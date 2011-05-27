@@ -12,9 +12,8 @@ package org.eclipse.rwt;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
 
-public final class TestResourceManagerFactory
-  implements IResourceManagerFactory
-{
+public final class TestResourceManagerFactory implements IResourceManagerFactory {
+  
   public IResourceManager create() {
     return new TestResourceManager();
   }

@@ -21,6 +21,7 @@ import javax.servlet.http.*;
 
 import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
@@ -40,9 +41,12 @@ public class Fixture {
   
   private static final String SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS
     = "usePerformanceOptimizations";
-
+  
   static {
     usePerformanceOptimizations = Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS );
+    if( Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS ) ) {
+      ApplicationContext.ignoreResoureRegistration = true;
+    }
   }
 
   private static TestServletContext servletContext;
@@ -53,6 +57,7 @@ public class Fixture {
   
   public static TestServletContext createServletContext() {
     servletContext = new TestServletContext();
+    Fixture.registerResourceManagerFactory();
     return getServletContext();
   }
   
@@ -179,13 +184,14 @@ public class Fixture {
   }
 
   private static void registerCurrentPhaseListener() {
-    String initParam = RWTServletContextListener.PHASE_LISTENERS_PARAM;
+    String initParam = PhaseListenerRegistryConfigurable.PHASE_LISTENERS_PARAM;
     setInitParameter( initParam, CurrentPhase.Listener.class.getName() );
   }
-
-  public static void registerResourceManagerFactory() {
-    String initParam = RWTServletContextListener.RESOURCE_MANAGER_FACTORY_PARAM;
-    setInitParameter( initParam, TestResourceManagerFactory.class.getName() );
+  
+  public static void registerDefaultResourceManager() {
+    String key = ResourceManagerProviderConfigurable.RESOURCE_MANAGER_FACTORY_PARAM;
+    String value = DefaultResourceManagerFactory.class.getName();
+    setInitParameter( key, value );
   }
 
   public static void tearDown() {
@@ -263,8 +269,7 @@ public class Fixture {
     TestRequest request = new TestRequest();
     request.setSession( session );
     TestResponse response = new TestResponse();
-    SessionStoreImpl sessionStore = SessionStoreImpl.getInstanceFromSession( session );
-    ServiceContext serviceContext = new ServiceContext( request, response, sessionStore );
+    ServiceContext serviceContext = new ServiceContext( request, response );
     serviceContext.setStateInfo( new ServiceStateInfo() );
     ContextProvider.disposeContext();
     ContextProvider.setContext( serviceContext );
@@ -491,6 +496,11 @@ public class Fixture {
     ISessionStore session = ContextProvider.getSession();
     LifeCycleUtil.setUIThread( session, result );
     return result;
+  }
+
+  private static void registerResourceManagerFactory() {
+    String initParam = ResourceManagerProviderConfigurable.RESOURCE_MANAGER_FACTORY_PARAM;
+    setInitParameter( initParam, TestResourceManagerFactory.class.getName() );
   }
 
   private Fixture() {

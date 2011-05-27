@@ -159,7 +159,8 @@ public final class EngineConfigWrapper implements IEngineConfig {
   private void registerSettingStoreFactory() {
     // determine which factory to use via an environment setting / config.ini
     ISettingStoreFactory result = null;
-    String factoryId = getOSGiProperty( RWTServletContextListener.SETTING_STORE_FACTORY_PARAM );
+    String settingStoreFactoryParam = SettingStoreManagerConfigurable.SETTING_STORE_FACTORY_PARAM;
+    String factoryId = getOSGiProperty( settingStoreFactoryParam );
     if( factoryId != null ) {
       IExtensionRegistry registry = Platform.getExtensionRegistry();
       IExtensionPoint point = registry.getExtensionPoint( ID_SETTING_STORES );

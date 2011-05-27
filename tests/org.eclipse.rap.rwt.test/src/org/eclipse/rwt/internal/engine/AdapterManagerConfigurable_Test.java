@@ -130,7 +130,7 @@ public class AdapterManagerConfigurable_Test extends TestCase {
   }
 
   private void setInitParameter( String value ) {
-    Fixture.setInitParameter( RWTServletContextListener.ADAPTER_FACTORIES_PARAM, value );
+    Fixture.setInitParameter( AdapterManagerConfigurable.ADAPTER_FACTORIES_PARAM, value );
   }
   
   private String getValidFactoryAndAdaptableValuePair() {

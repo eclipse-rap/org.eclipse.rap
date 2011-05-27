@@ -61,13 +61,14 @@ public class ImageDataFactory_Test extends TestCase {
     }
   }
 
-  protected void setUp() throws Exception {
+  protected void setUp() {
+    Fixture.registerDefaultResourceManager();
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
     imageDataFactory = new ImageDataFactory();
   }
 
-  protected void tearDown() throws Exception {
+  protected void tearDown() {
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
   }

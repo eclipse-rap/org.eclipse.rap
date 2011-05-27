@@ -30,13 +30,13 @@ public class ShellThemeAdapter_Test extends TestCase {
 
   private Display display;
 
-  protected void setUp() throws Exception {
+  protected void setUp() {
     Fixture.setUp();
     Fixture.fakeNewRequest();
     display = new Display();
   }
 
-  protected void tearDown() throws Exception {
+  protected void tearDown() {
     Fixture.tearDown();
   }
 

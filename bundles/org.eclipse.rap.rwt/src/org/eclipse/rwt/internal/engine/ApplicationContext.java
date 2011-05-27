@@ -31,6 +31,9 @@ import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
 
 
 public class ApplicationContext {
+  // TODO [fappel]: the testMode flag is used to ignore resource registration. Think about
+  //                a less intrusive solution
+  public static boolean ignoreResoureRegistration;
   // TODO [fappel]: themeManagerHolder isn't final for performance reasons of the testsuite.
   //                TestServletContext#setAttribute(String,Object) will replace the runtime
   //                implementation with an optimized version for testing purpose. Think about
@@ -265,7 +268,9 @@ public class ApplicationContext {
     serviceManager.activate();
     // Note: order is crucial here
     jsLibraryConcatenator.startJSConcatenation();
-    DisplayLCAFacade.registerResources();
+    if( !ignoreResoureRegistration ) {
+      DisplayLCAFacade.registerResources();
+    }
     themeManagerHolder.activate();
     jsLibraryConcatenator.finishJSConcatenation();
   }

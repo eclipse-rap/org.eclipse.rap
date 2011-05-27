@@ -21,59 +21,16 @@ import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
 
 public class ThemeUtil_Test extends TestCase {
+  private static final String CUSTOM_THEME_ID = "customThemeId";
 
-  public void testSetCurrentThemeId() throws Exception {
-    ThemeManagerHelper.resetThemeManager();
-    ThemeManager manager = ThemeManager.getInstance();
-    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
-    Theme theme = new Theme( "custom.id", "Custom Theme", styleSheet );
-    manager.registerTheme( theme );
-    manager.initialize();
-    ThemeUtil.setCurrentThemeId( "custom.id" );
-    assertEquals( "custom.id", ThemeUtil.getCurrentThemeId() );
-  }
-
-  public void testSetCurrentThemeIdInvalid() {
-    ThemeManager manager = ThemeManager.getInstance();
-    manager.initialize();
-    try {
-      ThemeUtil.setCurrentThemeId( "woo.doo.schick.schnack" );
-      fail( "should throw IAE for invalid theme ids" );
-    } catch( IllegalArgumentException expected ) {
-    }
-  }
-
-  public void testGetDefaultTheme() {
-    ThemeManager themeManager = ThemeManager.getInstance();
-    themeManager.initialize();
-    assertNotNull( ThemeUtil.getDefaultTheme() );
-  }
-
-  public void testGetTheme() throws Exception {
-    ThemeManagerHelper.resetThemeManager();
-    ThemeManager themeManager = ThemeManager.getInstance();
-    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
-    Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );
-    themeManager.registerTheme( customTheme );
-    themeManager.initialize();
-    assertNotNull( ThemeUtil.getTheme() );
-    assertSame( ThemeUtil.getDefaultTheme(), ThemeUtil.getTheme() );
-    ThemeUtil.setCurrentThemeId( "custom.id" );
-    assertNotSame( ThemeUtil.getDefaultTheme(), ThemeUtil.getTheme() );
-    assertSame( customTheme, ThemeUtil.getTheme() );
-  }
-
-  public void testGetCssValue() throws IOException {
-    ThemeManagerHelper.resetThemeManager();
-    ThemeManager themeManager = ThemeManager.getInstance();
-    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
-    Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );
-    themeManager.registerTheme( customTheme );
-    themeManager.initialize();
-    ThemeUtil.setCurrentThemeId( "custom.id" );
-    SimpleSelector selector = new SimpleSelector( new String[] { ".special" } );
-    QxType cssValue = ThemeUtil.getCssValue( "Button", "color", selector );
-    assertEquals( "#ff0000", ( ( QxColor )cssValue ).toDefaultString() );
+  public void testCurrentThemeChanges() throws Exception {
+    checkDefaultTheme();
+    registerTheme();
+    checkDefaultTheme();
+    checkUnknownTheme();
+    ThemeUtil.setCurrentThemeId( CUSTOM_THEME_ID );
+    checkCurrentTheme();
+    checkCssValue();
   }
 
   protected void setUp() throws Exception {
@@ -82,5 +39,43 @@ public class ThemeUtil_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  private Theme createTheme( String themeId ) throws IOException {
+    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
+    return new Theme( themeId, "Custom Theme", styleSheet );
+  }
+
+  private void checkCssValue() {
+    SimpleSelector selector = new SimpleSelector( new String[] { ".special" } );
+    QxType cssValue = ThemeUtil.getCssValue( "Button", "color", selector );
+    assertEquals( "#ff0000", ( ( QxColor )cssValue ).toDefaultString() );
+  }
+
+  private void checkCurrentTheme() {
+    assertEquals( CUSTOM_THEME_ID, ThemeUtil.getCurrentThemeId() );
+    assertNotSame( ThemeUtil.getDefaultTheme(), ThemeUtil.getTheme() );
+    assertSame( ThemeManager.getInstance().getTheme( CUSTOM_THEME_ID ), ThemeUtil.getTheme() );
+  }
+
+  private void registerTheme() throws IOException {
+    ThemeManagerHelper.resetThemeManager();
+    ThemeManager manager = ThemeManager.getInstance();
+    manager.registerTheme( createTheme( CUSTOM_THEME_ID ) );
+    manager.initialize();
+  }
+
+  private void checkUnknownTheme() {
+    try {
+      ThemeUtil.setCurrentThemeId( "woo.doo.schick.schnack" );
+      fail( "should throw IAE for invalid theme ids" );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  private void checkDefaultTheme() {
+    assertNotNull( ThemeUtil.getDefaultTheme() );
+    assertNotNull( ThemeUtil.getTheme() );
+    assertSame( ThemeUtil.getDefaultTheme(), ThemeUtil.getTheme() );
   }
 }

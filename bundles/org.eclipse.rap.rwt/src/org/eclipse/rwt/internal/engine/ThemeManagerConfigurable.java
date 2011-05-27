@@ -23,6 +23,8 @@ import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
 
 class ThemeManagerConfigurable implements Configurable {
+  static final String THEMES_PARAM = "org.eclipse.rwt.themes";
+
   private final ServletContext servletContext;
   
   private static class ThemeResourceLoader implements ResourceLoader {
@@ -95,7 +97,7 @@ class ThemeManagerConfigurable implements Configurable {
   }
   
   private String getInitParameter() {
-    return servletContext.getInitParameter( RWTServletContextListener.THEMES_PARAM );
+    return servletContext.getInitParameter( ThemeManagerConfigurable.THEMES_PARAM );
   }
   
   private Declaration parseDeclaration( String declarationString ) {

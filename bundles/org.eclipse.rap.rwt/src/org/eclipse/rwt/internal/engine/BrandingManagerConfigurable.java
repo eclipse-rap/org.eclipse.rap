@@ -19,6 +19,8 @@ import org.eclipse.rwt.internal.util.ClassInstantiationException;
 import org.eclipse.rwt.internal.util.ClassUtil;
 
 class BrandingManagerConfigurable implements Configurable {
+  public static final String BRANDINGS_PARAM = "org.eclipse.rwt.brandings";
+
   private final ServletContext servletContext;
 
   BrandingManagerConfigurable( ServletContext servletContext ) {
@@ -36,7 +38,7 @@ class BrandingManagerConfigurable implements Configurable {
   }
 
   private void registerBrandings( ApplicationContext context ) {
-    String param = servletContext.getInitParameter( RWTServletContextListener.BRANDINGS_PARAM );
+    String param = servletContext.getInitParameter( BrandingManagerConfigurable.BRANDINGS_PARAM );
     String[] brandings = param.split( RWTServletContextListener.PARAMETER_SEPARATOR );
     for( int i = 0; i < brandings.length; i++ ) {
       registerBranding( context, brandings[ i ].trim() );
@@ -44,7 +46,7 @@ class BrandingManagerConfigurable implements Configurable {
   }
 
   private boolean hasBrandingsConfigured() {
-    return null != servletContext.getInitParameter( RWTServletContextListener.BRANDINGS_PARAM );
+    return null != servletContext.getInitParameter( BrandingManagerConfigurable.BRANDINGS_PARAM );
   }
 
   private void registerBranding( ApplicationContext context, String className ) {

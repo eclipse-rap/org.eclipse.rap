@@ -103,7 +103,6 @@ public class RWTHostTestSuite {
     // RWT Tests
     suite.addTestSuite( EntryPointManager_Test.class );
     suite.addTestSuite( RWTServletContextListener_Test.class );
-    suite.addTestSuite( Configurables_Test.class );
     suite.addTestSuite( ConfigurationReaderConfigurable_Test.class );
     suite.addTestSuite( ResourceManangerProviderConfigurable_Test.class );
     suite.addTestSuite( EntryPointManagerConfigurable_Test.class );

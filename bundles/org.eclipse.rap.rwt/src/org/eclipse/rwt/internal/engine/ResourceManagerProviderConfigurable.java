@@ -20,9 +20,9 @@ import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
 
 
-class ResourceManagerProviderConfigurable implements Configurable {
-  private static final String RESOURCE_MANAGER_FACTORY_PARAM
-    = RWTServletContextListener.RESOURCE_MANAGER_FACTORY_PARAM;
+public class ResourceManagerProviderConfigurable implements Configurable {
+  public static final String RESOURCE_MANAGER_FACTORY_PARAM
+    = "org.eclipse.rwt.resourceManagerFactory";
   
   private final ServletContext servletContext;
 

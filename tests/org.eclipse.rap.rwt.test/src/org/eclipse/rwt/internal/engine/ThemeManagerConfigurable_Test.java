@@ -70,7 +70,7 @@ public class ThemeManagerConfigurable_Test extends TestCase {
   }
   
   protected void tearDown() {
-    Fixture.setInitParameter( RWTServletContextListener.THEMES_PARAM, null );
+    Fixture.setInitParameter( ThemeManagerConfigurable.THEMES_PARAM, null );
     resetThemeManager();
     Fixture.disposeOfServletContext();
   }
@@ -82,7 +82,7 @@ public class ThemeManagerConfigurable_Test extends TestCase {
   }
   
   private void setInitParameter( String value ) {
-    Fixture.setInitParameter( RWTServletContextListener.THEMES_PARAM, value );
+    Fixture.setInitParameter( ThemeManagerConfigurable.THEMES_PARAM, value );
   }
   
   private void checkIllegalArgumentException() {

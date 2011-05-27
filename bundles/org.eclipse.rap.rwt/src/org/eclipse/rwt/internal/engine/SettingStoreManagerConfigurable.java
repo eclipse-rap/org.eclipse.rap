@@ -20,9 +20,8 @@ import org.eclipse.rwt.service.ISettingStoreFactory;
 import org.eclipse.rwt.service.RWTFileSettingStoreFactory;
 
 
-class SettingStoreManagerConfigurable implements Configurable {
-  private static final String SETTING_STORE_FACTORY_PARAM
-    = RWTServletContextListener.SETTING_STORE_FACTORY_PARAM;
+public class SettingStoreManagerConfigurable implements Configurable {
+  public static final String SETTING_STORE_FACTORY_PARAM = "org.eclipse.rwt.settingStoreFactory";
   
   private final ServletContext servletContext;
 

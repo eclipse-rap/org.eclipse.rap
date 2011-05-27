@@ -97,7 +97,9 @@ public final class ThemeStoreWriter {
     Iterator iterator = themes.iterator();
     while( iterator.hasNext() ) {
       ThemeEntry themeEntry = ( ThemeEntry )iterator.next();
-      QxType[] values = themeEntry.theme.getValuesMap().getAllValues();
+      Theme theme = themeEntry.theme;
+      ThemeCssValuesMap valuesMap = theme.getValuesMap();
+      QxType[] values = valuesMap.getAllValues();
       for( int i = 0; i < values.length; i++ ) {
         valueSet.add( values[ i ] );
       }

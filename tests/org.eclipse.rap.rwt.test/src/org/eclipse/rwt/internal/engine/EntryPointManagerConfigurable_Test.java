@@ -60,7 +60,7 @@ public class EntryPointManagerConfigurable_Test extends TestCase {
   }
   
   public void testConfigureWithUnknownEntryPointClass() {
-    Fixture.setInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM, "unknown" );
+    Fixture.setInitParameter( EntryPointManagerConfigurable.ENTRY_POINTS_PARAM, "unknown" );
     
     try {
       configurable.configure( applicationContext );
@@ -86,7 +86,7 @@ public class EntryPointManagerConfigurable_Test extends TestCase {
   }
   
   protected void tearDown() {
-    Fixture.setInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM, null );
+    Fixture.setInitParameter( EntryPointManagerConfigurable.ENTRY_POINTS_PARAM, null );
     Fixture.disposeOfServletContext();
   }
 
@@ -109,7 +109,7 @@ public class EntryPointManagerConfigurable_Test extends TestCase {
   }
 
   private void setEntryPointsInitParameter( String value ) {
-    Fixture.setInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM, value );
+    Fixture.setInitParameter( EntryPointManagerConfigurable.ENTRY_POINTS_PARAM, value );
   }
 
   private String[] getEntryPoints() {

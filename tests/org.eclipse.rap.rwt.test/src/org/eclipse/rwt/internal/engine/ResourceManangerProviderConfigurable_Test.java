@@ -25,6 +25,7 @@ public class ResourceManangerProviderConfigurable_Test extends TestCase {
   private ApplicationContext applicationContext;
   
   public void testGetFactoryName() {
+    setResourceManagerFactory( null );
     String defaultFactoryName = configurable.getFactoryName();
     setTestFactoryNameAsInitParam();
     String testFactoryName = configurable.getFactoryName();
@@ -42,7 +43,7 @@ public class ResourceManangerProviderConfigurable_Test extends TestCase {
   }
   
   public void testConfigureWithUnknownFactoryName() {
-    Fixture.setInitParameter( RWTServletContextListener.RESOURCE_MANAGER_FACTORY_PARAM, "unkown" );
+    setResourceManagerFactory( "unkown" );
     
     try {
       configurable.configure( applicationContext );
@@ -68,7 +69,7 @@ public class ResourceManangerProviderConfigurable_Test extends TestCase {
   }
   
   protected void tearDown() {
-    Fixture.setInitParameter( RWTServletContextListener.RESOURCE_MANAGER_FACTORY_PARAM, null );
+    setResourceManagerFactory( null );
     Fixture.disposeOfServletContext();
   }
   
@@ -86,7 +87,11 @@ public class ResourceManangerProviderConfigurable_Test extends TestCase {
   }
   
   private void setTestFactoryNameAsInitParam() {
-    String name = TestResourceManagerFactory.class.getName();
-    Fixture.setInitParameter( RWTServletContextListener.RESOURCE_MANAGER_FACTORY_PARAM, name );
+    setResourceManagerFactory( TestResourceManagerFactory.class.getName() );
+  }
+
+  private void setResourceManagerFactory( String value ) {
+    String key = ResourceManagerProviderConfigurable.RESOURCE_MANAGER_FACTORY_PARAM;
+    Fixture.setInitParameter( key, value );
   }
 }

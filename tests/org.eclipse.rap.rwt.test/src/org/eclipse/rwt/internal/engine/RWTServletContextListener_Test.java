@@ -13,6 +13,9 @@
 
 package org.eclipse.rwt.internal.engine;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
@@ -25,18 +28,29 @@ import org.eclipse.swt.widgets.*;
 
 
 public class RWTServletContextListener_Test extends TestCase {
-  private static final String ENTRYPOINT = RWTServletContextListener.ENTRY_POINTS_PARAM;
-  private static final String RESOURCE_MANAGER_FACTORY
-    = RWTServletContextListener.RESOURCE_MANAGER_FACTORY_PARAM;
-  private static final String PHASE_LISTENER_PARAM 
-    = RWTServletContextListener.PHASE_LISTENERS_PARAM;
-  private static final String RESOURCE_PARAM 
-    = RWTServletContextListener.RESOURCES_PARAM;
-  private static final String BRANDINGS_PARAM
-    = RWTServletContextListener.BRANDINGS_PARAM;
   private static String phaseListenerLog = "";
-
   
+  private static class TestConfigurable implements Configurable {
+    private boolean configured;
+    private boolean reset;
+    public void configure( ApplicationContext context ) {
+      configured = true;
+    }
+
+    public void reset( ApplicationContext context ) {
+      reset = true;
+    }
+
+    boolean isConfigured() {
+      return configured;
+    }
+
+    
+    boolean isReset() {
+      return reset;
+    }
+  }
+
   public static class TestEntryPointWithShell implements IEntryPoint {
     Composite shell;
     
@@ -88,30 +102,29 @@ public class RWTServletContextListener_Test extends TestCase {
   }
   
   public void testResourceManagerInitialization() {
-    String factoryName = TestResourceManagerFactory.class.getName();
-    Fixture.setInitParameter( RESOURCE_MANAGER_FACTORY, factoryName );
+    setResourceManagerFactoryInitParameter();
     Fixture.triggerServletContextInitialized();
     Fixture.createServiceContext();
     assertTrue( RWT.getResourceManager() instanceof TestResourceManager );
   }
 
   public void testEntryPointInitialization() {
-    Fixture.setInitParameter( ENTRYPOINT, TestEntryPointWithShell.class.getName() );
+    setEntryPointInitParameter();
     Fixture.triggerServletContextInitialized();
     Fixture.createServiceContext();
     assertEquals( 1, RWTFactory.getEntryPointManager().getEntryPoints().length );
   }
     
-  public void testPhaseListenerInitialization() throws Exception  {
-    Fixture.setInitParameter( PHASE_LISTENER_PARAM, TestPhaseListener.class.getName() );
+  public void testPhaseListenerInitialization()  {
+    setPhaseListenerInitParameter();
     Fixture.triggerServletContextInitialized();
     Fixture.createServiceContext();
     assertEquals( 1, RWTFactory.getPhaseListenerRegistry().get().length );
     assertTrue( RWTFactory.getPhaseListenerRegistry().get()[ 0 ] instanceof TestPhaseListener );
   }
 
-  public void testResourceInitialization() throws Exception  {
-    Fixture.setInitParameter( RESOURCE_PARAM, TestResource.class.getName() );
+  public void testResourceInitialization() {
+    setResourceInitParameter();
     Fixture.triggerServletContextInitialized();
     Fixture.createServiceContext();
     assertTrue( RWTFactory.getResourceRegistry().get()[ 0 ] instanceof TestResource );
@@ -119,19 +132,91 @@ public class RWTServletContextListener_Test extends TestCase {
   }
 
   public void testBrandingInitialization() {
-    String brandingType = TestBranding.class.getName();
-    Fixture.setInitParameter( BRANDINGS_PARAM, brandingType );
+    setBrandingInitParameter();
     Fixture.triggerServletContextInitialized();
     Fixture.createServiceContext();
     AbstractBranding[] allBrandings = RWTFactory.getBrandingManager().getAll();
     assertEquals( 1, allBrandings.length );
     assertEquals( TestBranding.class, allBrandings[ 0 ].getClass() );
   }
+  
+  public void testCreateConfigurables() {
+    RWTServletContextListener listener = new RWTServletContextListener();
+    
+    Configurable[] configurables = listener.createConfigurables( new TestServletContext() );
+    
+    assertEquals( 10, configurables.length );
+  }
+  
+  public void testConfigurationLifeCyle() {
+    TestConfigurable configurable = new TestConfigurable();
 
-  protected void tearDown() throws Exception {
+    initializeServletContext( configurable );
+    destroyServletContext();
+
+    assertTrue( configurable.isConfigured() );
+    assertTrue( configurable.isReset() );
+  }
+
+  protected void tearDown() {
+    if( Fixture.getServletContext() != null ) {
+      Fixture.triggerServletContextDestroyed();
+      Fixture.disposeOfServiceContext();
+      Fixture.disposeOfServletContext();
+    }
+  }
+
+
+  private void destroyServletContext() {
     Fixture.triggerServletContextDestroyed();
-    Fixture.disposeOfServiceContext();
     Fixture.disposeOfServletContext();
-    Fixture.registerResourceManagerFactory();
+  }
+
+  private void initializeServletContext( Configurable configurable ) {
+    RWTServletContextListener listener = createListener( configurable );
+    ServletContext servletContext = Fixture.createServletContext();
+    listener.contextInitialized( new ServletContextEvent( servletContext ) );
+  }
+
+  private RWTServletContextListener createListener( final Configurable testConfigurable ) {
+    return new RWTServletContextListener() {
+      protected Configurable[] createConfigurables( ServletContext servletContext ) {
+        Configurable[] configurables = super.createConfigurables( servletContext );
+        Configurable[] result = new Configurable[ configurables.length + 1 ];
+        System.arraycopy( configurables, 0, result, 0, configurables.length );
+        result[ configurables.length ] = testConfigurable;
+        return result;
+      }
+    };
+  }
+
+  private void setResourceManagerFactoryInitParameter() {
+    String name = ResourceManagerProviderConfigurable.RESOURCE_MANAGER_FACTORY_PARAM;
+    String value = TestResourceManagerFactory.class.getName();
+    Fixture.setInitParameter( name, value );
+  }
+
+  private void setEntryPointInitParameter() {
+    String name = EntryPointManagerConfigurable.ENTRY_POINTS_PARAM;
+    String value = TestEntryPointWithShell.class.getName();
+    Fixture.setInitParameter( name, value );
+  }
+  
+  private void setPhaseListenerInitParameter() {
+    String name = PhaseListenerRegistryConfigurable.PHASE_LISTENERS_PARAM;
+    String value = TestPhaseListener.class.getName();
+    Fixture.setInitParameter( name, value );
+  }
+
+  private void setResourceInitParameter() {
+    String name = ResourceRegistryConfigurable.RESOURCES_PARAM;
+    String value = TestResource.class.getName();
+    Fixture.setInitParameter( name, value );
+  }
+
+  private void setBrandingInitParameter() {
+    String name = BrandingManagerConfigurable.BRANDINGS_PARAM;
+    String value = TestBranding.class.getName();
+    Fixture.setInitParameter( name, value );
   }
 }

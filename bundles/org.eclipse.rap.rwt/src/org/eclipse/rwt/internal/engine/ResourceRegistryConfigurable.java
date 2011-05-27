@@ -20,6 +20,8 @@ import org.eclipse.rwt.resources.IResource;
 
 
 class ResourceRegistryConfigurable implements Configurable {
+  static final String RESOURCES_PARAM = "org.eclipse.rwt.resources";
+
   private final ServletContext servletContext;
 
   ResourceRegistryConfigurable( ServletContext servletContext ) {
@@ -49,12 +51,12 @@ class ResourceRegistryConfigurable implements Configurable {
   }
 
   private String[] parseClassNames() {
-    String initParam = servletContext.getInitParameter( RWTServletContextListener.RESOURCES_PARAM );
+    String initParam = servletContext.getInitParameter( ResourceRegistryConfigurable.RESOURCES_PARAM );
     return initParam.split( RWTServletContextListener.PARAMETER_SEPARATOR );
   }
 
   private boolean hasResourcesConfigured() {
-    return null != servletContext.getInitParameter( RWTServletContextListener.RESOURCES_PARAM );
+    return null != servletContext.getInitParameter( ResourceRegistryConfigurable.RESOURCES_PARAM );
   }
 
   private IResource createResource( String className ) {

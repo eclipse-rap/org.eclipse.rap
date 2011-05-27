@@ -63,14 +63,20 @@ public final class ThemeTestUtil {
   public static void registerCustomTheme( String themeId, String cssCode, ResourceLoader loader )
     throws IOException
   {
+    ThemeManagerHelper.resetThemeManager();
+    Theme theme = createTheme( themeId, cssCode, loader );
+    ThemeManager manager = ThemeManager.getInstance();
+    manager.registerTheme( theme );
+    manager.initialize();
+  }
+
+  public static Theme createTheme( String themeId, String cssCode, ResourceLoader loader )
+    throws IOException
+  {
     String cssFileName = themeId + ".css";
     byte[] buf = cssCode.getBytes( "UTF-8" );
     ByteArrayInputStream inStream = new ByteArrayInputStream( buf );
     StyleSheet styleSheet = CssFileReader.readStyleSheet( inStream, cssFileName, loader );
-    ThemeManagerHelper.resetThemeManager();
-    ThemeManager manager = ThemeManager.getInstance();
-    Theme theme = new Theme( themeId, "Custom Theme", styleSheet );
-    manager.registerTheme( theme );
-    manager.initialize();
+    return new Theme( themeId, "Custom Theme", styleSheet );
   }
 }

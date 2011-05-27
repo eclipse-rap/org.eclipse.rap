@@ -117,7 +117,7 @@ public class ThemeManagerHelper {
   }
 
   private static boolean isThemeManagerResetNeeded() {
-    return    isThemeManagerAvailable() 
+    return    isThemeManagerAvailable()
            && getThemeManager().getRegisteredThemeIds().length != 1;
   }
 

@@ -272,6 +272,10 @@ public final class ThemeManager {
     return themeableWidgets.get( widget );
   }
 
+  ThemeableWidget[] getAllThemeableWidget() {
+    return themeableWidgets.getAll();
+  }
+
   private void checkNotInitialized() {
     if( initialized ) {
       throw new IllegalStateException( "ThemeManager is already initialized" );

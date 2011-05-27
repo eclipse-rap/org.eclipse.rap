@@ -198,6 +198,7 @@ public class Image_Test extends TestCase {
   // Width/Height constructor
   
   public void testWidthHeightConstructor() {
+    useDefaultResourceManager();
     Display device = new Display();
     Image image = new Image( device, 1, 1 );
     ImageData imageData = image.getImageData();
@@ -259,6 +260,7 @@ public class Image_Test extends TestCase {
   }
 
   public void testGetImageData() {
+    useDefaultResourceManager();
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
     ImageData imageData = new ImageData( stream );
@@ -400,13 +402,19 @@ public class Image_Test extends TestCase {
     assertNotSame( image1, image2 );
   }
 
-  protected void setUp() throws Exception {
+  protected void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
   }
 
-  protected void tearDown() throws Exception {
+  protected void tearDown() {
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
+  }
+
+  private void useDefaultResourceManager() {
+    tearDown();
+    Fixture.registerDefaultResourceManager();
+    setUp();
   }
 }

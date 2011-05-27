@@ -57,7 +57,7 @@ public class PhaseListenerRegistryConfigurable_Test extends TestCase {
   }
 
   public void testConfigureWithUnknownPhaseListener() {
-    Fixture.setInitParameter( RWTServletContextListener.PHASE_LISTENERS_PARAM, "unknown" );
+    Fixture.setInitParameter( PhaseListenerRegistryConfigurable.PHASE_LISTENERS_PARAM, "unknown" );
     
     try {
       configurable.configure( applicationContext );
@@ -83,13 +83,13 @@ public class PhaseListenerRegistryConfigurable_Test extends TestCase {
   }
   
   protected void tearDown() {
-    Fixture.setInitParameter( RWTServletContextListener.PHASE_LISTENERS_PARAM, null );
+    Fixture.setInitParameter( PhaseListenerRegistryConfigurable.PHASE_LISTENERS_PARAM, null );
     Fixture.disposeOfServletContext();
   }
 
   private void setPhaseListenerInitParameter() {
     String name = TestPhaseListener.class.getName();
-    Fixture.setInitParameter( RWTServletContextListener.PHASE_LISTENERS_PARAM, name );
+    Fixture.setInitParameter( PhaseListenerRegistryConfigurable.PHASE_LISTENERS_PARAM, name );
   }
 
   private PhaseListenerRegistry getRegistry() {

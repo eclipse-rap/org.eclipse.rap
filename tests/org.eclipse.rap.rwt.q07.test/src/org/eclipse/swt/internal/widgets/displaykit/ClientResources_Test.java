@@ -29,13 +29,13 @@ public class ClientResources_Test extends TestCase {
   private ClientResources clientResources;
   private IResourceManager resourceManager;
 
-  public void testRegisterResources() throws Exception {
+  public void testRegisterResources() {
     clientResources.registerResources();
     assertTrue( resourceManager.isRegistered( "client.js" ) );
     assertFalse( resourceManager.isRegistered( "qx/lang/Core.js" ) );
   }
 
-  public void testRegisterResourcesDebug() throws Exception {
+  public void testRegisterResourcesDebug() {
     System.setProperty( "org.eclipse.rwt.clientLibraryVariant", "DEBUG" );
     clientResources.registerResources();
     assertFalse( resourceManager.isRegistered( "client.js" ) );
@@ -49,7 +49,7 @@ public class ClientResources_Test extends TestCase {
     assertSame( contextLoader, resourceManager.getContextLoader() );
   }
 
-  protected void setUp() throws Exception {
+  protected void setUp() {
     ServletContext servletContext = Fixture.createServletContext();
     Fixture.createServiceContext();
     ApplicationContext appContext = new ApplicationContext();

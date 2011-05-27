@@ -75,6 +75,7 @@ public class InternalImageFactory_Test extends TestCase {
   }
 
   public void testInternalImagesFromImageDataAreCached() {
+    useDefaultResourceManager();
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
     ImageData imageData1 = image.getImageData();
     ImageData imageData2 = image.getImageData();
@@ -116,14 +117,20 @@ public class InternalImageFactory_Test extends TestCase {
     assertSame( internalImage1, internalImage2 );
   }
 
-  protected void setUp() throws Exception {
+  protected void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
     internalImageFactory = new InternalImageFactory();
   }
 
-  protected void tearDown() throws Exception {
+  protected void tearDown() {
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
+  }
+  
+  private void useDefaultResourceManager() {
+    tearDown();
+    Fixture.registerDefaultResourceManager();
+    setUp();
   }
 }

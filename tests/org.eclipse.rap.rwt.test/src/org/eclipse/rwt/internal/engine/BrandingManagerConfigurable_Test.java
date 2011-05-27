@@ -36,7 +36,7 @@ public class BrandingManagerConfigurable_Test extends TestCase {
   }
   
   public void testConfigureWithUnknownBrandingType() {
-    Fixture.setInitParameter( RWTServletContextListener.BRANDINGS_PARAM, "unknown" );
+    Fixture.setInitParameter( BrandingManagerConfigurable.BRANDINGS_PARAM, "unknown" );
     
     try {
       configurable.configure( applicationContext );
@@ -62,7 +62,7 @@ public class BrandingManagerConfigurable_Test extends TestCase {
   }
   
   protected void tearDown() {
-    Fixture.setInitParameter( RWTServletContextListener.BRANDINGS_PARAM, null );
+    Fixture.setInitParameter( BrandingManagerConfigurable.BRANDINGS_PARAM, null );
     Fixture.disposeOfServletContext();
   }
   
@@ -72,6 +72,6 @@ public class BrandingManagerConfigurable_Test extends TestCase {
   
   private void setBrandingInitParameter() {
     String brandingType = TestBranding.class.getName();
-    Fixture.setInitParameter( RWTServletContextListener.BRANDINGS_PARAM, brandingType );
+    Fixture.setInitParameter( BrandingManagerConfigurable.BRANDINGS_PARAM, brandingType );
   }
 }

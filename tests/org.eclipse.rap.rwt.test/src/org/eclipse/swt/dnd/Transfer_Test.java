@@ -73,11 +73,11 @@ public class Transfer_Test extends TestCase {
     assertTrue( transfer.getTypeIds().length > 0 );
   }
   
-  public void testImagaeTransferConversion() {
+  public void testImagaTransferConversion() {
+    useDefaultResourceManager();
     Transfer transfer = ImageTransfer.getInstance();
     TransferData data = transfer.getSupportedTypes()[ 0 ];
-    Image image = Graphics.getImage( Fixture.IMAGE1, 
-                                     Fixture.class.getClassLoader() );
+    Image image = Graphics.getImage( Fixture.IMAGE1, Fixture.class.getClassLoader() );
     ImageData imageData = image.getImageData();
     transfer.javaToNative( imageData, data );
     assertEquals( 1, data.result );
@@ -167,13 +167,19 @@ public class Transfer_Test extends TestCase {
     assertTrue( fooType != barType );
   }
 
-  protected void setUp() throws Exception {
+  protected void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
   }
 
-  protected void tearDown() throws Exception {
+  protected void tearDown() {
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
+  }
+
+  private void useDefaultResourceManager() {
+    tearDown();
+    Fixture.registerDefaultResourceManager();
+    setUp();
   }
 }

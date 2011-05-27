@@ -18,6 +18,8 @@ import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 
 
 class EntryPointManagerConfigurable implements Configurable {
+  static final String ENTRY_POINTS_PARAM = "org.eclipse.rwt.entryPoints";
+  
   private final ServletContext servletContext;
   
   private static class EntryPointDeclaration {
@@ -95,6 +97,6 @@ class EntryPointManagerConfigurable implements Configurable {
   }
   
   private String getEntryPointParameters() {
-    return servletContext.getInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM );
+    return servletContext.getInitParameter( EntryPointManagerConfigurable.ENTRY_POINTS_PARAM );
   }
 }

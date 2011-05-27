@@ -22,7 +22,6 @@ import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
 final class ClientResources {
-
   private static final String CLIENT_LIBRARY_VARIANT = "org.eclipse.rwt.clientLibraryVariant";
   private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
 
@@ -252,7 +251,7 @@ final class ClientResources {
     "org/eclipse/swt/widgets/ToolTip.js"
   };
 
-  private static final String[] WIDGET_IMAGES = new String[]{
+  private static final String[] WIDGET_IMAGES = new String[] {
     "resource/static/image/blank.gif",
     "resource/static/image/dotted_white.gif",
     "resource/widget/rap/ctabfolder/maximize.gif",

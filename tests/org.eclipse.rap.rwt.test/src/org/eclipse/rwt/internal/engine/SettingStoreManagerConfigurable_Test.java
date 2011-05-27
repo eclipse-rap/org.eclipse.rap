@@ -42,7 +42,7 @@ public class SettingStoreManagerConfigurable_Test extends TestCase {
   }
   
   public void testConfigureWithUnknownFactoryName() {
-    Fixture.setInitParameter( RWTServletContextListener.SETTING_STORE_FACTORY_PARAM, "unkown" );
+    Fixture.setInitParameter( SettingStoreManagerConfigurable.SETTING_STORE_FACTORY_PARAM, "unkown" );
     
     try {
       configurable.configure( applicationContext );
@@ -68,12 +68,12 @@ public class SettingStoreManagerConfigurable_Test extends TestCase {
   }
   
   protected void tearDown() {
-    Fixture.setInitParameter( RWTServletContextListener.SETTING_STORE_FACTORY_PARAM, null );
+    Fixture.setInitParameter( SettingStoreManagerConfigurable.SETTING_STORE_FACTORY_PARAM, null );
     Fixture.disposeOfServletContext();
   }
     
   private void setTestFactoryNameAsInitParam() {
     String factoryName = MemorySettingStoreFactory.class.getName();
-    Fixture.setInitParameter( RWTServletContextListener.SETTING_STORE_FACTORY_PARAM, factoryName );
+    Fixture.setInitParameter( SettingStoreManagerConfigurable.SETTING_STORE_FACTORY_PARAM, factoryName );
   }
 }

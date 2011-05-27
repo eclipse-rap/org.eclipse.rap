@@ -92,7 +92,7 @@ public class ResourceRegistryConfigurable_Test extends TestCase {
   }
 
   private void setInitParameter( String value ) {
-    Fixture.setInitParameter( RWTServletContextListener.RESOURCES_PARAM, value );
+    Fixture.setInitParameter( ResourceRegistryConfigurable.RESOURCES_PARAM, value );
   }
   
   private ResourceRegistry getResourceRegistry() {

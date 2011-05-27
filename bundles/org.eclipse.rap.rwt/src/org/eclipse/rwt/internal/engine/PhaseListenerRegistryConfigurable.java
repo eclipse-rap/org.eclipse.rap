@@ -21,7 +21,8 @@ import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 
 
-class PhaseListenerRegistryConfigurable implements Configurable {
+public class PhaseListenerRegistryConfigurable implements Configurable {
+  public static final String PHASE_LISTENERS_PARAM = "org.eclipse.rwt.phaseListeners";
   static final String[] DEFAULT_PHASE_LISTENERS = new String[] {
     CurrentPhase.Listener.class.getName(),
     MeasurementListener.class.getName()
@@ -70,6 +71,6 @@ class PhaseListenerRegistryConfigurable implements Configurable {
   }
 
   private String getInitParameter() {
-    return servletContext.getInitParameter( RWTServletContextListener.PHASE_LISTENERS_PARAM );
+    return servletContext.getInitParameter( PhaseListenerRegistryConfigurable.PHASE_LISTENERS_PARAM );
   }
 }

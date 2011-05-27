@@ -10,12 +10,26 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 
 
 public class ThemeStoreWriter_Test extends TestCase {
+  private static final String THEME_WRITE_IMAGES = "themeWriteImages";
+  private static final String THEME_WRITE_COLORS = "themeWriteColors";
+  private static final String THEME_WRITE_SHADOW = "themeWriteShadow";
+  private static final String THEME_WRITE_HORIZONTAL_GRADIENT = "themeWriteHorizontalGradient";
+  private static final String THEME_WRITE_VERTICAL_GRADIENT = "themeWriteVerticalGradient";
+  private static final String THEME_ANIMATIONS = "themeAnimations";
+  private static final String THEME_SET_CURRENT_THEME_ID = "themeSetCurrentThemeId";
+  
+  // static field used for performance improvements of test initialization
+  private static Map themes;
 
   public void testSetCurrentThemeId() throws Exception {
     ThemeCssElement element1 = new ThemeCssElement( "Button" );
@@ -23,17 +37,7 @@ public class ThemeStoreWriter_Test extends TestCase {
     element1.addProperty( "background-image" );
     IThemeCssElement[] elements = new IThemeCssElement[] { element1 };
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-    String themeId = "myTheme";
-    String cssCode =   "Button { color: black; }\n"
-                     + "Button[BORDER] { color: red; }\n"
-                     + "Button { background-image: none;\n }"
-                     + "Button[BORDER] { background-image: url( "
-                     + Fixture.IMAGE_50x100
-                     + " ); }\n";
-    ResourceLoader loader = ThemeTestUtil.createResourceLoader( Fixture.class );
-    ThemeTestUtil.registerCustomTheme( themeId, cssCode, loader );
-    Theme theme = ThemeManager.getInstance().getTheme( themeId );
-    storeWriter.addTheme( theme, true );
+    storeWriter.addTheme( getTheme( THEME_SET_CURRENT_THEME_ID ), true );
     String output = storeWriter.createJs();
     // register colors
     assertTrue( output.indexOf( "\"#000000\"" ) != -1 );
@@ -51,18 +55,13 @@ public class ThemeStoreWriter_Test extends TestCase {
                + "[ [ [ \"[BORDER\" ], \"cd56ce7d\" ], [ [], \"ffffffff\" ] ]";
     assertTrue( output.indexOf( expected ) != -1 );
   }
-
+  
   public void testWriteAnimations() throws Exception {
     ThemeCssElement element1 = new ThemeCssElement( "Menu" );
     element1.addProperty( "animation" );
     IThemeCssElement[] elements = new IThemeCssElement[] { element1 };
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-    String themeId = "myTheme";
-    String cssCode = "Menu { animation: slideIn 2s ease-in, slideOut 2s ease-out; }\n";
-    ResourceLoader loader = ThemeTestUtil.createResourceLoader( Fixture.class );
-    ThemeTestUtil.registerCustomTheme( themeId, cssCode, loader );
-    Theme theme = ThemeManager.getInstance().getTheme( themeId );
-    storeWriter.addTheme( theme, true );
+    storeWriter.addTheme( getTheme( THEME_ANIMATIONS ), true );
     String output = storeWriter.createJs();
     String expected =   "\"animations\": {\n"
                       + "\"2e5f3d63\": {\n"
@@ -82,18 +81,7 @@ public class ThemeStoreWriter_Test extends TestCase {
     element.addProperty( "background-image" );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-    String themeId = "myTheme";
-    String cssCode =   "Button { background-image: gradient(\n"
-                     + "linear, left top, left bottom,\n"
-                     + "from( #ffffff ),\n"
-                     + "color-stop( 48%, #f0f0f0 ),\n"
-                     + "color-stop( 52%, #e0e0e0 ),\n"
-                     + "to( #ffffff )\n"
-                     + "); }";
-    ResourceLoader loader = ThemeTestUtil.createResourceLoader( Fixture.class );
-    ThemeTestUtil.registerCustomTheme( themeId, cssCode, loader );
-    Theme theme = ThemeManager.getInstance().getTheme( themeId );
-    storeWriter.addTheme( theme, true );
+    storeWriter.addTheme( getTheme( THEME_WRITE_VERTICAL_GRADIENT ), true );
     String output = storeWriter.createJs();
     String expected =   "\"gradients\": {\n"
                       + "\"96f80000\": {\n"
@@ -114,18 +102,7 @@ public class ThemeStoreWriter_Test extends TestCase {
     element.addProperty( "background-image" );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-    String themeId = "myTheme";
-    String cssCode =   "Button { background-image: gradient(\n"
-                     + "linear, left top, right top,\n"
-                     + "from( #ffffff ),\n"
-                     + "color-stop( 48%, #f0f0f0 ),\n"
-                     + "color-stop( 52%, #e0e0e0 ),\n"
-                     + "to( #ffffff )\n"
-                     + "); }";
-    ResourceLoader loader = ThemeTestUtil.createResourceLoader( Fixture.class );
-    ThemeTestUtil.registerCustomTheme( themeId, cssCode, loader );
-    Theme theme = ThemeManager.getInstance().getTheme( themeId );
-    storeWriter.addTheme( theme, true );
+    storeWriter.addTheme( getTheme( THEME_WRITE_HORIZONTAL_GRADIENT ), true );
     String output = storeWriter.createJs();
     String expected =   "\"gradients\": {\n"
                       + "\"df000025\": {\n"
@@ -146,12 +123,7 @@ public class ThemeStoreWriter_Test extends TestCase {
     element.addProperty( "box-shadow" );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-    String themeId = "myTheme";
-    String cssCode = "Shell { box-shadow: 10px 10px 3px 0 rgba( 0, 0, 0, 0.5 ); }\n";
-    ResourceLoader loader = ThemeTestUtil.createResourceLoader( Fixture.class );
-    ThemeTestUtil.registerCustomTheme( themeId, cssCode, loader );
-    Theme theme = ThemeManager.getInstance().getTheme( themeId );
-    storeWriter.addTheme( theme, true );
+    storeWriter.addTheme( getTheme( THEME_WRITE_SHADOW ), true );
     String output = storeWriter.createJs();
     String expected =   "\"shadows\": {\n"
                       + "\"2aedfabd\": [ false, 10, 10, 3, 0, \"#000000\", 0.5 ]\n"
@@ -169,13 +141,7 @@ public class ThemeStoreWriter_Test extends TestCase {
     element.addProperty( "background-color" );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-    String themeId = "myTheme";
-    String cssCode =   "Button { color: red; background-color: transparent; }\n"
-                     + "Button.special { color: inherit; background-color: #cecece; }\n";
-    ResourceLoader loader = ThemeTestUtil.createResourceLoader( Fixture.class );
-    ThemeTestUtil.registerCustomTheme( themeId, cssCode, loader );
-    Theme theme = ThemeManager.getInstance().getTheme( themeId );
-    storeWriter.addTheme( theme, true );
+    storeWriter.addTheme( getTheme( THEME_WRITE_COLORS ), true );
     String output = storeWriter.createJs();
     String expected =   "\"colors\": {\n"
                       + "\"ffffffff\": \"undefined\",\n"
@@ -195,16 +161,7 @@ public class ThemeStoreWriter_Test extends TestCase {
     element.addProperty( "background-image" );
     IThemeCssElement[] elements = new IThemeCssElement[] { element };
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-    String themeId = "myTheme";
-    String cssCode =   "Button { background-image: url( " + Fixture.IMAGE_100x50 + " ); }\n"
-                     + "Button.special { background-image: gradient( linear, left top, left bottom,\n"
-                     + "  from( #000000 ),\n"
-                     + "  to( #ffffff )\n"
-                     + "); }\n";
-    ResourceLoader loader = ThemeTestUtil.createResourceLoader( Fixture.class );
-    ThemeTestUtil.registerCustomTheme( themeId, cssCode, loader );
-    Theme theme = ThemeManager.getInstance().getTheme( themeId );
-    storeWriter.addTheme( theme, true );
+    storeWriter.addTheme( getTheme( THEME_WRITE_IMAGES ), true );
     String output = storeWriter.createJs();
     String expectedImages =   "\"images\": {\n"
                             + "\"793f156b\": [ 100, 50 ]\n"
@@ -225,10 +182,92 @@ public class ThemeStoreWriter_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.fakeNewRequest();
+    initializeThemesOnFirstSetUp();
   }
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+  
+  private void initializeThemesOnFirstSetUp() throws Exception {
+    if( themes == null ) {
+      themes = new HashMap();
+      registerThemeForTestSetCurrentThemeId();
+      registerThemeForTestWriteAnimations();
+      registerThemeForTestWriteColors();
+      registerThemeForTestWriteHorizontalGradient();
+      registerThemeForTestWriteImages();
+      registerThemeForTestWriteShadow();
+      registerThemeForTestWriteVerticalGradient();
+    }
+  }
+  
+  private void registerThemeForTestWriteImages() throws IOException {
+    String cssCode =   "Button { background-image: url( " + Fixture.IMAGE_100x50 + " ); }\n"
+    + "Button.special { background-image: gradient( linear, left top, left bottom,\n"
+    + "  from( #000000 ),\n"
+    + "  to( #ffffff )\n"
+    + "); }\n";
+    registerTheme( THEME_WRITE_IMAGES, cssCode );
+  }
+
+  private void registerThemeForTestWriteColors() throws IOException {
+    String cssCode =   "Button { color: red; background-color: transparent; }\n"
+                     + "Button.special { color: inherit; background-color: #cecece; }\n";
+    registerTheme( THEME_WRITE_COLORS, cssCode );
+  }
+
+  private void registerThemeForTestWriteShadow() throws IOException {
+    String cssCode = "Shell { box-shadow: 10px 10px 3px 0 rgba( 0, 0, 0, 0.5 ); }\n";
+    registerTheme( THEME_WRITE_SHADOW, cssCode );
+  }
+
+  private void registerThemeForTestWriteHorizontalGradient() throws IOException {
+    String cssCode =   "Button { background-image: gradient(\n"
+                     + "linear, left top, right top,\n"
+                     + "from( #ffffff ),\n"
+                     + "color-stop( 48%, #f0f0f0 ),\n"
+                     + "color-stop( 52%, #e0e0e0 ),\n"
+                     + "to( #ffffff )\n"
+                     + "); }";
+    registerTheme( THEME_WRITE_HORIZONTAL_GRADIENT, cssCode );
+  }
+
+  private void registerThemeForTestWriteVerticalGradient() throws IOException {
+    String cssCode =   "Button { background-image: gradient(\n"
+                     + "linear, left top, left bottom,\n"
+                     + "from( #ffffff ),\n"
+                     + "color-stop( 48%, #f0f0f0 ),\n"
+                     + "color-stop( 52%, #e0e0e0 ),\n"
+                     + "to( #ffffff )\n"
+                     + "); }";
+    registerTheme( THEME_WRITE_VERTICAL_GRADIENT, cssCode );
+  }
+
+  private void registerThemeForTestSetCurrentThemeId() throws IOException {
+    String cssCode =   "Button { color: black; }\n"
+                     + "Button[BORDER] { color: red; }\n"
+                     + "Button { background-image: none;\n }"
+                     + "Button[BORDER] { background-image: url( "
+                     + Fixture.IMAGE_50x100
+                     + " ); }\n";
+    registerTheme( THEME_SET_CURRENT_THEME_ID, cssCode );
+  }
+  
+
+  private void registerThemeForTestWriteAnimations() throws Exception {
+    String cssCode = "Menu { animation: slideIn 2s ease-in, slideOut 2s ease-out; }\n";
+    registerTheme( THEME_ANIMATIONS, cssCode );
+  }
+
+  private void registerTheme( String themeId, String cssCode ) throws IOException {
+    ResourceLoader loader = ThemeTestUtil.createResourceLoader( Fixture.class );
+    Theme theme = ThemeTestUtil.createTheme( themeId, cssCode, loader );
+    theme.initialize( ThemeManager.getInstance().getAllThemeableWidget() );
+    themes.put( themeId, theme );
+  }
+  
+  private Theme getTheme( String themeId ) {
+    return ( Theme )themes.get( themeId );
   }
 }

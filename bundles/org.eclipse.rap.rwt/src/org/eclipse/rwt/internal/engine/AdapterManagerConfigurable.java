@@ -23,7 +23,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class AdapterManagerConfigurable implements Configurable {
+class AdapterManagerConfigurable implements Configurable {
+  static final String ADAPTER_FACTORIES_PARAM = "org.eclipse.rwt.adapterFactories";
+
   private final ServletContext servletContext;
   
   private static class Declaration {
@@ -157,7 +159,7 @@ public class AdapterManagerConfigurable implements Configurable {
   }
   
   private String getInitParameter() {
-    return servletContext.getInitParameter( RWTServletContextListener.ADAPTER_FACTORIES_PARAM );
+    return servletContext.getInitParameter( AdapterManagerConfigurable.ADAPTER_FACTORIES_PARAM );
   }
   
   private Declaration[] getDefaultDeclarations() {

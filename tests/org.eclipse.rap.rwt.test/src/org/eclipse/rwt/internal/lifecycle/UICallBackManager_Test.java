@@ -17,7 +17,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.*;
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
@@ -28,15 +28,25 @@ import org.eclipse.swt.widgets.Display;
 
 
 public class UICallBackManager_Test extends TestCase {
-
-  private static final int SLEEP_TIME = 200;
-  private static final int TIMER_EXEC_DELAY = 1000;
+  public static final String SYS_PROP_SLEEP_TIME = "sleepTime";
+  public static final String SYS_PROP_TIMER_EXEC_DELAY = "timerExecDelay";
+ 
+  private static final int SLEEP_TIME;
+  private static final int TIMER_EXEC_DELAY;
   private static final String RUN_ASYNC_EXEC = "run async exec|";
   private static final String RUN_TIMER_EXEC = "timerExecCode|";
   private static final Runnable EMPTY_RUNNABLE = new Runnable() {
     public void run() {
     }
   };
+  static {
+    String sleepTimeProp = System.getProperty( SYS_PROP_SLEEP_TIME );
+    SLEEP_TIME = sleepTimeProp == null ? 200 : Integer.parseInt( sleepTimeProp );
+    String timerExecDelayProp = System.getProperty( SYS_PROP_TIMER_EXEC_DELAY );
+    TIMER_EXEC_DELAY = timerExecDelayProp == null ? 5000 :Integer.parseInt( timerExecDelayProp );
+  }
+  
+  
   private static String log = "";
 
   private Display display;
@@ -254,7 +264,7 @@ public class UICallBackManager_Test extends TestCase {
     Runnable runnable = new Runnable() {
       public void run() {
         try {
-          display.timerExec( 5000, EMPTY_RUNNABLE );
+          display.timerExec( TIMER_EXEC_DELAY, EMPTY_RUNNABLE );
         } catch( Throwable t ) {
           exceptionInTimerExec[ 0 ] = t;
         }
@@ -278,9 +288,9 @@ public class UICallBackManager_Test extends TestCase {
         log += RUN_TIMER_EXEC;
       }
     };
-    display.timerExec( 200, runnable );
+    display.timerExec( TIMER_EXEC_DELAY, runnable );
     display.dispose();
-    Thread.sleep( 200 );
+    Thread.sleep( SLEEP_TIME );
     assertEquals( "", log.toString() );
   }
 
@@ -290,9 +300,9 @@ public class UICallBackManager_Test extends TestCase {
         log += RUN_TIMER_EXEC;
       }
     };
-    display.timerExec( 200, runnable );
+    display.timerExec( TIMER_EXEC_DELAY, runnable );
     display.timerExec( -1, runnable );
-    Thread.sleep( 2000 );
+    Thread.sleep( SLEEP_TIME );
     assertEquals( 0, getDisplayAdapter().getAsyncRunnablesCount() );
     assertEquals( "", log );
   }
@@ -329,9 +339,9 @@ public class UICallBackManager_Test extends TestCase {
     }
     // wait (hopefully long enough) until all bg-threads have done their work
     // (i.e. called addSync) and make sure all sync-runnables get executed
-    Thread.sleep( 20 );
+    Thread.sleep( SLEEP_TIME );
     while( display.readAndDispatch() ) {
-      Thread.sleep( 20 );
+      Thread.sleep( SLEEP_TIME );
     }
     // wait for all bgThreads to terminate
     for( int i = 0; i < bgThreads.size(); i++ ) {
