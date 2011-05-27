@@ -794,12 +794,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var tree = this._createDefaultTree( false, false, "check", [ 5, 20 ]  );
       this._fakeCheckBoxAppearance();
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      wm.add( tree, "w1", true );
+      wm.add( item, "w2", false );
       testUtil.flush();
+      testUtil.initRequestLog();
       var node = tree._rowContainer._getTargetNode().childNodes[ 0 ].childNodes[ 0 ];
       testUtil.clickDOM( node.parentNode ); // nothing happens:
       assertFalse( item.isChecked() );
+      tree.setHasSelectionListeners( true );
       testUtil.clickDOM( node );
+      assertEquals( 1, testUtil.getRequestsSend() );
       assertTrue( item.isChecked() );
+      var request = testUtil.getMessage();
+      var expected1 = "w2.checked=true";
+      var expected2 = "org.eclipse.swt.events.widgetSelected=w1";
+      var expected3 = "org.eclipse.swt.events.widgetSelected.item=w2";
+      var expected4 = "org.eclipse.swt.events.widgetSelected.detail=check";
+      assertTrue( request.indexOf( expected1 ) != -1 );      
+      assertTrue( request.indexOf( expected2 ) != -1 );      
+      assertTrue( request.indexOf( expected3 ) != -1 );      
+      assertTrue( request.indexOf( expected4 ) != -1 );      
       tree.destroy();
     },
 
@@ -814,6 +829,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var tree = this._createDefaultTree();
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       testUtil.flush();
+      assertFalse( tree.isItemSelected( item ) );
       testUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() ); 
       assertTrue( tree.isItemSelected( item ) );
       tree.destroy();
@@ -1316,8 +1332,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var expected1 = "w1.selection=" + encodeURIComponent( "w2,w3,w3#0,w1#1" );
       var expected2 = "org.eclipse.swt.events.widgetSelected=w1";
       var expected3 = "org.eclipse.swt.events.widgetSelected.item=" + encodeURIComponent( "w1#1" );
-      console.log( expected3 );
-      console.log( request );
       assertTrue( request.indexOf( expected1 ) != -1 );      
       assertTrue( request.indexOf( expected2 ) != -1 );      
       assertTrue( request.indexOf( expected3 ) != -1 );      
@@ -1337,12 +1351,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var child1 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       wm.add( tree, "w1", true );
       wm.add( child0, "w2", false );
-      tree.selectItem( child0 );
       testUtil.flush();
       testUtil.initRequestLog();
       testUtil.doubleClick( tree._rowContainer._children[ 0 ] );
-      assertEquals( 2, testUtil.getRequestsSend() );
       var log = testUtil.getRequestLog();
+      console.log( log );
+      assertEquals( 2, testUtil.getRequestsSend() );
       var expected1a = "org.eclipse.swt.events.widgetSelected=w1";
       var expected1b = "org.eclipse.swt.events.widgetSelected.item=w2";
       var expected2a = "org.eclipse.swt.events.widgetDefaultSelected=w1";
@@ -2719,6 +2733,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
 
     testKeyboardNavigationCtrlAndSpaceSelects : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree( false, false );
+      var item0 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
+      var item1 = new org.eclipse.rwt.widgets.TreeItem( item0 );
+      item0.setExpanded( true );
+      testUtil.flush();
+      testUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
+      assertTrue( tree.isItemSelected( item0 ) );
+      assertTrue( tree.isFocusItem( item0 ) );
+      testUtil.initRequestLog();
+      tree.setHasSelectionListeners( true );
+      testUtil.ctrlPress( tree, "Space" );
+      assertFalse( tree.isItemSelected( item0 ) );
+      testUtil.ctrlPress( tree, "Space" );
+      assertTrue( tree.isItemSelected( item0 ) );
+      assertEquals( 2, testUtil.getRequestsSend() );
+      tree.destroy();
+    },
+
+    testKeyboardNavigationCtrlAndSpaceMultiSelects : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( false, false, "multiSelection" );
       var item0 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
       var item1 = new org.eclipse.rwt.widgets.TreeItem( item0 );
@@ -2738,7 +2772,44 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertFalse( tree.isItemSelected( item1 ) );
       tree.destroy();
     },
-    
+
+    testKeyboardNavigationSpaceDoesNotCheckWithoutCheckBox : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree( false, false );
+      this._fakeCheckBoxAppearance();
+      var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
+      testUtil.flush();
+      testUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
+      assertTrue( tree.isItemSelected( item ) );
+      assertTrue( tree.isFocusItem( item ) );
+      assertFalse( item.isChecked() );
+      testUtil.initRequestLog();
+      tree.setHasSelectionListeners( true );
+      testUtil.press( tree, "Space" );
+      assertFalse( item.isChecked() );
+      assertEquals( 0, testUtil.getRequestsSend() );
+      tree.destroy();
+    },
+
+    testKeyboardNavigationSpaceChecks : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree( false, false, "check", [ 5, 20 ]  );
+      this._fakeCheckBoxAppearance();
+      var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
+      testUtil.flush();
+      testUtil.initRequestLog();
+      testUtil.clickDOM( tree._rowContainer._children[ 0 ]._getTargetNode() );
+      assertTrue( tree.isItemSelected( item ) );
+      assertTrue( tree.isFocusItem( item ) );
+      assertFalse( item.isChecked() );
+      tree.setHasSelectionListeners( true );
+      testUtil.press( tree, "Space" );
+      assertTrue( item.isChecked() );
+      console.log( testUtil.getRequestLog() );
+      assertEquals( 1, testUtil.getRequestsSend() );
+      tree.destroy();
+    },
+
     testKeyboardNavigationNoShiftSelectForLeftRight : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( false, false, "multiSelection" );
