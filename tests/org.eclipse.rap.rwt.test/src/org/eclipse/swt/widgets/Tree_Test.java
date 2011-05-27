@@ -1419,9 +1419,6 @@ public class Tree_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-    display.dispose();
-    display = null;
-    composite = null;
     Fixture.tearDown();
   }
 

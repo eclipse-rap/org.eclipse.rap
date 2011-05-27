@@ -57,7 +57,6 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE,
                   adapter.getPreserved( ToolItemLCAUtil.PROP_SELECTION ) );
     testPreserveValues( display, item );
-    display.dispose();
   }
 
   public void testDropDownPreserveValues() {
@@ -65,7 +64,6 @@ public class ToolItemLCA_Test extends TestCase {
     ToolItem item = new ToolItem( tb, SWT.DROP_DOWN );
     Fixture.markInitialized( display );
     testPreserveValues( display, item );
-    display.dispose();
   }
 
   public void testPushPreserveValues() {
@@ -73,7 +71,6 @@ public class ToolItemLCA_Test extends TestCase {
     ToolItem item = new ToolItem( tb, SWT.PUSH );
     Fixture.markInitialized( display );
     testPreserveValues( display, item );
-    display.dispose();
   }
 
   public void testRadioPreserveValues() {
@@ -90,7 +87,6 @@ public class ToolItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE,
                   adapter.getPreserved( ToolItemLCAUtil.PROP_SELECTION ) );
     testPreserveValues( display, item );
-    display.dispose();
   }
 
   public void testCheckItemSelected() {

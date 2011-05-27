@@ -43,7 +43,6 @@ public class ButtonLCA_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-    display.dispose();
     Fixture.tearDown();
   }
 
@@ -61,8 +60,6 @@ public class ButtonLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( button );
     isDefault = ( Boolean )adapter.getPreserved( PushButtonDelegateLCA.PROP_DEFAULT );
     assertEquals( Boolean.TRUE, isDefault );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testRadioPreserveValues() {
@@ -73,8 +70,6 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testCheckPreserveValues() {
@@ -87,8 +82,6 @@ public class ButtonLCA_Test extends TestCase {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( CheckButtonDelegateLCA.PROP_GRAYED ) );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testArrowPreserveValues() {
@@ -123,8 +116,6 @@ public class ButtonLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( button );
     alignment = ( Integer )adapter.getPreserved( ButtonLCAUtil.PROP_ALIGNMENT );
     assertEquals( SWT.DOWN, alignment.intValue() );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testTogglePreserveValues() {
@@ -135,8 +126,6 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   private void testPreserveValues( final Display display, final Button button ) {

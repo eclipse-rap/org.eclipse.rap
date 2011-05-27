@@ -117,8 +117,6 @@ public class ExpandBarLCA_Test extends TestCase {
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   private ExpandItem createExpandItems( final ExpandBar expandBar ) {

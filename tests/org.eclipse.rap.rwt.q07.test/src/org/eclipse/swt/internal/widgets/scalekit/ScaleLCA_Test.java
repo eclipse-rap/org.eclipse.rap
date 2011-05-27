@@ -55,7 +55,6 @@ public class ScaleLCA_Test extends TestCase {
     testPreserveControlProperties( scale );
     // Test preserved selection listeners
     testPreserveSelectionListener( scale );
-    display.dispose();
   }
 
   public void testSelectionEvent() {

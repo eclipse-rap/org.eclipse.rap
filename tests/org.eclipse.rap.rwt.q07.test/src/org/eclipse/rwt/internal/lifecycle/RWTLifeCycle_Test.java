@@ -44,10 +44,10 @@ public class RWTLifeCycle_Test extends TestCase {
 
   private static class LoggingPhaseListener implements PhaseListener {
     private static final long serialVersionUID = 1L;
-    public void beforePhase( final PhaseEvent event ) {
+    public void beforePhase( PhaseEvent event ) {
       log.append( "before" + event.getPhaseId() );
     }
-    public void afterPhase( final PhaseEvent event ) {
+    public void afterPhase( PhaseEvent event ) {
       log.append( "after" + event.getPhaseId() );
     }
     public PhaseId getPhaseId() {
@@ -72,12 +72,12 @@ public class RWTLifeCycle_Test extends TestCase {
 
     private static final long serialVersionUID = 1L;
 
-    public void afterPhase( final PhaseEvent event ) {
+    public void afterPhase( PhaseEvent event ) {
       log.append( AFTER + event.getPhaseId() + "|" );
       throw new RuntimeException();
     }
 
-    public void beforePhase( final PhaseEvent event ) {
+    public void beforePhase( PhaseEvent event ) {
       log.append( BEFORE + event.getPhaseId() + "|" );
       throw new RuntimeException();
     }
@@ -127,7 +127,7 @@ public class RWTLifeCycle_Test extends TestCase {
     public int createUI() {
       Display display = new Display();
       display.addListener( SWT.Dispose, new Listener() {
-        public void handleEvent(final Event event) {
+        public void handleEvent( Event event ) {
           log.append( "display disposed" );
         }
       } );
@@ -163,26 +163,26 @@ public class RWTLifeCycle_Test extends TestCase {
 
   public static class ExceptionInRenderEntryPoint implements IEntryPoint {
     public static class BuggyShell extends Shell {
-      public BuggyShell( final Display display ) {
+      public BuggyShell( Display display ) {
         super( display );
       }
-      public Object getAdapter( final Class adapter ) {
+      public Object getAdapter( Class adapter ) {
         Object result;
         if( adapter.equals( ILifeCycleAdapter.class ) ) {
           result = new AbstractWidgetLCA() {
-            public void preserveValues( final Widget widget ) {
+            public void preserveValues( Widget widget ) {
             }
-            public void readData( final Widget widget ) {
+            public void readData( Widget widget ) {
             }
-            public void renderInitialization( final Widget widget )
+            public void renderInitialization( Widget widget )
               throws IOException
             {
               throw new RuntimeException( EXCEPTION_IN_RENDER );
             }
-            public void renderChanges( final Widget widget ) throws IOException {
+            public void renderChanges( Widget widget ) throws IOException {
               throw new RuntimeException( EXCEPTION_IN_RENDER );
             }
-            public void renderDispose( final Widget widget ) throws IOException {
+            public void renderDispose( Widget widget ) throws IOException {
             }
           };
         } else {
@@ -216,13 +216,13 @@ public class RWTLifeCycle_Test extends TestCase {
     public int createUI() {
       Display display = new Display();
       display.addListener( SWT.Dispose, new Listener() {
-        public void handleEvent(final Event event) {
+        public void handleEvent( Event event ) {
           log.append( "disposeEvent, " );
         }
       } );
       ISessionStore sessionStore = RWT.getSessionStore();
       sessionStore.addSessionStoreListener( new SessionStoreListener() {
-        public void beforeDestroy( final SessionStoreEvent event ) {
+        public void beforeDestroy( SessionStoreEvent event ) {
           log.append( "beforeDestroy" );
         }
       } );
@@ -262,8 +262,7 @@ public class RWTLifeCycle_Test extends TestCase {
     try {
       lifeCycle.execute();
       fail( "Executing lifecycle with unknown entry point must fail." );
-    } catch( final IllegalArgumentException iae ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -274,11 +273,11 @@ public class RWTLifeCycle_Test extends TestCase {
 
       private static final long serialVersionUID = 1L;
 
-      public void afterPhase( final PhaseEvent event ) {
+      public void afterPhase( PhaseEvent event ) {
         log.append( AFTER + event.getPhaseId() + "|" );
       }
 
-      public void beforePhase( final PhaseEvent event ) {
+      public void beforePhase( PhaseEvent event ) {
         log.append( BEFORE + event.getPhaseId() + "|" );
       }
 
@@ -337,11 +336,11 @@ public class RWTLifeCycle_Test extends TestCase {
 
       private static final long serialVersionUID = 1L;
 
-      public void afterPhase( final PhaseEvent event ) {
+      public void afterPhase( PhaseEvent event ) {
         log.append( AFTER + event.getPhaseId() + "|" );
       }
 
-      public void beforePhase( final PhaseEvent event ) {
+      public void beforePhase( PhaseEvent event ) {
         log.append( BEFORE + event.getPhaseId() + "|" );
       }
 
@@ -367,7 +366,7 @@ public class RWTLifeCycle_Test extends TestCase {
     try {
       lifeCycle.execute();
       fail();
-    } catch( final RuntimeException e ) {
+    } catch( RuntimeException e ) {
       String msg = TestErrorInLifeCycleEntryPoint.class.getName();
       assertEquals( msg, e.getMessage() );
       assertTrue( RWTLifeCycle.getUIThreadHolder().getThread().isAlive() );
@@ -408,10 +407,10 @@ public class RWTLifeCycle_Test extends TestCase {
     final PhaseListener[] callbackHandler = new PhaseListener[ 1 ];
     PhaseListener listener = new PhaseListener() {
       private static final long serialVersionUID = 1L;
-      public void beforePhase( final PhaseEvent event ) {
+      public void beforePhase( PhaseEvent event ) {
         callbackHandler[ 0 ] = this;
       }
-      public void afterPhase( final PhaseEvent event ) {
+      public void afterPhase( PhaseEvent event ) {
       }
       public PhaseId getPhaseId() {
         return PhaseId.PREPARE_UI_ROOT;
@@ -435,10 +434,10 @@ public class RWTLifeCycle_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
-      public void afterPhase( final PhaseEvent event ) {
+      public void afterPhase( PhaseEvent event ) {
         log.append( "after" + event.getPhaseId() );
       }
-      public void beforePhase( final PhaseEvent event ) {
+      public void beforePhase( PhaseEvent event ) {
         log.append( "before" + event.getPhaseId() );
       }
       public PhaseId getPhaseId() {
@@ -542,7 +541,7 @@ public class RWTLifeCycle_Test extends TestCase {
       }
     };
     SelectionAdapter listener = new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         log.append( "eventExecuted" );
       }
     };
@@ -568,7 +567,7 @@ public class RWTLifeCycle_Test extends TestCase {
       }
     };
     SelectionAdapter listener = new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         display.readAndDispatch();
       }
     };
@@ -845,7 +844,7 @@ public class RWTLifeCycle_Test extends TestCase {
     try {
       ( ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle() ).execute();
       fail();
-    } catch( final RuntimeException re ) {
+    } catch( RuntimeException re ) {
       assertEquals( ERR_MSG, re.getMessage() );
     }
   }
@@ -856,7 +855,7 @@ public class RWTLifeCycle_Test extends TestCase {
     final boolean hasContext[] = new boolean[]{ false };
     final IServiceStateInfo stateInfo[] =  { null };
     session.addSessionStoreListener( new SessionStoreListener() {
-      public void beforeDestroy( final SessionStoreEvent event ) {
+      public void beforeDestroy( SessionStoreEvent event ) {
         invalidateThreadName[ 0 ] = Thread.currentThread().getName();
         hasContext[ 0 ] = ContextProvider.hasContext();
         stateInfo[ 0 ] = ContextProvider.getStateInfo();
@@ -903,7 +902,7 @@ public class RWTLifeCycle_Test extends TestCase {
     final boolean hasContext[] = new boolean[]{ false };
     final IServiceStateInfo stateInfo[] =  { null };
     session.addSessionStoreListener( new SessionStoreListener() {
-      public void beforeDestroy( final SessionStoreEvent event ) {
+      public void beforeDestroy( SessionStoreEvent event ) {
         invalidateThreadName[ 0 ] = Thread.currentThread().getName();
         hasContext[ 0 ] = ContextProvider.hasContext();
         stateInfo[ 0 ] = ContextProvider.getStateInfo();
@@ -915,10 +914,10 @@ public class RWTLifeCycle_Test extends TestCase {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
-      public void beforePhase( final PhaseEvent event ) {
+      public void beforePhase( PhaseEvent event ) {
         uiThreadName[ 0 ] = Thread.currentThread().getName();
       }
-      public void afterPhase( final PhaseEvent event ) {
+      public void afterPhase( PhaseEvent event ) {
       }
       public PhaseId getPhaseId() {
         return PhaseId.PREPARE_UI_ROOT;

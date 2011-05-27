@@ -74,8 +74,6 @@ public class LabelLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( label );
     alignment = ( Integer )adapter.getPreserved( "alignment" );
     assertEquals( new Integer( SWT.LEFT ), alignment );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   private void testPreserveValues( final Display display, final Label label ) {
@@ -187,7 +185,6 @@ public class LabelLCA_Test extends TestCase {
     Label label = new Label( shell, style );
     Fixture.markInitialized( display );
     testPreserveValues( display, label );
-    display.dispose();
   }
 
   public void testRenderText() throws IOException {

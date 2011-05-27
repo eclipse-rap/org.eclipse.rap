@@ -51,7 +51,6 @@ public class TabItemLCA_Test extends TestCase {
     assertEquals( Graphics.getImage( Fixture.IMAGE1 ),
                   adapter.getPreserved( Props.IMAGE ) );
     assertEquals( "tooltip text", adapter.getPreserved( "toolTipText" ) );
-    display.dispose();
   }
 
   public void testReadData() {

@@ -134,8 +134,6 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, hasListeners );
     Object width = adapter.getPreserved( TableColumnLCA.PROP_WIDTH );
     assertEquals( new Integer( 30 ), width );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testResizeEvent() {

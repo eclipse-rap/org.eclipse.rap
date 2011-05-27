@@ -34,7 +34,6 @@ public class MenuDetectEvent_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-    display.dispose();
     Fixture.tearDown();
   }
 

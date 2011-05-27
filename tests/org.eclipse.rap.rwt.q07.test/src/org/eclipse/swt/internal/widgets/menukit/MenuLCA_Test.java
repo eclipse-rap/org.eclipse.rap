@@ -72,7 +72,6 @@ public class MenuLCA_Test extends TestCase {
     testPreserveMenuListener( menu );
     testPreserveWidth( menu );
     testPreserveEnabled( menu );
-    display.dispose();
   }
 
   public void testPopUpPreserveValues() {
@@ -84,7 +83,6 @@ public class MenuLCA_Test extends TestCase {
     testPreserveMenuListener( menu );
     testPreserveWidth( menu );
     testPreserveEnabled( menu );
-    display.dispose();
   }
 
   public void testUnassignedMenuBar() throws IOException {

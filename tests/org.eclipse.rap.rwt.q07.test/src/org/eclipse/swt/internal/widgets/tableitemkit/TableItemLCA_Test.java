@@ -175,8 +175,6 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item2 );
     assertSame( image, adapter.getPreserved( Props.IMAGE ) );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testFontIsEffectivelyPreserved() throws IOException {
@@ -191,7 +189,6 @@ public class TableItemLCA_Test extends TestCase {
     String expected = "w.setFont(";
     String markup = Fixture.getAllMarkup();
     assertFalse( markup.indexOf( expected ) != -1 );
-    display.dispose();
   }
 
   public void testCheckPreserveValues() {
@@ -213,8 +210,6 @@ public class TableItemLCA_Test extends TestCase {
     grayed = adapter.getPreserved( TableItemLCA.PROP_GRAYED );
     assertEquals( Boolean.TRUE, checked );
     assertEquals( Boolean.TRUE, grayed );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testItemTextWithoutColumn() throws IOException {

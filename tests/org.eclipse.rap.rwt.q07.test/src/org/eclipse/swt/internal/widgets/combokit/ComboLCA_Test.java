@@ -142,8 +142,6 @@ public class ComboLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( combo );
     hasListeners = ( Boolean ) adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testEditablePreserveValues(){
@@ -180,7 +178,6 @@ public class ComboLCA_Test extends TestCase {
     Integer textLimit
       = ( Integer )adapter.getPreserved( ComboLCA.PROP_TEXT_LIMIT );
     assertEquals( new Integer( 10 ), textLimit );
-    display.dispose();
   }
 
   public void testRenderChanges() throws IOException {

@@ -176,8 +176,6 @@ public class SashLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( sash );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testRenderChanges() throws IOException {

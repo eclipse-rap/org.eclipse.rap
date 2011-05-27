@@ -42,8 +42,6 @@ public class CoolItemLCA_Test extends TestCase {
     item.setControl( null );
     lca.preserveValues( item );
     assertNull( adapter.getPreserved( CoolItemLCA.PROP_CONTROL ) );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   protected void setUp() throws Exception {

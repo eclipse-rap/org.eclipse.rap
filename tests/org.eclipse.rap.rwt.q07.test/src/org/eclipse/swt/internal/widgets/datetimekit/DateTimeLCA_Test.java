@@ -92,7 +92,6 @@ public class DateTimeLCA_Test extends TestCase {
     Fixture.clearPreserved();
     // Test preserved selection listeners
     testPreserveSelectionListener( dateTime );
-    display.dispose();
   }
 
   public void testDateTimeTimePreserveValues() {
@@ -147,7 +146,6 @@ public class DateTimeLCA_Test extends TestCase {
     Fixture.clearPreserved();
     // Test preserved selection listeners
     testPreserveSelectionListener( dateTime );
-    display.dispose();
   }
 
   public void testDateTimeCalendarPreserveValues() {
@@ -172,7 +170,6 @@ public class DateTimeLCA_Test extends TestCase {
     testPreserveControlProperties( dateTime );
     // Test preserved selection listeners
     testPreserveSelectionListener( dateTime );
-    display.dispose();
   }
 
   public void testSelectionEvent() {

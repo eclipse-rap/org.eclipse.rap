@@ -181,8 +181,6 @@ public class LinkLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( link );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testSelectionEvent() {

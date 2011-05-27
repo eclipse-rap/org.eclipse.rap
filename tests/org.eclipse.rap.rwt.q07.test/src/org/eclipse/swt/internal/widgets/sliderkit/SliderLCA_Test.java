@@ -59,7 +59,6 @@ public class SliderLCA_Test extends TestCase {
     testPreserveControlProperties( slider );
     // Test preserved selection listeners
     testPreserveSelectionListener( slider );
-    display.dispose();
   } 
 
   public void testSelectionEvent() {

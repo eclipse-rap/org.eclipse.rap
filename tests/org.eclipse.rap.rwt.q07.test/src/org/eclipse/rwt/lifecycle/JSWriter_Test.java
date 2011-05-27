@@ -116,7 +116,6 @@ public class JSWriter_Test extends TestCase {
     writer.set( "Width", 5 );
     expected += "w.setWidth( 5 );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    display.dispose();
   }
 
   public void testNewWidget() throws Exception {
@@ -134,7 +133,6 @@ public class JSWriter_Test extends TestCase {
     writer.set( "Text", "xyz" );
     expected = "w.setText( \"xyz\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    display.dispose();
   }
 
   public void testNewWidgetWithParams() throws Exception {
@@ -211,7 +209,6 @@ public class JSWriter_Test extends TestCase {
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
         + "var w = wm.findWidgetById( \"w2\" );w.setText( \"xyz\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    display.dispose();
   }
 
   public void testSetInt() throws Exception {
@@ -224,7 +221,6 @@ public class JSWriter_Test extends TestCase {
       =   "var wm = org.eclipse.swt.WidgetManager.getInstance();"
         + "var w = wm.findWidgetById( \"w2\" );w.setWidth( 20000000 );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    display.dispose();
   }
 
   public void testSetBoolean() throws Exception {
@@ -236,7 +232,6 @@ public class JSWriter_Test extends TestCase {
       = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
       + "var w = wm.findWidgetById( \"w2\" );w.setAllowStretchY( true );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    display.dispose();
   }
 
   public void testCallWithStringArray() throws Exception {
@@ -300,7 +295,6 @@ public class JSWriter_Test extends TestCase {
       + "var w = wm.findWidgetById( \"w2\" );"
       + "w.setIntValues( 1, 2 );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    display.dispose();
   }
 
   public void testSetBooleanArray() throws Exception {
@@ -313,7 +307,6 @@ public class JSWriter_Test extends TestCase {
       + "var w = wm.findWidgetById( \"w2\" );"
       + "w.setBoolValues( true, false );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    display.dispose();
   }
 
   public void testSetWidgetArray() throws IOException {
@@ -359,7 +352,6 @@ public class JSWriter_Test extends TestCase {
       + "var w = wm.findWidgetById( \"w2\" );"
       + "w.getProp1().setProp2( var1, var2 );";
     assertEquals( expected, Fixture.getAllMarkup() );
-    display.dispose();
 
   }
 
@@ -436,7 +428,6 @@ public class JSWriter_Test extends TestCase {
     writer.call( "function2", null );
     expected += "w.function2();";
     assertEquals( expected, Fixture.getAllMarkup() );
-    display.dispose();
   }
 
   public void testCallFieldAssignment() {
@@ -583,8 +574,6 @@ public class JSWriter_Test extends TestCase {
     writer.addListener( "prop", "type", "jshandler" );
     expected += "w.getProp().addEventListener( \"type\", jshandler );";
     assertEquals( expected, Fixture.getAllMarkup() );
-
-    display.dispose();
   }
 
   public void testRemoveListener() throws Exception {
@@ -613,8 +602,6 @@ public class JSWriter_Test extends TestCase {
     writer.removeListener( "type", "this.jshandler" );
     expected += "w.removeEventListener( \"type\", w.jshandler, w );";
     assertEquals( expected, Fixture.getAllMarkup() );
-
-    display.dispose();
   }
 
   public void testUpdateListenerAction() throws Exception {

@@ -135,8 +135,6 @@ public class ControlLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( control );
     hasListeners = ( Boolean ) adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testWriteVisibility() throws IOException {

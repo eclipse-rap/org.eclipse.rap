@@ -169,8 +169,6 @@ public class ShellLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( shell );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testReadDataForClosed() {
@@ -476,7 +474,6 @@ public class ShellLCA_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
-    display.dispose();
     Fixture.tearDown();
   }
 

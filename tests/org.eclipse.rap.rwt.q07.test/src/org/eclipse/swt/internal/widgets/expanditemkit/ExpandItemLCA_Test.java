@@ -71,8 +71,6 @@ public class ExpandItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, expanded );
     headerHeight = adapter.getPreserved( ExpandItemLCA.PROP_HEADER_HEIGHT );
     assertEquals( new Integer( 34 ), headerHeight );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testExpandEvent() {

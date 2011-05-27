@@ -196,8 +196,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( sc );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testPreserveHasScrollBars() {
@@ -216,8 +214,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
                   adapter.getPreserved( ScrolledCompositeLCA.PROP_HAS_H_SCROLL_BAR ) );
     assertEquals( Boolean.TRUE,
                   adapter.getPreserved( ScrolledCompositeLCA.PROP_HAS_V_SCROLL_BAR ) );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testNoBounds() throws Exception {

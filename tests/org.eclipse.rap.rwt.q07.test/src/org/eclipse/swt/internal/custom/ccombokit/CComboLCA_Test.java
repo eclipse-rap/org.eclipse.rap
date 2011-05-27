@@ -151,8 +151,6 @@ public class CComboLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( ccombo );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testEditablePreserveValues() {

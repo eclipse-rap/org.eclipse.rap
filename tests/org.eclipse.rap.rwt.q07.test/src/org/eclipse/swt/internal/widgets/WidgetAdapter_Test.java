@@ -45,7 +45,6 @@ public class WidgetAdapter_Test extends TestCase {
     display = new Display();
     Object adapter3 = display.getAdapter( IWidgetAdapter.class );
     assertTrue( adapter3 != adapter2 );
-    display.dispose();
   }
 
   public void testGetAdapterForShell() {
@@ -55,7 +54,6 @@ public class WidgetAdapter_Test extends TestCase {
     shell = new Shell( display, SWT.NONE );
     Object adapter2 = shell.getAdapter( IWidgetAdapter.class );
     assertTrue( adapter1 != adapter2 );
-    display.dispose();
   }
 
   public void testGetAdapterForButton() {
@@ -66,7 +64,6 @@ public class WidgetAdapter_Test extends TestCase {
     Button button2 = new Button( shell, SWT.PUSH );
     Object adapter2 = button2.getAdapter( IWidgetAdapter.class );
     assertTrue( adapter1 != adapter2 );
-    display.dispose();
   }
 
   public void testId() {
@@ -77,7 +74,6 @@ public class WidgetAdapter_Test extends TestCase {
     IWidgetAdapter adapter2
       = ( IWidgetAdapter )display.getAdapter( IWidgetAdapter.class );
     assertEquals( adapter1.getId(), adapter2.getId() );
-    display.dispose();
   }
 
   public void testInitializedForShell() throws IOException {

@@ -137,8 +137,6 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( foreground1, foregrounds[ 0 ] );
     assertEquals( foreground2, foregrounds[ 1 ] );
     assertEquals( foreground3, foregrounds[ 2 ] );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testCheckPreserveValues() {
@@ -156,8 +154,6 @@ public class TreeItemLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( treeItem );
     assertEquals( Boolean.TRUE, adapter.getPreserved( TreeItemLCA.PROP_CHECKED ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( TreeItemLCA.PROP_GRAYED ) );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testPreserveVariant() {
@@ -182,8 +178,6 @@ public class TreeItemLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     assertEquals( Boolean.FALSE, getPreservedProperty( treeItem, TreeItemLCA.PROP_MATERIALIZED ) );
-    Fixture.clearPreserved();
-    display.dispose();
   }
   
   public void testLcaDoesNotMaterializeItem() {

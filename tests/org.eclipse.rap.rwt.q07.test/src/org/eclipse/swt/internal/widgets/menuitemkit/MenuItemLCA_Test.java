@@ -51,7 +51,6 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     testPreserveEnabled( menuItem );
     testPreserveText( menuItem );
-    display.dispose();
   }
 
   public void testPushPreserveValues() {
@@ -66,7 +65,6 @@ public class MenuItemLCA_Test extends TestCase {
     testPreserveSelectionListener( menuItem );
     testPreserveEnabled( menuItem );
     testPreserveText( menuItem );
-    display.dispose();
   }
 
   public void testRadioPreserveValues() {
@@ -89,8 +87,6 @@ public class MenuItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, Boolean.valueOf( menuItem.getSelection() ) );
     assertEquals( Boolean.TRUE, 
                   adapter.getPreserved( MenuItemLCAUtil.PROP_SELECTION ) );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testCheckPreserveValues() {
@@ -111,8 +107,6 @@ public class MenuItemLCA_Test extends TestCase {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     assertEquals( Boolean.TRUE, 
                   adapter.getPreserved( MenuItemLCAUtil.PROP_SELECTION ) );
-    Fixture.clearPreserved();
-    display.dispose();
   }
 
   public void testWidgetSelected() {

@@ -1323,6 +1323,7 @@ public class Display_Test extends TestCase {
         otherDisplay[ 0 ] = new Display();
       }
     } );
+    otherThread.setDaemon( true );
     otherThread.start();
     otherThread.join();
     Display display = Display.findDisplay( otherThread );
