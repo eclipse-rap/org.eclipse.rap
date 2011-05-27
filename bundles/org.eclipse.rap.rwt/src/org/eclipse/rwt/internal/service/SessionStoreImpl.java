@@ -29,7 +29,15 @@ public final class SessionStoreImpl
 {
   private static final long serialVersionUID = 1L;
 
-  static final String ATTR_SESSION_STORE = SessionStoreImpl.class.getName();
+  public static final String ATTR_SESSION_STORE = SessionStoreImpl.class.getName();
+  
+  public static SessionStoreImpl getInstanceFromSession( HttpSession httpSession ) {
+    return ( SessionStoreImpl )httpSession.getAttribute( ATTR_SESSION_STORE );
+  }
+  
+  public static void attachToSession( HttpSession httpSession, ISessionStore sessionStore ) {
+    httpSession.setAttribute( ATTR_SESSION_STORE, sessionStore );
+  }
   
   private final SerializableLock lock;
   private final Map attributes;
@@ -48,7 +56,7 @@ public final class SessionStoreImpl
     this.sessionStoreListeners = new HashSet();
     this.id = httpSession.getId();
     this.bound = true;
-    attachHttpSession( httpSession );
+    this.httpSession = httpSession;
   }
   
   public void setShutdownAdapter( ISessionShutdownAdapter adapter ) {
@@ -120,7 +128,6 @@ public final class SessionStoreImpl
     synchronized( lock ) {
       this.httpSession = httpSession;
     }
-    this.httpSession.setAttribute( ATTR_SESSION_STORE, this );
   }
   
   public boolean isBound() {

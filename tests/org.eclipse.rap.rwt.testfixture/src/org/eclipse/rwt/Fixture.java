@@ -263,7 +263,8 @@ public class Fixture {
     TestRequest request = new TestRequest();
     request.setSession( session );
     TestResponse response = new TestResponse();
-    ServiceContext serviceContext = new ServiceContext( request, response );
+    SessionStoreImpl sessionStore = SessionStoreImpl.getInstanceFromSession( session );
+    ServiceContext serviceContext = new ServiceContext( request, response, sessionStore );
     serviceContext.setStateInfo( new ServiceStateInfo() );
     ContextProvider.disposeContext();
     ContextProvider.setContext( serviceContext );

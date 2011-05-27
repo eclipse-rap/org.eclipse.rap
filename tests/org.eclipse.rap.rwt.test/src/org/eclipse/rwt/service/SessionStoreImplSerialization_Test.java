@@ -59,6 +59,7 @@ public class SessionStoreImplSerialization_Test extends TestCase {
     SessionStoreImpl deserializedSession = serializeAndDeserialize( sessionStore );
     TestSession newHttpSession = new TestSession();
     deserializedSession.attachHttpSession( newHttpSession );
+    SessionStoreImpl.attachToSession( newHttpSession, deserializedSession );
     newHttpSession.invalidate();
     
     assertTrue( LoggingSessionStoreListener.wasCalled );

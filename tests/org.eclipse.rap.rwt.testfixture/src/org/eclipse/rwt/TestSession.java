@@ -17,7 +17,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.*;
 
 
-public final class TestSession implements HttpSession {
+public class TestSession implements HttpSession {
   
   private final Map attributes;
   private String id;

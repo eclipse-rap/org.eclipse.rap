@@ -119,6 +119,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( RWTFactory_Test.class );
     suite.addTestSuite( PhaseListenerRegistry_Test.class );
     suite.addTestSuite( RWTDelegate_Test.class );
+    suite.addTestSuite( RWTClusterSupport_Test.class );
     suite.addTestSuite( ResourceRegistry_Test.class );
     suite.addTestSuite( RWTRequestVersionControl_Test.class );
     suite.addTestSuite( ResourceManagerProvider_Test.class );

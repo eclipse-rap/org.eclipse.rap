@@ -202,6 +202,11 @@ public class Display_Test extends TestCase {
     assertSame( Thread.currentThread(), thread[ 0 ] );
   }
   
+  public void testGetSessionDisplay() {
+    Display display = new Display();
+    assertSame( display, LifeCycleUtil.getSessionDisplay() );
+  }
+  
   public void testAttachAndDetachThread() {
     Display display = new Display();
     IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );

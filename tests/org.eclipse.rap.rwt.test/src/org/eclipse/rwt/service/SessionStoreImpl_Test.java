@@ -374,7 +374,6 @@ public class SessionStoreImpl_Test extends TestCase {
   }
   
   public void testGetAttributeNamesForUnboundSessionStore() {
-    ISessionStore session = new SessionStoreImpl( httpSession );
     session.setAttribute( "name", "value" );
     httpSession.invalidate();
 
@@ -622,9 +621,21 @@ public class SessionStoreImpl_Test extends TestCase {
     assertFalse( wasCalled[ 0 ] );
   }
   
+  public void testGetInstanceFromSession() {
+    SessionStoreImpl returnedSession = SessionStoreImpl.getInstanceFromSession( httpSession );
+    assertSame( returnedSession, session );
+  }
+  
+  public void testGetInstanceFromSessionAfterInvalidate() {
+    httpSession.invalidate();
+    SessionStoreImpl returnedSession = SessionStoreImpl.getInstanceFromSession( httpSession );
+    assertNull( returnedSession );
+  }
+  
   protected void setUp() throws Exception {
     httpSession = new TestSession();
-    session = new SessionStoreImpl( httpSession );  
+    session = new SessionStoreImpl( httpSession );
+    SessionStoreImpl.attachToSession( httpSession, session );
     servletLogEntries = new LinkedList();
     TestServletContext servletContext = ( TestServletContext )httpSession.getServletContext();
     servletContext.setLogger( new TestLogger() {
