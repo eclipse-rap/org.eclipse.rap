@@ -252,7 +252,7 @@ public class ApplicationContext {
   }
   
   private void activateInstances() {
-    ApplicationContextUtil.runWithInstance( this, new Runnable() {
+    ApplicationContextUtil.runWith( this, new Runnable() {
       public void run() {
         doActivateInstances();
       }
@@ -271,7 +271,7 @@ public class ApplicationContext {
   }
   
   private void deactivateInstances() {
-    ApplicationContextUtil.runWithInstance( this, new Runnable() {
+    ApplicationContextUtil.runWith( this, new Runnable() {
       public void run() {
         doDeactivateInstances();
       }

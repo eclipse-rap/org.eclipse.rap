@@ -159,7 +159,7 @@ public class HttpServiceTracker extends ServiceTracker {
       RWTDelegate handler = new RWTDelegate();
       httpService.registerServlet( "/" + name, handler, null, httpContext );
       ServletContext servletContext = handler.getServletContext();
-      ApplicationContextUtil.registerApplicationContext( servletContext, rwtContext );
+      ApplicationContextUtil.set( servletContext, rwtContext );
     } catch( Exception exception ) {
       logError( "Failed to register servlet " + name, exception );
     }
@@ -217,14 +217,12 @@ public class HttpServiceTracker extends ServiceTracker {
   private static ApplicationContext createAndInitializeRWTContext() {
     ApplicationContext result = new ApplicationContext();
     result.addConfigurable( new Configurable() {
-
       public void configure( ApplicationContext context ) {
         new EngineConfigWrapper( context );
       }
 
       public void reset( ApplicationContext context ) {
       }
-      
     } );
     result.activate();
     return result;
@@ -232,7 +230,7 @@ public class HttpServiceTracker extends ServiceTracker {
 
   private static String getContextRoot( ApplicationContext rwtContext ) {
     final String[] result = new String[ 1 ];
-    ApplicationContextUtil.runWithInstance( rwtContext, new Runnable() {
+    ApplicationContextUtil.runWith( rwtContext, new Runnable() {
       public void run() {
         IEngineConfig engineConfig = RWTFactory.getConfigurationReader().getEngineConfig();
 		String contextRoot = engineConfig.getServerContextDir().toString();

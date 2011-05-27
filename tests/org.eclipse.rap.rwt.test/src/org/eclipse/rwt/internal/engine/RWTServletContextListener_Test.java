@@ -130,6 +130,7 @@ public class RWTServletContextListener_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.triggerServletContextDestroyed();
+    Fixture.disposeOfServiceContext();
     Fixture.disposeOfServletContext();
     Fixture.registerResourceManagerFactory();
   }

@@ -29,7 +29,7 @@ public class ServiceContext_Test extends TestCase {
     ServiceContext context = createContext( applicationContext );
     
     ApplicationContext foundInContext = context.getApplicationContext();
-    ApplicationContext foundInSession = ApplicationContextUtil.getApplicationContext( sessionStore );
+    ApplicationContext foundInSession = ApplicationContextUtil.get( sessionStore );
     assertSame( applicationContext, foundInContext );
     assertSame( applicationContext, foundInSession );
   }
@@ -47,7 +47,7 @@ public class ServiceContext_Test extends TestCase {
   public void testGetApplicationContextFromSessionStore() {
     ApplicationContext applicationContext = new ApplicationContext();
     ServiceContext context = createContext();
-    ApplicationContextUtil.registerApplicationContext( sessionStore, applicationContext );
+    ApplicationContextUtil.set( sessionStore, applicationContext );
 
     ApplicationContext found = context.getApplicationContext();
     assertSame( applicationContext, found );
@@ -77,7 +77,7 @@ public class ServiceContext_Test extends TestCase {
     }
     request.setSession( session );
     ServletContext servletContext = session.getServletContext();
-    ApplicationContextUtil.registerApplicationContext( servletContext, applicationContext );
+    ApplicationContextUtil.set( servletContext, applicationContext );
     return createContext( request, response );
   }
 

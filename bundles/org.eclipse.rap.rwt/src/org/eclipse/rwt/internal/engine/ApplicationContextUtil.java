@@ -22,40 +22,29 @@ import org.eclipse.rwt.service.ISessionStore;
 public class ApplicationContextUtil {
   private final static ThreadLocal CONTEXT_HOLDER = new ThreadLocal();
   private final static String ATTRIBUTE_APPLICATION_CONTEXT
-    = ApplicationContext.class.getName() + "#instance";
+    = ApplicationContext.class.getName() + "#INSTANCE";
  
-  public static ApplicationContext createContext( ServletContext context ) {
-    ApplicationContext result = new ApplicationContext();
-    registerApplicationContext( context, result );
-    return result;
-  }
-
-  public static void registerApplicationContext( ServletContext servletContext,
-                                                 ApplicationContext applicationContext )
-  {
+  public static void set( ServletContext servletContext, ApplicationContext applicationContext ) {
     servletContext.setAttribute( ATTRIBUTE_APPLICATION_CONTEXT, applicationContext );
   }
 
-  public static ApplicationContext getApplicationContext( ServletContext servletContext ) {
+  public static ApplicationContext get( ServletContext servletContext ) {
     return ( ApplicationContext )servletContext.getAttribute( ATTRIBUTE_APPLICATION_CONTEXT );
   }
 
-  public static void deregisterApplicationContext( ServletContext servletContext ) {
+  public static void remove( ServletContext servletContext ) {
     servletContext.removeAttribute( ATTRIBUTE_APPLICATION_CONTEXT );
-    ContextProvider.disposeContext();
   }
   
-  public static void registerApplicationContext( ISessionStore sessionStore,
-                                                 ApplicationContext applicationContext )
-  {
+  public static void set( ISessionStore sessionStore, ApplicationContext applicationContext ) {
     sessionStore.setAttribute( ATTRIBUTE_APPLICATION_CONTEXT, applicationContext );
   }
 
-  public static ApplicationContext getApplicationContext( ISessionStore sessionStore ) {
+  public static ApplicationContext get( ISessionStore sessionStore ) {
     return ( ApplicationContext )sessionStore.getAttribute( ATTRIBUTE_APPLICATION_CONTEXT );
   }
 
-  public static void deregisterApplicationContext( ISessionStore sessionStore ) {
+  public static void remove( ISessionStore sessionStore ) {
     sessionStore.removeAttribute( ATTRIBUTE_APPLICATION_CONTEXT );
   }
   
@@ -69,7 +58,7 @@ public class ApplicationContextUtil {
     return result;
   }
 
-  public static void runWithInstance( ApplicationContext applicationContext, Runnable runnable ) {
+  public static void runWith( ApplicationContext applicationContext, Runnable runnable ) {
     ParamCheck.notNull( applicationContext, "applicationContext" );
     ParamCheck.notNull( runnable, "runnable" );
     checkNestedCall();
@@ -79,6 +68,10 @@ public class ApplicationContextUtil {
     } finally {
       CONTEXT_HOLDER.set( null );
     }
+  }
+  
+  static boolean hasContext() {
+    return CONTEXT_HOLDER.get() != null;
   }
 
   private static void checkNestedCall() {
@@ -92,9 +85,5 @@ public class ApplicationContextUtil {
     if( applicationContext == null ) {
       throw new IllegalStateException( "No ApplicationContext registered." );
     }
-  }
-
-  static boolean hasContext() {
-    return CONTEXT_HOLDER.get() != null;
   }
 }

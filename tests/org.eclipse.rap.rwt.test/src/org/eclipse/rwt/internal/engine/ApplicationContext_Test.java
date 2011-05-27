@@ -163,7 +163,7 @@ public class ApplicationContext_Test extends TestCase {
     } catch( NullPointerException expected ) {
     }
   }
-  
+    
   public void testRemoveConfigurable() {
     TestConfigurable configurable = new TestConfigurable();
     context.addConfigurable( configurable );

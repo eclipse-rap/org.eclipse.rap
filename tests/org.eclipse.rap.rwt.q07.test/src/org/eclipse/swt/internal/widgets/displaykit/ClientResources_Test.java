@@ -52,7 +52,8 @@ public class ClientResources_Test extends TestCase {
   protected void setUp() throws Exception {
     ServletContext servletContext = Fixture.createServletContext();
     Fixture.createServiceContext();
-    ApplicationContext appContext = ApplicationContextUtil.createContext( servletContext );
+    ApplicationContext appContext = new ApplicationContext();
+    ApplicationContextUtil.set( servletContext, appContext );
     ResourceManagerProvider resourceManagerProvider = appContext.getResourceManagerProvider();
     resourceManagerProvider.registerFactory( new TestResourceManagerFactory() );
     resourceManager = RWT.getResourceManager();

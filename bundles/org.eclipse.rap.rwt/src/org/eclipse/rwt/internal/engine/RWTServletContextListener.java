@@ -74,17 +74,18 @@ public final class RWTServletContextListener implements ServletContextListener {
 
   public void contextInitialized( ServletContextEvent evt ) {
     ServletContext servletContext = evt.getServletContext();
-    ApplicationContext applicationContext = ApplicationContextUtil.createContext( servletContext );
+    ApplicationContext applicationContext = new ApplicationContext();
+    ApplicationContextUtil.set( servletContext, applicationContext );
     registerConfigurables( servletContext, applicationContext );
     applicationContext.activate();
   }
 
   public void contextDestroyed( ServletContextEvent evt ) {
     ServletContext servletContext = evt.getServletContext();
-    ApplicationContext appContext = ApplicationContextUtil.getApplicationContext( servletContext );
+    ApplicationContext appContext = ApplicationContextUtil.get( servletContext );
     appContext.deactivate();
     deregisterConfigurables( servletContext, appContext );
-    ApplicationContextUtil.deregisterApplicationContext( servletContext );
+    ApplicationContextUtil.remove( servletContext );
   }
 
   private static void registerConfigurables( ServletContext servletContext, 

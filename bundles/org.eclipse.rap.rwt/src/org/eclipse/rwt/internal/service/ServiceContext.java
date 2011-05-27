@@ -164,7 +164,7 @@ public final class ServiceContext {
   
   private void bufferApplicationContextInSession() {
     if( sessionStore != null ) {
-      ApplicationContextUtil.registerApplicationContext( sessionStore, applicationContext );
+      ApplicationContextUtil.set( sessionStore, applicationContext );
     }
   }
 
@@ -173,12 +173,12 @@ public final class ServiceContext {
     //                expensive. Because of this the ApplicationContext is 
     //                buffered in a field.
     ServletContext servletContext = request.getSession().getServletContext();
-    applicationContext = ApplicationContextUtil.getApplicationContext( servletContext );
+    applicationContext = ApplicationContextUtil.get( servletContext );
   }
 
   private void getApplicationContextFromSession() {
     if( sessionStore != null ) {
-      applicationContext = ApplicationContextUtil.getApplicationContext( sessionStore );
+      applicationContext = ApplicationContextUtil.get( sessionStore );
     }
   }
   

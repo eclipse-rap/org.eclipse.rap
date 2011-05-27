@@ -156,7 +156,7 @@ public class AdapterManagerConfigurable_Test extends TestCase {
   private Display createDisplay() {
     Fixture.createServiceContext();
     TestServletContext servletContext = Fixture.getServletContext();
-    ApplicationContextUtil.registerApplicationContext( servletContext, applicationContext );
+    ApplicationContextUtil.set( servletContext, applicationContext );
     Display result = new Display();
     Fixture.disposeOfServiceContext();
     return result;
