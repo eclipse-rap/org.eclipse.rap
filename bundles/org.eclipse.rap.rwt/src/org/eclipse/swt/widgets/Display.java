@@ -32,6 +32,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
@@ -116,6 +117,7 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
  * @since 1.0
  */
 public class Display extends Device implements Adaptable {
+  private static final long serialVersionUID = 1L;
 
   private static final IFilterEntry[] EMPTY_FILTERS = new IFilterEntry[ 0 ];
   private final static String AVAILABLE_WIDTH = "w4t_width";
@@ -180,17 +182,17 @@ public class Display extends Device implements Adaptable {
   }
 
   private final List shells;
-  private Thread thread;
-  private final ISessionStore session;
+  private transient Thread thread;
+  private final ISessionStore sessionStore;
   private final Rectangle bounds;
   private final Point cursorLocation;
   private Shell activeShell;
   private List filters;
   private Collection redrawControls;
   private Control focusControl;
-  private final Monitor monitor;
-  private IDisplayAdapter displayAdapter;
-  private WidgetAdapter widgetAdapter;
+  private transient Monitor monitor;
+  private transient IDisplayAdapter displayAdapter;
+  private transient WidgetAdapter widgetAdapter;
   private Set closeListeners;
   private Set disposeListeners;
   private Runnable[] disposeList;
@@ -205,8 +207,8 @@ public class Display extends Device implements Adaptable {
   private String[] keys;
   private Object[] values;
 
-  private Synchronizer synchronizer;
-  private TimerExecScheduler scheduler;
+  private transient Synchronizer synchronizer;
+  private transient TimerExecScheduler scheduler;
 
   /**
    * Constructs a new instance of this class.
@@ -233,12 +235,16 @@ public class Display extends Device implements Adaptable {
     }
     LifeCycleUtil.setSessionDisplay( this );
     attachThread();
-    session = ContextProvider.getSession();
+    sessionStore = ContextProvider.getSession();
     shells = new ArrayList();
     monitor = new Monitor( this );
     cursorLocation = new Point( 0, 0 );
     bounds = readInitialBounds();
+    initialize();
     register();
+  }
+
+  private void initialize() {
     synchronizer = new Synchronizer( this );
     scheduler = new TimerExecScheduler( this );
   }
@@ -1694,14 +1700,7 @@ public class Display extends Device implements Adaptable {
     if( filters == null ) {
       filters = new ArrayList();
     }
-    filters.add( new IFilterEntry() {
-      public Listener getListener() {
-        return listener;
-      }
-      public int getType() {
-        return eventType;
-      }
-    } );
+    filters.add( new FilterEntry( eventType, listener ) );
   }
 
   /**
@@ -2031,6 +2030,9 @@ public class Display extends Device implements Adaptable {
    */
   public Monitor[] getMonitors() {
     checkDevice();
+    if( monitor == null ) {
+      monitor = new Monitor( this );
+    }
     return new Monitor[] { monitor };
   }
 
@@ -2042,8 +2044,7 @@ public class Display extends Device implements Adaptable {
    * @since 1.2
    */
   public Monitor getPrimaryMonitor() {
-    checkDevice();
-    return monitor;
+    return getMonitors()[ 0 ];
   }
 
   ////////////////////////
@@ -2273,9 +2274,34 @@ public class Display extends Device implements Adaptable {
     }
     return result;
   }
+  
+  private Object readResolve() {
+    initialize();
+    return this;
+  }
 
   /////////////////
   // Inner classes
+
+  private static class FilterEntry implements IFilterEntry, SerializableCompatibility {
+    private static final long serialVersionUID = 1L;
+
+    private final int eventType;
+    private final Listener listener;
+
+    FilterEntry( int eventType, Listener listener ) {
+      this.eventType = eventType;
+      this.listener = listener;
+    }
+
+    public int getType() {
+      return eventType;
+    }
+
+    public Listener getListener() {
+      return listener;
+    }
+  }
 
   private static final class ControlFinder {
 
@@ -2370,8 +2396,8 @@ public class Display extends Device implements Adaptable {
       return result;
     }
 
-    public ISessionStore getSession() {
-      return Display.this.session;
+    public ISessionStore getSessionStore() {
+      return Display.this.sessionStore;
     }
 
     public IFilterEntry[] getFilters() {

@@ -30,7 +30,7 @@ public interface IDisplayAdapter {
   void invalidateFocus();
   boolean isFocusInvalidated();
   Shell[] getShells();
-  ISessionStore getSession();
+  ISessionStore getSessionStore();
   IFilterEntry[] getFilters();
   
   int getAsyncRunnablesCount();

@@ -53,7 +53,7 @@ public final class FakeContextUtil {
     boolean useFakeContext = !ContextProvider.hasContext();
     if( useFakeContext ) {
       IDisplayAdapter adapter = getDisplayAdapter( display );
-      ISessionStore session = adapter.getSession();
+      ISessionStore session = adapter.getSessionStore();
       ContextProvider.setContext( createFakeContext( session ) );
     }
     try {

@@ -16,8 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.util.SerializableLock;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 
 
@@ -27,19 +29,20 @@ import org.eclipse.swt.internal.graphics.ResourceFactory;
  *
  * <p>This class is <em>not</em> intended to be directly used by clients.</p>
  */
-public abstract class Device implements Drawable {
+public abstract class Device implements Drawable, SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
   // SWT code uses Device.class as the synchronization lock. This synchronize 
   // access from all over the application. In RWT we need a way to synchronize
   // access from within a session. Therefore Device.class was replaced by the 
   // 'deviceLock'.
-  protected final Object deviceLock;
+  protected final SerializableLock deviceLock;
   private boolean disposed;
   private Point dpi;
   private int depth;
   
   public Device() {
-    deviceLock = new Object();
+    deviceLock = new SerializableLock();
     readDPI();
     readDepth();
   }

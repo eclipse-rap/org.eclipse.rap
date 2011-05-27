@@ -14,6 +14,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rwt.service.ISessionStore;
 
 
 public class ApplicationContextUtil_Test extends TestCase {
@@ -141,6 +142,17 @@ public class ApplicationContextUtil_Test extends TestCase {
     }
   }
 
+  public void testApplicationContextInSessionStoreIsNotSerialized() throws Exception {
+    SessionStoreImpl sessionStore = new SessionStoreImpl( new TestSession() );
+    ApplicationContextUtil.set( sessionStore, new ApplicationContext() );
+    byte[] bytes = Fixture.serialize( sessionStore );
+    ISessionStore deserializedSessionStore = ( ISessionStore )Fixture.deserialize( bytes );
+    
+    ApplicationContext appContext = ApplicationContextUtil.get( deserializedSessionStore );
+    
+    assertNull( appContext );
+  }
+  
   private static RuntimeException runWithExceptionExpected( Runnable runnable ) {
     RuntimeException result = null;
     try {

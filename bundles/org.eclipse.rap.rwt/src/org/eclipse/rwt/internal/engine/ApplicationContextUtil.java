@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
+import java.io.Serializable;
+
 import javax.servlet.ServletContext;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
@@ -21,31 +23,51 @@ import org.eclipse.rwt.service.ISessionStore;
 
 public class ApplicationContextUtil {
   private final static ThreadLocal CONTEXT_HOLDER = new ThreadLocal();
-  private final static String ATTRIBUTE_APPLICATION_CONTEXT
+  private final static String ATTR_APPLICATION_CONTEXT
     = ApplicationContext.class.getName() + "#INSTANCE";
  
+  private static class TransientValue implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
+    private final transient Object value;
+
+    TransientValue( Object value ) {
+      this.value = value;
+    }
+    
+    Object getValue() {
+      return value;
+    }
+  }
+ 
   public static void set( ServletContext servletContext, ApplicationContext applicationContext ) {
-    servletContext.setAttribute( ATTRIBUTE_APPLICATION_CONTEXT, applicationContext );
+    servletContext.setAttribute( ATTR_APPLICATION_CONTEXT, applicationContext );
   }
 
   public static ApplicationContext get( ServletContext servletContext ) {
-    return ( ApplicationContext )servletContext.getAttribute( ATTRIBUTE_APPLICATION_CONTEXT );
+    return ( ApplicationContext )servletContext.getAttribute( ATTR_APPLICATION_CONTEXT );
   }
 
   public static void remove( ServletContext servletContext ) {
-    servletContext.removeAttribute( ATTRIBUTE_APPLICATION_CONTEXT );
+    servletContext.removeAttribute( ATTR_APPLICATION_CONTEXT );
   }
   
   public static void set( ISessionStore sessionStore, ApplicationContext applicationContext ) {
-    sessionStore.setAttribute( ATTRIBUTE_APPLICATION_CONTEXT, applicationContext );
+    TransientValue transientValue = new TransientValue( applicationContext );
+    sessionStore.setAttribute( ATTR_APPLICATION_CONTEXT, transientValue );
   }
 
   public static ApplicationContext get( ISessionStore sessionStore ) {
-    return ( ApplicationContext )sessionStore.getAttribute( ATTRIBUTE_APPLICATION_CONTEXT );
+    ApplicationContext result = null;
+    TransientValue value = ( TransientValue )sessionStore.getAttribute( ATTR_APPLICATION_CONTEXT );
+    if( value != null ) {
+      result = ( ApplicationContext )value.getValue();
+    }
+    return result;
   }
 
   public static void remove( ISessionStore sessionStore ) {
-    sessionStore.removeAttribute( ATTRIBUTE_APPLICATION_CONTEXT );
+    sessionStore.removeAttribute( ATTR_APPLICATION_CONTEXT );
   }
   
   public static ApplicationContext getInstance() {

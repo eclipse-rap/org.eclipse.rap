@@ -147,6 +147,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( SharedInstanceBuffer_Test.class );
 
     suite.addTestSuite( Display_Test.class );
+    suite.addTestSuite( DisplaySerialization_Test.class );
     suite.addTestSuite( Monitor_Test.class );
     suite.addTestSuite( Shell_Test.class );
     suite.addTestSuite( Widget_Test.class );
@@ -226,6 +227,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( Resource_Test.class );
     suite.addTestSuite( Cursor_Test.class );
     suite.addTestSuite( Device_Test.class );
+    suite.addTestSuite( DeviceSerialization_Test.class );
     suite.addTestSuite( GC_Test.class );
     suite.addTestSuite( ControlGC_Test.class );
     suite.addTestSuite( DeviceGC_Test.class );
