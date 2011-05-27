@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.cluster.test.entrypoints.ThreeButtonExample;
 import org.eclipse.rap.rwt.cluster.testfixture.*;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
+import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.ServletEngine;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -27,7 +28,7 @@ import org.eclipse.rwt.service.ISessionStore;
 
 public class SessionSerialization_Test extends TestCase {
 
-  private ServletEngine servletEngine;
+  private IServletEngine servletEngine;
   private RWTClient client;
 
   public void testSessionIsSerializable() throws Exception {

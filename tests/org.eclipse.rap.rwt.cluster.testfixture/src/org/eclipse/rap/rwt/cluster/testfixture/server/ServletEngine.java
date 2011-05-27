@@ -19,13 +19,11 @@ import java.util.Map;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.session.*;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlet.*;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.resource.FileResource;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
-import org.eclipse.rwt.internal.engine.RWTDelegate;
-import org.eclipse.rwt.internal.engine.RWTServletContextListener;
+import org.eclipse.rwt.internal.engine.*;
 
 
 public class ServletEngine implements IServletEngine {
@@ -68,7 +66,8 @@ public class ServletEngine implements IServletEngine {
 
   public void addEntryPoint( Class entryPointClass ) {
     ServletContextHandler servletContext = createServletContext( "/" );
-    servletContext.addServlet( new ServletHolder( new RWTDelegate() ), "/rap" );
+    servletContext.addServlet( RWTDelegate.class.getName(), "/rap" );
+    servletContext.addFilter( RWTClusterSupport.class.getName(), "/rap", FilterMapping.DEFAULT );
     servletContext.addEventListener( new RWTServletContextListener() );
     servletContext.setInitParameter( "org.eclipse.rwt.entryPoints", entryPointClass.getName() );
   }

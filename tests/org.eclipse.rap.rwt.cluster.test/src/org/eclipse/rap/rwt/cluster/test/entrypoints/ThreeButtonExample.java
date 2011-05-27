@@ -10,16 +10,15 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.test.entrypoints;
 
+import java.io.Serializable;
+
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.*;
 
 
 public class ThreeButtonExample implements IEntryPoint {
@@ -51,17 +50,18 @@ public class ThreeButtonExample implements IEntryPoint {
     button.addSelectionListener( new UpdateLabelListener( position, label ) );
   }
   
-  private static class UpdateLabelListener extends SelectionAdapter {
+  private static class UpdateLabelListener extends SelectionAdapter implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final int position;
     private final Label label;
-    private Integer globalCounter = new Integer( 1 );
+    private final Integer globalCounter;
     private int counter = 0;
 
     UpdateLabelListener( int position, Label label ) {
       this.position = position;
       this.label = label;
+      this.globalCounter = new Integer( 1 );
     }
 
     public void widgetSelected( SelectionEvent event ) {

@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.cluster.testfixture;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
+import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
@@ -20,13 +21,11 @@ import org.eclipse.swt.widgets.Display;
 
 
 public class ClusterFixture {
-  private static final String ATTR_SESSION_STORE
-    = SessionStoreImpl.class.getName();
   private static final String ATTR_SESSION_DISPLAY 
     = LifeCycleUtil.class.getName() + "#sessionDisplay";
 
   public static void setUp() {
-    System.setProperty( "lifecycle", "org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle" );
+    System.setProperty( "lifecycle", SimpleLifeCycle.class.getName() );
   }
 
   public static void tearDown() {
@@ -38,7 +37,7 @@ public class ClusterFixture {
   }
 
   public static ISessionStore getSessionStore( HttpSession httpSession ) {
-    return ( ISessionStore )httpSession.getAttribute( ATTR_SESSION_STORE );
+    return ( ISessionStore )httpSession.getAttribute( SessionStoreImpl.ATTR_SESSION_STORE );
   }
 
   public static Display getSessionDisplay( HttpSession httpSession ) {

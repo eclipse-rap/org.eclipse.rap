@@ -21,13 +21,14 @@ import org.eclipse.rap.rwt.cluster.test.entrypoints.ThreeButtonExample;
 import org.eclipse.rap.rwt.cluster.testfixture.ClusterFixture;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
+import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.ServletEngine;
 
 
 
 public class SingleServer_Test extends TestCase {
 
-  private ServletEngine servletEngine;
+  private IServletEngine servletEngine;
   private RWTClient client;
   
   protected void setUp() throws Exception {

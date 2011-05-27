@@ -23,14 +23,17 @@ import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
 import org.eclipse.rap.rwt.cluster.testfixture.db.DatabaseServer;
 import org.eclipse.rap.rwt.cluster.testfixture.server.ClusteredServletEngine;
+import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
+import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
 
 
 
 public class SessionFailover_Test extends TestCase {
 
-  private ClusteredServletEngine primary;
-  private ClusteredServletEngine secondary;
+  private IServletEngine primary;
+  private IServletEngine secondary;
   private DatabaseServer db;
 
   protected void setUp() throws Exception {
@@ -50,6 +53,10 @@ public class SessionFailover_Test extends TestCase {
     secondary.stop();
     db.stop();
     ClusterFixture.tearDown();
+  }
+  
+  public void testAttachHttpSessionDoesNotTriggerSessionListeners() {
+    fail();
   }
 
   public void testSessionFailoverBetweenButtonClicks() throws Exception {
@@ -72,16 +79,28 @@ public class SessionFailover_Test extends TestCase {
     assertEquals( primarySessionId, secondarySessionId );
     assertTrue( client.getSessionId().startsWith( primarySessionId ) );
     // HttpSessions
-    HttpSession primarySession = ( HttpSession )primarySessions.get( primarySessionId );
-    HttpSession secondarySession = ( HttpSession )secondarySessions.get( secondarySessionId );
-    assertNotNull( ClusterFixture.getSessionStore( primarySession ) );
-    assertNotNull( ClusterFixture.getSessionStore( secondarySession ) );
+    HttpSession primarySession = ( HttpSession )primary.getSessions().get( secondarySessionId );
+    assertSessionIsIntact( primarySession, client );
+    HttpSession secondarySession = ( HttpSession )secondary.getSessions().get( secondarySessionId );
+    assertSessionIsIntact( secondarySession, client );
     // Displays
     Display primaryDisplay = ClusterFixture.getSessionDisplay( primarySession );
     Display secondaryDisplay = ClusterFixture.getSessionDisplay( secondarySession );
-    assertNotNull( primaryDisplay );
-    assertNotNull( secondaryDisplay );
     assertNotSame( primaryDisplay, secondaryDisplay );
+  }
+  
+  private static void assertSessionIsIntact( HttpSession session, RWTClient client ) {
+    ISessionStore sessionStore = ClusterFixture.getSessionStore( session );
+    Display display = ClusterFixture.getSessionDisplay( session );
+    assertNotNull( sessionStore );
+    assertNotNull( display );
+    assertSame( sessionStore, getDisplaySession( display ) );
+    assertNotNull( sessionStore.getHttpSession() );
+    assertTrue( client.getSessionId().startsWith( session.getId() ) );
+  }
+
+  private static IDisplayAdapter getDisplaySession( Display display ) {
+    return( ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class ) );
   }
 
   private static void clickCenterButton( RWTClient client, int start, int end ) throws IOException {
@@ -89,8 +108,8 @@ public class SessionFailover_Test extends TestCase {
       Response response = client.sendWidgetSelectedRequest( "w5" );
       assertTrue( response.isValidJavascript() );
       String expectedLabelPart = "relocated " + i + "/1";
-      assertTrue( "label update mismatch, missing part: '" + expectedLabelPart + "'",
-                  response.getContent().contains( expectedLabelPart ) );
+      String msg = "label update mismatch, missing part: '" + expectedLabelPart + "'";
+      assertTrue( msg, response.getContent().contains( expectedLabelPart ) );
     }
   }
 }
