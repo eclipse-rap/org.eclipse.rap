@@ -59,7 +59,7 @@ public class ContextProvider {
    * <p>Note: to dispose of contexts that are added with this method
    * use <code>disposeContext()</code>. </p>
    */
-  public static void setContext( final ServiceContext context ) {
+  public static void setContext( ServiceContext context ) {
     ParamCheck.notNull( context, "context" );
     if( getContextInternal() != null ) {
       String msg = "Current thread has already a context instance buffered.";
@@ -78,16 +78,12 @@ public class ContextProvider {
    * the context to the current thread use
    * <code>setContext(ServiceContext)</code> instead.</p>
    */
-  public static void setContext( final ServiceContext context, 
-                                 final Thread thread )
-  {
+  public static void setContext( ServiceContext context, Thread thread ) {
     ParamCheck.notNull( context, "context" );
     ParamCheck.notNull( thread, "thread" );
-    
     synchronized( CONTEXT_HOLDER_FOR_BG_THREADS ){
       if( CONTEXT_HOLDER_FOR_BG_THREADS.containsKey( thread ) ) {
-        String msg
-          = "The given thread has already a context instance mapped.";
+        String msg = "The given thread has already a context instance mapped.";
         throw new IllegalStateException( msg );        
       }
       CONTEXT_HOLDER_FOR_BG_THREADS.put( thread, context );
@@ -101,8 +97,7 @@ public class ContextProvider {
   public static ServiceContext getContext() {
     ServiceContext result = getContextInternal();
     if( result == null ) {
-      String msg = "No context available outside of the request "
-                 + "service lifecycle.";
+      String msg = "No context available outside of the request service lifecycle.";
       throw new IllegalStateException( msg );
     }
     return result;
@@ -208,7 +203,7 @@ public class ContextProvider {
    * must be disposed of by calling <code>disposeContext()</code> from the 
    * same thread.</p>
    */
-  public static void disposeContext( final Thread thread ) {
+  public static void disposeContext( Thread thread ) {
     ParamCheck.notNull( thread, "thread" );
     synchronized( CONTEXT_HOLDER_FOR_BG_THREADS ) {
       ServiceContext toRemove = getMappedContext( thread );
@@ -241,7 +236,7 @@ public class ContextProvider {
     return result;
   }
 
-  private static ServiceContext getMappedContext( final Thread thread ) {
+  private static ServiceContext getMappedContext( Thread thread ) {
     return ( ServiceContext )CONTEXT_HOLDER_FOR_BG_THREADS.get( thread );
   }
 }
