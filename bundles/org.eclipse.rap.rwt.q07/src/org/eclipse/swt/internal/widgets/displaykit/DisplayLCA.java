@@ -20,6 +20,7 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
@@ -189,7 +190,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     Object oldThemeId = adapter.getPreserved( PROP_CURR_THEME );
     if( !currThemeId.equals( oldThemeId ) ) {
-      Theme theme = ThemeManager.getInstance().getTheme( currThemeId );
+      Theme theme = RWTFactory.getThemeManager().getTheme( currThemeId );
       StringBuffer buffer = new StringBuffer();
       buffer.append( "qx.theme.manager.Meta.getInstance().setTheme( " );
       buffer.append( theme.getJsId() );

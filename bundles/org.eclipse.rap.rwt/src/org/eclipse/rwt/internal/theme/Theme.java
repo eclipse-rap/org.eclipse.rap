@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
+import java.text.MessageFormat;
+
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
 
@@ -60,7 +62,9 @@ public final class Theme {
 
   public void initialize( final ThemeableWidget[] themeableWidgets ) {
     if( valuesMap != null ) {
-      throw new IllegalStateException( "Theme is already initialized" );
+      String pattern = "Theme ''{0}'' is already initialized.";
+      String msg = MessageFormat.format( pattern, new Object[] { id } );
+      throw new IllegalStateException( msg );
     }
     StyleSheet styleSheet = styleSheetBuilder.getStyleSheet();
     valuesMap = new ThemeCssValuesMap( styleSheet, themeableWidgets );

@@ -14,6 +14,7 @@ package org.eclipse.rwt.internal.theme;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.engine.ThemeManagerHelper;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.swt.SWT;
@@ -40,9 +41,9 @@ public class AbstractThemeAdapter_Test extends TestCase {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme theme = new Theme( "customId", "Custom Theme", styleSheet );
     ThemeManagerHelper.resetThemeManager();
-    ThemeManager themeManager = ThemeManager.getInstance();
+    ThemeManager themeManager = RWTFactory.getThemeManager();
     themeManager.registerTheme( theme );
-    themeManager.initialize();
+    themeManager.activate();
     AbstractThemeAdapter adapter = new AbstractThemeAdapter() {
       protected void configureMatcher( final WidgetMatcher matcher ) {
       }
@@ -65,7 +66,7 @@ public class AbstractThemeAdapter_Test extends TestCase {
     int customBorderWidth
       = adapter.getCssBorderWidth( "CustomWidget", "border", custom );
     assertTrue( defaultBorderWidth == customBorderWidth );
-    ThemeManager.resetInstance();
+    RWTFactory.getThemeManager().deactivate();
   }
 
   protected void setUp() throws Exception {

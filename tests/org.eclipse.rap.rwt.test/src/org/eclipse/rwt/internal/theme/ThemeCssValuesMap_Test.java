@@ -16,6 +16,7 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.swt.widgets.Button;
@@ -105,8 +106,8 @@ public class ThemeCssValuesMap_Test extends TestCase {
   }
 
   private static ThemeCssValuesMap getValuesMap() throws IOException {
-    ThemeManager manager = ThemeManager.getInstance();
-    manager.initialize();
+    ThemeManager manager = RWTFactory.getThemeManager();
+    manager.activate();
     ThemeableWidget buttonWidget = manager.getThemeableWidget( Button.class );
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     ThemeableWidget[] themeableWidgets = new ThemeableWidget[] { buttonWidget };

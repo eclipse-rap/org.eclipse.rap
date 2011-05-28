@@ -291,7 +291,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
   }
 
   private ThemeManager getThemeManager() {
-    return applicationContext.getThemeManager().getInstance();
+    return applicationContext.getThemeManager();
   }
 
   private void registerThemes() {

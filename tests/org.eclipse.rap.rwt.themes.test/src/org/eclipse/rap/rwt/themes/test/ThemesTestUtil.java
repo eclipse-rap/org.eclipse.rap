@@ -15,11 +15,9 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.engine.ThemeManagerHelper;
-import org.eclipse.rwt.internal.theme.ResourceLoader;
-import org.eclipse.rwt.internal.theme.Theme;
-import org.eclipse.rwt.internal.theme.ThemeManager;
-import org.eclipse.rwt.internal.theme.ThemeUtil;
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
@@ -103,9 +101,9 @@ public class ThemesTestUtil {
     }
     Theme theme = new Theme( themeId, "Test Theme", styleSheet );
     ThemeManagerHelper.resetThemeManager();
-    ThemeManager themeManager = ThemeManager.getInstance();
+    ThemeManager themeManager = RWTFactory.getThemeManager();
     themeManager.registerTheme( theme );
-    themeManager.initialize();
+    themeManager.activate();
     ThemeUtil.setCurrentThemeId( themeId );
   }
 

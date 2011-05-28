@@ -27,7 +27,7 @@ public class ThemeManager_Test extends TestCase {
   public void testCreate() {
     ThemeManager manager = new ThemeManager();
     assertEquals( "org.eclipse.rap.rwt.theme.Default", ThemeManager.DEFAULT_THEME_ID );
-    manager.initialize();
+    manager.activate();
     Theme defaultTheme = manager.getTheme( ThemeManager.DEFAULT_THEME_ID );
     assertNotNull( defaultTheme );
     assertEquals( "RAP Default Theme", defaultTheme.getName() );
@@ -35,7 +35,7 @@ public class ThemeManager_Test extends TestCase {
 
   public void testRegisterResources() {
     ThemeManager manager = new ThemeManager();
-    manager.initialize();
+    manager.activate();
     manager.registerResources();
     String[] themeIds = manager.getRegisteredThemeIds();
     assertNotNull( themeIds );
@@ -47,7 +47,7 @@ public class ThemeManager_Test extends TestCase {
     StyleSheet emptyStyleSheet = new StyleSheet( new StyleRule[ 0 ] );
     Theme customTheme = new Theme( "custom.id", "foo", emptyStyleSheet );
     manager.registerTheme( customTheme );
-    manager.initialize();
+    manager.activate();
     assertTrue( manager.hasTheme( "custom.id" ) );
     List regThemeIds = Arrays.asList( manager.getRegisteredThemeIds() );
     assertTrue( regThemeIds.contains( "custom.id" ) );
@@ -68,7 +68,7 @@ public class ThemeManager_Test extends TestCase {
 
   public void testGetThemeableWidget() {
     ThemeManager manager = new ThemeManager();
-    manager.initialize();
+    manager.activate();
     ThemeableWidget themeableWidget = manager.getThemeableWidget( Button.class );
     assertNotNull( themeableWidget );
     assertNotNull( themeableWidget.loader );
@@ -79,7 +79,7 @@ public class ThemeManager_Test extends TestCase {
 
   public void testDefaultThemeInitialized() {
     ThemeManager manager = new ThemeManager();
-    manager.initialize();
+    manager.activate();
     Theme defaultTheme = manager.getTheme( ThemeManager.DEFAULT_THEME_ID );
     assertNotNull( defaultTheme.getValuesMap() );
     assertTrue( defaultTheme.getValuesMap().getAllValues().length > 0 );
@@ -90,19 +90,37 @@ public class ThemeManager_Test extends TestCase {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );
     manager.registerTheme( customTheme );
-    manager.initialize();
+    manager.activate();
     Theme defaultTheme = manager.getTheme( ThemeManager.DEFAULT_THEME_ID );
     assertNotNull( defaultTheme.getValuesMap() );
     assertTrue( defaultTheme.getValuesMap().getAllValues().length > 0 );
     assertNotNull( customTheme.getValuesMap() );
     assertTrue( customTheme.getValuesMap().getAllValues().length > 0 );
   }
+  
+  public void testActivateAndDeactivate() {
+    ThemeManager themeManager = new ThemeManager();
+    
+    Theme beforeActivate = getTheme( themeManager );
+    themeManager.activate();
+    Theme afterActivate = getTheme( themeManager );
+    themeManager.deactivate();
+    Theme afterDeactivate = getTheme( themeManager );
+    
+    assertNull( beforeActivate );
+    assertNotNull( afterActivate );
+    assertNull( afterDeactivate );
+  }
 
-  protected void setUp() throws Exception {
+  protected void setUp() {
     Fixture.setUp();
   }
 
-  protected void tearDown() throws Exception {
+  protected void tearDown() {
     Fixture.tearDown();
+  }
+
+  private Theme getTheme( ThemeManager themeManager ) {
+    return themeManager.getTheme( ThemeManager.DEFAULT_THEME_ID );
   }
 }

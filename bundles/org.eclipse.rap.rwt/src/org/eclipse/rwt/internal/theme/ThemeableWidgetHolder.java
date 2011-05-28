@@ -13,27 +13,29 @@ package org.eclipse.rwt.internal.theme;
 import java.util.*;
 
 
-public class ThemeableWidgetHolder {
-
+class ThemeableWidgetHolder {
   private final Map themeableWidgets;
 
-  public ThemeableWidgetHolder() {
+  ThemeableWidgetHolder() {
     themeableWidgets = new LinkedHashMap();
   }
 
-  public void add( final ThemeableWidget widget ) {
+  void add( final ThemeableWidget widget ) {
     themeableWidgets.put( widget.widget, widget );
   }
 
-  public ThemeableWidget get( final Class widget ) {
+  ThemeableWidget get( final Class widget ) {
     return ( ThemeableWidget )themeableWidgets.get( widget );
   }
 
-  public ThemeableWidget[] getAll() {
+  ThemeableWidget[] getAll() {
     Collection values = themeableWidgets.values();
-    int size = values.size();
-    ThemeableWidget[] result = new ThemeableWidget[ size ];
+    ThemeableWidget[] result = new ThemeableWidget[ values.size() ];
     values.toArray( result );
     return result;
+  }
+  
+  void reset() {
+    themeableWidgets.clear();
   }
 }

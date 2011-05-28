@@ -19,7 +19,6 @@ import org.eclipse.rwt.internal.theme.IThemeCssElement;
  * Holds all registered {@link IThemeCssElement}s.
  */
 public class CssElementHolder {
-
   private final Map elements;
 
   public CssElementHolder() {
@@ -28,8 +27,7 @@ public class CssElementHolder {
 
   public void addElement( final IThemeCssElement element ) {
     if( elements.containsKey( element.getName() ) ) {
-      String message = "An element with this name is already defined: "
-                       + element.getName();
+      String message = "An element with this name is already defined: " + element.getName();
       throw new IllegalArgumentException( message );
     }
     elements.put( element.getName(), element );

@@ -17,7 +17,6 @@ import java.io.*;
 import java.text.MessageFormat;
 import java.util.*;
 
-import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
@@ -35,10 +34,9 @@ import org.eclipse.swt.widgets.Widget;
  * The ThemeManager maintains information about the themeable widgets and the
  * installed themes.
  */
-public final class ThemeManager {
+public class ThemeManager {
 
   public static final String DEFAULT_THEME_ID = "org.eclipse.rap.rwt.theme.Default";
-
   private static final String DEFAULT_THEME_NAME = "RAP Default Theme";
 
   // TODO [ApplicationContext]: made field public to replace with a performance
@@ -101,15 +99,13 @@ public final class ThemeManager {
   private final Set customAppearances;
   private final Map themes;
   private final Set registeredThemeFiles;
+  private final ThemeableWidgetHolder themeableWidgets;
+  private final CssElementHolder registeredCssElements;
+  private Theme defaultTheme;
   private boolean initialized;
   private boolean widgetsInitialized;
-  private Theme defaultTheme;
-  private ThemeableWidgetHolder themeableWidgets;
-  private final CssElementHolder registeredCssElements;
 
-
-  ThemeManager() {
-    // prevent instantiation from outside
+  public ThemeManager() {
     initialized = false;
     widgetsInitialized = false;
     themeableWidgets = new ThemeableWidgetHolder();
@@ -117,22 +113,21 @@ public final class ThemeManager {
     registeredThemeFiles = new HashSet();
     registeredCssElements = new CssElementHolder();
     themes = new HashMap();
-    defaultTheme = new Theme( DEFAULT_THEME_ID, DEFAULT_THEME_NAME, null );
   }
 
-  /**
-   * Returns the sole instance of the ThemeManager.
-   */
-  public static ThemeManager getInstance() {
-    return RWTFactory.getThemeManager().getInstance();
+  public void activate() {
+    initialize();
+    registerResources();
   }
 
-  /**
-   * Clears the current ThemeManager instance, forcing a subsequent getInstance
-   * call to create a new instance.
-   */
-  public static void resetInstance() {
-    RWTFactory.getThemeManager().resetInstance();
+  public void deactivate() {
+    themes.clear();
+    registeredCssElements.clear();
+    registeredThemeFiles.clear();
+    customAppearances.clear();
+    themeableWidgets.reset();
+    widgetsInitialized = false;
+    initialized = false;
   }
   
   /**
@@ -140,9 +135,8 @@ public final class ThemeManager {
    * themeable widgets, resources are registered. If the ThemeManager has
    * already been initialized, no action is taken.
    */
-  public void initialize() {
+  private void initialize() {
     if( !initialized ) {
-      themes.put( DEFAULT_THEME_ID, defaultTheme );
       initializeThemeableWidgets();
       Collection allThemes = themes.values();
       Iterator iterator = allThemes.iterator();
@@ -155,8 +149,10 @@ public final class ThemeManager {
     }
   }
 
-  public void initializeThemeableWidgets() {
+  private void initializeThemeableWidgets() {
     if( !widgetsInitialized ) {
+      defaultTheme = new Theme( DEFAULT_THEME_ID, DEFAULT_THEME_NAME, null );
+      themes.put( DEFAULT_THEME_ID, defaultTheme );
       addDefaultThemableWidgets();
       ThemeableWidget[] widgets = themeableWidgets.getAll();
       for( int i = 0; i < widgets.length; i++ ) {
@@ -444,7 +440,7 @@ public final class ThemeManager {
             ThemePropertyAdapter adapter = registry.getPropertyAdapter( value.getClass() );
             String key = adapter.getKey( value );
             String registerPath = IMAGE_DEST_PATH + "/" + key;
-            RWT.getResourceManager().register( registerPath, inputStream );
+            getResourceManager().register( registerPath, inputStream );
           } finally {
             try {
               inputStream.close();
@@ -485,8 +481,8 @@ public final class ThemeManager {
           try {
             String widgetDestPath = CURSOR_DEST_PATH;
             String registerPath = widgetDestPath + "/" + key;
-            RWT.getResourceManager().register( registerPath, inputStream );
-            String location = RWT.getResourceManager().getLocation( registerPath );
+            getResourceManager().register( registerPath, inputStream );
+            String location = getResourceManager().getLocation( registerPath );
             log( " theme cursor registered @ " + location );
           } finally {
             try {
@@ -501,7 +497,7 @@ public final class ThemeManager {
   }
 
   private static void registerJsLibrary( String name, String code, boolean compress ) {
-    IResourceManager resourceManager = RWT.getResourceManager();
+    IResourceManager resourceManager = getResourceManager();
     RegisterOptions option =   compress
                              ? RegisterOptions.VERSION_AND_COMPRESS
                              : RegisterOptions.VERSION;
@@ -518,6 +514,10 @@ public final class ThemeManager {
       resourceManager.register( name, CHARSET, option );
     }
     ResourceUtil.useJsLibrary( name );
+  }
+
+  private static IResourceManager getResourceManager() {
+    return RWTFactory.getResourceManagerProvider().getResourceManager();
   }
 
   private String createQxThemes( Theme theme ) {

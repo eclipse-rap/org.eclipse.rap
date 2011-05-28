@@ -78,7 +78,7 @@ class ThemeManagerConfigurable implements Configurable {
     checkThemeDeclaration( themeDeclaration );
     Declaration declaration = parseDeclaration( themeDeclaration );
     Theme theme = createTheme( declaration );
-    context.getThemeManager().getInstance().registerTheme( theme );
+    context.getThemeManager().registerTheme( theme );
   }
 
   private Theme createTheme( Declaration declaration ) {

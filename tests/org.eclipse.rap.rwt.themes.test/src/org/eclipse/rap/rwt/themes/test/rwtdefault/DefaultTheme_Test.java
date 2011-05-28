@@ -12,6 +12,7 @@ package org.eclipse.rap.rwt.themes.test.rwtdefault;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.themes.test.ThemeTestCase;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 
@@ -19,8 +20,8 @@ import org.eclipse.rwt.internal.theme.ThemeUtil;
 public class DefaultTheme_Test extends ThemeTestCase {
 
   public void testDefaultTheme() throws IOException {
-    ThemeManager.resetInstance();
-    ThemeManager.getInstance().initialize();
+    RWTFactory.getThemeManager().deactivate();
+    RWTFactory.getThemeManager().activate();
     ThemeUtil.setCurrentThemeId( ThemeManager.DEFAULT_THEME_ID );
     processCssTestFile( getClass(), "Button.test.css" );
     processCssTestFile( getClass(), "Shell.test.css" );

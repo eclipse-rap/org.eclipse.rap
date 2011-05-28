@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Widget;
 
@@ -33,7 +34,7 @@ public abstract class AbstractThemeAdapter implements IThemeAdapter {
   public static String getPrimaryElement( final Widget widget ) {
     String result;
     Class widgetClass = widget.getClass();
-    ThemeManager manager = ThemeManager.getInstance();
+    ThemeManager manager = RWTFactory.getThemeManager();
     ThemeableWidget thWidget = manager.getThemeableWidget( widgetClass );
     if( thWidget != null
         && thWidget.elements != null

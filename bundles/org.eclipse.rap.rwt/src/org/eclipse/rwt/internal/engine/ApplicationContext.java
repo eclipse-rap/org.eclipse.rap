@@ -22,7 +22,7 @@ import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
-import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.IApplicationStore;
 import org.eclipse.swt.internal.graphics.*;
@@ -38,7 +38,7 @@ public class ApplicationContext {
   //                TestServletContext#setAttribute(String,Object) will replace the runtime
   //                implementation with an optimized version for testing purpose. Think about
   //                a less intrusive solution.
-  private ThemeManagerHolder themeManagerHolder;
+  private ThemeManager themeManager;
   private final ResourceManagerProvider resourceManagerProvider;
   private final BrandingManager brandingManager;
   private final PhaseListenerRegistry phaseListenerRegistry;
@@ -69,7 +69,7 @@ public class ApplicationContext {
     configurationReader = new ConfigurationReader();
     resourceManagerProvider = new ResourceManagerProvider();
     lifeCycleFactory = new LifeCycleFactory( configurationReader );
-    themeManagerHolder = new ThemeManagerHolder();
+    themeManager = new ThemeManager();
     brandingManager = new BrandingManager();
     phaseListenerRegistry = new PhaseListenerRegistry();
     entryPointManager = new EntryPointManager();
@@ -161,16 +161,16 @@ public class ApplicationContext {
     return jsLibraryConcatenator;
   }
 
-  public ThemeManagerHolder getThemeManager() {
-    return themeManagerHolder;
+  public ThemeManager getThemeManager() {
+    return themeManager;
   }
 
   // TODO [fappel]: setThemeManager exists only for performance reasons of the testsuite.
   //                TestServletContext#setAttribute(String,Object) will replace the runtime
   //                implementation with an optimized version for testing purpose using this
   //                method. Think about a less intrusive solution.
-  void setThemeManager( ThemeManagerHolder themeManagerHolder ) {
-    this.themeManagerHolder = themeManagerHolder;
+  void setThemeManager( ThemeManager themeManager ) {
+    this.themeManager = themeManager;
   }
 
   public LifeCycleFactory getLifeCycleFactory() {
@@ -266,7 +266,7 @@ public class ApplicationContext {
     if( !ignoreResoureRegistration ) {
       DisplayLCAFacade.registerResources();
     }
-    themeManagerHolder.activate();
+    themeManager.activate();
     jsLibraryConcatenator.finishJSConcatenation();
   }
   
@@ -281,7 +281,7 @@ public class ApplicationContext {
   private void doDeactivateInstances() {
     lifeCycleFactory.deactivate();
     serviceManager.deactivate();
-    themeManagerHolder.deactivate();
+    themeManager.deactivate();
   }
   
 

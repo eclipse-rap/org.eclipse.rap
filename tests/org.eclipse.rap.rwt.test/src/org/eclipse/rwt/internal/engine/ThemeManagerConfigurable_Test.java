@@ -16,7 +16,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.theme.ThemeManager;
-import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
 
 
 public class ThemeManagerConfigurable_Test extends TestCase {
@@ -32,7 +31,7 @@ public class ThemeManagerConfigurable_Test extends TestCase {
 
     configurable.configure( applicationContext );
     
-    assertNotNull( getThemeManager().getTheme( THEME_ID ) );
+    assertNotNull( applicationContext.getThemeManager().getTheme( THEME_ID ) );
   }
   
   public void testConfigureWithUnavailableThemeFile() {
@@ -56,11 +55,11 @@ public class ThemeManagerConfigurable_Test extends TestCase {
   public void testReset() {
     setInitParameter( ( THEME_ID + SPLIT + STYLE_SHEET ) );
     configurable.configure( applicationContext );
-    ThemeManagerHolder themeManager = applicationContext.getThemeManager();
+    ThemeManager themeManager = applicationContext.getThemeManager();
 
     configurable.reset( applicationContext );
     
-    assertNull( themeManager.getInstance().getTheme( THEME_ID ) );
+    assertNull( themeManager.getTheme( THEME_ID ) );
   }
   
   protected void setUp() {
@@ -77,7 +76,7 @@ public class ThemeManagerConfigurable_Test extends TestCase {
 
   private void resetThemeManager() {
     if( applicationContext.isActivated() ) {
-      applicationContext.getThemeManager().resetInstance();
+      applicationContext.getThemeManager().deactivate();
     }
   }
   
@@ -91,9 +90,5 @@ public class ThemeManagerConfigurable_Test extends TestCase {
       fail();
     } catch( IllegalArgumentException expected ) {
     }
-  }
-
-  private ThemeManager getThemeManager() {
-    return applicationContext.getThemeManager().getInstance();
   }
 }

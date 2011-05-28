@@ -252,7 +252,6 @@ public class RWTHostTestSuite {
     // == Theming ==
     suite.addTestSuite( Theme_Test.class );
     suite.addTestSuite( ThemeManager_Test.class );
-    suite.addTestSuite( ThemeManagerHolder_Test.class );
     suite.addTestSuite( ThemeUtil_Test.class );
     suite.addTestSuite( ThemeAdapterManager_Test.class );
     suite.addTestSuite( QxTheme_Test.class );

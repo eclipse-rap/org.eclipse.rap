@@ -14,16 +14,17 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.theme.ResourceLoader;
+import org.eclipse.rwt.internal.theme.ThemeManager;
 
 
 public class ThemeManagerHelper {
-  private static ThemeManagerHolder themeManagerHolder;
+  private static ThemeManager themeManager;
   static {
     ThemeManager.STANDARD_RESOURCE_LOADER = new TestResourceLoader();
   }
   
-  public static class TestThemeManagerHolder extends ThemeManagerHolder {
+  public static class TestThemeManager extends ThemeManager {
     boolean activated;
     
     public void deactivate() {
@@ -39,7 +40,7 @@ public class ThemeManagerHelper {
     
     public void resetInstanceInTestCases() {
       activated = false;
-      super.resetInstance();
+      super.deactivate();
     }
   }
 
@@ -104,15 +105,15 @@ public class ThemeManagerHelper {
     }
   }
   
-  private static ThemeManagerHolder getInstance() {
-    if( themeManagerHolder == null ) {
-      themeManagerHolder = new TestThemeManagerHolder();
+  private static ThemeManager getInstance() {
+    if( themeManager == null ) {
+      themeManager = new TestThemeManager();
     }
-    return themeManagerHolder;
+    return themeManager;
   }
 
   private static void doThemeManagerReset() {
-    TestThemeManagerHolder themeManager = ( TestThemeManagerHolder )RWTFactory.getThemeManager();
+    TestThemeManager themeManager = ( TestThemeManager )RWTFactory.getThemeManager();
     themeManager.resetInstanceInTestCases();
   }
 
@@ -128,7 +129,7 @@ public class ThemeManagerHelper {
   private static ThemeManager getThemeManager() {
     ThemeManager result = null;
     try {
-      result = ThemeManager.getInstance();
+      result = RWTFactory.getThemeManager();
     } catch( IllegalStateException noApplicationContextAvailable ) {
     } catch( IllegalArgumentException noThemeManagerRegisterd ) {
     }

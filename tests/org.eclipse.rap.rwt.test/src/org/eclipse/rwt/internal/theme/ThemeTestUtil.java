@@ -13,6 +13,7 @@ package org.eclipse.rwt.internal.theme;
 
 import java.io.*;
 
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.engine.ThemeManagerHelper;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
@@ -65,9 +66,9 @@ public final class ThemeTestUtil {
   {
     ThemeManagerHelper.resetThemeManager();
     Theme theme = createTheme( themeId, cssCode, loader );
-    ThemeManager manager = ThemeManager.getInstance();
+    ThemeManager manager = RWTFactory.getThemeManager();
     manager.registerTheme( theme );
-    manager.initialize();
+    manager.activate();
   }
 
   public static Theme createTheme( String themeId, String cssCode, ResourceLoader loader )

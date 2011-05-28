@@ -19,7 +19,7 @@ import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
-import org.eclipse.rwt.internal.theme.ThemeManagerHolder;
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.service.IApplicationStore;
 import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.internal.widgets.DisplaysHolder;
@@ -63,7 +63,7 @@ public class RWTFactory {
     return ApplicationContextUtil.getInstance().getPhaseListenerRegistry();
   }
   
-  public static ThemeManagerHolder getThemeManager() {
+  public static ThemeManager getThemeManager() {
     return ApplicationContextUtil.getInstance().getThemeManager();
   }
 

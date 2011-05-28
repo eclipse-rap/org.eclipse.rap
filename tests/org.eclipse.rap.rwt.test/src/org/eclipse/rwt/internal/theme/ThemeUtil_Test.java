@@ -16,6 +16,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.engine.ThemeManagerHelper;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
@@ -55,14 +56,14 @@ public class ThemeUtil_Test extends TestCase {
   private void checkCurrentTheme() {
     assertEquals( CUSTOM_THEME_ID, ThemeUtil.getCurrentThemeId() );
     assertNotSame( ThemeUtil.getDefaultTheme(), ThemeUtil.getTheme() );
-    assertSame( ThemeManager.getInstance().getTheme( CUSTOM_THEME_ID ), ThemeUtil.getTheme() );
+    assertSame( RWTFactory.getThemeManager().getTheme( CUSTOM_THEME_ID ), ThemeUtil.getTheme() );
   }
 
   private void registerTheme() throws IOException {
     ThemeManagerHelper.resetThemeManager();
-    ThemeManager manager = ThemeManager.getInstance();
+    ThemeManager manager = RWTFactory.getThemeManager();
     manager.registerTheme( createTheme( CUSTOM_THEME_ID ) );
-    manager.initialize();
+    manager.activate();
   }
 
   private void checkUnknownTheme() {

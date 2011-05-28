@@ -12,6 +12,7 @@
 
 package org.eclipse.rwt.internal.theme;
 
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rwt.service.ISessionStore;
@@ -32,7 +33,7 @@ public final class ThemeUtil {
    * @return an array of the theme ids, never <code>null</code>
    */
   public static String[] getAvailableThemeIds() {
-    return ThemeManager.getInstance().getRegisteredThemeIds();
+    return RWTFactory.getThemeManager().getRegisteredThemeIds();
   }
 
   /**
@@ -57,18 +58,18 @@ public final class ThemeUtil {
    *             registered
    */
   public static void setCurrentThemeId( final String themeId ) {
-    if( !ThemeManager.getInstance().hasTheme( themeId ) ) {
+    if( !RWTFactory.getThemeManager().hasTheme( themeId ) ) {
       throw new IllegalArgumentException( "Illegal theme id: " + themeId );
     }
     ContextProvider.getSession().setAttribute( CURR_THEME_ATTR, themeId );
   }
 
   public static Theme getTheme() {
-    return ThemeManager.getInstance().getTheme( getCurrentThemeId() );
+    return RWTFactory.getThemeManager().getTheme( getCurrentThemeId() );
   }
 
   public static Theme getDefaultTheme() {
-    ThemeManager themeManager = ThemeManager.getInstance();
+    ThemeManager themeManager = RWTFactory.getThemeManager();
     return themeManager.getTheme( ThemeManager.DEFAULT_THEME_ID );
   }
 
