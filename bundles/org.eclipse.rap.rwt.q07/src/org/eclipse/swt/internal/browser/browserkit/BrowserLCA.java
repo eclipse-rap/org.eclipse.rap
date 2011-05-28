@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.EncodingUtil;
@@ -139,7 +138,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   static boolean hasUrlChanged( final Browser browser ) {
     boolean initialized = WidgetUtil.getAdapter( browser ).isInitialized();
-    return !initialized || getAdapter( browser ).getAndResetUrlChanged();
+    return getAdapter( browser ).getAndResetUrlChanged() || !initialized;
   }
 
   static String getUrl( final Browser browser ) throws IOException {

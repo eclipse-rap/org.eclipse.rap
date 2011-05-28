@@ -21,6 +21,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.*;
+import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -93,6 +94,35 @@ public class BrowserLCA_Test extends TestCase {
     browser.setUrl( "http://eclipse.org/rip" );
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     assertEquals( "http://eclipse.org/rip", BrowserLCA.getUrl( browser ) );
+  }
+
+  public void testResetUrlChanged_NotInitialized() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Fixture.markInitialized( display );
+    Browser browser = new Browser( shell, SWT.NONE );
+    browser.setUrl( "http://eclipse.org/rap" );
+    Fixture.fakeResponseWriter();
+
+    BrowserLCA lca = new BrowserLCA();
+    lca.renderChanges( browser );
+
+    assertFalse( getAdapter( browser).getAndResetUrlChanged() );
+  }
+
+  public void testResetUrlChanged_Initialized() throws IOException {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Fixture.markInitialized( display );
+    Browser browser = new Browser( shell, SWT.NONE );
+    Fixture.markInitialized( browser );
+    browser.setUrl( "http://eclipse.org/rap" );
+    Fixture.fakeResponseWriter();
+
+    BrowserLCA lca = new BrowserLCA();
+    lca.renderChanges( browser );
+
+    assertFalse( getAdapter( browser).getAndResetUrlChanged() );
   }
 
   public void testRenderUrl() throws IOException {
@@ -335,6 +365,10 @@ public class BrowserLCA_Test extends TestCase {
     assertEquals( 2, log.size() );
     assertEquals( "changed", log.get( 0 ) );
     assertEquals( "completed", log.get( 1 ) );
+  }
+
+  private static IBrowserAdapter getAdapter( final Browser browser ) {
+    return ( IBrowserAdapter )browser.getAdapter( IBrowserAdapter.class );
   }
 
   protected void setUp() throws Exception {
