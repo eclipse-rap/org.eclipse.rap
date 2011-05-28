@@ -56,7 +56,6 @@ public class ApplicationContext {
   private final InternalImageFactory internalImageFactory;
   private final ImageDataFactory imageDataFactory;
   private final FontDataFactory fontDataFactory;
-  private final StartupPageConfigurer startupPageConfigurer;
   private final StartupPage startupPage;
   private final DisplaysHolder displaysHolder;
   private final ThemeAdapterManager themeAdapterManager;
@@ -81,10 +80,9 @@ public class ApplicationContext {
     fontDataFactory = new FontDataFactory();
     adapterManager = new AdapterManager();
     settingStoreManager = new SettingStoreManager();
-    startupPageConfigurer = new StartupPageConfigurer();
-    startupPage = new StartupPage();
-    serviceManager = new ServiceManager();
     resourceRegistry = new ResourceRegistry();
+    startupPage = new StartupPage( resourceRegistry );
+    serviceManager = createServiceManager();
     displaysHolder = new DisplaysHolder();
     themeAdapterManager = new ThemeAdapterManager();
     jsLibraryConcatenator = new JSLibraryConcatenator();
@@ -203,9 +201,6 @@ public class ApplicationContext {
     return fontDataFactory;
   }
   
-  public StartupPageConfigurer getStartupPageConfigurer() {
-    return startupPageConfigurer;
-  }
   public StartupPage getStartupPage() {
     return startupPage;
   }
@@ -287,5 +282,10 @@ public class ApplicationContext {
     lifeCycleFactory.deactivate();
     serviceManager.deactivate();
     themeManagerHolder.deactivate();
+  }
+  
+
+  private ServiceManager createServiceManager() {
+    return new ServiceManager( new LifeCycleServiceHandler( lifeCycleFactory, startupPage ));
   }
 }

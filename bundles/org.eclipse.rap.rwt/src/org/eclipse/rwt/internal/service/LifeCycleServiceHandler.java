@@ -19,7 +19,6 @@ import javax.servlet.http.*;
 
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.SingletonManager;
-import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.service.IServiceHandler;
@@ -27,14 +26,22 @@ import org.eclipse.rwt.service.ISessionStore;
 
 
 public class LifeCycleServiceHandler implements IServiceHandler {
-
   public static final String RWT_INITIALIZE = "rwt_initialize";
   // TODO [if]: Move this code to a fragment
   private static final String PATTERN_RELOAD
     = "qx.core.Init.getInstance().getApplication().reload( \"{0}\" )";
   static final String SESSION_INITIALIZED
     = LifeCycleServiceHandler.class.getName() + "#isSessionInitialized";
+  
+  private final LifeCycleFactory lifeCycleFactory;
+  private final StartupPage startupPage;
+  
 
+  public LifeCycleServiceHandler( LifeCycleFactory lifeCycleFactory, StartupPage startupPage ) {
+    this.lifeCycleFactory = lifeCycleFactory;
+    this.startupPage = startupPage;
+  }
+  
   public void service() throws IOException {
     synchronized( ContextProvider.getSession() ) {
       synchronizedService();
@@ -63,17 +70,17 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     }
   }
 
-  private static void runLifeCycle() throws IOException {
+  private void runLifeCycle() throws IOException {
     checkRequest();
     initializeSession();
     if( isSessionInitialized() ) {
       RequestParameterBuffer.merge();
-      LifeCycle lifeCycle = ( LifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
+      LifeCycle lifeCycle = ( LifeCycle )lifeCycleFactory.getLifeCycle();
       lifeCycle.execute();
     } else {
       Map parameters = ContextProvider.getRequest().getParameterMap();
       RequestParameterBuffer.store( parameters );
-      RWTFactory.getStartupPage().send();
+      startupPage.send();
     }
   }
 

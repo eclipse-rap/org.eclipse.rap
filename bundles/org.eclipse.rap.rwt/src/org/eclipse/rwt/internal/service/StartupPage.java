@@ -20,9 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
-import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
+import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.util.*;
 
@@ -31,19 +31,22 @@ import org.eclipse.rwt.internal.util.*;
  * A helping class that delivers the initial HTML page in order to bootstrap the client side.
  */
 public final class StartupPage {
+  private final IStartupPageConfigurer configurer;
+  
   public interface IStartupPageConfigurer {
     StartupPageTemplateHolder getTemplate() throws IOException;
     boolean isModifiedSince();
   }
   
-  private IStartupPageConfigurer configurer;
+  public StartupPage( ResourceRegistry resourceRegistry ) {
+    this.configurer = new StartupPageConfigurer( resourceRegistry );
+  }
 
-  void setConfigurer( IStartupPageConfigurer configurer ) {
-    this.configurer = configurer;
+  public IStartupPageConfigurer getConfigurer() {
+    return configurer;
   }
 
   void send() throws IOException {
-    ensureConfigurer();
     if( configurer.isModifiedSince() ) {
       // send out the survey
       render();
@@ -52,12 +55,6 @@ public final class StartupPage {
       if( branding.getThemeId() != null ) {
         ThemeUtil.setCurrentThemeId( branding.getThemeId() );
       }
-    }
-  }
-
-  private void ensureConfigurer() {
-    if( configurer == null ) {
-      configurer = RWTFactory.getStartupPageConfigurer();
     }
   }
 

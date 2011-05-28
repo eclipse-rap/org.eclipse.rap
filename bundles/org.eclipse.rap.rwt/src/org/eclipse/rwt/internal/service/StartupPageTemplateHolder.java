@@ -17,8 +17,8 @@ import org.eclipse.rwt.internal.util.ParamCheck;
 
 
 public final class StartupPageTemplateHolder {
-  
   private static final int[] EMPTY_INDICES = new int[ 0 ];
+  
   private final static String TOKEN_BACKGROUND_IMAGE = "backgroundImage";
   private final static String TOKEN_LIBRARIES = "libraries";
   private final static String TOKEN_APPSCRIPT = "appScript";
@@ -30,30 +30,21 @@ public final class StartupPageTemplateHolder {
   private final static String TOKEN_STARTUP = "startup";
   private final static String TOKEN_NO_SCRIPT_MESSAGE = "noScriptMessage";
 
-  public final static Variable VAR_BACKGROUND_IMAGE
-    = new Variable( TOKEN_BACKGROUND_IMAGE );
-  public final static Variable VAR_LIBRARIES
-    = new Variable( TOKEN_LIBRARIES );
-  public final static Variable VAR_APPSCRIPT
-    = new Variable( TOKEN_APPSCRIPT );
-  public final static Variable VAR_SERVLET
-    = new Variable( TOKEN_SERVLET );
-  public final static Variable VAR_ENTRY_POINT
-    = new Variable( TOKEN_ENTRY_POINT );
-  public final static Variable VAR_BODY
-    = new Variable( TOKEN_BODY );
-  public final static Variable VAR_TITLE
-    = new Variable( TOKEN_TITLE );
-  public final static Variable VAR_HEADERS
-    = new Variable( TOKEN_HEADERS );
-  public final static Variable VAR_STARTUP
-    = new Variable( TOKEN_STARTUP );
-  public final static Variable VAR_NO_SCRIPT_MESSAGE
-    = new Variable( TOKEN_NO_SCRIPT_MESSAGE );
+  public final static Variable VAR_BACKGROUND_IMAGE = new Variable( TOKEN_BACKGROUND_IMAGE );
+  public final static Variable VAR_LIBRARIES = new Variable( TOKEN_LIBRARIES );
+  public final static Variable VAR_APPSCRIPT = new Variable( TOKEN_APPSCRIPT );
+  public final static Variable VAR_SERVLET = new Variable( TOKEN_SERVLET );
+  public final static Variable VAR_ENTRY_POINT = new Variable( TOKEN_ENTRY_POINT );
+  public final static Variable VAR_BODY = new Variable( TOKEN_BODY );
+  public final static Variable VAR_TITLE = new Variable( TOKEN_TITLE );
+  public final static Variable VAR_HEADERS = new Variable( TOKEN_HEADERS );
+  public final static Variable VAR_STARTUP = new Variable( TOKEN_STARTUP );
+  public final static Variable VAR_NO_SCRIPT_MESSAGE = new Variable( TOKEN_NO_SCRIPT_MESSAGE );
 
+  private final String[] tokens;
+  private final Map replacementIndices;
 
   public static final class Variable {
-    
     private final static Map NAMES = new HashMap();
     private final String name;
 
@@ -70,11 +61,6 @@ public final class StartupPageTemplateHolder {
       return "${" + name + "}";
     }
   }
-
-
-  private final String[] tokens;
-  private final Map replacementIndices;
-
 
   public StartupPageTemplateHolder( final String template ) {
     ParamCheck.notNull( template, "template" );

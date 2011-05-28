@@ -104,9 +104,6 @@ public class ApplicationContext_Test extends TestCase {
     assertNotNull( context.getResourceManagerProvider() );
     assertSame( context.getResourceManagerProvider(), context.getResourceManagerProvider() );
     
-    assertNotNull( context.getStartupPageConfigurer() );
-    assertSame( context.getStartupPageConfigurer(), context.getStartupPageConfigurer() );
-    
     assertNotNull( context.getStartupPage() );
     assertSame( context.getStartupPage(), context.getStartupPage() );
     

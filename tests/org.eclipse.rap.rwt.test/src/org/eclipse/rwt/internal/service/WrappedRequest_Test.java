@@ -12,12 +12,12 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
-import java.io.IOException;
 import java.util.*;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.*;
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.TestRequest;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
@@ -26,6 +26,8 @@ import org.eclipse.swt.widgets.Display;
 
 public class WrappedRequest_Test extends TestCase {
   
+  private static final int TOKEN_INDEX_TITLE = 1;
+
   public static final class DefaultEntryPoint implements IEntryPoint {
     public int createUI() {
       Display display = new Display();
@@ -95,22 +97,14 @@ public class WrappedRequest_Test extends TestCase {
   }
   
   public void testStartupRequestWithParameter() throws Exception {
-    StartupPage startupPage = RWTFactory.getStartupPage();
-    startupPage.setConfigurer( new StartupPage.IStartupPageConfigurer() {
-      public StartupPageTemplateHolder getTemplate() throws IOException {
-        return new StartupPageTemplateHolder( "Startup Page" );
-      }
-      public boolean isModifiedSince() {
-        return true;
-      }
-    } );
-
     String p1 = "p1";
     String v1 = "v1";
     Fixture.fakeRequestParam( p1, v1 );
     RWTFactory.getServiceManager().getHandler().service();
     String allMarkup = Fixture.getAllMarkup();
-    assertTrue( allMarkup.indexOf( "Startup Page" ) != -1 );
+    StartupPage startupPage = RWTFactory.getStartupPage();
+    String title = startupPage.getConfigurer().getTemplate().getTokens() [ TOKEN_INDEX_TITLE ];
+    assertTrue( allMarkup.indexOf( title ) != -1 );
     
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, DefaultEntryPoint.class );
     Fixture.fakeRequestParam( p1, null );

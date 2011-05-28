@@ -16,7 +16,6 @@ import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
 import org.eclipse.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
@@ -50,10 +49,6 @@ public class RWTFactory {
 
   public static StartupPage getStartupPage() {
     return ApplicationContextUtil.getInstance().getStartupPage();
-  }
-  
-  public static IStartupPageConfigurer getStartupPageConfigurer() {
-    return ApplicationContextUtil.getInstance().getStartupPageConfigurer();
   }
 
   public static SettingStoreManager getSettingStoreManager() {

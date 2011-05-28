@@ -23,9 +23,10 @@ import org.eclipse.rwt.internal.util.ParamCheck;
 public class BrandingManager {
   public static final String DEFAULT_SERVLET_NAME = "rap";
   public static final String DEFAULT_BRANDING_ID = "org.eclipse.rap.rwt.branding.default";
-
   private static final Header[] EMPTY_HEADERS = new Header[ 0 ];
   private static final String[] EMPTY_ENTRY_POINTS = new String[ 0 ];
+  
+  private final List brandings;
   
   private static final AbstractBranding DEFAULT_BRANDING = new AbstractBranding() {
     public String getBody() {
@@ -56,8 +57,6 @@ public class BrandingManager {
       return "RAP Startup Page";
     }
   };
-  
-  private final List brandings;
 
   public BrandingManager() {
     brandings = new LinkedList();

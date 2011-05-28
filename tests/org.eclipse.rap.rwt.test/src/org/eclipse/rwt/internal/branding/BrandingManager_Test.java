@@ -186,7 +186,7 @@ public class BrandingManager_Test extends TestCase {
     // check precondition
     assertEquals( 0, branding.registerResourcesCallCount );
     // access branding for the first time: registerResources must be called
-    configurer = RWTFactory.getStartupPageConfigurer();
+    configurer = RWTFactory.getStartupPage().getConfigurer();
     configurer.getTemplate();
     assertEquals( 1, branding.registerResourcesCallCount );
     // access branding another time: registerResources must *not* be called

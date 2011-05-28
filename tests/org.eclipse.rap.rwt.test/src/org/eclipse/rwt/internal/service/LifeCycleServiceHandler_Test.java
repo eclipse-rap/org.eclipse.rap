@@ -21,6 +21,8 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
@@ -38,6 +40,11 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   private StringBuffer log = new StringBuffer();
 
   private class TestHandler extends LifeCycleServiceHandler {
+    
+    public TestHandler( LifeCycleFactory lifeCycleFactory, StartupPage startupPage ) {
+      super( lifeCycleFactory, startupPage );
+    }
+
     void synchronizedService() {
       log.append( ENTER );
       try {
@@ -78,7 +85,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     ContextProvider.getSession();
     ServiceContext context = ContextProvider.getContext();
     for( int i = 0; i < THREAD_COUNT; i++ ) {
-      IServiceHandler syncHandler = new TestHandler();
+      IServiceHandler syncHandler = new TestHandler( getLifeCycleFactory(), getStartupPage() );
       Thread thread = new Thread( new Worker( context, syncHandler ) );
       thread.setDaemon( true );
       thread.start();
@@ -122,19 +129,26 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     assertFalse( versionAfterRestart.equals( versionForNextRequest ) );
   }
 
-  protected void setUp() throws Exception {
+  protected void setUp() {
     Fixture.setUp();
-    Fixture.fakeResponseWriter();
   }
   
-  protected void tearDown() throws Exception {
+  protected void tearDown() {
     Fixture.tearDown();
   }
 
-  private static void simulateSessionRestart() throws IOException {
+  private void simulateSessionRestart() throws IOException {
     Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
     ISessionStore session = ContextProvider.getSession();
     session.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED, Boolean.TRUE );
-    new LifeCycleServiceHandler().service();
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+  }
+
+  private StartupPage getStartupPage() {
+    return RWTFactory.getStartupPage();
+  }
+
+  private LifeCycleFactory getLifeCycleFactory() {
+    return RWTFactory.getLifeCycleFactory();
   }
 }

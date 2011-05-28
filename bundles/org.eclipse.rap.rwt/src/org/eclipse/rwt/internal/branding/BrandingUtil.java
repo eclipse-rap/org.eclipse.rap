@@ -51,9 +51,9 @@ public final class BrandingUtil {
     HttpServletRequest request = ContextProvider.getRequest();
     String servletName = URLHelper.getServletName();
     String entryPoint = request.getParameter( RequestParams.STARTUP );
-    AbstractBranding branding = RWTFactory.getBrandingManager().find( servletName, entryPoint );
-    RWT.getSessionStore().setAttribute( ATTR_BRANDING_ID, branding.getId() );
-    return branding;
+    AbstractBranding result = RWTFactory.getBrandingManager().find( servletName, entryPoint );
+    RWT.getSessionStore().setAttribute( ATTR_BRANDING_ID, result.getId() );
+    return result;
   }
   
   /**

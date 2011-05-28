@@ -53,7 +53,7 @@ public class RWTDelegate extends HttpServlet {
   }
 
   public String getServletInfo() {
-    return "RAP Servlet Delegate";
+    return "RWT Servlet";
   }
 
   //////////////////

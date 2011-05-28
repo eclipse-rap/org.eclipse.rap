@@ -24,9 +24,9 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
-import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
+import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
 import org.eclipse.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
@@ -36,22 +36,23 @@ import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager;
 
 
-public final class StartupPageConfigurer implements IStartupPageConfigurer {
-
+final class StartupPageConfigurer implements IStartupPageConfigurer {
   private static final String PACKAGE_NAME 
     = StartupPageConfigurer.class.getPackage().getName();
   private final static String FOLDER = PACKAGE_NAME.replace( '.', '/' );
   private final static String INDEX_TEMPLATE = FOLDER + "/rwt-index.html";
   
+  private final List registeredBrandings;
+  private final ResourceRegistry resourceRegistry;
   // TODO [fappel]: think about clusters cache control variables
   private int probeCount;
   private long lastModified;
   private StartupPageTemplateHolder template;
-  private final List registeredBrandings;
   
-  public StartupPageConfigurer() {
-    lastModified = System.currentTimeMillis();
-    registeredBrandings = new LinkedList();
+  StartupPageConfigurer( ResourceRegistry resourceRegistry ) {
+    this.resourceRegistry = resourceRegistry;
+    this.lastModified = System.currentTimeMillis();
+    this.registeredBrandings = new LinkedList();
   }
   
   ////////////////////////////////////////////////////
@@ -214,9 +215,9 @@ public final class StartupPageConfigurer implements IStartupPageConfigurer {
     }
   }
 
-  private static String getJsLibraries() {
+  private String getJsLibraries() {
     StringBuffer buffer = new StringBuffer();
-    IResource[] resources = RWTFactory.getResourceRegistry().get();
+    IResource[] resources = resourceRegistry.get();
     for( int i = 0; i < resources.length; i++ ) {
       if( resources[ i ].isExternal() && resources[ i ].isJSLibrary() ) {
         writeScriptTag( buffer, resources[ i ].getLocation() );

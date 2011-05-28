@@ -24,7 +24,7 @@ import org.eclipse.rwt.service.IServiceManager;
 public class ServiceManager implements IServiceManager {
   private final ServiceHandlerRegistry customHandlers;
   private final IServiceHandler handlerDispatcher;
-  private IServiceHandler lifeCycleRequestHandler;
+  private final IServiceHandler lifeCycleRequestHandler;
   
   private final class HandlerDispatcher implements IServiceHandler {
     public void service() throws ServletException, IOException {
@@ -37,9 +37,10 @@ public class ServiceManager implements IServiceManager {
     }
   }
   
-  public ServiceManager() {
-    handlerDispatcher = new HandlerDispatcher();
-    customHandlers = new ServiceHandlerRegistry();
+  public ServiceManager( IServiceHandler lifeCycleRequestHandler ) {
+    this.lifeCycleRequestHandler = lifeCycleRequestHandler;
+    this.customHandlers = new ServiceHandlerRegistry();
+    this.handlerDispatcher = new HandlerDispatcher();
   }
   
   public void registerServiceHandler( String id, IServiceHandler handler ) {
@@ -71,9 +72,6 @@ public class ServiceManager implements IServiceManager {
   }
   
   private IServiceHandler getLifeCycleRequestHandler() {
-    if( lifeCycleRequestHandler == null ) {
-      lifeCycleRequestHandler = new LifeCycleServiceHandler();
-    }
     return lifeCycleRequestHandler;
   }
 

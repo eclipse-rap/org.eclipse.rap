@@ -28,7 +28,7 @@ public class ServiceManagerConfigurable_Test extends TestCase {
 
   private class TestApplicationContext extends ApplicationContext {
     public ServiceManager getServiceManager() {
-      return new ServiceManager() {
+      return new ServiceManager( null ) {
         public void registerServiceHandler( String id, IServiceHandler handler ) {
           log.put( id, handler );
         }
