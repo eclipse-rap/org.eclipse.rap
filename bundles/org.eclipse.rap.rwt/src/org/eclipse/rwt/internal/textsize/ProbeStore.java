@@ -13,23 +13,23 @@ package org.eclipse.rwt.internal.textsize;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.graphics.FontData;
 
 
 public class ProbeStore {
-  private final Map probes; 
+  private final Map probes;
+  private final TextSizeStorage textSizeStorage; 
   
-  public ProbeStore() {
-    probes = new HashMap();
+  public ProbeStore( TextSizeStorage textSizeStorage ) {
+    this.textSizeStorage = textSizeStorage;
+    this.probes = new HashMap();
   }
   
   Probe[] getProbes() {
     Probe[] result;
     synchronized( probes ) {
       if( probes.isEmpty() ) {
-        // TODO [rh] store TextSizeStorageRegistry in a field and initialize it during configuration
-        FontData[] fontList = RWTFactory.getTextSizeStorage().getFontList();
+        FontData[] fontList = textSizeStorage.getFontList();
         for( int i = 0; i < fontList.length; i++ ) {
           createProbe( fontList[ i ] );
         }
@@ -45,7 +45,7 @@ public class ProbeStore {
     synchronized( probes ) {
       probes.put( fontData, result );
     }
-    RWTFactory.getTextSizeStorage().storeFont( fontData );
+    textSizeStorage.storeFont( fontData );
     return result;
   }
   

@@ -87,7 +87,7 @@ public class ApplicationContext {
     themeAdapterManager = new ThemeAdapterManager();
     jsLibraryConcatenator = new JSLibraryConcatenator();
     textSizeStorage = new TextSizeStorage();
-    probeStore = new ProbeStore();
+    probeStore = new ProbeStore( textSizeStorage );
     configurables = new HashSet();
   }
 

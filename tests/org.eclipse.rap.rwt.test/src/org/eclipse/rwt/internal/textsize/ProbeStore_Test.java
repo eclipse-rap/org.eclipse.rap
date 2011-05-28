@@ -12,8 +12,6 @@ package org.eclipse.rwt.internal.textsize;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
@@ -22,6 +20,7 @@ public class ProbeStore_Test extends TestCase {
   private static final FontData FONT_DATA = new FontData( "arial", 23, SWT.BOLD );
   
   private ProbeStore probeStore;
+  private TextSizeStorage textSizeStorage;
 
   public void testInitialSize() {
     assertEquals( 0, probeStore.getSize() );
@@ -50,7 +49,7 @@ public class ProbeStore_Test extends TestCase {
   }
   
   public void testGetProbesFromGlobalStorage() {
-    RWTFactory.getTextSizeStorage().storeFont( FONT_DATA );
+    textSizeStorage.storeFont( FONT_DATA );
 
     Probe[] probes = probeStore.getProbes();
     
@@ -59,12 +58,8 @@ public class ProbeStore_Test extends TestCase {
   }
   
   protected void setUp() {
-    Fixture.setUp();
-    probeStore = new ProbeStore();
-  }
-  
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    textSizeStorage = new TextSizeStorage();
+    probeStore = new ProbeStore( textSizeStorage );
   }
   
   private Probe createProbe() {
