@@ -16,74 +16,63 @@ import junit.framework.TestCase;
 
 
 public class JSLibraryConcatenator_Test extends TestCase {
+  private static final char CHARACTER = 'a';
   
+  private JSLibraryConcatenator concatenator;
+
   public void testConcatenation() {
-    char character = 'a';
-    JSLibraryConcatenator concatenator = new JSLibraryConcatenator();
+    appendAndActivate( new File( "library.js"), new byte[] { ( byte )CHARACTER } );
 
-    concatenator.startJSConcatenation();
-    concatenator.appendJSLibrary( new File( "library.js"), new byte[] { ( byte )character } );
-
-    assertEquals( concatenator.getUncompressed()[ 0 ], character );
+    assertEquals( concatenator.getUncompressed()[ 0 ], CHARACTER );
     assertEquals( concatenator.getUncompressed()[ 1 ], '\n' );
     assertEquals( 2, concatenator.getUncompressed().length );
     assertNotNull( concatenator.getHashCode() );
     assertNotNull( concatenator.getCompressed() );
   }
 
-  public void testIgnoreConcatenation() {
-    JSLibraryConcatenator concatenator = new JSLibraryConcatenator();
+  public void testActivate() {
+    appendAndActivate( new File( "library.js"), new byte[] { ( byte )CHARACTER } );
+    concatenator.deactivate();
+    
+    assertNull( concatenator.getUncompressed() );
+    assertNull( concatenator.getHashCode() );
+    assertNull( concatenator.getCompressed() );
+  }
 
-    concatenator.appendJSLibrary( new File( "library.js"), new byte[] { 'a' } );
+  public void testIgnoreConcatenation() {
+    concatenator.appendJSLibrary( new File( "library.js" ), new byte[] { CHARACTER } );
+    concatenator.activate();
     
     assertEquals( 0, concatenator.getUncompressed().length );
   }
   
   public void testEmptyFileContent() {
-    JSLibraryConcatenator concatenator = new JSLibraryConcatenator();
-    
-    concatenator.startJSConcatenation();
-    concatenator.appendJSLibrary( new File( "library.js"), new byte[ 0 ] );
+    appendAndActivate( new File( "library.js"), new byte[ 0 ] );
     
     assertEquals( 0, concatenator.getUncompressed().length );
   }
   
   public void testIgnoreNonJSFiles() {
-    JSLibraryConcatenator concatenator = new JSLibraryConcatenator();
-    
-    concatenator.startJSConcatenation();
-    concatenator.appendJSLibrary( new File( "content.html"), new byte[] { 'a' } );
+    appendAndActivate( new File( "content.html"), new byte[] { CHARACTER } );
     
     assertEquals( 0, concatenator.getUncompressed().length );    
   }
   
-  public void testIgnoreAppendJSLibraryAfterGetHashCode() {
-    JSLibraryConcatenator concatenator = new JSLibraryConcatenator();
-    
+  public void testIgnoreAppendJSLibraryAfterFinishJSConcatenation() {
     concatenator.startJSConcatenation();
-    concatenator.getHashCode();
-    concatenator.appendJSLibrary( new File( "content.js"), new byte[] { 'a' } );
-    
-    assertEquals( 0, concatenator.getUncompressed().length );        
-  }
-
-  public void testIgnoreAppendJSLibraryAfterGetCompressed() {
-    JSLibraryConcatenator concatenator = new JSLibraryConcatenator();
-    
-    concatenator.startJSConcatenation();
-    concatenator.getCompressed();
+    concatenator.activate();
     concatenator.appendJSLibrary( new File( "content.js"), new byte[] { 'a' } );
     
     assertEquals( 0, concatenator.getUncompressed().length );        
   }
   
-  public void testIgnoreAppendJSLibraryAfterGetUncompressed() {
-    JSLibraryConcatenator concatenator = new JSLibraryConcatenator();
-    
+  protected void setUp() {
+    concatenator = new JSLibraryConcatenator();
+  }
+
+  private void appendAndActivate( File toWrite, byte[] content ) {
     concatenator.startJSConcatenation();
-    concatenator.getUncompressed();
-    concatenator.appendJSLibrary( new File( "content.js"), new byte[] { 'a' } );
-    
-    assertEquals( 0, concatenator.getUncompressed().length );        
+    concatenator.appendJSLibrary( toWrite, content );
+    concatenator.activate();
   }
 }

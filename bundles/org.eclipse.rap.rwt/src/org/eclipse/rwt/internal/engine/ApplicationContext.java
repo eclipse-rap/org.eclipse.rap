@@ -267,7 +267,7 @@ public class ApplicationContext {
       DisplayLCAFacade.registerResources();
     }
     themeManager.activate();
-    jsLibraryConcatenator.finishJSConcatenation();
+    jsLibraryConcatenator.activate();
   }
   
   private void deactivateInstances() {
@@ -279,6 +279,8 @@ public class ApplicationContext {
   }
 
   private void doDeactivateInstances() {
+    // TODO [SystemStart]: Unit testing
+    jsLibraryConcatenator.deactivate();
     lifeCycleFactory.deactivate();
     serviceManager.deactivate();
     themeManager.deactivate();

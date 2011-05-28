@@ -13,7 +13,6 @@ package org.eclipse.rwt.internal.resources;
 import java.io.*;
 import java.util.zip.GZIPOutputStream;
 
-import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.internal.util.StreamWritingUtil;
 
@@ -29,22 +28,15 @@ public class JSLibraryConcatenator {
     content = "";
   }
 
-  public static JSLibraryConcatenator getInstance() {
-    return RWTFactory.getJSLibraryConcatenator();
-  }
-
   public String getHashCode() {
-    finishJSConcatenation();
     return hashCode;
   }
 
   public byte[] getCompressed() {
-    finishJSConcatenation();
     return compressed;
   }
 
   public byte[] getUncompressed() {
-    finishJSConcatenation();
     return uncompressed;
   }
 
@@ -75,8 +67,7 @@ public class JSLibraryConcatenator {
     }
   }
 
-  // TODO [SystemStart]: use this method explicitly instead of beeing lazy invoked on first access
-  public void finishJSConcatenation() {
+  public void activate() {
     try {
       initialize();
     } catch( RuntimeException rte ) {
@@ -84,6 +75,14 @@ public class JSLibraryConcatenator {
     } catch( Exception shouldNotHappen ) {
       throw new RuntimeException( shouldNotHappen );
     }
+  }
+  
+  public void deactivate() {
+    jsConcatenator = null;
+    hashCode = null;
+    compressed = null;
+    uncompressed = null;
+    content = null;
   }
   
   //////////////////
