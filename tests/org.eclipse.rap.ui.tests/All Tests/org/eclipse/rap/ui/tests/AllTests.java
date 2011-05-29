@@ -27,7 +27,7 @@ public class AllTests {
       suite.addTest( new org.eclipse.jface.tests.AllTests() );
       // RAP UI Tests
       suite.addTestSuite( ServiceHandlerExtensionTest.class );
-      suite.addTestSuite( EngineConfigWrapperTest.class );
+      suite.addTestSuite( RWTConfigurationWrapper.class );
       // RAP JFace Tests
       suite.addTestSuite( Bug264226TableViewerTest.class );
       // Cleanup

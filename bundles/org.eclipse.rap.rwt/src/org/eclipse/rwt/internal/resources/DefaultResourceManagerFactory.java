@@ -11,13 +11,19 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
+import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
 
 
 public final class DefaultResourceManagerFactory implements IResourceManagerFactory {
+  private RWTConfiguration configuration;
+
+  public void setConfiguration( RWTConfiguration configuration ) {
+    this.configuration = configuration;
+  }
 
   public IResourceManager create() {
-    return ResourceManagerImpl.createInstance();
+    return new ResourceManagerImpl( configuration );
   }
 }

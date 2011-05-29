@@ -16,7 +16,7 @@ import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
 
 
-public final class ResourceManagerProvider {
+public class ResourceManagerProvider {
   private IResourceManagerFactory factory;
   private IResourceManager instance;
   

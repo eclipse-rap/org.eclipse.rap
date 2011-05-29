@@ -23,8 +23,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
 
-class AdapterManagerConfigurable implements Configurable {
-  static final String ADAPTER_FACTORIES_PARAM = "org.eclipse.rwt.adapterFactories";
+public class AdapterManagerConfigurable implements Configurable {
+  public static final String ADAPTER_FACTORIES_PARAM = "org.eclipse.rwt.adapterFactories";
 
   private final ServletContext servletContext;
   

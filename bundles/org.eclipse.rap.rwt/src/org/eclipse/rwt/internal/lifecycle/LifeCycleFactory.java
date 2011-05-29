@@ -12,20 +12,20 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import org.eclipse.rwt.internal.ConfigurationReader;
+import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 
 
 public class LifeCycleFactory {
-  private final ConfigurationReader configurationReader;
+  private final RWTConfiguration configuration;
   private LifeCycle lifeCycle;
 
   
-  public LifeCycleFactory( ConfigurationReader configurationReader ) {
-    ParamCheck.notNull( configurationReader, "configurationReader" );
-    this.configurationReader = configurationReader;
+  public LifeCycleFactory( RWTConfiguration configuration ) {
+    ParamCheck.notNull( configuration, "configuratino" );
+    this.configuration = configuration;
   }
   public ILifeCycle getLifeCycle() {
     return lifeCycle;
@@ -49,6 +49,6 @@ public class LifeCycleFactory {
   }
   
   private String getLifeCycleClassName() {
-    return configurationReader.getConfiguration().getLifeCycle();
+    return configuration.getLifeCycle();
   }
 }

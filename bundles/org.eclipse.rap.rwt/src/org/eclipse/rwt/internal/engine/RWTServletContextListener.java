@@ -40,7 +40,7 @@ public class RWTServletContextListener implements ServletContextListener {
   
   protected Configurable[] createConfigurables( ServletContext servletContext ) {
     Configurable[] result = new Configurable[] {
-      new ConfigurationReaderConfigurable( servletContext ),
+      new RWTConfigurationConfigurable( servletContext ),
       new ResourceManagerProviderConfigurable( servletContext ),
       new EntryPointManagerConfigurable( servletContext ),
       new BrandingManagerConfigurable( servletContext ),

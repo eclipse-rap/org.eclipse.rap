@@ -11,17 +11,13 @@
 
 package org.eclipse.rap.ui.tests;
 
-import org.eclipse.rap.ui.tests.resources.Resource1;
-import org.eclipse.rap.ui.tests.resources.Resource2;
-import org.eclipse.rap.ui.tests.resources.Resource3;
-import org.eclipse.rap.ui.tests.resources.Resource4;
-import org.eclipse.rap.ui.tests.resources.Resource5;
+import junit.framework.TestCase;
+
+import org.eclipse.rap.ui.tests.resources.*;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.resources.IResource;
 
-import junit.framework.TestCase;
-
-public class EngineConfigWrapperTest extends TestCase {
+public class RWTConfigurationWrapper extends TestCase {
   
   public void testRegisterResourcesWithDependencies() {
     IResource[] resources = RWTFactory.getResourceRegistry().get();
@@ -49,5 +45,4 @@ public class EngineConfigWrapperTest extends TestCase {
     assertTrue( resource3Index < resource2Index );
     assertTrue( resource2Index < resource1Index );
   }
-
 }

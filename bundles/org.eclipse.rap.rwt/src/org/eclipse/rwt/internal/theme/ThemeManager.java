@@ -101,6 +101,8 @@ public class ThemeManager {
   private final Set registeredThemeFiles;
   private final ThemeableWidgetHolder themeableWidgets;
   private final CssElementHolder registeredCssElements;
+  private final ThemeAdapterManager themeAdapterManager;
+  private final Map resolvedPackageNames; // only for performance improvements
   private Theme defaultTheme;
   private boolean initialized;
   private boolean widgetsInitialized;
@@ -112,7 +114,9 @@ public class ThemeManager {
     customAppearances = new HashSet();
     registeredThemeFiles = new HashSet();
     registeredCssElements = new CssElementHolder();
+    themeAdapterManager = new ThemeAdapterManager();
     themes = new HashMap();
+    resolvedPackageNames = new HashMap();
   }
 
   public void activate() {
@@ -121,7 +125,9 @@ public class ThemeManager {
   }
 
   public void deactivate() {
+    resolvedPackageNames.clear();
     themes.clear();
+    themeAdapterManager.reset();
     registeredCssElements.clear();
     registeredThemeFiles.clear();
     customAppearances.clear();
@@ -185,6 +191,11 @@ public class ThemeManager {
       throw new IllegalArgumentException( message );
     }
     themeableWidgets.add( new ThemeableWidget( widget, loader ) );
+  }
+  
+
+  public ThemeAdapterManager getThemeAdapterManager() {
+    return themeAdapterManager;
   }
 
   /**
@@ -319,15 +330,14 @@ public class ThemeManager {
     throws IOException
   {
     boolean result = false;
-    String resPkgName = pkgName.replace( '.', '/' );
+    String resPkgName = resolvePackageName( pkgName );
     String fileName = resPkgName + "/" + className + ".theme.xml";
     InputStream inStream = themeWidget.loader.getResourceAsStream( fileName );
     if( inStream != null ) {
       log( "Found theme definition file: " +  fileName );
       result = true;
       try {
-        ThemeDefinitionReader reader
-          = new ThemeDefinitionReader( inStream, fileName );
+        ThemeDefinitionReader reader = new ThemeDefinitionReader( inStream, fileName );
         reader.read();
         themeWidget.elements = reader.getThemeCssElements();
         for( int i = 0; i < themeWidget.elements.length; i++ ) {
@@ -342,12 +352,21 @@ public class ThemeManager {
     }
     return result;
   }
+  
+  private String resolvePackageName( String packageName ) {
+    String result = ( String )resolvedPackageNames.get( packageName );
+    if( result == null ) {
+      result =  packageName.replace( '.', '/' );
+      resolvedPackageNames.put( packageName, result );
+    }
+    return result;
+  }
 
   private boolean loadAppearanceJs( ThemeableWidget themeWidget, String pkgName, String className )
     throws IOException
   {
     boolean result = false;
-    String resPkgName = pkgName.replace( '.', '/' );
+    String resPkgName = resolvePackageName( pkgName );
     String fileName = resPkgName + "/" + className + ".appearances.js";
     InputStream inStream = themeWidget.loader.getResourceAsStream( fileName );
     if( inStream != null ) {
@@ -367,7 +386,7 @@ public class ThemeManager {
     throws IOException
   {
     boolean result = false;
-    String resPkgName = pkgName.replace( '.', '/' );
+    String resPkgName = resolvePackageName( pkgName );
     String fileName = resPkgName + "/" + className + ".default.css";
     ResourceLoader resLoader = themeWidget.loader;
     InputStream inStream = resLoader.getResourceAsStream( fileName );
@@ -408,7 +427,7 @@ public class ThemeManager {
         log( "-- REGISTERED THEME CODE FOR " + themeId + " ( " + themeCode.length() + " )--" );
         log( themeCode );
         log( "-- END REGISTERED THEME CODE --" );
-        String name = jsId.replace( '.', '/' ) + ".js";
+        String name = resolvePackageName( jsId ) + ".js";
         registerJsLibrary( name, themeCode, compress );
         registeredThemeFiles.add( themeId );
       }

@@ -32,6 +32,7 @@ public class ResourceManagerProviderConfigurable implements Configurable {
   
   public void configure( ApplicationContext context ) {
     IResourceManagerFactory factory = createFactory();
+    applyConfiguration( factory, context );
     context.getResourceManagerProvider().registerFactory( factory );
   }
 
@@ -59,5 +60,13 @@ public class ResourceManagerProviderConfigurable implements Configurable {
       throw new IllegalArgumentException( msg );
     }
     return result;
+  }
+  
+
+  private void applyConfiguration( IResourceManagerFactory factory, ApplicationContext context ) {
+    if( factory instanceof DefaultResourceManagerFactory ) {
+      DefaultResourceManagerFactory defaultFactory = ( DefaultResourceManagerFactory )factory;
+      defaultFactory.setConfiguration( context.getConfiguration() );
+    }
   }
 }

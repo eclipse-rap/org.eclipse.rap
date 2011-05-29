@@ -60,8 +60,8 @@ public class RWTFactory_Test extends TestCase {
     assertNotNull( RWTFactory.getResourceRegistry() );
     assertSame( RWTFactory.getResourceRegistry(), RWTFactory.getResourceRegistry() );
     
-    assertNotNull( RWTFactory.getConfigurationReader() );
-    assertSame( RWTFactory.getConfigurationReader(), RWTFactory.getConfigurationReader() );
+    assertNotNull( RWTFactory.getConfiguration() );
+    assertSame( RWTFactory.getConfiguration(), RWTFactory.getConfiguration() );
     
     assertNotNull( RWTFactory.getResourceManagerProvider() );
     assertSame( RWTFactory.getResourceManagerProvider(), RWTFactory.getResourceManagerProvider() );
@@ -71,9 +71,6 @@ public class RWTFactory_Test extends TestCase {
     
     assertNotNull( RWTFactory.getDisplaysHolder() );
     assertSame( RWTFactory.getDisplaysHolder(), RWTFactory.getDisplaysHolder() );
-    
-    assertNotNull( RWTFactory.getThemeAdapterManager() );
-    assertSame( RWTFactory.getThemeAdapterManager(), RWTFactory.getThemeAdapterManager() );
     
     assertNotNull( RWTFactory.getJSLibraryConcatenator() );
     assertSame( RWTFactory.getJSLibraryConcatenator(), RWTFactory.getJSLibraryConcatenator() );

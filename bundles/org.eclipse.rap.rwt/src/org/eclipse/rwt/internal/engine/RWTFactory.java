@@ -11,14 +11,12 @@
 package org.eclipse.rwt.internal.engine;
 
 import org.eclipse.rwt.internal.AdapterManager;
-import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rwt.internal.textsize.TextSizeStorage;
-import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.service.IApplicationStore;
 import org.eclipse.swt.internal.graphics.*;
@@ -55,8 +53,8 @@ public class RWTFactory {
     return ApplicationContextUtil.getInstance().getSettingStoreManager();
   }
   
-  public static ConfigurationReader getConfigurationReader() {
-    return ApplicationContextUtil.getInstance().getConfigurationReader();
+  public static RWTConfiguration getConfiguration() {
+    return ApplicationContextUtil.getInstance().getConfiguration();
   }
 
   public static PhaseListenerRegistry getPhaseListenerRegistry() {
@@ -65,10 +63,6 @@ public class RWTFactory {
   
   public static ThemeManager getThemeManager() {
     return ApplicationContextUtil.getInstance().getThemeManager();
-  }
-
-  public static ThemeAdapterManager getThemeAdapterManager() {
-    return ApplicationContextUtil.getInstance().getThemeAdapterManager();
   }
 
   public static TextSizeStorage getTextSizeStorage() {

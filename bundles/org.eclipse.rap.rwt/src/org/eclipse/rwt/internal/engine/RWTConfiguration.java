@@ -6,32 +6,40 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Innoopract Informationssysteme GmbH - initial API and implementation
- *    EclipseSource - ongoing implementation
- *    Frank Appel - replaced singletons and static fields (Bug 337787)
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal;
+package org.eclipse.rwt.internal.engine;
+
+import java.io.File;
 
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 
-/** 
- * <p>This interface provides access to the W4 Toolkit configuration
- * settings.</p>
- * <p>This interface is not intended to be implemented by clients.</p>
- */
-public interface IConfiguration {
 
+public interface RWTConfiguration {
   public static final String PARAM_LIFE_CYCLE = "lifecycle";
   public static final String PARAM_RESOURCES = "resources";
-
   public static final String LIFE_CYCLE_DEFAULT = RWTLifeCycle.class.getName();
-
   public static final String RESOURCES_DELIVER_FROM_DISK = "deliverFromDisk";
   public static final String RESOURCES_DELIVER_BY_SERVLET = "deliverByServlet";
 
   /**
-   * specifies the implementation class that manages the lifecycle of each
-   * request.
+   * returns the path to the web application context on disk 
+   */
+  File getContextDirectory();
+
+  /**
+   * returns the path to the lib directory of the web application context 
+   */
+  File getLibraryDirectory();
+
+  /**
+   * returns the path to the class directory of the web application context 
+   */
+  File getClassDirectory();
+
+  /**
+   * returns the fully qualified class name that manages the lifecycle of each request.
    */
   String getLifeCycle();
 
@@ -44,5 +52,5 @@ public interface IConfiguration {
    * Can be <code>RESOURCES_DELIVER_FROM_DISK</code> or 
    * <code>RESOURCES_DELIVER_BY_SERVLET</code>.
    */
-  String getResources();
+  String getResourcesDeliveryMode();
 }

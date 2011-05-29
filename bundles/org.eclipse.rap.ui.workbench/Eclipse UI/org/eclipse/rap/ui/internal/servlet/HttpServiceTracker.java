@@ -167,10 +167,10 @@ public class HttpServiceTracker extends ServiceTracker {
 
   private void registerResourceDir( HttpService httpService,
                                     HttpContext httpContext,
-                                    ApplicationContext rwtContext )
+                                    ApplicationContext applicationContext )
   {
     if( httpService != null ) {
-      String contextRoot = getContextRoot( rwtContext );
+      String contextRoot = getContextRoot( applicationContext );
       String location = contextRoot + "/" + ResourceManagerImpl.RESOURCES;
       try {
         httpService.registerResources( "/" + resourceAlias, location, httpContext );
@@ -218,7 +218,7 @@ public class HttpServiceTracker extends ServiceTracker {
     ApplicationContext result = new ApplicationContext();
     result.addConfigurable( new Configurable() {
       public void configure( ApplicationContext context ) {
-        new EngineConfigWrapper( context );
+        new RWTConfigurationWrapper( context );
       }
 
       public void reset( ApplicationContext context ) {
@@ -228,12 +228,12 @@ public class HttpServiceTracker extends ServiceTracker {
     return result;
   }
 
-  private static String getContextRoot( ApplicationContext rwtContext ) {
+  private static String getContextRoot( ApplicationContext applicationContext ) {
     final String[] result = new String[ 1 ];
-    ApplicationContextUtil.runWith( rwtContext, new Runnable() {
+    ApplicationContextUtil.runWith( applicationContext, new Runnable() {
       public void run() {
-        IEngineConfig engineConfig = RWTFactory.getConfigurationReader().getEngineConfig();
-		String contextRoot = engineConfig.getServerContextDir().toString();
+        RWTConfiguration configuration = RWTFactory.getConfiguration();
+		String contextRoot = configuration.getContextDirectory().toString();
         result[ 0 ] = ( new Path( contextRoot ) ).toString();
       }
     } );

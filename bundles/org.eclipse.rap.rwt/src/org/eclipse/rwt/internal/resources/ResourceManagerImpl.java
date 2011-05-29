@@ -17,8 +17,8 @@ import java.net.*;
 import java.text.MessageFormat;
 import java.util.*;
 
-import org.eclipse.rwt.internal.ConfigurationReader;
-import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rwt.internal.engine.RWTConfiguration;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.internal.util.URLHelper;
@@ -69,10 +69,9 @@ public class ResourceManagerImpl implements IResourceManager {
 
   private final Map repository;
   private final Map cache;
-  private String webAppRoot;
+  private final RWTConfiguration configuration;
   private ClassLoader loader;
   private ThreadLocal contextLoader;
-  private String deliveryMode = DELIVER_BY_SERVLET;
 
   private static final class Resource {
 
@@ -104,20 +103,11 @@ public class ResourceManagerImpl implements IResourceManager {
     }
   }
 
-  public ResourceManagerImpl() {
-    repository = new Hashtable();
-    cache = new Hashtable();
-    contextLoader = new ThreadLocal();
-  }
-
-  static IResourceManager createInstance() {
-    ResourceManagerImpl result = new ResourceManagerImpl();
-    ConfigurationReader configurationReader = RWTFactory.getConfigurationReader();
-    String resources = configurationReader.getConfiguration().getResources();
-    File servletContextDir = configurationReader.getEngineConfig().getServerContextDir();
-    result.webAppRoot = servletContextDir.toString();
-    result.deliveryMode = resources;
-    return result;
+  public ResourceManagerImpl( RWTConfiguration configuration ) {
+    this.configuration = configuration;
+    this.repository = new Hashtable();
+    this.cache = new Hashtable();
+    this.contextLoader = new ThreadLocal();
   }
 
   /**
@@ -167,7 +157,7 @@ public class ResourceManagerImpl implements IResourceManager {
   /** <p>returns whether the application runs in the mode specified by the
     * passed String.</p> */
   public boolean isDeliveryMode( String deliveryMode ) {
-    return this.deliveryMode.equals( deliveryMode );
+    return configuration.getResourcesDeliveryMode().equals( deliveryMode );
   }
 
   /////////////////////////////
@@ -316,10 +306,8 @@ public class ResourceManagerImpl implements IResourceManager {
     {
       result = getContextLoader();
     } else if( loader == null ) {
-      IEngineConfig engineConfig = RWTFactory.getConfigurationReader().getEngineConfig();
-      List buffer = WebAppURLs.getWebAppURLs( engineConfig );
-      URL[] urls = new URL[ buffer.size() ];
-      buffer.toArray( urls );
+      RWTConfiguration configuration = RWTFactory.getConfiguration();
+      URL[] urls = new ContextURLs( configuration ).get();
       ClassLoader parent = getClass().getClassLoader();
       loader = new URLClassLoader( urls, parent );
       result = loader;
@@ -452,7 +440,7 @@ public class ResourceManagerImpl implements IResourceManager {
 
   private File getDiskLocation( String name, Integer version ) {
     StringBuffer filename = new StringBuffer();
-    filename.append( webAppRoot );
+    filename.append( configuration.getContextDirectory().toString() );
     filename.append( File.separator );
     filename.append( RESOURCES );
     filename.append( File.separator );

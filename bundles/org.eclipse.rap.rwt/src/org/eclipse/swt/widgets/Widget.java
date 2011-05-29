@@ -173,7 +173,7 @@ public abstract class Widget implements Adaptable {
     } else if( adapter == IThemeAdapter.class ) {
       // This also bypasses the AdapterManager for the sake of performance.
       // ThemeAdapters are requested frequently during size computations.
-      result = RWTFactory.getThemeAdapterManager().getThemeAdapter( this );
+      result = RWTFactory.getThemeManager().getThemeAdapterManager().getThemeAdapter( this );
     } else if( adapter == IWidgetGraphicsAdapter.class ) {
       if( widgetGraphicsAdapter == null ) {
         widgetGraphicsAdapter = new WidgetGraphicsAdapter();

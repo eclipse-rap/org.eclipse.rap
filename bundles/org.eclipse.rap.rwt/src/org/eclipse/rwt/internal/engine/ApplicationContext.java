@@ -14,14 +14,12 @@ package org.eclipse.rwt.internal.engine;
 import java.util.*;
 
 import org.eclipse.rwt.internal.AdapterManager;
-import org.eclipse.rwt.internal.ConfigurationReader;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rwt.internal.textsize.TextSizeStorage;
-import org.eclipse.rwt.internal.theme.ThemeAdapterManager;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.IApplicationStore;
@@ -34,11 +32,15 @@ public class ApplicationContext {
   // TODO [fappel]: the testMode flag is used to ignore resource registration. Think about
   //                a less intrusive solution
   public static boolean ignoreResoureRegistration;
+  // TODO [fappel]: the testMode flag is used to ignore service handler registration via
+  //                servicehandler.xml. Think about a less intrusive solution
+  public static boolean ignoreServiceHandlerRegistration;
   // TODO [fappel]: themeManagerHolder isn't final for performance reasons of the testsuite.
   //                TestServletContext#setAttribute(String,Object) will replace the runtime
   //                implementation with an optimized version for testing purpose. Think about
   //                a less intrusive solution.
   private ThemeManager themeManager;
+  private final RWTConfiguration configuration; 
   private final ResourceManagerProvider resourceManagerProvider;
   private final BrandingManager brandingManager;
   private final PhaseListenerRegistry phaseListenerRegistry;
@@ -47,7 +49,6 @@ public class ApplicationContext {
   private final AdapterManager adapterManager;
   private final SettingStoreManager settingStoreManager;
   private final ServiceManager serviceManager;
-  private final ConfigurationReader configurationReader;
   private final ResourceRegistry resourceRegistry;
   private final JSLibraryConcatenator jsLibraryConcatenator;
   private final ApplicationStoreImpl applicationStoreImpl;
@@ -58,7 +59,6 @@ public class ApplicationContext {
   private final FontDataFactory fontDataFactory;
   private final StartupPage startupPage;
   private final DisplaysHolder displaysHolder;
-  private final ThemeAdapterManager themeAdapterManager;
   private final TextSizeStorage textSizeStorage;
   private final ProbeStore probeStore;
   private final Set configurables;
@@ -66,9 +66,9 @@ public class ApplicationContext {
   
   public ApplicationContext() {
     applicationStoreImpl = new ApplicationStoreImpl();
-    configurationReader = new ConfigurationReader();
+    configuration = new RWTConfigurationImpl();
     resourceManagerProvider = new ResourceManagerProvider();
-    lifeCycleFactory = new LifeCycleFactory( configurationReader );
+    lifeCycleFactory = new LifeCycleFactory( configuration );
     themeManager = new ThemeManager();
     brandingManager = new BrandingManager();
     phaseListenerRegistry = new PhaseListenerRegistry();
@@ -84,7 +84,6 @@ public class ApplicationContext {
     startupPage = new StartupPage( resourceRegistry );
     serviceManager = createServiceManager();
     displaysHolder = new DisplaysHolder();
-    themeAdapterManager = new ThemeAdapterManager();
     jsLibraryConcatenator = new JSLibraryConcatenator();
     textSizeStorage = new TextSizeStorage();
     probeStore = new ProbeStore( textSizeStorage );
@@ -121,8 +120,8 @@ public class ApplicationContext {
     configurables.remove( configurable );
   }
   
-  public ConfigurationReader getConfigurationReader() {
-    return configurationReader;
+  public RWTConfiguration getConfiguration() {
+    return configuration;
   }
   
   public ResourceManagerProvider getResourceManagerProvider() {
@@ -209,10 +208,6 @@ public class ApplicationContext {
     return displaysHolder;
   }
   
-  public ThemeAdapterManager getThemeAdapterManager() {
-    return themeAdapterManager;
-  }
-  
   public TextSizeStorage getTextSizeStorage() {
     return textSizeStorage;
   }
@@ -260,7 +255,9 @@ public class ApplicationContext {
   private void doActivateInstances() {
     // TODO [SystemStart]: Unit testing
     lifeCycleFactory.activate();
-    serviceManager.activate();
+    if( !ignoreServiceHandlerRegistration ) {
+      serviceManager.activate();
+    }
     // Note: order is crucial here
     jsLibraryConcatenator.startJSConcatenation();
     if( !ignoreResoureRegistration ) {

@@ -13,20 +13,21 @@ package org.eclipse.rwt.internal.engine;
 import javax.servlet.ServletContext;
 
 
-class ConfigurationReaderConfigurable implements Configurable {
+class RWTConfigurationConfigurable implements Configurable {
   private final ServletContext servletContext;
 
-  ConfigurationReaderConfigurable( ServletContext servletContext ) {
+  RWTConfigurationConfigurable( ServletContext servletContext ) {
     this.servletContext = servletContext;
   }
 
   public void configure( ApplicationContext context ) {
     String realPath = servletContext.getRealPath( "/" );
-    EngineConfig engineConfig = new EngineConfig( realPath );
-    context.getConfigurationReader().setEngineConfig( engineConfig );
+    RWTConfigurationImpl configuration = ( RWTConfigurationImpl )context.getConfiguration();
+    configuration.configure( realPath );
   }
 
   public void reset( ApplicationContext context ) {
-    context.getConfigurationReader().setEngineConfig( null );
+    RWTConfigurationImpl configuration = ( RWTConfigurationImpl )context.getConfiguration();
+    configuration.reset();
   }
 }

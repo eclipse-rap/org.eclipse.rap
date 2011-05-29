@@ -21,11 +21,14 @@ import org.eclipse.swt.widgets.Widget;
 
 
 public final class ThemeAdapterManager {
-
   private final Map themeAdapters;
 
   public ThemeAdapterManager() {
     themeAdapters = new HashMap();
+  }
+  
+  public void reset() {
+    themeAdapters.clear();
   }
 
   public IThemeAdapter getThemeAdapter( Widget widget ) {

@@ -86,7 +86,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( SessionStoreImplSerialization_Test.class );
     suite.addTestSuite( SessionStoreEvent_Test.class );
     suite.addTestSuite( ApplicationStoreImpl_Test.class );
-    suite.addTestSuite( EngineConfig_Test.class );
+    suite.addTestSuite( RWTConfiguration_Test.class );
     suite.addTestSuite( QxCleanup_Test.class );
     suite.addTestSuite( ResourceManagerImpl_Test.class );
     suite.addTestSuite( ResourceUtil_Test.class );
@@ -94,7 +94,6 @@ public class RWTHostTestSuite {
     suite.addTestSuite( EventAdapter_Test.class );
     suite.addTestSuite( WrappedRequest_Test.class );
     suite.addTestSuite( RequestParameterBuffer_Test.class );
-    suite.addTestSuite( ConfigurationReader_Test.class );
     suite.addTestSuite( ContextProvider_Test.class );
     suite.addTestSuite( ServiceContext_Test.class );
     suite.addTestSuite( ServletLog_Test.class );
@@ -103,7 +102,7 @@ public class RWTHostTestSuite {
     // RWT Tests
     suite.addTestSuite( EntryPointManager_Test.class );
     suite.addTestSuite( RWTServletContextListener_Test.class );
-    suite.addTestSuite( ConfigurationReaderConfigurable_Test.class );
+    suite.addTestSuite( RWTConfigurationConfigurable_Test.class );
     suite.addTestSuite( ResourceManangerProviderConfigurable_Test.class );
     suite.addTestSuite( EntryPointManagerConfigurable_Test.class );
     suite.addTestSuite( BrandingManagerConfigurable_Test.class );

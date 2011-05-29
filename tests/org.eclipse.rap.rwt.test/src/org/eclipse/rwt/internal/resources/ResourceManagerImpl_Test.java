@@ -19,7 +19,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.TestRequest;
-import org.eclipse.rwt.internal.IConfiguration;
+import org.eclipse.rwt.internal.engine.RWTConfiguration;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
@@ -480,8 +481,8 @@ public class ResourceManagerImpl_Test extends TestCase {
   protected void setUp() throws Exception {
     clearTempFile();
     Fixture.setUp();
-    System.setProperty( IConfiguration.PARAM_RESOURCES, 
-                        IConfiguration.RESOURCES_DELIVER_FROM_DISK );
+    System.setProperty( RWTConfiguration.PARAM_RESOURCES, 
+                        RWTConfiguration.RESOURCES_DELIVER_FROM_DISK );
   }
 
   protected void tearDown() throws Exception {
@@ -548,8 +549,10 @@ public class ResourceManagerImpl_Test extends TestCase {
   }
 
   private static ResourceManagerImpl getResourceManager( String mode ) {
-    System.setProperty( IConfiguration.PARAM_RESOURCES, mode );
-    return ( ResourceManagerImpl )new DefaultResourceManagerFactory().create();
+    System.setProperty( RWTConfiguration.PARAM_RESOURCES, mode );
+    DefaultResourceManagerFactory factory = new DefaultResourceManagerFactory();
+    factory.setConfiguration( RWTFactory.getConfiguration() );
+    return ( ResourceManagerImpl )factory.create();
   }
 
   private static String getWebContextDirectory() {

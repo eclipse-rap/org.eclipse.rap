@@ -98,8 +98,8 @@ public class ApplicationContext_Test extends TestCase {
     assertNotNull( context.getResourceRegistry() );
     assertSame( context.getResourceRegistry(), context.getResourceRegistry() );
     
-    assertNotNull( context.getConfigurationReader() );
-    assertSame( context.getConfigurationReader(), context.getConfigurationReader() );
+    assertNotNull( context.getConfiguration() );
+    assertSame( context.getConfiguration(), context.getConfiguration() );
     
     assertNotNull( context.getResourceManagerProvider() );
     assertSame( context.getResourceManagerProvider(), context.getResourceManagerProvider() );
@@ -109,9 +109,6 @@ public class ApplicationContext_Test extends TestCase {
     
     assertNotNull( context.getDisplaysHolder() );
     assertSame( context.getDisplaysHolder(), context.getDisplaysHolder() );
-    
-    assertNotNull( context.getThemeAdapterManager() );
-    assertSame( context.getThemeAdapterManager(), context.getThemeAdapterManager() );
     
     assertNotNull( context.getJSLibraryConcatenator() );
     assertSame( context.getJSLibraryConcatenator(), context.getJSLibraryConcatenator() );
@@ -183,7 +180,7 @@ public class ApplicationContext_Test extends TestCase {
     ServletContext servletContext = Fixture.createServletContext();
     context = new ApplicationContext();
     context.addConfigurable( new ResourceManagerProviderConfigurable( servletContext ) );
-    context.addConfigurable( new ConfigurationReaderConfigurable( servletContext ) );
+    context.addConfigurable( new RWTConfigurationConfigurable( servletContext ) );
   }
 
   private void checkUnallowedMethodAccessIfNotActivated() {

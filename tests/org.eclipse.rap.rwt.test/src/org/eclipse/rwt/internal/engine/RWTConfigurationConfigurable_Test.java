@@ -15,38 +15,39 @@ import java.io.File;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.TestServletContext;
-import org.eclipse.rwt.internal.ConfigurationReader;
 
 
-public class ConfigurationReaderConfigurable_Test extends TestCase {
+public class RWTConfigurationConfigurable_Test extends TestCase {
   private TestServletContext servletContext;
-  private ConfigurationReaderConfigurable configurable;
+  private RWTConfigurationConfigurable configurable;
   private ApplicationContext applicationContext;
 
   public void testConfigure() {
     configurable.configure( applicationContext );
     
-    assertNotNull( getConfigurationReader().getEngineConfig() );
-    assertEquals( getRealPath(), getConfigurationReader().getEngineConfig().getServerContextDir() );
+    assertEquals( getRealPath(), getConfiguration().getContextDirectory() );
   }
   
   public void testReset() {
     configurable.configure( applicationContext );
-    ConfigurationReader reader = getConfigurationReader();
     
     configurable.reset( applicationContext );
     
-    assertNull( reader.getEngineConfig() );
+    try {
+      getConfiguration().getLibraryDirectory();
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
   }
   
   protected void setUp() {
     servletContext = new TestServletContext();
-    configurable = new ConfigurationReaderConfigurable( servletContext );
+    configurable = new RWTConfigurationConfigurable( servletContext );
     applicationContext = new ApplicationContext();
   }
   
-  private ConfigurationReader getConfigurationReader() {
-    return applicationContext.getConfigurationReader();
+  private RWTConfiguration getConfiguration() {
+    return applicationContext.getConfiguration();
   }
   
   private File getRealPath() {

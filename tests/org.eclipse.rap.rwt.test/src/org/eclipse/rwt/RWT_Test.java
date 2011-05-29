@@ -13,7 +13,7 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.internal.IConfiguration;
+import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rwt.lifecycle.PhaseListener;
@@ -135,7 +135,7 @@ public class RWT_Test extends TestCase {
   }
   
   public void testRequestThreadExecDelegatesToLifeCycle() {
-    System.setProperty( IConfiguration.PARAM_LIFE_CYCLE, TestLifeCycle.class.getName() );
+    System.setProperty( RWTConfiguration.PARAM_LIFE_CYCLE, TestLifeCycle.class.getName() );
     Fixture.setUp();
     new Display();
     
@@ -147,6 +147,6 @@ public class RWT_Test extends TestCase {
   
   protected void tearDown() throws Exception {
     Fixture.tearDown();
-    System.getProperties().remove( IConfiguration.PARAM_LIFE_CYCLE );
+    System.getProperties().remove( RWTConfiguration.PARAM_LIFE_CYCLE );
   }
 }

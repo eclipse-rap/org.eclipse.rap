@@ -42,13 +42,13 @@ import org.osgi.framework.Constants;
 
 
 /**
- * The underlying W4Toolkit runtime engine expects some configuration
- * infos read by the IEngineConfig implementation. We abuse the
- * <code>EngineConfigWrapper</code> to fake an appropriate environment
+ * The underlying RWT runtime engine expects some configuration
+ * infos provided by the RWTConfiguration implementation. We abuse the
+ * <code>RWTConfigurationWrapper</code> to fake an appropriate environment
  * for the library.
  */
 // TODO: [fappel] clean replacement mechanism that is anchored in W4Toolkit core
-public final class EngineConfigWrapper implements IEngineConfig {
+public final class RWTConfigurationWrapper implements RWTConfiguration {
   
   private static final class DependentResource {
     public final IResource resource;
@@ -94,32 +94,38 @@ public final class EngineConfigWrapper implements IEngineConfig {
   private static final String ID_SETTING_STORES
     = "org.eclipse.rap.ui.settingstores";
 
-  private final EngineConfig engineConfig;
   private final ApplicationContext applicationContext;
 
-  public EngineConfigWrapper( ApplicationContext applicationContext ) {
+  public RWTConfigurationWrapper( ApplicationContext applicationContext ) {
     this.applicationContext = applicationContext;
-    this.engineConfig = new EngineConfig( findContextPath().toString() );
     init();
   }
 
-  public File getServerContextDir() {
-    return engineConfig.getServerContextDir();
+  public File getContextDirectory() {
+    return applicationContext.getConfiguration().getContextDirectory();
   }
 
-  public File getClassDir() {
-    return engineConfig.getClassDir();
+  public File getClassDirectory() {
+    return applicationContext.getConfiguration().getClassDirectory();
   }
 
-  public File getLibDir() {
-    return engineConfig.getLibDir();
+  public File getLibraryDirectory() {
+    return applicationContext.getConfiguration().getLibraryDirectory();
+  }
+
+  public String getLifeCycle() {
+    return applicationContext.getConfiguration().getLifeCycle();
+  }
+
+  public String getResourcesDeliveryMode() {
+    return applicationContext.getConfiguration().getResourcesDeliveryMode();
   }
 
   //////////////////
   // helping methods
 
   private void init() {
-    applicationContext.getConfigurationReader().setEngineConfig( this );
+    configure();
     registerPhaseListener();
     registerResourceManagerFactory();
     registerSettingStoreFactory();
@@ -134,6 +140,11 @@ public final class EngineConfigWrapper implements IEngineConfig {
     registerCustomServiceHandlers();
     registerApplicationEntryPoints();
     registerBrandings();
+  }
+
+  private void configure() {
+    RWTConfigurationImpl config = ( RWTConfigurationImpl )applicationContext.getConfiguration();
+    config.configure( findContextPath().toString()  );
   }
 
   private void registerPhaseListener() {
@@ -153,6 +164,7 @@ public final class EngineConfigWrapper implements IEngineConfig {
 
   private void registerResourceManagerFactory() {
     DefaultResourceManagerFactory factory = new DefaultResourceManagerFactory();
+    factory.setConfiguration( applicationContext.getConfiguration() );
     applicationContext.getResourceManagerProvider().registerFactory( factory );
   }
 

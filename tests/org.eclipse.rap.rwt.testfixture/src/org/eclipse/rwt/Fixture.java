@@ -46,6 +46,7 @@ public class Fixture {
     usePerformanceOptimizations = Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS );
     if( Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS ) ) {
       ApplicationContext.ignoreResoureRegistration = true;
+      ApplicationContext.ignoreServiceHandlerRegistration = true;
     }
   }
 
@@ -176,11 +177,22 @@ public class Fixture {
   // general setup and tear down
 
   public static void setUp() {
+    registerLifeCycleAdapterFactory();
     registerResourceManagerFactory();
     registerCurrentPhaseListener();
     setSystemProperties();
     createApplicationContext();
     createServiceContext();
+  }
+
+  private static void registerLifeCycleAdapterFactory() {
+    String factory = TestLifeCycleAdapterFactory.class.getName();
+    String adaptable1 = Widget.class.getName();
+    String adaptable2 = Display.class.getName();
+    String split = RWTServletContextListener.PARAMETER_SPLIT;
+    String separator = RWTServletContextListener.PARAMETER_SEPARATOR;
+    String value = factory + split + adaptable1 + separator + factory + split + adaptable2;
+    setInitParameter( AdapterManagerConfigurable.ADAPTER_FACTORIES_PARAM, value );
   }
 
   private static void registerCurrentPhaseListener() {
