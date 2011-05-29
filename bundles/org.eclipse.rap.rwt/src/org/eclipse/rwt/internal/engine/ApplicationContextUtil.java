@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
+import java.io.File;
 import java.io.Serializable;
 
 import javax.servlet.ServletContext;
@@ -91,7 +92,13 @@ public class ApplicationContextUtil {
       CONTEXT_HOLDER.set( null );
     }
   }
-  
+
+  public static void delete( File toDelete ) {
+    if( toDelete.exists() ) {
+      doDelete( toDelete );
+    }
+  }
+
   static boolean hasContext() {
     return CONTEXT_HOLDER.get() != null;
   }
@@ -106,6 +113,28 @@ public class ApplicationContextUtil {
   private static void checkApplicationContextExists( ApplicationContext applicationContext ) {
     if( applicationContext == null ) {
       throw new IllegalStateException( "No ApplicationContext registered." );
+    }
+  }
+  
+  private static void doDelete( File toDelete ) {
+    if( toDelete.isDirectory() ) {
+      deleteChildren( toDelete );
+    }
+    deleteFile( toDelete );
+  }
+
+  private static void deleteChildren( File toDelete ) {
+    File[] children = toDelete.listFiles();
+    for( int i = 0; i < children.length; i++ ) {
+      delete( children[ i ] );
+    }
+  }
+
+  private static void deleteFile( File toDelete ) {
+    boolean deleted = toDelete.delete();
+    if( !deleted ) {
+      String msg = "Could not delete: " + toDelete.getPath();
+      throw new IllegalStateException( msg );
     }
   }
 }

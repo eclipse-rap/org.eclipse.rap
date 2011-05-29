@@ -10,6 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
+import java.io.File;
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
@@ -140,6 +143,19 @@ public class ApplicationContextUtil_Test extends TestCase {
       fail();
     } catch( IllegalStateException expected ) {
     }
+  }
+  
+  public void testDelete() throws IOException {
+    File contextDirectory = new File( Fixture.TEMP_DIR, "contextDirectory" );
+    boolean directoryCreated = contextDirectory.mkdirs();
+    File content = new File( contextDirectory, "context.xml" );
+    boolean fileCreated = content.createNewFile();
+    
+    ApplicationContextUtil.delete( contextDirectory );
+    
+    assertTrue( directoryCreated );
+    assertTrue( fileCreated );
+    assertFalse( contextDirectory.exists() );
   }
 
   public void testApplicationContextInSessionStoreIsNotSerialized() throws Exception {

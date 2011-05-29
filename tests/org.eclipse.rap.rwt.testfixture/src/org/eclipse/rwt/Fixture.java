@@ -406,9 +406,7 @@ public class Fixture {
   }
 
   public static void delete( File toDelete ) {
-    if( toDelete.exists() ) {
-      doDelete( toDelete );
-    }
+    ApplicationContextUtil.delete( toDelete );
   }
 
   public static byte[] serialize( Object object ) throws IOException {
@@ -424,20 +422,6 @@ public class Fixture {
     return objectInputStream.readObject();
   }
   
-  private static void doDelete( File toDelete ) {
-    if( toDelete.isDirectory() ) {
-      File[] children = toDelete.listFiles();
-      for( int i = 0; i < children.length; i++ ) {
-        delete( children[ i ] );
-      }
-    }
-    boolean deleted = toDelete.delete();
-    if( !deleted ) {
-      String msg = "Could not delete: " + toDelete.getPath();
-      throw new IllegalStateException( msg );
-    }
-  }
-
   private static void simulateRequest( IUIThreadHolder threadHolder, Thread serverThread ) {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     synchronized( threadHolder.getLock() ) {

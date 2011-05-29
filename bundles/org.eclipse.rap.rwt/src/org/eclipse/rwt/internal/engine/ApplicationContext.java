@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
+import java.io.File;
 import java.util.*;
 
 import org.eclipse.rwt.internal.AdapterManager;
@@ -281,6 +282,17 @@ public class ApplicationContext {
     lifeCycleFactory.deactivate();
     serviceManager.deactivate();
     themeManager.deactivate();
+    
+    // TODO [fappel]: think of better solution. This maps directly to the 
+    //                default resource manager implementation while 
+    //                the resource manager factory is configurable. Is
+    //                the latter really necessary since the only other factory
+    //                in use is for testing purpose (unfortunately API).
+    if( !ignoreResoureRegistration ) {
+      File resourcesDir = new File( configuration.getContextDirectory(),
+                                    ResourceManagerImpl.RESOURCES );
+      ApplicationContextUtil.delete( resourcesDir ); 
+    }
   }
   
 
