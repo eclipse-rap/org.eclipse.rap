@@ -81,6 +81,23 @@ public class ResourceManagerImpl_Test extends TestCase {
       + "="
       + "1895582734";
 
+  private static class CloseableInputStream extends ByteArrayInputStream {
+    
+    boolean closed;
+
+    public CloseableInputStream() {
+      super( new byte[ 1 ] );
+    }
+    
+    public void close() throws IOException {
+      closed = true;
+      super.close();
+    }
+    
+    boolean isClosed() {
+      return closed;
+    }
+  }
   
   public void testInstanceCreationDisk() {
     IResourceManager manager = getResourceManager( DELIVER_FROM_DISK );
@@ -476,6 +493,25 @@ public class ResourceManagerImpl_Test extends TestCase {
     String location = manager.getLocation( name );
     
     assertEquals( "rwt-resources/http$1//host$1port/path$$1", location );
+  }
+
+  public void testRegisterWithInputStreamClosesStream() {
+    IResourceManager manager = getResourceManager( DELIVER_FROM_DISK );
+    CloseableInputStream inputStream = new CloseableInputStream();
+    
+    manager.register( "resource-name", inputStream );
+    
+    assertTrue( inputStream.isClosed() );
+  }
+  
+  public void testRegisterWithAlreadyRegisteredInputStreamClosesStream() {
+    IResourceManager manager = getResourceManager( DELIVER_FROM_DISK );
+    manager.register( "resource-name", new CloseableInputStream() );
+    
+    CloseableInputStream inputStream = new CloseableInputStream();
+    manager.register( "resource-name", inputStream );
+    
+    assertTrue( inputStream.isClosed() );
   }
   
   protected void setUp() throws Exception {
