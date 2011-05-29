@@ -326,15 +326,11 @@ public class Fixture {
   ////////////////
   // general stuff
 
-  public static void copyTestResource( String resourceName, 
-                                       File destination )
-    throws FileNotFoundException, IOException
-  {
+  public static void copyTestResource( String resourceName, File destination ) throws IOException {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream is = loader.getResourceAsStream( resourceName );
     if( is == null ) {
-      String msg = "Resource could not be found: " + resourceName;
-      throw new IllegalArgumentException( msg );
+      throw new IllegalArgumentException( "Resource could not be found: " + resourceName );
     }
     BufferedInputStream bis = new BufferedInputStream( is );
     try {
