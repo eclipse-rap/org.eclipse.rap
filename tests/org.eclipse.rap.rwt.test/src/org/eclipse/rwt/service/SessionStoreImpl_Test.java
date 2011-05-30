@@ -635,7 +635,7 @@ public class SessionStoreImpl_Test extends TestCase {
   protected void setUp() throws Exception {
     httpSession = new TestSession();
     session = new SessionStoreImpl( httpSession );
-    SessionStoreImpl.attachToSession( httpSession, session );
+    SessionStoreImpl.attachInstanceToSession( httpSession, session );
     servletLogEntries = new LinkedList();
     TestServletContext servletContext = ( TestServletContext )httpSession.getServletContext();
     servletContext.setLogger( new TestLogger() {

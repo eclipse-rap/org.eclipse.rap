@@ -132,7 +132,7 @@ public class ContextProvider {
       result = SessionStoreImpl.getInstanceFromSession( httpSession );
       if( result == null ) { 
         result = new SessionStoreImpl( httpSession );
-        SessionStoreImpl.attachToSession( httpSession, result );
+        SessionStoreImpl.attachInstanceToSession( httpSession, result );
         SingletonManager.install( result );
       }
       result.attachHttpSession( httpSession );

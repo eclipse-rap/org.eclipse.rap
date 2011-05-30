@@ -67,6 +67,6 @@ public class RWTClusterSupport implements Filter {
 
   private static void markSessionChanged( HttpSession httpSession ) {
     SessionStoreImpl sessionStore = SessionStoreImpl.getInstanceFromSession( httpSession );
-    SessionStoreImpl.attachToSession( httpSession, sessionStore );
+    SessionStoreImpl.attachInstanceToSession( httpSession, sessionStore );
   }
 }

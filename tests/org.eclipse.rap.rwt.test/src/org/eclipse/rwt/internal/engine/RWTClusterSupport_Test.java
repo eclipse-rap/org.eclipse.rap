@@ -69,7 +69,7 @@ public class RWTClusterSupport_Test extends TestCase {
     };
     request.setSession( session );
     session.setAttribute( "foo", "bar" );
-    SessionStoreImpl.attachToSession( session, new SessionStoreImpl( session ) );
+    SessionStoreImpl.attachInstanceToSession( session, new SessionStoreImpl( session ) );
     log.setLength( 0 );
     
     rwtClusterSupport.doFilter( request, response, chain );

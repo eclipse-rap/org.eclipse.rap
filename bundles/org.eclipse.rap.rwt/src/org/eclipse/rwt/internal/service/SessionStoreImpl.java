@@ -35,7 +35,8 @@ public final class SessionStoreImpl
     return ( SessionStoreImpl )httpSession.getAttribute( ATTR_SESSION_STORE );
   }
   
-  public static void attachToSession( HttpSession httpSession, ISessionStore sessionStore ) {
+  public static void attachInstanceToSession( HttpSession httpSession, ISessionStore sessionStore )
+  {
     httpSession.setAttribute( ATTR_SESSION_STORE, sessionStore );
   }
   
