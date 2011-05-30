@@ -94,12 +94,12 @@ public class SessionFailover_Test extends TestCase {
     Display display = ClusterFixture.getSessionDisplay( session );
     assertNotNull( sessionStore );
     assertNotNull( display );
-    assertSame( sessionStore, getDisplaySession( display ) );
+    assertSame( sessionStore, getDisplayAdapter( display ).getSessionStore() );
     assertNotNull( sessionStore.getHttpSession() );
     assertTrue( client.getSessionId().startsWith( session.getId() ) );
   }
 
-  private static IDisplayAdapter getDisplaySession( Display display ) {
+  private static IDisplayAdapter getDisplayAdapter( Display display ) {
     return( ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class ) );
   }
 
