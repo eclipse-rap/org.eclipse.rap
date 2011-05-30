@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Javascript test suite
 Bundle-SymbolicName: org.eclipse.rap.rwt.q07.jstest;singleton:=true
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Export-Package: org.eclipse.rwt.test,
  org.eclipse.rwt.test.fixture,
  org.eclipse.rwt.test.tests,
  resource
-Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.equinox.http.jetty;bundle-version="[2.0.0,4.0.0)",
  org.eclipse.osgi.services;bundle-version="[3.2.0,4.0.0)",
  org.eclipse.core.runtime;bundle-version="[3.6.0,4.0.0)"

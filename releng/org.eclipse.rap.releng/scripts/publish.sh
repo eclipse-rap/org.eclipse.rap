@@ -36,8 +36,8 @@ Usage: $0 [options]"
   -j, --java-home           path to java home (overrides \$JAVA_HOME)
 
 Examples:
-  $0 -i rap-runtime-1.4.0-N-20100921-1741.zip -r 1.4/runtime -z 1.4
-  $0 -i rap-tooling-1.4.0-N-20100921-1835.zip -r 1.4/tooling -z 1.4
+  $0 -i rap-runtime-1.5.0-N-20100921-1741.zip -r 1.5/runtime -z 1.5
+  $0 -i rap-tooling-1.5.0-N-20100921-1835.zip -r 1.5/tooling -z 1.5
 EOT
 }
 

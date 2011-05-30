@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.rap.test"
       label="RAP Test Feature"
-      version="1.4.0.qualifier"
+      version="1.5.0.qualifier"
       provider-name="Eclipse.org">
 
    <description url="http://www.example.com/description">
@@ -23,7 +23,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.rap.rwt.themes.test"
          download-size="0"

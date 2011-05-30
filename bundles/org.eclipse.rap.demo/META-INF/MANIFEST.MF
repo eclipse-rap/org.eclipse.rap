@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.rap.demo; singleton := true
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.rap.ui,
  org.eclipse.rap.ui.views
 Import-Package: javax.servlet.http;version="2.3.0"
 Bundle-Vendor: %Bundle-Vendor
-Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.eclipse.rap.demo;x-internal:=true,
  org.eclipse.rap.demo.actions;x-internal:=true,
  org.eclipse.rap.demo.controls;x-internal:=true,
