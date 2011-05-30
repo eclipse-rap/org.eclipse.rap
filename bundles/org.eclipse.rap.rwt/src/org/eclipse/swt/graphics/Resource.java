@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.graphics;
 
 import org.eclipse.swt.SWT;
@@ -40,7 +40,7 @@ public abstract class Resource {
   final Device device;
   private boolean disposed;
   
-  Resource( final Device device ) {
+  Resource( Device device ) {
     this.device = device;
   }
   
@@ -77,8 +77,7 @@ public abstract class Resource {
    */
   public void dispose() {
     if( device == null ) {
-      String msg = "A factory-created resource cannot be disposed.";
-      throw new IllegalStateException( msg );
+      throw new IllegalStateException( "A factory-created resource cannot be disposed." );
     }
     destroy();
     disposed = true;
@@ -103,7 +102,7 @@ public abstract class Resource {
     return disposed;
   }
 
-  static Device checkDevice( final Device device ) {
+  static Device checkDevice( Device device ) {
     Device result = device;
     if( result == null ) {
       result = Display.getCurrent();

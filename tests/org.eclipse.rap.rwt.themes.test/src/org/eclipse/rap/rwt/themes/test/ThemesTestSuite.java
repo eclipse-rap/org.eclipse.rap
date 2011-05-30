@@ -22,15 +22,10 @@ public class ThemesTestSuite {
   
   public static Test suite() {
     TestSuite result = new TestSuite( "Tests for RWT Themes" );
-    // Add CSS Themes tests
-    result.addTest( new TestSuite( DefaultTheme_Test.class, 
-    						       "Default Theme" ) );
-    result.addTest( new TestSuite( ClassicTheme_Test.class, 
-                                   "Classic Theme" ) );
-    result.addTest( new TestSuite( BusinessTheme_Test.class, 
-                                   "Business Theme" ) );
-    result.addTest( new TestSuite( FancyTheme_Test.class, 
-                                   "Fancy Theme" ) );   
+    result.addTest( new TestSuite( DefaultTheme_Test.class, "Default Theme" ) );
+    result.addTest( new TestSuite( ClassicTheme_Test.class, "Classic Theme" ) );
+    result.addTest( new TestSuite( BusinessTheme_Test.class, "Business Theme" ) );
+    result.addTest( new TestSuite( FancyTheme_Test.class, "Fancy Theme" ) );
     return result;
   }
   
