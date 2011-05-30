@@ -23,7 +23,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     this._level = -1;
     this._children = [];
     this._visibleChildrenCount = 0;
-    this._expanded = false;
+    this._expandedItems = {};
     this._texts = placeholder ? [ "..." ] : [];
     this._images = [];
     this._cached = !placeholder;
@@ -40,6 +40,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       this._level = this._parent.getLevel() + 1; 
       this._parent._add( this, index );
     }
+    this._expanded = this.isRootItem();
     this.addEventListener( "update", this._onUpdate, this );
   },
   
@@ -49,9 +50,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     }
     org.eclipse.swt.WidgetManager.getInstance().remove( this );
   },
-  
+
   statics : {
-    
+
     createItem : function( parent, index, id ) {
       var parentItem = this._getItem( parent );
       var item;
@@ -63,7 +64,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       }
       org.eclipse.swt.WidgetManager.getInstance().add( item, id, false );
     },
-    
+
     _getItem : function( treeOrItem ) {
       var result;
       if( treeOrItem instanceof org.eclipse.rwt.widgets.Tree ) {
@@ -75,13 +76,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     }
 
   },
-  
+
   events: {
     "update" : "qx.event.type.Event" 
   },  
 
   members : {
-    
+
     setItemCount : function( value ) {
       var msg = this._children.length > value ? "remove" : "add";
       this._children.length = value; 
@@ -115,7 +116,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
 
     setTexts : function( texts ) {
       this._texts = texts;
-      this._update();
+      this._update( "content" );
     },
 
     getText : function( column ) {
@@ -125,7 +126,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
 
     setFont : function( font ) {
       this._font = font;
-      this._update();
+      this._update( "content" );
     },
 
     getCellFont : function( column ) {
@@ -135,12 +136,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
 
     setCellFonts : function( fonts ) {
       this._cellFonts = fonts;
-      this._update();
+      this._update( "content" );
     },
 
     setForeground : function( color ) {
       this._foreground = color;
-      this._update();
+      this._update( "content" );
     },
 
     getCellForeground : function( column ) {
@@ -150,12 +151,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
 
     setCellForegrounds : function( colors ) {
       this._cellForegrounds = colors;
-      this._update();
+      this._update( "content" );
     },
 
     setBackground : function( color ) {
       this._background = color;
-      this._update();
+      this._update( "content" );
     },
 
     getCellBackground : function( column ) {
@@ -169,17 +170,50 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
 
     setCellBackgrounds : function( colors ) {
       this._cellBackgrounds = colors;
-      this._update();
+      this._update( "content" );
     },
 
     setImages : function( images ) {
       this._images = images;
-      this._update();
+      this._update( "content" );
     },
 
     getImage : function( column ) {
       var result = this._images[ column ];
       return typeof result === "string" ? result : null;
+    },
+
+    setChecked : function( value ) {
+      this._checked = value;
+      this._update( "content" );
+    },
+    
+    isChecked : function() {
+      return this._checked;
+    },
+    
+    setGrayed : function( value ) {
+      this._grayed = value;
+      this._update( "content" );
+    },
+    
+    isGrayed : function() {
+      return this._grayed;
+    },
+    
+    setVariant : function( variant ) {
+      this._variant = variant;
+    },
+
+    getVariant : function() {
+      return this._variant;
+    },
+    
+    //////////////////////////
+    // relationship management
+
+    isRootItem : function() {
+      return this._level < 0;
     },
 
     getLevel : function() {
@@ -190,20 +224,203 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       return this._parent;
     },
 
-    getVisibleChildrenCount : function() {
+    setExpanded : function( value ) {
+      if( this._expanded != value ) {
+        this._expanded = value;
+        this._update( value ? "expanded" : "collapsed" );
+        if( value ) {
+	        this._parent._addToExpandedItems( this );
+        } else {
+	        this._parent._removeFromExpandedItems( this );        	
+        }
+      }
+    },
+
+    isExpanded : function() {
+      return this._expanded;
+    },
+
+    isDisplayable : function() {
+      var result = false;
+      if( this.isRootItem() || this._parent.isRootItem() ) {
+        result = true;
+      } else {
+        result = this._parent.isExpanded() && this._parent.isDisplayable();
+      }
+      return result;
+    },
+
+    hasChildren : function() {
+      return this._children.length > 0;
+    },
+
+    isChildCreated : function( index ) {
+      return this._children[ index ] !== undefined;
+    },
+
+    isChildCached : function( index ) {
+      return this._children[ index ].isCached();
+    },
+
+    getVisibleChildrenCount : function() { // TODO [tb] : rather "itemCount"
       if( this._visibleChildrenCount == null ) {
         this._computeVisibleChildrenCount();
       }
       return this._visibleChildrenCount;
     },
+    
+    getChild : function( index ) {
+      var result = this._children[ index ];
+      if( !result ) {
+       if( index >= 0 && index < this._children.length ) {
+          result = new org.eclipse.rwt.widgets.TreeItem( this, index, true );
+        } else {
+          result = null; // TODO [tb] : no longer needed? (hasNextSibling has been refactored)
+        }
+      }
+      return result;
+    },    
 
-    setVariant : function( variant ) {
-      this._variant = variant;
+    getLastChild : function() {
+      return this.getChild( this._children.length - 1 ); 
+    },
+    
+    indexOf : function( item ) {
+      return this._children.indexOf( item );
     },
 
-    getVariant : function() {
-      return this._variant;
+    findItemByFlatIndex : function( index ) {
+    	//return this._findItemByIndex( index );
+    	var expanded = this._getExpandedIndicies();
+    	var localIndex = index;
+    	var result = null;
+    	var success = false;
+    	while( !success && localIndex >= 0) {
+    		var expandedIndex = expanded.shift();
+    		if( expandedIndex === undefined || expandedIndex >= localIndex ) {
+    			result = this.getChild( localIndex );
+    			success = true;
+    		} else {
+    			var childrenCount = this.getChild( expandedIndex ).getVisibleChildrenCount();
+    			var offset = localIndex - expandedIndex; // Items between current item and target item
+    			if( offset <= childrenCount ) {
+    				result = this.getChild( expandedIndex ).findItemByFlatIndex( offset - 1 );
+    				success = true;
+    				if( result == null ) {
+    					throw new Error( "getItemByFlatIndex failed" );
+    				}
+    			} else {
+    				localIndex -= childrenCount;
+    			}
+    		}
+    	}
+    	return result;
     },
+
+    // TODO [tb] : can this be optimized to create less virtual placeholder items? 
+    _findItemByIndex : function( index, startItem, startIndex ) {
+      var result;
+      var computedStartItem = startItem ? startItem : this.getChild( 0 );
+      var computedStartIndex = startIndex ? startIndex : 0;
+      if( index >= computedStartIndex ) {
+        result = this._findItemByIndexForwards( index, computedStartItem, computedStartIndex );
+      } else {
+        result = this._findItemByIndexBackwards( index, computedStartItem, computedStartIndex );
+      }
+      return result;
+    },
+
+    _findItemByIndexForwards : function( index, startItem, startIndex ) {
+      var i = startIndex;
+      var item = startItem;
+      while( i != index && item != null ) {
+        var siblingIndex = i + item.getVisibleChildrenCount() + 1;
+        if( siblingIndex <= index ) {
+          i = siblingIndex;
+          item = item.getNextItem( true );
+        } else {
+          item = item.getNextItem();
+          i++;
+        } 
+      }
+      return item;
+    },
+
+    _findItemByIndexBackwards : function( index, startItem, startIndex ) {
+      var i = startIndex;
+      var item = startItem;
+      while( i != index && item != null ) {
+        if( item.hasPreviousSibling() ) {
+          var previous = item.getPreviousSibling();
+          var prevSiblingIndex = i - ( previous.getVisibleChildrenCount() + 1 );
+          if( prevSiblingIndex >= index ) {
+            i = prevSiblingIndex;
+            item = previous;              
+          } else {
+            item = item.getPreviousItem();
+            i--;
+          }
+        } else {
+          item = item.getPreviousItem();
+          i--;
+        }
+      }
+      return item;
+    },
+
+    hasPreviousSibling : function() {
+      var siblings = this._parent._children;
+      var index = siblings.indexOf( this ) - 1 ;
+      return index >= 0;
+    },
+
+    hasNextSibling : function() {
+      var siblings = this._parent._children;
+      var index = siblings.indexOf( this ) + 1 ;
+      return index < siblings.length;
+    },
+
+    getPreviousSibling : function() {
+      var index = this._parent.indexOf( this ) - 1 ;
+      return this._parent.getChild( index );
+    },
+
+    getNextSibling : function() {
+      var index = this._parent.indexOf( this ) + 1 ;
+      return this._parent.getChild( index );
+    },
+    
+    // TODO [tb] : rename to "getNextDisplayableItem"?
+    // NOTE : For a flat Hierarchy, this behaves like getNextSibling 
+    getNextItem : function( skipChildren ) {
+      var result = null;
+      if( !skipChildren && this.hasChildren() && this.isExpanded() ) {
+        result = this.getChild( 0 );
+      } else if( this.hasNextSibling() ) {
+        result = this.getNextSibling();
+      } else if( this.getLevel() > 0 ) {
+        result = this._parent.getNextItem( true );
+      }
+      return result;
+    },
+    
+    // TODO [tb] : rename to "getPreviousDisplayableItem"?
+    // NOTE : For a flat Hierarchy, this behaves like getPreviousSibling 
+    getPreviousItem : function() {
+      var result = null;
+      if( this.hasPreviousSibling() ) {
+        result = this.getPreviousSibling();
+        while( result.hasChildren() && result.isExpanded() ) {
+          result = result.getLastChild();
+        }        
+      } else if( this.getLevel() > 0 ) {
+        result = this._parent
+      }
+      return result;
+    },
+    
+    /////////////////////////
+    // API for other TreeItem
 
     /** 
      * Behavior is consistent with SWT:
@@ -224,7 +441,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
           this._update( "add", item );
         } else {
           this._children[ index ] = item;
-          item._update();
         }
       }
     },
@@ -235,133 +451,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       this._children.splice( index, 1 );
       this._update( "remove", item );
     },
+    
+    _addToExpandedItems : function( item ) {
+    	this._expandedItems[ item.toHashCode() ] = item;
+    },
 
-    hasChildren : function() {
-      return this._children.length > 0;
+    _removeFromExpandedItems : function( item ) {
+    	delete this._expandedItems[ item.toHashCode() ];
     },
     
-    getChild : function( index ) {
-      var result = this._children[ index ];
-      if( !result ) {
-       if( index >= 0 && index < this._children.length ) {
-          result = new org.eclipse.rwt.widgets.TreeItem( this, index, true );
-        } else {
-          result = null; // TODO [tb] : no longer needed? (hasNextSibling has been refactored)
-        }
-      }
-      return result;
-    },
-    
-    isChildCreated : function( index ) {
-      return this._children[ index ] !== undefined;
-    },
-
-    isChildCached : function( index ) {
-      return this._children[ index ].isCached();
-    },
-
-    getLastChild : function() {
-      return this.getChild( this._children.length - 1 ); 
-    },
-    
-    getIndexOfChild : function( item ) {
-      return this._children.indexOf( item );
-    },
-
-    setExpanded : function( value ) {
-      if( this._expanded != value ) {
-        this._expanded = value;
-        this._update( value ? "expanded" : "collapsed" );
-      } 
-    },
-
-    isExpanded : function() {
-      return this._expanded;
-    },
-
-    hasPreviousSibling : function() {
-      var siblings = this._parent._children;
-      var index = siblings.indexOf( this ) - 1 ;
-      return index >= 0;
-    },
-
-    hasNextSibling : function() {
-      var siblings = this._parent._children;
-      var index = siblings.indexOf( this ) + 1 ;
-      return index < siblings.length;
-    },
-
-    getPreviousSibling : function() {
-      var index = this._parent.getIndexOfChild( this ) - 1 ;
-      return this._parent.getChild( index );
-    },
-
-    getNextSibling : function() {
-      var index = this._parent.getIndexOfChild( this ) + 1 ;
-      return this._parent.getChild( index );
-    },
-    
-    // TODO [tb] : rename to "getNextDisplayableItem"?
-    // NOTE : For a flat Hierarchy, this behaves like getNextSibling 
-    getNextItem : function( skipChildren ) {
-      var result = null;
-      if( !skipChildren && this.hasChildren() && this.isExpanded() ) {
-        result = this.getChild( 0 );
-      } else if( this.hasNextSibling() ) {
-        result = this.getNextSibling();
-      } else if( this.getLevel() > 0 ) {
-        result = this.getParent().getNextItem( true );
-      }
-      return result;
-    },
-    
-    // TODO [tb] : rename to "getPreviousDisplayableItem"?
-    // NOTE : For a flat Hierarchy, this behaves like getPreviousSibling 
-    getPreviousItem : function() {
-      var result = null;
-      if( this.hasPreviousSibling() ) {
-        result = this.getPreviousSibling();
-        while( result.hasChildren() && result.isExpanded() ) {
-          result = result.getLastChild();
-        }        
-      } else if( this.getLevel() > 0 ) {
-        result = this.getParent();
-      }
-      return result;
-    },
-
-    isRootItem : function() {
-      return this._level < 0;
-    },
-    
-    setChecked : function( value ) {
-      this._checked = value;
-      this._update();
-    },
-    
-    isChecked : function() {
-      return this._checked;
-    },
-    
-    setGrayed : function( value ) {
-      this._grayed = value;
-      this._update();
-    },
-    
-    isGrayed : function() {
-      return this._grayed;
-    },
-    
-    isDisplayable : function() {
-      var result = false;
-      if( this.isRootItem() || this._parent.isRootItem() ) {
-        result = true;
-      } else {
-        result = this._parent.isExpanded() && this._parent.isDisplayable();
-      }
-      return result;
-    },
-
     //////////////////////////////
     // support for event-bubbling:
 
@@ -371,7 +469,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
 
     _update : function( msg, related ) {
       var event = new qx.event.type.DataEvent( "update" );
-      event.setData( typeof msg != "undefined" ? msg : null );
+      event.setData( msg );
       event.setBubbles( true );
       event.setPropagationStopped( false );
       if( related ) {
@@ -380,9 +478,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       this.dispatchEvent( event, true );
     },
     
-    _onUpdate : function() {
-      this._visibleChildrenCount = null;
+    _onUpdate : function( event ) {
+    	if( event.getData() !== "content" ) {
+	      this._visibleChildrenCount = null;
+    	}
     },
+    
+    /////////
+    // Helper
     
     _computeVisibleChildrenCount : function() {
       // NOTE: Caching this value speeds up creating and scrolling the tree considerably
@@ -396,6 +499,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
         }
       }
       this._visibleChildrenCount = result;      
+    },
+    
+    _getExpandedIndicies : function() {
+    	var result = [];
+    	for( var key in this._expandedItems ) {
+    		result.push( this.indexOf( this._expandedItems[ key ] ) ); 
+    	}
+    	return result.sort( function( a, b ){ return a - b; } );
     },
     
     toString : function() {

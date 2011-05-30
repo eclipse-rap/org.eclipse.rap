@@ -17,7 +17,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
   construct : function( argsMap ) {
     this.base( arguments );
     this._rootItem = new org.eclipse.rwt.widgets.TreeItem();
-    this._rootItem.setExpanded( true );
     // Style-Flags:
     this._isVirtual = false;
     this._hasMultiSelection = false;
@@ -584,7 +583,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var oldIndex = this._findIndexByItem( this._focusItem );
       var offset = this._rowContainer.getChildrenLength() - 2;
       var newIndex = Math.max( 0, oldIndex - offset );
-      var item = this._findItemByIndex( newIndex );
+      var item = this._rootItem.findItemByFlatIndex( newIndex );
       var itemIndex = this._findIndexByItem( item );
       this._handleKeyboardSelect( event, item, itemIndex );
     },
@@ -594,7 +593,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var offset = this._rowContainer.getChildrenLength() - 2;
       var max = this.getRootItem().getVisibleChildrenCount() - 1;
       var newIndex = Math.min( max, oldIndex + offset );
-      var item = this._findItemByIndex( newIndex, this._topItem, this._topItemIndex );
+      var item = this._rootItem.findItemByFlatIndex( newIndex );
       var itemIndex = this._findIndexByItem( item );
       this._handleKeyboardSelect( event, item, itemIndex );
     },
@@ -606,6 +605,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _handleKeyEnd : function( event ) {
       var item = this.getRootItem().getLastChild();
+      var time = new Date();
       var itemIndex = this.getRootItem().getVisibleChildrenCount() - 1;
       this._handleKeyboardSelect( event, item, itemIndex );
     },
@@ -720,11 +720,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
     
     _updateTopItem : function( oldIndex, render ) {
-      if( typeof oldIndex == "number" ) {
-        this._topItem = this._findItemByIndex( this._topItemIndex, this._topItem, oldIndex );
-      } else {
-        this._topItem = this._findItemByIndex( this._topItemIndex );
-      }
+      var time = new Date();
+      this._topItem = this._rootItem.findItemByFlatIndex( this._topItemIndex );
       this._rowContainer.setTopItem( this._topItem, this._topItemIndex, render );
     },
     
@@ -904,7 +901,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     		} else {
       		result = wm.findIdByWidget( parent );    			
     		}
-    		result += "#" + parent.getIndexOfChild( item );
+    		result += "#" + parent.indexOf( item );
     	}
     	return result;
     },
@@ -1203,57 +1200,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     ///////////////
     // model-helper
 
-    // TODO [tb] : can this be optimized to create less virtual placeholder items? 
-    _findItemByIndex : function( index, startItem, startIndex ) {
-      var result;
-      var computedStartItem = startItem ? startItem : this.getRootItem().getChild( 0 );
-      var computedStartIndex = startIndex ? startIndex : 0;
-      if( index >= computedStartIndex ) {
-        result = this._findItemByIndexForwards( index, computedStartItem, computedStartIndex );
-      } else {
-        result = this._findItemByIndexBackwards( index, computedStartItem, computedStartIndex );
-      }
-      return result;
-    },
-
-    _findItemByIndexForwards : function( index, startItem, startIndex ) {
-      var i = startIndex;
-      var item = startItem;
-      while( i != index && item != null ) {
-        var siblingIndex = i + item.getVisibleChildrenCount() + 1;
-        if( siblingIndex <= index ) {
-          i = siblingIndex;
-          item = item.getNextItem( true );
-        } else {
-          item = item.getNextItem();
-          i++;
-        } 
-      }
-      return item;
-    },
-
-    _findItemByIndexBackwards : function( index, startItem, startIndex ) {
-      var i = startIndex;
-      var item = startItem;
-      while( i != index && item != null ) {
-        if( item.hasPreviousSibling() ) {
-          var previous = item.getPreviousSibling();
-          var prevSiblingIndex = i - ( previous.getVisibleChildrenCount() + 1 );
-          if( prevSiblingIndex >= index ) {
-            i = prevSiblingIndex;
-            item = previous;              
-          } else {
-            item = item.getPreviousItem();
-            i--;
-          }
-        } else {
-          item = item.getPreviousItem();
-          i--;
-        }
-      }
-      return item;
-    },
-
+    // TODO [tb] : This item is only used to find items that are near the focusItem, which usually
+    //             near the topItem. Optimize for focusItem item. (instead of topItem.)
     _findIndexByItem : function( item ) {
       if( this._topItem === null ) {
         this._updateTopItem();

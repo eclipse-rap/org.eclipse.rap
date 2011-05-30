@@ -227,7 +227,7 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
         var item = this._tree._rowContainer.findItemByRow( this._currentRow );
 	      var index = this._tree._findIndexByItem( item );
         var newIndex = index + offset;
-        var newItem = this._tree._findItemByIndex( newIndex );
+        var newItem = this._tree._rootItem.findItemByFlatIndex( newIndex );
         if( newItem != null ) {
           var newTopIndex = this._tree._topItemIndex + offset;
           this._tree.setTopItemIndex( newTopIndex );

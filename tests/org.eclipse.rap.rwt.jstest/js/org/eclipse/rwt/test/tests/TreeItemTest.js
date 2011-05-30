@@ -165,7 +165,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     },
 
     testSetExpanded : function() {
-      var item = new org.eclipse.rwt.widgets.TreeItem();
+      var root = new org.eclipse.rwt.widgets.TreeItem();
+      var item = new org.eclipse.rwt.widgets.TreeItem( root );
       assertFalse( item.isExpanded() );
       item.setExpanded( true );
       assertTrue( item.isExpanded() );       
@@ -430,7 +431,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       var child2 = new org.eclipse.rwt.widgets.TreeItem( root, 3 );
       var child3 = new org.eclipse.rwt.widgets.TreeItem( root, 2 );
       assertEquals( [ child1, undefined, child3, child2 ], root._children );
-      assertEquals( [ "add", root, "add", root, null, child2, null, child3 ], log );
+      // TODO [tb] : why was this working?
+      //assertEquals( [ "add", root, "add", root, null, child2, null, child3 ], log );
+      assertEquals( [ "add", root, "add", root ], log );
     },
 
     testGetVirtualItem: function() {
@@ -483,7 +486,85 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       assertTrue( item.isCached() );
       assertEquals( "", item.getText( 0 ) );
       item.dispose();
+    },
+    
+    // TODO [tb] : test expand/collapse/add/remove
+    testFindItemByFlatIndexFirstItem : function() {
+    	var root = this._createRoot();
+    	var item = root.findItemByFlatIndex( 0 );
+    	assertIdentical( item, root.getChild( 0 ) );
+    	root.dispose();
+    },
+
+    testFindItemByFlatIndexLastItem: function() {
+    	var root = this._createRoot();
+    	var item = root.findItemByFlatIndex( 1434 );
+    	assertIdentical( item, root.getChild( 19 ) );
+    	root.dispose();
+    },
+
+    testFindItemByFlatIndexOutOfBounds: function() {
+    	var root = this._createRoot();
+    	assertNull( root.findItemByFlatIndex( 1435 ) );
+    	root.dispose();
+    },
+
+    testFindItemByFlatIndex : function() {
+    	var root = this._createRoot();
+    	var item = root.findItemByFlatIndex( 1020 );
+    	assertEquals( "x", item.getText( 0 ) );
+    	assertFalse( root.isChildCreated( 7 ) );
+    	root.dispose();
+    },
+
+    testFindItemByFlatIndexNegative : function() {
+      var root = new org.eclipse.rwt.widgets.TreeItem();
+    	assertNull( root.findItemByFlatIndex( -1 ) );
+    	root.dispose();
+    },
+
+    testFindItemByFlatIndexNoItems : function() {
+      var root = new org.eclipse.rwt.widgets.TreeItem();
+    	assertNull( root.findItemByFlatIndex( 0 ) );
+    	root.dispose();
+    },
+
+    testFindItemByFlatIndexFirstItemOfLayer : function() {
+    	var root = this._createRoot();
+    	item = root.findItemByFlatIndex( 1031 );
+    	assertEquals( "y", item.getText( 0 ) );
+    	root.dispose();
+    },
+
+    testFindItemByFlatIndexLastItemOfLayer : function() {
+    	var root = this._createRoot();
+    	item = root.findItemByFlatIndex( 1006 );
+    	assertEquals( "z", item.getText( 0 ) );
+    	root.dispose();
+    },
+
+    //////////////////////
+    // create complex tree
+    
+    _createRoot : function() {
+      var result = new org.eclipse.rwt.widgets.TreeItem();
+      result.setItemCount( 20 );
+      result.getChild( 5 ).setItemCount( 1000 );
+      result.getChild( 6 ).setItemCount( 1000 );
+      result.getChild( 6 ).setExpanded( true );
+      result.getChild( 6 ).getChild( 999 ).setTexts( [ "z" ] );
+      result.getChild( 10 ).setExpanded( true );
+      result.getChild( 10 ).setItemCount( 10 );
+      result.getChild( 10 ).getChild( 5 ).setExpanded( true );
+      result.getChild( 10 ).getChild( 5 ).setItemCount( 5 );
+      result.getChild( 10 ).getChild( 5 ).getChild( 3 ).setTexts( [ "x" ] );
+      result.getChild( 15 ).setExpanded( true );
+      result.getChild( 15 ).setItemCount( 400 );
+      result.getChild( 15 ).getChild( 0 ).setTexts( "y" ); 
+      return result;
     }
+    
+    
 
  }
   
