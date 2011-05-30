@@ -30,7 +30,7 @@ public final class WidgetGraphicsAdapter implements IWidgetGraphicsAdapter {
   public Color[] getBackgroundGradientColors() {
     Color[] result = null;
     if( backgroundGradientColors != null ) {
-      result = ( Color[] )backgroundGradientColors.clone();
+      result = backgroundGradientColors.clone();
     }
     return result;
   }
@@ -38,7 +38,7 @@ public final class WidgetGraphicsAdapter implements IWidgetGraphicsAdapter {
   public int[] getBackgroundGradientPercents() {
     int[] result = null;
     if( backgroundGradientPercents != null ) {
-      result = ( int[] )backgroundGradientPercents.clone();
+      result = backgroundGradientPercents.clone();
     }
     return result;
   }
@@ -63,11 +63,11 @@ public final class WidgetGraphicsAdapter implements IWidgetGraphicsAdapter {
     }
     backgroundGradientColors = null;
     if( gradientColors != null ) {
-      backgroundGradientColors = ( Color[] )gradientColors.clone();
+      backgroundGradientColors = gradientColors.clone();
     }
     backgroundGradientPercents = null;
     if( percents != null ) {
-      backgroundGradientPercents = ( int[] )percents.clone();
+      backgroundGradientPercents = percents.clone();
     }
     backgroundGradientVertical = vertical;
   }

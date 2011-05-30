@@ -29,12 +29,12 @@ public final class StyleSheet {
   private SelectorWrapper[] selectorWrappers;
 
   public StyleSheet( final StyleRule[] styleRules ) {
-    this.styleRules = ( StyleRule[] )styleRules.clone();
+    this.styleRules = styleRules.clone();
     createSelectorWrappers();
   }
 
   public StyleRule[] getStyleRules() {
-    return ( StyleRule[] )styleRules.clone();
+    return styleRules.clone();
   }
 
   public ConditionalValue[] getValues( final String elementName,

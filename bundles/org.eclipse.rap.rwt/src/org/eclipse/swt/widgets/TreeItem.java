@@ -55,7 +55,7 @@ public class TreeItem extends Item {
     public Color[] getCellBackgrounds() {
       Color[] backgrounds = null;
       if( cellBackgrounds != null ) {
-        backgrounds = ( Color[] )cellBackgrounds.clone();
+        backgrounds = cellBackgrounds.clone();
       }
       return backgrounds;
     }
@@ -63,7 +63,7 @@ public class TreeItem extends Item {
     public Color[] getCellForegrounds() {
       Color[] foregrounds = null;
       if( cellForegrounds != null ) {
-        foregrounds = ( Color[] )cellForegrounds.clone();
+        foregrounds = cellForegrounds.clone();
       }
       return foregrounds;
     }
@@ -71,7 +71,7 @@ public class TreeItem extends Item {
     public Font[] getCellFonts() {
       Font[] fonts = null;
       if( cellFonts != null ) {
-        fonts = ( Font[] )cellFonts.clone();
+        fonts = cellFonts.clone();
       }
       return fonts;
     }
