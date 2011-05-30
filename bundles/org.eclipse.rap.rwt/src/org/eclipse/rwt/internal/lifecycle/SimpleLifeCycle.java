@@ -42,7 +42,6 @@ public class SimpleLifeCycle extends LifeCycle {
   }
 
   private static class SimpleUIThreadHolder implements IUIThreadHolder {
-  
     private final Thread thread;
   
     public SimpleUIThreadHolder( Thread thread ) {
@@ -50,15 +49,19 @@ public class SimpleLifeCycle extends LifeCycle {
     }
   
     public void updateServiceContext() {
+      throw new UnsupportedOperationException();
     }
   
     public void terminateThread() {
+      throw new UnsupportedOperationException();
     }
   
     public void switchThread() {
+      throw new UnsupportedOperationException();
     }
   
     public void setServiceContext( ServiceContext serviceContext ) {
+      throw new UnsupportedOperationException();
     }
   
     public Thread getThread() {
@@ -66,7 +69,7 @@ public class SimpleLifeCycle extends LifeCycle {
     }
   
     public Object getLock() {
-      return null;
+      throw new UnsupportedOperationException();
     }
   }
 
