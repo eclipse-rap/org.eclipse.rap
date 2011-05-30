@@ -22,8 +22,9 @@ import org.eclipse.swt.widgets.Display;
 
 public class Font_Test extends TestCase {
 
+  private Device device;
+
   public void testConstructor() {
-    Device device = new Display();
     Font font = new Font( device, "roman", 1, SWT.NORMAL );
     FontData fontData = FontUtil.getData( font );
     assertEquals( "roman", fontData.getName() );
@@ -33,94 +34,78 @@ public class Font_Test extends TestCase {
   }
   
   public void testConstructorWithNullDevice() {
+    device.dispose();
     try {
       new Font( null, "roman", 1, SWT.NONE );
       fail( "The device must not be null" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testConstructorWithNullName() {
-    Device device = new Display();
     try {
       new Font( device, null, 1, SWT.NONE );
       fail( "The font name must not be null" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testConstructorWithNullNameHashcodeClash() {
     // see http://bugs.eclipse.org/320282
-    Device device = new Display();
     new Font( device, "", 1, SWT.NONE );
     try {
       new Font( device, null, 1, SWT.NONE );
       fail( "The font name must not be null" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testConstructorWithNullFontData() {
-    Device device = new Display();
     try {
       new Font( device, ( FontData )null );
       fail( "Must not allow FontData to be null" );
-    } catch( Exception e ) {
-      // expected
+    } catch( Exception expected ) {
     }
   }
   
   public void testConstructorWithNullFontDataArray() {
-    Device device = new Display();
     try {
       new Font( device, ( FontData[] )null );
       fail( "Must not allow FontData[] to be null" );
-    } catch( Exception e ) {
-      // expected
+    } catch( Exception expected ) {
     }
   }
 
   public void testConstructorWithEmptyFontDataArray() {
-    Device device = new Display();
     try {
       new Font( device, new FontData[ 0 ] );
       fail( "Must not allow to pass empty FontData array" );
-    } catch( Exception e ) {
-      // expected
+    } catch( Exception expected ) {
     }
   }
 
   public void testConstructorWithNullFontDataInArray() {
-    Device device = new Display();
     try {
       new Font( device, new FontData[] { null } );
       fail( "FontData array must not contain null" );
-    } catch( Exception e ) {
-      // expected
+    } catch( Exception expected ) {
     }
   }
 
   public void testConstructorWithIllegalFontSize() {
-    Device device = new Display();
     try {
       new Font( device, "abc", -1, SWT.NONE );
       fail( "The font size must not be negative" );
-    } catch( IllegalArgumentException e ) {
-      // Expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testConstructorWithBogusStyle() {
-    Device device = new Display();
     Font font = new Font( device, "roman", 1, 1 << 3 );
     assertEquals( SWT.NORMAL, FontUtil.getData( font ).getStyle() );
   }
 
   public void testConstructorCreatesSafeCopy() {
-    Device device = new Display();
     FontData fontData = new FontData( "roman", 1, SWT.NORMAL );
     Font font = new Font( device, fontData );
     fontData.setHeight( 23 );
@@ -128,36 +113,31 @@ public class Font_Test extends TestCase {
   }
 
   public void testGetFontData() {
-    Display display = new Display();
-    Font font = new Font( display, "roman", 13, SWT.ITALIC );
+    Font font = new Font( device, "roman", 13, SWT.ITALIC );
     FontData[] fontDatas = font.getFontData();
     assertEquals( 1, fontDatas.length );
     assertEquals( "roman", fontDatas[ 0 ].getName() );
     assertEquals( 13, fontDatas[ 0 ].getHeight() );
     assertEquals( SWT.ITALIC, fontDatas[ 0 ].getStyle() );
   }
-
+  
   public void testGetFontDataCreatesSafeCopy() {
-    Display display = new Display();
-    Font font = new Font( display, "foo", 13, SWT.ITALIC );
+    Font font = new Font( device, "foo", 13, SWT.ITALIC );
     FontUtil.getData( font ).setName( "bar" );
     assertEquals( "foo", FontUtil.getData( font ).getName() );
   }
 
   public void testGetFontDataAfterDispose() {
-    Display display = new Display();
-    Font font = new Font( display, "roman", 1, SWT.NORMAL );
+    Font font = new Font( device, "roman", 1, SWT.NORMAL );
     font.dispose();
     try {
       font.getFontData();
       fail( "Must not allow to access fontData of disposed font" );
-    } catch( Exception e ) {
-      // expected
+    } catch( Exception expected ) {
     }
   }
 
   public void testDispose() {
-    Display device = new Display();
     Font font = new Font( device, "roman", 1, SWT.NORMAL );
     assertFalse( font.isDisposed() );
     font.dispose();
@@ -165,7 +145,6 @@ public class Font_Test extends TestCase {
   }
 
   public void testEquality() {
-    Device device = new Display();
     Font font1 = new Font( device, "roman", 1, SWT.NORMAL );
     Font font2 = new Font( device, "roman", 1, SWT.NORMAL );
     assertTrue( font1.equals( font2 ) );
@@ -173,7 +152,6 @@ public class Font_Test extends TestCase {
   }
 
   public void testEqualityWithSharedFont() {
-    Device device = new Display();
     Font font1 = Graphics.getFont( "roman", 1, SWT.NORMAL );
     Font font2 = new Font( device, "roman", 1, SWT.NORMAL );
     assertTrue( font1.equals( font2 ) );
@@ -182,6 +160,7 @@ public class Font_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    device = new Display();
   }
 
   protected void tearDown() throws Exception {

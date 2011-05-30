@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -17,39 +17,40 @@ import org.eclipse.swt.widgets.Display;
 
 public class Resource_Test extends TestCase {
   
-  private static final class TestResource extends Resource {
-    TestResource( final Device device ) {
+  private static class TestResource extends Resource {
+    TestResource( Device device ) {
       super( device );
     }
   }
+
+  private Device device;
   
   public void testDispose() {
-    Resource resource = new TestResource( new Display() );
+    Resource resource = new TestResource( device );
     assertFalse( resource.isDisposed() );
     resource.dispose();
     assertTrue( resource.isDisposed() );
   }
   
   public void testDisplayDispose() {
-    Device device = new Display();
     Resource resource = new TestResource( device );
     device.dispose();
     assertFalse( resource.isDisposed() );
   }
   
   public void testGetDevice() {
-    Device device = new Display();
     Resource resource = new TestResource( device );
     assertSame( device, resource.getDevice() );
   }
 
   public void testGetDeviceForFactoryResource() {
     Resource resource = new TestResource( null );
-    assertSame( Display.getCurrent(), resource.getDevice() );
+    assertSame( device, resource.getDevice() );
   }
   
   protected void setUp() throws Exception {
     Fixture.setUp();
+    device = new Display();
   }
 
   protected void tearDown() throws Exception {
