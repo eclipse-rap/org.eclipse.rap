@@ -8,15 +8,13 @@
 # Cleanup workspace dir
 test -d "$WORKSPACE" && rm -rf "$WORKSPACE"/*
 
-runtimeDir=/home/build/rap/build-runtimes/eclipse-3.6
-
 scriptsDir=`dirname $0`
 
 $scriptsDir/build-common.sh \
   --cvs-tag "$CVS_TAG" \
   --build-type "$BUILD_TYPE" \
   --work "$WORKSPACE" \
-  --runtime "$runtimeDir" \
+  --runtime "$RUNTIME_DIR" \
   --base-platform "$PLATFORM_DIR" \
   --builder "org.eclipse.rap/releng/org.eclipse.rap.releng/runtime" \
   --output "$WORKSPACE"
