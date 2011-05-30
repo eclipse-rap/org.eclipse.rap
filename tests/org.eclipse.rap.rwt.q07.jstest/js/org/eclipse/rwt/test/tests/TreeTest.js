@@ -1355,7 +1355,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.initRequestLog();
       testUtil.doubleClick( tree._rowContainer._children[ 0 ] );
       var log = testUtil.getRequestLog();
-      console.log( log );
       assertEquals( 2, testUtil.getRequestsSend() );
       var expected1a = "org.eclipse.swt.events.widgetSelected=w1";
       var expected1b = "org.eclipse.swt.events.widgetSelected.item=w2";
@@ -2805,7 +2804,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setHasSelectionListeners( true );
       testUtil.press( tree, "Space" );
       assertTrue( item.isChecked() );
-      console.log( testUtil.getRequestLog() );
       assertEquals( 1, testUtil.getRequestsSend() );
       tree.destroy();
     },

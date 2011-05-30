@@ -121,6 +121,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       assertEquals( null, item.getImage( 2 ) );
     },
 
+    testClear : function() {
+      var item = new org.eclipse.rwt.widgets.TreeItem();
+      item.setImages( [ "test1.jpg", "test2.jpg" ] );
+      item.setTexts( [ "bla", "blubg" ] );
+      item.setCellFonts( "arial", "windings" ) ;
+      item.setCellForegrounds( "red", "blue" );
+      item.setCellBackgrounds( "red", "blue" );
+      item.setFont( "arial" );
+      item.setForeground( "green" );
+      item.setBackground( "yellow" );
+      item.setVariant( "foo" );
+      item.clear();
+      assertEquals( null, item.getCellForeground( 0 ) );
+      assertEquals( null, item.getCellBackground( 0 ) );
+      assertEquals( null, item.getCellFont( 0 ) );
+      assertEquals( null, item.getBackground() );
+      assertEquals( "...", item.getText( 0 ) );
+      assertEquals( "", item.getText( 1 ) );
+      assertEquals( null, item.getImage( 0 ) );
+      assertEquals( null, item.getImage( 1 ) );
+      assertEquals( null, item.getVariant() );
+    },
+
     testParent : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
       var child = new org.eclipse.rwt.widgets.TreeItem( item );

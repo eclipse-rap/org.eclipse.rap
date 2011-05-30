@@ -89,10 +89,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     },
 
     clear : function() {
+    	// TODO [tb] : children?
       this._cached = false;
       this._checked = false;
       this._grayed = false;
-      this._texts = [];
+      this._texts = [ "..." ];
       this._images = [];
       this._background = null;
       this._foreground = null;
