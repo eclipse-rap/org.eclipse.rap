@@ -10,8 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
+import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
@@ -32,8 +35,9 @@ public class ClusterFixture {
     System.getProperties().remove( "lifecycle" );
   }
   
-  private ClusterFixture() {
-    // prevent instantiation
+  public static HttpSession getFirstSession( IServletEngine servletEngine ) {
+    Map sessions = servletEngine.getSessions();
+    return ( HttpSession )sessions.values().iterator().next();
   }
 
   public static ISessionStore getSessionStore( HttpSession httpSession ) {
@@ -43,5 +47,9 @@ public class ClusterFixture {
   public static Display getSessionDisplay( HttpSession httpSession ) {
     ISessionStore sessionStore = getSessionStore( httpSession );
     return ( Display )sessionStore.getAttribute( ATTR_SESSION_DISPLAY );
+  }
+
+  private ClusterFixture() {
+    // prevent instantiation
   }
 }

@@ -47,7 +47,10 @@ public class ServletEngine implements IServletEngine {
     this.sessionManager = createSessionManager( sessionManagerProvider );
   }
 
-  public void start() throws Exception {
+  public void start( Class entryPointClass ) throws Exception {
+    if( entryPointClass != null ) {
+      addEntryPoint( entryPointClass );
+    }
     server.start();
   }
 
@@ -64,16 +67,16 @@ public class ServletEngine implements IServletEngine {
     return ( HttpURLConnection )url.openConnection();
   }
 
-  public void addEntryPoint( Class entryPointClass ) {
+  public Map getSessions() {
+    return ( ( AbstractSessionManager )sessionManager ).getSessionMap();
+  }
+
+  private void addEntryPoint( Class entryPointClass ) {
     ServletContextHandler servletContext = createServletContext( "/" );
     servletContext.addServlet( RWTDelegate.class.getName(), "/rap" );
     servletContext.addFilter( RWTClusterSupport.class.getName(), "/rap", FilterMapping.DEFAULT );
     servletContext.addEventListener( new RWTServletContextListener() );
     servletContext.setInitParameter( "org.eclipse.rwt.entryPoints", entryPointClass.getName() );
-  }
-
-  public Map getSessions() {
-    return ( ( AbstractSessionManager )sessionManager ).getSessionMap();
   }
 
   private SessionManager createSessionManager( ISessionManagerProvider sessionManagerProvider ) {

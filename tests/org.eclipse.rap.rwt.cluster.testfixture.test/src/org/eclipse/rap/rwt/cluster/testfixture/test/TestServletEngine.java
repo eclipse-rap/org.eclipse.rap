@@ -31,7 +31,7 @@ public class TestServletEngine implements IServletEngine {
     this.port = port;
   }
 
-  public void start() throws Exception {
+  public void start( Class entryPointClass ) throws Exception {
   }
 
   public void stop() throws Exception {
@@ -41,9 +41,6 @@ public class TestServletEngine implements IServletEngine {
     return port;
   }
   
-  public void addEntryPoint( Class entryPointClass ) {
-  }
-
   public Map getSessions() {
     return null;
   }

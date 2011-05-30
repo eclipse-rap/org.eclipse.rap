@@ -27,4 +27,4 @@ Export-Package: org.eclipse.rap.rwt.cluster.testfixture,
  org.eclipse.rap.rwt.cluster.testfixture.client,
  org.eclipse.rap.rwt.cluster.testfixture.db,
  org.eclipse.rap.rwt.cluster.testfixture.server
-Require-Bundle: org.eclipse.rap.rwt;bundle-version="[1.4.0,2.0.0)"
+Require-Bundle: org.eclipse.rap.rwt;bundle-version="[1.5.0,2.0.0)"

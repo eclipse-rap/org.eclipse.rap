@@ -5,9 +5,10 @@ Bundle-SymbolicName: org.eclipse.rap.rwt.cluster.test
 Bundle-Version: 1.5.0.qualifier
 Bundle-Vendor: Eclipse.org - RAP
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.eclipse.rap.rwt,
- org.eclipse.rap.rwt.cluster.testfixture,
- org.junit
-Import-Package: javax.servlet.http
+Require-Bundle: org.eclipse.rap.rwt;bundle-version="[1.5.0,2.0.0)",
+ org.eclipse.rap.rwt.cluster.testfixture;bundle-version="[1.5.0,2.0.0)"
+Import-Package: javax.servlet;version="2.5.0",
+ javax.servlet.http;version="2.5.0",
+ junit.framework;version="3.8.0"
 
 

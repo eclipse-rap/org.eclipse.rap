@@ -8,19 +8,21 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.cluster.testfixture.server;
+package org.eclipse.rap.rwt.cluster.test.entrypoints;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.Map;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
-public interface IServletEngine {
-  void start( Class entryPointClass ) throws Exception;
-  void stop() throws Exception;
-  int getPort();
-  
-  Map getSessions();
 
-  HttpURLConnection createConnection( URL url ) throws IOException;
+public class FontEntryPoint implements IEntryPoint {
+
+  public int createUI() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setFont( new Font( display, "font-name", 12, SWT.BOLD ) );
+    return 0;
+  }
 }

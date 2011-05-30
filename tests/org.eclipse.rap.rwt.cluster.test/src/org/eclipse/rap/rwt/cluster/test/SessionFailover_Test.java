@@ -13,10 +13,12 @@ package org.eclipse.rap.rwt.cluster.test;
 import java.io.IOException;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.cluster.test.entrypoints.FontEntryPoint;
 import org.eclipse.rap.rwt.cluster.test.entrypoints.ThreeButtonExample;
 import org.eclipse.rap.rwt.cluster.testfixture.ClusterFixture;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
@@ -24,28 +26,78 @@ import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
 import org.eclipse.rap.rwt.cluster.testfixture.db.DatabaseServer;
 import org.eclipse.rap.rwt.cluster.testfixture.server.ClusteredServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
+import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
 import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
-
+import org.eclipse.swt.widgets.Shell;
 
 
 public class SessionFailover_Test extends TestCase {
 
+  private DatabaseServer db;
   private IServletEngine primary;
   private IServletEngine secondary;
-  private DatabaseServer db;
+  private RWTClient client;
+
+  public void testThreeButonExample() throws Exception {
+    primary.start( ThreeButtonExample.class );
+    secondary.start( ThreeButtonExample.class );
+    client.sendStartupRequest();
+    client.sendInitializationRequest();
+    // click center button four times on primary
+    clickCenterButton( 1, 4 );
+    // click center button four times on secondary
+    client.changeServletEngine( secondary );
+    clickCenterButton( 5, 8 );
+    Map primarySessions = primary.getSessions();
+    Map secondarySessions = secondary.getSessions();
+    // number of sessions
+    assertEquals( 1, primarySessions.size() );
+    assertEquals( 1, secondarySessions.size() );
+    // HttpSessions
+    HttpSession primarySession = ClusterFixture.getFirstSession( primary );
+    assertSessionIsIntact( primarySession, client );
+    HttpSession secondarySession = ClusterFixture.getFirstSession( secondary );
+    assertSessionIsIntact( secondarySession, client );
+    assertEquals( primarySession.getId(), secondarySession.getId() );
+    // Displays
+    Display primaryDisplay = ClusterFixture.getSessionDisplay( primarySession );
+    Display secondaryDisplay = ClusterFixture.getSessionDisplay( secondarySession );
+    assertNotSame( primaryDisplay, secondaryDisplay );
+  }
+
+  public void testFontEntryPoint() throws Exception {
+    primary.start( FontEntryPoint.class );
+    secondary.start( FontEntryPoint.class );
+    client.sendStartupRequest();
+    client.sendInitializationRequest();
+    
+    client.changeServletEngine( secondary );
+    client.sendDisplayResizeRequest( 400, 600 );
+
+    prepareExamination();
+    Shell primaryShell = getFirstShell( primary );
+    Shell secondaryShell = getFirstShell( secondary );
+    Font primaryFont = primaryShell.getFont();
+    Font secondaryFont = secondaryShell.getFont();
+    assertEquals( primaryFont, secondaryFont );
+    assertNotSame( primaryFont, secondaryFont );
+    assertSame( primaryShell.getDisplay(), primaryFont.getDevice() );
+    assertSame( secondaryShell.getDisplay(), secondaryFont.getDevice() );
+  }
 
   protected void setUp() throws Exception {
     ClusterFixture.setUp();
     db = new DatabaseServer();
     db.start();
     primary = new ClusteredServletEngine( db );
-    primary.addEntryPoint( ThreeButtonExample.class );
     secondary = new ClusteredServletEngine( db );
-    secondary.addEntryPoint( ThreeButtonExample.class );
-    primary.start();
-    secondary.start();
+    client = new RWTClient( primary );
   }
 
   protected void tearDown() throws Exception {
@@ -55,55 +107,41 @@ public class SessionFailover_Test extends TestCase {
     ClusterFixture.tearDown();
   }
   
-  public void testAttachHttpSessionDoesNotTriggerSessionListeners() {
-    fail();
+  private void prepareExamination() {
+    attachCurrentThreadToDisplay( primary );
+    attachCurrentThreadToDisplay( secondary );
   }
 
-  public void testSessionFailoverBetweenButtonClicks() throws Exception {
-    RWTClient client = new RWTClient( primary );
-    client.sendStartupRequest();
-    client.sendInitializationRequest();
-    // click center button four times on primary
-    clickCenterButton( client, 1, 4 );
-    // click center button four times on secondary
-    client.changeServletEngine( secondary );
-    clickCenterButton( client, 5, 8 );
-    Map primarySessions = primary.getSessions();
-    Map secondarySessions = secondary.getSessions();
-    // number of sessions
-    assertEquals( 1, primarySessions.size() );
-    assertEquals( 1, secondarySessions.size() );
-    // session id equality
-    String primarySessionId = ( String )primarySessions.keySet().iterator().next();
-    String secondarySessionId = ( String )secondarySessions.keySet().iterator().next();
-    assertEquals( primarySessionId, secondarySessionId );
-    assertTrue( client.getSessionId().startsWith( primarySessionId ) );
-    // HttpSessions
-    HttpSession primarySession = ( HttpSession )primary.getSessions().get( secondarySessionId );
-    assertSessionIsIntact( primarySession, client );
-    HttpSession secondarySession = ( HttpSession )secondary.getSessions().get( secondarySessionId );
-    assertSessionIsIntact( secondarySession, client );
-    // Displays
-    Display primaryDisplay = ClusterFixture.getSessionDisplay( primarySession );
-    Display secondaryDisplay = ClusterFixture.getSessionDisplay( secondarySession );
-    assertNotSame( primaryDisplay, secondaryDisplay );
+  private static void attachCurrentThreadToDisplay( IServletEngine servletEngine ) {
+    HttpSession session = ClusterFixture.getFirstSession( servletEngine );
+    Display display = ClusterFixture.getSessionDisplay( session );
+    getDisplayAdapter( display ).attachThread();
   }
-  
+
   private static void assertSessionIsIntact( HttpSession session, RWTClient client ) {
+    assertTrue( client.getSessionId().startsWith( session.getId() ) );
     ISessionStore sessionStore = ClusterFixture.getSessionStore( session );
     Display display = ClusterFixture.getSessionDisplay( session );
     assertNotNull( sessionStore );
     assertNotNull( display );
     assertSame( sessionStore, getDisplayAdapter( display ).getSessionStore() );
     assertNotNull( sessionStore.getHttpSession() );
-    assertTrue( client.getSessionId().startsWith( session.getId() ) );
+    ServletContext servletContext = session.getServletContext();
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    assertNotNull( applicationContext );
   }
 
   private static IDisplayAdapter getDisplayAdapter( Display display ) {
     return( ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class ) );
   }
 
-  private static void clickCenterButton( RWTClient client, int start, int end ) throws IOException {
+  private static Shell getFirstShell( IServletEngine servletEngine ) {
+    HttpSession session = ClusterFixture.getFirstSession( servletEngine );
+    Display display = ClusterFixture.getSessionDisplay( session );
+    return display.getShells()[ 0 ];
+  }
+
+  private void clickCenterButton( int start, int end ) throws IOException {
     for( int i = start; i <= end; i++ ) {
       Response response = client.sendWidgetSelectedRequest( "w5" );
       assertTrue( response.isValidJavascript() );

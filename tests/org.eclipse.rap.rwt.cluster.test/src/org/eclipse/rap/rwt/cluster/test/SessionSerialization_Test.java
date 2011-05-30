@@ -45,8 +45,7 @@ public class SessionSerialization_Test extends TestCase {
   protected void setUp() throws Exception {
     ClusterFixture.setUp();
     servletEngine = new ServletEngine();
-    servletEngine.addEntryPoint( ThreeButtonExample.class );
-    servletEngine.start();
+    servletEngine.start( ThreeButtonExample.class );
     client = new RWTClient( servletEngine );
   }
 

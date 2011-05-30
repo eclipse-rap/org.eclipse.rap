@@ -110,10 +110,7 @@ public class ServletEngine_Test extends TestCase {
 
   private ServletEngine startServletEngine( Class entryPoint ) throws Exception {
     ServletEngine result = new ServletEngine();
-    if( entryPoint != null ) {
-      result.addEntryPoint( entryPoint );
-    }
-    result.start();
+    result.start( entryPoint );
     startedEngines.add( result );
     return result;
   }
