@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,7 @@ public final class FontData {
    *    <li>ERROR_INVALID_ARGUMENT - if the height is negative</li>
    * </ul>
    */
-  public FontData( final String name, final int height, final int style ) {
+  public FontData( String name, int height, int style ) {
     if( name == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -86,7 +86,7 @@ public final class FontData {
    *
    * @see #toString
    */
-  public FontData( final String string ) {
+  public FontData( String string ) {
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -224,7 +224,7 @@ public final class FontData {
    * @see #getHeight
    * @since 1.4
    */
-  public void setHeight( final int height ) {
+  public void setHeight( int height ) {
     if( height < 0 ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
@@ -242,7 +242,7 @@ public final class FontData {
    * @see #getName
    * @since 1.4
    */
-  public void setName( final String name ) {
+  public void setName( String name ) {
     if( name == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -260,7 +260,7 @@ public final class FontData {
    * @see #getStyle
    * @since 1.4
    */
-  public void setStyle( final int style ) {
+  public void setStyle( int style ) {
     this.style = style;
   }
 
@@ -282,7 +282,7 @@ public final class FontData {
    * @see java.util.Locale#toString
    * @since 1.4
    */
-  public void setLocale( final String locale ) {
+  public void setLocale( String locale ) {
     String result = "";
     if( locale != null ) {
       int length = locale.length();
@@ -313,7 +313,7 @@ public final class FontData {
    *
    * @see #hashCode
    */
-  public boolean equals( final Object obj ) {
+  public boolean equals( Object obj ) {
     boolean result = false;
     if( obj instanceof FontData ) {
       FontData toCompare = ( FontData )obj;
@@ -339,7 +339,7 @@ public final class FontData {
     return name.hashCode() ^ height << 8 ^ style;
   }
 
-  private static int checkFontStyle( final int style ) {
+  private static int checkFontStyle( int style ) {
     int result = SWT.NORMAL;
     if( ( style & SWT.BOLD ) != 0 ) {
       result |= SWT.BOLD;

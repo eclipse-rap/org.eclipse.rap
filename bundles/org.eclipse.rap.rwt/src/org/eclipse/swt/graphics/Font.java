@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,7 @@ public final class Font extends Resource {
   private final FontData internalFontData;
 
   // used by ResourceFactory#getFont()
-  private Font( final FontData fontData ) {
+  private Font( FontData fontData ) {
     super( null );
     internalFontData = findFontData( fontData );
   }
@@ -67,7 +67,7 @@ public final class Font extends Resource {
    *
    * @since 1.3
    */
-  public Font( final Device device, final FontData fontData ) {
+  public Font( Device device, FontData fontData ) {
     super( checkDevice( device ) );
     if( fontData == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -104,7 +104,7 @@ public final class Font extends Resource {
    *
    * @since 1.3
    */
-  public Font( final Device device, final FontData[] fontData ) {
+  public Font( Device device, FontData[] fontData ) {
     super( checkDevice( device ) );
     if( fontData == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -142,7 +142,7 @@ public final class Font extends Resource {
    *    <li>ERROR_NO_HANDLES - if a font could not be created from the given arguments</li>
    * </ul>
    */
-  public Font( final Device device, final String name, final int height, final int style ) {
+  public Font( Device device, String name, int height, int style ) {
     super( checkDevice( device ) );
     if( name == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -178,7 +178,7 @@ public final class Font extends Resource {
     return new FontData[] { fontData };
   }
 
-  public boolean equals( final Object object ) {
+  public boolean equals( Object object ) {
     boolean result;
     if( object == this ) {
       result = true;
@@ -224,7 +224,7 @@ public final class Font extends Resource {
     return buffer.toString();
   }
 
-  private static FontData findFontData( final FontData fontData ) {
+  private static FontData findFontData( FontData fontData ) {
     return RWTFactory.getFontDataFactory().findFontData( fontData );
   }
 }

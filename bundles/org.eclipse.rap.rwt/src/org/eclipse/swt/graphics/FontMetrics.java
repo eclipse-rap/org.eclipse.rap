@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -27,7 +27,7 @@ public final class FontMetrics {
   /**
    * Prevents instances from being created outside the package.
    */
-  FontMetrics( final Font font ) {
+  FontMetrics( Font font ) {
     this.font = font;
   }
 
@@ -64,7 +64,7 @@ public final class FontMetrics {
    *         <code>false</code> otherwise
    * @see #hashCode
    */
-  public boolean equals( final Object object ) {
+  public boolean equals( Object object ) {
     boolean result = false;
     if( object == this ) {
       result = true;
