@@ -37,9 +37,9 @@ public class SessionSerialization_Test extends TestCase {
     client.sendInitializationRequest();
     
     HttpSession httpSession = getFirstSession();
-    assertSessionAttributesAreSerializable( httpSession );
     ISessionStore sessionStore = ClusterFixture.getSessionStore( httpSession );
-    assertSessionStoreAttributesAreSerializable( sessionStore );
+    assertSerializable( httpSession );
+    assertSerializable( sessionStore );
   }
 
   protected void setUp() throws Exception {
@@ -59,27 +59,29 @@ public class SessionSerialization_Test extends TestCase {
     return ( HttpSession )servletEngine.getSessions().values().iterator().next();
   }
 
-  private void assertSessionAttributesAreSerializable( HttpSession session ) {
+  private static void assertSerializable( HttpSession session ) {
     Enumeration names = session.getAttributeNames();
     while( names.hasMoreElements() ) {
       String name = ( String )names.nextElement();
       Object value = session.getAttribute( name );
-      String msg = "session attribute " + name + " is not serializable";
+      String msg = "Session attribute not serializable: " + name;
       assertIsSerializable( msg, value );
     }
   }
 
-  private static void assertSessionStoreAttributesAreSerializable( ISessionStore sessionStore ) {
+  private static void assertSerializable( ISessionStore sessionStore ) {
     Enumeration names = sessionStore.getAttributeNames();
     while( names.hasMoreElements() ) {
       String name = ( String )names.nextElement();
       Object value = sessionStore.getAttribute( name );
-      String msg = "sessionStore attribute " + name + " is not serializable";
+      String msg = "SessionStore attribute not serializable: " + name;
       assertIsSerializable( msg, value );
     }
   }
 
   private static void assertIsSerializable( String msg, Object value ) {
-    assertTrue( msg, value instanceof Serializable );
+    if( value != null ) {
+      assertTrue( msg, value instanceof Serializable );
+    }
   }
 }
