@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -14,12 +14,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
 
 public final class WidgetGraphicsAdapter implements IWidgetGraphicsAdapter {
-
-//  private static final class Data {
-//  }
-//
-//  private Data data;
-
   private int roundedBorderWidth;
   private Color roundedBorderColor;
   private Rectangle roundedBorderRadius;
