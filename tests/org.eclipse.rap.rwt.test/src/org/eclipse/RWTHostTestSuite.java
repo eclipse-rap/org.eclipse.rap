@@ -130,6 +130,8 @@ public class RWTHostTestSuite {
     suite.addTestSuite( DisposeEvent_Test.class );
     suite.addTestSuite( ShellEvent_Test.class );
     suite.addTestSuite( TreeEvent_Test.class );
+    suite.addTestSuite( KeyEvent_Test.class );
+    suite.addTestSuite( MenuDetectEvent_Test.class );
     suite.addTestSuite( UntypedEventAdapter_Test.class );
     suite.addTestSuite( IdManager_Test.class );
     suite.addTestSuite( UICallBack_Test.class );
@@ -143,6 +145,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ClassUtil_Test.class );
     suite.addTestSuite( StreamWritingUtil_Test.class );
     suite.addTestSuite( SharedInstanceBuffer_Test.class );
+    suite.addTestSuite( NumberFormatUtil_Test.class );
 
     suite.addTestSuite( Display_Test.class );
     suite.addTestSuite( DisplaySerialization_Test.class );
@@ -265,6 +268,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( QxCursor_Test.class );
     suite.addTestSuite( QxAnimation_Test.class );
     suite.addTestSuite( QxIdentifier_Test.class );
+    suite.addTestSuite( QxShadow_Test.class );
     suite.addTestSuite( CssFileReader_Test.class );
     suite.addTestSuite( PropertyResolver_Test.class );
     suite.addTestSuite( JsonArray_Test.class );
@@ -281,6 +285,7 @@ public class RWTHostTestSuite {
     suite.addTestSuite( ToolBarThemeAdapter_Test.class );
     suite.addTestSuite( StyleSheetBuilder_Test.class );
     suite.addTestSuite( ThemeStoreWriter_Test.class );
+    suite.addTestSuite( ThemePropertyAdapterRegistry_Test.class );
 
     // == SettingStore ==
     suite.addTestSuite( MemorySettingStore_Test.class );

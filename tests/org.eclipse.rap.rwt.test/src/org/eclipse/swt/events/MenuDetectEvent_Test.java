@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource
+ * Copyright (c) 2010, 2011 EclipseSource
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
 
 
-public class KeyEvent_Test extends TestCase {
+public class MenuDetectEvent_Test extends TestCase {
 
   private Display display;
   private Shell shell;
@@ -40,29 +40,27 @@ public class KeyEvent_Test extends TestCase {
   public void testCopyFieldsFromUntypedEvent() {
     final List log = new ArrayList();
     Button button = new Button( shell, SWT.PUSH );
-    button.addKeyListener( new KeyAdapter() {
-      public void keyPressed( final KeyEvent event ) {
+    button.addMenuDetectListener( new MenuDetectListener() {
+      public void menuDetected( final MenuDetectEvent event ) {
         log.add( event );
       }
     } );
     Object data = new Object();
     Event event = new Event();
-    event.stateMask = 23;
-    event.keyCode = 42;
-    event.character = 'f';
+    event.x = 10;
+    event.y = 20;
     event.doit = true;
     event.data = data;
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    button.notifyListeners( SWT.KeyDown, event );
-    KeyEvent keyEvent = ( KeyEvent )log.get( 0 );
-    assertSame( button, keyEvent.getSource() );
-    assertSame( button, keyEvent.widget );
-    assertSame( display, keyEvent.display );
-    assertSame( data, keyEvent.data );
-    assertEquals( 23, keyEvent.stateMask );
-    assertEquals( 42, keyEvent.keyCode );
-    assertEquals( 'f', keyEvent.character );
-    assertEquals( true, keyEvent.doit );
-    assertEquals( SWT.KeyDown, keyEvent.getID() );
+    button.notifyListeners( SWT.MenuDetect, event );
+    MenuDetectEvent menuDetectEvent = ( MenuDetectEvent )log.get( 0 );
+    assertSame( button, menuDetectEvent.getSource() );
+    assertSame( button, menuDetectEvent.widget );
+    assertSame( display, menuDetectEvent.display );
+    assertSame( data, menuDetectEvent.data );
+    assertEquals( event.x, menuDetectEvent.x );
+    assertEquals( event.y, menuDetectEvent.y );
+    assertEquals( event.doit, menuDetectEvent.doit );
+    assertEquals( SWT.MenuDetect, menuDetectEvent.getID() );
   }
 }
