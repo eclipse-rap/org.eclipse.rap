@@ -22,13 +22,13 @@ public class RWTClient {
   private IServletEngine servletEngine;
   private String sessionId;
   private int requestCounter;
-  private final Map parameters;
+  private final Map<String,String> parameters;
 
   public RWTClient( IServletEngine servletEngine ) {
     this.servletEngine = servletEngine;
     this.sessionId = "";
     this.requestCounter = -2;
-    this.parameters = new HashMap();
+    this.parameters = new HashMap<String,String>();
   }
   
   public void changeServletEngine( IServletEngine servletEngine ) {

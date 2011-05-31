@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.cluster.test.entrypoints.ThreeButtonExample;
+import org.eclipse.rap.rwt.cluster.test.entrypoints.ButtonEntryPoint;
 import org.eclipse.rap.rwt.cluster.testfixture.*;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
@@ -36,7 +36,7 @@ public class SessionSerialization_Test extends TestCase {
     
     client.sendInitializationRequest();
     
-    HttpSession httpSession = getFirstSession();
+    HttpSession httpSession = servletEngine.getSessions()[ 0 ];
     ISessionStore sessionStore = ClusterFixture.getSessionStore( httpSession );
     assertSerializable( httpSession );
     assertSerializable( sessionStore );
@@ -45,17 +45,13 @@ public class SessionSerialization_Test extends TestCase {
   protected void setUp() throws Exception {
     ClusterFixture.setUp();
     servletEngine = new ServletEngine();
-    servletEngine.start( ThreeButtonExample.class );
+    servletEngine.start( ButtonEntryPoint.class );
     client = new RWTClient( servletEngine );
   }
 
   protected void tearDown() throws Exception {
     servletEngine.stop();
     ClusterFixture.tearDown();
-  }
-
-  private HttpSession getFirstSession() {
-    return ( HttpSession )servletEngine.getSessions().values().iterator().next();
   }
 
   private static void assertSerializable( HttpSession session ) {

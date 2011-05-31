@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Cluster Testfixture tests
 Bundle-SymbolicName: org.eclipse.rap.rwt.cluster.testfixture.test
-Bundle-Version: 1.4.0.qualifier
-Fragment-Host: org.eclipse.rap.rwt.cluster.testfixture;bundle-version="[1.4.0,2.0.0)"
+Bundle-Version: 1.5.0.qualifier
+Fragment-Host: org.eclipse.rap.rwt.cluster.testfixture;bundle-version="[1.5.0,2.0.0)"
 Bundle-Vendor: Eclipse.org - RAP
-Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Import-Package: junit.framework;version="3.8.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: RWT cluster tests
+Bundle-Name: RWT Cluster Tests
 Bundle-SymbolicName: org.eclipse.rap.rwt.cluster.test
 Bundle-Version: 1.5.0.qualifier
 Bundle-Vendor: Eclipse.org - RAP

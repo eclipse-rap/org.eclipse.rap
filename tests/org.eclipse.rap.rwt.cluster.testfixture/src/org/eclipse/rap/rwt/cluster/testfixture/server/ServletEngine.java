@@ -14,12 +14,16 @@ import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.session.*;
-import org.eclipse.jetty.servlet.*;
+import org.eclipse.jetty.servlet.FilterMapping;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.resource.FileResource;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
@@ -67,10 +71,14 @@ public class ServletEngine implements IServletEngine {
     return ( HttpURLConnection )url.openConnection();
   }
 
-  public Map getSessions() {
-    return ( ( AbstractSessionManager )sessionManager ).getSessionMap();
+  @SuppressWarnings({ "deprecation", "unchecked" })
+  public HttpSession[] getSessions() {
+    Map sessionMap = ( ( AbstractSessionManager )sessionManager ).getSessionMap();
+    Collection<HttpSession> sessions = sessionMap.values();
+    return sessions.toArray( new HttpSession[ sessions.size() ] );
   }
 
+  @SuppressWarnings("restriction")
   private void addEntryPoint( Class entryPointClass ) {
     ServletContextHandler servletContext = createServletContext( "/" );
     servletContext.addServlet( RWTDelegate.class.getName(), "/rap" );

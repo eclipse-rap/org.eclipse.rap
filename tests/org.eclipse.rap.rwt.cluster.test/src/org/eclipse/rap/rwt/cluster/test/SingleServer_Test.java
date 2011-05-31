@@ -11,13 +11,12 @@
 package org.eclipse.rap.rwt.cluster.test;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.cluster.test.entrypoints.ThreeButtonExample;
+import org.eclipse.rap.rwt.cluster.test.entrypoints.ButtonEntryPoint;
 import org.eclipse.rap.rwt.cluster.testfixture.ClusterFixture;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
@@ -34,7 +33,7 @@ public class SingleServer_Test extends TestCase {
   protected void setUp() throws Exception {
     ClusterFixture.setUp();
     servletEngine = new ServletEngine();
-    servletEngine.start( ThreeButtonExample.class );
+    servletEngine.start( ButtonEntryPoint.class );
     client = new RWTClient( servletEngine );
   }
   
@@ -54,10 +53,9 @@ public class SingleServer_Test extends TestCase {
     Response subsequentRequest = client.sendWidgetSelectedRequest( "w5" );
     assertTrue( subsequentRequest.isValidJavascript() );
     
-    Map sessions = servletEngine.getSessions();
-    assertEquals( 1, sessions.size() );
-    HttpSession httpSession = ( HttpSession )sessions.values().iterator().next();
-    assertNotNull( ClusterFixture.getSessionDisplay( httpSession ) );
+    HttpSession[] sessions = servletEngine.getSessions();
+    assertEquals( 1, sessions.length );
+    assertNotNull( ClusterFixture.getSessionDisplay( sessions[ 0 ] ) );
   }
 }
 

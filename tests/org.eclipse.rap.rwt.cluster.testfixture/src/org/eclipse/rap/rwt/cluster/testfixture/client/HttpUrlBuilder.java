@@ -21,14 +21,14 @@ class HttpUrlBuilder {
   private final int port;
   private final String path;
   private String sessionId;
-  private final Map parameters;
+  private final Map<String,String> parameters;
   
   HttpUrlBuilder( String hostName, int port, String path ) {
     this.hostName = hostName;
     this.port = port;
     this.path = path;
     this.sessionId = "";
-    this.parameters = new HashMap();
+    this.parameters = new HashMap<String,String>();
   }
   
   void setSessionId( String string ) {
@@ -78,7 +78,7 @@ class HttpUrlBuilder {
       Iterator iterator = parameters.keySet().iterator();
       while( iterator.hasNext() ) {
         String name = ( String )iterator.next();
-        String value = ( String )parameters.get( name );
+        String value = parameters.get( name );
         buffer.append( name );
         buffer.append( "=" );
         buffer.append( value );

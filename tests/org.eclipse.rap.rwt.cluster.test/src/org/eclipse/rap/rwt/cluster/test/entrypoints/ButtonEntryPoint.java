@@ -21,7 +21,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 
-public class ThreeButtonExample implements IEntryPoint {
+public class ButtonEntryPoint implements IEntryPoint {
 
   private Display display;
 

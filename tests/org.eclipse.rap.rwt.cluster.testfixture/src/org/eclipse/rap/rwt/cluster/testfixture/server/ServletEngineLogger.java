@@ -47,7 +47,7 @@ class ServletEngineLogger implements Logger {
     this.debugEnabled = enabled;
   }
 
-  public void warn( String msg, Object[] args ) {
+  public void warn( String msg, Object... args ) {
     warn( msg, ( Throwable )null );
   }
 
@@ -64,7 +64,7 @@ class ServletEngineLogger implements Logger {
     }
   }
 
-  public void info( String msg, Object[] args ) {
+  public void info( String msg, Object... args ) {
   }
 
   public void info( Throwable thrown ) {
@@ -73,7 +73,7 @@ class ServletEngineLogger implements Logger {
   public void info( String msg, Throwable thrown ) {
   }
 
-  public void debug( String msg, Object[] args ) {
+  public void debug( String msg, Object... args ) {
     debug( msg, ( Throwable )null );
   }
 

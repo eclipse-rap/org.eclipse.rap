@@ -11,32 +11,30 @@
 package org.eclipse.rap.rwt.cluster.test;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.cluster.test.entrypoints.ButtonEntryPoint;
 import org.eclipse.rap.rwt.cluster.test.entrypoints.FontEntryPoint;
-import org.eclipse.rap.rwt.cluster.test.entrypoints.ThreeButtonExample;
 import org.eclipse.rap.rwt.cluster.testfixture.ClusterFixture;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
 import org.eclipse.rap.rwt.cluster.testfixture.db.DatabaseServer;
 import org.eclipse.rap.rwt.cluster.testfixture.server.ClusteredServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
 import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 
+@SuppressWarnings("restriction")
 public class SessionFailover_Test extends TestCase {
 
   private DatabaseServer db;
@@ -44,21 +42,19 @@ public class SessionFailover_Test extends TestCase {
   private IServletEngine secondary;
   private RWTClient client;
 
-  public void testThreeButonExample() throws Exception {
-    primary.start( ThreeButtonExample.class );
-    secondary.start( ThreeButtonExample.class );
+  public void testButtonEntryPoint() throws Exception {
+    primary.start( ButtonEntryPoint.class );
+    secondary.start( ButtonEntryPoint.class );
     client.sendStartupRequest();
     client.sendInitializationRequest();
-    // click center button four times on primary
+    // Click center button four times on primary
     clickCenterButton( 1, 4 );
-    // click center button four times on secondary
+    // Click center button four times on secondary
     client.changeServletEngine( secondary );
     clickCenterButton( 5, 8 );
-    Map primarySessions = primary.getSessions();
-    Map secondarySessions = secondary.getSessions();
-    // number of sessions
-    assertEquals( 1, primarySessions.size() );
-    assertEquals( 1, secondarySessions.size() );
+    // Number of sessions
+    assertEquals( 1, primary.getSessions().length );
+    assertEquals( 1, secondary.getSessions().length );
     // HttpSessions
     HttpSession primarySession = ClusterFixture.getFirstSession( primary );
     assertSessionIsIntact( primarySession, client );
@@ -90,7 +86,7 @@ public class SessionFailover_Test extends TestCase {
     assertSame( primaryShell.getDisplay(), primaryFont.getDevice() );
     assertSame( secondaryShell.getDisplay(), secondaryFont.getDevice() );
   }
-
+  
   protected void setUp() throws Exception {
     ClusterFixture.setUp();
     db = new DatabaseServer();

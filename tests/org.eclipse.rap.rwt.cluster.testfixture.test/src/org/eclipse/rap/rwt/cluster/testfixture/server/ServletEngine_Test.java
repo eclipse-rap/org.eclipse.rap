@@ -26,7 +26,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.test.TestEntryPoint;
 
 public class ServletEngine_Test extends TestCase {
 
-  private List startedEngines;
+  private List<IServletEngine> startedEngines;
 
   public void testPortsAreUnique() throws Exception {
     ServletEngine engine1 = startServletEngine( null );
@@ -67,10 +67,9 @@ public class ServletEngine_Test extends TestCase {
     Response subsequentRequest = client.sendDisplayResizeRequest( 300, 300 );
     assertTrue( subsequentRequest.isValidJavascript() );
     
-    Map sessions = servletEngine.getSessions();
-    assertEquals( 1, sessions.size() );
-    HttpSession httpSession = ( HttpSession )sessions.values().iterator().next();
-    assertNotNull( ClusterFixture.getSessionDisplay( httpSession ) );
+    HttpSession[] sessions = servletEngine.getSessions();
+    assertEquals( 1, sessions.length );
+    assertNotNull( ClusterFixture.getSessionDisplay( sessions[ 0 ] ) );
   }
 
   
@@ -81,17 +80,17 @@ public class ServletEngine_Test extends TestCase {
     sendRequest( engine1 );
     sendRequest( engine2 );
     
-    assertEquals( 1, engine1.getSessions().size() );
-    assertEquals( 1, engine2.getSessions().size() );
-    String sessionId1 = ( String )engine1.getSessions().keySet().iterator().next();
-    String sessionId2 = ( String )engine2.getSessions().keySet().iterator().next();
+    assertEquals( 1, engine1.getSessions().length );
+    assertEquals( 1, engine2.getSessions().length );
+    String sessionId1 = engine1.getSessions()[ 0 ].getId();
+    String sessionId2 = engine2.getSessions()[ 0 ].getId();
     assertFalse( sessionId1.equals( sessionId2 ) );
   }
 
   protected void setUp() throws Exception {
     System.setProperty( "lifecycle", "org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle" );
     TestEntryPoint.reset();
-    startedEngines = new LinkedList();
+    startedEngines = new LinkedList<IServletEngine>();
   }
 
   protected void tearDown() throws Exception {

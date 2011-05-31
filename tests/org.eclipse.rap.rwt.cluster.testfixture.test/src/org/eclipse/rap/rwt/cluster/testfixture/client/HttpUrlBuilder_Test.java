@@ -73,7 +73,7 @@ public class HttpUrlBuilder_Test extends TestCase {
   }
   
   public void testToStringWithAddedParameterMap() throws MalformedURLException {
-    Map parameters = new HashMap();
+    Map<String,String> parameters = new HashMap<String,String>();
     urlBuilder = new HttpUrlBuilder( "localhost", 80, "path" );
     parameters.put( "name1", "value1" );
     parameters.put( "name2", "value2" );

@@ -13,7 +13,8 @@ package org.eclipse.rap.rwt.cluster.testfixture.test;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 
@@ -41,7 +42,7 @@ public class TestServletEngine implements IServletEngine {
     return port;
   }
   
-  public Map getSessions() {
+  public HttpSession[] getSessions() {
     return null;
   }
 

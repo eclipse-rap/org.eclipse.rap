@@ -13,14 +13,15 @@ package org.eclipse.rap.rwt.cluster.testfixture.server;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 public interface IServletEngine {
   void start( Class entryPointClass ) throws Exception;
   void stop() throws Exception;
   int getPort();
   
-  Map getSessions();
+  HttpSession[] getSessions();
 
   HttpURLConnection createConnection( URL url ) throws IOException;
 }
