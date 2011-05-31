@@ -59,16 +59,14 @@ public final class ShellLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_IMAGE, shell.getImage() );
     adapter.preserve( PROP_ALPHA, new Integer( shell.getAlpha() ) );
     adapter.preserve( PROP_MODE, getMode( shell ) );
-    adapter.preserve( PROP_FULLSCREEN,
-                      Boolean.valueOf( shell.getFullScreen() ) );
-    adapter.preserve( PROP_SHELL_LISTENER,
-                      Boolean.valueOf( ShellEvent.hasListener( shell ) ) );
+    adapter.preserve( PROP_FULLSCREEN, Boolean.valueOf( shell.getFullScreen() ) );
+    adapter.preserve( PROP_SHELL_LISTENER, Boolean.valueOf( ShellEvent.hasListener( shell ) ) );
     adapter.preserve( PROP_SHELL_MENU, shell.getMenuBar() );
     adapter.preserve( PROP_MINIMUM_SIZE, shell.getMinimumSize() );
     WidgetLCAUtil.preserveCustomVariant( shell );
   }
 
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
     Shell shell = ( Shell )widget;
     // [if] Preserve the menu bounds before setting the new shell bounds.
     preserveMenuBounds( shell );
@@ -86,7 +84,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( shell );
   }
 
-  public void renderInitialization( final Widget widget ) throws IOException {
+  public void renderInitialization( Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     Shell shell = ( Shell )widget;
     writer.newWidget( QX_TYPE );
@@ -114,8 +112,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writer.set( "showClose", ( style & SWT.CLOSE ) != 0 );
     writer.set( "allowClose", ( style & SWT.CLOSE ) != 0 );
     Boolean resizable = Boolean.valueOf( ( style & SWT.RESIZE ) != 0 );
-    writer.set( "resizable",
-                new Object[] { resizable, resizable, resizable, resizable } );
+    writer.set( "resizable", new Object[] { resizable, resizable, resizable, resizable } );
     Composite parent = shell.getParent();
     if( parent instanceof Shell ) {
       writer.set( "parentShell", parent );
@@ -123,7 +120,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writer.call( "initialize", null );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
     WidgetLCAUtil.writeCustomVariant( shell ); // Order matters for animation
     writeImage( shell );
@@ -153,7 +150,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   //////////////////
   // Helping methods
 
-  private static void writeText( final Shell shell ) throws IOException {
+  private static void writeText( Shell shell ) throws IOException {
     String text = shell.getText();
     if( WidgetLCAUtil.hasChanged( shell, PROP_TEXT, text, "" ) ) {
       JSWriter writer = JSWriter.getWriterFor( shell );
@@ -162,7 +159,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void writeAlpha( final Shell shell ) throws IOException {
+  private void writeAlpha( Shell shell ) throws IOException {
     int alpha = shell.getAlpha();
     if( WidgetLCAUtil.hasChanged( shell, PROP_ALPHA, new Integer( alpha ), new Integer( 0xFF ) ) ) {
       JSWriter writer = JSWriter.getWriterFor( shell );
@@ -171,7 +168,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeOpen( final Shell shell ) throws IOException {
+  private static void writeOpen( Shell shell ) throws IOException {
     // TODO [rst] workaround: qx window should be opened only once.
     Boolean defValue = Boolean.FALSE;
     Boolean actValue = Boolean.valueOf( shell.getVisible() );
@@ -183,7 +180,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeMinimumSize( final Shell shell ) throws IOException {
+  private static void writeMinimumSize( Shell shell ) throws IOException {
     Point newValue = shell.getMinimumSize();
     if( WidgetLCAUtil.hasChanged( shell, PROP_MINIMUM_SIZE, newValue ) ) {
       JSWriter writer = JSWriter.getWriterFor( shell );
@@ -192,7 +189,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeDefaultButton( final Shell shell ) throws IOException
+  private static void writeDefaultButton( Shell shell ) throws IOException
   {
     Button defaultButton = shell.getDefaultButton();
     if( defaultButton != null && defaultButton.isDisposed() ) {
@@ -220,17 +217,16 @@ public final class ShellLCA extends AbstractWidgetLCA {
   /////////////////////////////////////////////
   // Methods to read and write the active shell
 
-  private static void writeActiveShell( final Shell shell ) throws IOException {
+  private static void writeActiveShell( Shell shell ) throws IOException {
     Shell activeShell = shell.getDisplay().getActiveShell();
-    boolean hasChanged
-      = WidgetLCAUtil.hasChanged( shell, PROP_ACTIVE_SHELL, activeShell, null );
+    boolean hasChanged = WidgetLCAUtil.hasChanged( shell, PROP_ACTIVE_SHELL, activeShell, null );
     if( shell == activeShell && hasChanged ) {
       JSWriter writer = JSWriter.getWriterFor( shell );
       writer.set( "active", true );
     }
   }
 
-  private static void processActiveShell( final Shell shell ) {
+  private static void processActiveShell( Shell shell ) {
     if( WidgetLCAUtil.wasEventSent( shell, JSConst.EVENT_SHELL_ACTIVATED ) ) {
       Shell lastActiveShell = shell.getDisplay().getActiveShell();
       setActiveShell( shell );
@@ -244,7 +240,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void setActiveShell( final Shell shell ) {
+  private static void setActiveShell( Shell shell ) {
     Object adapter = shell.getDisplay().getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     displayAdapter.setActiveShell( shell );
@@ -256,8 +252,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   /* (intentionally non-JavaDoc'ed)
    * This method is declared public only to be accessible from DisplayLCA
    */
-  public static void writeActiveControl( final Shell shell ) throws IOException
-  {
+  public static void writeActiveControl( Shell shell ) throws IOException {
     final Control activeControl = getActiveControl( shell );
     String prop = PROP_ACTIVE_CONTROL;
     if( WidgetLCAUtil.hasChanged( shell, prop, activeControl, null ) ) {
@@ -267,7 +262,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   }
 
   // TODO [rh] is this safe for multiple shells?
-  private static void processActivate( final Shell shell ) {
+  private static void processActivate( Shell shell ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String widgetId = request.getParameter( JSConst.EVENT_WIDGET_ACTIVATED );
     if( widgetId != null ) {
@@ -276,8 +271,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
         setActiveControl( shell, widget );
       }
     } else {
-      String activeControlId
-        = WidgetLCAUtil.readPropertyValue( shell, "activeControl" );
+      String activeControlId = WidgetLCAUtil.readPropertyValue( shell, "activeControl" );
       Widget widget = WidgetUtil.find( shell, activeControlId );
       if( widget != null ) {
         setActiveControl( shell, widget );
@@ -285,15 +279,14 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static Control getActiveControl( final Shell shell ) {
+  private static Control getActiveControl( Shell shell ) {
     Object adapter = shell.getAdapter( IShellAdapter.class );
     IShellAdapter shellAdapter = ( IShellAdapter )adapter;
     Control activeControl = shellAdapter.getActiveControl();
     return activeControl;
   }
 
-  private static void setActiveControl( final Shell shell, final Widget widget )
-  {
+  private static void setActiveControl( Shell shell, final Widget widget ) {
     if( EventUtil.isAccessible( widget ) ) {
       Object adapter = shell.getAdapter( IShellAdapter.class );
       IShellAdapter shellAdapter = ( IShellAdapter )adapter;
@@ -301,7 +294,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeImage( final Shell shell ) throws IOException {
+  private static void writeImage( Shell shell ) throws IOException {
     if( ( shell.getStyle() & SWT.TITLE ) != 0 ) {
       Image image = shell.getImage();
       if( image == null ) {
@@ -312,20 +305,19 @@ public final class ShellLCA extends AbstractWidgetLCA {
       }
       if( WidgetLCAUtil.hasChanged( shell, PROP_IMAGE, image, null ) ) {
         JSWriter writer = JSWriter.getWriterFor( shell );
-        writer.set( JSConst.QX_FIELD_ICON,
-                    ImageFactory.getImagePath( image ) );
+        writer.set( JSConst.QX_FIELD_ICON, ImageFactory.getImagePath( image ) );
       }
     }
   }
 
-  private static void readBounds( final Shell shell ) {
+  private static void readBounds( Shell shell ) {
     Rectangle bounds = WidgetLCAUtil.readBounds( shell, shell.getBounds() );
     Object adapter = shell.getAdapter( IShellAdapter.class );
     IShellAdapter shellAdapter = ( IShellAdapter )adapter;
     shellAdapter.setBounds( bounds );
   }
 
-  private static void readMode( final Shell shell ) {
+  private static void readMode( Shell shell ) {
     final String value = WidgetLCAUtil.readPropertyValue( shell, "mode" );
     if( value != null ) {
       if( "maximized".equals( value ) ) {
@@ -339,7 +331,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeMode( final Shell shell ) throws IOException {
+  private static void writeMode( Shell shell ) throws IOException {
     Object defValue = null;
     Object newValue = getMode( shell );
     if( WidgetLCAUtil.hasChanged( shell, PROP_MODE, newValue, defValue ) ) {
@@ -348,15 +340,14 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeCloseListener( final Shell shell ) throws IOException
-  {
+  private static void writeCloseListener( Shell shell ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( shell );
     Boolean newValue = Boolean.valueOf( ShellEvent.hasListener( shell ) );
     Boolean defValue = Boolean.FALSE;
     writer.set( PROP_SHELL_LISTENER, "hasShellListener", newValue, defValue );
   }
 
-  private static void writeFullScreen( final Shell shell ) throws IOException {
+  private static void writeFullScreen( Shell shell ) throws IOException {
     Object defValue = Boolean.FALSE;
     Boolean newValue = Boolean.valueOf( shell.getFullScreen() );
     if( WidgetLCAUtil.hasChanged( shell, PROP_FULLSCREEN, newValue, defValue ) ) {
@@ -365,7 +356,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static String getMode( final Shell shell ) {
+  private static String getMode( Shell shell ) {
     String result = null;
     if( shell.getMinimized() ) {
       result = "minimized";
@@ -375,7 +366,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static void preserveMenuBounds( final Shell shell ) {
+  private static void preserveMenuBounds( Shell shell ) {
     Object adapter = shell.getAdapter( IShellAdapter.class );
     IShellAdapter shellAdapter = ( IShellAdapter )adapter;
     Rectangle menuBounds = shellAdapter.getMenuBounds();
