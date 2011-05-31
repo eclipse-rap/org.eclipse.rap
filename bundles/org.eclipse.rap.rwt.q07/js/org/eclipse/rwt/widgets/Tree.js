@@ -140,9 +140,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     _parseArgsMap : function( map ) {
-      this.setAppearance( map.appearance );
       this._dummyColumn.setAppearance( map.appearance + "-column" );
       this._rowContainer.setRowAppearance( map.appearance + "-row" );
+      this.setAppearance( map.appearance );
       if( map.noScroll ) {
         this._rowContainer.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
       }

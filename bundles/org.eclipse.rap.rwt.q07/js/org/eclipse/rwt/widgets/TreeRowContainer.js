@@ -209,7 +209,7 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
 
     _updateRowCount : function() {
       var height = this.getHeight()
-      var rowsNeeded = Math.ceil( this.getHeight() / this._rowHeight );
+      var rowsNeeded = Math.round( ( this.getHeight() / this._rowHeight ) + 0.5 );
       while( this._children.length < rowsNeeded ) {
         var row = new org.eclipse.rwt.widgets.TreeRow( this.getParent() );
         row.setAppearance( this._rowAppearance ); 

@@ -33,7 +33,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
 
     testAddTreeRowsOnTreeResize : function() {
       var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
-      tree.setAppearance( "tree" );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
       tree.setHeight( 551 );
@@ -42,9 +41,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
       tree.destroy();
     },
 
+    testAddOneAdditionalRow : function() {
+      var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
+      tree.setItemHeight( 50 );
+      var clientArea = tree._rowContainer;
+      tree.setHeight( 499 );
+      assertEquals( 10, clientArea.getChildren().length );
+      tree.setHeight( 500 );
+      assertEquals( 11, clientArea.getChildren().length );
+      tree.setHeight( 501 );
+      assertEquals( 11, clientArea.getChildren().length );
+      tree.destroy();
+    },
+
     testAddTreeRowsOnRowResize : function() {
       var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
-      tree.setAppearance( "tree" );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
       tree.setItemHeight( 25 );
@@ -55,7 +66,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
 
     testRemoveTreeRowsOnTreeResize : function() {
       var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
-      tree.setAppearance( "tree" );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
       tree.setHeight( 401 );
@@ -66,7 +76,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
 
     testRemoveTreeRowsOnRowResize : function() {
       var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
-      tree.setAppearance( "tree" );
       tree.setItemHeight( 50 );
       tree.setHeight( 501 );
       tree.setItemHeight( 100 );
@@ -179,7 +188,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
         "selectionPadding" : [ 2, 4 ],
         "indentionWidth" : 16
       } );
-      tree.setAppearance( "tree" );
       tree.setItemHeight( 20 );
       tree.setLeft( 0 );
       tree.setTop( 0 );
