@@ -16,6 +16,7 @@ import junit.framework.TestCase;
 public class Device_Test extends TestCase {
 
   private static final class TestDevice extends Device {
+    private static final long serialVersionUID = 1L;
   }
 
   public void testGetClientArea() {
