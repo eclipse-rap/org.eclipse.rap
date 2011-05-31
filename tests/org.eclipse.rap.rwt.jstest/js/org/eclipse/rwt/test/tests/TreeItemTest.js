@@ -566,6 +566,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       root.dispose();
     },
 
+
+    testGetFlatIndex : function() {
+      var root = this._createRoot();
+      assertEquals( 0, root.findItemByFlatIndex( 0 ).getFlatIndex() );
+      assertEquals( 6, root.findItemByFlatIndex( 6 ).getFlatIndex() );
+      assertEquals( 7, root.findItemByFlatIndex( 7 ).getFlatIndex() );
+      assertEquals( 1020, root.findItemByFlatIndex( 1020 ).getFlatIndex() );
+      assertEquals( 1434, root.findItemByFlatIndex( 1434 ).getFlatIndex() );
+      assertFalse( root.isChildCreated( 7 ) );
+      root.dispose();
+    },
+
+
     //////////////////////
     // create complex tree
     

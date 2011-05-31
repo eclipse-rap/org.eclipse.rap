@@ -553,7 +553,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       if( event.isCtrlPressed() || !this.isItemSelected( this._focusItem ) ) {
         // NOTE: When space does not change the selection, the SWT Tree still fires an selection 
         //       event, while the Table doesnt. Table behavior is used since it makes more sense.
-	      var itemIndex = this._findIndexByItem( this._focusItem );
+	      var itemIndex = this._focusItem.getFlatIndex();
 	      this._handleKeyboardSelect( event, this._focusItem, itemIndex );
       }
       if( this._config.hasCheckBoxes ) {
@@ -564,7 +564,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _handleKeyUp : function( event ) {
       var item = this._focusItem.getPreviousItem();
       if( item != null ) {
-        var itemIndex = this._findIndexByItem( item );
+        var itemIndex = item.getFlatIndex();
         this._handleKeyboardSelect( event, item, itemIndex );
       }
     },
@@ -572,27 +572,27 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _handleKeyDown : function( event ) {
       var item = this._focusItem.getNextItem();
       if( item != null ) {
-        var itemIndex = this._findIndexByItem( item );
+        var itemIndex = item.getFlatIndex();
         this._handleKeyboardSelect( event, item, itemIndex );
       }
     },
     
     _handleKeyPageUp : function( event ) {
-      var oldIndex = this._findIndexByItem( this._focusItem );
+      var oldIndex = this._focusItem.getFlatIndex();
       var offset = this._rowContainer.getChildrenLength() - 2;
       var newIndex = Math.max( 0, oldIndex - offset );
       var item = this._rootItem.findItemByFlatIndex( newIndex );
-      var itemIndex = this._findIndexByItem( item );
+      var itemIndex = item.getFlatIndex();
       this._handleKeyboardSelect( event, item, itemIndex );
     },
     
     _handleKeyPageDown : function( event ) {
-      var oldIndex = this._findIndexByItem( this._focusItem );
+      var oldIndex = this._focusItem.getFlatIndex();
       var offset = this._rowContainer.getChildrenLength() - 2;
       var max = this.getRootItem().getVisibleChildrenCount() - 1;
       var newIndex = Math.min( max, oldIndex + offset );
       var item = this._rootItem.findItemByFlatIndex( newIndex );
-      var itemIndex = this._findIndexByItem( item );
+      var itemIndex = item.getFlatIndex();
       this._handleKeyboardSelect( event, item, itemIndex );
     },
     
@@ -613,7 +613,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._focusItem.setExpanded( false );
       } else if( !this._focusItem.getParent().isRootItem() ) {
         var item = this._focusItem.getParent();
-        var itemIndex = this._findIndexByItem( item );
+        var itemIndex = item.getFlatIndex();
         this._handleKeyboardSelect( event, item, itemIndex, true );
       }
     },
@@ -624,7 +624,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
           this._focusItem.setExpanded( true );
         } else {
           var item = this._focusItem.getChild( 0 )
-          var itemIndex = this._findIndexByItem( item );
+          var itemIndex = item.getFlatIndex();
           this._handleKeyboardSelect( event, item, itemIndex, true );
         }
       }
@@ -961,8 +961,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var currentItem = this._leadItem != null ? this._leadItem : this._focusItem;
       this._leadItem = currentItem;
       var targetItem = item;
-      var startIndex = this._findIndexByItem( currentItem );
-      var endIndex = this._findIndexByItem( targetItem );
+      var startIndex = currentItem.getFlatIndex();
+      var endIndex = targetItem.getFlatIndex();
       if( startIndex > endIndex ) {
         var temp = currentItem;
         currentItem = targetItem;
@@ -1194,40 +1194,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       return result;
     },
 
-    ///////////////
-    // model-helper
-
-    // TODO [tb] : This item is only used to find items that are near the focusItem, which usually
-    //             near the topItem. Optimize for focusItem item. (instead of topItem.)
-    _findIndexByItem : function( item ) {
-      if( this._topItem === null ) {
-        this._updateTopItem();
-      }
-      var forwardsItem = this._topItem;
-      var backwardsItem = this._topItem;
-      var forwardsIndex = this._topItemIndex;
-      var backwardsIndex = this._topItemIndex;
-      while( forwardsItem !== item && backwardsItem !== item ) {
-        if( forwardsItem != null ) {
-          forwardsItem = forwardsItem.getNextItem();
-          forwardsIndex++;
-        }
-        if( backwardsItem != null ) {
-          backwardsItem = backwardsItem.getPreviousItem();
-          backwardsIndex--;
-        }
-        if( backwardsItem === null && forwardsItem === null ) {
-          throw "Tree._findIndexByItem failed!";
-        }
-      }
-      var result;
-      if( forwardsItem === item ) {
-        result = forwardsIndex;
-      } else {
-        result = backwardsIndex;
-      }
-      return result;
-    },
+    //////////////
+    // misc helper
 
     _isChildOf : function( child, parent ) {
       var result = false;
@@ -1238,9 +1206,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
       return result;
     },
-
-    //////////////
-    // misc helper
 
     _inServerResponse : function() {
       return org.eclipse.swt.EventUtil.getSuspended();      

@@ -196,9 +196,7 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
     _startScrollTimer : function() {
       if( this._scrollTimer == null ) {
         this._scrollTimer = new qx.client.Timer( 250 );
-        this._scrollTimer.addEventListener( "interval", 
-                                            this._onScrollTimer, 
-                                            this );
+        this._scrollTimer.addEventListener( "interval", this._onScrollTimer, this );
       }
       this._scrollTimer.setEnabled( true );
     },
@@ -225,7 +223,7 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
       var offset = this._getScrollDirection( this._currentRow );
       if( offset != 0 ) {
         var item = this._tree._rowContainer.findItemByRow( this._currentRow );
-	      var index = this._tree._findIndexByItem( item );
+	      var index = item.getFlatIndex();
         var newIndex = index + offset;
         var newItem = this._tree._rootItem.findItemByFlatIndex( newIndex );
         if( newItem != null ) {

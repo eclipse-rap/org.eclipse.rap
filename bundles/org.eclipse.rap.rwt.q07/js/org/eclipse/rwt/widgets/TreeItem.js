@@ -288,6 +288,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     },
 
     findItemByFlatIndex : function( index ) {
+    	// TODO [tb] : could be optimized by creating helper "flatIndexOf" using cached values for
+    	//             expanded items. This helper could also be used by "getFlatIndex"
     	var expanded = this._getExpandedIndicies();
     	var localIndex = index;
     	var result = null;
@@ -312,6 +314,20 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     		}
     	}
     	return result;
+    },
+    
+    getFlatIndex : function() {
+    	var localIndex = this._parent.indexOf( this );
+    	var result = localIndex;
+      var expanded = this._parent._getExpandedIndicies();
+      while( expanded.length > 0 && localIndex > expanded[ 0 ] ) {
+      	var expandedIndex = expanded.shift();
+      	result += this._parent._children[ expandedIndex ].getVisibleChildrenCount();
+      }
+      if( !this._parent.isRootItem() ) {
+      	result += this._parent.getFlatIndex() + 1;
+      }
+      return result;
     },
 
     hasPreviousSibling : function() {
