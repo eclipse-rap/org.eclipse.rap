@@ -292,7 +292,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._renderGridVertical();
     },
     
-    // TODO [tb] : set the variant directly instead of using only state
     addState : function( state ) {
       this.base( arguments, state );
       if( state.slice( 0, 8 ) === "variant_" ) {
@@ -454,7 +453,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     _onRowMouseDown : function( row, event ) {
-      // TODO [tb] : maybe this abstraction could also be done in TreeRowContainer
       var item = this._rowContainer.findItemByRow( row );
       if( item != null ) {
         if( row.isExpandSymbolTarget( event ) && item.hasChildren() ) {
@@ -811,8 +809,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _sendScrollLeftChange : function() {
       // TODO [tb] : There should be a check for _inServerResponse,
       // but currently this is needed to sync the value with the 
-      // server when the scrollbars are hidden by the server. Should be 
-      // improved here and in table with new scrollbar implementation.
+      // server when the scrollbars are hidden by the server.
       var req = org.eclipse.swt.Request.getInstance();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( this );

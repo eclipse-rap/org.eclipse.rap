@@ -274,8 +274,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       if( !result ) {
        if( index >= 0 && index < this._children.length ) {
           result = new org.eclipse.rwt.widgets.TreeItem( this, index, true );
-        } else {
-          result = null; // TODO [tb] : no longer needed? (hasNextSibling has been refactored)
         }
       }
       return result;
@@ -290,7 +288,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     },
 
     findItemByFlatIndex : function( index ) {
-    	//return this._findItemByIndex( index );
     	var expanded = this._getExpandedIndicies();
     	var localIndex = index;
     	var result = null;
@@ -317,57 +314,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     	return result;
     },
 
-    // TODO [tb] : can this be optimized to create less virtual placeholder items? 
-    _findItemByIndex : function( index, startItem, startIndex ) {
-      var result;
-      var computedStartItem = startItem ? startItem : this.getChild( 0 );
-      var computedStartIndex = startIndex ? startIndex : 0;
-      if( index >= computedStartIndex ) {
-        result = this._findItemByIndexForwards( index, computedStartItem, computedStartIndex );
-      } else {
-        result = this._findItemByIndexBackwards( index, computedStartItem, computedStartIndex );
-      }
-      return result;
-    },
-
-    _findItemByIndexForwards : function( index, startItem, startIndex ) {
-      var i = startIndex;
-      var item = startItem;
-      while( i != index && item != null ) {
-        var siblingIndex = i + item.getVisibleChildrenCount() + 1;
-        if( siblingIndex <= index ) {
-          i = siblingIndex;
-          item = item.getNextItem( true );
-        } else {
-          item = item.getNextItem();
-          i++;
-        } 
-      }
-      return item;
-    },
-
-    _findItemByIndexBackwards : function( index, startItem, startIndex ) {
-      var i = startIndex;
-      var item = startItem;
-      while( i != index && item != null ) {
-        if( item.hasPreviousSibling() ) {
-          var previous = item.getPreviousSibling();
-          var prevSiblingIndex = i - ( previous.getVisibleChildrenCount() + 1 );
-          if( prevSiblingIndex >= index ) {
-            i = prevSiblingIndex;
-            item = previous;              
-          } else {
-            item = item.getPreviousItem();
-            i--;
-          }
-        } else {
-          item = item.getPreviousItem();
-          i--;
-        }
-      }
-      return item;
-    },
-
     hasPreviousSibling : function() {
       var siblings = this._parent._children;
       var index = siblings.indexOf( this ) - 1 ;
@@ -390,8 +336,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       return this._parent.getChild( index );
     },
     
-    // TODO [tb] : rename to "getNextDisplayableItem"?
-    // NOTE : For a flat Hierarchy, this behaves like getNextSibling 
     getNextItem : function( skipChildren ) {
       var result = null;
       if( !skipChildren && this.hasChildren() && this.isExpanded() ) {
@@ -404,8 +348,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       return result;
     },
     
-    // TODO [tb] : rename to "getPreviousDisplayableItem"?
-    // NOTE : For a flat Hierarchy, this behaves like getPreviousSibling 
     getPreviousItem : function() {
       var result = null;
       if( this.hasPreviousSibling() ) {
@@ -506,6 +448,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     	for( var key in this._expandedItems ) {
     		result.push( this.indexOf( this._expandedItems[ key ] ) ); 
     	}
+    	// TODO [tb] : result could be cached
     	return result.sort( function( a, b ){ return a - b; } );
     },
     

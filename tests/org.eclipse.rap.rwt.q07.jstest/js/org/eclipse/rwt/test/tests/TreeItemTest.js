@@ -271,7 +271,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       var root = new org.eclipse.rwt.widgets.TreeItem();
       var child1 = new org.eclipse.rwt.widgets.TreeItem( root );
       assertEquals( child1, root.getChild( 0 ) );
-      assertNull( root.getChild( 1 ) );
+      assertIdentical( undefined, root.getChild( 1 ) );
     },
 
     testGetPreviousSibling : function() {
@@ -488,7 +488,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       item.dispose();
     },
     
-    // TODO [tb] : test expand/collapse/add/remove
     testFindItemByFlatIndexFirstItem : function() {
     	var root = this._createRoot();
     	var item = root.findItemByFlatIndex( 0 );
@@ -505,7 +504,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
 
     testFindItemByFlatIndexOutOfBounds: function() {
     	var root = this._createRoot();
-    	assertNull( root.findItemByFlatIndex( 1435 ) );
+    	assertIdentical( undefined, root.findItemByFlatIndex( 1435 ) );
     	root.dispose();
     },
 
@@ -525,7 +524,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
 
     testFindItemByFlatIndexNoItems : function() {
       var root = new org.eclipse.rwt.widgets.TreeItem();
-    	assertNull( root.findItemByFlatIndex( 0 ) );
+    	assertIdentical( undefined, root.findItemByFlatIndex( 0 ) );
     	root.dispose();
     },
 
@@ -541,6 +540,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     	item = root.findItemByFlatIndex( 1006 );
     	assertEquals( "z", item.getText( 0 ) );
     	root.dispose();
+    },
+
+    testFindItemByFlatIndexCollapse : function() {
+      var root = this._createRoot();
+      assertEquals( "x", root.findItemByFlatIndex( 1020 ).getText( 0 ) );
+      root.getChild( 6 ).setExpanded( false );
+      assertEquals( "x", root.findItemByFlatIndex( 20 ).getText( 0 ) );
+      root.dispose();
+    },
+
+    testFindItemByFlatIndexCollapseAdd : function() {
+      var root = this._createRoot();
+      assertEquals( "x", root.findItemByFlatIndex( 1020 ).getText( 0 ) );
+      root.getChild( 6 ).setItemCount( 1010 );
+      assertEquals( "x", root.findItemByFlatIndex( 1030 ).getText( 0 ) );
+      root.dispose();
+    },
+
+    testFindItemByFlatIndexCollapseRemove : function() {
+      var root = this._createRoot();
+      assertEquals( "x", root.findItemByFlatIndex( 1020 ).getText( 0 ) );
+      root.getChild( 6 ).setItemCount( 900 );
+      assertEquals( "x", root.findItemByFlatIndex( 920 ).getText( 0 ) );
+      root.dispose();
     },
 
     //////////////////////
