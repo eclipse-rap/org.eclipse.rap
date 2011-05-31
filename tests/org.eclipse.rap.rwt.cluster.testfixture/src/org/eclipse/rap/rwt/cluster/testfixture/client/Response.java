@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.cluster.testfixture.client;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
+import java.nio.charset.Charset;
 
 
 public class Response {
@@ -21,7 +22,7 @@ public class Response {
     = "var req = org.eclipse.swt.Request.getInstance();";
   
   private final int responseCode;
-  private final String content;
+  private final byte[] content;
 
   Response( HttpURLConnection connection ) throws IOException {
     this.responseCode = connection.getResponseCode();
@@ -32,20 +33,24 @@ public class Response {
     return responseCode;
   }
   
-  public String getContent() {
-    return content;
+  public byte[] getContent() {
+    return content.clone();
+  }
+  
+  public String getContentText() {
+    return new String( content, Charset.forName( "utf-8" ) );
   }
 
   public boolean isValidJavascript() {
-    return responseCode == 200 && content.startsWith( JAVASCRIPT_PROLOGUE );
+    return responseCode == 200 && getContentText().startsWith( JAVASCRIPT_PROLOGUE );
   }
 
   public boolean isValidStartupPage() {
-    return responseCode == 200 && content.startsWith( HTML_PROLOGUE );
+    return responseCode == 200 && getContentText().startsWith( HTML_PROLOGUE );
   }
 
-  private static String readResponseContent( URLConnection connection ) throws IOException {
-    String content;
+  private static byte[] readResponseContent( URLConnection connection ) throws IOException {
+    byte[] content;
     InputStream inputStream = connection.getInputStream();
     try {
       content = readResponseContent( inputStream );
@@ -55,14 +60,13 @@ public class Response {
     return content;
   }
 
-  private static String readResponseContent( InputStream inputStream ) throws IOException {
-    Reader reader = new InputStreamReader( inputStream, "utf-8" );
-    StringBuffer buffer = new StringBuffer();
-    int read = reader.read();
+  private static byte[] readResponseContent( InputStream inputStream ) throws IOException {
+    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+    int read = inputStream.read();
     while( read != -1 ) {
-      buffer.append( ( char )read );
-      read = reader.read();
+      byteStream.write( read );
+      read = inputStream.read();
     }
-    return buffer.toString();
+    return byteStream.toByteArray();
   }
 }

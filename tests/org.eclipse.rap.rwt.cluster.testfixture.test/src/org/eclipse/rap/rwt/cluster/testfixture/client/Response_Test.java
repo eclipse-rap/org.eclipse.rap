@@ -32,7 +32,7 @@ public class Response_Test extends TestCase {
     Response response = new Response( connection );
     
     assertEquals( responseCode, response.getResponseCode() );
-    assertEquals( content, response.getContent() );
+    assertEquals( content, response.getContentText() );
   }
   
   public void testIsValidJavascripWithInvalidContent() throws IOException {

@@ -17,8 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.cluster.test.entrypoints.ButtonEntryPoint;
-import org.eclipse.rap.rwt.cluster.test.entrypoints.FontEntryPoint;
+import org.eclipse.rap.rwt.cluster.test.entrypoints.*;
 import org.eclipse.rap.rwt.cluster.testfixture.ClusterFixture;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
@@ -29,6 +28,7 @@ import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -87,6 +87,27 @@ public class SessionFailover_Test extends TestCase {
     assertSame( secondaryShell.getDisplay(), secondaryFont.getDevice() );
   }
   
+  public void testImageEntryPoint() throws Exception {
+    primary.start( ImageEntryPoint.class );
+    secondary.start( ImageEntryPoint.class );
+    client.sendStartupRequest();
+    client.sendInitializationRequest();
+    client.sendResourceRequest( ImageEntryPoint.imagePath );
+    
+    client.changeServletEngine( secondary );
+    client.sendDisplayResizeRequest( 400, 600 );
+    
+    prepareExamination();
+    Shell primaryShell = getFirstShell( primary );
+    Shell secondaryShell = getFirstShell( secondary );
+    Image primaryImage = primaryShell.getImage();
+    Image secondaryImage = secondaryShell.getImage();
+    assertEquals( primaryImage.getImageData(), secondaryImage.getImageData() );
+    assertNotSame( primaryImage, secondaryImage );
+    assertSame( primaryShell.getDisplay(), primaryImage.getDevice() );
+    assertSame( secondaryShell.getDisplay(), secondaryImage.getDevice() );
+  }
+  
   protected void setUp() throws Exception {
     ClusterFixture.setUp();
     db = new DatabaseServer();
@@ -143,7 +164,7 @@ public class SessionFailover_Test extends TestCase {
       assertTrue( response.isValidJavascript() );
       String expectedLabelPart = "relocated " + i + "/1";
       String msg = "label update mismatch, missing part: '" + expectedLabelPart + "'";
-      assertTrue( msg, response.getContent().contains( expectedLabelPart ) );
+      assertTrue( msg, response.getContentText().contains( expectedLabelPart ) );
     }
   }
 }

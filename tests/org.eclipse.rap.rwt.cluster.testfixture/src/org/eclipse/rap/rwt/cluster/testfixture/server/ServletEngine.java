@@ -22,20 +22,21 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.session.*;
-import org.eclipse.jetty.servlet.FilterMapping;
-import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.*;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.resource.FileResource;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rwt.internal.engine.*;
 
 
+@SuppressWarnings("restriction")
 public class ServletEngine implements IServletEngine {
-  
+  private static final String SERVLET_NAME = "/rap";
+
   static {
     Log.setLog( new ServletEngineLogger() );
   }
-
+  
   private final Server server;
   private final ContextHandlerCollection contextHandlers;
   private final SessionManager sessionManager;
@@ -78,13 +79,12 @@ public class ServletEngine implements IServletEngine {
     return sessions.toArray( new HttpSession[ sessions.size() ] );
   }
 
-  @SuppressWarnings("restriction")
   private void addEntryPoint( Class entryPointClass ) {
-    ServletContextHandler servletContext = createServletContext( "/" );
-    servletContext.addServlet( RWTDelegate.class.getName(), "/rap" );
-    servletContext.addFilter( RWTClusterSupport.class.getName(), "/rap", FilterMapping.DEFAULT );
-    servletContext.addEventListener( new RWTServletContextListener() );
-    servletContext.setInitParameter( "org.eclipse.rwt.entryPoints", entryPointClass.getName() );
+    ServletContextHandler context = createServletContext( "/" );
+    context.addServlet( RWTDelegate.class.getName(), SERVLET_NAME );
+    context.addFilter( RWTClusterSupport.class.getName(), SERVLET_NAME, FilterMapping.DEFAULT );
+    context.addEventListener( new RWTServletContextListener() );
+    context.setInitParameter( "org.eclipse.rwt.entryPoints", entryPointClass.getName() );
   }
 
   private SessionManager createSessionManager( ISessionManagerProvider sessionManagerProvider ) {
@@ -101,14 +101,16 @@ public class ServletEngine implements IServletEngine {
     sessionManager.setSessionHandler( sessionHandler );
     ServletContextHandler result = new ServletContextHandler( contextHandlers, path );
     result.setSessionHandler( sessionHandler );
-    result.setBaseResource( createContextPath() );
+    result.setBaseResource( createServletContextPath() );
+    result.addServlet( DefaultServlet.class.getName(), "/" );
     return result;
   }
 
-  private static FileResource createContextPath() {
+  private FileResource createServletContextPath() {
     String tempDir = System.getProperty( "java.io.tmpdir" );
+    File contextRoot = new File( tempDir, this.toString() + "-context-root" );
     try {
-      return new FileResource( new File( tempDir, "temp-context-root" ).toURI().toURL() );
+      return new FileResource( contextRoot.toURI().toURL() );
     } catch( Exception e ) {
       throw new RuntimeException( e );
     }

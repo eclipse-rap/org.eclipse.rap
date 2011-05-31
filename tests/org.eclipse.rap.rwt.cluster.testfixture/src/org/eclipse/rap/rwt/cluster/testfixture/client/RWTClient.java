@@ -19,6 +19,9 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 
 public class RWTClient {
 
+  // TODO [rh] replace hard-coded servet name (see also ServletEngine#addEntryPoint)
+  private static final String SERVLET_NAME = "rap";
+
   private IServletEngine servletEngine;
   private String sessionId;
   private int requestCounter;
@@ -82,8 +85,19 @@ public class RWTClient {
     return sendRequest();
   }
   
+  public Response sendResourceRequest( String resourceLocation ) throws IOException {
+    clearParameters();
+    URL url = createUrl( resourceLocation );
+    HttpURLConnection connection = createConnection( url );
+    connection.connect();
+    return new Response( connection );
+  }
+  
   Response sendRequest() throws IOException {
-    URL url = createUrl();
+    if( requestCounter >= 0 ) {
+      addParameter( "requestCounter", String.valueOf( requestCounter ) );
+    }
+    URL url = createUrl( SERVLET_NAME );
     HttpURLConnection connection = createConnection( url );
     connection.connect();
     parseSessionId( connection );
@@ -91,13 +105,10 @@ public class RWTClient {
     return new Response( connection );
   }
 
-  private URL createUrl() {
-    // TODO [rh] replace hard-coded servet name (see also ServletEngine#addEntryPoint)
-    HttpUrlBuilder urlBuilder = new HttpUrlBuilder( "localhost", servletEngine.getPort(), "rap" );
+  private URL createUrl( String path ) {
+    int port = servletEngine.getPort();
+    HttpUrlBuilder urlBuilder = new HttpUrlBuilder( "localhost", port, path );
     urlBuilder.addParameters( parameters );
-    if( requestCounter >= 0 ) {
-      urlBuilder.addParameter( "requestCounter", String.valueOf( requestCounter ) );
-    }
     urlBuilder.setSessionId( sessionId );
     return urlBuilder.toUrl();
   }

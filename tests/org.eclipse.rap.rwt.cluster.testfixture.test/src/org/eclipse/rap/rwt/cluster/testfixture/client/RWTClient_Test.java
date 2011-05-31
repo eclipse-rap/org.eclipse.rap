@@ -36,7 +36,17 @@ public class RWTClient_Test extends TestCase {
 
     Response response = client.sendRequest();
     
-    assertEquals( responseContent, response.getContent() );
+    assertEquals( responseContent, response.getContentText() );
+  }
+  
+  public void testSendResourceRequest() throws IOException {
+    RWTClient client = new RWTClient( servletEngine );
+    servletEngine.setConnection( new TestHttpUrlConnection( "responseContent" ) );
+
+    client.sendResourceRequest( "foo/bar.gif" );
+    
+    String connectionUrl = servletEngine.getConnectionUrl().toExternalForm();
+    assertEquals( "http://localhost:-1/foo/bar.gif", connectionUrl );
   }
   
   public void testRequestWithParameters() throws IOException {
