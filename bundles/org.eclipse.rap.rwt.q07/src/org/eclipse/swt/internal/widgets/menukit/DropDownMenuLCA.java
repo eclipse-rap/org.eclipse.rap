@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.menukit;
 
 import java.io.IOException;
@@ -25,7 +24,7 @@ import org.eclipse.swt.widgets.*;
 
 final class DropDownMenuLCA extends MenuDelegateLCA {
 
-  void preserveValues( final Menu menu ) {
+  void preserveValues( Menu menu ) {
     MenuLCAUtil.preserveEnabled( menu );
     MenuLCAUtil.preserveMenuListener( menu );
     MenuLCAUtil.preserveWidth( menu );
@@ -33,12 +32,12 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
     WidgetLCAUtil.preserveHelpListener( menu );
   }
   
-  void readData( final Menu menu ) {
+  void readData( Menu menu ) {
     MenuLCAUtil.readMenuEvent( menu );
     WidgetLCAUtil.processHelp( menu );
   }
   
-  void renderInitialization( final Menu menu ) throws IOException {
+  void renderInitialization( Menu menu ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menu );
     // TODO [rh] check whether it is allowed (in SWT and/or Qooxdoo) to 
     //      assign a Menu to more than one MenuItem
@@ -50,7 +49,7 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
     }
   }
 
-  void renderChanges( final Menu menu ) throws IOException {
+  void renderChanges( Menu menu ) throws IOException {
     WidgetLCAUtil.writeCustomVariant( menu );
     MenuLCAUtil.writeEnabled( menu );
     MenuLCAUtil.writeMenuListener( menu );
@@ -64,7 +63,7 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
    * <code>MenuItem</code>s refer to the given <code>menu</code>.</p> 
    */
   private static MenuItem[] findReferringMenuItems( final Menu menu ) {
-    final List menuItems = new ArrayList();
+    final List<MenuItem> menuItems = new ArrayList<MenuItem>();
     Decorations parent = menu.getParent();
     WidgetTreeVisitor.accept( parent, new AllWidgetTreeVisitor() {
       public boolean doVisit( final Widget widget ) {
@@ -78,8 +77,6 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
         return true;
       }
     } );
-    MenuItem[] result = new MenuItem[ menuItems.size() ];
-    menuItems.toArray( result );
-    return result;
+    return menuItems.toArray( new MenuItem[ menuItems.size() ] );
   }
 }
