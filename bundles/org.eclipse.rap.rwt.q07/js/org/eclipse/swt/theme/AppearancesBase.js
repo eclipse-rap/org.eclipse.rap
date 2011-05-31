@@ -2406,7 +2406,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         border : tv.getCssBorder( "ScrollBar", "border" ),
-        backgroundColor : tv.getCssColor( "ScrollBar", "background-color" )
+        backgroundColor : tv.getCssColor( "ScrollBar", "background-color" ),
+        backgroundImage : tv.getCssImage( "ScrollBar", "background-image" ),
+        backgroundGradient : tv.getCssGradient( "ScrollBar", "background-image" )
       };
       var width = tv.getCssDimension( "ScrollBar", "width" );
       if( states[ "rwt_HORIZONTAL" ] ) {
@@ -2423,16 +2425,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.backgroundColor = tv.getCssColor( "ScrollBar-Thumb",
-                                               "background-color" );
+      result.backgroundColor = tv.getCssColor( "ScrollBar-Thumb", "background-color" );
       result.border = tv.getCssBorder( "ScrollBar-Thumb", "border" );
-      result.backgroundImage = tv.getCssImage( "ScrollBar-Thumb",
-                                               "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "ScrollBar-Thumb", 
-                                                     "background-image" );
-                                                     
-      result.icon = tv.getCssSizedImage( "ScrollBar-Thumb-Icon", 
-                                         "background-image" );
+      result.backgroundImage = tv.getCssImage( "ScrollBar-Thumb", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "ScrollBar-Thumb", "background-image" );
+      result.icon = tv.getCssSizedImage( "ScrollBar-Thumb-Icon", "background-image" );
       return result;
     }
   },
@@ -2444,19 +2441,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       result.spacing = tv.getCssDimension( "Button", "spacing" );
       result.padding = tv.getCssBoxDimensions( "Button", "padding" );
-      result.backgroundColor = tv.getCssColor( "ScrollBar-DownButton", 
-                                               "background-color" );
-      result.icon = tv.getCssSizedImage( "ScrollBar-DownButton-Icon", 
-                                         "background-image" );
+      result.backgroundColor = tv.getCssColor( "ScrollBar-DownButton", "background-color" );
+      result.icon = tv.getCssSizedImage( "ScrollBar-DownButton-Icon", "background-image" );
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
-        result.icon = tv.getCssSizedImage( "ScrollBar-DownButton", 
-                                           "background-image" );
+        result.icon = tv.getCssSizedImage( "ScrollBar-DownButton", "background-image" );
       } else {
-        result.backgroundImage = tv.getCssImage( "ScrollBar-DownButton", 
-                                                 "background-image" );
+        result.backgroundImage = tv.getCssImage( "ScrollBar-DownButton", "background-image" );
       }      
-      result.backgroundGradient = tv.getCssGradient( "ScrollBar-DownButton", 
-                                                     "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "ScrollBar-DownButton", "background-image" );
       result.border = tv.getCssBorder( "ScrollBar-DownButton", "border" );
       var width = tv.getCssDimension( "ScrollBar", "width" );
       if( states[ "rwt_HORIZONTAL" ] ){
@@ -2478,19 +2470,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.textColor = tv.getCssColor( "Button", "color" );
       result.spacing = tv.getCssDimension( "Button", "spacing" );
       result.padding = tv.getCssBoxDimensions( "Button", "padding" );
-      result.backgroundColor = tv.getCssColor( "ScrollBar-UpButton", 
-                                               "background-color" );
-      result.icon = tv.getCssSizedImage( "ScrollBar-UpButton-Icon", 
-                                         "background-image" );
+      result.backgroundColor = tv.getCssColor( "ScrollBar-UpButton", "background-color" );
+      result.icon = tv.getCssSizedImage( "ScrollBar-UpButton-Icon", "background-image" );
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
-        result.icon = tv.getCssSizedImage( "ScrollBar-UpButton", 
-                                           "background-image" );
+        result.icon = tv.getCssSizedImage( "ScrollBar-UpButton", "background-image" );
       } else {
-        result.backgroundImage = tv.getCssImage( "ScrollBar-UpButton", 
-                                                 "background-image" );
+        result.backgroundImage = tv.getCssImage( "ScrollBar-UpButton", "background-image" );
       }      
-      result.backgroundGradient = tv.getCssGradient( "ScrollBar-UpButton", 
-                                                     "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "ScrollBar-UpButton", "background-image" );
       result.border = tv.getCssBorder( "ScrollBar-UpButton", "border" );
       var width = tv.getCssDimension( "ScrollBar", "width" );
       if( states[ "rwt_HORIZONTAL" ] ) {

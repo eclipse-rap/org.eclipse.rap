@@ -18,6 +18,12 @@
     <property name="background-color"
         description="Background color for scrollbars." />
 
+    <property name="background-image">
+        <description>
+          Background image or gradient for scrollbars.
+        </description>
+    </property>
+
     <property name="border"
         description="Border for scrollbars." />
 
