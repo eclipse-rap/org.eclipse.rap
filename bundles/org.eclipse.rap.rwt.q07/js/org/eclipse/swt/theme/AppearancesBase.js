@@ -1637,6 +1637,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
                                                      "background-image" );
       result.border = tv.getCssBorder( "Composite", "border" );
       result.opacity = tv.getCssFloat( "Composite", "opacity" );
+      result.shadow = tv.getCssShadow( "Composite", "box-shadow" );
       return result;
     }
   },
