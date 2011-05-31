@@ -578,6 +578,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       root.dispose();
     },
 
+    testIsChildOf : function() {
+      var root = this._createRoot();
+      assertTrue( root.getChild( 0 ).isChildOf( root ) );
+      assertTrue( root.getChild( 5 ).getChild( 5 ).isChildOf( root ) );
+      var item10 = root.getChild( 10 );
+      assertTrue( item10.getChild( 5 ).getChild( 3 ).isChildOf( item10 ) );
+      assertTrue( item10.getChild( 5 ).getChild( 3 ).isChildOf( root ) );
+      assertFalse( item10.isChildOf( root.getChild( 5 ) ) );
+      assertFalse( item10.isChildOf( item10 ) );
+      root.dispose();
+    },
 
     //////////////////////
     // create complex tree

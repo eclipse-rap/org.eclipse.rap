@@ -384,7 +384,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var item = event.getTarget();
       if( event.getData() === "collapsed" ) {
         // TODO [tb] : Should be done on server if focusItem is synced
-        if( this._isChildOf( this._focusItem, item ) ) {
+        if( this._focusItem && this._focusItem.isChildOf( item ) ) {
           this.setFocusItem( item );
         }
       }
@@ -1194,18 +1194,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       return result;
     },
 
-    //////////////
-    // misc helper
-
-    _isChildOf : function( child, parent ) {
-      var result = false;
-      var item = child;
-      while( item != null && !result ) {
-        item = item.getParent();
-        result = item === parent;
-      }
-      return result;
-    },
+    /////////
+    // helper
 
     _inServerResponse : function() {
       return org.eclipse.swt.EventUtil.getSuspended();      

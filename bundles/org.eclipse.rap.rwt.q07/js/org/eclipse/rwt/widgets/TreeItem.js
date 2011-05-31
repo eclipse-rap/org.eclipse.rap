@@ -90,7 +90,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     },
 
     clear : function() {
-    	// TODO [tb] : children?
+      // TODO [tb] : children?
       this._cached = false;
       this._checked = false;
       this._grayed = false;
@@ -229,9 +229,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
         this._expanded = value;
         this._update( value ? "expanded" : "collapsed" );
         if( value ) {
-	        this._parent._addToExpandedItems( this );
+          this._parent._addToExpandedItems( this );
         } else {
-	        this._parent._removeFromExpandedItems( this );        	
+          this._parent._removeFromExpandedItems( this );          
         }
       }
     },
@@ -286,46 +286,63 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     indexOf : function( item ) {
       return this._children.indexOf( item );
     },
+    
+    /**
+     * Returns true if the given item is one of the parents of this item (recursive).
+     */
+    isChildOf : function( parent ) {
+      var result = this._parent === parent
+      if( !result && !this._parent.isRootItem() ) {
+        result = this._parent.isChildOf( parent );
+      }
+      return result;
+    },
 
+    /**
+     * Finds the item at the given index, counting all visible children.
+     */
     findItemByFlatIndex : function( index ) {
-    	// TODO [tb] : could be optimized by creating helper "flatIndexOf" using cached values for
-    	//             expanded items. This helper could also be used by "getFlatIndex"
-    	var expanded = this._getExpandedIndicies();
-    	var localIndex = index;
-    	var result = null;
-    	var success = false;
-    	while( !success && localIndex >= 0) {
-    		var expandedIndex = expanded.shift();
-    		if( expandedIndex === undefined || expandedIndex >= localIndex ) {
-    			result = this.getChild( localIndex );
-    			success = true;
-    		} else {
-    			var childrenCount = this.getChild( expandedIndex ).getVisibleChildrenCount();
-    			var offset = localIndex - expandedIndex; // Items between current item and target item
-    			if( offset <= childrenCount ) {
-    				result = this.getChild( expandedIndex ).findItemByFlatIndex( offset - 1 );
-    				success = true;
-    				if( result == null ) {
-    					throw new Error( "getItemByFlatIndex failed" );
-    				}
-    			} else {
-    				localIndex -= childrenCount;
-    			}
-    		}
-    	}
-    	return result;
+      // TODO [tb] : could be optimized by creating helper "flatIndexOf" using cached values for
+      //             expanded items. This helper could also be used by "getFlatIndex"
+      var expanded = this._getExpandedIndicies();
+      var localIndex = index;
+      var result = null;
+      var success = false;
+      while( !success && localIndex >= 0) {
+        var expandedIndex = expanded.shift();
+        if( expandedIndex === undefined || expandedIndex >= localIndex ) {
+          result = this.getChild( localIndex );
+          success = true;
+        } else {
+          var childrenCount = this.getChild( expandedIndex ).getVisibleChildrenCount();
+          var offset = localIndex - expandedIndex; // Items between current item and target item
+          if( offset <= childrenCount ) {
+            result = this.getChild( expandedIndex ).findItemByFlatIndex( offset - 1 );
+            success = true;
+            if( result == null ) {
+              throw new Error( "getItemByFlatIndex failed" );
+            }
+          } else {
+            localIndex -= childrenCount;
+          }
+        }
+      }
+      return result;
     },
     
+    /**
+     * Gets the index relative to the root-item, counting all visible items inbetween.
+     */
     getFlatIndex : function() {
-    	var localIndex = this._parent.indexOf( this );
-    	var result = localIndex;
+      var localIndex = this._parent.indexOf( this );
+      var result = localIndex;
       var expanded = this._parent._getExpandedIndicies();
       while( expanded.length > 0 && localIndex > expanded[ 0 ] ) {
-      	var expandedIndex = expanded.shift();
-      	result += this._parent._children[ expandedIndex ].getVisibleChildrenCount();
+        var expandedIndex = expanded.shift();
+        result += this._parent._children[ expandedIndex ].getVisibleChildrenCount();
       }
       if( !this._parent.isRootItem() ) {
-      	result += this._parent.getFlatIndex() + 1;
+        result += this._parent.getFlatIndex() + 1;
       }
       return result;
     },
@@ -352,6 +369,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       return this._parent.getChild( index );
     },
     
+    /**
+     * Returns the next visible item, which my be the first child, 
+     * the next sibling or the next sibling of the parent.
+     */
     getNextItem : function( skipChildren ) {
       var result = null;
       if( !skipChildren && this.hasChildren() && this.isExpanded() ) {
@@ -364,6 +385,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
       return result;
     },
     
+    /**
+     * Returns the previous visible item, which my be the previous sibling, 
+     * the previous siblings last child, or the parent.
+     */
     getPreviousItem : function() {
       var result = null;
       if( this.hasPreviousSibling() ) {
@@ -411,11 +436,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     },
     
     _addToExpandedItems : function( item ) {
-    	this._expandedItems[ item.toHashCode() ] = item;
+      this._expandedItems[ item.toHashCode() ] = item;
     },
 
     _removeFromExpandedItems : function( item ) {
-    	delete this._expandedItems[ item.toHashCode() ];
+      delete this._expandedItems[ item.toHashCode() ];
     },
     
     //////////////////////////////
@@ -437,9 +462,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     },
     
     _onUpdate : function( event ) {
-    	if( event.getData() !== "content" ) {
-	      this._visibleChildrenCount = null;
-    	}
+      if( event.getData() !== "content" ) {
+        this._visibleChildrenCount = null;
+      }
     },
     
     /////////
@@ -460,12 +485,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     },
     
     _getExpandedIndicies : function() {
-    	var result = [];
-    	for( var key in this._expandedItems ) {
-    		result.push( this.indexOf( this._expandedItems[ key ] ) ); 
-    	}
-    	// TODO [tb] : result could be cached
-    	return result.sort( function( a, b ){ return a - b; } );
+      var result = [];
+      for( var key in this._expandedItems ) {
+        result.push( this.indexOf( this._expandedItems[ key ] ) ); 
+      }
+      // TODO [tb] : result could be cached
+      return result.sort( function( a, b ){ return a - b; } );
     },
     
     toString : function() {
