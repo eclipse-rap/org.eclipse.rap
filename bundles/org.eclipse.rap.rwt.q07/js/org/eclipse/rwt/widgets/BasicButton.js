@@ -13,7 +13,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
 
   extend : org.eclipse.rwt.widgets.MultiCellWidget,
 
-  construct : function( buttonType ) {
+  construct : function( buttonType, noKeyControl ) {
     this.base( arguments, this._CELLORDER );
     this._hasSelectionListener = false;
     this._selected = false;
@@ -23,9 +23,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
     this.addEventListener( "mouseout", this._onMouseOut );
     this.addEventListener( "mousedown", this._onMouseDown );
     this.addEventListener( "mouseup", this._onMouseUp );
-    this.addEventListener( "keydown", this._onKeyDown );
-    this.addEventListener( "keyup", this._onKeyUp );
-    this.addEventListener( "keypress", this._onKeyPress );
+    if( !noKeyControl ) {
+	    this.addEventListener( "keydown", this._onKeyDown );
+	    this.addEventListener( "keyup", this._onKeyUp );
+	    this.addEventListener( "keypress", this._onKeyPress );
+    }
     this.addState( buttonType );
     switch( buttonType ) {
      case "push":
