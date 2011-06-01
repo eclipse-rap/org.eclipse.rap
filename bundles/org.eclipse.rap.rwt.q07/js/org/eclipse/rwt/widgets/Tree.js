@@ -539,6 +539,23 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
           break;
         }
       }
+      this._stopKeyEvent( event );
+    },
+    
+    _stopKeyEvent : function( event ) {
+      switch( event.getKeyIdentifier() ) {
+      	case "Up":
+      	case "Down":
+      	case "Left":
+      	case "Right":
+      	case "Home":
+      	case "End":
+      	case "PageUp":
+      	case "PageDown":
+		    	event.preventDefault();
+		    	event.stopPropagation();
+		    break;
+      }
     },
 
     _onColumnAreaAppear : function() {

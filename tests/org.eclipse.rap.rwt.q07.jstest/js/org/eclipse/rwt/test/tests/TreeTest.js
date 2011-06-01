@@ -2450,6 +2450,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.destroy();
     },
     
+    testPreventDefaultKeys : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      var stopped = true;
+      var log = [];
+      tree.addEventListener( "keypress", function( event ) {
+      	log.push( event.getDefaultPrevented() );
+      }, this );
+      testUtil.getDocument().addEventListener( "keypress", function( event ) {
+        stopped = false;
+      }, this );
+      testUtil.press( tree, "Up" );
+      testUtil.press( tree, "Down" );
+      testUtil.press( tree, "Left" );
+      testUtil.press( tree, "Right" );
+      testUtil.press( tree, "PageUp" );
+      testUtil.press( tree, "PageDown" );
+      testUtil.press( tree, "Home" );
+      testUtil.press( tree, "End" );
+      assertEquals( [ true, true, true, true, true, true, true, true ], log );
+      assertTrue( stopped );
+      tree.destroy();
+    },
+    
     testKeyboardNavigationUpDown : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
