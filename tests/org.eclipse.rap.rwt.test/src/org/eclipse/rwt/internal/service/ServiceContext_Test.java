@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
@@ -18,6 +19,8 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
+import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.swt.widgets.Display;
 
 
 public class ServiceContext_Test extends TestCase {
@@ -64,8 +67,35 @@ public class ServiceContext_Test extends TestCase {
     }
   }
   
+  public void testGetApplicationContextFromBackgroundThread() throws Throwable {
+    ServiceContext serviceContext = createContext( new ApplicationContext() );
+    ContextProvider.setContext( serviceContext );
+    final ApplicationContext[] backgroundApplicationContext = { null };
+    final Display display = new Display();
+    Runnable runnable = new Runnable() {
+      public void run() {
+        UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+          public void run() {
+            backgroundApplicationContext[ 0 ] = ApplicationContextUtil.getInstance();
+          }
+        } );
+      }
+    };
+    
+    Fixture.runInThread( runnable );
+    
+    assertSame( ApplicationContextUtil.getInstance(), backgroundApplicationContext[ 0 ] );
+  }
+  
   protected void setUp() {
     sessionStore = new SessionStoreImpl( new TestSession() );
+  }
+  
+  @Override
+  protected void tearDown() throws Exception {
+    if( ContextProvider.hasContext() ) {
+      Fixture.disposeOfServiceContext();
+    }
   }
 
   private ServiceContext createContext( ApplicationContext applicationContext ) {
@@ -85,9 +115,7 @@ public class ServiceContext_Test extends TestCase {
     return createContext( new TestRequest(), new TestResponse() );
   }
 
-  private ServiceContext createContext( TestRequest request,
-                                        TestResponse response )
-  {
+  private ServiceContext createContext( TestRequest request, TestResponse response ) {
     return new ServiceContext( request, response, sessionStore );
   }
 }
