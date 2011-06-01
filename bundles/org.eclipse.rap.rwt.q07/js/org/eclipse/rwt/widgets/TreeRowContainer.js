@@ -133,6 +133,7 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
     },
     
     setRowLinesVisible : function( value ) {
+    	this._linesVisible = value;
       for( var i = 0; i < this._children.length; i++ ) {
         this._children[ i ].setLinesVisible( value );
       }

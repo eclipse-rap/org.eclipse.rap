@@ -123,6 +123,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
       tree.destroy();
     },
 
+    testGridLinesStateOnNewRows : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree( true );
+      testUtil.flush();
+      tree.setLinesVisible( true );
+      var row = tree._rowContainer._children[ 24 ];
+      assertTrue( row.hasState( "linesvisible" ) );
+      tree.setHeight( 1000 );
+      row = tree._rowContainer._children[ 28 ];
+      assertTrue( row.hasState( "linesvisible" ) );
+      tree.destroy();
+    },
+
     testGridLinesHorizontal : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
