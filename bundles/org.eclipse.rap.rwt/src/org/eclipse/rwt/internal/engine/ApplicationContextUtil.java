@@ -23,7 +23,8 @@ import org.eclipse.rwt.service.ISessionStore;
 
 
 public class ApplicationContextUtil {
-  private final static ThreadLocal CONTEXT_HOLDER = new ThreadLocal();
+  private final static ThreadLocal<ApplicationContext> CONTEXT_HOLDER
+    = new ThreadLocal<ApplicationContext>();
   private final static String ATTR_APPLICATION_CONTEXT
     = ApplicationContext.class.getName() + "#INSTANCE";
  
@@ -72,7 +73,7 @@ public class ApplicationContextUtil {
   }
   
   public static ApplicationContext getInstance() {
-    ApplicationContext result = ( ApplicationContext )CONTEXT_HOLDER.get();
+    ApplicationContext result = CONTEXT_HOLDER.get();
     if( result == null  ) {
       ServiceContext context = ContextProvider.getContext();
       result = context.getApplicationContext();

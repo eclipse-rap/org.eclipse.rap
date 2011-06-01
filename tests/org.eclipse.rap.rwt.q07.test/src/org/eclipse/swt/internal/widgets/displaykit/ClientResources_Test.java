@@ -13,14 +13,10 @@ package org.eclipse.swt.internal.widgets.displaykit;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import javax.servlet.ServletContext;
-
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.*;
-import org.eclipse.rwt.internal.engine.ApplicationContext;
-import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
-import org.eclipse.rwt.internal.resources.ResourceManagerProvider;
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.resources.IResourceManager;
 
 
@@ -50,18 +46,13 @@ public class ClientResources_Test extends TestCase {
   }
 
   protected void setUp() {
-    ServletContext servletContext = Fixture.createServletContext();
-    Fixture.createServiceContext();
-    ApplicationContext appContext = new ApplicationContext();
-    ApplicationContextUtil.set( servletContext, appContext );
-    ResourceManagerProvider resourceManagerProvider = appContext.getResourceManagerProvider();
-    resourceManagerProvider.registerFactory( new TestResourceManagerFactory() );
-    resourceManager = RWT.getResourceManager();
-    clientResources = new ClientResources( resourceManager );
+    Fixture.setUp();
+    Fixture.useDefaultResourceManager();
+    resourceManager = RWTFactory.getResourceManager();
+    clientResources = new ClientResources( RWTFactory.getResourceManager() );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.disposeOfServiceContext();
-    Fixture.disposeOfServletContext();
+  protected void tearDown() {
+    Fixture.tearDown();
   }
 }

@@ -101,8 +101,8 @@ public class ApplicationContext_Test extends TestCase {
     assertNotNull( context.getConfiguration() );
     assertSame( context.getConfiguration(), context.getConfiguration() );
     
-    assertNotNull( context.getResourceManagerProvider() );
-    assertSame( context.getResourceManagerProvider(), context.getResourceManagerProvider() );
+    assertNotNull( context.getResourceManager() );
+    assertSame( context.getResourceManager(), context.getResourceManager() );
     
     assertNotNull( context.getStartupPage() );
     assertSame( context.getStartupPage(), context.getStartupPage() );
@@ -179,7 +179,6 @@ public class ApplicationContext_Test extends TestCase {
   protected void setUp() throws Exception {
     ServletContext servletContext = Fixture.createServletContext();
     context = new ApplicationContext();
-    context.addConfigurable( new ResourceManagerProviderConfigurable( servletContext ) );
     context.addConfigurable( new RWTConfigurationConfigurable( servletContext ) );
   }
 

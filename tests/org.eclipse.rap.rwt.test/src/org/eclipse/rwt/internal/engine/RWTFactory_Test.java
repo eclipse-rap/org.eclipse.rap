@@ -63,8 +63,8 @@ public class RWTFactory_Test extends TestCase {
     assertNotNull( RWTFactory.getConfiguration() );
     assertSame( RWTFactory.getConfiguration(), RWTFactory.getConfiguration() );
     
-    assertNotNull( RWTFactory.getResourceManagerProvider() );
-    assertSame( RWTFactory.getResourceManagerProvider(), RWTFactory.getResourceManagerProvider() );
+    assertNotNull( RWTFactory.getResourceManager() );
+    assertSame( RWTFactory.getResourceManager(), RWTFactory.getResourceManager() );
     
     assertNotNull( RWTFactory.getStartupPage() );
     assertSame( RWTFactory.getStartupPage(), RWTFactory.getStartupPage() );

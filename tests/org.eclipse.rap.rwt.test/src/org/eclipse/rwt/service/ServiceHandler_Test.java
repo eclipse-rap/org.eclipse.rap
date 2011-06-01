@@ -20,8 +20,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.engine.ApplicationContext;
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.engine.*;
 
 
 public class ServiceHandler_Test extends TestCase {
@@ -33,7 +32,7 @@ public class ServiceHandler_Test extends TestCase {
   private static String log = "";
   private static boolean throwException;
   
-  private boolean ignoreServiceHandlerRegistrationBuffer;
+  private boolean serviceHandlerRegistrationFlag;
 
   public static class CustomHandler implements IServiceHandler {
 
@@ -89,17 +88,25 @@ public class ServiceHandler_Test extends TestCase {
   }
 
   protected void setUp() {
-    ignoreServiceHandlerRegistrationBuffer = ApplicationContext.ignoreServiceHandlerRegistration;
-    ApplicationContext.ignoreServiceHandlerRegistration = false;
+    ensureServiceHandlerRegistration();
     throwException = false;
     registerCustomHandler();
   }
-
   protected void tearDown() {
     throwException = false;
     Fixture.tearDown();
     log = "";
-    ApplicationContext.ignoreServiceHandlerRegistration = ignoreServiceHandlerRegistrationBuffer;
+    restoreServiceHanderRegistrationFlag();
+  }
+
+  
+  private void ensureServiceHandlerRegistration() {
+    serviceHandlerRegistrationFlag = ApplicationContextHelper.isIgnoreServiceHandlerRegistration();
+    ApplicationContextHelper.setIgnoreServiceHandlerRegistration( false );
+  }
+  
+  private void restoreServiceHanderRegistrationFlag() {
+    ApplicationContextHelper.setIgnoreServiceHandlerRegistration( serviceHandlerRegistrationFlag );
   }
 
   private void registerCustomHandler() {

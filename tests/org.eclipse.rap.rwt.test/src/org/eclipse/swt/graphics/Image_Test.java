@@ -198,7 +198,7 @@ public class Image_Test extends TestCase {
   // Width/Height constructor
   
   public void testWidthHeightConstructor() {
-    useDefaultResourceManager();
+    Fixture.useDefaultResourceManager();
     Display device = new Display();
     Image image = new Image( device, 1, 1 );
     ImageData imageData = image.getImageData();
@@ -260,7 +260,7 @@ public class Image_Test extends TestCase {
   }
 
   public void testGetImageData() {
-    useDefaultResourceManager();
+    Fixture.useDefaultResourceManager();
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
     ImageData imageData = new ImageData( stream );
@@ -410,11 +410,5 @@ public class Image_Test extends TestCase {
   protected void tearDown() {
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
-  }
-
-  private void useDefaultResourceManager() {
-    tearDown();
-    Fixture.registerDefaultResourceManager();
-    setUp();
   }
 }

@@ -62,9 +62,9 @@ public class ImageDataFactory_Test extends TestCase {
   }
 
   protected void setUp() {
-    Fixture.registerDefaultResourceManager();
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
+    Fixture.useDefaultResourceManager();
     imageDataFactory = new ImageDataFactory();
   }
 

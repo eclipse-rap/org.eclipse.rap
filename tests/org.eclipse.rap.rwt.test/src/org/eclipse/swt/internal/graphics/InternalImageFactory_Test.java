@@ -75,7 +75,7 @@ public class InternalImageFactory_Test extends TestCase {
   }
 
   public void testInternalImagesFromImageDataAreCached() {
-    useDefaultResourceManager();
+    Fixture.useDefaultResourceManager();
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
     ImageData imageData1 = image.getImageData();
     ImageData imageData2 = image.getImageData();
@@ -126,11 +126,5 @@ public class InternalImageFactory_Test extends TestCase {
   protected void tearDown() {
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
-  }
-  
-  private void useDefaultResourceManager() {
-    tearDown();
-    Fixture.registerDefaultResourceManager();
-    setUp();
   }
 }

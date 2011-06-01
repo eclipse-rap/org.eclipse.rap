@@ -21,7 +21,6 @@ import javax.servlet.http.*;
 
 import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
@@ -45,8 +44,8 @@ public class Fixture {
   static {
     usePerformanceOptimizations = Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS );
     if( Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS ) ) {
-      ApplicationContext.ignoreResoureRegistration = true;
-      ApplicationContext.ignoreServiceHandlerRegistration = true;
+      ApplicationContextHelper.setIgnoreResoureRegistration( true );
+      ApplicationContextHelper.setIgnoreServiceHandlerRegistration( true );
     }
   }
 
@@ -58,7 +57,7 @@ public class Fixture {
   
   public static TestServletContext createServletContext() {
     servletContext = new TestServletContext();
-    Fixture.registerResourceManagerFactory();
+    Fixture.useTestResourceManager();
     return getServletContext();
   }
   
@@ -178,7 +177,7 @@ public class Fixture {
 
   public static void setUp() {
     registerLifeCycleAdapterFactory();
-    registerResourceManagerFactory();
+    useTestResourceManager();
     registerCurrentPhaseListener();
     setSystemProperties();
     createApplicationContext();
@@ -200,10 +199,8 @@ public class Fixture {
     setInitParameter( initParam, CurrentPhase.Listener.class.getName() );
   }
   
-  public static void registerDefaultResourceManager() {
-    String key = ResourceManagerProviderConfigurable.RESOURCE_MANAGER_FACTORY_PARAM;
-    String value = DefaultResourceManagerFactory.class.getName();
-    setInitParameter( key, value );
+  public static void useDefaultResourceManager() {
+    ApplicationContextHelper.useDefaultResourceManager();
   }
 
   public static void tearDown() {
@@ -385,7 +382,7 @@ public class Fixture {
   }
 
   public static Thread[] startThreads( int threadCount, Runnable runnable ) {
-    List threads = new ArrayList();
+    List<Thread> threads = new ArrayList<Thread>();
     for( int i = 0; i < threadCount; i++ ) {
       Thread thread = new Thread( runnable );
       thread.setDaemon( true );
@@ -490,9 +487,8 @@ public class Fixture {
     return result;
   }
 
-  private static void registerResourceManagerFactory() {
-    String initParam = ResourceManagerProviderConfigurable.RESOURCE_MANAGER_FACTORY_PARAM;
-    setInitParameter( initParam, TestResourceManagerFactory.class.getName() );
+  private static void useTestResourceManager() {
+    ApplicationContextHelper.useTestResourceManager();
   }
 
   private Fixture() {

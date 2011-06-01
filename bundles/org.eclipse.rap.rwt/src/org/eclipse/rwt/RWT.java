@@ -229,7 +229,7 @@ public final class RWT {
    * @return instance of {@link IResourceManager}
    */
   public static IResourceManager getResourceManager() {
-    return RWTFactory.getResourceManagerProvider().getResourceManager();
+    return RWTFactory.getResourceManager();
   }
   
   /**

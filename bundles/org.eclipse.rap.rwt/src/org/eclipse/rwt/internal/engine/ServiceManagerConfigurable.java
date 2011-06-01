@@ -15,7 +15,7 @@ import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.ServiceManager;
 
 
-class ServiceManagerConfigurable implements Configurable {
+public class ServiceManagerConfigurable implements Configurable {
   private static final String ID_JS_LIBRARIES = JSLibraryServiceHandler.HANDLER_ID;
   private static final String ID_UI_CALL_BACK = UICallBackServiceHandler.HANDLER_ID;
 

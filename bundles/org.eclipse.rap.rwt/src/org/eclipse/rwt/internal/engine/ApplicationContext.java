@@ -23,6 +23,7 @@ import org.eclipse.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.service.IApplicationStore;
 import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.internal.widgets.DisplaysHolder;
@@ -30,19 +31,22 @@ import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
 
 
 public class ApplicationContext {
+  // TODO [fappel]: this allows to set a fake double of the resource manager for testing purpose.
+  //                Think about a less intrusive solution.
+  static IResourceManager testResourceManager;
   // TODO [fappel]: the testMode flag is used to ignore resource registration. Think about
-  //                a less intrusive solution
-  public static boolean ignoreResoureRegistration;
+  //                a less intrusive solution.
+  static boolean ignoreResoureRegistration;
   // TODO [fappel]: the testMode flag is used to ignore service handler registration via
   //                servicehandler.xml. Think about a less intrusive solution
-  public static boolean ignoreServiceHandlerRegistration;
-  // TODO [fappel]: themeManagerHolder isn't final for performance reasons of the testsuite.
+  static boolean ignoreServiceHandlerRegistration;
+  // TODO [fappel]: themeManager isn't final for performance reasons of the testsuite.
   //                TestServletContext#setAttribute(String,Object) will replace the runtime
   //                implementation with an optimized version for testing purpose. Think about
   //                a less intrusive solution.
   private ThemeManager themeManager;
   private final RWTConfiguration configuration; 
-  private final ResourceManagerProvider resourceManagerProvider;
+  private final ResourceManagerImpl resourceManager;
   private final BrandingManager brandingManager;
   private final PhaseListenerRegistry phaseListenerRegistry;
   private final LifeCycleFactory lifeCycleFactory;
@@ -62,13 +66,13 @@ public class ApplicationContext {
   private final DisplaysHolder displaysHolder;
   private final TextSizeStorage textSizeStorage;
   private final ProbeStore probeStore;
-  private final Set configurables;
+  private final Set<Configurable> configurables;
   private boolean activated;
   
   public ApplicationContext() {
     applicationStoreImpl = new ApplicationStoreImpl();
     configuration = new RWTConfigurationImpl();
-    resourceManagerProvider = new ResourceManagerProvider();
+    resourceManager = new ResourceManagerImpl( configuration );
     lifeCycleFactory = new LifeCycleFactory( configuration );
     themeManager = new ThemeManager();
     brandingManager = new BrandingManager();
@@ -88,7 +92,7 @@ public class ApplicationContext {
     jsLibraryConcatenator = new JSLibraryConcatenator();
     textSizeStorage = new TextSizeStorage();
     probeStore = new ProbeStore( textSizeStorage );
-    configurables = new HashSet();
+    configurables = new HashSet<Configurable>();
   }
 
   public boolean isActivated() {
@@ -125,8 +129,8 @@ public class ApplicationContext {
     return configuration;
   }
   
-  public ResourceManagerProvider getResourceManagerProvider() {
-    return resourceManagerProvider;
+  public IResourceManager getResourceManager() {
+    return testResourceManager != null ? testResourceManager : resourceManager;
   }
   
   public EntryPointManager getEntryPointManager() {

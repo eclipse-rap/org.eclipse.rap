@@ -108,7 +108,7 @@ public class Graphics_Test extends TestCase {
   }
 
   public void testGetImage() {
-    useDefaultResourceManager();
+    Fixture.useDefaultResourceManager();
     IResourceManager resourceManager = RWT.getResourceManager();
     // only if you comment initial registration in
     // org.eclipse.swt.internal.widgets.displaykit.QooxdooResourcesUtil
@@ -251,11 +251,5 @@ public class Graphics_Test extends TestCase {
   protected void tearDown() {
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
-  }
-  
-  private void useDefaultResourceManager() {
-    tearDown();
-    Fixture.registerDefaultResourceManager();
-    setUp();
   }
 }

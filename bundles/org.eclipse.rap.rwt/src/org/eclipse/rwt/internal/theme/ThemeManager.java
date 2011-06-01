@@ -536,7 +536,7 @@ public class ThemeManager {
   }
 
   private static IResourceManager getResourceManager() {
-    return RWTFactory.getResourceManagerProvider().getResourceManager();
+    return RWTFactory.getResourceManager();
   }
 
   private String createQxThemes( Theme theme ) {

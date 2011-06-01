@@ -102,7 +102,6 @@ public class RWTServletContextListener_Test extends TestCase {
   }
   
   public void testResourceManagerInitialization() {
-    setResourceManagerFactoryInitParameter();
     Fixture.triggerServletContextInitialized();
     Fixture.createServiceContext();
     assertTrue( RWT.getResourceManager() instanceof TestResourceManager );
@@ -145,7 +144,7 @@ public class RWTServletContextListener_Test extends TestCase {
     
     Configurable[] configurables = listener.createConfigurables( new TestServletContext() );
     
-    assertEquals( 10, configurables.length );
+    assertEquals( 9, configurables.length );
   }
   
   public void testConfigurationLifeCyle() {
@@ -188,12 +187,6 @@ public class RWTServletContextListener_Test extends TestCase {
         return result;
       }
     };
-  }
-
-  private void setResourceManagerFactoryInitParameter() {
-    String name = ResourceManagerProviderConfigurable.RESOURCE_MANAGER_FACTORY_PARAM;
-    String value = TestResourceManagerFactory.class.getName();
-    Fixture.setInitParameter( name, value );
   }
 
   private void setEntryPointInitParameter() {

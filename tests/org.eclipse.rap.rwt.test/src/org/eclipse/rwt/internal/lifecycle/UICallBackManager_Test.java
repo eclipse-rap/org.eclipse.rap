@@ -329,7 +329,7 @@ public class UICallBackManager_Test extends TestCase {
       }
     };
     // simulate a lot "parallel" bg-threads to provoke multi-threading problems
-    List bgThreads = new ArrayList();
+    List<Thread> bgThreads = new ArrayList<Thread>();
     for( int i = 0; i < 200; i++ ) {
       Thread bgThread = new Thread( bgRunnable, "Test-Bg-Thread " + i );
       bgThread.setDaemon( true );
@@ -345,7 +345,7 @@ public class UICallBackManager_Test extends TestCase {
     }
     // wait for all bgThreads to terminate
     for( int i = 0; i < bgThreads.size(); i++ ) {
-      Thread bgThread = ( Thread )bgThreads.get( i );
+      Thread bgThread = bgThreads.get( i );
       bgThread.join();
       display.readAndDispatch();
     }

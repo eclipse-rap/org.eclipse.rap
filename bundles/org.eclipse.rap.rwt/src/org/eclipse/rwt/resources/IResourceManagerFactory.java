@@ -21,6 +21,7 @@ package org.eclipse.rwt.resources;
  * 
  * @since 1.0
  * @see IResourceManager
+ * @deprecated not used anymore, will be removed in future without replacement
  */
 public interface IResourceManagerFactory {
 

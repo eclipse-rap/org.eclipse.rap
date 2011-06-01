@@ -21,18 +21,17 @@ import javax.servlet.*;
 import org.eclipse.rwt.internal.engine.ThemeManagerHelper;
 
 
-public final class TestServletContext implements ServletContext {
-
+public class TestServletContext implements ServletContext {
+  private final Map<String,Object> initParameters = new HashMap<String,Object>();
+  private final Map<String,Object> attributes = new HashMap<String,Object>();
   private String servletContextName;
-  private final Map initParameters = new HashMap();
-  private Map attributes = new HashMap();
   private TestLogger logger;
 
-  public void setLogger( final TestLogger logger ) {
+  public void setLogger( TestLogger logger ) {
     this.logger = logger;
   }
   
-  public ServletContext getContext( final String arg0 ) {
+  public ServletContext getContext( String arg0 ) {
     return null;
   }
 
@@ -44,31 +43,31 @@ public final class TestServletContext implements ServletContext {
     return 0;
   }
 
-  public String getMimeType( final String arg0 ) {
+  public String getMimeType( String arg0 ) {
     return null;
   }
 
-  public Set getResourcePaths( final String arg0 ) {
+  public Set getResourcePaths( String arg0 ) {
     return null;
   }
 
-  public URL getResource( final String arg0 ) throws MalformedURLException {
+  public URL getResource( String arg0 ) throws MalformedURLException {
     return null;
   }
 
-  public InputStream getResourceAsStream( final String arg0 ) {
+  public InputStream getResourceAsStream( String arg0 ) {
     return null;
   }
 
-  public RequestDispatcher getRequestDispatcher( final String arg0 ) {
+  public RequestDispatcher getRequestDispatcher( String arg0 ) {
     return null;
   }
 
-  public RequestDispatcher getNamedDispatcher( final String arg0 ) {
+  public RequestDispatcher getNamedDispatcher( String arg0 ) {
     return null;
   }
 
-  public Servlet getServlet( final String arg0 ) throws ServletException {
+  public Servlet getServlet( String arg0 ) throws ServletException {
     return null;
   }
 
@@ -80,21 +79,21 @@ public final class TestServletContext implements ServletContext {
     return null;
   }
 
-  public void log( final String arg0 ) {
+  public void log( String arg0 ) {
     log( arg0, null );
   }
 
-  public void log( final Exception arg0, final String arg1 ) {
+  public void log( Exception arg0, String arg1 ) {
     log( arg1, arg0 );
   }
 
-  public void log( final String arg0, final Throwable arg1 ) {
+  public void log( String arg0, Throwable arg1 ) {
     if( logger != null ) {
       logger.log( arg0, arg1 );
     }
   }
 
-  public String getRealPath( final String path ) {
+  public String getRealPath( String path ) {
     return Fixture.WEB_CONTEXT_DIR + path;
   }
 
@@ -102,11 +101,11 @@ public final class TestServletContext implements ServletContext {
     return null;
   }
 
-  public String getInitParameter( final String name ) {
+  public String getInitParameter( String name ) {
     return ( String )initParameters.get( name );
   }
   
-  public void setInitParameter( final String name, final String value ) {
+  public void setInitParameter( String name, String value ) {
     initParameters.put( name, value );
   }
 
@@ -114,7 +113,7 @@ public final class TestServletContext implements ServletContext {
     return null;
   }
 
-  public Object getAttribute( final String arg0 ) {
+  public Object getAttribute( String arg0 ) {
     return attributes.get( arg0 );
   }
 
@@ -122,12 +121,12 @@ public final class TestServletContext implements ServletContext {
     return null;
   }
 
-  public void setAttribute( final String arg0, final Object arg1 ) {
+  public void setAttribute( String arg0, Object arg1 ) {
     ThemeManagerHelper.adaptApplicationContext( arg1 );
     attributes .put( arg0, arg1 );
   }
 
-  public void removeAttribute( final String arg0 ) {
+  public void removeAttribute( String arg0 ) {
     attributes.remove( arg0 );
   }
 
@@ -135,12 +134,11 @@ public final class TestServletContext implements ServletContext {
     return servletContextName;
   }
   
-  public void setServletContextName( final String servletContextName ) {
+  public void setServletContextName( String servletContextName ) {
     this.servletContextName = servletContextName;
   }
 
   public String getContextPath() {
     return null;
   }
-  
 }

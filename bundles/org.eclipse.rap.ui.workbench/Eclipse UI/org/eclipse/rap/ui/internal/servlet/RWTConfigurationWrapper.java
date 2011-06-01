@@ -24,7 +24,6 @@ import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
-import org.eclipse.rwt.internal.resources.DefaultResourceManagerFactory;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.theme.*;
@@ -127,7 +126,6 @@ public final class RWTConfigurationWrapper implements RWTConfiguration {
   private void init() {
     configure();
     registerPhaseListener();
-    registerResourceManagerFactory();
     registerSettingStoreFactory();
     registerWorkbenchEntryPoint();
     registerThemeableWidgets();
@@ -144,7 +142,7 @@ public final class RWTConfigurationWrapper implements RWTConfiguration {
 
   private void configure() {
     RWTConfigurationImpl config = ( RWTConfigurationImpl )applicationContext.getConfiguration();
-    config.configure( findContextPath().toString()  );
+    config.configure( findContextPath().toString() );
   }
 
   private void registerPhaseListener() {
@@ -160,12 +158,6 @@ public final class RWTConfigurationWrapper implements RWTConfiguration {
         WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );
       }
     }
-  }
-
-  private void registerResourceManagerFactory() {
-    DefaultResourceManagerFactory factory = new DefaultResourceManagerFactory();
-    factory.setConfiguration( applicationContext.getConfiguration() );
-    applicationContext.getResourceManagerProvider().registerFactory( factory );
   }
 
   private void registerSettingStoreFactory() {

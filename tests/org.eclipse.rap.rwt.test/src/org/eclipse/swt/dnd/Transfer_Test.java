@@ -74,7 +74,7 @@ public class Transfer_Test extends TestCase {
   }
   
   public void testImagaTransferConversion() {
-    useDefaultResourceManager();
+    Fixture.useDefaultResourceManager();
     Transfer transfer = ImageTransfer.getInstance();
     TransferData data = transfer.getSupportedTypes()[ 0 ];
     Image image = Graphics.getImage( Fixture.IMAGE1, Fixture.class.getClassLoader() );
@@ -175,11 +175,5 @@ public class Transfer_Test extends TestCase {
   protected void tearDown() {
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
-  }
-
-  private void useDefaultResourceManager() {
-    tearDown();
-    Fixture.registerDefaultResourceManager();
-    setUp();
   }
 }

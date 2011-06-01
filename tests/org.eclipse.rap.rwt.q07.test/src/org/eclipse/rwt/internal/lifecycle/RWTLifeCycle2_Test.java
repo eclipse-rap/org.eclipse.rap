@@ -338,9 +338,10 @@ public class RWTLifeCycle2_Test extends TestCase {
     //           is not on this tests classpath. Note that this problem
     //           didn't show up running the RWTAllTestSuite, since
     //           in that case all projects are available on the classpath.
-    String initParam = ResourceManagerProviderConfigurable.RESOURCE_MANAGER_FACTORY_PARAM;
-    String initValue = FakeResourceManagerFactory.class.getName();
-    Fixture.setInitParameter( initParam, initValue );
+    new Exception( "FIXME" ).printStackTrace();
+//    String initParam = ResourceManagerProviderConfigurable.RESOURCE_MANAGER_FACTORY_PARAM;
+//    String initValue = FakeResourceManagerFactory.class.getName();
+//    Fixture.setInitParameter( initParam, initValue );
   }
 
   protected void tearDown() throws Exception {
