@@ -416,7 +416,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var nodes = row._getTargetNode().childNodes;
       var startSymbol = testUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbol.indexOf( "start.gif" ) != -1 );
-      new org.eclipse.rwt.widgets.TreeItem( item )
+      item.setItemCount( 3 );
+      new org.eclipse.rwt.widgets.TreeItem( item, 2 )
       row.renderItem( item, tree._config, false, null );
       var startSymbolCollapsed = testUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbolCollapsed.indexOf( "start-collapsed.gif" ) != -1 );
@@ -439,7 +440,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var nodes = row._getTargetNode().childNodes;
       var startSymbol = testUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbol.indexOf( "end.gif" ) != -1 );
-      new org.eclipse.rwt.widgets.TreeItem( item );
+      item.setItemCount( 3 );
+      new org.eclipse.rwt.widgets.TreeItem( item, 2 );
       row.renderItem( item, tree._config, false, null );
       var startSymbolCollapsed = testUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbolCollapsed.indexOf( "end-collapsed.gif" ) != -1 );
@@ -462,7 +464,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var nodes = row._getTargetNode().childNodes;
       var startSymbol = testUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbol.indexOf( "intermediate.gif" ) != -1 );
-      new org.eclipse.rwt.widgets.TreeItem( item );
+      item.setItemCount( 4 );
+      new org.eclipse.rwt.widgets.TreeItem( item, 3 );
       row.renderItem( item, tree._config, false, null );
       var startSymbolCollapsed = testUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbolCollapsed.indexOf( "intermediate-collapsed.gif" ) != -1 );
@@ -485,7 +488,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       var nodes = row._getTargetNode().childNodes;
       var startSymbol = testUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbol.indexOf( "single.gif" ) != -1 );
-      new org.eclipse.rwt.widgets.TreeItem( item );
+      item.setItemCount( 2 );
+      new org.eclipse.rwt.widgets.TreeItem( item, 1 );
       row.renderItem( item, tree._config, false, null );
       var startSymbolCollapsed = testUtil.getCssBackgroundImage( nodes[ 0 ] );
       assertTrue( startSymbolCollapsed.indexOf( "single-collapsed.gif" ) != -1 );
@@ -1793,12 +1797,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
 
     _createItem : function( parent, hasPrevious, hasNext ) {
       var parentItem = org.eclipse.rwt.widgets.TreeItem._getItem( parent );
+      var count = 0;
+      parent.setItemCount( 1 + hasPrevious ? 1 : 0 + hasNext ? 1 : 0 );
       if( hasPrevious ) {
-        new org.eclipse.rwt.widgets.TreeItem( parentItem );
+        new org.eclipse.rwt.widgets.TreeItem( parentItem, count );
+        count++;
       }
-      var item = new org.eclipse.rwt.widgets.TreeItem( parentItem );
+      var item = new org.eclipse.rwt.widgets.TreeItem( parentItem, count );
+      count++;
       if( hasNext ) {
-        new org.eclipse.rwt.widgets.TreeItem( parentItem );
+        new org.eclipse.rwt.widgets.TreeItem( parentItem, count );
       }
       return item;
     },

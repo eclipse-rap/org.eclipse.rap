@@ -405,26 +405,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     /////////////////////////
     // API for other TreeItem
 
-    /** 
-     * Behavior is consistent with SWT:
-     *  - without index the item is added as the last one (item count increases)
-     *  - if the index already has an item, it and all after it are shifted (item count increases)
-     *  - if the index does not have an item, its inserted at that index (item count stays)
-     *  - if the index is greater the the item count it is ignored (item count increases)
-     */
     _add : function( item, index ) {
-      if( index === this._children.length || index === undefined ) {    
-        // TODO [tb] : this code is currently only used by tests, remove and refactor tests
-        this._children.push( item );
+      if( this._children[ index ] ) {
+        this._children.splice( index, 0, item );
+        this._children.pop();
         this._update( "add", item );
       } else {
-        if( this._children[ index ] ) {
-          this._children.splice( index, 0, item );
-          this._children.pop();
-          this._update( "add", item );
-        } else {
-          this._children[ index ] = item;
-        }
+        this._children[ index ] = item;
       }
     },
 

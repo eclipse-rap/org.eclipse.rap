@@ -1338,6 +1338,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     createTreeItem : function( itemNr, tree, parent ) {
       var nr = itemNr + 2;
       var parentItem = org.eclipse.rwt.widgets.TreeItem._getItem( parent );
+      parentItem.setItemCount( itemNr + 1 );
       var item = new org.eclipse.rwt.widgets.TreeItem( parentItem, itemNr );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.add( item, "w" + nr, false );

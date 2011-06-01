@@ -146,26 +146,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
 
     testParent : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
-      var child = new org.eclipse.rwt.widgets.TreeItem( item );
+      var child = new org.eclipse.rwt.widgets.TreeItem( item, 0 );
       assertIdentical( item, child.getParent() );
     },
 
     testChildren : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
-      var child1 = new org.eclipse.rwt.widgets.TreeItem( item );
-      var child2 = new org.eclipse.rwt.widgets.TreeItem( item );
+      item.setItemCount( 2 );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( item, 0 );
+      var child2 = new org.eclipse.rwt.widgets.TreeItem( item, 1 );
       assertEquals( [ child1, child2 ], item._children );
     },
 
     testHasChildren : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
       assertFalse( item.hasChildren() );
-      var child = new org.eclipse.rwt.widgets.TreeItem( item );
+      item.setItemCount( 1 );
+      var child = new org.eclipse.rwt.widgets.TreeItem( item, 0 );
       assertTrue( item.hasChildren() );
     },
 
     testSetExpanded : function() {
       var root = new org.eclipse.rwt.widgets.TreeItem();
+      root.setItemCount( 1 );
       var item = new org.eclipse.rwt.widgets.TreeItem( root );
       assertFalse( item.isExpanded() );
       item.setExpanded( true );
@@ -174,24 +177,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
 
     testHasPreviousSibling : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
-      var child1 = new org.eclipse.rwt.widgets.TreeItem( item );
-      var child2 = new org.eclipse.rwt.widgets.TreeItem( item );
+      item.setItemCount( 2 );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( item, 0 );
+      var child2 = new org.eclipse.rwt.widgets.TreeItem( item, 1 );
       assertFalse( child1.hasPreviousSibling() );
       assertTrue( child2.hasPreviousSibling() );
     },
 
     testHasNextSibling : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
-      var child1 = new org.eclipse.rwt.widgets.TreeItem( item );
-      var child2 = new org.eclipse.rwt.widgets.TreeItem( item );
+      item.setItemCount( 2 );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( item, 0 );
+      var child2 = new org.eclipse.rwt.widgets.TreeItem( item, 1 );
       assertTrue( child1.hasNextSibling() );
       assertFalse( child2.hasNextSibling() );
     },
 
     testGetLevel : function() {
       var root = new org.eclipse.rwt.widgets.TreeItem();
-      var child1 = new org.eclipse.rwt.widgets.TreeItem( root );
-      var child2 = new org.eclipse.rwt.widgets.TreeItem( child1 );
+      root.setItemCount( 1 );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
+      child1.setItemCount( 1 );
+      var child2 = new org.eclipse.rwt.widgets.TreeItem( child1, 0 );
       assertEquals( -1, root.getLevel() );
       assertEquals( 0, child1.getLevel() );
       assertEquals( 1, child2.getLevel() );
@@ -199,8 +206,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
 
     testIsRootItem : function() {
       var root = new org.eclipse.rwt.widgets.TreeItem();
+      root.setItemCount( 1 );
       var child1 = new org.eclipse.rwt.widgets.TreeItem( root );
-      var child2 = new org.eclipse.rwt.widgets.TreeItem( child1 );
+      child1.setItemCount( 1 );
+      var child2 = new org.eclipse.rwt.widgets.TreeItem( child1, 0 );
       assertTrue( root.isRootItem() );
       assertFalse( child1.isRootItem() );
       assertFalse( child2.isRootItem() );
@@ -212,7 +221,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       root.addEventListener( "update", function( event ) {
         log.push( event.getData() );
       }, this);
-      var child1 = new org.eclipse.rwt.widgets.TreeItem( root );
+      root.setItemCount( 1 );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
       assertEquals( 1, log.length );
       assertEquals( "add", log[ 0 ] );
     },
@@ -223,8 +233,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       root.addEventListener( "update", function( event ) {
         log.push( event );
       }, this);
-      var child1 = new org.eclipse.rwt.widgets.TreeItem( root );
-      var child2 = new org.eclipse.rwt.widgets.TreeItem( child1 );
+      root.setItemCount( 1 );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
+      child1.setItemCount( 1 );
+      var child2 = new org.eclipse.rwt.widgets.TreeItem( child1, 0 );
       assertEquals( 2, log.length );
     },
 
@@ -247,9 +259,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
 
     testRemoveItem : function() {
       var root = new org.eclipse.rwt.widgets.TreeItem();
-      var child1 = new org.eclipse.rwt.widgets.TreeItem( root );
-      var child2 = new org.eclipse.rwt.widgets.TreeItem( root );
-      var child3 = new org.eclipse.rwt.widgets.TreeItem( root );
+      root.setItemCount( 3 );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
+      var child2 = new org.eclipse.rwt.widgets.TreeItem( root, 1 );
+      var child3 = new org.eclipse.rwt.widgets.TreeItem( root, 2 );
       assertEquals( [ child1, child2, child3 ], root._children );
       child2.dispose();
       assertEquals( [ child1, child3, undefined ], root._children );
@@ -258,40 +271,47 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     testRemoveItemEvent : function() {
       var log = [];
       var root = new org.eclipse.rwt.widgets.TreeItem();
-      var child = new org.eclipse.rwt.widgets.TreeItem( root );
+      root.setItemCount( 1 );
+      var child = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
       root.addEventListener( "update", function( event ) {
         log.push( event.getData() );
       }, this);
+      root.setItemCount( 0 );
       child.dispose();
-      assertEquals( 1, log.length );
-      assertEquals( "remove", log[ 0 ] );
+      // Two events, one from the dispose, one from the setItemCount. Both are needed, 
+      // since there are cases where one of them can be missing (virtual or replacing items)
+      assertEquals( [ "remove", "remove" ], log );
     },
 
     testGetChild : function() {
       var root = new org.eclipse.rwt.widgets.TreeItem();
-      var child1 = new org.eclipse.rwt.widgets.TreeItem( root );
+      root.setItemCount( 1 );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
       assertEquals( child1, root.getChild( 0 ) );
       assertIdentical( undefined, root.getChild( 1 ) );
     },
 
     testGetPreviousSibling : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
-      var child1 = new org.eclipse.rwt.widgets.TreeItem( item );
-      var child2 = new org.eclipse.rwt.widgets.TreeItem( item );
+      item.setItemCount( 2 );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( item, 0 );
+      var child2 = new org.eclipse.rwt.widgets.TreeItem( item, 1 );
       assertEquals( child1, child2.getPreviousSibling() );
     },
 
     testGetNextSibling : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
-      var child1 = new org.eclipse.rwt.widgets.TreeItem( item );
-      var child2 = new org.eclipse.rwt.widgets.TreeItem( item );
+      item.setItemCount( 2 );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( item, 0 );
+      var child2 = new org.eclipse.rwt.widgets.TreeItem( item, 1 );
       assertEquals( child2, child1.getNextSibling() );
     },
 
     testItemExpandedEvent : function() {
       var log = [];
       var root = new org.eclipse.rwt.widgets.TreeItem();
-      var child1 = new org.eclipse.rwt.widgets.TreeItem( root );
+      root.setItemCount( 1 );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
       root.addEventListener( "update", function( event ) {
         log.push( event.getData() );
       }, this);
@@ -304,18 +324,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
 
     testVisibleChildrenCountOnlyOneLayer : function() {
       var root = new org.eclipse.rwt.widgets.TreeItem();
+      root.setItemCount( 10 );
       for( var i = 0; i < 10; i++ ) {
-        new org.eclipse.rwt.widgets.TreeItem( root );
+        new org.eclipse.rwt.widgets.TreeItem( root, i );
       }
       assertEquals( 10, root.getVisibleChildrenCount() );
     },
 
     testVisibleChildrenCount : function() {
       var root = new org.eclipse.rwt.widgets.TreeItem();
-      var item1 = new org.eclipse.rwt.widgets.TreeItem( root );
-      var item2 = new org.eclipse.rwt.widgets.TreeItem( root );
-      new org.eclipse.rwt.widgets.TreeItem( item1 );
-      new org.eclipse.rwt.widgets.TreeItem( item2 );
+      root.setItemCount( 2 );
+      var item1 = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
+      var item2 = new org.eclipse.rwt.widgets.TreeItem( root, 1 );
+      item1.setItemCount( 1 );
+      item2.setItemCount( 1 );
+      new org.eclipse.rwt.widgets.TreeItem( item1, 0 );
+      new org.eclipse.rwt.widgets.TreeItem( item2, 0 );
       item1.setExpanded( true );
       assertEquals( 3, root.getVisibleChildrenCount() );
     },
@@ -327,8 +351,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
 
     testVisibleChildrenCountResultIsZeroWithCollapsedChildren : function() {
       var root = new org.eclipse.rwt.widgets.TreeItem();
-      var item = new org.eclipse.rwt.widgets.TreeItem( root );
-      new org.eclipse.rwt.widgets.TreeItem( item );
+      root.setItemCount( 1 );
+      var item = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
+      item.setItemCount( 1 );
+      new org.eclipse.rwt.widgets.TreeItem( item, 0 );
       assertEquals( 0, item.getVisibleChildrenCount() );
     },
 
@@ -344,7 +370,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     testItemCheckedEvent : function() {
       var log = [];
       var root = new org.eclipse.rwt.widgets.TreeItem();
-      var child1 = new org.eclipse.rwt.widgets.TreeItem( root );
+      root.setItemCount( 1 );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
       root.addEventListener( "update", function( event ) {
         log.push( event );
       }, this);
@@ -375,8 +402,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
 
     testIsDisplayable : function() {
       var root = new org.eclipse.rwt.widgets.TreeItem();
+      root.setItemCount( 1 );
       var child1 = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
+      child1.setItemCount( 1 );
       var child2 = new org.eclipse.rwt.widgets.TreeItem( child1, 0 );
+      child2.setItemCount( 1 );
       var child3 = new org.eclipse.rwt.widgets.TreeItem( child2, 0 );
       child1.setExpanded( true );
       child2.setExpanded( false );
@@ -426,14 +456,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       root.addEventListener( "update", function( event ) {
         log.push( event.getData(), event.getTarget() );
       }, this);
-      var child1 = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
       root.setItemCount( 4 );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
       var child2 = new org.eclipse.rwt.widgets.TreeItem( root, 3 );
       var child3 = new org.eclipse.rwt.widgets.TreeItem( root, 2 );
       assertEquals( [ child1, undefined, child3, child2 ], root._children );
-      // TODO [tb] : why was this working?
-      //assertEquals( [ "add", root, "add", root, null, child2, null, child3 ], log );
-      assertEquals( [ "add", root, "add", root ], log );
+      // NOTE: Only one "add" for setItemCount. The other items have never been rendered 
+      //       (otherwise woulnt be undefined) and don't shift anything either. 
+      assertEquals( [ "add", root], log );
     },
 
     testGetVirtualItem: function() {
