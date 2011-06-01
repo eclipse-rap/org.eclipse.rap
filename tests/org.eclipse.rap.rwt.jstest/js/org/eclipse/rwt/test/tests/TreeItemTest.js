@@ -253,7 +253,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       var child3 = new org.eclipse.rwt.widgets.TreeItem( root );
       assertEquals( [ child1, child2, child3 ], root._children );
       child2.dispose();
-      assertEquals( [ child1, child3 ], root._children );
+      assertEquals( [ child1, child3, undefined ], root._children );
     },
 
     testRemoveItemEvent : function() {

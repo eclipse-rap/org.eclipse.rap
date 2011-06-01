@@ -209,13 +209,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     testRenderRemoveItem : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
+      tree.setItemCount( 10 );
       var item;
       for( var i = 0; i < 10; i++ ) {
-        item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
+        item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), i );
         item.setTexts( [ "Test" + i ] );
       }
       testUtil.flush();
       item.dispose();
+      tree.setItemCount( 9 ); // order is relevant: dispose before setItemCount
       testUtil.flush();
       var sample = tree._rowContainer._getTargetNode().childNodes[ 9 ];
       assertEquals( 1, sample.childNodes.length );
@@ -223,18 +225,58 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.destroy();
     },
 
+    testRenderRemoveAddItem : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      tree.setItemCount( 10 );
+      var item;
+      for( var i = 0; i < 10; i++ ) {
+        item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), i );
+        item.setTexts( [ "Test" + i ] );
+      }
+      testUtil.flush();
+      item.dispose();
+	    item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 9 );
+	    item.setTexts( [ "newItem" ] );
+      testUtil.flush();
+      var sample = tree._clientArea._getTargetNode().childNodes[ 9 ];
+      assertEquals( 1, sample.childNodes.length );
+      assertEquals( "newItem", sample.childNodes[ 0 ].innerHTML );
+      tree.destroy();
+    },
+
+    testRenderRemoveItemVirtual : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      tree.setItemCount( 10 );
+      var item;
+      for( var i = 0; i < 10; i++ ) {
+        item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), i );
+        item.setTexts( [ "Test" + i ] );
+      }
+      testUtil.flush();
+      item.dispose();
+      testUtil.flush();
+      var sample = tree._clientArea._getTargetNode().childNodes[ 9 ];
+      assertEquals( 1, sample.childNodes.length );
+      assertEquals( "...", sample.childNodes[ 0 ].innerHTML );
+      tree.destroy();
+    },
+
     testRenderRemoveFirstItem : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
+      tree.setItemCount( 10 );
       var item;
       for( var i = 0; i < 10; i++ ) {
-        item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem() );
+        item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), i );
         item.setTexts( [ "Test" + i ] );
       }
       item = tree._rootItem._children[ 0 ];
       assertEquals( "Test0", item.getText( 0 ) );
       testUtil.flush();
       item.dispose();
+      tree.setItemCount( 9 );
       testUtil.flush();
       item = tree._rootItem._children[ 0 ];
       assertEquals( "Test1", item.getText( 0 ) );
@@ -306,10 +348,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.flush();
       var node = tree._rowContainer._children[ 0 ]._getTargetNode();
       assertTrue( node.innerHTML.indexOf( "empty.gif" ) != -1 ); 
+      item.setItemCount( 1 );
       var item2 = new org.eclipse.rwt.widgets.TreeItem( item );
       testUtil.flush();
       assertTrue( node.innerHTML.indexOf( "children.gif" ) != -1 );
       item2.dispose(); 
+      item.setItemCount( 0 );
       testUtil.flush();
       assertTrue( node.innerHTML.indexOf( "empty.gif" ) != -1 );
       tree.destroy();
