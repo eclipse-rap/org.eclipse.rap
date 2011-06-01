@@ -239,7 +239,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
 	    item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 9 );
 	    item.setTexts( [ "newItem" ] );
       testUtil.flush();
-      var sample = tree._clientArea._getTargetNode().childNodes[ 9 ];
+      var sample = tree._rowContainer._getTargetNode().childNodes[ 9 ];
       assertEquals( 1, sample.childNodes.length );
       assertEquals( "newItem", sample.childNodes[ 0 ].innerHTML );
       tree.destroy();
@@ -257,7 +257,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.flush();
       item.dispose();
       testUtil.flush();
-      var sample = tree._clientArea._getTargetNode().childNodes[ 9 ];
+      var sample = tree._rowContainer._getTargetNode().childNodes[ 9 ];
       assertEquals( 1, sample.childNodes.length );
       assertEquals( "...", sample.childNodes[ 0 ].innerHTML );
       tree.destroy();
