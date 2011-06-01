@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.internal.junit.runtime;
 
 import org.eclipse.core.runtime.Platform;
@@ -27,6 +27,7 @@ import org.eclipse.ui.testing.TestableObject;
  * This class controls all aspects of the application's execution and is
  * contributed through the plugin.xml.
  */
+@SuppressWarnings("restriction")
 public class Application implements IEntryPoint, ITestHarness {
 
   private TestableObject fTestableObject;
