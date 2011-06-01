@@ -41,8 +41,8 @@ public final class SessionStoreImpl
   }
   
   private final SerializableLock lock;
-  private final Map attributes;
-  private final Set sessionStoreListeners;
+  private final Map<String,Object> attributes;
+  private final Set<SessionStoreListener> sessionStoreListeners;
   private final String id;
   private transient HttpSession httpSession;
   private boolean bound;
@@ -53,8 +53,8 @@ public final class SessionStoreImpl
   public SessionStoreImpl( HttpSession httpSession ) {
     ParamCheck.notNull( httpSession, "httpSession" );
     this.lock = new SerializableLock();
-    this.attributes = new HashMap();
-    this.sessionStoreListeners = new HashSet();
+    this.attributes = new HashMap<String,Object>();
+    this.sessionStoreListeners = new HashSet<SessionStoreListener>();
     this.id = httpSession.getId();
     this.bound = true;
     this.httpSession = httpSession;
@@ -201,10 +201,10 @@ public final class SessionStoreImpl
   }
 
   private void doValueUnbound() {
-    HashMap attributesCopy;
+    Map<String,Object> attributesCopy;
     synchronized( lock ) {      
       aboutUnbound = true;
-      attributesCopy = new HashMap( attributes );
+      attributesCopy = new HashMap<String,Object>( attributes );
     }
     fireBeforeDestroy();
     // leave all attributes in place while firing valueUnbound events to allow a defined shutdown 
@@ -225,8 +225,8 @@ public final class SessionStoreImpl
   private void fireBeforeDestroy() {
     SessionStoreListener[] listeners;
     synchronized( lock ) {
-      listeners = new SessionStoreListener[ sessionStoreListeners.size() ];
-      sessionStoreListeners.toArray( listeners );
+      int size = sessionStoreListeners.size();
+      listeners = sessionStoreListeners.toArray( new SessionStoreListener[ size ] );
     }
     SessionStoreEvent event = new SessionStoreEvent( this );
     for( int i = 0; i < listeners.length; i++ ) {
@@ -289,9 +289,9 @@ public final class SessionStoreImpl
   }
   
   private Enumeration createAttributeNameEnumeration() {
-    Set names;
+    Set<String> names;
     synchronized( lock ) {
-      names = new HashSet( attributes.keySet() );
+      names = new HashSet<String>( attributes.keySet() );
     }
     final Iterator iterator = names.iterator();
     return new Enumeration() {
