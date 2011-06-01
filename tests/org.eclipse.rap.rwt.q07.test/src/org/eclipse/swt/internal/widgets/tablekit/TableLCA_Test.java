@@ -114,9 +114,6 @@ public class TableLCA_Test extends TestCase {
     String prop = TableLCA.PROP_SCROLLBARS_SELECTION_LISTENER;
     hasListeners = ( Boolean )adapter.getPreserved( prop );
     assertEquals( Boolean.FALSE, hasListeners );
-    Object defaultColumnwidth = adapter.getPreserved( TableLCA.PROP_DEFAULT_COLUMN_WIDTH );
-    int defaultColumnWidth2 = TableLCA.getDefaultColumnWidth( table );
-    assertEquals( new Integer( defaultColumnWidth2 ), defaultColumnwidth );
     ItemMetrics[] itemMetrics = ( ItemMetrics[] )adapter.getPreserved( TableLCAUtil.PROP_ITEM_METRICS );
     int imageLeft1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageLeft;
     assertEquals( imageLeft1, itemMetrics[ 0 ].imageLeft );
@@ -161,9 +158,6 @@ public class TableLCA_Test extends TestCase {
     assertEquals( new Integer( 1 ), adapter.getPreserved( TableLCA.PROP_TOP_ITEM_INDEX ) );
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
-    defaultColumnwidth = adapter.getPreserved( TableLCA.PROP_DEFAULT_COLUMN_WIDTH );
-    defaultColumnWidth2 = TableLCA.getDefaultColumnWidth( table );
-    assertEquals( new Integer( defaultColumnWidth2 ), defaultColumnwidth );
     itemMetrics = ( ItemMetrics[] )adapter.getPreserved( TableLCAUtil.PROP_ITEM_METRICS );
     imageLeft1 = ( TableLCAUtil.getItemMetrics( table )[ 0 ] ).imageLeft;
     assertEquals( imageLeft1, itemMetrics[ 0 ].imageLeft );
