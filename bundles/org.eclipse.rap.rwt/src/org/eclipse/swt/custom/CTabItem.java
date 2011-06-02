@@ -560,6 +560,7 @@ public class CTabItem extends Item {
       : shortenText( font, text, width, "" );
   }
 
+  @SuppressWarnings("all")
   static String shortenText( Font font, String text, int width, String ellipses ) {
     if( Graphics.stringExtent( font, text ).x <= width ) {
       return text;

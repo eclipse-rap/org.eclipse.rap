@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,7 @@ public class Composition_Test extends TestCase {
   }
 
   public void testDispose() {
-    final List disposedWidgets = new ArrayList();
+    final List<Object> disposedWidgets = new ArrayList<Object>();
     DisposeListener disposeListener = new DisposeListener() {
       public void widgetDisposed( final DisposeEvent evt ) {
         disposedWidgets.add( evt.getSource() );
@@ -83,7 +83,7 @@ public class Composition_Test extends TestCase {
     assertEquals( true, button2.isDisposed() );
     // the assert below may not work in the future since getChildren is
     // checkWidget()-protected
-    assertEquals( 0, ControlHolder.getControls( shell ).length );
+    assertEquals( 0, ControlHolder.size( shell ) );
     assertEquals( 0, Display.getCurrent().getShells().length );
     // 
     disposedWidgets.clear();

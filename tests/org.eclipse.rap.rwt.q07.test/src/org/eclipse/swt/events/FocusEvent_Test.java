@@ -28,14 +28,14 @@ public class FocusEvent_Test extends TestCase {
   
   private Display display;
   private Shell shell;
-  private List events;
+  private List<FocusEvent> events;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
     shell.open();
-    events = new ArrayList();
+    events = new ArrayList<FocusEvent>();
   }
   
   protected void tearDown() throws Exception {
@@ -55,7 +55,7 @@ public class FocusEvent_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     button.notifyListeners( SWT.FocusIn, event );
     assertEquals( 1, events.size() );
-    FocusEvent focusEvent = ( FocusEvent )events.get( 0 );
+    FocusEvent focusEvent = events.get( 0 );
     assertSame( button, focusEvent.getSource() );
     assertSame( button, focusEvent.widget );
     assertSame( display, focusEvent.display );
@@ -82,7 +82,7 @@ public class FocusEvent_Test extends TestCase {
     Fixture.fakeRequestParam( "org.eclipse.swt.events.focusLost", focusControlId );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 1, events.size() );
-    FocusEvent event = ( FocusEvent )events.get( 0 );
+    FocusEvent event = events.get( 0 );
     assertEquals( FocusEvent.FOCUS_LOST, event.getID() );
     assertSame( unfocusControl, event.getSource() );
   }
@@ -104,7 +104,7 @@ public class FocusEvent_Test extends TestCase {
     Fixture.fakeRequestParam( "org.eclipse.swt.events.focusGained", controlId );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 1, events.size() );
-    FocusEvent event = ( FocusEvent )events.get( 0 );
+    FocusEvent event = events.get( 0 );
     assertEquals( FocusEvent.FOCUS_GAINED, event.getID() );
     assertSame( control, event.getSource() );
   }

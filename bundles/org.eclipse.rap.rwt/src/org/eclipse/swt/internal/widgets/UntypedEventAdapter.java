@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,10 +50,10 @@ public final class UntypedEventAdapter
     }
   }
 
-  private final java.util.List listeners;
+  private final java.util.List<Entry> listeners;
 
   public UntypedEventAdapter() {
-    listeners = new ArrayList();
+    listeners = new ArrayList<Entry>();
   }
 
   // XXXListener interface imlementations
@@ -450,14 +450,14 @@ public final class UntypedEventAdapter
 
   public Listener[] getListeners( final int eventType ) {
     Entry[] entries = getEntries();
-    java.util.List result = new ArrayList();
+    java.util.List<Listener> result = new ArrayList<Listener>();
     for( int i = 0; i < entries.length; i++ ) {
       Entry entry = entries[ i ];
       if( entry.eventType == eventType ) {
         result.add( entry.listener );
       }
     }
-    return ( Listener[] )result.toArray( new Listener[0] );
+    return result.toArray( new Listener[ result.size() ] );
   }
 
   public boolean hasUntypedListener( final int eventType ) {
@@ -472,9 +472,7 @@ public final class UntypedEventAdapter
     return result;
   }
 
-  public static boolean hasTypedListener( final Widget widget,
-                                          final int eventType )
-  {
+  public static boolean hasTypedListener( final Widget widget, final int eventType ) {
     boolean result = false;
     switch( eventType ) {
       case SWT.Move:
@@ -655,9 +653,7 @@ public final class UntypedEventAdapter
   }
 
   private Entry[] getEntries() {
-    Entry[] result = new Entry[ listeners.size() ];
-    listeners.toArray( result );
-    return result;
+    return listeners.toArray( new Entry[ listeners.size() ] );
   }
 
   private static Event createEvent( final int eventType, final Object source ) {

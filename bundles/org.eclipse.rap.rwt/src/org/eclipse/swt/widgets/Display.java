@@ -181,26 +181,26 @@ public class Display extends Device implements Adaptable {
     return result;
   }
 
-  private final List shells;
+  private final List<Shell> shells;
   private transient Thread thread;
   private final ISessionStore sessionStore;
   private final Rectangle bounds;
   private final Point cursorLocation;
   private Shell activeShell;
-  private List filters;
-  private Collection redrawControls;
+  private List<FilterEntry> filters;
+  private Collection<Control> redrawControls;
   private Control focusControl;
   private transient Monitor monitor;
   private transient IDisplayAdapter displayAdapter;
   private transient WidgetAdapter widgetAdapter;
-  private Set closeListeners;
-  private Set disposeListeners;
+  private Set<Listener> closeListeners;
+  private Set<Listener> disposeListeners;
   private Runnable[] disposeList;
   private Composite[] layoutDeferred;
   private int layoutDeferredCount;
   private Widget[] skinList;
   private int skinCount;
-  private Set skinListeners;
+  private Set<Listener> skinListeners;
 
   /* Display Data */
   private Object data;
@@ -236,7 +236,7 @@ public class Display extends Device implements Adaptable {
     LifeCycleUtil.setSessionDisplay( this );
     attachThread();
     sessionStore = ContextProvider.getSession();
-    shells = new ArrayList();
+    shells = new ArrayList<Shell>();
     monitor = new Monitor( this );
     cursorLocation = new Point( 0, 0 );
     bounds = readInitialBounds();
@@ -567,17 +567,17 @@ public class Display extends Device implements Adaptable {
     }
     if( eventType == SWT.Close ) {
       if( closeListeners == null ) {
-        closeListeners = new HashSet();
+        closeListeners = new HashSet<Listener>();
       }
       closeListeners.add( listener );
     } else if( eventType == SWT.Dispose ) {
       if( disposeListeners == null ) {
-        disposeListeners = new HashSet();
+        disposeListeners = new HashSet<Listener>();
       }
       disposeListeners.add( listener );
     } else if( eventType == SWT.Skin ) {
       if( skinListeners == null ) {
-        skinListeners = new HashSet();
+        skinListeners = new HashSet<Listener>();
       }
       skinListeners.add( listener );
     }
@@ -845,7 +845,7 @@ public class Display extends Device implements Adaptable {
     if( shell == activeShell ) {
       if( shells.size() > 0 ) {
         // activate the least recently added / activated element
-        setActiveShell( ( Shell )shells.get( shells.size() - 1 ) );
+        setActiveShell( shells.get( shells.size() - 1 ) );
       } else {
         setActiveShell( null );
       }
@@ -1217,10 +1217,10 @@ public class Display extends Device implements Adaptable {
   //////////
   // Redraw
 
-  void redrawControl( final Control control, boolean redraw ) {
+  void redrawControl( Control control, boolean redraw ) {
     if( redraw ) {
       if( redrawControls == null ) {
-        redrawControls = new LinkedList();
+        redrawControls = new LinkedList<Control>();
       }
       if( !redrawControls.contains( control ) ) {
         redrawControls.add( control );
@@ -1698,7 +1698,7 @@ public class Display extends Device implements Adaptable {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( filters == null ) {
-      filters = new ArrayList();
+      filters = new ArrayList<FilterEntry>();
     }
     filters.add( new FilterEntry( eventType, listener ) );
   }
@@ -2148,20 +2148,21 @@ public class Display extends Device implements Adaptable {
     return false;
   }
 
+  @SuppressWarnings("unchecked")
   private void register() {
     synchronized( Device.class ) {
       boolean registered = false;
       WeakReference[] displays = getDisplays();
       for( int i = 0; !registered && i < displays.length; i++ ) {
         if( canDisplayRefBeReplaced( displays[ i ] ) ) {
-          displays[ i ] = new WeakReference( this );
+          displays[ i ] = new WeakReference<Display>( this );
           registered = true;
         }
       }
       if( !registered ) {
-        WeakReference[] newDisplays = new WeakReference[ displays.length + 4 ];
+        WeakReference<Display>[] newDisplays = new WeakReference[ displays.length + 4 ];
         System.arraycopy( displays, 0, newDisplays, 0, displays.length );
-        newDisplays[ displays.length ] = new WeakReference( this );
+        newDisplays[ displays.length ] = new WeakReference<Display>( this );
         setDisplays( newDisplays );
       }
     }
@@ -2192,11 +2193,11 @@ public class Display extends Device implements Adaptable {
     }
   }
 
-  private static WeakReference[] getDisplays() {
+  private static WeakReference<Display>[] getDisplays() {
     return RWTFactory.getDisplaysHolder().getDisplays();
   }
   
-  private static void setDisplays( WeakReference[] displays ) {
+  private static void setDisplays( WeakReference<Display>[] displays ) {
     RWTFactory.getDisplaysHolder().setDisplays( displays );
   }
 
@@ -2307,13 +2308,13 @@ public class Display extends Device implements Adaptable {
 
     private final Display display;
     private final Point location;
-    private final Set foundComponentInParent;
+    private final Set<Control> foundComponentInParent;
     private Control control;
 
     ControlFinder( final Display display, final Point location ) {
       this.display = display;
       this.location = new Point( location.x, location.y );
-      this.foundComponentInParent = new HashSet();
+      this.foundComponentInParent = new HashSet<Control>();
       find();
     }
 

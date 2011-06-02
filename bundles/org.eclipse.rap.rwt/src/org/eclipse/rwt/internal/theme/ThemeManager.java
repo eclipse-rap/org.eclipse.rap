@@ -96,13 +96,13 @@ public class ThemeManager {
     org.eclipse.swt.widgets.ScrollBar.class
   };
 
-  private final Set customAppearances;
-  private final Map themes;
-  private final Set registeredThemeFiles;
+  private final Set<String> customAppearances;
+  private final Map<String,Theme> themes;
+  private final Set<String> registeredThemeFiles;
   private final ThemeableWidgetHolder themeableWidgets;
   private final CssElementHolder registeredCssElements;
   private final ThemeAdapterManager themeAdapterManager;
-  private final Map resolvedPackageNames; // only for performance improvements
+  private final Map<String,String> resolvedPackageNames; // only for performance improvements
   private Theme defaultTheme;
   private boolean initialized;
   private boolean widgetsInitialized;
@@ -111,12 +111,12 @@ public class ThemeManager {
     initialized = false;
     widgetsInitialized = false;
     themeableWidgets = new ThemeableWidgetHolder();
-    customAppearances = new HashSet();
-    registeredThemeFiles = new HashSet();
+    customAppearances = new HashSet<String>();
+    registeredThemeFiles = new HashSet<String>();
     registeredCssElements = new CssElementHolder();
     themeAdapterManager = new ThemeAdapterManager();
-    themes = new HashMap();
-    resolvedPackageNames = new HashMap();
+    themes = new HashMap<String,Theme>();
+    resolvedPackageNames = new HashMap<String,String>();
   }
 
   public void activate() {
@@ -239,7 +239,7 @@ public class ThemeManager {
   public Theme getTheme( String themeId ) {
     Theme result = null;
     if( themes.containsKey( themeId ) ) {
-      result = ( Theme )themes.get( themeId );
+      result = themes.get( themeId );
     }
     return result;
   }
@@ -251,8 +251,8 @@ public class ThemeManager {
    *         <code>null</code>
    */
   public String[] getRegisteredThemeIds() {
-    String[] result = new String[ themes.size() ];
-    return ( String[] )themes.keySet().toArray( result );
+    Set<String> themeIds = themes.keySet();
+    return themeIds.toArray( new String[ themeIds.size() ] );
   }
 
   /**
@@ -268,7 +268,7 @@ public class ThemeManager {
     registerThemeFiles( defaultTheme );
     while( iterator.hasNext() ) {
       String key = ( String )iterator.next();
-      Theme theme = ( Theme )themes.get( key );
+      Theme theme = themes.get( key );
       if( theme != defaultTheme ) {
         registerThemeFiles( theme );
       }
@@ -354,7 +354,7 @@ public class ThemeManager {
   }
   
   private String resolvePackageName( String packageName ) {
-    String result = ( String )resolvedPackageNames.get( packageName );
+    String result = resolvedPackageNames.get( packageName );
     if( result == null ) {
       result =  packageName.replace( '.', '/' );
       resolvedPackageNames.put( packageName, result );

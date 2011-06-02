@@ -15,25 +15,25 @@ import java.util.*;
 
 
 
-public class SharedInstanceBuffer implements Serializable {
+public class SharedInstanceBuffer<K,I> implements Serializable {
   private static final long serialVersionUID = 1L;
 
-  public interface IInstanceCreator {
-    Object createInstance();
+  public interface IInstanceCreator<T> {
+    T createInstance();
   }
 
   private final SerializableLock lock;
-  private final Map store;
+  private final Map<K,I> store;
   
   public SharedInstanceBuffer() {
     lock = new SerializableLock();
-    store = new HashMap();
+    store = new HashMap<K,I>();
   }
   
-  public Object get( Object key, IInstanceCreator instanceCreator ) {
+  public I get( K key, IInstanceCreator<I> instanceCreator ) {
     ParamCheck.notNull( instanceCreator, "valueCreator" );
     synchronized( lock ) {
-      Object result = store.get( key );
+      I result = store.get( key );
       if( result == null ) {
         result = instanceCreator.createInstance();
         store.put( key, result );
@@ -42,7 +42,7 @@ public class SharedInstanceBuffer implements Serializable {
     }
   }
   
-  public Object remove( Object key ) {
+  public I remove( K key ) {
     synchronized( lock ) {
       return store.remove( key );
     }

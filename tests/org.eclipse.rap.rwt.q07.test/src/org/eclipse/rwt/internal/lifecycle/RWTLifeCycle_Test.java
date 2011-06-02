@@ -583,7 +583,7 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testReadAndDispatchWithAsyncExec() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<Runnable> log = new ArrayList<Runnable>();
     Runnable runnable = new Runnable() {
       public void run() {
         log.add( this );

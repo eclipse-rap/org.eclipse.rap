@@ -75,7 +75,7 @@ public class Table extends Composite {
   private final class CompositeItemHolder implements IItemHolderAdapter {
     public void add( final Item item ) {
       if( item instanceof TableColumn ) {
-        columnHolder.add( item );
+        columnHolder.add( ( TableColumn )item );
       } else {
         String msg = "Only TableColumns may be added to CompositeItemHolder";
         throw new IllegalArgumentException( msg );
@@ -83,7 +83,7 @@ public class Table extends Composite {
     }
     public void insert( final Item item, final int index ) {
       if( item instanceof TableColumn ) {
-        columnHolder.insert( item, index );
+        columnHolder.insert( ( TableColumn )item, index );
       } else {
         String msg = "Only TableColumns may be inserted to CompositeItemHolder";
         throw new IllegalArgumentException( msg );
@@ -91,10 +91,9 @@ public class Table extends Composite {
     }
     public void remove( final Item item ) {
       if( item instanceof TableColumn ) {
-        columnHolder.remove( item );
+        columnHolder.remove( ( TableColumn )item );
       } else {
-        String msg
-          = "Only TableColumns may be removed from CompositeItemHolder";
+        String msg = "Only TableColumns may be removed from CompositeItemHolder";
         throw new IllegalArgumentException( msg );
       }
     }
@@ -251,7 +250,7 @@ public class Table extends Composite {
   private final ResizeListener resizeListener;
   private int itemCount;
   private TableItem[] items;
-  private final ItemHolder columnHolder;
+  private final ItemHolder<TableColumn> columnHolder;
   private int[] columnImageCount;
   private int[] columnOrder;
   private int[] selection;
@@ -311,7 +310,7 @@ public class Table extends Composite {
     sortDirection = SWT.NONE;
     tableAdapter = new TableAdapter();
     itemHolder = new CompositeItemHolder();
-    columnHolder = new ItemHolder( TableColumn.class );
+    columnHolder = new ItemHolder<TableColumn>( TableColumn.class );
     setTableEmpty();
     createScrollBars();
     selection = EMPTY_SELECTION;
@@ -388,7 +387,7 @@ public class Table extends Composite {
    */
   public TableColumn[] getColumns() {
     checkWidget();
-    return ( TableColumn[] )columnHolder.getItems();
+    return columnHolder.getItems();
   }
 
   /**
@@ -420,7 +419,7 @@ public class Table extends Composite {
    */
   public TableColumn getColumn( final int index ) {
     checkWidget();
-    return ( TableColumn )columnHolder.getItem( index );
+    return columnHolder.getItem( index );
   }
 
   /**
@@ -2158,7 +2157,7 @@ public class Table extends Composite {
         items[ i ] = null;
       }
     }
-    Item[] tableColumns = columnHolder.getItems();
+    TableColumn[] tableColumns = columnHolder.getItems();
     for( int i = 0; i < tableColumns.length; i++ ) {
       tableColumns[ i ].dispose();
       columnHolder.remove( tableColumns[ i ] );

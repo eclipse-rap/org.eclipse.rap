@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,25 +22,25 @@ import org.eclipse.swt.widgets.Widget;
 public final class WidgetMatcher implements ValueSelector {
 
   public static interface Constraint {
-
     boolean matches( Widget widget );
   }
 
   // TODO [rst] Optimize, linear search might be faster than hashmap overhead
-  private final Map constraintMap = new HashMap();
-
-  public void addStyle( final String string, final int style )
-  {
+  private final Map<String,Constraint> constraintMap;
+  
+  public WidgetMatcher() {
+    constraintMap = new HashMap<String,Constraint>();
+  }
+  
+  public void addStyle( String string, int style ) {
     constraintMap.put( "[" + string, createStyleConstraint( style ) );
   }
 
-  public void addState( final String string, final Constraint constraint )
-  {
+  public void addState( String string, Constraint constraint ) {
     constraintMap.put( ":" + string, constraint );
   }
 
-  public QxType select( final ConditionalValue[] values, final Widget widget )
-  {
+  public QxType select( ConditionalValue[] values, Widget widget ) {
     QxType result = null;
     for( int i = 0; i < values.length && result == null; i++ ) {
       ConditionalValue condValue = values[ i ];
@@ -54,15 +54,14 @@ public final class WidgetMatcher implements ValueSelector {
 
   public static Constraint createStyleConstraint( final int style ) {
     Constraint matcher = new Constraint() {
-
-      public boolean matches( final Widget widget ) {
+      public boolean matches( Widget widget ) {
         return ( widget.getStyle() & style ) != 0;
       }
     };
     return matcher;
   }
 
-  private boolean matches( final Widget widget, final String[] constraints ) {
+  private boolean matches( Widget widget, String[] constraints ) {
     boolean result = true;
     for( int i = 0; i < constraints.length && result; i++ ) {
       String string = constraints[ i ];
@@ -70,15 +69,14 @@ public final class WidgetMatcher implements ValueSelector {
         String variant = string.substring( 1 );
         result &= hasVariant( widget, variant );
       } else {
-        Constraint constraint = ( Constraint )constraintMap.get( string );
+        Constraint constraint = constraintMap.get( string );
         result &= constraint != null && constraint.matches( widget );
       }
     }
     return result;
   }
 
-  private static boolean hasVariant( final Widget widget, final String variant )
-  {
+  private static boolean hasVariant( Widget widget, String variant ) {
     String actualVariant = WidgetUtil.getVariant( widget );
     return actualVariant != null && actualVariant.equals( variant );
   }

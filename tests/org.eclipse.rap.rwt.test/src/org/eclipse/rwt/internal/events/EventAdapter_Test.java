@@ -18,6 +18,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.internal.SWTEventListener;
 import org.eclipse.swt.widgets.*;
 
 
@@ -62,10 +63,9 @@ public class EventAdapter_Test extends TestCase {
   }
   
   public void testAddListenerWithIllegalArguments() {
-    IEventAdapter eventAdapter
-      = ( IEventAdapter )widget.getAdapter( IEventAdapter.class );
+    IEventAdapter eventAdapter = ( IEventAdapter )widget.getAdapter( IEventAdapter.class );
     try {
-      eventAdapter.addListener( SelectionListener.class, new Object() );
+      eventAdapter.addListener( SelectionListener.class, new SWTEventListener() { } );
       fail();
     } catch( final IllegalArgumentException iae ) {
     }

@@ -1511,12 +1511,12 @@ public class Table_Test extends TestCase {
 
     table.setItemCount( 1 );
     assertEquals( 1, table.getItemCount() );
-    Item[] items = ItemHolder.getItems( table );
+    Item[] items = ItemHolder.getItemHolder( table ).getItems();
     assertEquals( 0, items.length );
 
     new TableItem( table, SWT.NONE );
     assertEquals( 2, table.getItemCount() );
-    items = ItemHolder.getItems( table );
+    items = ItemHolder.getItemHolder( table ).getItems();
     assertEquals( 1, items.length );
   }
 
@@ -1582,11 +1582,11 @@ public class Table_Test extends TestCase {
     shell.open();
 
     // Ensure that a virtual item is not "realized" as long as it is invisible
-    assertEquals( 0, ItemHolder.getItems( table ).length );
+    assertEquals( 0, ItemHolder.getItemHolder( table ).getItems().length );
 
     // Enlarge the table so that the item will become visible
     table.setSize( 200, 200 );
-    assertEquals( 1, ItemHolder.getItems( table ).length );
+    assertEquals( 1, ItemHolder.getItemHolder( table ).getItems().length );
   }
 
   public void testItemImageSize() {
@@ -2282,7 +2282,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testReskinDoesNotResolveVirtualItems() {
-    final java.util.List eventLog = new LinkedList();
+    final java.util.List<Event> eventLog = new LinkedList<Event>();
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 1000 );

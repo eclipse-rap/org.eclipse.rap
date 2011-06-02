@@ -38,7 +38,7 @@ public class KeyEvent_Test extends TestCase {
   }
 
   public void testCopyFieldsFromUntypedEvent() {
-    final List log = new ArrayList();
+    final List<KeyEvent> log = new ArrayList<KeyEvent>();
     Button button = new Button( shell, SWT.PUSH );
     button.addKeyListener( new KeyAdapter() {
       public void keyPressed( final KeyEvent event ) {
@@ -54,7 +54,7 @@ public class KeyEvent_Test extends TestCase {
     event.data = data;
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     button.notifyListeners( SWT.KeyDown, event );
-    KeyEvent keyEvent = ( KeyEvent )log.get( 0 );
+    KeyEvent keyEvent = log.get( 0 );
     assertSame( button, keyEvent.getSource() );
     assertSame( button, keyEvent.widget );
     assertSame( display, keyEvent.display );

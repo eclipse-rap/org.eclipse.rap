@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.*;
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
  */
+@SuppressWarnings("all")
 public class ViewForm extends Composite {
 
   /**
@@ -277,7 +278,7 @@ public class ViewForm extends Composite {
   void onResize() {
     Point size = getSize();
     if( oldSize == null || oldSize.x == 0 || oldSize.y == 0 ) {
-      // redraw();
+      redraw();
     } else {
       int width = 0;
       if( oldSize.x < size.x ) {
@@ -285,7 +286,7 @@ public class ViewForm extends Composite {
       } else if( oldSize.x > size.x ) {
         width = borderRight + highlight;
       }
-      // redraw( size.x - width, 0, width, size.y, false );
+      redraw( size.x - width, 0, width, size.y, false );
       int height = 0;
       if( oldSize.y < size.y ) {
         height = size.y - oldSize.y + borderBottom + highlight;
@@ -293,7 +294,7 @@ public class ViewForm extends Composite {
       if( oldSize.y > size.y ) {
         height = borderBottom + highlight;
       }
-      // redraw( 0, size.y - height, size.x, height, false );
+      redraw( 0, size.y - height, size.x, height, false );
     }
     oldSize = size;
   }

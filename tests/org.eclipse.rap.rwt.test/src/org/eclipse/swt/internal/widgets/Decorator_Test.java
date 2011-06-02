@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -8,8 +8,6 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
-
-import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -29,9 +27,7 @@ public class Decorator_Test extends TestCase {
   public void testCreate() {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    List decorations 
-      = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
-    assertNull( decorations );
+    assertEquals( 0, Decorator.getDecorators( control ).length );
 
     ControlDecorator decoration 
       = new ControlDecorator( control, SWT.RIGHT, null );
@@ -45,46 +41,34 @@ public class Decorator_Test extends TestCase {
     assertFalse( decoration.isVisible() );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), decoration.getBounds() );
     assertFalse( FocusEvent.hasListener( control ) );
-    decorations = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
-    assertNotNull( decorations );
-    assertEquals( 1, decorations.size() );
+    assertEquals( 1, Decorator.getDecorators( control ).length );
 
     decoration = new ControlDecorator( control, SWT.LEFT, shell );
     assertSame( control, decoration.getControl() );
     assertEquals( shell, decoration.getParent() );
-    decorations = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
-    assertNotNull( decorations );
-    assertEquals( 2, decorations.size() );
+    assertEquals( 2, Decorator.getDecorators( control ).length );
   }
 
   public void testDispose() {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    ControlDecorator decoration 
-      = new ControlDecorator( control, SWT.RIGHT, null );
-    List decorations 
-      = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
-    assertNotNull( decorations );
-    assertEquals( 1, decorations.size() );
+    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
+    assertEquals( 1, Decorator.getDecorators( control ).length );
     control.dispose();
     assertTrue( decoration.isDisposed() );
 
     control = new Button( composite, SWT.PUSH );
     decoration = new ControlDecorator( control, SWT.RIGHT, null );
-    decorations = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
-    assertNotNull( decorations );
-    assertEquals( 1, decorations.size() );
+    assertEquals( 1, Decorator.getDecorators( control ).length );
     composite.dispose();
     assertTrue( decoration.isDisposed() );
 
     control = new Button( composite, SWT.PUSH );
     decoration = new ControlDecorator( control, SWT.RIGHT, null );
-    decorations = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
-    assertNotNull( decorations );
-    assertEquals( 1, decorations.size() );
+    assertEquals( 1, Decorator.getDecorators( control ).length );
+    
     decoration.dispose();
-    decorations = ( List )control.getData( ControlDecorator.KEY_DECORATIONS );
-    assertNull( decorations );
+    assertEquals( 0, Decorator.getDecorators( control ).length );
   }
 
   public void testImage() {

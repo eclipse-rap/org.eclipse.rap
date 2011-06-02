@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,11 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.events;
+
+import org.eclipse.swt.internal.SWTEventListener;
 
 
 /**
@@ -25,7 +28,7 @@ public interface IEventAdapter {
    * @return an array of listeners or an empty array if no listeners are
    * available.
    */
-  Object[] getListener();
+  SWTEventListener[] getListeners();
   
   /**
    * <p>Returns an array containing all listeners of type 
@@ -35,7 +38,7 @@ public interface IEventAdapter {
    * @return an array of listeners or an empty array if no listeners are
    * available.
    */
-  Object[] getListener( Class listenerType );
+  SWTEventListener[] getListener( Class listenerType );
   
   /**
    * <p>Returns whether there are any listeners of type 
@@ -53,7 +56,7 @@ public interface IEventAdapter {
    * @param listenerType the type of the listeners to be added
    * @param listener the listener to be added 
    */
-  void addListener( Class listenerType, Object listener );
+  void addListener( Class listenerType, SWTEventListener listener );
   
   /**
    * <p>Removes the given listener from the object that returned this 
@@ -61,5 +64,5 @@ public interface IEventAdapter {
    * @param listenerType the type of the listeners to be removed
    * @param listener the listener to be removed
    */
-  void removeListener( Class listenerType, Object listener );
+  void removeListener( Class listenerType, SWTEventListener listener );
 }

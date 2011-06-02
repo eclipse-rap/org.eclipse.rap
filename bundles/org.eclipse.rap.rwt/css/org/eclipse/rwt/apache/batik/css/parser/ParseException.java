@@ -27,8 +27,9 @@ package org.eclipse.rwt.apache.batik.css.parser;
  * exceptions, it must wrap those exceptions in a ParseException.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: ParseException.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
+ * @version $Id: ParseException.java,v 1.2 2011/06/02 20:48:56 rherrmann Exp $
  */
+@SuppressWarnings("all")
 public class ParseException extends RuntimeException {
 
     /**

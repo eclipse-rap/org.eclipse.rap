@@ -34,10 +34,10 @@ import org.eclipse.swt.widgets.*;
 
 public class DisplayLCA_Test extends TestCase {
 
-  private static final List log = new ArrayList();
-  private static final List renderInitLog = new ArrayList();
-  private static final List renderChangesLog = new ArrayList();
-  private static final List renderDisposeLog = new ArrayList();
+  private static final List<Widget> log = new ArrayList<Widget>();
+  private static final List<Widget> renderInitLog = new ArrayList<Widget>();
+  private static final List<Widget> renderChangesLog = new ArrayList<Widget>();
+  private static final List<Widget> renderDisposeLog = new ArrayList<Widget>();
   
   private DisplayLCA displayLCA;
   

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -18,8 +18,17 @@ import org.eclipse.swt.widgets.Widget;
 
 
 public class Decorator extends Widget {
-  
-  public static final String KEY_DECORATIONS = "decorations";
+  private static final String KEY_DECORATORS = Widget.class.getName() + "#decorators";
+  private static final Decorator[] EMPTY_DECORATORS = new Decorator[ 0 ];
+
+  public static Decorator[] getDecorators( Widget widget ) {
+    Decorator[] result = EMPTY_DECORATORS;
+    List<Decorator> decorationsList = getDecoratorsList( widget );
+    if( decorationsList != null ) {
+      result = decorationsList.toArray( new Decorator[ decorationsList.size() ] );
+    }
+    return result;
+  }
 
   private Widget decoratedWidget;
   private DisposeListener disposeListener;
@@ -60,22 +69,31 @@ public class Decorator extends Widget {
   }
   
   private void bindDecoration() {
-    List decorations = ( List )decoratedWidget.getData( KEY_DECORATIONS );
+    List<Decorator> decorations = getDecoratorsList( decoratedWidget );
     if( decorations == null ) {
-      decorations = new ArrayList();
+      decorations = new ArrayList<Decorator>();
     }
     decorations.add( this );
-    decoratedWidget.setData( KEY_DECORATIONS, decorations );
+    setDecoratorsList( decorations );
   }
 
   private void unbindDecoration() {
-    List decorations = ( List )decoratedWidget.getData( KEY_DECORATIONS );
+    List<Decorator> decorations = getDecoratorsList( decoratedWidget );
     if( decorations != null ) {
       decorations.remove( this );
       if( decorations.size() == 0 ) {
         decorations = null;
       }
-      decoratedWidget.setData( KEY_DECORATIONS, decorations );
+      setDecoratorsList( decorations );
     }
+  }
+
+  private void setDecoratorsList( List<Decorator> decorations ) {
+    decoratedWidget.setData( KEY_DECORATORS, decorations );
+  }
+
+  @SuppressWarnings("unchecked")
+  private static List<Decorator> getDecoratorsList( Widget widget ) {
+    return ( List<Decorator> )widget.getData( KEY_DECORATORS );
   }
 }

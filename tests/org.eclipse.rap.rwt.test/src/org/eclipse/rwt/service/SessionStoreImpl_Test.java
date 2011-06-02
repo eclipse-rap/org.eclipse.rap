@@ -35,11 +35,11 @@ public class SessionStoreImpl_Test extends TestCase {
   private static class LoggingSessionBindingListener implements HttpSessionBindingListener {
 
     private String eventTypes;
-    private final List eventLog;
+    private final List<HttpSessionBindingEvent> eventLog;
 
     LoggingSessionBindingListener( ) {
       this.eventTypes = "";
-      this.eventLog = new LinkedList();
+      this.eventLog = new LinkedList<HttpSessionBindingEvent>();
     }
 
     public void valueBound( HttpSessionBindingEvent event ) {
@@ -74,7 +74,7 @@ public class SessionStoreImpl_Test extends TestCase {
   
   private TestSession httpSession;
   private SessionStoreImpl session;
-  private List servletLogEntries;
+  private List<Throwable> servletLogEntries;
   
   public void testConstructorWithNullArgument() {
     try {
@@ -469,7 +469,7 @@ public class SessionStoreImpl_Test extends TestCase {
   }
   
   public void testDestroyEventDetails() {
-    final List eventLog = new LinkedList();
+    final List<SessionStoreEvent> eventLog = new LinkedList<SessionStoreEvent>();
     session.addSessionStoreListener( new SessionStoreListener() {
       public void beforeDestroy( SessionStoreEvent event ) {
         eventLog.add( event );
@@ -479,7 +479,7 @@ public class SessionStoreImpl_Test extends TestCase {
     httpSession.invalidate();
     
     assertEquals( 1, eventLog.size() );
-    SessionStoreEvent event = ( SessionStoreEvent )eventLog.get( 0 );
+    SessionStoreEvent event = eventLog.get( 0 );
     assertSame( session, event.getSessionStore() );
   }
   
@@ -636,7 +636,7 @@ public class SessionStoreImpl_Test extends TestCase {
     httpSession = new TestSession();
     session = new SessionStoreImpl( httpSession );
     SessionStoreImpl.attachInstanceToSession( httpSession, session );
-    servletLogEntries = new LinkedList();
+    servletLogEntries = new LinkedList<Throwable>();
     TestServletContext servletContext = ( TestServletContext )httpSession.getServletContext();
     servletContext.setLogger( new TestLogger() {
       public void log( String message, Throwable throwable ) {

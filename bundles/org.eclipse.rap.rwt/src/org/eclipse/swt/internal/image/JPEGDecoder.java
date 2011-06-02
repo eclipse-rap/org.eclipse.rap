@@ -15,6 +15,7 @@ import java.io.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 
+@SuppressWarnings("all")
 public class JPEGDecoder {
 	
 	static final int DCTSIZE = 8;

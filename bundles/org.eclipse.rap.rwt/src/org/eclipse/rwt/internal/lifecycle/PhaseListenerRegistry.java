@@ -19,10 +19,10 @@ import org.eclipse.rwt.lifecycle.PhaseListener;
 
 
 public class PhaseListenerRegistry {
-  private final Set phaseListeners;
+  private final Set<PhaseListener> phaseListeners;
 
   public PhaseListenerRegistry() {
-    phaseListeners = new HashSet();
+    phaseListeners = new HashSet<PhaseListener>();
   }
   
   public void add( PhaseListener listener ) {

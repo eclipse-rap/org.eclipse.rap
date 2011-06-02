@@ -24,14 +24,14 @@ class AdapterFactoryRegistry {
   //      removed as AdapterFactories are then only registered during startup
   //      +1 [fappel]
   private final Object lock;
-  /* key: Class<Adaptable>, value: List<AdapterFactory> */
-  private final Map registry;
+  private final Map<Class,List<AdapterFactory>> registry;
   
   AdapterFactoryRegistry() {
     lock = new Object();
-    registry = new HashMap();
+    registry = new HashMap<Class,List<AdapterFactory>>();
   }
   
+  // TODO [rh] consied to change signature to register(Class<? extends Adaptable>, AdapterFactory)
   void register( Class adaptableClass, AdapterFactory adapterFactory ) {
     ParamCheck.notNull( adapterFactory, "adapterFactory" );
     ParamCheck.notNull( adaptableClass, "adaptableClass" );
@@ -47,11 +47,11 @@ class AdapterFactoryRegistry {
 
   private void registerInternal( Class adaptableClass, AdapterFactory adapterFactory ) {
     synchronized( lock ) {
-      List adapterFactories;
+      List<AdapterFactory> adapterFactories;
       if( registry.containsKey( adaptableClass ) ) {
-        adapterFactories = ( List )registry.get( adaptableClass );
+        adapterFactories = registry.get( adaptableClass );
       } else {
-        adapterFactories = new ArrayList();
+        adapterFactories = new ArrayList<AdapterFactory>();
         registry.put( adaptableClass, adapterFactories );
       }
       if( !adapterFactories.contains( adapterFactory ) ) {
@@ -62,27 +62,25 @@ class AdapterFactoryRegistry {
   
   Class[] getAdaptableClasses() {
     synchronized( lock ) {
-      Set adaptableClasses = registry.keySet();
-      Class[] result = new Class[ adaptableClasses.size() ];
-      adaptableClasses.toArray( result );
-      return result;
+      Set<Class> adaptableClasses = registry.keySet();
+      return adaptableClasses.toArray( new Class[ adaptableClasses.size() ] );
     }
   }
   
   AdapterFactory[] getAdapterFactories( Class adaptableClass ) {
-    List adapterFactories = getAdapterFacoriesList( adaptableClass );
+    List<AdapterFactory> adapterFactories = getAdapterFacoriesList( adaptableClass );
     AdapterFactory[] result = new AdapterFactory[ adapterFactories.size() ];
     adapterFactories.toArray( result );
     return result;
   }
 
-  private List getAdapterFacoriesList( Class adaptableClass ) {
-    List result;
+  private List<AdapterFactory> getAdapterFacoriesList( Class adaptableClass ) {
+    List<AdapterFactory> result;
     synchronized( lock ) {
       if( registry.containsKey( adaptableClass ) ) {
-        result = ( List )registry.get( adaptableClass );
+        result = registry.get( adaptableClass );
       } else {
-        result = Collections.EMPTY_LIST;
+        result = Collections.emptyList();
       }
     }
     return result;

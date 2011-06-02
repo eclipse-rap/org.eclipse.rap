@@ -16,6 +16,7 @@ import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
 
 
+@SuppressWarnings("deprecation")
 public final class DefaultResourceManagerFactory implements IResourceManagerFactory {
   private RWTConfiguration configuration;
 

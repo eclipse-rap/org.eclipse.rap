@@ -17,7 +17,7 @@ import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 
 public class SharedInstanceBuffer_Test extends TestCase {
   
-  private static class TestInstanceCreator implements IInstanceCreator {
+  private static class TestInstanceCreator implements IInstanceCreator<Object> {
     private final Object value;
 
     TestInstanceCreator( Object value ) {
@@ -29,13 +29,13 @@ public class SharedInstanceBuffer_Test extends TestCase {
     }
   }
 
-  private SharedInstanceBuffer keyValueStore;
+  private SharedInstanceBuffer<Object,Object> keyValueStore;
 
   public void testGetAndCreate() {
     Object key = new Object();
     final Object value = new Object();
     
-    Object returnedValue = keyValueStore.get( key, new IInstanceCreator() {
+    Object returnedValue = keyValueStore.get( key, new IInstanceCreator<Object>() {
       public Object createInstance() {
         return value;
       }
@@ -50,7 +50,7 @@ public class SharedInstanceBuffer_Test extends TestCase {
     final Object value = new Object();
     keyValueStore.get( key, new TestInstanceCreator( value ) );
 
-    Object returnedValue = keyValueStore.get( key, new IInstanceCreator() {
+    Object returnedValue = keyValueStore.get( key, new IInstanceCreator<Object>() {
       public Object createInstance() {
         createValueWasInvoked[ 0 ] = true;
         return null;
@@ -62,7 +62,7 @@ public class SharedInstanceBuffer_Test extends TestCase {
   }
   
   public void testGetAndCreateWithNullKey() {
-    IInstanceCreator valueCreator = new TestInstanceCreator( null );
+    IInstanceCreator<Object> valueCreator = new TestInstanceCreator( null );
     try {
       keyValueStore.get( null, valueCreator );
     } catch( NullPointerException expected ) {
@@ -83,7 +83,7 @@ public class SharedInstanceBuffer_Test extends TestCase {
     keyValueStore.get( key, new TestInstanceCreator( value ) );
     keyValueStore.remove( key );
     
-    Object returnedValue = keyValueStore.get( key, new IInstanceCreator() {
+    Object returnedValue = keyValueStore.get( key, new IInstanceCreator<Object>() {
       public Object createInstance() {
         createValueWasInvoked[ 0 ] = true;
         return value;
@@ -118,6 +118,6 @@ public class SharedInstanceBuffer_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    keyValueStore = new SharedInstanceBuffer();
+    keyValueStore = new SharedInstanceBuffer<Object,Object>();
   }
 }

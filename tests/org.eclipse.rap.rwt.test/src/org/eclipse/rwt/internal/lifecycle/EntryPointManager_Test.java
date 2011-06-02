@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,6 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.lifecycle;
 
 import junit.framework.TestCase;
@@ -27,8 +26,11 @@ public class EntryPointManager_Test extends TestCase {
     }
   }
 
+  private EntryPointManager entryPointManager;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    entryPointManager = new EntryPointManager();
   }
 
   protected void tearDown() throws Exception {
@@ -36,7 +38,6 @@ public class EntryPointManager_Test extends TestCase {
   }
   
   public void testRegisterWithNullName() {
-    EntryPointManager entryPointManager = new EntryPointManager();
     try {
       entryPointManager.register( null, TestEntryPointWithLog.class );
       fail( "null-name not allowed" );
@@ -45,7 +46,6 @@ public class EntryPointManager_Test extends TestCase {
   }
 
   public void testRegisterWithNullClass() {
-    EntryPointManager entryPointManager = new EntryPointManager();
     try {
       entryPointManager.register( "xyz", null );
       fail( "null-class not allowed" );
@@ -54,7 +54,6 @@ public class EntryPointManager_Test extends TestCase {
   }
   
   public void testRegisterWithNonEntryPointClass() {
-    EntryPointManager entryPointManager = new EntryPointManager();
     try {
       entryPointManager.register( "xyz", String.class );
       fail( "illegal entry point class" );
@@ -63,7 +62,6 @@ public class EntryPointManager_Test extends TestCase {
   }
   
   public void testRegisterDuplicateEntryPoint() {
-    EntryPointManager entryPointManager = new EntryPointManager();
     entryPointManager.register( "xyz", TestEntryPointWithLog.class );
     try {
       entryPointManager.register( "xyz", TestEntryPointWithLog.class );
@@ -73,7 +71,6 @@ public class EntryPointManager_Test extends TestCase {
   }
 
   public void testDeregisterWithNullName() {
-    EntryPointManager entryPointManager = new EntryPointManager();
     try {
       entryPointManager.deregister( null );
       fail( "deregister( null ) not allowed" );
@@ -82,7 +79,6 @@ public class EntryPointManager_Test extends TestCase {
   }
   
   public void testDeregisterNonExistingEntryPoint() {
-    EntryPointManager entryPointManager = new EntryPointManager();
     try {
       entryPointManager.deregister( "does.not.exist.at.all" );
       fail( "deregister not allowed for unregistered entry points" );
@@ -91,7 +87,6 @@ public class EntryPointManager_Test extends TestCase {
   }
   
   public void testDeregister() {
-    EntryPointManager entryPointManager = new EntryPointManager();
     entryPointManager.register( "abc", TestEntryPointWithLog.class );
     entryPointManager.deregister( "abc" );
     try {
@@ -102,7 +97,6 @@ public class EntryPointManager_Test extends TestCase {
   }
 
   public void testDeregisterAll() {
-    EntryPointManager entryPointManager = new EntryPointManager();
     entryPointManager.register( "abc", TestEntryPointWithLog.class );
     entryPointManager.deregisterAll();
     try {
@@ -113,7 +107,6 @@ public class EntryPointManager_Test extends TestCase {
   }
 
   public void testCreateUIWithNullName() {
-    EntryPointManager entryPointManager = new EntryPointManager();
     try {
       entryPointManager.createUI( null );
       fail( "createUI must be given a non-null name" );
@@ -122,7 +115,6 @@ public class EntryPointManager_Test extends TestCase {
   }
   
   public void testCreateUIWithNonExistingEntryPointName() {
-    EntryPointManager entryPointManager = new EntryPointManager();
     try {
       entryPointManager.createUI( "does.not.exist" );
       fail( "cannot call createUI for non-existing entry point" );
@@ -131,7 +123,6 @@ public class EntryPointManager_Test extends TestCase {
   }
   
   public void testCreateUI() {
-    EntryPointManager entryPointManager = new EntryPointManager();
     entryPointManager.register( EntryPointManager.DEFAULT, TestEntryPointWithLog.class );
     int returnVal = entryPointManager.createUI( EntryPointManager.DEFAULT );
     assertEquals( "isRunning", log );

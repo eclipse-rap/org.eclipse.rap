@@ -7,7 +7,7 @@
  * The original version of this interface comes from SAX :
  * http://www.megginson.com/SAX/
  *
- * $Id: CSSParseException.java,v 1.1 2008/12/03 15:25:51 rsternber Exp $
+ * $Id: CSSParseException.java,v 1.2 2011/06/02 20:48:28 rherrmann Exp $
  */
 package org.w3c.css.sac;
 
@@ -24,9 +24,10 @@ package org.w3c.css.sac;
  * <p>Since this exception is a subclass of CSSException, it
  * inherits the ability to wrap another exception.</p>
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @author  Philippe Le Hegaret
  */
+@SuppressWarnings("all")
 public class CSSParseException extends CSSException {
     
     private String uri;

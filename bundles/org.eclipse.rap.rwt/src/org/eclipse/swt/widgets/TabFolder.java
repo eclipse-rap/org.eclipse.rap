@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,8 +49,8 @@ public class TabFolder extends Composite {
   private static final TabItem[] EMPTY_TAB_ITEMS = new TabItem[ 0 ];
   private static final int TAB_BAR_HEIGHT = 23;
 
-  private final ItemHolder itemHolder = new ItemHolder( TabItem.class );
-  private int selectionIndex = -1;
+  private final ItemHolder<TabItem> itemHolder;
+  private int selectionIndex;
   private boolean onBottom;
 
   /**
@@ -83,7 +83,9 @@ public class TabFolder extends Composite {
    */
   public TabFolder( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
-    onBottom = ( super.getStyle() & SWT.BOTTOM ) != 0;
+    this.itemHolder = new ItemHolder<TabItem>( TabItem.class );
+    this.selectionIndex = -1;
+    this.onBottom = ( super.getStyle() & SWT.BOTTOM ) != 0;
   }
 
   void initState() {
@@ -121,7 +123,7 @@ public class TabFolder extends Composite {
    */
   public TabItem[] getItems() {
     checkWidget();
-    return ( TabItem[] )itemHolder.getItems();
+    return itemHolder.getItems();
   }
 
   /**
@@ -141,7 +143,7 @@ public class TabFolder extends Composite {
    */
   public TabItem getItem( final int index ) {
     checkWidget();
-    return ( TabItem )itemHolder.getItem( index );
+    return itemHolder.getItem( index );
   }
 
   /**
@@ -244,7 +246,7 @@ public class TabFolder extends Composite {
     checkWidget();
     TabItem[] result = EMPTY_TAB_ITEMS;
     if( getSelectionIndex() != -1 ) {
-      TabItem selected = ( TabItem )itemHolder.getItem( getSelectionIndex() );
+      TabItem selected = itemHolder.getItem( getSelectionIndex() );
       result = new TabItem[]{
         selected
       };
@@ -332,7 +334,7 @@ public class TabFolder extends Composite {
     int oldIndex = getSelectionIndex();
     if( oldIndex != index ) {
       if( oldIndex != -1 ) {
-        TabItem item = ( TabItem )itemHolder.getItem( oldIndex );
+        TabItem item = itemHolder.getItem( oldIndex );
         Control control = item.getControl();
         if( control != null && !control.isDisposed() ) {
           control.setVisible( false );
@@ -343,7 +345,7 @@ public class TabFolder extends Composite {
       if( newIndex != -1 ) {
         updateSelectedItemControl();
         if( notify ) {
-          TabItem item = ( TabItem )itemHolder.getItem( newIndex );
+          TabItem item = itemHolder.getItem( newIndex );
           SelectionEvent event
             = new SelectionEvent( this, item, SelectionEvent.WIDGET_SELECTED );
           event.processEvent();

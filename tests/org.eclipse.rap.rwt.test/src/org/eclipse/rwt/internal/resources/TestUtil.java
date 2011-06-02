@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others.
+ * Copyright (c) 2010, 2011 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 package org.eclipse.rwt.internal.resources;
 
 import java.io.*;
-import java.util.ArrayList;
+import java.util.List;
 
 import org.mozilla.javascript.Token;
 
@@ -20,8 +20,9 @@ import com.yahoo.platform.yui.compressor.*;
 
 public class TestUtil {
 
+  @SuppressWarnings("unchecked")
   public static TokenList parse( String input ) throws IOException {
-    ArrayList tokens = TestAdapter.parseString( input );
+    List tokens = TestAdapter.parseString( input );
     return new TokenList( tokens );
   }
 

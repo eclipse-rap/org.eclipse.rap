@@ -12,6 +12,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.*;
@@ -36,7 +37,7 @@ import org.eclipse.swt.internal.widgets.*;
 public class Menu extends Widget {
 
   private IMenuAdapter menuAdapter;
-  private final ItemHolder itemHolder;
+  private final ItemHolder<MenuItem> itemHolder;
   private final Decorations parent;
   private int x;
   private int y;
@@ -149,7 +150,7 @@ public class Menu extends Widget {
   public Menu( final Decorations parent, final int style ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
-    itemHolder = new ItemHolder( MenuItem.class );
+    this.itemHolder = new ItemHolder<MenuItem>( MenuItem.class );
     MenuHolder.addMenu( parent, this );
   }
 
@@ -531,7 +532,7 @@ public class Menu extends Widget {
    */
   public MenuItem[] getItems() {
     checkWidget();
-    return ( MenuItem[] )itemHolder.getItems();
+    return itemHolder.getItems();
   }
 
   /**
@@ -551,7 +552,7 @@ public class Menu extends Widget {
    */
   public MenuItem getItem( final int index ) {
     checkWidget();
-    return ( MenuItem )itemHolder.getItem( index );
+    return itemHolder.getItem( index );
   }
 
   /**
@@ -626,7 +627,7 @@ public class Menu extends Widget {
 
   // TODO [rh] disposal of Menu and its items not yet completely implemented
   final void releaseChildren() {
-    MenuItem[] menuItems = ( MenuItem[] )ItemHolder.getItems( this );
+    MenuItem[] menuItems = itemHolder.getItems();
     for( int i = 0; i < menuItems.length; i++ ) {
       menuItems[ i ].dispose();
     }

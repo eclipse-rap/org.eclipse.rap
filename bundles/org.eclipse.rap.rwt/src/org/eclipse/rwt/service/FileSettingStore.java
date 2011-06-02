@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,13 +7,14 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.service;
 
 import java.io.*;
 import java.util.*;
 
-import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.service.ServletLog;
 import org.eclipse.rwt.internal.util.ParamCheck;
 
 /**
@@ -36,9 +37,8 @@ public final class FileSettingStore implements ISettingStore {
   private static final Random RANDOM = new Random( System.currentTimeMillis() ); 
   
   private final File workDir;
-  private final Properties props = new Properties();
-  private final Set listeners = new HashSet();
-
+  private final Properties props;
+  private final Set<SettingStoreListener> listeners;
   private String id;
 
   /**
@@ -53,34 +53,25 @@ public final class FileSettingStore implements ISettingStore {
    * @throws IllegalArgumentException if the argument workDir is not a directory
    * @see #loadById(String)
    */
-  public FileSettingStore( final File workDir ) {
+  public FileSettingStore( File workDir ) {
     ParamCheck.notNull( workDir, "workDir" );
-    if( !workDir.isDirectory() ) {
-      String msg = "workDir is not a directory: " + workDir;
-      throw new IllegalArgumentException( msg );
-    }
+    checkWorkDir( workDir );
     this.workDir = workDir;
-    id = String.valueOf( System.currentTimeMillis() ) 
-         + "_" 
-         + RANDOM.nextInt( Short.MAX_VALUE );
+    this.props = new Properties();
+    this.listeners = new HashSet<SettingStoreListener>();
+    this.id = generateId();
   }
-  
-  ////////////////////////
-  // ISettingStore methods
-  
+
   public String getId() {
     return id;
   }
   
-  public synchronized String getAttribute( final String name ) {
+  public synchronized String getAttribute( String name ) {
     ParamCheck.notNull( name, "name" );
     return props.getProperty( name );
   }
 
-  public synchronized void setAttribute( final String name, 
-                                         final String value ) 
-    throws SettingStoreException 
-  {
+  public synchronized void setAttribute( String name, String value ) throws SettingStoreException {
     ParamCheck.notNull( name, "name" );
     if( value == null ) {
       removeAttribute( name );
@@ -97,22 +88,20 @@ public final class FileSettingStore implements ISettingStore {
     return props.keys();
   }
 
-  public synchronized void loadById( final String id ) 
-    throws SettingStoreException 
-  {
+  public synchronized void loadById( String id ) throws SettingStoreException {
     ParamCheck.notNullOrEmpty( id, "id" );
     this.id = id;
     notifyForEachAttribute( true );
     props.clear();
     
-    BufferedInputStream bis = getInputStream( id );
-    if( bis != null ) {
+    BufferedInputStream inputStream = getInputStream( id );
+    if( inputStream != null ) {
       try {
         try {
-          props.load( bis );
+          props.load( inputStream );
           notifyForEachAttribute( false );
         } finally {
-          bis.close();
+          inputStream.close();
         }
       } catch( IOException ioe ) {
         String msg = "Failed to load into file setting store; id= " + id;
@@ -121,9 +110,7 @@ public final class FileSettingStore implements ISettingStore {
     }
   }
   
-  public synchronized void removeAttribute( final String name ) 
-    throws SettingStoreException 
-  {
+  public synchronized void removeAttribute( String name ) throws SettingStoreException {
     String oldValue = ( String )props.remove( name );
     if( oldValue != null ) {
       notifyListeners( name, oldValue, null );
@@ -131,25 +118,23 @@ public final class FileSettingStore implements ISettingStore {
     }
   }
 
-  public synchronized void addSettingStoreListener( final SettingStoreListener listener ) {
+  public synchronized void addSettingStoreListener( SettingStoreListener listener ) {
     ParamCheck.notNull( listener, "listener" );
     listeners.add( listener );
   }
 
-  public synchronized void removeSettingStoreListener( final SettingStoreListener listener ) {
+  public synchronized void removeSettingStoreListener( SettingStoreListener listener ) {
     ParamCheck.notNull( listener, "listener" );
     listeners.remove( listener );
   }
-  
   
   //////////////////
   // helping methods
   
   /**
-   * @return a BufferedInputStream or <code>null</code> if this file 
-   *         does not exist
+   * @return a BufferedInputStream or <code>null</code> if this file does not exist
    */
-  private BufferedInputStream getInputStream( final String streamId ) {
+  private BufferedInputStream getInputStream( String streamId ) {
     BufferedInputStream result = null;
     File file = getStoreFile( streamId );
     if( file.exists() ) {
@@ -162,21 +147,21 @@ public final class FileSettingStore implements ISettingStore {
     return result;
   }
   
-  private BufferedOutputStream getOutputStream( final String streamId ) 
+  private BufferedOutputStream getOutputStream( String streamId ) 
   throws FileNotFoundException {
     File file = getStoreFile( streamId );
     return new BufferedOutputStream( new FileOutputStream( file ) );
   }
   
-  private File getStoreFile( final String fileName ) {
+  private File getStoreFile( String fileName ) {
     return new File( workDir, fileName );
   }
 
-  private void log( final String msg, final Throwable throwable ) {
-    RWT.getRequest().getSession().getServletContext().log( msg, throwable );
+  private static void log( String msg, Throwable throwable ) {
+    ServletLog.log( msg, throwable );
   }
   
-  private synchronized void notifyForEachAttribute( final boolean removed ) {
+  private synchronized void notifyForEachAttribute( boolean removed ) {
     Enumeration attributes = props.keys();
     while( attributes.hasMoreElements() ) {
       String attribute = ( String )attributes.nextElement();
@@ -189,23 +174,19 @@ public final class FileSettingStore implements ISettingStore {
     }
   }
 
-  private synchronized void notifyListeners( final String attribute,
-                                             final String oldValue, 
-                                             final String newValue ) {
-    SettingStoreEvent event 
-      = new SettingStoreEvent( this, attribute, oldValue, newValue );
+  private synchronized void notifyListeners( String attribute, String oldValue, String newValue ) {
+    SettingStoreEvent event = new SettingStoreEvent( this, attribute, oldValue, newValue );
+    // TODO [rh] create a snapshot of listeners before invoking (possible concurrent modification)
     Iterator iter = listeners.iterator();
     while( iter.hasNext() ) {
       SettingStoreListener listener = ( SettingStoreListener )iter.next();
       try {
         listener.settingChanged( event );
       } catch( Exception exc ) {
-        String msg =   "Exception when invoking listener " 
-                     + listener.getClass().getName();
+        String msg = "Exception when invoking listener " + listener.getClass().getName();
         log( msg, exc );
       } catch( LinkageError le ) {
-        String msg =   "Linkage error when invoking listener "
-                     + listener.getClass().getName();
+        String msg = "Linkage error when invoking listener " + listener.getClass().getName();
         log( msg, le );
       }
     }
@@ -213,11 +194,11 @@ public final class FileSettingStore implements ISettingStore {
   
   private void persist() throws SettingStoreException {
     try {
-      BufferedOutputStream bos = getOutputStream( id );
+      BufferedOutputStream outputStream = getOutputStream( id );
       try {
-        props.store( bos, FileSettingStore.class.getName() );
+        props.store( outputStream, FileSettingStore.class.getName() );
       } finally {
-        bos.close();
+        outputStream.close();
       }
     } catch( IOException ioe ) {
       String msg = "Failed to persist file setting store; id= " + id;
@@ -225,4 +206,13 @@ public final class FileSettingStore implements ISettingStore {
     }
   }
 
+  private static void checkWorkDir( File workDir ) {
+    if( !workDir.isDirectory() ) {
+      throw new IllegalArgumentException( "workDir is not a directory: " + workDir );
+    }
+  }
+
+  private static String generateId() {
+    return String.valueOf( System.currentTimeMillis() ) + "_" + RANDOM.nextInt( Short.MAX_VALUE );
+  }
 }

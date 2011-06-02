@@ -12,6 +12,7 @@ package org.eclipse.swt.internal.image;
 
 import java.io.*;
 
+@SuppressWarnings("all")
 public class PngInputStream extends InputStream {
 	PngChunkReader reader;
 	PngChunk chunk;

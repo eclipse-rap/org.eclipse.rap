@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - bug 348056: Eliminate compiler warnings
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
@@ -21,16 +22,16 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 
 class MeasurementOperator {
-  private final Set probes;
-  private final Set items;
+  private final Set<Probe> probes;
+  private final Set<MeasurementItem> items;
 
   static MeasurementOperator getInstance() {
     return ( MeasurementOperator )SessionSingletonBase.getInstance( MeasurementOperator.class );
   }
 
   MeasurementOperator() {
-    probes = new HashSet();
-    items = new HashSet();
+    probes = new HashSet<Probe>();
+    items = new HashSet<MeasurementItem>();
     addStartupProbesToBuffer();
   }
 
@@ -65,9 +66,7 @@ class MeasurementOperator {
   }
   
   Probe[] getProbes() {
-    Probe[] result = new Probe[ probes.size() ];
-    probes.toArray( result );
-    return result;
+    return probes.toArray( new Probe[ probes.size() ] );
   }
   
   void addItemToMeasure( MeasurementItem newItem ) {
@@ -81,9 +80,7 @@ class MeasurementOperator {
   }
   
   MeasurementItem[] getItems() {
-    MeasurementItem[] result = new MeasurementItem[ items.size() ];
-    items.toArray( result );
-    return result;
+    return items.toArray( new MeasurementItem[ items.size() ] );
   }
   
   //////////////////

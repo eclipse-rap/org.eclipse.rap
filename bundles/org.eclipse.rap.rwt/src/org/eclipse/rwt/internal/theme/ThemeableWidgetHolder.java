@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -14,25 +15,23 @@ import java.util.*;
 
 
 class ThemeableWidgetHolder {
-  private final Map themeableWidgets;
+  private final Map<Class,ThemeableWidget> themeableWidgets;
 
   ThemeableWidgetHolder() {
-    themeableWidgets = new LinkedHashMap();
+    themeableWidgets = new LinkedHashMap<Class,ThemeableWidget>();
   }
 
-  void add( final ThemeableWidget widget ) {
+  void add( ThemeableWidget widget ) {
     themeableWidgets.put( widget.widget, widget );
   }
 
-  ThemeableWidget get( final Class widget ) {
-    return ( ThemeableWidget )themeableWidgets.get( widget );
+  ThemeableWidget get( Class widget ) {
+    return themeableWidgets.get( widget );
   }
 
   ThemeableWidget[] getAll() {
-    Collection values = themeableWidgets.values();
-    ThemeableWidget[] result = new ThemeableWidget[ values.size() ];
-    values.toArray( result );
-    return result;
+    Collection<ThemeableWidget> values = themeableWidgets.values();
+    return values.toArray( new ThemeableWidget[ values.size() ] );
   }
   
   void reset() {

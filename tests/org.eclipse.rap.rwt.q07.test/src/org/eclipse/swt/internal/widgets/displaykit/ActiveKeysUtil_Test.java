@@ -74,7 +74,7 @@ public class ActiveKeysUtil_Test extends TestCase {
   }
 
   public void testNoKeyEventsForIllegalWidgetId() {
-    final ArrayList log = new ArrayList();
+    final ArrayList<Event> log = new ArrayList<Event>();
     display.addFilter( SWT.KeyDown, new Listener() {
       public void handleEvent( final Event event ) {
         log.add( event );
@@ -92,7 +92,7 @@ public class ActiveKeysUtil_Test extends TestCase {
   }
 
   public void testReadKeyBindingEvents_CtrlAltSpace() {
-    final ArrayList log = new ArrayList();
+    final ArrayList<Event> log = new ArrayList<Event>();
     display.addFilter( SWT.KeyDown, new Listener() {
       public void handleEvent( final Event event ) {
         log.add( event );
@@ -107,7 +107,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     Fixture.readDataAndProcessAction( display );
     
     assertEquals( 1, log.size() );
-    Event event = ( Event )log.get( 0 );
+    Event event = log.get( 0 );
     assertEquals( SWT.KeyDown, event.type );
     assertEquals( null, event.widget );
     assertEquals( 32, event.keyCode );
@@ -116,7 +116,7 @@ public class ActiveKeysUtil_Test extends TestCase {
   }
 
   public void testReadKeyBindingEvents_AltShiftF5() {
-    final ArrayList log = new ArrayList();
+    final java.util.List<Event> log = new ArrayList<Event>();
     display.addFilter( SWT.KeyDown, new Listener() {
       public void handleEvent( final Event event ) {
         log.add( event );
@@ -131,7 +131,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     Fixture.readDataAndProcessAction( display );
 
     assertEquals( 1, log.size() );
-    Event event = ( Event )log.get( 0 );
+    Event event = log.get( 0 );
     assertEquals( SWT.KeyDown, event.type );
     assertEquals( null, event.widget );
     assertEquals( SWT.F5, event.keyCode );

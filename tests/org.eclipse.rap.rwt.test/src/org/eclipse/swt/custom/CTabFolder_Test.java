@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -94,7 +94,7 @@ public class CTabFolder_Test extends TestCase {
     folder1.dispose();
     assertEquals( true, folder1.isDisposed() );
     assertEquals( true, item1.isDisposed() );
-    assertEquals( 0, ItemHolder.getItems( folder1 ).length );
+    assertEquals( 0, ItemHolder.getItemHolder( folder1 ).getItems().length );
 
     // Ensure that no SelectionEvent is sent when disposing of a CTabFolder
     assertEquals( "", log.toString() );

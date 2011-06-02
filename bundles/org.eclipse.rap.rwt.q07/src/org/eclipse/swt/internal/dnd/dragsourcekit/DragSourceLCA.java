@@ -153,26 +153,22 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
   }
 
   private static String[] convertFeedback( int feedback ) {
-    List list = new ArrayList();
+    List<String> feedbackNames = new ArrayList<String>();
     if( ( feedback & DND.FEEDBACK_EXPAND ) != 0 ) {
-      list.add( "expand" );
+      feedbackNames.add( "expand" );
     }
     if( ( feedback & DND.FEEDBACK_INSERT_AFTER ) != 0 ) {
-      list.add( "after" );
+      feedbackNames.add( "after" );
     }
     if( ( feedback & DND.FEEDBACK_INSERT_BEFORE ) != 0 ) {
-      list.add( "before" );
+      feedbackNames.add( "before" );
     }
     if( ( feedback & DND.FEEDBACK_SCROLL ) != 0 ) {
-      list.add( "scroll" );
+      feedbackNames.add( "scroll" );
     }
     if( ( feedback & DND.FEEDBACK_SELECT ) != 0 ) {
-      list.add( "select" );
+      feedbackNames.add( "select" );
     }
-    String[] result = new String[ list.size() ];
-    for( int i = 0; i < list.size(); i++ ) {
-      result[ i ] = ( String )list.get( i );
-    }
-    return result;
+    return feedbackNames.toArray( new String[ feedbackNames.size() ] );
   }
 }

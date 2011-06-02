@@ -101,6 +101,7 @@ public class Graphics_Test extends TestCase {
     }
   }
   
+  @SuppressWarnings("deprecation")
   public void testGetCursor() {
     Display display = new Display();
     Cursor cursor = Graphics.getCursor( SWT.CURSOR_ARROW );

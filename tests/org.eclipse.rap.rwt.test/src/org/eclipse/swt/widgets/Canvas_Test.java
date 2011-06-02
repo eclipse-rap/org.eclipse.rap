@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -33,7 +33,7 @@ public class Canvas_Test extends TestCase {
   }
 
   public void testPaintEvent() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<PaintEvent> log = new ArrayList<PaintEvent>();
     Display display = new Display();
     Shell shell = new Shell( display );
     Canvas canvas = new Canvas( shell, SWT.NONE );
@@ -45,13 +45,13 @@ public class Canvas_Test extends TestCase {
     assertEquals( 0, log.size() );
     canvas.redraw();
     assertEquals( 1, log.size() );
-    PaintEvent event = ( PaintEvent )log.get( 0 );
+    PaintEvent event = log.get( 0 );
     assertSame( canvas, event.widget );
     assertTrue( event.gc.isDisposed() );
   }
   
   public void testRemovePaintListener() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<PaintEvent> log = new ArrayList<PaintEvent>();
     Display display = new Display();
     Shell shell = new Shell( display );
     Canvas canvas = new Canvas( shell, SWT.NONE );
@@ -67,7 +67,7 @@ public class Canvas_Test extends TestCase {
   }
   
   public void testResize() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<PaintEvent> log = new ArrayList<PaintEvent>();
     Display display = new Display();
     Shell shell = new Shell( display );
     Canvas canvas = new Canvas( shell, SWT.NONE );
@@ -82,7 +82,7 @@ public class Canvas_Test extends TestCase {
   }
   
   public void testMultiplePaintEvents() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<PaintEvent> log = new ArrayList<PaintEvent>();
     Display display = new Display();
     Shell shell = new Shell( display );
     Canvas canvas = new Canvas( shell, SWT.NONE );

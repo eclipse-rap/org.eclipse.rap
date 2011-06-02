@@ -23,10 +23,10 @@ import org.eclipse.rwt.resources.IResourceManager;
 public class TestResourceManager implements IResourceManager {
   private ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
-  private final Set registeredResources;
+  private final Set<String> registeredResources;
 
   public TestResourceManager() {
-    registeredResources = new HashSet();
+    registeredResources = new HashSet<String>();
   }
 
   public String getCharset( final String name ) {

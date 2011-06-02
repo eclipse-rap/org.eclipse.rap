@@ -38,7 +38,7 @@ public class MenuDetectEvent_Test extends TestCase {
   }
 
   public void testCopyFieldsFromUntypedEvent() {
-    final List log = new ArrayList();
+    final List<MenuDetectEvent> log = new ArrayList<MenuDetectEvent>();
     Button button = new Button( shell, SWT.PUSH );
     button.addMenuDetectListener( new MenuDetectListener() {
       public void menuDetected( final MenuDetectEvent event ) {
@@ -53,7 +53,7 @@ public class MenuDetectEvent_Test extends TestCase {
     event.data = data;
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     button.notifyListeners( SWT.MenuDetect, event );
-    MenuDetectEvent menuDetectEvent = ( MenuDetectEvent )log.get( 0 );
+    MenuDetectEvent menuDetectEvent = log.get( 0 );
     assertSame( button, menuDetectEvent.getSource() );
     assertSame( button, menuDetectEvent.widget );
     assertSame( display, menuDetectEvent.display );

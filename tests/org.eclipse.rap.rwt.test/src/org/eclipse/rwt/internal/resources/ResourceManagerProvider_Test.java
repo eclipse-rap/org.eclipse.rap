@@ -19,16 +19,15 @@ import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
 
 
+@SuppressWarnings("deprecation")
 public class ResourceManagerProvider_Test extends TestCase {
   private ResourceManagerProvider resourceManagerProvider;
-  
   
   private static class TestResourceManagerFactory implements IResourceManagerFactory {
     public IResourceManager create() {
       return new TestResourceManager();
     }
   }
-
 
   public void testRegisterFactoryWithNullArgument() {
     try {

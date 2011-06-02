@@ -27,10 +27,10 @@ import org.w3c.dom.*;
 class ServiceHandlerRegistry {
   private static final String SERVICEHANDLER_XML = "servicehandler.xml";
 
-  private final Map handlers;
+  private final Map<String,IServiceHandler> handlers;
   
   ServiceHandlerRegistry() {
-    handlers = new HashMap();
+    handlers = new HashMap<String,IServiceHandler>();
   }
 
   boolean isCustomHandler( String customHandlerId ) {
@@ -39,9 +39,9 @@ class ServiceHandlerRegistry {
     }
   }
   
-  void put( String id, IServiceHandler handler ) {
+  void put( String id, IServiceHandler serviceHandler ) {
     synchronized( handlers ) {
-      handlers.put( id, handler );
+      handlers.put( id, serviceHandler );
     }
   }
 
@@ -53,7 +53,7 @@ class ServiceHandlerRegistry {
 
   IServiceHandler get( String customHandlerId ) {
     synchronized( handlers ) {
-      return ( IServiceHandler )handlers.get( customHandlerId );
+      return handlers.get( customHandlerId );
     }
   }
 
@@ -137,8 +137,12 @@ class ServiceHandlerRegistry {
   }
 
   private void registerHandlerInstance( String id, String name ) {
-    Object handlerInstance = ClassUtil.newInstance( getClass().getClassLoader(), name );
+    IServiceHandler handlerInstance = createServiceHandler( name );
     this.handlers.put( id, handlerInstance );
+  }
+
+  private IServiceHandler createServiceHandler( String name ) {
+    return ( IServiceHandler )ClassUtil.newInstance( getClass().getClassLoader(), name );
   }
 
   private static NodeList getHandlerList( Document document ) {

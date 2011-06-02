@@ -24,10 +24,10 @@ import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 public final class ServiceStateInfo implements IServiceStateInfo {
 
   private JavaScriptResponseWriter responseWriter;
-  private final Map attributes;
+  private final Map<String,Object> attributes;
   
   public ServiceStateInfo() {
-    attributes = new HashMap();
+    attributes = new HashMap<String,Object>();
   }
   
   /**
@@ -44,11 +44,11 @@ public final class ServiceStateInfo implements IServiceStateInfo {
     return responseWriter;
   }
 
-  public Object getAttribute( final String key ) {
+  public Object getAttribute( String key ) {
     return attributes.get( key );
   }
 
-  public void setAttribute( final String key, final Object value ) {
+  public void setAttribute( String key, Object value ) {
     attributes.put( key, value );
   }
 }

@@ -23,8 +23,8 @@ public final class TestResponse implements HttpServletResponse {
   private TestServletOutputStream outStream;
   private String contentType;
   private String characterEncoding;
-  private Map cookies;
-  private Map headers;
+  private Map<String,Cookie> cookies;
+  private Map<String,String> headers;
   private int errorStatus;
   private String redirect;
   private PrintWriter printWriter;
@@ -32,8 +32,8 @@ public final class TestResponse implements HttpServletResponse {
   public TestResponse() {
     characterEncoding = "UTF-8";
     outStream = new TestServletOutputStream();
-    cookies = new HashMap();
-    headers = new HashMap();
+    cookies = new HashMap<String,Cookie>();
+    headers = new HashMap<String,String>();
   }
 
   public void addCookie( Cookie arg0 ) {
@@ -41,7 +41,7 @@ public final class TestResponse implements HttpServletResponse {
   }
 
   public Cookie getCookie( String cookieName ) {
-    return ( Cookie )cookies.get( cookieName );
+    return cookies.get( cookieName );
   }
 
   public boolean containsHeader( String arg0 ) {
@@ -99,7 +99,7 @@ public final class TestResponse implements HttpServletResponse {
   }
 
   public String getHeader( String name ) {
-    return ( String )headers.get( name );
+    return headers.get( name );
   }
 
   public void addHeader( String arg0, String arg1 ) {

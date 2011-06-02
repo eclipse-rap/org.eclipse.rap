@@ -26,19 +26,19 @@ final class ImageDataCache {
   /** Maximum size of image data that is being cached */
   private static final int MAX_DATA_SIZE = 1024;
 
-  private final Map cache;
+  private final Map<InternalImage,ImageData> cache;
   private final Object cacheLock;
 
   ImageDataCache() {
     cacheLock = new Object();
-    cache = new HashMap( 25 );
+    cache = new HashMap<InternalImage,ImageData>( 25 );
   }
 
   ImageData getImageData( InternalImage internalImage ) {
     ParamCheck.notNull( internalImage, "internalImage" );
     ImageData cached;
     synchronized( cacheLock ) {
-      cached = ( ImageData )cache.get( internalImage );
+      cached = cache.get( internalImage );
     }
     return cached != null ? ( ImageData )cached.clone() : null;
   }
@@ -49,7 +49,7 @@ final class ImageDataCache {
     if( imageData.data.length <= MAX_DATA_SIZE ) {
       synchronized( cacheLock ) {
         // TODO [rst] Implement replacement strategy (LRU or LFU)
-        cache.put( internalImage, imageData.clone() );
+        cache.put( internalImage, ( ImageData )imageData.clone() );
       }
     }
   }

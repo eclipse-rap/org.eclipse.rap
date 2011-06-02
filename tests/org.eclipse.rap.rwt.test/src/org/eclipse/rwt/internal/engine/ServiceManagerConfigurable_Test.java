@@ -7,10 +7,12 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - bug 348056: Eliminate compiler warnings
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -24,7 +26,7 @@ public class ServiceManagerConfigurable_Test extends TestCase {
   private static final String ID_JS_LIBRARIES = JSLibraryServiceHandler.HANDLER_ID;
   private static final String ID_UI_CALL_BACK = UICallBackServiceHandler.HANDLER_ID;
   
-  private HashMap log;
+  private Map<String,IServiceHandler> log;
 
   private class TestApplicationContext extends ApplicationContext {
     public ServiceManager getServiceManager() {
@@ -59,6 +61,6 @@ public class ServiceManagerConfigurable_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    log = new HashMap();
+    log = new HashMap<String,IServiceHandler>();
   }
 }

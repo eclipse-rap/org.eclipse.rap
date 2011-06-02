@@ -31,8 +31,9 @@ import java.util.*;
  * @author <a href="mailto:alex@purpletech.com">Alexander Day Chaffee</a>
  * @author <a href="mailto:ggregory@seagullsw.com">Gary Gregory</a>
  * @since 2.0
- * @version $Id: Entities.java,v 1.2 2011/02/06 16:11:31 rsternber Exp $
+ * @version $Id: Entities.java,v 1.3 2011/06/02 20:48:57 rherrmann Exp $
  */
+@SuppressWarnings("all")
 public final class Entities {
 
     private static final String[][] BASIC_ARRAY = {

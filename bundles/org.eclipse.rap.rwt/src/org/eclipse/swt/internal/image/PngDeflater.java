@@ -12,6 +12,7 @@ package org.eclipse.swt.internal.image;
 
 import java.io.ByteArrayOutputStream;
 
+@SuppressWarnings("all")
 public class PngDeflater {
 
 	static final int BASE = 65521;

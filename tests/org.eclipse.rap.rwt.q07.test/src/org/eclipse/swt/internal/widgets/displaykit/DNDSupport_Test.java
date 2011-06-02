@@ -20,8 +20,7 @@ import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.dnd.*;
-import org.eclipse.swt.events.DragDetectEvent;
-import org.eclipse.swt.events.DragDetectListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.widgets.*;
 
 
@@ -57,14 +56,14 @@ public class DNDSupport_Test extends TestCase {
   
   private Display display;
   private Shell shell;
-  private java.util.List events;
+  private java.util.List<Object> events;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
-    events = new ArrayList();
+    events = new ArrayList<Object>();
   }
 
   protected void tearDown() throws Exception {

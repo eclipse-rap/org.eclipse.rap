@@ -19,21 +19,19 @@ import org.eclipse.rwt.resources.IResource;
 
 
 public class ResourceRegistry {
-  private final Set resources;
+  private final Set<IResource> resources;
 
   public ResourceRegistry() {
-    resources = new LinkedHashSet();
+    resources = new LinkedHashSet<IResource>();
   }
   
-  public void add( final IResource resource ) {
+  public void add( IResource resource ) {
     ParamCheck.notNull( resource, "resource" );
     resources.add( resource );
   }
   
   public IResource[] get() {
-    IResource[] result = new IResource[ resources.size() ];
-    resources.toArray( result );
-    return result;
+    return resources.toArray( new IResource[ resources.size() ] );
   }
   
   public void clear() {

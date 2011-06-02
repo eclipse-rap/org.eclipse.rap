@@ -24,11 +24,8 @@ public class ProcessActionRunner {
   private static final String ATTR_RUNNABLE_LIST 
     = ProcessActionRunner.class.getName();
 
+  @SuppressWarnings("unchecked")
   public static void add( final Runnable runnable ) {
-    // TODO: [fappel] In case of session invalidation there's no phase.
-    //                So no event processing should take place, this situation
-    //                may improve with the new readAndDispatch mechanism in
-    //                place.
     if( CurrentPhase.get() != null ) {
       if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() ) 
           || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) ) 
@@ -36,13 +33,13 @@ public class ProcessActionRunner {
         runnable.run();
       } else {
         IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-        List list = ( List )stateInfo.getAttribute( ATTR_RUNNABLE_LIST );
+        List<Runnable> list = ( List<Runnable> )stateInfo.getAttribute( ATTR_RUNNABLE_LIST );
         if( list == null ) {
-          list = new ArrayList();
+          list = new ArrayList<Runnable>();
           stateInfo.setAttribute( ATTR_RUNNABLE_LIST, list );
         }
         if( !list.contains( runnable ) ) {
-          list.add(  runnable );
+          list.add( runnable );
         }
       }
     }
@@ -60,12 +57,12 @@ public class ProcessActionRunner {
     return result;
   }
   
+  @SuppressWarnings("unchecked")
   public static void execute() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    List list = ( List )stateInfo.getAttribute( ATTR_RUNNABLE_LIST );
+    List<Runnable> list = ( List<Runnable> )stateInfo.getAttribute( ATTR_RUNNABLE_LIST );
     if( list != null ) {
-      Runnable[] runables = new Runnable[ list.size() ];
-      list.toArray( runables );
+      Runnable[] runables = list.toArray( new Runnable[ list.size() ] );
       for( int i = 0; i < runables.length; i++ ) {
         // TODO: [fappel] think about exception handling.
         runables[ i ].run();

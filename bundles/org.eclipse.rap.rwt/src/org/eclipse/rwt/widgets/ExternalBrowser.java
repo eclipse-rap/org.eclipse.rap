@@ -121,12 +121,12 @@ public final class ExternalBrowser {
                                    final String url,
                                    final int style )
   {
-    String[] args = new String[] { escapeId( id ), url, getFeatures( style ) };
+    Object[] args = new String[] { escapeId( id ), url, getFeatures( style ) };
     return MessageFormat.format( OPEN, args );
   }
 
   private static String getCloseJS( final String id ) {
-    return MessageFormat.format( CLOSE, new String[] { escapeId( id ) } );
+    return MessageFormat.format( CLOSE, new Object[] { escapeId( id ) } );
   }
 
   static String escapeId( final String id ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -19,13 +20,13 @@ import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
 public class StyleSheetBuilder {
 
-  private final List rulesList;
+  private final List<StyleRule> rulesList;
 
   public StyleSheetBuilder() {
-    rulesList = new ArrayList();
+    rulesList = new ArrayList<StyleRule>();
   }
 
-  public void addStyleSheet( final StyleSheet styleSheet ) {
+  public void addStyleSheet( StyleSheet styleSheet ) {
     StyleRule[] styleRules = styleSheet.getStyleRules();
     for( int i = 0; i < styleRules.length; i++ ) {
       StyleRule styleRule = styleRules[ i ];
@@ -33,13 +34,12 @@ public class StyleSheetBuilder {
     }
   }
 
-  public void addStyleRule( final StyleRule styleRule ) {
+  public void addStyleRule( StyleRule styleRule ) {
     rulesList.add( styleRule );
   }
 
   public StyleSheet getStyleSheet() {
-    StyleRule[] styleRules = new StyleRule[ rulesList.size() ];
-    rulesList.toArray( styleRules );
+    StyleRule[] styleRules = rulesList.toArray( new StyleRule[ rulesList.size() ] );
     return new StyleSheet( styleRules );
   }
 }

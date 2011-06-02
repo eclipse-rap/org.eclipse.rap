@@ -37,10 +37,10 @@ public final class TestRequest implements HttpServletRequest {
   private String requestURI;
   private String servletPath;
   private String pathInfo;
-  private Map parameters;
-  private Map headers;
-  private Map attributes;
-  private Set cookies;
+  private Map<String,String[]> parameters;
+  private Map<String,String> headers;
+  private Map<String,Object> attributes;
+  private Set<Cookie> cookies;
   private Locale locale;
   private String contentType;
   private String body;
@@ -53,10 +53,10 @@ public final class TestRequest implements HttpServletRequest {
     contextPath = DEFAULT_CONTEX_PATH;
     requestURI = DEFAULT_REQUEST_URI;
     servletPath = DEFAULT_SERVLET_PATH;
-    parameters = new HashMap();
-    headers = new HashMap();
-    attributes = new HashMap();
-    cookies = new HashSet();
+    parameters = new HashMap<String,String[]>();
+    headers = new HashMap<String, String>();
+    attributes = new HashMap<String,Object>();
+    cookies = new HashSet<Cookie>();
   }
 
   public String getAuthType() {
@@ -68,7 +68,7 @@ public final class TestRequest implements HttpServletRequest {
   }
 
   public Cookie[] getCookies() {
-    return ( Cookie[] )cookies.toArray( new Cookie[ cookies.size() ] );
+    return cookies.toArray( new Cookie[ cookies.size() ] );
   }
 
   public long getDateHeader( String arg0 ) {
@@ -76,11 +76,11 @@ public final class TestRequest implements HttpServletRequest {
   }
 
   public String getHeader( String arg0 ) {
-    return ( String )headers.get( arg0 );
+    return headers.get( arg0 );
   }
 
   public void setHeader( String arg0, String arg1) {
-    headers.put(arg0, arg1);
+    headers.put( arg0, arg1 );
   }
 
   public Enumeration getHeaders( String arg0 ) {
@@ -230,7 +230,7 @@ public final class TestRequest implements HttpServletRequest {
   }
 
   public String getParameter( String arg0 ) {
-    String[] value = ( String[] )parameters.get( arg0 );
+    String[] value = parameters.get( arg0 );
     String result = null;
     if( value != null ) {
       result = value[ 0 ];
@@ -252,7 +252,7 @@ public final class TestRequest implements HttpServletRequest {
   }
 
   public String[] getParameterValues( String arg0 ) {
-    return ( String[] )parameters.get( arg0 );
+    return parameters.get( arg0 );
   }
 
   public void setParameter( String key, String value ) {
@@ -265,7 +265,7 @@ public final class TestRequest implements HttpServletRequest {
 
   public void addParameter( String key, String value ) {
     if( parameters.containsKey( key ) ) {
-      String[] values = ( String[] )parameters.get( key );
+      String[] values = parameters.get( key );
       String[] newValues = new String[ values.length + 1 ];
       System.arraycopy( values, 0, newValues, 0, values.length );
       newValues[ values.length ] = value;

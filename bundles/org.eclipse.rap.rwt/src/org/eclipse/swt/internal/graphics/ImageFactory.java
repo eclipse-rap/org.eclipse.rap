@@ -24,7 +24,7 @@ import org.eclipse.swt.graphics.Image;
 
 public class ImageFactory {
   
-  private final SharedInstanceBuffer cache;
+  private final SharedInstanceBuffer<String,Image> cache;
   
   public static String getImagePath( Image image ) {
     String result = null;
@@ -36,7 +36,7 @@ public class ImageFactory {
   }
 
   public ImageFactory() {
-    cache = new SharedInstanceBuffer();
+    cache = new SharedInstanceBuffer<String,Image>();
   }
 
   public Image findImage( String path ) {
@@ -44,16 +44,16 @@ public class ImageFactory {
   }
 
   public Image findImage( final String path, final ClassLoader imageLoader ) {
-    return ( Image )cache.get( path, new IInstanceCreator() {
-      public Object createInstance() {
+    return cache.get( path, new IInstanceCreator<Image>() {
+      public Image createInstance() {
         return createImage( path, imageLoader );
       }
     } );
   }
 
   public Image findImage( final String path, final InputStream inputStream ) {
-    return ( Image )cache.get( path, new IInstanceCreator() {
-      public Object createInstance() {
+    return cache.get( path, new IInstanceCreator<Image>() {
+      public Image createInstance() {
         return createImage( null, path, inputStream );
       }
     } );

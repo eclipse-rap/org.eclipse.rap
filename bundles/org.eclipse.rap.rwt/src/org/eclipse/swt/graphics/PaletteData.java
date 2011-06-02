@@ -53,6 +53,7 @@ import org.eclipse.swt.*;
  * @since 1.3
  */
  
+@SuppressWarnings("all")
 public final class PaletteData {
     
     /**

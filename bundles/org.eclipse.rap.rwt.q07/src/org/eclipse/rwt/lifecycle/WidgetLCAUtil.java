@@ -88,7 +88,8 @@ public final class WidgetLCAUtil {
   //////////////////////////////////////////////////////////////////////////////
   // TODO [fappel]: Experimental - profiler seems to indicate that buffering
   //                improves performance - still under investigation.
-  private final static SharedInstanceBuffer parsedFonts = new SharedInstanceBuffer();
+  private final static SharedInstanceBuffer<String,String[]> parsedFonts 
+    = new SharedInstanceBuffer<String,String[]>();
   //////////////////////////////////////////////////////////////////////////////
 
   private WidgetLCAUtil() {
@@ -579,8 +580,8 @@ public final class WidgetLCAUtil {
   }
 
   public static String[] parseFontName( final String name ) {
-    return ( String[] )parsedFonts.get( name, new IInstanceCreator() {
-      public Object createInstance() {
+    return parsedFonts.get( name, new IInstanceCreator<String[]>() {
+      public String[] createInstance() {
         return parseFontNameInternal( name );
       }
     } );

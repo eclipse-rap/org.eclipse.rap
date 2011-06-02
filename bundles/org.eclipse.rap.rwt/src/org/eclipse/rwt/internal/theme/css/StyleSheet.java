@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,13 +22,12 @@ import org.w3c.css.sac.SelectorList;
  * Instances of this class represent a parsed CSS stylesheet.
  */
 public final class StyleSheet {
+  private static final SelectorWrapperComparator COMPARATOR = new SelectorWrapperComparator();
 
-  private static final SelectorWrapperComparator COMPARATOR
-    = new SelectorWrapperComparator();
   private final StyleRule[] styleRules;
   private SelectorWrapper[] selectorWrappers;
 
-  public StyleSheet( final StyleRule[] styleRules ) {
+  public StyleSheet( StyleRule[] styleRules ) {
     this.styleRules = styleRules.clone();
     createSelectorWrappers();
   }
@@ -37,10 +36,8 @@ public final class StyleSheet {
     return styleRules.clone();
   }
 
-  public ConditionalValue[] getValues( final String elementName,
-                                       final String propertyName )
-  {
-    List buffer = new ArrayList();
+  public ConditionalValue[] getValues( final String elementName, final String propertyName ) {
+    List<ConditionalValue> buffer = new ArrayList<ConditionalValue>();
     for( int i = 0; i < selectorWrappers.length; i++ ) {
       SelectorWrapper selectorWrapper = selectorWrappers[ i ];
       String selectorElement
@@ -57,9 +54,7 @@ public final class StyleSheet {
         }
       }
     }
-    ConditionalValue[] result = new ConditionalValue[ buffer.size() ];
-    buffer.toArray( result );
-    return result;
+    return buffer.toArray( new ConditionalValue[ buffer.size() ] );
   }
 
   public String toString() {
@@ -100,7 +95,7 @@ public final class StyleSheet {
   }
 
   private void createSelectorWrappers() {
-    ArrayList selectorWrappersList = new ArrayList();
+    List<SelectorWrapper> selectorWrappersList = new LinkedList<SelectorWrapper>();
     for( int pos = 0; pos < styleRules.length; pos++ ) {
       StyleRule styleRule = styleRules[ pos ];
       SelectorList selectors = styleRule.getSelectors();
@@ -108,8 +103,7 @@ public final class StyleSheet {
       int length = selectors.getLength();
       for( int i = 0; i < length; i++ ) {
         Selector selector = selectors.item( i );
-        SelectorWrapper selectorWrapper
-          = new SelectorWrapper( selector, properties, pos );
+        SelectorWrapper selectorWrapper = new SelectorWrapper( selector, properties, pos );
         selectorWrappersList.add( selectorWrapper );
       }
     }
@@ -135,12 +129,10 @@ public final class StyleSheet {
     }
   }
 
-  private static class SelectorWrapperComparator implements Comparator {
+  private static class SelectorWrapperComparator implements Comparator<SelectorWrapper> {
 
-    public int compare( final Object object1, final Object object2 ) {
+    public int compare( SelectorWrapper selectorWrapper1, SelectorWrapper selectorWrapper2 ) {
       int result = 0;
-      SelectorWrapper selectorWrapper1 = ( SelectorWrapper )object1;
-      SelectorWrapper selectorWrapper2 = ( SelectorWrapper )object2;
       int specificity1
         = ( ( Specific )selectorWrapper1.selector ).getSpecificity();
       int specificity2

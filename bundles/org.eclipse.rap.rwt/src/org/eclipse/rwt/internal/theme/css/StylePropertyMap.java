@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,38 +7,37 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme.css;
 
 import java.util.*;
 
 import org.eclipse.rwt.internal.theme.QxType;
+import org.eclipse.rwt.internal.util.ParamCheck;
 
 
 public class StylePropertyMap implements IStylePropertyMap {
 
-  private final Map properties;
+  private final Map<String,QxType> properties;
 
   public StylePropertyMap() {
-    properties = new HashMap();
+    properties = new HashMap<String,QxType>();
   }
 
-  public void setProperty( final String key, final QxType value ) {
-    if( key == null || value == null ) {
-      throw new NullPointerException( "null argument" );
-    }
+  public void setProperty( String key, QxType value ) {
+    ParamCheck.notNull( key, "key" );
+    ParamCheck.notNull( value, "value" );
     properties.put( key, value );
   }
 
   public String[] getProperties() {
-    Set keySet = properties.keySet();
-    String[] result = new String[ keySet.size() ];
-    keySet.toArray( result );
-    return result;
+    Set<String> keySet = properties.keySet();
+    return keySet.toArray( new String[ keySet.size() ] );
   }
 
-  public QxType getValue( final String propertyName ) {
-    return ( QxType )properties.get( propertyName );
+  public QxType getValue( String propertyName ) {
+    return properties.get( propertyName );
   }
 
   public String toString() {
@@ -58,7 +57,7 @@ public class StylePropertyMap implements IStylePropertyMap {
     return result.toString();
   }
 
-  public boolean equals( final Object obj ) {
+  public boolean equals( Object obj ) {
     boolean result = false;
     if( obj == this ) {
       result = true;

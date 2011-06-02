@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,11 +32,11 @@ final class RequestParameterBuffer {
    * use with <code>merge</code>. If the session has already parameters stored,
    * the method returns immediately.
    */
-  static void store( Map parameters ) {
+  static void store( Map<?,?> parameters ) {
     // [if] Store parameters only once.
     // Workaround for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=265008
     if( getBufferedParameters() == null ) {
-      Map buffer = new HashMap( parameters );
+      Map buffer = new HashMap<Object,Object>( parameters );
       ISessionStore sessionStore = ContextProvider.getSession();
       sessionStore.setAttribute( BUFFER, buffer );
     }      

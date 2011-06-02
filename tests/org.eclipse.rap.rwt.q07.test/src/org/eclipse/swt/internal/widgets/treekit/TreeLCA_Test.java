@@ -12,8 +12,7 @@
 package org.eclipse.swt.internal.widgets.treekit;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -37,8 +36,8 @@ import org.eclipse.swt.widgets.*;
 public class TreeLCA_Test extends TestCase {
 
   private static class LoggingSelectionListener extends SelectionAdapter {
-    private final List events;
-    private LoggingSelectionListener( List events ) {
+    private final List<SelectionEvent> events;
+    private LoggingSelectionListener( List<SelectionEvent> events ) {
       this.events = events;
     }
     public void widgetSelected( SelectionEvent event ) {
@@ -553,7 +552,7 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testSelectionEvent() {
-    java.util.List events = new LinkedList();
+    java.util.List<SelectionEvent> events = new LinkedList<SelectionEvent>();
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
@@ -566,7 +565,7 @@ public class TreeLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".item", treeItemId );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 1, events.size() );
-    SelectionEvent event = ( SelectionEvent )events.get( 0 );
+    SelectionEvent event = events.get( 0 );
     assertEquals( tree, event.getSource() );
     assertEquals( treeItem, event.item );
     assertEquals( true, event.doit );
@@ -578,7 +577,7 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testDefaultSelectionEvent() {
-    java.util.List events = new LinkedList();
+    java.util.List<SelectionEvent> events = new LinkedList<SelectionEvent>();
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
@@ -591,7 +590,7 @@ public class TreeLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED + ".item", treeItemId );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 1, events.size() );
-    SelectionEvent event = ( SelectionEvent )events.get( 0 );
+    SelectionEvent event = events.get( 0 );
     assertEquals( tree, event.getSource() );
     assertEquals( treeItem, event.item );
     assertEquals( true, event.doit );
@@ -603,7 +602,7 @@ public class TreeLCA_Test extends TestCase {
   }
 
   public void testDefaultSelectionEventUntyped() {
-    final java.util.List events = new LinkedList();
+    final java.util.List<Event> events = new LinkedList<Event>();
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
@@ -620,7 +619,7 @@ public class TreeLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED + ".item", treeItemId );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 1, events.size() );
-    Event event = ( Event )events.get( 0 );
+    Event event = events.get( 0 );
     assertEquals( treeItem, event.item );
     assertEquals( true, event.doit );
     // ensure same behaviour as SWT: bounds are undefined in tree selection
@@ -645,7 +644,7 @@ public class TreeLCA_Test extends TestCase {
 
   public void testScrollbarsSelectionEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final java.util.List events = new ArrayList();
+    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>();
     Tree tree = new Tree( shell, SWT.NONE );
     SelectionListener listener = new LoggingSelectionListener( events );
     tree.getHorizontalBar().addSelectionListener( listener );

@@ -120,7 +120,7 @@ public class FileUploadLCA_Test extends TestCase {
   }
 
   public void testFireSelectionEvent() {
-    final List eventLog = new ArrayList();
+    final List<SelectionEvent> eventLog = new ArrayList<SelectionEvent>();
     FileUpload upload = new FileUpload( shell, SWT.NONE );
     upload.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
@@ -133,7 +133,7 @@ public class FileUploadLCA_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread( );
     assertEquals( "foo", upload.getFileName() );
     assertEquals( 1, eventLog.size() );
-    SelectionEvent event = ( SelectionEvent )eventLog.get( 0 );
+    SelectionEvent event = eventLog.get( 0 );
     assertSame( upload, event.widget );
   }
 

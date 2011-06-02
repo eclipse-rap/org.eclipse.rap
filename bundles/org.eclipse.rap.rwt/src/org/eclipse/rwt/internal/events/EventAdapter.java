@@ -16,22 +16,23 @@ import java.util.*;
 
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.SWTEventListener;
 
 
 public class EventAdapter implements IEventAdapter {
 
-  private static final Object[] EMPTY_RESULT = new Object[ 0 ];
+  private static final SWTEventListener[] EMPTY_LISTENERS = new SWTEventListener[ 0 ];
 
-  private Map listenerSets;
+  private Map<Class,Set<SWTEventListener>> listenerSets;
 
   /**
    * <p>Custom Set implementation (intended to hold Listeners) to reduce 
    * memory consumption.</p>
    */
-  private static final class ListenerSet implements Set {
+  private static final class ListenerSet implements Set<SWTEventListener> {
 
     // Start with low capacity, assuming that only few listeners are added
-    private final List list = new ArrayList( 3 );
+    private final List<SWTEventListener> list = new ArrayList<SWTEventListener>( 3 );
 
     public int size() {
       return list.size();
@@ -49,7 +50,7 @@ public class EventAdapter implements IEventAdapter {
       return list.toArray();
     }
 
-    public boolean add( final Object o ) {
+    public boolean add( SWTEventListener o ) {
       boolean result = !contains( o ) ;
       if( result ) {
         list.add( o );
@@ -81,20 +82,20 @@ public class EventAdapter implements IEventAdapter {
       throw new UnsupportedOperationException();
     }
 
-    public Iterator iterator() {
+    public Iterator<SWTEventListener> iterator() {
       throw new UnsupportedOperationException();
     }
 
-    public Object[] toArray( final Object[] a ) {
-      return list.toArray( a ); 
+    public <T> T[] toArray( T[] a ) {
+      return list.toArray( a );
     }
   }
 
-  public Object[] getListener( final Class listenerType ) {
+  public SWTEventListener[] getListener( Class listenerType ) {
     ParamCheck.notNull( listenerType, "listenerType" );
-    Set listenerSet = getListenerSet( listenerType );
+    Set<SWTEventListener> listenerSet = getListenerSet( listenerType );
     int size = listenerSet.size();
-    Object[] result = ( Object[] )Array.newInstance( listenerType, size );
+    SWTEventListener[] result = ( SWTEventListener[] )Array.newInstance( listenerType, size );
     listenerSet.toArray( result );
     return result;
   }
@@ -109,9 +110,7 @@ public class EventAdapter implements IEventAdapter {
     return result;
   }
 
-  public void addListener( final Class listenerType, 
-                           final Object listener ) 
-  {
+  public void addListener( Class listenerType, SWTEventListener listener ) {
     if( listenerType == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -122,9 +121,7 @@ public class EventAdapter implements IEventAdapter {
     getListenerSet( listenerType ).add( listener );
   }
 
-  public void removeListener( final Class listenerType, 
-                              final Object listener )
-  {
+  public void removeListener( Class listenerType, SWTEventListener listener ) {
     if( listenerType == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -137,41 +134,38 @@ public class EventAdapter implements IEventAdapter {
     }
   }
 
-  private Set getListenerSet( final Class listenerType ) {
+  private Set<SWTEventListener> getListenerSet( Class listenerType ) {
     checkListenerType( listenerType );
     if( listenerSets == null ) {
-      // Create with low capacity, assuming that there are only few 
-      // listener types used
-      listenerSets = new HashMap( 4, 1.0f );
+      // Create with low capacity, assuming that there are only few listener types used
+      listenerSets = new HashMap<Class,Set<SWTEventListener>>( 4, 1.0f );
     }
     if( !listenerSets.containsKey( listenerType ) ) {
       listenerSets.put( listenerType, new ListenerSet() );
     }
-    return ( Set )listenerSets.get( listenerType );
+    return listenerSets.get( listenerType );
   }
 
-  public Object[] getListener() {
-    Object[] result = EMPTY_RESULT;
+  public SWTEventListener[] getListeners() {
+    SWTEventListener[] result = EMPTY_LISTENERS;
     if( listenerSets != null ) {
-      Set buffer = new HashSet();
+      Set<SWTEventListener> buffer = new HashSet<SWTEventListener>();
       Object[] sets = listenerSets.values().toArray();
       for( int i = 0; i < sets.length; i++ ) {
         Set set = ( Set )sets[ i ];
         Object[] listeners = set.toArray();
         for( int j = 0; j < listeners.length; j++ ) {
-          buffer.add( listeners[ j ] );
+          buffer.add( ( SWTEventListener )listeners[ j ] );
         }
       }
-      result = buffer.toArray();
+      result = buffer.toArray( new SWTEventListener[ buffer.size() ] );
     }
     return result;
   }
   
-  private static void checkTypeCompatibility( Class listenerType, Object listener ) {
+  private static void checkTypeCompatibility( Class<?> listenerType, Object listener ) {
     if( !listenerType.isAssignableFrom( listener.getClass() ) ) {
-      String msg =   "Parameter 'listener' must be of type '" 
-                   + listenerType.getName() 
-                   + "'.";
+      String msg = "Parameter 'listener' must be of type '" + listenerType.getName() + "'.";
       throw new IllegalArgumentException( msg );
     }
   }

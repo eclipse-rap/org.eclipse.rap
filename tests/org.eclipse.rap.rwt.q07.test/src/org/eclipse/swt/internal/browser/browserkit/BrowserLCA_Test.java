@@ -345,7 +345,7 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   public void testProgressEvent() {
-    final ArrayList log = new ArrayList();
+    final ArrayList<String> log = new ArrayList<String>();
     Fixture.markInitialized( display );
     Browser browser = new Browser( shell, SWT.NONE );
     browser.addProgressListener( new ProgressListener() {

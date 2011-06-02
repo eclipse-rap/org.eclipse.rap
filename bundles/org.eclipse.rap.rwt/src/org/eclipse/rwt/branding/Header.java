@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007. 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.branding;
 
@@ -40,12 +41,9 @@ public final class Header {
    * @throws IllegalArgumentException if <code>tagName</code> isn't either
    *           <code>meta</code> or <code>link</code>.
    */
-  public Header( final String tagName, final Map attributes ) {
-    if( !"link".equals( tagName ) && !"meta".equals( tagName ) ) {
-      String msg 
-        = "Invalid tag name. The tag name must be either 'meta' or 'link'.";
-      throw new IllegalArgumentException( msg );
-    }
+  @SuppressWarnings("unchecked")
+  public Header( String tagName, Map attributes ) {
+    checkTagName( tagName );
     this.tagName = tagName;
     if( attributes == null ) {
       this.names = EMPTY_STRINGS;
@@ -72,15 +70,8 @@ public final class Header {
    * @throws IllegalArgumentException if <code>tagName</code> isn't either
    *           <code>meta</code> or <code>link</code>.
    */
-  public Header( final String tagName, 
-                 final String[] attributeNames, 
-                 final String[] attributeValues ) 
-  {
-    if( !"link".equals( tagName ) && !"meta".equals( tagName ) ) {
-      String msg 
-        = "Invalid tag name. The tag name must be either 'meta' or 'link'.";
-      throw new IllegalArgumentException( msg );
-    }
+  public Header( String tagName, String[] attributeNames, String[] attributeValues ) {
+    checkTagName( tagName );
     ParamCheck.notNull( attributeNames, "attributeNames" );
     ParamCheck.notNull( attributeValues, "attributeValues" );
     if( attributeNames.length != attributeValues.length ) {
@@ -135,5 +126,12 @@ public final class Header {
     String[] result = new String[ values.length ];
     System.arraycopy( values, 0, result, 0, values.length );
     return result;
+  }
+
+  private static void checkTagName( String tagName ) {
+    if( !"link".equals( tagName ) && !"meta".equals( tagName ) ) {
+      String msg = "Invalid tag name. The tag name must be either 'meta' or 'link'.";
+      throw new IllegalArgumentException( msg );
+    }
   }
 }

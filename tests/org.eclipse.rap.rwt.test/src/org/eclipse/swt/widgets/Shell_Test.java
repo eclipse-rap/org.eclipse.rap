@@ -370,7 +370,7 @@ public class Shell_Test extends TestCase {
   }
 
   public void testSetActive() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<ShellEvent> log = new ArrayList<ShellEvent>();
     shell.open();
     assertSame( shell, display.getActiveShell() );
     shell.addShellListener( new ShellAdapter() {
@@ -387,7 +387,7 @@ public class Shell_Test extends TestCase {
   }
 
   public void testActiveShellOnFocusControl() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<String> log = new ArrayList<String>();
     Shell secondShell = new Shell( display );
     shell.open();
     secondShell.open();
@@ -411,9 +411,9 @@ public class Shell_Test extends TestCase {
     button.setFocus();
     assertSame( shell, display.getActiveShell() );
     assertEquals( 3, log.size() );
-    assertEquals( "shellActivated", ( String )log.get( 0 ) );
-    assertEquals( "buttonFocusGained", ( String )log.get( 1 ) );
-    assertEquals( "buttonActivated", ( String )log.get( 2 ) );
+    assertEquals( "shellActivated", log.get( 0 ) );
+    assertEquals( "buttonFocusGained", log.get( 1 ) );
+    assertEquals( "buttonActivated", log.get( 2 ) );
   }
 
   /* test case to simulate the scenario reported in this bug:
@@ -510,7 +510,7 @@ public class Shell_Test extends TestCase {
   }
 
   public void testShellAdapterSetBounds() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
     shell.setBounds( 1, 2, 3, 4 );
     shell.setMaximized( true );
     shell.addControlListener( new ControlAdapter() {
@@ -544,7 +544,7 @@ public class Shell_Test extends TestCase {
   }
 
   public void testMinimumSize() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
     shell.addControlListener( new ControlAdapter() {
       public void controlResized( final ControlEvent event ) {
         log.add( event );
@@ -576,7 +576,7 @@ public class Shell_Test extends TestCase {
   }
 
   public void testFullScreen() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<String> log = new ArrayList<String>();
     Rectangle displayBounds = new Rectangle( 0, 0, 800, 600 );
     getDisplayAdapter( display ).setBounds( displayBounds );
     Rectangle shellBounds = new Rectangle( 10, 10, 100, 100 );

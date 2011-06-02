@@ -17,6 +17,7 @@ import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 
 
+@SuppressWarnings("restriction")
 public class DefaultTheme_Test extends ThemeTestCase {
 
   public void testDefaultTheme() throws IOException {

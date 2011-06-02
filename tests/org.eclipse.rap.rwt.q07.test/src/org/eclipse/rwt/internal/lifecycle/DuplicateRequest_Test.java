@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.*;
 public class DuplicateRequest_Test extends TestCase {
   
   public void testDisabledButton() {
-    final java.util.List events = new ArrayList(); 
+    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>(); 
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
@@ -60,7 +60,7 @@ public class DuplicateRequest_Test extends TestCase {
   }
   
   public void testInvisibleButton() {
-    final java.util.List events = new ArrayList(); 
+    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>(); 
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
@@ -93,7 +93,7 @@ public class DuplicateRequest_Test extends TestCase {
   }
   
   public void testDisposedButton() {
-    final java.util.List events = new ArrayList(); 
+    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>(); 
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
@@ -126,7 +126,7 @@ public class DuplicateRequest_Test extends TestCase {
   }
   
   public void testButtonOpensModalShell() {
-    final java.util.List events = new ArrayList(); 
+    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>(); 
     Display display = new Display();
     final Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
@@ -161,7 +161,7 @@ public class DuplicateRequest_Test extends TestCase {
   }
 
   public void testFocusOutOpensModalShell() {
-    final java.util.List events = new ArrayList(); 
+    final java.util.List<TypedEvent> events = new ArrayList<TypedEvent>(); 
     Display display = new Display();
     final Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
@@ -200,7 +200,7 @@ public class DuplicateRequest_Test extends TestCase {
   }
   
   public void testCloseClosedShell() {
-    final java.util.List events = new ArrayList(); 
+    final java.util.List<ShellEvent> events = new ArrayList<ShellEvent>(); 
     Display display = new Display();
     final Shell shell = new Shell( display, SWT.SHELL_TRIM );
     shell.setSize( 100, 100 );
@@ -232,7 +232,7 @@ public class DuplicateRequest_Test extends TestCase {
   }
   
   public void testNestedModalShell() {
-    final java.util.List events = new ArrayList(); 
+    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>(); 
     Display display = new Display();
     final Shell shell1 = new Shell( display, SWT.APPLICATION_MODAL );
     shell1.setSize( 100, 100 );

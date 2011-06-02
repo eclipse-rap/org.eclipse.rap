@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -17,14 +17,14 @@ import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 
 public final class GCAdapter implements IGCAdapter {
 
-  private final List gcOperations;
+  private final List<GCOperation> gcOperations;
   private boolean forceRedraw;
 
   public GCAdapter() {
-    gcOperations = new LinkedList();
+    gcOperations = new LinkedList<GCOperation>();
   }
 
-  public void addGCOperation( final GCOperation operation ) {
+  public void addGCOperation( GCOperation operation ) {
     gcOperations.add( operation );
   }
 
@@ -54,7 +54,7 @@ public final class GCAdapter implements IGCAdapter {
     return result;
   }
 
-  public void setForceRedraw( final boolean forceRedraw ) {
+  public void setForceRedraw( boolean forceRedraw ) {
     this.forceRedraw = forceRedraw;
   }
 
@@ -62,8 +62,7 @@ public final class GCAdapter implements IGCAdapter {
     return forceRedraw;
   }
 
-  private static boolean isDrawOperation( final GCOperation operation ) {
-    return !(    operation instanceof SetProperty
-              || operation instanceof SetFont );
+  private static boolean isDrawOperation( GCOperation operation ) {
+    return !( operation instanceof SetProperty || operation instanceof SetFont );
   }
 }

@@ -479,7 +479,7 @@ public final class DNDSupport {
   static TransferData[] determineDataTypes( final DragSource dragSource,
                                             final DropTarget dropTarget )
   {
-    java.util.List supportedTypes = new ArrayList();
+    java.util.List<TransferData> supportedTypes = new ArrayList<TransferData>();
     Transfer[] dragSourceTransfers = dragSource.getTransfer();
     Transfer[] dropTargetTransfers = dropTarget.getTransfer();
     for( int i = 0; i < dragSourceTransfers.length; i++ ) {
@@ -494,7 +494,7 @@ public final class DNDSupport {
     }
     TransferData[] result = new TransferData[ supportedTypes.size() ];
     for( int i = 0; i < supportedTypes.size(); i++ ) {
-      result[ i ] = ( TransferData )supportedTypes.get( i );
+      result[ i ] = supportedTypes.get( i );
     }
     return result;
   }

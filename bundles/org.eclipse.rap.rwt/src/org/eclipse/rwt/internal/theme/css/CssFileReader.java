@@ -24,7 +24,7 @@ import org.w3c.css.sac.*;
 public class CssFileReader {
 
   private static final String CSS_ENCODING = "UTF-8";
-  private final List problems;
+  private final List<CSSException> problems;
   private Parser parser;
 
   CssFileReader() {
@@ -33,7 +33,7 @@ public class CssFileReader {
     } catch( Exception e ) {
       throw new RuntimeException( "Failed to instantiate CSS parser", e );
     }
-    problems = new ArrayList();
+    problems = new ArrayList<CSSException>();
   }
 
   /**
@@ -125,7 +125,7 @@ public class CssFileReader {
   }
   private static class ErrorHandlerImpl implements ErrorHandler {
 
-    private final List problems;
+    private final List<CSSException> problems;
 
     public ErrorHandlerImpl( final CssFileReader reader ) {
       problems = reader.problems;

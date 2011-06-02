@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.*;
  * Tests in here are separated from RWTLifeCycle_Test because they need 
  * different setUp/tearDown implementations.
  */
+@SuppressWarnings("deprecation")
 public class RWTLifeCycle2_Test extends TestCase {
   private static final String TEST_SESSION_ATTRIBUTE = "testSessionAttr";
   private static final String EXCEPTION_MSG = "Error in readAndDispatch";
@@ -44,7 +45,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   private static String maliciousButtonId;
   private static boolean createUIEntered;
   private static boolean createUIExited;
-  private static java.util.List eventLog;
+  private static java.util.List<Object> eventLog;
   private static PhaseId currentPhase;
 
   private TestSession session;
@@ -310,7 +311,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     maliciousButtonId = null;
     createUIEntered = false;
     createUIExited = false;
-    eventLog = new LinkedList();
+    eventLog = new LinkedList<Object>();
     registerTestLogger();
   }
 

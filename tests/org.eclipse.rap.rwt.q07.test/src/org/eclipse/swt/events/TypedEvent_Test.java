@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,7 +61,7 @@ public class TypedEvent_Test extends TestCase {
   }
 
   public void testCopyFieldsFromUntypedEvent() {
-    final List log = new ArrayList();
+    final List<HelpEvent> log = new ArrayList<HelpEvent>();
     Button button = new Button( shell, SWT.PUSH );
     button.addHelpListener( new HelpListener() {
       public void helpRequested( final HelpEvent event ) {
@@ -73,7 +73,7 @@ public class TypedEvent_Test extends TestCase {
     event.data = data;
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     button.notifyListeners( SWT.Help, event );
-    TypedEvent typedEvent = ( TypedEvent )log.get( 0 );
+    TypedEvent typedEvent = log.get( 0 );
     assertSame( button, typedEvent.getSource() );
     assertSame( button, typedEvent.widget );
     assertSame( display, typedEvent.display );
@@ -122,7 +122,7 @@ public class TypedEvent_Test extends TestCase {
   public void testMultipleEventsInOneRequest() {
     // Ensure that two events get fired in the order as it is specified in
     // TypedEvent
-    final java.util.List eventLog = new ArrayList();
+    final java.util.List<TypedEvent> eventLog = new ArrayList<TypedEvent>();
     Shell shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {

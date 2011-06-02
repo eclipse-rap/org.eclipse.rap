@@ -103,7 +103,7 @@ public class Browser extends Composite {
   private boolean executePending;
   private Object evaluateResult;
   private final IBrowserAdapter browserAdapter;
-  private List functions;
+  private List<BrowserFunction> functions;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -141,7 +141,7 @@ public class Browser extends Composite {
     html = "";
     url = "";
     browserAdapter = new BrowserAdapter();
-    functions = new ArrayList();
+    functions = new ArrayList<BrowserFunction>();
   }
 
   /**
@@ -484,15 +484,13 @@ public class Browser extends Composite {
   // BrowserFunction support helping methods
 
   private BrowserFunction[] getBrowserFunctions() {
-    BrowserFunction[] result = new BrowserFunction[ functions.size() ];
-    functions.toArray( result );
-    return result;
+    return functions.toArray( new BrowserFunction[ functions.size() ] );
   }
 
   void createFunction( final BrowserFunction function ) {
     boolean removed = false;
     for( int i = 0; !removed && i < functions.size(); i++ ) {
-      BrowserFunction current = ( BrowserFunction )functions.get( i );
+      BrowserFunction current = functions.get( i );
       if( current.name.equals( function.name ) ) {
         functions.remove( current );
         removed = true;
@@ -509,9 +507,7 @@ public class Browser extends Composite {
     updateBrowserFunctions( function.getName(), false );
   }
 
-  private void updateBrowserFunctions( final String function,
-                                       final boolean create )
-  {
+  private void updateBrowserFunctions( final String function, final boolean create ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     String id = WidgetUtil.getId( this );
     String key = create ? FUNCTIONS_TO_CREATE + id : FUNCTIONS_TO_DESTROY + id;

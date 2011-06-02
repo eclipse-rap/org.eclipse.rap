@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.image;
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 
+@SuppressWarnings("all")
 final class LZWCodec {
 	int bitsPerPixel, blockSize, blockIndex, currentByte, bitsLeft,
 		codeSize, clearCode, endCode, newCodes, topSlot, currentSlot,

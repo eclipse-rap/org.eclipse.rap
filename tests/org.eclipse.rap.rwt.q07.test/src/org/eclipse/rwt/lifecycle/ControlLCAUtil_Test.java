@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -264,7 +264,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testWriteKeyEvents() throws IOException {
-    final java.util.List eventLog = new ArrayList();
+    final java.util.List<Event> eventLog = new ArrayList<Event>();
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.open();
@@ -285,7 +285,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testWriteTraverseEvents() throws IOException {
-    final java.util.List eventLog = new ArrayList();
+    final java.util.List<Event> eventLog = new ArrayList<Event>();
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.open();
@@ -306,7 +306,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessKeyEvents() {
-    final java.util.List eventLog = new ArrayList();
+    final java.util.List<Event> eventLog = new ArrayList<Event>();
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.open();
@@ -339,7 +339,7 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.processKeyEvents( shell );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display.readAndDispatch();
-    Event event = ( Event )eventLog.get( 0 );
+    Event event = eventLog.get( 0 );
     assertEquals( SWT.KeyDown, event.type );
     assertEquals( shell, event.widget );
     assertEquals( 0, event.character );
@@ -349,7 +349,7 @@ public class ControlLCAUtil_Test extends TestCase {
 
   public void testProcessKeyEventsWithDoItFlag() {
     RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
-    final java.util.List eventLog = new ArrayList();
+    final java.util.List<Event> eventLog = new ArrayList<Event>();
     Listener doitTrueListener = new Listener() {
       public void handleEvent( final Event event ) {
         eventLog.add( event );
@@ -381,9 +381,9 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "65" );
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( 2, eventLog.size() );
-    assertEquals( SWT.KeyDown, ( ( Event )eventLog.get( 0 ) ).type );
-    assertTrue( ( ( Event )eventLog.get( 0 ) ).doit );
-    assertEquals( SWT.KeyUp, ( ( Event )eventLog.get( 1 ) ).type );
+    assertEquals( SWT.KeyDown, eventLog.get( 0 ).type );
+    assertTrue( eventLog.get( 0 ).doit );
+    assertEquals( SWT.KeyUp, eventLog.get( 1 ).type );
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_CANCEL_EVENT ) == -1 );
     assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_ALLOW_EVENT ) != -1 );
@@ -399,8 +399,8 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "65" );
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( 1, eventLog.size() );
-    assertEquals( SWT.KeyDown, ( ( Event )eventLog.get( 0 ) ).type );
-    assertFalse( ( ( Event )eventLog.get( 0 ) ).doit );
+    assertEquals( SWT.KeyDown, eventLog.get( 0 ).type );
+    assertFalse( eventLog.get( 0 ).doit );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_CANCEL_EVENT ) != -1 );
     assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_ALLOW_EVENT ) == -1 );
@@ -409,7 +409,7 @@ public class ControlLCAUtil_Test extends TestCase {
 
   public void testProcessTraverseEventsWithDoItFlag() {
     RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
-    final java.util.List eventLog = new ArrayList();
+    final java.util.List<Event> eventLog = new ArrayList<Event>();
     Listener doitTrueListener = new Listener() {
       public void handleEvent( final Event event ) {
         eventLog.add( event );
@@ -435,8 +435,8 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( 1, eventLog.size() );
-    assertEquals( SWT.Traverse, ( ( Event )eventLog.get( 0 ) ).type );
-    assertTrue( ( ( Event )eventLog.get( 0 ) ).doit );
+    assertEquals( SWT.Traverse, eventLog.get( 0 ).type );
+    assertTrue( eventLog.get( 0 ).doit );
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_CANCEL_EVENT ) == -1 );
     shell.removeListener( SWT.Traverse, doitTrueListener );
@@ -451,8 +451,8 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( 1, eventLog.size() );
-    assertEquals( SWT.Traverse, ( ( Event )eventLog.get( 0 ) ).type );
-    assertFalse( ( ( Event )eventLog.get( 0 ) ).doit );
+    assertEquals( SWT.Traverse, eventLog.get( 0 ).type );
+    assertFalse( eventLog.get( 0 ).doit );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_CANCEL_EVENT ) != -1 );
     shell.removeListener( SWT.Traverse, doitFalseListener );
@@ -460,7 +460,7 @@ public class ControlLCAUtil_Test extends TestCase {
 
   public void testKeyAndTraverseEvents() {
     RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
-    final java.util.List eventLog = new ArrayList();
+    final java.util.List<Event> eventLog = new ArrayList<Event>();
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.open();
@@ -483,13 +483,13 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 3, eventLog.size() );
-    Event traverseEvent = ( Event )eventLog.get( 0 );
+    Event traverseEvent = eventLog.get( 0 );
     assertEquals( SWT.Traverse, traverseEvent.type );
     assertEquals( SWT.TRAVERSE_ESCAPE, traverseEvent.detail );
     assertTrue( traverseEvent.doit );
-    Event downEvent = ( Event )eventLog.get( 1 );
+    Event downEvent = eventLog.get( 1 );
     assertEquals( SWT.KeyDown, downEvent.type );
-    Event upEvent = ( Event )eventLog.get( 2 );
+    Event upEvent = eventLog.get( 2 );
     assertEquals( SWT.KeyUp, upEvent.type );
   }
 
@@ -557,7 +557,7 @@ public class ControlLCAUtil_Test extends TestCase {
 
   public void testProcessHelpEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final java.util.List log = new ArrayList();
+    final java.util.List<HelpEvent> log = new ArrayList<HelpEvent>();
     Display display = new Display();
     Control control = new Shell( display, SWT.NONE );
     control.addHelpListener( new HelpListener() {
@@ -568,7 +568,7 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_HELP, WidgetUtil.getId( control ) );
     WidgetLCAUtil.processHelp( control );
     assertEquals( 1, log.size() );
-    HelpEvent event = ( HelpEvent )log.get( 0 );
+    HelpEvent event = log.get( 0 );
     assertSame( control, event.widget );
     assertSame( display, event.display );
   }

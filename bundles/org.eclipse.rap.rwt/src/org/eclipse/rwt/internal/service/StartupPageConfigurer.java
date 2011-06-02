@@ -42,7 +42,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
   private final static String FOLDER = PACKAGE_NAME.replace( '.', '/' );
   private final static String INDEX_TEMPLATE = FOLDER + "/rwt-index.html";
   
-  private final List registeredBrandings;
+  private final List<AbstractBranding> registeredBrandings;
   private final ResourceRegistry resourceRegistry;
   // TODO [fappel]: think about clusters cache control variables
   private int probeCount;
@@ -52,7 +52,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
   StartupPageConfigurer( ResourceRegistry resourceRegistry ) {
     this.resourceRegistry = resourceRegistry;
     this.lastModified = System.currentTimeMillis();
-    this.registeredBrandings = new LinkedList();
+    this.registeredBrandings = new LinkedList<AbstractBranding>();
   }
   
   ////////////////////////////////////////////////////

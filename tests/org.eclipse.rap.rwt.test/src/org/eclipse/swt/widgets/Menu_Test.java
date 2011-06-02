@@ -154,7 +154,7 @@ public class Menu_Test extends TestCase {
   }
 
   public void testUntypedShowEvent() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<Event> log = new ArrayList<Event>();
     Listener listener = new Listener() {
       public void handleEvent( final Event event ) {
         log.add( event );
@@ -165,8 +165,8 @@ public class Menu_Test extends TestCase {
     popupMenu.addListener( SWT.Show, listener );
     popupMenu.setVisible( true );
     assertEquals( 1, log.size() );
-    assertSame( popupMenu, ( ( Event )log.get( 0 ) ).widget );
-    assertEquals( SWT.Show, ( ( Event )log.get( 0 ) ).type );
+    assertSame( popupMenu, log.get( 0 ).widget );
+    assertEquals( SWT.Show, log.get( 0 ).type );
     // BAR menus must not fire show events
     log.clear();
     Menu barMenu = new Menu( shell, SWT.BAR );

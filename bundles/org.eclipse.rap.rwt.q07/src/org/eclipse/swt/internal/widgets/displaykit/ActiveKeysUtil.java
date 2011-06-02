@@ -34,7 +34,7 @@ public final class ActiveKeysUtil {
   private static final String JSFUNC_SET_ACTIVE_KEYS
     = "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings";
 
-  private static final Map KEY_MAP = new HashMap();
+  private static final Map<String,Integer> KEY_MAP = new HashMap<String,Integer>();
   static {
     KEY_MAP.put( "BACKSPACE", new Integer( 8 ) );
     KEY_MAP.put( "BS", new Integer( 8 ) );

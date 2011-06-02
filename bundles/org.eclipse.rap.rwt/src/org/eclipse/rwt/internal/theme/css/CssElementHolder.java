@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSoource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme.css;
 
@@ -19,13 +20,13 @@ import org.eclipse.rwt.internal.theme.IThemeCssElement;
  * Holds all registered {@link IThemeCssElement}s.
  */
 public class CssElementHolder {
-  private final Map elements;
+  private final Map<String,IThemeCssElement> elements;
 
   public CssElementHolder() {
-    elements = new HashMap();
+    elements = new HashMap<String,IThemeCssElement>();
   }
 
-  public void addElement( final IThemeCssElement element ) {
+  public void addElement( IThemeCssElement element ) {
     if( elements.containsKey( element.getName() ) ) {
       String message = "An element with this name is already defined: " + element.getName();
       throw new IllegalArgumentException( message );
@@ -34,11 +35,8 @@ public class CssElementHolder {
   }
 
   public IThemeCssElement[] getAllElements() {
-    Collection values = elements.values();
-    int size = values.size();
-    IThemeCssElement[] result = new IThemeCssElement[ size ];
-    values.toArray( result );
-    return result;
+    Collection<IThemeCssElement> values = elements.values();
+    return values.toArray( new IThemeCssElement[ values.size() ] );
   }
 
   public void clear() {

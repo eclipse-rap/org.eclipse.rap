@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,18 +18,15 @@ import java.util.Collection;
 public class ThemeCssElement implements IThemeCssElement {
 
   private final String name;
-
-  private Collection properties;
-
-  private Collection styles;
-
-  private Collection states;
+  private Collection<String> properties;
+  private Collection<String> styles;
+  private Collection<String> states;
 
   public ThemeCssElement( final String name ) {
     this.name = name;
-    this.properties = new ArrayList();
-    this.styles = new ArrayList();
-    this.states = new ArrayList();
+    this.properties = new ArrayList<String>();
+    this.styles = new ArrayList<String>();
+    this.states = new ArrayList<String>();
   }
 
   public String getName() {
@@ -37,32 +34,26 @@ public class ThemeCssElement implements IThemeCssElement {
   }
 
   public String[] getProperties() {
-    String[] result = new String[ properties.size() ];
-    properties.toArray( result );
-    return result;
+    return properties.toArray( new String[ properties.size() ]);
   }
 
   public String[] getStyles() {
-    String[] result = new String[ styles.size() ];
-    styles.toArray( result );
-    return result;
+    return styles.toArray( new String[ styles.size() ] );
   }
   
   public String[] getStates() {
-    String[] result = new String[ states.size() ];
-    states.toArray( result );
-    return result;
+    return states.toArray( new String[ states.size() ] );
   }
 
-  public void addProperty( final String property ) {
+  public void addProperty( String property ) {
     properties.add( property );
   }
 
-  public void addStyle( final String style ) {
+  public void addStyle( String style ) {
     styles.add( style );
   }
 
-  public void addState( final String state ) {
+  public void addState( String state ) {
     states.add( state );
   }
 }

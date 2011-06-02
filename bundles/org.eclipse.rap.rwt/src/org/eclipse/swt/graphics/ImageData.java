@@ -32,6 +32,7 @@ import org.eclipse.swt.internal.CloneableCompatibility;
  * @since 1.3
  */
 
+@SuppressWarnings("all")
 public final class ImageData implements CloneableCompatibility {
     
     /**

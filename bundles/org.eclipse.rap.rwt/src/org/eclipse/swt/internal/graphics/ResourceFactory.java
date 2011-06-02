@@ -19,14 +19,14 @@ import org.eclipse.swt.graphics.*;
 
 public class ResourceFactory {
   
-  private final SharedInstanceBuffer colors;
-  private final SharedInstanceBuffer fonts;
-  private final SharedInstanceBuffer cursors;
+  private final SharedInstanceBuffer<Integer,Color> colors;
+  private final SharedInstanceBuffer<Integer,Font> fonts;
+  private final SharedInstanceBuffer<Integer,Cursor> cursors;
   
   public ResourceFactory() {
-    colors = new SharedInstanceBuffer();
-    fonts = new SharedInstanceBuffer();
-    cursors = new SharedInstanceBuffer();
+    colors = new SharedInstanceBuffer<Integer,Color>();
+    fonts = new SharedInstanceBuffer<Integer,Font>();
+    cursors = new SharedInstanceBuffer<Integer,Cursor>();
   }
   
   public Color getColor( int red, int green, int blue ) {
@@ -36,8 +36,8 @@ public class ResourceFactory {
 
   private Color getColor( final int value ) {
     Integer key = new Integer( value );
-    return ( Color )colors.get( key, new IInstanceCreator() {
-      public Object createInstance() {
+    return colors.get( key, new IInstanceCreator<Color>() {
+      public Color createInstance() {
         return createColorInstance( value );
       }
     } );
@@ -45,8 +45,8 @@ public class ResourceFactory {
 
   public Font getFont( final FontData fontData ) {
     Integer key = new Integer( fontData.hashCode() );
-    return ( Font )fonts.get( key, new IInstanceCreator() {
-      public Object createInstance() {
+    return fonts.get( key, new IInstanceCreator<Font>() {
+      public Font createInstance() {
         return createFontInstance( fontData );
       }
     } );
@@ -54,8 +54,8 @@ public class ResourceFactory {
 
   public Cursor getCursor( final int style ) {
     Integer key = new Integer( style );
-    return ( Cursor )cursors.get( key, new IInstanceCreator() {
-        public Object createInstance() {
+    return cursors.get( key, new IInstanceCreator<Cursor>() {
+        public Cursor createInstance() {
           return createCursorInstance( style );
         }
       } );

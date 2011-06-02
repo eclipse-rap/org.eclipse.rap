@@ -220,7 +220,7 @@ public class ControlLCA_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Label label = new Label( shell, SWT.NONE );
-    final java.util.List log = new ArrayList();
+    final java.util.List<MenuDetectEvent> log = new ArrayList<MenuDetectEvent>();
     label.addMenuDetectListener( new MenuDetectListener() {
       public void menuDetected( MenuDetectEvent event ) {
         log.add( event );
@@ -232,7 +232,7 @@ public class ControlLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT_X, "10" );
     Fixture.fakeRequestParam( JSConst.EVENT_MENU_DETECT_Y, "30" );
     Fixture.readDataAndProcessAction( display );
-    MenuDetectEvent event = ( MenuDetectEvent )log.get( 0 );
+    MenuDetectEvent event = log.get( 0 );
     assertSame( label, event.widget );
     assertEquals( 10, event.x );
     assertEquals( 30, event.y );

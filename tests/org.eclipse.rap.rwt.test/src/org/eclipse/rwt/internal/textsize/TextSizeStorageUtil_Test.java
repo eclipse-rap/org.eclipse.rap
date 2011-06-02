@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - bug 348056: Eliminate compiler warnings
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
@@ -50,7 +51,7 @@ public class TextSizeStorageUtil_Test extends TestCase {
   }
 
   public void testGetKey() {
-    Set takenKeys = new HashSet();
+    Set<Integer> takenKeys = new HashSet<Integer>();
     StringBuffer generatedText = new StringBuffer();
     for( int i = 0; i < 100; i++ ) {
       generatedText.append( "a" );

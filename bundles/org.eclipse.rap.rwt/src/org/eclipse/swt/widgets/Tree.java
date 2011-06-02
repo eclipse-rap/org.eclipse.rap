@@ -99,7 +99,7 @@ public class Tree extends Composite {
 
   private int itemCount;
   private TreeItem[] items;
-  /* package */final ItemHolder columnHolder;
+  final ItemHolder<TreeColumn> columnHolder;
   private TreeItem[] selection;
   private boolean linesVisible;
   private int[] columnOrder;
@@ -123,7 +123,7 @@ public class Tree extends Composite {
   private final class CompositeItemHolder implements IItemHolderAdapter {
     public void add( Item item ) {
       if( item instanceof TreeColumn ) {
-        columnHolder.add( item );
+        columnHolder.add( ( TreeColumn )item );
       } else {
         String msg = "Only TreeColumns may be added to CompositeItemHolder";
         throw new IllegalArgumentException( msg );
@@ -131,7 +131,7 @@ public class Tree extends Composite {
     }
     public void insert( Item item, int index ) {
       if( item instanceof TreeColumn ) {
-        columnHolder.insert( item, index );
+        columnHolder.insert( ( TreeColumn )item, index );
       } else {
         String msg = "Only TreeColumns may be inserted to CompositeItemHolder";
         throw new IllegalArgumentException( msg );
@@ -139,7 +139,7 @@ public class Tree extends Composite {
     }
     public void remove( Item item ) {
       if( item instanceof TreeColumn ) {
-        columnHolder.remove( item );
+        columnHolder.remove( ( TreeColumn )item );
       } else {
         String msg = "Only TreeColumns may be removed from CompositeItemHolder";
         throw new IllegalArgumentException( msg );
@@ -300,7 +300,7 @@ public class Tree extends Composite {
    */
   public Tree( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
-    columnHolder = new ItemHolder( TreeColumn.class );
+    columnHolder = new ItemHolder<TreeColumn>( TreeColumn.class );
     treeAdapter = new InternalTreeAdapter();
     setTreeEmpty();
     createScrollBars();
@@ -901,7 +901,7 @@ public class Tree extends Composite {
     if( ( style & SWT.SINGLE ) != 0 ) {
       setSelection( item );
     } else {
-      ArrayList selItems = new ArrayList( Arrays.asList( selection ) );
+      List<TreeItem> selItems = new ArrayList<TreeItem>( Arrays.asList( selection ) );
       if( !selItems.contains( item ) ) {
         selItems.add( item );
         selection = new TreeItem[ selItems.size() ];
@@ -925,12 +925,12 @@ public class Tree extends Composite {
   public void selectAll() {
     checkWidget();
     if( ( style & SWT.MULTI ) != 0 ) {
-      final java.util.List allItems = new ArrayList();
+      final java.util.List<TreeItem> allItems = new ArrayList<TreeItem>();
       WidgetTreeVisitor.accept( this, new AllWidgetTreeVisitor() {
 
         public boolean doVisit( Widget widget ) {
           if( widget instanceof TreeItem ) {
-            allItems.add( widget );
+            allItems.add( ( TreeItem )widget );
           }
           return true;
         }
@@ -965,7 +965,7 @@ public class Tree extends Composite {
     if( item.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    List selItems = new ArrayList( Arrays.asList( selection ) );
+    List<TreeItem> selItems = new ArrayList<TreeItem>( Arrays.asList( selection ) );
     if( selItems.contains( item ) ) {
       selItems.remove( item );
       selection = new TreeItem[ selItems.size() ];
@@ -1123,8 +1123,8 @@ public class Tree extends Composite {
     return result;
   }
 
-  private List collectVisibleItems( TreeItem parent ) {
-    List result = new ArrayList();
+  private List<TreeItem> collectVisibleItems( TreeItem parent ) {
+    List<TreeItem> result = new ArrayList<TreeItem>();
     TreeItem[] children;
     if( parent == null ) {
       children = getItems();
@@ -1433,7 +1433,7 @@ public class Tree extends Composite {
     if( !( 0 <= index && index < columnHolder.size() ) ) {
       error( SWT.ERROR_INVALID_RANGE );
     }
-    return ( TreeColumn )columnHolder.getItem( index );
+    return columnHolder.getItem( index );
   }
 
   /**
@@ -1462,7 +1462,7 @@ public class Tree extends Composite {
    */
   public TreeColumn[] getColumns() {
     checkWidget();
-    return ( TreeColumn[] )columnHolder.getItems();
+    return columnHolder.getItems();
   }
 
   /**
@@ -1768,7 +1768,7 @@ public class Tree extends Composite {
     for( int i = 0; i < items.length; i++ ) {
       items[ i ].dispose();
     }
-    TreeColumn[] cols = ( TreeColumn[] )columnHolder.getItems();
+    TreeColumn[] cols = columnHolder.getItems();
     for( int c = 0; c < cols.length; c++ ) {
       cols[ c ].dispose();
       columnHolder.remove( cols[ c ] );

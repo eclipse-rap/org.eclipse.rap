@@ -35,9 +35,9 @@ import org.eclipse.swt.layout.FillLayout;
 public class Control_Test extends TestCase {
 
   private static class RedrawLogginShell extends Shell {
-    private final List log;
+    private final List<Widget> log;
 
-    private RedrawLogginShell( Display display, List log ) {
+    private RedrawLogginShell( Display display, List<Widget> log ) {
       super( display );
       this.log = log;
     }
@@ -54,9 +54,9 @@ public class Control_Test extends TestCase {
   }
 
   private static class LoggingWidgetLCA extends AbstractWidgetLCA {
-    private final List log;
+    private final List<Widget> log;
 
-    public LoggingWidgetLCA( List log ) {
+    public LoggingWidgetLCA( List<Widget> log ) {
       this.log = log;
     }
 
@@ -762,7 +762,7 @@ public class Control_Test extends TestCase {
   }
 
   public void testShowEvent() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<Event> log = new ArrayList<Event>();
     Listener showListener = new Listener() {
       public void handleEvent( final Event event ) {
         log.add( event );
@@ -775,7 +775,7 @@ public class Control_Test extends TestCase {
     // only sent for the shell itself, not for its containing controls
     shell.setVisible( true );
     assertEquals( 1, log.size() );
-    Event event = ( Event )log.get( 0 );
+    Event event = log.get( 0 );
     assertSame( shell, event.widget );
     // Calling setVisible(true) on an already visible control does not trigger
     // event
@@ -787,7 +787,7 @@ public class Control_Test extends TestCase {
     log.clear();
     control.setVisible( true );
     assertEquals( 1, log.size() );
-    assertSame( control, ( ( Event )log.get( 0 ) ).widget );
+    assertSame( control, log.get( 0 ).widget );
   }
 
   public void testShowEventDetails() {
@@ -801,7 +801,7 @@ public class Control_Test extends TestCase {
   }
 
   public void testHideEvent() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<Event> log = new ArrayList<Event>();
     Listener showListener = new Listener() {
       public void handleEvent( final Event event ) {
         log.add( event );
@@ -815,19 +815,19 @@ public class Control_Test extends TestCase {
     log.clear();
     control.setVisible( false );
     assertEquals( 1, log.size() );
-    assertSame( control, ( ( Event )log.get( 0 ) ).widget );
+    assertSame( control, log.get( 0 ).widget );
 
     log.clear();
     shell.setVisible( false );
     assertEquals( 1, log.size() );
-    assertSame( shell, ( ( Event )log.get( 0 ) ).widget );
+    assertSame( shell, log.get( 0 ).widget );
 
     log.clear();
     shell.setVisible( true );
     control.setVisible( true );
     shell.setVisible( false );
     assertEquals( 1, log.size() );
-    assertSame( shell, ( ( Event )log.get( 0 ) ).widget );
+    assertSame( shell, log.get( 0 ).widget );
   }
 
   public void testCursor() {
@@ -879,7 +879,7 @@ public class Control_Test extends TestCase {
   }
   
   public void testRedrawTriggersLCAInOrder() {
-    final List log = new ArrayList();
+    final List<Widget> log = new ArrayList<Widget>();
     Composite control0 = new RedrawLogginShell( display, log );
     Composite control1 = new RedrawLogginShell( display, log );
     control0.redraw();

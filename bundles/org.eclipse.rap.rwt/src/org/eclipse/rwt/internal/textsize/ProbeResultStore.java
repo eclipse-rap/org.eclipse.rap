@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,14 +21,14 @@ import org.eclipse.swt.graphics.Point;
 
 final class ProbeResultStore {
 
-  private final Map probeResults;
+  private final Map<FontData,ProbeResult> probeResults;
 
   static ProbeResultStore getInstance() {
     return ( ProbeResultStore )SessionSingletonBase.getInstance( ProbeResultStore.class );
   }
   
   ProbeResultStore() {
-    probeResults = new HashMap();
+    probeResults = new HashMap<FontData,ProbeResult>();
   }
    
   ProbeResult createProbeResult( Probe probe, Point size ) {
@@ -38,7 +38,7 @@ final class ProbeResultStore {
   }
 
   ProbeResult getProbeResult( FontData fontData ) {
-    return ( ProbeResult )probeResults.get( fontData );
+    return probeResults.get( fontData );
   }
   
   boolean containsProbeResult( FontData fontData ) {

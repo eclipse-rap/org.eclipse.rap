@@ -19,9 +19,9 @@ import com.yahoo.platform.yui.compressor.JavaScriptToken;
 
 public class TokenList {
 
-  private final List tokens;
+  private final List<JavaScriptToken> tokens;
 
-  public TokenList( List tokens ) {
+  public TokenList( List<JavaScriptToken> tokens ) {
     this.tokens = tokens;
   }
 
@@ -32,7 +32,7 @@ public class TokenList {
   public JavaScriptToken getToken( int index ) {
     JavaScriptToken token = null;
     if( index >= 0 && index < tokens.size() ) {
-      token = ( JavaScriptToken )tokens.get( index );
+      token = tokens.get( index );
     }
     return token;
   }
@@ -62,9 +62,7 @@ public class TokenList {
   public int readExpression( int offset ) {
     int result = -1;
     JavaScriptToken token = getToken( offset );
-    if( TokenMatcher.LEFT_BRACE.matches( token )
-        || TokenMatcher.LEFT_BRACKET.matches( token ) )
-    {
+    if( TokenMatcher.LEFT_BRACE.matches( token ) || TokenMatcher.LEFT_BRACKET.matches( token ) ) {
       result = findClosing( offset );
     }
     int pos = offset;
@@ -75,7 +73,7 @@ public class TokenList {
           || TokenMatcher.LEFT_PAREN.matches( token ) )
       {
         pos = findClosing( pos ) + 1;
-      } else if( TokenMatcher.RIGHT_BRACE.matches( token )
+      } else if(    TokenMatcher.RIGHT_BRACE.matches( token )
                  || TokenMatcher.RIGHT_BRACKET.matches( token )
                  || TokenMatcher.RIGHT_PAREN.matches( token )
                  || TokenMatcher.COMMA.matches( token )

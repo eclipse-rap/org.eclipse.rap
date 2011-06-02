@@ -28,8 +28,8 @@ import org.eclipse.swt.widgets.*;
 public class MouseEvent_Test extends TestCase {
 
   private static class LoggingListener implements Listener {
-    private final List events;
-    private LoggingListener( List events ) {
+    private final List<Object> events;
+    private LoggingListener( List<Object> events ) {
       this.events = events;
     }
     public void handleEvent( Event event ) {
@@ -38,8 +38,8 @@ public class MouseEvent_Test extends TestCase {
   }
 
   private static class LoggingMouseListener implements MouseListener {
-    private final List events;
-    private LoggingMouseListener( List events ) {
+    private final List<Object> events;
+    private LoggingMouseListener( List<Object> events ) {
       this.events = events;
     }
     public void mouseDoubleClick( final MouseEvent event ) {
@@ -55,14 +55,14 @@ public class MouseEvent_Test extends TestCase {
 
   private Display display;
   private Shell shell;
-  private List events;
+  private List<Object> events;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
-    events = new LinkedList();
+    events = new LinkedList<Object>();
   }
 
   protected void tearDown() throws Exception {

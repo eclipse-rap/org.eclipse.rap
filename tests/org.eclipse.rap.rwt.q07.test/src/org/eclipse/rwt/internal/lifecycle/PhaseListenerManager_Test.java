@@ -76,6 +76,7 @@ public class PhaseListenerManager_Test extends TestCase {
   }
 
 
+  private List<Throwable> exceptionsInServletLog;
   private PhaseListenerManager phaseListenerManager;
   private ILifeCycle lifeCycle;
   
@@ -162,7 +163,7 @@ public class PhaseListenerManager_Test extends TestCase {
   
   public void testAddRemovePhaseListenerConcurently() throws InterruptedException {
     final int threadCount = 120;
-    final List succeededThreads = Collections.synchronizedList( new LinkedList() );
+    final List<Thread> succeededThreads = Collections.synchronizedList( new LinkedList<Thread>() );
     Runnable runnable = new Runnable() {
       public void run() {
         EmptyPhaseListener phaseListener = new EmptyPhaseListener();
@@ -170,7 +171,7 @@ public class PhaseListenerManager_Test extends TestCase {
         phaseListenerManager.getPhaseListeners();
         Thread.yield();
         phaseListenerManager.removePhaseListener( phaseListener );
-        succeededThreads.add( this );
+        succeededThreads.add( Thread.currentThread() );
       }
     };
     Thread[] threads = Fixture.startThreads( threadCount, runnable );
@@ -209,17 +210,13 @@ public class PhaseListenerManager_Test extends TestCase {
   }
   
   public void testExceptionsInBeforePhaseEvent() {
-    List loggedExceptions = new LinkedList();
-    setupServletContextLog( loggedExceptions );
     phaseListenerManager.addPhaseListener( new ExceptionPhaseListener() );
     phaseListenerManager.addPhaseListener( new ExceptionPhaseListener() );
     phaseListenerManager.notifyBeforePhase( PhaseId.READ_DATA );
-    assertEquals( 2, loggedExceptions.size() );
+    assertEquals( 2, exceptionsInServletLog.size() );
   }
 
   public void testErrorInBeforePhaseEvent() {
-    List loggedExceptions = new LinkedList();
-    setupServletContextLog( loggedExceptions );
     phaseListenerManager.addPhaseListener( new ErrorPhaseListener() );
     try {
       phaseListenerManager.notifyBeforePhase( PhaseId.READ_DATA );
@@ -257,17 +254,13 @@ public class PhaseListenerManager_Test extends TestCase {
   }
   
   public void testExceptionsInAfterPhaseEvent() {
-    List loggedExceptions = new LinkedList();
-    setupServletContextLog( loggedExceptions );
     phaseListenerManager.addPhaseListener( new ExceptionPhaseListener() );
     phaseListenerManager.addPhaseListener( new ExceptionPhaseListener() );
     phaseListenerManager.notifyAfterPhase( PhaseId.READ_DATA );
-    assertEquals( 2, loggedExceptions.size() );
+    assertEquals( 2, exceptionsInServletLog.size() );
   }
 
   public void testErrorInAfterPhaseEvent() {
-    List loggedExceptions = new LinkedList();
-    setupServletContextLog( loggedExceptions );
     phaseListenerManager.addPhaseListener( new ErrorPhaseListener() );
     try {
       phaseListenerManager.notifyAfterPhase( PhaseId.READ_DATA );
@@ -280,18 +273,20 @@ public class PhaseListenerManager_Test extends TestCase {
     Fixture.setUp();
     lifeCycle = new TestLifeCycle();
     phaseListenerManager = new PhaseListenerManager( lifeCycle );
+    exceptionsInServletLog = new LinkedList<Throwable>();
+    setupServletContextLog();
   }
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
 
-  private static void setupServletContextLog( final List loggedExceptions ) {
+  private void setupServletContextLog() {
     HttpSession session = ContextProvider.getSession().getHttpSession();
     TestServletContext servletContext = ( TestServletContext )session.getServletContext();
     servletContext.setLogger( new TestLogger() {
       public void log( String message, Throwable throwable ) {
-        loggedExceptions.add( throwable );
+        exceptionsInServletLog.add( throwable );
       }
     } );
   }

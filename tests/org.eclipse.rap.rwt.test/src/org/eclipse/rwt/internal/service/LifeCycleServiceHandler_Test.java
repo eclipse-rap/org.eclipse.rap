@@ -80,7 +80,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   }
   
   public void testRequestSynchronization() throws InterruptedException {
-    List threads = new ArrayList();
+    List<Thread> threads = new ArrayList<Thread>();
     // initialize session, see bug 344549
     ContextProvider.getSession();
     ServiceContext context = ContextProvider.getContext();
@@ -92,7 +92,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
       threads.add( thread );
     }
     while( threads.size() > 0 ) {
-      Thread thread = ( Thread )threads.get( 0 );
+      Thread thread = threads.get( 0 );
       thread.join();
       threads.remove( 0 );
     }

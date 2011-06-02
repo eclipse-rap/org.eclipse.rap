@@ -34,12 +34,12 @@ public class AdapterManager {
   private final Object lock;
   private final AdapterFactoryRegistry registry;
   /* key: hash of adaptableClass * adapterClass, value: AdapterFactory */
-  private final Map bufferedAdapterFactories;
+  private final Map<Integer,AdapterFactory> bufferedAdapterFactories;
   
   public AdapterManager() {
     lock = new Object();
     registry = new AdapterFactoryRegistry();
-    bufferedAdapterFactories = new HashMap();
+    bufferedAdapterFactories = new HashMap<Integer,AdapterFactory>();
   }
   
   public Object getAdapter( Object adaptable, Class adapter ) {
@@ -71,13 +71,13 @@ public class AdapterManager {
 
   private AdapterFactory findBufferedAdapterFactory( Object adaptable, Class adapter ) {
     Integer hash = calculateHash( adaptable, adapter );
-    return ( AdapterFactory )bufferedAdapterFactories.get( hash );
+    return bufferedAdapterFactories.get( hash );
   }
 
-  private AdapterFactory determineAdapterFactory( Object adaptable, Class adapter ) {
+  private AdapterFactory determineAdapterFactory( Object adaptable, Class<?> adapter ) {
     AdapterFactory result = NULL_ADAPTER_FACTORY;
     boolean found = false;
-    Class[] adaptableClasses = registry.getAdaptableClasses();
+    Class<?>[] adaptableClasses = registry.getAdaptableClasses();
     for( int i = 0; !found && i < adaptableClasses.length; i++ ) {
       if( adaptableClasses[ i ].isAssignableFrom( adaptable.getClass() ) ) {
         AdapterFactory[] factories = registry.getAdapterFactories( adaptableClasses[ i ] );

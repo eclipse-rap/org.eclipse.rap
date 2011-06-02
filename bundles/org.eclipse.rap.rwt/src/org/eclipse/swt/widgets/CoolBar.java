@@ -369,6 +369,7 @@ public class CoolBar extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
+  @SuppressWarnings("all")
   public int indexOf( CoolItem item ) {
     checkWidget();
     if ( item == null )

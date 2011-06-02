@@ -35,6 +35,7 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  * 
  * @since 1.0
  */
+@SuppressWarnings("all")
 public final class RGB implements SerializableCompatibility {
 
   private static final long serialVersionUID = 1L;

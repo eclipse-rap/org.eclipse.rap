@@ -55,8 +55,8 @@ public final class PropertyResolver {
   /** A thick border. */
   private static final String THICK = "thick";
   private static final String TRANSPARENT = "transparent";
-  private static final Map NAMED_COLORS = new HashMap();
-  private static final List BORDER_STYLES = new ArrayList();
+  private static final Map<String,NamedColor> NAMED_COLORS = new HashMap<String,NamedColor>();
+  private static final List<String> BORDER_STYLES = new ArrayList<String>();
   /** Width value for "thin" identifier. */
   static final int THIN_VALUE = 1;
   /** Width value for "medium" identifier. */
@@ -172,7 +172,7 @@ public final class PropertyResolver {
       if( TRANSPARENT.equals( string ) ) {
         result = QxColor.TRANSPARENT;
       } else if( NAMED_COLORS.containsKey( lowerCaseString ) ) {
-        NamedColor color = ( NamedColor )NAMED_COLORS.get( lowerCaseString );
+        NamedColor color = NAMED_COLORS.get( lowerCaseString );
         result = QxColor.create( color.red, color.green, color.blue );
       }
     } else if( type == LexicalUnit.SAC_INHERIT ) {
@@ -474,7 +474,7 @@ public final class PropertyResolver {
   }
 
   static String[] readFontFamily( final LexicalUnit unit ) {
-    List list = new ArrayList();
+    List<String> list = new ArrayList<String>();
     LexicalUnit nextUnit = unit;
     boolean ok = true;
     String buffer = "";

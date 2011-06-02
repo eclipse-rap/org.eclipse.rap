@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.List;
 
 class LoggingListener implements Listener {
-  final List log = new ArrayList();
+  final List<Event> log = new ArrayList<Event>();
 
   public void handleEvent( Event event ) {
     log.add( event );
@@ -28,12 +28,12 @@ class LoggingListener implements Listener {
   }
 
   public Event get( int index ) {
-    return ( Event )log.get( index );
+    return log.get( index );
   }
 
-  public List getItems() {
+  public List<Widget> getItems() {
     int size = log.size();
-    List result = new ArrayList( size );
+    List<Widget> result = new ArrayList<Widget>( size );
     for( int i = 0; i < size; i++ ) {
       result.add( get( i ).item );
     }

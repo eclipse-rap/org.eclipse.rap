@@ -16,10 +16,10 @@ import java.util.Map;
 import org.eclipse.rwt.service.IApplicationStore;
 
 public class ApplicationStoreImpl implements IApplicationStore {
-  private final Map attributes;
+  private final Map<String,Object> attributes;
   
   public ApplicationStoreImpl() {
-    attributes = new HashMap();
+    attributes = new HashMap<String,Object>();
   }
   
   public Object getAttribute( String name ) {

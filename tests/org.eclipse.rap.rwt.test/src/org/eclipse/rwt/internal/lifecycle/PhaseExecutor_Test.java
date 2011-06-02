@@ -44,11 +44,11 @@ public class PhaseExecutor_Test extends TestCase {
   
   private static class TestPhase implements IPhase {
 
-    private final List executionLog;
+    private final List<IPhase> executionLog;
     private final PhaseId phaseId;
     private final PhaseId nextPhaseId;
     
-    TestPhase( List executionLog, PhaseId phaseId, PhaseId nextPhaseId ) {
+    TestPhase( List<IPhase> executionLog, PhaseId phaseId, PhaseId nextPhaseId ) {
       this.executionLog = executionLog;
       this.phaseId = phaseId;
       this.nextPhaseId = nextPhaseId;
@@ -68,7 +68,7 @@ public class PhaseExecutor_Test extends TestCase {
   private TestLifeCycle lifeCycle;
 
   public void testExecute() throws IOException {
-    List executionLog = new LinkedList();
+    List<IPhase> executionLog = new LinkedList<IPhase>();
     IPhase[] phases = new IPhase[] { 
       new TestPhase( executionLog, PhaseId.PREPARE_UI_ROOT, PhaseId.RENDER ), 
       new TestPhase( executionLog, PhaseId.RENDER, null ) 
@@ -84,7 +84,7 @@ public class PhaseExecutor_Test extends TestCase {
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
     phaseListenerManager.addPhaseListener( phaseListener );
     IPhase[] phases = new IPhase[] { 
-      new TestPhase( new LinkedList(), PhaseId.PREPARE_UI_ROOT, null ), 
+      new TestPhase( new LinkedList<IPhase>(), PhaseId.PREPARE_UI_ROOT, null ), 
     };
     PhaseExecutor phaseExecutor = new TestPhaseExecutor( phaseListenerManager, phases );
     phaseExecutor.execute( PhaseId.PREPARE_UI_ROOT );

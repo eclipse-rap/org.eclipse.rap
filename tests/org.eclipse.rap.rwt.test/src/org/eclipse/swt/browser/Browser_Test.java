@@ -173,7 +173,7 @@ public class Browser_Test extends TestCase {
   }
 
   public void testProgressEvent_setTextAllowed() {
-    final ArrayList log = new ArrayList();
+    final ArrayList<String> log = new ArrayList<String>();
     final Browser browser = new Browser( shell, SWT.NONE );
     browser.addProgressListener( new ProgressListener() {
       public void changed( final ProgressEvent event ) {
@@ -189,7 +189,7 @@ public class Browser_Test extends TestCase {
   }
 
   public void testProgressEvent_setTextNotAllowed() {
-    final ArrayList log = new ArrayList();
+    final ArrayList<String> log = new ArrayList<String>();
     final Browser browser = new Browser( shell, SWT.NONE );
     browser.addLocationListener( new LocationListener() {
       public void changing( final LocationEvent event ) {
@@ -211,7 +211,7 @@ public class Browser_Test extends TestCase {
   }
 
   public void testProgressEvent_setUrlAllowed() {
-    final ArrayList log = new ArrayList();
+    final ArrayList<String> log = new ArrayList<String>();
     final Browser browser = new Browser( shell, SWT.NONE );
     browser.addProgressListener( new ProgressListener() {
       public void changed( final ProgressEvent event ) {
@@ -227,7 +227,7 @@ public class Browser_Test extends TestCase {
   }
 
   public void testProgressEvent_setUrlNotAllowed() {
-    final ArrayList log = new ArrayList();
+    final ArrayList<String> log = new ArrayList<String>();
     final Browser browser = new Browser( shell, SWT.NONE );
     browser.addLocationListener( new LocationListener() {
       public void changing( final LocationEvent event ) {

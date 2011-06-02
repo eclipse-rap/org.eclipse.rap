@@ -20,11 +20,11 @@ import org.eclipse.rwt.internal.theme.css.ConditionalValue;
 public final class ThemeStoreWriter {
 
   private final IThemeCssElement[] allThemeableWidgetElements;
-  private final List themes;
+  private final Collection<ThemeEntry> themes;
 
   public ThemeStoreWriter( IThemeCssElement[] elements ) {
     allThemeableWidgetElements = elements;
-    themes = new ArrayList();
+    themes = new ArrayList<ThemeEntry>();
   }
 
   public void addTheme( Theme theme, boolean isDefault ) {
@@ -93,7 +93,7 @@ public final class ThemeStoreWriter {
   }
 
   private QxType[] getValuesFromAllThemes() {
-    Set valueSet = new LinkedHashSet();
+    Set<QxType> valueSet = new LinkedHashSet<QxType>();
     Iterator iterator = themes.iterator();
     while( iterator.hasNext() ) {
       ThemeEntry themeEntry = ( ThemeEntry )iterator.next();
@@ -104,9 +104,7 @@ public final class ThemeStoreWriter {
         valueSet.add( values[ i ] );
       }
     }
-    QxType[] values = new QxType[ valueSet.size() ];
-    valueSet.toArray( values );
-    return values;
+    return valueSet.toArray( new QxType[ valueSet.size() ] );
   }
 
   private static Map createValuesMap( QxType[] values ) {

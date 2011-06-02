@@ -647,7 +647,7 @@ public class TableItem_Test extends TestCase {
    * fired when the item becomes visible. SWT (on Windows) behaves the same. */
   public void testSetterWithVirtual() {
     // set up virtual table with unresolved items
-    final java.util.List eventLog = new ArrayList();
+    final java.util.List<Event> eventLog = new ArrayList<Event>();
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 90, 90 );
@@ -691,7 +691,7 @@ public class TableItem_Test extends TestCase {
   }
 
   public void testSetItemCountDisposeOrder() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<Object> log = new ArrayList<Object>();
     Table table = new Table( shell, SWT.NONE );
     for( int i = 0; i < 30; i++ ) {
       final TableItem item = new TableItem( table, SWT.NONE );

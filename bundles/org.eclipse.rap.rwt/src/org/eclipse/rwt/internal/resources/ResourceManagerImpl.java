@@ -67,11 +67,11 @@ public class ResourceManagerImpl implements IResourceManager {
   final static String RESOURCE = "w4t_resource";
   final static String RESOURCE_VERSION = "w4t_res_version";
 
-  private final Map repository;
-  private final Map cache;
+  private final Map<String,String> repository;
+  private final Map<String,Resource> cache;
   private final RWTConfiguration configuration;
   private ClassLoader loader;
-  private ThreadLocal contextLoader;
+  private ThreadLocal<ClassLoader> contextLoader;
 
   private static final class Resource {
 
@@ -105,9 +105,9 @@ public class ResourceManagerImpl implements IResourceManager {
 
   public ResourceManagerImpl( RWTConfiguration configuration ) {
     this.configuration = configuration;
-    this.repository = new Hashtable();
-    this.cache = new Hashtable();
-    this.contextLoader = new ThreadLocal();
+    this.repository = new Hashtable<String,String>();
+    this.cache = new Hashtable<String,Resource>();
+    this.contextLoader = new ThreadLocal<ClassLoader>();
   }
 
   /**
@@ -123,7 +123,7 @@ public class ResourceManagerImpl implements IResourceManager {
   public byte[] findResource( String name, Integer version ) {
     ParamCheck.notNull( name, "name" );
     byte[] result = null;
-    Resource resource = ( Resource )cache.get( createKey( name ) );
+    Resource resource = cache.get( createKey( name ) );
     if( resource != null ) {
       if(    ( version == null && resource.getVersion() == null )
           || ( version != null && version.equals( resource.getVersion() ) ) )
@@ -147,7 +147,7 @@ public class ResourceManagerImpl implements IResourceManager {
   public Integer findVersion( String name ) {
     ParamCheck.notNull( name, "name" );
     Integer result = null;
-    Resource resource = ( Resource )cache.get( createKey( name ) );
+    Resource resource = cache.get( createKey( name ) );
     if( resource != null ) {
       result = resource.getVersion();
     }
@@ -217,7 +217,7 @@ public class ResourceManagerImpl implements IResourceManager {
     ParamCheck.notNull( name, "name" );
     boolean result = false;
     String key = createKey( name );
-    String fileName = ( String )repository.remove( key );
+    String fileName = repository.remove( key );
     if( fileName != null ) {
       result = true;
       Integer version = findVersion( name );
@@ -230,21 +230,21 @@ public class ResourceManagerImpl implements IResourceManager {
 
   public String getCharset( String name ) {
     ParamCheck.notNull( name, "name" );
-    Resource resource = ( Resource )cache.get( createKey( name ) );
+    Resource resource = cache.get( createKey( name ) );
     return resource.getCharset();
   }
 
   public boolean isRegistered( String name ) {
     ParamCheck.notNull( name, "name" );
     String key = createKey( name );
-    String fileName = ( String )repository.get( key );
+    String fileName = repository.get( key );
     return fileName != null;
   }
 
   public String getLocation( String name ) {
     ParamCheck.notNull( name, "name" );
     String key = createKey( name );
-    String fileName = ( String )repository.get( key );
+    String fileName = repository.get( key );
     return createRequestURL( fileName, findVersion( name ) );
   }
 
@@ -276,13 +276,13 @@ public class ResourceManagerImpl implements IResourceManager {
   }
 
   public ClassLoader getContextLoader() {
-    return ( ClassLoader )contextLoader.get();
+    return contextLoader.get();
   }
 
   public InputStream getRegisteredContent( String name ) {
     InputStream result = null;
     String key = createKey( name );
-    String fileName = ( String )repository.get( key );
+    String fileName = repository.get( key );
     if( fileName != null ) {
       // TODO [rst] Works only for non-versioned content for now
       File file = getDiskLocation( name, null );

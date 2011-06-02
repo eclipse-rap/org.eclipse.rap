@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,17 +15,14 @@ import java.util.*;
 
 final class Utf8ResourceBundle {
   
-  private final static Map bundles = new HashMap();
+  private final static Map<ResourceBundle,ResourceBundle> bundles 
+    = new HashMap<ResourceBundle,ResourceBundle>();
   
-  static ResourceBundle getBundle( final String baseName,
-                                   final Locale locale,
-                                   final ClassLoader loader )
-  {
-    ResourceBundle bundle 
-      = ResourceBundle.getBundle( baseName, locale, loader );
+  static ResourceBundle getBundle( String baseName, Locale locale, ClassLoader loader ) {
+    ResourceBundle bundle = ResourceBundle.getBundle( baseName, locale, loader );
     ResourceBundle result;
     synchronized( bundles ) {
-      result = ( ResourceBundle )bundles.get( bundle );
+      result = bundles.get( bundle );
       if( result == null ) {
         result = createUtf8Bundle( bundle );
         bundles.put( bundle, result );
@@ -34,8 +31,7 @@ final class Utf8ResourceBundle {
     return result;
   }
 
-  private static ResourceBundle createUtf8Bundle( final ResourceBundle bundle )
-  {
+  private static ResourceBundle createUtf8Bundle( ResourceBundle bundle ) {
     ResourceBundle result = bundle;
     if( bundle instanceof PropertyResourceBundle ) {
       PropertyResourceBundle prb = ( PropertyResourceBundle )bundle;
@@ -44,18 +40,18 @@ final class Utf8ResourceBundle {
     return result;
   }
   
-  private static final class Utf8PropertyResourceBundle extends ResourceBundle {
+  private static class Utf8PropertyResourceBundle extends ResourceBundle {
     private PropertyResourceBundle bundle;
 
     private Utf8PropertyResourceBundle( final PropertyResourceBundle bundle ) {
       this.bundle = bundle;
     }
 
-    public Enumeration getKeys() {
+    public Enumeration<String> getKeys() {
       return bundle.getKeys();
     }
 
-    protected Object handleGetObject( final String key ) {
+    protected Object handleGetObject( String key ) {
       String result = ( String )bundle.handleGetObject( key );
       try {
         // We do not buffer the encoded result since the RWT.NLS mechanism

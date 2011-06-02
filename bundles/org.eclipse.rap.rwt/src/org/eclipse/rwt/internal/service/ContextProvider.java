@@ -42,7 +42,8 @@ public class ContextProvider {
   
   // The context mapping mechanism used in standard UI requests from
   // the client is the CONTEXT_HOLDER.
-  private final static ThreadLocal CONTEXT_HOLDER = new ThreadLocal();
+  private final static ThreadLocal<ServiceContext> CONTEXT_HOLDER
+    = new ThreadLocal<ServiceContext>();
   
   // For background threads that need access to data stored in the session
   // a context can be mapped from outside the thread execution.
@@ -50,7 +51,8 @@ public class ContextProvider {
   // be possible to use the map also to replace the CONTEXT_HOLDER, but 
   // due to the smaller synchronization impact the thread local mechanism
   // stays in place for the most common usecase.
-  private final static Map CONTEXT_HOLDER_FOR_BG_THREADS = new WeakHashMap();
+  private final static Map<Thread,ServiceContext> CONTEXT_HOLDER_FOR_BG_THREADS 
+    = new WeakHashMap<Thread,ServiceContext>();
 
   /** 
    * Maps the {@link ServiceContext} to the currently
@@ -163,7 +165,7 @@ public class ContextProvider {
    * by using <code>disposeContext(Thread)</code>.</p>
    */
   public static void disposeContext() {
-    ServiceContext context = ( ServiceContext )CONTEXT_HOLDER.get();
+    ServiceContext context = CONTEXT_HOLDER.get();
     if( context != null ) {
       if( !context.isDisposed() ) {
         context.dispose();
@@ -182,7 +184,7 @@ public class ContextProvider {
       CONTEXT_HOLDER.set( null );
     } else {
       synchronized( CONTEXT_HOLDER_FOR_BG_THREADS ) {
-        ServiceContext toRemove = getMappedContext( Thread.currentThread() );
+        ServiceContext toRemove = CONTEXT_HOLDER_FOR_BG_THREADS.get( Thread.currentThread() );
         if( toRemove != null ) {
           CONTEXT_HOLDER_FOR_BG_THREADS.remove( Thread.currentThread() );
         }
@@ -207,7 +209,7 @@ public class ContextProvider {
   public static void disposeContext( Thread thread ) {
     ParamCheck.notNull( thread, "thread" );
     synchronized( CONTEXT_HOLDER_FOR_BG_THREADS ) {
-      ServiceContext toRemove = getMappedContext( thread );
+      ServiceContext toRemove = CONTEXT_HOLDER_FOR_BG_THREADS.get( thread );
       if( toRemove != null ) {
         CONTEXT_HOLDER_FOR_BG_THREADS.remove( thread );
         toRemove.dispose();
@@ -227,17 +229,13 @@ public class ContextProvider {
   // helping methods
 
   private static ServiceContext getContextInternal() {
-    ServiceContext result = ( ServiceContext )CONTEXT_HOLDER.get();
+    ServiceContext result = CONTEXT_HOLDER.get();
     if( result == null ) {
       synchronized( CONTEXT_HOLDER_FOR_BG_THREADS ) {
         Thread currentThread = Thread.currentThread();
-        result = getMappedContext( currentThread );
+        result = CONTEXT_HOLDER_FOR_BG_THREADS.get( currentThread );
       }
     }
     return result;
-  }
-
-  private static ServiceContext getMappedContext( Thread thread ) {
-    return ( ServiceContext )CONTEXT_HOLDER_FOR_BG_THREADS.get( thread );
   }
 }

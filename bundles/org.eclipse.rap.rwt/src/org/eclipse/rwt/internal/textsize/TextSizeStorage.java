@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,9 +26,9 @@ public final class TextSizeStorage {
 
   private final Object lock;
   // access is guarded by 'lock'
-  private final Set fontDatas;
+  private final Set<FontData> fontDatas;
   // access is guarded by 'lock'
-  private final Map data;
+  private final Map<Integer,Entry> data;
   private int maximumStoreSize;
   private int clearRange;
   private long clock;
@@ -39,12 +39,10 @@ public final class TextSizeStorage {
     private long timeStamp;
   }
   
-  private static class EntryComparator implements Comparator, Serializable {
+  private static class EntryComparator implements Comparator<Entry>, Serializable {
     private static final long serialVersionUID = 1L;
 
-    public int compare( Object obj1, Object obj2 ) {
-      Entry entry1 = ( Entry )obj1;
-      Entry entry2 = ( Entry )obj2;
+    public int compare( Entry entry1, Entry entry2 ) {
       int result = 0;
       if( entry1.timeStamp > entry2.timeStamp ) {
         result = 1;
@@ -58,8 +56,8 @@ public final class TextSizeStorage {
 
   public TextSizeStorage() {
     lock = new Object();
-    data = new HashMap();
-    fontDatas = new HashSet();
+    data = new HashMap<Integer,Entry>();
+    fontDatas = new HashSet<FontData>();
     setMaximumStoreSize( DEFAULT_STORE_SIZE );
   }
 
@@ -81,7 +79,7 @@ public final class TextSizeStorage {
   Point lookupTextSize( Integer key ) {
     Point result = null;
     synchronized( lock ) {
-      Entry entry = ( Entry )data.get( key );
+      Entry entry = data.get( key );
       if( entry != null ) {
         updateTimestamp( entry );
         result = entry.point;
@@ -96,7 +94,7 @@ public final class TextSizeStorage {
     entry.point = defensiveCopy( size );
     updateTimestamp( entry );
     synchronized( lock ) {
-      data.put( key , entry );
+      data.put( key, entry );
       handleOverFlow();
     }
   }

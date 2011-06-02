@@ -138,6 +138,7 @@ class CBannerLayout extends Layout {
     return true;
   }
 
+  @SuppressWarnings("unused")
   protected void layout( Composite composite, boolean flushCache ) {
     CBanner banner = ( CBanner )composite;
     Control left = banner.left;

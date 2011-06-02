@@ -431,6 +431,7 @@ public class CLabel extends Canvas {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
+  @SuppressWarnings("all")
   public void setText( String text ) {
     checkWidget();
     if ( text == null )

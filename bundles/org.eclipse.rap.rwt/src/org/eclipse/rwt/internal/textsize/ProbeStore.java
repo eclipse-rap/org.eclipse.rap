@@ -17,12 +17,12 @@ import org.eclipse.swt.graphics.FontData;
 
 
 public class ProbeStore {
-  private final Map probes;
+  private final Map<FontData,Probe> probes;
   private final TextSizeStorage textSizeStorage; 
   
   public ProbeStore( TextSizeStorage textSizeStorage ) {
     this.textSizeStorage = textSizeStorage;
-    this.probes = new HashMap();
+    this.probes = new HashMap<FontData,Probe>();
   }
   
   Probe[] getProbes() {
@@ -51,7 +51,7 @@ public class ProbeStore {
   
   Probe getProbe( FontData font ) {
     synchronized( probes ) {
-      return ( Probe )probes.get( font );
+      return probes.get( font );
     }
   }
   

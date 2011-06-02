@@ -92,7 +92,7 @@ public class CTabFolder extends Composite {
 
   private final ICTabFolderAdapter tabFolderAdapter;
   private final IWidgetGraphicsAdapter selectionGraphicsAdapter;
-  private final ItemHolder itemHolder = new ItemHolder( CTabItem.class );
+  private final ItemHolder<CTabItem> itemHolder = new ItemHolder<CTabItem>( CTabItem.class );
   private final ControlListener resizeListener;
   private FocusListener focusListener;
   private Menu showMenu;
@@ -214,7 +214,7 @@ public class CTabFolder extends Composite {
    */
   public CTabItem[] getItems() {
     checkWidget();
-    return ( CTabItem[] )itemHolder.getItems();
+    return itemHolder.getItems();
   }
 
   /**
@@ -233,7 +233,7 @@ public class CTabFolder extends Composite {
    */
   public CTabItem getItem( final int index ) {
     checkWidget();
-    return ( CTabItem )itemHolder.getItem( index );
+    return itemHolder.getItem( index );
   }
 
   /**
@@ -255,7 +255,7 @@ public class CTabFolder extends Composite {
     boolean onChevron = showChevron && chevronRect.contains( pt );
     int itemCount = itemHolder.size();
     if( itemCount > 0 && size.x > borderLeft + borderRight && !onChevron ) {
-      CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
+      CTabItem[] items = itemHolder.getItems();
       for( int i = 0; result == null && i < priority.length; i++ ) {
         CTabItem item = items[ priority[ i ] ];
         Rectangle rect = item.getBounds();
@@ -395,7 +395,7 @@ public class CTabFolder extends Composite {
     checkWidget();
     CTabItem result = null;
     if( selectedIndex != -1 ) {
-      result = ( CTabItem )itemHolder.getItem( selectedIndex );
+      result = itemHolder.getItem( selectedIndex );
     }
     return result;
   }
@@ -1487,7 +1487,7 @@ public class CTabFolder extends Composite {
   }
 
   boolean updateItems(int showIndex) {
-    CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
+    CTabItem[] items = itemHolder.getItems();
     if (!single && !mru && showIndex != -1) {
       // make sure selected item will be showing
       int firstIndex = showIndex;
@@ -1557,7 +1557,7 @@ public class CTabFolder extends Composite {
   }
 
   boolean setItemLocation() {
-    CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
+    CTabItem[] items = itemHolder.getItems();
     boolean changed = false;
     if( items.length == 0 ) {
       return false;
@@ -1642,7 +1642,7 @@ public class CTabFolder extends Composite {
   }
 
   boolean setItemSize() {
-    CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
+    CTabItem[] items = itemHolder.getItems();
     boolean changed = false;
     if( isDisposed() ) {
       return changed;
@@ -1779,8 +1779,9 @@ public class CTabFolder extends Composite {
     return changed;
   }
 
+  @SuppressWarnings("unused")
   void setButtonBounds() {
-CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
+CTabItem[] items = itemHolder.getItems();
     Point size = getSize();
 //    int oldX, oldY, oldWidth, oldHeight;
     // max button
@@ -1930,7 +1931,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
   }
 
   boolean updateTabHeight(boolean force){
-    CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
+    CTabItem[] items = itemHolder.getItems();
     int style = getStyle();
     if (fixedTabHeight == 0 && (style & SWT.FLAT) != 0 && (style & SWT.BORDER) == 0) highlight_header = 0;
     int oldHeight = tabHeight;
@@ -2045,7 +2046,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
 
     // Differs from SWT code: adjust bounds of the selected items' control
     if( selectedIndex != -1 ) {
-      CTabItem item = ( CTabItem )itemHolder.getItem( selectedIndex );
+      CTabItem item = itemHolder.getItem( selectedIndex );
       Control control = item.getControl();
       if( control != null && !control.isDisposed() ) {
         control.setBounds( getClientArea() );
@@ -2072,7 +2073,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
       showMenu = null;
     }
     while( itemHolder.size() > 0 ) {
-      Item item = itemHolder.getItem( 0 );
+      CTabItem item = itemHolder.getItem( 0 );
       item.dispose();
       itemHolder.remove( item );
     }
@@ -2277,7 +2278,7 @@ CTabItem[] items = ( CTabItem[] )itemHolder.getItems();
   private CTabItem getInternalSelectedItem() {
     CTabItem result = null;
     if( internalSelectedIndex != -1 ) {
-      result = ( CTabItem )itemHolder.getItem( internalSelectedIndex );
+      result = itemHolder.getItem( internalSelectedIndex );
     }
     return result;
   }

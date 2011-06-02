@@ -32,10 +32,10 @@ public class SimpleLifeCycle_Test extends TestCase {
   private static class ThreadRecordingPhaseListener implements PhaseListener {
     private static final long serialVersionUID = 1L;
 
-    private final List threads;
+    private final List<Thread> threads;
 
     private ThreadRecordingPhaseListener() {
-      this.threads = new LinkedList();
+      this.threads = new LinkedList<Thread>();
     }
 
     public void beforePhase( PhaseEvent event ) {

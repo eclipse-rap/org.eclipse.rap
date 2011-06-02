@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *   Ralf Zahn (ARS) - initial API and implementation
+ *   EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -446,15 +447,14 @@ public class FontDialog extends Dialog {
   }
 
   private void fillAvailableFonts() {
-    Collection fontFamilies = new HashSet();
+    Collection<String> fontFamilies = new HashSet<String>();
     FontData[] fontList = parent.getDisplay().getFontList( null, true );
     if( fontList != null ) {
       for( int i = 0; i < fontList.length; i++ ) {
         fontFamilies.add( fontList[ i ].getName() );
       }
     }
-    String[] availableFontNames = new String[ fontFamilies.size() ];
-    fontFamilies.toArray( availableFontNames );
+    String[] availableFontNames = fontFamilies.toArray( new String[ fontFamilies.size() ] );
     Arrays.sort( availableFontNames );
     fontFamilyList.setItems( availableFontNames );
   }

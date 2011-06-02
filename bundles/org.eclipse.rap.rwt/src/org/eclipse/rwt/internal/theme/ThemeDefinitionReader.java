@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.Collection;
 import javax.xml.parsers.*;
 
 import org.eclipse.rwt.internal.service.ServletLog;
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
@@ -52,7 +53,7 @@ public final class ThemeDefinitionReader {
 
   private final InputStream inputStream;
   private final String fileName;
-  private final Collection cssElements;
+  private final Collection<IThemeCssElement> cssElements;
 
   /**
    * An instance of this class reads theme definitions from an XML resource.
@@ -60,15 +61,11 @@ public final class ThemeDefinitionReader {
    * @param inputStream input stream from a theme definition XML
    * @param fileName the file name to refer to in (error) messages
    */
-  public ThemeDefinitionReader( final InputStream inputStream,
-                                final String fileName )
-  {
-    if( inputStream == null ) {
-      throw new NullPointerException( "null argument" );
-    }
+  public ThemeDefinitionReader( InputStream inputStream, String fileName ) {
+    ParamCheck.notNull( inputStream, "inputStream" );
     this.inputStream = inputStream;
     this.fileName = fileName;
-    this.cssElements = new ArrayList();
+    this.cssElements = new ArrayList<IThemeCssElement>();
   }
 
   /**

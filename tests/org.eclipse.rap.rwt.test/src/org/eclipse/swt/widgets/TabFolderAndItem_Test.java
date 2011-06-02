@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ public class TabFolderAndItem_Test extends TestCase {
   }
 
   public void testInitialSelection() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<SelectionEvent> log = new ArrayList<SelectionEvent>();
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     folder.setSize( 100, 100 );
     SelectionListener selectionListener = new SelectionAdapter() {
@@ -60,7 +60,7 @@ public class TabFolderAndItem_Test extends TestCase {
     assertEquals( 1, folder.getSelection().length );
     assertSame( item, folder.getSelection()[ 0 ] );
     assertEquals( 1, log.size() );
-    SelectionEvent event = ( SelectionEvent )log.get( 0 );
+    SelectionEvent event = log.get( 0 );
     assertSame( folder, event.widget );
     assertSame( item, event.item );
     assertTrue( event.doit );
@@ -241,7 +241,7 @@ public class TabFolderAndItem_Test extends TestCase {
     TabItem item = new TabItem( folder, SWT.NONE );
     folder.dispose();
     assertEquals( true, item.isDisposed() );
-    assertEquals( 0, ItemHolder.getItems( folder ).length );
+    assertEquals( 0, ItemHolder.getItemHolder( folder ).getItems().length );
   }
 
   public void testIndexedItemCreation() {

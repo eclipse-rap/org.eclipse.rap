@@ -21,21 +21,14 @@ import org.eclipse.swt.graphics.Color;
 public class QxColor implements QxType {
 
   private static final String TRANSPARENT_STR = "transparent";
-
-  private static final Map NAMED_COLORS = new HashMap();
-
+  private static final Map<String,int[]> NAMED_COLORS = new HashMap<String,int[]>();
   public static final QxColor BLACK = new QxColor( 0, 0, 0, 1f );
-
   public static final QxColor WHITE = new QxColor( 255, 255, 255, 1f );
-
   public static final QxColor TRANSPARENT = new QxColor();
 
   public final int red;
-
   public final int green;
-
   public final int blue;
-  
   public final float alpha;
 
   static {
@@ -136,7 +129,7 @@ public class QxColor implements QxType {
           throw new IllegalArgumentException( message );
         }
       } else if( NAMED_COLORS.containsKey( lowerCaseInput ) ) {
-        int[] values = ( int[] )NAMED_COLORS.get( lowerCaseInput );
+        int[] values = NAMED_COLORS.get( lowerCaseInput );
         red = values[ 0 ];
         green = values[ 1 ];
         blue = values[ 2 ];

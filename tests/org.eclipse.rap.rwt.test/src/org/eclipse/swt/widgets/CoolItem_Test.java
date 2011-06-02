@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.widgets;
@@ -15,6 +16,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -192,6 +194,15 @@ public class CoolItem_Test extends TestCase {
     CoolItem coolItem = new CoolItem( coolBar, 0 );
     assertSame( display, coolItem.getDisplay() );
     assertSame( coolBar.getDisplay(), coolItem.getDisplay() );
+  }
+  
+  public void testRemoveNonExistingSelectionListener() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    CoolBar coolBar = new CoolBar( shell, SWT.NONE );
+    CoolItem coolItem = new CoolItem( coolBar, SWT.NONE );
+    coolItem.removeSelectionListener( new SelectionAdapter() {} );
+    // no assert: must silently ignore attempt to remove unknown listener
   }
 
   public void test_setPreferredSizeLorg_eclipse_swt_graphics_Point() {

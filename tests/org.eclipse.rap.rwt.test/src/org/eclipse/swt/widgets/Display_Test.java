@@ -863,7 +863,7 @@ public class Display_Test extends TestCase {
   }
 
   public void testEnsureIdIsW1() throws IOException {
-    Class entryPointClass = EnsureIdEntryPoint.class;
+    Class<EnsureIdEntryPoint> entryPointClass = EnsureIdEntryPoint.class;
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, entryPointClass );
     Fixture.fakeNewRequest();
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
@@ -980,7 +980,7 @@ public class Display_Test extends TestCase {
     // 2. shell dispose listeners
     // 3. disposeRunnable(s)
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final java.util.List log = new ArrayList();
+    final java.util.List<Object> log = new ArrayList<Object>();
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.addDisposeListener( new DisposeListener() {
@@ -1052,7 +1052,7 @@ public class Display_Test extends TestCase {
   }
 
   public void testCloseWithListener() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<Event> log = new ArrayList<Event>();
     Display display = new Display();
     display.addListener( SWT.Close, new Listener() {
       public void handleEvent( final Event event ) {
@@ -1062,7 +1062,7 @@ public class Display_Test extends TestCase {
     display.close();
     assertTrue( display.isDisposed() );
     assertEquals( 1, log.size() );
-    Event event = ( Event )log.get( 0 );
+    Event event = log.get( 0 );
     assertSame( display, event.display );
   }
 
@@ -1123,7 +1123,7 @@ public class Display_Test extends TestCase {
   public void testCloseEventFilter() {
     Display display = new Display();
     final StringBuffer order = new StringBuffer();
-    final java.util.List events = new ArrayList();
+    final java.util.List<Event> events = new ArrayList<Event>();
     display.addFilter( SWT.Close, new Listener() {
       public void handleEvent( final Event event ) {
         events.add( event );
@@ -1140,18 +1140,18 @@ public class Display_Test extends TestCase {
     display.close();
     assertEquals( "filter, listener", order.toString() );
     assertEquals( 2, events.size() );
-    Event filterEvent = ( Event )events.get( 0 );
+    Event filterEvent = events.get( 0 );
     assertSame( display, filterEvent.display );
     assertEquals( SWT.Close, filterEvent.type );
     assertNull( filterEvent.widget );
-    Event listenerEevent = ( Event )events.get( 1 );
+    Event listenerEevent = events.get( 1 );
     assertSame( filterEvent, listenerEevent );
   }
 
   public void testDisposeEventFilter() {
     Display display = new Display();
     final StringBuffer order = new StringBuffer();
-    final java.util.List events = new ArrayList();
+    final java.util.List<Event> events = new ArrayList<Event>();
     display.addFilter( SWT.Dispose, new Listener() {
       public void handleEvent( final Event event ) {
         events.add( event );
@@ -1167,11 +1167,11 @@ public class Display_Test extends TestCase {
     display.dispose();
     assertEquals( "filter, listener", order.toString() );
     assertEquals( 2, events.size() );
-    Event filterEvent = ( Event )events.get( 0 );
+    Event filterEvent = events.get( 0 );
     assertSame( display, filterEvent.display );
     assertEquals( SWT.Dispose, filterEvent.type );
     assertNull( filterEvent.widget );
-    Event listenerEevent = ( Event )events.get( 1 );
+    Event listenerEevent = events.get( 1 );
     assertSame( filterEvent, listenerEevent );
   }
   

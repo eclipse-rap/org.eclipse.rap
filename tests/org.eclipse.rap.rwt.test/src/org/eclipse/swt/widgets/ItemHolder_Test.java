@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
@@ -24,13 +24,13 @@ public class ItemHolder_Test extends TestCase {
     Composite shell = new Shell( display , SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
-    ItemHolder itemHolder = new ItemHolder( TreeItem.class );
+    ItemHolder<TreeItem> itemHolder = new ItemHolder<TreeItem>( TreeItem.class );
     assertEquals( 0, itemHolder.size() );
     assertEquals( 0, itemHolder.getItems().length );
     itemHolder.add( item );
     assertEquals( 1, itemHolder.size() );
     // Do not inline to ensure type safety
-    TreeItem[] items = (org.eclipse.swt.widgets.TreeItem[] )itemHolder.getItems();
+    TreeItem[] items = itemHolder.getItems();
     assertSame( item, items[ 0 ] );
     assertSame( item, itemHolder.getItem( 0 ) );
     itemHolder.remove( item );
@@ -69,21 +69,21 @@ public class ItemHolder_Test extends TestCase {
     Composite shell = new Shell( display , SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     try {
-      ItemHolder.getItems( shell );
+      ItemHolder.getItemHolder( shell ).getItems();
       fail( "Shell is not an item holder widget" );
     } catch( final IllegalArgumentException iae ) {
       // expected
     }
-    Item[] items = ItemHolder.getItems( tree );
+    Item[] items = ItemHolder.getItemHolder( tree ).getItems();
     assertEquals( 0, items.length );
     TreeItem item = new TreeItem( tree, SWT.NONE );
-    items = ItemHolder.getItems( tree );
+    items = ItemHolder.getItemHolder( tree ).getItems();
     assertEquals( 1, items.length );
     assertEquals( item, items[ 0 ] ); 
     assertEquals( 1, tree.getItemCount() );
     assertEquals( 0, tree.indexOf( item ) );
     item.dispose();
-    items = ItemHolder.getItems( tree );
+    items = ItemHolder.getItemHolder( tree ).getItems();
     assertEquals( 0, items.length );
     assertEquals( 0, tree.getItemCount() );
     Tree anotherTree = new Tree( shell, SWT.NONE );

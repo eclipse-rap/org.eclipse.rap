@@ -76,6 +76,7 @@ import org.eclipse.swt.widgets.*;
  * 
  * @since 1.0
  */
+@SuppressWarnings("all")
 public final class FormAttachment {
   /**
    * numerator specifies the numerator of the "a" term in the

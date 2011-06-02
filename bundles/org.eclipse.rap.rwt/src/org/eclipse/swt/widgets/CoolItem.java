@@ -51,15 +51,10 @@ public class CoolItem extends Item {
   private static final int CHEVRON_IMAGE_WIDTH = 8; // Width to draw the double
                                                     // arrow
 
-  // Keep in sync with defaultValue for handleSize in CoolItem.js
-  // (see function updateHandleBounds)
-  // TODO: [bm] usage?
-  private static final int HANDLE_SIZE = 3;
-
   ToolBar chevron;
   boolean wrap;
   Image arrowImage = null;
-  private List selectionListeners;
+  private List<SelectionListener> selectionListeners;
 
 //  private static final class CoolItemOrderComparator implements Comparator {
 //
@@ -209,7 +204,7 @@ public class CoolItem extends Item {
     // addListener (SWT.Selection,typedListener);
     // addListener (SWT.DefaultSelection,typedListener);
     if ( selectionListeners == null ) {
-      selectionListeners = new ArrayList();
+      selectionListeners = new ArrayList<SelectionListener>();
     }
     selectionListeners.add( listener );
 
@@ -486,7 +481,7 @@ public class CoolItem extends Item {
     // postEvent (SWT.Selection, event);
     event.widget = this;
     for ( int i = 0; i < selectionListeners.size(); i++ ) {
-      ((SelectionListener) selectionListeners.get( i ))
+      selectionListeners.get( i )
           .widgetSelected( new SelectionEvent( event ) );
     }
 
@@ -520,7 +515,9 @@ public class CoolItem extends Item {
     // if (eventTable == null) return;
     // eventTable.unhook (SWT.Selection, listener);
     // eventTable.unhook (SWT.DefaultSelection,listener);
-    selectionListeners.remove( listener );
+    if( selectionListeners != null ) {
+      selectionListeners.remove( listener );
+    }
   }
 
   void setBounds( int x, int y, int width, int height ) {

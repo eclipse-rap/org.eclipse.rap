@@ -10,11 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.eclipse.rwt.internal.resources.TokenList.TokenMatcher;
 import org.mozilla.javascript.Token;
@@ -25,12 +21,11 @@ import com.yahoo.platform.yui.compressor.JavaScriptToken;
 public final class QxCodeCleaner {
 
   private final TokenList tokens;
-
-  private final List replacements;
+  private final List<Replacement> replacements;
 
   public QxCodeCleaner( TokenList tokens ) {
     this.tokens = tokens;
-    replacements = new ArrayList();
+    this.replacements = new ArrayList<Replacement>();
   }
 
   public void cleanupQxCode() {
@@ -131,33 +126,24 @@ public final class QxCodeCleaner {
     return last - first + 1;
   }
 
-  private void markRangeForReplacement( Range range,
-                                        JavaScriptToken[] replacementTokens )
-  {
-    replacements.add( new Replacement( range.begin,
-                                       range.end,
-                                       replacementTokens ) );
+  private void markRangeForReplacement( Range range, JavaScriptToken[] replacementTokens ) {
+    replacements.add( new Replacement( range.begin, range.end, replacementTokens ) );
   }
 
   private void doReplacements() {
-    Collections.sort( replacements, new Comparator() {
-      
-      public int compare( Object o1, Object o2 ) {
-        Replacement repl1 = ( Replacement )o1;
-        Replacement repl2 = ( Replacement )o2;
+    Collections.sort( replacements, new Comparator<Replacement>() {
+      public int compare( Replacement repl1, Replacement repl2 ) {
         return repl1.end < repl2.end ? 1 : repl1.end == repl2.end ? 0 : -1;
       }
     } );
     for( Iterator iterator = replacements.iterator(); iterator.hasNext(); ) {
       Replacement replacement = ( Replacement )iterator.next();
-      tokens.replaceTokens( replacement.begin,
-                            replacement.end,
-                            replacement.replacement );
+      tokens.replaceTokens( replacement.begin, replacement.end, replacement.replacement );
     }
   }
 
   private static boolean canRemoveVariant( String variantName ) {
-    return "qx.debug".equals( variantName )
+    return    "qx.debug".equals( variantName )
            || "qx.compatibility".equals( variantName )
            || "qx.aspects".equals( variantName );
   }
@@ -226,39 +212,38 @@ public final class QxCodeCleaner {
     return result;
   }
 
-  public static class Range {
-    public final int begin;
-    public final int end;
+  private static class Range {
+    final int begin;
+    final int end;
     
-    public Range( int begin, int end ) {
+    Range( int begin, int end ) {
       this.begin = begin;
       this.end = end;
     }
   }
 
-  public static class Replacement extends Range {
+  private static class Replacement extends Range {
+    private final JavaScriptToken[] replacement;
 
-    public final JavaScriptToken[] replacement;
-
-    public Replacement( int begin, int end, JavaScriptToken[] replacement ) {
+    Replacement( int begin, int end, JavaScriptToken[] replacement ) {
       super( begin, end );
       this.replacement = replacement;
     }
   }
 
-  static class VariantConditional extends Range {
-    public final String variant;
+  private static class VariantConditional extends Range {
+    private final String variant;
     
-    public VariantConditional( int begin, int end, String variant ) {
+    VariantConditional( int begin, int end, String variant ) {
       super( begin, end );
       this.variant = variant;
     }
   }
 
-  static class VariantSelection extends Range {
-    public final String variant;
+  private static class VariantSelection extends Range {
+    private final String variant;
     
-    public VariantSelection( int begin, int end, String variant ) {
+    VariantSelection( int begin, int end, String variant ) {
       super( begin, end );
       this.variant = variant;
     }

@@ -16,6 +16,7 @@ import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
 
 
+@SuppressWarnings("deprecation")
 public class ResourceManagerProvider {
   private IResourceManagerFactory factory;
   private IResourceManager instance;

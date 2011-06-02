@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -116,7 +116,7 @@ public class CoolBar_Test extends TestCase {
   }
 
   public void testDispose() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<Object> log = new ArrayList<Object>();
     DisposeListener disposeListener = new DisposeListener() {
       public void widgetDisposed( DisposeEvent event ) {
         log.add( event.getSource() );

@@ -14,6 +14,7 @@ import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 import java.io.*;
 
+@SuppressWarnings("all")
 public final class JPEGFileFormat extends FileFormat {
 	int restartInterval;
 	JPEGFrameHeader frameHeader;

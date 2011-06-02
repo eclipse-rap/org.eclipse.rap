@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.rwt.internal.events;
 import java.util.EventObject;
 
 import org.eclipse.rwt.Adaptable;
+import org.eclipse.swt.internal.SWTEventListener;
 
 public abstract class Event extends EventObject {
   
@@ -68,14 +69,14 @@ public abstract class Event extends EventObject {
 
   protected static void addListener( final Adaptable adaptable, 
                                      final Class listenerType, 
-                                     final Object listener )
+                                     final SWTEventListener listener )
   {
     getEventAdapter( adaptable ).addListener( listenerType, listener );
   }
 
   protected static void removeListener( final Adaptable adaptable, 
                                         final Class listenerType,
-                                        final Object listener )
+                                        final SWTEventListener listener )
   {
     getEventAdapter( adaptable ).removeListener( listenerType, listener );
   }

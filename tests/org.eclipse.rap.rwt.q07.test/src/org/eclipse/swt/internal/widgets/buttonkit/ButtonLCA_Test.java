@@ -411,7 +411,7 @@ public class ButtonLCA_Test extends TestCase {
   }
 
   public void testRadioTypedSelectionEventOrder() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<SelectionEvent> log = new ArrayList<SelectionEvent>();
     Button button1 = new Button( shell, SWT.RADIO );
     button1.setText( "1" );
     Button button2 = new Button( shell, SWT.RADIO );
@@ -431,14 +431,12 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.fakeRequestParam( button2Id + ".selection", "false" );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 2, log.size() );
-    SelectionEvent event = ( SelectionEvent )log.get( 0 );
-    assertSame( button2, event.widget );
-    event = ( SelectionEvent )log.get( 1 );
-    assertSame( button1, event.widget );
+    assertSame( button2, log.get( 0 ).widget );
+    assertSame( button1, log.get( 1 ).widget );
   }
 
   public void testRadioUntypedSelectionEventOrder() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<Event> log = new ArrayList<Event>();
     Button button1 = new Button( shell, SWT.RADIO );
     button1.setText( "1" );
     Button button2 = new Button( shell, SWT.RADIO );
@@ -458,9 +456,9 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.fakeRequestParam( button2Id + ".selection", "false" );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 2, log.size() );
-    Event event = ( Event )log.get( 0 );
+    Event event = log.get( 0 );
     assertSame( button2, event.widget );
-    event = ( Event )log.get( 1 );
+    event = log.get( 1 );
     assertSame( button1, event.widget );
   }
 

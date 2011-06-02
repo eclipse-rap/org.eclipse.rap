@@ -27,8 +27,9 @@ import org.w3c.css.sac.*;
  * This class implements the {@link _org.w3c.css.sac.Parser} interface.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: Parser.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
+ * @version $Id: Parser.java,v 1.2 2011/06/02 20:48:56 rherrmann Exp $
  */
+@SuppressWarnings("all")
 public class Parser implements org.w3c.css.sac.Parser {
 
     /**

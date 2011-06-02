@@ -309,7 +309,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "1" );
     Fixture.executeLifeCycleFromServerThread();
-    assertEquals( 1, ItemHolder.getItems( table ).length );
+    assertEquals( 1, ItemHolder.getItemHolder( table ).getItems().length );
     assertEquals( "SetDataEvent", log.toString() );
     String tableItemCtor = "org.eclipse.swt.widgets.TableItem";
     assertTrue( Fixture.getAllMarkup().indexOf( tableItemCtor ) != -1 );
@@ -898,7 +898,7 @@ public class TableLCA_Test extends TestCase {
 
   public void testScrollbarsSelectionEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final ArrayList log = new ArrayList();
+    final ArrayList<String> log = new ArrayList<String>();
     Table table = new Table( shell, SWT.NONE );
     SelectionListener listener = new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {

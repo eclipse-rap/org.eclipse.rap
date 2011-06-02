@@ -23,27 +23,27 @@ import org.eclipse.rwt.internal.theme.css.StyleSheet;
  */
 public final class ThemeCssValuesMap {
 
-  private final Map valuesMap;
+  private final Map<PropertyKey,ConditionalValue[]> valuesMap;
 
   public ThemeCssValuesMap( StyleSheet styleSheet, ThemeableWidget[] themeableWidgets ) {
-    valuesMap = new LinkedHashMap();
+    valuesMap = new LinkedHashMap<PropertyKey,ConditionalValue[]>();
     extractValues( styleSheet, themeableWidgets );
   }
 
   public ConditionalValue[] getValues( String elementName, String propertyName ) {
     ConditionalValue[] result;
     PropertyKey propertyKey = new PropertyKey( elementName, propertyName );
-    result = ( ConditionalValue[] )valuesMap.get( propertyKey );
+    result = valuesMap.get( propertyKey );
     // if element name is unknown, resort to * rules
     if( result == null ) {
       PropertyKey wildcardKey = new PropertyKey( "*", propertyName );
-      result = ( ConditionalValue[] )valuesMap.get( wildcardKey );
+      result = valuesMap.get( wildcardKey );
     }
     return result;
   }
 
   public QxType[] getAllValues() {
-    Set resultSet = new LinkedHashSet();
+    Set<QxType> resultSet = new LinkedHashSet<QxType>();
     Iterator iterator = valuesMap.values().iterator();
     while( iterator.hasNext() ) {
       ConditionalValue[] condValues = ( ConditionalValue[] )iterator.next();
@@ -52,9 +52,7 @@ public final class ThemeCssValuesMap {
         resultSet.add( condValue.value );
       }
     }
-    QxType[] result = new QxType[ resultSet.size() ];
-    resultSet.toArray( result );
-    return result;
+    return resultSet.toArray( new QxType[ resultSet.size() ] );
   }
 
   private void extractValues( StyleSheet styleSheet, ThemeableWidget[] themeableWidgets ) {
@@ -83,7 +81,7 @@ public final class ThemeCssValuesMap {
   }
 
   private ConditionalValue[] filterValues( ConditionalValue[] values, IThemeCssElement element ) {
-    List resultList = new ArrayList();
+    Collection<ConditionalValue> resultList = new ArrayList<ConditionalValue>();
     String[] latestConstraint = null;
     for( int j = 0; j < values.length; j++ ) {
       ConditionalValue value = values[ j ];
@@ -94,9 +92,7 @@ public final class ThemeCssValuesMap {
         }
       }
     }
-    ConditionalValue[] result = new ConditionalValue[ resultList.size() ];
-    resultList.toArray( result );
-    return result;
+    return resultList.toArray( new ConditionalValue[ resultList.size() ] );
   }
 
   private static boolean matches( IThemeCssElement element, String[] constraints ) {

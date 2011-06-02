@@ -330,7 +330,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   }
 
   static Object[] parseArguments( final String arguments ) {
-    List result = new ArrayList();
+    List<Object> result = new ArrayList<Object>();
     if( arguments.startsWith( "[" ) && arguments.endsWith( "]" ) ) {
       // remove [ ] brackets
       String args = arguments.substring( 1, arguments.length() - 1 );

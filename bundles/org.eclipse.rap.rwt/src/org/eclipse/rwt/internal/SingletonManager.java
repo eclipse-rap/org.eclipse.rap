@@ -33,18 +33,16 @@ public class SingletonManager implements SerializableCompatibility {
     return ( SingletonManager )sessionStore.getAttribute( ATTR_SINGLETON_MANAGER );
   }
   
-  // Key: Class<T>, value: instance of T
-  private final Map singletons;
-  // Key: Class<T>, value: lock for T
-  private transient SharedInstanceBuffer typeLocks;
+  private final Map<Class,Object> singletons;
+  private transient SharedInstanceBuffer<Class,Object> typeLocks;
   
   private SingletonManager() {
-    singletons = Collections.synchronizedMap( new HashMap() );
+    singletons = Collections.synchronizedMap( new HashMap<Class,Object>() );
     initialize();
   }
   
   private void initialize() {
-    typeLocks = new SharedInstanceBuffer();
+    typeLocks = new SharedInstanceBuffer<Class,Object>();
   }
 
   public Object getSingleton( Class type ) {
@@ -59,7 +57,7 @@ public class SingletonManager implements SerializableCompatibility {
   }
   
   private Object getTypeLock( final Class type ) {
-    Object result = typeLocks.get( type, new IInstanceCreator() {
+    Object result = typeLocks.get( type, new IInstanceCreator<Object>() {
       public Object createInstance() {
         return new Object();
       }

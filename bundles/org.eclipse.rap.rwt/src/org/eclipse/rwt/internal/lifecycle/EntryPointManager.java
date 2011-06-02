@@ -32,12 +32,13 @@ public class EntryPointManager {
     return ( String )session.getAttribute( EntryPointManager.CURRENT_ENTRY_POINT );    
   }
   
-  private final Map registry;
+  private final Map<String,Class> registry;
 
   public EntryPointManager() {
-    registry = new HashMap();
+    registry = new HashMap<String,Class>();
   }
 
+  // TODO [rh] consider changing signature to register( String, Class<? extends IEntryPoint> )
   public void register( String name, Class clazz ) {
     ParamCheck.notNull( name, "name" );
     ParamCheck.notNull( clazz, "clazz" );
@@ -71,7 +72,7 @@ public class EntryPointManager {
     Class clazz;
     synchronized( registry ) {
       checkNameExists( name );
-      clazz = ( Class )registry.get( name );
+      clazz = registry.get( name );
     }
     // no synchronization during instance creation to avoid lock in case
     // of expensive constructor operations

@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.image;
 
 import java.io.*;
 
+@SuppressWarnings("all")
 final class LEDataInputStream extends InputStream {
 	int position;
 	InputStream in;

@@ -7,24 +7,28 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - bug 348056: Eliminate compiler warnings
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
 import java.lang.ref.WeakReference;
 
+import org.eclipse.swt.widgets.Display;
+
 
 public class DisplaysHolder {
-  private WeakReference[] displays;
+  private WeakReference<Display>[] displays;
   
+  @SuppressWarnings("unchecked")
   public DisplaysHolder() {
     displays = new WeakReference[ 4 ];
   }
   
-  public WeakReference[] getDisplays() {
+  public WeakReference<Display>[] getDisplays() {
     return displays;
   }
   
-  public void setDisplays( WeakReference[] displays ) {
+  public void setDisplays( WeakReference<Display>[] displays ) {
     this.displays = displays;
   }
 }

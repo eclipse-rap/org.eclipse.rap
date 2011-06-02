@@ -26,7 +26,7 @@ public class BrandingManager {
   private static final Header[] EMPTY_HEADERS = new Header[ 0 ];
   private static final String[] EMPTY_ENTRY_POINTS = new String[ 0 ];
   
-  private final List brandings;
+  private final List<AbstractBranding> brandings;
   
   private static final AbstractBranding DEFAULT_BRANDING = new AbstractBranding() {
     public String getBody() {
@@ -59,17 +59,17 @@ public class BrandingManager {
   };
 
   public BrandingManager() {
-    brandings = new LinkedList();
+    brandings = new LinkedList<AbstractBranding>();
   }
 
-  public void register( final AbstractBranding branding ) {
+  public void register( AbstractBranding branding ) {
     ParamCheck.notNull( branding, "branding" );
     synchronized( brandings ) {
       brandings.add( branding );
     }
   }
   
-  public void deregister( final AbstractBranding branding ) {
+  public void deregister( AbstractBranding branding ) {
     ParamCheck.notNull( branding, "branding" );
     synchronized( brandings ) {
       brandings.remove( branding );
@@ -83,12 +83,9 @@ public class BrandingManager {
   }
   
   public AbstractBranding[] getAll() {
-    AbstractBranding[] result;
     synchronized( brandings ) {
-      result = new AbstractBranding[ brandings.size() ];
-      brandings.toArray( result );
+      return brandings.toArray( new AbstractBranding[ brandings.size() ] );
     }
-    return result;
   }
 
   public AbstractBranding find( String servletName, String entryPoint ) {

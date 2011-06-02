@@ -12,8 +12,6 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
-import java.util.List;
-
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.widgets.*;
 
@@ -109,27 +107,19 @@ public class WidgetTreeVisitor {
     }
   }
 
-  private static void handleItems( final Widget root, 
-                                   final WidgetTreeVisitor visitor )
-  {
+  private static void handleItems( final Widget root, final WidgetTreeVisitor visitor ) {
     if( ItemHolder.isItemHolder( root ) ) {
-      Item[] items = ItemHolder.getItems( root );
+      Item[] items = ItemHolder.getItemHolder( root ).getItems();
       for( int i = 0; i < items.length; i++ ) {
         accept( items[ i ], visitor );
       }
     }
   }
 
-  private static void handleDecorator( final Widget root,
-                                       final WidgetTreeVisitor visitor )
-  {
-    List decorations = ( List )root.getData( Decorator.KEY_DECORATIONS );
-    if( decorations != null ) {
-      Widget[] widgets = new Widget[ decorations.size() ];
-      decorations.toArray( widgets );
-      for( int i = 0; i < widgets.length; i++ ) {
-        visitor.visit( widgets[ i ] );
-      }
+  private static void handleDecorator( final Widget root, final WidgetTreeVisitor visitor ) {
+    Decorator[] decorators = Decorator.getDecorators( root );
+    for( int i = 0; i < decorators.length; i++ ) {
+      visitor.visit( decorators[ i ] );
     }
   }
 

@@ -89,7 +89,7 @@ public final class RWT {
    */
   public static final class NLS {
     
-    private final static Map map = new HashMap();
+    private final static Map<ResourceBundle,Object> map = new HashMap<ResourceBundle, Object>();
 
     /**
      * Returns a NLS object for the given bundle and type. See
@@ -101,12 +101,9 @@ public final class RWT {
      * @param bundleName the bundle to load.
      * @param clazz the class of the NLS object to load.
      */
-    public static Object getISO8859_1Encoded( final String bundleName, 
-                                              final Class clazz )
-    {
+    public static Object getISO8859_1Encoded( final String bundleName, final Class clazz ) {
       ClassLoader loader = clazz.getClassLoader();
-      ResourceBundle bundle
-        = ResourceBundle.getBundle( bundleName, getLocale(), loader );
+      ResourceBundle bundle = ResourceBundle.getBundle( bundleName, getLocale(), loader );
       return internalGet( bundle, clazz );
     }
 
@@ -120,18 +117,13 @@ public final class RWT {
      * @param bundleName the bundle to load.
      * @param clazz the class of the NLS object to load.
      */
-    public static Object getUTF8Encoded( final String bundleName, 
-                                         final Class clazz )
-    {
+    public static Object getUTF8Encoded( final String bundleName, final Class clazz ) {
       ClassLoader loader = clazz.getClassLoader();
-      ResourceBundle bundle
-        = Utf8ResourceBundle.getBundle( bundleName, getLocale(), loader );
+      ResourceBundle bundle = Utf8ResourceBundle.getBundle( bundleName, getLocale(), loader );
       return internalGet( bundle, clazz );
     }
     
-    private static Object internalGet( final ResourceBundle bundle, 
-                                       final Class clazz )
-    {
+    private static Object internalGet( final ResourceBundle bundle, final Class clazz ) {
       Object result;
       synchronized( map ) {
         result = map.get( bundle );

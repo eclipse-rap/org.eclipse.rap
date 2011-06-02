@@ -28,7 +28,7 @@ package org.eclipse.rwt.internal.util;
  * @author Alex Chaffee (alex@apache.org)
  * @author Stephen Colebourne
  * @since 2.0
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @see java.util.HashMap
  */
 final class IntHashMap {
@@ -64,7 +64,7 @@ final class IntHashMap {
      */
     private static class Entry {
         int hash;
-        int key;
+//        int key;
         Object value;
         Entry next;
 
@@ -78,7 +78,7 @@ final class IntHashMap {
          */
         protected Entry(int hash, int key, Object value, Entry next) {
             this.hash = hash;
-            this.key = key;
+//            this.key = key;
             this.value = value;
             this.next = next;
         }
@@ -113,6 +113,7 @@ final class IntHashMap {
      * @throws IllegalArgumentException  if the initial capacity is less
      *             than zero, or if the load factor is nonpositive.
      */
+    @SuppressWarnings("all")
     public IntHashMap(int initialCapacity, float loadFactor) {
         super();
         if (initialCapacity < 0) {

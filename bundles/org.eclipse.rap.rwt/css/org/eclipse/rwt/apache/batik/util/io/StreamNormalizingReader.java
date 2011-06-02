@@ -26,8 +26,9 @@ import java.util.Map;
  * bytes.
  *
  * @author <a href="mailto:stephane@hillion.org">Stephane Hillion</a>
- * @version $Id: StreamNormalizingReader.java,v 1.1 2010/04/14 15:16:16 rherrmann Exp $
+ * @version $Id: StreamNormalizingReader.java,v 1.2 2011/06/02 20:48:36 rherrmann Exp $
  */
+@SuppressWarnings("all")
 public class StreamNormalizingReader extends NormalizingReader {
 
     /**

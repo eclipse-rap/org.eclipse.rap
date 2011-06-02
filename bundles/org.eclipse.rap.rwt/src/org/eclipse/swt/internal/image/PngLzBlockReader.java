@@ -12,6 +12,7 @@ package org.eclipse.swt.internal.image;
 
 import java.io.*;
 
+@SuppressWarnings("all")
 public class PngLzBlockReader {
 	boolean isLastBlock;
 	byte compressionType;

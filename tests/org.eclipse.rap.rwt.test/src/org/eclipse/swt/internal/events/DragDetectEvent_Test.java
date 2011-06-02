@@ -28,7 +28,7 @@ public class DragDetectEvent_Test extends TestCase {
   private Shell shell;
 
   public void testCopyFieldsFromUntypedEvent() {
-    final List log = new ArrayList();
+    final List<DragDetectEvent> log = new ArrayList<DragDetectEvent>();
     Button button = new Button( shell, SWT.PUSH );
     button.addDragDetectListener( new DragDetectListener() {
       public void dragDetected( final DragDetectEvent event ) {
@@ -45,7 +45,7 @@ public class DragDetectEvent_Test extends TestCase {
     event.time = 4711;
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     button.notifyListeners( SWT.DragDetect, event );
-    DragDetectEvent dragDetectEvent = ( DragDetectEvent )log.get( 0 );
+    DragDetectEvent dragDetectEvent = log.get( 0 );
     assertSame( button, dragDetectEvent.getSource() );
     assertSame( button, dragDetectEvent.widget );
     assertSame( display, dragDetectEvent.display );
@@ -59,7 +59,7 @@ public class DragDetectEvent_Test extends TestCase {
   }
 
   public void testDragDetectEvent() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<Event> log = new ArrayList<Event>();
     Listener listener = new Listener() {
       public void handleEvent( final Event event ) {
         log.add( event );
@@ -69,7 +69,7 @@ public class DragDetectEvent_Test extends TestCase {
     assertTrue( shell.isListening( SWT.DragDetect ) );
     shell.notifyListeners( SWT.DragDetect, new Event() );
     assertEquals( 1, log.size() );
-    Event event = ( Event )log.get( 0 );
+    Event event = log.get( 0 );
     assertSame( display, event.display );
     assertSame( shell, event.widget );
     shell.removeListener( SWT.DragDetect, listener );

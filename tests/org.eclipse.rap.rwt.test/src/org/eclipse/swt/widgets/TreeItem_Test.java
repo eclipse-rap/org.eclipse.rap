@@ -1393,7 +1393,7 @@ public class TreeItem_Test extends TestCase {
     Display display = new Display();
     final Shell shell = new Shell( display );
     final Tree tree = new Tree( shell, SWT.VIRTUAL );
-    final List log = new ArrayList();
+    final List<Event> log = new ArrayList<Event>();
     tree.addListener( SWT.SetData, new Listener() {
       public void handleEvent( final Event event ) {
         log.add( event );

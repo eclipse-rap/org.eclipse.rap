@@ -178,7 +178,7 @@ public class TabFolderLCA_Test extends TestCase {
   }
 
   public void testSelectionWithListener() {
-    final java.util.List events = new ArrayList();
+    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>();
     Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
@@ -211,7 +211,7 @@ public class TabFolderLCA_Test extends TestCase {
     assertFalse( control0.getVisible() );
     assertTrue( control1.getVisible() );
     assertEquals( 1, events.size() );
-    SelectionEvent event = ( SelectionEvent )events.get( 0 );
+    SelectionEvent event = events.get( 0 );
     assertSame( item1, event.item );
     assertSame( folder, event.widget );
     assertTrue( event.doit );

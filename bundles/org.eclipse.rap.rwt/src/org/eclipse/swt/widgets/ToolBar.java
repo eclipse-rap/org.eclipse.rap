@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ public class ToolBar extends Composite {
   private static final int DEFAULT_TOOLBAR_WIDTH = 24;
   private static final int DEFAULT_TOOLBAR_HEIGHT = 22;
 
-  private final ItemHolder itemHolder = new ItemHolder( ToolItem.class );
+  private final ItemHolder<ToolItem> itemHolder;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -97,6 +97,7 @@ public class ToolBar extends Composite {
     } else {
       this.style |= SWT.HORIZONTAL;
     }
+    this.itemHolder = new ItemHolder<ToolItem>( ToolItem.class );
   }
 
   public Object getAdapter( final Class adapter ) {
@@ -129,7 +130,7 @@ public class ToolBar extends Composite {
    */
   public ToolItem getItem( final int index ) {
     checkWidget();
-    return ( ToolItem )itemHolder.getItem( index );
+    return itemHolder.getItem( index );
   }
 
   /**
@@ -198,7 +199,7 @@ public class ToolBar extends Composite {
    */
   public ToolItem[] getItems() {
     checkWidget();
-    return ( ToolItem[] )itemHolder.getItems();
+    return itemHolder.getItems();
   }
 
   /**
@@ -242,7 +243,7 @@ public class ToolBar extends Composite {
     int height = 0;
     if( ( style & SWT.VERTICAL ) != 0 ) {
       for( int i = 0; i < itemHolder.size(); i++ ) {
-        ToolItem item = ( ToolItem )itemHolder.getItem( i );
+        ToolItem item = itemHolder.getItem( i );
         Rectangle itemBounds = item.getBounds();
         width = Math.max( width, itemBounds.width );
         if( i == itemHolder.size() - 1 ) {
@@ -251,7 +252,7 @@ public class ToolBar extends Composite {
       }
     } else {
       for( int i = 0; i < itemHolder.size(); i++ ) {
-        ToolItem item = ( ToolItem )itemHolder.getItem( i );
+        ToolItem item = itemHolder.getItem( i );
         Rectangle itemBounds = item.getBounds();
         height = Math.max( height, itemBounds.height );
         if( i == itemHolder.size() - 1 ) {
@@ -275,7 +276,7 @@ public class ToolBar extends Composite {
       height = hHint;
     }
     for( int i = 0; i < itemHolder.size(); i++ ) {
-      ToolItem item = ( ToolItem )itemHolder.getItem( i );
+      ToolItem item = itemHolder.getItem( i );
       item.resizeControl();
     }
     Rectangle trim = computeTrim( 0, 0, width, height );
@@ -322,7 +323,7 @@ public class ToolBar extends Composite {
     // TODO: check again because the item bounds are not very exact
     // see ToolItem#getWidth()
     for( int i = 0; i < itemHolder.size(); i++ ) {
-      ToolItem item = ( ToolItem )itemHolder.getItem( i );
+      ToolItem item = itemHolder.getItem( i );
       Rectangle ibounds = item.getBounds();
       boolean visible = ibounds.x + ibounds.width <= bounds.width;
       item.setVisible( visible );
@@ -335,7 +336,7 @@ public class ToolBar extends Composite {
 
   void removeControl( final Control control ) {
     super.removeControl( control );
-    ToolItem[] items = ( ToolItem[] )itemHolder.getItems();
+    ToolItem[] items = itemHolder.getItems();
     for( int i = 0; i < items.length; i++ ) {
       ToolItem item = items[ i ];
       if( item != null && item.getControl() == control ) {
@@ -348,7 +349,7 @@ public class ToolBar extends Composite {
   // Widget overrides
 
   final void releaseChildren() {
-    ToolItem[] toolItems = ( ToolItem[] )itemHolder.getItems();
+    ToolItem[] toolItems = itemHolder.getItems();
     for( int i = 0; i < toolItems.length; i++ ) {
       toolItems[ i ].dispose();
     }

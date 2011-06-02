@@ -36,14 +36,13 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
   // needs a resource manager to be in place
   private IDisplayLifeCycleAdapter displayAdapter;
   // Maps widget classes to their respective life cycle adapters
-  // Key: Class<Widget>, value: IWidgetLifeCycleAdapter
-  private final Map widgetAdapters;
+  private final Map<Class,ILifeCycleAdapter> widgetAdapters;
 
   
   public LifeCycleAdapterFactory() {
     displayAdapterLock = new Object();
     widgetAdaptersLock = new Object();
-    widgetAdapters = new HashMap();
+    widgetAdapters = new HashMap<Class,ILifeCycleAdapter>();
   }
   
   public Object getAdapter( Object adaptable, Class adapter ) {
@@ -87,7 +86,7 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
     // [fappel] This code is performance critical, don't change without checking against a profiler
     ILifeCycleAdapter result;
     synchronized( widgetAdaptersLock ) {
-      result = ( ILifeCycleAdapter )widgetAdapters.get( clazz );
+      result = widgetAdapters.get( clazz );
       if( result == null ) {
         ILifeCycleAdapter adapter = null;
         Class superClass = clazz;

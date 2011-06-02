@@ -163,7 +163,7 @@ public class MenuItemLCA_Test extends TestCase {
   }
 
   public void testRadioSelectionEvent() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<SelectionEvent> log = new ArrayList<SelectionEvent>();
     Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
@@ -186,7 +186,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( radio1Id + ".selection", "true" );
     Fixture.readDataAndProcessAction( display );
-    SelectionEvent event = ( SelectionEvent )log.get( 0 );
+    SelectionEvent event = log.get( 0 );
     assertSame( radioItem1, event.widget );
     assertTrue( radioItem1.getSelection() );
     assertEquals( 1, log.size() );
@@ -196,16 +196,16 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( radio2Id + ".selection", "true" );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 2, log.size() );
-    event = ( SelectionEvent )log.get( 0 );
+    event = log.get( 0 );
     assertSame( radioItem1, event.widget );
     assertFalse( radioItem1.getSelection() );
-    event = ( SelectionEvent )log.get( 1 );
+    event = log.get( 1 );
     assertSame( radioItem2, event.widget );
     assertTrue( radioItem2.getSelection() );
   }
 
   public void testRadioTypedSelectionEventOrder() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<SelectionEvent> log = new ArrayList<SelectionEvent>();
     Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
@@ -229,14 +229,14 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( item2Id + ".selection", "false" );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 2, log.size() );
-    SelectionEvent event = ( SelectionEvent )log.get( 0 );
+    SelectionEvent event = log.get( 0 );
     assertSame( radioItem2, event.widget );
-    event = ( SelectionEvent )log.get( 1 );
+    event = log.get( 1 );
     assertSame( radioItem1, event.widget );
   }
 
   public void testRadioUntypedSelectionEventOrder() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<Event> log = new ArrayList<Event>();
     Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
@@ -260,9 +260,9 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.fakeRequestParam( item2Id + ".selection", "false" );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 2, log.size() );
-    Event event = ( Event )log.get( 0 );
+    Event event = log.get( 0 );
     assertSame( radioItem2, event.widget );
-    event = ( Event )log.get( 1 );
+    event = log.get( 1 );
     assertSame( radioItem1, event.widget );
   }
 
@@ -280,7 +280,7 @@ public class MenuItemLCA_Test extends TestCase {
   }
 
   public void testArmEvent() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<Widget> log = new ArrayList<Widget>();
     Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );

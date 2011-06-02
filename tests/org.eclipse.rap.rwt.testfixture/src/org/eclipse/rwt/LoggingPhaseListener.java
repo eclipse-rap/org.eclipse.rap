@@ -32,11 +32,11 @@ public class LoggingPhaseListener implements PhaseListener {
   }
   
   private final PhaseId phaseId;
-  private final List eventLog;
+  private final List<PhaseEventInfo> eventLog;
   
   public LoggingPhaseListener( PhaseId phaseId ) {
     this.phaseId = phaseId;
-    this.eventLog = new LinkedList();
+    this.eventLog = new LinkedList<PhaseEventInfo>();
   }
   
   public void beforePhase( PhaseEvent event ) {

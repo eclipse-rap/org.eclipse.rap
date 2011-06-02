@@ -23,22 +23,22 @@ public final class UICallBackManager {
 
   static final class IdManager {
   
-    private final Set ids;
+    private final Set<String> ids;
     private final Object lock;
   
     private IdManager() {
-      ids = new HashSet();
+      ids = new HashSet<String>();
       lock = new Object();
     }
   
-    int add( final String id ) {
+    int add( String id ) {
       synchronized( lock ) {
         ids.add( id );
         return ids.size();
       }
     }
   
-    int remove( final String id ) {
+    int remove( String id ) {
       synchronized( lock ) {
         ids.remove( id );
         return ids.size();
@@ -62,7 +62,7 @@ public final class UICallBackManager {
   final Object lock;
   // contains a reference to the callback request thread that is currently
   // blocked.
-  private final Set blockedCallBackRequests;
+  private final Set<Thread> blockedCallBackRequests;
   // Flag that indicates whether a request is processed. In that case no
   // notifications are sent to the client.
   private boolean uiThreadRunning;
@@ -76,7 +76,7 @@ public final class UICallBackManager {
   private UICallBackManager() {
     lock = new Object();
     idManager = new IdManager();
-    blockedCallBackRequests = new HashSet();
+    blockedCallBackRequests = new HashSet<Thread>();
     uiThreadRunning = false;
     waitForUIThread = false;
   }

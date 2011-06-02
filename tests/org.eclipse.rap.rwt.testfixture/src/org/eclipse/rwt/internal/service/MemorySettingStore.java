@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
@@ -26,8 +27,8 @@ import org.eclipse.rwt.service.*;
  */
 public final class MemorySettingStore implements ISettingStore {
 
-  private static final Map VALUES = new HashMap();
-  private static final Set LISTENERS = new HashSet();
+  private static final Map<String,String> VALUES = new HashMap<String,String>();
+  private static final Set<SettingStoreListener> LISTENERS = new HashSet<SettingStoreListener>();
 
   private String id;
   
@@ -63,11 +64,11 @@ public final class MemorySettingStore implements ISettingStore {
   public synchronized String getAttribute( final String name ) {
     ParamCheck.notNull( name, "name" );
     String key = id + name;
-    return ( String )VALUES.get( key );
+    return VALUES.get( key );
   }
 
   public synchronized Enumeration getAttributeNames() {
-    List result = new ArrayList();
+    List<String> result = new ArrayList<String>();
     Iterator iter = VALUES.keySet().iterator();
     int nameBeginIndex = id.length();
     while( iter.hasNext() ) {
@@ -90,7 +91,7 @@ public final class MemorySettingStore implements ISettingStore {
   public synchronized void removeAttribute( final String name ) {
     ParamCheck.notNull( name, "name" );
     String key = id + name;
-    String oldValue = ( String )VALUES.remove( key );
+    String oldValue = VALUES.remove( key );
     if( oldValue != null ) {
       notifyListeners( name, oldValue, null );
     }
@@ -105,7 +106,7 @@ public final class MemorySettingStore implements ISettingStore {
     } else {
       ParamCheck.notNull( value, "value" );
       String key = id + name;
-      String oldValue = ( String )VALUES.put( key, value );
+      String oldValue = VALUES.put( key, value );
       if( !value.equals( oldValue ) ) {
         notifyListeners( name, oldValue, value );
       }
@@ -135,7 +136,7 @@ public final class MemorySettingStore implements ISettingStore {
     while( attributes.hasMoreElements() ) {
       String name = ( String )attributes.nextElement();
       String key = id + name;
-      String value = ( String )VALUES.get( key );
+      String value = VALUES.get( key );
       notifyListeners( name, value, null );
     }
   }
@@ -145,7 +146,7 @@ public final class MemorySettingStore implements ISettingStore {
     while( attributes.hasMoreElements() ) {
       String name = ( String )attributes.nextElement();
       String key = id + name;
-      String value = ( String )VALUES.get( key );
+      String value = VALUES.get( key );
       notifyListeners( name, null, value );
     }
   }

@@ -15,6 +15,7 @@ import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 import java.io.*;
 
+@SuppressWarnings("all")
 final class TIFFDirectory {
 
 	TIFFRandomFileAccess file;

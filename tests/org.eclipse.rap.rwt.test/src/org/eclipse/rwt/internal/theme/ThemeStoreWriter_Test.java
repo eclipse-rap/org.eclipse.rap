@@ -30,7 +30,7 @@ public class ThemeStoreWriter_Test extends TestCase {
   private static final String THEME_SET_CURRENT_THEME_ID = "themeSetCurrentThemeId";
   
   // static field used for performance improvements of test initialization
-  private static Map themes;
+  private static Map<String,Theme> themes;
 
   public void testSetCurrentThemeId() throws Exception {
     ThemeCssElement element1 = new ThemeCssElement( "Button" );
@@ -192,7 +192,7 @@ public class ThemeStoreWriter_Test extends TestCase {
   
   private void initializeThemesOnFirstSetUp() throws Exception {
     if( themes == null ) {
-      themes = new HashMap();
+      themes = new HashMap<String,Theme>();
       registerThemeForTestSetCurrentThemeId();
       registerThemeForTestWriteAnimations();
       registerThemeForTestWriteColors();
@@ -269,6 +269,6 @@ public class ThemeStoreWriter_Test extends TestCase {
   }
   
   private Theme getTheme( String themeId ) {
-    return ( Theme )themes.get( themeId );
+    return themes.get( themeId );
   }
 }

@@ -149,6 +149,7 @@ public final class TextSizeUtilFacadeImpl extends TextSizeUtilFacade {
     }
   }
 
+  @SuppressWarnings("deprecation")
   private JSWriter getWriter() {
     return JSWriter.getWriterForResetHandler();
   }

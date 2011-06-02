@@ -125,7 +125,7 @@ public class SingletonManager_Test extends TestCase {
   public void testGetSingletonFromConcurrentThreads() throws InterruptedException {
     SingletonManager.install( sessionStore );
     final Throwable[] problem = { null };
-    final Set instances = Collections.synchronizedSet( new HashSet() );
+    final Set<Object> instances = Collections.synchronizedSet( new HashSet<Object>() );
     Runnable runnable = new Runnable() {
       public void run() {
         try {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,7 +65,7 @@ public class QxFont implements QxType {
     if( input.trim().length() == 0 ) {
       throw new IllegalArgumentException( "Empty font definition" );
     }
-    List family = new ArrayList();
+    List<String> family = new ArrayList<String>();
     int size = 0;
     boolean bold = false;
     boolean italic = false;
@@ -93,7 +93,7 @@ public class QxFont implements QxType {
       }
     }
     // TODO [rst] Check for illegal input and throw exception
-    String[] familyArr = ( String[] )family.toArray( new String[ family.size() ] );
+    String[] familyArr = family.toArray( new String[ family.size() ] );
     return new QxFont( familyArr, size, bold, italic ) ;
   }
 

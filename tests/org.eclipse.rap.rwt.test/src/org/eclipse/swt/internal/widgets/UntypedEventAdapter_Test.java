@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -123,12 +123,12 @@ public class UntypedEventAdapter_Test extends TestCase {
     Display display = new Display();
     Control widget = new Shell( display );
     UntypedEventAdapter adapter = new UntypedEventAdapter();
-    final Set eventBuffer = new HashSet();
+    final Set<Event> eventBuffer = new HashSet<Event>();
     Listener listener = new Listener() {
       public void handleEvent( final Event event ) {
         eventType = event.type;
         log += EVENT_FIRED;
-        eventBuffer.add(  event );
+        eventBuffer.add( event );
       }
     };
     adapter.addListener( SWT.Move, listener );

@@ -71,7 +71,7 @@ public class ExpandBar extends Composite {
   int spacing;
   int allItemsHeight;
   int charHeight;
-  private final ItemHolder itemHolder;
+  private final ItemHolder<ExpandItem> itemHolder;
   private final IExpandBarAdapter expandBarAdapter;
   private final ResizeListener resizeListener;
   private ScrollBar verticalBar;
@@ -112,7 +112,7 @@ public class ExpandBar extends Composite {
     createScrollBars();
     resizeListener = new ResizeListener();
     addControlListener( resizeListener );
-    itemHolder = new ItemHolder( ExpandItem.class );
+    itemHolder = new ItemHolder<ExpandItem>( ExpandItem.class );
   }
 
   /**
@@ -271,7 +271,7 @@ public class ExpandBar extends Composite {
    */
   public ExpandItem getItem( final int index ) {
     checkWidget();
-    return ( ExpandItem )itemHolder.getItem( index );
+    return itemHolder.getItem( index );
   }
 
   /**
@@ -308,7 +308,7 @@ public class ExpandBar extends Composite {
    */
   public ExpandItem[] getItems() {
     checkWidget();
-    return ( ExpandItem[] )itemHolder.getItems();
+    return itemHolder.getItems();
   }
 
   /**

@@ -64,16 +64,13 @@ public final class JSWriter {
 
   private static final JSVar TARGET_REF = new JSVar( "t" );
 
-  private static final String WRITER_MAP
-    = JSWriter.class.getName() + "#map";
-  private static final String HAS_WIDGET_MANAGER
-    = JSWriter.class.getName() + "#hasWidgetManager";
-  private static final String CURRENT_WIDGET_REF
-    = JSWriter.class.getName() + "#currentWidgetRef";
+  private static final String WRITER_MAP = JSWriter.class.getName() + "#map";
+  private static final String HAS_WIDGET_MANAGER = JSWriter.class.getName() + "#hasWidgetManager";
+  private static final String CURRENT_WIDGET_REF = JSWriter.class.getName() + "#currentWidgetRef";
 
-  private static final Map setterNames = new HashMap();
-  private static final Map getterNames = new HashMap();
-  private static final Map resetterNames = new HashMap();
+  private static final Map<String,String> setterNames = new HashMap<String,String>();
+  private static final Map<String,String> getterNames = new HashMap<String,String>();
+  private static final Map<String,String> resetterNames = new HashMap<String,String>();
 
 
   private final Widget widget;
@@ -86,16 +83,17 @@ public final class JSWriter {
    * @param widget the widget for the requested {@link JSWriter}
    * @return the corresponding {@link JSWriter}
    */
+  @SuppressWarnings("unchecked")
   public static JSWriter getWriterFor( final Widget widget ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     JSWriter result;
-    Map map = ( Map )stateInfo.getAttribute( WRITER_MAP );
+    Map<Widget,JSWriter> map = ( Map<Widget,JSWriter> )stateInfo.getAttribute( WRITER_MAP );
     if( map == null ) {
-      map = new HashMap();
+      map = new HashMap<Widget,JSWriter>();
       stateInfo.setAttribute( WRITER_MAP, map );
     }
     if( map.containsKey( widget ) ) {
-      result = ( JSWriter )map.get( widget );
+      result = map.get( widget );
     } else {
       result = new JSWriter( widget );
       map.put( widget, result );
@@ -944,7 +942,7 @@ public final class JSWriter {
 
   private static String getSetterName( final String jsProperty ) {
     synchronized( setterNames ) {
-      String result = ( String )setterNames.get( jsProperty );
+      String result = setterNames.get( jsProperty );
       if( result == null ) {
         StringBuffer functionName = new StringBuffer();
         functionName.append( "set" );
@@ -958,7 +956,7 @@ public final class JSWriter {
 
   private static String getResetterName( final String jsProperty ) {
     synchronized( resetterNames ) {
-      String result = ( String )resetterNames.get( jsProperty );
+      String result = resetterNames.get( jsProperty );
       if( result == null ) {
         StringBuffer functionName = new StringBuffer();
         functionName.append( "reset" );
@@ -972,7 +970,7 @@ public final class JSWriter {
 
   private static String getGetterName( final String jsProperty ) {
     synchronized( getterNames ) {
-      String result = ( String )getterNames.get( jsProperty );
+      String result = getterNames.get( jsProperty );
       if( result == null ) {
         StringBuffer functionName = new StringBuffer();
         functionName.append( "get" );

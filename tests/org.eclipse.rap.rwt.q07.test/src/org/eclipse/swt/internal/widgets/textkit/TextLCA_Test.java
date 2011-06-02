@@ -160,7 +160,7 @@ public class TextLCA_Test extends TestCase {
   }
   
   public void testSelectionWithVerifyEvent() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<VerifyEvent> log = new ArrayList<VerifyEvent>();
     // register preserve-values phase-listener
     final Text text = new Text( shell, SWT.NONE );
     shell.open();
@@ -256,7 +256,7 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testVerifyAndModifyEvent() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<TypedEvent> log = new ArrayList<TypedEvent>();
     // set up widgets to be tested
     final Text text = new Text( shell, SWT.NONE );
     shell.open();

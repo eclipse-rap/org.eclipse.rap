@@ -21,10 +21,10 @@ import org.eclipse.swt.widgets.Widget;
 
 
 public final class ThemeAdapterManager {
-  private final Map themeAdapters;
+  private final Map<Class,IThemeAdapter> themeAdapters;
 
   public ThemeAdapterManager() {
-    themeAdapters = new HashMap();
+    themeAdapters = new HashMap<Class, IThemeAdapter>();
   }
   
   public void reset() {
@@ -35,7 +35,7 @@ public final class ThemeAdapterManager {
     Class widgetClass = widget.getClass();
     IThemeAdapter result;
     synchronized( themeAdapters ) {
-      result = ( IThemeAdapter )themeAdapters.get( widgetClass );
+      result = themeAdapters.get( widgetClass );
       if( result == null ) {
         IThemeAdapter adapter = findThemeAdapter( widgetClass );
         themeAdapters.put( widgetClass, adapter );

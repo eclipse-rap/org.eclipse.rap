@@ -37,8 +37,9 @@ class ContextURLs {
   URL[] get() {
     return contextURLs;
   }
+  
   private URL[] getContextURLs() {
-    List buffer = new LinkedList();
+    List<URL> buffer = new LinkedList<URL>();
     buffer.add( getClassDirectoryURL() );
     buffer.addAll( getLibraryPaths() );
     URL[] result = new URL[ buffer.size() ];
@@ -46,43 +47,42 @@ class ContextURLs {
     return result;
   }
   
-  private Collection getLibraryPaths() {
-    List result = new LinkedList();
-    List pathList = getLibraryPath();
+  private Collection<URL> getLibraryPaths() {
+    List<URL> result = new LinkedList<URL>();
+    List<File> pathList = getLibraryPath();
     for( int i = 0; i < pathList.size(); i++ ) {
-      File libraryFile = ( File )pathList.get( i );
+      File libraryFile = pathList.get( i );
       URL library = getLibraryURL( libraryFile );
       result.add( library );
     }
     return result;
   }
 
-  private URL getLibraryURL( File libraryFile ) {
-    URL library;
+  private static URL getLibraryURL( File libraryFile ) {
+    URL result;
     try {
-      library = libraryFile.toURI().toURL();
+      result = libraryFile.toURI().toURL();
     } catch( RuntimeException rte ) {
       throw rte;
     } catch( Exception shouldNotHappen ) {
       throw new RuntimeException( shouldNotHappen );
     }
-    return library;
+    return result;
   }
 
   private URL getClassDirectoryURL() {
     File classDirectory = configuration.getClassDirectory();
-    URL result = getLibraryURL( classDirectory );
-    return result;
+    return getLibraryURL( classDirectory );
   }
   
-  private List getLibraryPath() {
-    List result = new LinkedList();
+  private List<File> getLibraryPath() {
+    List<File> result = new LinkedList<File>();
     File libDir = configuration.getLibraryDirectory();
     String[] libraryNames = libDir.list();
     if( libraryNames != null ) {
       for( int i = 0; i < libraryNames.length; i++ ) {
         if( libraryNames[ i ].endsWith( ".jar" ) ) {
-          result.add( new File( libDir.toString()  + File.separator + libraryNames[ i ] ) );
+          result.add( new File( libDir.toString() + File.separator + libraryNames[ i ] ) );
         }
       }
     }

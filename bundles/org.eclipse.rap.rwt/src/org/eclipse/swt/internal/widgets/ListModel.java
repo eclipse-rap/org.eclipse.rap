@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,12 +22,12 @@ public final class ListModel {
   private static final int[] EMPTY_SELECTION = new int[ 0 ];
 
   private final boolean single;
-  private final java.util.List items;
+  private final java.util.List<String> items;
   private int[] selection = EMPTY_SELECTION;
 
   public ListModel( final boolean single ) {
     this.single = single;
-    items = new ArrayList();
+    items = new ArrayList<String>();
   }
 
   ///////////////////////////////
@@ -251,7 +251,7 @@ public final class ListModel {
 
   public String getItem( final int index ) {
     checkIndex( index );
-    return ( String )items.get( index );
+    return items.get( index );
   }
 
   public int getItemCount() {
@@ -259,9 +259,7 @@ public final class ListModel {
   }
 
   public String[] getItems() {
-    String[] result = new String[ items.size() ];
-    items.toArray( result );
-    return result;
+    return items.toArray( new String[ items.size() ] );
   }
 
   //////////////////

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets;
 
 import java.util.*;
@@ -21,7 +21,7 @@ import java.util.*;
  * implemented. Other methods throw <code>UnsupportedOperationException</code>s.
  * </p> 
  */
-public final class SlimList implements List {
+public final class SlimList<E> implements List<E> {
 
   private static final Object[] EMPTY = new Object[ 0 ];
   
@@ -31,7 +31,7 @@ public final class SlimList implements List {
     data = EMPTY;
   }
 
-  public boolean add( Object element ) {
+  public boolean add( E element ) {
     Object[] newData = new Object[ data.length + 1 ];
     System.arraycopy( data, 0, newData, 0, data.length );
     newData[ data.length ] = element;
@@ -39,7 +39,7 @@ public final class SlimList implements List {
     return true;
   }
 
-  public void add( int index, Object element ) {
+  public void add( int index, E element ) {
     if( index < 0 || index > size() ) {
       String msg = "Index: " + index + ", Size: " + size();
       throw new IndexOutOfBoundsException( msg );
@@ -52,11 +52,11 @@ public final class SlimList implements List {
     data = newData;
   }
 
-  public boolean addAll( Collection collection ) {
+  public boolean addAll( Collection<? extends E> collection ) {
     throw new UnsupportedOperationException();
   }
 
-  public boolean addAll( int index, Collection collection ) {
+  public boolean addAll( int index, Collection<? extends E> collection ) {
     throw new UnsupportedOperationException();
   }
 
@@ -72,12 +72,13 @@ public final class SlimList implements List {
     return result;
   }
 
-  public boolean containsAll( Collection collection ) {
+  public boolean containsAll( Collection<?> collection ) {
     throw new UnsupportedOperationException();
   }
 
-  public Object get( int index ) {
-    return data[ index ];
+  @SuppressWarnings("unchecked")
+  public E get( int index ) {
+    return ( E )data[ index ];
   }
 
   public int indexOf( Object object ) {
@@ -94,7 +95,7 @@ public final class SlimList implements List {
     throw new UnsupportedOperationException();
   }
 
-  public Iterator iterator() {
+  public Iterator<E> iterator() {
     throw new UnsupportedOperationException();
   }
 
@@ -102,15 +103,15 @@ public final class SlimList implements List {
     throw new UnsupportedOperationException();
   }
 
-  public ListIterator listIterator() {
+  public ListIterator<E> listIterator() {
     throw new UnsupportedOperationException();
   }
 
-  public ListIterator listIterator( int index ) {
+  public ListIterator<E> listIterator( int index ) {
     throw new UnsupportedOperationException();
   }
 
-  public Object remove( int index ) {
+  public E remove( int index ) {
     throw new UnsupportedOperationException();
   }
 
@@ -128,15 +129,15 @@ public final class SlimList implements List {
     return index != -1;
   }
 
-  public boolean removeAll( Collection c ) {
+  public boolean removeAll( Collection<?> c ) {
     throw new UnsupportedOperationException();
   }
 
-  public boolean retainAll( Collection c ) {
+  public boolean retainAll( Collection<?> c ) {
     throw new UnsupportedOperationException();
   }
 
-  public Object set( int index, Object element ) {
+  public E set( int index, E element ) {
     throw new UnsupportedOperationException();
   }
 
@@ -144,7 +145,7 @@ public final class SlimList implements List {
     return data.length;
   }
 
-  public List subList( int fromIndex, int toIndex ) {
+  public List<E> subList( int fromIndex, int toIndex ) {
     throw new UnsupportedOperationException();
   }
 
@@ -152,7 +153,7 @@ public final class SlimList implements List {
     throw new UnsupportedOperationException();
   }
 
-  public Object[] toArray( Object[] array ) {
+  public <T> T[] toArray( T[] array ) {
     System.arraycopy( data, 0, array, 0, data.length );
     return array;
   }

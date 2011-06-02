@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others.
+ * Copyright (c) 2009, 2011 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -296,7 +296,7 @@ public class CComboLCA_Test extends TestCase {
   }
 
   public void testTextSelectionWithVerifyEvent() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<VerifyEvent> log = new ArrayList<VerifyEvent>();
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     final CCombo ccombo = new CCombo( shell, SWT.NONE );

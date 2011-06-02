@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+* Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved. This
 * program and the accompanying materials are made available under the terms of
 * the Eclipse Public License v1.0 which accompanies this distribution, and is
 * available at http://www.eclipse.org/legal/epl-v10.html
@@ -22,6 +22,7 @@ import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
 
+@SuppressWarnings("restriction")
 public class ThemesTestUtil {
 
   public static final String CLASSIC_PATH = "theme/classic.css";
@@ -77,7 +78,7 @@ public class ThemesTestUtil {
                                             final String path )
   {
     if( path != null ) {
-      Class clazz = URLClassLoader.class;
+      Class<?> clazz = URLClassLoader.class;
       try {
         Class[] params = new Class[] { URL.class };
         Method method = clazz.getDeclaredMethod( "addURL", params );

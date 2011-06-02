@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,13 +20,13 @@ import org.eclipse.swt.internal.widgets.SlimList;
  */
 final class ControlHolder {
 
-  private final List controls;
+  private final List<Control> controls;
   
   static interface IControlHolderAdapter {
   }
 
   ControlHolder() {
-    controls = new SlimList();
+    controls = new SlimList<Control>();
   }
 
   int size() {
@@ -34,9 +34,7 @@ final class ControlHolder {
   }
 
   Control[] getControls() {
-    Control[] result = new Control[ controls.size() ];
-    controls.toArray( result );
-    return result;
+    return controls.toArray( new Control[ controls.size() ] );
   }
 
   void add( final Control control ) {

@@ -49,7 +49,7 @@ public class WrappedRequest_Test extends TestCase {
     original.addParameter( p1, v1a );
     original.addParameter( p1, v1b );
     
-    Map paramMap = new HashMap();
+    Map<String,Object> paramMap = new HashMap<String,Object>();
     String p2 = "p2";
     String v2 = "v2";
     String p3 = "p3";
@@ -65,9 +65,9 @@ public class WrappedRequest_Test extends TestCase {
     assertEquals( v3a, wrapper.getParameter( p3 ) );
     
     Enumeration parameterNames = wrapper.getParameterNames();
-    Set names = new HashSet();
+    Set<Object> names = new HashSet<Object>();
     while( parameterNames.hasMoreElements() ) {
-      names.add(  parameterNames.nextElement() );
+      names.add( parameterNames.nextElement() );
     }
     assertTrue( names.contains( p0 ) );
     assertTrue( names.contains( p1 ) );

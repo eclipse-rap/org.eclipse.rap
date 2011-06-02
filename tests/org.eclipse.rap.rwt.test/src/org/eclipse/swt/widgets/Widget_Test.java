@@ -374,7 +374,7 @@ public class Widget_Test extends TestCase {
   }
   
   public void testReskin() {
-    final java.util.List log = new ArrayList();
+    final java.util.List<Widget> log = new ArrayList<Widget>();
     Listener listener = new Listener() {
       public void handleEvent( final Event event ) {
         if( event.type == SWT.Skin ) {

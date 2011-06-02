@@ -271,10 +271,15 @@ public final class ThemePropertyAdapterRegistry {
 
   // TODO [rst] Create instance in ApplicationContext
   private static ThemePropertyAdapterRegistry instance = new ThemePropertyAdapterRegistry();
-  private final Map map;
+
+  public static ThemePropertyAdapterRegistry getInstance() {
+    return instance;
+  }
+
+  private final Map<Class<? extends QxType>,ThemePropertyAdapter> map;
 
   private ThemePropertyAdapterRegistry() {
-    map = new HashMap();
+    map = new HashMap<Class<? extends QxType>,ThemePropertyAdapter>();
     map.put( QxAnimation.class, new AnimationPropertyAdapter() );
     map.put( QxBoolean.class, new DirectPropertyAdapter() );
     map.put( QxBorder.class, new BorderPropertyAdapter() );
@@ -289,11 +294,7 @@ public final class ThemePropertyAdapterRegistry {
     map.put( QxShadow.class, new ShadowPropertyAdapter() );
   }
 
-  public static ThemePropertyAdapterRegistry getInstance() {
-    return instance;
-  }
-
   public ThemePropertyAdapter getPropertyAdapter( Class key ) {
-    return ( ThemePropertyAdapter )map.get( key );
+    return map.get( key );
   }
 }

@@ -65,7 +65,7 @@ public final class BrowserHistory
     if( quotedText != null ) {
       quotedText = "\"" + EncodingUtil.escapeDoubleQuoted( text ) + "\"";
     }
-    String[] args = new String[]{ quotedId, quotedText };
+    Object[] args = new String[]{ quotedId, quotedText };
     JSExecutor.executeJS( MessageFormat.format( ADD_TO_HISTORY, args ) );
   }
 

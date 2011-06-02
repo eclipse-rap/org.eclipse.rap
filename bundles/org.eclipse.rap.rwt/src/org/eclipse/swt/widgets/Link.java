@@ -256,6 +256,7 @@ public class Link extends Control {
   }
 
   /* verbatim copy from SWT */
+  @SuppressWarnings("all")
   String parse (String string) {
     int length = string.length ();
     offsets = new Point [length / 4];

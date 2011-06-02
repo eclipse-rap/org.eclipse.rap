@@ -242,11 +242,11 @@ public class TypedEvent extends Event {
   }
 
   private static TypedEvent[] getScheduledEvents() {
-    List list = getScheduledEventList();
-    List sortedEvents = new ArrayList();
+    List<TypedEvent> list = getScheduledEventList();
+    List<TypedEvent> sortedEvents = new ArrayList<TypedEvent>();
     for( int i = 0; i < EVENT_ORDER.length; i++ ) {
       for( int k = 0; k < list.size(); k++ ) {
-        Object event = list.get( k );
+        TypedEvent event = list.get( k );
         if( EVENT_ORDER[ i ].equals( event.getClass() ) ) {
           sortedEvents.add( event );
         }
@@ -257,11 +257,13 @@ public class TypedEvent extends Event {
     return result;
   }
 
-  private static List getScheduledEventList() {
+  @SuppressWarnings("unchecked")
+  private static List<TypedEvent> getScheduledEventList() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    List result = ( List )stateInfo.getAttribute( ATTR_SCHEDULED_EVENT_LIST );
+    List<TypedEvent> result
+      = ( List<TypedEvent> )stateInfo.getAttribute( ATTR_SCHEDULED_EVENT_LIST );
     if( result == null ) {
-      result = new ArrayList();
+      result = new ArrayList<TypedEvent>();
       stateInfo.setAttribute( ATTR_SCHEDULED_EVENT_LIST, result );
     }
     return result;

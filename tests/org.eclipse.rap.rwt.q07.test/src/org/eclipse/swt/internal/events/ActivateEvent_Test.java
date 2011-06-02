@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -110,7 +110,7 @@ public class ActivateEvent_Test extends TestCase {
     Label labelToActivate = new Label( shell, SWT.NONE );
     shell.open();
     
-    final java.util.List log = new ArrayList();
+    final java.util.List<ActivateEvent> log = new ArrayList<ActivateEvent>();
     ActivateEvent.addListener( labelToActivate, new ActivateListener() {
       public void activated( final ActivateEvent event ) {
         log.add( event );
@@ -121,13 +121,13 @@ public class ActivateEvent_Test extends TestCase {
     } );
     labelToActivate.forceFocus();
     assertEquals( 1, log.size() );
-    ActivateEvent event = ( ActivateEvent )log.get( 0 );
+    ActivateEvent event = log.get( 0 );
     assertEquals( labelToActivate, event.widget );
     assertEquals( ActivateEvent.ACTIVATED, event.getID() );
   }
   
   public void testUntypedListener() {
-    final List log = new ArrayList(); 
+    final List<Event> log = new ArrayList<Event>(); 
     Listener listener = new Listener() {
       public void handleEvent( final Event event ) {
         log.add( event );
@@ -142,7 +142,7 @@ public class ActivateEvent_Test extends TestCase {
     fakeActivateRequestParam( control );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 1, log.size() );
-    Event loggedEvent = ( Event )log.get( 0 );
+    Event loggedEvent = log.get( 0 );
     assertEquals( SWT.Activate, loggedEvent.type );
     assertSame( control, loggedEvent.widget );
     // simulated request: activate another control -> Deactivate event for 
@@ -154,10 +154,10 @@ public class ActivateEvent_Test extends TestCase {
     fakeActivateRequestParam( newControl );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 2, log.size() );
-    loggedEvent = ( Event )log.get( 0 );
+    loggedEvent = log.get( 0 );
     assertEquals( SWT.Deactivate, loggedEvent.type );
     assertSame( control, loggedEvent.widget );
-    loggedEvent = ( Event )log.get( 1 );
+    loggedEvent = log.get( 1 );
     assertEquals( SWT.Activate, loggedEvent.type );
   }
   

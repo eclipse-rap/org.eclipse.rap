@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - bug 348056: Eliminate compiler warnings
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
@@ -49,12 +50,12 @@ public class ThemeManagerHelper {
   //      solution.
   private static class TestResourceLoader implements ResourceLoader {
     private ClassLoader classLoader = ThemeManager.class.getClassLoader();
-    private Map resourceStreams = new HashMap();
+    private Map<String,StreamBuffer> resourceStreams = new HashMap<String,StreamBuffer>();
 
     public InputStream getResourceAsStream( final String name )
       throws IOException
     {
-      StreamBuffer result = ( StreamBuffer )resourceStreams.get( name );
+      StreamBuffer result = resourceStreams.get( name );
       if( !hasStreamBuffer( result ) ) {
         result = bufferStream( name );
       } else {

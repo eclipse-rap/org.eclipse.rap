@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 public class SlimList_Test extends TestCase {
 
   public void testRemove() {
-    List list = new SlimList();
+    List<Object> list = new SlimList<Object>();
     Object object1 = new Object();
     Object object2 = new Object();
     Object object3 = new Object();
@@ -72,7 +72,7 @@ public class SlimList_Test extends TestCase {
   }
 
   public void testInsert() {
-    List list = new SlimList();
+    List<String> list = new SlimList<String>();
     list.add( "a" );
     list.add( "c" );
     list.add( 1, "b" );
@@ -98,7 +98,7 @@ public class SlimList_Test extends TestCase {
   }
   
   public void testClear() {
-    List list = new SlimList();
+    List<Object> list = new SlimList<Object>();
     list.clear();
     assertEquals( 0, list.size() );
     list.add( new Object() );

@@ -23,7 +23,7 @@ import com.yahoo.platform.yui.compressor.JavaScriptToken;
 public class TokenList_Test extends TestCase {
 
   public void testCreate() {
-    List tokens = new ArrayList();
+    List<JavaScriptToken> tokens = new ArrayList<JavaScriptToken>();
     tokens.add( new JavaScriptToken( Token.STRING, "Test" ) );
     tokens.add( new JavaScriptToken( Token.LB, "[" ) );
     TokenList tokenList = new TokenList( tokens );
@@ -31,7 +31,7 @@ public class TokenList_Test extends TestCase {
   }
 
   public void testGetToken() {
-    List tokens = new ArrayList();
+    List<JavaScriptToken> tokens = new ArrayList<JavaScriptToken>();
     tokens.add( new JavaScriptToken( Token.STRING, "Test" ) );
     tokens.add( new JavaScriptToken( Token.LB, "[" ) );
     TokenList tokenList = new TokenList( tokens );
@@ -42,7 +42,7 @@ public class TokenList_Test extends TestCase {
   }
 
   public void testRemoveToken() {
-    List tokens = new ArrayList();
+    List<JavaScriptToken> tokens = new ArrayList<JavaScriptToken>();
     tokens.add( new JavaScriptToken( Token.STRING, "First" ) );
     tokens.add( new JavaScriptToken( Token.STRING, "Second" ) );
     TokenList tokenList = new TokenList( tokens );
@@ -52,17 +52,17 @@ public class TokenList_Test extends TestCase {
   }
 
   public void testRemoveToken_ModifiesOriginalList() {
-    List tokens = new ArrayList();
+    List<JavaScriptToken> tokens = new ArrayList<JavaScriptToken>();
     tokens.add( new JavaScriptToken( Token.STRING, "First" ) );
     tokens.add( new JavaScriptToken( Token.STRING, "Second" ) );
     TokenList tokenList = new TokenList( tokens );
     tokenList.removeToken( 0 );
     assertEquals( 1, tokens.size() );
-    assertEquals( "Second", ( ( JavaScriptToken )tokens.get( 0 ) ).getValue() );
+    assertEquals( "Second", tokens.get( 0 ).getValue() );
   }
 
   public void testReplaceToken() {
-    List tokens = new ArrayList();
+    List<JavaScriptToken> tokens = new ArrayList<JavaScriptToken>();
     tokens.add( new JavaScriptToken( Token.STRING, "orig 1" ) );
     tokens.add( new JavaScriptToken( Token.STRING, "orig 2" ) );
     tokens.add( new JavaScriptToken( Token.STRING, "orig 3" ) );
@@ -80,7 +80,7 @@ public class TokenList_Test extends TestCase {
   }
 
   public void testReplaceToken_WithNull() {
-    List tokens = new ArrayList();
+    List<JavaScriptToken> tokens = new ArrayList<JavaScriptToken>();
     tokens.add( new JavaScriptToken( Token.STRING, "orig 1" ) );
     tokens.add( new JavaScriptToken( Token.STRING, "orig 2" ) );
     tokens.add( new JavaScriptToken( Token.STRING, "orig 3" ) );
@@ -92,7 +92,7 @@ public class TokenList_Test extends TestCase {
   }
 
   public void testReplaceToken_ModifiesOriginalList() {
-    List tokens = new ArrayList();
+    List<JavaScriptToken> tokens = new ArrayList<JavaScriptToken>();
     tokens.add( new JavaScriptToken( Token.STRING, "orig 1" ) );
     tokens.add( new JavaScriptToken( Token.STRING, "orig 2" ) );
     tokens.add( new JavaScriptToken( Token.STRING, "orig 3" ) );
@@ -103,10 +103,10 @@ public class TokenList_Test extends TestCase {
     };
     tokenList.replaceToken( 1, replacement );
     assertEquals( 4, tokenList.size() );
-    assertEquals( "orig 1", ( ( JavaScriptToken )tokens.get( 0 ) ).getValue() );
-    assertEquals( "new 1", ( ( JavaScriptToken )tokens.get( 1 ) ).getValue() );
-    assertEquals( "new 2", ( ( JavaScriptToken )tokens.get( 2 ) ).getValue() );
-    assertEquals( "orig 3", ( ( JavaScriptToken )tokens.get( 3 ) ).getValue() );
+    assertEquals( "orig 1", tokens.get( 0 ).getValue() );
+    assertEquals( "new 1", tokens.get( 1 ).getValue() );
+    assertEquals( "new 2", tokens.get( 2 ).getValue() );
+    assertEquals( "orig 3", tokens.get( 3 ).getValue() );
   }
 
   public void testFindClosingFailsIfNotOnOpeningBrace() throws Exception {

@@ -23,12 +23,12 @@ class PhaseListenerManager {
 
   private final ILifeCycle eventSource;
   private final Object lock;
-  private final Set phaseListeners;
+  private final Set<PhaseListener> phaseListeners;
   
   public PhaseListenerManager( ILifeCycle eventSource ) {
     this.eventSource = eventSource;
     this.lock = new Object();
-    this.phaseListeners = new HashSet();
+    this.phaseListeners = new HashSet<PhaseListener>();
   }
   
   void addPhaseListener( PhaseListener phaseListener ) {

@@ -41,6 +41,7 @@ import org.eclipse.swt.internal.image.*;
  * @since 1.3
  */
  
+@SuppressWarnings("all")
 public class ImageLoader {
     
     /**

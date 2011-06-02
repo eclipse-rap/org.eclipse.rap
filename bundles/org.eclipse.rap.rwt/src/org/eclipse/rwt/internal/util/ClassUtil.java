@@ -8,6 +8,7 @@
  * Contributors:
  *    Rüdiger Herrmann - initial API and implementation
  *    Frank Appel - improved exception handling (bug 340482)
+ *    EclipseSource - bug 348056: Eliminate compiler warnings
  ******************************************************************************/
 package org.eclipse.rwt.internal.util;
 
@@ -49,10 +50,10 @@ public final class ClassUtil {
     return result;
   }
 
-  private static Object createInstance( Class type, Class[] paramTypes, Object[] paramValues ) 
+  private static Object createInstance( Class<?> type, Class[] paramTypes, Object[] paramValues ) 
     throws Exception 
   {
-    Constructor constructor = type.getDeclaredConstructor( paramTypes );
+    Constructor<?> constructor = type.getDeclaredConstructor( paramTypes );
     if( !constructor.isAccessible() ) {
       constructor.setAccessible( true );
     }

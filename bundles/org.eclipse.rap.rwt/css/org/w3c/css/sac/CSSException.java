@@ -7,14 +7,15 @@
  * The original version of this interface comes from SAX :
  * http://www.megginson.com/SAX/
  *
- * $Id: CSSException.java,v 1.1 2008/12/03 15:25:51 rsternber Exp $
+ * $Id: CSSException.java,v 1.2 2011/06/02 20:48:28 rherrmann Exp $
  */
 package org.w3c.css.sac;
 
 /**
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @author  Philippe Le Hegaret
  */
+@SuppressWarnings("all")
 public class CSSException extends RuntimeException {
 
     protected String s;

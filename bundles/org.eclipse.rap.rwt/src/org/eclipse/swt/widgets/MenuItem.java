@@ -78,7 +78,7 @@ public class MenuItem extends Item {
   public MenuItem( final Menu parent, final int style ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
-    ItemHolder.addItem( parent, this );
+    ItemHolder.getItemHolder( parent ).add( this );
   }
 
   /**
@@ -120,7 +120,7 @@ public class MenuItem extends Item {
   public MenuItem( final Menu parent, final int style, final int index ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
-    ItemHolder.insertItem( parent, this, index );
+    ItemHolder.getItemHolder( parent ).insert( this, index );
   }
 
   /**
@@ -537,7 +537,7 @@ public class MenuItem extends Item {
 
   final void releaseParent() {
     super.releaseParent();
-    ItemHolder.removeItem( parent, this );
+    ItemHolder.getItemHolder( parent ).remove( this );
   }
 
   String getNameText() {

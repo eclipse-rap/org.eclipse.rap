@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007,2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -151,7 +151,7 @@ public class TreeColumn_Test extends TestCase {
 
   public void testPack() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final java.util.List log = new ArrayList();
+    final java.util.List<Widget> log = new ArrayList<Widget>();
     ControlAdapter resizeListener = new ControlAdapter() {
 
       public void controlResized( ControlEvent e ) {
@@ -201,7 +201,7 @@ public class TreeColumn_Test extends TestCase {
 
   public void testPackWithVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final java.util.List log = new ArrayList();
+    final java.util.List<Widget> log = new ArrayList<Widget>();
     Listener setDataListener = new Listener() {
 
       public void handleEvent( final Event event ) {
@@ -239,7 +239,7 @@ public class TreeColumn_Test extends TestCase {
 
   public void testResizeEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final java.util.List log = new ArrayList();
+    final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
     Display display = new Display();
     Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
@@ -259,7 +259,7 @@ public class TreeColumn_Test extends TestCase {
     log.clear();
     column.setWidth( column.getWidth() + 1 );
     assertEquals( 1, log.size() );
-    event = ( ControlEvent )log.get( 0 );
+    event = log.get( 0 );
     assertSame( column, event.getSource() );
     // Setting the column width to the same value it already has as well leads
     // to resize event

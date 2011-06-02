@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,19 +7,16 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets;
 
 import org.eclipse.swt.widgets.Item;
 
-public interface IItemHolderAdapter {
+public interface IItemHolderAdapter<T extends Item> {
 
-  void add( Item item );
-  
-  void insert( Item item, int index );
-
-  void remove( Item item );
-
-  Item[] getItems();
+  void add( T item );
+  void insert( T item, int index );
+  void remove( T item );
+  T[] getItems();
 }

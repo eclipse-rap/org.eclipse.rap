@@ -22,14 +22,14 @@ import org.eclipse.rwt.Fixture;
 public class RequestParameterBuffer_Test extends TestCase {
 
   public void testStore() {
-    Map parameters = new HashMap();
+    Map<String,String> parameters = new HashMap<String,String>();
     parameters.put( "key", "value" );
     RequestParameterBuffer.store( parameters );
     Map bufferedParameters = RequestParameterBuffer.getBufferedParameters();
     assertNotSame( parameters, bufferedParameters );
     assertEquals( "value", bufferedParameters.get( "key" ) );
     // ensure that merge() only works once per session
-    parameters = new HashMap();
+    parameters = new HashMap<String,String>();
     parameters.put( "anotherKey", "anotherValue" );
     RequestParameterBuffer.store( parameters );
     assertEquals( "value", bufferedParameters.get( "key" ) );

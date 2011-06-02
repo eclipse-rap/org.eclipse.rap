@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,10 +42,10 @@ public final class StartupPageTemplateHolder {
   public final static Variable VAR_NO_SCRIPT_MESSAGE = new Variable( TOKEN_NO_SCRIPT_MESSAGE );
 
   private final String[] tokens;
-  private final Map replacementIndices;
+  private final Map<Variable,List<Integer>> replacementIndices;
 
   public static final class Variable {
-    private final static Map NAMES = new HashMap();
+    private final static Map<String,Variable> NAMES = new HashMap<String,Variable>();
     private final String name;
 
     private Variable( final String varName ) {
@@ -54,7 +54,7 @@ public final class StartupPageTemplateHolder {
     }
 
     private static Variable lookup( final String name ) {
-      return ( Variable )NAMES.get( name );
+      return NAMES.get( name );
     }
 
     public String toString() {
@@ -64,7 +64,7 @@ public final class StartupPageTemplateHolder {
 
   public StartupPageTemplateHolder( final String template ) {
     ParamCheck.notNull( template, "template" );
-    replacementIndices = new HashMap();
+    replacementIndices = new HashMap<Variable,List<Integer>>();
     StringTokenizer tokenizer = new StringTokenizer( template, "${}", true );
     int countTokens = tokenizer.countTokens();
     tokens = new String[ countTokens ];
@@ -100,16 +100,16 @@ public final class StartupPageTemplateHolder {
   }
 
   private void addReplacementIndex( final Variable variable, final int index ) {
-    List indices = ( List )replacementIndices.get( variable );
+    List<Integer> indices = replacementIndices.get( variable );
     if( indices == null ) {
-      indices = new ArrayList();
+      indices = new ArrayList<Integer>();
       replacementIndices.put( variable, indices );
     }
     indices.add( new Integer( index ) );
   }
 
   private int[] getReplacementIndices( final Variable variable ) {
-    List indices = ( List )replacementIndices.get( variable );
+    List<Integer> indices = replacementIndices.get( variable );
     int[] result = null;
     if( indices == null ) {
       result = EMPTY_INDICES;

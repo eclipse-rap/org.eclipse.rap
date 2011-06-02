@@ -100,9 +100,9 @@ public class Tree_Test extends TestCase {
     assertEquals( true, item.isDisposed() );
     assertEquals( true, subItem.isDisposed() );
     assertEquals( true, column.isDisposed() );
-    assertEquals( 0, ItemHolder.getItems( tree ).length );
-    assertEquals( 0, ItemHolder.getItems( item ).length );
-    assertEquals( 0, ItemHolder.getItems( subItem ).length );
+    assertEquals( 0, ItemHolder.getItemHolder( tree ).getItems().length );
+    assertEquals( 0, ItemHolder.getItemHolder( item ).getItems().length );
+    assertEquals( 0, ItemHolder.getItemHolder( subItem ).getItems().length );
   }
 
   public void testDisposeWithFontDisposeInDisposeListener() {
@@ -691,7 +691,7 @@ public class Tree_Test extends TestCase {
 
   public void testResizeListener() {
     final Tree tree = new Tree( composite, SWT.VIRTUAL | SWT.BORDER );
-    final List log = new ArrayList();
+    final List<ControlEvent> log = new ArrayList<ControlEvent>();
     tree.addControlListener( new ControlAdapter() {
       public void controlResized( ControlEvent event ) {
         log.add( event );
@@ -1092,7 +1092,7 @@ public class Tree_Test extends TestCase {
 
   public void testVirtualInitalSetDataEvents() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
-    final List log = new ArrayList();
+    final List<Widget> log = new ArrayList<Widget>();
     tree.addListener( SWT.SetData, new Listener() {
       public void handleEvent( final Event event ) {
         log.add( event.item );
@@ -1120,7 +1120,7 @@ public class Tree_Test extends TestCase {
 
   public void testVirtualNoSetDataEventForCollapsedItems() {
     final Tree tree = new Tree( composite, SWT.VIRTUAL );
-    final List log = new ArrayList();
+    final List<Event> log = new ArrayList<Event>();
     tree.addListener( SWT.SetData, new Listener() {
       public void handleEvent( final Event event ) {
         log.add( event );

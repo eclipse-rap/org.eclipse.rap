@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -234,7 +234,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   }
 
   public void testReadData() {
-    final ArrayList log = new ArrayList();
+    final ArrayList<String> log = new ArrayList<String>();
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );
     int scStyle = SWT.H_SCROLL | SWT.V_SCROLL;

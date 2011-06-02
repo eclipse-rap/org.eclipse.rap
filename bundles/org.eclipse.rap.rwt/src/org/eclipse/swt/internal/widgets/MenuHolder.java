@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets;
 
 import java.util.List;
@@ -42,10 +42,10 @@ public final class MenuHolder {
     return getMenuHolder( widget ).getMenus();
   }
   
-  private final List menus;
+  private final List<Menu> menus;
 
   public MenuHolder() {
-    menus = new SlimList();
+    menus = new SlimList<Menu>();
   }
 
   private void addMenu( final Menu menu ) {
@@ -57,9 +57,7 @@ public final class MenuHolder {
   }
 
   private Menu[] getMenus() {
-    Menu[] result = new Menu[ menus.size() ];
-    menus.toArray( result );
-    return result;
+    return menus.toArray( new Menu[ menus.size() ] );
   }
 
   private int getMenuCount() {

@@ -19,14 +19,14 @@ import javax.servlet.http.*;
 
 public class TestSession implements HttpSession {
   
-  private final Map attributes;
+  private final Map<String,Object> attributes;
   private String id;
   private ServletContext servletContext;
   private boolean isInvalidated;
   private boolean newSession;
   
   public TestSession() {
-    attributes = new HashMap();
+    attributes = new HashMap<String,Object>();
     servletContext = new TestServletContext();
     id = String.valueOf( hashCode() );
   }

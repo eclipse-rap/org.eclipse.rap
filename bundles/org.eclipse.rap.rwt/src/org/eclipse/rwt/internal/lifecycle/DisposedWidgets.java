@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  * 
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
@@ -23,20 +24,22 @@ public final class DisposedWidgets {
   private static final String DISPOSAL_LIST 
     = DisposedWidgets.class.getName() + "#disposalList";
 
+  @SuppressWarnings("unchecked")
   public static void add( final Widget widget ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    List disposalList = ( List )stateInfo.getAttribute( DISPOSAL_LIST );
+    List<Widget> disposalList = ( List<Widget> )stateInfo.getAttribute( DISPOSAL_LIST );
     if( disposalList == null ) {
-      disposalList = new LinkedList();
+      disposalList = new LinkedList<Widget>();
       stateInfo.setAttribute( DISPOSAL_LIST, disposalList );
     }
     disposalList.add( widget );
   }
 
+  @SuppressWarnings("unchecked")
   public static Widget[] getAll() {
     Widget[] result;
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    List disposalList = ( List )stateInfo.getAttribute( DISPOSAL_LIST );
+    List<Widget> disposalList = ( List<Widget> )stateInfo.getAttribute( DISPOSAL_LIST );
     if( disposalList == null ) {
       result = new Widget[ 0 ];
     } else {

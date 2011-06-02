@@ -17,10 +17,10 @@ import org.eclipse.swt.graphics.FontData;
 
 
 public class FontDataFactory {
-  private final SharedInstanceBuffer cache;
+  private final SharedInstanceBuffer<Integer,FontData> cache;
   
   public FontDataFactory() {
-    cache = new SharedInstanceBuffer();
+    cache = new SharedInstanceBuffer<Integer,FontData>();
   }
 
   public FontData findFontData( final FontData fontData ) {
@@ -29,9 +29,9 @@ public class FontDataFactory {
     //             can at worst lead to one FontData instance overwriting the
     //             other. In this rare case, two equal internal FontData
     //             instances would be in use in the system, which is harmless.
-    Object key = new Integer( fontData.hashCode() );
-    FontData result = ( FontData )cache.get( key, new IInstanceCreator() {
-      public Object createInstance() {
+    Integer key = new Integer( fontData.hashCode() );
+    FontData result = cache.get( key, new IInstanceCreator<FontData>() {
+      public FontData createInstance() {
         return cloneFontData( fontData );
       }
     } );

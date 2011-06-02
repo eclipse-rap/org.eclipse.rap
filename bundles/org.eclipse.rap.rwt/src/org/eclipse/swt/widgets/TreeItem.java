@@ -1348,7 +1348,7 @@ public class TreeItem extends Item {
     if( value != null && value.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    TreeColumn[] columns = ( TreeColumn[] )parent.columnHolder.getItems();
+    TreeColumn[] columns = parent.columnHolder.getItems();
     int validColumnCount = Math.max( 1, columns.length );
     if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
       return;
