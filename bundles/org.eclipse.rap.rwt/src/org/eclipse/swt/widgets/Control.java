@@ -2373,6 +2373,7 @@ public abstract class Control extends Widget implements Drawable {
   }
 
   // Copied from SWT/win32 as is
+  @SuppressWarnings("all")
   boolean isFocusAncestor (Control control) {
     while (control != null && control != this && !(control instanceof Shell)) {
       control = control.parent;
