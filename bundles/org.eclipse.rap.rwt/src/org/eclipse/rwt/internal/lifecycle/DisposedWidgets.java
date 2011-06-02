@@ -17,7 +17,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.widgets.Widget;
 
-
+// TODO [rh] consider to maintain the list of disposed widget in IDisplayAdapter
 public final class DisposedWidgets {
   
   private static final String DISPOSAL_LIST 
