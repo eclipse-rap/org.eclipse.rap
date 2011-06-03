@@ -47,6 +47,7 @@ public class Composition_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     new Item( shell, SWT.NONE ) {
+      private static final long serialVersionUID = 1L;
     };
     assertEquals( 0, shell.getChildren().length );
   }

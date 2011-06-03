@@ -39,6 +39,7 @@ import org.eclipse.swt.internal.widgets.*;
  * @since 1.0
  */
 public class List extends Scrollable {
+  private static final long serialVersionUID = 1L;
 
   private final class ResizeListener extends ControlAdapter {
     public void controlResized( final ControlEvent event ) {

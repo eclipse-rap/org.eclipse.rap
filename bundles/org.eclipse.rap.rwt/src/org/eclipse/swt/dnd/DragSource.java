@@ -96,6 +96,7 @@ import org.eclipse.swt.widgets.*;
  * @since 1.3
  */
 public class DragSource extends Widget {
+  private static final long serialVersionUID = 1L;
 
   IDNDAdapter dndAdapter;
 	// info for registering as a drag source

@@ -43,6 +43,7 @@ import org.eclipse.swt.internal.widgets.groupkit.GroupThemeAdapter;
  * @since 1.0
  */
 public class Group extends Composite {
+  private static final long serialVersionUID = 1L;
 
   private String text = "";
 

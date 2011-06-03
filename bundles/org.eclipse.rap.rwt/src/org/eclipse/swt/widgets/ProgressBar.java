@@ -32,9 +32,9 @@ import org.eclipse.swt.graphics.Point;
  * @since 1.0
  */
 public class ProgressBar extends Control {
+  private static final long serialVersionUID = 1L;
 
-  // TODO [fappel]: base for progressbar size calculation, should this be
-  //                themable?
+  // TODO [fappel]: base for progressbar size calculation, should this be themable?
   private static final int SIZE_BASE = 16;
   private int minimum;
   private int selection;

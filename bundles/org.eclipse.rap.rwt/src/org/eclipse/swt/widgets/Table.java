@@ -70,6 +70,7 @@ import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
  * @since 1.0
  */
 public class Table extends Composite {
+  private static final long serialVersionUID = 1L;
 
   // handle the fact that we have two item types to deal with
   private final class CompositeItemHolder implements IItemHolderAdapter {

@@ -43,6 +43,7 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
  * @since 1.0
  */
 public abstract class Control extends Widget implements Drawable {
+  private static final long serialVersionUID = 1L;
 
   private final class ControlAdapter implements IControlAdapter {
 
@@ -96,7 +97,7 @@ public abstract class Control extends Widget implements Drawable {
     }
   }
 
-  private final IControlAdapter controlAdapter;
+  private transient IControlAdapter controlAdapter;
   final Composite parent;
   private int tabIndex;
   Rectangle bounds;
@@ -119,7 +120,6 @@ public abstract class Control extends Widget implements Drawable {
     // prevent instantiation from outside this package; only called by Shell
     // and its super-classes
     this.parent = parent;
-    this.controlAdapter = new ControlAdapter();
     this.bounds = new Rectangle( 0, 0, 0, 0 );
     this.tabIndex = -1;
   }
@@ -1130,15 +1130,13 @@ public abstract class Control extends Widget implements Drawable {
    */
   public int getBorderWidth() {
     checkWidget();
-    IControlThemeAdapter themeAdapter
-      = ( IControlThemeAdapter )getAdapter( IThemeAdapter.class );
+    IControlThemeAdapter themeAdapter = ( IControlThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getBorderWidth( this );
   }
 
   Rectangle getPadding() {
     if( bufferedPadding == null ) {
-      IControlThemeAdapter themeAdapter
-        = ( IControlThemeAdapter )getAdapter( IThemeAdapter.class );
+      IControlThemeAdapter themeAdapter = ( IControlThemeAdapter )getAdapter( IThemeAdapter.class );
       bufferedPadding = themeAdapter.getPadding( this );
     }
     return bufferedPadding;
@@ -1450,6 +1448,9 @@ public abstract class Control extends Widget implements Drawable {
   public Object getAdapter( final Class adapter ) {
     Object result = null;
     if( adapter == IControlAdapter.class ) {
+      if( controlAdapter == null ) {
+        controlAdapter = new ControlAdapter();
+      }
       result = controlAdapter;
     } else {
       result = super.getAdapter( adapter );
@@ -2310,8 +2311,7 @@ public abstract class Control extends Widget implements Drawable {
   void setBounds( final Rectangle bounds, final boolean updateMode ) {
     Point oldLocation = getLocation();
     Point oldSize = getSize();
-    this.bounds
-      = new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
+    this.bounds = new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
     this.bounds.width = Math.max( 0, this.bounds.width );
     this.bounds.height = Math.max( 0, this.bounds.height );
     if( updateMode ) {

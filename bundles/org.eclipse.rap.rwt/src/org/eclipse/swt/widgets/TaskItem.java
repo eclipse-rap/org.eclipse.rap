@@ -30,6 +30,7 @@ import org.eclipse.swt.graphics.*;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class TaskItem extends Item {
+  private static final long serialVersionUID = 1L;
   
   private TaskBar parent;
   

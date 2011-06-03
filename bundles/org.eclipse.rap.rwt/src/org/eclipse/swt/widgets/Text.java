@@ -47,6 +47,7 @@ import org.eclipse.swt.internal.widgets.ITextAdapter;
  * @since 1.0
  */
 public class Text extends Scrollable {
+  private static final long serialVersionUID = 1L;
 
   // This factor must be kept in sync with TextUtil.js#_updateLineHeight
   private static final double LINE_HEIGHT_FACTOR = 1.2;

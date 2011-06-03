@@ -45,6 +45,7 @@ import org.eclipse.swt.internal.widgets.toolbarkit.ToolBarThemeAdapter;
  * @since 1.0
  */
 public class ToolBar extends Composite {
+  private static final long serialVersionUID = 1L;
 
   private static final int DEFAULT_TOOLBAR_WIDTH = 24;
   private static final int DEFAULT_TOOLBAR_HEIGHT = 22;

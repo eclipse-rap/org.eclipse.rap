@@ -89,6 +89,7 @@ import org.eclipse.swt.internal.widgets.treekit.TreeThemeAdapter;
  * @since 1.0
  */
 public class Tree extends Composite {
+  private static final long serialVersionUID = 1L;
 
   private static final TreeItem[] EMPTY_SELECTION = new TreeItem[ 0 ];
   // This values must be kept in sync with appearance of list items

@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.*;
  * @since 1.0
  */
 public class ScrolledComposite extends Composite {
+  private static final long serialVersionUID = 1L;
 
   private final ControlAdapter contentListener;
   private ScrollBar horizontalBar;

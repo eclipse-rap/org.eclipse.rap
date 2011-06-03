@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.*;
 public class ThemeAdapterManager_Test extends TestCase {
   
   private static class TestWidget extends Widget {
+    private static final long serialVersionUID = 1L;
     public TestWidget( Widget parent ) {
       super( parent, SWT.NONE );
     }

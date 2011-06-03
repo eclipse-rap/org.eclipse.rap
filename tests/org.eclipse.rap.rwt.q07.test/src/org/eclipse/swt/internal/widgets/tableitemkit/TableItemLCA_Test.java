@@ -303,6 +303,7 @@ public class TableItemLCA_Test extends TestCase {
     final String[] lcaMethod = { "" };
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE ) {
+      private static final long serialVersionUID = 1L;
       public boolean getChecked() {
         fail(   lcaMethod[ 0 ]
               + ": Must not call getChecked() from LCA when no CHECK style" );

@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.*;
  * @since 1.4
  */
 public class FileUpload extends Canvas {
+  private static final long serialVersionUID = 1L;
 
   private final IFileUploadAdapter fileUploadAdapter;
   private String text;

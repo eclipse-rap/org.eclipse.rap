@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Widget;
 
 
 public class Decorator extends Widget {
+  private static final long serialVersionUID = 1L;
   private static final String KEY_DECORATORS = Widget.class.getName() + "#decorators";
   private static final Decorator[] EMPTY_DECORATORS = new Decorator[ 0 ];
 

@@ -8,17 +8,18 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import java.util.List;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.SlimList;
 
 /*
  * Holds the child controls of Composites
  */
-final class ControlHolder {
+final class ControlHolder implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
   private final List<Control> controls;
   

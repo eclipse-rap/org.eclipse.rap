@@ -48,6 +48,7 @@ import org.eclipse.swt.widgets.*;
  * @since 1.2
  */
 public final class CCombo extends Composite {
+  private static final long serialVersionUID = 1L;
 
   /* Default size for widgets */
   static final int DEFAULT_WIDTH = 64;

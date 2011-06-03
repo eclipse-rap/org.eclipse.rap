@@ -39,11 +39,13 @@ import org.eclipse.swt.internal.widgets.expandbarkit.ExpandBarThemeAdapter;
  * @since 1.2
  */
 public class ExpandItem extends Item {
+  private static final long serialVersionUID = 1L;
 
   static final int LEFT_MARGIN = 4;
   static final int RIGHT_MARGIN = 24;
   static final int INTERNAL_SPACING = 4;
   static final int CHEVRON_SIZE = 24;
+
   ExpandBar parent;
   Control control;
   boolean expanded;

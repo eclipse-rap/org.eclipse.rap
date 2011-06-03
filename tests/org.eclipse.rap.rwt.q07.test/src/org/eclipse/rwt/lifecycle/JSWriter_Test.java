@@ -33,6 +33,7 @@ public class JSWriter_Test extends TestCase {
   private static final String PROPERTY_NAME = "propertyName";
 
   private final class TestShell extends Shell {
+    private static final long serialVersionUID = 1L;
 
     final Button button;
     final Text text;

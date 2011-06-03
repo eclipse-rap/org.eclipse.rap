@@ -30,7 +30,8 @@ import org.eclipse.swt.*;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class TaskBar extends Widget {
-    
+  private static final long serialVersionUID = 1L;
+
   /**
    * Returns the item at the given, zero-relative index in the
    * receiver. Throws an exception if the index is out of range.

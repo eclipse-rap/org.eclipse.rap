@@ -34,6 +34,8 @@ import org.eclipse.swt.graphics.*;
  * @since 1.0
  */
 public class CoolItem extends Item {
+  private static final long serialVersionUID = 1L;
+  
   Control control;
   CoolBar parent;
   boolean ideal;

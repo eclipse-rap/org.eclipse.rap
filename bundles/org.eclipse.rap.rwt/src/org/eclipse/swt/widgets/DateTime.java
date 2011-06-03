@@ -50,6 +50,7 @@ import org.eclipse.swt.internal.widgets.datetimekit.DateTimeThemeAdapter;
  * @since 1.1.1
  */
 public class DateTime extends Composite {
+  private static final long serialVersionUID = 1L;
 
   private final class DateTimeAdapter implements IDateTimeAdapter {
 

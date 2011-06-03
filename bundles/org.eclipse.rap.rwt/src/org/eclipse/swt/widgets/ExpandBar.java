@@ -44,6 +44,7 @@ import org.eclipse.swt.internal.widgets.*;
  * @since 1.2
  */
 public class ExpandBar extends Composite {
+  private static final long serialVersionUID = 1L;
 
   private final class ExpandBarAdapter implements IExpandBarAdapter {
 

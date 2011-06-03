@@ -56,6 +56,7 @@ import org.eclipse.swt.internal.widgets.labelkit.LabelThemeAdapter;
  */
 // TODO [rh] check what should happen with style == SEPARATOR and setForeground
 public class Label extends Control {
+  private static final long serialVersionUID = 1L;
 
   private String text = "";
   private Image image;

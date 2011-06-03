@@ -26,18 +26,21 @@ import org.eclipse.swt.widgets.*;
 public class LifeCycleAdapter_Test extends TestCase {
 
   public static class CustomComposite extends Composite {
+    private static final long serialVersionUID = 1L;
     public CustomComposite( Composite parent ) {
       super( parent, SWT.NONE );
     }
   }
   
   public static class TestControl extends Control {
+    private static final long serialVersionUID = 1L;
     public TestControl( Composite parent ) {
       super( parent, SWT.NONE );
     }
   }
   
   public static class TestWidget extends Widget {
+    private static final long serialVersionUID = 1L;
     public TestWidget( Widget parent ) {
       super( parent, SWT.NONE );
     }

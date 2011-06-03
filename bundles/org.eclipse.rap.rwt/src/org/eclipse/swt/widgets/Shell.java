@@ -120,6 +120,7 @@ import org.eclipse.swt.internal.widgets.shellkit.ShellThemeAdapter;
  * @see SWT
  */
 public class Shell extends Decorations {
+  private static final long serialVersionUID = 1L;
 
   private static final int MODE_NONE = 0;
   private static final int MODE_MAXIMIZED = 1;

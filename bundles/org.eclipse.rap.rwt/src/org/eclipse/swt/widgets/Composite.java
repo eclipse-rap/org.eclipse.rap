@@ -33,16 +33,18 @@ import org.eclipse.swt.widgets.ControlHolder.IControlHolderAdapter;
  * </p>
  */
 public class Composite extends Scrollable {
+  private static final long serialVersionUID = 1L;
 
   private Layout layout;
   int layoutCount;
-  private final ControlHolder controlHolder = new ControlHolder();
+  private final ControlHolder controlHolder;
   private Control[] tabList;
   int backgroundMode;
 
   Composite( final Composite parent ) {
     // prevent instantiation from outside this package
     super( parent );
+    controlHolder = new ControlHolder();
   }
 
   /**
@@ -74,6 +76,7 @@ public class Composite extends Scrollable {
    */
   public Composite( final Composite parent, final int style ) {
     super( parent, style );
+    controlHolder = new ControlHolder();
   }
 
   void initState() {

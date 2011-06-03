@@ -244,6 +244,7 @@ public class ControlLCA_Test extends TestCase {
     Display display = new Display();
     Shell shell = new Shell( display );
     Control control = new Composite( shell, SWT.NONE ) {
+      private static final long serialVersionUID = 1L;
       public Object getAdapter( final Class adapter ) {
         Object result;
         if( adapter == ILifeCycleAdapter.class ) {

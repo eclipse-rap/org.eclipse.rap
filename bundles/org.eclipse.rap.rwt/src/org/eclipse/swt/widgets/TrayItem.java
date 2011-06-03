@@ -30,6 +30,7 @@ import org.eclipse.swt.events.*;
  * @since 1.4
  */
 public class TrayItem extends Item {
+  private static final long serialVersionUID = 1L;
   
   private Tray parent;
 

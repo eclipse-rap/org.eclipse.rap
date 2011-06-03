@@ -58,6 +58,7 @@ import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
  * @since 1.0
  */
 public class Combo extends Composite {
+  private static final long serialVersionUID = 1L;
 
   /**
    * The maximum number of characters that can be entered

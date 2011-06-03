@@ -17,9 +17,11 @@ import java.util.*;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.SWTEventListener;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
 
-public class EventAdapter implements IEventAdapter {
+public class EventAdapter implements IEventAdapter, SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
   private static final SWTEventListener[] EMPTY_LISTENERS = new SWTEventListener[ 0 ];
 

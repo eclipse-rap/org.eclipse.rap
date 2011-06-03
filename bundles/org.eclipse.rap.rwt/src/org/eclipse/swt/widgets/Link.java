@@ -37,7 +37,8 @@ import org.eclipse.swt.internal.widgets.ILinkAdapter;
  * @since 1.0
  */
 public class Link extends Control {
-  
+  private static final long serialVersionUID = 1L;
+
   // Must be kept in sync with appearance value in AppearancesBase.js
   private final static int PADDING = 2;
 

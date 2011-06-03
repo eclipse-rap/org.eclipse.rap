@@ -60,6 +60,7 @@ import org.eclipse.swt.widgets.*;
  * @since 1.0
  */
 public class CTabFolder extends Composite {
+  private static final long serialVersionUID = 1L;
 
   // internal constants
   static final int DEFAULT_WIDTH = 64;

@@ -39,6 +39,7 @@ import org.eclipse.swt.internal.widgets.treekit.TreeThemeAdapter;
  * @since 1.0
  */
 public class TreeColumn extends Item {
+  private static final long serialVersionUID = 1L;
 
   Tree parent;
   String displayText = "";

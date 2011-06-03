@@ -45,6 +45,7 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
  * @since 1.0
  */
 public class TabFolder extends Composite {
+  private static final long serialVersionUID = 1L;
 
   private static final TabItem[] EMPTY_TAB_ITEMS = new TabItem[ 0 ];
   private static final int TAB_BAR_HEIGHT = 23;

@@ -163,6 +163,7 @@ public class RWTLifeCycle_Test extends TestCase {
 
   public static class ExceptionInRenderEntryPoint implements IEntryPoint {
     public static class BuggyShell extends Shell {
+      private static final long serialVersionUID = 1L;
       public BuggyShell( Display display ) {
         super( display );
       }
@@ -536,6 +537,7 @@ public class RWTLifeCycle_Test extends TestCase {
     Fixture.fakePhase( PhaseId.READ_DATA );
     log.setLength( 0 );
     Shell widget = new Shell( display ) {
+      private static final long serialVersionUID = 1L;
       public boolean getVisible() {
         return true;
       }
@@ -562,6 +564,7 @@ public class RWTLifeCycle_Test extends TestCase {
     Fixture.fakePhase( PhaseId.READ_DATA );
     final Display display = new Display();
     Shell widget = new Shell( display ) {
+      private static final long serialVersionUID = 1L;
       public boolean getVisible() {
         return true;
       }

@@ -30,6 +30,7 @@ import org.eclipse.swt.graphics.*;
  * @since 1.0
  */
 public class SashForm extends Composite {
+  private static final long serialVersionUID = 1L;
 
   public int SASH_WIDTH = 3;
 

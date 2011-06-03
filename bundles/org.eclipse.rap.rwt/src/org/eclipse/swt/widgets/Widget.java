@@ -22,6 +22,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.*;
 
 
@@ -57,7 +58,8 @@ import org.eclipse.swt.internal.widgets.*;
  * @see #checkSubclass
  * @since 1.0
  */
-public abstract class Widget implements Adaptable {
+public abstract class Widget implements Adaptable, SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
   /* Default size for widgets */
   static final int DEFAULT_WIDTH = 64;
@@ -94,7 +96,7 @@ public abstract class Widget implements Adaptable {
   int state;
   Display display;
   private Object data;
-  private AdapterManager adapterManager;
+  private transient AdapterManager adapterManager;
   private IWidgetAdapter widgetAdapter;
   private IEventAdapter eventAdapter;
   private UntypedEventAdapter untypedAdapter;
@@ -155,17 +157,15 @@ public abstract class Widget implements Adaptable {
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IEventAdapter.class ) {
-      // Note: This is not implemented via the AdapterManager, since the
-      // manager's mapping mechanism prevents the component being released
-      // unless the session is invalidated.
+      // Note: This is not implemented via the AdapterManager, since the manager's mapping mechanism 
+      // prevents the component being released unless the session is invalidated.
       if( eventAdapter == null ) {
         eventAdapter = new EventAdapter();
       }
       result = eventAdapter;
     } else if( adapter == IWidgetAdapter.class ) {
-      // [fappel] Directly return the WidgetAdapter instead of consulting the
-      // adapter factory. This is done for performance reasons and must not
-      // be changed without good reason.
+      // [fappel] Directly return the WidgetAdapter instead of consulting the adapter factory. 
+      // This is done for performance reasons and must not be changed without good reason.
       if( widgetAdapter == null ) {
         widgetAdapter = new WidgetAdapter();
       }

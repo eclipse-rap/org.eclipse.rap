@@ -28,6 +28,7 @@ import org.eclipse.swt.SWT;
  * @since 1.4
  */
 public class Tray extends Widget {
+  private static final long serialVersionUID = 1L;
 
   /**
    * Returns the item at the given, zero-relative index in the receiver. Throws

@@ -46,6 +46,7 @@ import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
  * @since 1.0
  */
 public class CoolBar extends Composite {
+  private static final long serialVersionUID = 1L;
 
   CoolItem[][] items = new CoolItem[0][0];
   CoolItem[] originalItems = new CoolItem[0];

@@ -46,6 +46,7 @@ import org.eclipse.swt.internal.widgets.buttonkit.ButtonThemeAdapter;
  */
 // TODO [rst] Remove comments from javadoc when fully implemented
 public class Button extends Control {
+  private static final long serialVersionUID = 1L;
 
   private String text = "";
   private boolean selected;

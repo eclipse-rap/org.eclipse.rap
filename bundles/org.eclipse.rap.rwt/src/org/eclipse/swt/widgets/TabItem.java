@@ -32,6 +32,7 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
  * </p>
  */
 public class TabItem extends Item {
+  private static final long serialVersionUID = 1L;
 
   // [if] This constants must be kept in sync with AppearancesBase.js
   private final static int TABS_SPACING = 1;

@@ -91,6 +91,7 @@ import org.eclipse.swt.internal.widgets.scrollbarkit.ScrollBarThemeAdapter;
  */
 // TODO [rh] include ScrollBar in widget hierarchy (child of Scrollable)?
 public class ScrollBar extends Widget {
+  private static final long serialVersionUID = 1L;
 
   private final Scrollable parent;
   private int thumb;

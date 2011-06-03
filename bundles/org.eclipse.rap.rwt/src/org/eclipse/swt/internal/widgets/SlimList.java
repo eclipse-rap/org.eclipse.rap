@@ -13,6 +13,8 @@ package org.eclipse.swt.internal.widgets;
 
 import java.util.*;
 
+import org.eclipse.swt.internal.SerializableCompatibility;
+
 /**
  * This class is a <code>List</code> implementation that is designed for 
  * storing </code>Widget</code>s. The implementation is optimized for 
@@ -21,7 +23,8 @@ import java.util.*;
  * implemented. Other methods throw <code>UnsupportedOperationException</code>s.
  * </p> 
  */
-public final class SlimList<E> implements List<E> {
+public final class SlimList<E> implements List<E>, SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
   private static final Object[] EMPTY = new Object[ 0 ];
   

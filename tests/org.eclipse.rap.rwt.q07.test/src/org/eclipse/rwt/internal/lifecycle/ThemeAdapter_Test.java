@@ -57,7 +57,7 @@ public class ThemeAdapter_Test extends TestCase {
   }
 
   static class CustomWidget extends Composite {
-
+    private static final long serialVersionUID = 1L;
     public CustomWidget( Composite parent, int style ) {
       super( parent, style );
     }

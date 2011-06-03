@@ -29,6 +29,7 @@ import org.eclipse.swt.graphics.Rectangle;
  * @since 1.0
  */
 public abstract class Scrollable extends Control {
+  private static final long serialVersionUID = 1L;
 
   Scrollable( final Composite parent ) {
     // prevent instantiation from outside this package

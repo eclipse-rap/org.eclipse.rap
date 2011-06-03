@@ -34,6 +34,7 @@ import org.eclipse.swt.internal.widgets.ItemHolder;
  * </p>
  */
 public class MenuItem extends Item {
+  private static final long serialVersionUID = 1L;
 
   private final Menu parent;
   private Menu menu;

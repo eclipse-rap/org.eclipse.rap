@@ -42,6 +42,7 @@ public class Scrollable_Test extends TestCase {
     assertEquals( 302, trim.height );
 
     composite = new Composite( shell, SWT.BORDER ) {
+      private static final long serialVersionUID = 1L;
       int getVScrollBarWidth() {
         return 20;
       }
@@ -70,6 +71,7 @@ public class Scrollable_Test extends TestCase {
     assertEquals( expected, composite.getClientArea() );
 
     composite = new Composite( shell, SWT.BORDER ) {
+      private static final long serialVersionUID = 1L;
       int getVScrollBarWidth() {
         return 20;
       }
@@ -95,6 +97,7 @@ public class Scrollable_Test extends TestCase {
     Rectangle expected = new Rectangle( 0, 0, 0, 0 );
     assertEquals( expected, composite.getClientArea() );
     composite = new Composite( shell, SWT.BORDER ) {
+      private static final long serialVersionUID = 1L;
       int getVScrollBarWidth() {
         return 20;
       }

@@ -36,6 +36,7 @@ import org.eclipse.swt.events.*;
  * @since 1.2
  */
 public class Scale extends Control {
+  private static final long serialVersionUID = 1L;
 
   private final Point PREFERRED_SIZE = new Point( 160, 41 );
 

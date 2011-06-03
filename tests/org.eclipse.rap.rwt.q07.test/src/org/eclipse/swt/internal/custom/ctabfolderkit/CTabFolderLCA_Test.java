@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.*;
 public class CTabFolderLCA_Test extends TestCase {
 
   private static final class CTabItemControl extends Composite {
+    private static final long serialVersionUID = 1L;
 
     public final StringBuffer markup = new StringBuffer();
 

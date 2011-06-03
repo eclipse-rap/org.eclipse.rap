@@ -48,8 +48,9 @@ import org.eclipse.swt.widgets.Composite;
  * @since 1.0
  */
 public class CLabel extends Canvas {
-
-	/** a string inserted in the middle of text that has been shortened */
+	private static final long serialVersionUID = 1L;
+	
+  /** a string inserted in the middle of text that has been shortened */
 //  private static final String ELLIPSIS = "..."; //$NON-NLS-1$ // could use the ellipsis glyph on some platforms "\u2026"
   /** the alignment. Either CENTER, RIGHT, LEFT. Default is LEFT */
   private int align = SWT.LEFT;

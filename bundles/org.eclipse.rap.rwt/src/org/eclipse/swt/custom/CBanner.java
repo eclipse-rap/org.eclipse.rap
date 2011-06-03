@@ -40,6 +40,7 @@ import org.eclipse.swt.widgets.*;
  * @since 1.0
  */
 public class CBanner extends Composite {
+  private static final long serialVersionUID = 1L;
 
   Control left;
   Control right;

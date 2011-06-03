@@ -43,6 +43,8 @@ import org.eclipse.swt.internal.widgets.IToolTipAdapter;
  * @noextend This class is not intended to be subclassed by clients.
  */
 public class ToolTip extends Widget {
+  private static final long serialVersionUID = 1L;
+  
   private final Shell parent;
   private boolean autoHide;
   private boolean visible;

@@ -68,8 +68,9 @@ import org.eclipse.swt.widgets.*;
  * @since 1.3
  */
 public class DropTarget extends Widget {
+  private static final long serialVersionUID = 1L;
 	
-	Control control;
+  Control control;
 	Listener controlListener;
 	Transfer[] transferAgents = new Transfer[0];
 	DropTargetEffect dropEffect;

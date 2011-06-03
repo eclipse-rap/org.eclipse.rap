@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.*;
 public class ReadData_Test extends TestCase {
 
   private final class TestWidget extends Shell {
+    private static final long serialVersionUID = 1L;
     private final StringBuffer log;
     private TestWidget( Display display, StringBuffer log ) {
       super( display );

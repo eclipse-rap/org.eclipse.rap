@@ -13,6 +13,8 @@ package org.eclipse.swt.internal.widgets;
 
 import java.util.List;
 
+import org.eclipse.rwt.Fixture;
+
 import junit.framework.TestCase;
 
 public class SlimList_Test extends TestCase {
@@ -104,5 +106,15 @@ public class SlimList_Test extends TestCase {
     list.add( new Object() );
     list.clear();
     assertEquals( 0, list.size() );
+  }
+  
+  public void testSerialize() throws Exception {
+    String element = "foo";
+    List<Object> list = new SlimList<Object>();
+    list.add( element );
+    
+    List<Object> deserializedList = Fixture.serializeAndDeserialize( list );
+    
+    assertEquals( element, deserializedList.get( 0 ) );
   }
 }

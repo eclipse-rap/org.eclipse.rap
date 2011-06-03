@@ -17,13 +17,15 @@ import java.util.Map;
 import org.eclipse.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Widget;
 
-public final class WidgetAdapter implements IWidgetAdapter {
+public final class WidgetAdapter implements IWidgetAdapter, SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
   private final String id;
   private boolean initialized;
-  private final Map<String,Object> preservedValues;
+  private /*final*/ transient Map<String,Object> preservedValues;
   private String jsParent;
   private IRenderRunnable renderRunnable;
   private String variant;
@@ -34,6 +36,10 @@ public final class WidgetAdapter implements IWidgetAdapter {
 
   public WidgetAdapter( String id ) {
     this.id = id;
+    initialize();
+  }
+
+  private void initialize() {
     preservedValues = new HashMap<String,Object>();
   }
 
@@ -96,5 +102,11 @@ public final class WidgetAdapter implements IWidgetAdapter {
     if( initialized ) {
       DisposedWidgets.add( widget );
     }
+  }
+  
+  
+  private Object readResolve() {
+    initialize();
+    return this;
   }
 }

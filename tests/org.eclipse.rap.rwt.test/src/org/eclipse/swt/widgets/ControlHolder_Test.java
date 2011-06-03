@@ -76,6 +76,7 @@ public class ControlHolder_Test extends TestCase {
     controls = ControlHolder.getControls( shell );
     assertEquals( 0, controls.length );
     Control extended = new Control( null ) {
+      private static final long serialVersionUID = 1L;
       public Display getDisplay() {
         return outerDisplay;
       }

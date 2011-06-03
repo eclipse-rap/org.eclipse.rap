@@ -16,6 +16,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 public final class ControlDecorator extends Decorator {
+  private static final long serialVersionUID = 1L;
+  
   private final Composite parent;
   private Image image;
   private String text;
