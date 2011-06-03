@@ -13,10 +13,12 @@ package org.eclipse.swt.internal.widgets;
 
 import java.util.List;
 
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Widget;
 
-public final class MenuHolder {
+public final class MenuHolder implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
   public static interface IMenuHolderAdapter {
     // marker interface

@@ -131,7 +131,7 @@ public class Shell extends Decorations {
   private static final int MIN_WIDTH_LIMIT = 80;
 
   private Control lastActive;
-  private IShellAdapter shellAdapter;
+  private transient IShellAdapter shellAdapter;
   private String text;
   private int alpha;
   private Button defaultButton;

@@ -20,8 +20,11 @@ import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
-class MeasurementOperator {
+class MeasurementOperator implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
+  
   private final Set<Probe> probes;
   private final Set<MeasurementItem> items;
 

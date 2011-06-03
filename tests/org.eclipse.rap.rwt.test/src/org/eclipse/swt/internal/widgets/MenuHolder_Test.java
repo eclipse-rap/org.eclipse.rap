@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets;
 
 import junit.framework.TestCase;
@@ -20,9 +20,9 @@ import org.eclipse.swt.widgets.*;
 
 public class MenuHolder_Test extends TestCase {
 
+  private Shell shell;
+
   public void testMenuHolder() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Object menuHolder = shell.getAdapter( IMenuHolderAdapter.class );
     assertNotNull( menuHolder );
     Object menuHolder2 = shell.getAdapter( IMenuHolderAdapter.class );
@@ -30,8 +30,6 @@ public class MenuHolder_Test extends TestCase {
   }
 
   public void testAddRemove() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     assertEquals( 0, MenuHolder.getMenuCount( shell ) );
     Menu menu = new Menu( shell );
     assertEquals( 1, MenuHolder.getMenuCount( shell ) );
@@ -44,9 +42,19 @@ public class MenuHolder_Test extends TestCase {
     assertEquals( 1, MenuHolder.getMenuCount( shell ) );
     assertEquals( anotherMenu, MenuHolder.getMenus( shell )[ 0 ] );
   }
+  
+  public void testSerialize() throws Exception {
+    new Menu( shell );
+    
+    Shell deserializedShell = Fixture.serializeAndDeserialize( shell );
+
+    assertEquals( 1, MenuHolder.getMenuCount( deserializedShell ) );
+  }
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Display display = new Display();
+    shell = new Shell( display, SWT.NONE );
   }
 
   protected void tearDown() throws Exception {

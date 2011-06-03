@@ -15,9 +15,19 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 
 public class ItemHolder_Test extends TestCase {
+
+  
+  private static class TestItem extends Item {
+    private static final long serialVersionUID = 1L;
+
+    public TestItem( Widget parent ) {
+      super( parent, 0 );
+    }
+  }
 
   public void testItemHolder() {
     Display display = new Display();
@@ -92,11 +102,19 @@ public class ItemHolder_Test extends TestCase {
     try {
       tree.getItem( 0 );
       fail( "Index out of bounds expected" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
+  public void testSerialize() throws Exception {
+    ItemHolder<TestItem> itemHolder = new ItemHolder<TestItem>( TestItem.class );
+    itemHolder.add( new TestItem( new Shell( new Display() ) ) );
+    
+    ItemHolder<TestItem> deserializedItemHolder = Fixture.serializeAndDeserialize( itemHolder );
+
+    assertEquals( 1, deserializedItemHolder.getItems().length );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
   }

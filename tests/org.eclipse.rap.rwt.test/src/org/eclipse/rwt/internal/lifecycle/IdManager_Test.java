@@ -10,8 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.UICallBackManager.IdManager;
 import org.eclipse.rwt.internal.util.ClassUtil;
 
@@ -41,7 +44,7 @@ public class IdManager_Test extends TestCase {
   }
   
   public void testRemoveNonExistingId() {
-    int size = idManager.remove( "does.nbot.exist" );
+    int size = idManager.remove( "does.not.exist" );
     assertEquals( 0, size );
   }
   
@@ -64,6 +67,27 @@ public class IdManager_Test extends TestCase {
     idManager.add( "id1" );
     int size = idManager.add( "id2" );
     assertEquals( 2, size );
+  }
+  
+  public void testSerializeWhenEmpty() throws IOException, ClassNotFoundException {
+    byte[] bytes = Fixture.serialize( idManager );
+
+    IdManager deserializedIdManager = ( IdManager )Fixture.deserialize( bytes );
+    
+    assertTrue( deserializedIdManager.isEmpty() );
+  }
+  
+  public void testSerializeWhenHoldingIds() throws IOException, ClassNotFoundException {
+    String id = "id";
+    idManager.add( id );
+    byte[] bytes = Fixture.serialize( idManager );
+    
+    IdManager deserializedIdManager = ( IdManager )Fixture.deserialize( bytes );
+    
+    assertFalse( deserializedIdManager.isEmpty() );
+    int size = deserializedIdManager.remove( id );
+    assertEquals( 0, size );
+    assertTrue( deserializedIdManager.isEmpty() );
   }
   
   protected void setUp() throws Exception {

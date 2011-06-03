@@ -16,19 +16,23 @@ import java.util.Set;
 
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.util.SerializableLock;
 import org.eclipse.rwt.service.*;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
 
-public final class UICallBackManager {
+public final class UICallBackManager implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
-  static final class IdManager {
+  static final class IdManager implements SerializableCompatibility {
+    private static final long serialVersionUID = 1L;
   
     private final Set<String> ids;
-    private final Object lock;
+    private final SerializableLock lock;
   
     private IdManager() {
       ids = new HashSet<String>();
-      lock = new Object();
+      lock = new SerializableLock();
     }
   
     int add( String id ) {
@@ -59,7 +63,7 @@ public final class UICallBackManager {
   private final IdManager idManager;
 
   // synchronization object to control access to the runnables List
-  final Object lock;
+  final SerializableLock lock;
   // contains a reference to the callback request thread that is currently
   // blocked.
   private final Set<Thread> blockedCallBackRequests;
@@ -74,7 +78,7 @@ public final class UICallBackManager {
   private boolean hasRunnables;
 
   private UICallBackManager() {
-    lock = new Object();
+    lock = new SerializableLock();
     idManager = new IdManager();
     blockedCallBackRequests = new HashSet<Thread>();
     uiThreadRunning = false;

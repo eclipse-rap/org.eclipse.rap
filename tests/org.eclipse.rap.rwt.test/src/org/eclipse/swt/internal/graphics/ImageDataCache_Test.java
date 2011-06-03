@@ -46,7 +46,7 @@ public class ImageDataCache_Test extends TestCase {
     ImageDataCache cache = new ImageDataCache();
     ImageData originalData = getImageData( Fixture.IMAGE1 );
     InternalImage internalImage
-    = new InternalImage( "testpath", originalData.width, originalData.height );
+      = new InternalImage( "testpath", originalData.width, originalData.height );
     cache.putImageData( internalImage, originalData );
     ImageData copyData = cache.getImageData( internalImage );
     assertNotSame( originalData, copyData );

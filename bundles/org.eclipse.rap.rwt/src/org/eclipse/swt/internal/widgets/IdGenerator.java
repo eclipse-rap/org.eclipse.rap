@@ -12,6 +12,7 @@
 package org.eclipse.swt.internal.widgets;
 
 import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
 /**
  * <p>Utility class to generate id's for widgets that are unique within a 
@@ -21,24 +22,19 @@ import org.eclipse.rwt.SessionSingletonBase;
  * synchronized externally.
  * </p>
  */
-final class IdGenerator {
-  
-  /**
-   * <p>Returns the session-wide singleton instance of this class.</p>
-   */
+final class IdGenerator implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
+
   static IdGenerator getInstance() {
     return ( IdGenerator )SessionSingletonBase.getInstance( IdGenerator.class );
   }
   
   private int lastId = 1;
   
-  private IdGenerator() {
+  IdGenerator() {
     // prevent instantiation from outside
   }
   
-  /**
-   * <p>Returns a session-wide unique integer.</p>
-   */
   String newId() {
     lastId++;
     return new StringBuffer( "w" ).append( lastId ).toString();

@@ -12,7 +12,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import java.io.InputStream;
+import java.io.*;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.*;
@@ -41,6 +41,7 @@ import org.eclipse.swt.internal.graphics.InternalImage;
  * @see org.eclipse.rwt.graphics.Graphics#getImage(String, java.io.InputStream)
  */
 public final class Image extends Resource {
+  private static final long serialVersionUID = 1L;
 
   /**
    * The internal resource.

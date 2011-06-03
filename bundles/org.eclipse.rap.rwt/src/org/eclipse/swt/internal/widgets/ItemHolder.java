@@ -15,10 +15,14 @@ import java.lang.reflect.Array;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Widget;
 
-public final class ItemHolder<T extends Item> implements IItemHolderAdapter<T> {
+public final class ItemHolder<T extends Item> 
+  implements IItemHolderAdapter<T>, SerializableCompatibility 
+{
+  private static final long serialVersionUID = 1L;
 
   @SuppressWarnings("unchecked")
   public static <T extends Item> IItemHolderAdapter<T> getItemHolder( Widget widget ) {
