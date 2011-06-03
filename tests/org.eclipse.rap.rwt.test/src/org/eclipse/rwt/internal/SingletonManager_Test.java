@@ -164,9 +164,9 @@ public class SingletonManager_Test extends TestCase {
     Object instance = singletonManager.getSingleton( SerializableTestSingleton.class );
     SerializableTestSingleton singleton = ( SerializableTestSingleton )instance;
     singleton.value = new Integer( 4711 );
-    SingletonManager deserializedSingletonManager = serializeAndDeserialize( singletonManager );
+    SingletonManager deserialized = Fixture.serializeAndDeserialize( singletonManager );
     
-    instance = deserializedSingletonManager.getSingleton( SerializableTestSingleton.class );
+    instance = deserialized.getSingleton( SerializableTestSingleton.class );
     SerializableTestSingleton deserializedSingleton = ( SerializableTestSingleton )instance;
 
     assertEquals( singleton.value, deserializedSingleton.value );
@@ -204,12 +204,5 @@ public class SingletonManager_Test extends TestCase {
   private static SingletonManager createSingletonManager( ISessionStore sessionStore ) {
     SingletonManager.install( sessionStore );
     return SingletonManager.getInstance( sessionStore );
-  }
-
-  private static SingletonManager serializeAndDeserialize( SingletonManager singletonManager )
-    throws Exception
-  {
-    byte[] bytes = Fixture.serialize( singletonManager );
-    return ( SingletonManager )Fixture.deserialize( bytes );
   }
 }

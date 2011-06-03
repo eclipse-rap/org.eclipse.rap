@@ -36,19 +36,19 @@ public class SessionStoreImplSerialization_Test extends TestCase {
     String attributeName = "foo";
     String attributeValue = "bar";
     sessionStore.setAttribute( attributeName, attributeValue );
-    SessionStoreImpl deserializedSession = serializeAndDeserialize( sessionStore );
+    SessionStoreImpl deserializedSession = Fixture.serializeAndDeserialize( sessionStore );
     
     assertEquals( attributeValue, deserializedSession.getAttribute( attributeName ) );
   }
   
   public void testHttpSessionIsNotSerializable() throws Exception {
-    SessionStoreImpl deserializedSession = serializeAndDeserialize( sessionStore );
+    SessionStoreImpl deserializedSession = Fixture.serializeAndDeserialize( sessionStore );
     
     assertNull( deserializedSession.getHttpSession() );
   }
   
   public void testBoundIsSerializable() throws Exception {
-    SessionStoreImpl deserializedSession = serializeAndDeserialize( sessionStore );
+    SessionStoreImpl deserializedSession = Fixture.serializeAndDeserialize( sessionStore );
 
     assertTrue( deserializedSession.isBound() );
   }
@@ -56,7 +56,7 @@ public class SessionStoreImplSerialization_Test extends TestCase {
   public void testListenersAreSerializable() throws Exception {
     LoggingSessionStoreListener listener = new LoggingSessionStoreListener();
     sessionStore.addSessionStoreListener( listener );
-    SessionStoreImpl deserializedSession = serializeAndDeserialize( sessionStore );
+    SessionStoreImpl deserializedSession = Fixture.serializeAndDeserialize( sessionStore );
     TestSession newHttpSession = new TestSession();
     deserializedSession.attachHttpSession( newHttpSession );
     SessionStoreImpl.attachInstanceToSession( newHttpSession, deserializedSession );
@@ -78,12 +78,5 @@ public class SessionStoreImplSerialization_Test extends TestCase {
     LoggingSessionStoreListener.wasCalled = false;
     httpSession = new TestSession();
     sessionStore = new SessionStoreImpl( httpSession );  
-  }
-
-  private static SessionStoreImpl serializeAndDeserialize( SessionStoreImpl sessionStore ) 
-    throws Exception 
-  {
-    byte[] bytes = Fixture.serialize( sessionStore );
-    return ( SessionStoreImpl )Fixture.deserialize( bytes );
   }
 }

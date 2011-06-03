@@ -30,7 +30,7 @@ public class DeviceSerialization_Test extends TestCase {
   public void testDeviceLockIsSerializable() throws Exception {
     TestDevice device = new TestDevice();
     
-    TestDevice deserializedDevice = serializeAndDeserialize( device );
+    TestDevice deserializedDevice = Fixture.serializeAndDeserialize( device );
     
     assertNotNull( deserializedDevice.getDeviceLock() );
   }
@@ -38,7 +38,7 @@ public class DeviceSerialization_Test extends TestCase {
   public void testDisposedIsSerializable() throws Exception {
     TestDevice device = new TestDevice();
     
-    TestDevice deserializedDevice = serializeAndDeserialize( device );
+    TestDevice deserializedDevice = Fixture.serializeAndDeserialize( device );
     
     assertFalse( deserializedDevice.isDisposed() );
   }
@@ -49,7 +49,7 @@ public class DeviceSerialization_Test extends TestCase {
     Fixture.fakeRequestParam( "w1.colorDepth", "32" );
     TestDevice device = new TestDevice();
 
-    TestDevice deserializedDevice = serializeAndDeserialize( device );
+    TestDevice deserializedDevice = Fixture.serializeAndDeserialize( device );
     
     assertEquals( 1, deserializedDevice.getDPI().x );
     assertEquals( 2, deserializedDevice.getDPI().y );
@@ -64,10 +64,5 @@ public class DeviceSerialization_Test extends TestCase {
   protected void tearDown() throws Exception {
     device.dispose();
     Fixture.tearDown();
-  }
-
-  private static TestDevice serializeAndDeserialize( Device device ) throws Exception {
-    byte[] bytes = Fixture.serialize( device );
-    return ( TestDevice )Fixture.deserialize( bytes );
   }
 }

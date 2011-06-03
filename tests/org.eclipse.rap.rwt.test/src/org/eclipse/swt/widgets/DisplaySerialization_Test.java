@@ -84,8 +84,8 @@ public class DisplaySerialization_Test extends TestCase {
   
   public void testThreadIsNotSerializable() throws Exception {
     getDisplayAdapter( display ).attachThread();
-    byte[] bytes = Fixture.serialize( display );
-    Display deserializedDisplay = ( Display )Fixture.deserialize( bytes );
+    
+    Display deserializedDisplay = Fixture.serializeAndDeserialize( display );
     
     assertNull( deserializedDisplay.getThread() );
   }
@@ -183,8 +183,7 @@ public class DisplaySerialization_Test extends TestCase {
   }
 
   private static Display serializeAndDeserialize( Display display ) throws Exception {
-    byte[] bytes = Fixture.serialize( display );
-    Display result = ( Display )Fixture.deserialize( bytes );
+    Display result = Fixture.serializeAndDeserialize( display );
     getDisplayAdapter( result ).attachThread();
     return result;
   }

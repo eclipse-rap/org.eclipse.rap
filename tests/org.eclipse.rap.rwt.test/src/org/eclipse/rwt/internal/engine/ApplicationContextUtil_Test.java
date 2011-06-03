@@ -161,8 +161,8 @@ public class ApplicationContextUtil_Test extends TestCase {
   public void testApplicationContextInSessionStoreIsNotSerialized() throws Exception {
     SessionStoreImpl sessionStore = new SessionStoreImpl( new TestSession() );
     ApplicationContextUtil.set( sessionStore, new ApplicationContext() );
-    byte[] bytes = Fixture.serialize( sessionStore );
-    ISessionStore deserializedSessionStore = ( ISessionStore )Fixture.deserialize( bytes );
+    
+    ISessionStore deserializedSessionStore = Fixture.serializeAndDeserialize( sessionStore ); 
     
     ApplicationContext appContext = ApplicationContextUtil.get( deserializedSessionStore );
     
