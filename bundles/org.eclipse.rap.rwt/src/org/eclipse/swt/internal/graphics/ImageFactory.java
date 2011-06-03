@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.rwt.RWT;
@@ -18,6 +19,8 @@ import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.util.*;
 import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 
@@ -67,7 +70,13 @@ public class ImageFactory {
 
   private Image createImage( String path, ClassLoader imageLoader ) {
     InputStream inputStream = getInputStream( path, imageLoader );
-    return createImage( null, path, inputStream );
+    Image result = createImage( null, path, inputStream );
+    try {
+      inputStream.close();
+    } catch( IOException ioe ) {
+      throw new SWTException( SWT.ERROR_IO, ioe.getMessage() );
+    }
+    return result;
   }
 
   private static Image createImageInstance( Device device, InternalImage internalImage ) {
