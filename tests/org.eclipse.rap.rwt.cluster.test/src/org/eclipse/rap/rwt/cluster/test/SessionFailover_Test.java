@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.test;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import javax.servlet.ServletContext;
@@ -27,8 +28,8 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
 import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -108,6 +109,32 @@ public class SessionFailover_Test extends TestCase {
     assertSame( secondaryShell.getDisplay(), secondaryImage.getDevice() );
   }
   
+  
+  private static boolean assertEquals( ImageData expected, ImageData actual ) {
+    boolean result;
+    byte[] expectedBytes = getImageBytes( expected );
+    byte[] actualBytes = getImageBytes( actual );
+    if( expectedBytes.length == actualBytes.length ) {
+      result = true;
+      for( int i = 0; result && i < actualBytes.length; i++ ) {
+        if( expectedBytes[ i ] != actualBytes[ i ] ) {
+          result = false;
+        }
+      }
+    } else {
+      result = false;
+    }
+    return result;
+  }
+  
+  private static byte[] getImageBytes( ImageData imageData ) {
+    ImageLoader imageLoader = new ImageLoader();
+    imageLoader.data = new ImageData[] { imageData }; 
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    imageLoader.save( outputStream, SWT.IMAGE_PNG );
+    return outputStream.toByteArray();
+  }
+
   protected void setUp() throws Exception {
     ClusterFixture.setUp();
     db = new DatabaseServer();
