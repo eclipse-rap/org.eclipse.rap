@@ -376,8 +376,9 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     String tableId = WidgetUtil.getId( table );
     String item2Id = WidgetUtil.getId( item2 );
+    String itemParam = JSConst.EVENT_WIDGET_DEFAULT_SELECTED + ".item";
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item2Id );
+    Fixture.fakeRequestParam( itemParam, item2Id );
     Fixture.readDataAndProcessAction( display );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
@@ -396,7 +397,7 @@ public class TableLCA_Test extends TestCase {
     table.select( 0 );
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item2Id );
+    Fixture.fakeRequestParam( itemParam, item2Id );
     Fixture.readDataAndProcessAction( display );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
@@ -416,7 +417,7 @@ public class TableLCA_Test extends TestCase {
     table.select( 1 );
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item2Id );
+    Fixture.fakeRequestParam( itemParam, item2Id );
     Fixture.readDataAndProcessAction( display );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );
@@ -435,7 +436,7 @@ public class TableLCA_Test extends TestCase {
     table.deselectAll();
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, tableId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item2Id );
+    Fixture.fakeRequestParam( itemParam, item2Id );
     Fixture.readDataAndProcessAction( display );
     assertNotNull( "SelectionEvent was not fired", events[ 0 ] );
     assertEquals( table, events[ 0 ].getSource() );

@@ -214,7 +214,9 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static void readWidgetSelected( final Table table ) {
     if( WidgetLCAUtil.wasEventSent( table, JSConst.EVENT_WIDGET_SELECTED ) ) {
       // TODO [rh] do something reasonable when index points to unresolved item
-      TableItem item = getWidgetSelectedItem( table );
+      HttpServletRequest request = ContextProvider.getRequest();
+      String selectionId = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_ITEM );
+      TableItem item = getItemFromSelectionId( table, selectionId );
       // Bugfix: check if index is valid before firing event to avoid problems with fast scrolling
       // TODO [tb] : Still useful? bugzilla id?
       if( item != null ) {
@@ -235,15 +237,16 @@ public final class TableLCA extends AbstractWidgetLCA {
       // A default-selected event can occur without a selection being present.
       // In this case the event.item field points to the focused item
       TableItem item = getFocusedItem( table );
-      TableItem selectedItem = getWidgetSelectedItem( table );
+      HttpServletRequest request = ContextProvider.getRequest();
+      String selectionId = request.getParameter( defaultSelectedParam + ".item" );
+      TableItem selectedItem = getItemFromSelectionId( table, selectionId );
       if( selectedItem != null ) {
         // TODO [rh] do something about when index points to unresolved item!
         item = selectedItem;
       }
       int id = SelectionEvent.WIDGET_DEFAULT_SELECTED;
       SelectionEvent event = new SelectionEvent( table, item, id );
-      event.stateMask
-        = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+      event.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
       event.processEvent();
     }
   }
@@ -252,12 +255,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     HttpServletRequest request = ContextProvider.getRequest();
     String value = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_DETAIL );
     return "check".equals( value ) ? SWT.CHECK : SWT.NONE;
-  }
-
-  private static TableItem getWidgetSelectedItem( Table table ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String selectionId = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_ITEM );
-    return getItemFromSelectionId( table, selectionId );
   }
 
   private static TableItem getFocusedItem( final Table table ) {
