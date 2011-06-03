@@ -490,8 +490,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setScrollBarsVisible( false, true );
       testUtil.flush();
       var area = testUtil.getElementBounds( tree._rowContainer.getElement() )
-      var vertical 
-        = testUtil.getElementBounds( tree._vertScrollBar.getElement() );
+      var vertical = testUtil.getElementBounds( tree._vertScrollBar.getElement() );
       assertEquals( 500, vertical.height );
       assertEquals( 0, vertical.right);
       assertEquals( 0, vertical.bottom );
@@ -506,8 +505,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setScrollBarsVisible( true, false );
       testUtil.flush();
       var area = testUtil.getElementBounds( tree._rowContainer.getElement() )
-      var horizontal 
-        = testUtil.getElementBounds( tree._horzScrollBar.getElement() );
+      var horizontal = testUtil.getElementBounds( tree._horzScrollBar.getElement() );
       assertEquals( 500, horizontal.width );
       assertEquals( 0, horizontal.bottom );
       assertEquals( 0, horizontal.right );
@@ -522,10 +520,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setScrollBarsVisible( true, true );
       testUtil.flush();
       var area = testUtil.getElementBounds( tree._rowContainer.getElement() )
-      var horizontal 
-        = testUtil.getElementBounds( tree._horzScrollBar.getElement() );
-      var vertical 
-        = testUtil.getElementBounds( tree._vertScrollBar.getElement() );
+      var horizontal = testUtil.getElementBounds( tree._horzScrollBar.getElement() );
+      var vertical = testUtil.getElementBounds( tree._vertScrollBar.getElement() );
       var height = 500 - horizontal.height;
       var width = 500 - vertical.width
       assertTrue( area.height == height );
@@ -849,25 +845,35 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
 
     testFocusItem : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var req = org.eclipse.swt.Request.getInstance();
       var tree = this._createDefaultTree();
+      testUtil.initRequestLog();
       tree.setItemCount( 3 )
       var item0 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       var item1 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 1 );
       var item2 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 2 );
+      wm.add( tree, "w1" );
+      wm.add( item2, "w2" );
       testUtil.flush();
       testUtil.clickDOM( tree._rowContainer._children[ 2 ]._getTargetNode() );
       testUtil.flush();
       assertTrue( tree.isFocusItem( item2 ) );
+      assertEquals( "w2", req.getParameter( "w1.focusItem" ) );
       tree.destroy();
     },
 
     testChangeFocusItem : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var req = org.eclipse.swt.Request.getInstance();
       var tree = this._createDefaultTree();
       tree.setItemCount( 3 );
       var item0 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       var item1 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 1 );
       var item2 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 2 );
+      wm.add( tree, "w1" );
+      wm.add( item2, "w2" );
       var rows = tree._rowContainer._children;
       testUtil.clickDOM( rows[ 1 ]._getTargetNode() );
       testUtil.flush();
@@ -875,6 +881,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.flush();
       assertFalse( tree.isFocusItem( item1 ) );
       assertTrue( tree.isFocusItem( item2 ) );
+      assertEquals( "w2", req.getParameter( "w1.focusItem" ) );
       tree.destroy();
     },
 

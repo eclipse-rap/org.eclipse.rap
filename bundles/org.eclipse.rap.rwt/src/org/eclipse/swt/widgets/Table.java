@@ -2433,7 +2433,7 @@ public class Table extends Composite {
     }
     return result;
   }
-  
+
   final Point getCheckSize() {
     Point result = new Point( 0, 0 );
     if( ( style & SWT.CHECK ) != 0 ) {
@@ -2445,7 +2445,7 @@ public class Table extends Composite {
     }
     return result;
   }
-  
+
   final Rectangle getCheckBoxMargin() {
     TableThemeAdapter themeAdapter = ( TableThemeAdapter )getAdapter( IThemeAdapter.class );
     Rectangle result = themeAdapter.getCheckBoxMargin( this );

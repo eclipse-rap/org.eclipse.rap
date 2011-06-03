@@ -1162,8 +1162,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       tree.destroy();
       row.destroy();
     },
-    
-    
+
     testRenderStateWidthDNDSelected : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createTree(  false, false, "fullSelection" );
@@ -1180,6 +1179,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       assertTrue( row.hasState( "dnd_selected" ) );
       assertTrue( row.hasState( "selected" ) );
       assertFalse( row.hasState( "parent_unfocused" ) );
+      tree.destroy();
+      row.destroy();
+    },
+    
+    testRenderSelectionStateWithHideSelection : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( true, "fullSelection", "hideSelection" );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      tree.blur();
+      row.renderItem( item, tree._config, true, null );
+      assertTrue( row.hasState( "parent_unfocused" ) );
+      assertFalse( row.hasState( "selected" ) );
       tree.destroy();
       row.destroy();
     },

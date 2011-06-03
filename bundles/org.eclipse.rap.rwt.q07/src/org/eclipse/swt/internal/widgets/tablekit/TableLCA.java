@@ -194,7 +194,6 @@ public final class TableLCA extends AbstractWidgetLCA {
   }
 
   private static void readFocusIndex( final Table table ) {
-    // TODO [tb] : currently not send by Tree
     String value = WidgetLCAUtil.readPropertyValue( table, "focusItem" );
     if( value != null ) {
       ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );

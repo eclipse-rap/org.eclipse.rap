@@ -258,6 +258,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     setFocusItem : function( item ) {
       this._focusItem = item;
+      this._sendItemFocusChange()
     },
 
     setScrollBarsVisible : function( horzVisible, vertVisible ) {
@@ -813,6 +814,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         var itemId = wm.findIdByWidget( item );
         req.addParameter( itemId + ".checked", item.isChecked() );
         this._sendSelectionEvent( item, false, "check" );
+      }
+    },
+
+    _sendItemFocusChange : function() {
+      if( !this._inServerResponse() ) {
+        var req = org.eclipse.swt.Request.getInstance();
+        var wm = org.eclipse.swt.WidgetManager.getInstance();   
+        var id = wm.findIdByWidget( this );
+        var itemId = wm.findIdByWidget( this._focusItem );
+        req.addParameter( id + ".focusItem", itemId );
       }
     },
 
