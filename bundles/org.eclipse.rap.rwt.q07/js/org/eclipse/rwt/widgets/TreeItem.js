@@ -22,6 +22,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     this._parent = parent
     this._level = -1;
     this._children = [];
+    this._indexCache = {};
     this._visibleChildrenCount = 0;
     this._expandedItems = {};
     this._texts = placeholder ? [ "..." ] : [];
@@ -253,6 +254,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     hasChildren : function() {
       return this._children.length > 0;
     },
+    
+    getChildrenLength : function() {
+    	return this._children.length;
+    },
 
     isChildCreated : function( index ) {
       return this._children[ index ] !== undefined;
@@ -284,7 +289,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     },
     
     indexOf : function( item ) {
-      return this._children.indexOf( item );
+    	var hash = item.toHashCode();
+    	if( this._indexCache[ hash ] === undefined ) {
+	    	this._indexCache[ hash ] = this._children.indexOf( item );
+    	}
+      return this._indexCache[ hash ];
     },
     
     /**
@@ -312,6 +321,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
         var expandedIndex = expanded.shift();
         if( expandedIndex === undefined || expandedIndex >= localIndex ) {
           result = this.getChild( localIndex );
+          if( result ) {
+	          this._indexCache[ result.toHashCode() ] = localIndex;
+          }
           success = true;
         } else {
           var childrenCount = this.getChild( expandedIndex ).getVisibleChildrenCount();
@@ -348,15 +360,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     },
 
     hasPreviousSibling : function() {
-      var siblings = this._parent._children;
-      var index = siblings.indexOf( this ) - 1 ;
+      var index = this._parent.indexOf( this ) - 1 ;
       return index >= 0;
     },
 
     hasNextSibling : function() {
-      var siblings = this._parent._children;
-      var index = siblings.indexOf( this ) + 1 ;
-      return index < siblings.length;
+      var index = this._parent.indexOf( this ) + 1 ;
+      return index < this._parent.getChildrenLength();
     },
 
     getPreviousSibling : function() {
@@ -366,7 +376,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
 
     getNextSibling : function() {
       var index = this._parent.indexOf( this ) + 1 ;
-      return this._parent.getChild( index );
+      var item = this._parent.getChild( index );
+      this._parent._indexCache[ item.toHashCode() ] = index;
+      return item;
     },
     
     /**
@@ -452,6 +464,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     _onUpdate : function( event ) {
       if( event.getData() !== "content" ) {
         this._visibleChildrenCount = null;
+        this._indexCache = {};
       }
     },
     
