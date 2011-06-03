@@ -13,8 +13,7 @@
 package org.eclipse.rwt.graphics;
 
 import java.io.*;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.net.*;
 
 import junit.framework.TestCase;
 
@@ -126,18 +125,22 @@ public class Graphics_Test extends TestCase {
   }
 
   public void testGetImageWithClassLoader() throws IOException {
-    File testGif = new File( Fixture.WEB_CONTEXT_DIR, "test.gif" );
+    String resourceName = "test.gif";
+    File testGif = new File( Fixture.WEB_CONTEXT_DIR, resourceName );
     Fixture.copyTestResource( Fixture.IMAGE3, testGif );
-    URL[] urls = new URL[] { Fixture.WEB_CONTEXT_DIR.toURI().toURL() };
-    URLClassLoader classLoader = new URLClassLoader( urls, null );
-    assertFalse( RWT.getResourceManager().isRegistered( Fixture.IMAGE3 ) );
+    ClassLoader classLoader = classLoaderFromFile( Fixture.WEB_CONTEXT_DIR );
+
+    Image image = Graphics.getImage( resourceName, classLoader );
+    
+    assertNotNull( image );
+  }
+
+  public void testGetImageFromClassLoaderWithNonExistingPath() {
     try {
       Graphics.getImage( "test.gif" );
-      fail( "Image not available on the classpath." );
+      fail();
     } catch( SWTException expected ) {
     }
-    Image image = Graphics.getImage( "test.gif", classLoader );
-    assertNotNull( image );
   }
 
   public void testGetImageWithInputStream() throws IOException {
@@ -227,12 +230,6 @@ public class Graphics_Test extends TestCase {
     }
   }
   
-  private static String getRegisterPath( Image image ) {
-    String imagePath = ImageFactory.getImagePath( image );
-    int prefixLength = ResourceManagerImpl.RESOURCES.length() + 1;
-    return imagePath.substring( prefixLength );
-  }
-
   protected void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
@@ -241,5 +238,16 @@ public class Graphics_Test extends TestCase {
   protected void tearDown() {
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
+  }
+
+  private static String getRegisterPath( Image image ) {
+    String imagePath = ImageFactory.getImagePath( image );
+    int prefixLength = ResourceManagerImpl.RESOURCES.length() + 1;
+    return imagePath.substring( prefixLength );
+  }
+
+  private static ClassLoader classLoaderFromFile( File webContextDir ) throws IOException {
+    URL[] urls = new URL[] { webContextDir.toURI().toURL() };
+    return new URLClassLoader( urls, null );
   }
 }
