@@ -81,7 +81,7 @@ public class ApplicationContext {
     resourceFactory = new ResourceFactory();
     imageFactory = new ImageFactory();
     internalImageFactory = new InternalImageFactory();
-    imageDataFactory = new ImageDataFactory();
+    imageDataFactory = new ImageDataFactory( resourceManager );
     fontDataFactory = new FontDataFactory();
     adapterManager = new AdapterManager();
     settingStoreManager = new SettingStoreManager();

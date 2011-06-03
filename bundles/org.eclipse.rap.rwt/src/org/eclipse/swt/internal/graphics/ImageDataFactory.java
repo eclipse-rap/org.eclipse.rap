@@ -14,19 +14,20 @@ package org.eclipse.swt.internal.graphics;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.graphics.ImageData;
 
 
 public class ImageDataFactory {
+  private final IResourceManager resourceManager;
   private final ImageDataCache imageDataCache;
   
-  public ImageDataFactory() {
-    imageDataCache = new ImageDataCache();
+  public ImageDataFactory( IResourceManager resourceManager ) {
+    this.resourceManager = resourceManager;
+    this.imageDataCache = new ImageDataCache();
   }
 
-  ImageData findImageData( InternalImage internalImage ) {
+  public ImageData findImageData( InternalImage internalImage ) {
     ImageData result;
     // Note [rst]: We don't need to synchronize access here. Since the creation
     //             of ImageData is deterministic, at worst it is done more than
@@ -41,11 +42,10 @@ public class ImageDataFactory {
     return result;
   }
 
-  private static ImageData createImageData( InternalImage internalImage ) {
+  private ImageData createImageData( InternalImage internalImage ) {
     ImageData result = null;
     String imagePath = internalImage.getResourceName();
     try {
-      IResourceManager resourceManager = RWT.getResourceManager();
       InputStream inputStream = resourceManager.getRegisteredContent( imagePath );
       if( inputStream != null ) {
         try {

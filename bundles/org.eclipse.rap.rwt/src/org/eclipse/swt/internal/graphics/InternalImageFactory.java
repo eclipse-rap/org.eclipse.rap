@@ -117,7 +117,7 @@ public class InternalImageFactory {
   }
 
   private static InternalImage createInternalImage( InputStream stream ) {
-    BufferedInputStream bufferedStream = new BufferedInputStream( stream );
+    InputStream bufferedStream = new BufferedInputStream( stream );
     ImageData imageData = readImageData( bufferedStream );
     String path = createGeneratedImagePath( imageData );
     return createInternalImage( path, bufferedStream, imageData );

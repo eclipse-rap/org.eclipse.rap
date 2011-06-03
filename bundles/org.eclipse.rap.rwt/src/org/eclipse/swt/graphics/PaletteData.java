@@ -12,6 +12,7 @@ package org.eclipse.swt.graphics;
 
 
 import org.eclipse.swt.*;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
 /**
  * Instances of this class describe the color data used by an image.
@@ -54,8 +55,9 @@ import org.eclipse.swt.*;
  */
  
 @SuppressWarnings("all")
-public final class PaletteData {
-    
+public final class PaletteData implements SerializableCompatibility {
+    private static final long serialVersionUID = 1L;
+
     /**
      * true if the receiver is a direct palette, 
      * and false otherwise

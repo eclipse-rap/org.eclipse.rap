@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -65,7 +66,7 @@ public class ImageDataFactory_Test extends TestCase {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
     Fixture.useDefaultResourceManager();
-    imageDataFactory = new ImageDataFactory();
+    imageDataFactory = new ImageDataFactory( RWTFactory.getResourceManager() );
   }
 
   protected void tearDown() {
