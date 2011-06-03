@@ -14,6 +14,7 @@ package org.eclipse.swt.graphics;
 import java.io.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.internal.CloneableCompatibility;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
 /**
  * Instances of this class are device-independent descriptions
@@ -33,8 +34,9 @@ import org.eclipse.swt.internal.CloneableCompatibility;
  */
 
 @SuppressWarnings("all")
-public final class ImageData implements CloneableCompatibility {
-    
+public final class ImageData implements CloneableCompatibility, SerializableCompatibility {
+    private static final long serialVersionUID = 1L;
+
     /**
      * The width of the image, in pixels.
      */
