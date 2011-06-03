@@ -20,7 +20,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -68,6 +67,15 @@ public class TableLCA_Test extends TestCase {
     lca.renderInitialization( table );
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "\"multiSelection\": true" ) != -1 );
+  }
+
+  public void testInitializationWithHideSelection() throws Exception {
+    Table table = new Table( shell, SWT.HIDE_SELECTION );
+    TableLCA lca = new TableLCA();
+    Fixture.fakeResponseWriter();
+    lca.renderInitialization( table );
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "\"hideSelection\": true" ) != -1 );
   }
 
   public void testInitializationWithVirtual() throws Exception {
@@ -875,9 +883,7 @@ public class TableLCA_Test extends TestCase {
     createTableItems( table, 5 );
     final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
     adapter.setCellToolTipProvider( new ICellToolTipProvider() {
-      public void getToolTipText( final Item item,
-                                  final int columnIndex )
-      {
+      public void getToolTipText( final Item item, final int columnIndex ) {
         StringBuffer buffer = new StringBuffer();
         buffer.append( "[" );
         buffer.append( WidgetUtil.getId( item ) );
@@ -906,7 +912,6 @@ public class TableLCA_Test extends TestCase {
     final ICellToolTipAdapter tableAdapter
       = ( ICellToolTipAdapter )table.getAdapter( ICellToolTipAdapter.class );
     tableAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
-
       public void getToolTipText( final Item item, final int columnIndex ) {
         StringBuffer buffer = new StringBuffer();
         buffer.append( "[" );

@@ -43,12 +43,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     renderItem : function( item, config, selected, hoverElement ) {
       this._usedNodes = 0;
       if( item != null ) {
-        var renderSelected = selected || this.hasState( "dnd_selected" );
+        var renderSelected = this._renderAsSelected( config, selected );
         var renderFullSelected = renderSelected && config.fullSelection;
         this._renderStates( item, config, renderFullSelected, hoverElement );
         this._renderBackground( item, config, renderSelected );
         if( config.treeColumn !== -1 ) {
-	      this._renderIndention( item, config, hoverElement );
+          this._renderIndention( item, config, hoverElement );
         }
         this._renderCheckBox( item, config, hoverElement );
         this._renderCells( item, config, renderSelected );
@@ -407,6 +407,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     
     _renderAsUnfocused : function( config ) {
       return !config.focused && !this.hasState( "dnd_selected" );
+    },
+    
+    _renderAsSelected : function( config, selected ) {
+    	var result =    ( selected || this.hasState( "dnd_selected" ) )
+    	             && ( config.focused || !config.hideSelection );
+    	return result;
     },
     
     /////////////

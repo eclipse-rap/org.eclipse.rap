@@ -356,7 +356,7 @@ public class TableColumnLCA_Test extends TestCase {
     Fixture.clearPreserved();
     Fixture.preserveWidgets();
     TableColumnLCA lca = new TableColumnLCA();
-    column.setAlignment(  SWT.RIGHT );
+    column.setAlignment( SWT.RIGHT );
     lca.renderChanges( column );
     String expected = "w.setAlignment( 1, qx.constant.Layout.ALIGN_RIGHT )";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );

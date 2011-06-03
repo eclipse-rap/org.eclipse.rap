@@ -146,6 +146,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       if( map.noScroll ) {
         this._rowContainer.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
       }
+      if( map.hideSelection ) {
+	      this._config.hideSelection = true;
+      }
       if( map.multiSelection ) {
         this._hasMultiSelection = true;
       }

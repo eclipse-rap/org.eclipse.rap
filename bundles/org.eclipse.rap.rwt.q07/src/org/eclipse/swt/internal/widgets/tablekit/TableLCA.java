@@ -106,6 +106,9 @@ public final class TableLCA extends AbstractWidgetLCA {
     if( ( table.getStyle() & SWT.MULTI ) != 0 ) {
       argsMap.append( "multiSelection", true );
     }
+    if( ( table.getStyle() & SWT.HIDE_SELECTION ) != 0 ) {
+      argsMap.append( "hideSelection", true );
+    }
     if( ( table.getStyle() & SWT.VIRTUAL ) != 0 ) {
       argsMap.append( "virtual", true );
     }
