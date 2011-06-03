@@ -48,32 +48,28 @@ public class Graphics_Test extends TestCase {
   public void testTextExtentNull() {
     Font font = Graphics.getFont( "Arial", 12, SWT.BOLD );
     try {
-      Graphics.textExtent( font , null, 0 );
+      Graphics.textExtent( font, null, 0 );
       fail( "Null string should throw IAE" );
-    } catch( final IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
     try {
       Graphics.textExtent( null, "", 0 );
       fail( "Null font should throw IAE" );
-    } catch( final IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testStringExtentNull() {
     Font font = Graphics.getFont( "Arial", 12, SWT.BOLD );
     try {
-      Graphics.stringExtent( font , null );
+      Graphics.stringExtent( font, null );
       fail( "Null string should throw IAE" );
-    } catch( final IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
     try {
       Graphics.stringExtent( null, "" );
       fail( "Null font should throw IAE" );
-    } catch( final IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
   
@@ -81,8 +77,7 @@ public class Graphics_Test extends TestCase {
     try {
       Graphics.getCharHeight( null );
       fail( "Null font should throw IAE" );
-    } catch( final IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
   
@@ -96,8 +91,7 @@ public class Graphics_Test extends TestCase {
     try {
       Graphics.getAvgCharWidth( null );
       fail( "Null font should throw IAE" );
-    } catch( final IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
   
@@ -140,8 +134,7 @@ public class Graphics_Test extends TestCase {
     try {
       Graphics.getImage( "test.gif" );
       fail( "Image not available on the classpath." );
-    } catch( final SWTException e ) {
-      // expected
+    } catch( SWTException expected ) {
     }
     Image image = Graphics.getImage( "test.gif", classLoader );
     assertNotNull( image );
@@ -161,6 +154,7 @@ public class Graphics_Test extends TestCase {
     }
     InputStream is = classLoader.getResourceAsStream( imageName );
     Image image = Graphics.getImage( "test.gif", is );
+    is.close();
     assertNotNull( image );
   }
 
@@ -168,20 +162,17 @@ public class Graphics_Test extends TestCase {
     try {
       Graphics.getImage( null );
       fail( "Image#find must not allow null-argument" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
     try {
       Graphics.getImage( "" );
       fail( "Image#find must not allow empty string argument" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
     try {
       Graphics.getImage( "", new ByteArrayInputStream( new byte[ 1 ] ) );
       fail( "Image#find must not allow empty string argument" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -215,14 +206,12 @@ public class Graphics_Test extends TestCase {
     try {
       Graphics.getFont( null, 1, SWT.NONE );
       fail( "The font name must not be null" );
-    } catch( IllegalArgumentException e ) {
-      // Expected
+    } catch( IllegalArgumentException expected ) {
     }
     try {
       Graphics.getFont( "abc", -1, SWT.NONE );
       fail( "The font size must not be negative" );
-    } catch( IllegalArgumentException e ) {
-      // Expected
+    } catch( IllegalArgumentException expected ) {
     }
     Font font = Graphics.getFont( "roman", 1, 1 << 3 );
     assertEquals( SWT.NORMAL, FontUtil.getData( font ).getStyle() );
