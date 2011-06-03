@@ -18,7 +18,6 @@ import java.text.MessageFormat;
 import java.util.*;
 
 import org.eclipse.rwt.internal.engine.RWTConfiguration;
-import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.internal.util.URLHelper;
@@ -306,7 +305,6 @@ public class ResourceManagerImpl implements IResourceManager {
     {
       result = getContextLoader();
     } else if( loader == null ) {
-      RWTConfiguration configuration = RWTFactory.getConfiguration();
       URL[] urls = new ContextURLs( configuration ).get();
       ClassLoader parent = getClass().getClassLoader();
       loader = new URLClassLoader( urls, parent );
