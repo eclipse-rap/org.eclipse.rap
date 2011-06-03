@@ -13,10 +13,12 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
+// TODO [rh] find a handier name
+public final class RWTRequestVersionControl implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
-
-public final class RWTRequestVersionControl {
   private static final Integer INITIAL_REQUEST_ID = new Integer( -1 );
 
   static final String REQUEST_COUNTER = "requestCounter";

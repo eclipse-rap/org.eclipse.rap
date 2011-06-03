@@ -59,6 +59,15 @@ public class RWTRequestVersionControl_Test extends TestCase {
     assertTrue( valid );
   }
   
+  public void testSerialization() throws Exception {
+    Integer requestId = RWTRequestVersionControl.getInstance().nextRequestId();
+    
+    RWTRequestVersionControl deserialized
+      = Fixture.serializeAndDeserialize( RWTRequestVersionControl.getInstance() );
+    
+    assertEquals( requestId, deserialized.getCurrentRequestId() );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
   }

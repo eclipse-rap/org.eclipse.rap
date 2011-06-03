@@ -419,6 +419,14 @@ public class Fixture {
     return objectInputStream.readObject();
   }
   
+  @SuppressWarnings("unchecked")
+  public static <T> T serializeAndDeserialize( T instance ) 
+    throws IOException, ClassNotFoundException 
+  {
+    byte[] bytes = serialize( instance );
+    return ( T )deserialize( bytes );
+  }
+  
   private static void simulateRequest( IUIThreadHolder threadHolder, Thread serverThread ) {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     synchronized( threadHolder.getLock() ) {
