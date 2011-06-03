@@ -532,7 +532,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     
     _onKeyDown : function( evt ) {
       switch( evt.getKeyIdentifier() ) {
-        // Handle <ENTER>, <ESC>
         case "Enter":
           if( this._dropped ) {
             this._toggleListVisibility();
@@ -554,11 +553,20 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           this.setFocused( true );
           evt.stopPropagation();
           break;
-        // Handle Alt+Down, Alt+Up
         case "Down":
         case "Up":
           if( evt.isAltPressed() ) {
             this._toggleListVisibility();
+          }
+        // intentionally no break here 
+        case "PageUp":
+        case "PageDown":
+          if( this._selected ) {
+            this._list._onkeypress( evt );
+            var selected = this._manager.getSelectedItem();
+            this._setSelected( selected );
+          } else if( this._list.getItemsCount() ) {
+            this._setSelected( this._list.getItems()[ 0 ] );
           }
           break;
       }
@@ -595,18 +603,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
             if( toSelect ) {
               this._setSelected( toSelect );
             }
-          }
-          break;
-        case "Up":
-        case "Down":
-        case "PageUp":
-        case "PageDown":
-          if( this._selected ) {
-            this._list._onkeypress( evt );
-            var selected = this._manager.getSelectedItem();
-            this._setSelected( selected );
-          } else if( this._list.getItemsCount() ) {
-            this._setSelected( this._list.getItems()[0] );
           }
           break;
       }

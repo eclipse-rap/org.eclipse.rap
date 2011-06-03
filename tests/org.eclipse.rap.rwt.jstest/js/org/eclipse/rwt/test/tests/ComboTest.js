@@ -206,6 +206,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.destroy();
     },
 
+    testSelectionByArrowKeys : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var combo = this._createDefaultCombo();
+      combo.setEditable( true );
+      combo.select( 3 );
+      testUtil.flush();
+      combo.focus();
+      testUtil.keyDown( combo._field.getElement(), "Down" );
+      assertEquals( "Simula", combo._list.getSelectedItems()[ 0 ].getLabel() );
+      testUtil.keyDown( combo._field.getElement(), "Up" );
+      assertEquals( "Ruby", combo._list.getSelectedItems()[ 0 ].getLabel() );
+      combo.destroy();
+    },
+
     //////////
     // Helpers
 
