@@ -91,8 +91,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this.addEventListener( "mouseover", this._onMouseOver, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
     // Keyboard events
-    this.addEventListener( "keydown", this._onKeyDown );
-    this.addEventListener( "keypress", this._onKeyPress );
+    this.addEventListener( "keydown", this._onKeyDown, this );
+    this.addEventListener( "keypress", this._onKeyPress, this );
+    this._field.addEventListener( "keypress", this._onKeyPress, this );
     // Specific events
     this._field.addEventListener( "blur", this._onTextBlur, this );
     this._field.addEventListener( "input", this._onTextInput, this );
@@ -119,8 +120,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this.removeEventListener( "mousewheel", this._onMouseWheel, this );
     this.removeEventListener( "mouseover", this._onMouseOver, this );
     this.removeEventListener( "mouseout", this._onMouseOut, this );
-    this.removeEventListener( "keydown", this._onKeyDown );
-    this.removeEventListener( "keypress", this._onKeyPress );
+    this.removeEventListener( "keydown", this._onKeyDown, this );
+    this.removeEventListener( "keypress", this._onKeyPress, this );
+    this._field.removeEventListener( "keypress", this._onKeyPress, this );
     this._field.removeEventListener( "blur", this._onTextBlur, this );
     this._field.removeEventListener( "input", this._onTextInput, this );
     this._list.removeEventListener( "appear", this._onListAppear, this );
@@ -608,9 +610,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           }
           break;
       }
-      if(    this._field.isCreated()
-          && !org.eclipse.swt.EventUtil.getSuspended() ) 
-      {
+      if( this._field.isCreated() && !org.eclipse.swt.EventUtil.getSuspended() ) {
         this._handleSelectionChange();
       }
       if( evt.getCharCode() !== 0 ) {
