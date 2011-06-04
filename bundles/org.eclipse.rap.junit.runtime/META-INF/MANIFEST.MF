@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Runtime Plug-in
+Bundle-Name: %Bundle-Name
+Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.rap.junit.runtime; singleton:=true
-Bundle-Version: 1.4.0.qualifier
+Bundle-Version: 1.5.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.rap.ui,
  org.eclipse.jdt.junit.runtime,
@@ -10,4 +11,4 @@ Require-Bundle: org.eclipse.core.runtime,
 Import-Package: javax.servlet;version="2.3.0",
  javax.servlet.http;version="2.3.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-
+Bundle-Localization: plugin
