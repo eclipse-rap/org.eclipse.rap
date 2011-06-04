@@ -304,7 +304,6 @@ public class RWTLifeCycle2_Test extends TestCase {
   
   protected void setUp() throws Exception {
     Fixture.setSystemProperties();
-    registerResourceManagerFactory();
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
 
@@ -327,22 +326,6 @@ public class RWTLifeCycle2_Test extends TestCase {
         }
       }
     } );
-  }
-
-  private void registerResourceManagerFactory() {
-    // [fappel]: This solves a class loader problem caused by the project 
-    //           dependencies:
-    //           ServiceManager tries to load a configured service handler 
-    //           which is not reachable from the q07 project. The 
-    //           service.xml is located in the fixture project and the 
-    //           handler implementation is in the rwt.test project, which
-    //           is not on this tests classpath. Note that this problem
-    //           didn't show up running the RWTAllTestSuite, since
-    //           in that case all projects are available on the classpath.
-    new Exception( "FIXME" ).printStackTrace();
-//    String initParam = ResourceManagerProviderConfigurable.RESOURCE_MANAGER_FACTORY_PARAM;
-//    String initValue = FakeResourceManagerFactory.class.getName();
-//    Fixture.setInitParameter( initParam, initValue );
   }
 
   protected void tearDown() throws Exception {
