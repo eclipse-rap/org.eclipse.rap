@@ -97,7 +97,6 @@ public class Fixture {
   public static void createApplicationContext() {
     ensureServletContext();
     createWebContextDirectories();
-    ensureServletContext();
     triggerServletContextInitialized();
   }
   
