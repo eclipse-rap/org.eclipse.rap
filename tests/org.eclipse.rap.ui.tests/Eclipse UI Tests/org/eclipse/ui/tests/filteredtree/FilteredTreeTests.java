@@ -34,6 +34,9 @@ public class FilteredTreeTests extends UITestCase {
 	private static int NUM_ITEMS = 20;
 	
 	private class MyFilteredTree extends FilteredTree{
+    // RAP [fappel]: added serialization version to fix compile errors 
+    private static final long serialVersionUID = 1L;
+
 		public MyFilteredTree(Composite comp, int style) {
 			super(comp);
 			doSomeStuffBeforeWidgetCreation();

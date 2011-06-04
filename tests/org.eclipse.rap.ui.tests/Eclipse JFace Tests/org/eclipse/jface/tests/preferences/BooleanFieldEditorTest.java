@@ -161,7 +161,9 @@ public class BooleanFieldEditorTest extends TestCase {
 		bfEditorWithSameLabel = new BooleanFieldEditor("name", "label", shell){
 			protected Button getChangeControl(Composite parent) {
 				return new Button(parent,SWT.CHECK){
-					protected void checkSubclass() {}
+				    // RAP [fappel]: added serialization version to fix compile errors 
+				    private static final long serialVersionUID = 1L;
+                    protected void checkSubclass() {}
 					public boolean setFocus() {
 						otherThreadEventOccurred();
 						return super.setFocus();

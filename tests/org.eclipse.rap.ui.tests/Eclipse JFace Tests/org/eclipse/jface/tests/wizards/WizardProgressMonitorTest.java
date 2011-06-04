@@ -139,6 +139,9 @@ public class WizardProgressMonitorTest extends TestCase {
 	 * label's text.
 	 */
 	class ProgressMonitorPartSubclass extends ProgressMonitorPart {
+    // RAP [fappel]: added serialization version to fix compile errors 
+    private static final long serialVersionUID = 1L;
+
 
 		ProgressMonitorPartSubclass(Composite parent, Layout layout, boolean useStopButton) {
 			super(parent, layout, useStopButton);
