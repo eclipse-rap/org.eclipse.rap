@@ -16,8 +16,7 @@ import java.net.URLClassLoader;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import junit.framework.*;
 
 
 public class RWTAllTestSuite {
@@ -98,10 +97,14 @@ public class RWTAllTestSuite {
     return result;
   }
 
+  // TODO [fappel]: Had a failure marker and solved this using the cast below.
+  //                But anyway we should think of supporting JUnit4 test cases
+  //                as well.
+  @SuppressWarnings("unchecked") 
   private void addToSuite( String className ) {
     if( className.endsWith( "_Test" ) ) {
       try {
-        suite.addTestSuite( classLoader.loadClass( className ) );
+        suite.addTestSuite( ( Class<? extends TestCase> )classLoader.loadClass( className ) );
       } catch( ClassNotFoundException cnfe ) {
         throw new RuntimeException( cnfe );
       }
