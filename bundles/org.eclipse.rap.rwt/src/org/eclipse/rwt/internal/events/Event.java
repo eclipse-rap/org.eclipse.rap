@@ -10,10 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.events;
 
+import java.util.EventListener;
 import java.util.EventObject;
 
 import org.eclipse.rwt.Adaptable;
-import org.eclipse.swt.internal.SWTEventListener;
 
 public abstract class Event extends EventObject {
   
@@ -69,14 +69,14 @@ public abstract class Event extends EventObject {
 
   protected static void addListener( final Adaptable adaptable, 
                                      final Class listenerType, 
-                                     final SWTEventListener listener )
+                                     final EventListener listener )
   {
     getEventAdapter( adaptable ).addListener( listenerType, listener );
   }
 
   protected static void removeListener( final Adaptable adaptable, 
                                         final Class listenerType,
-                                        final SWTEventListener listener )
+                                        final EventListener listener )
   {
     getEventAdapter( adaptable ).removeListener( listenerType, listener );
   }

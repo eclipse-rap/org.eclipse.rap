@@ -23,18 +23,18 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 public class EventAdapter implements IEventAdapter, SerializableCompatibility {
   private static final long serialVersionUID = 1L;
 
-  private static final SWTEventListener[] EMPTY_LISTENERS = new SWTEventListener[ 0 ];
+  private static final EventListener[] EMPTY_LISTENERS = new SWTEventListener[ 0 ];
 
-  private Map<Class,Set<SWTEventListener>> listenerSets;
+  private Map<Class,Set<EventListener>> listenerSets;
 
   /**
    * <p>Custom Set implementation (intended to hold Listeners) to reduce 
    * memory consumption.</p>
    */
-  private static final class ListenerSet implements Set<SWTEventListener> {
+  private static final class ListenerSet implements Set<EventListener> {
 
     // Start with low capacity, assuming that only few listeners are added
-    private final List<SWTEventListener> list = new ArrayList<SWTEventListener>( 3 );
+    private final List<EventListener> list = new ArrayList<EventListener>( 3 );
 
     public int size() {
       return list.size();
@@ -52,7 +52,7 @@ public class EventAdapter implements IEventAdapter, SerializableCompatibility {
       return list.toArray();
     }
 
-    public boolean add( SWTEventListener o ) {
+    public boolean add( EventListener o ) {
       boolean result = !contains( o ) ;
       if( result ) {
         list.add( o );
@@ -60,31 +60,31 @@ public class EventAdapter implements IEventAdapter, SerializableCompatibility {
       return result;
     }
 
-    public boolean contains( final Object o ) {
+    public boolean contains( Object o ) {
       return list.contains( o );
     }
 
-    public boolean remove( final Object o ) {
+    public boolean remove( Object o ) {
       return list.remove( o );
     }
 
-    public boolean addAll( final Collection c ) {
+    public boolean addAll( Collection c ) {
       throw new UnsupportedOperationException();
     }
 
-    public boolean containsAll( final Collection c ) {
+    public boolean containsAll( Collection c ) {
       throw new UnsupportedOperationException();
     }
 
-    public boolean removeAll( final Collection c ) {
+    public boolean removeAll( Collection c ) {
       throw new UnsupportedOperationException();
     }
 
-    public boolean retainAll( final Collection c ) {
+    public boolean retainAll( Collection c ) {
       throw new UnsupportedOperationException();
     }
 
-    public Iterator<SWTEventListener> iterator() {
+    public Iterator<EventListener> iterator() {
       throw new UnsupportedOperationException();
     }
 
@@ -93,11 +93,11 @@ public class EventAdapter implements IEventAdapter, SerializableCompatibility {
     }
   }
 
-  public SWTEventListener[] getListener( Class listenerType ) {
+  public EventListener[] getListener( Class listenerType ) {
     ParamCheck.notNull( listenerType, "listenerType" );
-    Set<SWTEventListener> listenerSet = getListenerSet( listenerType );
+    Set<EventListener> listenerSet = getListenerSet( listenerType );
     int size = listenerSet.size();
-    SWTEventListener[] result = ( SWTEventListener[] )Array.newInstance( listenerType, size );
+    EventListener[] result = ( EventListener[] )Array.newInstance( listenerType, size );
     listenerSet.toArray( result );
     return result;
   }
@@ -112,7 +112,7 @@ public class EventAdapter implements IEventAdapter, SerializableCompatibility {
     return result;
   }
 
-  public void addListener( Class listenerType, SWTEventListener listener ) {
+  public void addListener( Class listenerType, EventListener listener ) {
     if( listenerType == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -123,7 +123,7 @@ public class EventAdapter implements IEventAdapter, SerializableCompatibility {
     getListenerSet( listenerType ).add( listener );
   }
 
-  public void removeListener( Class listenerType, SWTEventListener listener ) {
+  public void removeListener( Class listenerType, EventListener listener ) {
     if( listenerType == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -136,11 +136,11 @@ public class EventAdapter implements IEventAdapter, SerializableCompatibility {
     }
   }
 
-  private Set<SWTEventListener> getListenerSet( Class listenerType ) {
+  private Set<EventListener> getListenerSet( Class listenerType ) {
     checkListenerType( listenerType );
     if( listenerSets == null ) {
       // Create with low capacity, assuming that there are only few listener types used
-      listenerSets = new HashMap<Class,Set<SWTEventListener>>( 4, 1.0f );
+      listenerSets = new HashMap<Class,Set<EventListener>>( 4, 1.0f );
     }
     if( !listenerSets.containsKey( listenerType ) ) {
       listenerSets.put( listenerType, new ListenerSet() );
@@ -148,16 +148,16 @@ public class EventAdapter implements IEventAdapter, SerializableCompatibility {
     return listenerSets.get( listenerType );
   }
 
-  public SWTEventListener[] getListeners() {
-    SWTEventListener[] result = EMPTY_LISTENERS;
+  public EventListener[] getListeners() {
+    EventListener[] result = EMPTY_LISTENERS;
     if( listenerSets != null ) {
-      Set<SWTEventListener> buffer = new HashSet<SWTEventListener>();
+      Set<EventListener> buffer = new HashSet<EventListener>();
       Object[] sets = listenerSets.values().toArray();
       for( int i = 0; i < sets.length; i++ ) {
         Set set = ( Set )sets[ i ];
         Object[] listeners = set.toArray();
         for( int j = 0; j < listeners.length; j++ ) {
-          buffer.add( ( SWTEventListener )listeners[ j ] );
+          buffer.add( ( EventListener )listeners[ j ] );
         }
       }
       result = buffer.toArray( new SWTEventListener[ buffer.size() ] );

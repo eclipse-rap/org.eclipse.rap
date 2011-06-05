@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.events;
 
-import org.eclipse.swt.internal.SWTEventListener;
+import java.util.EventListener;
 
 
 /**
@@ -28,7 +28,7 @@ public interface IEventAdapter {
    * @return an array of listeners or an empty array if no listeners are
    * available.
    */
-  SWTEventListener[] getListeners();
+  EventListener[] getListeners();
   
   /**
    * <p>Returns an array containing all listeners of type 
@@ -38,7 +38,7 @@ public interface IEventAdapter {
    * @return an array of listeners or an empty array if no listeners are
    * available.
    */
-  SWTEventListener[] getListener( Class listenerType );
+  EventListener[] getListener( Class listenerType );
   
   /**
    * <p>Returns whether there are any listeners of type 
@@ -56,7 +56,7 @@ public interface IEventAdapter {
    * @param listenerType the type of the listeners to be added
    * @param listener the listener to be added 
    */
-  void addListener( Class listenerType, SWTEventListener listener );
+  void addListener( Class listenerType, EventListener listener );
   
   /**
    * <p>Removes the given listener from the object that returned this 
@@ -64,5 +64,5 @@ public interface IEventAdapter {
    * @param listenerType the type of the listeners to be removed
    * @param listener the listener to be removed
    */
-  void removeListener( Class listenerType, SWTEventListener listener );
+  void removeListener( Class listenerType, EventListener listener );
 }
