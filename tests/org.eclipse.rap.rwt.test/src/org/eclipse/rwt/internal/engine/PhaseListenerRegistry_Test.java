@@ -35,16 +35,6 @@ public class PhaseListenerRegistry_Test extends TestCase {
   }
 
   private PhaseListenerRegistry phaseListenerRegistry;
-
-  protected void setUp() throws Exception {
-    phaseListenerRegistry = new PhaseListenerRegistry();
-  }
-  
-  protected void tearDown() throws Exception {
-    if( ContextProvider.hasContext() ) {
-      Fixture.disposeOfServiceContext();
-    }
-  }
   
   public void testDefaultInitialization() {
     Fixture.triggerServletContextInitialized();
@@ -84,6 +74,21 @@ public class PhaseListenerRegistry_Test extends TestCase {
     try {
       phaseListenerRegistry.remove( null );
     } catch( NullPointerException expected ) {
+    }
+  }
+  
+  protected void setUp() {
+    ensureServiceContextHasBeenDisposed();
+    phaseListenerRegistry = new PhaseListenerRegistry();
+  }
+  
+  protected void tearDown()  {
+    ensureServiceContextHasBeenDisposed();
+  }
+
+  private void ensureServiceContextHasBeenDisposed() {
+    if( ContextProvider.hasContext() ) {
+      Fixture.disposeOfServiceContext();
     }
   }
   
