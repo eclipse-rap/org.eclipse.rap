@@ -721,6 +721,58 @@ public class TableLCA_Test extends TestCase {
     assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
   }
 
+  public void testGetItemMetricsWithCheckBox() {
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    shell.setBounds( 0, 0, 200, 200 );
+    shell.setLayout( new FillLayout() );
+    Table table = new Table( shell, SWT.CHECK );
+    table.setHeaderVisible( true );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    column.setText( "column1" );
+    column.setWidth( 30 );
+    TableColumn column2 = new TableColumn( table, SWT.NONE );
+    column2.setText( "column2" );
+    column2.setWidth( 400 );
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    adapter.setLeftOffset( 5 );
+    TableItem item1 = new TableItem( table, SWT.NONE );
+    item1.setText( "item1" );
+    TableItem item2 = new TableItem( table, SWT.NONE );
+    item2.setText( "item2" );
+    TableItem item3 = new TableItem( table, SWT.NONE );
+    item3.setText( "item3" );
+    item2.setImage( image );
+    ItemMetrics[] metrics = TableLCAUtil.getItemMetrics( table );
+    assertEquals( 24, metrics[ 0 ].imageLeft );
+    assertEquals( 6, metrics[ 0 ].imageWidth );
+  }
+
+  public void testGetItemMetricsImageCutOffInSecondColumn() {
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    shell.setBounds( 0, 0, 200, 200 );
+    shell.setLayout( new FillLayout() );
+    Table table = new Table( shell, SWT.NONE );
+    table.setHeaderVisible( true );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    column.setText( "column1" );
+    column.setWidth( 400 );
+    TableColumn column2 = new TableColumn( table, SWT.NONE );
+    column2.setText( "column2" );
+    column2.setWidth( 30 );
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    adapter.setLeftOffset( 5 );
+    TableItem item1 = new TableItem( table, SWT.NONE );
+    item1.setText( "item1" );
+    TableItem item2 = new TableItem( table, SWT.NONE );
+    item2.setText( "item2" );
+    TableItem item3 = new TableItem( table, SWT.NONE );
+    item3.setText( "item3" );
+    item2.setImage( 1, image );
+    ItemMetrics[] metrics = TableLCAUtil.getItemMetrics( table );
+    assertEquals( 403, metrics[ 1 ].imageLeft );
+    assertEquals( 27, metrics[ 1 ].imageWidth );
+  }
+
   public void testGetItemMetricsWithoutColumns() {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     shell.setBounds( 0, 0, 800, 600 );
@@ -757,8 +809,7 @@ public class TableLCA_Test extends TestCase {
     assertEquals( expected, metrics[ 0 ].textLeft );
 
     // left offset must be compensated
-    ITableAdapter adapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( 10 );
     metrics = TableLCAUtil.getItemMetrics( table );
     assertEquals( 0, metrics[ 0 ].left );

@@ -140,7 +140,6 @@ public final class TableLCA extends AbstractWidgetLCA {
     writeHeaderHeight( table );
     writeHeaderVisible( table );
     writeFocusItem( table );
-    writeAlwaysHideSelection( table );
     writeLeftOffset( table );
     writeEnableCellToolTip( table );
     writeCellToolTipText( table );
@@ -346,15 +345,6 @@ public final class TableLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( table );
       writer.set( "hasScrollBarsSelectionListener", newValue );
     }
-  }
-
-  private static void writeAlwaysHideSelection( final Table table ) throws IOException {
-    // TODO: not directly supported by Tree, solve by theming?
-//    JSWriter writer = JSWriter.getWriterFor( table );
-//    Boolean newValue = alwaysHideSelection( table );
-//    Boolean defValue = Boolean.FALSE;
-//    String prop = PROP_ALWAYS_HIDE_SELECTION;
-//    writer.set( prop, "alwaysHideSelection", newValue, defValue );
   }
 
   private static void writeScrollBarsVisible( final Table table ) throws IOException {

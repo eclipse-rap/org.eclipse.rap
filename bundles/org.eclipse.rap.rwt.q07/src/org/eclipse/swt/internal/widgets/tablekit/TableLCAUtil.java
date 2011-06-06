@@ -126,7 +126,6 @@ public final class TableLCAUtil {
     ITableAdapter tableAdapter = getTableAdapter( table );
     TableItem measureItem = tableAdapter.getMeasureItem();
     if( measureItem != null ) {
-      int checkWidth = tableAdapter.getCheckWidthWithMargin();
       int leftOffset = tableAdapter.getLeftOffset();
       for( int i = 0; i < columnCount; i++ ) {
         Rectangle bounds = measureItem.getBounds( i );
@@ -135,7 +134,10 @@ public final class TableLCAUtil {
         // If in column mode, cut image width if image exceeds right cell border
         int imageWidth = tableAdapter.getItemImageWidth( i );
         if( table.getColumnCount() > 0 ) {
-          int maxImageWidth = bounds.width - ( ( imageBounds.x - checkWidth ) - bounds.x );
+          TableColumn column = table.getColumn( i );
+          int columnLeft = tableAdapter.getColumnLeft( column );
+          int columnWidth = column.getWidth();
+          int maxImageWidth = columnWidth - ( imageBounds.x - columnLeft + leftOffset );
           if( imageWidth > maxImageWidth ) {
             imageWidth = Math.max( 0, maxImageWidth );
           }

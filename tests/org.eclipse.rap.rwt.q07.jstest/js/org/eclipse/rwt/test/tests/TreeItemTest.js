@@ -50,7 +50,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     testItemFont : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
       item.setFont( "Arial" );
-      assertEquals( "Arial", item.getCellFont( 0 ) );       
+      assertEquals( "Arial", item.getCellFont( 0 ) );
     },
 
     testCellFonts : function() {
@@ -58,7 +58,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       item.setCellFonts( [ "Arial", "Verdana", "monospace" ] );
       assertEquals( "Arial", item.getCellFont( 0 ) );       
       assertEquals( "Verdana", item.getCellFont( 1 ) );       
-      assertEquals( "monospace", item.getCellFont( 2 ) );       
+      assertEquals( "monospace", item.getCellFont( 2 ) );
     },
 
     testSomeCellFontsSet : function() {
@@ -73,29 +73,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     testForeground : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
       item.setForeground( "red" );
-      assertEquals( "red", item.getCellForeground( 0 ) );       
+      assertEquals( "red", item.getCellForeground( 0 ) );
     },
 
     testCellForegrounds : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
       item.setCellForegrounds( [ "red", "green" ] );
       assertEquals( "red", item.getCellForeground( 0 ) );       
-      assertEquals( "green", item.getCellForeground( 1 ) );       
+      assertEquals( "green", item.getCellForeground( 1 ) );
     },
 
     testSomeCellForegroundsSets : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
       item.setForeground( "red" );
       item.setCellForegrounds( [ null, "green" ] );
-      assertEquals( "red", item.getCellForeground( 0 ) );       
-      assertEquals( "green", item.getCellForeground( 1 ) );       
-      assertEquals( "red", item.getCellForeground( 2 ) );       
+      assertEquals( "red", item.getCellForeground( 0 ) );
+      assertEquals( "green", item.getCellForeground( 1 ) );
+      assertEquals( "red", item.getCellForeground( 2 ) );
     },
 
     testBackground : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
-      item.setBackground( "red" );              
-      assertEquals( "red", item.getBackground() );                            
+      item.setBackground( "red" );
+      assertEquals( "red", item.getBackground() );
     },
 
     testCellBackgrounds: function() {
