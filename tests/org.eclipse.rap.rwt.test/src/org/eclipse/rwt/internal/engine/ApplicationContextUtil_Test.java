@@ -127,8 +127,8 @@ public class ApplicationContextUtil_Test extends TestCase {
   }
   
   public void testGetInstance() {
+    TestServletContext servletContext = Fixture.createServletContext();
     Fixture.createServiceContext();
-    TestServletContext servletContext = Fixture.getServletContext();
     ApplicationContext appContext = createAndSet( servletContext );
     
     ApplicationContext found = ApplicationContextUtil.getInstance();
