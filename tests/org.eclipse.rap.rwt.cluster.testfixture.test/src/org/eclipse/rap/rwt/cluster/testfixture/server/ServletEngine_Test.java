@@ -82,6 +82,7 @@ public class ServletEngine_Test extends TestCase {
     
     assertEquals( 1, engine1.getSessions().length );
     assertEquals( 1, engine2.getSessions().length );
+    assertNotSame( engine1.getSessions()[ 0 ], engine2.getSessions()[ 0 ] );
     String sessionId1 = engine1.getSessions()[ 0 ].getId();
     String sessionId2 = engine2.getSessions()[ 0 ].getId();
     assertFalse( sessionId1.equals( sessionId2 ) );
