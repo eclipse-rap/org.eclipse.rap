@@ -12,6 +12,7 @@
 package org.eclipse.swt.graphics;
 
 import org.eclipse.swt.*;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
 /**
  * Instances of this class describe fonts.
@@ -23,7 +24,8 @@ import org.eclipse.swt.*;
  * @see Font
  * @since 1.0
  */
-public final class FontData {
+public final class FontData implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
   private String name;
   private int height;

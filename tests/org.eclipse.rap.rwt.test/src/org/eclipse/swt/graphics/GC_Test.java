@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import java.io.InputStream;
+import java.io.*;
 
 import junit.framework.TestCase;
 
@@ -584,6 +584,16 @@ public class GC_Test extends TestCase {
     gc.setAlpha( 64 );
     gc.setAdvanced( false );
     assertEquals( 255, gc.getAlpha() );
+  }
+  
+  public void testSerialization() throws Exception {
+    // As of now, GC must not be serializable. It should only be used within a request (i.e. inside
+    // a paint listener)
+    try {
+      Fixture.serialize( gc );
+      fail();
+    } catch( NotSerializableException expected ) {
+    }
   }
 
   protected void setUp() throws Exception {

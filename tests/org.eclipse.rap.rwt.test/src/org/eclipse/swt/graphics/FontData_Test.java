@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,11 +7,13 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
 
 
@@ -135,7 +137,19 @@ public class FontData_Test extends TestCase {
     assertTrue( localeDe.equals( localeEn ) );
   }
   
-  private static String setAndGetLocale( final String locale ) {
+  public void testSerialization() throws Exception {
+    FontData fontData = new FontData( "name", 1, SWT.BOLD );
+    fontData.setLocale( "fr" );
+    
+    FontData deserializedFontData = Fixture.serializeAndDeserialize( fontData );
+    
+    assertEquals( fontData.getName(), deserializedFontData.getName() );
+    assertEquals( fontData.getHeight(), deserializedFontData.getHeight() );
+    assertEquals( fontData.getStyle(), deserializedFontData.getStyle() );
+    assertEquals( fontData.getLocale(), deserializedFontData.getLocale() );
+  }
+  
+  private static String setAndGetLocale( String locale ) {
     FontData fontData = new FontData();
     fontData.setLocale( locale );
     return fontData.getLocale();

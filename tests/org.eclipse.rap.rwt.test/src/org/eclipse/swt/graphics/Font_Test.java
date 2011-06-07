@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -157,7 +157,29 @@ public class Font_Test extends TestCase {
     assertTrue( font1.equals( font2 ) );
     assertTrue( font2.equals( font1 ) );
   }
+  
+  public void testSerializeSessionFont() throws Exception {
+    Font font = new Font( device, "roman", 1, SWT.NORMAL );
+    
+    Font deserializedFont = Fixture.serializeAndDeserialize( font );
+    
+    assertEquals( font.isDisposed(), deserializedFont.isDisposed() );
+    assertEquals( font.getFontData().length, deserializedFont.getFontData().length );
+    assertNotNull( deserializedFont.getDevice() );
+    assertNotSame( font.getDevice(), deserializedFont.getDevice() );
+    assertEquals( font.getFontData()[ 0 ], deserializedFont.getFontData()[ 0 ] );
+  }
 
+  public void testSerializeSharedFont() throws Exception {
+    Font font = Graphics.getFont( "roman", 1, SWT.NORMAL );
+    
+    Font deserializedFont = Fixture.serializeAndDeserialize( font );
+    
+    assertEquals( font.isDisposed(), deserializedFont.isDisposed() );
+    assertEquals( font.getFontData().length, deserializedFont.getFontData().length );
+    assertEquals( font.getFontData()[ 0 ], deserializedFont.getFontData()[ 0 ] );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
     device = new Display();
@@ -165,5 +187,12 @@ public class Font_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  private static void assertEquals( FontData fontData, FontData deserializedFontData ) {
+    assertEquals( fontData.getName(), deserializedFontData.getName() );
+    assertEquals( fontData.getHeight(), deserializedFontData.getHeight() );
+    assertEquals( fontData.getStyle(), deserializedFontData.getStyle() );
+    assertEquals( fontData.getLocale(), deserializedFontData.getLocale() );
   }
 }

@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Display;
 public class Resource_Test extends TestCase {
   
   private static class TestResource extends Resource {
+    private static final long serialVersionUID = 1L;
     TestResource( Device device ) {
       super( device );
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -178,6 +178,27 @@ public class Color_Test extends TestCase {
     } catch( Exception e ) {
       // expected
     }
+  }
+  
+  public void testSerializeSessionColor() throws Exception {
+    Device device = new Display();
+    Color color = new Color( device, 1, 2, 3 );
+    
+    Color deserializedColor = Fixture.serializeAndDeserialize( color );
+
+    assertEquals( color.getRGB(), deserializedColor.getRGB() );
+    assertFalse( deserializedColor.isDisposed() );
+    assertNotNull( deserializedColor.getDevice() );
+    assertNotSame( color.getDevice(), deserializedColor.getDevice() );
+  }
+  
+  public void testSerializeSharedColor() throws Exception {
+    Color color = Graphics.getColor( 1, 2, 3 );
+    
+    Color deserializedColor = Fixture.serializeAndDeserialize( color );
+    
+    assertEquals( color.getRGB(), deserializedColor.getRGB() );
+    assertFalse( deserializedColor.isDisposed() );
   }
   
   protected void setUp() throws Exception {

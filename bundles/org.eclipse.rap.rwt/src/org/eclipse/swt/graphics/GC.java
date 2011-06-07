@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
+import java.io.*;
+
 import org.eclipse.swt.*;
 import org.eclipse.swt.widgets.Control;
 
@@ -1486,5 +1488,9 @@ public class GC extends Resource {
       result = ( Device )drawable;
     }
     return result;
+  }
+  
+  void writeObject( ObjectOutputStream stream ) throws IOException {
+    throw new NotSerializableException( getClass().getName() );
   }
 }

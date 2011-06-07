@@ -43,7 +43,7 @@ public final class Cursor extends Resource {
   private final int value;
 
   // used by ResourceFactory#getCursor()
-  private Cursor( final int style ) {
+  private Cursor( int style ) {
     super( null );
     checkStyle( style );
     value = style;
@@ -97,7 +97,7 @@ public final class Cursor extends Resource {
    *
    * @since 1.3
    */
-  public Cursor( final Device device, final int style ) {
+  public Cursor( Device device, int style ) {
     super( checkDevice( device ) );
   	checkStyle( style );
   	value = style;
@@ -112,7 +112,7 @@ public final class Cursor extends Resource {
    *
    * @see #hashCode
    */
-  public boolean equals( final Object object ) {
+  public boolean equals( Object object ) {
     boolean result;
     if( object == this ) {
       result = true;
@@ -155,7 +155,7 @@ public final class Cursor extends Resource {
     return result;
   }
 
-  private static void checkStyle( final int style ) {
+  private static void checkStyle( int style ) {
     switch( style ) {
       case SWT.CURSOR_ARROW:
       case SWT.CURSOR_WAIT:

@@ -68,9 +68,9 @@ public class SessionFailover_Test extends TestCase {
     assertNotSame( primaryDisplay, secondaryDisplay );
   }
 
-  public void testFontEntryPoint() throws Exception {
-    primary.start( FontEntryPoint.class );
-    secondary.start( FontEntryPoint.class );
+  public void testResourcesEntryPoint() throws Exception {
+    primary.start( ResourcesEntryPoint.class );
+    secondary.start( ResourcesEntryPoint.class );
     client.sendStartupRequest();
     client.sendInitializationRequest();
     

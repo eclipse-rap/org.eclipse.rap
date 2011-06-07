@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -12,6 +12,7 @@ package org.eclipse.swt.graphics;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
@@ -68,6 +69,38 @@ public class Cursor_Test extends TestCase {
     } catch( IllegalStateException e ) {
       assertFalse( cursor.isDisposed() );
     }
+  }
+  
+  public void testSerializeSessionCursor() throws Exception {
+    Display display = new Display();
+    Cursor cursor = new Cursor( display, SWT.CURSOR_ARROW );
+
+    Cursor deserializedCurosr = Fixture.serializeAndDeserialize( cursor );
+    
+    assertEquals( cursor, deserializedCurosr );
+    assertFalse( deserializedCurosr.isDisposed() );
+    assertNotNull( deserializedCurosr.getDevice() );
+    assertNotSame( cursor.getDevice(), deserializedCurosr.getDevice() );
+  }
+  
+  public void testSerializeSystemCursor() throws Exception {
+    Display display = new Display();
+    Cursor cursor = display.getSystemCursor( SWT.CURSOR_CROSS );
+
+    Cursor deserializedCurosr = Fixture.serializeAndDeserialize( cursor );
+    
+    assertEquals( cursor, deserializedCurosr );
+    assertFalse( deserializedCurosr.isDisposed() );
+  }
+  
+  @SuppressWarnings("deprecation")
+  public void testSerializeSharedCursor() throws Exception {
+    Cursor cursor = Graphics.getCursor( SWT.CURSOR_ARROW );
+
+    Cursor deserializedCurosr = Fixture.serializeAndDeserialize( cursor );
+    
+    assertEquals( cursor, deserializedCurosr );
+    assertFalse( deserializedCurosr.isDisposed() );
   }
   
   protected void setUp() throws Exception {
