@@ -31,13 +31,13 @@ public class RWTAllTestSuite {
   
   private final URLClassLoader classLoader;
   private final List<Thread> threads;
-  private final List<IOException> problems;
+  private final List<Throwable> problems;
   private final List<Class<? extends TestCase>> tests;
 
   RWTAllTestSuite() {
     classLoader = ( URLClassLoader )getClass().getClassLoader();
     threads = new Vector<Thread>();
-    problems = new Vector<IOException>();
+    problems = new Vector<Throwable>();
     tests = new Vector<Class<? extends TestCase>>();
   }
   
@@ -69,16 +69,16 @@ public class RWTAllTestSuite {
     return result;
   }
 
+  @SuppressWarnings("unchecked")
   private Class<? extends TestCase>[] sortTests() {
-    @SuppressWarnings("unchecked")
-    Class<? extends TestCase>[] testCases = new Class[ tests.size() ];
-    tests.toArray( testCases );
-    Arrays.sort( testCases, new Comparator<Class<? extends TestCase>>() {
-      public int compare( Class<? extends TestCase> o1, Class<? extends TestCase> o2 ) {
-        return o1.getName().compareTo( o2.getName() );
+    Class<? extends TestCase>[] result = new Class[ tests.size() ];
+    tests.toArray( result );
+    Arrays.sort( result, new Comparator<Class<? extends TestCase>>() {
+      public int compare( Class<? extends TestCase> test1, Class<? extends TestCase> test2 ) {
+        return test1.getName().compareTo( test2.getName() );
       }
     } );
-    return testCases;
+    return result;
   }
 
   private void scanClasspath() throws IOException {
@@ -89,7 +89,7 @@ public class RWTAllTestSuite {
         runScan( file );
       }  
     }
-    waitTillScanIsFinished();
+    waitForScan();
   }
 
   private boolean isInInclusionList( File file ) {
@@ -103,14 +103,13 @@ public class RWTAllTestSuite {
     return result;
   }
 
-  private void waitTillScanIsFinished() {
-    if( !threads.isEmpty() ) {
-      synchronized( tests ) {
-        try {
-          tests.wait();
-        } catch( InterruptedException shouldNotHappen ) {
-          throw new RuntimeException( shouldNotHappen );
-        }
+  private void waitForScan() {
+    while( !threads.isEmpty() ) {
+      Thread thread = threads.remove( 0 );
+      try {
+        thread.join();
+      } catch( InterruptedException ie ) {
+        throw new RuntimeException( ie );
       }
     }
     handleProblems();
@@ -118,12 +117,12 @@ public class RWTAllTestSuite {
 
   private void handleProblems() {
     if( !problems.isEmpty() ) {
-      Iterator<IOException> iterator = problems.iterator();
+      Iterator<Throwable> iterator = problems.iterator();
       while( iterator.hasNext() ) {
-        iterator.next().printStackTrace();
+        Throwable exception = iterator.next();
+        exception.printStackTrace();
       }
-      String msg = "Unable to start testsuite due to IO problems, see stacktraces.";
-      throw new RuntimeException( msg );
+      throw new RuntimeException( "Unable to start test suite, see stacktraces." );
     }
   }
 
@@ -132,10 +131,9 @@ public class RWTAllTestSuite {
       public void run() {
         try {
           scan( file );
-        } catch( IOException ioe ) {
-          problems.add( ioe );
+        } catch( Throwable thr ) {
+          problems.add( thr );
         }
-        notifyFileScanComplete();
       }
     } );
     threads.add( thread );
@@ -143,15 +141,6 @@ public class RWTAllTestSuite {
     thread.start();
   }
   
-  private void notifyFileScanComplete() {
-    threads.remove( 0 );
-    if( threads.isEmpty() ) {
-      synchronized( tests ) {
-        tests.notify();
-      }
-    }
-  }
-
   private void scan( final File file ) throws IOException {
     if( file.getName().endsWith( JAR_EXTENSION ) ) {
       scanJar( file );
@@ -199,16 +188,11 @@ public class RWTAllTestSuite {
     return result;
   }
 
-  // TODO [fappel]: Had a failure marker and solved this using the cast below.
-  //                But anyway we should think of supporting JUnit4 test cases
-  //                as well.
   @SuppressWarnings("unchecked") 
   private void addToSuite( String className ) {
     if( className.endsWith( "_Test" ) ) {
       try {
-        synchronized( tests ) {
-          tests.add( ( Class<? extends TestCase> )classLoader.loadClass( className ) );
-        }
+        tests.add( ( Class<? extends TestCase> )classLoader.loadClass( className ) );
       } catch( ClassNotFoundException cnfe ) {
         throw new RuntimeException( cnfe );
       }
