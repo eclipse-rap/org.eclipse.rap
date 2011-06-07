@@ -428,8 +428,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     },
 
     _remove : function( item ) {
-      var children = this._children;
-      var index = children.indexOf( item );
+      if( item.isExpanded() ) {
+        delete this._expandedItems[ item.toHashCode() ];
+      }
+      var index = this._children.indexOf( item );
       this._children.splice( index, 1 );
       this._children.push( undefined );
       this._update( "remove", item );

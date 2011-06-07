@@ -580,6 +580,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       root.dispose();
     },
 
+    testFindItemByFlatIndexRemoveChild : function() {
+      var root = this._createRoot();
+      assertEquals( "x", root.findItemByFlatIndex( 1020 ).getText( 0 ) );
+      root.getChild( 6 ).dispose();
+      assertEquals( "x", root.findItemByFlatIndex( 19 ).getText( 0 ) );
+      root.dispose();
+    },
+
     testFindItemByFlatIndexCollapseAdd : function() {
       var root = this._createRoot();
       assertEquals( "x", root.findItemByFlatIndex( 1020 ).getText( 0 ) );
