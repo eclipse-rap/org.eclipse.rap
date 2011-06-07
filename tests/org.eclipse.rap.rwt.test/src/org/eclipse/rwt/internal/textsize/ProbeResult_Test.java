@@ -12,6 +12,7 @@ package org.eclipse.rwt.internal.textsize;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
@@ -51,6 +52,15 @@ public class ProbeResult_Test extends TestCase {
     assertEquals( 0.2, probeResult.getAvgCharWidth(), 0.01 );
   }
   
+  public void testIsSerializable() throws Exception {
+    ProbeResult probeResult = createProbeResult( "0123456789", 2 );
+    
+    ProbeResult deserializeProbeResult = Fixture.serializeAndDeserialize( probeResult );
+    
+    assertEquals( probeResult.getSize(), deserializeProbeResult.getSize() );
+    assertEquals( probeResult.getProbe(), deserializeProbeResult.getProbe() );
+  }
+
   private static ProbeResult createProbeResult( String text, int width ) {
     Probe probe = createProbe( text );
     return new ProbeResult( probe, new Point( width, 0 ) );

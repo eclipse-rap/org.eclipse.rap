@@ -12,6 +12,7 @@ package org.eclipse.rwt.internal.textsize;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
@@ -40,7 +41,7 @@ public class MeasurementItem_Test extends TestCase {
     assertTrue( item1.equals( createItem( "textToMeasure", FONT_DATA, 13 ) ) );
   }
   
-  public void testHashcode() {
+  public void testHashCode() {
     MeasurementItem item = createItem( "textToMeasure", FONT_DATA, 13 );
     
     int hashCode = item.hashCode();
@@ -55,12 +56,23 @@ public class MeasurementItem_Test extends TestCase {
     } catch( NullPointerException expected ) {
     }
   }
+  
   public void testParamFontDataMustNotBeNull() {
     try {
       new MeasurementItem( "textToMeasure", null, 1 );
       fail();
     } catch( NullPointerException expected ) {
     }
+  }
+  
+  public void testIsSerializable() throws Exception {
+    MeasurementItem measurementItem = createItem( "text", FONT_DATA, 155 );
+    
+    MeasurementItem deserialized = Fixture.serializeAndDeserialize( measurementItem );
+    
+    assertEquals( measurementItem.getTextToMeasure(), deserialized.getTextToMeasure() );
+    assertEquals( measurementItem.getFontData(), deserialized.getFontData() );
+    assertEquals( measurementItem.getWrapWidth(), deserialized.getWrapWidth() );
   }
   
   private MeasurementItem createItem( String textToMeasure, FontData fontData, int wrapWidth ) {

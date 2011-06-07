@@ -7,13 +7,17 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
-class Probe {
+class Probe implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
+  
   final static String DEFAULT_PROBE_STRING;
   static {
     StringBuffer result = new StringBuffer();

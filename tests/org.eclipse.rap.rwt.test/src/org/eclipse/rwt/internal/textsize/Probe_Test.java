@@ -7,11 +7,13 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 
@@ -47,17 +49,26 @@ public class Probe_Test extends TestCase {
   }
   
   public void testEquals() {
-    Probe probe1 = new Probe( FONT_DATA );
+    Probe probe = new Probe( FONT_DATA );
     
-    assertTrue( probe1.equals( probe1 ) );
-    assertTrue( probe1.equals( new Probe( FONT_DATA ) ) );
-    assertFalse( probe1.equals( null ) );
-    assertFalse( probe1.equals( new Object() ) );
-    assertFalse( probe1.equals( new Probe( "otherText", FONT_DATA ) ) );
-    assertFalse( probe1.equals( new Probe( new FontData( "helvetia", 23, SWT.BOLD ) ) ) );
+    assertTrue( probe.equals( probe ) );
+    assertTrue( probe.equals( new Probe( FONT_DATA ) ) );
+    assertFalse( probe.equals( null ) );
+    assertFalse( probe.equals( new Object() ) );
+    assertFalse( probe.equals( new Probe( "otherText", FONT_DATA ) ) );
+    assertFalse( probe.equals( new Probe( new FontData( "helvetia", 23, SWT.BOLD ) ) ) );
   }
   
   public void testHashcode() {
     assertEquals( 930413418, new Probe( FONT_DATA ).hashCode() );
+  }
+  
+  public void testIsSerializable() throws Exception {
+    Probe probe = new Probe( "text", new FontData( "name", 1, SWT.ITALIC ) );
+    
+    Probe deserializedProbe = Fixture.serializeAndDeserialize( probe );
+    
+    assertEquals( probe.getText(), deserializedProbe.getText() );
+    assertEquals( probe.getFontData(), deserializedProbe.getFontData() );
   }
 }

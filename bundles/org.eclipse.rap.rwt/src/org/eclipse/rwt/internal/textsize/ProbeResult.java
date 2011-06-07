@@ -7,17 +7,21 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
 import java.math.BigDecimal;
 
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
-class ProbeResult {
+class ProbeResult implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
+  
   private final Point size;
   private final Probe probe;
-  private float avgCharWidth;
+  private transient float avgCharWidth;
 
   ProbeResult( Probe probe, Point size ) {
     this.probe = probe;

@@ -12,8 +12,10 @@ package org.eclipse.rwt.internal.textsize;
 
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
-class MeasurementItem {
+class MeasurementItem implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
   private final int wrapWidth;
   private final FontData fontData;

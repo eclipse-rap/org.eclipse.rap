@@ -7,11 +7,13 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
@@ -38,6 +40,14 @@ public class ProbeResultStore_Test extends TestCase {
     probeResultStore.createProbeResult( PROBE_OF_FONT_DATA_1, SIZE );
 
     assertTrue( probeResultStore.containsProbeResult( FONT_DATA_1 ) );
+  }
+  
+  public void testIsSerializable() throws Exception {
+    probeResultStore.createProbeResult( PROBE_OF_FONT_DATA_1, SIZE );
+    
+    ProbeResultStore deserialized = Fixture.serializeAndDeserialize( probeResultStore );
+    
+    assertTrue( deserialized.containsProbeResult( FONT_DATA_1 ) );
   }
   
   protected void setUp() throws Exception {

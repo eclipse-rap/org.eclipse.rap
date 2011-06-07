@@ -17,9 +17,11 @@ import java.util.Map;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
 
-final class ProbeResultStore {
+final class ProbeResultStore implements SerializableCompatibility  {
+  private static final long serialVersionUID = 1L;
 
   private final Map<FontData,ProbeResult> probeResults;
 
