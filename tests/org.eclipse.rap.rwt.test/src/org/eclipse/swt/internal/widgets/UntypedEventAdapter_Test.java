@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,14 +26,25 @@ import org.eclipse.swt.widgets.*;
 
 public class UntypedEventAdapter_Test extends TestCase {
 
+  private static class SerializableListener implements Listener, Serializable {
+    private static final long serialVersionUID = 1L;
+    public void handleEvent( Event event ) {
+    }
+  }
+
   private static final String EVENT_FIRED = "fired|";
   private static int eventType;
   private static String log;
+  
+  private Display display;
+  private Control widget;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     eventType = 0;
     log = "";
+    display = new Display();
+    widget = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
@@ -40,8 +52,6 @@ public class UntypedEventAdapter_Test extends TestCase {
   }
 
   public void testListenerTypes() {
-    Display display = new Display();
-    Control widget = new Shell( display );
     UntypedEventAdapter adapter = new UntypedEventAdapter();
     Listener listener = new Listener() {
       public void handleEvent( final Event event ) {
@@ -120,8 +130,6 @@ public class UntypedEventAdapter_Test extends TestCase {
   }
 
   public void testAdditionAndRemovalOfListener() {
-    Display display = new Display();
-    Control widget = new Shell( display );
     UntypedEventAdapter adapter = new UntypedEventAdapter();
     final Set<Event> eventBuffer = new HashSet<Event>();
     Listener listener = new Listener() {
@@ -158,7 +166,6 @@ public class UntypedEventAdapter_Test extends TestCase {
   }
 
   public void testExecutionOrder() {
-    Display display = new Display();
     Control widget = new Shell( display );
     UntypedEventAdapter adapter = new UntypedEventAdapter();
     Listener listener1 = new Listener() {
@@ -179,8 +186,6 @@ public class UntypedEventAdapter_Test extends TestCase {
 
   public void testEventFields() {
     final Event[] eventLog = { null };
-    final Display display = new Display();
-    final Shell shell = new Shell( display );
     Listener listener = new Listener() {
       public void handleEvent( final Event event ) {
         eventLog[ 0 ] = event;
@@ -189,16 +194,15 @@ public class UntypedEventAdapter_Test extends TestCase {
     // Move event
     UntypedEventAdapter adapter = new UntypedEventAdapter();
     adapter.addListener( SWT.Move, listener );
-    ControlEvent event = new ControlEvent( shell, ControlEvent.CONTROL_MOVED );
+    ControlEvent event = new ControlEvent( widget, ControlEvent.CONTROL_MOVED );
     adapter.controlMoved( event );
     assertNotNull( eventLog[ 0 ] );
     assertSame( display, eventLog [ 0 ].display );
-    assertSame( shell, eventLog [ 0 ].widget );
+    assertSame( widget, eventLog [ 0 ].widget );
     // Selection event
     adapter = new UntypedEventAdapter();
     adapter.addListener( SWT.Selection, listener );
-    SelectionEvent selEvent
-      = new SelectionEvent( shell, null, SelectionEvent.WIDGET_SELECTED );
+    SelectionEvent selEvent = new SelectionEvent( widget, null, SelectionEvent.WIDGET_SELECTED );
     selEvent.x = 1;
     selEvent.y = 2;
     selEvent.width = 3;
@@ -217,7 +221,7 @@ public class UntypedEventAdapter_Test extends TestCase {
     // Key event
     adapter = new UntypedEventAdapter();
     adapter.addListener( SWT.KeyDown, listener );
-    KeyEvent keyEvent = new KeyEvent( shell, KeyEvent.KEY_PRESSED );
+    KeyEvent keyEvent = new KeyEvent( widget, KeyEvent.KEY_PRESSED );
     keyEvent.character = 'x';
     keyEvent.keyCode = 123;
     keyEvent.stateMask = 321;
@@ -232,7 +236,7 @@ public class UntypedEventAdapter_Test extends TestCase {
     // Mouse event
     adapter = new UntypedEventAdapter();
     adapter.addListener( SWT.MouseDown, listener );
-    MouseEvent mouseEvent = new MouseEvent( shell, MouseEvent.MOUSE_DOWN );
+    MouseEvent mouseEvent = new MouseEvent( widget, MouseEvent.MOUSE_DOWN );
     mouseEvent.x = 1;
     mouseEvent.y = 2;
     mouseEvent.button = 3;
@@ -253,11 +257,20 @@ public class UntypedEventAdapter_Test extends TestCase {
         eventLog[ 0 ] = event;
       }
     };
-    Display display = new Display();
-    Widget widget = new Shell( display );
     // Ensure that adding an unknown/invalid event type is silently ignored
     widget.addListener( 505, listener );
     assertNull( eventLog[ 0 ] );
     widget.removeListener( 505, listener );
+  }
+  
+  public void testIsSerializable() throws Exception {
+    UntypedEventAdapter adapter = new UntypedEventAdapter();
+    adapter.addListener( SWT.Move, new SerializableListener() );
+    
+    UntypedEventAdapter deserializeAdapter = Fixture.serializeAndDeserialize( adapter );
+    
+    Listener[] listeners = deserializeAdapter.getListeners( SWT.Move );
+    assertEquals( 1, listeners.length );
+    assertEquals( SerializableListener.class, listeners[ 0 ].getClass() );
   }
 }

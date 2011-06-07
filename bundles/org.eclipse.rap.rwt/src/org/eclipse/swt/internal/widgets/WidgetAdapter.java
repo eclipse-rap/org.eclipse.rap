@@ -104,7 +104,6 @@ public final class WidgetAdapter implements IWidgetAdapter, SerializableCompatib
     }
   }
   
-  
   private Object readResolve() {
     initialize();
     return this;

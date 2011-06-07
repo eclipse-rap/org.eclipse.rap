@@ -15,12 +15,14 @@ import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.events.*;
 import org.eclipse.swt.widgets.*;
 
 
 public final class UntypedEventAdapter
-  implements ControlListener,
+  implements SerializableCompatibility,
+             ControlListener,
              DisposeListener,
              SelectionListener,
              FocusListener,
@@ -40,11 +42,13 @@ public final class UntypedEventAdapter
              MenuDetectListener,
              ArmListener
 {
+  private static final long serialVersionUID = 1L;
 
-  private static final class Entry {
+  private static final class Entry implements SerializableCompatibility {
+    private static final long serialVersionUID = 1L;
     final int eventType;
     final Listener listener;
-    private Entry( final int eventType, final Listener listener ) {
+    private Entry( int eventType, Listener listener ) {
       this.eventType = eventType;
       this.listener = listener;
     }
