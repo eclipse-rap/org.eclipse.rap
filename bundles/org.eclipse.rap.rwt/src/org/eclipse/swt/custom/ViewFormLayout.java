@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.*;
  * @see ViewForm
  */
 class ViewFormLayout extends Layout {
+  private static final long serialVersionUID = 1L;
 
   protected Point computeSize( Composite composite,
                                int wHint,

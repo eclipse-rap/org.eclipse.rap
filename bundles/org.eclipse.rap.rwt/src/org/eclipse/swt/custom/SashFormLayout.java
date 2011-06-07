@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.*;
  * @see SashForm
  */
 class SashFormLayout extends Layout {
+private static final long serialVersionUID = 1L;
 protected Point computeSize(Composite composite, int wHint, int hHint, boolean flushCache) {
   SashForm sashForm = (SashForm)composite;
   Control[] cArray = sashForm.getControls(true);

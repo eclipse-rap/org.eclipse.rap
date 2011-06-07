@@ -13,6 +13,7 @@ package org.eclipse.swt.layout;
  
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -43,7 +44,8 @@ import org.eclipse.swt.widgets.*;
  * 
  * @since 1.0
  */
-public final class FormData {
+public final class FormData implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
   /**
    * width specifies the preferred width in pixels. This value
    * is the wHint passed into Control.computeSize(int, int, boolean) 

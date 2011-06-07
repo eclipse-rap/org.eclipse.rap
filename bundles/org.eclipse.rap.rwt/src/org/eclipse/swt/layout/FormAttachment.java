@@ -11,6 +11,7 @@
 package org.eclipse.swt.layout;
 
 import org.eclipse.swt.*;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -76,8 +77,9 @@ import org.eclipse.swt.widgets.*;
  * 
  * @since 1.0
  */
-@SuppressWarnings("all")
-public final class FormAttachment {
+public final class FormAttachment implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
+
   /**
    * numerator specifies the numerator of the "a" term in the
    * equation, y = ax + b, which defines the attachment.
@@ -242,6 +244,7 @@ FormAttachment divide (int value) {
   return new FormAttachment (numerator, denominator * value, offset / value);
 }
 
+@SuppressWarnings("all")
 int gcd (int m, int n) {
   int temp;
   m = Math.abs (m);

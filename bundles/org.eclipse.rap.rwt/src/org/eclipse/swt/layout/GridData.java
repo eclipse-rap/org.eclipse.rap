@@ -12,6 +12,7 @@ package org.eclipse.swt.layout;
 
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -54,7 +55,9 @@ import org.eclipse.swt.widgets.*;
  * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
  * @since 1.0
  */
-public final class GridData {
+public final class GridData implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
+
   /**
    * verticalAlignment specifies how controls will be positioned 
    * vertically within a cell. 

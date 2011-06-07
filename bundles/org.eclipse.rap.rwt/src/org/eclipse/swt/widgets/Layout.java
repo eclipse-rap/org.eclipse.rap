@@ -11,6 +11,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
 /**
  * A layout controls the position and size of the children of a composite
@@ -18,9 +19,10 @@ import org.eclipse.swt.graphics.Point;
  * 
  * @see Composite#setLayout(Layout)
  */
-public abstract class Layout {
+public abstract class Layout implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
-	/**
+  /**
 	 * Lays out the children of the specified composite according to this
 	 * layout.
 	 * <p>

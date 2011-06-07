@@ -87,7 +87,8 @@ import org.eclipse.swt.widgets.*;
  * @since 1.0
  */
 public final class FormLayout extends Layout {
-  
+  private static final long serialVersionUID = 1L;
+
   /**
    * marginWidth specifies the number of pixels of horizontal margin
    * that will be placed along the left and right edges of the layout.

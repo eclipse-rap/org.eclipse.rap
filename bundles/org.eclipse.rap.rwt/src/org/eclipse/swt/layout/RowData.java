@@ -12,6 +12,7 @@ package org.eclipse.swt.layout;
 
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
 /**
  * Each control controlled by a <code>RowLayout</code> can have its initial 
@@ -34,7 +35,9 @@ import org.eclipse.swt.graphics.*;
  * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
  * @since 1.0
  */
-public final class RowData {
+public final class RowData implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
+  
   /**
    * width specifies the desired width in pixels. This value
    * is the wHint passed into Control.computeSize(int, int, boolean) 

@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.*;
  * @see CTabFolder
  */
 class CTabFolderLayout extends Layout {
+  private static final long serialVersionUID = 1L;
   protected Point computeSize(Composite composite, int wHint, int hHint, boolean flushCache) {
     CTabFolder folder = (CTabFolder)composite;
 //    CTabItem[] items = folder.items;

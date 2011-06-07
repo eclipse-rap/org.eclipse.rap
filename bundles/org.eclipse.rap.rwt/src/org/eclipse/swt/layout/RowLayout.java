@@ -57,7 +57,8 @@ import org.eclipse.swt.widgets.*;
  * @since 1.0
  */
 public final class RowLayout extends Layout {
-  
+  private static final long serialVersionUID = 1L;
+
   /**
    * type specifies whether the layout places controls in rows or 
    * columns.
