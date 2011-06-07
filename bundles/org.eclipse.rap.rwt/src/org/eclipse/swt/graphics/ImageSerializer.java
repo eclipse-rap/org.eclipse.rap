@@ -40,9 +40,9 @@ class ImageSerializer {
     }
   
     public void validateObject() throws InvalidObjectException {
-      PostDeserialization.addProcessor( sessionStore, new Runnable() {
+      PostDeserialization.addProcessor( getSessionStore(), new Runnable() {
         public void run() {
-          ByteArrayInputStream inputStream = new ByteArrayInputStream( imageBytes.data );
+          InputStream inputStream = new ByteArrayInputStream( imageBytes.data );
           getResourceManager().register( image.internalImage.getResourceName(), inputStream );
         }
       } );
@@ -50,11 +50,9 @@ class ImageSerializer {
   }
 
   private final Image image;
-  private final ISessionStore sessionStore;
 
   ImageSerializer( Image image ) {
     this.image = image;
-    this.sessionStore = getSessionStore();
   }
 
   void writeObject( ObjectOutputStream stream ) throws IOException {
@@ -85,6 +83,6 @@ class ImageSerializer {
   }
 
   private IResourceManager getResourceManager() {
-    return ApplicationContextUtil.get( sessionStore ).getResourceManager();
+    return ApplicationContextUtil.get( getSessionStore() ).getResourceManager();
   }
 }
