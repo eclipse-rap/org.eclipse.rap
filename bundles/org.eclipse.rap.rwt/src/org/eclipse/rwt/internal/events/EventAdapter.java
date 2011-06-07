@@ -31,7 +31,8 @@ public class EventAdapter implements IEventAdapter, SerializableCompatibility {
    * <p>Custom Set implementation (intended to hold Listeners) to reduce 
    * memory consumption.</p>
    */
-  private static final class ListenerSet implements Set<EventListener> {
+  private static final class ListenerSet implements Set<EventListener>, SerializableCompatibility {
+    private static final long serialVersionUID = 1L;
 
     // Start with low capacity, assuming that only few listeners are added
     private final List<EventListener> list = new ArrayList<EventListener>( 3 );

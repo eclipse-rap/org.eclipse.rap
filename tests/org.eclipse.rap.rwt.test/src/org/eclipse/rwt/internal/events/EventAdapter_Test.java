@@ -12,6 +12,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.events;
 
+import java.io.Serializable;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -24,6 +26,13 @@ import org.eclipse.swt.widgets.*;
 
 public class EventAdapter_Test extends TestCase {
   
+  private static class SerializableSelectionListener 
+    extends SelectionAdapter 
+    implements Serializable 
+  {
+    private static final long serialVersionUID = 1L;
+  }
+
   private Widget widget;
 
   protected void setUp() throws Exception {
@@ -38,8 +47,7 @@ public class EventAdapter_Test extends TestCase {
   }
   
   public void testActionPerformed()  {
-    IEventAdapter eventAdapter
-      = ( IEventAdapter )widget.getAdapter( IEventAdapter.class );
+    IEventAdapter eventAdapter = ( IEventAdapter )widget.getAdapter( IEventAdapter.class );
     assertNotNull( eventAdapter );
     assertSame( eventAdapter, widget.getAdapter( IEventAdapter.class ) );
     assertFalse( eventAdapter.hasListener( SelectionListener.class ) );
@@ -83,5 +91,16 @@ public class EventAdapter_Test extends TestCase {
     }
     Object[] listeners = eventAdapter.getListener( SelectionListener.class );
     assertEquals( 0, listeners.length );
+  }
+  
+  public void testIsSerializable() throws Exception {
+    IEventAdapter eventAdapter = ( IEventAdapter )widget.getAdapter( IEventAdapter.class );
+    eventAdapter.addListener( SelectionListener.class, new SerializableSelectionListener() );
+
+    IEventAdapter deserialized = Fixture.serializeAndDeserialize( eventAdapter );
+    
+    assertEquals( 1, deserialized.getListeners().length );
+    assertEquals( SerializableSelectionListener.class, 
+                  deserialized.getListeners()[ 0 ].getClass() );
   }
 }
