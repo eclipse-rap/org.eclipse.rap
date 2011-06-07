@@ -34,6 +34,7 @@ import org.eclipse.swt.internal.graphics.ColorUtil;
  * @since 1.0
  */
 public class Color extends Resource {
+  private static final long serialVersionUID = 1L;
 
   /**
    * Holds the color values within one integer.

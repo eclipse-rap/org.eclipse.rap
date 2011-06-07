@@ -56,8 +56,8 @@ public class JSLibraryConcatenator {
     jsConcatenator = new ByteArrayOutputStream();
   }
 
-  public void appendJSLibrary( File toWrite, byte[] content ) {
-    if( isAllowed( toWrite ) ) {
+  public void appendJSLibrary( byte[] content ) {
+    if( jsConcatenator != null ) {
       for( int i = 0; i < content.length; i++ ) {
         jsConcatenator.write( content[ i ] );
         if( isLastCharacter( content, i ) ) {
@@ -87,10 +87,6 @@ public class JSLibraryConcatenator {
   
   //////////////////
   // helping methods
-
-  private boolean isAllowed( File toWrite ) {
-    return jsConcatenator != null && toWrite.getName().endsWith( "js" );
-  }
 
   private void writeNewLine() {
     jsConcatenator.write( '\n' );

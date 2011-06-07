@@ -14,9 +14,12 @@ package org.eclipse.swt.graphics;
 
 import java.io.*;
 
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.*;
 import org.eclipse.swt.internal.graphics.InternalImage;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * Instances of this class are graphics which have been prepared
@@ -298,7 +301,7 @@ public final class Image extends Resource {
    * @return a rectangle specifying the image's bounds
    *
    * @exception SWTException <ul>
-   * <!--   <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li> -->
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_INVALID_IMAGE - if the image is not a bitmap or an icon</li>
    * </ul>
    */
@@ -328,9 +331,16 @@ public final class Image extends Resource {
     if( isDisposed() ) {
       SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
     }
-    return internalImage.getImageData();
+    ImageData result;
+    if( device != null ) {
+      ApplicationContext applicationContext = getApplicationContext();
+      result = applicationContext.getImageDataFactory().findImageData( internalImage );
+    } else {
+      result = internalImage.getImageData();
+    }
+    return result;
   }
-  
+
   /**
    * Sets the color to which to map the transparent pixel.
    * <p>
@@ -405,6 +415,24 @@ public final class Image extends Resource {
     }
     // do nothing
     return null;
+  }
+
+  private void writeObject( ObjectOutputStream stream ) throws IOException {
+    if( device == null ) {
+      throw new NotSerializableException( getClass().getName() );
+    }
+    new ImageSerializer( this ).writeObject( stream );
+  }
+
+  private void readObject( ObjectInputStream stream ) throws IOException, ClassNotFoundException {
+    new ImageSerializer( this ).readObject( stream );
+  }
+
+  private ApplicationContext getApplicationContext() {
+    Display display = ( Display )device;
+    IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    ISessionStore sessionStore = adapter.getSessionStore();
+    return ApplicationContextUtil.get( sessionStore );
   }
 
   private static InternalImage findInternalImage( final ImageData imageData ) {

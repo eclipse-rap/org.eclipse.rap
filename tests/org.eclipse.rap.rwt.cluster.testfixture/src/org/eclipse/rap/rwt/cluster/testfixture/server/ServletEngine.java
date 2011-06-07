@@ -57,6 +57,7 @@ public class ServletEngine implements IServletEngine {
       addEntryPoint( entryPointClass );
     }
     server.start();
+System.out.println( "port " + getPort() );    
   }
 
   public void stop() throws Exception {

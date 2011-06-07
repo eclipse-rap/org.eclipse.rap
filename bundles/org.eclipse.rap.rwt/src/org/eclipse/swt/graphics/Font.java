@@ -32,6 +32,7 @@ import org.eclipse.swt.*;
  * @since 1.0
  */
 public final class Font extends Resource {
+  private static final long serialVersionUID = 1L;
 
   private final FontData internalFontData;
 

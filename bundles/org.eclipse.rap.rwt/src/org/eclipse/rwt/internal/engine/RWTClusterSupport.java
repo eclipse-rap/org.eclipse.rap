@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rwt.service.ISessionStore;
 
 
 public class RWTClusterSupport implements Filter {
@@ -51,7 +52,15 @@ public class RWTClusterSupport implements Filter {
     SessionStoreImpl sessionStore = SessionStoreImpl.getInstanceFromSession( httpSession );
     if( sessionStore != null ) {
       sessionStore.attachHttpSession( httpSession );
+      attachApplicationContext( sessionStore );
+      PostDeserialization.runProcessors( sessionStore );
     }
+  }
+
+  private static void attachApplicationContext( ISessionStore sessionStore ) {
+    ServletContext servletContext = sessionStore.getHttpSession().getServletContext();
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    ApplicationContextUtil.set( sessionStore, applicationContext );
   }
 
   private static void afterService( ServletRequest request ) {

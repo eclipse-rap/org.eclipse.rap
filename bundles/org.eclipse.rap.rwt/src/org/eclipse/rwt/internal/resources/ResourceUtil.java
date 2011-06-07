@@ -60,7 +60,9 @@ public final class ResourceUtil {
     } finally {
       fos.close();
     }
-    RWTFactory.getJSLibraryConcatenator().appendJSLibrary( toWrite, content );
+    if( toWrite.getName().endsWith( "js" ) ) {
+      RWTFactory.getJSLibraryConcatenator().appendJSLibrary( content );
+    }
   }
 
   public static void useJsLibrary( String libraryName ) {
@@ -118,7 +120,8 @@ public final class ResourceUtil {
     return result;
   }
 
-  static byte[] readBinary( InputStream stream ) throws IOException {
+  // TODO [rh] move to utility class (as is also used by Image)
+  public static byte[] readBinary( InputStream stream ) throws IOException {
     ByteArrayOutputStream bufferedResult = new ByteArrayOutputStream();
     BufferedInputStream bufferedStream = new BufferedInputStream( stream );
     try {
