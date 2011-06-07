@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -8,6 +8,8 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
+
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
@@ -20,9 +22,10 @@ import org.eclipse.swt.widgets.*;
 
 public class WidgetGraphicsAdapter_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   public void testRoundedBorderInitialValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Control control = new Composite( shell, SWT.NONE );
     Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
@@ -44,8 +47,7 @@ public class WidgetGraphicsAdapter_Test extends TestCase {
     graphicsAdapter.setRoundedBorder( 0, null, 1, 2, 3, 4 );
     radius = graphicsAdapter.getRoundedBorderRadius();
     radius.x = 99;
-    assertEquals( new Rectangle( 1, 2, 3, 4 ),
-                  graphicsAdapter.getRoundedBorderRadius() );
+    assertEquals( new Rectangle( 1, 2, 3, 4 ), graphicsAdapter.getRoundedBorderRadius() );
   }
 
   public void testRoundedBorderColor() {
@@ -54,15 +56,12 @@ public class WidgetGraphicsAdapter_Test extends TestCase {
     graphicsAdapter.setRoundedBorder( 2, blue, 1, 2, 3, 4 );
     assertEquals( 2, graphicsAdapter.getRoundedBorderWidth() );
     assertEquals( blue, graphicsAdapter.getRoundedBorderColor() );
-    assertEquals( new Rectangle( 1, 2, 3, 4 ),
-                  graphicsAdapter.getRoundedBorderRadius() );
+    assertEquals( new Rectangle( 1, 2, 3, 4 ), graphicsAdapter.getRoundedBorderRadius() );
 
   }
 
   public void testBackgroundGradient() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    final Control control = new Composite( shell, SWT.NONE );
+    Control control = new Composite( shell, SWT.NONE );
     Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
     assertNull( graphicsAdapter.getBackgroundGradientColors() );
@@ -89,8 +88,7 @@ public class WidgetGraphicsAdapter_Test extends TestCase {
     try {
       graphicsAdapter.setBackgroundGradient( gradientColors, percents, true );
       fail( "Must throw exception for invalid arguments" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
 
     gradientColors = new Color[] { blue, null, blue };
@@ -98,14 +96,11 @@ public class WidgetGraphicsAdapter_Test extends TestCase {
     try {
       graphicsAdapter.setBackgroundGradient( gradientColors, percents, true );
       fail( "Must throw exception for invalid arguments" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testBackgroundGradientSafeCopy() {
-    Display display = new Display();
-    Control shell = new Shell( display );
     Object adapter = shell.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
     Color[] colors = { Graphics.getColor( new RGB( 1, 2, 3 ) ) };
@@ -114,9 +109,32 @@ public class WidgetGraphicsAdapter_Test extends TestCase {
     percentages[ 0 ] = 2;
     assertEquals( 1, graphicsAdapter.getBackgroundGradientPercents()[ 0 ] );
   }
+  
+  public void testIsSerializable() throws Exception {
+    WidgetGraphicsAdapter graphicsAdapter = new WidgetGraphicsAdapter();
+    graphicsAdapter.setRoundedBorder( 1, createColor(), 3, 4, 5, 6 );
+    Color[] colors = new Color[] { createColor() };
+    graphicsAdapter.setBackgroundGradient( colors, new int[] { 100 }, false );
+
+    WidgetGraphicsAdapter deserialized = Fixture.serializeAndDeserialize( graphicsAdapter );
+    
+    assertEquals( graphicsAdapter.getRoundedBorderWidth(), deserialized.getRoundedBorderWidth() );
+    assertEquals( graphicsAdapter.getRoundedBorderColor(), deserialized.getRoundedBorderColor() );
+    assertEquals( graphicsAdapter.getRoundedBorderRadius(), deserialized.getRoundedBorderRadius() );
+    assertTrue( Arrays.equals( graphicsAdapter.getBackgroundGradientColors(), 
+                               deserialized.getBackgroundGradientColors() ) );
+    assertTrue( Arrays.equals( graphicsAdapter.getBackgroundGradientPercents(), 
+                               deserialized.getBackgroundGradientPercents() ) );
+  }
+
+  private Color createColor() {
+    return new Color( display, 1, 2, 3 );
+  }
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {

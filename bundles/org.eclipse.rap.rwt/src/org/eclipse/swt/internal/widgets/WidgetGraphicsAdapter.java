@@ -12,8 +12,13 @@ package org.eclipse.swt.internal.widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
-public final class WidgetGraphicsAdapter implements IWidgetGraphicsAdapter {
+public final class WidgetGraphicsAdapter 
+  implements IWidgetGraphicsAdapter, SerializableCompatibility 
+{
+  private static final long serialVersionUID = 1L;
+  
   private int roundedBorderWidth;
   private Color roundedBorderColor;
   private Rectangle roundedBorderRadius;
@@ -41,10 +46,7 @@ public final class WidgetGraphicsAdapter implements IWidgetGraphicsAdapter {
     return backgroundGradientVertical;
   }
 
-  public void setBackgroundGradient( final Color[] gradientColors,
-                                     final int[] percents,
-                                     final boolean vertical )
-  {
+  public void setBackgroundGradient( Color[] gradientColors, int[] percents, boolean vertical ) {
     if( gradientColors != null && percents != null ) {
       if( gradientColors.length != percents.length ) {
         SWT.error( SWT.ERROR_INVALID_ARGUMENT );
@@ -87,12 +89,12 @@ public final class WidgetGraphicsAdapter implements IWidgetGraphicsAdapter {
     return result;
   }
 
-  public void setRoundedBorder( final int width,
-                                final Color color,
-                                final int topLeftRadius,
-                                final int topRightRadius,
-                                final int bottomRightRadius,
-                                final int bottomLeftRadius ) {
+  public void setRoundedBorder( int width,
+                                Color color,
+                                int topLeftRadius,
+                                int topRightRadius,
+                                int bottomRightRadius,
+                                int bottomLeftRadius ) {
     roundedBorderWidth = width;
     roundedBorderColor = color;
     roundedBorderRadius = new Rectangle( topLeftRadius,
