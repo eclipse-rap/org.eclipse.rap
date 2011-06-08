@@ -22,7 +22,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._hasMultiSelection = false;
     // Internal State:
     this._hasSelectionListeners = false;
-    this._topItem = null;
     this._leadItem = null;
     this._topItemIndex = 0;
     this._selection = [];
@@ -77,7 +76,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._columnArea = null;
     this._horzScrollBar = null;
     this._vertScrollBar = null;
-    this._topItem = null;
     this._leadItem = null;
     this._focusItem = null;
     this._resizeLine = null;
@@ -204,7 +202,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._itemHeight = height;
       this._vertScrollBar.setIncrement( height );
       this._rowContainer.setRowHeight( height );
-      this._scheduleUpdate( true );
+      this._scheduleUpdate( "scrollHeight" );
     },
     
     setColumnCount : function( count ) {
@@ -387,23 +385,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _onItemUpdate : function( event ) {
       var item = event.getTarget();
       if( event.getData() === "collapsed" ) {
-        // TODO [tb] : Should be done on server if focusItem is synced
         if( this._focusItem && this._focusItem.isChildOf( item ) ) {
           this.setFocusItem( item );
         }
       }
       if( event.getData() === "remove" ) {
-        var oldItem = event.getRelatedTarget();
-        this._deselectItem( oldItem, false );
-        if( this._topItem === oldItem ) {
-          this._topItem = null;
-        }
-        if( this._leadItem === oldItem ) {
-          this._leadItem = null;
-        }
-        if( this._focusItem === oldItem ) {
-          this._focusItem = null;
-        }
+      	this._scheduleUpdate( "checkDisposedItems" );
       }
       this._sendItemUpdate( item, event );
       this._renderItemUpdate( item, event );
@@ -425,11 +412,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var oldIndex = this._topItemIndex;
       this._topItemIndex = Math.ceil( scrollTop / this._itemHeight );
       if( this._inServerResponse() ) {
-        this._topItem = null;
-        this._scheduleUpdate();
+        this._scheduleUpdate( "topItem" );
       } else {
         this._sendTopItemIndexChange();
-        this._updateTopItem( oldIndex, true );
+        this._updateTopItem( true );
       }
     },
 
@@ -668,13 +654,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         switch( event.getData() ) {
           case "expanded":
           case "collapsed":
-            this._scheduleUpdate( true ); 
+            this._scheduleUpdate( "scrollHeight" ); 
           break;
           case "add":
           case "remove":
             // NOTE: the added/removed item is a child of this item
             if( item.isExpanded() ) {
-              this._scheduleUpdate( true ); 
+              this._scheduleUpdate( "scrollHeight" ); 
             } else {
               this._scheduleItemUpdate( item );
             }
@@ -695,9 +681,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this.addToQueue( "updateRows" );
     },
     
-    _scheduleUpdate : function( scrollHeight ) {
-      if( scrollHeight === true ) {
-        this.addToQueue( "scrollHeight" );
+    _scheduleUpdate : function( task ) {
+      if( task !== undefined ) {
+        this.addToQueue( task );
       }
       this._renderQueue[ "allItems" ] = true;
       this.addToQueue( "updateRows" );
@@ -705,11 +691,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _layoutPost : function( changes ) {
       this.base( arguments, changes );
+      if( changes[ "checkDisposedItems" ] ) {
+        this._checkDisposedItems();
+      }
       if( changes[ "scrollHeight" ] ) {
         this._updateScrollHeight();
       }
-      if( this._topItem === null ) {
-        this._updateTopItem();
+      if( changes[ "scrollHeight" ] || changes[ "topItem" ] ) {
+        this._updateTopItem( false );
       }
       if( changes[ "updateRows" ] ) {
         if( this._renderQueue[ "allItems" ] ) {
@@ -733,15 +722,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         if( !this._vertScrollBar.getDisposed() ) {
           this._vertScrollBar.setMaximum( height );
         }
-        // TODO [tb] : topItem changes only under certain conditions. Optimize?
-        this._topItem = null;
       }
     },
     
-    _updateTopItem : function( oldIndex, render ) {
-      var time = new Date();
-      this._topItem = this._rootItem.findItemByFlatIndex( this._topItemIndex );
-      this._rowContainer.setTopItem( this._topItem, this._topItemIndex, render );
+    _updateTopItem : function( render ) {
+      var topItem = this._rootItem.findItemByFlatIndex( this._topItemIndex );
+      this._rowContainer.setTopItem( topItem, this._topItemIndex, render );
     },
     
     _updateScrollWidth : function() {
@@ -936,7 +922,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     ////////////////////
     // focus & selection
-    
+
     _singleSelectItem : function( event, item ) {
     	if( event instanceof qx.event.type.KeyEvent && event.isCtrlPressed() ) {
     		// NOTE: Apparently in SWT this is only supported by Table, not Tree. 
@@ -1060,6 +1046,26 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._scheduleUpdate();
     },
 
+    _checkDisposedItems : function() {
+    	if( this._focusItem && this._focusItem.isDisposed() ) {
+    		this._focusItem = null;
+    	}
+    	if( this._leadItem && this._leadItem.isDisposed() ) {
+    		this._leadItem = null;
+    	}
+    	var i = 0;
+    	while( i < this._selection.length ) {
+    		if( this._selection[ i ].isDisposed() ) {
+    			this._deselectItem( this._selection[ i ], false );
+    		} else {
+	    		i++; 		
+    		}
+    	}
+    },
+
+    ////////////////////////////
+    // internal layout & theming
+
     _applyTextColor : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
       this._config.textColor = newValue;
@@ -1071,9 +1077,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._config.font = newValue;
       this._scheduleUpdate();
     },
-
-    ////////////////////////////
-    // internal layout & theming
 
     _applyBackgroundColor : function( newValue ) {
       this._rowContainer.setBackgroundColor( newValue );

@@ -702,7 +702,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertNotNull( tree._rootItem );
       assertNotNull( tree._focusItem );
       assertNotNull( tree._leadItem );
-      assertNotNull( tree._topItem );
       tree.destroy();
       testUtil.flush();
       assertTrue( element.parentNode !== document.body );
@@ -722,7 +721,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertNull( tree._dummyColumn );
       assertNull( tree._focusItem );
       assertNull( tree._leadItem );
-      assertNull( tree._topItem );
       assertNull( tree._mergeEventsTimer );
       assertNull( tree._sendRequestTimer );
       assertNull( tree._rowContainer );
@@ -2608,14 +2606,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var root = tree.getRootItem();
       testUtil.flush();
       assertEquals( 26, tree._rowContainer._children.length );
-      assertIdentical( root.getChild( 0 ), tree._topItem );
+      assertIdentical( root.getChild( 0 ), tree._rowContainer._topItem );
       testUtil.clickDOM( tree._rowContainer._children[ 23 ]._getTargetNode() );
       assertTrue( tree.isItemSelected( root.getChild( 23 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 23 ) ) );
       testUtil.press( tree, "Down" );
-      assertIdentical( root.getChild( 0 ), tree._topItem );
+      assertIdentical( root.getChild( 0 ), tree._rowContainer._topItem );
       testUtil.press( tree, "Down" );
-      assertIdentical( root.getChild( 1 ), tree._topItem );
+      assertIdentical( root.getChild( 1 ), tree._rowContainer._topItem );
       tree.destroy();
     },
 
@@ -2626,14 +2624,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setTopItemIndex( 50 );
       var root = tree.getRootItem();
       testUtil.flush();
-      assertIdentical( root.getChild( 50 ), tree._topItem );
+      assertIdentical( root.getChild( 50 ), tree._rowContainer._topItem );
       testUtil.clickDOM( tree._rowContainer._children[ 1 ]._getTargetNode() );
       assertTrue( tree.isItemSelected( root.getChild( 51 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 51 ) ) );
       testUtil.press( tree, "Up" );
-      assertIdentical( root.getChild( 50 ), tree._topItem );
+      assertIdentical( root.getChild( 50 ), tree._rowContainer._topItem );
       testUtil.press( tree, "Up" );
-      assertIdentical( root.getChild( 49 ), tree._topItem );
+      assertIdentical( root.getChild( 49 ), tree._rowContainer._topItem );
       tree.destroy();
     },
     
@@ -2645,12 +2643,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var root = tree.getRootItem();
       testUtil.flush();
       assertEquals( 26, tree._rowContainer._children.length );
-      assertIdentical( root.getChild( 50 ), tree._topItem );
+      assertIdentical( root.getChild( 50 ), tree._rowContainer._topItem );
       testUtil.clickDOM( tree._rowContainer._children[ 5 ]._getTargetNode() );
       assertTrue( tree.isItemSelected( root.getChild( 55 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 55 ) ) );
       testUtil.press( tree, "PageUp" );
-      assertIdentical( root.getChild( 31 ), tree._topItem );
+      assertIdentical( root.getChild( 31 ), tree._rowContainer._topItem );
       assertTrue( tree.isItemSelected( root.getChild( 31 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 31 ) ) );
       tree.destroy();
@@ -2664,12 +2662,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var root = tree.getRootItem();
       testUtil.flush();
       assertEquals( 26, tree._rowContainer._children.length );
-      assertIdentical( root.getChild( 50 ), tree._topItem );
+      assertIdentical( root.getChild( 50 ), tree._rowContainer._topItem );
       testUtil.clickDOM( tree._rowContainer._children[ 5 ]._getTargetNode() );
       assertTrue( tree.isItemSelected( root.getChild( 55 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 55 ) ) );
       testUtil.press( tree, "PageDown" );
-      assertIdentical( root.getChild( 55 ), tree._topItem );
+      assertIdentical( root.getChild( 55 ), tree._rowContainer._topItem );
       assertTrue( tree.isItemSelected( root.getChild( 79 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 79 ) ) );
       tree.destroy();
@@ -2682,12 +2680,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var root = tree.getRootItem();
       testUtil.flush();
       assertEquals( 26, tree._rowContainer._children.length );
-      assertIdentical( root.getChild( 0 ), tree._topItem );
+      assertIdentical( root.getChild( 0 ), tree._rowContainer._topItem );
       testUtil.clickDOM( tree._rowContainer._children[ 5 ]._getTargetNode() );
       assertTrue( tree.isItemSelected( root.getChild( 5 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 5 ) ) );
       testUtil.press( tree, "PageUp" );
-      assertIdentical( root.getChild( 0 ), tree._topItem );
+      assertIdentical( root.getChild( 0 ), tree._rowContainer._topItem );
       assertTrue( tree.isItemSelected( root.getChild( 0 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 0 ) ) );
       tree.destroy();
@@ -2700,12 +2698,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var root = tree.getRootItem();
       testUtil.flush();
       assertEquals( 26, tree._rowContainer._children.length );
-      assertIdentical( root.getChild( 0 ), tree._topItem );
+      assertIdentical( root.getChild( 0 ), tree._rowContainer._topItem );
       testUtil.clickDOM( tree._rowContainer._children[ 5 ]._getTargetNode() );
       assertTrue( tree.isItemSelected( root.getChild( 5 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 5 ) ) );
       testUtil.press( tree, "PageDown" );
-      assertIdentical( root.getChild( 0 ), tree._topItem );
+      assertIdentical( root.getChild( 0 ), tree._rowContainer._topItem );
       assertTrue( tree.isItemSelected( root.getChild( 9 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 9 ) ) );
       tree.destroy();
@@ -2878,12 +2876,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var root = tree.getRootItem();
       testUtil.flush();
       assertEquals( 26, tree._rowContainer._children.length );
-      assertIdentical( root.getChild( 50 ), tree._topItem );
+      assertIdentical( root.getChild( 50 ), tree._rowContainer._topItem );
       testUtil.clickDOM( tree._rowContainer._children[ 5 ]._getTargetNode() );
       assertTrue( tree.isItemSelected( root.getChild( 55 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 55 ) ) );
       testUtil.press( tree, "Home" );
-      assertIdentical( root.getChild( 0 ), tree._topItem );
+      assertIdentical( root.getChild( 0 ), tree._rowContainer._topItem );
       assertTrue( tree.isItemSelected( root.getChild( 0 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 0 ) ) );
       tree.destroy();      
@@ -2897,12 +2895,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var root = tree.getRootItem();
       testUtil.flush();
       assertEquals( 26, tree._rowContainer._children.length );
-      assertIdentical( root.getChild( 50 ), tree._topItem );
+      assertIdentical( root.getChild( 50 ), tree._rowContainer._topItem );
       testUtil.clickDOM( tree._rowContainer._children[ 5 ]._getTargetNode() );
       assertTrue( tree.isItemSelected( root.getChild( 55 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 55 ) ) );
       testUtil.press( tree, "End" );
-      assertIdentical( root.getChild( 75 ), tree._topItem );
+      assertIdentical( root.getChild( 75 ), tree._rowContainer._topItem );
       assertTrue( tree.isItemSelected( root.getChild( 99 ) ) );
       assertTrue( tree.isFocusItem( root.getChild( 99 ) ) );
       tree.destroy();
@@ -3070,26 +3068,85 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
-      tree.setItemCount( 1 );
+      tree.setItemCount( 2 );
       var child0 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       child0.setTexts( [ "C0" ] );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 1 );
+      child1.setTexts( [ "C1" ] );
+      var child2 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 1 );
+      child2.setTexts( [ "C2" ] );
       tree.setFocusItem( child0 );
       tree.setTopItemIndex( 0 );
       testUtil.flush();      
       testUtil.mouseOver( tree._rowContainer._children[ 0 ] );
       testUtil.shiftClick( tree._rowContainer._children[ 0 ] );
-      assertEquals( child0, tree._topItem )
+      tree.selectItem( child1 );
+      tree.selectItem( child2 );
+      assertEquals( child0, tree._rowContainer._topItem )
       assertEquals( child0, tree._focusItem )
       assertEquals( child0, tree._leadItem )
-      //assertEquals( child0, tree._rowContainer._hoverItem )
-      assertEquals( [ child0 ], tree._selection );
+      assertEquals( [ child0, child1, child2 ], tree._selection );
       child0.dispose();
-      assertNull( tree._topItem )
+      child1.dispose();
+      testUtil.flush();
       assertNull( tree._focusItem )
       assertNull( tree._leadItem )
-      //assertNull( tree._rowContainer._hoverItem )
+      assertEquals( [ child2 ], tree._selection );
+      tree.destroy();
+    },
+    
+    testRemoveInderectlyDisposedItemFromState : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var tree = this._createDefaultTree( false, false, "multiSelection");
+      tree.setHeight( 15 );
+      tree.setItemHeight( 20 );
+      tree.setItemCount( 1 );
+      var child0 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
+      child0.setItemCount( 1 );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( child0, 0 );
+      child1.setTexts( [ "C1" ] );
+      child0.setExpanded( true );
+      tree.setTopItemIndex( 1 );
+      tree.setFocusItem( child1 );
+      testUtil.flush();      
+      assertEquals( child1, tree._rowContainer._topItem )
+      testUtil.mouseOver( tree._rowContainer._children[ 0 ] );
+      testUtil.shiftClick( tree._rowContainer._children[ 0 ] );
+      assertEquals( child1, tree._focusItem )
+      assertEquals( [ child1 ], tree._selection );
+      assertEquals( child1, tree._leadItem )
+      child0.dispose(); // Order is important for this test
+      child1.dispose();
+      var child0new = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
+      child0new.setItemCount( 1 );
+      var child1new = new org.eclipse.rwt.widgets.TreeItem( child0new, 0 );
+      child1new.setTexts( [ "C1new" ] );
+      child0new.setExpanded( true );
+      testUtil.flush();
+      assertEquals( child1new, tree._rowContainer._topItem )
+      assertNull( tree._leadItem )
+      assertNull( tree._focusItem )
       assertEquals( [], tree._selection );
       tree.destroy();
+    },
+
+    testDisposeAndCollapseParentItem : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var tree = this._createDefaultTree();
+      tree.setItemCount( 1 );
+      var child0 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
+      child0.setItemCount( 1 );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( child0, 0 );
+      child1.setTexts( [ "C1" ] );
+      child0.setExpanded( true );
+      tree.setFocusItem( child1 );
+      testUtil.flush();      
+      child1.dispose();
+      child0.setExpanded( false );
+      assertEquals( child0, tree._focusItem )
+      tree.destroy();    	
     },
 
     testTreeMultiSelectionDrag : function() {

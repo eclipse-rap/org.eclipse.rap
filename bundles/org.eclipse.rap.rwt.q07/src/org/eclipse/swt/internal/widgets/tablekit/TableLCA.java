@@ -322,8 +322,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeLinesVisible( final Table table ) throws IOException
-  {
+  private static void writeLinesVisible( final Table table ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( table );
     Boolean newValue = Boolean.valueOf( table.getLinesVisible() );
     writer.set( PROP_LINES_VISIBLE, "linesVisible", newValue, Boolean.FALSE );

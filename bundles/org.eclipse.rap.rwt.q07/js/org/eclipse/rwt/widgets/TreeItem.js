@@ -44,7 +44,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     this._expanded = this.isRootItem();
     this.addEventListener( "update", this._onUpdate, this );
   },
-  
+
   destruct : function() {
     if( this._parent != null ) {
       this._parent._remove( this );
