@@ -879,7 +879,7 @@ public class TableLCA_Test extends TestCase {
     assertTrue( markup.indexOf( expected ) != -1 );
   }
 
-  public void testReadFocusIndex() {
+  public void testReadFocusItem() {
     Table table = new Table( shell, SWT.MULTI );
     for( int i = 0; i < 5; i++ ) {
       new TableItem( table, SWT.NONE );
@@ -889,6 +889,23 @@ public class TableLCA_Test extends TestCase {
     String tableId = WidgetUtil.getId( table );
     // ensure that reading selection parameter does not override focusIndex
     Fixture.fakeRequestParam( tableId + ".focusItem", indexToId( table, 4 ) );
+    String items = indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } );
+    Fixture.fakeRequestParam( tableId + ".selection", items );
+    TableLCA tableLCA = new TableLCA();
+    tableLCA.readData( table );
+    assertEquals( 4, tableAdapter.getFocusIndex() );
+  }
+
+  public void testReadUnresolvedFocusItem() {
+    Table table = new Table( shell, SWT.MULTI );
+    for( int i = 0; i < 5; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    String tableId = WidgetUtil.getId( table );
+    // ensure that reading selection parameter does not override focusIndex
+    Fixture.fakeRequestParam( tableId + ".focusItem", tableId + "#4" );
     String items = indicesToIds( table, new int[]{ 0, 1, 2, 3, 4 } );
     Fixture.fakeRequestParam( tableId + ".selection", items );
     TableLCA tableLCA = new TableLCA();

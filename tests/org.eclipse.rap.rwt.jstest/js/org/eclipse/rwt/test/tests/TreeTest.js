@@ -774,6 +774,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( request.indexOf( expected4 ) != -1 );      
       tree.destroy();
     },
+    
+    testClickCheckBoxOnUnresolved : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree( false, false, "check", [ 5, 20 ]  );
+      this._fakeCheckBoxAppearance();
+      tree.setItemCount( 1 );
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      wm.add( tree, "w1", true );
+      testUtil.flush();
+      testUtil.initRequestLog();
+      tree.setHasSelectionListeners( true );
+      var node = tree._rowContainer._getTargetNode().childNodes[ 0 ].childNodes[ 0 ];
+      testUtil.clickDOM( node );
+      assertFalse( tree.getRootItem().getChild( 0 ).isChecked() );
+      assertEquals( 0, testUtil.getRequestsSend() );
+      tree.destroy();
+    },
 
     testHasFullSelection : function() {
       var tree = this._createDefaultTree();
@@ -880,6 +897,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertFalse( tree.isFocusItem( item1 ) );
       assertTrue( tree.isFocusItem( item2 ) );
       assertEquals( "w2", req.getParameter( "w1.focusItem" ) );
+      tree.destroy();
+    },
+
+    testFocusUnresolvedItem : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var req = org.eclipse.swt.Request.getInstance();
+      var tree = this._createDefaultTree();
+      testUtil.initRequestLog();
+      tree.setItemCount( 3 )
+      wm.add( tree, "w1" );
+      var item0 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
+      var item2 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 2 );
+      testUtil.flush();
+      testUtil.clickDOM( tree._rowContainer._children[ 1 ]._getTargetNode() );
+      testUtil.flush();
+      assertTrue( tree.isFocusItem( tree.getRootItem()._children[ 1 ] ) );
+      assertEquals( "w1#1", req.getParameter( "w1.focusItem" ) );
       tree.destroy();
     },
 

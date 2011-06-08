@@ -145,28 +145,28 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._rowContainer.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
       }
       if( map.hideSelection ) {
-	      this._config.hideSelection = true;
+        this._config.hideSelection = true;
       }
       if( map.multiSelection ) {
         this._hasMultiSelection = true;
       }
       if( map.fullSelection ) {
-	      this._config.fullSelection = true;
+        this._config.fullSelection = true;
       } else {
-	      this._config.selectionPadding = map.selectionPadding;
+        this._config.selectionPadding = map.selectionPadding;
       }
-	    if( map.check ) {
-	      this._config.hasCheckBoxes = true;
-		    this._config.checkBoxLeft = map.checkBoxMetrics[ 0 ];
-		    this._config.checkBoxWidth = map.checkBoxMetrics[ 1 ];
-	    }
-	    if( map.virtual ) {
-	      this._isVirtual = true;
+      if( map.check ) {
+        this._config.hasCheckBoxes = true;
+        this._config.checkBoxLeft = map.checkBoxMetrics[ 0 ];
+        this._config.checkBoxWidth = map.checkBoxMetrics[ 1 ];
+      }
+      if( map.virtual ) {
+        this._isVirtual = true;
         this._createSendRequestTimer();
-	    }
-	    if( typeof map.indentionWidth === "number" ) {
-	      this._config.indentionWidth = map.indentionWidth;
-	    }
+      }
+      if( typeof map.indentionWidth === "number" ) {
+        this._config.indentionWidth = map.indentionWidth;
+      }
     },
 
     _createSendRequestTimer : function() {
@@ -390,7 +390,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         }
       }
       if( event.getData() === "remove" ) {
-      	this._scheduleUpdate( "checkDisposedItems" );
+        this._scheduleUpdate( "checkDisposedItems" );
       }
       this._sendItemUpdate( item, event );
       this._renderItemUpdate( item, event );
@@ -534,17 +534,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _stopKeyEvent : function( event ) {
       switch( event.getKeyIdentifier() ) {
-      	case "Up":
-      	case "Down":
-      	case "Left":
-      	case "Right":
-      	case "Home":
-      	case "End":
-      	case "PageUp":
-      	case "PageDown":
-		    	event.preventDefault();
-		    	event.stopPropagation();
-		    break;
+        case "Up":
+        case "Down":
+        case "Left":
+        case "Right":
+        case "Home":
+        case "End":
+        case "PageUp":
+        case "PageDown":
+          event.preventDefault();
+          event.stopPropagation();
+        break;
       }
     },
 
@@ -560,11 +560,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       if( event.isCtrlPressed() || !this.isItemSelected( this._focusItem ) ) {
         // NOTE: When space does not change the selection, the SWT Tree still fires an selection 
         //       event, while the Table doesnt. Table behavior is used since it makes more sense.
-	      var itemIndex = this._focusItem.getFlatIndex();
-	      this._handleKeyboardSelect( event, this._focusItem, itemIndex );
+        var itemIndex = this._focusItem.getFlatIndex();
+        this._handleKeyboardSelect( event, this._focusItem, itemIndex );
       }
       if( this._config.hasCheckBoxes ) {
-	      this._toggleCheckSelection( this._focusItem );
+        this._toggleCheckSelection( this._focusItem );
       }
     },
     
@@ -806,10 +806,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _sendItemFocusChange : function() {
       if( !this._inServerResponse() ) {
         var req = org.eclipse.swt.Request.getInstance();
-        var wm = org.eclipse.swt.WidgetManager.getInstance();   
-        var id = wm.findIdByWidget( this );
-        var itemId = wm.findIdByWidget( this._focusItem );
-        req.addParameter( id + ".focusItem", itemId );
+        var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( this );
+        req.addParameter( id + ".focusItem", this._getItemId( this._focusItem ) );
       }
     },
 
@@ -906,31 +904,31 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _getItemId : function( item ) {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var result;
-    	if( item.isCached() ) {
-    		result = wm.findIdByWidget( item );
-    	} else {
-    		var parent = item.getParent()
-    		if( parent.isRootItem() ) {
-      		result = wm.findIdByWidget( this );    			
-    		} else {
-      		result = wm.findIdByWidget( parent );    			
-    		}
-    		result += "#" + parent.indexOf( item );
-    	}
-    	return result;
+      if( item.isCached() ) {
+        result = wm.findIdByWidget( item );
+      } else {
+        var parent = item.getParent()
+        if( parent.isRootItem() ) {
+          result = wm.findIdByWidget( this );          
+        } else {
+          result = wm.findIdByWidget( parent );          
+        }
+        result += "#" + parent.indexOf( item );
+      }
+      return result;
     },
 
     ////////////////////
     // focus & selection
 
     _singleSelectItem : function( event, item ) {
-    	if( event instanceof qx.event.type.KeyEvent && event.isCtrlPressed() ) {
-    		// NOTE: Apparently in SWT this is only supported by Table, not Tree. 
-    		//       No reason not to support it in RAP though.
-    		this._ctrlSelectItem( item );
-    	} else {
-	      this._exclusiveSelectItem( item );
-    	}
+      if( event instanceof qx.event.type.KeyEvent && event.isCtrlPressed() ) {
+        // NOTE: Apparently in SWT this is only supported by Table, not Tree. 
+        //       No reason not to support it in RAP though.
+        this._ctrlSelectItem( item );
+      } else {
+        this._exclusiveSelectItem( item );
+      }
     },
 
     _multiSelectItem : function( event, item ) {
@@ -1021,8 +1019,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
     
     _toggleCheckSelection : function( item ) {
-		  item.setChecked( !item.isChecked() );
-		  this._sendItemCheckedChange( item );
+      if( item.isCached() ) {
+        item.setChecked( !item.isChecked() );
+        this._sendItemCheckedChange( item );
+      }
     },
 
     _deselectVisibleChildren : function( item ) {
@@ -1047,20 +1047,22 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     _checkDisposedItems : function() {
-    	if( this._focusItem && this._focusItem.isDisposed() ) {
-    		this._focusItem = null;
-    	}
-    	if( this._leadItem && this._leadItem.isDisposed() ) {
-    		this._leadItem = null;
-    	}
-    	var i = 0;
-    	while( i < this._selection.length ) {
-    		if( this._selection[ i ].isDisposed() ) {
-    			this._deselectItem( this._selection[ i ], false );
-    		} else {
-	    		i++; 		
-    		}
-    	}
+      // NOTE : FocusItem might already been fixed by the server. But since this is not 
+      //        always the case (depending on the server-side widget), we also do it here.
+      if( this._focusItem && this._focusItem.isDisposed() ) {
+        this._focusItem = null;
+      }
+      if( this._leadItem && this._leadItem.isDisposed() ) {
+        this._leadItem = null;
+      }
+      var i = 0;
+      while( i < this._selection.length ) {
+        if( this._selection[ i ].isDisposed() ) {
+          this._deselectItem( this._selection[ i ], false );
+        } else {
+          i++;     
+        }
+      }
     },
 
     ////////////////////////////

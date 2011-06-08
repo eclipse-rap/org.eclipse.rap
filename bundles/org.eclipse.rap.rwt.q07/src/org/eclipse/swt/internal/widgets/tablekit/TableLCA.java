@@ -173,7 +173,7 @@ public final class TableLCA extends AbstractWidgetLCA {
         for( int i = 0; i < selectedItems.length; i++ ) {
           TableItem item = null;
           String itemId = selectedItems[ i ];
-          item = getItemFromSelectionId( table, itemId );
+          item = getItem( table, itemId );
           newSelection[ i ] = table.indexOf( item );
         }
       }
@@ -195,8 +195,8 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static void readFocusIndex( final Table table ) {
     String value = WidgetLCAUtil.readPropertyValue( table, "focusItem" );
     if( value != null ) {
+      TableItem item = getItem( table, value );
       ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
-      TableItem item = ( TableItem )WidgetUtil.find( table, value );
       adapter.setFocusIndex( table.indexOf( item ) );
     }
   }
@@ -214,10 +214,9 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   private static void readWidgetSelected( final Table table ) {
     if( WidgetLCAUtil.wasEventSent( table, JSConst.EVENT_WIDGET_SELECTED ) ) {
-      // TODO [rh] do something reasonable when index points to unresolved item
       HttpServletRequest request = ContextProvider.getRequest();
       String selectionId = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_ITEM );
-      TableItem item = getItemFromSelectionId( table, selectionId );
+      TableItem item = getItem( table, selectionId );
       // Bugfix: check if index is valid before firing event to avoid problems with fast scrolling
       // TODO [tb] : Still useful? bugzilla id?
       if( item != null ) {
@@ -240,7 +239,7 @@ public final class TableLCA extends AbstractWidgetLCA {
       TableItem item = getFocusedItem( table );
       HttpServletRequest request = ContextProvider.getRequest();
       String selectionId = request.getParameter( defaultSelectedParam + ".item" );
-      TableItem selectedItem = getItemFromSelectionId( table, selectionId );
+      TableItem selectedItem = getItem( table, selectionId );
       if( selectedItem != null ) {
         // TODO [rh] do something about when index points to unresolved item!
         item = selectedItem;
@@ -260,8 +259,7 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   private static TableItem getFocusedItem( final Table table ) {
     TableItem result = null;
-    ITableAdapter tableAdapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     int focusIndex = tableAdapter.getFocusIndex();
     if( focusIndex != -1 ) {
       // TODO [rh] do something about when index points to unresolved item!
@@ -429,7 +427,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   //////////////////
   // Helping methods
 
-  private static TableItem getItemFromSelectionId( Table table, String itemId ) {
+  private static TableItem getItem( Table table, String itemId ) {
     TableItem item;
     String[] idParts = itemId.split( "#" );
     if( idParts.length == 2 ) {
