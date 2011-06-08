@@ -1060,7 +1060,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         if( this._selection[ i ].isDisposed() ) {
           this._deselectItem( this._selection[ i ], false );
         } else {
-          i++;     
+          i++;
         }
       }
     },

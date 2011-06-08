@@ -3133,7 +3133,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     testRemoveInderectlyDisposedItemFromState : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var tree = this._createDefaultTree( false, false, "multiSelection");
+      var tree = this._createDefaultTree( false, false, "multiSelection" );
       tree.setHeight( 15 );
       tree.setItemHeight( 20 );
       tree.setItemCount( 1 );
@@ -3159,9 +3159,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       child1new.setTexts( [ "C1new" ] );
       child0new.setExpanded( true );
       testUtil.flush();
-      assertEquals( child1new, tree._rowContainer._topItem )
-      assertNull( tree._leadItem )
-      assertNull( tree._focusItem )
+      assertEquals( child1new, tree._rowContainer._topItem );
+      assertNull( tree._leadItem );
+      assertNull( tree._focusItem );
       assertEquals( [], tree._selection );
       tree.destroy();
     },
