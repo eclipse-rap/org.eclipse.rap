@@ -14,16 +14,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
   extend : qx.ui.layout.CanvasLayout,
 
-  construct : function() {
+  construct : function( argsMap ) {
     this.base( arguments );
     this._rootItem = new org.eclipse.rwt.widgets.TreeItem();
-    this._rootItem.setExpanded( true );
     // Style-Flags:
     this._isVirtual = false;
     this._hasMultiSelection = false;
     // Internal State:
     this._hasSelectionListeners = false;
-    this._topItem = null;
     this._leadItem = null;
     this._topItemIndex = 0;
     this._selection = [];
@@ -57,10 +55,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._config = this._rowContainer.getRenderConfig();
     this.setCursor( "default" );
     this.setOverflow( "hidden" );
-    this.setAppearance( "tree" );
     this._configureAreas();
     this._configureScrollBars();
     this._registerListeners();
+    this._parseArgsMap( argsMap );
   },
   
   destruct : function() {
@@ -78,7 +76,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._columnArea = null;
     this._horzScrollBar = null;
     this._vertScrollBar = null;
-    this._topItem = null;
     this._leadItem = null;
     this._focusItem = null;
     this._resizeLine = null;
@@ -92,7 +89,39 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     /////////////////////
     // Contructor helpers
-    
+
+    _configureAreas : function() {
+      this._columnArea.setOverflow( "hidden" );
+      this._columnArea.addEventListener( "appear", this._onColumnAreaAppear, this );
+      this._columnArea.setTop( 0 );
+      this._columnArea.setLeft( 0 );
+      // NOTE: Need to use setDisplay here instead of setVisibility,
+      // otherwise the appear event would be fired when the widget
+      // is not yet ready to be scrolled (see _onColumnAreaAppear)
+      this._columnArea.setDisplay( false );
+      // TODO [tb] : Find a cleaner solution to block drag-events
+      var dragBlocker = function( event ) { event.stopPropagation(); };
+      this._columnArea.addEventListener( "dragstart", dragBlocker );
+      this._dummyColumn.setHeight( "100%" );
+      this._dummyColumn.setLabel( "&nbsp;" );
+      this._dummyColumn.addState( "dummy" );
+      this._columnArea.add( this._dummyColumn );
+    },
+
+    _configureScrollBars : function() {
+      var dragBlocker = function( event ) { event.stopPropagation(); };
+      this._horzScrollBar.setZIndex( 1e8 );
+      this._horzScrollBar.setVisibility( false );
+      this._horzScrollBar.setLeft( 0 );
+      this._horzScrollBar.setMergeEvents( false );
+      this._horzScrollBar.addEventListener( "dragstart", dragBlocker );
+      this._vertScrollBar.setZIndex( 1e8 );
+      this._vertScrollBar.setVisibility( false );
+      this._vertScrollBar.setIncrement( 16 );
+      this._vertScrollBar.setMergeEvents( false );
+      this._vertScrollBar.addEventListener( "dragstart", dragBlocker );
+    },
+
     _registerListeners : function() {
       this._rootItem.addEventListener( "update", this._onItemUpdate, this );
       this.addEventListener( "mousedown", this._onMouseDown, this );
@@ -107,40 +136,39 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._rowContainer.setPostRenderFunction( this._vertScrollBar.autoEnableMerge, 
                                                 this._vertScrollBar );
     },
-    
-    _configureScrollBars : function() {
-      var dragBlocker = function( event ) { event.stopPropagation(); };
-      this._horzScrollBar.setZIndex( 1e8 );
-      this._horzScrollBar.setVisibility( false );
-      this._horzScrollBar.setLeft( 0 );
-      this._horzScrollBar.setMergeEvents( false );
-      this._horzScrollBar.addEventListener( "dragstart", dragBlocker );
-      this._vertScrollBar.setZIndex( 1e8 );
-      this._vertScrollBar.setVisibility( false );
-      this._vertScrollBar.setIncrement( 16 );
-      this._vertScrollBar.setMergeEvents( false );
-      this._vertScrollBar.addEventListener( "dragstart", dragBlocker );
+
+    _parseArgsMap : function( map ) {
+      this._dummyColumn.setAppearance( map.appearance + "-column" );
+      this._rowContainer.setRowAppearance( map.appearance + "-row" );
+      this.setAppearance( map.appearance );
+      if( map.noScroll ) {
+        this._rowContainer.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
+      }
+      if( map.hideSelection ) {
+        this._config.hideSelection = true;
+      }
+      if( map.multiSelection ) {
+        this._hasMultiSelection = true;
+      }
+      if( map.fullSelection ) {
+        this._config.fullSelection = true;
+      } else {
+        this._config.selectionPadding = map.selectionPadding;
+      }
+      if( map.check ) {
+        this._config.hasCheckBoxes = true;
+        this._config.checkBoxLeft = map.checkBoxMetrics[ 0 ];
+        this._config.checkBoxWidth = map.checkBoxMetrics[ 1 ];
+      }
+      if( map.virtual ) {
+        this._isVirtual = true;
+        this._createSendRequestTimer();
+      }
+      if( typeof map.indentionWidth === "number" ) {
+        this._config.indentionWidth = map.indentionWidth;
+      }
     },
-    
-    _configureAreas : function() {
-      this._columnArea.setOverflow( "hidden" );
-      this._columnArea.addEventListener( "appear", this._onColumnAreaAppear, this );
-      this._columnArea.setTop( 0 );
-      this._columnArea.setLeft( 0 );
-      // NOTE: Need to use setDisplay here instead of setVisibility,
-      // otherwise the appear event would be fired when the widget
-      // is not yet ready to be scrolled (see _onColumnAreaAppear)
-      this._columnArea.setDisplay( false );
-      // TODO [tb] : Find a cleaner solution to block drag-events
-      var dragBlocker = function( event ) { event.stopPropagation(); };
-      this._columnArea.addEventListener( "dragstart", dragBlocker );
-      this._dummyColumn.setAppearance( "tree-column" );
-      this._dummyColumn.setHeight( "100%" );
-      this._dummyColumn.setLabel( "&nbsp;" );
-      this._dummyColumn.addState( "dummy" );
-      this._columnArea.add( this._dummyColumn );
-    },
-    
+
     _createSendRequestTimer : function() {
       if( this._sendRequestTimer === null ) {
         var timer = new qx.client.Timer( 400 );
@@ -148,50 +176,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         timer.addEventListener( "interval", req.send, req );
         req.addEventListener( "send", timer.stop, timer );
         this._sendRequestTimer = timer;
-      }
-    },
-    
-    /////////////////////////////////
-    // API for server - initial setup
-    
-    // NOTE : It is assumed that these setters are called only once and before
-    // rendering any content (i.e. directly after the contructor) 
-    
-    setCheckBoxMetrics : function( left, width ) {
-      this._config.checkBoxLeft = left;
-      this._config.checkBoxWidth = width;
-    },
-    
-    setHasCheckBoxes : function( value ) {
-      this._config.hasCheckBoxes = value;
-    },
-    
-    setHasFullSelection : function( value ) {
-      this._config.fullSelection = value;
-    },
-
-    setHasMultiSelection : function( value ) {
-      this._hasMultiSelection = value;
-    },
-
-    setHasNoScroll : function( value ) {
-      if( value ) {
-        this._rowContainer.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
-      }
-    },
-
-    setIndentionWidth : function( offset ) {
-      this._config.indentionWidth = offset;
-    },
-    
-    setSelectionPadding : function( left, right ) {
-      this._config.selectionPadding = [ left, right ];
-    },
-    
-    setIsVirtual : function( value ) {
-      this._isVirtual = value;
-      if( value ) {
-        this._createSendRequestTimer();
       }
     },
 
@@ -218,7 +202,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._itemHeight = height;
       this._vertScrollBar.setIncrement( height );
       this._rowContainer.setRowHeight( height );
-      this._scheduleUpdate( true );
+      this._scheduleUpdate( "scrollHeight" );
     },
     
     setColumnCount : function( count ) {
@@ -272,6 +256,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     setFocusItem : function( item ) {
       this._focusItem = item;
+      this._sendItemFocusChange()
     },
 
     setScrollBarsVisible : function( horzVisible, vertVisible ) {
@@ -309,7 +294,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._renderGridVertical();
     },
     
-    // TODO [tb] : set the variant directly instead of using only state
     addState : function( state ) {
       this.base( arguments, state );
       if( state.slice( 0, 8 ) === "variant_" ) {
@@ -401,23 +385,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _onItemUpdate : function( event ) {
       var item = event.getTarget();
       if( event.getData() === "collapsed" ) {
-        // TODO [tb] : Should be done on server if focusItem is synced
-        if( this._isChildOf( this._focusItem, item ) ) {
+        if( this._focusItem && this._focusItem.isChildOf( item ) ) {
           this.setFocusItem( item );
         }
       }
       if( event.getData() === "remove" ) {
-        var oldItem = event.getRelatedTarget();
-        this._deselectItem( oldItem, false );
-        if( this._topItem === oldItem ) {
-          this._topItem = null;
-        }
-        if( this._leadItem === oldItem ) {
-          this._leadItem = null;
-        }
-        if( this._focusItem === oldItem ) {
-          this._focusItem = null;
-        }
+        this._scheduleUpdate( "checkDisposedItems" );
       }
       this._sendItemUpdate( item, event );
       this._renderItemUpdate( item, event );
@@ -439,11 +412,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var oldIndex = this._topItemIndex;
       this._topItemIndex = Math.ceil( scrollTop / this._itemHeight );
       if( this._inServerResponse() ) {
-        this._topItem = null;
-        this._scheduleUpdate();
+        this._scheduleUpdate( "topItem" );
       } else {
         this._sendTopItemIndexChange();
-        this._updateTopItem( oldIndex, true );
+        this._updateTopItem( true );
       }
     },
 
@@ -471,7 +443,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     _onRowMouseDown : function( row, event ) {
-      // TODO [tb] : maybe this abstraction could also be done in TreeRowContainer
       var item = this._rowContainer.findItemByRow( row );
       if( item != null ) {
         if( row.isExpandSymbolTarget( event ) && item.hasChildren() ) {
@@ -481,8 +452,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
           }
           item.setExpanded( expanded );
         } else if( row.isCheckBoxTarget( event ) ) {
-          item.setChecked( !item.isChecked() );
-          this._sendItemCheckedChange( item );
+          this._toggleCheckSelection( item );
         } else if( row.isSelectionClick( event, this._config.fullSelection ) ) {
           this._onSelectionClick( event, item );
         }
@@ -501,7 +471,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
             this._multiSelectItem( event, item );          
           }
         } else {
-          this._singleSelectItem( item );            
+          this._singleSelectItem( event, item );            
         }
       }      
     },
@@ -559,6 +529,23 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
           break;
         }
       }
+      this._stopKeyEvent( event );
+    },
+    
+    _stopKeyEvent : function( event ) {
+      switch( event.getKeyIdentifier() ) {
+        case "Up":
+        case "Down":
+        case "Left":
+        case "Right":
+        case "Home":
+        case "End":
+        case "PageUp":
+        case "PageDown":
+          event.preventDefault();
+          event.stopPropagation();
+        break;
+      }
     },
 
     _onColumnAreaAppear : function() {
@@ -570,14 +557,21 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
     
     _handleKeySpace : function( event ) {
-      var itemIndex = this._findIndexByItem( this._focusItem );
-      this._handleKeyboardSelect( event, this._focusItem, itemIndex );
+      if( event.isCtrlPressed() || !this.isItemSelected( this._focusItem ) ) {
+        // NOTE: When space does not change the selection, the SWT Tree still fires an selection 
+        //       event, while the Table doesnt. Table behavior is used since it makes more sense.
+        var itemIndex = this._focusItem.getFlatIndex();
+        this._handleKeyboardSelect( event, this._focusItem, itemIndex );
+      }
+      if( this._config.hasCheckBoxes ) {
+        this._toggleCheckSelection( this._focusItem );
+      }
     },
     
     _handleKeyUp : function( event ) {
       var item = this._focusItem.getPreviousItem();
       if( item != null ) {
-        var itemIndex = this._findIndexByItem( item );
+        var itemIndex = item.getFlatIndex();
         this._handleKeyboardSelect( event, item, itemIndex );
       }
     },
@@ -585,27 +579,27 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _handleKeyDown : function( event ) {
       var item = this._focusItem.getNextItem();
       if( item != null ) {
-        var itemIndex = this._findIndexByItem( item );
+        var itemIndex = item.getFlatIndex();
         this._handleKeyboardSelect( event, item, itemIndex );
       }
     },
     
     _handleKeyPageUp : function( event ) {
-      var oldIndex = this._findIndexByItem( this._focusItem );
+      var oldIndex = this._focusItem.getFlatIndex();
       var offset = this._rowContainer.getChildrenLength() - 2;
       var newIndex = Math.max( 0, oldIndex - offset );
-      var item = this._findItemByIndex( newIndex );
-      var itemIndex = this._findIndexByItem( item );
+      var item = this._rootItem.findItemByFlatIndex( newIndex );
+      var itemIndex = item.getFlatIndex();
       this._handleKeyboardSelect( event, item, itemIndex );
     },
     
     _handleKeyPageDown : function( event ) {
-      var oldIndex = this._findIndexByItem( this._focusItem );
+      var oldIndex = this._focusItem.getFlatIndex();
       var offset = this._rowContainer.getChildrenLength() - 2;
       var max = this.getRootItem().getVisibleChildrenCount() - 1;
       var newIndex = Math.min( max, oldIndex + offset );
-      var item = this._findItemByIndex( newIndex, this._topItem, this._topItemIndex );
-      var itemIndex = this._findIndexByItem( item );
+      var item = this._rootItem.findItemByFlatIndex( newIndex );
+      var itemIndex = item.getFlatIndex();
       this._handleKeyboardSelect( event, item, itemIndex );
     },
     
@@ -616,6 +610,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     
     _handleKeyEnd : function( event ) {
       var item = this.getRootItem().getLastChild();
+      var time = new Date();
       var itemIndex = this.getRootItem().getVisibleChildrenCount() - 1;
       this._handleKeyboardSelect( event, item, itemIndex );
     },
@@ -625,7 +620,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._focusItem.setExpanded( false );
       } else if( !this._focusItem.getParent().isRootItem() ) {
         var item = this._focusItem.getParent();
-        var itemIndex = this._findIndexByItem( item );
+        var itemIndex = item.getFlatIndex();
         this._handleKeyboardSelect( event, item, itemIndex, true );
       }
     },
@@ -636,7 +631,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
           this._focusItem.setExpanded( true );
         } else {
           var item = this._focusItem.getChild( 0 )
-          var itemIndex = this._findIndexByItem( item );
+          var itemIndex = item.getFlatIndex();
           this._handleKeyboardSelect( event, item, itemIndex, true );
         }
       }
@@ -647,7 +642,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       if( this._hasMultiSelection && !suppressMulti ) {
         this._multiSelectItem( event, item );
       } else {
-        this._singleSelectItem( item );            
+        this._singleSelectItem( event, item );            
       }
     },
 
@@ -659,13 +654,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         switch( event.getData() ) {
           case "expanded":
           case "collapsed":
-            this._scheduleUpdate( true ); 
+            this._scheduleUpdate( "scrollHeight" ); 
           break;
           case "add":
           case "remove":
             // NOTE: the added/removed item is a child of this item
             if( item.isExpanded() ) {
-              this._scheduleUpdate( true ); 
+              this._scheduleUpdate( "scrollHeight" ); 
             } else {
               this._scheduleItemUpdate( item );
             }
@@ -686,9 +681,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this.addToQueue( "updateRows" );
     },
     
-    _scheduleUpdate : function( scrollHeight ) {
-      if( scrollHeight === true ) {
-        this.addToQueue( "scrollHeight" );
+    _scheduleUpdate : function( task ) {
+      if( task !== undefined ) {
+        this.addToQueue( task );
       }
       this._renderQueue[ "allItems" ] = true;
       this.addToQueue( "updateRows" );
@@ -696,11 +691,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _layoutPost : function( changes ) {
       this.base( arguments, changes );
+      if( changes[ "checkDisposedItems" ] ) {
+        this._checkDisposedItems();
+      }
       if( changes[ "scrollHeight" ] ) {
         this._updateScrollHeight();
       }
-      if( this._topItem === null ) {
-        this._updateTopItem();
+      if( changes[ "scrollHeight" ] || changes[ "topItem" ] ) {
+        this._updateTopItem( false );
       }
       if( changes[ "updateRows" ] ) {
         if( this._renderQueue[ "allItems" ] ) {
@@ -724,18 +722,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         if( !this._vertScrollBar.getDisposed() ) {
           this._vertScrollBar.setMaximum( height );
         }
-        // TODO [tb] : topItem changes only under certain conditions. Optimize?
-        this._topItem = null;
       }
     },
     
-    _updateTopItem : function( oldIndex, render ) {
-      if( typeof oldIndex == "number" ) {
-        this._topItem = this._findItemByIndex( this._topItemIndex, this._topItem, oldIndex );
-      } else {
-        this._topItem = this._findItemByIndex( this._topItemIndex );
-      }
-      this._rowContainer.setTopItem( this._topItem, this._topItemIndex, render );
+    _updateTopItem : function( render ) {
+      var topItem = this._rootItem.findItemByFlatIndex( this._topItemIndex );
+      this._rowContainer.setTopItem( topItem, this._topItemIndex, render );
     },
     
     _updateScrollWidth : function() {
@@ -786,16 +778,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._createSendRequestTimer();
       }
     },
-        
+
     //////////////
     // Send events
-    
+
     _sendSelectionChange : function( item ) {
       if( !this._inServerResponse() ) {
         var req = org.eclipse.swt.Request.getInstance();
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var id = wm.findIdByWidget( this );
-        var selection = this._getSelectionIndices();        
+        var selection = this._getSelectionList();        
         req.addParameter( id + ".selection", selection );
         this._sendSelectionEvent( item, false, null );
       }
@@ -811,6 +803,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
     },
 
+    _sendItemFocusChange : function() {
+      if( !this._inServerResponse() ) {
+        var req = org.eclipse.swt.Request.getInstance();
+        var id = org.eclipse.swt.WidgetManager.getInstance().findIdByWidget( this );
+        req.addParameter( id + ".focusItem", this._getItemId( this._focusItem ) );
+      }
+    },
+
     _sendTopItemIndexChange : function() {
       var req = org.eclipse.swt.Request.getInstance();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
@@ -820,12 +820,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._sendRequestTimer.start();
       }
     },
-    
+
     _sendScrollLeftChange : function() {
       // TODO [tb] : There should be a check for _inServerResponse,
       // but currently this is needed to sync the value with the 
-      // server when the scrollbars are hidden by the server. Should be 
-      // improved here and in table with new scrollbar implementation.
+      // server when the scrollbars are hidden by the server.
       var req = org.eclipse.swt.Request.getInstance();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var id = wm.findIdByWidget( this );
@@ -834,7 +833,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._sendRequestTimer.start();
       }
     },
-    
+
     _sendItemUpdate : function( item, event ) {
       if( !this._inServerResponse() ) {
         switch( event.getData() ) {
@@ -864,7 +863,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         var id = wm.findIdByWidget( this );
         var eventName = "org.eclipse.swt.events.widget";
         eventName += defaultSelected ? "DefaultSelected" : "Selected";
-        var itemId = wm.findIdByWidget( item );
+        var itemId = this._getItemId( item );
         req.addEvent( eventName, id );
         org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
         req.addParameter( eventName + ".item", itemId );
@@ -879,11 +878,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var result = false;
       var mousedown = event.getType() === "mousedown";
       var leftClick = event.getButton() === "left";
-      if(    leftClick
-          && mousedown
-          && this.isFocusItem( item ) 
-          && this._selectionTimestamp != null ) 
-      {
+      if( leftClick && mousedown && this.isFocusItem( item ) && this._selectionTimestamp != null ) {
         var stamp = new Date();
         var diff = org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME;
         if( stamp.getTime() - this._selectionTimestamp.getTime() < diff ) {
@@ -898,46 +893,72 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       return result;
     },
 
-    _getSelectionIndices : function() {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
+    _getSelectionList : function() {
       var result = [];
       for( var i = 0; i < this._selection.length; i++ ) {
-        result.push( wm.findIdByWidget( this._selection[ i ] ) );
+        result.push( this._getItemId( this._selection[ i ] ) );
       }
       return result.join();
+    },
+    
+    _getItemId : function( item ) {
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var result;
+      if( item.isCached() ) {
+        result = wm.findIdByWidget( item );
+      } else {
+        var parent = item.getParent()
+        if( parent.isRootItem() ) {
+          result = wm.findIdByWidget( this );          
+        } else {
+          result = wm.findIdByWidget( parent );          
+        }
+        result += "#" + parent.indexOf( item );
+      }
+      return result;
     },
 
     ////////////////////
     // focus & selection
 
-    _singleSelectItem : function( item ) {
-      this._deselectAll();
-      this._leadItem = null;
-      this._selectItem( item, true );
-      this._sendSelectionChange( item );
-      this.setFocusItem( item );
+    _singleSelectItem : function( event, item ) {
+      if( event instanceof qx.event.type.KeyEvent && event.isCtrlPressed() ) {
+        // NOTE: Apparently in SWT this is only supported by Table, not Tree. 
+        //       No reason not to support it in RAP though.
+        this._ctrlSelectItem( item );
+      } else {
+        this._exclusiveSelectItem( item );
+      }
     },
 
     _multiSelectItem : function( event, item ) {
       if( event instanceof qx.event.type.MouseEvent && event.isRightButtonPressed() ) {
         if( !this.isItemSelected( item ) ) {
-          this._singleSelectItem( item );
+          this._exclusiveSelectItem( item );
         }
       } else if( event.isCtrlPressed() ) {
         if( event instanceof qx.event.type.KeyEvent && item != this._focusItem  ) {
           this.setFocusItem( item );
         } else {
-          this._ctrlSelectItem( item );            
+          this._ctrlSelectItem( item );
         }
       } else if( event.isShiftPressed() ) {
         if( this._focusItem != null ) {
           this._shiftSelectItem( item );
         } else {
-          this._singleSelectItem( item );
+          this._exclusiveSelectItem( item );
         } 
       } else {
-        this._singleSelectItem( item );
+        this._exclusiveSelectItem( item );
       }
+    },
+    
+    _exclusiveSelectItem : function( item ) {
+      this._deselectAll();
+      this._leadItem = null;
+      this._selectItem( item, true );
+      this._sendSelectionChange( item );
+      this.setFocusItem( item );
     },
 
     _ctrlSelectItem : function( item ) {
@@ -955,8 +976,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var currentItem = this._leadItem != null ? this._leadItem : this._focusItem;
       this._leadItem = currentItem;
       var targetItem = item;
-      var startIndex = this._findIndexByItem( currentItem );
-      var endIndex = this._findIndexByItem( targetItem );
+      var startIndex = currentItem.getFlatIndex();
+      var endIndex = targetItem.getFlatIndex();
       if( startIndex > endIndex ) {
         var temp = currentItem;
         currentItem = targetItem;
@@ -996,6 +1017,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._rowContainer.renderItem( oldSelection[ i ] );
       }
     },
+    
+    _toggleCheckSelection : function( item ) {
+      if( item.isCached() ) {
+        item.setChecked( !item.isChecked() );
+        this._sendItemCheckedChange( item );
+      }
+    },
 
     _deselectVisibleChildren : function( item ) {
       var currentItem = item.getNextItem();
@@ -1018,6 +1046,28 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._scheduleUpdate();
     },
 
+    _checkDisposedItems : function() {
+      // NOTE : FocusItem might already been fixed by the server. But since this is not 
+      //        always the case (depending on the server-side widget), we also do it here.
+      if( this._focusItem && this._focusItem.isDisposed() ) {
+        this._focusItem = null;
+      }
+      if( this._leadItem && this._leadItem.isDisposed() ) {
+        this._leadItem = null;
+      }
+      var i = 0;
+      while( i < this._selection.length ) {
+        if( this._selection[ i ].isDisposed() ) {
+          this._deselectItem( this._selection[ i ], false );
+        } else {
+          i++;
+        }
+      }
+    },
+
+    ////////////////////////////
+    // internal layout & theming
+
     _applyTextColor : function( newValue, oldValue ) {
       this.base( arguments, newValue, oldValue );
       this._config.textColor = newValue;
@@ -1029,9 +1079,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._config.font = newValue;
       this._scheduleUpdate();
     },
-
-    ////////////////////////////
-    // internal layout & theming
 
     _applyBackgroundColor : function( newValue ) {
       this._rowContainer.setBackgroundColor( newValue );
@@ -1117,7 +1164,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _getGridBorder : function( state ) {
       var tvGrid = new org.eclipse.swt.theme.ThemeValues( state );
-      var gridColor = tvGrid.getCssColor( "Tree-GridLine", "color" );
+      var cssElement = qx.lang.String.toFirstUp( this.getAppearance() ) + "-GridLine"; 
+      var gridColor = tvGrid.getCssColor( cssElement, "color" );
       tvGrid.dispose();
       var borderWidths = [ 0, 0, 0, 0 ];
       gridColor = gridColor == "undefined" ? "transparent" : gridColor;
@@ -1182,102 +1230,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       return result;
     },
 
-    ///////////////
-    // model-helper
-
-    // TODO [tb] : can this be optimized to create less virtual placeholder items? 
-    _findItemByIndex : function( index, startItem, startIndex ) {
-      var result;
-      var computedStartItem = startItem ? startItem : this.getRootItem().getChild( 0 );
-      var computedStartIndex = startIndex ? startIndex : 0;
-      if( index >= computedStartIndex ) {
-        result = this._findItemByIndexForwards( index, computedStartItem, computedStartIndex );
-      } else {
-        result = this._findItemByIndexBackwards( index, computedStartItem, computedStartIndex );
-      }
-      return result;
-    },
-
-    _findItemByIndexForwards : function( index, startItem, startIndex ) {
-      var i = startIndex;
-      var item = startItem;
-      while( i != index && item != null ) {
-        var siblingIndex = i + item.getVisibleChildrenCount() + 1;
-        if( siblingIndex <= index ) {
-          i = siblingIndex;
-          item = item.getNextItem( true );
-        } else {
-          item = item.getNextItem();
-          i++;
-        } 
-      }
-      return item;
-    },
-
-    _findItemByIndexBackwards : function( index, startItem, startIndex ) {
-      var i = startIndex;
-      var item = startItem;
-      while( i != index && item != null ) {
-        if( item.hasPreviousSibling() ) {
-          var previous = item.getPreviousSibling();
-          var prevSiblingIndex = i - ( previous.getVisibleChildrenCount() + 1 );
-          if( prevSiblingIndex >= index ) {
-            i = prevSiblingIndex;
-            item = previous;              
-          } else {
-            item = item.getPreviousItem();
-            i--;
-          }
-        } else {
-          item = item.getPreviousItem();
-          i--;
-        }
-      }
-      return item;
-    },
-
-    _findIndexByItem : function( item ) {
-      if( this._topItem === null ) {
-        this._updateTopItem();
-      }
-      var forwardsItem = this._topItem;
-      var backwardsItem = this._topItem;
-      var forwardsIndex = this._topItemIndex;
-      var backwardsIndex = this._topItemIndex;
-      while( forwardsItem !== item && backwardsItem !== item ) {
-        if( forwardsItem != null ) {
-          forwardsItem = forwardsItem.getNextItem();
-          forwardsIndex++;
-        }
-        if( backwardsItem != null ) {
-          backwardsItem = backwardsItem.getPreviousItem();
-          backwardsIndex--;
-        }
-        if( backwardsItem === null && forwardsItem === null ) {
-          throw "Tree._findIndexByItem failed!";
-        }
-      }
-      var result;
-      if( forwardsItem === item ) {
-        result = forwardsIndex;
-      } else {
-        result = backwardsIndex;
-      }
-      return result;
-    },
-
-    _isChildOf : function( child, parent ) {
-      var result = false;
-      var item = child;
-      while( item != null && !result ) {
-        item = item.getParent();
-        result = item === parent;
-      }
-      return result;
-    },
-
-    //////////////
-    // misc helper
+    /////////
+    // helper
 
     _inServerResponse : function() {
       return org.eclipse.swt.EventUtil.getSuspended();      

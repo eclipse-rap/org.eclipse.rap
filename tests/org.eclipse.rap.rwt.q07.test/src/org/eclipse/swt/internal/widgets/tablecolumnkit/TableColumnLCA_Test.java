@@ -12,6 +12,8 @@
 
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -335,4 +337,26 @@ public class TableColumnLCA_Test extends TestCase {
     String expected = "var w = wm.findWidgetById( \"" + column1Id + "\" );w.setLeft( 10 );";
     assertTrue( markup.indexOf( expected ) != -1 );
   }
+
+  public void testRenderAlignment() throws IOException {
+    Fixture.fakeResponseWriter();
+    Fixture.markInitialized( display );
+    Shell shell = new Shell( display, SWT.NONE );
+    Table table = new Table( shell, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    shell.open();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( table );
+    Fixture.markInitialized( column );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
+    TableColumnLCA lca = new TableColumnLCA();
+    column.setAlignment( SWT.RIGHT );
+    lca.renderChanges( column );
+    String expected = "w.setAlignment( 1, qx.constant.Layout.ALIGN_RIGHT )";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
 }

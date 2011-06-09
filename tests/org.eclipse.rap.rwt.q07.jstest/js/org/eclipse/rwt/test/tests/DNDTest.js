@@ -911,7 +911,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var feedback = dndSupport._dropFeedbackRenderer;
       assertNotNull( feedback );
       assertEquals( 0, tree._topItemIndex );
-      assertEquals( 1, feedback._getScrollDirection( 1 ) );
+      //assertEquals( 1, feedback._getScrollDirection( 1 ) );
       testUtil.clearTimerOnceLog();
       // scroll to item 3
       testUtil.forceInterval( dndSupport._dropFeedbackRenderer._scrollTimer );
@@ -1142,7 +1142,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var dndHandler = qx.event.handler.DragAndDropHandler.getInstance()
       var leftButton = qx.event.type.MouseEvent.buttons.left;
-      var tree = new org.eclipse.rwt.widgets.Tree();
+      var argsMap = {
+        "appearance" : "tree",
+        "selectionPadding" : [ 2, 2 ]
+      };
+      var tree = new org.eclipse.rwt.widgets.Tree( argsMap );
       tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500 );      
       tree.setUserData( "id", "w2" );
       tree.setUserData( "isControl", true );
@@ -1178,7 +1182,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var dndHandler = qx.event.handler.DragAndDropHandler.getInstance()
       var leftButton = qx.event.type.MouseEvent.buttons.left;
-      var tree = new org.eclipse.rwt.widgets.Tree();
+      var argsMap = {
+        "appearance" : "tree",
+        "selectionPadding" : [ 2, 2 ]
+      };
+      var tree = new org.eclipse.rwt.widgets.Tree( argsMap );
       tree.setUserData( "id", "w2" );
       tree.setUserData( "isControl", true );
       tree.setSpace( 13, 364, 27, 30 );
@@ -1210,130 +1218,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       tree.setParent( null );
       tree.destroy();
       testUtil.flush();
-    },
-    
-    testFeedbackWidgetTable : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance()
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
-      var table = this.createTable();
-      dndSupport.registerDragSource( table, [ "move" ] );
-      dndSupport.setDragSourceTransferTypes( table, [ "default" ] );
-      var sourceNode = table._rows[ 0 ].getElement();      
-      var doc = document.body;
-      // drag
-      testUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
-      testUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
-      testUtil.flush();
-      assertNotNull( dndHandler.__dragCache );
-      assertTrue( dndHandler.__dragCache.dragHandlerActive );
-      assertEquals( dndSupport._dropFeedbackRendererWidget, dndHandler.__dropFeedbackRendererWidget );
-      dndSupport.cancel();
-      assertEquals( null, dndHandler.__dropFeedbackRendererWidget );
-      dndSupport.deregisterDragSource( table );
-      this.disposeTable();
-    },
-    
-    testTableFeedbackSelect : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance()
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
-      var source = this.createSource();
-      var table = this.createTable();
-      dndSupport.registerDropTarget( table, [ "move" ] );
-      dndSupport.setDropTargetTransferTypes( table, [ "default" ] );
-      testUtil.flush();
-      var sourceNode = source._getTargetNode();
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var row2 = table._rows[ 1 ];
-      assertEquals( row2.getItemIndex(), 1 );
-      var targetNode = row2._getTargetNode();
-      var tableNode = table._getTargetNode();
-      var doc = document.body;
-      // drag
-      testUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
-      testUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
-      assertNotNull( dndHandler.__dragCache );
-      assertTrue( dndHandler.__dragCache.dragHandlerActive );
-      // Over
-      testUtil.fakeMouseEventDOM( tableNode, "mouseover", leftButton );
-      testUtil.fakeMouseEventDOM( tableNode, "mousemove", leftButton );
-      assertEquals( table, dndSupport._currentDropTarget );
-      testUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton );
-      testUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
-      assertNull( dndSupport._dropFeedbackRenderer );
-      dndSupport.setFeedback( table, [ "select" ] );
-      assertNotNull( dndSupport._dropFeedbackRenderer );
-      testUtil.flush();
-      assertTrue( row2.hasState( "selected" ) );
-      // drop
-      testUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton );
-      assertFalse( row2.hasState( "selected" ) );
-      testUtil.clearTimerOnceLog();
-      testUtil.clearRequestLog();
-      dndSupport.cancel();
-      dndSupport.deregisterDropTarget( table );
-      dndSupport.deregisterDragSource( source );
-      this.disposeTable();
-    },
-    
-    testTableFeedbackScroll : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var dndHandler = qx.event.handler.DragAndDropHandler.getInstance()
-      var leftButton = qx.event.type.MouseEvent.buttons.left;
-      var table = this.createTable();
-      table.setHeight( 28 );
-      dndSupport.registerDropTarget( table, [ "move" ] );
-      dndSupport.setDropTargetTransferTypes( table, [ "default" ] );
-      var source = this.createSource();
-      testUtil.flush();
-      var sourceNode = source._getTargetNode();
-      var tableNode = table.getElement();
-      assertEquals( 2, table._rows.length );
-      var doc = document.body;
-      // drag 
-      testUtil.fakeMouseEventDOM( sourceNode, "mousedown", leftButton, 11, 11 );
-      testUtil.fakeMouseEventDOM( doc, "mousemove", leftButton, 25, 15 );
-      assertNotNull( dndHandler.__dragCache );
-      assertTrue( dndHandler.__dragCache.dragHandlerActive );
-      // Over Table
-      testUtil.fakeMouseEventDOM( tableNode, "mouseover", leftButton );
-      testUtil.fakeMouseEventDOM( tableNode, "mousemove", leftButton );
-      assertEquals( table, dndSupport._currentDropTarget );
-      // over row 2
-      var targetNode = table._rows[ 1 ].getElement();
-      testUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton );
-      testUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
-      assertNull( dndSupport._dropFeedbackRenderer );
-      dndSupport.setFeedback( table, [ "scroll" ] );
-      // setting feedback
-      var feedback = dndSupport._dropFeedbackRenderer;
-      assertNotNull( feedback );
-      // row 2 is only partly in view, so scroll down
-      assertEquals( table._rows[ 1 ], dndSupport._dropFeedbackRenderer._currentRow );
-      assertEquals( 1, table._rows[ 1 ].getItemIndex() );
-      assertEquals( 1, feedback._getScrollDirection( 1 ) );
-      testUtil.clearTimerOnceLog();
-      // scroll to row 3 (partly in view)
-      testUtil.forceInterval( dndSupport._dropFeedbackRenderer._scrollTimer );
-      testUtil.flush();
-      assertEquals( 2, table._rows[ 1 ].getItemIndex() );
-      assertTrue( testUtil.getTimerOnceLog().length > 0 );
-      assertEquals( table._rows[ 0 ], dndSupport._dropFeedbackRenderer._currentRow );
-      testUtil.forceTimerOnce();  // targetUpdateCheck
-      assertEquals( table._rows[ 1 ], dndSupport._dropFeedbackRenderer._currentRow );
-      // drop
-      testUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton );
-      assertNull( dndSupport._dropFeedbackRenderer );
-      testUtil.clearTimerOnceLog();
-      testUtil.clearRequestLog();
-      dndSupport.cancel();
-      dndSupport.deregisterDragSource( source );
-      dndSupport.deregisterDropTarget( table );
-      this.disposeTable();      
     },
     
     testOperationChanged : function() {
@@ -1436,12 +1320,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     
     createTreeTarget : function() {
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
-      var tree = new org.eclipse.rwt.widgets.Tree();
+      var argsMap = {
+      	"appearance" : "tree",
+      	"selectionPadding" : [ 2, 2 ]
+      };
+      var tree = new org.eclipse.rwt.widgets.Tree( argsMap );
       tree.setUserData( "id", "w2" );
       tree.setUserData( "isControl", true );
       tree.setSpace( 13, 364, 27, 30 );
       tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500 );
-      tree.setSelectionPadding( 2, 2 );
       tree.addToDocument();
       var actions = [ "copy", "move", "alias" ];
       dndSupport.registerDropTarget( tree, actions );
@@ -1452,6 +1339,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
     createTreeItem : function( itemNr, tree, parent ) {
       var nr = itemNr + 2;
       var parentItem = org.eclipse.rwt.widgets.TreeItem._getItem( parent );
+      parentItem.setItemCount( itemNr + 1 );
       var item = new org.eclipse.rwt.widgets.TreeItem( parentItem, itemNr );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.add( item, "w" + nr, false );

@@ -22,7 +22,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     this.base( arguments );
     this.setSelectable( false ); // Prevents user from selecting text
     this.setHeight( 16 );
-    this.setAppearance( "tree-row" ); 
     this._textNodes = [];
     this._usedNodes = 0;
     this._expandElement = null;
@@ -44,11 +43,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     renderItem : function( item, config, selected, hoverElement ) {
       this._usedNodes = 0;
       if( item != null ) {
-        var renderSelected = selected || this.hasState( "dnd_selected" );
+        var renderSelected = this._renderAsSelected( config, selected );
         var renderFullSelected = renderSelected && config.fullSelection;
         this._renderStates( item, config, renderFullSelected, hoverElement );
         this._renderBackground( item, config, renderSelected );
-        this._renderIndention( item, config, hoverElement );
+        if( config.treeColumn !== -1 ) {
+          this._renderIndention( item, config, hoverElement );
+        }
         this._renderCheckBox( item, config, hoverElement );
         this._renderCells( item, config, renderSelected );
       } else {
@@ -202,13 +203,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       if( hoverElement !== null && hoverElement === this._expandElement ) {
         states.over = true;
       } 
-      return this._getImageFromAppearance( "tree-indent", states );
+      return this._getImageFromAppearance( "indent", states );
     },
 
     _getLineSymbol : function( item, config ) {
       var states = this._getParentStates( config );
       states.line = true;
-      return this._getImageFromAppearance( "tree-indent", states );
+      return this._getImageFromAppearance( "indent", states );
     },
     
     _getParentStates : function( config ) {
@@ -219,7 +220,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       return result;
     },
 
-    _getImageFromAppearance : function( appearance, states ) {
+    _getImageFromAppearance : function( image, states ) {
+      var appearance = this.getAppearance() + "-" + image; 
       var manager = qx.theme.manager.Appearance.getInstance();
       var styleMap = manager.styleFrom( appearance, states );
       var valid = styleMap && styleMap.backgroundImage;
@@ -247,7 +249,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         var oldCheckBox = this._checkBoxElement;
         var states = this.__states;
         this._setState( "over", hoverElement !== null && hoverElement === oldCheckBox );
-        var image = this._getImageFromAppearance( "tree-check-box", states );
+        var image = this._getImageFromAppearance( "check-box", states );
         this._renderOverState( hoverElement );
         var element = this._getImageElement( 3 );
         this._setImage( element, image, config.enabled );
@@ -405,6 +407,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     
     _renderAsUnfocused : function( config ) {
       return !config.focused && !this.hasState( "dnd_selected" );
+    },
+    
+    _renderAsSelected : function( config, selected ) {
+    	var result =    ( selected || this.hasState( "dnd_selected" ) )
+    	             && ( config.focused || !config.hideSelection );
+    	return result;
     },
     
     /////////////

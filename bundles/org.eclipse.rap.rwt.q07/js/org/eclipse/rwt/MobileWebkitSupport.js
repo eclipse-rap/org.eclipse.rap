@@ -28,7 +28,6 @@ qx.Class.define( "org.eclipse.rwt.MobileWebkitSupport", {
       "org.eclipse.rwt.widgets.BasicButton" : [ "scrollbar-thumb" ],
       "qx.ui.layout.CanvasLayout" : [ "coolitem-handle" ],
       "org.eclipse.swt.widgets.List" : [ "scrollbar-thumb" ],
-      "org.eclipse.swt.widgets.Table" : [ "table-column", "label", "image", "scrollbar-thumb" ],
       "org.eclipse.rwt.widgets.Tree" : [ "tree-column", "label", "image", "scrollbar-thumb" ]
     },
     _lastMouseOverTarget : null,

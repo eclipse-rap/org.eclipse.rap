@@ -9,6 +9,7 @@
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
+
   extend : qx.core.Object,
 
   construct : function() {
@@ -56,6 +57,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       }
       hBar.destroy();
       vBar.destroy();
+    },
+
+    testProppagateKeys : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bar = this._createScrollBar();
+      testUtil.click( bar._thumb );
+      var log = [];
+      bar.addEventListener( "keypress", function( event ) {
+      	log.push( event );
+      } );
+      bar.addEventListener( "keydown", function( event ) {
+      	log.push( event );
+      } );
+      bar.addEventListener( "keyup", function( event ) {
+      	log.push( event );
+      } );
+      testUtil.pressOnce( bar._thumb._getTargetNode(), "Enter" );
+      testUtil.pressOnce( bar._thumb._getTargetNode(), "Down" );
+      assertEquals( 6, log.length );
+      bar.destroy();
     },
 
     testSetValidValue : function() {

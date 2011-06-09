@@ -16,7 +16,9 @@ import org.eclipse.swt.widgets.TableItem;
 
 public interface ITableAdapter {
 
+  int getCheckWidthWithMargin();
   int getCheckWidth();
+  int getCheckLeft();
   int getItemImageWidth( int columnIndex );
 
   int getFocusIndex();

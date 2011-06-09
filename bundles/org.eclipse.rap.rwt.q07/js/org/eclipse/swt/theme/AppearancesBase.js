@@ -945,7 +945,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "tree-check-box" : {
+  "tree-row-check-box" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
@@ -954,7 +954,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "tree-indent" : {
+  "tree-row-indent" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
@@ -996,22 +996,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     }
   },
 
-  "tree-column-resizer" : {
-    style : function( states ) {
-      return {
-        // TODO [rh] use same bg-color as splitpane-spltter (see there)
-        backgroundColor : "#d6d5d9",
-        width : 3
-      }
-    }
-  },
-
   "tree-column-sort-indicator" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.source = tv.getCssImage( "TreeColumn-SortIndicator",
-                                      "background-image" );
+      result.source = tv.getCssImage( "TreeColumn-SortIndicator", "background-image" );
       return result;
     }
   },
@@ -1273,32 +1262,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "table" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var checkWidth = tv.getCssDimension( "Table-Checkbox", "width" );
-      var checkImage = tv.getCssSizedImage( "Table-Checkbox", "background-image" );
-      var checkMargin =  tv.getCssBoxDimensions( "Table-Checkbox", "margin" );
-      if( checkMargin.join() !== "0,0,0,0" ) {
-        checkWidth = checkImage[ 1 ] + checkMargin[ 1 ] + checkMargin[ 3 ];
-      }
-      var checkHeight = checkImage[ 2 ] + checkMargin[ 0 ] + checkMargin[ 2 ];
       return {
         textColor : tv.getCssColor( "Table", "color" ),
         font : tv.getCssFont( "*", "font" ),
         border : tv.getCssBorder( "Table", "border" ),
-        checkWidth : checkWidth,
-        checkHeight : checkHeight
-      };
-    }
-  },
-
-  "table-client-area" : {
-    style : function( states ) {
-      var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = {
         backgroundColor : tv.getCssColor( "Table", "background-color" ),
         backgroundImage : tv.getCssImage( "Table", "background-image" ),
         backgroundGradient : tv.getCssGradient( "Table", "background-image" )
       };
-      return result;
     }
   },
 
@@ -1355,50 +1326,26 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       return result;
     }
   },
-
+  
   "table-row" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = {
-        cursor : "default"
-      };
-      if( states.linesvisible ) {
-        // TODO [rst] Optimize: this function might be called a few times,
-        //            the border can be cached somewhere
-        var horizontalState = { "horizontal" : true };
-        var tvGrid = new org.eclipse.swt.theme.ThemeValues( horizontalState );
-        var gridColor = tvGrid.getCssColor( "Table-GridLine", "color" );
-        gridColor = gridColor == "undefined" ? "transparent" : gridColor;        
-        result.border = new org.eclipse.rwt.Border( [ 0, 0, 1, 0 ], "solid", gridColor );
-      } else {
-        result.border = "undefined"; // resets border to initial value (not a border itself!) 
-      }
-      result.textColor = tv.getCssColor( "TableItem", "color" );
-      if( result.textColor == "undefined" ) {
-        result.textColor = "inherit";
-      }
-      result.backgroundColor = tv.getCssColor( "TableItem", "background-color" );
+      var result = {};
+      result.itemBackground = tv.getCssColor( "TableItem", "background-color" );
+      result.itemForeground = tv.getCssColor( "TableItem", "color" );
       result.textDecoration = tv.getCssIdentifier( "TableItem", "text-decoration" );
-      return result;
+      // TODO [tb]
+      //result.textDecoration = tv.getCssIdentifier( "TableItem", "text-decoration" );
+      return result; 
     }
   },
 
-  "table-check-box" : {
-    include: "image",
+  "table-row-check-box" : {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-      var result = {};
-      var checkWidth = tv.getCssDimension( "Table-Checkbox", "width" );
-      var checkImage = tv.getCssSizedImage( "Table-Checkbox", "background-image" );
-      var checkMargin =  tv.getCssBoxDimensions( "Table-Checkbox", "margin" );
-      if( checkMargin.join() !== "0,0,0,0" ) {
-        result.paddingLeft = checkMargin[ 3 ];
-      } else {
-        result.paddingLeft = Math.max( 0, ( checkWidth - checkImage[ 1 ] ) / 2 );
-      }
-      result.paddingTop = checkMargin[ 0 ]
-      result.source = checkImage[ 0 ];
-      return result;
+      return {
+        backgroundImage : tv.getCssImage( "Table-Checkbox", "background-image" )
+      } 
     }
   },
 

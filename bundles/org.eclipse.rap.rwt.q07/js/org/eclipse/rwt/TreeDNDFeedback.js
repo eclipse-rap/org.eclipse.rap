@@ -207,25 +207,25 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
       }
     },
 
-    _getScrollDirection : function( index ) {
+    _getScrollDirection : function( row ) {
       var result = 0;
-      var topItemIndex = this._tree._topItemIndex;
-      if( index === topItemIndex ) {
-        result = -1;
-      } else if( index >= ( topItemIndex + this._tree._rowContainer.getChildrenLength() - 2 ) ) {
-        result = 1;
+      var rowIndex = this._tree._rowContainer.indexOf( row );
+      if( rowIndex === 0 ) {
+      	result = -1;
+      } else if( rowIndex >= this._tree._rowContainer.getChildrenLength() - 2 ) {
+      	result = 1;
       }
       return result;
     },
 
     _onScrollTimer : function( event ) {
       this._stopScrollTimer();
-      var item = this._tree._rowContainer.findItemByRow( this._currentRow );
-      var index = this._tree._findIndexByItem( item );
-      var offset = this._getScrollDirection( index );
+      var offset = this._getScrollDirection( this._currentRow );
       if( offset != 0 ) {
+        var item = this._tree._rowContainer.findItemByRow( this._currentRow );
+	      var index = item.getFlatIndex();
         var newIndex = index + offset;
-        var newItem = this._tree._findItemByIndex( newIndex );
+        var newItem = this._tree._rootItem.findItemByFlatIndex( newIndex );
         if( newItem != null ) {
           var newTopIndex = this._tree._topItemIndex + offset;
           this._tree.setTopItemIndex( newTopIndex );

@@ -17,6 +17,7 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
     this._scrollLeft = 0;
     this._rowHeight = 16;
     this._rowWidth = 0;
+    this._rowAppearance = null;
     this._rowBorder = null;
     this._linesVisible = false;
     this._topItem = null;
@@ -57,6 +58,7 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
         "focused" : true,
         "linesVisible" : false,
         "fullSelection" : false,
+        "hideSelection" : false,
         "variant" : null, 
         "selectionPadding" : null, 
         "indentionWidth" : 16,   
@@ -116,6 +118,13 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
       }
       this._updateRowCount();
     },
+    
+    /**
+     * has to be set before creating any rows
+     */
+    setRowAppearance : function( value ) {
+      this._rowAppearance = value;
+    },
 
     setRowBorder : function( border ) {
       this._rowBorder = border;
@@ -125,6 +134,7 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
     },
     
     setRowLinesVisible : function( value ) {
+    	this._linesVisible = value;
       for( var i = 0; i < this._children.length; i++ ) {
         this._children[ i ].setLinesVisible( value );
       }
@@ -201,9 +211,10 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
 
     _updateRowCount : function() {
       var height = this.getHeight()
-      var rowsNeeded = Math.ceil( this.getHeight() / this._rowHeight );
+      var rowsNeeded = Math.round( ( this.getHeight() / this._rowHeight ) + 0.5 );
       while( this._children.length < rowsNeeded ) {
         var row = new org.eclipse.rwt.widgets.TreeRow( this.getParent() );
+        row.setAppearance( this._rowAppearance ); 
         row.setWidth( this._rowWidth );
         row.setHeight( this._rowHeight );
         row.setBorder( this._rowBorder );
@@ -248,11 +259,10 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
     },
     
     _renderRow : function( row, item ) {
-       row.renderItem( item, 
-                       this._config, 
-                       this._isSelected( item ), 
-                       this._getHoverElement( item ) );
-       // TODO [tb] : onRenderVirtual
+      row.renderItem( item, 
+                      this._config, 
+                      this._isSelected( item ), 
+                      this._getHoverElement( item ) );
     },
 
     _switchRows : function( newFirstRow ) {

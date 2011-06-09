@@ -288,11 +288,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     _getCurrentItemTarget : function() {
       var result = null;
       var target = this._getCurrentFeedbackTarget();
-      if( target instanceof org.eclipse.swt.widgets.TableRow ) {
-        var table = this._currentDropTarget;
-        var index = target.getItemIndex()
-        result = table._items[ index ];
-      } if( target instanceof org.eclipse.rwt.widgets.TreeRow ) {
+      if( target instanceof org.eclipse.rwt.widgets.TreeRow ) {
         var tree = this._currentDropTarget;
         result = tree._rowContainer.findItemByRow( target );
       } else {
@@ -371,8 +367,6 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       if( this._dropFeedbackRenderer == null ) {
         if( widget instanceof org.eclipse.rwt.widgets.Tree ) {
           this._dropFeedbackRenderer = new org.eclipse.rwt.TreeDNDFeedback( widget );
-        } else if( widget instanceof org.eclipse.swt.widgets.Table ) {
-          this._dropFeedbackRenderer = new org.eclipse.rwt.TableDNDFeedback( widget );
         }
       }
     },
@@ -387,10 +381,8 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     _getCurrentFeedbackTarget : function() {
       var result = null;
       var widget = this._currentTargetWidget;
-      if(    widget instanceof org.eclipse.swt.widgets.TableRow
-          || widget instanceof org.eclipse.rwt.widgets.TreeRow ) 
-      {
-        // _currentDropTarget could be another tree or table
+      if( widget instanceof org.eclipse.rwt.widgets.TreeRow ) {
+        // _currentDropTarget could be another tree
         if( this._currentDropTarget && this._currentDropTarget.contains( widget ) ) {
           result = widget;
         }
@@ -413,9 +405,6 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         if( item instanceof org.eclipse.rwt.widgets.TreeRow ) {
           success = true;
           this._configureTreeRowFeedback( item );
-        } else if( item instanceof org.eclipse.swt.widgets.TableRow ) {
-          success = true;
-          this.configureTableRowFeedback( item );
         }
         if( !success ) {
           item = item.getParent();
@@ -424,7 +413,6 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       return success ? this._dragFeedbackWidget : null;
     },
 
-    // TODO [tb] : could this be merged with tableRowFeedback?
     _configureTreeRowFeedback : function( row ) {
       var widget = this._dragFeedbackWidget;
       var tree = this._currentDragSource;
@@ -443,27 +431,6 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         widget.setTextColor( textColor );
         widget.setCellContent( 1, item.getText( config.treeColumn ) );
         widget.setFont( config.font );
-      }
-    },
-    
-    configureTableRowFeedback : function( item ) {
-      var widget = this._dragFeedbackWidget;
-      if( item.getElement().childNodes.length > 0  ) {
-        var rowDiv = item.getElement();
-        var cellDiv = rowDiv.childNodes[ 0 ];
-        widget.setCellContent( 1, cellDiv.innerHTML ) ;
-        // TODO [tb] : get cell-only fonts how?
-        widget.setFont( item.getFont() );
-        if( cellDiv.style.backgroundColor != "" ) {
-          widget.setBackgroundColor( cellDiv.style.backgroundColor );
-        } else {
-          widget.setBackgroundColor( rowDiv.style.backgroundColor );
-        }
-        if( cellDiv.style.color != "" ) {
-          widget.setTextColor( cellDiv.style.color );
-        } else {
-          widget.setTextColor( rowDiv.style.color );
-        }
       }
     },
     

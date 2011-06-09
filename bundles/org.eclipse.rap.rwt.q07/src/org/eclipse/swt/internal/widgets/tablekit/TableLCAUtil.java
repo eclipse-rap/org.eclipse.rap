@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,9 +70,7 @@ public final class TableLCAUtil {
     return hasItemMetricsChanged( table, itemMetrics );
   }
 
-  public static void writeItemMetrics( final Table table )
-    throws IOException
-  {
+  public static void writeItemMetrics( final Table table ) throws IOException {
     ItemMetrics[] itemMetrics = getItemMetrics( table );
     if( hasItemMetricsChanged( table, itemMetrics ) ) {
       JSWriter writer = JSWriter.getWriterFor( table );
@@ -88,7 +86,6 @@ public final class TableLCAUtil {
         };
         writer.set( "itemMetrics", args );
       }
-      writer.call( "updateRows", null );
     }
   }
 
@@ -129,7 +126,6 @@ public final class TableLCAUtil {
     ITableAdapter tableAdapter = getTableAdapter( table );
     TableItem measureItem = tableAdapter.getMeasureItem();
     if( measureItem != null ) {
-      int checkWidth = tableAdapter.getCheckWidth();
       int leftOffset = tableAdapter.getLeftOffset();
       for( int i = 0; i < columnCount; i++ ) {
         Rectangle bounds = measureItem.getBounds( i );
@@ -138,7 +134,10 @@ public final class TableLCAUtil {
         // If in column mode, cut image width if image exceeds right cell border
         int imageWidth = tableAdapter.getItemImageWidth( i );
         if( table.getColumnCount() > 0 ) {
-          int maxImageWidth = bounds.width - ( ( imageBounds.x - checkWidth ) - bounds.x );
+          TableColumn column = table.getColumn( i );
+          int columnLeft = tableAdapter.getColumnLeft( column );
+          int columnWidth = column.getWidth();
+          int maxImageWidth = columnWidth - ( imageBounds.x - columnLeft + leftOffset );
           if( imageWidth > maxImageWidth ) {
             imageWidth = Math.max( 0, maxImageWidth );
           }

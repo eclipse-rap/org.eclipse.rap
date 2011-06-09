@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.theme.JsonArray;
+import org.eclipse.rwt.internal.theme.JsonObject;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -87,35 +89,35 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( final Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
+    ITreeAdapter adapter = getTreeAdapter( tree );
     JSWriter writer = JSWriter.getWriterFor( tree );
-    writer.newWidget( "org.eclipse.rwt.widgets.Tree" );
-    ControlLCAUtil.writeStyleFlags( tree );
+    JsonObject argsMap = new JsonObject();
+    argsMap.append( "appearance", "tree" );
+    if( ( tree.getStyle() & SWT.VIRTUAL ) != 0 ) {
+      argsMap.append( "virtual", true );
+    }
     if( ( tree.getStyle() & SWT.NO_SCROLL ) != 0 ) {
-      writer.set( "hasNoScroll", true );
+      argsMap.append( "noScroll", true );
     }
     if( ( tree.getStyle() & SWT.MULTI ) != 0 ) {
-      writer.set( "hasMultiSelection", true );
-    }
-    if( ( tree.getStyle() & SWT.FULL_SELECTION ) != 0 ) {
-      writer.set( "hasFullSelection", true );
-    } else {
-      Rectangle textMargin = getTreeAdapter( tree ).getTextMargin();
-      writer.set( "selectionPadding", new int[]{
-        textMargin.x,
-        textMargin.width - textMargin.x
-      } );
+      argsMap.append( "multiSelection", true );
     }
     if( ( tree.getStyle() & SWT.CHECK ) != 0 ) {
-      writer.set( "hasCheckBoxes", true );
-      writer.set( "checkBoxMetrics", new Object[]{
-        new Integer( getTreeAdapter( tree ).getCheckLeft() ),
-        new Integer( getTreeAdapter( tree ).getCheckWidth() )
-      } );
+      int[] checkMetrics = new int[] { adapter.getCheckLeft(), adapter.getCheckWidth() };
+      argsMap.append( "check", true );
+      argsMap.append( "checkBoxMetrics", JsonArray.valueOf( checkMetrics ) );
     }
-    if( ( tree.getStyle() & SWT.VIRTUAL ) != 0 ) {
-      writer.set( "isVirtual", true );
+    if( ( tree.getStyle() & SWT.FULL_SELECTION ) != 0 ) {
+      argsMap.append( "fullSelection", true );
+    } else {
+      Rectangle textMargin = getTreeAdapter( tree ).getTextMargin();
+      int[] selectionPadding = new int[] { textMargin.x, textMargin.width - textMargin.x };
+      argsMap.append( "selectionPadding", JsonArray.valueOf( selectionPadding ) );
     }
-    writeIndentionWidth( tree );
+    argsMap.append( "indentionWidth", adapter.getIndentionWidth() );
+    Object[] args = new Object[]{ new JSVar( argsMap.toString() ) };
+    writer.newWidget( "org.eclipse.rwt.widgets.Tree", args );
+    ControlLCAUtil.writeStyleFlags( tree );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -159,12 +161,9 @@ public final class TreeLCA extends AbstractWidgetLCA {
       String itemId = request.getParameter( eventName + ".item" );
       Item treeItem = ( Item )WidgetUtil.find( tree, itemId );
       String detailStr = request.getParameter( eventName + ".detail" );
-      int detail = "check".equals( detailStr )
-                                              ? SWT.CHECK
-                                              : SWT.NONE;
+      int detail = "check".equals( detailStr ) ? SWT.CHECK : SWT.NONE;
       int eventType = SelectionEvent.WIDGET_SELECTED;
-      int stateMask
-        = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+      int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
       SelectionEvent event = new SelectionEvent( tree,
                                                  treeItem,
                                                  eventType,
@@ -280,14 +279,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
   
-  private static void writeIndentionWidth( final Tree tree )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( tree );
-    ITreeAdapter treeAdapter = getTreeAdapter( tree );
-    writer.set( "indentionWidth", treeAdapter.getIndentionWidth() );
-  }
-
   private static void writeHeaderHeight( final Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = new Integer( tree.getHeaderHeight() );
@@ -354,9 +345,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     writer.set( PROP_LINES_VISIBLE, "linesVisible", newValue, Boolean.FALSE );
   }
 
-  private static void updateSelectionListener( final Tree tree )
-    throws IOException
-  {
+  private static void updateSelectionListener( final Tree tree ) throws IOException {
     Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( tree ) );
     String prop = PROP_SELECTION_LISTENERS;
     if( WidgetLCAUtil.hasChanged( tree, prop, newValue, Boolean.FALSE ) ) {
@@ -365,9 +354,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeScrollBarsSelectionListener( final Tree tree )
-    throws IOException
-  {
+  private static void writeScrollBarsSelectionListener( final Tree tree ) throws IOException {
     Boolean newValue = hasScrollBarsSelectionListener( tree );
     String prop = PROP_SCROLLBARS_SELECTION_LISTENER;
     if( WidgetLCAUtil.hasChanged( tree, prop, newValue, Boolean.FALSE ) ) {
@@ -379,9 +366,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   ////////////////
   // Cell tooltips
 
-  private static void writeEnableCellToolTip( final Tree tree )
-    throws IOException
-  {
+  private static void writeEnableCellToolTip( final Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     String prop = PROP_ENABLE_CELL_TOOLTIP;
     Boolean newValue = new Boolean( CellToolTipUtil.isEnabledFor( tree ) );
@@ -402,18 +387,14 @@ public final class TreeLCA extends AbstractWidgetLCA {
         String itemId = details[ 0 ];
         int columnIndex = NumberFormatUtil.parseInt( details[ 1 ] );
         TreeItem item = getItemById( tree.getItems(), itemId );
-        if(    item != null
-            && ( columnIndex == 0 || columnIndex < tree.getColumnCount() ) )
-        {
+        if( item != null && ( columnIndex == 0 || columnIndex < tree.getColumnCount() ) ) {
           provider.getToolTipText( item, columnIndex );
         }
       }
     }
   }
 
-  private static void writeCellToolTipText( final Tree tree )
-    throws IOException
-  {
+  private static void writeCellToolTipText( final Tree tree ) throws IOException {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
     String text = adapter.getToolTipText();
     if( text != null ) {

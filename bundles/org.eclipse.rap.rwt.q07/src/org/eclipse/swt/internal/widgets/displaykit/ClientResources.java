@@ -22,6 +22,7 @@ import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
 final class ClientResources {
+
   private static final String CLIENT_LIBRARY_VARIANT = "org.eclipse.rwt.clientLibraryVariant";
   private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
 
@@ -191,15 +192,11 @@ final class ClientResources {
     "org/eclipse/rwt/widgets/MenuItem.js",
     "org/eclipse/rwt/RadioButtonUtil.js",
     "org/eclipse/rwt/widgets/MenuBar.js",
-    "org/eclipse/rwt/TableDNDFeedback.js",
     "org/eclipse/rwt/DNDSupport.js",
-    "org/eclipse/swt/widgets/TableRow.js",
     "org/eclipse/swt/theme/ThemeValues.js",
     "org/eclipse/rwt/widgets/Tree.js",
     "org/eclipse/rwt/widgets/TreeItem.js",
     "org/eclipse/rwt/TreeDNDFeedback.js",
-    "org/eclipse/swt/widgets/Table.js",
-    "org/eclipse/swt/widgets/TableItem.js",
     "org/eclipse/swt/widgets/TableCellToolTip.js",
     "org/eclipse/swt/widgets/TableColumn.js",
     "org/eclipse/swt/browser/Browser.js",
@@ -274,7 +271,7 @@ final class ClientResources {
     "resource/widget/rap/scale/h_marker_small.gif",
     "resource/widget/rap/scale/v_marker_small.gif",
   };
-  
+
   private final IResourceManager resourceManager;
 
   public ClientResources( IResourceManager resourceManager ) {

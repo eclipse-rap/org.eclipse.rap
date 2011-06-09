@@ -31,9 +31,9 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
     this._delayTimer = new qx.client.Timer( 250 ); // delay auto-repeated actions
     this._repeatTimer = new qx.client.Timer( 100 ); // for auto-repeated actions
     // subwidgets:
-    this._thumb = new org.eclipse.rwt.widgets.BasicButton( "push" );
-    this._minButton = new org.eclipse.rwt.widgets.BasicButton( "push" );
-    this._maxButton = new org.eclipse.rwt.widgets.BasicButton( "push" );
+    this._thumb = new org.eclipse.rwt.widgets.BasicButton( "push", true );
+    this._minButton = new org.eclipse.rwt.widgets.BasicButton( "push", true );
+    this._maxButton = new org.eclipse.rwt.widgets.BasicButton( "push", true );
     this.add( this._thumb );
     this.add( this._minButton );
     this.add( this._maxButton );
@@ -253,6 +253,7 @@ qx.Class.define( "org.eclipse.swt.widgets.AbstractSlider", {
       org.eclipse.swt.WidgetUtil.fixIEBoxHeight( this._maxButton );
       this._minButton.setTabIndex( null );
       this._maxButton.setTabIndex( null );
+      this._thumb.setTabIndex( null );
     },
     
     _setStates : function() {

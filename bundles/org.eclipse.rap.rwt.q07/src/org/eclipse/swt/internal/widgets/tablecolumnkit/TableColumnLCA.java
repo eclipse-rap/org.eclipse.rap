@@ -52,10 +52,8 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_LEFT, new Integer( getLeft( column ) ) );
     adapter.preserve( PROP_WIDTH, new Integer( column.getWidth() ) );
     adapter.preserve( PROP_SORT_DIRECTION, getSortDirection( column ) );
-    adapter.preserve( PROP_RESIZABLE,
-                      Boolean.valueOf( column.getResizable() ) );
-    adapter.preserve( PROP_MOVEABLE,
-                      Boolean.valueOf( column.getMoveable() ) );
+    adapter.preserve( PROP_RESIZABLE, Boolean.valueOf( column.getResizable() ) );
+    adapter.preserve( PROP_MOVEABLE, Boolean.valueOf( column.getMoveable() ) );
     adapter.preserve( PROP_SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( column ) ) );
     WidgetLCAUtil.preserveCustomVariant( column );
@@ -98,7 +96,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     TableColumn column = ( TableColumn )widget;
     JSWriter writer = JSWriter.getWriterFor( column );
     Object[] args = new Object[] { column.getParent() };
-    writer.newWidget( "org.eclipse.swt.widgets.TableColumn", args );    
+    writer.newWidget( "org.eclipse.swt.widgets.TableColumn", args );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
@@ -171,9 +169,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     writer.set( PROP_MOVEABLE, "moveable", newValue, Boolean.FALSE );
   }
 
-  private static void writeAlignment( final TableColumn column )
-    throws IOException
-  {
+  private static void writeAlignment( final TableColumn column ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( column );
     if( TableLCAUtil.hasAlignmentChanged( column ) ) {
       Integer newValue = new Integer( column.getAlignment() );
@@ -183,7 +179,8 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
       } else if( newValue.intValue() == SWT.RIGHT ) {
         alignment = JSConst.QX_CONST_ALIGN_RIGHT;
       }
-      writer.set( "horizontalChildrenAlign", new Object[] { alignment } );
+      Integer index = new Integer( column.getParent().indexOf( column ) );
+      writer.set( "alignment", new Object[] { index, alignment } );
     }
   }
 
@@ -275,7 +272,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
             result++;
           }
         }
-      }      
+      }
     }
     // Column was moved right of the right-most column
     if( result == -1 ) {
