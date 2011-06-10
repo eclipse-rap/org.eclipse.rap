@@ -238,6 +238,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     setTopItemIndex : function( index ) {
       this._updateScrollHeight();
       this._vertScrollBar.setValue( index * this._itemHeight );
+      if( !this._inServerResponse() ) {
+        qx.ui.core.Widget.flushGlobalQueues();
+      }
+        
     },
 
     setScrollLeft: function( value ) {
@@ -638,12 +642,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
     
     _handleKeyboardSelect : function( event, item, itemIndex, suppressMulti ) { 
-      this._scrollIntoView( itemIndex );
       if( this._hasMultiSelection && !suppressMulti ) {
         this._multiSelectItem( event, item );
       } else {
         this._singleSelectItem( event, item );            
       }
+      this._scrollIntoView( itemIndex );
     },
 
     /////////////////

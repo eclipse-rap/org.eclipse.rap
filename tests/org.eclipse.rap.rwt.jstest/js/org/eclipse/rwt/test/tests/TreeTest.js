@@ -389,6 +389,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.destroy();
     },
 
+    testSetTopItemInternalIndex : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      this._fillTree( tree, 100 );
+      testUtil.flush();
+      tree.setTopItemIndex( 55 ); // NOTE: NO Flush!
+      var area = tree._rowContainer._getTargetNode();
+      assertEquals( 1100, tree._vertScrollBar.getValue() );
+      assertEquals( 273, parseInt( tree._vertScrollBar._thumb.getElement().style.top ) );
+      assertEquals( "Test55", area.childNodes[ 0 ].childNodes[ 0 ].innerHTML );
+      tree.destroy();
+    },
+
     testSetTopItemAndExpandClick : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
