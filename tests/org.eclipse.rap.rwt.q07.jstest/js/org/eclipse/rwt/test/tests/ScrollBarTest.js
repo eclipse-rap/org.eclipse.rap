@@ -340,7 +340,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertFalse( bar.getMergeEvents() );
       bar.autoEnableMerge( 600 );
       assertFalse( bar.getMergeEvents() );
-      bar.autoEnableMerge( 710 );
+      bar.autoEnableMerge( 1010 );
       assertTrue( bar.getMergeEvents() );
       bar.destroy();
     },
@@ -355,7 +355,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       bar.autoEnableMerge( 0 );
       bar.autoEnableMerge( 0 );
       assertFalse( bar.getMergeEvents() );
-      bar.autoEnableMerge( 710 );
+      bar.autoEnableMerge( 1010 );
       assertTrue( bar.getMergeEvents() );
       bar.destroy();
     },
