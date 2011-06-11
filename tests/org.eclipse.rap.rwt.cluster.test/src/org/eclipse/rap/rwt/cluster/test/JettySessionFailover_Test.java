@@ -10,17 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.test;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
+import org.eclipse.rap.rwt.cluster.testfixture.server.JettyFactory;
 
 
-public class ClusterTestSuite {
-
-  public static Test suite() {
-    TestSuite suite = new TestSuite( ClusterTestSuite.class.getName() );
-    suite.addTestSuite( JettySessionFailover_Test.class );
-    suite.addTestSuite( TomcatSessionFailover_Test.class );
-    suite.addTestSuite( SessionSerialization_Test.class );
-    return suite;
+public class JettySessionFailover_Test extends SessionFailover_Test {
+  IServletEngineFactory getServletEngineFactory() {
+    return new JettyFactory();
   }
 }

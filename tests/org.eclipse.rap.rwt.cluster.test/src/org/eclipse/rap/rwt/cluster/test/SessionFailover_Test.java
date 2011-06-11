@@ -22,11 +22,10 @@ import org.eclipse.rap.rwt.cluster.test.entrypoints.*;
 import org.eclipse.rap.rwt.cluster.testfixture.ClusterFixture;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
-import org.eclipse.rap.rwt.cluster.testfixture.db.DatabaseServer;
-import org.eclipse.rap.rwt.cluster.testfixture.server.ClusteredServletEngine;
-import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
+import org.eclipse.rap.rwt.cluster.testfixture.server.*;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
+import org.eclipse.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
@@ -36,21 +35,23 @@ import org.eclipse.swt.widgets.Shell;
 
 
 @SuppressWarnings("restriction")
-public class SessionFailover_Test extends TestCase {
+public abstract class SessionFailover_Test extends TestCase {
 
-  private DatabaseServer db;
+  private IServletEngineCluster cluster;
   private IServletEngine primary;
   private IServletEngine secondary;
   private RWTClient client;
-
+  
+  abstract IServletEngineFactory getServletEngineFactory();
+  
   public void testButtonEntryPoint() throws Exception {
-    primary.start( ButtonEntryPoint.class );
-    secondary.start( ButtonEntryPoint.class );
+    cluster.start( ButtonEntryPoint.class );
     client.sendStartupRequest();
     client.sendInitializationRequest();
     // Click center button four times on primary
     clickCenterButton( 1, 4 );
     // Click center button four times on secondary
+    cluster.removeServletEngine( primary );
     client.changeServletEngine( secondary );
     clickCenterButton( 5, 8 );
     // Number of sessions
@@ -69,8 +70,7 @@ public class SessionFailover_Test extends TestCase {
   }
 
   public void testResourcesEntryPoint() throws Exception {
-    primary.start( ResourcesEntryPoint.class );
-    secondary.start( ResourcesEntryPoint.class );
+    cluster.start( ResourcesEntryPoint.class );
     client.sendStartupRequest();
     client.sendInitializationRequest();
     
@@ -89,8 +89,7 @@ public class SessionFailover_Test extends TestCase {
   }
   
   public void testImageEntryPoint() throws Exception {
-    primary.start( ImageEntryPoint.class );
-    secondary.start( ImageEntryPoint.class );
+    cluster.start( ImageEntryPoint.class );
     client.sendStartupRequest();
     client.sendInitializationRequest();
     client.sendResourceRequest( ImageEntryPoint.imagePath );
@@ -109,7 +108,19 @@ public class SessionFailover_Test extends TestCase {
     assertSame( secondaryShell.getDisplay(), secondaryImage.getDevice() );
   }
   
-  
+  protected void setUp() throws Exception {
+    ClusterFixture.setUp();
+    cluster = getServletEngineFactory().createServletEngineCluster();
+    primary = cluster.addServletEngine();
+    secondary = cluster.addServletEngine();
+    client = new RWTClient( primary );
+  }
+
+  protected void tearDown() throws Exception {
+    cluster.stop();
+    ClusterFixture.tearDown();
+  }
+
   private static boolean assertEquals( ImageData expected, ImageData actual ) {
     boolean result;
     byte[] expectedBytes = getImageBytes( expected );
@@ -135,25 +146,19 @@ public class SessionFailover_Test extends TestCase {
     return outputStream.toByteArray();
   }
 
-  protected void setUp() throws Exception {
-    ClusterFixture.setUp();
-    db = new DatabaseServer();
-    db.start();
-    primary = new ClusteredServletEngine( db );
-    secondary = new ClusteredServletEngine( db );
-    client = new RWTClient( primary );
-  }
-
-  protected void tearDown() throws Exception {
-    primary.stop();
-    secondary.stop();
-    db.stop();
-    ClusterFixture.tearDown();
+  private void prepareExamination() {
+    attachApplicationContextToSession( primary );
+    attachCurrentThreadToDisplay( primary );
+    attachApplicationContextToSession( secondary );
+    attachCurrentThreadToDisplay( secondary );
   }
   
-  private void prepareExamination() {
-    attachCurrentThreadToDisplay( primary );
-    attachCurrentThreadToDisplay( secondary );
+  private static void attachApplicationContextToSession( IServletEngine servletEngine ) {
+    HttpSession session = ClusterFixture.getFirstSession( servletEngine );
+    SessionStoreImpl sessionStore = SessionStoreImpl.getInstanceFromSession( session );
+    ServletContext servletContext = session.getServletContext();
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    ApplicationContextUtil.set( sessionStore, applicationContext );
   }
 
   private static void attachCurrentThreadToDisplay( IServletEngine servletEngine ) {

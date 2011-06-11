@@ -10,9 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.client;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 

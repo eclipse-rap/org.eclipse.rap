@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.cluster.testfixture.server;
+package org.eclipse.rap.rwt.cluster.testfixture.internal.jetty;
 
 import org.eclipse.jetty.util.log.Logger;
 

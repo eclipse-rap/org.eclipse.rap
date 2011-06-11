@@ -10,21 +10,18 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.server;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.server.DelegatingServletEngine;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.tomcat.TomcatCluster;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.tomcat.TomcatEngine;
 
-import javax.servlet.http.HttpSession;
 
-import org.eclipse.rwt.lifecycle.IEntryPoint;
+public class TomcatFactory implements IServletEngineFactory {
 
-public interface IServletEngine {
-  void start( Class<? extends IEntryPoint> entryPointClass ) throws Exception;
-  void stop() throws Exception;
-  int getPort();
-  
-  HttpSession[] getSessions();
+  public IServletEngine createServletEngine() {
+    return new DelegatingServletEngine( new TomcatEngine() );
+  }
 
-  // TODO [rh] eliminate this method, it is used for tests only
-  HttpURLConnection createConnection( URL url ) throws IOException;
+  public IServletEngineCluster createServletEngineCluster() {
+    return new TomcatCluster();
+  }
 }

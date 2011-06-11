@@ -10,21 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.server;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
-import javax.servlet.http.HttpSession;
-
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-
-public interface IServletEngine {
-  void start( Class<? extends IEntryPoint> entryPointClass ) throws Exception;
-  void stop() throws Exception;
-  int getPort();
-  
-  HttpSession[] getSessions();
-
-  // TODO [rh] eliminate this method, it is used for tests only
-  HttpURLConnection createConnection( URL url ) throws IOException;
+public interface IServletEngineFactory {
+  IServletEngine createServletEngine();
+  IServletEngineCluster createServletEngineCluster();
 }

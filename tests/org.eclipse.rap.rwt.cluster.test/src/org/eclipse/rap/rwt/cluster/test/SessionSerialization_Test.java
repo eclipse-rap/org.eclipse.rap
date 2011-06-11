@@ -20,8 +20,8 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.cluster.test.entrypoints.ButtonEntryPoint;
 import org.eclipse.rap.rwt.cluster.testfixture.*;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.jetty.JettyEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rap.rwt.cluster.testfixture.server.ServletEngine;
 import org.eclipse.rwt.service.ISessionStore;
 
 
@@ -44,7 +44,7 @@ public class SessionSerialization_Test extends TestCase {
 
   protected void setUp() throws Exception {
     ClusterFixture.setUp();
-    servletEngine = new ServletEngine();
+    servletEngine = new JettyEngine();
     servletEngine.start( ButtonEntryPoint.class );
     client = new RWTClient( servletEngine );
   }

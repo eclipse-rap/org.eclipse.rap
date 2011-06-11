@@ -8,9 +8,11 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.cluster.testfixture.db;
+package org.eclipse.rap.rwt.cluster.testfixture.internal.jetty;
 
 import java.sql.*;
+
+import org.eclipse.rap.rwt.cluster.testfixture.internal.jetty.DatabaseServer;
 
 import junit.framework.TestCase;
 

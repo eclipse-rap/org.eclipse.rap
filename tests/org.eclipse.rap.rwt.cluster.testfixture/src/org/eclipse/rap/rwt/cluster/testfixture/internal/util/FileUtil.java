@@ -8,19 +8,24 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.cluster.test;
+package org.eclipse.rap.rwt.cluster.testfixture.internal.util;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import java.io.File;
 
 
-public class ClusterTestSuite {
+public class FileUtil {
+  
+  public static void deleteDirectory( File directory ) {
+    if( directory.isDirectory() ) {
+      File[] files = directory.listFiles();
+      for( int i = 0; i < files.length; i++ ) {
+        deleteDirectory( files[ i ] );
+      }
+    }
+    directory.delete();
+  }
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite( ClusterTestSuite.class.getName() );
-    suite.addTestSuite( JettySessionFailover_Test.class );
-    suite.addTestSuite( TomcatSessionFailover_Test.class );
-    suite.addTestSuite( SessionSerialization_Test.class );
-    return suite;
+  private FileUtil() {
+    // prevent instantiation
   }
 }

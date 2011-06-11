@@ -10,10 +10,18 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.server;
 
-import org.eclipse.jetty.server.*;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.jetty.JettyCluster;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.jetty.JettyEngine;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.server.DelegatingServletEngine;
 
 
-interface ISessionManagerProvider {
-  SessionManager createSessionManager( Server server );
-  SessionIdManager createSessionIdManager( Server server );
+public class JettyFactory implements IServletEngineFactory {
+
+  public IServletEngine createServletEngine() {
+    return new DelegatingServletEngine( new JettyEngine() );
+  }
+
+  public IServletEngineCluster createServletEngineCluster() {
+    return new JettyCluster();
+  }
 }

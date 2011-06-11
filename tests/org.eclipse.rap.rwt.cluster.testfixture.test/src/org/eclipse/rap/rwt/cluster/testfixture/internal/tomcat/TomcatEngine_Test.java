@@ -8,19 +8,16 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.cluster.test;
+package org.eclipse.rap.rwt.cluster.testfixture.internal.tomcat;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.server.ServletEngine_Test;
+import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
+import org.eclipse.rap.rwt.cluster.testfixture.server.TomcatFactory;
 
 
-public class ClusterTestSuite {
+public class TomcatEngine_Test extends ServletEngine_Test {
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite( ClusterTestSuite.class.getName() );
-    suite.addTestSuite( JettySessionFailover_Test.class );
-    suite.addTestSuite( TomcatSessionFailover_Test.class );
-    suite.addTestSuite( SessionSerialization_Test.class );
-    return suite;
+  protected IServletEngineFactory getServletEngineFactory() {
+    return new TomcatFactory();
   }
 }

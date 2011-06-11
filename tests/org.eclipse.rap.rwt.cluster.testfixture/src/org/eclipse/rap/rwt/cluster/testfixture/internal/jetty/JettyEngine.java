@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.cluster.testfixture.server;
+package org.eclipse.rap.rwt.cluster.testfixture.internal.jetty;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,41 +21,46 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
-import org.eclipse.jetty.server.session.*;
+import org.eclipse.jetty.server.session.AbstractSessionManager;
+import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.*;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.resource.FileResource;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.server.DelegatingServletEngine;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.util.FileUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
+import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 
 @SuppressWarnings("restriction")
-public class ServletEngine implements IServletEngine {
+public class JettyEngine implements IServletEngine {
   private static final String SERVLET_NAME = "/rap";
 
   static {
     Log.setLog( new ServletEngineLogger() );
   }
   
+  private final ISessionManagerProvider sessionManagerProvider;
   private final Server server;
   private final ContextHandlerCollection contextHandlers;
-  private final SessionManager sessionManager;
-
-  public ServletEngine() {
+  private SessionManager sessionManager;
+  
+  public JettyEngine() {
     this( new SessionManagerProvider() );
   }
   
-  ServletEngine( ISessionManagerProvider sessionManagerProvider ) {
+  JettyEngine( ISessionManagerProvider sessionManagerProvider ) {
+    this.sessionManagerProvider = sessionManagerProvider;
     this.server = new Server( SocketUtil.getFreePort() );
     this.contextHandlers = new ContextHandlerCollection();
     this.server.setHandler( contextHandlers );
-    this.sessionManager = createSessionManager( sessionManagerProvider );
   }
-
-  public void start( Class entryPointClass ) throws Exception {
-    if( entryPointClass != null ) {
-      addEntryPoint( entryPointClass );
-    }
+  
+  public void start( Class<? extends IEntryPoint> entryPointClass ) throws Exception {
+    createSessionManager();
+    addEntryPoint( entryPointClass );
     server.start();
   }
 
@@ -79,7 +84,11 @@ public class ServletEngine implements IServletEngine {
     return sessions.toArray( new HttpSession[ sessions.size() ] );
   }
 
-  private void addEntryPoint( Class entryPointClass ) {
+  private void createSessionManager() {
+    sessionManager = createSessionManager( sessionManagerProvider );
+  }
+
+  private void addEntryPoint( Class<? extends IEntryPoint> entryPointClass ) {
     ServletContextHandler context = createServletContext( "/" );
     context.addServlet( RWTDelegate.class.getName(), SERVLET_NAME );
     context.addFilter( RWTClusterSupport.class.getName(), SERVLET_NAME, FilterMapping.DEFAULT );
@@ -107,8 +116,7 @@ public class ServletEngine implements IServletEngine {
   }
 
   private FileResource createServletContextPath() {
-    String tempDir = System.getProperty( "java.io.tmpdir" );
-    File contextRoot = new File( tempDir, this.toString() + "-context-root" );
+    File contextRoot = DelegatingServletEngine.getTempDir( this );
     try {
       return new FileResource( contextRoot.toURI().toURL() );
     } catch( Exception e ) {
@@ -122,32 +130,9 @@ public class ServletEngine implements IServletEngine {
       for( int i = 0; i < handlers.length; i++ ) {
         if( handlers[ i ] instanceof ServletContextHandler ) {
           ServletContextHandler contextHandler = ( ServletContextHandler )handlers[ i ];
-          deleteDirectory( contextHandler.getBaseResource().getFile() );
+          FileUtil.deleteDirectory( contextHandler.getBaseResource().getFile() );
         }
       }
-    }
-  }
-
-  private static void deleteDirectory( File directory ) {
-    if( directory.isDirectory() ) {
-      File[] files = directory.listFiles();
-      for( int i = 0; i < files.length; i++ ) {
-        deleteDirectory( files[ i ] );
-      }
-    }
-    directory.delete();
-  }
-
-  private static class SessionManagerProvider implements ISessionManagerProvider {
-
-    public SessionManager createSessionManager( Server server ) {
-      HashSessionManager result = new HashSessionManager();
-      result.setUsingCookies( true );
-      return result;
-    }
-
-    public SessionIdManager createSessionIdManager( Server server ) {
-      return new HashSessionIdManager();
     }
   }
 }

@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.cluster.testfixture.db;
+package org.eclipse.rap.rwt.cluster.testfixture.internal.jetty;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
@@ -17,16 +17,16 @@ import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.h2.tools.Server;
 
 
-public class DatabaseServer {
+class DatabaseServer {
 
   private Server server;
   private int port;
   
-  public DatabaseServer() {
+  DatabaseServer() {
     port = -1;
   }
 
-  public void start() {
+  void start() {
     port = SocketUtil.getFreePort();
     try {
       String[] args = new String[] {
@@ -43,16 +43,16 @@ public class DatabaseServer {
     }
   }
 
-  public void stop() {
+  void stop() {
     server.stop();
     port = -1;
   }
 
-  public String getDriverClassName() {
+  String getDriverClassName() {
     return org.h2.Driver.class.getName();
   }
   
-  public String getConnectionUrl() {
+  String getConnectionUrl() {
     String pattern = "jdbc:h2:tcp://localhost:{0}/mem:sessions;DB_CLOSE_DELAY=-1";
     Object[] args = new Object[] { String.valueOf( port ) };
     return MessageFormat.format( pattern, args );
