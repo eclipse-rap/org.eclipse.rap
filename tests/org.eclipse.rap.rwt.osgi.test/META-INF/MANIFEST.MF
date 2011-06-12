@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for RWT-OSGi Integration Bundle
-Bundle-SymbolicName: org.eclipse.rap.rwt.osgi.internal.test
+Bundle-SymbolicName: org.eclipse.rap.rwt.osgi.test
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse.org
 Fragment-Host: org.eclipse.rap.rwt.osgi;bundle-version="1.0.0"
