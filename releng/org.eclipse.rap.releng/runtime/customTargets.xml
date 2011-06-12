@@ -17,16 +17,9 @@
   <target name="getMapFiles" depends="checkLocalMaps" unless="skipMaps">
     <cvs cvsRoot="${mapsRepo}" package="${mapsRoot}" dest="${buildDirectory}/maps" tag="${mapsCheckoutTag}" />
     
+  	<delete file="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.mockito/META-INF" />
   	<!-- Hack to integrate mockito: this should be removed once the signing problems with mockito jar are solved
   	     We cannot use map file entries for this, since we need certain CVS tags -->
-     <delete file="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.mockito/META-INF/MANIFEST.MF" />
-     <delete file="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.mockito_rwtbuild/META-INF/MANIFEST.MF" />
-     <copy file="${builder}/MOCKITO_MANIFEST_REPLACEMENT.MF"
-           tofile="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.mockito_rwtbuild/META-INF/MANIFEST.MF"/>
-    <copy todir="${buildDirectory}/target-platform">
-       <fileset dir="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4"/>
-    </copy>
-
   	<!--
     <copy todir="${buildDirectory}/target-platform">
        <fileset dir="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4"/>
@@ -38,6 +31,9 @@
   	<copy todir="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.mockito_rwtbuild">
   	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.mockito"/>
   	</copy>
+  	<delete file="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.mockito_rwtbuild/META-INF/MANIFEST.MF" />
+    <copy file="${builder}/MOCKITO_MANIFEST_REPLACEMENT.MF"
+          tofile="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.mockito_rwtbuild/META-INF/MANIFEST.MF"/>
     <cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
     	   package="org.eclipse.orbit/org.objenesis"
     	   dest="${buildDirectory}/orbit"
@@ -153,6 +149,9 @@
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/lib/resource_manager_test.jar" />
       <fileset dir="${baseLocation}/plugins">
         <include name="org.junit_3*/junit.jar" />
+        <include name="org.mockito*/" />
+        <include name="org.objenesis*/" />
+        <include name="org.hamcrest*/" />
       </fileset>
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.ui.forms/@dot" />
     </path>
