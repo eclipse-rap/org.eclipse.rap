@@ -19,6 +19,7 @@
     
   	<!-- Hack to integrate mockito: this should be removed once the signing problems with mockito jar are solved
   	     We cannot use map file entries for this, since we need certain CVS tags -->
+  	<!--
     <copy todir="${buildDirectory}/target-platform">
        <fileset dir="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4"/>
     </copy>
@@ -43,6 +44,7 @@
   	<copy todir="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.junit_rwtbuild">
       <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.junit"/>
   	</copy>
+  	-->
   	<!-- End of mockito hack-->
   	
   </target>
