@@ -17,7 +17,6 @@
   <target name="getMapFiles" depends="checkLocalMaps" unless="skipMaps">
     <cvs cvsRoot="${mapsRepo}" package="${mapsRoot}" dest="${buildDirectory}/maps" tag="${mapsCheckoutTag}" />
     
-  	<delete file="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.mockito/META-INF" />
   	<!-- Hack to integrate mockito: this should be removed once the signing problems with mockito jar are solved
   	     We cannot use map file entries for this, since we need certain CVS tags -->
   	<!--
