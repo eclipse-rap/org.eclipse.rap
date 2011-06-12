@@ -21,11 +21,11 @@
   	     We cannot use map file entries for this, since we need certain CVS tags -->
   	<cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools" package="org.eclipse.orbit/org.mockito" dest="${buildDirectory}/orbit" tag="v1_8_4" />
   	<copy todir="${buildDirectory}/plugins/org.mockito">
-  	  <fileset dir="${buildDirectory}/orbit/org.mockito"/>
+  	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.mockito"/>
   	</copy>
     <cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools" package="org.eclipse.orbit/org.objenesis" dest="${buildDirectory}/orbit" tag="v1_0" />
   	<copy todir="${buildDirectory}/plugins/org.objenesis">
-  	  <fileset dir="${buildDirectory}/orbit/org.objenesis"/>
+  	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.objenesis"/>
   	</copy>
   	<!-- End of mockito hack-->
   	
