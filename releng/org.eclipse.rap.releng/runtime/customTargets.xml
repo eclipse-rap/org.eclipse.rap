@@ -41,7 +41,7 @@
     	   dest="${buildDirectory}/orbit"
     	   tag="v4_8_1" />
   	<copy todir="${buildDirectory}/plugins/org.junit">
-  	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.junit"/>
+      <fileset dir="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.junit_rwtbuild"/>
   	</copy>
   	<!-- End of mockito hack-->
   	
