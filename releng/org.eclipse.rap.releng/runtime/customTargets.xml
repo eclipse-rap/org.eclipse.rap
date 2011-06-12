@@ -19,13 +19,33 @@
     
   	<!-- Hack to integrate mockito: this should be removed once the signing problems with mockito jar are solved
   	     We cannot use map file entries for this, since we need certain CVS tags -->
-  	<cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools" package="org.eclipse.orbit/org.mockito" dest="${buildDirectory}/orbit" tag="v1_8_4" />
+  	<cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
+  	     package="org.eclipse.orbit/org.mockito" 
+  		   dest="${buildDirectory}/orbit"
+  		   tag="v1_8_4" />
   	<copy todir="${buildDirectory}/plugins/org.mockito">
   	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.mockito"/>
   	</copy>
-    <cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools" package="org.eclipse.orbit/org.objenesis" dest="${buildDirectory}/orbit" tag="v1_0" />
+    <cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
+    	   package="org.eclipse.orbit/org.objenesis"
+    	   dest="${buildDirectory}/orbit"
+    	   tag="v1_0" />
   	<copy todir="${buildDirectory}/plugins/org.objenesis">
   	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.objenesis"/>
+  	</copy>
+    <cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
+    	   package="org.eclipse.orbit/org.junit"
+    	   dest="${buildDirectory}/orbit"
+    	   tag="v4_8_2" />
+  	<copy todir="${buildDirectory}/plugins/org.junit">
+  	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.junit"/>
+  	</copy>
+    <cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
+  	     package="org.eclipse.orbit/org.hamcrest.core"
+    	   dest="${buildDirectory}/orbit"
+    	   tag="v1_1" />
+  	<copy todir="${buildDirectory}/plugins/org.hamcrest.core">
+  	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.hamcrest.core"/>
   	</copy>
   	<!-- End of mockito hack-->
   	
