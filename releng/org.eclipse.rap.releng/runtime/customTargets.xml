@@ -36,7 +36,7 @@
     <cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
     	   package="org.eclipse.orbit/org.junit"
     	   dest="${buildDirectory}/orbit"
-    	   tag="v4_8_2" />
+    	   tag="v4_8_1" />
   	<copy todir="${buildDirectory}/plugins/org.junit">
   	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.junit"/>
   	</copy>
