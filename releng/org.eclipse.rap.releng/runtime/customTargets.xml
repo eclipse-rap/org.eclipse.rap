@@ -41,7 +41,7 @@
   	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.junit"/>
   	</copy>
   	<copy file="${builder}/JUNIT_4_MANIFEST_REPLACEMENT.MF"
-  		    todir="${buildDirectory}/orbit/org.eclipse.orbit/org.junit/META-INF"/>
+  		    tofile="${buildDirectory}/plugins/org.junit/META-INF/MANIFEST.MF"/>
     <cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
   	     package="org.eclipse.orbit/org.hamcrest.core"
     	   dest="${buildDirectory}/orbit"
