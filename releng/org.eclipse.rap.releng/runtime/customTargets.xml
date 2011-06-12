@@ -26,14 +26,14 @@
   	     package="org.eclipse.orbit/org.mockito" 
   		   dest="${buildDirectory}/orbit"
   		   tag="v1_8_4" />
-  	<copy todir="${buildDirectory}/plugins/org.mockito">
+  	<copy todir="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.mockito_rwtbuild">
   	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.mockito"/>
   	</copy>
     <cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
     	   package="org.eclipse.orbit/org.objenesis"
     	   dest="${buildDirectory}/orbit"
     	   tag="v1_0" />
-  	<copy todir="${buildDirectory}/plugins/org.objenesis">
+  	<copy todir="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.objenesis_rwtbuild">
   	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.objenesis"/>
   	</copy>
     <cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
