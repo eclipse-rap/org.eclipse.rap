@@ -19,6 +19,9 @@ plugin@org.eclipse.rap.ui=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,o
 plugin@org.eclipse.rap.ui.views=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.ui.views
 plugin@org.eclipse.rap.ui.workbench=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.ui.workbench
 
+# rwt osgi integration
+plugin@org.eclipse.rap.rwt.osgi=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt/org.eclipse.rap.rwt.osgi
+
 # rwt flavors
 fragment@org.eclipse.rap.rwt.q07=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt/org.eclipse.rap.rwt.q07
 
@@ -46,6 +49,9 @@ plugin@org.eclipse.rap.rwt.themes.test=HEAD,:pserver:anonymous@dev.eclipse.org:/
 fragment@org.eclipse.rap.rwt.testfixture=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.testfixture
 fragment@org.eclipse.rap.rwt.test.mockup=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.test.mockup
 
+# rwt osgi integration
+fragment@org.eclipse.rap.rwt.osgi.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.osgi.test
+
 # tests for qx07 flavor
 fragment@org.eclipse.rap.rwt.q07.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.q07.test
 
@@ -60,6 +66,11 @@ plugin@org.eclipse.rap.ui.launch.rwt=HEAD,:pserver:anonymous@dev.eclipse.org:/cv
 # rap junit
 plugin@org.eclipse.rap.junit=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.junit
 plugin@org.eclipse.rap.junit.runtime=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.junit.runtime
+
+# mockito (this should be removed once the signing problems with mockito jar are solved)
+plugin@org.mockito=v1_8_4,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/org.mockito
+plugin@org.objenisis=v1_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/org.objenisis
+
 
 ###############################################################################
 

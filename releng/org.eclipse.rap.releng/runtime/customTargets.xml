@@ -91,6 +91,7 @@
     <property name="src.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/" />
     <property name="host.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/@dot" />
     <property name="fragment.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07.test/@dot" />
+    <property name="rwt_osgi.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.osgi.test/@dot" />
     <property name="forms.tests" value="${buildDirectory}/plugins/org.eclipse.rap.ui.forms.test/@dot" />
     <property name="themes.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.themes.test/@dot" />
     <property name="reports.tests" value="${buildDirectory}/tests" />
@@ -98,6 +99,7 @@
     <path id="cp">
       <pathelement location="${host.tests}" />
       <pathelement location="${fragment.tests}" />
+      <pathelement location="${rwt_osgi.tests}" />
       <pathelement location="${forms.tests}" />
       <pathelement location="${themes.tests}" />
       <fileset dir="${buildDirectory}/${buildLabel}/target/eclipse/plugins">
@@ -125,6 +127,9 @@
           <include name="**/*_Test.class" />
         </fileset>
         <fileset dir="${fragment.tests}">
+          <include name="**/*_Test.class" />
+        </fileset>
+        <fileset dir="${rwt_osgi.tests}">
           <include name="**/*_Test.class" />
         </fileset>
         <fileset dir="${forms.tests}">
