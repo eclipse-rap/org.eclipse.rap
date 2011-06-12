@@ -17,39 +17,38 @@
   <target name="getMapFiles" depends="checkLocalMaps" unless="skipMaps">
     <cvs cvsRoot="${mapsRepo}" package="${mapsRoot}" dest="${buildDirectory}/maps" tag="${mapsCheckoutTag}" />
     
-  	<!-- Hack to integrate mockito: this should be removed once the signing problems with mockito jar are solved
-  	     We cannot use map file entries for this, since we need certain CVS tags, additionally 
-  	     the manifest has to be patched to declare a bundle dependency to org.hamcrest. The
-  	     package import doesn't work in build environment (shrug) -->
-  	<!--
-    <copy todir="${buildDirectory}/target-platform">
-       <fileset dir="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4"/>
-    </copy>
+  	<!-- Hack to integrate mockito: this should be removed once the signing (and other...) 
+  	     problems with mockito jar are solved. We cannot use map file entries for this,
+  	     since we need certain CVS tags, additionally the manifest has to be patched to
+  	     declare a bundle dependency to org.hamcrest. The package import doesn't work 
+  	     in build environment (shrug) -->
   	<cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
   	     package="org.eclipse.orbit/org.mockito" 
   		   dest="${buildDirectory}/orbit"
   		   tag="v1_8_4" />
-  	<copy todir="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.mockito_rwtbuild">
+  	<delete dir="${baseLocation}/plugins/org.mockito_rwtbuild" />
+  	<copy todir="${baseLocation}/plugins/org.mockito_rwtbuild">
   	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.mockito"/>
   	</copy>
-  	<delete file="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.mockito_rwtbuild/META-INF/MANIFEST.MF" />
+  	<delete file="${baseLocation}/plugins/org.mockito_rwtbuild/META-INF/MANIFEST.MF" />
     <copy file="${builder}/MOCKITO_MANIFEST_REPLACEMENT.MF"
-          tofile="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.mockito_rwtbuild/META-INF/MANIFEST.MF"/>
+          tofile="${baseLocation}/plugins/org.mockito_rwtbuild/META-INF/MANIFEST.MF"/>
     <cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
     	   package="org.eclipse.orbit/org.objenesis"
     	   dest="${buildDirectory}/orbit"
     	   tag="v1_0" />
-  	<copy todir="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.objenesis_rwtbuild">
+  	<delete dir="${baseLocation}/plugins/org.objenesis_rwtbuild" />
+  	<copy todir="${baseLocation}/plugins/org.objenesis_rwtbuild">
   	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.objenesis"/>
   	</copy>
     <cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
     	   package="org.eclipse.orbit/org.junit"
     	   dest="${buildDirectory}/orbit"
     	   tag="v4_8_1" />
-  	<copy todir="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.junit_rwtbuild">
+  	<delete dir="${baseLocation}/plugins/org.junit_rwtbuild" />
+  	<copy todir="${baseLocation}/plugins/org.junit_rwtbuild">
       <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.junit"/>
   	</copy>
-  	-->
   	<!-- End of mockito hack-->
   	
   </target>
