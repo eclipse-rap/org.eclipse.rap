@@ -23,6 +23,9 @@
   	     package="org.eclipse.orbit/org.mockito" 
   		   dest="${buildDirectory}/orbit"
   		   tag="v1_8_4" />
+  	<copy todir="${buildDirectory}/target-platform">
+  	  <fileset dir="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4"/>
+  	</copy>
   	<copy todir="${buildDirectory}/plugins/org.mockito">
   	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.mockito"/>
   	</copy>
