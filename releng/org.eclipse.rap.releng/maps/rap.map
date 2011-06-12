@@ -67,10 +67,6 @@ plugin@org.eclipse.rap.ui.launch.rwt=HEAD,:pserver:anonymous@dev.eclipse.org:/cv
 plugin@org.eclipse.rap.junit=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.junit
 plugin@org.eclipse.rap.junit.runtime=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.junit.runtime
 
-# mockito (this should be removed once the signing problems with mockito jar are solved)
-plugin@org.mockito=v1_8_4,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/org.mockito
-plugin@org.objenesis=v1_0,:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,,org.eclipse.orbit/org.objenesis
-
 
 ###############################################################################
 

@@ -16,6 +16,12 @@
   <!-- ===================================================================== -->
   <target name="getMapFiles" depends="checkLocalMaps" unless="skipMaps">
     <cvs cvsRoot="${mapsRepo}" package="${mapsRoot}" dest="${buildDirectory}/maps" tag="${mapsCheckoutTag}" />
+    
+  	<!-- Hack to integrate mockito: this should be removed once the signing problems with mockito jar are solved -->
+  	<cvs cvsRoot="pserver:anonymous@dev.eclipse.org:/cvsroot/tools" package="org.eclipse.orbit/org.mockito" dest="${buildDirectory}/maps" tag="v1_8_4" />
+    <cvs cvsRoot="pserver:anonymous@dev.eclipse.org:/cvsroot/tools" package="org.eclipse.orbit/org.objenesis" dest="${buildDirectory}/maps" tag="v1_0" />
+  	<!-- End of mockito hack-->
+  	
   </target>
 
   <target name="checkLocalMaps">
