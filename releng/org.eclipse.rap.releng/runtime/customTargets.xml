@@ -40,6 +40,7 @@
   	<copy todir="${buildDirectory}/plugins/org.junit">
   	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.junit"/>
   	</copy>
+  	<delete file="${buildDirectory}/plugins/org.junit/META-INF/MANIFEST.MF" />
   	<copy file="${builder}/JUNIT_4_MANIFEST_REPLACEMENT.MF"
   		    tofile="${buildDirectory}/plugins/org.junit/META-INF/MANIFEST.MF"/>
     <cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
