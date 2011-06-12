@@ -22,8 +22,6 @@
   	     since we need certain CVS tags, additionally the manifest has to be patched to
   	     declare a bundle dependency to org.hamcrest. The package import doesn't work 
   	     in build environment (shrug) -->
-  	<!-- seems that there are some problems with open file handles. Therefore I comment
-  	     this part (only use this to update the target...)
   	<cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
   	     package="org.eclipse.orbit/org.mockito" 
   		   dest="${buildDirectory}/orbit"
@@ -51,7 +49,6 @@
   	<copy todir="${baseLocation}/plugins/org.junit_rwtbuild">
       <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.junit"/>
   	</copy>
-  	-->
   	<!-- End of mockito hack-->
   	
   </target>
