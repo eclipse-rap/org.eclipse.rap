@@ -8,12 +8,14 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.engine.configurables;
 
 import java.text.MessageFormat;
 
 import javax.servlet.ServletContext;
 
+import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.Configurable;
 import org.eclipse.rwt.internal.util.ClassInstantiationException;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.service.ISettingStoreFactory;
@@ -25,7 +27,7 @@ public class SettingStoreManagerConfigurable implements Configurable {
   
   private final ServletContext servletContext;
 
-  SettingStoreManagerConfigurable( ServletContext servletContext ) {
+  public SettingStoreManagerConfigurable( ServletContext servletContext ) {
     this.servletContext = servletContext;
   }
 

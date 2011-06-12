@@ -14,6 +14,8 @@ package org.eclipse.rwt.internal.engine;
 
 import javax.servlet.*;
 
+import org.eclipse.rwt.internal.engine.configurables.*;
+
 
 public class RWTServletContextListener implements ServletContextListener {
   public static final String PARAMETER_SEPARATOR = ",";

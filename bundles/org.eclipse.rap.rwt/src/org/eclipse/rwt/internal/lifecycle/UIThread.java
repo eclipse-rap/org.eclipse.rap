@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
+import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.service.ISessionStore;
@@ -155,13 +157,25 @@ final class UIThread
       CurrentPhase.set( PhaseId.PROCESS_ACTION );
       // TODO [rh] find a better decoupled way to dispose of the display
       Display display = LifeCycleUtil.getSessionDisplay();
-      if( display != null ) {
+      // TODO [fappel]: Think about a better solution: isActivated() checks whether
+      //                the applicationContext is still activated before starting
+      //                cleanup. This is due to the missing possibility of OSGi HttpService
+      //                to shutdown HttpContext instances. Therefore sessions will survive the
+      //                deactivation of ApplicationContext instances. In case the HttpService
+      //                gets halted the corresponding ApplicationContext instances have already
+      //                been deactivated and this will cause a NPE.
+      if( isActivated() && display != null ) {
         display.dispose();
       }
       shutdownCallback.run();
     } finally {
       ContextProvider.disposeContext();
     }
+  }
+
+  private boolean isActivated() {
+    ApplicationContext applicationContext = ApplicationContextUtil.get( sessionStore );
+    return applicationContext != null && applicationContext.isActivated();
   }
 
   //////////////////

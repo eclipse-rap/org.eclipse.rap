@@ -37,6 +37,9 @@ public class ApplicationContext {
   // TODO [fappel]: the testMode flag is used to ignore resource registration. Think about
   //                a less intrusive solution.
   static boolean ignoreResoureRegistration;
+  // TODO [fappel]: the testMode flag is used to ignore resource deletion. Think about
+  //                a less intrusive solution.
+  static boolean ignoreResoureDeletion;
   // TODO [fappel]: the testMode flag is used to ignore service handler registration via
   //                servicehandler.xml. Think about a less intrusive solution
   static boolean ignoreServiceHandlerRegistration;
@@ -292,7 +295,7 @@ public class ApplicationContext {
     //                the resource manager factory is configurable. Is
     //                the latter really necessary since the only other factory
     //                in use is for testing purpose (unfortunately API).
-    if( !ignoreResoureRegistration ) {
+    if( !ignoreResoureDeletion ) {
       File resourcesDir = new File( configuration.getContextDirectory(),
                                     ResourceManagerImpl.RESOURCES );
       ApplicationContextUtil.delete( resourcesDir ); 

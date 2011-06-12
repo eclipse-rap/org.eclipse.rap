@@ -27,10 +27,10 @@ import org.w3c.dom.*;
 class ServiceHandlerRegistry {
   private static final String SERVICEHANDLER_XML = "servicehandler.xml";
 
-  private final Map<String,IServiceHandler> handlers;
+  private final Map<String, IServiceHandler> handlers;
   
   ServiceHandlerRegistry() {
-    handlers = new HashMap<String,IServiceHandler>();
+    handlers = new HashMap<String, IServiceHandler>();
   }
 
   boolean isCustomHandler( String customHandlerId ) {
@@ -58,6 +58,7 @@ class ServiceHandlerRegistry {
   }
 
   void activate() {
+    // TODO [fappel]: remove registering from XML file. Use configuration API instead
     registerHandlerInstances();
   }
   

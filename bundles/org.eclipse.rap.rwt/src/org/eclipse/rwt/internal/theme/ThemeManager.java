@@ -97,12 +97,12 @@ public class ThemeManager {
   };
 
   private final Set<String> customAppearances;
-  private final Map<String,Theme> themes;
+  private final Map<String, Theme> themes;
   private final Set<String> registeredThemeFiles;
   private final ThemeableWidgetHolder themeableWidgets;
   private final CssElementHolder registeredCssElements;
   private final ThemeAdapterManager themeAdapterManager;
-  private final Map<String,String> resolvedPackageNames; // only for performance improvements
+  private final Map<String, String> resolvedPackageNames; // only for performance improvements
   private Theme defaultTheme;
   private boolean initialized;
   private boolean widgetsInitialized;
@@ -115,8 +115,8 @@ public class ThemeManager {
     registeredThemeFiles = new HashSet<String>();
     registeredCssElements = new CssElementHolder();
     themeAdapterManager = new ThemeAdapterManager();
-    themes = new HashMap<String,Theme>();
-    resolvedPackageNames = new HashMap<String,String>();
+    themes = new HashMap<String, Theme>();
+    resolvedPackageNames = new HashMap<String, String>();
   }
 
   public void activate() {
@@ -251,8 +251,8 @@ public class ThemeManager {
    *         <code>null</code>
    */
   public String[] getRegisteredThemeIds() {
-    Set<String> themeIds = themes.keySet();
-    return themeIds.toArray( new String[ themeIds.size() ] );
+    String[] result = new String[ themes.size() ];
+    return themes.keySet().toArray( result );
   }
 
   /**
@@ -275,7 +275,7 @@ public class ThemeManager {
     }
   }
 
-  ThemeableWidget getThemeableWidget( Class widget ) {
+  public ThemeableWidget getThemeableWidget( Class widget ) {
     return themeableWidgets.get( widget );
   }
 

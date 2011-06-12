@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.branding.AbstractBranding;
+import org.eclipse.rwt.internal.engine.configurables.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;

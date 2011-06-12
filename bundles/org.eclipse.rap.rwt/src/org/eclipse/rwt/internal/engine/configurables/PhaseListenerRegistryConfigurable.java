@@ -8,12 +8,13 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.engine.configurables;
 
 import java.text.MessageFormat;
 
 import javax.servlet.ServletContext;
 
+import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rwt.internal.util.ClassInstantiationException;
@@ -29,7 +30,7 @@ public class PhaseListenerRegistryConfigurable implements Configurable {
   };
   private final ServletContext servletContext;
 
-  PhaseListenerRegistryConfigurable( ServletContext servletContext ) {
+  public PhaseListenerRegistryConfigurable( ServletContext servletContext ) {
     this.servletContext = servletContext;
   }
 

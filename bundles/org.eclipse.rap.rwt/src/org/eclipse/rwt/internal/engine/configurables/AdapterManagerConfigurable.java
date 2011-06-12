@@ -8,7 +8,7 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.engine.configurables;
 
 import java.text.MessageFormat;
 
@@ -16,6 +16,7 @@ import javax.servlet.ServletContext;
 
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.internal.AdapterManager;
+import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rwt.internal.util.ClassInstantiationException;
 import org.eclipse.rwt.internal.util.ClassUtil;
@@ -46,7 +47,7 @@ public class AdapterManagerConfigurable implements Configurable {
     }
   }
 
-  AdapterManagerConfigurable( ServletContext servletContext ) {
+  public AdapterManagerConfigurable( ServletContext servletContext ) {
     this.servletContext = servletContext;
   }
 

@@ -8,8 +8,10 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.engine.configurables;
 
+import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.Configurable;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.ServiceManager;

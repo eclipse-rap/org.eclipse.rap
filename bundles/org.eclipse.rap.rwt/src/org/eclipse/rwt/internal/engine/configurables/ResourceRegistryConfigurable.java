@@ -8,23 +8,24 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.engine.configurables;
 
 import java.text.MessageFormat;
 
 import javax.servlet.ServletContext;
 
+import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.util.ClassInstantiationException;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.resources.IResource;
 
 
-class ResourceRegistryConfigurable implements Configurable {
-  static final String RESOURCES_PARAM = "org.eclipse.rwt.resources";
+public class ResourceRegistryConfigurable implements Configurable {
+  public static final String RESOURCES_PARAM = "org.eclipse.rwt.resources";
 
   private final ServletContext servletContext;
 
-  ResourceRegistryConfigurable( ServletContext servletContext ) {
+  public ResourceRegistryConfigurable( ServletContext servletContext ) {
     this.servletContext = servletContext;
   }
 

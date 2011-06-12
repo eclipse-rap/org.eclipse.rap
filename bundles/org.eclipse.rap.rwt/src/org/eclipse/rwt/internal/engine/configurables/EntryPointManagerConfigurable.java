@@ -8,17 +8,18 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.engine.configurables;
 
 import java.text.MessageFormat;
 
 import javax.servlet.ServletContext;
 
+import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 
 
-class EntryPointManagerConfigurable implements Configurable {
-  static final String ENTRY_POINTS_PARAM = "org.eclipse.rwt.entryPoints";
+public class EntryPointManagerConfigurable implements Configurable {
+  public static final String ENTRY_POINTS_PARAM = "org.eclipse.rwt.entryPoints";
   
   private final ServletContext servletContext;
   
@@ -40,7 +41,7 @@ class EntryPointManagerConfigurable implements Configurable {
     }
   }
   
-  EntryPointManagerConfigurable( ServletContext servletContext ) {
+  public EntryPointManagerConfigurable( ServletContext servletContext ) {
     this.servletContext = servletContext;
   }
 

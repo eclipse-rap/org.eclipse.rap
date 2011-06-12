@@ -65,6 +65,10 @@ public class RWTConfigurationImpl implements RWTConfiguration {
     return resourcesDeliveryMode;
   }
   
+  public boolean isConfigured() {
+    return contextDirectory != null;
+  }
+  
   private String getConfigValue( String tagName, String defaultValue ) {
     String result = System.getProperty( tagName );
     if( result == null ) {
@@ -74,7 +78,7 @@ public class RWTConfigurationImpl implements RWTConfiguration {
   }
   
   private void checkConfigured() {
-    if( contextDirectory == null ) {
+    if( !isConfigured() ) {
       throw new IllegalStateException( "RWTConfigurationImpl has not been configured." );
     }
   }

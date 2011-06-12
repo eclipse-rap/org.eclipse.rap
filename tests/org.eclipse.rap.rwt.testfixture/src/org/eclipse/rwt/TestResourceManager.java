@@ -11,11 +11,12 @@
  ******************************************************************************/
 package org.eclipse.rwt;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 
+import org.eclipse.rwt.engine.ContextControl;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.resources.IResourceManager;
 
@@ -70,22 +71,27 @@ public class TestResourceManager implements IResourceManager {
   }
 
   public void register( String name ) {
+    createResourcesDirectory();
     registeredResources.add( name );
   }
 
   public void register( String name, InputStream is ) {
+    createResourcesDirectory();
     registeredResources.add( name );
   }
 
   public void register( String name, String charset ) {
+    createResourcesDirectory();
     registeredResources.add( name );
   }
 
   public void register( String name, String charset, RegisterOptions options ) {
+    createResourcesDirectory();
     registeredResources.add( name );
   }
 
   public void register( String name, InputStream is, String charset, RegisterOptions options ) {
+    createResourcesDirectory();
     registeredResources.add( name );
   }
   
@@ -99,5 +105,15 @@ public class TestResourceManager implements IResourceManager {
 
   public InputStream getRegisteredContent( final String name ) {
     return null;
+  }
+
+  private void createResourcesDirectory() {
+    if( registeredResources.isEmpty() ) {
+      File contextDirectory = RWTFactory.getConfiguration().getContextDirectory();
+      File file = new File( contextDirectory, ContextControl.RESOURCES );
+      if( !file.exists() ) {
+        file.mkdirs();
+      }
+    }
   }
 }

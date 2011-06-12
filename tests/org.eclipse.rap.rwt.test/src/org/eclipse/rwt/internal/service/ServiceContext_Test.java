@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
+import org.eclipse.rwt.internal.engine.configurables.RWTConfigurationConfigurable;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 
@@ -48,12 +49,23 @@ public class ServiceContext_Test extends TestCase {
   }
   
   public void testGetApplicationContextFromSessionStore() {
-    ApplicationContext applicationContext = new ApplicationContext();
     ServiceContext context = createContext();
+    ApplicationContext applicationContext = createActivatedApplicationContext( context );
     ApplicationContextUtil.set( sessionStore, applicationContext );
 
     ApplicationContext found = context.getApplicationContext();
+    
     assertSame( applicationContext, found );
+  }
+  
+  public void testGetApplicationContextFromSessionStoreWithDeactivatedApplicationContext() {
+    ApplicationContext applicationContext = new ApplicationContext();
+    ServiceContext context = createContext();
+    ApplicationContextUtil.set( sessionStore, applicationContext );
+    
+    ApplicationContext found = context.getApplicationContext();
+    
+    assertNull( found );
   }
   
   public void testGetApplicationContextOnDisposedServiceContext() {
@@ -99,6 +111,13 @@ public class ServiceContext_Test extends TestCase {
   }
 
   private ServiceContext createContext( ApplicationContext applicationContext ) {
+    ServiceContext result = createContext();
+    ServletContext servletContext = result.getRequest().getSession().getServletContext();
+    ApplicationContextUtil.set( servletContext, applicationContext );
+    return result;
+  }
+
+  private ServiceContext createContext() {
     TestRequest request = new TestRequest();
     TestResponse response = new TestResponse();
     HttpSession session = new TestSession();
@@ -106,13 +125,15 @@ public class ServiceContext_Test extends TestCase {
       session = sessionStore.getHttpSession();
     }
     request.setSession( session );
-    ServletContext servletContext = session.getServletContext();
-    ApplicationContextUtil.set( servletContext, applicationContext );
     return createContext( request, response );
   }
 
-  private ServiceContext createContext() {
-    return createContext( new TestRequest(), new TestResponse() );
+  private ApplicationContext createActivatedApplicationContext( ServiceContext context ) {
+    ApplicationContext result = new ApplicationContext();
+    ServletContext servletContext = context.getRequest().getSession().getServletContext();
+    result.addConfigurable( new RWTConfigurationConfigurable( servletContext ) );
+    result.activate();
+    return result;
   }
 
   private ServiceContext createContext( TestRequest request, TestResponse response ) {

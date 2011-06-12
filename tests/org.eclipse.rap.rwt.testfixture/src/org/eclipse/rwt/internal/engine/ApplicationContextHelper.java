@@ -14,8 +14,13 @@ import org.eclipse.rwt.TestResourceManager;
 
 
 public class ApplicationContextHelper {
+
   public static void setIgnoreResoureRegistration( boolean ignore ) {
     ApplicationContext.ignoreResoureRegistration = ignore;
+  }
+  
+  public static void setIgnoreResoureDeletion( boolean ignore ) {
+    ApplicationContext.ignoreResoureDeletion = ignore;
   }
 
   public static void setIgnoreServiceHandlerRegistration( boolean ignore ) {

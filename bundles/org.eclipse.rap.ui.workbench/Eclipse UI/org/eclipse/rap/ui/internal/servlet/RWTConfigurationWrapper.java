@@ -23,6 +23,7 @@ import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rwt.internal.engine.configurables.SettingStoreManagerConfigurable;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.ServiceManager;

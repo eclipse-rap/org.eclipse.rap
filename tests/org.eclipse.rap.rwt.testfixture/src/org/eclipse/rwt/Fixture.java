@@ -20,7 +20,10 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.http.*;
 
 import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rwt.internal.engine.configurables.AdapterManagerConfigurable;
+import org.eclipse.rwt.internal.engine.configurables.PhaseListenerRegistryConfigurable;
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
@@ -32,6 +35,8 @@ import org.eclipse.swt.widgets.Widget;
 public class Fixture {
   public final static File TEMP_DIR = new File( System.getProperty( "java.io.tmpdir" ) );
   public static final File WEB_CONTEXT_DIR = new File( TEMP_DIR, "testapp" );
+  public static final File WEB_CONTEXT_RWT_RESOURCES_DIR
+    = new File( WEB_CONTEXT_DIR, ResourceManagerImpl.RESOURCES );
   public static final String IMAGE1 = "resources/images/image1.gif";
   public static final String IMAGE2 = "resources/images/image2.gif";
   public static final String IMAGE3 = "resources/images/image3.gif";
@@ -42,15 +47,13 @@ public class Fixture {
     = "usePerformanceOptimizations";
   
   static {
-    usePerformanceOptimizations = Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS );
-    if( Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS ) ) {
-      ApplicationContextHelper.setIgnoreResoureRegistration( true );
-      ApplicationContextHelper.setIgnoreServiceHandlerRegistration( true );
-    }
+    ThemeManagerHelper.replaceStandardResourceLoader();
+    setIgnoreResourceRegistration( usePerformanceOptimizations() );
+    setIgnoreResourceDeletion( usePerformanceOptimizations() );
+    setIgnoreServiceHandlerRegistration( usePerformanceOptimizations() );
   }
-
+  
   private static TestServletContext servletContext;
-  private static boolean usePerformanceOptimizations;
   
   ////////////////////////////////////////////
   // Methods to control global servlet context
@@ -107,7 +110,7 @@ public class Fixture {
     //      50% on my machine without causing any test to fail. However this has a bad smell
     //      with it, so I introduced a flag that can be switch on for fast tests on local machines 
     //      and switched of for the integration build tests. Think about a less intrusive solution.
-    if( !usePerformanceOptimizations ) {
+    if( !usePerformanceOptimizations() ) {
       deleteWebContextDirectories();
     }
   }
@@ -200,6 +203,10 @@ public class Fixture {
   
   public static void useDefaultResourceManager() {
     ApplicationContextHelper.useDefaultResourceManager();
+  }
+  
+  public static void useTestResourceManager() {
+    ApplicationContextHelper.useTestResourceManager();
   }
 
   public static void tearDown() {
@@ -321,6 +328,22 @@ public class Fixture {
   
   ////////////////
   // general stuff
+  
+  public static boolean usePerformanceOptimizations() {
+    return Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS );
+  }
+
+  public static void setIgnoreServiceHandlerRegistration( boolean usePerformanceOptimizations ) {
+    ApplicationContextHelper.setIgnoreServiceHandlerRegistration( usePerformanceOptimizations );
+  }
+
+  public static void setIgnoreResourceDeletion( boolean usePerformanceOptimizations ) {
+    ApplicationContextHelper.setIgnoreResoureDeletion( usePerformanceOptimizations );
+  }
+
+  public static void setIgnoreResourceRegistration( boolean usePerformanceOptimizations ) {
+    ApplicationContextHelper.setIgnoreResoureRegistration( usePerformanceOptimizations );
+  }
 
   public static void copyTestResource( String resourceName, File destination ) throws IOException {
     ClassLoader loader = Fixture.class.getClassLoader();
@@ -492,10 +515,6 @@ public class Fixture {
     ISessionStore session = ContextProvider.getSession();
     LifeCycleUtil.setUIThread( session, result );
     return result;
-  }
-
-  private static void useTestResourceManager() {
-    ApplicationContextHelper.useTestResourceManager();
   }
 
   private Fixture() {

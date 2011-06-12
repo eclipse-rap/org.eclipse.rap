@@ -63,6 +63,10 @@ public class ServiceManager implements IServiceManager {
     customHandlers.deactivate();
   }
   
+  public IServiceHandler getCustomHandler( String customHandlerId ) {
+    return customHandlers.get( customHandlerId );
+  }
+  
   //////////////////
   // helping methods
   
@@ -80,6 +84,6 @@ public class ServiceManager implements IServiceManager {
   }
   
   private IServiceHandler getCustomHandler() {
-    return customHandlers.get( getCustomHandlerId() );
+    return getCustomHandler( getCustomHandlerId() );
   }
 }

@@ -8,15 +8,17 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.engine.configurables;
 
 import javax.servlet.ServletContext;
 
+import org.eclipse.rwt.internal.engine.*;
 
-class RWTConfigurationConfigurable implements Configurable {
+
+public class RWTConfigurationConfigurable implements Configurable {
   private final ServletContext servletContext;
 
-  RWTConfigurationConfigurable( ServletContext servletContext ) {
+  public RWTConfigurationConfigurable( ServletContext servletContext ) {
     this.servletContext = servletContext;
   }
 

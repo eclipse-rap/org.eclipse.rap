@@ -112,14 +112,14 @@ public final class BrandingExtension {
 
   // EXPERIMENTAL, see bug 241210
   private Filter readServiceFilter( IConfigurationElement element, Branding branding ) {
-    Filter serviceFilter = null;
+    Filter result = null;
     IConfigurationElement[] serviceFilterElements = element.getChildren( ELEM_SERVICE_SELECTOR );
     if( serviceFilterElements.length > 0 ) {
       IConfigurationElement serviceFilterElement = serviceFilterElements[ 0 ];
       String filterClass = serviceFilterElement.getAttribute( ATT_CLASS );
       if( filterClass != null ) {
         try {
-          serviceFilter = ( Filter )serviceFilterElement.createExecutableExtension( ATT_CLASS );
+          result = ( Filter )serviceFilterElement.createExecutableExtension( ATT_CLASS );
         } catch( CoreException exception ) {
           String text = "Could not instantiate http service filter for branding ''{0}'': ''{1}''";
           Object[] param = new Object[] { branding.getId(), exception.getMessage() };
@@ -128,7 +128,7 @@ public final class BrandingExtension {
         }
       }
     }
-    return serviceFilter;
+    return result;
   }
 
   private IExitConfirmation findExitConfirmationImpl( IConfigurationElement element ) {

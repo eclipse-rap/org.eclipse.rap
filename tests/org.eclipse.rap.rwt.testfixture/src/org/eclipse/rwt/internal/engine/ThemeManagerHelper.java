@@ -22,21 +22,35 @@ import org.eclipse.rwt.internal.theme.ThemeManager;
 public class ThemeManagerHelper {
   private static ThemeManager themeManager;
   static {
-    ThemeManager.STANDARD_RESOURCE_LOADER = new TestResourceLoader();
+    replaceStandardResourceLoader();
   }
   
   public static class TestThemeManager extends ThemeManager {
     boolean activated;
+    boolean deactivated;
     
     public void deactivate() {
       // ignore reset for test cases to improve performance
+      deactivated = true;
     }
     
     public void activate() {
       if( !activated ) {
         super.activate();
         activated = true;
+      } else {
+        RWTFactory.getResourceManager().register( "dummy" );
       }
+      deactivated = false;
+    }
+    
+    @Override
+    public String[] getRegisteredThemeIds() {
+      String[] result = new String[ 0 ];
+      if( !deactivated ) {
+        result = super.getRegisteredThemeIds();
+      }
+      return result;
     }
     
     public void resetInstanceInTestCases() {
@@ -104,6 +118,10 @@ public class ThemeManagerHelper {
     if( isThemeManagerResetNeeded() ) {
       doThemeManagerReset();
     }
+  }
+  
+  public static void replaceStandardResourceLoader() {
+    ThemeManager.STANDARD_RESOURCE_LOADER = new TestResourceLoader();
   }
   
   private static ThemeManager getInstance() {

@@ -8,7 +8,7 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.engine.configurables;
 
 import javax.servlet.ServletContext;
 
@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.branding.BrandingManager;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 
 
 public class BrandingManagerConfigurable_Test extends TestCase {

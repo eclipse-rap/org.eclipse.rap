@@ -8,13 +8,14 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.engine.configurables;
 
 import java.io.File;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.TestServletContext;
+import org.eclipse.rwt.internal.engine.*;
 
 
 public class RWTConfigurationConfigurable_Test extends TestCase {

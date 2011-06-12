@@ -8,7 +8,7 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.engine.configurables;
 
 import javax.servlet.ServletContext;
 
@@ -16,6 +16,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.AdapterManager;
+import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.swt.widgets.Display;
 

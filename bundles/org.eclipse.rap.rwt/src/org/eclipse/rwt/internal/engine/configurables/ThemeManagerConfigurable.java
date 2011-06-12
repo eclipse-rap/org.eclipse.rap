@@ -8,7 +8,7 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.engine.configurables;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,13 +16,14 @@ import java.text.MessageFormat;
 
 import javax.servlet.ServletContext;
 
+import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.theme.ResourceLoader;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
 
-class ThemeManagerConfigurable implements Configurable {
+public class ThemeManagerConfigurable implements Configurable {
   static final String THEMES_PARAM = "org.eclipse.rwt.themes";
 
   private final ServletContext servletContext;
@@ -53,7 +54,7 @@ class ThemeManagerConfigurable implements Configurable {
     }
   }
 
-  ThemeManagerConfigurable( ServletContext servletContext ) {
+  public ThemeManagerConfigurable( ServletContext servletContext ) {
     this.servletContext = servletContext;
   }
 

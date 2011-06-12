@@ -8,22 +8,23 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.engine.configurables;
 
 import java.text.MessageFormat;
 
 import javax.servlet.ServletContext;
 
 import org.eclipse.rwt.branding.AbstractBranding;
+import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.util.ClassInstantiationException;
 import org.eclipse.rwt.internal.util.ClassUtil;
 
-class BrandingManagerConfigurable implements Configurable {
+public class BrandingManagerConfigurable implements Configurable {
   public static final String BRANDINGS_PARAM = "org.eclipse.rwt.brandings";
 
   private final ServletContext servletContext;
 
-  BrandingManagerConfigurable( ServletContext servletContext ) {
+  public BrandingManagerConfigurable( ServletContext servletContext ) {
     this.servletContext = servletContext;
   }
 
