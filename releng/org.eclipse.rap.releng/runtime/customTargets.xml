@@ -22,6 +22,9 @@
      <delete file="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.mockito/META-INF/MANIFEST.MF" />
      <copy file="${builder}/MOCKITO_MANIFEST_REPLACEMENT.MF"
            tofile="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4/plugins/org.mockito/META-INF/MANIFEST.MF"/>
+    <copy todir="${buildDirectory}/target-platform">
+       <fileset dir="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4"/>
+    </copy>
 
   	<!--
     <copy todir="${buildDirectory}/target-platform">
