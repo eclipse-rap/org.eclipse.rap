@@ -18,7 +18,9 @@
     <cvs cvsRoot="${mapsRepo}" package="${mapsRoot}" dest="${buildDirectory}/maps" tag="${mapsCheckoutTag}" />
     
   	<!-- Hack to integrate mockito: this should be removed once the signing problems with mockito jar are solved
-  	     We cannot use map file entries for this, since we need certain CVS tags -->
+  	     We cannot use map file entries for this, since we need certain CVS tags, additionally 
+  	     the manifest has to be patched to declare a bundle dependency to org.hamcrest. The
+  	     package import doesn't work in build environment (shrug) -->
   	<!--
     <copy todir="${buildDirectory}/target-platform">
        <fileset dir="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4"/>
