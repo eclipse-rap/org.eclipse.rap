@@ -23,9 +23,6 @@
   	     package="org.eclipse.orbit/org.mockito" 
   		   dest="${buildDirectory}/orbit"
   		   tag="v1_8_4" />
-  	<copy todir="${buildDirectory}/target-platform">
-  	  <fileset dir="/opt/public/rt/rap/base-platforms/eclipse-3.7RC4"/>
-  	</copy>
   	<copy todir="${buildDirectory}/plugins/org.mockito">
   	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.mockito"/>
   	</copy>
@@ -42,16 +39,6 @@
     	   tag="v4_8_1" />
   	<copy todir="${buildDirectory}/plugins/org.junit">
   	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.junit"/>
-  	</copy>
-  	<delete file="${buildDirectory}/plugins/org.junit/META-INF/MANIFEST.MF" />
-  	<copy file="${builder}/JUNIT_4_MANIFEST_REPLACEMENT.MF"
-  		    tofile="${buildDirectory}/plugins/org.junit/META-INF/MANIFEST.MF"/>
-    <cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
-  	     package="org.eclipse.orbit/org.hamcrest.core"
-    	   dest="${buildDirectory}/orbit"
-    	   tag="v1_1" />
-  	<copy todir="${buildDirectory}/plugins/org.hamcrest.core">
-  	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.hamcrest.core"/>
   	</copy>
   	<!-- End of mockito hack-->
   	
