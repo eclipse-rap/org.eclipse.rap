@@ -92,4 +92,10 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.junit"
+         download-size="0"
+         install-size="0"
+         version="4.8.1"/>
+
 </feature>
