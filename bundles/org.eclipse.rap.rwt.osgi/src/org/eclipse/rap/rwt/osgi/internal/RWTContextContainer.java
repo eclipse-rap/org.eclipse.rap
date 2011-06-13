@@ -11,7 +11,6 @@
 package org.eclipse.rap.rwt.osgi.internal;
 
 import java.util.HashSet;
-import java.util.Iterator;
 
 
 class RWTContextContainer {
@@ -22,36 +21,18 @@ class RWTContextContainer {
   }
 
   void add( RWTContextImpl context ) {
-    removeDeadContexts();
     contexts.add( context );
   }
   
   void remove( RWTContextImpl context ) {
-    removeDeadContexts();
     contexts.remove( context );
   }
 
   void clear() {
     contexts.clear();
   }
-  
-  // for testing purposes only...
-  int size() {
-    return contexts.size();
-  }
 
   RWTContextImpl[] getAll() {
-    removeDeadContexts();
     return contexts.toArray( new RWTContextImpl[ contexts.size() ] );
-  }
-
-  private void removeDeadContexts() {
-    Iterator< RWTContextImpl > iterator = contexts.iterator();
-    while( iterator.hasNext() ) {
-      RWTContextImpl context = iterator.next();
-      if( !context.isAlive() ) {
-        iterator.remove();
-      }
-    }
   }
 }

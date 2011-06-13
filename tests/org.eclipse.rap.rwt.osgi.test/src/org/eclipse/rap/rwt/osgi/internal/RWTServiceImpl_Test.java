@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServlet;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.osgi.RWTContext;
+import org.eclipse.rap.rwt.osgi.RWTServiceObserver;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.engine.*;
@@ -227,6 +228,28 @@ public class RWTServiceImpl_Test extends TestCase {
     registerServiceReferences();
     
     checkDefaultAliasHasBeenRegistered();
+  }
+  
+  public void testRWTServiceObserver() {
+    RWTServiceObserver listener = mock( RWTServiceObserver.class );
+    service.addObserver( listener );
+    
+    RWTContext context = service.start( configurator, httpService, null );
+    context.stop();
+    service.removeObserver( listener );
+    service.start( configurator, httpService, null );
+    
+    verify( listener ).contextStarted( context );
+    verify( listener ).contextStopped( context );
+  }
+  
+  public void testRWTServiceObserverNotificationAboutPreviouslyStarted() {
+    RWTContext context = service.start( configurator, httpService, null );
+    RWTServiceObserver listener = mock( RWTServiceObserver.class );
+
+    service.addObserver( listener );
+    
+    verify( listener ).contextStarted( context );
   }
 
   protected void setUp() {

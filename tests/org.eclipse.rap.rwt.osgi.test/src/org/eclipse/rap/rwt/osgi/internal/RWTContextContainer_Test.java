@@ -42,37 +42,6 @@ public class RWTContextContainer_Test extends TestCase {
     assertEquals( 0, container.getAll().length );
   }
   
-  public void testRemoveDeadContextsOnAdd() {
-    container.add( context );
-    stopContext();
-    mockRWTContext();
-    
-    container.add( context );
-    
-    assertEquals( 1, container.size() );
-  }
-  
-  public void testRemoveDeadContextsOnGetAll() {
-    container.add( context );
-    stopContext();
-    
-    container.getAll();
-    
-    assertEquals( 0, container.size() );
-  }
-  
-  public void testRemoveDeadContextsOnRemove() {
-    RWTContextImpl toRemove = context;
-    container.add( toRemove );
-    mockRWTContext();
-    container.add( context );
-    stopContext();
-    
-    container.remove( toRemove );
-    
-    assertEquals( 0, container.size() );
-    
-  }
 
   protected void setUp() {
     container = new RWTContextContainer();
@@ -83,9 +52,5 @@ public class RWTContextContainer_Test extends TestCase {
     RWTContextImpl result = mock( RWTContextImpl.class );
     when( Boolean.valueOf( result.isAlive() ) ).thenReturn( Boolean.TRUE );
     return result;
-  }
-  
-  private void stopContext() {
-    when( Boolean.valueOf( context.isAlive() ) ).thenReturn( Boolean.FALSE );
   }
 }

@@ -41,4 +41,6 @@ public interface Context {
   void addThemableWidget( Class<? extends Widget> widget );
 
   void addThemeContribution( String themeId, String styleSheetLocation );
+
+  void setAttribute( String name, Object value );
 }

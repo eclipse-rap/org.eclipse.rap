@@ -14,47 +14,53 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.engine.Configurator;
+import org.eclipse.rap.rwt.osgi.RWTServiceObserver;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osgi.framework.*;
 
 
-public class ConfigurationTracker_Test extends TestCase {
+public class RWTServiceObserverTracker_Test extends TestCase {
 
   private BundleContext bundleContext;
   private RWTServiceImpl rwtService;
-  private ServiceReference< Configurator> serviceReference;
-  private Configurator service;
-  private ConfiguratorTracker tracker;
+  private ServiceReference< RWTServiceObserver> serviceReference;
+  private RWTServiceObserver service;
+  private RWTServiceObserverTracker tracker;
 
-  public void testAddingService() {
+  public void testAddObserver() {
     tracker.addingService( serviceReference );
     
-    verify( rwtService ).addConfigurator( serviceReference );
+    verify( rwtService ).addObserver( service );
   }
   
-  public void testRemovedService() {
+  public void testRemoveObserver() {
     tracker.removedService( serviceReference, service );
     
-    verify( rwtService ).removeConfigurator( service );
+    verify( rwtService ).removeObserver( service );
   }
   
   public void testOpen() {
     tracker.open();
     
-    verify( rwtService ).addConfigurator( serviceReference );
+    verify( rwtService ).addObserver( service );
   }
   
   @SuppressWarnings( "unchecked" )
   protected void setUp() throws Exception {
     mockBundleContext();
     rwtService = mock( RWTServiceImpl.class );
-    tracker = new ConfiguratorTracker( bundleContext, rwtService );
+    tracker = new RWTServiceObserverTracker( bundleContext, rwtService );
     serviceReference = mock( ServiceReference.class );
-    service = mock( Configurator.class );
+    mockObserverService();
+  }
+
+  private void mockObserverService() {
+    service = mock( RWTServiceObserver.class );
+    when( bundleContext.getService( serviceReference ) ).thenReturn( service );
   }
 
   private void mockBundleContext() throws InvalidSyntaxException {

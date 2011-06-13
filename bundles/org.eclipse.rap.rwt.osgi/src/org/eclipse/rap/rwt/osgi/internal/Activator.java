@@ -19,18 +19,22 @@ public class Activator implements BundleActivator {
   private ServiceRegistration< RWTService > rwtServiceRegistration;
   private HttpTracker httpTracker;
   private ConfiguratorTracker configuratorTracker;
+  private RWTServiceObserverTracker rwtServiceObserverTracker;
 
   public void start( BundleContext context ) {
     registerRWTService( context );
     openHttpServiceTracker( context );
     openConfiguratorTracker( context );
+    openRWTServiceObserverTracker( context );
   }
 
   public void stop( BundleContext context ) {
+    rwtServiceObserverTracker.close();
     configuratorTracker.close();
     httpTracker.close();
     rwtServiceRegistration.unregister();
     rwtService.deactivate();
+    rwtServiceObserverTracker = null;
     configuratorTracker = null;
     httpTracker = null;
     rwtService = null;
@@ -52,5 +56,10 @@ public class Activator implements BundleActivator {
   private void openHttpServiceTracker( BundleContext context ) {
     httpTracker = new HttpTracker( context, rwtService );
     httpTracker.open();
+  }
+
+  private void openRWTServiceObserverTracker( BundleContext context ) {
+    rwtServiceObserverTracker = new RWTServiceObserverTracker( context, rwtService );
+    rwtServiceObserverTracker.open();
   }
 }

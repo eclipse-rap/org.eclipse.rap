@@ -31,16 +31,19 @@ class RWTContextImpl implements RWTContext {
   private String contextName;
   private ContextControl contextControl;
   private boolean alive;
+  private RWTServiceImpl rwtServiceImpl;
 
   public RWTContextImpl( Configurator configurator,
                          HttpService httpService,
                          String contextName, 
-                         String contextLocation )
+                         String contextLocation,
+                         RWTServiceImpl rwtServiceImpl )
   {
     this.configurator = configurator;
     this.httpService = httpService;
     this.contextLocation = contextLocation;
     this.contextName = contextName;
+    this.rwtServiceImpl = rwtServiceImpl;
   }
   
   public boolean isAlive() {
@@ -53,6 +56,7 @@ class RWTContextImpl implements RWTContext {
     registerServletContextProvider();
     try {
       stopContext();
+      rwtServiceImpl.notifyContextStopped( this );
     } finally {
       unregisterServletContextProvider();
     }
@@ -150,6 +154,7 @@ class RWTContextImpl implements RWTContext {
     configurator = null;
     contextName = null;
     contextLocation = null;
+    rwtServiceImpl = null;
   }
 
   private void unregisterServlet( String alias ) {

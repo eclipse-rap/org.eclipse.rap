@@ -10,27 +10,32 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
-import org.eclipse.rwt.engine.Configurator;
+import org.eclipse.rap.rwt.osgi.RWTServiceObserver;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
-class ConfiguratorTracker extends ServiceTracker< Configurator, Configurator > {
+
+public class RWTServiceObserverTracker
+  extends ServiceTracker< RWTServiceObserver, RWTServiceObserver >
+{
   private final RWTServiceImpl rwtService;
-  
-  ConfiguratorTracker( BundleContext context, RWTServiceImpl rwtService ) {
-    super( context, Configurator.class.getName(), null );
+
+  public RWTServiceObserverTracker( BundleContext context, RWTServiceImpl rwtService ) {
+    super( context, RWTServiceObserver.class.getName(), null );
     this.rwtService = rwtService;
   }
-  
+
   @Override
-  public Configurator addingService( ServiceReference<Configurator> reference ) {
-    rwtService.addConfigurator( reference );
+  public RWTServiceObserver addingService( ServiceReference<RWTServiceObserver> reference ) {
+    rwtService.addObserver( context.getService( reference ) );
     return super.addingService( reference );
   }
   
   @Override
-  public void removedService( ServiceReference<Configurator> reference, Configurator service ) {
-    rwtService.removeConfigurator( service );
+  public void removedService( ServiceReference<RWTServiceObserver> reference,
+                              RWTServiceObserver service )
+  {
+    rwtService.removeObserver( service );
   }
 }

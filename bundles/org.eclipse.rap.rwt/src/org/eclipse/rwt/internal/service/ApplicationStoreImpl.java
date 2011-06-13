@@ -41,4 +41,10 @@ public class ApplicationStoreImpl implements IApplicationStore {
       attributes.remove( name );
     }
   }
+
+  public void reset() {
+    synchronized( attributes ) {
+      attributes.clear();
+    }
+  }
 }

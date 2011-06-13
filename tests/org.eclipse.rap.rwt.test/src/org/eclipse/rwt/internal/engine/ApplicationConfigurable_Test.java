@@ -18,8 +18,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.engine.Context;
 import org.eclipse.rwt.engine.Configurator;
+import org.eclipse.rwt.engine.Context;
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.engine.ThemeManagerHelper.TestThemeManager;
 import org.eclipse.rwt.internal.engine.configurables.RWTConfigurationConfigurable;
@@ -39,6 +39,8 @@ import org.eclipse.swt.widgets.Display;
 
 
 public class ApplicationConfigurable_Test extends TestCase {
+  private static final Object ATTRIBUTE_VALUE = new Object();
+  private static final String ATTRIBUTE_NAME = "name";
   private static final String THEME_ID = "TestTheme";
   private static final String STYLE_SHEET = "resources/theme/TestExample.css";
   private static final String STYLE_SHEET_2 = "resources/theme/TestExample2.css";
@@ -155,8 +157,9 @@ public class ApplicationConfigurable_Test extends TestCase {
     checkThemeHasBeenAdded();
     checkThemableWidgetHasBeenAdded();
     checkThemeContributionHasBeenAdded();
+    checkAttributeHasBeenSet();
   }
-  
+
   public void testConfigureWithDefaultSettingStoreFactory() {
     runConfigurator( new Configurator() {
       public void configure( Context application ) {
@@ -181,6 +184,7 @@ public class ApplicationConfigurable_Test extends TestCase {
     checkServiceHandlerHasBeenRemoved();
     checkSettingStoreFactoryHasBeenRemoved();
     checkThemeManagerHasBeenResetted();
+    checkApplicationStoreHasBeenResetted();
   }
 
   @Override
@@ -229,10 +233,16 @@ public class ApplicationConfigurable_Test extends TestCase {
         application.addTheme( THEME_ID, STYLE_SHEET );
         application.addThemableWidget( TestWidget.class );
         application.addThemeContribution( THEME_ID, STYLE_SHEET_2 );
+        application.setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
       }
     };
   }
-
+  
+  private void checkAttributeHasBeenSet() {
+    Object attribute = applicationContext.getApplicationStore().getAttribute( ATTRIBUTE_NAME );
+    assertSame( ATTRIBUTE_VALUE, attribute );
+  }
+  
   private void checkThemeContributionHasBeenAdded() {
     Theme theme = applicationContext.getThemeManager().getTheme( THEME_ID );
     assertEquals( 18, theme.getValuesMap().getAllValues().length );
@@ -326,5 +336,10 @@ public class ApplicationConfigurable_Test extends TestCase {
   private void checkThemeManagerHasBeenResetted() {
     TestThemeManager themeManager = ( TestThemeManager )applicationContext.getThemeManager();
     assertEquals( 0, themeManager.getRegisteredThemeIds().length );
+  }
+  
+  private void checkApplicationStoreHasBeenResetted() {
+    Object attribute = applicationContext.getApplicationStore().getAttribute( ATTRIBUTE_NAME );
+    assertNull( attribute );
   }
 }

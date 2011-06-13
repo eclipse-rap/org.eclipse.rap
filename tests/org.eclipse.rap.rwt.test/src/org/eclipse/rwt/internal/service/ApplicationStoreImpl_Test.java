@@ -34,4 +34,13 @@ public class ApplicationStoreImpl_Test extends TestCase {
     
     assertSame( null, applicationStore.getAttribute( KEY ) );
   }
+  
+  public void testReset() {
+    ApplicationStoreImpl applicationStore = new ApplicationStoreImpl();
+    applicationStore.setAttribute( KEY, VALUE );
+
+    applicationStore.reset();
+    
+    assertSame( null, applicationStore.getAttribute( KEY ) );
+  }
 }

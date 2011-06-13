@@ -11,9 +11,10 @@
 package org.eclipse.rap.rwt.osgi.internal;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.eclipse.rap.rwt.osgi.RWTContext;
-import org.eclipse.rap.rwt.osgi.RWTService;
+import org.eclipse.rap.rwt.osgi.*;
 import org.eclipse.rap.rwt.osgi.internal.ServiceContainer.ServiceHolder;
 import org.eclipse.rwt.engine.Configurator;
 import org.osgi.framework.BundleContext;
@@ -26,6 +27,7 @@ public class RWTServiceImpl implements RWTService {
   private final ServiceContainer< Configurator > configurators;
   private final ServiceContainer< HttpService > httpServices;
   private final RWTContextContainer contexts;
+  private final Set< RWTServiceObserver >observers;
   private BundleContext bundleContext;
   
   public RWTServiceImpl( BundleContext bundleContext ) {
@@ -33,6 +35,7 @@ public class RWTServiceImpl implements RWTService {
     this.configurators = new ServiceContainer< Configurator >( bundleContext );
     this.httpServices = new ServiceContainer< HttpService >( bundleContext );
     this.contexts = new RWTContextContainer();
+    this.observers = new HashSet< RWTServiceObserver >();
     this.bundleContext = bundleContext;
   }
   
@@ -84,12 +87,13 @@ public class RWTServiceImpl implements RWTService {
   {
     checkAlive();
     RWTContextImpl result
-      = new RWTContextImpl( configurator, httpService, contextName, contextLocation );
+      = new RWTContextImpl( configurator, httpService, contextName, contextLocation, this );
     synchronized( lock ) {
       contexts.add( result );
       httpServices.add( httpService );
       configurators.add( configurator );
       result.start();
+      notifyContextStarted( result );
     }
     return result;
   }
@@ -101,6 +105,7 @@ public class RWTServiceImpl implements RWTService {
       configurators.clear();
       contexts.clear();
       httpServices.clear();
+      observers.clear();
       bundleContext = null;
     }
   }
@@ -108,7 +113,61 @@ public class RWTServiceImpl implements RWTService {
   public boolean isAlive() {
     return bundleContext != null;
   }
+
+  public void addObserver( RWTServiceObserver observer ) {
+    RWTContextImpl[] all;
+    synchronized( lock ) {
+      observers.add( observer );
+      all = contexts.getAll();
+    }
+    for( RWTContextImpl rwtContextImpl : all ) {
+      notifyContextStarted( rwtContextImpl );
+    }
+  }
+
+  public void removeObserver( RWTServiceObserver observer ) {
+    synchronized( lock ) {
+      observers.remove( observer );
+    }
+  }
+
+  void notifyContextStopped( RWTContextImpl context ) {
+    RWTServiceObserver[] observerList;
+    synchronized( lock ) {
+      contexts.remove( context );
+      observerList = getObserverList();
+    }
+    notifyStoppedUnsynchronized( context, observerList );
+  }
+
+  private void notifyStoppedUnsynchronized( RWTContext context, RWTServiceObserver[] toNotify ) {
+    for( RWTServiceObserver observer : toNotify ) {
+      // TODO [fappel]: think about exception handling
+      observer.contextStopped( context );
+    }
+  }
+
+  private void notifyContextStarted( RWTContextImpl context ) {
+    RWTServiceObserver[] observerList;
+    synchronized( lock ) {
+      observerList = getObserverList();
+    }
+    notifyStartedUnsynchronized( context, observerList );
+  }
+
+  private void notifyStartedUnsynchronized( RWTContext context, RWTServiceObserver[] toNotify ) {
+    for( RWTServiceObserver observer : toNotify ) {
+      // TODO [fappel]: think about exception handling
+      observer.contextStarted( context );
+    }
+  }
   
+  private RWTServiceObserver[] getObserverList() {
+    RWTServiceObserver[] result = new RWTServiceObserver[ observers.size() ];
+    observers.toArray( result );
+    return result;
+  }
+
   private void startAtHttpService( ServiceHolder< HttpService > httpServiceHolder ) {
     ServiceHolder<Configurator>[] services = configurators.getServices();
     for( ServiceHolder< Configurator > configuratorHolder : services ) {
@@ -146,7 +205,6 @@ public class RWTServiceImpl implements RWTService {
     for( RWTContextImpl context : iterator ) {
       if( context.belongsTo( service ) ) {
         context.stop();
-        contexts.remove( context );
       }
     }
   }

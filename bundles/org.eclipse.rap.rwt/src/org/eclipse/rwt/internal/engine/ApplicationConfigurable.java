@@ -20,6 +20,7 @@ import org.eclipse.rwt.engine.Configurator;
 import org.eclipse.rwt.engine.Context;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
+import org.eclipse.rwt.internal.service.ApplicationStoreImpl;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rwt.internal.theme.ResourceLoader;
@@ -120,6 +121,9 @@ public class ApplicationConfigurable implements Configurable {
       return result;
     }
 
+    public void setAttribute( String name, Object value ) {
+      applicationContext.getApplicationStore().setAttribute( name, value );
+    }
   }
 
   public ApplicationConfigurable( Configurator configurator ) {
@@ -143,6 +147,14 @@ public class ApplicationConfigurable implements Configurable {
     applicationContext.getResourceRegistry().clear();
     applicationContext.getSettingStoreManager().deregisterFactory();
     resetConfiguration( applicationContext );
+    resetApplicationStore( applicationContext );
+  }
+
+  private void resetApplicationStore( ApplicationContext applicationContext ) {
+    IApplicationStore storeInstance = applicationContext.getApplicationStore();
+    ApplicationStoreImpl applicationStore = ( ApplicationStoreImpl )storeInstance;
+    applicationStore.reset();
+    
   }
 
   private void resetConfiguration( ApplicationContext applicationContext ) {

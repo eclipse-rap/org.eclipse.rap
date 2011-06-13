@@ -10,22 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi;
 
-import org.eclipse.rwt.engine.Configurator;
-import org.osgi.service.http.HttpService;
 
-
-public interface RWTService {
-
-  public static final String PROPERTY_CONTEXT_NAME = "contextName";
-
-  RWTContext start( Configurator configurator,
-                    HttpService httpService,
-                    String contextName );
-
-  RWTContext start( Configurator configurator,
-                    HttpService httpService,
-                    String contextName,
-                    String contextDirectory );
-  boolean isAlive();
-
+public interface RWTServiceObserver {
+  void contextStarted( RWTContext context );
+  void contextStopped( RWTContext context );
 }

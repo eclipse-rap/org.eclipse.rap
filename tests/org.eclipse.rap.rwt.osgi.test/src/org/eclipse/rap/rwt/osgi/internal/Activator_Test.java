@@ -54,7 +54,7 @@ public class Activator_Test extends TestCase {
   }
 
   private void checkTrackersHaveBeenClosed() {
-    verify( context, times( 2 ) ).removeServiceListener( any( ServiceListener.class ) );
+    verify( context, times( 3 ) ).removeServiceListener( any( ServiceListener.class ) );
   }
   
   @SuppressWarnings( "unchecked" )
@@ -66,7 +66,7 @@ public class Activator_Test extends TestCase {
   }
 
   private void checkTrackersHaveBeenOpend() throws Exception {
-    verify( context, times( 2 ) )
+    verify( context, times( 3 ) )
       .addServiceListener( any( ServiceListener.class ), any( String.class ) );
   }
 
