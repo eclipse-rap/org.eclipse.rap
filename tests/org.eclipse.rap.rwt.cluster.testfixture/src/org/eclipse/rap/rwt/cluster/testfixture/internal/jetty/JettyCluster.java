@@ -31,9 +31,12 @@ public class JettyCluster implements IServletEngineCluster {
   
   public IServletEngine addServletEngine() {
     JettyEngine jettyEngine = new JettyEngine( sessionManagerProvider );
-    IServletEngine result = new DelegatingServletEngine( jettyEngine );
-    servletEngines.add( result );
-    return result; 
+    return addServletEngine( jettyEngine ); 
+  }
+
+  public IServletEngine addServletEngine( int port ) {
+    JettyEngine jettyEngine = new JettyEngine( sessionManagerProvider, port );
+    return addServletEngine( jettyEngine ); 
   }
   
   public void removeServletEngine( IServletEngine servletEngine ) {
@@ -52,5 +55,11 @@ public class JettyCluster implements IServletEngineCluster {
       servletEngine.stop();
     }
     databaseServer.stop();
+  }
+
+  private IServletEngine addServletEngine( JettyEngine jettyEngine ) {
+    IServletEngine result = new DelegatingServletEngine( jettyEngine );
+    servletEngines.add( result );
+    return result;
   }
 }

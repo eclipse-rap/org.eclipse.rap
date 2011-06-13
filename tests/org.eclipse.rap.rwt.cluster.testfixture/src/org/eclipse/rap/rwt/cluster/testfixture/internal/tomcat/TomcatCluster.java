@@ -18,9 +18,12 @@ public class TomcatCluster implements IServletEngineCluster {
   
   public IServletEngine addServletEngine() {
     TomcatEngine tomcatEngine = new TomcatEngine();
-    DelegatingServletEngine result = new DelegatingServletEngine( tomcatEngine );
-    servletEngines.add( result );
-    return result;
+    return addServletEngine( tomcatEngine );
+  }
+
+  public IServletEngine addServletEngine( int port ) {
+    TomcatEngine tomcatEngine = new TomcatEngine( port );
+    return addServletEngine( tomcatEngine );
   }
   
   public void removeServletEngine( IServletEngine servletEngine ) {
@@ -41,6 +44,12 @@ public class TomcatCluster implements IServletEngineCluster {
     for( IServletEngine servletEngine : servletEngines ) {
       servletEngine.stop();
     }
+  }
+
+  private IServletEngine addServletEngine( TomcatEngine tomcatEngine ) {
+    DelegatingServletEngine result = new DelegatingServletEngine( tomcatEngine );
+    servletEngines.add( result );
+    return result;
   }
 
   private static void configureEngine( TomcatEngine servletEngine ) {

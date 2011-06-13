@@ -33,7 +33,7 @@ public class TomcatEngine implements IServletEngine {
     this( SocketUtil.getFreePort() ); 
   }
   
-  public TomcatEngine( int port ) {
+  TomcatEngine( int port ) {
     this.port = port;
     this.tomcat = new Tomcat();
     configureTomcat(); 

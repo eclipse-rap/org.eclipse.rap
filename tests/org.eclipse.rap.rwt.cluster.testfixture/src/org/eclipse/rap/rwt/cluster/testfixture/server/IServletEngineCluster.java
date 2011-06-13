@@ -15,6 +15,7 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 public interface IServletEngineCluster {
   IServletEngine addServletEngine();
+  IServletEngine addServletEngine( int port );
   void removeServletEngine( IServletEngine servletEngine );
   void start( Class<? extends IEntryPoint> entryPointClass ) throws Exception;
   void stop() throws Exception;
