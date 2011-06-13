@@ -17,11 +17,16 @@
   <target name="getMapFiles" depends="checkLocalMaps" unless="skipMaps">
     <cvs cvsRoot="${mapsRepo}" package="${mapsRoot}" dest="${buildDirectory}/maps" tag="${mapsCheckoutTag}" />
     
-  	<!-- Hack to integrate mockito: this should be removed once the signing (and other...) 
-  	     problems with mockito jar are solved. We cannot use map file entries for this,
-  	     since we need certain CVS tags, additionally the manifest has to be patched to
-  	     declare a bundle dependency to org.hamcrest. The package import doesn't work 
-  	     in build environment (shrug) -->
+    <antcall target="createMockito" />
+  	
+  </target>
+
+  <target name="createMockito">
+  	<!-- Hack to integrate mockito: this should be removed once the signing and package
+  	     import problems are solved with mockito orbit jar are solved. We cannot use 
+  	     map file entries for this, since we need a certain CVS tag different from head,
+  	     additionally the manifest has to be patched to declare a bundle dependency to 
+  	     org.hamcrest. The package import doesn't work in build environment (shrug) -->
   	<cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
   	     package="org.eclipse.orbit/org.mockito" 
   		   dest="${buildDirectory}/orbit"
@@ -35,25 +40,11 @@
           tofile="${baseLocation}/plugins/org.mockito_rwtbuild/META-INF/MANIFEST.MF"/>
   	<delete file="${baseLocation}/plugins/org.mockito_rwtbuild/.classPath" />
   	<delete file="${baseLocation}/plugins/org.mockito_rwtbuild/.project" />
-  	
   	<zip destfile="${baseLocation}/plugins/org.mockito.jar"
   	     basedir="${baseLocation}/plugins/org.mockito_rwtbuild" />
   	<delete dir="${baseLocation}/plugins/org.mockito_rwtbuild" />
-  	
-  	<delete dir="${baseLocation}/plugins/org.objenesis_rwtbuild" />
-  	<copy file="${builder}/org.objenesis_1.0.0.v201105211943.jar" 
-  		  todir="${baseLocation}/plugins" />
-  	<copy file="${builder}/org.objenesis.source_1.0.0.v201105211943.jar" 
-  		  todir="${baseLocation}/plugins" />
-  	
-  	<delete dir="${baseLocation}/plugins/org.junit_rwtbuild" />
-  	<copy todir="${baseLocation}/plugins/org.junit_4.8.1.v4_8_1_v20100427-1100">
-  		<fileset dir="${builder}/org.junit_4.8.1.v4_8_1_v20100427-1100"/>
-  	</copy>
-  	<copy file="${builder}/org.junit.source_4.8.1.v4_8_1_v20100427-1100.jar" 
-  		  todir="${baseLocation}/plugins" />
   	<!-- End of mockito hack-->
- 
+  	
   </target>
 
   <target name="checkLocalMaps">
@@ -84,6 +75,10 @@
   <target name="preSetup">
     <!-- tidy up before build to clean broken build -->
     <antcall target="tidyup" />
+  	
+  	<!-- see comment at createMockito target -->
+  	<delete file="${baseLocation}/plugins/org.mockito.jar" />
+  	
   </target>
 
   <!-- ===================================================================== -->
