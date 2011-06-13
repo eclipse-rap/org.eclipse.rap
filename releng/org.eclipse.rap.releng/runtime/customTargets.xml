@@ -33,24 +33,27 @@
   	<delete file="${baseLocation}/plugins/org.mockito_rwtbuild/META-INF/MANIFEST.MF" />
     <copy file="${builder}/MOCKITO_MANIFEST_REPLACEMENT.MF"
           tofile="${baseLocation}/plugins/org.mockito_rwtbuild/META-INF/MANIFEST.MF"/>
-    <cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
-    	   package="org.eclipse.orbit/org.objenesis"
-    	   dest="${buildDirectory}/orbit"
-    	   tag="v1_0" />
-  	<delete dir="${baseLocation}/plugins/org.objenesis_rwtbuild" />
-  	<copy todir="${baseLocation}/plugins/org.objenesis_rwtbuild">
-  	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.objenesis"/>
-  	</copy>
-    <cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
-    	   package="org.eclipse.orbit/org.junit"
-    	   dest="${buildDirectory}/orbit"
-    	   tag="v4_8_1" />
-  	<delete dir="${baseLocation}/plugins/org.junit_rwtbuild" />
-  	<copy todir="${baseLocation}/plugins/org.junit_rwtbuild">
-      <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.junit"/>
-  	</copy>
-  	<!-- End of mockito hack-->
+  	<delete file="${baseLocation}/plugins/org.mockito_rwtbuild/.classPath" />
+  	<delete file="${baseLocation}/plugins/org.mockito_rwtbuild/.project" />
   	
+  	<zip destfile="${baseLocation}/plugins/org.mockito.jar"
+  	     basedir="${baseLocation}/plugins/org.mockito_rwtbuild" />
+  	<delete dir="${baseLocation}/plugins/org.mockito_rwtbuild" />
+  	
+  	<delete dir="${baseLocation}/plugins/org.objenesis_rwtbuild" />
+  	<copy file="${builder}/org.objenesis_1.0.0.v201105211943.jar" 
+  		  todir="${baseLocation}/plugins" />
+  	<copy file="${builder}/org.objenesis.source_1.0.0.v201105211943.jar" 
+  		  todir="${baseLocation}/plugins" />
+  	
+  	<delete dir="${baseLocation}/plugins/org.junit_rwtbuild" />
+  	<copy todir="${baseLocation}/plugins/org.junit_4.8.1.v4_8_1_v20100427-1100">
+  		<fileset dir="${builder}/org.junit_4.8.1.v4_8_1_v20100427-1100"/>
+  	</copy>
+  	<copy file="${builder}/org.junit.source_4.8.1.v4_8_1_v20100427-1100.jar" 
+  		  todir="${baseLocation}/plugins" />
+  	<!-- End of mockito hack-->
+ 
   </target>
 
   <target name="checkLocalMaps">
