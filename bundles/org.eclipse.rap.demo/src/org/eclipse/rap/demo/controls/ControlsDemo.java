@@ -12,7 +12,9 @@
 
 package org.eclipse.rap.demo.controls;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -23,26 +25,25 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
 
+@SuppressWarnings("restriction")
 public class ControlsDemo implements IEntryPoint {
 
   public int createUI() {
     Display display = new Display();
-    try {
-      Shell shell = new Shell( display, SWT.TITLE | SWT.MAX | SWT.RESIZE );
-      shell.setBounds( 10, 10, 850, 600 );
-      createContent( shell );
-      shell.setText( "SWT Controls Demo" );
-      ClassLoader classLoader = getClass().getClassLoader();
-      Image image = Graphics.getImage( "resources/shell.gif", classLoader );
-      shell.setImage( image );
-      shell.layout();
-      shell.open();
+    Shell shell = new Shell( display, SWT.TITLE | SWT.MAX | SWT.RESIZE );
+    shell.setBounds( 10, 10, 850, 600 );
+    createContent( shell );
+    shell.setText( "SWT Controls Demo" );
+    Image image = Graphics.getImage( "resources/shell.gif", getClass().getClassLoader() );
+    shell.setImage( image );
+    shell.layout();
+    shell.open();
+    if( RWT.getLifeCycle() instanceof RWTLifeCycle ) {
       while( !shell.isDisposed() ) {
         if( !display.readAndDispatch() ) {
           display.sleep();
         }
       }
-    } finally {
       display.dispose();
     }
     return 0;
