@@ -191,14 +191,11 @@ public class Shell_Test extends TestCase {
     // during setVisible( true )
     final StringBuffer log = new StringBuffer();
     shell.setLayout( new Layout() {
-      protected Point computeSize( final Composite composite,
-                                   final int hint,
-                                   final int hint2,
-                                   final boolean flushCache )
-      {
+      private static final long serialVersionUID = 1L;
+      protected Point computeSize( Composite composite, int hint, int hint2, boolean flushCache ) {
         return null;
       }
-      protected void layout( final Composite composite, final boolean flushCache ) {
+      protected void layout( Composite composite, boolean flushCache ) {
         log.append( "layout" );
       }
     } );
