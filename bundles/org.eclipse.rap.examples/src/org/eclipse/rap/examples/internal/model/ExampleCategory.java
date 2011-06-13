@@ -47,11 +47,11 @@ public class ExampleCategory implements Comparable {
   }
 
   public IExamplePage[] getPages() {
-    return ( IExamplePage[] )pages.clone();
+    return pages.clone();
   }
 
   public void setPages( final IExamplePage[] pages ) {
-    this.pages = ( IExamplePage[] )pages.clone();
+    this.pages = pages.clone();
   }
 
   public int compareTo( final Object object ) {
