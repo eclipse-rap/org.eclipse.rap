@@ -23,8 +23,7 @@ import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.ApplicationStoreImpl;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.textsize.MeasurementListener;
-import org.eclipse.rwt.internal.theme.ResourceLoader;
-import org.eclipse.rwt.internal.theme.Theme;
+import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
@@ -42,15 +41,14 @@ public class ApplicationConfigurable implements Configurable {
   private final Configurator configurator;
 
   private static class ResourceLoaderImpl implements ResourceLoader {
-    private final Configurator configurator;
+    private final ClassLoader loader;
     
-    private ResourceLoaderImpl( Configurator configurator ) {
-      this.configurator = configurator;
+    private ResourceLoaderImpl( ClassLoader loader ) {
+      this.loader = loader;
       
     }
     public InputStream getResourceAsStream( String resourceName ) throws IOException {
-      ClassLoader classLoader = configurator.getClass().getClassLoader();
-      return classLoader.getResourceAsStream( resourceName );
+      return loader.getResourceAsStream( resourceName );
     }
   }
   
@@ -94,11 +92,12 @@ public class ApplicationConfigurable implements Configurable {
 
     public void addTheme( String themeId, String styleSheetLocation ) {
       StyleSheet styleSheet = readStyleSheet( styleSheetLocation );
-      applicationContext.getThemeManager().registerTheme( new Theme( themeId, "unknown", styleSheet ) );
+      ThemeManager themeManager = applicationContext.getThemeManager();
+      themeManager.registerTheme( new Theme( themeId, "unknown", styleSheet ) );
     }
 
     public void addThemableWidget( Class<? extends Widget> widget ) {
-      ResourceLoaderImpl loader = new ResourceLoaderImpl( configurator );
+      ResourceLoaderImpl loader = new ResourceLoaderImpl( widget.getClassLoader() );
       applicationContext.getThemeManager().addThemeableWidget( widget, loader );
     }
 
@@ -109,8 +108,9 @@ public class ApplicationConfigurable implements Configurable {
 
     private StyleSheet readStyleSheet( String styleSheetLocation ) {
       StyleSheet result;
+      ClassLoader classLoader = configurator.getClass().getClassLoader();
+      ResourceLoaderImpl loader = new ResourceLoaderImpl( classLoader );
       try {
-        ResourceLoaderImpl loader = new ResourceLoaderImpl( configurator );
         result = CssFileReader.readStyleSheet( styleSheetLocation, loader );
       } catch( IOException ioe ) {
         String text = "Failed to read stylesheet from resource ''{0}''";
