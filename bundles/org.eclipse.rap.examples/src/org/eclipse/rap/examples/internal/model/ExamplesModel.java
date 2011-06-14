@@ -35,12 +35,12 @@ public final class ExamplesModel {
   private final static String EXT_ATTR_DESCRIPTION = "description";
   private final static String EXT_ATTR_CLASS = "class";
 
-  private final List categories;
-  private final List pages;
+  private final List<ExampleCategory> categories;
+  private final List<PageWrapper> pages;
 
   private ExamplesModel() {
-    categories = new ArrayList();
-    pages = new ArrayList();
+    categories = new ArrayList<ExampleCategory>();
+    pages = new ArrayList<PageWrapper>();
     IConfigurationElement[] extensions = readRegistry();
     createCategories( extensions );
     createPages( extensions );
@@ -70,7 +70,7 @@ public final class ExamplesModel {
    * @return String[] with example names
    */
   public String[] getExamplesInCategory( final ExampleCategory category ) {
-    ArrayList resultList = new ArrayList();
+    List<String> resultList = new ArrayList<String>();
     String catId = category.getId();
     Iterator iterator = pages.iterator();
     while( iterator.hasNext() ) {

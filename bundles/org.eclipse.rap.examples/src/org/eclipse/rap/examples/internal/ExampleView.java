@@ -26,15 +26,15 @@ import org.eclipse.ui.part.ViewPart;
 public class ExampleView extends ViewPart {
   public static final String ID = "org.eclipse.rap.examples.exampleView";
   
-  private final Map examplePages;
+  private final Map<String,Composite> examplePages;
   private PageBook book;
   private SelectionListener selectionListener;
 
   public ExampleView() {
-    examplePages = new HashMap();
+    examplePages = new HashMap<String,Composite>();
   }
   
-  public void createPartControl( final Composite parent ) {
+  public void createPartControl( Composite parent ) {
     book = new PageBook( parent, 0 );
     selectionListener = new SelectionListener();
     ISelectionService selectionService = getSelectionService();
@@ -51,18 +51,18 @@ public class ExampleView extends ViewPart {
     super.dispose();
   }
 
-  private void showPage( final String name ) {
+  private void showPage( String name ) {
     book.showPage( createPage( name ) );
   }
 
-  private Composite createPage( final String name ) {
-    Composite result = ( Composite )examplePages.get( name );
+  private Composite createPage( String name ) {
+    Composite result = examplePages.get( name );
     if( result == null ) {
-      Composite exPage = new Composite( book, SWT.V_SCROLL );
+      Composite examplePage = new Composite( book, SWT.V_SCROLL );
       IExamplePage page = ExamplesModel.getInstance().getExample( name );
-      page.createControl( exPage );
-      examplePages.put( name, exPage );
-      result = exPage;
+      page.createControl( examplePage );
+      examplePages.put( name, examplePage );
+      result = examplePage;
     }
     return result;
   }
@@ -72,10 +72,7 @@ public class ExampleView extends ViewPart {
   }
 
   private final class SelectionListener implements ISelectionListener {
-
-    public void selectionChanged( final IWorkbenchPart part,
-                                  final ISelection selection )
-    {
+    public void selectionChanged( IWorkbenchPart part, ISelection selection ) {
       if( selection instanceof IStructuredSelection ) {
         IStructuredSelection sselection = ( IStructuredSelection )selection;
         Object firstElement = sselection.getFirstElement();

@@ -44,7 +44,7 @@ public class Elements {
     "NM",
   };
   
-  private static List elements = new ArrayList();
+  private static List<Element> elements = new ArrayList<Element>();
 
   static {
     ClassLoader classLoader = Elements.class.getClassLoader();
@@ -63,19 +63,17 @@ public class Elements {
           String symbol = parts[ 3 ];
           String name = parts[ 4 ];
           int series = readCategory( parts[ 5 ] );
-          Element element
-            = new Element( number, period, group, series, symbol, name );
+          Element element = new Element( number, period, group, series, symbol, name );
           elements.add( element );
         }
       }
-    } catch( IOException e ) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+    } catch( IOException ioe ) {
+      throw new RuntimeException( ioe );
     } finally {
       try {
         bufferedStream.close();
-      } catch( IOException e ) {
-        e.printStackTrace();
+      } catch( IOException ioe ) {
+        throw new RuntimeException( ioe );
       }
     }
   }
@@ -91,7 +89,7 @@ public class Elements {
   }
 
   public static List getElements() {
-    return new ArrayList( elements );
+    return new ArrayList<Element>( elements );
   }
 
   public static class Element {

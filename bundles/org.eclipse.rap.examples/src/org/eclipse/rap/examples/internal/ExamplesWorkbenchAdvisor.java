@@ -17,6 +17,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.application.*;
 
 
+@SuppressWarnings("restriction")
 public class ExamplesWorkbenchAdvisor extends WorkbenchAdvisor {
 
   public String getInitialWindowPerspectiveId() {

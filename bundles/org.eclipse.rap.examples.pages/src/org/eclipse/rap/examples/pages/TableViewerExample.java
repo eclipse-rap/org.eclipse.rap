@@ -135,7 +135,7 @@ public class TableViewerExample implements IExamplePage {
     return result;
   }
 
-  private static int updateSortDirection( final TableColumn column ) {
+  private static int updateSortDirection( TableColumn column ) {
     Table table = column.getParent();
     if( column == table.getSortColumn() ) {
       if( table.getSortDirection() == SWT.UP ) {
@@ -150,10 +150,8 @@ public class TableViewerExample implements IExamplePage {
     return table.getSortDirection();
   }
 
-  private static void sort( final TableViewer viewer,
-                            final int property,
-                            final boolean ascending )
-  {
+  @SuppressWarnings("unchecked")
+  private static void sort( TableViewer viewer, int property, boolean ascending ) {
     if( ( viewer.getControl().getStyle() & SWT.VIRTUAL ) != 0 ) {
       List input = ( List )viewer.getInput();
       Collections.sort( input, new ElementComparator( property, ascending ) );
@@ -163,18 +161,14 @@ public class TableViewerExample implements IExamplePage {
     }
   }
 
-  private static final class ElementsContentProvider
-    implements IStructuredContentProvider
-  {
+  private static final class ElementsContentProvider implements IStructuredContentProvider {
     Object[] elements;
-    public Object[] getElements( final Object inputElement ) {
+    
+    public Object[] getElements( Object inputElement ) {
       return elements;
     }
 
-    public void inputChanged( final Viewer viewer,
-                              final Object oldInput,
-                              final Object newInput )
-    {
+    public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {
       if( newInput == null ) {
         elements = new Object[ 0 ];
       } else {
@@ -188,10 +182,8 @@ public class TableViewerExample implements IExamplePage {
     }
   }
 
-  private static final class ElementsLabelProvider
-    extends CellLabelProvider
-  {
-    public void update( final ViewerCell cell ) {
+  private static final class ElementsLabelProvider extends CellLabelProvider {
+    public void update( ViewerCell cell ) {
       Element element = ( Element )cell.getElement();
       int columnIndex = cell.getColumnIndex();
       switch( columnIndex ) {
@@ -217,7 +209,7 @@ public class TableViewerExample implements IExamplePage {
       }
     }
 
-    public String getToolTipText( final Object object ) {
+    public String getToolTipText( Object object ) {
       Element element = ( Element )object;
       return 
           element.symbol 
@@ -228,33 +220,24 @@ public class TableViewerExample implements IExamplePage {
     }
   }
 
-  private static final class ElementComparator
-    extends ViewerComparator
-    implements Comparator
-  {
-
+  private static final class ElementComparator extends ViewerComparator implements Comparator {
     private final boolean ascending;
-
     private final int property;
 
-    public ElementComparator( final int property, final boolean ascending ) {
+    public ElementComparator( int property, boolean ascending ) {
       this.property = property;
       this.ascending = ascending;
     }
 
-    public int compare( final Viewer viewer,
-                        final Object object1,
-                        final Object object2 )
-    {
+    public int compare( Viewer viewer, Object object1, Object object2 ) {
       return compare( object1, object2 );
     }
 
-    public boolean isSorterProperty( final Object elem, final String property )
-    {
+    public boolean isSorterProperty( Object elem, String property ) {
       return true;
     }
 
-    public int compare( final Object object1, final Object object2 ) {
+    public int compare( Object object1, Object object2 ) {
       Element element1 = ( Element )object1;
       Element element2 = ( Element )object2;
       int result = 0;
@@ -291,17 +274,13 @@ public class TableViewerExample implements IExamplePage {
   }
 
   private static final class ElementsFilter extends ViewerFilter {
-
     private String text;
 
-    public void setText( final String string ) {
+    void setText( String string ) {
       this.text = string;
     }
 
-    public boolean select( final Viewer viewer,
-                           final Object parentElement,
-                           final Object element )
-    {
+    public boolean select( Viewer viewer, Object parentElement, Object element ) {
       boolean result = true;
       Element chemElement = ( Element )element;
       if( text != null && text.length() > 0 ) {
@@ -320,7 +299,7 @@ public class TableViewerExample implements IExamplePage {
       return result;
     }
 
-    public boolean isFilterProperty( final Object element, final String prop ) {
+    public boolean isFilterProperty( Object element, String prop ) {
       return true;
     }
   }

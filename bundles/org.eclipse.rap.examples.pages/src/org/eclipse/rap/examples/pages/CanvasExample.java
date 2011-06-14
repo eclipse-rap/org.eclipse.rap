@@ -49,10 +49,10 @@ public final class CanvasExample implements IExamplePage {
     SWT.ICON_ERROR
   };
 
+  private final java.util.List<Object[]> path;
   private Display display;
   private Canvas drawingArea;
   private int mode;
-  private ArrayList path;
   private int[] currentParam;
   private Point currentStart;
   private int currentColor;
@@ -61,7 +61,7 @@ public final class CanvasExample implements IExamplePage {
 
 
   public CanvasExample() {
-    path = new ArrayList();
+    path = new ArrayList<Object[]>();
     currentAlpha = 255;
   }
 
@@ -201,7 +201,7 @@ public final class CanvasExample implements IExamplePage {
   }
 
   private void clear() {
-    path = new ArrayList();
+    path.clear();
     newOperation();
   }
 
@@ -235,7 +235,7 @@ public final class CanvasExample implements IExamplePage {
       GC gc = event.gc;
       gc.setLineWidth( LINE_WIDTH );
       for( int i = 0; i < path.size(); i++ ) {
-        Object[] operation = ( Object[] )path.get( i );
+        Object[] operation = path.get( i );
         int operationMode = ( ( Integer )operation[ 0 ] ).intValue();
         int[] param = ( int[] )operation[ 1 ];
         gc.setAlpha( ( ( Integer )operation[ 3 ] ).intValue() );

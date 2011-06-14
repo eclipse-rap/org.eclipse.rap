@@ -532,16 +532,16 @@ public class TreeViewerExample implements IExamplePage {
   // Model
 
   private static class TreeObject {
-    private final List children;
+    private final List<TreeObject> children;
     private String name;
     private TreeObject parent;
 
     public TreeObject( final String name ) {
       setName( name );
-      children = new ArrayList();
+      children = new ArrayList<TreeObject>();
     }
 
-    public void setParent( final TreeObject parent ) {
+    public void setParent( TreeObject parent ) {
       this.parent = parent;
     }
 
@@ -549,7 +549,7 @@ public class TreeViewerExample implements IExamplePage {
       return parent;
     }
 
-    public void setName( final String name ) {
+    public void setName( String name ) {
       this.name = name;
     }
 
@@ -557,12 +557,12 @@ public class TreeViewerExample implements IExamplePage {
       return name;
     }
 
-    public void addChild( final TreeObject child ) {
+    public void addChild( TreeObject child ) {
       children.add( child );
       child.setParent( this );
     }
 
-    public void removeChild( final TreeObject child ) {
+    public void removeChild( TreeObject child ) {
       children.remove( child );
       child.setParent( null );
     }
@@ -586,17 +586,17 @@ public class TreeViewerExample implements IExamplePage {
     private String timezone;
     private int offset;
 
-    public City( final String name, final String timezone, final int offset ) {
+    public City( String name, String timezone, int offset ) {
       super( name );
       setTimeZone( timezone );
       setOffset( offset );
     }
 
-    private void setOffset( final int offset ) {
+    private void setOffset( int offset ) {
       this.offset = offset;
     }
 
-    public void setTimeZone( final String tz ) {
+    public void setTimeZone( String tz ) {
       this.timezone = tz;
     }
 
@@ -627,7 +627,7 @@ public class TreeViewerExample implements IExamplePage {
     private final Color offsetTextColor;
     private int style;
 
-    TreeLabelProvider( final Device device, final int style ) {
+    TreeLabelProvider( Device device, int style ) {
       this.device = device;
       this.style = style;
       this.cityFont = createFont( "Times New Roman", 13, SWT.NONE );
@@ -643,7 +643,7 @@ public class TreeViewerExample implements IExamplePage {
       }
     }
 
-    public void update( final ViewerCell cell ) {
+    public void update( ViewerCell cell ) {
       TreeObject treeObject = ( TreeObject )cell.getElement();
       int columnIndex = cell.getColumnIndex();
       switch( columnIndex ) {
@@ -659,7 +659,7 @@ public class TreeViewerExample implements IExamplePage {
       }
     }
 
-    public String getToolTipText( final Object element ) {
+    public String getToolTipText( Object element ) {
       String result = "";
       if( element instanceof City ) {
         City city = ( City )element;
@@ -671,8 +671,7 @@ public class TreeViewerExample implements IExamplePage {
       return result;
     }
 
-    private void updateName( final ViewerCell cell,
-                             final TreeObject treeObject ) {
+    private void updateName( ViewerCell cell, TreeObject treeObject ) {
       cell.setText( treeObject.name );
       if( style == MODERN_STYLE ) {
         if( treeObject instanceof City ) {
@@ -684,9 +683,7 @@ public class TreeViewerExample implements IExamplePage {
       cell.setImage( treeObject instanceof City ? cityImage : continentImage );
     }
 
-    private void updateTimeZone( final ViewerCell cell,
-                                 final TreeObject treeObject )
-    {
+    private void updateTimeZone( ViewerCell cell, TreeObject treeObject ) {
       if( treeObject instanceof City ) {
         City city = ( City )treeObject;
         cell.setText( city.getTimeZone() );
@@ -696,9 +693,7 @@ public class TreeViewerExample implements IExamplePage {
       }
     }
 
-    private void updateOffset( final ViewerCell cell,
-                               final TreeObject treeObject )
-    {
+    private void updateOffset( ViewerCell cell, TreeObject treeObject ) {
       if( treeObject instanceof City ) {
         if( style == TABLE_STYLE ) {
           cell.setForeground( offsetTextColor );
@@ -708,15 +703,12 @@ public class TreeViewerExample implements IExamplePage {
       }
     }
 
-    private Font createFont( final String name,
-                             final int size,
-                             final int style )
-    {
+    private Font createFont( String name, int size, int style ) {
       FontData fontData = new FontData( name, size, style );
       return new Font( device, fontData );
     }
 
-    private Image createImage( final String name ) {
+    private Image createImage( String name ) {
       ClassLoader classLoader = getClass().getClassLoader();
       return Graphics.getImage( name, classLoader );
     }
@@ -729,11 +721,11 @@ public class TreeViewerExample implements IExamplePage {
 
   private static class TreeContentProvider implements ITreeContentProvider {
 
-    public Object[] getElements( final Object parent ) {
+    public Object[] getElements( Object parent ) {
       return getChildren( parent );
     }
 
-    public Object getParent( final Object child ) {
+    public Object getParent( Object child ) {
       Object result = null;
       if( child instanceof City ) {
         result = ( ( City )child ).getParent();
@@ -741,7 +733,7 @@ public class TreeViewerExample implements IExamplePage {
       return result;
     }
 
-    public Object[] getChildren( final Object parent ) {
+    public Object[] getChildren( Object parent ) {
       Object[] result = new Object[ 0 ];
       if( parent instanceof TreeObject ) {
         result = ( ( TreeObject )parent ).getChildren();
@@ -749,7 +741,7 @@ public class TreeViewerExample implements IExamplePage {
       return result;
     }
 
-    public boolean hasChildren( final Object parent ) {
+    public boolean hasChildren( Object parent ) {
       boolean result = false;
       if( parent instanceof TreeObject ) {
         result = ( ( TreeObject )parent ).hasChildren();
@@ -757,10 +749,7 @@ public class TreeViewerExample implements IExamplePage {
       return result;
     }
 
-    public void inputChanged( final Viewer viewer,
-                              final Object oldInput,
-                              final Object newInput )
-    {
+    public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {
     }
 
     public void dispose() {

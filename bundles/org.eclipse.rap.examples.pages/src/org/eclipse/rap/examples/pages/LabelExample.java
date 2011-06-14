@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.*;
 
 public class LabelExample implements IExamplePage {
 
-  public void createControl( final Composite parent ) {
+  public void createControl( Composite parent ) {
     parent.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 20 ) );
     createTextLabels( parent );
     createAlignedLabels( parent );
@@ -65,7 +65,7 @@ public class LabelExample implements IExamplePage {
     rightLabel.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
   }
 
-  private void createImageLabels( final Composite parent ) {
+  private void createImageLabels( Composite parent ) {
     Group group = new Group( parent, SWT.NONE );
     group.setText( "Image Labels" );
     group.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
@@ -89,7 +89,7 @@ public class LabelExample implements IExamplePage {
     imageLabel3.setImage( image3 );
   }
 
-  private void createCLabels( final Composite parent ) {
+  private void createCLabels( Composite parent ) {
     Group group = new Group( parent, SWT.NONE );
     group.setText( "CLabel" );
     group.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
