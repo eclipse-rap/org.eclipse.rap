@@ -20,6 +20,10 @@ public class TomcatFactory implements IServletEngineFactory {
   public IServletEngine createServletEngine() {
     return new DelegatingServletEngine( new TomcatEngine() );
   }
+  
+  public IServletEngine createServletEngine( int port ) {
+    return new DelegatingServletEngine( new TomcatEngine( port ) );
+  }
 
   public IServletEngineCluster createServletEngineCluster() {
     return new TomcatCluster();

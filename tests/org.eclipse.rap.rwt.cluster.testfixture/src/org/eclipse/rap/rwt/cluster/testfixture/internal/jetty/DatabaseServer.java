@@ -18,16 +18,10 @@ import org.h2.tools.Server;
 
 
 class DatabaseServer {
-
   private Server server;
-  private int port;
   
-  DatabaseServer() {
-    port = -1;
-  }
-
   void start() {
-    port = SocketUtil.getFreePort();
+    int port = SocketUtil.getFreePort();
     try {
       String[] args = new String[] {
         "-tcp", 
@@ -44,8 +38,10 @@ class DatabaseServer {
   }
 
   void stop() {
-    server.stop();
-    port = -1;
+    if( server != null ) {
+      server.stop();
+      server = null;
+    }
   }
 
   String getDriverClassName() {
@@ -54,6 +50,7 @@ class DatabaseServer {
   
   String getConnectionUrl() {
     String pattern = "jdbc:h2:tcp://localhost:{0}/mem:sessions;DB_CLOSE_DELAY=-1";
+    int port = server == null ? -1 : server.getPort();
     Object[] args = new Object[] { String.valueOf( port ) };
     return MessageFormat.format( pattern, args );
   }

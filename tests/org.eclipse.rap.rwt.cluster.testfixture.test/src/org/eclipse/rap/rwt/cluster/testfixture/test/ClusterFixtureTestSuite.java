@@ -14,9 +14,9 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.eclipse.rap.rwt.cluster.testfixture.client.*;
-import org.eclipse.rap.rwt.cluster.testfixture.internal.jetty.DatabaseServer_Test;
-import org.eclipse.rap.rwt.cluster.testfixture.internal.jetty.JettyEngine_Test;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.jetty.*;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.server.DelegatingServletEngine_Test;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.tomcat.TomcatEngineCluster_Test;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.tomcat.TomcatEngine_Test;
 
 
@@ -31,6 +31,8 @@ public class ClusterFixtureTestSuite {
     suite.addTestSuite( DelegatingServletEngine_Test.class );
     suite.addTestSuite( JettyEngine_Test.class );
     suite.addTestSuite( TomcatEngine_Test.class );
+    suite.addTestSuite( JettyEngineCluster_Test.class );
+    suite.addTestSuite( TomcatEngineCluster_Test.class );
     return suite;
   }
 }

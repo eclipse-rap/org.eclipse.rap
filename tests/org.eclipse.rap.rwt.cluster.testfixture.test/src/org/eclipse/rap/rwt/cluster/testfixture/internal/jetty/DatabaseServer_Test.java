@@ -21,11 +21,6 @@ public class DatabaseServer_Test extends TestCase {
 
   private DatabaseServer databaseServer;
 
-  protected void setUp() throws Exception {
-    databaseServer = new DatabaseServer();
-    Class.forName( databaseServer.getDriverClassName() );
-  }
-  
   public void testGetConnectionUrl() {
     String connectionUrl = databaseServer.getConnectionUrl();
     
@@ -54,5 +49,17 @@ public class DatabaseServer_Test extends TestCase {
       fail();
     } catch( SQLException expected ) {
     }
+  }
+  
+  public void testStopOnStoppedServer() {
+    try {
+      databaseServer.stop();
+    } catch( Exception notExpected ) {
+    }
+  }
+
+  protected void setUp() throws Exception {
+    databaseServer = new DatabaseServer();
+    Class.forName( databaseServer.getDriverClassName() );
   }
 }

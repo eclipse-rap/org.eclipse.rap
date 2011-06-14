@@ -17,12 +17,13 @@ import java.net.ServerSocket;
 public class SocketUtil {
   
   public static int getFreePort() {
-    int result = -1;
+    int result;
     try {
       ServerSocket socket = new ServerSocket( 0 );
       result = socket.getLocalPort();
       socket.close();
-    } catch( IOException ignore ) {
+    } catch( IOException ioe ) {
+      throw new RuntimeException( "Failed to find free port.", ioe );
     } 
     return result;
   }

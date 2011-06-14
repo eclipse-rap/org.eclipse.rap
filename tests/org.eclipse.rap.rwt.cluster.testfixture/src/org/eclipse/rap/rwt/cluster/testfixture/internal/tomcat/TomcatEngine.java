@@ -25,7 +25,6 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
 @SuppressWarnings("restriction")
 public class TomcatEngine implements IServletEngine {
 
-  private final int port;
   private final Tomcat tomcat;
   private final Context context;
 
@@ -33,14 +32,13 @@ public class TomcatEngine implements IServletEngine {
     this( SocketUtil.getFreePort() ); 
   }
   
-  TomcatEngine( int port ) {
-    this.port = port;
+  public TomcatEngine( int port ) {
     this.tomcat = new Tomcat();
-    configureTomcat(); 
+    configureTomcat( port ); 
     this.context = tomcat.addContext( "/", tomcat.getHost().getAppBase() );
   }
   
-  private void configureTomcat() {
+  private void configureTomcat( int port ) {
     tomcat.setSilent( true );
     tomcat.setPort( port );
     tomcat.setBaseDir( getBaseDir().getAbsolutePath() );
@@ -62,7 +60,7 @@ public class TomcatEngine implements IServletEngine {
   }
   
   public int getPort() {
-    return port;
+    return tomcat.getConnector().getPort();
   }
   
   public HttpURLConnection createConnection( URL url ) throws IOException {

@@ -23,6 +23,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.cluster.testfixture.ClusterFixture;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
 import org.eclipse.rap.rwt.cluster.testfixture.test.TestEntryPoint;
@@ -42,6 +43,16 @@ public abstract class ServletEngine_Test extends TestCase {
     IServletEngine engine2 = startServletEngine( TestEntryPoint.class );
   
     assertFalse( engine1.getPort() == engine2.getPort() );
+  }
+  
+  public void testSpecifyPort() throws Exception {
+    int freePort = SocketUtil.getFreePort();
+    IServletEngine engine = getServletEngineFactory().createServletEngine( freePort );
+    startedEngines.add( engine );
+
+    engine.start( TestEntryPoint.class );
+
+    assertEquals( freePort, engine.getPort() );
   }
   
   public void testCreateConnection() throws IOException {

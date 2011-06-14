@@ -8,11 +8,16 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.cluster.testfixture.server;
+package org.eclipse.rap.rwt.cluster.testfixture.internal.jetty;
+
+import org.eclipse.rap.rwt.cluster.testfixture.internal.server.ServletEngineCluster_Test;
+import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
+import org.eclipse.rap.rwt.cluster.testfixture.server.JettyFactory;
 
 
-public interface IServletEngineFactory {
-  IServletEngine createServletEngine();
-  IServletEngine createServletEngine( int port );
-  IServletEngineCluster createServletEngineCluster();
+public class JettyEngineCluster_Test extends ServletEngineCluster_Test {
+
+  protected IServletEngineFactory getServletEngineFactory() {
+    return new JettyFactory();
+  }
 }

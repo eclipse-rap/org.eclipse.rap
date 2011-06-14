@@ -51,6 +51,10 @@ public class JettyEngine implements IServletEngine {
     this( new SessionManagerProvider() );
   }
   
+  public JettyEngine( int port ) {
+    this( new SessionManagerProvider(), port );
+  }
+  
   JettyEngine( ISessionManagerProvider sessionManagerProvider ) {
     this( sessionManagerProvider, SocketUtil.getFreePort() );
   }

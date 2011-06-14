@@ -20,6 +20,10 @@ public class JettyFactory implements IServletEngineFactory {
   public IServletEngine createServletEngine() {
     return new DelegatingServletEngine( new JettyEngine() );
   }
+  
+  public IServletEngine createServletEngine( int port ) {
+    return new DelegatingServletEngine( new JettyEngine( port ) );
+  }
 
   public IServletEngineCluster createServletEngineCluster() {
     return new JettyCluster();
