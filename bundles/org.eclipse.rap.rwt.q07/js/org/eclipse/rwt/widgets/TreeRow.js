@@ -39,7 +39,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
   },
 
   members : {
-    
+
     renderItem : function( item, config, selected, hoverElement ) {
       this._usedNodes = 0;
       if( item != null ) {
@@ -267,21 +267,23 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         this._renderStates( item, config, false, hoverElement );
       }
       for( var i = 0; i < columns; i++ ) {
-        this._renderCellBackground( item, i, config );
-        if( !config.fullSelection && this._isTreeColumn( i, config ) ) {
-          if( selected ) {
-            this._renderStates( item, config, true, hoverElement );
+        if( this._getItemWidth( item, i, config ) > 0 ) {
+          this._renderCellBackground( item, i, config );
+          if( !config.fullSelection && this._isTreeColumn( i, config ) ) {
+            if( selected ) {
+              this._renderStates( item, config, true, hoverElement );
+            }
+            var imageElement = this._renderCellImage( item, i, config );
+            var labelElement = this._renderCellLabel( item, i, config );
+            this._selectionElements = [ imageElement, labelElement ];
+            if( selected ) {
+              this._renderSelectionBackground( item, i, config );
+              this._renderStates( item, config, false, hoverElement);
+            }
+          } else {
+            this._renderCellImage( item, i, config );
+            this._renderCellLabel( item, i, config );
           }
-          var imageElement = this._renderCellImage( item, i, config );
-          var labelElement = this._renderCellLabel( item, i, config );
-          this._selectionElements = [ imageElement, labelElement ];
-          if( selected ) {
-            this._renderSelectionBackground( item, i, config );
-            this._renderStates( item, config, false, hoverElement);
-          }
-        } else {
-          this._renderCellImage( item, i, config );
-          this._renderCellLabel( item, i, config );
         }
       }
     },

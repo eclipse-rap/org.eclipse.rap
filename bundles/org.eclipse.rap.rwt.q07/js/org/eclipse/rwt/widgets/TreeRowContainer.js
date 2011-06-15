@@ -8,7 +8,7 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {  
+qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {  
   extend : qx.ui.layout.VerticalBoxLayout,
 
   construct : function() {
@@ -26,7 +26,7 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
     this._items = [];
     this._hoverItem = null;
     this._hoverElement = null;
-    this._config = this._createRenderConfig();
+    this._config = org.eclipse.rwt.widgets.TreeRowContainer.createRenderConfig();
     this.addEventListener( "mouseover", this._onRowOver, this );
     this.addEventListener( "mouseout", this._onRowOver, this );
     this.addEventListener( "elementOut", this._onElementOver, this );
@@ -43,14 +43,8 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
   },
   
   statics : {
-  },
-  
-  members : {
-    
-    /////////////////////
-    // cunstructor helper
 
-    _createRenderConfig : function() {
+    createRenderConfig : function() {
       var result = {
         "textColor" : null,
         "font" : null,
@@ -76,7 +70,14 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
         "itemTextWidth" : []   
       };
       return result;
-    },
+    }
+
+  },
+  
+  members : {
+    
+    /////////////////////
+    // cunstructor helper
 
     /////////////
     // Public API

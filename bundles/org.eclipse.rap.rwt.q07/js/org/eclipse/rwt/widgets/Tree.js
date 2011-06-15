@@ -38,8 +38,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._sendRequestTimer = null;
     this._vertGridBorder = null;
     this._horzGridBorder = null;
-    // Subwidgets
-    this._rowContainer = new org.eclipse.rwt.widgets.TreeRowContainer();
+    // Subwidgets 
+    this._rowContainer = org.eclipse.rwt.TreeUtil.createTreeRowContainer( argsMap );
     this._columnArea = new qx.ui.layout.CanvasLayout();
     this._dummyColumn = new qx.ui.basic.Atom();
     this._horzScrollBar = new org.eclipse.rwt.widgets.ScrollBar( true );
@@ -59,6 +59,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._configureScrollBars();
     this._registerListeners();
     this._parseArgsMap( argsMap );
+    // TreeUtil handles all non SWT-based features.
+    org.eclipse.rwt.TreeUtil.init( this, argsMap );
   },
   
   destruct : function() {

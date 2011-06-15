@@ -168,7 +168,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ScrollBar", {
       }
       this.base( arguments, value );
     },
-    
+
     _selectionChanged : function() {
       this.base( arguments );
       if( this._getMergeCurrentEvent() ) {

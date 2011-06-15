@@ -178,6 +178,7 @@
     "org/eclipse/rwt/ErrorHandler.js",
     "org/eclipse/swt/LabelUtil.js",
     "org/eclipse/rwt/widgets/TreeRowContainer.js",
+    "org/eclipse/rwt/TreeUtil.js",
     "org/eclipse/rwt/widgets/TreeRow.js",
     "org/eclipse/swt/Application.js",
     "org/eclipse/rwt/AsyncKeyEventUtil.js",
