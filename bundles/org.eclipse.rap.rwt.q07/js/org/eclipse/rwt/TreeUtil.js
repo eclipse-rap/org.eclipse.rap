@@ -80,12 +80,15 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       "setTopItem",
       "renderItem",
       "renderItemQueue",
-      "setRowLinesVisible"
+      "setRowLinesVisible",
+      "setToolTip"
     ],
 
     _CONTAINER_GETTER_DELEGATES : [ 
       "getTop",
-      "getHeight"
+      "getHeight",
+      "getHoverItem",
+      "getElement"
     ],
 
     _CONTAINERCONSTR : function( fixedColumns ) {
@@ -97,6 +100,8 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       this._width = 0;
       this._splitOffset = 0;
       this._rowWidth = 0;
+      this.addEventListener( "mouseover", this._onRowOver, this );
+      this.addEventListener( "mouseout", this._onRowOver, this );
     },
     
     _CONTAINERPROTO : {
@@ -202,17 +207,13 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
         return result;
       },
 
-      _copyMetrics : function( target, columns, offset ) {
-        for( var i = 0; i < columns.length; i++ ) {
-          target.itemWidth[ i ] = this._config.itemWidth[ columns[ i ] ];
-          target.itemLeft[ i ] = this._config.itemLeft[ columns[ i ] ] - offset;
-          target.itemImageLeft[ i ] = this._config.itemImageLeft[ columns[ i ] ] - offset;
-          target.itemTextLeft[ i ] = this._config.itemTextLeft[ columns[ i ] ] - offset;
+      _onRowOver : function( event ) {
+        var eventTarget = event.getCurrentTarget();
+        for( var i = 0; i < this._container.length; i++ ) {
+          if( this._container[ i ] !== eventTarget ) {
+            this._container[ i ].setHoverItem( eventTarget.getHoverItem() );
+          }
         }
-      },
-      
-      _getSplitOffset : function() {
-        this._config
       }
 
     }

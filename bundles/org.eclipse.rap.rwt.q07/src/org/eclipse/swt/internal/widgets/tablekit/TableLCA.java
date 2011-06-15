@@ -118,6 +118,10 @@ public final class TableLCA extends AbstractWidgetLCA {
       argsMap.append( "checkBoxMetrics", JsonArray.valueOf( checkMetrics ) );
     }
     argsMap.append( "indentionWidth", 0 );
+    Integer fixedColumns = ( Integer )widget.getData( "fixedColumns" );
+    if( fixedColumns != null ) {
+      argsMap.append( "fixedColumns", fixedColumns.intValue() );
+    }
     Object[] args = new Object[]{ new JSVar( argsMap.toString() ) };
     writer.newWidget( "org.eclipse.rwt.widgets.Tree", args );
     ControlLCAUtil.writeStyleFlags( table );
