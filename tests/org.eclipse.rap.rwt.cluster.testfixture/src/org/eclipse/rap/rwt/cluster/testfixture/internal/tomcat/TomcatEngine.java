@@ -56,6 +56,7 @@ public class TomcatEngine implements IServletEngine {
   public void stop() throws Exception {
     tomcat.getEngine().setCluster( null );
     tomcat.stop();
+    tomcat.destroy();
     FileUtil.deleteDirectory( getBaseDir() );
   }
   
