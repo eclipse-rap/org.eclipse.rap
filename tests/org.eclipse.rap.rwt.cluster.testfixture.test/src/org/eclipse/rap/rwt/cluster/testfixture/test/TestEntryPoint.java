@@ -30,6 +30,7 @@ public class TestEntryPoint implements IEntryPoint {
     }
   }
   
+  @SuppressWarnings("unused")
   public int createUI() {
     synchronized( TestEntryPoint.class ) {
       wasCreateUIInvoked = true;
