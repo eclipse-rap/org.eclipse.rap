@@ -37,8 +37,11 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
 
     _createContainerWrapper : function( fixedColumns ) {
       if( !this._CONTAINERPROTO._protoInit ) {
-        for( var i = 0; i < this._CONTAINERDELEGATES.length; i++ ) {
-          this._createContainerDelegater( this._CONTAINERDELEGATES[ i ] );
+        for( var i = 0; i < this._CONTAINER_DELEGATES.length; i++ ) {
+          this._createContainerDelegater( this._CONTAINER_DELEGATES[ i ] );
+        }
+        for( var i = 0; i < this._CONTAINER_GETTER_DELEGATES.length; i++ ) {
+          this._createContainerGetterDelegater( this._CONTAINER_GETTER_DELEGATES[ i ] );
         }
         this._CONTAINERPROTO._protoInit = true;
         this._CONTAINERCONSTR.prototype = this._CONTAINERPROTO;
@@ -53,10 +56,16 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       }
     },
     
+    _createContainerGetterDelegater : function( funcName ) {
+      this._CONTAINERPROTO[ funcName ] = function() {
+        return this._container[ 0 ][ funcName ].apply( this._container[ 0 ], arguments );
+      }
+    },
+    
     ///////////////////
     // internal classes
 
-    _CONTAINERDELEGATES : [ 
+    _CONTAINER_DELEGATES : [ 
       "setParent", 
       "destroy", 
       "addEventListener", 
@@ -69,9 +78,16 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       "setBackgroundImage",
       "setRowHeight",
       "setTopItem",
-      "renderItem"
+      "renderItem",
+      "renderItemQueue",
+      "setRowLinesVisible"
     ],
-    
+
+    _CONTAINER_GETTER_DELEGATES : [ 
+      "getTop",
+      "getHeight"
+    ],
+
     _CONTAINERCONSTR : function( fixedColumns ) {
       this._fixedColumns = fixedColumns;
       this._container = [];
@@ -114,6 +130,14 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       
       setScrollLeft : function( value ) {
         this._container[ 1 ].setScrollLeft( value );
+      },
+      
+      findItemByRow : function( row ) {
+        var result = this._container[ 0 ].findItemByRow( row );
+        if( result == null ) {
+          result = this._container[ 1 ].findItemByRow( row );
+        }
+        return result;
       },
 
       renderAll : function() {

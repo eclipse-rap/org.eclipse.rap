@@ -119,6 +119,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       container.destroy();
     },
 
+    testGetTopHeight : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var container = this._createSplitContainer();
+      container.setTop( 30 );
+      container.setHeight( 300 );
+      assertEquals( 30, container.getTop() );
+      assertEquals( 300, container.getHeight() );
+      container.destroy();
+    },
+
     testSetWidth : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var container = this._createSplitContainer();
@@ -232,6 +242,47 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       assertEquals( 3, rowRight._getTargetNode().childNodes.length );
       assertEquals( "c0", rowLeft._getTargetNode().firstChild.innerHTML );
       assertEquals( "c1", rowRight._getTargetNode().firstChild.innerHTML );
+      tree.destroy();
+    },
+
+    testSplitSelectionClickLeft : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createSplitTree();
+      tree.setItemCount( 1 );
+      var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
+      testUtil.flush();
+      assertFalse( tree.isItemSelected( item ) );
+      testUtil.clickDOM( tree._rowContainer.getSubContainer( 0 )._children[ 0 ]._getTargetNode() ); 
+      testUtil.flush();
+      assertTrue( tree.isItemSelected( item ) );
+      tree.destroy();
+    },
+
+    testSplitSelectionClickRight : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createSplitTree();
+      tree.setItemCount( 1 );
+      var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
+      testUtil.flush();
+      assertFalse( tree.isItemSelected( item ) );
+      testUtil.clickDOM( tree._rowContainer.getSubContainer( 1 )._children[ 0 ]._getTargetNode() ); 
+      testUtil.flush();
+      assertTrue( tree.isItemSelected( item ) );
+      tree.destroy();
+    },
+
+    testSplitSelectionByServer : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createSplitTree();
+      tree.setItemCount( 1 );
+      var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
+      testUtil.flush();
+      assertFalse( tree.isItemSelected( item ) );
+      org.eclipse.swt.EventUtil.setSuspended( true );
+      tree.selectItem( item ); 
+      org.eclipse.swt.EventUtil.setSuspended( false );
+      testUtil.flush();
+      assertTrue( tree.isItemSelected( item ) );
       tree.destroy();
     },
 
