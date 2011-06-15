@@ -113,7 +113,7 @@ public class RWTServletContextListener_Test extends TestCase {
 
   public void testEntryPointInitialization() {
     setEntryPointInitParameter();
-    Fixture.triggerServletContextInitialized();
+    triggerServletContextInitialized();
     Fixture.createServiceContext();
     
     checkEntryPointHasBeenRegistered();
@@ -121,15 +121,22 @@ public class RWTServletContextListener_Test extends TestCase {
     
   public void testPhaseListenerInitialization()  {
     setPhaseListenerInitParameter();
-    Fixture.triggerServletContextInitialized();
+    triggerServletContextInitialized();
     Fixture.createServiceContext();
     
     checkPhaseListenerHasBeenRegistered();
   }
 
+  private void triggerServletContextInitialized() {
+    ServletContext servletContext = Fixture.getServletContext();
+    ServletContextEvent event = new ServletContextEvent( servletContext );
+    new RWTServletContextListener().contextInitialized( event );
+
+  }
+
   public void testResourceInitialization() {
     setResourceInitParameter();
-    Fixture.triggerServletContextInitialized();
+    triggerServletContextInitialized();
     Fixture.createServiceContext();
     
     checkResourceHasBeenRegistered();
@@ -137,7 +144,7 @@ public class RWTServletContextListener_Test extends TestCase {
 
   public void testBrandingInitialization() {
     setBrandingInitParameter();
-    Fixture.triggerServletContextInitialized();
+    triggerServletContextInitialized();
     Fixture.createServiceContext();
     
     checkBrandingHasBeenRegistered();
@@ -163,7 +170,7 @@ public class RWTServletContextListener_Test extends TestCase {
   
   public void testConfigurator() {
     setConfiguratorInitParameter();
-    Fixture.triggerServletContextInitialized();
+    triggerServletContextInitialized();
     Fixture.createServiceContext();
     
     checkEntryPointHasBeenRegistered();
