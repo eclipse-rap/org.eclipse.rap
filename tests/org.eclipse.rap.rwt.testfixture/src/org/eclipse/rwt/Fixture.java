@@ -19,9 +19,10 @@ import java.util.List;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.*;
 
+import org.eclipse.rwt.engine.Configurator;
+import org.eclipse.rwt.engine.Context;
 import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.engine.configurables.AdapterManagerConfigurable;
-import org.eclipse.rwt.internal.engine.configurables.PhaseListenerRegistryConfigurable;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.resources.SystemProps;
@@ -55,6 +56,11 @@ public class Fixture {
   
   private static TestServletContext servletContext;
   
+  public static class FixtureConfigurator implements Configurator {
+    public void configure( Context context ) {
+    }
+  }
+  
   ////////////////////////////////////////////
   // Methods to control global servlet context
   
@@ -78,6 +84,7 @@ public class Fixture {
   
   public static void triggerServletContextInitialized() {
     ensureServletContext();
+    registerConfigurer();
     ServletContextEvent event = new ServletContextEvent( servletContext );
     new RWTServletContextListener().contextInitialized( event );
   }
@@ -86,13 +93,7 @@ public class Fixture {
     ServletContextEvent event = new ServletContextEvent( servletContext );
     new RWTServletContextListener().contextDestroyed( event );
   }
-  
-  private static void ensureServletContext() {
-    if( servletContext == null ) {
-      createServletContext();
-    }
-  }
-  
+
   
   ////////////////////////////////////////
   // Methods to control ApplicationContext
@@ -180,7 +181,6 @@ public class Fixture {
   public static void setUp() {
     registerLifeCycleAdapterFactory();
     useTestResourceManager();
-    registerCurrentPhaseListener();
     setSystemProperties();
     createApplicationContext();
     createServiceContext();
@@ -196,11 +196,6 @@ public class Fixture {
     setInitParameter( AdapterManagerConfigurable.ADAPTER_FACTORIES_PARAM, value );
   }
 
-  private static void registerCurrentPhaseListener() {
-    String initParam = PhaseListenerRegistryConfigurable.PHASE_LISTENERS_PARAM;
-    setInitParameter( initParam, CurrentPhase.Listener.class.getName() );
-  }
-  
   public static void useDefaultResourceManager() {
     ApplicationContextHelper.useDefaultResourceManager();
   }
@@ -447,6 +442,16 @@ public class Fixture {
   {
     byte[] bytes = serialize( instance );
     return ( T )deserialize( bytes );
+  }
+  
+  private static void ensureServletContext() {
+    if( servletContext == null ) {
+      createServletContext();
+    }
+  }
+
+  private static void registerConfigurer() {
+    setInitParameter( ContextConfigurable.CONFIGURATOR_PARAM, FixtureConfigurator.class.getName() );
   }
   
   private static void simulateRequest( IUIThreadHolder threadHolder, Thread serverThread ) {

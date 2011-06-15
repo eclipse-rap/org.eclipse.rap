@@ -14,72 +14,61 @@ package org.eclipse.rwt.internal.engine;
 
 import javax.servlet.*;
 
-import org.eclipse.rwt.internal.engine.configurables.*;
-
 
 public class RWTServletContextListener implements ServletContextListener {
   public static final String PARAMETER_SEPARATOR = ",";
   public static final String PARAMETER_SPLIT = "#";
   
-  private static final String CONFIGURABLES
-    = RWTServletContextListener.class.getName() + "#CONFIGURABLES";
+  private final ConfigurablesProvider configurablesProvider;
+
+  public RWTServletContextListener() {
+    this( new ConfigurablesProvider() );
+  }
+  
+  RWTServletContextListener( ConfigurablesProvider configurablesProvider ) {
+    this.configurablesProvider = configurablesProvider;
+  }
 
   public void contextInitialized( ServletContextEvent evt ) {
-    ServletContext servletContext = evt.getServletContext();
-    ApplicationContext applicationContext = new ApplicationContext();
-    ApplicationContextUtil.set( servletContext, applicationContext );
-    addConfigurables( servletContext, applicationContext );
-    applicationContext.activate();
+    createApplicationContext( evt.getServletContext() );
+    configureApplicationContext( evt.getServletContext() );
+    activateApplicationContext( evt.getServletContext() );
   }
 
   public void contextDestroyed( ServletContextEvent evt ) {
-    ServletContext servletContext = evt.getServletContext();
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-    applicationContext.deactivate();
-    removeConfigurables( servletContext, applicationContext );
-    ApplicationContextUtil.remove( servletContext );
+    deactivateApplicationContext( evt.getServletContext() );
+    deconfigureApplicationContext( evt.getServletContext() );
+    disposeOfApplicationContext( evt.getServletContext() );
+  }
+
+  private void createApplicationContext( ServletContext servletContext ) {
+    ApplicationContext applicationContext = new ApplicationContext();
+    ApplicationContextUtil.set( servletContext, applicationContext );
   }
   
-  protected Configurable[] createConfigurables( ServletContext servletContext ) {
-    Configurable[] result = new Configurable[] {
-      new RWTConfigurationConfigurable( servletContext ),
-      new EntryPointManagerConfigurable( servletContext ),
-      new BrandingManagerConfigurable( servletContext ),
-      new SettingStoreManagerConfigurable( servletContext ),
-      new PhaseListenerRegistryConfigurable( servletContext ),
-      new AdapterManagerConfigurable( servletContext ),
-      new ResourceRegistryConfigurable( servletContext ),
-      new ServiceManagerConfigurable(),
-      new ThemeManagerConfigurable( servletContext )
-    };
-    return result;
+  private void configureApplicationContext( ServletContext servletContext ) {
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    Configurable[] configurables = configurablesProvider.createConfigurables( servletContext );
+    ConfigurablesProvider.addConfigurables( configurables, applicationContext );
+    ConfigurablesProvider.bufferConfigurables( configurables, servletContext );
+  }
+  
+  private void activateApplicationContext( ServletContext servletContext ) {
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    applicationContext.activate();
   }
 
-  private void addConfigurables( ServletContext servletContext, ApplicationContext appContext ) {
-    Configurable[] configurables = createConfigurables( servletContext );
-    for( int i = 0; i < configurables.length; i++ ) {
-      appContext.addConfigurable( configurables[ i ] );
-    }
-    bufferConfigurables( configurables, servletContext );
+  private void deactivateApplicationContext( ServletContext servletContext ) {
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    applicationContext.deactivate();
   }
-
-  private void removeConfigurables( ServletContext servletContext, ApplicationContext appContext ) {
-    Configurable[] configurables = getConfigurables( servletContext );
-    for( int i = 0; i < configurables.length; i++ ) {
-      appContext.removeConfigurable( configurables[ i ] );
-    }
-    removeConfigurables( servletContext );
+  
+  private void deconfigureApplicationContext( ServletContext servletContext ) {
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    ConfigurablesProvider.removeConfigurables( servletContext, applicationContext );
   }
-    
-  private void bufferConfigurables( Configurable[] configurables, ServletContext servletContext ) {
-    servletContext.setAttribute( CONFIGURABLES, configurables );
-  }
-
-  private Configurable[] getConfigurables( ServletContext servletContext ) {
-    return ( Configurable[] )servletContext.getAttribute( CONFIGURABLES );
-  }
-
-  private void removeConfigurables( ServletContext servletContext ) {
-    servletContext.removeAttribute( CONFIGURABLES );
+  
+  private void disposeOfApplicationContext( ServletContext servletContext ) {
+    ApplicationContextUtil.remove( servletContext );
   }
 }

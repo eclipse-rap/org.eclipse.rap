@@ -12,6 +12,7 @@ package org.eclipse.rwt.internal.engine;
 
 import java.io.IOException;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import junit.framework.TestCase;
@@ -38,7 +39,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
 
-public class ApplicationConfigurable_Test extends TestCase {
+public class ContextConfigurable_Test extends TestCase {
   private static final Object ATTRIBUTE_VALUE = new Object();
   private static final String ATTRIBUTE_NAME = "name";
   private static final String THEME_ID = "TestTheme";
@@ -162,8 +163,8 @@ public class ApplicationConfigurable_Test extends TestCase {
 
   public void testConfigureWithDefaultSettingStoreFactory() {
     runConfigurator( new Configurator() {
-      public void configure( Context application ) {
-        application.addTheme( THEME_ID, STYLE_SHEET );
+      public void configure( Context context ) {
+        context.addTheme( THEME_ID, STYLE_SHEET );
       }
     } );
     
@@ -216,24 +217,25 @@ public class ApplicationConfigurable_Test extends TestCase {
   }
 
   private void runConfigurator( Configurator configurator ) {
-    applicationContext.addConfigurable( new ApplicationConfigurable( configurator ) );
+    ServletContext servletContext = new TestServletContext();
+    applicationContext.addConfigurable( new ContextConfigurable( configurator, servletContext ) );
     applicationContext.activate();
   }
 
   private Configurator createConfigurator() {
     return new Configurator() {
-      public void configure( Context application ) {
-        application.addEntryPoint( entryPointName, TestEntryPoint.class );
-        application.addResource( testResource );
-        application.addPhaseListener( testPhaseListener );
-        application.addAddapterFactory( TestAdaptable.class, testAdapterFactory );
-        application.setSettingStoreFactory( testSettingStoreFactory );
-        application.addServiceHandler( testServiceHandlerId, testServiceHandler );
-        application.addBranding( testBranding );
-        application.addTheme( THEME_ID, STYLE_SHEET );
-        application.addThemableWidget( TestWidget.class );
-        application.addThemeContribution( THEME_ID, STYLE_SHEET_2 );
-        application.setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
+      public void configure( Context context ) {
+        context.addEntryPoint( entryPointName, TestEntryPoint.class );
+        context.addResource( testResource );
+        context.addPhaseListener( testPhaseListener );
+        context.addAddapterFactory( TestAdaptable.class, testAdapterFactory );
+        context.setSettingStoreFactory( testSettingStoreFactory );
+        context.addServiceHandler( testServiceHandlerId, testServiceHandler );
+        context.addBranding( testBranding );
+        context.addTheme( THEME_ID, STYLE_SHEET );
+        context.addThemableWidget( TestWidget.class );
+        context.addThemeContribution( THEME_ID, STYLE_SHEET_2 );
+        context.setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
       }
     };
   }

@@ -35,8 +35,7 @@ public class ContextControl {
   }
   
   public void startContext() {
-    setContextDirectory();
-    applicationContext.addConfigurable( new ApplicationConfigurable( configurator ) );
+    applicationContext.addConfigurable( new ContextConfigurable( configurator, servletContext ) );
     ApplicationContextUtil.set( servletContext, applicationContext );
     applicationContext.activate();
   }
@@ -57,11 +56,5 @@ public class ContextControl {
       names.add( branding.getServletName() );
     }
     return names.toArray( new String[ names.size() ] );
-  }
-  
-  private void setContextDirectory() {
-    RWTConfiguration configurationInstance = applicationContext.getConfiguration();
-    RWTConfigurationImpl configuration = ( RWTConfigurationImpl )configurationInstance;
-    configuration.configure( servletContext.getRealPath( "/" ) );
   }
 }
