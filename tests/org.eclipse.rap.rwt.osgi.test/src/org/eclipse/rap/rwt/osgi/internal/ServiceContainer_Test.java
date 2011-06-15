@@ -50,6 +50,21 @@ public class ServiceContainer_Test extends TestCase {
     assertSame( service, holder1.getService());
   }
   
+
+  public void testUpdateServiceReference() {
+    Object service = new Object();
+    mockServiceReference( service );
+    
+    ServiceHolder< Object > holder1 = container.add( service );
+    ServiceReference< Object > reference = holder1.getReference();
+    ServiceHolder< Object > holder2 = container.add( serviceReference );
+    
+    assertEquals( 1, container.size() );
+    assertSame( holder1, holder2 );
+    assertNull( reference );
+    assertSame( serviceReference, holder2.getReference() );
+  }
+  
   public void testFind() {
     Object service = new Object();
     container.add( service );
@@ -57,15 +72,6 @@ public class ServiceContainer_Test extends TestCase {
     ServiceHolder< Object > holder = container.find( service );
     
     assertSame( service, holder.getService() );
-  }
-
-  public void testContains() {
-    Object service = new Object();
-    container.add( service );
-    
-    boolean contains = container.contains( service );
-    
-    assertTrue( contains );
   }
   
   public void testClear() {

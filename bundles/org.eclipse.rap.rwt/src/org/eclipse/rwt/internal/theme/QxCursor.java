@@ -12,6 +12,8 @@ package org.eclipse.rwt.internal.theme;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.rwt.engine.ResourceLoader;
+
 
 public class QxCursor implements QxType {
 

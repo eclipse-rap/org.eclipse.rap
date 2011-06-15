@@ -9,7 +9,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 
-package org.eclipse.rwt.internal.theme;
+package org.eclipse.rwt.engine;
 
 
 import java.io.IOException;

@@ -38,9 +38,15 @@ public interface Context {
 
   void addTheme( String themeId, String styleSheetLocation );
 
+  void addTheme( String themeId, String styleSheetLocation, ResourceLoader resourceLoader );
+
   void addThemableWidget( Class<? extends Widget> widget );
+
+  void addThemableWidget( Class<? extends Widget> widget, ResourceLoader resourceLoader );
 
   void addThemeContribution( String themeId, String styleSheetLocation );
 
+  void addThemeContribution( String themeId, String styleSheetLocation, ResourceLoader loader );
+  
   void setAttribute( String name, Object value );
 }

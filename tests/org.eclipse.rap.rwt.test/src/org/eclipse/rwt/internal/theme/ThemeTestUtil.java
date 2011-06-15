@@ -13,6 +13,7 @@ package org.eclipse.rwt.internal.theme;
 
 import java.io.*;
 
+import org.eclipse.rwt.engine.ResourceLoader;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.engine.ThemeManagerHelper;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;

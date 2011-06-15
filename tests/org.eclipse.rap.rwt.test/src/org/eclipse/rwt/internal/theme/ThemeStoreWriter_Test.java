@@ -17,6 +17,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.engine.ResourceLoader;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 
 

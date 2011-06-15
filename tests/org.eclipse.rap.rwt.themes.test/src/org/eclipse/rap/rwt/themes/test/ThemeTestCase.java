@@ -15,8 +15,8 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.engine.ResourceLoader;
 import org.eclipse.rwt.internal.theme.QxType;
-import org.eclipse.rwt.internal.theme.ResourceLoader;
 import org.eclipse.rwt.internal.theme.SimpleSelector;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;

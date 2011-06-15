@@ -12,7 +12,8 @@
  ******************************************************************************/
 package org.eclipse.rap.ui.internal.servlet;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.*;
@@ -22,34 +23,31 @@ import org.eclipse.rap.ui.internal.application.ApplicationRegistry;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rwt.AdapterFactory;
-import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rwt.engine.*;
 import org.eclipse.rwt.internal.engine.configurables.SettingStoreManagerConfigurable;
-import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
-import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
-import org.eclipse.rwt.internal.service.ServiceManager;
-import org.eclipse.rwt.internal.theme.*;
-import org.eclipse.rwt.internal.theme.css.CssFileReader;
-import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISettingStoreFactory;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.Constants;
+import org.osgi.framework.*;
 
 
-/**
- * The underlying RWT runtime engine expects some configuration
- * infos provided by the RWTConfiguration implementation. We abuse the
- * <code>RWTConfigurationWrapper</code> to fake an appropriate environment
- * for the library.
- */
-// TODO: [fappel] clean replacement mechanism that is anchored in W4Toolkit core
-public final class RWTConfigurationWrapper implements RWTConfiguration {
+public final class RWTConfigurator implements Configurator {
+  private static final String ID_ADAPTER_FACTORY = "org.eclipse.rap.ui.adapterfactory";
+  private static final String ID_ENTRY_POINT = "org.eclipse.rap.ui.entrypoint";
+  private static final String ID_THEMES = "org.eclipse.rap.ui.themes";
+  private static final String ELEMENT_THEME = "theme";
+  private static final String ELEMENT_THEME_CONTRIBUTION = "themeContribution";
+  private static final String ID_THEMEABLE_WIDGETS = "org.eclipse.rap.ui.themeableWidgets";
+  private static final String ID_PHASE_LISTENER = "org.eclipse.rap.ui.phaselistener";
+  private static final String ID_SERVICE_HANDLER = "org.eclipse.rap.ui.serviceHandler";
+  private static final String ID_RESOURCES = "org.eclipse.rap.ui.resources";
+  private static final String ID_SETTING_STORES = "org.eclipse.rap.ui.settingstores";
   
+  private final ServiceReference httpServiceReference;
+
   private static final class DependentResource {
     public final IResource resource;
     public final String id;
@@ -66,134 +64,79 @@ public final class RWTConfigurationWrapper implements RWTConfiguration {
     }
   }
 
-  //  extension point id for adapter factory registration
-  private static final String ID_ADAPTER_FACTORY
-    = "org.eclipse.rap.ui.adapterfactory";
-  //  extension point id for entry point registration
-  private static final String ID_ENTRY_POINT
-    = "org.eclipse.rap.ui.entrypoint";
-  //  extension point id for custom theme registration
-  private static final String ID_THEMES
-    = "org.eclipse.rap.ui.themes";
-  private static final String ELEMENT_THEME = "theme";
-  private static final String ELEMENT_THEME_CONTRIBUTION = "themeContribution";
-  //  extension point id for custom themeable widget registration
-  private static final String ID_THEMEABLE_WIDGETS
-    = "org.eclipse.rap.ui.themeableWidgets";
-  //  extension point id for phase listener registration
-  private static final String ID_PHASE_LISTENER
-    = "org.eclipse.rap.ui.phaselistener";
-  //  extension point id for service handler registration
-  private static final String ID_SERVICE_HANDLER
-    = "org.eclipse.rap.ui.serviceHandler";
-  //  extension point id for registration of resources (i.e. javascript)
-  //  which needed to be loaded at page startup
-  private static final String ID_RESOURCES
-    = "org.eclipse.rap.ui.resources";
-  // extension point id for registration of a setting store factories
-  private static final String ID_SETTING_STORES
-    = "org.eclipse.rap.ui.settingstores";
-
-  private final ApplicationContext applicationContext;
-
-  public RWTConfigurationWrapper( ApplicationContext applicationContext ) {
-    this.applicationContext = applicationContext;
-    init();
+  RWTConfigurator( ServiceReference httpServiceReference ) {
+    this.httpServiceReference = httpServiceReference;
   }
 
-  public File getContextDirectory() {
-    return applicationContext.getConfiguration().getContextDirectory();
+  public void configure( Context context ) {
+    registerPhaseListener( context );
+    registerSettingStoreFactory( context );
+    registerWorkbenchEntryPoint( context );
+    registerThemeableWidgets( context );
+    registerThemes( context );
+    registerThemeContributions( context );
+    registerFactories( context );
+    registerResources( context );
+    registerServiceHandlers( context );
+    registerApplicationEntryPoints( context );
+    registerBrandings( context );
   }
 
-  public File getClassDirectory() {
-    return applicationContext.getConfiguration().getClassDirectory();
-  }
-
-  public File getLibraryDirectory() {
-    return applicationContext.getConfiguration().getLibraryDirectory();
-  }
-
-  public String getLifeCycle() {
-    return applicationContext.getConfiguration().getLifeCycle();
-  }
-
-  public String getResourcesDeliveryMode() {
-    return applicationContext.getConfiguration().getResourcesDeliveryMode();
-  }
-
-  //////////////////
-  // helping methods
-
-  private void init() {
-    configure();
-    registerPhaseListener();
-    registerSettingStoreFactory();
-    registerWorkbenchEntryPoint();
-    registerThemeableWidgets();
-    registerThemes();
-    registerThemeContributions();
-    registerFactories();
-    registerResources();
-    registerUICallBackServiceHandler();
-    registerJSLibraryServiceHandler();
-    registerCustomServiceHandlers();
-    registerApplicationEntryPoints();
-    registerBrandings();
-  }
-
-  private void configure() {
-    RWTConfigurationImpl config = ( RWTConfigurationImpl )applicationContext.getConfiguration();
-    config.configure( findContextPath().toString() );
-  }
-
-  private void registerPhaseListener() {
+  private void registerPhaseListener( Context context ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_PHASE_LISTENER );
     IConfigurationElement[] elements = point.getConfigurationElements();
     for( int i = 0; i < elements.length; i++ ) {
       try {
-        PhaseListener listener
-          = ( PhaseListener )elements[ i ].createExecutableExtension( "class" );
-        applicationContext.getPhaseListenerRegistry().add( listener );
+        Object instance = elements[ i ].createExecutableExtension( "class" );
+        PhaseListener listener = ( PhaseListener )instance;
+        context.addPhaseListener( listener );
       } catch( final CoreException ce ) {
         WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );
       }
     }
   }
 
-  private void registerSettingStoreFactory() {
+  private void registerSettingStoreFactory( Context context ) {
     // determine which factory to use via an environment setting / config.ini
-    ISettingStoreFactory result = null;
     String settingStoreFactoryParam = SettingStoreManagerConfigurable.SETTING_STORE_FACTORY_PARAM;
     String factoryId = getOSGiProperty( settingStoreFactoryParam );
+    ISettingStoreFactory result = null;
     if( factoryId != null ) {
-      IExtensionRegistry registry = Platform.getExtensionRegistry();
-      IExtensionPoint point = registry.getExtensionPoint( ID_SETTING_STORES );
-      IConfigurationElement[] elements = point.getConfigurationElements();
-      for( int i = 0; i < elements.length; i++ ) {
-        String id = elements[ i ].getAttribute( "id" );
-        if( factoryId.equals( id ) ) {
-          try {
-            Object obj = elements[ i ].createExecutableExtension( "class" );
-            if( obj instanceof ISettingStoreFactory ) {
-              result = ( ISettingStoreFactory )obj;
-            }
-          } catch( CoreException cex ) {
-            WorkbenchPlugin.log( cex.getStatus() );
-          }
-        }
-      }
-      if( result == null ) {
-        String msg =   "Warning: could not find the factory with id '"
-                     + factoryId
-                     + "' in org.eclipse.rap.ui.settingstores";
-        WorkbenchPlugin.log( WorkbenchPlugin.getStatus( new Throwable( msg ) ) );
-      }
+      result = loadSettingStoreFactory( factoryId );
     }
     if( result == null ) {
       result = new WorkbenchFileSettingStoreFactory(); // default
     }
-    applicationContext.getSettingStoreManager().register( result );
+    context.setSettingStoreFactory( result );
+  }
+
+  private ISettingStoreFactory loadSettingStoreFactory( String factoryId ) {
+    ISettingStoreFactory result = null;
+    IExtensionRegistry registry = Platform.getExtensionRegistry();
+    IExtensionPoint point = registry.getExtensionPoint( ID_SETTING_STORES );
+    IConfigurationElement[] elements = point.getConfigurationElements();
+    for( int i = 0; i < elements.length; i++ ) {
+      String id = elements[ i ].getAttribute( "id" );
+      if( factoryId.equals( id ) ) {
+        result = loadSettingStoreFactory( elements[ i ] );
+      }
+    }
+    if( result == null ) {
+      String msg = "Unable to find setting store factory with id '" + factoryId + "'.";
+      WorkbenchPlugin.log( msg );
+    }
+    return result;
+  }
+
+  private ISettingStoreFactory loadSettingStoreFactory( IConfigurationElement element ) {
+    ISettingStoreFactory result = null;
+    try {
+      result = ( ISettingStoreFactory )element.createExecutableExtension( "class" );
+    } catch( CoreException cex ) {
+      WorkbenchPlugin.log( cex.getStatus() );
+    }
+    return result;
   }
 
   private static String getOSGiProperty( String name ) {
@@ -201,7 +144,7 @@ public final class RWTConfigurationWrapper implements RWTConfiguration {
 	return systemBundle.getBundleContext().getProperty( name );
   }
 
-  private void registerFactories() {
+  private void registerFactories( Context context ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_ADAPTER_FACTORY );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -214,23 +157,17 @@ public final class RWTConfigurationWrapper implements RWTConfiguration {
         Class factoryClass = bundle.loadClass( factoryName );
         Class adaptableClass = bundle.loadClass( adaptableName );
         AdapterFactory adapterFactory = ( AdapterFactory )ClassUtil.newInstance( factoryClass ) ;
-        applicationContext.getAdapterManager().registerAdapters( adaptableClass, adapterFactory );
+        context.addAddapterFactory( adaptableClass, adapterFactory );
       } catch( Throwable thr ) {
-        String text =   "Could not register adapter factory ''{0}'' "
-                      + "for the adapter type ''{1}''.";
+        String text = "Could not register adapter factory ''{0}''  for the adapter type ''{1}''.";
         Object[] param = new Object[] { factoryName, adaptableName};
-        String msg = MessageFormat.format( text, param );
-        Status status = new Status( IStatus.ERROR,
-                                    contributorName,
-                                    IStatus.OK,
-                                    msg,
-                                    thr );
-        WorkbenchPlugin.getDefault().getLog().log( status );
+        logProblem( text, param, thr, contributorName );
       }
     }
   }
 
-  private void registerWorkbenchEntryPoint() {
+
+  private void registerWorkbenchEntryPoint( Context context ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_ENTRY_POINT );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -242,24 +179,17 @@ public final class RWTConfigurationWrapper implements RWTConfiguration {
       try {
         Bundle bundle = Platform.getBundle( contributorName );
         Class clazz = bundle.loadClass( className );
-        applicationContext.getEntryPointManager().register( parameter, clazz );
+        context.addEntryPoint( parameter, clazz );
         EntryPointExtension.bind( id, parameter );
       } catch( final Throwable thr ) {
-        String text =   "Could not register entry point ''{0}'' "
-                      + "with request startup parameter ''{1}''.";
+        String text = "Could not register entry point ''{0}'' with startup parameter ''{1}''.";
         Object[] param = new Object[] { className, parameter };
-        String msg = MessageFormat.format( text, param );
-        IStatus status = new Status( IStatus.ERROR,
-                                     contributorName,
-                                     IStatus.OK,
-                                     msg,
-                                     thr );
-        WorkbenchPlugin.getDefault().getLog().log( status );
+        logProblem( text, param, thr, contributorName );
       }
     }
   }
 
-  private void registerThemeableWidgets() {
+  private void registerThemeableWidgets( Context context ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( ID_THEMEABLE_WIDGETS );
     IConfigurationElement[] widgetExts = ep.getConfigurationElements();
@@ -268,38 +198,36 @@ public final class RWTConfigurationWrapper implements RWTConfiguration {
       String widgetClass = widgetExts[ i ].getAttribute( "class" );
       try {
         final Bundle bundle = Platform.getBundle( contributorName );
-        ResourceLoader resLoader = new ResourceLoader() {
-          public InputStream getResourceAsStream( final String resourceName )
-            throws IOException
-          {
-            InputStream result = null;
-            // We need to call getResource() here since resources must be loaded
-            // by the bundle classloader
-            URL url = bundle.getResource( resourceName );
-            if( url != null ) {
-              result = url.openStream();
-            }
-            return result;
-          }
-        };
+        ResourceLoader resLoader = createThemableWidgetsResourceLoader( bundle );
         Class widget = bundle.loadClass( widgetClass );
-        getThemeManager().addThemeableWidget( widget, resLoader );
+        context.addThemableWidget( widget, resLoader );
       } catch( final Throwable thr ) {
         String text = "Could not register themeable widget ''{0}''.";
         Object[] param = new Object[] { widgetClass };
-        String message = MessageFormat.format( text, param );
-        IStatus status
-          = new Status( IStatus.ERROR, contributorName, message, thr );
-        WorkbenchPlugin.getDefault().getLog().log( status );
+        logProblem( text, param, thr, contributorName );
       }
     }
   }
 
-  private ThemeManager getThemeManager() {
-    return applicationContext.getThemeManager();
+
+  private ResourceLoader createThemableWidgetsResourceLoader( final Bundle bundle ) {
+    return new ResourceLoader() {
+      public InputStream getResourceAsStream( final String resourceName )
+        throws IOException
+      {
+        InputStream result = null;
+        // We need to call getResource() here since resources must be loaded
+        // by the bundle classloader
+        URL url = bundle.getResource( resourceName );
+        if( url != null ) {
+          result = url.openStream();
+        }
+        return result;
+      }
+    };
   }
 
-  private void registerThemes() {
+  private void registerThemes( Context context ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( ID_THEMES );
     IConfigurationElement[] elements = ep.getConfigurationElements();
@@ -307,32 +235,21 @@ public final class RWTConfigurationWrapper implements RWTConfiguration {
       if( ELEMENT_THEME.equals( elements[ i ].getName() ) ) {
         String contributorName = elements[ i ].getContributor().getName();
         String themeId = elements[ i ].getAttribute( "id" );
-        String themeName = elements[ i ].getAttribute( "name" );
         String themeFile = elements[ i ].getAttribute( "file" );
-        if( !ThemeManager.DEFAULT_THEME_ID.equals( themeId ) ) {
-          try {
-            Bundle bundle = Platform.getBundle( contributorName );
-            ResourceLoader loader = createResourceLoader( bundle );
-            StyleSheet styleSheet = null;
-            if( themeFile != null ) {
-              styleSheet = CssFileReader.readStyleSheet( themeFile, loader );
-            }
-            Theme theme = new Theme( themeId, themeName, styleSheet );
-            getThemeManager().registerTheme( theme );
-          } catch( final Exception e ) {
-            String text = "Could not register custom theme ''{0}'' "
-                          + "from file ''{1}''.";
-            Object[] param = new Object[]{ themeId, themeFile };
-            String msg = MessageFormat.format( text, param );
-            IStatus status = new Status( IStatus.ERROR, contributorName, msg, e );
-            WorkbenchPlugin.getDefault().getLog().log( status );
-          }
+        try {
+          Bundle bundle = Platform.getBundle( contributorName );
+          ResourceLoader resourceLoader = createThemeResourceLoader( bundle );
+          context.addTheme( themeId, themeFile, resourceLoader );
+        } catch( final Exception e ) {
+          String text = "Could not register custom theme ''{0}'' from file ''{1}''.";
+          Object[] param = new Object[]{ themeId, themeFile };
+          logProblem( text, param, e, contributorName );
         }
       }
     }
   }
 
-  private void registerThemeContributions() {
+  private void registerThemeContributions( Context context ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( ID_THEMES );
     IConfigurationElement[] elements = ep.getConfigurationElements();
@@ -343,28 +260,18 @@ public final class RWTConfigurationWrapper implements RWTConfiguration {
         String themeFile = elements[ i ].getAttribute( "file" );
         try {
           Bundle bundle = Platform.getBundle( contributorName );
-          ResourceLoader loader = createResourceLoader( bundle );
-          StyleSheet styleSheet = CssFileReader.readStyleSheet( themeFile,
-                                                                loader );
-          Theme theme = getThemeManager().getTheme( themeId );
-          if( theme == null ) {
-            throw new IllegalArgumentException( "No such theme defined: "
-                                                + themeId );
-          }
-          theme.addStyleSheet( styleSheet );
+          ResourceLoader loader = createThemeResourceLoader( bundle );
+          context.addThemeContribution( themeId, themeFile, loader );
         } catch( final Exception e ) {
-          String text = "Could not register theme contribution for theme ''{0}'' "
-                        + "from file ''{1}''.";
+          String text = "Could not register contribution for theme ''{0}'' from file ''{1}''.";
           Object[] param = new Object[]{ themeId, themeFile };
-          String msg = MessageFormat.format( text, param );
-          IStatus status = new Status( IStatus.ERROR, contributorName, msg, e );
-          WorkbenchPlugin.getDefault().getLog().log( status );
+          logProblem( text, param, e, contributorName );
         }
       }
     }
   }
 
-  private static ResourceLoader createResourceLoader( final Bundle bundle ) {
+  private static ResourceLoader createThemeResourceLoader( final Bundle bundle ) {
     ResourceLoader result = new ResourceLoader() {
 
       public InputStream getResourceAsStream( final String resourceName )
@@ -382,20 +289,13 @@ public final class RWTConfigurationWrapper implements RWTConfiguration {
     return result;
   }
 
-  // determine a faked context directory
-  private static IPath findContextPath() {
-    Bundle bundle = Platform.getBundle( PlatformUI.PLUGIN_ID );
-    IPath stateLocation = Platform.getStateLocation( bundle );
-    return stateLocation.append( "context" );
-  }
-
-  private void registerResources() {
+  private void registerResources( Context context ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_RESOURCES );
     IConfigurationElement[] elements = point.getConfigurationElements();
     DependentResource[] resources = loadResources( elements );
     resources = sortResources( resources );
-    registerResources( resources );
+    registerResources( resources, context );
   }
 
   private static DependentResource[] loadResources( IConfigurationElement[] elements ) {
@@ -458,29 +358,15 @@ public final class RWTConfigurationWrapper implements RWTConfiguration {
     return result;
   }
 
-  private void registerResources( DependentResource[] resources ) {
+  private void registerResources( DependentResource[] resources, Context context ) {
     for( int i = 0; i < resources.length; i++ ) {
       if( resources[ i ] != null ) {
-        applicationContext.getResourceRegistry().add( resources[ i ].resource );
+        context.addResource( resources[ i ].resource );
       }
     }
   }
 
-  private void registerUICallBackServiceHandler() {
-    ServiceManager serviceManager = applicationContext.getServiceManager();
-    UICallBackServiceHandler handler = new UICallBackServiceHandler();
-    serviceManager.registerServiceHandler( UICallBackServiceHandler.HANDLER_ID, handler );
-  }
-
-  private void registerJSLibraryServiceHandler() {
-    ServiceManager serviceManager = applicationContext.getServiceManager();
-    JSLibraryServiceHandler handler = new JSLibraryServiceHandler();
-    serviceManager.registerServiceHandler( JSLibraryServiceHandler.HANDLER_ID, handler );
-    // TODO [SystemStart]: move this to where the actual system initialization takes place
-    applicationContext.getJSLibraryConcatenator().startJSConcatenation();
-  }
-
-  private void registerCustomServiceHandlers() {
+  private void registerServiceHandlers( Context context ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_SERVICE_HANDLER );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -490,7 +376,7 @@ public final class RWTConfigurationWrapper implements RWTConfiguration {
         if( id != null ) {
           Object extObject = elements[ i ].createExecutableExtension( "class" );
           IServiceHandler handler = ( IServiceHandler )extObject;
-          applicationContext.getServiceManager().registerServiceHandler( id, handler );
+          context.addServiceHandler( id, handler );
         }
       } catch( final CoreException ce ) {
         WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );
@@ -498,16 +384,21 @@ public final class RWTConfigurationWrapper implements RWTConfiguration {
     }
   }
 
-  private void registerBrandings() {
+  private void registerBrandings( Context context ) {
     try {
-      new BrandingExtension( applicationContext ).read();
+      new BrandingExtension( context, httpServiceReference ).read();
     } catch( final IOException ioe ) {
       throw new RuntimeException( "Unable to read branding extension", ioe );
     }
   }
 
-  private void registerApplicationEntryPoints() {
-    // TODO [fappel]: find a better solution that this static approach
-    ApplicationRegistry.registerApplicationEntryPoints( applicationContext );
+  private void registerApplicationEntryPoints( Context context ) {
+    ApplicationRegistry.registerApplicationEntryPoints( context );
+  }
+  
+  private void logProblem( String text, Object[] textParams, Throwable problem, String bundleId ) {
+    String msg = MessageFormat.format( text, textParams );
+    Status status = new Status( IStatus.ERROR, bundleId, IStatus.OK, msg, problem );
+    WorkbenchPlugin.getDefault().getLog().log( status );
   }
 }

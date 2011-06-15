@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import org.eclipse.rwt.engine.ResourceLoader;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.engine.ThemeManagerHelper;
 import org.eclipse.rwt.internal.theme.*;

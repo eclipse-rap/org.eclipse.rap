@@ -43,7 +43,7 @@ class Matcher {
                                  ServiceReference< ? > targetReference,
                                  Class< ? > targetType )
   {
-    boolean result = true;
+    boolean result = targetReference != null;
     String filterExpression = getFilterExpression( serviceReference, targetType );
     if( filterExpression != null ) {
       Filter filter = createFilter( filterExpression );

@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.apache.batik.css.parser.Parser;
+import org.eclipse.rwt.engine.ResourceLoader;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.QxAnimation.Animation;
 import org.w3c.css.sac.*;

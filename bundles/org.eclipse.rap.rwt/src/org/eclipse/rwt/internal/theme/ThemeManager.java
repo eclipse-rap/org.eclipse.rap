@@ -17,6 +17,7 @@ import java.io.*;
 import java.text.MessageFormat;
 import java.util.*;
 
+import org.eclipse.rwt.engine.ResourceLoader;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;

@@ -16,7 +16,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.*;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.rap.ui.internal.servlet.EntryPointExtension;
-import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.engine.Context;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.framework.Bundle;
@@ -51,9 +51,7 @@ public final class ApplicationRegistry {
     return application;
   }
 
-  private static void registerApplication( IExtension extension, 
-                                           ApplicationContext applicationContext )
-  {
+  private static void registerApplication( IExtension extension, Context context ) {
     IConfigurationElement configElement
       = extension.getConfigurationElements()[0];
     String contributorName = configElement.getContributor().getName();
@@ -69,8 +67,7 @@ public final class ApplicationRegistry {
         Bundle bundle = Platform.getBundle( contributorName );
         Class clazz = bundle.loadClass( className );
         appEntrypointMapping.put( applicationParameter, clazz );
-        applicationContext.getEntryPointManager().register( applicationParameter,
-                                    				        EntrypointApplicationWrapper.class );
+        context.addEntryPoint( applicationParameter, EntrypointApplicationWrapper.class );
         EntryPointExtension.bind( applicationId, applicationParameter );
       }
     } catch( final ClassNotFoundException e ) {
@@ -84,10 +81,10 @@ public final class ApplicationRegistry {
     }
   }
 
-  public static void registerApplicationEntryPoints(ApplicationContext applicationContext) {
+  public static void registerApplicationEntryPoints( Context context ) {
     IExtension[] elements = getApplicationExtensions();
     for( int i = 0; i < elements.length; i++ ) {
-      registerApplication( elements[ i ], applicationContext );
+      registerApplication( elements[ i ], context );
     }
   }
 

@@ -61,7 +61,7 @@ public class Matcher_Test extends TestCase {
   
   public void testMatchesWithMatchingConfiguratorFilter() {
     createConfiguratorFilter();
-    createConfigurationProperties();
+    createConfiguratorProperties();
 
     boolean matches = matcher.matches();
 
@@ -79,7 +79,7 @@ public class Matcher_Test extends TestCase {
   
   public void testMatchesWithMatchingConfigurationFilterAndNonMatchingHttpServiceFilter() {
     createConfiguratorFilter();
-    createConfigurationProperties();
+    createConfiguratorProperties();
     createHttpServiceFilter();
     
     boolean matches = matcher.matches();
@@ -99,7 +99,7 @@ public class Matcher_Test extends TestCase {
 
   public void testMatchesWithMatchingFilters() {
     createConfiguratorFilter();
-    createConfigurationProperties();
+    createConfiguratorProperties();
     createHttpServiceFilter();
     createHttpServiceProperties();
     
@@ -119,6 +119,22 @@ public class Matcher_Test extends TestCase {
     }
   }
   
+  public void testMatchesWithNullConfiguratorReference() {
+    matcher = new Matcher( httpServiceReference, null );
+    
+    boolean matches = matcher.matches();
+    
+    assertFalse( matches );
+  }
+  
+  public void testMatchesWithNullHttpServiceReference() {
+    matcher = new Matcher( null, configuratorReference );
+    
+    boolean matches = matcher.matches();
+    
+    assertFalse( matches );
+  }
+  
   @SuppressWarnings( "unchecked" )
   protected void setUp() {
     httpServiceReference = mock( ServiceReference.class );
@@ -136,7 +152,7 @@ public class Matcher_Test extends TestCase {
     when( httpServiceReference.getProperty( configuratorKey ) ).thenReturn( KEY_VALUE );
   }
   
-  private void createConfigurationProperties() {
+  private void createConfiguratorProperties() {
     when( configuratorReference.getProperty( KEY ) ).thenReturn( VALUE );
   }
   

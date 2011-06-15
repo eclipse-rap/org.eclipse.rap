@@ -14,6 +14,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,22 +53,32 @@ public class RWTServiceImpl_Test extends TestCase {
   private RWTServiceImpl service;
   
   public void testStart() {
-    service.start( configurator, httpService, null, Fixture.WEB_CONTEXT_DIR.getPath() );
+    service.start( configurator, httpService, null, null, Fixture.WEB_CONTEXT_DIR.getPath() );
     
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
+    checkHttpContextHasBeenCreated();
+  }
+
+  public void testStartWithHttpContext() {
+    HttpContext httpContext = mock( HttpContext.class );
+    service.start( configurator, httpService, httpContext, null, Fixture.WEB_CONTEXT_DIR.getPath() );
+    
+    checkDefaultAliasHasBeenRegistered();
+    checkWebContextResourcesHaveBeenCreated();
+    checkHttpContextHasBeenWrapped();
   }
   
   public void testStartWithDefaultContextDirectory() {
-    service.start( configurator, httpService, null );
+    startRWTContext();
     
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
   }
-  
+
   public void testStop() {
     String path = Fixture.WEB_CONTEXT_DIR.getPath();
-    RWTContext context = service.start( configurator, httpService, null, path );
+    RWTContext context = startRWTContext( path );
     
     context.stop();
 
@@ -80,14 +91,14 @@ public class RWTServiceImpl_Test extends TestCase {
   }
   
   public void testActivationStateAfterActivation() {
-    RWTContext context = service.start( configurator, httpService, null );
+    RWTContext context = startRWTContext();
 
     assertTrue( service.isAlive() );
     assertTrue( context.isAlive() );
   }
   
   public void testActivationStateAfterDeactivation() {
-    RWTContext context = service.start( configurator, httpService, null );
+    RWTContext context = startRWTContext();
 
     service.deactivate();
 
@@ -101,7 +112,7 @@ public class RWTServiceImpl_Test extends TestCase {
     createAliasConfigurator( SERVLET_ALIAS_1, SERVLET_ALIAS_2 );
     createService();
     
-    service.start( configurator, httpService, null );
+    startRWTContext();
     
     checkAliasHasBeenRegistered( SERVLET_ALIAS_1 );
     checkAliasHasBeenRegistered( SERVLET_ALIAS_2 );
@@ -110,7 +121,7 @@ public class RWTServiceImpl_Test extends TestCase {
   public void testStopWithMultipleServletNames() {
     createAliasConfigurator( SERVLET_ALIAS_1, SERVLET_ALIAS_2 );
     createService();
-    RWTContext context = service.start( configurator, httpService, null );
+    RWTContext context = startRWTContext();
 
     context.stop();
     
@@ -121,8 +132,9 @@ public class RWTServiceImpl_Test extends TestCase {
   public void testStartWithContextName() {
     mockBundleContext( CONTEXT_NAME );
     createService();
+    String location = service.getLocation( CONTEXT_NAME, configurator, httpService );
     
-    service.start( configurator, httpService, CONTEXT_NAME );
+    service.start( configurator, httpService, null, CONTEXT_NAME, location );
     
     checkAliasHasBeenRegistered( CONTEXT_NAME + "/" + RWTContextImpl.DEFAULT_ALIAS );
   }
@@ -130,7 +142,8 @@ public class RWTServiceImpl_Test extends TestCase {
   public void testStopWithContextName() {
     mockBundleContext( CONTEXT_NAME );
     createService();
-    RWTContext context = service.start( configurator, httpService, CONTEXT_NAME );
+    String location = service.getLocation( CONTEXT_NAME, configurator, httpService );
+    RWTContext context = service.start( configurator, httpService, null, CONTEXT_NAME, location );
     
     context.stop();
     
@@ -145,7 +158,7 @@ public class RWTServiceImpl_Test extends TestCase {
   }
   
   public void testDeactivate() {
-    RWTContext context = service.start( configurator, httpService, null );
+    RWTContext context = startRWTContext();
     
     service.deactivate();
     
@@ -179,8 +192,8 @@ public class RWTServiceImpl_Test extends TestCase {
   }
   
   public void testRemoveHttpService() {
-    RWTContext context1 = service.start( configurator, httpService, null );
-    RWTContext context2 = service.start( configurator, httpService, null );
+    RWTContext context1 = startRWTContext();
+    RWTContext context2 = startRWTContext();
     
     service.removeHttpService( httpService );
     
@@ -190,7 +203,8 @@ public class RWTServiceImpl_Test extends TestCase {
   }
   
   public void testAddConfigurerAfterStart() {
-    RWTContext context = service.start( configurator, httpService, null );
+    RWTContext context = startRWTContext();
+    service.addHttpService( httpServiceReference );
     context.stop();
     
     mockSecondConfiguratorReference();
@@ -234,17 +248,17 @@ public class RWTServiceImpl_Test extends TestCase {
     RWTServiceObserver listener = mock( RWTServiceObserver.class );
     service.addObserver( listener );
     
-    RWTContext context = service.start( configurator, httpService, null );
+    RWTContext context = startRWTContext();
     context.stop();
     service.removeObserver( listener );
-    service.start( configurator, httpService, null );
+    startRWTContext();
     
     verify( listener ).contextStarted( context );
     verify( listener ).contextStopped( context );
   }
   
   public void testRWTServiceObserverNotificationAboutPreviouslyStarted() {
-    RWTContext context = service.start( configurator, httpService, null );
+    RWTContext context = startRWTContext();
     RWTServiceObserver listener = mock( RWTServiceObserver.class );
 
     service.addObserver( listener );
@@ -339,12 +353,7 @@ public class RWTServiceImpl_Test extends TestCase {
     } catch( IllegalStateException expected ) {
     }
     try {
-      service.start( mock( Configurator.class ), httpService, null );
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
-    try {
-      service.start( mock( Configurator.class ), httpService, null, "/contextPath" );
+      service.start( mock( Configurator.class ), httpService, null, null, "/contextPath" );
       fail();
     } catch( IllegalStateException expected ) {
     }
@@ -368,6 +377,14 @@ public class RWTServiceImpl_Test extends TestCase {
       fail();
     } catch( IllegalStateException expected ) {
     }
+  }
+
+  private HttpContext checkHttpContextHasBeenWrapped() {
+    return verify( httpService, never() ).createDefaultHttpContext();
+  }
+  
+  private void checkHttpContextHasBeenCreated() {
+    verify( httpService ).createDefaultHttpContext();
   }
 
   private void registerServiceReferences() {
@@ -504,5 +521,14 @@ public class RWTServiceImpl_Test extends TestCase {
     AbstractBranding result = mock( AbstractBranding.class );
     when( result.getServletName() ).thenReturn( servletName );
     return result;
+  }
+  
+  private RWTContext startRWTContext() {
+    String location = service.getLocation( null, configurator, httpService );
+    return startRWTContext( location );
+  }
+
+  private RWTContext startRWTContext( String location ) {
+    return service.start( configurator, httpService, null, null, location );
   }
 }

@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme.css;
 
+import org.eclipse.rwt.engine.ResourceLoader;
 import org.eclipse.rwt.internal.theme.*;
 import org.w3c.css.sac.*;
 

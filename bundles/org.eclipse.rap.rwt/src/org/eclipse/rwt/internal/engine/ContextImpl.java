@@ -16,10 +16,10 @@ import java.text.MessageFormat;
 
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.engine.Configurator;
-import org.eclipse.rwt.engine.Context;
+import org.eclipse.rwt.engine.*;
 import org.eclipse.rwt.internal.service.ServiceManager;
-import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.theme.Theme;
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
@@ -80,29 +80,41 @@ class ContextImpl implements Context {
   }
 
   public void addTheme( String themeId, String styleSheetLocation ) {
-    StyleSheet styleSheet = readStyleSheet( styleSheetLocation );
+    addTheme( themeId, styleSheetLocation, new ResourceLoaderImpl( getClassLoader() ) );
+  }
+
+  public void addTheme( String themeId, String styleSheetLocation, ResourceLoader resourceLoader ) {
+    StyleSheet styleSheet = readStyleSheet( styleSheetLocation, resourceLoader );
     ThemeManager themeManager = applicationContext.getThemeManager();
     themeManager.registerTheme( new Theme( themeId, "unknown", styleSheet ) );
   }
 
   public void addThemableWidget( Class<? extends Widget> widget ) {
     ResourceLoaderImpl loader = new ResourceLoaderImpl( widget.getClassLoader() );
-    applicationContext.getThemeManager().addThemeableWidget( widget, loader );
+    addThemableWidget( widget, loader );
+  }
+
+  public void addThemableWidget( Class<? extends Widget> widget, ResourceLoader resourceLoader ) {
+    applicationContext.getThemeManager().addThemeableWidget( widget, resourceLoader );
   }
 
   public void addThemeContribution( String themeId, String styleSheetLocation ) {
-    StyleSheet styleSheet = readStyleSheet( styleSheetLocation );
+    ResourceLoaderImpl loader = new ResourceLoaderImpl( getClassLoader() );
+    addThemeContribution( themeId, styleSheetLocation, loader );
+  }
+
+  public void addThemeContribution( String themeId, String location, ResourceLoader loader ) {
+    StyleSheet styleSheet = readStyleSheet( location, loader  );
     applicationContext.getThemeManager().getTheme( themeId ).addStyleSheet( styleSheet );
+  }
+
+  private ClassLoader getClassLoader() {
+    ClassLoader classLoader = configurator.getClass().getClassLoader();
+    return classLoader;
   }
   
   public void setAttribute( String name, Object value ) {
     applicationContext.getApplicationStore().setAttribute( name, value );
-  }
-
-  private StyleSheet readStyleSheet( String styleSheetLocation ) {
-    ClassLoader classLoader = configurator.getClass().getClassLoader();
-    ResourceLoaderImpl loader = new ResourceLoaderImpl( classLoader );
-    return readStyleSheet( styleSheetLocation, loader );
   }
 
   private StyleSheet readStyleSheet( String styleSheetLocation, ResourceLoader loader ) {

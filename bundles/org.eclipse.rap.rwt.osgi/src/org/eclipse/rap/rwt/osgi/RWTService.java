@@ -11,21 +11,18 @@
 package org.eclipse.rap.rwt.osgi;
 
 import org.eclipse.rwt.engine.Configurator;
+import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 
 
 public interface RWTService {
-
   public static final String PROPERTY_CONTEXT_NAME = "contextName";
 
   RWTContext start( Configurator configurator,
                     HttpService httpService,
-                    String contextName );
-
-  RWTContext start( Configurator configurator,
-                    HttpService httpService,
+                    HttpContext httpContext,
                     String contextName,
                     String contextDirectory );
+  
   boolean isAlive();
-
 }

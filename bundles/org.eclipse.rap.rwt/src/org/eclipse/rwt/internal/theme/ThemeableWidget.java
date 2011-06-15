@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
+import org.eclipse.rwt.engine.ResourceLoader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
 final class ThemeableWidget {

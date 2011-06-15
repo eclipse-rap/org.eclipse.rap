@@ -20,12 +20,10 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.rap.ui.branding.IExitConfirmation;
-import org.eclipse.rap.ui.internal.servlet.HttpServiceTracker;
+import org.eclipse.rwt.branding.AbstractBranding;
+import org.eclipse.rwt.engine.Context;
 import org.eclipse.rwt.internal.branding.BrandingManager;
-import org.eclipse.rwt.internal.engine.ApplicationContext;
-import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.Filter;
+import org.osgi.framework.*;
 
 
 public final class BrandingExtension {
@@ -51,10 +49,12 @@ public final class BrandingExtension {
   private static final String ELEM_SERVICE_SELECTOR = "httpServiceFilter"; //$NON-NLS-1$
   private static final String ATT_CLASS = "class"; //$NON-NLS-1$
   
-  private final ApplicationContext applicationContext;
+  private final Context context;
+  private final ServiceReference httpServiceReference;
 
-  public BrandingExtension( ApplicationContext applicationContext ) {
-    this.applicationContext = applicationContext;
+  public BrandingExtension( Context context, ServiceReference httpServiceReference ) {
+    this.context = context;
+    this.httpServiceReference = httpServiceReference;
   }
 
   public void read() throws IOException {
@@ -106,8 +106,9 @@ public final class BrandingExtension {
       }
     }
     Filter serviceFilter = readServiceFilter( element, branding );
-    registerServletName( servletName, serviceFilter );
-    applicationContext.getBrandingManager().register( branding );
+    if( ( serviceFilter == null || serviceFilter.match( httpServiceReference ) ) ) {
+      context.addBranding( branding );
+    }
   }
 
   // EXPERIMENTAL, see bug 241210
@@ -178,14 +179,15 @@ public final class BrandingExtension {
       }
     }
     if( !found ) {
-      registerServletName( BrandingManager.DEFAULT_SERVLET_NAME, null );
+      context.addBranding( new AbstractBranding() {
+        public String getServletName() {
+          return BrandingManager.DEFAULT_SERVLET_NAME;
+        }
+        public String getTitle() {
+          return "RAP Application";
+        }
+      } );
     }
-  }
-
-  private void registerServletName( String servletName, Filter filter ) {
-    WorkbenchPlugin workbench = WorkbenchPlugin.getDefault();
-    HttpServiceTracker httpServiceTracker = workbench.getHttpServiceTracker();
-    httpServiceTracker.addServletAlias( servletName, filter );
   }
 
   private void readAdditionalHeader( Branding branding, IConfigurationElement elem ) {

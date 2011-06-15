@@ -112,6 +112,7 @@ Import-Package: com.ibm.icu.text,
  javax.servlet;version="2.3.0",
  javax.servlet.http;version="2.3.0",
  javax.xml.parsers,
+ org.eclipse.rap.rwt.osgi;version="[1.0.0,2.0.0)",
  org.w3c.dom,
  org.xml.sax
 Bundle-RequiredExecutionEnvironment: J2SE-1.4,

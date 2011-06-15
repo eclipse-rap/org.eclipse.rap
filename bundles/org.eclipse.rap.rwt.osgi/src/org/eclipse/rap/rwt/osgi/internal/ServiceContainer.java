@@ -21,8 +21,8 @@ class ServiceContainer< S > {
   private final BundleContext bundleContext;
 
   static class ServiceHolder< S > {
-    private final ServiceReference< S > serviceReference;
-    private final S service;
+    private ServiceReference< S > serviceReference;
+    private S service;
 
     private ServiceHolder( S service,  ServiceReference< S > serviceReference ) {
       this.service = service;
@@ -35,6 +35,10 @@ class ServiceContainer< S > {
 
     ServiceReference< S > getReference() {
       return serviceReference;
+    }
+    
+    private void setServiceReference( ServiceReference< S > serviceReference ) {
+      this.serviceReference = serviceReference;
     }
   }
 
@@ -67,17 +71,6 @@ class ServiceContainer< S > {
   ServiceHolder< S > add( ServiceReference< S > reference ) {
     return add( bundleContext.getService( reference ), reference );
   }
-
-  private ServiceHolder< S > add( S service, ServiceReference< S > reference ) {
-    ServiceHolder< S > result;
-    if( !contains( service ) ) {
-      result = new ServiceHolder< S >( service, reference );
-      this.services.add( result );
-    } else {
-      result = find( service );
-    }
-    return result;
-  }
   
   void remove( S service ) {
     services.remove( find( service ) );
@@ -102,11 +95,26 @@ class ServiceContainer< S > {
     services.clear();
   }
 
-  boolean contains( S service ) {
-    return find( service ) != null;
-  }
-  
   int size() {
     return services.size();
+  }
+
+  private ServiceHolder< S > add( S service, ServiceReference< S > reference ) {
+    ServiceHolder< S > result = find( service );
+    if( notFound( result ) ) {
+      result = new ServiceHolder< S >( service, reference );
+      services.add( result );
+    } else if( referenceIsMissing( reference, result ) ) {
+      result.setServiceReference( reference );
+    }
+    return result;
+  }
+
+  private boolean notFound( ServiceHolder< S > result ) {
+    return result == null;
+  }
+
+  private boolean referenceIsMissing( ServiceReference< S > reference, ServiceHolder< S > result ) {
+    return reference != null && result.serviceReference == null;
   }
 }

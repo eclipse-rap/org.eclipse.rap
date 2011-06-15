@@ -16,8 +16,8 @@ import java.text.MessageFormat;
 
 import javax.servlet.ServletContext;
 
+import org.eclipse.rwt.engine.ResourceLoader;
 import org.eclipse.rwt.internal.engine.*;
-import org.eclipse.rwt.internal.theme.ResourceLoader;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;

@@ -30,17 +30,19 @@ class RWTContextImpl implements RWTContext {
   private String contextLocation;
   private String contextName;
   private ContextControl contextControl;
-  private boolean alive;
   private RWTServiceImpl rwtServiceImpl;
+  private boolean alive;
 
   public RWTContextImpl( Configurator configurator,
                          HttpService httpService,
+                         HttpContext httpContext,
                          String contextName, 
                          String contextLocation,
                          RWTServiceImpl rwtServiceImpl )
   {
     this.configurator = configurator;
     this.httpService = httpService;
+    this.httpContext = createWrappedHttpContext( httpContext );
     this.contextLocation = contextLocation;
     this.contextName = contextName;
     this.rwtServiceImpl = rwtServiceImpl;
@@ -64,7 +66,6 @@ class RWTContextImpl implements RWTContext {
   }
 
   void start() {
-    createHttpContext();
     createContextControl( registerServletContextProvider() );
     try {
       startContext();
@@ -88,8 +89,18 @@ class RWTContextImpl implements RWTContext {
     unregisterServlet( SERVLET_CONTEXT_FINDER_ALIAS );
   }
 
-  private void createHttpContext() {
-    httpContext = new HttpContextWrapper( httpService.createDefaultHttpContext() );
+  private HttpContext createWrappedHttpContext( HttpContext httpContext ) {
+    HttpContext result;
+    if( httpContext == null ) {
+      result = wrapHttpContext( httpService.createDefaultHttpContext() );
+    } else {
+      result = wrapHttpContext( httpContext );
+    }
+    return result;
+  }
+
+  private HttpContextWrapper wrapHttpContext( HttpContext createDefaultHttpContext ) {
+    return new HttpContextWrapper( createDefaultHttpContext );
   }
 
   private HttpServlet registerServletContextProvider() {

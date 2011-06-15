@@ -19,6 +19,7 @@ import org.eclipse.rap.rwt.osgi.internal.ServiceContainer.ServiceHolder;
 import org.eclipse.rwt.engine.Configurator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 
 
@@ -72,22 +73,18 @@ public class RWTServiceImpl implements RWTService {
   }
   
   public RWTContext start( Configurator configurator,
-                            HttpService httpService,
-                            String contextName )
-  {
-    checkAlive();
-    String contextLocation = getLocation( contextName, configurator, httpService );
-    return start( configurator, httpService, contextName, contextLocation );
-  }
-
-  public RWTContext start( Configurator configurator,
                            HttpService httpService,
+                           HttpContext httpContext,
                            String contextName,
-                           String contextLocation )
+                           String contextDirectory )
   {
     checkAlive();
-    RWTContextImpl result
-      = new RWTContextImpl( configurator, httpService, contextName, contextLocation, this );
+    RWTContextImpl result = new RWTContextImpl( configurator, 
+                                                httpService, 
+                                                httpContext, 
+                                                contextName, 
+                                                contextDirectory, 
+                                                this );
     synchronized( lock ) {
       contexts.add( result );
       httpServices.add( httpService );
@@ -97,6 +94,7 @@ public class RWTServiceImpl implements RWTService {
     }
     return result;
   }
+
 
   public void deactivate() {
     checkAlive();
@@ -192,7 +190,8 @@ public class RWTServiceImpl implements RWTService {
     Configurator configurator = configuratorHolder.getService();
     HttpService httpService = httpServiceHolder.getService();
     String contextName = getContextName( configuratorHolder );
-    start( configurator, httpService, contextName );
+    String contextLocation = getLocation( contextName, configurator, httpService );
+    start( configurator, httpService, null, contextName, contextLocation );
   }
 
   private String getContextName( ServiceHolder< Configurator > configuratorHolder ) {
@@ -230,7 +229,7 @@ public class RWTServiceImpl implements RWTService {
     }
   }
 
-  private String getLocation( String contextName, Configurator configurator, HttpService service ) {
+  String getLocation( String contextName, Configurator configurator, HttpService service ) {
     String pathToContext = getContextFileName( contextName, configurator, service );
     File dataFile = bundleContext.getDataFile( pathToContext );
     return dataFile.toString();
