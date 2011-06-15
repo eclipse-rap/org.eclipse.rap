@@ -33,11 +33,18 @@ import org.eclipse.swt.widgets.*;
 /**
  * A button-like widget allowing to select a file from the client's file system and to upload this
  * file to a given URL using HTTP POST.
+ * <p>
+ * Note that although this class is a subclass of <code>Composite</code>,
+ * it does not make sense to set a layout on it.
+ * </p>
  * <dl>
  * <dt><b>Styles:</b></dt>
  * <dd>(none)</dd>
  * </dl>
  *
+ * </p><p>
+ * IMPORTANT: This class is <em>not</em> intended to be subclassed.
+ * </p>
  * @since 1.4
  */
 public class FileUpload extends Canvas {
