@@ -36,6 +36,17 @@ public class DatabaseServer_Test extends TestCase {
     assertNotNull( connection );
   }
   
+  public void testStartAndQuery() throws Exception {
+    databaseServer.start();
+    Connection connection = DriverManager.getConnection( databaseServer.getConnectionUrl() );
+    
+    String query = "select * from INFORMATION_SCHEMA.CATALOGS";
+    PreparedStatement statement = connection.prepareStatement( query );
+    ResultSet resultSet = statement.executeQuery();
+
+    assertTrue( resultSet.first() );
+  }
+  
   public void testStop() throws Exception {
     databaseServer.start();
     String connectionUrl = databaseServer.getConnectionUrl();
@@ -57,9 +68,13 @@ public class DatabaseServer_Test extends TestCase {
     } catch( Exception notExpected ) {
     }
   }
-
+  
   protected void setUp() throws Exception {
     databaseServer = new DatabaseServer();
     Class.forName( databaseServer.getDriverClassName() );
+  }
+  
+  protected void tearDown() throws Exception {
+    databaseServer.stop();
   }
 }
