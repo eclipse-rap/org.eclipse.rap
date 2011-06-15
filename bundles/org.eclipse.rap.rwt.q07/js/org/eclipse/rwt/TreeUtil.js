@@ -111,6 +111,10 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       setRowWidth : function( value ) {
         this._rowWidth = value; // will be updated with next renderAll
       },
+      
+      setScrollLeft : function( value ) {
+        this._container[ 1 ].setScrollLeft( value );
+      },
 
       renderAll : function() {
         this._updateConfig();

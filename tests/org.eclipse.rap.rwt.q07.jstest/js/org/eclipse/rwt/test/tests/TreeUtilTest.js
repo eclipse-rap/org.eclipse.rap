@@ -181,6 +181,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       container.destroy();
     },
 
+    testScrollLeft : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var container = this._createSplitContainer();
+      container.setRowWidth( 200 );
+      container.renderAll();
+      testUtil.flush();
+      container.setScrollLeft( 20 );
+      var sub1 = container.getSubContainer( 0 );
+      var sub2 = container.getSubContainer( 1 );
+      assertEquals( 0, sub1.getScrollLeft() );
+      assertEquals( 20, sub2.getScrollLeft() );
+      container.destroy();
+    },
+
     testCreateMinimalTreeWithFixedColumns : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = new org.eclipse.rwt.widgets.Tree( { 
