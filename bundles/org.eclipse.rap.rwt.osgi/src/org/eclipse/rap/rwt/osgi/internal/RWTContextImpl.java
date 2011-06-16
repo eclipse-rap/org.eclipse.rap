@@ -59,8 +59,8 @@ class RWTContextImpl implements RWTContext {
     registerServletContextProvider();
     try {
       stopContext();
-      rwtServiceImpl.notifyContextStopped( this );
     } finally {
+      notifyContextStopped();
       unregisterServletContextProvider();
     }
     clearFields();
@@ -176,6 +176,10 @@ class RWTContextImpl implements RWTContext {
 
   private void unregisterResourcesDirectory() {
     httpService.unregister( getContextSegment() + "/" + ContextControl.RESOURCES );
+  }
+
+  private void notifyContextStopped() {
+    rwtServiceImpl.notifyContextStopped( this );
   }
 
   private String getContextSegment() {
