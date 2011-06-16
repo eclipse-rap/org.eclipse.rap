@@ -1029,7 +1029,7 @@ public class TableItem extends Item {
     } else if( index >= 0 && index < columnCount ) {
       // TODO [rh] consider applying the leftOffset already in Column#getLeft()
       int columnLeft = parent.getColumn( index ).getLeft();
-      result = getCheckWidth( index ) + columnLeft - parent.leftOffset;
+      result = getCheckWidth( index ) + columnLeft - parent.getLeftOffset( index );
     }
     return result;
   }

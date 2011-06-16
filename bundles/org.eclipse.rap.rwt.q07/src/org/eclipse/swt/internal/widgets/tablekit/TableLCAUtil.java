@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -126,8 +126,8 @@ public final class TableLCAUtil {
     ITableAdapter tableAdapter = getTableAdapter( table );
     TableItem measureItem = tableAdapter.getMeasureItem();
     if( measureItem != null ) {
-      int leftOffset = tableAdapter.getLeftOffset();
       for( int i = 0; i < columnCount; i++ ) {
+        int leftOffset = tableAdapter.getLeftOffset( i );
         Rectangle bounds = measureItem.getBounds( i );
         Rectangle imageBounds = measureItem.getImageBounds( i );
         Rectangle textBounds = measureItem.getTextBounds( i );

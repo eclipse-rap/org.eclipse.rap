@@ -141,8 +141,12 @@ public class Table extends Composite {
       Table.this.setFocusIndex( focusIndex );
     }
 
+    public int getLeftOffset( int columnIndex ) {
+      return Table.this.getLeftOffset( columnIndex );
+    }
+
     public int getLeftOffset() {
-      return Table.this.leftOffset;
+      return Table.this.getLeftOffset( -1 );
     }
 
     public void setLeftOffset( final int leftOffset ) {
@@ -2454,6 +2458,27 @@ public class Table extends Composite {
       int imageWidth = themeAdapter.getCheckBoxImageSize( this ).x;
       result.width = Math.max( 0, width - imageWidth );
       result.x = Math.round( result.width / 2 );
+    }
+    return result;
+  }
+
+  final int getLeftOffset( int columnIndex ) {
+    int result = leftOffset;
+    if( columnIndex >= 0 ) {
+      result = columnIndex < getFixedColumns() ? 0 : leftOffset;
+    }
+    return result;
+  }
+
+  private int getFixedColumns() {
+    int result = -1;
+    try {
+      Integer data = ( Integer )getData( "fixedColumns" );
+      if( data != null ) {
+        result = data.intValue();
+      }
+    } catch( ClassCastException ex ) {
+      // not a valid fixedColumns value
     }
     return result;
   }
