@@ -15,14 +15,16 @@ import java.io.File;
 
 public class FileUtil {
   
-  public static void deleteDirectory( File directory ) {
-    if( directory.isDirectory() ) {
-      File[] files = directory.listFiles();
+  public static void deleteDirectory( File file ) {
+    if( file.isDirectory() ) {
+      File[] files = file.listFiles();
       for( int i = 0; i < files.length; i++ ) {
         deleteDirectory( files[ i ] );
       }
     }
-    directory.delete();
+    if( !file.delete() ) {
+      throw new RuntimeException( "Failed to delete file: " + file.getAbsolutePath() );
+    }
   }
 
   private FileUtil() {
