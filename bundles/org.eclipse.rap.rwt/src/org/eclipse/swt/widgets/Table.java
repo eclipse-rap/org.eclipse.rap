@@ -2622,9 +2622,11 @@ public class Table extends Composite {
     return result;
   }
 
-  private static TableItem max( final TableItem item1, final TableItem item2 ) {
+  private static TableItem max( TableItem item1, TableItem item2 ) {
     TableItem result;
-    if( item1.getText( 0 ).length() > item2.getText( 0 ).length() ) {
+    int item1TextWidth = Graphics.stringExtent( item1.getFont(), item1.getText( 0 ) ).x;
+    int item2TextWidth = Graphics.stringExtent( item2.getFont(), item2.getText( 0 ) ).x;
+    if( item1TextWidth > item2TextWidth ) {
       result = item1;
     } else {
       result = item2;
