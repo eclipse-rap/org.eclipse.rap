@@ -19,6 +19,9 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 public interface IServletEngine {
+  String SERVLET_NAME= "rap";
+  String SERVLET_PATH = "/" + SERVLET_NAME;
+
   void start( Class<? extends IEntryPoint> entryPointClass ) throws Exception;
   void stop() throws Exception;
   int getPort();

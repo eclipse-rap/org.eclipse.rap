@@ -36,8 +36,7 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 @SuppressWarnings("restriction")
 public class JettyEngine implements IServletEngine {
-  private static final String SERVLET_NAME = "/rap";
-
+  
   static {
     Log.setLog( new ServletEngineLogger() );
   }
@@ -98,8 +97,8 @@ public class JettyEngine implements IServletEngine {
 
   private void addEntryPoint( Class<? extends IEntryPoint> entryPointClass ) {
     ServletContextHandler context = createServletContext( "/" );
-    context.addServlet( RWTDelegate.class.getName(), SERVLET_NAME );
-    context.addFilter( RWTClusterSupport.class.getName(), SERVLET_NAME, FilterMapping.DEFAULT );
+    context.addServlet( RWTDelegate.class.getName(), IServletEngine.SERVLET_PATH );
+    context.addFilter( RWTClusterSupport.class.getName(), IServletEngine.SERVLET_PATH, FilterMapping.DEFAULT );
     context.addEventListener( new RWTServletContextListener() );
     context.setInitParameter( "org.eclipse.rwt.entryPoints", entryPointClass.getName() );
   }

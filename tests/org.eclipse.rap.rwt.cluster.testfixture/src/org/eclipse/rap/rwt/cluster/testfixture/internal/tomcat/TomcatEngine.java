@@ -91,7 +91,7 @@ public class TomcatEngine implements IServletEngine {
     context.addParameter( "org.eclipse.rwt.entryPoints", entryPointClass.getName() );
     context.addApplicationListener( RWTServletContextListener.class.getName() );
     Wrapper rwtServlet = addServlet( "rwtServlet", new RWTDelegate() );
-    context.addServletMapping( "/rap", rwtServlet.getName() );
+    context.addServletMapping( IServletEngine.SERVLET_PATH, rwtServlet.getName() );
     Wrapper defaultServlet = addServlet( "defaultServlet", new DefaultServlet() );
     context.addServletMapping( "/", defaultServlet.getName() );
     addFilter( rwtServlet, new RWTClusterSupport() );

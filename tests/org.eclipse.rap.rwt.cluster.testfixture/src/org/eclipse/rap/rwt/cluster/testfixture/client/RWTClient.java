@@ -21,9 +21,6 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 
 public class RWTClient {
 
-  // TODO [rh] replace hard-coded servet name (see also ServletEngine#addEntryPoint)
-  private static final String SERVLET_NAME = "rap";
-
   private IServletEngine servletEngine;
   private String sessionId;
   private int requestCounter;
@@ -99,7 +96,7 @@ public class RWTClient {
     if( requestCounter >= 0 ) {
       addParameter( "requestCounter", String.valueOf( requestCounter ) );
     }
-    URL url = createUrl( SERVLET_NAME );
+    URL url = createUrl( IServletEngine.SERVLET_NAME );
     HttpURLConnection connection = createConnection( url );
     connection.connect();
     parseSessionId( connection );
