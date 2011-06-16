@@ -21,7 +21,7 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
     init : function( tree, argsMap ) {
       
     },
-    
+
     createTreeRowContainer : function( argsmap ) {
       var result;
       if( typeof argsmap.fixedColumns === "number" ) {
@@ -32,8 +32,37 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       return result;
     },
     
+    getColumnByPageX : function( tree, pageX ) {
+      var container = tree.getRowContainer();
+      var splitContainer = container instanceof this._CONTAINERCONSTR;
+      if( splitContainer ) {
+        container = tree.getRowContainer().getSubContainer( 0 );
+      }
+      var result = this._getColumnByPageX( container, pageX );
+      if( result === -1 && splitContainer ) {
+        container = tree.getRowContainer().getSubContainer( 1 );
+        result = this._getColumnByPageX( container, pageX );
+      }
+      return result;
+    },
+    
     ////////////
     // Internals
+    
+    _getColumnByPageX : function( container, pageX ) {
+      var config = container.getRenderConfig();
+      var columnCount = config.columnCount;
+      var columnIndex = columnCount == 0 ? 0 : -1;
+      var element = container.getFirstChild().getElement();
+      var leftOffset = qx.bom.element.Location.getLeft( element );
+      for( var i = 0; columnIndex == -1 && i < columnCount; i++ ) {
+        var pageLeft = leftOffset + config.itemLeft[ i ];
+        if( pageX >= pageLeft && pageX < pageLeft + config.itemWidth[ i ] ) {
+          columnIndex = i;
+        }
+      }
+      return columnIndex;
+    },
 
     _createContainerWrapper : function( fixedColumns ) {
       if( !this._CONTAINERPROTO._protoInit ) {
@@ -108,9 +137,19 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       
       _protoInit : false,
 
+      ///////////////////
+      // Wrapper-only API
+      
       getSubContainer : function( pos ) {
         return this._container[ pos ] || null;
       },
+      
+      getFixedColumns : function() {
+        return this._fixedColumns;
+      },
+      
+      /////////////////////////////////////////////
+      // New Implementation of TreeRowContainer API
 
       getRenderConfig : function() {
         return this._config;

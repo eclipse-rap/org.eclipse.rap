@@ -314,8 +314,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this.base( arguments, state );
     },
         
-    ////////////////////////
-    // API for Tests and DND
+    //////////////////////////////////
+    // API for Tests, DND and TreeUtil
     
     getRenderConfig : function() {
       return this._config;
@@ -331,6 +331,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     isItemSelected : function( item ) {
       return this._selection.indexOf( item ) != -1;
+    },
+    
+    getRowContainer : function() {
+      return this._rowContainer;
     },
     
     //////////////////////
@@ -1267,20 +1271,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _onClientAreaMouseMove : function( evt ) {
       if( this._cellToolTip != null ) {
-        var pageX = evt.getPageX();
         if( this._rowContainer.getHoverItem() ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var itemId = widgetManager.findIdByWidget( this._rowContainer.getHoverItem() );
-          var columnCount = this._config.columnCount;
-          var columnIndex = columnCount == 0 ? 0 : -1;
-          var element = this._rowContainer.getElement();
-          var leftOffset = qx.bom.element.Location.getLeft( element );
-          for( var i = 0; columnIndex == -1 && i < columnCount; i++ ) {
-            var pageLeft = leftOffset + this._config.itemLeft[ i ];
-            if( pageX >= pageLeft && pageX < pageLeft + this._config.itemWidth[ i ] ) {
-              columnIndex = i;
-            }
-          }
+          var columnIndex = org.eclipse.rwt.TreeUtil.getColumnByPageX( this, evt.getPageX() );
           this._cellToolTip.setCell( itemId, columnIndex );
         }
       }

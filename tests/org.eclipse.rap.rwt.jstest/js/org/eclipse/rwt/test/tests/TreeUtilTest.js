@@ -306,7 +306,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       tree.destroy();
     },
 
-    testCellToolTipOnSplitTree : function() {
+    testCellToolTipOnFixedColumns : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
@@ -336,6 +336,43 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       assertEquals( 1, testUtil.getRequestsSend() );
       var param1 = "org.eclipse.swt.events.cellToolTipTextRequested=w3";
       var param2 = "org.eclipse.swt.events.cellToolTipTextRequested.cell=w45%2C1";
+      console.log( msg );
+      assertTrue( msg.indexOf( param1 ) != -1 );
+      assertTrue( msg.indexOf( param2 ) != -1 );
+      tree.destroy();
+    },
+
+    testCellToolTipOnNonFixedColumns : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createSplitTree();
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      widgetManager.add( tree, "w3", true );
+      tree.setWidth( 300 );
+      tree.setEnableCellToolTip( true );
+      tree.setColumnCount( 6 );
+      tree.setItemMetrics( 0, 0, 5, 0, 0, 0, 50 ); 
+      tree.setItemMetrics( 1, 5, 10, 0, 0, 0, 50 ); 
+      tree.setItemMetrics( 2, 15, 10, 0, 0, 0, 50 ); 
+      tree.setItemMetrics( 3, 25, 10, 0, 0, 0, 50 ); 
+      tree.setItemMetrics( 4, 35, 350, 0, 0, 0, 50 ); 
+      tree.setItemMetrics( 5, 400, 100, 405, 10, 430, 50 );
+      tree.setItemCount( 1 ); 
+      var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
+      widgetManager.add( item, "w45", true );
+      testUtil.flush();
+      testUtil.prepareTimerUse();
+      testUtil.initRequestLog();
+      tree.setScrollLeft( 20 );      
+      var leftButton = qx.event.type.MouseEvent.buttons.left;
+      var node = tree._rowContainer.getSubContainer( 1 ).getChildren()[ 0 ].getElement();
+      testUtil.fakeMouseEventDOM( node, "mouseover", leftButton, 16, 11 );
+      testUtil.fakeMouseEventDOM( node, "mousemove", leftButton, 16, 11 );
+      testUtil.forceInterval( tree._cellToolTip._showTimer );
+      var msg = testUtil.getMessage();
+      assertEquals( 1, testUtil.getRequestsSend() );
+      var param1 = "org.eclipse.swt.events.cellToolTipTextRequested=w3";
+      var param2 = "org.eclipse.swt.events.cellToolTipTextRequested.cell=w45%2C4";
+      console.log( msg );
       assertTrue( msg.indexOf( param1 ) != -1 );
       assertTrue( msg.indexOf( param2 ) != -1 );
       tree.destroy();
