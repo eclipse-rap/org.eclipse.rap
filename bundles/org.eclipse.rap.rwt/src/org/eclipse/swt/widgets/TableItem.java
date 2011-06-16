@@ -997,7 +997,8 @@ public class TableItem extends Item {
         imageWidth = parent.getItemImageSize().x;
         spacing = getSpacing( 0 );
       }
-      left = getLeft( 0 ) + cellPadding.x + imageWidth + spacing; top = getTop( itemIndex );
+      left = getLeft( 0 ) + cellPadding.x + imageWidth + spacing;
+      top = getTop( itemIndex );
       Font font = getFont();
       width = Graphics.stringExtent( font, getText( 0 ) ).x;
     } else if( itemIndex != -1 && index < parent.getColumnCount() ) {
