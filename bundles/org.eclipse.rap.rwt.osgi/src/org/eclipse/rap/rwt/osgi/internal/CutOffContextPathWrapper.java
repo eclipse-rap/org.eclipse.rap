@@ -21,12 +21,15 @@ class CutOffContextPathWrapper extends HttpServlet {
 
   private final HttpServlet servlet;
   private final String alias;
+  private ServletContext servletContext;
 
   static class RequestWrapper extends HttpServletRequestWrapper {
     private final String alias;
+    private final HttpSession httpSession;
 
-    RequestWrapper( HttpServletRequest request, String alias ) {
+    RequestWrapper( HttpServletRequest request, ServletContext servletContext, String alias ) {
       super( request );
+      this.httpSession = new HttpSessionWrapper( request.getSession(), servletContext );
       this.alias = alias;
     }
     
@@ -34,10 +37,16 @@ class CutOffContextPathWrapper extends HttpServlet {
     public String getServletPath() {
       return "/" + alias;
     }
+    
+    @Override
+    public HttpSession getSession() {
+      return httpSession;
+    }
   }
   
-  CutOffContextPathWrapper( HttpServlet servlet, String alias ) {
+  CutOffContextPathWrapper( HttpServlet servlet, ServletContext servletContext, String alias ) {
     this.servlet = servlet;
+    this.servletContext = servletContext;
     this.alias = alias;
   }
 
@@ -90,7 +99,8 @@ class CutOffContextPathWrapper extends HttpServlet {
   public void service( ServletRequest req, ServletResponse res )
     throws ServletException, IOException
   {
-    servlet.service( new RequestWrapper( ( HttpServletRequest )req, alias ), res );
+    RequestWrapper request = new RequestWrapper( ( HttpServletRequest )req, servletContext, alias );
+    servlet.service( request, res );
   }
 
   @Override

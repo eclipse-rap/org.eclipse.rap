@@ -12,10 +12,13 @@ package org.eclipse.rap.rwt.osgi.internal;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import javax.servlet.ServletContext;
 
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.TestServletContext;
 
 
 public class ServletContextWrapper_Test extends TestCase {
@@ -188,10 +191,52 @@ public class ServletContextWrapper_Test extends TestCase {
 
   public void testRemoveAttribute() {
     String name = "name";
+    when( context.getAttribute( name ) ).thenReturn( new Object() );
     wrapper.removeAttribute( name );
     
     verify( context ).removeAttribute( name );
   }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////
+  // START ATTRIBUTE BEHAVIOR TEST
+  //
+  // Note [fappel]: This fixes a problem with underlying OSGi ServletContext implementations
+  //                that do not implement the attributes API part.
+  
+  public void testLocalAttributeBuffering() {
+    Object object = new Object();
+    String name = "name";
+    
+    wrapper.setAttribute( name, object );
+    Object found = wrapper.getAttribute( name );
+    boolean hasMoreElements = wrapper.getAttributeNames().hasMoreElements();
+    wrapper.removeAttribute( name );
+    Object foundAfterRemove = wrapper.getAttribute( name );
+    
+    assertSame( object, found );
+    assertTrue( hasMoreElements );
+    assertNull( foundAfterRemove );
+  }
+  
+  public void testAttributeBufferingInWrappedServletContext() {
+    Object object = new Object();
+    String name = "name";
+    TestServletContext wrapped = new TestServletContext();
+    wrapper = new ServletContextWrapper( wrapped, "" );
+    
+    wrapper.setAttribute( name, object );
+    Object found = wrapped.getAttribute( name );
+    boolean hasMoreElements = wrapper.getAttributeNames().hasMoreElements();
+    wrapper.removeAttribute( name );
+    Object foundAfterRemove = wrapped.getAttribute( name );
+
+    assertSame( object, found );
+    assertTrue( hasMoreElements );
+    assertNull( foundAfterRemove );
+  }
+
+  // END ATTRIBUTE BEHAVIOR TEST
+  //////////////////////////////////////////////////////////////////////////////////////////////////
 
   public void testGetServletContextName() {
     wrapper.getServletContextName();

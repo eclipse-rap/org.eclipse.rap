@@ -13,18 +13,19 @@ package org.eclipse.rap.rwt.osgi.internal;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.*;
 
 class ServletContextWrapper implements ServletContext {
   private final ServletContext servletContext;
   private final String contextDirectory;
+  private final Map<String, Object> attributes;
 
   ServletContextWrapper( ServletContext servletContext, String contextDirectory ) {
     this.servletContext = servletContext;
     this.contextDirectory = contextDirectory;
+    this.attributes = new HashMap<String, Object>();
   }
 
   public ServletContext getContext( String uripath ) {
@@ -113,21 +114,69 @@ class ServletContextWrapper implements ServletContext {
   }
 
   public Object getAttribute( String name ) {
-    return servletContext.getAttribute( name );
+    Object result;
+    synchronized( attributes ) {
+      if( isAttributeInWrappedContext( name ) ) {
+        result = servletContext.getAttribute( name );
+      } else {
+        result = attributes.get( name );
+      }
+    }
+    return result;
   }
 
   public Enumeration getAttributeNames() {
-    return servletContext.getAttributeNames();
+    Enumeration result;
+    synchronized( attributes ) {
+      result = servletContext.getAttributeNames();
+      if( needEnumerationFromLocalAttributeBuffer( result ) ) {
+        result = createAttributeNamesEnumeration();
+      }
+    }
+    return result;
+  }
+
+  private boolean needEnumerationFromLocalAttributeBuffer( Enumeration result ) {
+    return ( result == null || !result.hasMoreElements() ) && !attributes.isEmpty();
+  }
+
+  private Enumeration createAttributeNamesEnumeration() {
+    return new Enumeration< Object >() {
+      Iterator< String > names = attributes.keySet().iterator();
+
+      public boolean hasMoreElements() {
+        return names.hasNext();
+      }
+
+      public Object nextElement() {
+        return names.next();
+      }
+    };
   }
 
   public void setAttribute( String name, Object object ) {
-    servletContext.setAttribute( name, object );
+    synchronized( attributes ) {
+      servletContext.setAttribute( name, object );
+      if( !isAttributeInWrappedContext( name ) ) {
+        attributes.put( name, object );
+      }
+    }
   }
 
   public void removeAttribute( String name ) {
-    servletContext.removeAttribute( name );
+    synchronized( attributes ) {
+      if( isAttributeInWrappedContext( name ) ) {
+        servletContext.removeAttribute( name );
+      } else {
+        attributes.remove( name );
+      }
+    }
   }
 
+  private boolean isAttributeInWrappedContext( String name ) {
+    return null != servletContext.getAttribute( name );
+  }
+  
   public String getServletContextName() {
     return servletContext.getServletContextName();
   }

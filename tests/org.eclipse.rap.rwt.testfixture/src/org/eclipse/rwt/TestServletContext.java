@@ -118,12 +118,22 @@ public class TestServletContext implements ServletContext {
   }
 
   public Enumeration getAttributeNames() {
-    return null;
+    return new Enumeration() {
+      Iterator iterator = TestServletContext.this.attributes.keySet().iterator();
+      
+      public boolean hasMoreElements() {
+        return iterator.hasNext();
+      }
+
+      public Object nextElement() {
+        return iterator.next();
+      }
+    };
   }
 
   public void setAttribute( String arg0, Object arg1 ) {
     ThemeManagerHelper.adaptApplicationContext( arg1 );
-    attributes .put( arg0, arg1 );
+    attributes.put( arg0, arg1 );
   }
 
   public void removeAttribute( String arg0 ) {

@@ -29,6 +29,7 @@ class RWTContextImpl implements RWTContext {
   private HttpContext httpContext;
   private String contextLocation;
   private String contextName;
+  private ServletContext servletContextWrapper;
   private ContextControl contextControl;
   private RWTServiceImpl rwtServiceImpl;
   private boolean alive;
@@ -81,8 +82,8 @@ class RWTContextImpl implements RWTContext {
 
   private void createContextControl( HttpServlet contextProvider ) {
     ServletContext servletContext = contextProvider.getServletContext();
-    ServletContext wrapper = new ServletContextWrapper( servletContext, contextLocation );
-    contextControl = new ContextControl( wrapper, configurator );
+    servletContextWrapper = new ServletContextWrapper( servletContext, contextLocation );
+    contextControl = new ContextControl( servletContextWrapper, configurator );
   }
 
   private void unregisterServletContextProvider() {
@@ -125,7 +126,7 @@ class RWTContextImpl implements RWTContext {
 
   private void registerServlet( String alias, final HttpServlet servlet ) {
     try {
-      HttpServlet wrapper = new CutOffContextPathWrapper( servlet, alias );
+      HttpServlet wrapper = new CutOffContextPathWrapper( servlet, servletContextWrapper, alias );
       httpService.registerServlet( getContextSegment() + "/" + alias, wrapper, null, httpContext );
     } catch( RuntimeException rte ) {
       throw rte;
@@ -166,6 +167,7 @@ class RWTContextImpl implements RWTContext {
     contextName = null;
     contextLocation = null;
     rwtServiceImpl = null;
+    servletContextWrapper = null;
   }
 
   private void unregisterServlet( String alias ) {

@@ -15,8 +15,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.http.*;
 
 import junit.framework.TestCase;
@@ -96,11 +95,15 @@ public class CutOffContextPathWrapper_Test extends TestCase {
   }
   
   public void testRequestWrapper() {
-    RequestWrapper requestWrapper = new RequestWrapper( mock( HttpServletRequest.class ), ALIAS );
+    HttpServletRequest servletRequest = mock( HttpServletRequest.class );
+    ServletContext servletContext = mock( ServletContext.class );
+    RequestWrapper requestWrapper = new RequestWrapper( servletRequest, servletContext, ALIAS );
     
     String servletPath = requestWrapper.getServletPath();
+    ServletContext foundContext = requestWrapper.getSession().getServletContext();
     
     assertEquals( "/" + ALIAS, servletPath );
+    assertSame( servletContext, foundContext );
   }
 
   public void testLogWithThrowable() {
@@ -120,6 +123,7 @@ public class CutOffContextPathWrapper_Test extends TestCase {
 
   protected void setUp() {
     servlet = mock( HttpServlet.class );
-    cutOffContextPathWrapper = new CutOffContextPathWrapper( servlet, ALIAS );
+    ServletContext servletContext = mock( ServletContext.class );
+    cutOffContextPathWrapper = new CutOffContextPathWrapper( servlet, servletContext, ALIAS );
   }
 }
