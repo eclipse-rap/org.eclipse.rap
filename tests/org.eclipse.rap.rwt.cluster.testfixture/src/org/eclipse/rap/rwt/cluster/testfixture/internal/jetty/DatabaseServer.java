@@ -18,6 +18,9 @@ import org.h2.tools.Server;
 
 
 class DatabaseServer {
+  private static final String CONNECTION_URL_PATTERN
+    = "jdbc:h2:tcp://localhost:{0}/mem:sessions;DB_CLOSE_DELAY=-1";
+
   private Server server;
   
   void start() {
@@ -38,7 +41,7 @@ class DatabaseServer {
   }
 
   void stop() {
-    if( server != null ) {
+    if( isRunning() ) {
       server.stop();
       server = null;
     }
@@ -49,9 +52,18 @@ class DatabaseServer {
   }
   
   String getConnectionUrl() {
-    String pattern = "jdbc:h2:tcp://localhost:{0}/mem:sessions;DB_CLOSE_DELAY=-1";
-    int port = server == null ? -1 : server.getPort();
-    Object[] args = new Object[] { String.valueOf( port ) };
-    return MessageFormat.format( pattern, args );
+    checkRunning();
+    String pattern = CONNECTION_URL_PATTERN;
+    return MessageFormat.format( pattern, String.valueOf( server.getPort() ) );
+  }
+
+  private void checkRunning() {
+    if( !isRunning() ) {
+      throw new IllegalStateException( "Database server is not running." );
+    }
+  }
+
+  private boolean isRunning() {
+    return server != null;
   }
 }

@@ -22,9 +22,19 @@ public class DatabaseServer_Test extends TestCase {
   private DatabaseServer databaseServer;
 
   public void testGetConnectionUrl() {
+    databaseServer.start();
+    
     String connectionUrl = databaseServer.getConnectionUrl();
     
-    assertEquals( "jdbc:h2:tcp://localhost:-1/mem:sessions;DB_CLOSE_DELAY=-1", connectionUrl );
+    assertNotNull( connectionUrl );
+  }
+  
+  public void testGetConnectionUrlWithStoppedDatabaseServer() {
+    try {
+      databaseServer.getConnectionUrl();
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
   }
   
   public void testStart() throws Exception {
