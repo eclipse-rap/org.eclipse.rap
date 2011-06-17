@@ -109,8 +109,8 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
         this.base( arguments, evt );
         if( this._isContentAccessible() ) {
           this._attachBrowserFunctions();
-          this._sendProgressEvent();
         }
+        this._sendProgressEvent();
       }
     },
 

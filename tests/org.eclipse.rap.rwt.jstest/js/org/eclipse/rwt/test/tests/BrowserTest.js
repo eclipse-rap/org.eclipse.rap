@@ -538,6 +538,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       assertEquals( ecpected, browser.objectToString( object ) );
     },
 
+    testProgressEvent :  [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var browser = this._createBrowser();
+        browser.setHasProgressListener( true );
+        testUtil.initRequestLog();
+        browser.setSource( "http://www.google.de/" );
+        browser.syncSource();
+        testUtil.delayTest( 1000 );
+        testUtil.store( browser );
+      },
+      function( browser ) {
+        assertTrue( "slow connection?", browser._isLoaded );
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        assertEquals( 1, testUtil.getRequestsSend() );
+        var msg = testUtil.getMessage();
+        assertTrue( msg.indexOf( "org.eclipse.swt.events.progressCompleted=w6" ) != -1 );
+        browser.destroy();
+      }
+    ],
+
     /////////////
     // helper
     
