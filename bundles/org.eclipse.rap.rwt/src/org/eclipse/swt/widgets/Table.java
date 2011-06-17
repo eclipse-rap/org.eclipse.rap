@@ -1606,11 +1606,11 @@ public class Table extends Composite {
         boolean found = false;
         for( int i = 0; i < columnOrder.length && !found; i++ ) {
           found = index == columnOrder[ i ];
-          if( !found ) {
+          if( !found && !isFixedColumn( i ) ) {
             leftColumnsWidth += getColumn( columnOrder[ i ] ).getWidth();
           }
         }
-        if( leftOffset > leftColumnsWidth ) {
+        if( getLeftOffset( index ) > leftColumnsWidth ) {
           leftOffset = leftColumnsWidth;
         } else if( leftOffset < leftColumnsWidth + columnWidth - clientWidth ) {
           leftOffset = leftColumnsWidth + columnWidth - clientWidth;
@@ -2465,9 +2465,13 @@ public class Table extends Composite {
   final int getLeftOffset( int columnIndex ) {
     int result = leftOffset;
     if( columnIndex >= 0 ) {
-      result = columnIndex < getFixedColumns() ? 0 : leftOffset;
+      result = isFixedColumn( columnIndex ) ? 0 : leftOffset;
     }
     return result;
+  }
+
+  private boolean isFixedColumn( int index ) {
+    return index < getFixedColumns();
   }
 
   private int getFixedColumns() {
