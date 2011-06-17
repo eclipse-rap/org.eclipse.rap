@@ -179,6 +179,23 @@ public class TableItem_Test extends TestCase {
     assertEquals( 30, item.getBounds( 1 ).x );
   }
 
+  public void testItemLeftWithFixedColumnsSwitchOrder() {
+    Table table = createFixedColumnsTable();
+    table.setSize( 100, 200 );
+    TableItem item = new TableItem( table, SWT.NONE );
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    column0.setWidth( 100 );
+    TableColumn column1 = new TableColumn( table, SWT.NONE );
+    column1.setWidth( 50 );
+    table.setColumnOrder( new int[]{ 1, 0 } );
+
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    adapter.setLeftOffset( 20 );
+
+    assertEquals( 0, item.getBounds( 1 ).x );
+    assertEquals( 30, item.getBounds( 0 ).x );
+  }
+
   public void testTextBounds() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );

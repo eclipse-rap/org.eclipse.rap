@@ -141,12 +141,12 @@ public class Table extends Composite {
       Table.this.setFocusIndex( focusIndex );
     }
 
-    public int getLeftOffset( int columnIndex ) {
-      return Table.this.getLeftOffset( columnIndex );
+    public int getColumnLeftOffset( int columnIndex ) {
+      return Table.this.getColumnLeftOffset( columnIndex );
     }
 
     public int getLeftOffset() {
-      return Table.this.getLeftOffset( -1 );
+      return Table.this.getColumnLeftOffset( -1 );
     }
 
     public void setLeftOffset( final int leftOffset ) {
@@ -1610,7 +1610,7 @@ public class Table extends Composite {
             leftColumnsWidth += getColumn( columnOrder[ i ] ).getWidth();
           }
         }
-        if( getLeftOffset( index ) > leftColumnsWidth ) {
+        if( getColumnLeftOffset( index ) > leftColumnsWidth ) {
           leftOffset = leftColumnsWidth;
         } else if( leftOffset < leftColumnsWidth + columnWidth - clientWidth ) {
           leftOffset = leftColumnsWidth + columnWidth - clientWidth;
@@ -2462,7 +2462,10 @@ public class Table extends Composite {
     return result;
   }
 
-  final int getLeftOffset( int columnIndex ) {
+  /**
+   * Returns the scroll-offset of the column, which is the leftOffset unless it is a fixed column.
+   */
+  final int getColumnLeftOffset( int columnIndex ) {
     int result = leftOffset;
     if( columnIndex >= 0 ) {
       result = isFixedColumn( columnIndex ) ? 0 : leftOffset;
@@ -2471,7 +2474,14 @@ public class Table extends Composite {
   }
 
   private boolean isFixedColumn( int index ) {
-    return index < getFixedColumns();
+    int[] columnOrder = getColumnOrder();
+    int visualIndex = -1;
+    for( int i = 0; i < columnOrder.length && visualIndex == -1; i++ ) {
+      if( index == columnOrder[ i ] ) {
+        visualIndex = i;
+      }
+    }
+    return visualIndex < getFixedColumns();
   }
 
   private int getFixedColumns() {

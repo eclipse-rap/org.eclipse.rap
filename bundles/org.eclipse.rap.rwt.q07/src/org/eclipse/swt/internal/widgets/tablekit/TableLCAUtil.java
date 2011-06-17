@@ -127,7 +127,7 @@ public final class TableLCAUtil {
     TableItem measureItem = tableAdapter.getMeasureItem();
     if( measureItem != null ) {
       for( int i = 0; i < columnCount; i++ ) {
-        int leftOffset = tableAdapter.getLeftOffset( i );
+        int leftOffset = tableAdapter.getColumnLeftOffset( i );
         Rectangle bounds = measureItem.getBounds( i );
         Rectangle imageBounds = measureItem.getImageBounds( i );
         Rectangle textBounds = measureItem.getTextBounds( i );
