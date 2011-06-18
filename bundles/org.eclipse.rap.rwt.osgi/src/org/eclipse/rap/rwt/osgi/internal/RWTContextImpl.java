@@ -22,7 +22,7 @@ import org.osgi.service.http.HttpService;
 
 class RWTContextImpl implements RWTContext {
   static final String SERVLET_CONTEXT_FINDER_ALIAS = "servlet_context_finder";
-  static final String DEFAULT_ALIAS = "rwt";
+  static final String DEFAULT_ALIAS = "rap";
 
   private Configurator configurator;
   private HttpService httpService;

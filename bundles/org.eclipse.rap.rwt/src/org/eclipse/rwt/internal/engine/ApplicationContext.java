@@ -105,15 +105,20 @@ public class ApplicationContext {
   public void activate() {
     checkIsActivated();
     activated = true;
-    notifyConfigurablesAboutActivation();
-    activateInstances();
+    try {
+      doActivate();
+    } catch( RuntimeException rte ) {
+      activated = false;
+      throw rte;
+    }
   }
 
   public void deactivate() {
-    checkIsNotActivated();
-    deactivateInstances();
-    notifyConfigurablesAboutDeactivation();
-    activated = false;
+    try {
+      doDeactivate();
+    } finally {
+      activated = false;
+    }
   }
 
   public void addConfigurable( Configurable configurable ) {
@@ -259,7 +264,12 @@ public class ApplicationContext {
       }
     } );
   }
-  
+
+  private void doActivate() {
+    notifyConfigurablesAboutActivation();
+    activateInstances();
+  }
+
   private void doActivateInstances() {
     // TODO [SystemStart]: Unit testing
     lifeCycleFactory.activate();
@@ -274,7 +284,13 @@ public class ApplicationContext {
     themeManager.activate();
     jsLibraryConcatenator.activate();
   }
-  
+
+  private void doDeactivate() {
+    checkIsNotActivated();
+    deactivateInstances();
+    notifyConfigurablesAboutDeactivation();
+  }
+
   private void deactivateInstances() {
     ApplicationContextUtil.runWith( this, new Runnable() {
       public void run() {

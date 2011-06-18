@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+
 import javax.servlet.ServletContext;
 
 import junit.framework.TestCase;
@@ -138,7 +141,7 @@ public class ApplicationContext_Test extends TestCase {
     checkUnallowedMethodAccessIfActivated();
   }
   
-  public void testApplicationContextDeactivate() {
+  public void testDeactivate() {
     TestConfigurable configurable = new TestConfigurable();
     context.addConfigurable( configurable );
     context.activate();
@@ -149,6 +152,24 @@ public class ApplicationContext_Test extends TestCase {
     assertSame( context, configurable.getResetContext() );
     assertTrue( configurable.isActivatedDuringReset() );
     checkUnallowedMethodAccessIfNotActivated();
+  }
+  
+  public void testActivateWithException() {
+    context.addConfigurable( createConfigurableWithConfigureProblem() );
+    
+    activateContextWithException();
+    
+    assertFalse( context.isActivated() );
+  }
+  
+  public void testDeactivateWithException() {
+    Configurable configurable = createConfigurableWithResetProblem();
+    context.addConfigurable( configurable );
+    context.activate();
+    
+    deactivateContextWithException();
+    
+    assertFalse( context.isActivated() );
   }
     
   public void testAddConfigurableWithNullParam() {
@@ -192,11 +213,7 @@ public class ApplicationContext_Test extends TestCase {
   }
   
   private void checkUnallowedMethodAccessIfActivated() {
-    try {
-      context.activate();
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
+    activateContextWithException();
     try {
       context.addConfigurable( null );
       fail();
@@ -204,6 +221,34 @@ public class ApplicationContext_Test extends TestCase {
     }
     try {
       context.removeConfigurable( null );
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
+  }
+  
+  private Configurable createConfigurableWithConfigureProblem() {
+    Configurable result = mock( Configurable.class );
+    doThrow( new IllegalStateException() ).when( result ).configure( context );
+    return result;
+  }
+  
+  private Configurable createConfigurableWithResetProblem() {
+    Configurable result = mock( Configurable.class );
+    doThrow( new IllegalStateException() ).when( result ).reset( context );
+    return result;
+  }
+
+  private void deactivateContextWithException() {
+    try {
+      context.deactivate();
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
+  }
+
+  private void activateContextWithException() {
+    try {
+      context.activate();
       fail();
     } catch( IllegalStateException expected ) {
     }

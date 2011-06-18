@@ -37,12 +37,17 @@ public class ContextControl {
   public void startContext() {
     applicationContext.addConfigurable( new ContextConfigurable( configurator, servletContext ) );
     ApplicationContextUtil.set( servletContext, applicationContext );
-    applicationContext.activate();
+    activateApplicationContext();
   }
   
   public void stopContext() {
-    applicationContext.deactivate();
-    ApplicationContextUtil.remove( servletContext );
+    try {
+      if( applicationContext.isActivated() ) {
+        applicationContext.deactivate();
+      }
+    } finally {
+      ApplicationContextUtil.remove( servletContext );
+    }
   }
   
   public HttpServlet createServlet() {
@@ -56,5 +61,14 @@ public class ContextControl {
       names.add( branding.getServletName() );
     }
     return names.toArray( new String[ names.size() ] );
+  }
+
+  private void activateApplicationContext() {
+    try {
+      applicationContext.activate();
+    } catch( RuntimeException rte ) {
+      ApplicationContextUtil.remove( servletContext );
+      throw rte;
+    }
   }
 }

@@ -11,7 +11,9 @@
 package org.eclipse.rwt.branding;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -49,11 +51,28 @@ public class ContextControl_Test extends TestCase {
     checkApplicationContextHasBeenRegistered();
   }
   
+  public void testStartContextWithProblem() {
+    createConfiguratorWithProblem();
+    
+    startContextWithProblem();
+    
+    checkApplicationContextHasBeenDeregistered();
+  }
+  
   public void testStopContext() {
     contextControl.startContext();
   
     contextControl.stopContext();
     checkApplicationContextHasBeenDeregistered();
+  }
+  
+  public void testStopContextThatHasFailedOnStart() {
+    createConfiguratorWithProblem();
+    startContextWithProblem();
+
+    contextControl.stopContext();
+    
+    checkApplicationContextGetsDeregisteredAnyway();
   }
 
   public void testGetDefaultServletNames() {
@@ -106,5 +125,21 @@ public class ContextControl_Test extends TestCase {
     };
     contextControl = new ContextControl( servletContext, configurator );
     contextControl.startContext();
+  }
+
+  private void createConfiguratorWithProblem() {
+    doThrow( new IllegalStateException() ).when( configurator ).configure( any( Context.class ) );
+  }
+
+  private void startContextWithProblem() {
+    try {
+      contextControl.startContext();
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
+  }
+
+  private void checkApplicationContextGetsDeregisteredAnyway() {
+    verify( servletContext, times( 2 ) ).removeAttribute( any( String.class ) );
   }
 }

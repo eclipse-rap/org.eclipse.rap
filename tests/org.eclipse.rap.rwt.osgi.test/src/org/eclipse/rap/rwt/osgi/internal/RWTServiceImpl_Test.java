@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.osgi.internal;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -37,6 +38,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
+import org.osgi.service.log.LogService;
 
 
 public class RWTServiceImpl_Test extends TestCase {
@@ -51,6 +53,7 @@ public class RWTServiceImpl_Test extends TestCase {
   private Configurator configurator;
   private ServiceReference< Configurator > configuratorReference;
   private RWTServiceImpl service;
+  private LogService log;
   
   public void testStart() {
     service.start( configurator, httpService, null, null, Fixture.WEB_CONTEXT_DIR.getPath() );
@@ -75,6 +78,16 @@ public class RWTServiceImpl_Test extends TestCase {
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
   }
+  
+  public void testStartWithProblem() {
+    prepareConfiguratorToThrowException();
+    mockLogService();
+    
+    service.addHttpService( httpServiceReference );
+    service.addConfigurator( configuratorReference );
+    
+    checkProblemHasBeenLogged();
+  }
 
   public void testStop() {
     String path = Fixture.WEB_CONTEXT_DIR.getPath();
@@ -86,6 +99,15 @@ public class RWTServiceImpl_Test extends TestCase {
     checkWebContextResourcesHaveBeenDeleted();
   }
   
+  public void testStopWithProblem() {
+    mockLogService();
+    RWTContextImpl rwtContext = createMalignRWTContext();
+    
+    service.stopContext( rwtContext );
+    
+    checkProblemHasBeenLogged();
+  }
+
   public void testInitialActivationState() {
     assertTrue( service.isAlive() );
   }
@@ -387,6 +409,21 @@ public class RWTServiceImpl_Test extends TestCase {
     verify( httpService ).createDefaultHttpContext();
   }
 
+  private void checkProblemHasBeenLogged() {
+    verify( log ).log( eq( LogService.LOG_ERROR ),
+                       any( String.class ), 
+                       any( IllegalStateException.class ) );
+  }
+
+  @SuppressWarnings( "unchecked" )
+  private void mockLogService() {
+    log = mock( LogService.class );
+    ServiceReference logReference = mock( ServiceReference.class );
+    when( bundleContext.getServiceReference( LogService.class.getName() ) )
+      .thenReturn( logReference );
+    when( bundleContext.getService( logReference ) ).thenReturn( log );
+  }
+
   private void registerServiceReferences() {
     service.addConfigurator( configuratorReference );
     service.addHttpService( httpServiceReference );
@@ -530,5 +567,15 @@ public class RWTServiceImpl_Test extends TestCase {
 
   private RWTContext startRWTContext( String location ) {
     return service.start( configurator, httpService, null, null, location );
+  }
+  
+  private void prepareConfiguratorToThrowException() {
+    doThrow( new IllegalStateException() ).when( configurator ).configure( any( Context.class ) );
+  }
+
+  private RWTContextImpl createMalignRWTContext() {
+    RWTContextImpl result = mock( RWTContextImpl.class );
+    doThrow( new IllegalStateException() ).when( result ).stop();
+    return result;
   }
 }

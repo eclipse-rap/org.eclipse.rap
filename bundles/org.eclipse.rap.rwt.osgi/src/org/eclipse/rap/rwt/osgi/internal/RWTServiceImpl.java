@@ -21,6 +21,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
+import org.osgi.service.log.LogService;
 
 
 public class RWTServiceImpl implements RWTService {
@@ -86,11 +87,11 @@ public class RWTServiceImpl implements RWTService {
                                                 contextDirectory, 
                                                 this );
     synchronized( lock ) {
+      result.start();
+      notifyContextStarted( result );
       contexts.add( result );
       httpServices.add( httpService );
       configurators.add( configurator );
-      result.start();
-      notifyContextStarted( result );
     }
     return result;
   }
@@ -191,7 +192,11 @@ public class RWTServiceImpl implements RWTService {
     HttpService httpService = httpServiceHolder.getService();
     String contextName = getContextName( configuratorHolder );
     String contextLocation = getLocation( contextName, configurator, httpService );
-    start( configurator, httpService, null, contextName, contextLocation );
+    try {
+      start( configurator, httpService, null, contextName, contextLocation );
+    } catch( RuntimeException rte ) {
+      logProblem( "Unable to start RWTContext.", rte );
+    }
   }
 
   private String getContextName( ServiceHolder< Configurator > configuratorHolder ) {
@@ -203,7 +208,7 @@ public class RWTServiceImpl implements RWTService {
     RWTContextImpl[] iterator = contexts.getAll();
     for( RWTContextImpl context : iterator ) {
       if( context.belongsTo( service ) ) {
-        context.stop();
+        stopContext( context );
       }
     }
   }
@@ -211,7 +216,15 @@ public class RWTServiceImpl implements RWTService {
   private void stopAllContexts() {
     RWTContextImpl[] all = contexts.getAll();
     for( RWTContextImpl context : all ) {
+      stopContext( context );
+    }
+  }
+  
+  void stopContext( RWTContextImpl context ) {
+    try {
       context.stop();
+    } catch( RuntimeException rte ) {
+      logProblem( "Unable to stop RWTContext properly.", rte );
     }
   }
 
@@ -244,5 +257,18 @@ public class RWTServiceImpl implements RWTService {
     result.append( "_" );
     result.append( service.hashCode() );
     return result.toString();
+  }
+  
+  private void logProblem( String failureMessage, Throwable failure ) {
+    ServiceReference logReference = bundleContext.getServiceReference( LogService.class.getName() );
+    if( logReference != null ) {
+      @SuppressWarnings( "unchecked" )
+      LogService log = ( LogService )bundleContext.getService( logReference );
+      log.log( LogService.LOG_ERROR, failureMessage, failure );
+    } else {
+      // TODO [fappel]: is there a better solution?
+      System.err.println( failureMessage );
+      failure.printStackTrace();
+    }
   }
 }
