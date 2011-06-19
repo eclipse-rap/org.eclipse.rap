@@ -25,8 +25,7 @@ class ConfiguratorTracker extends ServiceTracker< Configurator, Configurator > {
   
   @Override
   public Configurator addingService( ServiceReference<Configurator> reference ) {
-    rwtService.addConfigurator( reference );
-    return super.addingService( reference );
+    return rwtService.addConfigurator( reference );
   }
   
   @Override

@@ -28,14 +28,12 @@ import javax.servlet.http.HttpServlet;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.osgi.RWTContext;
-import org.eclipse.rap.rwt.osgi.RWTServiceObserver;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.engine.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.*;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.log.LogService;
@@ -53,14 +51,18 @@ public class RWTServiceImpl_Test extends TestCase {
   private Configurator configurator;
   private ServiceReference< Configurator > configuratorReference;
   private RWTServiceImpl service;
+  private ServiceRegistration serviceRegistration;
   private LogService log;
   
   public void testStart() {
-    service.start( configurator, httpService, null, null, Fixture.WEB_CONTEXT_DIR.getPath() );
+    String path = Fixture.WEB_CONTEXT_DIR.getPath();
+    
+    service.start( configurator, httpService, null, null, path );
     
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
     checkHttpContextHasBeenCreated();
+    checkRWTContextHasBeenRegisteredAsService();
   }
 
   public void testStartWithHttpContext() {
@@ -70,6 +72,7 @@ public class RWTServiceImpl_Test extends TestCase {
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
     checkHttpContextHasBeenWrapped();
+    checkRWTContextHasBeenRegisteredAsService();
   }
   
   public void testStartWithDefaultContextDirectory() {
@@ -83,8 +86,7 @@ public class RWTServiceImpl_Test extends TestCase {
     prepareConfiguratorToThrowException();
     mockLogService();
     
-    service.addHttpService( httpServiceReference );
-    service.addConfigurator( configuratorReference );
+    registerServiceReferences();
     
     checkProblemHasBeenLogged();
   }
@@ -97,6 +99,7 @@ public class RWTServiceImpl_Test extends TestCase {
 
     checkDefaultAliasHasBeenUnregistered();
     checkWebContextResourcesHaveBeenDeleted();
+    checkRWTContextHasBeenUnregisteredAsService();
   }
   
   public void testStopWithProblem() {
@@ -190,8 +193,9 @@ public class RWTServiceImpl_Test extends TestCase {
   public void testAddConfigurator() {
     service.addHttpService( httpServiceReference );
     
-    service.addConfigurator( configuratorReference );
+    Configurator added = service.addConfigurator( configuratorReference );
 
+    assertSame( configurator, added );
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
   }
@@ -207,8 +211,11 @@ public class RWTServiceImpl_Test extends TestCase {
   }
   
   public void testAddHttpService() {
-    registerServiceReferences();
+    service.addConfigurator( configuratorReference );
     
+    HttpService added = service.addHttpService( httpServiceReference );
+    
+    assertSame( httpService, added );
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
   }
@@ -265,28 +272,6 @@ public class RWTServiceImpl_Test extends TestCase {
     
     checkDefaultAliasHasBeenRegistered();
   }
-  
-  public void testRWTServiceObserver() {
-    RWTServiceObserver listener = mock( RWTServiceObserver.class );
-    service.addObserver( listener );
-    
-    RWTContext context = startRWTContext();
-    context.stop();
-    service.removeObserver( listener );
-    startRWTContext();
-    
-    verify( listener ).contextStarted( context );
-    verify( listener ).contextStopped( context );
-  }
-  
-  public void testRWTServiceObserverNotificationAboutPreviouslyStarted() {
-    RWTContext context = startRWTContext();
-    RWTServiceObserver listener = mock( RWTServiceObserver.class );
-
-    service.addObserver( listener );
-    
-    verify( listener ).contextStarted( context );
-  }
 
   protected void setUp() {
     Fixture.deleteWebContextDirectories();
@@ -301,6 +286,17 @@ public class RWTServiceImpl_Test extends TestCase {
   protected void tearDown() {
     Fixture.delete( Fixture.WEB_CONTEXT_DIR );
     Fixture.setIgnoreResourceDeletion( Fixture.usePerformanceOptimizations() );
+  }
+
+  @SuppressWarnings( "unchecked" )
+  private ServiceRegistration< ? > checkRWTContextHasBeenRegisteredAsService() {
+    return verify( bundleContext ).registerService( eq( RWTContext.class.getName() ),
+                                             any( RWTContext.class ),
+                                             any( Dictionary.class ) );
+  }
+
+  private void checkRWTContextHasBeenUnregisteredAsService() {
+    verify( serviceRegistration ).unregister();
   }
 
   private void checkDefaultAliasHasBeenRegisteredTwice() {
@@ -546,12 +542,18 @@ public class RWTServiceImpl_Test extends TestCase {
     mockBundleContext( null );
   }
 
+  @SuppressWarnings( "unchecked" )
   private void mockBundleContext( String contextName ) {
     bundleContext = mock( BundleContext.class );
     String name = RWTServiceImpl.getContextFileName( contextName, configurator, httpService );
     when( bundleContext.getDataFile( eq( name ) ) ).thenReturn( Fixture.WEB_CONTEXT_DIR );
     when( bundleContext.getService( httpServiceReference ) ).thenReturn( httpService );
     when( bundleContext.getService( configuratorReference ) ).thenReturn( configurator );
+    serviceRegistration = mock( ServiceRegistration.class );
+    when( bundleContext.registerService( eq( RWTContext.class.getName() ), 
+                                         any( RWTContext.class ),
+                                         any( Dictionary.class ) ) )
+      .thenReturn( serviceRegistration );
   }
 
   private AbstractBranding mockBranding( String servletName ) {

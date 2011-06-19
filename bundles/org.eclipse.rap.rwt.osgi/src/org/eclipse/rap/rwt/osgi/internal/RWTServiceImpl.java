@@ -11,10 +11,9 @@
 package org.eclipse.rap.rwt.osgi.internal;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 
-import org.eclipse.rap.rwt.osgi.*;
+import org.eclipse.rap.rwt.osgi.RWTContext;
+import org.eclipse.rap.rwt.osgi.RWTService;
 import org.eclipse.rap.rwt.osgi.internal.ServiceContainer.ServiceHolder;
 import org.eclipse.rwt.engine.Configurator;
 import org.osgi.framework.BundleContext;
@@ -29,7 +28,6 @@ public class RWTServiceImpl implements RWTService {
   private final ServiceContainer< Configurator > configurators;
   private final ServiceContainer< HttpService > httpServices;
   private final RWTContextContainer contexts;
-  private final Set< RWTServiceObserver >observers;
   private BundleContext bundleContext;
   
   public RWTServiceImpl( BundleContext bundleContext ) {
@@ -37,16 +35,17 @@ public class RWTServiceImpl implements RWTService {
     this.configurators = new ServiceContainer< Configurator >( bundleContext );
     this.httpServices = new ServiceContainer< HttpService >( bundleContext );
     this.contexts = new RWTContextContainer();
-    this.observers = new HashSet< RWTServiceObserver >();
     this.bundleContext = bundleContext;
   }
   
-  public void addHttpService( ServiceReference<HttpService> reference ) {
+  public HttpService addHttpService( ServiceReference<HttpService> reference ) {
     checkAlive();
+    ServiceHolder<HttpService> httpServiceHolder;
     synchronized( lock ) {
-      ServiceHolder<HttpService> httpService = httpServices.add( reference );
-      startAtHttpService( httpService );
+      httpServiceHolder = httpServices.add( reference );
+      startAtHttpService( httpServiceHolder );
     }
+    return httpServiceHolder.getService();
   }
   
   public void removeHttpService( HttpService httpService ) {
@@ -57,12 +56,14 @@ public class RWTServiceImpl implements RWTService {
     }
   }
 
-  public void addConfigurator( ServiceReference<Configurator> reference ) {
+  public Configurator addConfigurator( ServiceReference<Configurator> reference ) {
     checkAlive();
+    ServiceHolder< Configurator > configuratorHolder;
     synchronized( lock ) {
-      ServiceHolder< Configurator > configurator = configurators.add( reference );
-      startOfConfigurator( configurator );
+      configuratorHolder = configurators.add( reference );
+      startOfConfigurator( configuratorHolder );
     }
+    return configuratorHolder.getService();
   }
   
   public void removeConfigurator( Configurator configurator ) {
@@ -88,10 +89,10 @@ public class RWTServiceImpl implements RWTService {
                                                 this );
     synchronized( lock ) {
       result.start();
-      notifyContextStarted( result );
       contexts.add( result );
       httpServices.add( httpService );
       configurators.add( configurator );
+      
     }
     return result;
   }
@@ -104,7 +105,6 @@ public class RWTServiceImpl implements RWTService {
       configurators.clear();
       contexts.clear();
       httpServices.clear();
-      observers.clear();
       bundleContext = null;
     }
   }
@@ -113,58 +113,14 @@ public class RWTServiceImpl implements RWTService {
     return bundleContext != null;
   }
 
-  public void addObserver( RWTServiceObserver observer ) {
-    RWTContextImpl[] all;
-    synchronized( lock ) {
-      observers.add( observer );
-      all = contexts.getAll();
-    }
-    for( RWTContextImpl rwtContextImpl : all ) {
-      notifyContextStarted( rwtContextImpl );
-    }
-  }
-
-  public void removeObserver( RWTServiceObserver observer ) {
-    synchronized( lock ) {
-      observers.remove( observer );
-    }
-  }
-
-  void notifyContextStopped( RWTContextImpl context ) {
-    RWTServiceObserver[] observerList;
+  void notifyContextAboutToStop( RWTContextImpl context ) {
     synchronized( lock ) {
       contexts.remove( context );
-      observerList = getObserverList();
-    }
-    notifyStoppedUnsynchronized( context, observerList );
-  }
-
-  private void notifyStoppedUnsynchronized( RWTContext context, RWTServiceObserver[] toNotify ) {
-    for( RWTServiceObserver observer : toNotify ) {
-      // TODO [fappel]: think about exception handling
-      observer.contextStopped( context );
-    }
-  }
-
-  private void notifyContextStarted( RWTContextImpl context ) {
-    RWTServiceObserver[] observerList;
-    synchronized( lock ) {
-      observerList = getObserverList();
-    }
-    notifyStartedUnsynchronized( context, observerList );
-  }
-
-  private void notifyStartedUnsynchronized( RWTContext context, RWTServiceObserver[] toNotify ) {
-    for( RWTServiceObserver observer : toNotify ) {
-      // TODO [fappel]: think about exception handling
-      observer.contextStarted( context );
     }
   }
   
-  private RWTServiceObserver[] getObserverList() {
-    RWTServiceObserver[] result = new RWTServiceObserver[ observers.size() ];
-    observers.toArray( result );
-    return result;
+  BundleContext getBundleContext() {
+    return bundleContext;
   }
 
   private void startAtHttpService( ServiceHolder< HttpService > httpServiceHolder ) {
@@ -241,6 +197,19 @@ public class RWTServiceImpl implements RWTService {
       throw new IllegalStateException( "RWTService is not alive." );
     }
   }
+  
+  private void logProblem( String failureMessage, Throwable failure ) {
+    ServiceReference logReference = bundleContext.getServiceReference( LogService.class.getName() );
+    if( logReference != null ) {
+      @SuppressWarnings( "unchecked" )
+      LogService log = ( LogService )bundleContext.getService( logReference );
+      log.log( LogService.LOG_ERROR, failureMessage, failure );
+    } else {
+      // TODO [fappel]: is there a better solution?
+      System.err.println( failureMessage );
+      failure.printStackTrace();
+    }
+  }
 
   String getLocation( String contextName, Configurator configurator, HttpService service ) {
     String pathToContext = getContextFileName( contextName, configurator, service );
@@ -257,18 +226,5 @@ public class RWTServiceImpl implements RWTService {
     result.append( "_" );
     result.append( service.hashCode() );
     return result.toString();
-  }
-  
-  private void logProblem( String failureMessage, Throwable failure ) {
-    ServiceReference logReference = bundleContext.getServiceReference( LogService.class.getName() );
-    if( logReference != null ) {
-      @SuppressWarnings( "unchecked" )
-      LogService log = ( LogService )bundleContext.getService( logReference );
-      log.log( LogService.LOG_ERROR, failureMessage, failure );
-    } else {
-      // TODO [fappel]: is there a better solution?
-      System.err.println( failureMessage );
-      failure.printStackTrace();
-    }
   }
 }

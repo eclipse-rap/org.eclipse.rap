@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServlet;
 import org.eclipse.rap.rwt.osgi.RWTContext;
 import org.eclipse.rwt.engine.Configurator;
 import org.eclipse.rwt.engine.ContextControl;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 
@@ -32,6 +34,7 @@ class RWTContextImpl implements RWTContext {
   private ServletContext servletContextWrapper;
   private ContextControl contextControl;
   private RWTServiceImpl rwtServiceImpl;
+  private ServiceRegistration< ? > serviceRegistration;
   private boolean alive;
 
   public RWTContextImpl( Configurator configurator,
@@ -57,10 +60,10 @@ class RWTContextImpl implements RWTContext {
     checkAlive();
     markNotAlive();
     registerServletContextProvider();
+    notifyAboutToStop();
     try {
       stopContext();
     } finally {
-      notifyContextStopped();
       unregisterServletContextProvider();
     }
     clearFields();
@@ -122,6 +125,12 @@ class RWTContextImpl implements RWTContext {
       registerServlet( alias, contextControl.createServlet() );
     }
     registerResourceDirectory();
+    registerAsService();
+  }
+
+  private void registerAsService() {
+    BundleContext bundleContext = rwtServiceImpl.getBundleContext();
+    serviceRegistration = bundleContext.registerService( RWTContext.class.getName(), this, null );
   }
 
   private void registerServlet( String alias, final HttpServlet servlet ) {
@@ -156,6 +165,7 @@ class RWTContextImpl implements RWTContext {
       unregisterServlet( alias );
     }
     unregisterResourcesDirectory();
+    serviceRegistration.unregister();
     contextControl.stopContext();
   }
 
@@ -178,8 +188,8 @@ class RWTContextImpl implements RWTContext {
     httpService.unregister( getContextSegment() + "/" + ContextControl.RESOURCES );
   }
 
-  private void notifyContextStopped() {
-    rwtServiceImpl.notifyContextStopped( this );
+  private void notifyAboutToStop() {
+    rwtServiceImpl.notifyContextAboutToStop( this );
   }
 
   private String getContextSegment() {

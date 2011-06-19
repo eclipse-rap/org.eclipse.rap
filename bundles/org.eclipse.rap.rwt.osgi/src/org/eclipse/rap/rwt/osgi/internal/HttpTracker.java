@@ -25,8 +25,7 @@ class HttpTracker extends ServiceTracker< HttpService, HttpService > {
 
   @Override
   public HttpService addingService( ServiceReference<HttpService> reference ) {
-    rwtService.addHttpService( reference );
-    return super.addingService( reference );
+    return rwtService.addHttpService( reference );
   }
 
   @Override
