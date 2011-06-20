@@ -21,7 +21,8 @@ public class TokenList {
 
   private final List<JavaScriptToken> tokens;
 
-  public TokenList( List<JavaScriptToken> tokens ) {
+  @SuppressWarnings("unchecked")
+  public TokenList( List tokens ) {
     this.tokens = tokens;
   }
 
@@ -45,8 +46,7 @@ public class TokenList {
     replaceTokens( index, index, replacement );
   }
 
-  public void replaceTokens( int begin, int end, JavaScriptToken[] replacement )
-  {
+  public void replaceTokens( int begin, int end, JavaScriptToken[] replacement ) {
     if( begin >= 0 && begin <= end && end < tokens.size() ) {
       for( int i = begin; i <= end; i++ ) {
         tokens.remove( begin );
@@ -68,7 +68,7 @@ public class TokenList {
     int pos = offset;
     while( pos >= 0 && pos < size() && result == -1 ) {
       token = getToken( pos );
-      if( TokenMatcher.LEFT_BRACE.matches( token )
+      if(    TokenMatcher.LEFT_BRACE.matches( token )
           || TokenMatcher.LEFT_BRACKET.matches( token )
           || TokenMatcher.LEFT_PAREN.matches( token ) )
       {

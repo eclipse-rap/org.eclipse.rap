@@ -108,14 +108,14 @@ public final class ThemeStoreWriter {
   }
 
   private static Map createValuesMap( QxType[] values ) {
-    Map result = new LinkedHashMap();
+    Map<String,JsonObject> result = new LinkedHashMap<String,JsonObject>();
     for( int i = 0; i < values.length; i++ ) {
       appendValueToMap( values[ i ], result );
     }
     return result;
   }
 
-  private static void appendValueToMap( QxType propertyValue, Map valuesMap ) {
+  private static void appendValueToMap( QxType propertyValue, Map<String,JsonObject> valuesMap ) {
     ThemePropertyAdapterRegistry registry = ThemePropertyAdapterRegistry.getInstance();
     ThemePropertyAdapter adapter = registry.getPropertyAdapter( propertyValue.getClass() );
     if( adapter != null ) {
@@ -144,8 +144,8 @@ public final class ThemeStoreWriter {
     return result;
   }
 
-  private static JsonObject getSlot( Map valuesMap, String name ) {
-    JsonObject result = ( JsonObject )valuesMap.get( name );
+  private static JsonObject getSlot( Map<String,JsonObject> valuesMap, String name ) {
+    JsonObject result = valuesMap.get( name );
     if( result == null ) {
       result = new JsonObject();
       valuesMap.put( name, result );
