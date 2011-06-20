@@ -46,6 +46,17 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
       return new Date().getTime() - app.getStartupTime();
     },
 
+    widgetDefaultSelected : function( evt ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( evt.getTarget() );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
+        req.send();
+      }
+    },
+
     widgetSelected : function( evt ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var req = org.eclipse.swt.Request.getInstance();
