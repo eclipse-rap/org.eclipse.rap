@@ -18,6 +18,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.custom.clabelkit.CLabelThemeAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
 import org.eclipse.swt.widgets.Canvas;
@@ -48,7 +49,16 @@ import org.eclipse.swt.widgets.Composite;
  * @since 1.0
  */
 public class CLabel extends Canvas {
-	private static final long serialVersionUID = 1L;
+  
+	private class LabelDisposeListener implements DisposeListener, SerializableCompatibility  {
+    private static final long serialVersionUID = 1L;
+
+    public void widgetDisposed( DisposeEvent event ) {
+      onDispose( event );
+    }
+  }
+
+  private static final long serialVersionUID = 1L;
 	
   /** a string inserted in the middle of text that has been shortened */
 //  private static final String ELLIPSIS = "..."; //$NON-NLS-1$ // could use the ellipsis glyph on some platforms "\u2026"
@@ -116,11 +126,7 @@ public class CLabel extends Canvas {
     if ( (result & SWT.LEFT) != 0 )
       align = SWT.LEFT;
 
-    addDisposeListener( new DisposeListener() {
-      public void widgetDisposed( DisposeEvent event ) {
-        onDispose( event );
-      }
-    } );
+    addDisposeListener( new LabelDisposeListener() );
     initMargins();
 
   }

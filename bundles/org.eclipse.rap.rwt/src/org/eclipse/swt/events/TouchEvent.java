@@ -13,28 +13,26 @@ package org.eclipse.swt.events;
 
 import org.eclipse.swt.widgets.*;
 /**
- * Instances of this class are sent as a result of
+ * Instances of this class are sent in response to
  * a touch-based input source being touched.
- * <p>
- * </p>
  *
  * @see TouchListener
+ * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
  * 
  * @since 1.4
  */
-
 public class TouchEvent extends TypedEvent {
   
   /**
-   * the set of touches that represent the state of all contacts with touch input device
-   * at the time the event was generated.
+   * The set of touches representing the state of all contacts with touch input
+   * device at the time the event was generated.
    * 
    * @see org.eclipse.swt.widgets.Touch
    */
   public Touch[] touches;
 
   /**
-   * the state of the keyboard modifier keys and mouse masks
+   * The state of the keyboard modifier keys and mouse masks 
    * at the time the event was generated.
    * 
    * @see org.eclipse.swt.SWT#MODIFIER_MASK
@@ -43,14 +41,14 @@ public class TouchEvent extends TypedEvent {
   public int stateMask;
   
   /**
-   * the widget-relative, x coordinate of the pointer
-   * at the time the touch occurred
+   * The widget-relative x coordinate of the pointer
+   * at the time the touch occurred.
    */
   public int x;
   
   /**
-   * the widget-relative, y coordinate of the pointer
-   * at the time the touch occurred
+   * The widget-relative y coordinate of the pointer
+   * at the time the touch occurred.
    */ 
   public int y;
   

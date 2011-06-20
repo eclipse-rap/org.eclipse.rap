@@ -12,6 +12,7 @@ package org.eclipse.swt.custom;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -58,7 +59,12 @@ import org.eclipse.swt.widgets.*;
  *
  * @since 1.0
  */
-public class ControlEditor {
+public class ControlEditor implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
+
+  // RAP Listener has to be serializable (bug 345699)
+  interface SerializableListener extends Listener, SerializableCompatibility {
+  }
 
   /**
    * Specifies how the editor should be aligned relative to the control. Allowed
@@ -118,8 +124,8 @@ public class ControlEditor {
    */
   public ControlEditor( Composite parent ) {
     this.parent = parent;
-    controlListener = new Listener() {
-
+    controlListener = new SerializableListener() {
+      private static final long serialVersionUID = 1L;
       public void handleEvent( Event e ) {
         layout();
       }
@@ -127,7 +133,8 @@ public class ControlEditor {
     for( int i = 0; i < EVENTS.length; i++ ) {
       parent.addListener( EVENTS[ i ], controlListener );
     }
-    scrollbarListener = new Listener() {
+    scrollbarListener = new SerializableListener() {
+      private static final long serialVersionUID = 1L;
       public void handleEvent( Event e ) {
         scroll( e );
       }

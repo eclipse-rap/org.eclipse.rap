@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,26 +16,27 @@ import org.eclipse.swt.internal.*;
 /**
  * Classes which implement this interface provide methods
  * that deal with the events that are generated as gestures
- * are triggered when the user interacts with a touch pad or
+ * are triggered by the user interacting with a touch pad or
  * touch screen.
  * <p>
  * After creating an instance of a class that implements
  * this interface it can be added to a control using the
  * <code>addGestureListener</code> method and removed using
  * the <code>removeGestureListener</code> method. When a
- * gesture is invoked, the appropriate method will be invoked.
+ * gesture is triggered, the appropriate method will be invoked.
  * </p>
  *
  * @see GestureEvent
+ *
  * @since 1.4
  */
 public interface GestureListener extends SWTEventListener {
 
-  /**
-   * Sent when a recognized gesture has occurred.
-   *
-   * @param e an event containing information about the gesture.
-   */
-  public void gesture( GestureEvent e );
+/**
+ * Sent when a recognized gesture has occurred.
+ *
+ * @param e an event containing information about the gesture.
+ */
+public void gesture(GestureEvent e);
 
 }

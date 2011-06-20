@@ -12,9 +12,11 @@ package org.eclipse.swt.custom;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Control;
 
-class CLayoutData {
+class CLayoutData implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
   int defaultWidth = -1, defaultHeight = -1;
   int currentWhint, currentHhint, currentWidth = -1, currentHeight = -1;

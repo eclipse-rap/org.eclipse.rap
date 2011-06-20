@@ -15,19 +15,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
 
-public final class ListModel {
+public final class ListModel implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
   private static final int[] EMPTY_SELECTION = new int[ 0 ];
 
   private final boolean single;
   private final java.util.List<String> items;
-  private int[] selection = EMPTY_SELECTION;
+  private int[] selection;
 
-  public ListModel( final boolean single ) {
+  public ListModel( boolean single ) {
     this.single = single;
     items = new ArrayList<String>();
+    selection = EMPTY_SELECTION;
   }
 
   ///////////////////////////////
@@ -51,14 +54,14 @@ public final class ListModel {
     return selection.length;
   }
 
-  public void setSelection( final int selection ) {
+  public void setSelection( int selection ) {
     deselectAll();
     if( selection >= 0 && selection <= getItemCount() - 1 ) {
       this.selection = new int[]{ selection };
     }
   }
 
-  public void setSelection( final int[] selection ) {
+  public void setSelection( int[] selection ) {
     if( selection == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -88,7 +91,7 @@ public final class ListModel {
     }
   }
   
-  public void setSelection( final int start, final int end ) {
+  public void setSelection( int start, int end ) {
     deselectAll();
     if( end >= 0 && start <= end && start <= getItemCount() - 1 ) {
       if( single ) {
@@ -108,7 +111,7 @@ public final class ListModel {
     }
   }
   
-  public void setSelection( final String[] selection ) {
+  public void setSelection( String[] selection ) {
     if( selection == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -132,7 +135,7 @@ public final class ListModel {
     }
   }
 
-  public void addSelection( final int index ) {
+  public void addSelection( int index ) {
     if( index >= 0 && index < getItemCount() ) {
       boolean exists = false;
       for( int i = 0; i < selection.length; i++ ) {
@@ -166,14 +169,14 @@ public final class ListModel {
   ////////////////////////////////
   // Methods to maintain the items
   
-  public void add( final String string ) {
+  public void add( String string ) {
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     items.add( string );
   }
 
-  public void add( final String string, final int index ) {
+  public void add( String string, int index ) {
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -183,13 +186,13 @@ public final class ListModel {
     items.add( index, string );
   }
 
-  public void remove( final int index ) {
+  public void remove( int index ) {
     checkIndex( index );
     items.remove( index );
     removeFromSelection( index );
   }
 
-  public void remove( final int start, final int end ) {
+  public void remove( int start, int end ) {
     checkIndex( start );
     checkIndex( end );
     for( int i = end; i >= start; i-- ) {
@@ -197,7 +200,7 @@ public final class ListModel {
     }
   }
   
-  public void remove( final int[] indices ) {
+  public void remove( int[] indices ) {
     if( indices == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -213,7 +216,7 @@ public final class ListModel {
     }
   }
 
-  public void remove( final String string ) {
+  public void remove( String string ) {
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -227,7 +230,7 @@ public final class ListModel {
     deselectAll();
   }
 
-  public void setItem( final int index, final String string ) {
+  public void setItem( int index, String string ) {
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -235,7 +238,7 @@ public final class ListModel {
     items.set( index, string );
   }
 
-  public void setItems( final String[] items ) {
+  public void setItems( String[] items ) {
     if( items == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     } 
@@ -249,7 +252,7 @@ public final class ListModel {
     deselectAll();
   }
 
-  public String getItem( final int index ) {
+  public String getItem( int index ) {
     checkIndex( index );
     return items.get( index );
   }
@@ -266,7 +269,7 @@ public final class ListModel {
   // Helping methods 
   
   /* If the given index is contained in the selection, it will be removed. */
-  private void removeFromSelection( final int index ) {
+  private void removeFromSelection( int index ) {
     boolean found = false;
     for( int i = 0; !found && i < selection.length; i++ ) {
       if( index == selection[ i ] ) {
@@ -287,11 +290,11 @@ public final class ListModel {
     }
   }
   
-  private int indexOf( final String string ) {
+  private int indexOf( String string ) {
     return items.indexOf( string );
   }
 
-  private void checkIndex( final int index ) {
+  private void checkIndex( int index ) {
     if( index < 0 || index >= getItemCount() ) {
       SWT.error( SWT.ERROR_INVALID_RANGE );
     }

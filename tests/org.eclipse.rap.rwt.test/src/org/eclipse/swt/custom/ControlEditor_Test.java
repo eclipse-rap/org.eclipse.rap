@@ -8,39 +8,38 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.widgets;
+package org.eclipse.swt.custom;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.swt.internal.widgets.IControlAdapter;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.*;
 
 
-public class ControlSerialization_Test extends TestCase {
+public class ControlEditor_Test extends TestCase {
 
-  private static class TestControl extends Control {
-    private static final long serialVersionUID = 1L;
+  private Display display;
+  private Shell shell;
 
-    TestControl( Composite parent ) {
-      super( parent );
-      display = parent.getDisplay();
-    }
+  public void testIsSerializable() throws Exception {
+    ControlEditor controlEditor = new ControlEditor( new CLabel( shell, SWT.NONE ) );
+    controlEditor.minimumHeight = 6;
+    
+    ControlEditor deserialized = Fixture.serializeAndDeserialize( controlEditor );
+    
+    assertNotNull( deserialized.parent );
+    assertEquals( 6, deserialized.minimumHeight );
   }
   
-  private Control control;
-  
-  public void testControlAdapterIsNotSerializable() throws Exception {
-    Control deserializedControl = Fixture.serializeAndDeserialize( control );
-    assertNotNull( deserializedControl.getAdapter( IControlAdapter.class ) );
-  }
-  
-  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    control = new TestControl( new Shell( new Display() ) ); 
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
   }
-  
-  @Override
+
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }

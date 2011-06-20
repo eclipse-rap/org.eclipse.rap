@@ -1106,14 +1106,12 @@ public final class CCombo extends Composite {
   }
 
   private Rectangle getFieldPadding() {
-    CComboThemeAdapter themeAdapter
-      = ( CComboThemeAdapter )getAdapter( IThemeAdapter.class );
+    CComboThemeAdapter themeAdapter = ( CComboThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getFieldPadding( this );
   }
 
   private int getButtonWidth() {
-    CComboThemeAdapter themeAdapter
-      = ( CComboThemeAdapter )getAdapter( IThemeAdapter.class );
+    CComboThemeAdapter themeAdapter = ( CComboThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getButtonWidth( this );
   }
 

@@ -11,9 +11,11 @@
 package org.eclipse.swt.custom;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -40,6 +42,31 @@ import org.eclipse.swt.widgets.*;
  * @since 1.0
  */
 public class CBanner extends Composite {
+  
+  private class SeparatorSelectionListener 
+    extends SelectionAdapter 
+    implements SerializableCompatibility 
+  {
+    private static final long serialVersionUID = 1L;
+    public void widgetSelected( SelectionEvent event ) {
+      onSepMove( event.x, event.width );
+    }
+  }
+
+  private class BannerResizeListener extends ControlAdapter implements SerializableCompatibility {
+    private static final long serialVersionUID = 1L;
+    public void controlResized( ControlEvent event ) {
+      onResize();
+    }
+  }
+
+  private class BannerDisposeListener implements DisposeListener, SerializableCompatibility {
+    private static final long serialVersionUID = 1L;
+    public void widgetDisposed( DisposeEvent event ) {
+      onDispose();
+    }
+  }
+
   private static final long serialVersionUID = 1L;
 
   Control left;
@@ -98,13 +125,7 @@ public class CBanner extends Composite {
     super( parent, checkStyle( style ) );
     super.setLayout( new CBannerLayout() );
     separator = new Sash( this, SWT.VERTICAL );
-    separator.addSelectionListener( new SelectionAdapter() {
-
-      public void widgetSelected( SelectionEvent event ) {
-        // TODO: check SWT.DRAG in event.details ?
-        onSepMove( event.x, event.width );
-      }
-    } );
+    separator.addSelectionListener( new SeparatorSelectionListener() );
     // Listener listener = new Listener() {
     // public void handleEvent(Event e) {
     // switch (e.type) {
@@ -130,21 +151,8 @@ public class CBanner extends Composite {
     // for (int i = 0; i < events.length; i++) {
     // addListener(events[i], listener);
     // }
-    addControlListener( new ControlListener() {
-
-      public void controlMoved( ControlEvent event ) {
-      }
-
-      public void controlResized( ControlEvent event ) {
-        onResize();
-      }
-    } );
-    addDisposeListener( new DisposeListener() {
-
-      public void widgetDisposed( DisposeEvent event ) {
-        onDispose();
-      }
-    } );
+    addControlListener( new BannerResizeListener() );
+    addDisposeListener( new BannerDisposeListener() );
   }
 
   static int[] bezier( int x0,

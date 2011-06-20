@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.custom;
 
 import junit.framework.TestCase;
@@ -27,9 +26,10 @@ import org.eclipse.swt.widgets.Shell;
 
 public class CLabel_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   public void testSetBackgroundColor() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.SHELL_TRIM );
     CLabel label = new CLabel( shell, SWT.RIGHT );
     Color red = display.getSystemColor( SWT.COLOR_RED );
     label.setBackground( red );
@@ -37,16 +37,12 @@ public class CLabel_Test extends TestCase {
   }
 
   public void testSetToolTipText() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.SHELL_TRIM );
     CLabel label = new CLabel( shell, SWT.RIGHT );
     label.setToolTipText( "foo" );
     assertEquals( label.getToolTipText(), "foo" );
   }
 
   public void testSetAlignment() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.SHELL_TRIM );
     CLabel label = new CLabel( shell, SWT.LEFT );
     assertEquals( label.getAlignment(), SWT.LEFT );
     label.setAlignment( SWT.RIGHT );
@@ -54,20 +50,14 @@ public class CLabel_Test extends TestCase {
   }
 
   public void testSetImage() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.SHELL_TRIM );
     CLabel label = new CLabel( shell, SWT.RIGHT );
     assertEquals( label.getImage(), null );
-    label.setImage( Graphics.getImage( Fixture.IMAGE1,
-                                       getClass().getClassLoader() ) );
+    label.setImage( Graphics.getImage( Fixture.IMAGE1, getClass().getClassLoader() ) );
     assertEquals( label.getImage(),
-                  Graphics.getImage( Fixture.IMAGE1,
-                                     getClass().getClassLoader() ) );
+                  Graphics.getImage( Fixture.IMAGE1, getClass().getClassLoader() ) );
   }
 
   public void testSetText() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.SHELL_TRIM );
     CLabel label = new CLabel( shell, SWT.RIGHT );
     assertEquals( null, label.getText() );
     label.setText( "bar" );
@@ -75,9 +65,6 @@ public class CLabel_Test extends TestCase {
   }
 
   public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.SHELL_TRIM );
     CLabel label = new CLabel( shell, SWT.RIGHT );
     Point expected = new Point( 6, 18 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -93,11 +80,8 @@ public class CLabel_Test extends TestCase {
   }
 
   public void testSetMargins() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.SHELL_TRIM );
     CLabel label = new CLabel( shell, SWT.RIGHT );
-    CLabelThemeAdapter themeAdapter
-      = ( CLabelThemeAdapter )label.getAdapter( IThemeAdapter.class );
+    CLabelThemeAdapter themeAdapter = ( CLabelThemeAdapter )label.getAdapter( IThemeAdapter.class );
     Rectangle padding = themeAdapter.getPadding( label );
     assertEquals( padding.x, label.getLeftMargin() );
     assertEquals( padding.y, label.getTopMargin() );
@@ -132,8 +116,6 @@ public class CLabel_Test extends TestCase {
   }
 
   public void testSetBackgroundGradient_Horizontal() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.SHELL_TRIM );
     CLabel label = new CLabel( shell, SWT.RIGHT );
     Color[] colors = new Color[] {
       display.getSystemColor( SWT.COLOR_RED ),
@@ -151,8 +133,6 @@ public class CLabel_Test extends TestCase {
   }
 
   public void testSetBackgroundGradient_Vertical() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.SHELL_TRIM );
     CLabel label = new CLabel( shell, SWT.RIGHT );
     Color[] colors = new Color[] {
       display.getSystemColor( SWT.COLOR_RED ),
@@ -170,8 +150,6 @@ public class CLabel_Test extends TestCase {
   }
 
   public void testSetBackgroundGradient_NullValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.SHELL_TRIM );
     CLabel label = new CLabel( shell, SWT.RIGHT );
     Color[] colors = null;
     int[] percents = null;
@@ -194,8 +172,6 @@ public class CLabel_Test extends TestCase {
   }
 
   public void testSetBackgroundGradient_ArraysSize() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.SHELL_TRIM );
     CLabel label = new CLabel( shell, SWT.RIGHT );
     Color[] colors = new Color[] {
       display.getSystemColor( SWT.COLOR_RED ),
@@ -212,8 +188,6 @@ public class CLabel_Test extends TestCase {
   }
 
   public void testSetBackgroundGradient_InvalidPercents() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.SHELL_TRIM );
     CLabel label = new CLabel( shell, SWT.RIGHT );
     Color[] colors = new Color[] {
       display.getSystemColor( SWT.COLOR_RED ),
@@ -244,8 +218,6 @@ public class CLabel_Test extends TestCase {
   }
 
   public void testSetBackgroundGradient_NullColorReplace() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.SHELL_TRIM );
     CLabel label = new CLabel( shell, SWT.RIGHT );
     label.setBackground( display.getSystemColor( SWT.COLOR_GREEN ) );
     Color[] colors = new Color[] {
@@ -262,8 +234,20 @@ public class CLabel_Test extends TestCase {
                   adapter.getBackgroundGradientColors()[ 1 ] );
   }
 
+  public void testIsSerializable() throws Exception {
+    CLabel label = new CLabel( shell, SWT.NONE );
+    label.setText( "text" );
+    
+    CLabel deserializedLabel = Fixture.serializeAndDeserialize( label );
+  
+    assertEquals( "text", deserializedLabel.getText() );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {

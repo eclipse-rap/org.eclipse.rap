@@ -29,6 +29,7 @@ import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
@@ -437,11 +438,19 @@ public class Fixture {
   }
   
   @SuppressWarnings("unchecked")
-  public static <T> T serializeAndDeserialize( T instance ) 
-    throws IOException, ClassNotFoundException 
-  {
+  public static <T> T serializeAndDeserialize( T instance ) throws Exception {
     byte[] bytes = serialize( instance );
     return ( T )deserialize( bytes );
+  }
+
+  @SuppressWarnings("unchecked")
+  public static <T extends Widget> T serializeAndDeserialize( T instance ) throws Exception {
+    byte[] bytes = serialize( instance );
+    T result = ( T )deserialize( bytes );
+    Object adapter = result.getDisplay().getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
+    displayAdapter.attachThread();
+    return result;
   }
   
   private static void ensureServletContext() {

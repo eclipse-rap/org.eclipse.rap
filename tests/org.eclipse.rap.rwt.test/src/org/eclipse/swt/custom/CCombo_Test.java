@@ -32,10 +32,10 @@ import org.eclipse.swt.widgets.*;
 public class CCombo_Test extends TestCase {
 
   private boolean listenerCalled;
+  private Display display;
+  private Composite shell;
 
   public void testDeselect() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "item1" );
     combo.add( "item2" );
@@ -52,8 +52,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testGetText() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CCombo combo = new CCombo( shell, SWT.READ_ONLY );
     combo.add( "item1" );
     combo.add( "item2" );
@@ -77,8 +75,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testTextLimit() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setTextLimit( -1 );
     assertEquals( Combo.LIMIT, combo.getTextLimit() );
@@ -102,8 +98,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testListVisible() {
-    Display display = new Display();
-    Composite shell = new Shell( display );
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setListVisible( true );
     assertTrue( combo.getListVisible() );
@@ -112,8 +106,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testSelection() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CCombo combo = new CCombo( shell, SWT.NONE );
     // test clearSelection
     combo.setText( "abc" );
@@ -133,8 +125,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testIndexOf() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CCombo combo = new CCombo( shell, SWT.READ_ONLY );
     combo.add( "string0" );
     try {
@@ -183,8 +173,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testIndexOfI() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CCombo combo = new CCombo( shell, SWT.READ_ONLY );
     combo.add( "string0" );
     try {
@@ -219,8 +207,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testSetText() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CCombo combo = new CCombo( shell, SWT.NONE );
     try {
       combo.setText( null );
@@ -251,8 +237,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testSelect() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.select( 0 );
@@ -265,8 +249,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testSelect2() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.select( 0 );
@@ -287,8 +269,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testSelect3() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test1" );
@@ -337,8 +317,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testSelectWithInvalidIndex() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test1" );
@@ -358,8 +336,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testSetTextSelect() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test2" );
@@ -370,8 +346,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testRemoveAll() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "1" );
     combo.add( "2" );
@@ -380,8 +354,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testDispose() {
-    Display display = new Display();
-    Composite shell = new Shell( display );
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.dispose();
@@ -389,9 +361,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testAddModifyListener() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display );
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setItems (new String [] {"A-1", "B-1", "C-1"});
     ModifyListener listener = new ModifyListener() {
@@ -458,9 +427,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testAddModifyListenerReadOnly() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display );
     CCombo combo = new CCombo( shell, SWT.READ_ONLY );
     combo.setItems (new String [] {"A-1", "B-1", "C-1"});
     ModifyListener listener = new ModifyListener() {
@@ -525,10 +491,7 @@ public class CCombo_Test extends TestCase {
 
   public void testVerifyEvent() {
     VerifyListener verifyListener;
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<TypedEvent> log = new ArrayList<TypedEvent>();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     final CCombo combo = new CCombo( shell, SWT.NONE );
     combo.addModifyListener( new ModifyListener() {
       public void modifyText( final ModifyEvent event ) {
@@ -607,8 +570,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testVisibleItemCount() {
-	  Display display = new Display();
-    Composite shell = new Shell( display );
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "1" );
     combo.add( "2" );
@@ -623,9 +584,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     CCombo combo = new CCombo( shell, SWT.NONE );
     Point expected = new Point( 64, 17 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -650,9 +608,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testSetTextAndSelection() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "test" );
     combo.add( "test1" );
@@ -667,8 +622,6 @@ public class CCombo_Test extends TestCase {
   }
 
   public void testGetTextHeight() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     CCombo combo = new CCombo( shell, SWT.NONE );
     // default theme font is 11px
     assertEquals( 13, combo.getTextHeight() );
@@ -677,9 +630,26 @@ public class CCombo_Test extends TestCase {
     combo.setFont( null );
     assertEquals( 13, combo.getTextHeight() );
   }
+  
+  public void testSelectionIsSerializable() throws Exception {
+    CCombo combo = new CCombo( shell, SWT.NONE );
+    combo.add( "0" );
+    combo.add( "1" );
+    combo.select( 1 );
+    
+    CCombo deserializedCombo = Fixture.serializeAndDeserialize( combo );
+    
+    assertEquals( "1", deserializedCombo.getText() );
+    assertEquals( 1, deserializedCombo.getSelectionIndex() );
+    assertEquals( "0", deserializedCombo.getItem( 0 ) );
+    assertEquals( "1", deserializedCombo.getItem( 1 ) );
+  }
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
   }
 
   protected void tearDown() throws Exception {
