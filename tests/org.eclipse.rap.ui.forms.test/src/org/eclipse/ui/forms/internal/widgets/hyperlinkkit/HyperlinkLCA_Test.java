@@ -1,13 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
+
+import java.io.IOException;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
@@ -16,11 +19,8 @@ import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.HyperlinkSettings;
 import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
 import org.eclipse.ui.forms.internal.widgets.IHyperlinkAdapter;
@@ -30,28 +30,21 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
 
   public void testPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Hyperlink hyperlink = new Hyperlink( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( hyperlink );
     String text = ( String )adapter.getPreserved( HyperlinkLCA.PROP_TEXT );
     assertEquals( "", text );
-    Boolean underlined
-      = ( Boolean )adapter.getPreserved( HyperlinkLCA.PROP_UNDERLINED );
+    Boolean underlined = ( Boolean )adapter.getPreserved( HyperlinkLCA.PROP_UNDERLINED );
     assertEquals( Boolean.FALSE, underlined );
-    Boolean hasListener
-      = ( Boolean )adapter.getPreserved( HyperlinkLCA.PROP_SELECTION_LISTENERS );
+    Boolean hasListener = ( Boolean )adapter.getPreserved( HyperlinkLCA.PROP_SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListener );
-    Color activeForeground
-      = ( Color )adapter.getPreserved( HyperlinkLCA.PROP_ACTIVE_FOREGROUND );
+    Color activeForeground = ( Color )adapter.getPreserved( HyperlinkLCA.PROP_ACTIVE_FOREGROUND );
     assertEquals( null, activeForeground );
-    Color activeBackground
-      = ( Color )adapter.getPreserved( HyperlinkLCA.PROP_ACTIVE_BACKGROUND );
+    Color activeBackground = ( Color )adapter.getPreserved( HyperlinkLCA.PROP_ACTIVE_BACKGROUND );
     assertEquals( null, activeBackground );
-    Integer underlineMode
-      = ( Integer )adapter.getPreserved( HyperlinkLCA.PROP_UNDERLINE_MODE );
+    Integer underlineMode = ( Integer )adapter.getPreserved( HyperlinkLCA.PROP_UNDERLINE_MODE );
     assertEquals( 0, underlineMode.intValue() );
     Fixture.clearPreserved();
     String newText = "click me";
@@ -66,17 +59,13 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Fixture.preserveWidgets();
     text = ( String )adapter.getPreserved( HyperlinkLCA.PROP_TEXT );
     assertEquals( newText, text );
-    underlined
-      = ( Boolean )adapter.getPreserved( HyperlinkLCA.PROP_UNDERLINED );
+    underlined = ( Boolean )adapter.getPreserved( HyperlinkLCA.PROP_UNDERLINED );
     assertEquals( Boolean.TRUE, underlined );
-    activeForeground
-      = ( Color )adapter.getPreserved( HyperlinkLCA.PROP_ACTIVE_FOREGROUND );
+    activeForeground = ( Color )adapter.getPreserved( HyperlinkLCA.PROP_ACTIVE_FOREGROUND );
     assertEquals( newActiveForeground, activeForeground );
-    activeBackground
-      = ( Color )adapter.getPreserved( HyperlinkLCA.PROP_ACTIVE_BACKGROUND );
+    activeBackground = ( Color )adapter.getPreserved( HyperlinkLCA.PROP_ACTIVE_BACKGROUND );
     assertEquals( newActiveBackground, activeBackground );
-    underlineMode
-      = ( Integer )adapter.getPreserved( HyperlinkLCA.PROP_UNDERLINE_MODE );
+    underlineMode = ( Integer )adapter.getPreserved( HyperlinkLCA.PROP_UNDERLINE_MODE );
     assertEquals( newUnderlineMode, underlineMode.intValue() );
     // Test preserved control properties
     testPreserveControlProperties( hyperlink );
@@ -84,10 +73,25 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   }
 
   public void testSelectionEvent() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Hyperlink hyperlink = new Hyperlink( shell, SWT.NONE );
     testDefaultSelectionEvent( hyperlink );
+  }
+
+  public void testWriteSelectionListener() throws IOException {
+    Hyperlink hyperlink = new Hyperlink( shell, SWT.NONE );
+    Fixture.markInitialized( hyperlink );
+    Fixture.fakeNewRequest( display );
+    Listener listener = new Listener() {
+      public void handleEvent( Event event ) {
+      }
+    };
+    hyperlink.addListener( SWT.DefaultSelection, listener );
+
+    HyperlinkLCA lca = new HyperlinkLCA();
+    lca.renderChanges( hyperlink );
+
+    String expected = "w.setHasSelectionListener( true )";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
   private void testDefaultSelectionEvent( final Hyperlink hyperlink ) {

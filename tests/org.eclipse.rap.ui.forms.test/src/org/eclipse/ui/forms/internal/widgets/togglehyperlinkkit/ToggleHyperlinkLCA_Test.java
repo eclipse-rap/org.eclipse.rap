@@ -1,24 +1,24 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit;
+
+import java.io.IOException;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
 import org.eclipse.ui.forms.widgets.ToggleHyperlink;
 import org.eclipse.ui.forms.widgets.Twistie;
@@ -27,8 +27,6 @@ import org.eclipse.ui.forms.widgets.Twistie;
 public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
 
   public void testPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Twistie twistie = new Twistie( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
@@ -50,10 +48,25 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   }
 
   public void testSelectionEvent() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Twistie twistie = new Twistie( shell, SWT.NONE );
     testDefaultSelectionEvent( twistie );
+  }
+
+  public void testWriteSelectionListener() throws IOException {
+    Twistie twistie = new Twistie( shell, SWT.NONE );
+    Fixture.markInitialized( twistie );
+    Fixture.fakeNewRequest( display );
+    Listener listener = new Listener() {
+      public void handleEvent( Event event ) {
+      }
+    };
+    twistie.addListener( SWT.DefaultSelection, listener );
+
+    ToggleHyperlinkLCA lca = new ToggleHyperlinkLCA();
+    lca.renderChanges( twistie );
+
+    String expected = "w.setHasSelectionListener( true )";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
   private void testDefaultSelectionEvent( final ToggleHyperlink hyperlink ) {
@@ -78,4 +91,5 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Fixture.readDataAndProcessAction( hyperlink );
     assertEquals( "widgetDefaultSelected", log.toString() );
   }
+
 }

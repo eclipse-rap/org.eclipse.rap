@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.formtextkit;
 
@@ -13,9 +14,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.HyperlinkSettings;
 import org.eclipse.ui.forms.internal.widgets.FormsControlLCA_AbstractTest;
 import org.eclipse.ui.forms.internal.widgets.IFormTextAdapter;
@@ -25,8 +23,6 @@ import org.eclipse.ui.internal.forms.widgets.Paragraph;
 public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
 
   public void testPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     FormText formText = new FormText( shell, SWT.WRAP );
     String text = "<form>"
       + "<p>First paragraph</p>"
@@ -40,15 +36,13 @@ public class FormTextLCA_Test extends FormsControlLCA_AbstractTest {
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( formText );
     String prop = FormTextLCA.PROP_PARAGRAPHS;
-    Paragraph[] paragraphs
-      = ( Paragraph[] )adapter.getPreserved( prop );
+    Paragraph[] paragraphs = ( Paragraph[] )adapter.getPreserved( prop );
     assertEquals( 5, paragraphs.length );
     for( int i = 0; i < paragraphs.length; i++ ) {
       assertSame( paragraphs[ i ], getAdapter( formText ).getParagraphs()[ i ] );
     }
     prop = FormTextLCA.PROP_HYPERLINK_SETTINGS;
-    HyperlinkSettings settings
-      = ( HyperlinkSettings )adapter.getPreserved( prop );
+    HyperlinkSettings settings = ( HyperlinkSettings )adapter.getPreserved( prop );
     assertSame( settings, formText.getHyperlinkSettings() );
     // Test preserved control properties
     testPreserveControlProperties( formText );
