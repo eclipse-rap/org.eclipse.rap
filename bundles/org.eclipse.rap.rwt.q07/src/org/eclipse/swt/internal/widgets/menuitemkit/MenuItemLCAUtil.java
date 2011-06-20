@@ -31,11 +31,7 @@ final class MenuItemLCAUtil {
   static final String PROP_SELECTION = "selection";
   static final String JS_PROP_SELECTION = "selection";
 
-  static void newItem( final MenuItem menuItem,
-                       final String jsClass,
-                       final String type )
-    throws IOException
-  {
+  static void newItem( MenuItem menuItem, String jsClass, String type ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menuItem );
     writer.newWidget( jsClass, new String[]{ type } );
     int index = menuItem.getParent().indexOf( menuItem );
@@ -44,19 +40,18 @@ final class MenuItemLCAUtil {
                  new Object[]{ menuItem, new Integer( index ) } );
   }
 
-  static void preserveEnabled( final MenuItem menuItem ) {
+  static void preserveEnabled( MenuItem menuItem ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     adapter.preserve( Props.ENABLED, Boolean.valueOf( menuItem.getEnabled() ) );
   }
 
-  static void writeEnabled( final MenuItem menuItem ) throws IOException {
+  static void writeEnabled( MenuItem menuItem ) throws IOException {
     Boolean newValue = Boolean.valueOf( menuItem.getEnabled() );
     JSWriter writer = JSWriter.getWriterFor( menuItem );
-    Boolean defValue = Boolean.TRUE;
-    writer.set( PROP_ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
+    writer.set( PROP_ENABLED, JSConst.QX_FIELD_ENABLED, newValue, Boolean.TRUE );
   }
 
-  static void writeImageAndText( final MenuItem menuItem ) throws IOException {
+  static void writeImageAndText( MenuItem menuItem ) throws IOException {
     String text = menuItem.getText();
     if( WidgetLCAUtil.hasChanged( menuItem, Props.TEXT, text ) ) {
       JSWriter writer = JSWriter.getWriterFor( menuItem );
@@ -71,7 +66,7 @@ final class MenuItemLCAUtil {
     writeImage( menuItem );
   }
 
-  static void writeImage( final MenuItem item ) throws IOException {
+  static void writeImage( MenuItem item ) throws IOException {
     Image image = item.getImage();
     if( WidgetLCAUtil.hasChanged( item, Props.IMAGE, image, null ) ) {
       String imagePath = ImageFactory.getImagePath( image );
@@ -86,26 +81,20 @@ final class MenuItemLCAUtil {
     }
   }
 
-  static void writeSelectionListener( final MenuItem menuItem )
-  throws IOException {
+  static void writeSelectionListener( MenuItem menuItem ) throws IOException {
     boolean hasListener = SelectionEvent.hasListener( menuItem );
     Boolean newValue = Boolean.valueOf( hasListener );
-    String prop = PROP_SELECTION_LISTENERS;
-    if( WidgetLCAUtil.hasChanged( menuItem, prop, newValue, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( menuItem );
-      writer.set( "hasSelectionListener", newValue );
-    }
-  }
-
-  static void writeSelection( final MenuItem menuItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menuItem );
-    writer.set( PROP_SELECTION,
-                JS_PROP_SELECTION,
-                Boolean.valueOf( menuItem.getSelection() ),
-                Boolean.FALSE );
+    writer.set( PROP_SELECTION_LISTENERS, "hasSelectionListener", newValue, Boolean.FALSE );
   }
 
-  static void processArmEvent( final MenuItem menuItem ) {
+  static void writeSelection( MenuItem menuItem ) throws IOException {
+    Boolean newValue = Boolean.valueOf( menuItem.getSelection() );
+    JSWriter writer = JSWriter.getWriterFor( menuItem );
+    writer.set( PROP_SELECTION, JS_PROP_SELECTION, newValue, Boolean.FALSE );
+  }
+
+  static void processArmEvent( MenuItem menuItem ) {
     Menu menu = menuItem.getParent();
     String eventId = JSConst.EVENT_MENU_SHOWN;
     if( WidgetLCAUtil.wasEventSent( menu, eventId ) ) {
