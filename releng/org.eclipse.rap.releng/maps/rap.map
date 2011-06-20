@@ -35,6 +35,10 @@ plugin@org.eclipse.rap.jface.databinding=HEAD,:pserver:anonymous@dev.eclipse.org
 plugin@org.eclipse.rap.ui.forms=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.ui.forms
 fragment@org.eclipse.rap.ui.forms.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui.test/org.eclipse.rap.ui.forms.test
 
+#styled text
+plugin@org.eclipse.rwt.widgets.styledtext=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/sandbox/org.eclipse.rwt.widgets.styledtext
+plugin@org.eclipse.rwt.widgets.styledtext.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/sandbox/org.eclipse.rwt.widgets.styledtext.test
+
 # example design
 plugin@org.eclipse.rap.design.example=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui/org.eclipse.rap.design.example
 
