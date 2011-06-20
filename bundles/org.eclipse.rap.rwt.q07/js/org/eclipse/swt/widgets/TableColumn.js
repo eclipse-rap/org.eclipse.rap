@@ -119,9 +119,16 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     setMoveable : function( value ) {
       this._moveable = value;
     },
-    
-    /** This listener function is added and removed server-side */
-    onClick : function( evt ) {
+
+    setHasSelectionListener : function( value ) {
+      if( value ) {
+        this.addEventListener( "click", this._onClick, this );
+      } else {
+        this.removeEventListener( "click", this._onClick, this );
+      }
+    },
+
+    _onClick : function( evt ) {
       // Don't send selection event when the onClick was caused while resizing
       if( !this._wasResizeOrMoveEvent ) {
         org.eclipse.swt.EventUtil.widgetSelected( evt );

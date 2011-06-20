@@ -27,8 +27,13 @@ import org.eclipse.swt.widgets.*;
 
 public class TreeColumnLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
@@ -36,8 +41,6 @@ public class TreeColumnLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.CENTER );
     Fixture.markInitialized( display );
@@ -133,8 +136,6 @@ public class TreeColumnLCA_Test extends TestCase {
 
   public void testResizeEvent() {
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     final TreeColumn column = new TreeColumn( tree, SWT.NONE );
     column.setWidth( 20 );
@@ -168,8 +169,6 @@ public class TreeColumnLCA_Test extends TestCase {
   }
 
   public void testGetLeft() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column0 = new TreeColumn( tree, SWT.NONE );
     column0.setWidth( 10 );
@@ -191,8 +190,6 @@ public class TreeColumnLCA_Test extends TestCase {
   }
 
   public void testMoveColumn() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column0 = new TreeColumn( tree, SWT.NONE );
     column0.setText( "Col 0" );
@@ -295,8 +292,6 @@ public class TreeColumnLCA_Test extends TestCase {
 
   public void testRenderAlignment() throws IOException {
     Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
@@ -311,6 +306,23 @@ public class TreeColumnLCA_Test extends TestCase {
     column.setAlignment(  SWT.RIGHT );
     lca.renderChanges( column );
     String expected = "w.setAlignment( 1, qx.constant.Layout.ALIGN_RIGHT )";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
+  public void testWriteSelectionListener() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+    Fixture.fakeResponseWriter();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
+
+    column.addSelectionListener( new SelectionAdapter() {} );
+    TreeColumnLCA lca = new TreeColumnLCA();
+    lca.renderChanges( column );
+
+    String expected = "w.setHasSelectionListener( true )";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 

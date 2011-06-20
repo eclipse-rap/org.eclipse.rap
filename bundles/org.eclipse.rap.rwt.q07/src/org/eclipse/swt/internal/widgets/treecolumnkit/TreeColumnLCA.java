@@ -39,10 +39,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
   private static final Integer DEFAULT_LEFT = new Integer( 0 );
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
 
-  private static final JSListenerInfo SELECTION_LISTENER
-    = new JSListenerInfo( "click", "this.onClick", JSListenerType.ACTION );
-
-  public void preserveValues( final Widget widget ) {
+  public void preserveValues( Widget widget ) {
     TreeColumn column = ( TreeColumn )widget;
     ItemLCAUtil.preserve( column );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
@@ -51,17 +48,15 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_LEFT, new Integer( getLeft( column ) ) );
     adapter.preserve( PROP_WIDTH, new Integer( column.getWidth() ) );
     adapter.preserve( PROP_SORT_DIRECTION, getSortDirection( column ) );
-    adapter.preserve( PROP_RESIZABLE,
-                      Boolean.valueOf( column.getResizable() ) );
-    adapter.preserve( PROP_MOVEABLE,
-                      Boolean.valueOf( column.getMoveable() ) );
+    adapter.preserve( PROP_RESIZABLE, Boolean.valueOf( column.getResizable() ) );
+    adapter.preserve( PROP_MOVEABLE, Boolean.valueOf( column.getMoveable() ) );
     adapter.preserve( PROP_ALIGNMENT, new Integer( column.getAlignment() ) );
     adapter.preserve( PROP_SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( column ) ) );
     WidgetLCAUtil.preserveCustomVariant( column );
   }
 
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
     final TreeColumn column = ( TreeColumn )widget;
     // Though there is sent an event parameter called
     // org.eclipse.swt.events.controlResized
@@ -94,14 +89,14 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processSelection( column, null, false );
   }
 
-  public void renderInitialization( final Widget widget ) throws IOException {
+  public void renderInitialization( Widget widget ) throws IOException {
     TreeColumn column = ( TreeColumn )widget;
     JSWriter writer = JSWriter.getWriterFor( column );
     Object[] args = new Object[] { column.getParent() };
     writer.newWidget( "org.eclipse.swt.widgets.TableColumn", args );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     TreeColumn column = ( TreeColumn )widget;
     ItemLCAUtil.writeChanges( column );
     writeLeft( column );
@@ -116,7 +111,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.writeCustomVariant( column );
   }
 
-  public void renderDispose( final Widget widget ) throws IOException {
+  public void renderDispose( Widget widget ) throws IOException {
     TreeColumn column = ( TreeColumn )widget;
     JSWriter writer = JSWriter.getWriterFor( column );
     writer.dispose();
@@ -125,57 +120,46 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
   //////////////////////////////////////////
   // Helping method to write JavaScript code
 
-  private static void writeLeft( final TreeColumn column ) throws IOException {
+  private static void writeLeft( TreeColumn column ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( column );
     Integer newValue = new Integer( getLeft( column ) );
     writer.set( PROP_LEFT, "left", newValue, DEFAULT_LEFT );
   }
 
-  private static void writeWidth( final TreeColumn column ) throws IOException
-  {
+  private static void writeWidth( TreeColumn column ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( column );
     Integer newValue = new Integer( column.getWidth() );
     writer.set( PROP_WIDTH, "width", newValue, null );
   }
 
-  private static void writeZIndex( final TreeColumn column ) throws IOException
-  {
+  private static void writeZIndex( TreeColumn column ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( column );
     Integer newValue = new Integer( getZIndex( column ) );
     writer.set( PROP_Z_INDEX, "zIndex", newValue, null );
   }
 
-  private static void writeSortDirection( final TreeColumn column )
-    throws IOException
-  {
+  private static void writeSortDirection( TreeColumn column ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( column );
     String newValue = getSortDirection( column );
     writer.set( PROP_SORT_DIRECTION, "sortDirection", newValue, null );
   }
 
-  private static void writeResizable( final TreeColumn column )
-    throws IOException
-  {
+  private static void writeResizable( TreeColumn column ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( column );
     Boolean newValue = Boolean.valueOf( column.getResizable() );
     writer.set( PROP_RESIZABLE, "resizable", newValue, Boolean.TRUE );
   }
 
-  private static void writeMoveable( final TreeColumn column )
-    throws IOException
-  {
+  private static void writeMoveable( TreeColumn column ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( column );
     Boolean newValue = Boolean.valueOf( column.getMoveable() );
     writer.set( PROP_MOVEABLE, "moveable", newValue, Boolean.FALSE );
   }
 
-  private static void writeAlignment( final TreeColumn column )
-    throws IOException
-  {
+  private static void writeAlignment( TreeColumn column ) throws IOException {
     Integer newValue = new Integer( column.getAlignment() );
     Integer defValue = DEFAULT_ALIGNMENT;
-    if( WidgetLCAUtil.hasChanged( column, PROP_ALIGNMENT, newValue, defValue ) )
-    {
+    if( WidgetLCAUtil.hasChanged( column, PROP_ALIGNMENT, newValue, defValue ) ) {
       JSVar alignment = JSConst.QX_CONST_ALIGN_LEFT;
       if( newValue.intValue() == SWT.CENTER ) {
         alignment = JSConst.QX_CONST_ALIGN_CENTER;
@@ -189,30 +173,27 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
   }
 
   // TODO [rh] selection event is also fired when resizing columns!
-  private static void writeSelectionListener( final TreeColumn column )
-    throws IOException
-  {
-    // TODO [rh] dispose of selection listener when widget is disposed of
+  private static void writeSelectionListener( TreeColumn column ) throws IOException {
+    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( column ) );
+    String prop = PROP_SELECTION_LISTENERS;
     JSWriter writer = JSWriter.getWriterFor( column );
-    writer.updateListener( SELECTION_LISTENER,
-                           PROP_SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( column ) );
+    writer.set( prop, "hasSelectionListener", newValue, Boolean.FALSE );
   }
 
   //////////////////////////////////////////////////
   // Helping methods to obtain calculated properties
 
-  static int getLeft( final TreeColumn column ) {
+  static int getLeft( TreeColumn column ) {
     Object adapter = column.getParent().getAdapter( ITreeAdapter.class );
     ITreeAdapter treeAdapter = ( ITreeAdapter )adapter;
     return treeAdapter.getColumnLeft( column );
   }
 
-  static int getZIndex( final TreeColumn column ) {
+  static int getZIndex( TreeColumn column ) {
     return ControlLCAUtil.getZIndex( column.getParent() ) + 1;
   }
 
-  static String getSortDirection( final TreeColumn column ) {
+  static String getSortDirection( TreeColumn column ) {
     String result = null;
     Tree tree = column.getParent();
     if( tree.getSortColumn() == column ) {
@@ -228,7 +209,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
   /////////////////////////////////
   // Helping methods to move column
 
-  static void moveColumn( final TreeColumn column, final int newLeft ) {
+  static void moveColumn( TreeColumn column, int newLeft ) {
     Tree tree = column.getParent();
     int targetColumn = findMoveTarget( tree, newLeft );
     int[] columnOrder = tree.getColumnOrder();
@@ -257,7 +238,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
    * value of columnCount indicates that the moved column should be inserted
    * after the right-most column.
    */
-  private static int findMoveTarget( final Tree tree, final int newLeft ) {
+  private static int findMoveTarget( Tree tree, int newLeft ) {
     int result = -1;
     TreeColumn[] columns = tree.getColumns();
     int[] columnOrder = tree.getColumnOrder();
@@ -282,7 +263,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static int arrayIndexOf( final int[] array, final int value ) {
+  private static int arrayIndexOf( int[] array, int value ) {
     int result = -1;
     for( int i = 0; result == -1 && i < array.length; i++ ) {
       if( array[ i ] == value ) {
@@ -292,7 +273,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static int[] arrayRemove( final int[] array, final int index ) {
+  private static int[] arrayRemove( int[] array, int index ) {
     int length = array.length;
     int[] result = new int[ length - 1 ];
     System.arraycopy( array, 0, result, 0, index );
@@ -302,11 +283,7 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static int[] arrayInsert( final int[] array,
-                                    final int index,
-                                    final int value )
-  {
-
+  private static int[] arrayInsert( int[] array, int index, int value ) {
     int length = array.length;
     int[] result = new int[ length + 1 ];
     System.arraycopy( array, 0, result, 0, length );
