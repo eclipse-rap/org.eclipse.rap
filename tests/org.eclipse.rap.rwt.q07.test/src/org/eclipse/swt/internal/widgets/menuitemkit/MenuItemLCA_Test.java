@@ -85,8 +85,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     assertEquals( Boolean.TRUE, Boolean.valueOf( menuItem.getSelection() ) );
-    assertEquals( Boolean.TRUE, 
-                  adapter.getPreserved( MenuItemLCAUtil.PROP_SELECTION ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( MenuItemLCAUtil.PROP_SELECTION ) );
   }
 
   public void testCheckPreserveValues() {
@@ -105,8 +104,7 @@ public class MenuItemLCA_Test extends TestCase {
     menuItem.setSelection( true );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
-    assertEquals( Boolean.TRUE, 
-                  adapter.getPreserved( MenuItemLCAUtil.PROP_SELECTION ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( MenuItemLCAUtil.PROP_SELECTION ) );
   }
 
   public void testWidgetSelected() {
@@ -325,13 +323,11 @@ public class MenuItemLCA_Test extends TestCase {
   private void testPreserveSelectionListener( final MenuItem menuItem ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     Fixture.preserveWidgets();
-    assertEquals( Boolean.FALSE,
-                  adapter.getPreserved( Props.SELECTION_LISTENERS ) );
+    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.SELECTION_LISTENERS ) );
     Fixture.clearPreserved();
     menuItem.addSelectionListener( new SelectionAdapter() {} );
     Fixture.preserveWidgets();
-    assertEquals( Boolean.TRUE,
-                  adapter.getPreserved( Props.SELECTION_LISTENERS ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.SELECTION_LISTENERS ) );
     Fixture.clearPreserved();
   }
 
@@ -362,5 +358,23 @@ public class MenuItemLCA_Test extends TestCase {
     // even if parent is disabled
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
+  }
+
+  public void testWriteSelectionListener() throws IOException {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
+    shell.setMenu( menu );
+    Fixture.fakeResponseWriter();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( menuItem );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
+
+    menuItem.addSelectionListener( new SelectionAdapter() {} );
+    PushMenuItemLCA lca = new PushMenuItemLCA();
+    lca.renderChanges( menuItem );
+
+    String expected = "w.setHasSelectionListener( true )";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 }
