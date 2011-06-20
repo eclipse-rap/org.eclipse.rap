@@ -18,6 +18,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -111,7 +113,8 @@ public class NLS_Test extends TestCase {
     try {
       Fixture.runInThread( runnable );
       fail();
-    } catch( IllegalStateException expected ) {
+    } catch( SWTException expected ) {
+      assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, expected.code );
     }
   }
   
@@ -145,7 +148,8 @@ public class NLS_Test extends TestCase {
     try {
       Fixture.runInThread( runnable );
       fail();
-    } catch( IllegalStateException expected ) {
+    } catch( SWTException expected ) {
+      assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, expected.code );
     }
   }
 

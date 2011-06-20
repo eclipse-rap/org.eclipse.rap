@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycle;
-import org.eclipse.rwt.lifecycle.PhaseListener;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.IApplicationStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -65,10 +65,7 @@ public class RWT_Test extends TestCase {
     Fixture.setUp();
     Runnable runnable = new Runnable() {
       public void run() {
-        RWT.requestThreadExec( new Runnable() {
-          public void run() {
-          }
-        } );
+        RWT.requestThreadExec( new EmptyRunnable() );
       }
     };
     try {
@@ -113,6 +110,7 @@ public class RWT_Test extends TestCase {
   
   public void testRequestThreadExecWithDisposedDisplay() {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     display.dispose();
     Runnable runnable = new EmptyRunnable();
@@ -137,12 +135,78 @@ public class RWT_Test extends TestCase {
   public void testRequestThreadExecDelegatesToLifeCycle() {
     System.setProperty( RWTConfiguration.PARAM_LIFE_CYCLE, TestLifeCycle.class.getName() );
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     new Display();
     
     RWT.requestThreadExec( new EmptyRunnable() );
     
     TestLifeCycle lifeCycle = ( TestLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     assertEquals( TestLifeCycle.REQUEST_THREAD_EXEC, lifeCycle.getInvocationLog() );
+  }
+  
+  public void testGetRequestFromBackgroundThread() throws Throwable {
+    Fixture.setUp();
+    Runnable runnable = new Runnable() {
+      public void run() {
+        RWT.getRequest();
+      }
+    };
+    
+    try {
+      Fixture.runInThread( runnable );
+      fail();
+    } catch( SWTException expected ) {
+    }
+  }
+  
+  public void testGetResponseFromBackgroundThread() throws Throwable {
+    Fixture.setUp();
+    Runnable runnable = new Runnable() {
+      public void run() {
+        RWT.getResponse();
+      }
+    };
+    
+    try {
+      Fixture.runInThread( runnable );
+      fail();
+    } catch( SWTException expected ) {
+    }
+  }
+  
+  public void testGetServiceStoreFromBackgroundThread() throws Throwable {
+    Fixture.setUp();
+    Runnable runnable = new Runnable() {
+      public void run() {
+        RWT.getServiceStore();
+      }
+    };
+    
+    try {
+      Fixture.runInThread( runnable );
+      fail();
+    } catch( SWTException expected ) {
+    }
+  }
+  
+  public void testGetServiceStoreFromSessionThread() throws Throwable {
+    Fixture.setUp();
+    final Display display = new Display();
+    final Runnable runnable = new Runnable() {
+      public void run() {
+        RWT.getServiceStore();
+      }
+    };
+    
+    try {
+      Fixture.runInThread( new Runnable() {
+        public void run() {
+          UICallBack.runNonUIThreadWithFakeContext( display, runnable );
+        }
+      } );
+      fail();
+    } catch( SWTException expected ) {
+    }
   }
   
   protected void tearDown() throws Exception {

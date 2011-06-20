@@ -17,7 +17,6 @@ import java.lang.reflect.Field;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
@@ -883,15 +882,15 @@ public class ControlLCAUtil {
   }
 
   private static void cancelKeyEvent( Widget widget) {
-    RWT.getServiceStore().setAttribute( ATT_CANCEL_KEY_EVENT, widget );
+    ContextProvider.getStateInfo().setAttribute( ATT_CANCEL_KEY_EVENT, widget );
   }
 
   private static void allowKeyEvent( Widget widget ) {
-    RWT.getServiceStore().setAttribute( ATT_ALLOW_KEY_EVENT, widget );
+    ContextProvider.getStateInfo().setAttribute( ATT_ALLOW_KEY_EVENT, widget );
   }
 
   private static void writeKeyEventResponse( Control control ) throws IOException {
-    IServiceStore serviceStore = RWT.getServiceStore();
+    IServiceStore serviceStore = ContextProvider.getStateInfo();
     if( serviceStore.getAttribute( ATT_ALLOW_KEY_EVENT ) == control ) {
       JSWriter writer = JSWriter.getWriterFor( control );
       writer.callStatic( JSFUNC_ALLOW_EVENT, null );
