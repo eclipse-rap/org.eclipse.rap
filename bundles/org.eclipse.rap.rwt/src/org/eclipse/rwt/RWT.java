@@ -21,8 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.LifeCycle;
-import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServletLog;
 import org.eclipse.rwt.internal.util.ClassUtil;
@@ -46,6 +45,9 @@ import org.eclipse.swt.widgets.Listener;
  * @since 1.0
  * @see ILifeCycle
  * @see ISessionStore
+ * @see IServiceStore
+ * @see IApplicationStore
+ * @see IBrowserHistory
  * @see IResourceManager
  * @see HttpServletRequest
  * @see HttpServletResponse
@@ -101,7 +103,7 @@ public final class RWT {
      * @param bundleName the bundle to load.
      * @param clazz the class of the NLS object to load.
      */
-    public static Object getISO8859_1Encoded( final String bundleName, final Class clazz ) {
+    public static Object getISO8859_1Encoded( String bundleName, Class clazz ) {
       ClassLoader loader = clazz.getClassLoader();
       ResourceBundle bundle = ResourceBundle.getBundle( bundleName, getLocale(), loader );
       return internalGet( bundle, clazz );
@@ -117,13 +119,13 @@ public final class RWT {
      * @param bundleName the bundle to load.
      * @param clazz the class of the NLS object to load.
      */
-    public static Object getUTF8Encoded( final String bundleName, final Class clazz ) {
+    public static Object getUTF8Encoded( String bundleName, Class clazz ) {
       ClassLoader loader = clazz.getClassLoader();
       ResourceBundle bundle = Utf8ResourceBundle.getBundle( bundleName, getLocale(), loader );
       return internalGet( bundle, clazz );
     }
     
-    private static Object internalGet( final ResourceBundle bundle, final Class clazz ) {
+    private static Object internalGet( ResourceBundle bundle, Class clazz ) {
       Object result;
       synchronized( map ) {
         result = map.get( bundle );
@@ -143,13 +145,13 @@ public final class RWT {
                     fields[ i ].setAccessible( true );
                     fields[ i ].set( result, value );
                   }
-                } catch( final MissingResourceException mre ) {
+                } catch( MissingResourceException mre ) {
                   fields[ i ].setAccessible( true );
                   fields[ i ].set( result, "" );
                   throw mre;
                 }
               }
-            } catch( final Exception ex ) {
+            } catch( Exception ex ) {
               String qualifiedName = clazz.getName() + "#" + fieldName;
               ServletLog.log( "Failed to load localized message for: " + qualifiedName, ex );
             }
@@ -249,9 +251,10 @@ public final class RWT {
    * @return {@link IServiceStore}
    */
   public static IServiceStore getServiceStore() {
+    checkHasPhase();
     return ContextProvider.getStateInfo();
   }
-  
+
   /**
    * Returns the <code>ISessionStore</code> of the <code>HttpSession</code>
    * to which the currently processed request belongs.
@@ -280,9 +283,10 @@ public final class RWT {
    * @return instance of {@link HttpServletRequest}
    */
   public static HttpServletRequest getRequest() {
+    checkHasSessionContext();
     return ContextProvider.getRequest();
   }
-  
+
   /**
    * Returns the <code>HttpServletResponse</code> that is mapped
    * to the currently processed request.
@@ -290,6 +294,7 @@ public final class RWT {
    * @return instance of {@link HttpServletResponse}
    */
   public static HttpServletResponse getResponse() {
+    checkHasSessionContext();
     return ContextProvider.getResponse();
   }
 
@@ -307,8 +312,8 @@ public final class RWT {
    * @see #setLocale(Locale)
    */
   public static Locale getLocale() {
-    ISessionStore session = ContextProvider.getSession();
-    Locale result = ( Locale )session.getAttribute( LOCALE );
+    checkHasSessionContext();
+    Locale result = ( Locale )ContextProvider.getSession().getAttribute( LOCALE );
     if( result == null ) {
       result = ContextProvider.getRequest().getLocale();
     }
@@ -325,9 +330,10 @@ public final class RWT {
    * 
    * @see #getLocale()
    */
-  public static void setLocale( final Locale locale ) {
-    ISessionStore session = ContextProvider.getSession();
-    session.setAttribute( LOCALE, locale );
+  public static void setLocale( Locale locale ) {
+    checkHasSessionContext();
+    ISessionStore sessionStore = ContextProvider.getSession();
+    sessionStore.setAttribute( LOCALE, locale );
   }
 
   /**
@@ -356,14 +362,27 @@ public final class RWT {
    * </ul>
    * @since 1.3
    */
-  public static void requestThreadExec( final Runnable runnable ) {
+  public static void requestThreadExec( Runnable runnable ) {
     ParamCheck.notNull( runnable, "runnable" );
+    checkHasPhase();
     Display display = LifeCycleUtil.getSessionDisplay();
-    if( display == null || display.getThread() != Thread.currentThread() ) {
-      SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
+    if( display == null || display.isDisposed() ) {
+      SWT.error( SWT.ERROR_DEVICE_DISPOSED );
     }
     LifeCycle lifeCycle = ( LifeCycle )getLifeCycle();
     lifeCycle.requestThreadExec( runnable );
+  }
+
+  private static void checkHasSessionContext() {
+    if( !ContextProvider.hasContext() ) {
+      SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
+    }
+  }
+
+  private static void checkHasPhase() {
+    if( !ContextProvider.hasContext() || CurrentPhase.get() == null ) {
+      SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
+    }
   }
 
   private RWT() {

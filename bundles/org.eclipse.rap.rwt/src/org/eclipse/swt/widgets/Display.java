@@ -20,7 +20,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
@@ -2383,11 +2382,11 @@ public class Display extends Device implements Adaptable {
     }
 
     public void invalidateFocus() {
-      RWT.getServiceStore().setAttribute( ATTR_INVALIDATE_FOCUS, Boolean.TRUE );
+      ContextProvider.getStateInfo().setAttribute( ATTR_INVALIDATE_FOCUS, Boolean.TRUE );
     }
 
     public boolean isFocusInvalidated() {
-      Object value = RWT.getServiceStore().getAttribute( ATTR_INVALIDATE_FOCUS );
+      Object value = ContextProvider.getStateInfo().getAttribute( ATTR_INVALIDATE_FOCUS );
       return value != null;
     }
 
