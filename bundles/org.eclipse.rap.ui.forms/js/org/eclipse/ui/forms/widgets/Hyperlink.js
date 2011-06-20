@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,17 +44,7 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
   statics : {
     UNDERLINE_NEVER : 1,
     UNDERLINE_HOVER : 2,
-    UNDERLINE_ALWAYS : 3,
-    // This event handler is added/removed by the server-side LCA
-    onClick : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( evt.getTarget() );
-        var req = org.eclipse.swt.Request.getInstance();
-        req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
-        req.send();
-      }
-    }
+    UNDERLINE_ALWAYS : 3
   },
     
   members : {
@@ -69,6 +59,14 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
     
     setUnderlineMode : function( value ) {
       this._underlineMode = value;      
+    },
+
+    setHasSelectionListener : function( value ) {
+      if( value ) {
+        this.addEventListener( "click", this._onClick, this );
+      } else {
+        this.removeEventListener( "click", this._onClick, this );
+      }
     },
 
     _onMouseMove : function( evt ) {
@@ -98,6 +96,17 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
         if( this._underlineMode == mode ) {
           this.setStyleProperty( "textDecoration", "none");
         }
+      }
+    },
+
+    _onClick : function( evt ) {
+      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        var id = widgetManager.findIdByWidget( evt.getTarget() );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
+        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
+        req.send();
       }
     }
   }
