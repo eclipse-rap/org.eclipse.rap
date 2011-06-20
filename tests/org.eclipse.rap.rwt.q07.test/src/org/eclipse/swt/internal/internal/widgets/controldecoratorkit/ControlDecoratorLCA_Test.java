@@ -1,13 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.internal.widgets.controldecoratorkit;
+
+import java.io.IOException;
 
 import junit.framework.TestCase;
 
@@ -26,25 +29,31 @@ import org.eclipse.swt.widgets.*;
 
 public class ControlDecoratorLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testPreserveValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
-    ControlDecorator decoration
-      = new ControlDecorator( control, SWT.RIGHT, null );
+    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( decoration );
-    assertEquals( new Rectangle( 0, 0, 0, 0 ),
-                  adapter.getPreserved( Props.BOUNDS ) );
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), adapter.getPreserved( Props.BOUNDS ) );
     assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
-    assertEquals( null,
-                  adapter.getPreserved( ControlDecoratorLCA.PROP_TEXT ) );
-    assertEquals( Boolean.TRUE,
-                  adapter.getPreserved( ControlDecoratorLCA.PROP_SHOW_HOVER ) );
-    assertEquals( Boolean.FALSE,
-                  adapter.getPreserved( Props.VISIBLE ) );
+    assertEquals( null, adapter.getPreserved( ControlDecoratorLCA.PROP_TEXT ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( ControlDecoratorLCA.PROP_SHOW_HOVER ) );
+    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
     String prop = ControlDecoratorLCA.PROP_SELECTION_LISTENERS;
     assertEquals( Boolean.FALSE, adapter.getPreserved( prop ) );
     Fixture.clearPreserved();
@@ -58,21 +67,15 @@ public class ControlDecoratorLCA_Test extends TestCase {
     shell.open();
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( decoration );
-    assertEquals( new Rectangle( 0, -6, 58, 12 ),
-                  adapter.getPreserved( Props.BOUNDS ) );
+    assertEquals( new Rectangle( 0, -6, 58, 12 ), adapter.getPreserved( Props.BOUNDS ) );
     assertEquals( image, adapter.getPreserved( Props.IMAGE ) );
-    assertEquals( "text",
-                  adapter.getPreserved( ControlDecoratorLCA.PROP_TEXT ) );
-    assertEquals( Boolean.FALSE,
-                  adapter.getPreserved( ControlDecoratorLCA.PROP_SHOW_HOVER ) );
-    assertEquals( Boolean.TRUE,
-                  adapter.getPreserved( Props.VISIBLE ) );
+    assertEquals( "text", adapter.getPreserved( ControlDecoratorLCA.PROP_TEXT ) );
+    assertEquals( Boolean.FALSE, adapter.getPreserved( ControlDecoratorLCA.PROP_SHOW_HOVER ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.VISIBLE ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( prop ) );
   }
 
   public void testSelectionEvent() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     final ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
@@ -113,11 +116,18 @@ public class ControlDecoratorLCA_Test extends TestCase {
     assertEquals( "widgetDefaultSelected", log.toString() );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
+  public void testWriteSelectionListener() throws IOException {
+    Composite composite = new Composite( shell, SWT.NONE );
+    Control control = new Button( composite, SWT.PUSH );
+    ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
+    Fixture.markInitialized( decoration );
+    Fixture.fakeNewRequest( display );
+    decoration.addSelectionListener( new SelectionAdapter() {} );
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    ControlDecoratorLCA lca = new ControlDecoratorLCA();
+    lca.renderChanges( decoration );
+
+    String expected = "w.setHasSelectionListener( true )";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 }

@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
-
 
 qx.Class.define( "org.eclipse.rwt.widgets.ControlDecorator", {
   extend : qx.ui.basic.Image,
@@ -41,25 +41,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.ControlDecorator", {
       }
     },
 
-    ////////////////////////////////////////////////////////////
-    // Event handling methods - added and removed by server-side
-
-    onWidgetSelected : function( evt ) {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( this );
-      var req = org.eclipse.swt.Request.getInstance();
-      req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
-      org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-      req.send();
-    },
-
-    onWidgetDefaultSelected : function( evt ) {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var id = widgetManager.findIdByWidget( this );
-      var req = org.eclipse.swt.Request.getInstance();
-      req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
-      org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-      req.send();
+    setHasSelectionListener : function( value ) {
+      var eventUtil = org.eclipse.swt.EventUtil;
+      if( value ) {
+        this.addEventListener( "mousedown", eventUtil.widgetSelected, this );
+        this.addEventListener( "dblclick", eventUtil.widgetDefaultSelected, this );
+      } else {
+        this.removeEventListener( "mousedown", eventUtil.widgetSelected, this );
+        this.removeEventListener( "dblclick", eventUtil.widgetDefaultSelected, this );
+      }
     }
 
   }
