@@ -176,9 +176,8 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
   // TODO [rh] selection event is also fired when resizing columns!
   private static void writeSelectionListener( TableColumn column ) throws IOException {
     Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( column ) );
-    String prop = PROP_SELECTION_LISTENERS;
     JSWriter writer = JSWriter.getWriterFor( column );
-    writer.set( prop, "hasSelectionListener", newValue, Boolean.FALSE );
+    writer.set( PROP_SELECTION_LISTENERS, "hasSelectionListener", newValue, Boolean.FALSE );
   }
 
   //////////////////////////////////////////////////

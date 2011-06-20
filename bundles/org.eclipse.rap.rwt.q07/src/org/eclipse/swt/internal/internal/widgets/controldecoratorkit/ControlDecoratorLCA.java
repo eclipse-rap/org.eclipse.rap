@@ -94,9 +94,8 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
 
   private static void writeSelectionListener( ControlDecorator decorator ) throws IOException {
     Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( decorator ) );
-    String prop = PROP_SELECTION_LISTENERS;
     JSWriter writer = JSWriter.getWriterFor( decorator );
-    writer.set( prop, "hasSelectionListener", newValue, Boolean.FALSE );
+    writer.set( PROP_SELECTION_LISTENERS, "hasSelectionListener", newValue, Boolean.FALSE );
   }
 
   ////////////////////////////////////////////////////
