@@ -127,6 +127,7 @@
     <property name="rwt_osgi.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.osgi.test/@dot" />
     <property name="forms.tests" value="${buildDirectory}/plugins/org.eclipse.rap.ui.forms.test/@dot" />
     <property name="themes.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.themes.test/@dot" />
+    <property name="styledtext.tests" value="${buildDirectory}/plugins/org.eclipse.rwt.widgets.styledtext.test/@dot" />
     <property name="reports.tests" value="${buildDirectory}/tests" />
     <mkdir dir="${reports.tests}" />
     <path id="cp">
@@ -135,6 +136,7 @@
       <pathelement location="${rwt_osgi.tests}" />
       <pathelement location="${forms.tests}" />
       <pathelement location="${themes.tests}" />
+      <pathelement location="${styledtext.tests}" />
       <fileset dir="${buildDirectory}/${buildLabel}/target/eclipse/plugins">
         <include name="**/*.jar" />
       </fileset>
@@ -145,13 +147,14 @@
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.theme.classic/@dot" />
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.design.example/@dot" />
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/lib/resource_manager_test.jar" />
+      <pathelement path="${buildDirectory}/plugins/org.eclipse.rwt.widgets.styledtext/@dot" />
+      <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.ui.forms/@dot" />
       <fileset dir="${baseLocation}/plugins">
         <include name="org.junit_3*/junit.jar" />
         <include name="org.mockito*/" />
         <include name="org.objenesis*/" />
         <include name="org.hamcrest*/" />
       </fileset>
-      <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.ui.forms/@dot" />
     </path>
 
     <!-- run rwt tests -->
@@ -172,6 +175,9 @@
           <include name="**/*_Test.class" />
         </fileset>
         <fileset dir="${themes.tests}">
+          <include name="**/*_Test.class" />
+        </fileset>
+        <fileset dir="${styledtext.tests}">
           <include name="**/*_Test.class" />
         </fileset>
       </batchtest>
