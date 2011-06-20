@@ -63,9 +63,9 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
 
     setHasSelectionListener : function( value ) {
       if( value ) {
-        this.addEventListener( "click", this._onClick, this );
+        this.addEventListener( "click", org.eclipse.swt.EventUtil.widgetDefaultSelected, this );
       } else {
-        this.removeEventListener( "click", this._onClick, this );
+        this.removeEventListener( "click", org.eclipse.swt.EventUtil.widgetDefaultSelected, this );
       }
     },
 
@@ -96,17 +96,6 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.Hyperlink", {
         if( this._underlineMode == mode ) {
           this.setStyleProperty( "textDecoration", "none");
         }
-      }
-    },
-
-    _onClick : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        var id = widgetManager.findIdByWidget( evt.getTarget() );
-        var req = org.eclipse.swt.Request.getInstance();
-        req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
-        org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
-        req.send();
       }
     }
   }
