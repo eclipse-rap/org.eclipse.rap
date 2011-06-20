@@ -13,7 +13,6 @@ package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -25,40 +24,32 @@ import org.eclipse.swt.widgets.MenuItem;
 final class PushMenuItemLCA extends MenuItemDelegateLCA {
 
   private static final String ITEM_TYPE_PUSH = "push";
-  private static final String ITEM_TYPE_CASCADE ="cascade";
-  private static final JSListenerInfo JS_LISTENER_INFO
-    = new JSListenerInfo( JSConst.QX_EVENT_EXECUTE,
-                          JSConst.JS_WIDGET_SELECTED,
-                          JSListenerType.ACTION );
+  private static final String ITEM_TYPE_CASCADE = "cascade";
 
-  void preserveValues( final MenuItem menuItem ) {
+  void preserveValues( MenuItem menuItem ) {
     ItemLCAUtil.preserve( menuItem );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     boolean hasListener = SelectionEvent.hasListener( menuItem );
-    adapter.preserve( Props.SELECTION_LISTENERS,
-                      Boolean.valueOf( hasListener ) );
+    adapter.preserve( Props.SELECTION_LISTENERS, Boolean.valueOf( hasListener ) );
     MenuItemLCAUtil.preserveEnabled( menuItem );
     WidgetLCAUtil.preserveCustomVariant( menuItem );
     WidgetLCAUtil.preserveHelpListener( menuItem );
   }
 
-  void readData( final MenuItem menuItem ) {
+  void readData( MenuItem menuItem ) {
     ControlLCAUtil.processSelection( menuItem, null, false );
     WidgetLCAUtil.processHelp( menuItem );
     MenuItemLCAUtil.processArmEvent( menuItem );
   }
 
-  void renderInitialization( final MenuItem menuItem ) throws IOException {
+  void renderInitialization( MenuItem menuItem ) throws IOException {
     String type = ( menuItem.getStyle() & SWT.CASCADE ) != 0 ? ITEM_TYPE_CASCADE : ITEM_TYPE_PUSH;
     MenuItemLCAUtil.newItem( menuItem, "org.eclipse.rwt.widgets.MenuItem", type );
   }
 
-  void renderChanges( final MenuItem menuItem ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( menuItem );
+  void renderChanges( MenuItem menuItem ) throws IOException {
     MenuItemLCAUtil.writeImageAndText( menuItem );
-    writer.updateListener( JS_LISTENER_INFO,
-                           Props.SELECTION_LISTENERS,
-                           SelectionEvent.hasListener( menuItem ) );
+    MenuItemLCAUtil.writeSelectionListener( menuItem );
     MenuItemLCAUtil.writeEnabled( menuItem );
     WidgetLCAUtil.writeCustomVariant( menuItem );
     WidgetLCAUtil.writeHelpListener( menuItem );
