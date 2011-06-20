@@ -17,11 +17,11 @@ import java.util.Locale;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.swt.widgets.Display;
 
 
 public class NLS_Test extends TestCase {
-  
-  private static Locale localeBuffer;
   
   final static class TestMessages {
     private static final String BUNDLE_NAME = "org.eclipse.rwt.messages";
@@ -52,8 +52,7 @@ public class NLS_Test extends TestCase {
   }
   
   final static class TestIncompleteMessages {
-    private static final String BUNDLE_NAME
-      = "org.eclipse.rwt.incomplete_messages";
+    private static final String BUNDLE_NAME = "org.eclipse.rwt.incomplete_messages";
     
     public String NoTranslationAvailable;
 
@@ -67,6 +66,8 @@ public class NLS_Test extends TestCase {
     }
   }
   
+  private Locale localeBuffer;
+
   protected void setUp() throws Exception {
     localeBuffer = Locale.getDefault();
     Locale.setDefault( Locale.ENGLISH );
@@ -78,18 +79,92 @@ public class NLS_Test extends TestCase {
     Locale.setDefault( localeBuffer );
   }
   
-  public void testLocale() {
+  public void testGetLocaleWithUnmodifiedLocale() {
     Locale locale = RWT.getLocale();
     assertSame( Locale.getDefault(), locale );
-    
+  }
+  
+  public void testGetLocaleWithRequestLocale() {
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setLocale( Locale.ITALIAN );
-    locale = RWT.getLocale();
-    assertSame( Locale.ITALIAN, locale );
     
+    Locale locale = RWT.getLocale();
+    
+    assertSame( Locale.ITALIAN, locale );
+  }
+  
+  public void testGetLocaleWithOverriddenLocale() {
     RWT.setLocale( Locale.UK );
-    locale = RWT.getLocale();
-    assertSame( Locale.UK, RWT.getLocale() );
+    
+    Locale locale = RWT.getLocale();
+    
+    assertSame( Locale.UK, locale );
+  }
+  
+  public void testGetLocaleFromBackgroundThread() throws Throwable {
+    Runnable runnable = new Runnable() {
+      public void run() {
+        RWT.getLocale();
+      }
+    };
+    
+    try {
+      Fixture.runInThread( runnable );
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
+  }
+  
+  public void testGetLocaleFromSessionThread() throws Throwable {
+    Locale locale = Locale.FRENCH;
+    RWT.setLocale( locale );
+    final Display display = new Display();
+    final Locale[] returnedLocale = { null };
+    final Runnable runnable = new Runnable() {
+      public void run() {
+        returnedLocale[ 0 ] = RWT.getLocale();
+      }
+    };
+    
+    Fixture.runInThread( new Runnable() {
+      public void run() {
+        UICallBack.runNonUIThreadWithFakeContext( display, runnable );
+      }
+    } );
+    
+    assertSame( locale, returnedLocale[ 0 ] );
+  }
+  
+  public void testSetLocaleFromBackgroundThread() throws Throwable {
+    Runnable runnable = new Runnable() {
+      public void run() {
+        RWT.setLocale( Locale.JAPAN );
+      }
+    };
+    
+    try {
+      Fixture.runInThread( runnable );
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
+  }
+
+  public void testSetLocaleFromSessionThread() throws Throwable {
+    RWT.setLocale( Locale.FRENCH );
+    final Display display = new Display();
+    final Runnable runnable = new Runnable() {
+      public void run() {
+        RWT.setLocale( Locale.JAPAN );
+      }
+    };
+    
+    Fixture.runInThread( new Runnable() {
+      public void run() {
+        UICallBack.runNonUIThreadWithFakeContext( display, runnable );
+      }
+    } );
+    
+    assertSame( Locale.JAPAN, RWT.getLocale() );
   }
   
   public void testNLS() {
