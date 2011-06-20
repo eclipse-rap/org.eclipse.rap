@@ -51,14 +51,14 @@ final class WrappedRequest extends HttpServletRequestWrapper {
     return result;
   }
   
-  public Enumeration getParameterNames() {
+  public Enumeration<String> getParameterNames() {
     final Iterator iterator = parameterMap.keySet().iterator();
-    return new Enumeration() {
+    return new Enumeration<String>() {
       public boolean hasMoreElements() {
         return iterator.hasNext();
       }
-      public Object nextElement() {
-        return iterator.next();
+      public String nextElement() {
+        return ( String )iterator.next();
       }      
     };
   }
