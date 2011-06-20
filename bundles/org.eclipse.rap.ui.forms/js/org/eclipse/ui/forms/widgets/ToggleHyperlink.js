@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.ui.forms.widgets.ToggleHyperlink", {
@@ -29,44 +30,30 @@ qx.Class.define( "org.eclipse.ui.forms.widgets.ToggleHyperlink", {
     this.removeEventListener( "mousemove", this._onMouseMove, this );
     this.removeEventListener( "mouseout", this._onMouseOut, this );
   },
-  
-  statics : {
-    
-    // This event handler is added/removed by the server-side LCA
-    onClick : function( evt ) {
-      if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-widgetManager.debug( "clicked" );      
-        var id = widgetManager.findIdByWidget( evt.getTarget() );
-        var req = org.eclipse.swt.Request.getInstance();
-        req.addEvent( "org.eclipse.swt.events.widgetDefaultSelected", id );
-        req.send();
-      }
-    }
-
-  },
     
   members : {
-    
-    setImages : function( collapseNormal, 
-                          collapseHover, 
-                          expandNormal, 
-                          expandHover ) 
-    {
+
+    setImages : function( collapseNormal, collapseHover, expandNormal, expandHover ) {
       this._collapseNormal = collapseNormal;
-      this._collapseHover 
-        = collapseHover != null ? collapseHover : collapseNormal;      
+      this._collapseHover = collapseHover != null ? collapseHover : collapseNormal;
       this._expandNormal = expandNormal;
-      this._expandHover 
-        = expandHover != null ? expandHover : expandNormal;
-      this._updateImage();      
+      this._expandHover = expandHover != null ? expandHover : expandNormal;
+      this._updateImage();
     },
-    
+
     setExpanded : function( value ) {
       this._expanded = value;
       this._updateImage();
     },
-    
+
+    setHasSelectionListener : function( value ) {
+      if( value ) {
+        this.addEventListener( "click", org.eclipse.swt.EventUtil.widgetDefaultSelected, this );
+      } else {
+        this.removeEventListener( "click", org.eclipse.swt.EventUtil.widgetDefaultSelected, this );
+      }
+    },
+
     _onMouseMove : function( evt ) {
       this._hover = true;
       this._updateImage();
@@ -76,7 +63,7 @@ widgetManager.debug( "clicked" );
       this._hover = false;
       this._updateImage();
     },
-      
+
     _updateImage : function() {
       var source;
       if( this._expanded ) {
