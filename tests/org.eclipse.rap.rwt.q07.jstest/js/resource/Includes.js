@@ -209,6 +209,7 @@
     "org/eclipse/rwt/widgets/TreeItem.js",
     "org/eclipse/rwt/TreeDNDFeedback.js",
     "org/eclipse/swt/widgets/TableCellToolTip.js",
+    "org/eclipse/rwt/widgets/TableHeader.js",
     "org/eclipse/swt/widgets/TableColumn.js",
     "org/eclipse/swt/browser/Browser.js",
     "org/eclipse/rwt/widgets/ExternalBrowser.js",

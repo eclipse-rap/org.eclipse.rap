@@ -40,8 +40,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._horzGridBorder = null;
     // Subwidgets 
     this._rowContainer = org.eclipse.rwt.TreeUtil.createTreeRowContainer( argsMap );
-    this._columnArea = new qx.ui.layout.CanvasLayout();
-    this._dummyColumn = new qx.ui.basic.Atom();
+    this._columnArea = new org.eclipse.rwt.widgets.TableHeader( argsMap );
     this._horzScrollBar = new org.eclipse.rwt.widgets.ScrollBar( true );
     this._vertScrollBar = new org.eclipse.rwt.widgets.ScrollBar( false );
     this._hasScrollBarsSelectionListener = false;
@@ -73,7 +72,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     }
     this._mergeEventsTimer.dispose();
     this._mergeEventsTimer = null;
-    this._dummyColumn = null;
     this._rowContainer = null;
     this._columnArea = null;
     this._horzScrollBar = null;
@@ -93,21 +91,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     // Contructor helpers
 
     _configureAreas : function() {
-      this._columnArea.setOverflow( "hidden" );
-      this._columnArea.addEventListener( "appear", this._onColumnAreaAppear, this );
+      this._columnArea.addEventListener( "columnLayoutChanged", this._onColumnLayoutChanged, this );
       this._columnArea.setTop( 0 );
       this._columnArea.setLeft( 0 );
       // NOTE: Need to use setDisplay here instead of setVisibility,
       // otherwise the appear event would be fired when the widget
-      // is not yet ready to be scrolled (see _onColumnAreaAppear)
+      // is not yet ready to be scrolled 
       this._columnArea.setDisplay( false );
       // TODO [tb] : Find a cleaner solution to block drag-events
       var dragBlocker = function( event ) { event.stopPropagation(); };
       this._columnArea.addEventListener( "dragstart", dragBlocker );
-      this._dummyColumn.setHeight( "100%" );
-      this._dummyColumn.setLabel( "&nbsp;" );
-      this._dummyColumn.addState( "dummy" );
-      this._columnArea.add( this._dummyColumn );
     },
 
     _configureScrollBars : function() {
@@ -140,7 +133,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     _parseArgsMap : function( map ) {
-      this._dummyColumn.setAppearance( map.appearance + "-column" );
       this._rowContainer.setRowAppearance( map.appearance + "-row" );
       this.setAppearance( map.appearance );
       if( map.noScroll ) {
@@ -314,8 +306,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this.base( arguments, state );
     },
         
-    //////////////////////////////////
-    // API for Tests, DND and TreeUtil
+    ///////////////////////////////////////////////
+    // API for Tests, DND, TreeUtil and TableColumn
     
     getRenderConfig : function() {
       return this._config;
@@ -337,56 +329,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       return this._rowContainer;
     },
     
-    //////////////////////
-    // API for TableColumn
-    
-    _addColumn : function( column ) {
-      column.setHeight( "100%" );
-      column.addEventListener( "changeWidth", this._updateScrollWidth, this );
-      this._hookColumnMove( column );
-      this._columnArea.add( column );
-    },
-    
-    _hookColumnMove : function( column ) {
-      column.addEventListener( "changeLeft", this._updateScrollWidth, this );
-    },
-
-    _unhookColumnMove : function( column ) {
-      column.removeEventListener( "changeLeft", this._updateScrollWidth, this );
-    },
-
-    _removeColumn : function( column ) {
-      this._unhookColumnMove( column );
-      column.removeEventListener( "changeWidth", 
-                                  this._updateScrollWidth, 
-                                  this );
-      this._columnArea.remove( column );
-      this._updateScrollWidth();
-      this._rowContainer.renderAll();
-    },
-
-    _onColumnChangeSize : function( evt ) {
-      this._updateScrollWidth();
-    },
-
-    _showResizeLine : function( x ) {
-      if( this._resizeLine === null ) {
-        this._resizeLine = new qx.ui.basic.Terminator();
-        this._resizeLine.setAppearance( "table-column-resizer" );
-        this.add( this._resizeLine );
-        qx.ui.core.Widget.flushGlobalQueues();
-      }
-      var top = this._rowContainer.getTop();
-      this._resizeLine._renderRuntimeTop( top );
-      var left = x - 2 - this._horzScrollBar.getValue();
-      this._resizeLine._renderRuntimeLeft( left );
-      var height = this._rowContainer.getHeight();
-      this._resizeLine._renderRuntimeHeight( height );
-      this._resizeLine.removeStyleProperty( "visibility" );
-    },
-
-    _hideResizeLine : function() {
-      this._resizeLine.setStyleProperty( "visibility", "hidden" );
+    getTableHeader : function() {
+      return this._columnArea;
     },
     
     ////////////////
@@ -431,9 +375,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _onHorzScrollBarChangeValue : function() {
       this._rowContainer.setScrollLeft( this._horzScrollBar.getValue() );
-      if( this._columnArea.isSeeable() ) {
-        this._columnArea.setScrollLeft( this._horzScrollBar.getValue() );
-      }
+      this._columnArea.setScrollLeft( this._horzScrollBar.getValue() );
       this._renderGridVertical();
       this._sendScrollLeftChange();
     },
@@ -558,8 +500,30 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
     },
 
-    _onColumnAreaAppear : function() {
-      this._columnArea.setScrollLeft( this._horzScrollBar.getValue() );
+    _onColumnLayoutChanged : function( event ) {
+      this._updateScrollWidth();
+      this._scheduleUpdate();
+    },
+
+    // TODO [tb] : handle by event via TableHeader instead of direct call
+    _showResizeLine : function( x ) {
+      if( this._resizeLine === null ) {
+        this._resizeLine = new qx.ui.basic.Terminator();
+        this._resizeLine.setAppearance( "table-column-resizer" );
+        this.add( this._resizeLine );
+        qx.ui.core.Widget.flushGlobalQueues();
+      }
+      var top = this._rowContainer.getTop();
+      this._resizeLine._renderRuntimeTop( top );
+      var left = x - 2 - this._horzScrollBar.getValue();
+      this._resizeLine._renderRuntimeLeft( left );
+      var height = this._rowContainer.getHeight();
+      this._resizeLine._renderRuntimeHeight( height );
+      this._resizeLine.removeStyleProperty( "visibility" );
+    },
+
+    _hideResizeLine : function() {
+      this._resizeLine.setStyleProperty( "visibility", "hidden" );
     },
     
     _handleKeyEnter : function( event ) {
@@ -746,32 +710,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       if( !this._horzScrollBar.getDisposed() ) {
         this._horzScrollBar.setMaximum( width );
       }
-      if( this._columnArea.getVisibility() ) {
-        this._renderDummyColumn();
-      }
-    },
-
-    _renderDummyColumn : function() {
-      var dummyLeft = this._getDummyColumnLeft();
-      var areaWidth = this._columnArea.getWidth()
-      var dummyWidth = Math.max( 0, areaWidth - dummyLeft );
-      if( this._vertScrollBar.getVisibility() ) {
-        dummyWidth = Math.max( dummyWidth, this._vertScrollBar.getWidth() );
-      }
-      this._dummyColumn.setLeft( dummyLeft );
-      this._dummyColumn.setWidth( dummyWidth );
-    },
-    
-    _getDummyColumnLeft : function() {
-      var columns = this._columnArea.getChildren();
-      var result = 0;
-      for( var i = 0; i < columns.length; i++ ) {
-        if( columns[ i ] !== this._dummyColumn ) {
-          var left = columns[ i ].getLeft() + columns[ i ].getWidth();
-          result = Math.max( result, left );
-        }
-      }
-      return result;
+      var headerOverlap = this._vertScrollBar.getVisibility() ? this._vertScrollBar.getWidth() : 0;
+      this._columnArea.setScrollWidth( width + headerOverlap );
     },
 
     _scrollIntoView : function( index ) {
@@ -1235,7 +1175,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     _getRowWidth : function() {
-      var width = this._rowContainer.getWidth()
+      var width = this._rowContainer.getWidth();
       var result = Math.max( this._getItemWidth(), width );
       return result;
     },

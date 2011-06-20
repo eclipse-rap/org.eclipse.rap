@@ -174,7 +174,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     testSetRowWidth : function() {
       var container = this._createSplitContainer();
       container.setRowWidth( 150 );
-      container.renderAll();
       var sub1 = container.getSubContainer( 0 );
       var sub2 = container.getSubContainer( 1 );
       assertEquals( 90, sub2.getChildren()[ 0 ].getWidth() );
@@ -336,7 +335,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       assertEquals( 1, testUtil.getRequestsSend() );
       var param1 = "org.eclipse.swt.events.cellToolTipTextRequested=w3";
       var param2 = "org.eclipse.swt.events.cellToolTipTextRequested.cell=w45%2C1";
-      console.log( msg );
       assertTrue( msg.indexOf( param1 ) != -1 );
       assertTrue( msg.indexOf( param2 ) != -1 );
       tree.destroy();
@@ -372,7 +370,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       assertEquals( 1, testUtil.getRequestsSend() );
       var param1 = "org.eclipse.swt.events.cellToolTipTextRequested=w3";
       var param2 = "org.eclipse.swt.events.cellToolTipTextRequested.cell=w45%2C4";
-      console.log( msg );
       assertTrue( msg.indexOf( param1 ) != -1 );
       assertTrue( msg.indexOf( param2 ) != -1 );
       tree.destroy();
@@ -402,6 +399,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       config.itemTextWidth = [ 3, 4, 5, 6, 7 ];
       testUtil.getDocument().add( result );   
       testUtil.flush();
+      result.renderAll();
       return result;
     },
 

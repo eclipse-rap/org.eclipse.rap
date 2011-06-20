@@ -108,9 +108,9 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       "setRowHeight",
       "setTopItem",
       "renderItem",
-      "renderItemQueue",
       "setRowLinesVisible",
-      "setToolTip"
+      "setToolTip",
+      "renderItemQueue"
     ],
 
     _CONTAINER_GETTER_DELEGATES : [ 
@@ -169,7 +169,8 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       },
 
       setRowWidth : function( value ) {
-        this._rowWidth = value; // will be updated with next renderAll
+        this._rowWidth = value;
+        this._layoutX();
       },
       
       setScrollLeft : function( value ) {
@@ -183,7 +184,7 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
         }
         return result;
       },
-
+      
       renderAll : function() {
         this._updateConfig();
         this._container[ 0 ].renderAll();

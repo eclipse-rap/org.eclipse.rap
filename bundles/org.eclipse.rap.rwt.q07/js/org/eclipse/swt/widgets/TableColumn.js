@@ -41,13 +41,14 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     // Init left property, seems to be null initially which breaks the markup 
     // produced by TableItem
     this.setLeft( 0 );
+    this.setHeight( "100%" );
     // Set the label part to 'html mode'
     this.setLabel( "(empty)" );
     this.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );
     this.setLabel( "" );
     // Add this column to the list of coluimns maintained by the table
     this._table = parent;
-    this._table._addColumn( this );
+    this._table.getTableHeader().add( this );
     // Register mouse-listener for 'mouseover' appearance state
     this.addEventListener( "mouseover", this._onMouseOver, this );
     // Register mouse-listeners for resizing    
@@ -79,9 +80,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     // on browser refresh. See bug:
     // 272686: [Table] Javascript error during table disposal
     // https://bugs.eclipse.org/bugs/show_bug.cgi?id=272686
-    if( !this._table.getDisposed() 
-        && !qx.core.Object.inGlobalDispose() ) {
-      this._table._removeColumn( this );
+    if( !this._table.getDisposed() && !qx.core.Object.inGlobalDispose() ) {
+      this._table.getTableHeader().remove( this );
     }
   },
 
@@ -160,7 +160,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
           this.setCapture( true );
           this._bufferedZIndex = this.getZIndex();
           this.setZIndex( 1e8 );
-          this._table._unhookColumnMove( this );
           this._offsetX = evt.getPageX() - this.getLeft();
           this._initialLeft = this.getLeft();
           evt.stopPropagation();
@@ -187,7 +186,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         this._inMove = false;
         this.setCapture( false );
         this.setZIndex( this._bufferedZIndex );
-        this._table._hookColumnMove( this );
         this.removeState( org.eclipse.swt.widgets.TableColumn.STATE_MOVING );
         if(    this.getLeft() < this._initialLeft - 1 
             || this.getLeft() > this._initialLeft + 1 ) 

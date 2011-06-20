@@ -16,6 +16,7 @@ package org.eclipse.jface.viewers;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TableItem;
@@ -68,6 +69,25 @@ public class TableViewerRow extends ViewerRow {
 	public int getColumnCount() {
 		return item.getParent().getColumnCount();
 	}
+
+	// RAP [if] Override ViewerRow method to respect the column order (needed for fixed columns)
+	public int getColumnIndex( Point point ) {
+      int result = -1;
+      int count = getColumnCount();
+      // If there are no columns the column-index is 0
+	  if( count == 0 ) {
+		result = 0;
+	  } else {
+		int[] columnOrder = item.getParent().getColumnOrder();
+		for( int i = 0; i < columnOrder.length && result == -1; i++ ) {
+		  if( getBounds( columnOrder[ i ] ).contains( point ) ) {
+			result = columnOrder[ i ];
+		  }
+		}
+	  }
+	  return result;
+	}
+	// RAPEND
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ViewerRow#getBackground(int)
@@ -221,7 +241,7 @@ public class TableViewerRow extends ViewerRow {
 	public Rectangle getTextBounds(int index) {
 		return item.getTextBounds(index);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ViewerRow#getImageBounds(int)
 	 */
@@ -236,17 +256,17 @@ public class TableViewerRow extends ViewerRow {
 	private boolean isValidOrderIndex(int currentIndex) {
 		return currentIndex < this.item.getParent().getColumnOrder().length;
 	}
-	
+
 	int getWidth(int columnIndex) {
 		return item.getParent().getColumn(columnIndex).getWidth();
 	}
-	
+
 	protected boolean scrollCellIntoView(int columnIndex) {
 		item.getParent().showItem(item);
 		if( hasColumns() ) {
-			item.getParent().showColumn(item.getParent().getColumn(columnIndex));	
+			item.getParent().showColumn(item.getParent().getColumn(columnIndex));
 		}
-		
+
 		return true;
 	}
 }
