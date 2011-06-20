@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.TabUtil", {
@@ -19,10 +20,9 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
       tabButton.getLabelObject().setMode( "html" ); 
       tabButton.setLabel( "" );
       tabButton.setEnableElementFocus( false );
-      tabButton.addEventListener( "changeFocused", 
-                                  org.eclipse.swt.TabUtil._onTabItemChangeFocus );
-      tabButton.addEventListener( "click", 
-                                  org.eclipse.swt.TabUtil._onTabItemClick );
+      tabButton.addEventListener( "changeFocused", org.eclipse.swt.TabUtil._onTabItemChangeFocus );
+      tabButton.addEventListener( "changeChecked", org.eclipse.swt.TabUtil._onTabItemSelected );
+      tabButton.addEventListener( "click", org.eclipse.swt.TabUtil._onTabItemClick );
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var tabView = widgetManager.findWidgetById( parentId );
       tabView.getBar().addAt( tabButton, index );
@@ -35,10 +35,9 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
     releaseTabItem : function( itemId ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var tabButton = widgetManager.findWidgetById( itemId );
-      tabButton.removeEventListener( "changeFocused", 
-                                     org.eclipse.swt.TabUtil._onTabItemChangeFocus );
-      tabButton.removeEventListener( "click", 
-                                     org.eclipse.swt.TabUtil._onTabItemClick );
+      tabButton.removeEventListener( "changeFocused", org.eclipse.swt.TabUtil._onTabItemChangeFocus );
+      tabButton.removeEventListener( "changeChecked", org.eclipse.swt.TabUtil._onTabItemSelected );
+      tabButton.removeEventListener( "click", org.eclipse.swt.TabUtil._onTabItemClick );
       widgetManager.dispose( itemId + "pg" );
     },
 
@@ -57,6 +56,19 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
       }
     },
 
+    _onTabItemSelected : function( evt ) {
+      var tab = evt.getTarget();
+      if( !org.eclipse.swt.EventUtil.getSuspended() && tab.getChecked() ) {
+        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+        // TODO [rst] Add item parameter in doWidgetSelected
+        var itemId = widgetManager.findIdByWidget( tab );
+        var req = org.eclipse.swt.Request.getInstance();
+        req.addParameter( "org.eclipse.swt.events.widgetSelected.item", itemId );
+        var id = widgetManager.findIdByWidget( tab.getParent().getParent() );
+        org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
+      }
+    },
+
     onTabFolderKeyPress : function( evt ) {
       var folder = evt.getTarget();
       if( folder.classname == "qx.ui.pageview.tabview.TabView" ) {
@@ -66,14 +78,12 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
           switch( evt.getKeyIdentifier() ) {
             case "Left":
               manager.selectPrevious( item );
-              org.eclipse.swt.TabUtil.markTabItemFocused( folder, 
-                                                          evt.getTarget() );
+              org.eclipse.swt.TabUtil.markTabItemFocused( folder, evt.getTarget() );
               evt.stopPropagation();
               break;
             case "Right":
               manager.selectNext( item );
-              org.eclipse.swt.TabUtil.markTabItemFocused( folder, 
-                                                          evt.getTarget() );
+              org.eclipse.swt.TabUtil.markTabItemFocused( folder, evt.getTarget() );
               evt.stopPropagation();
               break;
           }
@@ -95,20 +105,6 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
       // add state to the selected item if the tabFolder is focused
       if( item != null && folder.getFocused() ) {
         item.addState( "focused" );
-      }
-    },
-
-    tabSelected : function( evt ) {
-      var tab = evt.getTarget();
-      if( !org.eclipse.swt.EventUtil.getSuspended() && tab.getChecked() ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        // TODO [rst] Add item parameter in doWidgetSelected
-        var itemId = widgetManager.findIdByWidget( tab );
-        var req = org.eclipse.swt.Request.getInstance();
-        req.addParameter( "org.eclipse.swt.events.widgetSelected.item", 
-                          itemId );
-        var id = widgetManager.findIdByWidget( tab.getParent().getParent() );
-        org.eclipse.swt.EventUtil.doWidgetSelected( id, 0, 0, 0, 0 );
       }
     }
   }

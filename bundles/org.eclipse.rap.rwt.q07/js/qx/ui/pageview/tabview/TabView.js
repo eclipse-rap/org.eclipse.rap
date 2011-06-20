@@ -29,6 +29,8 @@ qx.Class.define("qx.ui.pageview.tabview.TabView",
 
   construct : function() {
     this.base(arguments, qx.ui.pageview.tabview.Bar, qx.ui.pageview.tabview.Pane);
+    this.addEventListener( "changeFocused", org.eclipse.swt.TabUtil.onTabFolderChangeFocused );
+    this.addEventListener( "keypress", org.eclipse.swt.TabUtil.onTabFolderKeyPress );
   },
 
 

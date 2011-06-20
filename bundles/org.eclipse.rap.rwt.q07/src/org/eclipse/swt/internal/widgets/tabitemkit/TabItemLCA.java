@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,12 +25,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
 
   private static final String PROP_SELECTED = "selected";
 
-  private static final String JS_FUNC_TAB_SELECTED 
-    = "org.eclipse.swt.TabUtil.tabSelected";
-  private static final String QX_EVENT_CHANGE_CHECKED = "changeChecked";
-
-
-  public void preserveValues( final Widget widget ) {
+  public void preserveValues( Widget widget ) {
     TabItem item = ( TabItem )widget;
     ItemLCAUtil.preserve( item );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
@@ -38,13 +33,12 @@ public class TabItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
     WidgetLCAUtil.preserveCustomVariant( item );
   }
-  
-  public void readData( final Widget widget ) {
+
+  public void readData( Widget widget ) {
     // TODO [rh] same hack as in CTabFolderLCA#readData
     // Read selected item and process selection event
     final TabItem item = ( TabItem )widget;
-    if( WidgetLCAUtil.wasEventSent( item, JSConst.EVENT_WIDGET_SELECTED_ITEM ) ) 
-    {
+    if( WidgetLCAUtil.wasEventSent( item, JSConst.EVENT_WIDGET_SELECTED_ITEM ) ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           TabFolder folder = item.getParent();
@@ -54,21 +48,20 @@ public class TabItemLCA extends AbstractWidgetLCA {
       } );
     }
   }
-  
-  public void renderInitialization( final Widget widget ) throws IOException {
+
+  public void renderInitialization( Widget widget ) throws IOException {
     TabItem tabItem = ( TabItem )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
     TabFolder parent = tabItem.getParent();
-    Object[] args = new Object[] { 
-      WidgetUtil.getId( tabItem ), 
+    Object[] args = new Object[] {
+      WidgetUtil.getId( tabItem ),
       WidgetUtil.getId( parent ),
       new Integer( parent.indexOf( tabItem ) )
     };
-    writer.callStatic( "org.eclipse.swt.TabUtil.createTabItem", args );    
-    writer.addListener( QX_EVENT_CHANGE_CHECKED, JS_FUNC_TAB_SELECTED );
+    writer.callStatic( "org.eclipse.swt.TabUtil.createTabItem", args );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     TabItem tabItem = ( TabItem )widget;
     setJSParent( tabItem );
     ItemLCAUtil.writeChanges( tabItem );
@@ -76,10 +69,9 @@ public class TabItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.writeToolTip( tabItem, tabItem.getToolTipText() );
     WidgetLCAUtil.writeCustomVariant( tabItem );
   }
-  
-  public void renderDispose( final Widget widget ) throws IOException {
+
+  public void renderDispose( Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.removeListener( QX_EVENT_CHANGE_CHECKED, JS_FUNC_TAB_SELECTED );
     Object[] args = new Object[]{ WidgetUtil.getId( widget ), };
     writer.callStatic( "org.eclipse.swt.TabUtil.releaseTabItem", args );
     writer.dispose();
@@ -87,27 +79,26 @@ public class TabItemLCA extends AbstractWidgetLCA {
 
   //////////////////
   // helping methods
-  
-  private void writeSelection( final TabItem item ) throws IOException {
+
+  private void writeSelection( TabItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );
     Boolean newValue = Boolean.valueOf( isSelected( item ) );
     writer.set( PROP_SELECTED, "checked", newValue, Boolean.FALSE );
   }
-  
-  private boolean isSelected( final TabItem tabItem ) {
+
+  private boolean isSelected( TabItem tabItem ) {
     TabFolder parent = tabItem.getParent();
     int selectionIndex = parent.getSelectionIndex();
     return selectionIndex != -1 && parent.getItem( selectionIndex ) == tabItem;
   }
-  
-  private static void setJSParent( final TabItem tabItem ) {
+
+  private static void setJSParent( TabItem tabItem ) {
     Control control = tabItem.getControl();
     if( control != null ) {
       StringBuffer replacementId = new StringBuffer();
       replacementId.append( WidgetUtil.getId( tabItem ) );
       replacementId.append( "pg" );
-      WidgetAdapter controlAdapter 
-        = ( WidgetAdapter )WidgetUtil.getAdapter( control );
+      WidgetAdapter controlAdapter = ( WidgetAdapter )WidgetUtil.getAdapter( control );
       controlAdapter.setJSParent( replacementId.toString() );
     }
   }
