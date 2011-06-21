@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.*;
 
 
 public class WidgetLCAUtil_Test extends TestCase {
-  
+
   private Display display;
   private Shell shell;
 
@@ -40,7 +40,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     display = new Display();
     shell = new Shell( display , SWT.NONE );
   }
-  
+
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -420,7 +420,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveBackground( control, null, false );
     WidgetLCAUtil.writeBackground( control, null, true );
-    
+
     String expected = "w.setBackgroundGradient( null );w.setBackgroundColor( null );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
@@ -446,7 +446,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveBackground( control, null, false );
     WidgetLCAUtil.writeBackground( control, red );
-    
+
     String expected = "w.setBackgroundGradient( null );w.setBackgroundColor( \"#ff0000\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
@@ -465,9 +465,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     label.setMenu( new Menu( label ) );
     WidgetLCAUtil.writeMenu( label, label.getMenu() );
     String expected
-      =   "var w = wm.findWidgetById( \"w2\" );w.setContextMenu( "
-        + "wm.findWidgetById( \"w3\" ) );w.addEventListener( "
-        + "\"contextmenu\", org.eclipse.rwt.widgets.Menu.contextMenuHandler );";
+      = "wm.setContextMenu( wm.findWidgetById( \"w2\" ), wm.findWidgetById( \"w3\" ) );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
 
     // for an initialized control with change menu: render it
@@ -476,9 +474,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     label.setMenu( null );
     WidgetLCAUtil.writeMenu( label, label.getMenu() );
-    expected
-      =   "w.setContextMenu( null );w.removeEventListener( \"contextmenu\", "
-        + "org.eclipse.rwt.widgets.Menu.contextMenuHandler );";
+    expected = "wm.setContextMenu( wm.findWidgetById( \"w2\" ), null );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 

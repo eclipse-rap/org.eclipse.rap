@@ -69,7 +69,6 @@ public final class WidgetLCAUtil {
   private static final String PROP_HELP_LISTENER = "helpListener";
 
   private static final String JS_PROP_SPACE = "space";
-  private static final String JS_PROP_CONTEXT_MENU = "contextMenu";
 
   private static final String JS_FUNC_SET_TOOL_TIP = "setToolTip";
   private static final String JS_FUNC_SET_ROUNDED_BORDER = "setRoundedBorder";
@@ -88,7 +87,7 @@ public final class WidgetLCAUtil {
   //////////////////////////////////////////////////////////////////////////////
   // TODO [fappel]: Experimental - profiler seems to indicate that buffering
   //                improves performance - still under investigation.
-  private final static SharedInstanceBuffer<String,String[]> parsedFonts 
+  private final static SharedInstanceBuffer<String,String[]> parsedFonts
     = new SharedInstanceBuffer<String,String[]>();
   //////////////////////////////////////////////////////////////////////////////
 
@@ -476,19 +475,10 @@ public final class WidgetLCAUtil {
    * @param menu the new value of the property
    * @throws IOException
    */
-  public static void writeMenu( final Widget widget, final Menu menu )
-    throws IOException
-  {
+  public static void writeMenu( Widget widget, Menu menu ) throws IOException {
     if( WidgetLCAUtil.hasChanged( widget, Props.MENU, menu, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
-      writer.set( JS_PROP_CONTEXT_MENU, menu );
-      if( menu == null ) {
-        writer.removeListener( JSConst.QX_EVENT_CONTEXTMENU,
-                               JSConst.JS_CONTEXT_MENU );
-      } else {
-        writer.addListener( JSConst.QX_EVENT_CONTEXTMENU,
-                            JSConst.JS_CONTEXT_MENU );
-      }
+      writer.call( JSWriter.WIDGET_MANAGER_REF, "setContextMenu", new Object[] { widget, menu } );
     }
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -459,9 +459,7 @@ public class ShellLCA_Test extends TestCase {
       = "var w = new org.eclipse.rwt.widgets.Menu();"
       + "wm.add( w, \"w3\", false );";
     int createMenuScriptIndex = markup.indexOf( createMenuScript );
-    String setShellMenuScript
-      = "var w = wm.findWidgetById( \"w2\" );"
-      + "w.setContextMenu( wm.findWidgetById( \"w3\" ) );";
+    String setShellMenuScript = "wm.setContextMenu( wm.findWidgetById( \"w2\" ), w );";
     int setShellMenuScriptIndex = markup.indexOf( setShellMenuScript );
     assertTrue( createMenuScriptIndex != -1 );
     assertTrue( setShellMenuScriptIndex != -1 );

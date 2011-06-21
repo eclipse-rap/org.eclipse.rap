@@ -273,6 +273,22 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       } else {
         widget.resetBorder();
       }
+    },
+    
+    ////////////////////////
+    // Context menu handling
+    
+    /**
+     * Sets the context menu for the given widget.
+     */
+    setContextMenu : function( widget, menu ) {
+      widget.setContextMenu( menu );
+      var menuHandler = org.eclipse.rwt.widgets.Menu.contextMenuHandler;
+      if( menu == null ) {
+        widget.removeEventListener( "contextmenu", menuHandler );
+      } else {
+        widget.addEventListener( "contextmenu", menuHandler );
+      }
     }
   }
 });
