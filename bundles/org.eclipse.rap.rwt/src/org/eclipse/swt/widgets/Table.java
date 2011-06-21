@@ -186,6 +186,10 @@ public class Table extends Composite {
       return Table.this.getColumn( index ).getLeft();
     }
 
+    public boolean isFixedColumn( TableColumn column ) {
+      return Table.this.isFixedColumn( Table.this.indexOf( column ) );
+    }
+
     public boolean isItemVisible( final TableItem item ) {
       int index = Table.this.indexOf( item );
       return index != -1 && Table.this.isItemVisible( index );
@@ -235,6 +239,7 @@ public class Table extends Composite {
     public void setToolTipText( final String toolTipText ) {
       this.toolTipText = toolTipText;
     }
+
   }
 
   private final class ResizeListener extends ControlAdapter {

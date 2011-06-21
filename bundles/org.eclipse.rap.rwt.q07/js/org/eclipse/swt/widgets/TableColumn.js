@@ -19,44 +19,34 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
 
   construct : function( parent ) {
     this.base( arguments );
+    this._table = parent;
     this._parentIsTree = parent.getAppearance() === "tree";
     this.setAppearance( this._parentIsTree ? "tree-column" : "table-column" );
     this.setHorizontalChildrenAlign( qx.constant.Layout.ALIGN_LEFT ); 
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
-    // Getter/setter variables
     this._resizable = true;
     this._moveable = false;
-    // Internally used fields for resizing
     this._resizeStartX = 0;
     this._inResize = false;
     this._wasResizeOrMoveEvent = false;
-    // Internally used fields for moving
     this._inMove = false;
     this._offsetX = 0;
     this._initialLeft = 0;
-    this._bufferedZIndex = 0;
     // Init width property, without this Table._updateScrollWidth would 
     // accidentially calculate a width of "0auto"
     this.setWidth( 0 );
-    // Init left property, seems to be null initially which breaks the markup 
-    // produced by TableItem
+    // Init left property, seems to be null initially which breaks the markup produced by TableItem
     this.setLeft( 0 );
     this.setHeight( "100%" );
     // Set the label part to 'html mode'
-    this.setLabel( "(empty)" );
+    this._createLabel();
     this.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );
-    this.setLabel( "" );
-    // Add this column to the list of coluimns maintained by the table
-    this._table = parent;
     this._table.getTableHeader().add( this );
-    // Register mouse-listener for 'mouseover' appearance state
     this.addEventListener( "mouseover", this._onMouseOver, this );
-    // Register mouse-listeners for resizing    
     this.addEventListener( "mousemove", this._onMouseMove, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
     this.addEventListener( "mousedown", this._onMouseDown, this );
     this.addEventListener( "mouseup", this._onMouseUp, this );
-    // Create sort image
     this._sortImage = new qx.ui.basic.Image();
     this._sortImage.setAnonymous( true );
     if( this._parentIsTree ) {
@@ -65,12 +55,11 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
       this._sortImage.setAppearance( "table-column-sort-indicator" );
     }
     this.add( this._sortImage );
+    this._handleZIndex();
   },
 
   destruct : function() {
-    // Remove mouse-listener for 'mouseover' appearance state
     this.removeEventListener( "mouseover", this._onMouseOver, this );
-    // Remove mouse-listeners for resize
     this.removeEventListener( "mousemove", this._onMouseMove, this );
     this.removeEventListener( "mouseout", this._onMouseOut, this );
     this.removeEventListener( "mousedown", this._onMouseDown, this );
@@ -122,7 +111,6 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     
     /** This listener function is added and removed server-side */
     onClick : function( evt ) {
-      // Don't send selection event when the onClick was caused while resizing
       if( !this._wasResizeOrMoveEvent ) {
         org.eclipse.swt.EventUtil.widgetSelected( evt );
       }
@@ -138,6 +126,26 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     setAlignment : function( index, value ) {
       this._table.setAlignment( index, value );
       this.setHorizontalChildrenAlign( value );
+    },
+    
+    setFixed : function( value ) {
+      if( this._fixed !== value ) {
+        this._fixed = value;
+        this._handleZIndex();
+        this.addToQueue( "left" )
+      }
+    },
+    
+    isFixed : function() {
+      return this._fixed;
+    },
+    
+    _renderRuntimeLeft : function( value ) {
+      var renderValue = value;
+      if( this._fixed ) {
+        renderValue += this.getParent().getScrollLeft();
+      }
+      this.base( arguments, renderValue );
     },
 
     /////////////////////////////
@@ -158,8 +166,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         } else if( this._moveable ) {
           this._inMove = true;
           this.setCapture( true );
-          this._bufferedZIndex = this.getZIndex();
-          this.setZIndex( 1e8 );
+          this._handleZIndex();
           this._offsetX = evt.getPageX() - this.getLeft();
           this._initialLeft = this.getLeft();
           evt.stopPropagation();
@@ -185,7 +192,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
       } else if( this._inMove ) {
         this._inMove = false;
         this.setCapture( false );
-        this.setZIndex( this._bufferedZIndex );
+        this._handleZIndex();
         this.removeState( org.eclipse.swt.widgets.TableColumn.STATE_MOVING );
         if(    this.getLeft() < this._initialLeft - 1 
             || this.getLeft() > this._initialLeft + 1 ) 
@@ -256,6 +263,16 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     _getResizeWidth : function( pageX ) {
       var delta = this._resizeStartX - pageX;
       return this.getWidth() - delta;
+    },
+    
+    _handleZIndex : function() {
+      var value = 1;
+      if( this._inMove ) {
+        value = 1e8; 
+      } else if( this._fixed ) {
+        value = 1e7;
+      }
+      this.setZIndex( value );
     },
 
 

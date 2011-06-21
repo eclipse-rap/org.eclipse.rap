@@ -17,7 +17,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TableHeader", {
   construct : function( argsMap ) {
     this.base( arguments );
     this.setOverflow( "hidden" );
-    this._fixedColumns = argsMap.fixedColumns;
+    this._fixedColumns = argsMap.fixedColumns != undefined ? argsMap.fixedColumns : 0;
     this._scrollWidth = 0;
     this._scrollLeft = 0;
     this._dummyColumn = new qx.ui.basic.Atom();
@@ -33,16 +33,32 @@ qx.Class.define( "org.eclipse.rwt.widgets.TableHeader", {
   },
   
   events: {
-    "columnLayoutChanged" : "qx.event.type.Event" 
+    "columnLayoutChanged" : "qx.event.type.Event",
+    "scrollLeftChanged" : "qx.event.type.Event"
   },  
 
   members : {
-    
+
     setScrollLeft : function( value ) {
       if( this.isSeeable() ) {
         this.base( arguments, value );
       }
       this._scrollLeft = value;
+      if( this._fixedColumns > 0 ) {
+        for( var i = 0; i < this._children.length; i++ ) {
+          if( this._children[ i ].isFixed && this._children[ i ].isFixed() ) {
+            this._children[ i ].addToQueue( "left" );
+          }
+        }
+        if( !org.eclipse.swt.EventUtil.getSuspended() ) {
+          qx.ui.core.Widget.flushGlobalQueues();
+        }
+      }
+      
+    },
+    
+    getScrollLeft : function() {
+      return this._scrollLeft;
     },
     
     setScrollWidth : function( value ) {

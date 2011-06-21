@@ -31,10 +31,10 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
 // Property names to preserve values
   static final String PROP_LEFT = "left";
   static final String PROP_WIDTH = "width";
-  static final String PROP_Z_INDEX = "zIndex";
   static final String PROP_SORT_DIRECTION = "sortDirection";
   static final String PROP_RESIZABLE = "resizable";
   static final String PROP_MOVEABLE = "moveable";
+  static final String PROP_FIXED = "fixed";
   private static final String PROP_SELECTION_LISTENERS = "selectionListeners";
 
   private static final Integer DEFAULT_LEFT = new Integer( 0 );
@@ -48,12 +48,12 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
     WidgetLCAUtil.preserveToolTipText( column, column.getToolTipText() );
     TableLCAUtil.preserveAlignment( column );
-    adapter.preserve( PROP_Z_INDEX, new Integer( getZIndex( column ) ) );
     adapter.preserve( PROP_LEFT, new Integer( getLeft( column ) ) );
     adapter.preserve( PROP_WIDTH, new Integer( column.getWidth() ) );
     adapter.preserve( PROP_SORT_DIRECTION, getSortDirection( column ) );
     adapter.preserve( PROP_RESIZABLE, Boolean.valueOf( column.getResizable() ) );
     adapter.preserve( PROP_MOVEABLE, Boolean.valueOf( column.getMoveable() ) );
+    adapter.preserve( PROP_FIXED, Boolean.valueOf( isFixed( column ) ) );
     adapter.preserve( PROP_SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( column ) ) );
     WidgetLCAUtil.preserveCustomVariant( column );
@@ -104,11 +104,11 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     ItemLCAUtil.writeChanges( column );
     writeLeft( column );
     writeWidth( column );
-    writeZIndex( column );
     WidgetLCAUtil.writeToolTip( column, column.getToolTipText() );
     writeSortDirection( column );
     writeResizable( column );
     writeMoveable( column );
+    writeFixed( column );
     writeAlignment( column );
     writeSelectionListener( column );
     WidgetLCAUtil.writeCustomVariant( column );
@@ -136,15 +136,6 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     writer.set( PROP_WIDTH, "width", newValue, null );
   }
 
-  // TODO [rh] writing Z-Index seems unnecessary since it is relative to the
-  //      parent and thus could be hard-coded client-side
-  private static void writeZIndex( final TableColumn column ) throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( column );
-    Integer newValue = new Integer( getZIndex( column ) );
-    writer.set( PROP_Z_INDEX, "zIndex", newValue, null );
-  }
-
   private static void writeSortDirection( final TableColumn column )
     throws IOException
   {
@@ -161,12 +152,16 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     writer.set( PROP_RESIZABLE, "resizable", newValue, Boolean.TRUE );
   }
 
-  private static void writeMoveable( final TableColumn column )
-    throws IOException
-  {
+  private static void writeMoveable( final TableColumn column ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( column );
     Boolean newValue = Boolean.valueOf( column.getMoveable() );
     writer.set( PROP_MOVEABLE, "moveable", newValue, Boolean.FALSE );
+  }
+
+  private static void writeFixed( final TableColumn column ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( column );
+    Boolean newValue = Boolean.valueOf( isFixed( column ) );
+    writer.set( PROP_FIXED, "fixed", newValue, Boolean.FALSE );
   }
 
   private static void writeAlignment( final TableColumn column ) throws IOException {
@@ -204,8 +199,10 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     return tableAdapter.getColumnLeft( column );
   }
 
-  static int getZIndex( final TableColumn column ) {
-    return ControlLCAUtil.getZIndex( column.getParent() ) + 1;
+  static boolean isFixed( TableColumn column ) {
+    Object adapter = column.getParent().getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    return tableAdapter.isFixedColumn( column );
   }
 
   static String getSortDirection( final TableColumn column ) {

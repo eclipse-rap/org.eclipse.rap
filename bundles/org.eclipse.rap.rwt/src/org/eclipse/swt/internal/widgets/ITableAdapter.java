@@ -43,4 +43,5 @@ public interface ITableAdapter {
   boolean hasVScrollBar();
 
   TableItem getMeasureItem();
+  boolean isFixedColumn( TableColumn column );
 }

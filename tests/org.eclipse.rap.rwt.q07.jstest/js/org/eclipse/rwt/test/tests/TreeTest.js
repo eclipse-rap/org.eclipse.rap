@@ -2195,6 +2195,54 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.destroy();
     },
 
+    testDontScrollFixedColumn : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree( false, true, "fixedColumns", 1 );
+      tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
+      var columnX = new org.eclipse.swt.widgets.TableColumn( tree );
+      columnX.setLeft( 10 );
+      columnX.setWidth( 1100 );
+      columnX.setZIndex( 1 );
+      columnX.setFixed( true );
+      assertEquals( 1e7, columnX.getZIndex() );
+      testUtil.flush();
+      tree.setScrollLeft( 160 );
+      tree.setHeaderHeight( 30 );
+      tree.setHeaderVisible( true );
+      testUtil.flush();
+      assertEquals( 160, tree._columnArea.getScrollLeft() );      
+      assertEquals( 10, columnX.getLeft() );      
+      assertEquals( 170, parseInt( columnX.getElement().style.left ) );      
+      tree.setScrollLeft( 10 );
+      assertEquals( 20, parseInt( columnX.getElement().style.left ) );
+      columnX.setFixed( false );
+      assertEquals( 1, columnX.getZIndex() );
+      testUtil.flush();
+      assertEquals( 10, parseInt( columnX.getElement().style.left ) );
+      tree.destroy();
+    },
+
+    testFixedColumnDontFlushInServerResponse : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree( false, true, "fixedColumns", 1 );
+      tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
+      var columnX = new org.eclipse.swt.widgets.TableColumn( tree );
+      columnX.setLeft( 10 );
+      columnX.setWidth( 1100 );
+      columnX.setFixed( true );
+      testUtil.flush();
+      tree.setHeaderHeight( 30 );
+      tree.setHeaderVisible( true );
+      testUtil.flush();
+      org.eclipse.swt.EventUtil.setSuspended( true );
+      tree.setScrollLeft( 10 );
+      org.eclipse.swt.EventUtil.setSuspended( false );      
+      assertEquals( 10, parseInt( columnX.getElement().style.left ) );
+      testUtil.flush();
+      assertEquals( 20, parseInt( columnX.getElement().style.left ) );
+      tree.destroy();
+    },
+
     testRenderOnItemGrayed : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( false, false, "check", [ 5, 5 ] );
@@ -3304,7 +3352,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var appearance = asTable ? "table" : "tree"; 
       var args = { "appearance": appearance };
       if( option ) {
-        args[ option ] = true;
+        args[ option ] = arg ? arg : true;
       }
       if( option === "check" ) {
         args[ "checkBoxMetrics" ] = arg;

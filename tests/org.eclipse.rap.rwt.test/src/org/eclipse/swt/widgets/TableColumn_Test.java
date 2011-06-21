@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.widgets;
@@ -21,6 +22,7 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.widgets.ITableAdapter;
 
 
 
@@ -355,4 +357,30 @@ public class TableColumn_Test extends TestCase {
     column2.setText( "Second Column" );
     column2.dispose();
   }
+
+  public void testIsFixedColumn() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 800, 600 );
+    Table table = createFixedColumnsTable( shell );
+    table.setSize( 300, 100 );
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    assertTrue( adapter.isFixedColumn( table.getColumn( 0 ) ) );
+    assertFalse( adapter.isFixedColumn( table.getColumn( 1 ) ) );
+    table.setColumnOrder( new int[]{ 1, 0, 2, 3, 4, 5, 6, 7, 8, 9 } );
+    assertFalse( adapter.isFixedColumn( table.getColumn( 0 ) ) );
+    assertTrue( adapter.isFixedColumn( table.getColumn( 1 ) ) );
+  }
+
+  private Table createFixedColumnsTable( Shell shell ) {
+    Table table = new Table( shell, SWT.NONE );
+    table.setData( "fixedColumns", new Integer( 1 ) );
+    for( int i = 0; i < 10; i++ ) {
+      TableColumn column = new TableColumn( table, SWT.NONE );
+      column.setWidth( 50 );
+    }
+    return table;
+  }
+
 }

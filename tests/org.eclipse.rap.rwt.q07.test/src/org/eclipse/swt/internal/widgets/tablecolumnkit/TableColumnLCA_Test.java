@@ -82,8 +82,7 @@ public class TableColumnLCA_Test extends TestCase {
     column.setAlignment( SWT.LEFT );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
-    Integer alignment
-     = ( Integer )adapter.getPreserved( TableLCAUtil.PROP_ALIGNMENT );
+    Integer alignment = ( Integer )adapter.getPreserved( TableLCAUtil.PROP_ALIGNMENT );
     assertEquals( SWT.LEFT, alignment.intValue() );
     Fixture.clearPreserved();
     column.setAlignment( SWT.RIGHT );
@@ -98,11 +97,9 @@ public class TableColumnLCA_Test extends TestCase {
     alignment = ( Integer )adapter.getPreserved( TableLCAUtil.PROP_ALIGNMENT );
     assertEquals( SWT.CENTER, alignment.intValue() );
     Fixture.clearPreserved();
-    //zindex,left,sortimage,resizable,moveable,selection_listeners,width
+    // left,sortimage,resizable,moveable,selection_listeners,width
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
-    Object zIndex = adapter.getPreserved( TableColumnLCA.PROP_Z_INDEX );
-    assertEquals( new Integer( TableColumnLCA.getZIndex( column ) ), zIndex );
     Object left = adapter.getPreserved( TableColumnLCA.PROP_LEFT );
     assertEquals( new Integer( TableColumnLCA.getLeft( column ) ), left );
     Object sortDir = adapter.getPreserved( TableColumnLCA.PROP_SORT_DIRECTION );
@@ -111,8 +108,7 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, resizable );
     Object moveable = adapter.getPreserved( TableColumnLCA.PROP_MOVEABLE );
     assertEquals( Boolean.FALSE, moveable );
-    Boolean hasListeners
-     = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
     column.setMoveable( true );
@@ -123,8 +119,6 @@ public class TableColumnLCA_Test extends TestCase {
     column.addSelectionListener( selectionListener );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
-    zIndex = adapter.getPreserved( TableColumnLCA.PROP_Z_INDEX );
-    assertEquals( new Integer( TableColumnLCA.getZIndex( column ) ), zIndex );
     left = adapter.getPreserved( TableColumnLCA.PROP_LEFT );
     assertEquals( new Integer( TableColumnLCA.getLeft( column ) ), left );
     sortDir = adapter.getPreserved( TableColumnLCA.PROP_SORT_DIRECTION );
@@ -360,6 +354,39 @@ public class TableColumnLCA_Test extends TestCase {
     lca.renderChanges( column );
     String expected = "w.setAlignment( 1, qx.constant.Layout.ALIGN_RIGHT )";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
+  public void testRenderFixed() throws IOException {
+    Fixture.fakeResponseWriter();
+    Fixture.markInitialized( display );
+    Shell shell = new Shell( display, SWT.NONE );
+    Table table = createFixedColumnsTable( shell );
+    TableColumn column = table.getColumn( 0 );
+    shell.open();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( table );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
+    TableColumnLCA lca = new TableColumnLCA();
+    lca.renderInitialization( column );
+    lca.renderChanges( column );
+    String expected = "w.setFixed( true )";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( column );
+    // TODO [tb] : how to test this?
+    assertFalse( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
+  private Table createFixedColumnsTable( Shell shell ) {
+    Table table = new Table( shell, SWT.NONE );
+    table.setData( "fixedColumns", new Integer( 1 ) );
+    for( int i = 0; i < 10; i++ ) {
+      TableColumn column = new TableColumn( table, SWT.NONE );
+      column.setWidth( 50 );
+    }
+    return table;
   }
 
 }
