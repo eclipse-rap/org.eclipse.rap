@@ -101,8 +101,8 @@ class ClusterConfigurer {
   private NioReceiver createChannelReceiver() {
     NioReceiver result = new NioReceiver();
     result.setAddress( LOCALHOST );
-    result.setPort( 4000 );
-    result.setAutoBind( 100 );
+    result.setPort( SocketUtil.getFreePort() );
+    result.setAutoBind( -1 );
     result.setSelectorTimeout( 5000 );
     return result;
   }
