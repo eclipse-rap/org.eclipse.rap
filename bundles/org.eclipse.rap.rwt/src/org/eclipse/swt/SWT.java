@@ -3403,7 +3403,7 @@ public class SWT {
    */
   public static final int ID_QUIT = -6;
 
-  private static final int RWT_VERSION = getVersion( 1, 300 );
+  private static final int RWT_VERSION = getVersion( 1, 500 );
 
   static {
     /*
@@ -3425,7 +3425,7 @@ public class SWT {
    *
    * @param code the SWT error code
    */
-  public static void error( final int code ) {
+  public static void error( int code ) {
     error( code, null );
   }
 
@@ -3454,7 +3454,7 @@ public class SWT {
    * @see SWTException
    * @see IllegalArgumentException
    */
-  public static void error( final int code, final Throwable throwable ) {
+  public static void error( int code, Throwable throwable ) {
     error( code, throwable, null );
   }
 
@@ -3484,10 +3484,7 @@ public class SWT {
    * @see SWTException
    * @see IllegalArgumentException
    */
-  public static void error( final int code,
-                            final Throwable throwable,
-                            final String detail )
-  {
+  public static void error( int code, Throwable throwable, String detail ) {
     /*
     * This code prevents the creation of "chains" of SWTErrors and
     * SWTExceptions which in turn contain other SWTErrors and
@@ -3569,7 +3566,7 @@ public class SWT {
     throw error;
   }
 
-  static String findErrorText( final int code ) {
+  static String findErrorText( int code ) {
     String result;
     switch( code ) {
       case ERROR_UNSPECIFIED:
@@ -3731,15 +3728,14 @@ public class SWT {
    *    <li>ERROR_NULL_ARGUMENT - if the key is null</li>
    * </ul>
    */
-  public static String getMessage( final String key ) {
+  public static String getMessage( String key ) {
     if( key == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    return RWTMessages.getMessage( key,
-                                   "org.eclipse.swt.internal.SWTMessages" );
+    return RWTMessages.getMessage( key, "org.eclipse.swt.internal.SWTMessages" );
   }
 
-  private static int getVersion( final int major, final int minor ) {
+  private static int getVersion( int major, int minor ) {
       return major * 1000 + minor;
   }
 }
