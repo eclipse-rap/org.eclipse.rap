@@ -72,6 +72,8 @@ public final class WidgetLCAUtil {
 
   private static final String JS_FUNC_SET_TOOL_TIP = "setToolTip";
   private static final String JS_FUNC_SET_ROUNDED_BORDER = "setRoundedBorder";
+  private static final String JS_FUNC_SET_HAS_LISTENER = "setHasListener";
+  private static final String JS_EVENT_TYPE_HELP = "help";
 
   private static final Pattern FONT_NAME_FILTER_PATTERN
     = Pattern.compile( "\"|\\\\" );
@@ -932,8 +934,8 @@ public final class WidgetLCAUtil {
     Boolean hasListener = Boolean.valueOf( HelpEvent.hasListener( widget ) );
     if( WidgetLCAUtil.hasChanged( widget, PROP_HELP_LISTENER, hasListener, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
-      Object[] args = new Object[] { widget, "help", hasListener };
-      writer.call( JSWriter.WIDGET_MANAGER_REF, "setHasListener", args );
+      Object[] args = new Object[] { widget, JS_EVENT_TYPE_HELP, hasListener };
+      writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
     }
   }
 
