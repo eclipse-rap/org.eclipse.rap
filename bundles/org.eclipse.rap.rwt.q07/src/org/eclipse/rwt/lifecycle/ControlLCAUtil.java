@@ -41,32 +41,6 @@ import org.eclipse.swt.widgets.*;
  */
 public class ControlLCAUtil {
 
-  private static final JSListenerInfo FOCUS_GAINED_LISTENER_INFO
-    = new JSListenerInfo( "focusin",
-                          "org.eclipse.swt.EventUtil.focusGained",
-                          JSListenerType.ACTION );
-  private static final JSListenerInfo FOCUS_LOST_LISTENER_INFO
-    = new JSListenerInfo( "focusout",
-                          "org.eclipse.swt.EventUtil.focusLost",
-                          JSListenerType.ACTION );
-
-  private static final JSListenerInfo MOUSE_DOWN_LISTENER_INFO
-    = new JSListenerInfo( "mousedown",
-                          "org.eclipse.swt.EventUtil.mouseDown",
-                          JSListenerType.ACTION );
-  private static final JSListenerInfo MOUSE_UP_LISTENER_INFO
-    = new JSListenerInfo( "mouseup",
-                          "org.eclipse.swt.EventUtil.mouseUp",
-                          JSListenerType.ACTION );
-  private static final JSListenerInfo MENU_DETECT_LISTENER_INFO_KEY
-    = new JSListenerInfo( "keydown",
-                          "org.eclipse.swt.EventUtil.menuDetectedByKey",
-                          JSListenerType.ACTION );
-  private static final JSListenerInfo MENU_DETECT_LISTENER_INFO_MOUSE
-    = new JSListenerInfo( "mouseup",
-                          "org.eclipse.swt.EventUtil.menuDetectedByMouse",
-                          JSListenerType.ACTION );
-
   private static final String JS_FUNC_ADD_ACTIVATE_LISTENER_WIDGET
     = "addActivateListenerWidget";
   private static final String JS_FUNC_REMOVE_ACTIVATE_LISTENER_WIDGET
@@ -492,18 +466,22 @@ public class ControlLCAUtil {
    */
   private static void writeFocusListener( Control control ) throws IOException {
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
-      JSWriter writer = JSWriter.getWriterFor( control );
-      boolean hasListener = FocusEvent.hasListener( control );
-      writer.updateListener( FOCUS_GAINED_LISTENER_INFO, PROP_FOCUS_LISTENER, hasListener );
-      writer.updateListener( FOCUS_LOST_LISTENER_INFO, PROP_FOCUS_LISTENER, hasListener );
+      Boolean hasListener = Boolean.valueOf( FocusEvent.hasListener( control ) );
+      if( WidgetLCAUtil.hasChanged( control, PROP_FOCUS_LISTENER, hasListener, Boolean.FALSE ) ) {
+        JSWriter writer = JSWriter.getWriterFor( control );
+        Object[] args = new Object[] { control, "focus", hasListener };
+        writer.call( JSWriter.WIDGET_MANAGER_REF, "setHasListener", args );
+      }
     }
   }
 
   private static void writeMouseListener( Control control ) throws IOException {
-    boolean hasListener = MouseEvent.hasListener( control );
-    JSWriter writer = JSWriter.getWriterFor( control );
-    writer.updateListener( MOUSE_UP_LISTENER_INFO, PROP_MOUSE_LISTENER, hasListener );
-    writer.updateListener( MOUSE_DOWN_LISTENER_INFO, PROP_MOUSE_LISTENER, hasListener );
+    Boolean hasListener = Boolean.valueOf( MouseEvent.hasListener( control ) );
+    if( WidgetLCAUtil.hasChanged( control, PROP_MOUSE_LISTENER, hasListener, Boolean.FALSE ) ) {
+      JSWriter writer = JSWriter.getWriterFor( control );
+      Object[] args = new Object[] { control, "mouse", hasListener };
+      writer.call( JSWriter.WIDGET_MANAGER_REF, "setHasListener", args );
+    }
   }
 
   static void writeKeyListener( Control control ) throws IOException {
@@ -562,10 +540,12 @@ public class ControlLCAUtil {
    * @since 1.3
    */
   public static void writeMenuDetectListener( Control control ) throws IOException {
-    boolean hasLsnr = MenuDetectEvent.hasListener( control );
-    JSWriter writer = JSWriter.getWriterFor( control );
-    writer.updateListener( MENU_DETECT_LISTENER_INFO_MOUSE, PROP_MENU_DETECT_LISTENER, hasLsnr );
-    writer.updateListener( MENU_DETECT_LISTENER_INFO_KEY, PROP_MENU_DETECT_LISTENER, hasLsnr );
+    Boolean hasLsnr = Boolean.valueOf( MenuDetectEvent.hasListener( control ) );
+    if( WidgetLCAUtil.hasChanged( control, PROP_MENU_DETECT_LISTENER, hasLsnr, Boolean.FALSE ) ) {
+      JSWriter writer = JSWriter.getWriterFor( control );
+      Object[] args = new Object[] { control, "menuDetect", hasLsnr };
+      writer.call( JSWriter.WIDGET_MANAGER_REF, "setHasListener", args );
+    }
   }
 
   /**

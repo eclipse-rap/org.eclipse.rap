@@ -21,6 +21,8 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.HelpEvent;
+import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.graphics.ImageFactory;
@@ -606,6 +608,23 @@ public class WidgetLCAUtil_Test extends TestCase {
     expected
       = "wm.setRoundedBorder"
       + "( wm.findWidgetById( \"w2\" ), 4, \"#00ff00\", 5, 4, 7, 8 );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+  }
+
+  public void testWriteHelpListener() throws IOException {
+    Composite widget = new Composite( shell, SWT.NONE );
+    CompositeLCA lca = new CompositeLCA();
+    Fixture.fakeResponseWriter();
+    lca.preserveValues( widget );
+    Fixture.markInitialized( widget );
+
+    widget.addHelpListener( new HelpListener() {
+      public void helpRequested( HelpEvent e ) {
+      }
+    } );
+    lca.renderChanges( widget );
+
+    String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"help\", true );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 }

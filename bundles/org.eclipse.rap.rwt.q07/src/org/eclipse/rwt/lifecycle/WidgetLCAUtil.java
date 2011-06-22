@@ -76,11 +76,6 @@ public final class WidgetLCAUtil {
   private static final Pattern FONT_NAME_FILTER_PATTERN
     = Pattern.compile( "\"|\\\\" );
 
-  private static final JSListenerInfo HELP_LISTENER_INFO
-    = new JSListenerInfo( "keydown",
-                          "org.eclipse.swt.EventUtil.helpRequested",
-                          JSListenerType.ACTION );
-
   private static final Rectangle DEF_ROUNDED_BORDER_RADIUS
     = new Rectangle( 0, 0, 0, 0 );
 
@@ -921,10 +916,9 @@ public final class WidgetLCAUtil {
    * @param widget the widget to preserve
    * @since 1.3
    */
-  public static void preserveHelpListener( final Widget widget ) {
+  public static void preserveHelpListener( Widget widget ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_HELP_LISTENER,
-                      Boolean.valueOf( HelpEvent.hasListener( widget ) ) );
+    adapter.preserve( PROP_HELP_LISTENER, Boolean.valueOf( HelpEvent.hasListener( widget ) ) );
   }
 
   /**
@@ -934,14 +928,13 @@ public final class WidgetLCAUtil {
    * @param widget
    * @since 1.3
    */
-  public static void writeHelpListener( final Widget widget )
-    throws IOException
-  {
-    boolean hasListener = HelpEvent.hasListener( widget );
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.updateListener( HELP_LISTENER_INFO,
-                           PROP_HELP_LISTENER,
-                           hasListener );
+  public static void writeHelpListener( Widget widget ) throws IOException {
+    Boolean hasListener = Boolean.valueOf( HelpEvent.hasListener( widget ) );
+    if( WidgetLCAUtil.hasChanged( widget, PROP_HELP_LISTENER, hasListener, Boolean.FALSE ) ) {
+      JSWriter writer = JSWriter.getWriterFor( widget );
+      Object[] args = new Object[] { widget, "help", hasListener };
+      writer.call( JSWriter.WIDGET_MANAGER_REF, "setHasListener", args );
+    }
   }
 
   /**
@@ -951,7 +944,7 @@ public final class WidgetLCAUtil {
    * @param widget the widget to process
    * @since 1.3
    */
-  public static void processHelp( final Widget widget ) {
+  public static void processHelp( Widget widget ) {
     if( WidgetLCAUtil.wasEventSent( widget, JSConst.EVENT_HELP ) ) {
       HelpEvent event = new HelpEvent( widget );
       event.processEvent();

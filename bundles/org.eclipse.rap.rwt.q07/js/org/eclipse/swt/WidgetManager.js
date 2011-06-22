@@ -283,12 +283,97 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      */
     setContextMenu : function( widget, menu ) {
       widget.setContextMenu( menu );
-      var menuHandler = org.eclipse.rwt.widgets.Menu.contextMenuHandler;
       if( menu == null ) {
-        widget.removeEventListener( "contextmenu", menuHandler );
+        this._removeListener( widget, "contextMenu" );
       } else {
-        widget.addEventListener( "contextmenu", menuHandler );
+        this._addListener( widget, "contextMenu" );
       }
+    },
+
+    /////////////////////////
+    // Common events handling
+
+    /**
+     * Add/remove event listener with specific type for the given widget.
+     */
+    setHasListener : function( widget, eventType, hasListener ) {
+      if( hasListener ) {
+        this._addListener( widget, eventType );
+      } else {
+        this._removeListener( widget, eventType );
+      }
+    },
+
+    _addListener : function( targetObject, eventType ) {
+      var list = this._listenerMap[ eventType ];
+      for( var i = 0; i < list.length; i++ ) {
+        targetObject.addEventListener( list[ i ].nativeType,
+                                       list[ i ].listener,
+                                       list[ i ].context );
+      }
+    },
+
+    _removeListener : function( targetObject, eventType ) {
+      var list = this._listenerMap[ eventType ];
+      for( var i = 0; i < list.length; i++ ) {
+        targetObject.removeEventListener( list[ i ].nativeType,
+                                          list[ i ].listener,
+                                          list[ i ].context );
+      }
+    },
+
+    _listenerMap : {
+      "focus" : [ 
+        { 
+          nativeType : "focusin", 
+          context : undefined, 
+          listener : org.eclipse.swt.EventUtil.focusGained 
+        },
+        { 
+          nativeType : "focusout", 
+          context : undefined, 
+          listener : org.eclipse.swt.EventUtil.focusLost 
+        }
+      ],
+      "mouse" : [
+        { 
+          nativeType : "mousedown", 
+          context : undefined, 
+          listener : org.eclipse.swt.EventUtil.mouseDown 
+        },
+        { 
+          nativeType : "mouseup", 
+          context : undefined, 
+          listener : org.eclipse.swt.EventUtil.mouseUp
+        }
+      ],
+      "help" : [
+        { 
+          nativeType : "keydown", 
+          context : undefined, 
+          listener : org.eclipse.swt.EventUtil.helpRequested
+        }
+      ],
+      "contextMenu" : [
+        { 
+          nativeType : "contextmenu", 
+          context : undefined, 
+          listener : org.eclipse.rwt.widgets.Menu.contextMenuHandler
+        }
+      ],
+      "menuDetect" : [
+        { 
+          nativeType : "keydown", 
+          context : undefined, 
+          listener : org.eclipse.swt.EventUtil.menuDetectedByKey
+        },
+        { 
+          nativeType : "mouseup", 
+          context : undefined, 
+          listener : org.eclipse.swt.EventUtil.menuDetectedByMouse
+        }
+      ]
     }
+
   }
 });

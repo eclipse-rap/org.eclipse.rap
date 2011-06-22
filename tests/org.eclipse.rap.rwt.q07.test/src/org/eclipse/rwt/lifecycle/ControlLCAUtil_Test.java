@@ -28,6 +28,9 @@ import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA;
+import org.eclipse.swt.internal.widgets.compositekit.CompositeLCA;
+import org.eclipse.swt.internal.widgets.labelkit.LabelLCA;
 import org.eclipse.swt.widgets.*;
 
 
@@ -36,10 +39,22 @@ public class ControlLCAUtil_Test extends TestCase {
   private static final String WIDGET_DEFAULT_SELECTED = "widgetDefaultSelected";
   private static final String WIDGET_SELECTED = "widgetSelected";
 
+  private Display display;
+  private Shell shell;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakeResponseWriter();
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testWriteBounds() throws Exception {
     // Ensure that bounds for an uninitialized widget are rendered
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell , SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
@@ -67,8 +82,6 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testWriteToolTip() throws IOException {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     // on a not yet initialized control: no tool tip -> no markup
     Fixture.fakeResponseWriter();
     ControlLCAUtil.writeToolTip( shell );
@@ -122,8 +135,6 @@ public class ControlLCAUtil_Test extends TestCase {
   public void testWriteActivateListener() throws IOException {
     ActivateAdapter listener = new ActivateAdapter() {
     };
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Composite composite = new Composite( shell, SWT.NONE );
     Label label = new Label( composite, SWT.NONE );
 
@@ -188,8 +199,6 @@ public class ControlLCAUtil_Test extends TestCase {
         log.append( WIDGET_DEFAULT_SELECTED );
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( listener );
     String displayId = DisplayUtil.getId( display );
@@ -229,8 +238,6 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testMaxZOrder() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     for( int i = 0; i < ControlLCAUtil.MAX_STATIC_ZORDER; i++ ) {
       new Button( shell, SWT.PUSH );
     }
@@ -241,8 +248,6 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testWriteCursor() throws Exception {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Control control = new Button( shell, SWT.PUSH );
     AbstractWidgetLCA controlLCA = WidgetUtil.getLCA( control );
     Cursor cursor = display.getSystemCursor( SWT.CURSOR_HAND );
@@ -265,8 +270,6 @@ public class ControlLCAUtil_Test extends TestCase {
 
   public void testWriteKeyEvents() throws IOException {
     final java.util.List<Event> eventLog = new ArrayList<Event>();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.open();
     Fixture.fakeResponseWriter();
     ControlLCAUtil.writeKeyListener( shell );
@@ -286,8 +289,6 @@ public class ControlLCAUtil_Test extends TestCase {
 
   public void testWriteTraverseEvents() throws IOException {
     final java.util.List<Event> eventLog = new ArrayList<Event>();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.open();
     Fixture.fakeResponseWriter();
     ControlLCAUtil.writeTraverseListener( shell );
@@ -307,8 +308,6 @@ public class ControlLCAUtil_Test extends TestCase {
 
   public void testProcessKeyEvents() {
     final java.util.List<Event> eventLog = new ArrayList<Event>();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.open();
     shell.addListener( SWT.KeyDown, new Listener() {
       public void handleEvent( final Event event ) {
@@ -366,8 +365,6 @@ public class ControlLCAUtil_Test extends TestCase {
         eventLog.add( event );
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.open();
     String shellId = WidgetUtil.getId( shell );
 
@@ -421,8 +418,6 @@ public class ControlLCAUtil_Test extends TestCase {
         event.doit = false;
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.open();
     String shellId = WidgetUtil.getId( shell );
 
@@ -461,8 +456,6 @@ public class ControlLCAUtil_Test extends TestCase {
   public void testKeyAndTraverseEvents() {
     RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     final java.util.List<Event> eventLog = new ArrayList<Event>();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.open();
     String shellId = WidgetUtil.getId( shell );
 
@@ -528,10 +521,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testWriteBackgroundImage() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
-
     Fixture.fakeResponseWriter();
     ControlLCAUtil.preserveBackgroundImage( control );
     Fixture.markInitialized( control );
@@ -558,27 +548,74 @@ public class ControlLCAUtil_Test extends TestCase {
   public void testProcessHelpEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<HelpEvent> log = new ArrayList<HelpEvent>();
-    Display display = new Display();
-    Control control = new Shell( display, SWT.NONE );
-    control.addHelpListener( new HelpListener() {
+    shell.addHelpListener( new HelpListener() {
       public void helpRequested( final HelpEvent event ) {
         log.add( event );
       }
     } );
-    Fixture.fakeRequestParam( JSConst.EVENT_HELP, WidgetUtil.getId( control ) );
-    WidgetLCAUtil.processHelp( control );
+    Fixture.fakeRequestParam( JSConst.EVENT_HELP, WidgetUtil.getId( shell ) );
+    WidgetLCAUtil.processHelp( shell );
     assertEquals( 1, log.size() );
     HelpEvent event = log.get( 0 );
-    assertSame( control, event.widget );
+    assertSame( shell, event.widget );
     assertSame( display, event.display );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
+  public void testWriteMouseListener() throws IOException {
+    Composite control = new Composite( shell, SWT.NONE );
+    CompositeLCA lca = new CompositeLCA();
     Fixture.fakeResponseWriter();
+    lca.preserveValues( control );
+    Fixture.markInitialized( control );
+
+    control.addMouseListener( new MouseAdapter() {} );
+    lca.renderChanges( control );
+
+    String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"mouse\", true );";
+    assertEquals( expected, Fixture.getAllMarkup() );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testWriteFocusListener_FocusableControl() throws IOException {
+    Button control = new Button( shell, SWT.PUSH );
+    ButtonLCA lca = new ButtonLCA();
+    Fixture.fakeResponseWriter();
+    lca.preserveValues( control );
+    Fixture.markInitialized( control );
+
+    control.addFocusListener( new FocusAdapter() {} );
+    lca.renderChanges( control );
+
+    String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"focus\", true );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+  }
+
+  public void testWriteFocusListener_NotFocusableControl() throws IOException {
+    Label control = new Label( shell, SWT.NONE );
+    LabelLCA lca = new LabelLCA();
+    Fixture.fakeResponseWriter();
+    lca.preserveValues( control );
+    Fixture.markInitialized( control );
+
+    control.addFocusListener( new FocusAdapter() {} );
+    lca.renderChanges( control );
+
+    assertEquals( "", Fixture.getAllMarkup() );
+  }
+
+  public void testWriteMenuDetectListener() throws IOException {
+    Composite control = new Composite( shell, SWT.NONE );
+    CompositeLCA lca = new CompositeLCA();
+    Fixture.fakeResponseWriter();
+    lca.preserveValues( control );
+    Fixture.markInitialized( control );
+
+    control.addMenuDetectListener( new MenuDetectListener() {
+      public void menuDetected( MenuDetectEvent e ) {
+      }
+    } );
+    lca.renderChanges( control );
+
+    String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"menuDetect\", true );";
+    assertEquals( expected, Fixture.getAllMarkup() );
   }
 }
