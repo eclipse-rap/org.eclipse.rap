@@ -25,7 +25,6 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil;
-import org.eclipse.swt.internal.widgets.treecolumnkit.TreeColumnLCA;
 import org.eclipse.swt.widgets.*;
 
 public class TableColumnLCA_Test extends TestCase {
