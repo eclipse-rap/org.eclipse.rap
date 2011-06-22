@@ -1062,7 +1062,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         }
       }
       while( this._vertGridLines.length > lineNr ) {
-        this._vertGridLines.pop().destroy();
+        this._getTargetNode().removeChild( this._vertGridLines.pop() );
       }
     },
 
@@ -1073,9 +1073,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       left -= this._horzScrollBar.getValue(); 
       if( left > 0 && left < clientWidth ) {
         var line = this._getVerticalGridline( lineNr );
-        line.setLeft( left );
-        line.setTop( this._rowContainer.getTop() );
-        line.setHeight( this._rowContainer.getHeight() );
+        line.style.left = left + "px";
+        line.style.top = this._rowContainer.getTop() + "px";
+        line.style.height = this._rowContainer.getHeight() + "px";
         newLineNr++
       }
       return newLineNr;
@@ -1083,12 +1083,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _getVerticalGridline : function( number ) {
       if( typeof this._vertGridLines[ number ] === "undefined" ) {
-        var line = new qx.ui.basic.Terminator();
-        line.setZIndex( 1 );
-        line.setWidth( 0 );
-        line.setBorder( this._getVerticalGridBorder() );
+        var line = document.createElement( "div" );
+        line.style.zIndex = 1;
+        line.style.position = "absolute";
+        line.style.width = "0px";
+        this._getVerticalGridBorder().renderElement( line );
+        if( this._isCreated ) {
+          this._getTargetNode().appendChild( line );
+        } else {
+          this.addEventListener( "appear", function( event ) {
+            this._getTargetNode().appendChild( line );
+          }, this );
+        }
         this._vertGridLines[ number ] = line;
-        this.add( line );
       }
       return this._vertGridLines[ number ];
     },

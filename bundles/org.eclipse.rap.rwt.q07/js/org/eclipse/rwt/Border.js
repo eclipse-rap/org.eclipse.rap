@@ -83,7 +83,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
     } ), 
     
     
-    reset : function( widget ) {
+    resetWidget : function( widget ) {
       widget._style.border = "";
       if( widget._innerStyle ) {
         widget._innerStyle.border = "";
@@ -122,6 +122,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
   },
 
   members : {
+
     _setColor : function( value ) {
       if( typeof value === "string" ) {
         this._singleColor = value;
@@ -256,7 +257,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
       return result;
     },
 
-    render : function( widget ) {
+    renderWidget : function( widget ) {
       if( this.getStyle() === "complex" ) {
         this._renderComplexBorder( widget );
       } else if( this.getStyle() === "rounded" ) {
@@ -265,10 +266,20 @@ qx.Class.define( "org.eclipse.rwt.Border", {
         this._renderSimpleBorder( widget );        
       }
     },
-    
+
+    renderElement : function( element ) {
+      if( this.getStyle() === "complex" || this.getStyle() === "rounded" ) {
+        throw new Error( "Rendering complex or rounded border on elements currently unsupported" );
+      }
+      this._renderSimpleBorderStyle( element.style );        
+    },
+
     _renderSimpleBorder : function( widget ) {
       org.eclipse.rwt.Border._resetComplexBorder( widget );
-      var style = widget._style;
+      this._renderSimpleBorderStyle( widget._style );              
+    },
+
+    _renderSimpleBorderStyle : function( style ) {
       var statics = org.eclipse.rwt.Border
       for( var i = 0; i < 4; i++ ) {
         style[ statics._EDGEWIDTH[ i ] ] = ( this._widths[ i ] || 0 ) + "px";
@@ -277,7 +288,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
       }
     },
 
-    _renderComplexBorder : qx.core.Variant.select("qx.client", {
+    _renderComplexBorder : qx.core.Variant.select( "qx.client", {
       "gecko" : function( widget ) {
         var statics = org.eclipse.rwt.Border
         var style = widget._style;
