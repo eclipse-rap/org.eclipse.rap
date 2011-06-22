@@ -110,7 +110,8 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       "renderItem",
       "setRowLinesVisible",
       "setToolTip",
-      "renderItemQueue"
+      "renderItemQueue",
+      "setRowBorder"
     ],
 
     _CONTAINER_GETTER_DELEGATES : [ 

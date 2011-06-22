@@ -375,6 +375,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       tree.destroy();
     },
 
+    testLinesVisibleForSplitTree: function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createSplitTree();
+      for( var i = 0; i < 5; i++ ) {
+        var column = new org.eclipse.swt.widgets.TableColumn( tree );
+        column.setLeft( tree.getRenderConfig().itemLeft[ i ] );
+        column.setWidth( tree.getRenderConfig().itemWidth[ i ] );
+        column.setZIndex( 1 );
+        if( i < 2 ) {
+          column.setFixed( true );
+        }
+      }
+      tree.setLinesVisible( true );
+      testUtil.flush();
+      var border = tree._getHorizontalGridBorder();      
+      var row = tree._rowContainer.getSubContainer( 0 )._children[ 0 ];
+      assertTrue( tree.hasState( "linesvisible" ) );
+      assertIdentical( border, row.getBorder() );      
+
+      tree.destroy();
+    },
+
     /////////
     // helper
     
