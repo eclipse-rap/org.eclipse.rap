@@ -231,6 +231,9 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     if( orderIndex < targetColumn ) {
       targetColumn--;
     }
+    if( isFixed( column ) || isFixed( table.getColumn( targetColumn ) ) ) {
+      targetColumn = table.indexOf( column );
+    }
     columnOrder = arrayInsert( columnOrder, targetColumn, index );
     if( Arrays.equals( columnOrder, table.getColumnOrder() ) ) {
       // TODO [rh] HACK mark left as changed
@@ -261,11 +264,15 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
       result = 0;
     } else {
       for( int i = 0; result == -1 && i < columns.length; i++ ) {
-        int left = getLeft( columns[ columnOrder [ i ] ] );
-        int width = columns[ columnOrder [ i ] ].getWidth();
+        TableColumn column = columns[ columnOrder [ i ] ];
+        int left = getLeft( column );
+        int width = column.getWidth();
+        if( isFixed( column ) ) {
+          left += getLeftOffset( column );
+        }
         if( newLeft >= left && newLeft <= left + width ) {
           result = i;
-          if( newLeft >= left + width / 2 && result < columns.length ) {
+          if( newLeft >= left + width / 2 && result < columns.length && !isFixed( column ) ) {
             result++;
           }
         }
@@ -276,6 +283,13 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
       result = columns.length;
     }
     return result;
+  }
+
+  private static int getLeftOffset( TableColumn column ) {
+    Table table = column.getParent();
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    return tableAdapter.getLeftOffset();
   }
 
   private static int arrayIndexOf( final int[] array, final int value ) {

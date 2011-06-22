@@ -145,6 +145,11 @@ public class Table extends Composite {
       return Table.this.getColumnLeftOffset( columnIndex );
     }
 
+    public int getColumnLeft( final TableColumn column ) {
+      int index = Table.this.indexOf( column );
+      return Table.this.getColumn( index ).getLeft();
+    }
+
     public int getLeftOffset() {
       return Table.this.getColumnLeftOffset( -1 );
     }
@@ -179,11 +184,6 @@ public class Table extends Composite {
         result = Math.max( result, items[ i ].getPackWidth( 0 ) );
       }
       return result;
-    }
-
-    public int getColumnLeft( final TableColumn column ) {
-      int index = Table.this.indexOf( column );
-      return Table.this.getColumn( index ).getLeft();
     }
 
     public boolean isFixedColumn( TableColumn column ) {
