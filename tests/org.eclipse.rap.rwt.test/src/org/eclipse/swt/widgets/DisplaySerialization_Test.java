@@ -137,21 +137,20 @@ public class DisplaySerialization_Test extends TestCase {
     assertTrue( SerializableListener.wasInvoked );
   }
 
-// TODO [rh] uncomment as soon as widgets are serializable  
-//  public void testShellsAndActiveShellIsSerializable() throws Exception {
-//    String shellText = "shell";
-//    Shell shell = new Shell( display );
-//    shell.setText( shellText );
-//    shell.open();
-//    Display deserializedDisplay = serializeAndDeserialize( display );
-//    
-//    Shell[] shells = deserializedDisplay.getShells();
-//    
-//    assertEquals( 1, shells.length );
-//    assertEquals( shellText, shells[ 0 ].getText() );
-//    assertNotNull( deserializedDisplay.getActiveShell() );
-//    assertEquals( shellText, deserializedDisplay.getActiveShell().getText() );
-//  }
+  public void testShellsAndActiveShellIsSerializable() throws Exception {
+    String shellText = "shell";
+    Shell shell = new Shell( display );
+    shell.setText( shellText );
+    shell.open();
+    Display deserializedDisplay = serializeAndDeserialize( display );
+    
+    Shell[] shells = deserializedDisplay.getShells();
+    
+    assertEquals( 1, shells.length );
+    assertEquals( shellText, shells[ 0 ].getText() );
+    assertNotNull( deserializedDisplay.getActiveShell() );
+    assertEquals( shellText, deserializedDisplay.getActiveShell().getText() );
+  }
   
   public void testFiltersIsSerializable() throws Exception {
     display.addFilter( SWT.Skin, new SerializableListener() );
