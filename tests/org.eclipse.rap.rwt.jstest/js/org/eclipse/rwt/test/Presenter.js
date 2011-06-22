@@ -98,11 +98,27 @@ qx.Class.define("org.eclipse.rwt.test.Presenter", {
       }
     },
     
-    log : function( text, indent ) {
+    forceReload : function() {
+      window.setTimeout( function() {
+        location.reload();
+      }, 10 );
+    },
+    
+    log : function( text, indent, link ) {
       var span = document.createElement( "span" );
       var msg = document.createTextNode( text );
       var br = document.createElement( "br" );
-      span.appendChild( msg );
+      if( link ) {
+        var a = document.createElement( "a" );
+        a.style.textDecoration = "none";
+        a.style.color = "black";
+        a.setAttribute( "href", link );
+        a.onclick = this.forceReload;
+        span.appendChild( a );
+        a.appendChild( msg );
+      } else {
+        span.appendChild( msg );
+      }
       span.appendChild( br );
       if( indent ) {
         span.style.marginLeft = '30px';
