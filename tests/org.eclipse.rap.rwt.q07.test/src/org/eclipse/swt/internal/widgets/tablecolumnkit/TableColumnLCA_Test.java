@@ -399,24 +399,17 @@ public class TableColumnLCA_Test extends TestCase {
   public void testRenderFixed() throws IOException {
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( display );
-    Shell shell = new Shell( display, SWT.NONE );
     Table table = createFixedColumnsTable( shell );
     TableColumn column = table.getColumn( 0 );
-    shell.open();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    Fixture.markInitialized( table );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
+    Fixture.markInitialized( column );
     TableColumnLCA lca = new TableColumnLCA();
-    lca.renderInitialization( column );
     lca.renderChanges( column );
     String expected = "w.setFixed( true )";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    Fixture.preserveWidgets();
+
+    Fixture.fakeNewRequest( display );
     lca.renderChanges( column );
-    // TODO [tb] : how to test this?
-    //assertFalse( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    assertFalse( Fixture.getAllMarkup().indexOf( expected ) == -1 );
   }
 
   public void testWriteTextMultiLine() throws IOException {
