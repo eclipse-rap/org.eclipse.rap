@@ -8,3 +8,4 @@ Fragment-Host: org.eclipse.rap.rwt;bundle-version="[1.2.0,2.0.0)"
 Require-Bundle: org.junit
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: javax.servlet.descriptor;version="2.5.0"

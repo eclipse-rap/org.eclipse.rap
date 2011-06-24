@@ -81,14 +81,14 @@ public class TestSession implements HttpSession {
     return null;
   }
   
-  public Enumeration getAttributeNames() {
+  public Enumeration<String> getAttributeNames() {
     final Iterator iterator = attributes.keySet().iterator();
-    return new Enumeration() {
+    return new Enumeration<String>() {
       public boolean hasMoreElements() {
         return iterator.hasNext();
       }
-      public Object nextElement() {
-        return iterator.next();
+      public String nextElement() {
+        return ( String )iterator.next();
       }
     };
   }

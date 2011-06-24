@@ -20,7 +20,6 @@ import com.yahoo.platform.yui.compressor.*;
 
 public class TestUtil {
 
-  @SuppressWarnings("unchecked")
   public static TokenList parse( String input ) throws IOException {
     List tokens = TestAdapter.parseString( input );
     return new TokenList( tokens );

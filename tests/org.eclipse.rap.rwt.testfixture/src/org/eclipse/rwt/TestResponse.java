@@ -192,4 +192,16 @@ public final class TestResponse implements HttpServletResponse {
     outStream = new TestServletOutputStream();
     printWriter = null;
   }
+
+  public int getStatus() {
+    return 0;
+  }
+
+  public Collection<String> getHeaders( String name ) {
+    return null;
+  }
+
+  public Collection<String> getHeaderNames() {
+    return null;
+  }
 }

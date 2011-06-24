@@ -17,6 +17,8 @@ import java.net.URL;
 import java.util.*;
 
 import javax.servlet.*;
+import javax.servlet.ServletRegistration.Dynamic;
+import javax.servlet.descriptor.JspConfigDescriptor;
 
 import org.eclipse.rwt.internal.engine.ThemeManagerHelper;
 
@@ -47,7 +49,7 @@ public class TestServletContext implements ServletContext {
     return null;
   }
 
-  public Set getResourcePaths( String arg0 ) {
+  public Set<String> getResourcePaths( String arg0 ) {
     return null;
   }
 
@@ -71,11 +73,11 @@ public class TestServletContext implements ServletContext {
     return null;
   }
 
-  public Enumeration getServlets() {
+  public Enumeration<Servlet> getServlets() {
     return null;
   }
 
-  public Enumeration getServletNames() {
+  public Enumeration<String> getServletNames() {
     return null;
   }
 
@@ -105,11 +107,12 @@ public class TestServletContext implements ServletContext {
     return ( String )initParameters.get( name );
   }
   
-  public void setInitParameter( String name, String value ) {
+  public boolean setInitParameter( String name, String value ) {
     initParameters.put( name, value );
+    return true;
   }
 
-  public Enumeration getInitParameterNames() {
+  public Enumeration<String> getInitParameterNames() {
     return null;
   }
 
@@ -117,15 +120,15 @@ public class TestServletContext implements ServletContext {
     return attributes.get( arg0 );
   }
 
-  public Enumeration getAttributeNames() {
-    return new Enumeration() {
-      Iterator iterator = TestServletContext.this.attributes.keySet().iterator();
+  public Enumeration<String> getAttributeNames() {
+    return new Enumeration<String>() {
+      Iterator<String> iterator = TestServletContext.this.attributes.keySet().iterator();
       
       public boolean hasMoreElements() {
         return iterator.hasNext();
       }
 
-      public Object nextElement() {
+      public String nextElement() {
         return iterator.next();
       }
     };
@@ -150,5 +153,102 @@ public class TestServletContext implements ServletContext {
 
   public String getContextPath() {
     return null;
+  }
+
+  public int getEffectiveMajorVersion() {
+    return 0;
+  }
+
+  public int getEffectiveMinorVersion() {
+    return 0;
+  }
+
+  public Dynamic addServlet( String servletName, String className ) {
+    return null;
+  }
+
+  public Dynamic addServlet( String servletName, Servlet servlet ) {
+    return null;
+  }
+
+  public Dynamic addServlet( String servletName, Class<? extends Servlet> servletClass ) {
+    return null;
+  }
+
+  public <T extends Servlet> T createServlet( Class<T> clazz ) throws ServletException {
+    return null;
+  }
+
+  public ServletRegistration getServletRegistration( String servletName ) {
+    return null;
+  }
+
+  public Map<String, ? extends ServletRegistration> getServletRegistrations() {
+    return null;
+  }
+
+  public javax.servlet.FilterRegistration.Dynamic addFilter( String filterName, String className ) {
+    return null;
+  }
+
+  public javax.servlet.FilterRegistration.Dynamic addFilter( String filterName, Filter filter ) {
+    return null;
+  }
+
+  public javax.servlet.FilterRegistration.Dynamic addFilter( String filterName,
+                                                             Class<? extends Filter> filterClass )
+  {
+    return null;
+  }
+
+  public <T extends Filter> T createFilter( Class<T> clazz ) throws ServletException {
+    return null;
+  }
+
+  public FilterRegistration getFilterRegistration( String filterName ) {
+    return null;
+  }
+
+  public Map<String, ? extends FilterRegistration> getFilterRegistrations() {
+    return null;
+  }
+
+  public SessionCookieConfig getSessionCookieConfig() {
+    return null;
+  }
+
+  public void setSessionTrackingModes( Set<SessionTrackingMode> sessionTrackingModes ) {
+  }
+
+  public Set<SessionTrackingMode> getDefaultSessionTrackingModes() {
+    return null;
+  }
+
+  public Set<SessionTrackingMode> getEffectiveSessionTrackingModes() {
+    return null;
+  }
+
+  public void addListener( String className ) {
+  }
+
+  public <T extends EventListener> void addListener( T t ) {
+  }
+
+  public void addListener( Class<? extends EventListener> listenerClass ) {
+  }
+
+  public <T extends EventListener> T createListener( Class<T> clazz ) throws ServletException {
+    return null;
+  }
+
+  public JspConfigDescriptor getJspConfigDescriptor() {
+    return null;
+  }
+
+  public ClassLoader getClassLoader() {
+    return null;
+  }
+
+  public void declareRoles( String... roleNames ) {
   }
 }

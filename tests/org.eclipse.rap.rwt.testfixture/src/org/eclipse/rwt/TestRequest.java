@@ -15,8 +15,7 @@ import java.io.*;
 import java.security.Principal;
 import java.util.*;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletInputStream;
+import javax.servlet.*;
 import javax.servlet.http.*;
 
 
@@ -83,18 +82,18 @@ public final class TestRequest implements HttpServletRequest {
     headers.put( arg0, arg1 );
   }
 
-  public Enumeration getHeaders( String arg0 ) {
+  public Enumeration<String> getHeaders( String arg0 ) {
     return null;
   }
 
-  public Enumeration getHeaderNames() {
-    return new Enumeration() {
+  public Enumeration<String> getHeaderNames() {
+    return new Enumeration<String>() {
       private Iterator iterator = headers.keySet().iterator();
       public boolean hasMoreElements() {
         return iterator.hasNext();
       }
-      public Object nextElement() {
-        return iterator.next();
+      public String nextElement() {
+        return ( String )iterator.next();
       }
     };
   }
@@ -195,7 +194,7 @@ public final class TestRequest implements HttpServletRequest {
     return attributes.get( arg0 );
   }
 
-  public Enumeration getAttributeNames() {
+  public Enumeration<String> getAttributeNames() {
     return null;
   }
 
@@ -238,15 +237,15 @@ public final class TestRequest implements HttpServletRequest {
     return result;
   }
 
-  public Enumeration getParameterNames() {
-    return new Enumeration() {
+  public Enumeration<String> getParameterNames() {
+    return new Enumeration<String>() {
       private Iterator iterator = parameters.keySet().iterator();
       public boolean hasMoreElements() {
         return iterator.hasNext();
       }
 
-      public Object nextElement() {
-        return iterator.next();
+      public String nextElement() {
+        return ( String )iterator.next();
       }
     };
   }
@@ -275,7 +274,7 @@ public final class TestRequest implements HttpServletRequest {
     }
   }
 
-  public Map getParameterMap() {
+  public Map<String,String[]> getParameterMap() {
     return parameters;
   }
 
@@ -334,7 +333,7 @@ public final class TestRequest implements HttpServletRequest {
     this.locale = locale;
   }
 
-  public Enumeration getLocales() {
+  public Enumeration<Locale> getLocales() {
     return null;
   }
 
@@ -368,5 +367,53 @@ public final class TestRequest implements HttpServletRequest {
 
   public int getRemotePort() {
     throw new UnsupportedOperationException();
+  }
+
+  public ServletContext getServletContext() {
+    return null;
+  }
+
+  public AsyncContext startAsync() throws IllegalStateException {
+    return null;
+  }
+
+  public AsyncContext startAsync( ServletRequest servletRequest, ServletResponse servletResponse )
+    throws IllegalStateException
+  {
+    return null;
+  }
+
+  public boolean isAsyncStarted() {
+    return false;
+  }
+
+  public boolean isAsyncSupported() {
+    return false;
+  }
+
+  public AsyncContext getAsyncContext() {
+    return null;
+  }
+
+  public DispatcherType getDispatcherType() {
+    return null;
+  }
+
+  public boolean authenticate( HttpServletResponse response ) throws IOException, ServletException {
+    return false;
+  }
+
+  public void login( String username, String password ) throws ServletException {
+  }
+
+  public void logout() throws ServletException {
+  }
+
+  public Collection<Part> getParts() throws IOException, ServletException {
+    return null;
+  }
+
+  public Part getPart( String name ) throws IOException, ServletException {
+    return null;
   }
 }
