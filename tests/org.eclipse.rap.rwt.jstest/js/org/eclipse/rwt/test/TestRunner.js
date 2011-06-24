@@ -18,6 +18,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
     this._FREEZEONFAIL = true;
     this._NOTRYCATCH = this._getURLParam( "notry" ) !== null;
     this._FULLSCREEN = true;
+    this._FILTERCHAR = "$";
     this._presenter = org.eclipse.rwt.test.Presenter.getInstance();
     this._presenter.setFullScreen( this._FULLSCREEN );
     this._testClasses = [];
@@ -127,7 +128,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
       this._presenter.setNumberTestsFinished( this._currentClass + 0.5 , this._testClasses.length );
       var className = this._testClasses[ this._currentClass ].classname;
       this._presenter.log( '', false );
-      this.info( "+ " + className, false, "./?filter=" + className.split( "." ).pop() );
+      this.info( "+ " + className, false, "filter=" + className.split( "." ).pop() );
       this._currentInstance = null;
       this._createTestInstance();
       this._testFunctions = this._getTestFunctions( this._currentInstance );
@@ -406,6 +407,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
       var engine = org.eclipse.rwt.Client.getEngine();
       var platform = org.eclipse.rwt.Client.getPlatform();
       var param = this._getFilterParam();
+      var filterchar = this._FILTERCHAR;
       var filter = function( clazz ) {
         var result = true;
         if( classes[ clazz ].prototype.TARGETENGINE instanceof Array ) {
@@ -419,7 +421,7 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
         if( result && param != null ) {
           var found = false;
           for( var i = 0; i < param.length; i++ ) {
-            var classStr = param[ i ].split( "#" )[ 0 ];
+            var classStr = param[ i ].split( filterchar )[ 0 ];
             if( clazz.indexOf( classStr ) != -1 ) {
               found = true;
             }
@@ -450,8 +452,8 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
       param = param ? param : [];
       var filterStr = null;;
       for( var i = 0; i < param.length && filterStr === null; i++ ) {
-        if( param[ i ].indexOf( testClassName + "#" ) !== -1 ) {
-          filterStr = param[ i ].split( "#" )[ 1 ];
+        if( param[ i ].indexOf( testClassName + this._FILTERCHAR ) !== -1 ) {
+          filterStr = param[ i ].split( this._FILTERCHAR )[ 1 ];
         }
       }
       return filterStr ? filterStr : null;
@@ -465,11 +467,11 @@ qx.Class.define( "org.eclipse.rwt.test.TestRunner", {
       }
       return result;
     },
-    
+
     _getCurrentTestLink : function() {
       var testClassName = this._currentInstance.classname.split( "." ).pop();
       var testFunctionName = this._testFunctions[ this._currentFunction ];
-      return "./?filter=" + testClassName + "#" + testFunctionName;
+      return "filter=" + testClassName + this._FILTERCHAR + testFunctionName;
     },
 
     info : function( text, indent, link ) {
