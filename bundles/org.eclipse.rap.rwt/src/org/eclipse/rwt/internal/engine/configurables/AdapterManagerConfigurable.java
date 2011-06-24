@@ -84,7 +84,7 @@ public class AdapterManagerConfigurable implements Configurable {
     return result;
   }
 
-  private Declaration parseFactoryAdaptablePair( String factoryAdaptablePair ) {
+  private static Declaration parseFactoryAdaptablePair( String factoryAdaptablePair ) {
     checkIsPair( factoryAdaptablePair ); 
     Class adaptableClass = loadAdaptableClass( factoryAdaptablePair );
     Class factoryClass = loadFactoryClass( factoryAdaptablePair );
@@ -92,7 +92,7 @@ public class AdapterManagerConfigurable implements Configurable {
     return new Declaration( factory, adaptableClass );
   }
 
-  private AdapterFactory createFactory( Class factoryClass ) {
+  private static AdapterFactory createFactory( Class factoryClass ) {
     AdapterFactory factory;
     try {
       factory = ( AdapterFactory )ClassUtil.newInstance( factoryClass );
@@ -105,7 +105,7 @@ public class AdapterManagerConfigurable implements Configurable {
     return factory;
   }
 
-  private Class loadFactoryClass( String factoryAdaptablePair ) {
+  private static Class loadFactoryClass( String factoryAdaptablePair ) {
     Class result;
     try {
       result = Class.forName( getFactoryClassName( factoryAdaptablePair ) );
@@ -117,7 +117,7 @@ public class AdapterManagerConfigurable implements Configurable {
     return result;
   }
 
-  private Class loadAdaptableClass( String factoryAdaptablePair ) {
+  private static Class loadAdaptableClass( String factoryAdaptablePair ) {
     Class result;
     try {
       result = Class.forName( getAdaptableClassName( factoryAdaptablePair ) );
@@ -129,15 +129,15 @@ public class AdapterManagerConfigurable implements Configurable {
     return result;
   }
 
-  private String getFactoryClassName( String factoryAdaptablePair ) {
+  private static String getFactoryClassName( String factoryAdaptablePair ) {
     return getClassNames( factoryAdaptablePair )[ 0 ];
   }
 
-  private String getAdaptableClassName( String factoryAdaptablePair ) {
+  private static String getAdaptableClassName( String factoryAdaptablePair ) {
     return getClassNames( factoryAdaptablePair )[ 1 ];
   }
 
-  private void checkIsPair( String factoryAdaptablePair ) {
+  private static void checkIsPair( String factoryAdaptablePair ) {
     String[] classNames = getClassNames( factoryAdaptablePair );
     if( classNames.length != 2 ) {
       String text = "''{0}'' is not a valid factory-adaptable pair.";
@@ -146,7 +146,7 @@ public class AdapterManagerConfigurable implements Configurable {
     }
   }
   
-  private String[] getClassNames( String factoryAdaptablePair ) {
+  private static String[] getClassNames( String factoryAdaptablePair ) {
     return factoryAdaptablePair.split( RWTServletContextListener.PARAMETER_SPLIT );
   }
 
