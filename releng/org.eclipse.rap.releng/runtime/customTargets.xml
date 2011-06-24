@@ -101,7 +101,7 @@
 
     <unzip src="${rap-feature}" dest="${targetLocation}" />
 
-    <!-- checks if ICU base is available and fail otherwise -->
+    <!-- checks if ICU base is available and fails otherwise -->
     <pathconvert property="icuBaseAvailable" setonempty="false" pathsep=" ">
       <path>
         <fileset dir="${baseLocation}/plugins" includes="com.ibm.icu.base*" />
