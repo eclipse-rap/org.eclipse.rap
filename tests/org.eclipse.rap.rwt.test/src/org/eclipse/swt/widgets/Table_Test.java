@@ -132,6 +132,16 @@ public class Table_Test extends TestCase {
     assertTrue( table.getHeaderHeight() > 0 );
   }
 
+  public void testMultiLineHeaderHeight() {
+    Table table = createMultiLineHeaderTable();
+    TableColumn column = table.getColumn( 1 );
+    table.setHeaderVisible( true );
+
+    column.setText( "Multi line\nHeader" );
+
+    assertEquals( 32, table.getHeaderHeight() );
+  }
+
   public void testTableItemTexts() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -2373,6 +2383,17 @@ public class Table_Test extends TestCase {
   private Table createFixedColumnsTable() {
     Table table = new Table( shell, SWT.NONE );
     table.setData( "fixedColumns", new Integer( 1 ) );
+    return table;
+  }
+
+  private Table createMultiLineHeaderTable() {
+    Table table = new Table( shell, SWT.NONE );
+    for( int i = 0; i < 3; i++ ) {
+      TableColumn column = new TableColumn( table, SWT.NONE );
+      column.setWidth( 50 );
+      column.setText( "Column " + i );
+    }
+    table.setData( "multiLineHeader", Boolean.TRUE );
     return table;
   }
 

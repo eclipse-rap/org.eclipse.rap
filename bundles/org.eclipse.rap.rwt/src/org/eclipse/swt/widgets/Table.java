@@ -1862,7 +1862,12 @@ public class Table extends Composite {
       int textHeight = Graphics.getCharHeight( headerFont );
       int imageHeight = 0;
       for( int i = 0; i < getColumnCount(); i++ ) {
-        Image image = getColumn( i ).getImage();
+        TableColumn column = getColumn( i );
+        if( isMultiLineHeader() && column.getText().indexOf( '\n' ) != -1 ) {
+          int columnTextHeight = Graphics.textExtent( headerFont, column.getText(), 0 ).y;
+          textHeight = Math.max( textHeight, columnTextHeight );
+        }
+        Image image = column.getImage();
         int height = image == null ? 0 : image.getBounds().height;
         if( height > imageHeight ) {
           imageHeight = height;
@@ -2487,6 +2492,19 @@ public class Table extends Composite {
       }
     }
     return visualIndex < getFixedColumns();
+  }
+
+  private boolean isMultiLineHeader() {
+    boolean result = false;
+    try {
+      Boolean data = ( Boolean )getData( "multiLineHeader" );
+      if( data != null ) {
+        result = data.booleanValue();
+      }
+    } catch( ClassCastException ex ) {
+      // not a valid multiLineHeader value
+    }
+    return result;
   }
 
   private int getFixedColumns() {

@@ -419,6 +419,33 @@ public class TableColumnLCA_Test extends TestCase {
     //assertFalse( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
+  public void testWriteTextMultiLine() throws IOException {
+    Fixture.fakeResponseWriter();
+    Table table = createMultiLineHeaderTable();
+    TableColumn column = table.getColumn( 1 );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+    Fixture.preserveWidgets();
+
+    column.setText( "Multi line\nHeader" );
+    TableColumnLCA lca = new TableColumnLCA();
+    lca.renderChanges( column );
+
+    String expected = "w.setLabel( \"Multi line<br/>Header\" )";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
+  private Table createMultiLineHeaderTable() {
+    Table table = new Table( shell, SWT.NONE );
+    for( int i = 0; i < 3; i++ ) {
+      TableColumn column = new TableColumn( table, SWT.NONE );
+      column.setWidth( 50 );
+      column.setText( "Column " + i );
+    }
+    table.setData( "multiLineHeader", Boolean.TRUE );
+    return table;
+  }
+
   private Table createFixedColumnsTable( Shell shell ) {
     Table table = new Table( shell, SWT.NONE );
     table.setData( "fixedColumns", new Integer( 1 ) );

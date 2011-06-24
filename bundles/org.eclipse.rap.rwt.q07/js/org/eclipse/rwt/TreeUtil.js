@@ -118,7 +118,8 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       "getTop",
       "getHeight",
       "getHoverItem",
-      "getElement"
+      "getElement",
+      "getChildrenLength"
     ],
 
     _CONTAINERCONSTR : function( fixedColumns ) {

@@ -101,7 +101,8 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     TableColumn column = ( TableColumn )widget;
-    ItemLCAUtil.writeChanges( column );
+    ItemLCAUtil.writeText( column, false, true );
+    ItemLCAUtil.writeImage( column );
     writeLeft( column );
     writeWidth( column );
     WidgetLCAUtil.writeToolTip( column, column.getToolTipText() );
