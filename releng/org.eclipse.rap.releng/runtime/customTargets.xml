@@ -121,14 +121,14 @@
   <!-- Steps to do to test the build results -->
   <!-- ===================================================================== -->
   <target name="runTests">
-    <property name="src.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/" />
+  	<!-- set up class path -->
     <property name="host.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/@dot" />
     <property name="fragment.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07.test/@dot" />
     <property name="rwt_osgi.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.osgi.test/@dot" />
     <property name="forms.tests" value="${buildDirectory}/plugins/org.eclipse.rap.ui.forms.test/@dot" />
     <property name="themes.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.themes.test/@dot" />
     <property name="styledtext.tests" value="${buildDirectory}/plugins/org.eclipse.rwt.widgets.styledtext.test/@dot" />
-    <property name="reports.tests" value="${buildDirectory}/tests" />
+    <property name="reports.tests" value="${buildDirectory}/test-reports" />
     <mkdir dir="${reports.tests}" />
     <path id="cp">
       <pathelement location="${host.tests}" />
@@ -156,7 +156,7 @@
       </fileset>
     </path>
 
-    <!-- run rwt tests -->
+    <!-- run tests -->
     <junit printsummary="yes" failureproperty="test.failed" fork="yes" forkmode="perTest">
       <classpath refid="cp" />
       <formatter type="xml" />
@@ -188,7 +188,6 @@
   <!-- ===================================================================== -->
   <target name="publish">
     <property name="buildOutputDirectory" value="${outputDirectory}/${buildType}-${buildId}" />
-    <property name="reports.tests" value="${buildDirectory}/tests" />
 
     <mkdir dir="${outputDirectory}" />
     <mkdir dir="${buildOutputDirectory}" />
@@ -201,8 +200,8 @@
     </copy>
 
     <!-- copy test results -->
-    <copy todir="${buildOutputDirectory}/tests">
-      <fileset dir="${reports.tests}" />
+    <copy todir="${buildOutputDirectory}/test-reports">
+      <fileset dir="${buildDirectory}/test-reports" />
     </copy>
   </target>
 
