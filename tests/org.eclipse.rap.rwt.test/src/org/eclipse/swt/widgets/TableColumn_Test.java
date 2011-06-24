@@ -213,6 +213,18 @@ public class TableColumn_Test extends TestCase {
     assertTrue( column.getWidth() >= item.getBounds().width );
   }
 
+  public void testGetPreferredWidthMultiLineHeader() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = createMultiLineHeaderTable( shell );
+    table.setHeaderVisible( true );
+    TableColumn column = table.getColumn( 1 );
+
+    column.setText( "Multi\nLineText" );
+
+    assertEquals( 50, column.getPreferredWidth() );
+  }
+
   public void testPackWithVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List log = new ArrayList();
@@ -380,6 +392,17 @@ public class TableColumn_Test extends TestCase {
       TableColumn column = new TableColumn( table, SWT.NONE );
       column.setWidth( 50 );
     }
+    return table;
+  }
+
+  private Table createMultiLineHeaderTable( Shell shell ) {
+    Table table = new Table( shell, SWT.NONE );
+    for( int i = 0; i < 3; i++ ) {
+      TableColumn column = new TableColumn( table, SWT.NONE );
+      column.setWidth( 50 );
+      column.setText( "Column " + i );
+    }
+    table.setData( "multiLineHeader", Boolean.TRUE );
     return table;
   }
 

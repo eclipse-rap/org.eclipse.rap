@@ -2494,7 +2494,7 @@ public class Table extends Composite {
     return visualIndex < getFixedColumns();
   }
 
-  private boolean isMultiLineHeader() {
+  boolean isMultiLineHeader() {
     boolean result = false;
     try {
       Boolean data = ( Boolean )getData( "multiLineHeader" );

@@ -462,14 +462,16 @@ public class TableColumn extends Item {
     int width = 0;
     if( parent.getHeaderVisible() ) {
       Font font = parent.getFont();
-      width = Graphics.stringExtent( font, getText() ).x;
+      if( parent.isMultiLineHeader() && text.indexOf( '\n' ) != -1 ) {
+        width = Graphics.textExtent( font, text, 0 ).x;
+      } else {
+        width = Graphics.stringExtent( font, text ).x;
+      }
       Image image = getImage();
       if( image != null ) {
         width += image.getBounds().width + SPACING;
       }
-      if(    parent.getSortColumn() == this
-          && parent.getSortDirection() != SWT.NONE )
-      {
+      if( parent.getSortColumn() == this && parent.getSortDirection() != SWT.NONE ) {
         width += SORT_INDICATOR_WIDTH + SPACING;
       }
       TableThemeAdapter themeAdapter
