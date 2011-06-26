@@ -17,11 +17,17 @@ import org.eclipse.swt.widgets.Display;
 public class TestEntryPoint implements IEntryPoint {
 
   private static boolean wasCreateUIInvoked;
+  private static Runnable runnable;
 
   public static void reset() {
     synchronized( TestEntryPoint.class ) {
       wasCreateUIInvoked = false;
     }
+    runnable = null;
+  }
+  
+  public static void setRunnable( Runnable runnable ) {
+    TestEntryPoint.runnable = runnable;
   }
   
   public static boolean wasCreateUIInvoked() {
@@ -36,6 +42,9 @@ public class TestEntryPoint implements IEntryPoint {
       wasCreateUIInvoked = true;
     }
     new Display();
+    if( runnable != null ) {
+      runnable.run();
+    }
     return 0;
   }
 }

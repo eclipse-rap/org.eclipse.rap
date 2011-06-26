@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.internal.server;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.LinkedList;
@@ -35,6 +35,8 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
 public abstract class ServletEngine_Test extends TestCase {
 
   private List<IServletEngine> startedEngines;
+  private PrintStream bufferedSystemErr;
+  private ByteArrayOutputStream redirectedSystemErr;
 
   protected abstract IServletEngineFactory getServletEngineFactory(); 
   
@@ -73,6 +75,23 @@ public abstract class ServletEngine_Test extends TestCase {
     assertTrue( TestEntryPoint.wasCreateUIInvoked() );
   }
   
+  public void testExceptionDuringRequest() throws Exception {
+    IServletEngine engine = startServletEngine( TestEntryPoint.class );
+    TestEntryPoint.setRunnable( new Runnable() {
+      public void run() {
+        throw new RuntimeException();
+      }
+    } );
+    RWTClient client = new RWTClient( engine );
+    client.sendStartupRequest();
+    
+    try {
+      client.sendInitializationRequest();
+      fail();
+    } catch( Exception expected ) {
+    }
+  }
+
   public void testStartupSequence() throws Exception {
     IServletEngine servletEngine = startServletEngine( TestEntryPoint.class );
     RWTClient client = new RWTClient( servletEngine );
@@ -97,8 +116,8 @@ public abstract class ServletEngine_Test extends TestCase {
     IServletEngine engine1 = startServletEngine( TestEntryPoint.class );
     IServletEngine engine2 = startServletEngine( TestEntryPoint.class );
 
-    sendRequest( engine1 );
-    sendRequest( engine2 );
+    sendStartupRequest( engine1 );
+    sendStartupRequest( engine2 );
     
     assertEquals( 1, engine1.getSessions().length );
     assertEquals( 1, engine2.getSessions().length );
@@ -115,9 +134,13 @@ public abstract class ServletEngine_Test extends TestCase {
     System.setProperty( "lifecycle", SimpleLifeCycle.class.getName() );
     TestEntryPoint.reset();
     startedEngines = new LinkedList<IServletEngine>();
+    bufferedSystemErr = System.err;
+    redirectedSystemErr = new ByteArrayOutputStream();
+    System.setErr( new PrintStream( redirectedSystemErr, true ) );
   }
 
   protected void tearDown() throws Exception {
+    System.setErr( bufferedSystemErr );
     stopEngines();
     TestEntryPoint.reset();
     System.getProperties().remove( "lifecycle" );
@@ -140,7 +163,7 @@ public abstract class ServletEngine_Test extends TestCase {
     return result;
   }
 
-  private static void sendRequest( IServletEngine servletEngine ) throws IOException {
+  private static void sendStartupRequest( IServletEngine servletEngine ) throws IOException {
     new RWTClient( servletEngine ).sendStartupRequest();
   }
 }

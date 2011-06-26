@@ -25,6 +25,10 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
 @SuppressWarnings("restriction")
 public class TomcatEngine implements IServletEngine {
 
+  static {
+    TomcatLog.silence();
+  }
+  
   private final Tomcat tomcat;
   private final Context context;
 
