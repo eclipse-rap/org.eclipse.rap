@@ -305,10 +305,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
       this.base( arguments, state );
     },
-        
+
     ///////////////////////////////////////////////
     // API for Tests, DND, TreeUtil and TableColumn
-    
+
     getRenderConfig : function() {
       return this._config;
     },
@@ -316,7 +316,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     getRootItem : function() {
       return this._rootItem;
     },
-    
+
     isFocusItem : function( item ) { 
       return this._focusItem === item;
     },
@@ -324,15 +324,15 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     isItemSelected : function( item ) {
       return this._selection.indexOf( item ) != -1;
     },
-    
+
     getRowContainer : function() {
       return this._rowContainer;
     },
-    
+
     getTableHeader : function() {
       return this._columnArea;
     },
-    
+
     ////////////////
     // event handler
 
@@ -622,7 +622,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     /////////////////
     // render content
-    
+
     _renderItemUpdate : function( item, event ) {
       if( item.isDisplayable() ) {      
         switch( event.getData() ) {
@@ -649,12 +649,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         }
       }
     },
-    
+
     _scheduleItemUpdate : function( item ) {
       this._renderQueue[ item.toHashCode() ] = item;
       this.addToQueue( "updateRows" );
     },
-    
+
     _scheduleUpdate : function( task ) {
       if( task !== undefined ) {
         this.addToQueue( task );
@@ -686,7 +686,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     //////////// 
     // scrolling
-    
+
     _updateScrollHeight : function() {
       var itemCount = this.getRootItem().getVisibleChildrenCount();
       var height = itemCount * this._itemHeight;

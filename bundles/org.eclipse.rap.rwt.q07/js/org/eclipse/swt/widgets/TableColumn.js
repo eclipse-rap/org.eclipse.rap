@@ -125,6 +125,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     
     setAlignment : function( index, value ) {
       this._table.setAlignment( index, value );
+      this.getLabelObject().setTextAlign( value );
       this.setHorizontalChildrenAlign( value );
     },
     

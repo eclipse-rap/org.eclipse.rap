@@ -2061,12 +2061,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     
     testSetAlignment : function() {
       var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
-      tree.setAlignment( 0, "left" );
-      tree.setAlignment( 1, "center" );
-      tree.setAlignment( 2, "right" );
+      tree.setHeaderVisible( true );
+      var column1 = new org.eclipse.swt.widgets.TableColumn( tree );
+      var column2 = new org.eclipse.swt.widgets.TableColumn( tree );
+      var column3 = new org.eclipse.swt.widgets.TableColumn( tree );
+      column1.setAlignment( 0, "left" );
+      column2.setAlignment( 1, "center" );
+      column3.setAlignment( 2, "right" );
       assertEquals( "left", tree.getRenderConfig().alignment[ 0 ] );
       assertEquals( "center", tree.getRenderConfig().alignment[ 1 ] );
       assertEquals( "right", tree.getRenderConfig().alignment[ 2 ] );
+      assertEquals( "left", column1.getLabelObject().getTextAlign() );
+      assertEquals( "center", column2.getLabelObject().getTextAlign() );
+      assertEquals( "right", column3.getLabelObject().getTextAlign() );
       tree.destroy();
     },
 
