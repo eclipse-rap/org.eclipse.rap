@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.examples.pages;
 
@@ -13,10 +14,9 @@ import java.util.*;
 import java.util.List;
 
 import org.eclipse.jface.viewers.*;
-import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.examples.*;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.events.*;
@@ -26,8 +26,6 @@ import org.eclipse.swt.widgets.*;
 
 
 public class TreeViewerExample implements IExamplePage {
-  private static final int MARGIN = 8;
-  private static final int FOOLTER_HEIGHT = 53;
 
   private static final int EDITOR_ACTIVATE
     =   ColumnViewerEditor.TABBING_HORIZONTAL
@@ -39,59 +37,63 @@ public class TreeViewerExample implements IExamplePage {
   private final static int TABLE_STYLE = 1;
 
   private TreeViewer currentViewer;
-  private TreeViewer modernTree;
-  private TreeViewer tableTree;
+  private TreeViewer simpleTree;
+  private TreeViewer complexTree;
   private int newItem;
 
   /////////////////
   // create widgets
 
-  public void createControl( final Composite parent ) {
-    parent.setLayout( new FormLayout() );
-    createTrees( parent );
+  public void createControl( Composite parent ) {
+    GridLayout mainLayout = ExampleUtil.createMainLayout( 2 );
+    mainLayout.makeColumnsEqualWidth = false;
+    parent.setLayout( mainLayout );
+    createTopLeft( parent );
+    createTopRight( parent );
     createFooter( parent );
-    Tree tree = modernTree.getTree();
+    setFocus();
+  }
+
+  private void createTopLeft( Composite parent ) {
+    Group group = new Group( parent, SWT.NONE );
+    group.setText( "Simple Tree" );
+    group.setLayoutData( ExampleUtil.createFillData() );
+    FillLayout layout = new FillLayout();
+    layout.marginHeight = 10;
+    layout.marginWidth = 10;
+    group.setLayout( layout );
+    simpleTree = createSimpleTree( group );
+  }
+
+  private void createTopRight( Composite parent ) {
+    Group group = new Group( parent, SWT.NONE );
+    group.setText( "Complex Tree" );
+    group.setLayoutData( ExampleUtil.createFillData() );
+    FillLayout layout = new FillLayout();
+    layout.marginHeight = 10;
+    layout.marginWidth = 10;
+    group.setLayout( layout );
+    complexTree = createComplexTree( group );
+  }
+
+  private void createFooter( Composite parent ) {
+    Group group = new Group( parent, SWT.NONE );
+    GridData footerData = ExampleUtil.createHorzFillData();
+    footerData.horizontalSpan = 2;
+    group.setLayoutData( footerData );
+    createControlButtons( group );
+  }
+  
+  private void setFocus() {
+    Tree tree = simpleTree.getTree();
     tree.forceFocus();
     tree.select( tree.getItem( 0 ) );
   }
 
-  private void createTrees( final Composite parent ) {
-    Composite topLeft = createComposite( parent, SWT.TOP | SWT.LEFT  );
-    Composite topRight = createComposite( parent, SWT.TOP | SWT.RIGHT );
-    modernTree = createModernTree( topLeft );
-    tableTree = createTableTree( topRight );
-  }
-
-  private static Composite createComposite( Composite parent, int position ) {
-    Composite result = new Composite( parent, SWT.NONE );
-    FormAttachment zero = new FormAttachment( 0 );
-    FormAttachment hFull = new FormAttachment( 100 );
-    FormAttachment vFull = new FormAttachment( 100, -FOOLTER_HEIGHT );
-    FormAttachment hFifty = new FormAttachment( 50 );
-    boolean left = ( position & SWT.RIGHT ) == 0;
-    FormData formData = new FormData();
-    result.setLayoutData( formData );
-    formData.left = left ? zero : hFifty;
-    formData.top = zero;
-    formData.right = left ? hFifty : hFull;
-    formData.bottom = vFull;
-    return result;
-  }
-
-  private void createFooter( final Composite parent ) {
-    Group bottom = new Group( parent, SWT.NONE );
-    FormData formData = new FormData();
-    bottom.setLayoutData( formData );
-    formData.top = new FormAttachment( 100, -FOOLTER_HEIGHT );
-    formData.left = new FormAttachment( 0, MARGIN );
-    formData.right = new FormAttachment( 100, -MARGIN );
-    formData.bottom = new FormAttachment( 100, -MARGIN );
-    createControlButtons( bottom );
-  }
-
-  private void createControlButtons( final Composite parent ) {
+  private void createControlButtons( Composite parent ) {
     RowLayout layout = new RowLayout();
     layout.fill = true;
+    layout.marginHeight = 5;
     layout.marginTop = 0;
     parent.setLayout( layout );
     Button newButton = new Button( parent, SWT.PUSH );
@@ -100,17 +102,13 @@ public class TreeViewerExample implements IExamplePage {
     Button removeButton = new Button( parent, SWT.PUSH );
     removeButton.setText( "Remove Item(s)" );
     removeButton.addSelectionListener( new RemoveButtonSelectionHandler() );
-    parent.layout();
   }
 
-  private TreeViewer createModernTree( final Composite composite ) {
-    Tree tree = new Tree( composite, SWT.BORDER | SWT.MULTI );
-    tree.setData( WidgetUtil.CUSTOM_VARIANT, "modern" );
-    composite.setLayout( newFillLayout() );
+  private TreeViewer createSimpleTree( Composite parent ) {
+    Tree tree = new Tree( parent, SWT.BORDER | SWT.MULTI );
     TreeViewer result = new TreeViewer( tree );
     result.setContentProvider( new TreeContentProvider() );
-    TreeLabelProvider labelProvider
-      = new TreeLabelProvider( composite.getDisplay(), MODERN_STYLE );
+    TreeLabelProvider labelProvider = new TreeLabelProvider( parent.getDisplay(), MODERN_STYLE );
     result.setLabelProvider( labelProvider );
     result.setInput( createModel() );
     result.expandAll();
@@ -121,11 +119,9 @@ public class TreeViewerExample implements IExamplePage {
     return result;
   }
 
-  private TreeViewer createTableTree( final Composite composite ) {
-    composite.setLayout( newFillLayout() );
+  private TreeViewer createComplexTree( Composite parent ) {
     int style = SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK;
-    Tree tree = new Tree( composite, style );
-    tree.setData( WidgetUtil.CUSTOM_VARIANT, "modern" );
+    Tree tree = new Tree( parent, style );
     createColumn( tree, "City", SWT.LEFT, 155 );
     createColumn( tree, "Timezone", SWT.CENTER, 65 );
     createColumn( tree, "Offset", SWT.CENTER, 65 );
@@ -135,7 +131,7 @@ public class TreeViewerExample implements IExamplePage {
     result.addCheckStateListener( new TreeCheckStateListener( result ) );
     result.setContentProvider( new TreeContentProvider() );
     TreeLabelProvider labelProvider
-      = new TreeLabelProvider( composite.getDisplay(), TABLE_STYLE );
+      = new TreeLabelProvider( parent.getDisplay(), TABLE_STYLE );
     result.setLabelProvider( labelProvider );
     result.setInput( createModel() );
     result.expandAll();
@@ -146,23 +142,12 @@ public class TreeViewerExample implements IExamplePage {
     return result;
   }
 
-  private static TreeColumn createColumn( final Tree parent,
-                                          final String name,
-                                          final int style,
-                                          final int width )
-  {
+  private static TreeColumn createColumn( Tree parent, String name, int style, int width ) {
     TreeColumn result = new TreeColumn( parent, style );
     result.setText( name );
     result.setWidth( width );
     result.setMoveable( true );
     result.setResizable( true );
-    return result;
-  }
-
-  private static FillLayout newFillLayout() {
-    FillLayout result = new FillLayout();
-    result.marginHeight = MARGIN;
-    result.marginWidth = MARGIN;
     return result;
   }
 
@@ -180,7 +165,7 @@ public class TreeViewerExample implements IExamplePage {
   //////////////
   // Cell-editor
 
-  private static void addCellEditor( final TreeViewer viewer ) {
+  private static void addCellEditor( TreeViewer viewer ) {
     CellEditor[] editors = new CellEditor[] {
       new TextCellEditor( viewer.getTree() ),
       new TextCellEditor( viewer.getTree() ),
@@ -195,7 +180,7 @@ public class TreeViewerExample implements IExamplePage {
     TreeViewerEditor.create( viewer, activationStrategy, EDITOR_ACTIVATE );
   }
 
-  private static void addToolTipSupport( final TreeViewer viewer ) {
+  private static void addToolTipSupport( TreeViewer viewer ) {
     ColumnViewerToolTipSupport.enableFor( viewer );
   }
 
@@ -221,13 +206,13 @@ public class TreeViewerExample implements IExamplePage {
   }
 
   private final class TreeFocusGainedHandler extends FocusAdapter {
-    public void focusGained( final FocusEvent event ) {
+    public void focusGained( FocusEvent event ) {
       currentViewer = null;
       Tree currentTree = ( Tree )event.widget;
-      if( modernTree.getTree() == currentTree ) {
-        currentViewer = modernTree;
-      } else if( tableTree.getTree() == currentTree ) {
-        currentViewer = tableTree;
+      if( simpleTree.getTree() == currentTree ) {
+        currentViewer = simpleTree;
+      } else if( complexTree.getTree() == currentTree ) {
+        currentViewer = complexTree;
       }
     }
   }
@@ -235,18 +220,18 @@ public class TreeViewerExample implements IExamplePage {
   private static class TreeCheckStateListener implements ICheckStateListener {
     private final CheckboxTreeViewer viewer;
 
-    TreeCheckStateListener( final CheckboxTreeViewer viewer ) {
+    TreeCheckStateListener( CheckboxTreeViewer viewer ) {
       this.viewer = viewer;
     }
 
-    public void checkStateChanged( final CheckStateChangedEvent event ) {
+    public void checkStateChanged( CheckStateChangedEvent event ) {
       TreeObject treeObject = ( TreeObject )event.getElement();
       boolean checked = event.getChecked();
       updateChildren( checked, treeObject );
       updateParent( treeObject );
     }
 
-    private void updateParent( final TreeObject treeObject ) {
+    private void updateParent( TreeObject treeObject ) {
       TreeObject parent = treeObject.getParent();
       if( parent != null ) {
         boolean parentChecked = true;
@@ -262,9 +247,7 @@ public class TreeViewerExample implements IExamplePage {
       }
     }
 
-    private void updateChildren( final boolean checked,
-                                 final TreeObject parent )
-    {
+    private void updateChildren( boolean checked, TreeObject parent ) {
       TreeObject[] children = parent.getChildren();
       for( int i = 0; i < children.length; i++ ) {
         TreeObject treeObject = children[ i ];
@@ -278,7 +261,7 @@ public class TreeViewerExample implements IExamplePage {
 
   private final class RemoveButtonSelectionHandler extends SelectionAdapter {
 
-    public void widgetSelected( final SelectionEvent event ) {
+    public void widgetSelected( SelectionEvent event ) {
       if( currentViewer != null && !currentViewer.getSelection().isEmpty() ) {
         ITreeSelection sel = ( ITreeSelection )currentViewer.getSelection();
         Iterator iterator = sel.iterator();
@@ -311,7 +294,7 @@ public class TreeViewerExample implements IExamplePage {
   }
 
   private final class NewButtonSelectionHandler extends SelectionAdapter {
-    public void widgetSelected( final SelectionEvent event ) {
+    public void widgetSelected( SelectionEvent event ) {
       if( currentViewer != null && !currentViewer.getSelection().isEmpty() ) {
         ITreeSelection sel = ( ITreeSelection )currentViewer.getSelection();
         TreeObject obj = ( TreeObject )sel.getFirstElement();
@@ -333,11 +316,11 @@ public class TreeViewerExample implements IExamplePage {
     private final TreeViewer viewer;
     private Object dragData;
     
-    TreeDragListener( final TreeViewer viewer ) {
+    TreeDragListener( TreeViewer viewer ) {
       this.viewer = viewer;
     }
 
-    public void dragStart( final DragSourceEvent event ) {
+    public void dragStart( DragSourceEvent event ) {
       dragData = getTreeObject( event.x, event.y );
     }
     
@@ -345,11 +328,11 @@ public class TreeViewerExample implements IExamplePage {
       event.data = dragData;
     }
 
-    public void dragFinished( final DragSourceEvent event ) {
+    public void dragFinished( DragSourceEvent event ) {
       viewer.refresh();
     }
     
-    private TreeObject getTreeObject( final int x, final int y ) {
+    private TreeObject getTreeObject( int x, int y ) {
       TreeObject result = null;
       Point point = viewer.getTree().toControl( x, y );
       ViewerCell cell = viewer.getCell( point );
@@ -361,12 +344,12 @@ public class TreeViewerExample implements IExamplePage {
   }
 
   private static class TreeDropListener extends DropTargetAdapter {
-    public void dragEnter( final DropTargetEvent event ){
+    public void dragEnter( DropTargetEvent event ){
       event.feedback
         = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
     }
 
-    public void drop( final DropTargetEvent event ) {
+    public void drop( DropTargetEvent event ) {
       if( event.data == null ) {
         event.detail = DND.DROP_NONE;
       } else {
@@ -379,9 +362,7 @@ public class TreeViewerExample implements IExamplePage {
       }
     }
 
-    private static boolean isValidDrop( final TreeObject draggedObject, 
-                                        final TreeObject targetObject ) 
-    {
+    private static boolean isValidDrop( TreeObject draggedObject, TreeObject targetObject ) {
       boolean result = false;
       if( draggedObject != null && targetObject != null ) {
         result = true;
@@ -427,7 +408,7 @@ public class TreeViewerExample implements IExamplePage {
       return result;
     }
 
-    public boolean isSupportedType( final TransferData transferData ) {
+    public boolean isSupportedType( TransferData transferData ) {
       boolean result = false;
       if( transferData != null ) {
         int[] types = getTypeIds();
@@ -439,12 +420,11 @@ public class TreeViewerExample implements IExamplePage {
       return result;
     }
 
-    public void javaToNative( final Object object,
-                              final TransferData transferData ) {
+    public void javaToNative( Object object, TransferData transferData ) {
       transferData.data = object;
     }
 
-    public Object nativeToJava( final TransferData transferData ) {
+    public Object nativeToJava( TransferData transferData ) {
       return transferData.data;
     }
   }
@@ -452,19 +432,19 @@ public class TreeViewerExample implements IExamplePage {
   private static final class CellModifier implements ICellModifier {
     private final TreeViewer viewer;
 
-    CellModifier( final TreeViewer viewer ) {
+    CellModifier( TreeViewer viewer ) {
       this.viewer = viewer;
     }
 
-    public boolean canModify( final Object element, final String property ) {
+    public boolean canModify( Object element, String property ) {
       return element instanceof City || property.equals( "Name" );
     }
 
-    public Object getValue( final Object element, final String property ) {
+    public Object getValue( Object element, String property ) {
       String result = "";
       TreeObject treeObject = ( TreeObject )element;
       if( property.equals( "Name" ) ) {
-        result = treeObject.getName();
+        result = treeObject.getTitle();
       } else if( property.equals( "Timezone" ) ) {
         City city = ( City )treeObject;
         result = city.getTimeZone();
@@ -477,10 +457,7 @@ public class TreeViewerExample implements IExamplePage {
       return result;
     }
 
-    public void modify( final Object element,
-                        final String property,
-                        final Object value )
-    {
+    public void modify( Object element, String property, Object value ) {
       TreeObject treeObject;
       if( element instanceof Item ) {
         treeObject = ( TreeObject )( ( Item ) element ).getData();
@@ -510,20 +487,15 @@ public class TreeViewerExample implements IExamplePage {
     extends ColumnViewerEditorActivationStrategy
   {
 
-    CellEditorActivationStrategy( final ColumnViewer viewer ) {
+    CellEditorActivationStrategy( ColumnViewer viewer ) {
       super( viewer );
     }
 
-    protected boolean isEditorActivationEvent(
-      final ColumnViewerEditorActivationEvent event )
-    {
-      boolean isTraversal
-        = event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL;
+    protected boolean isEditorActivationEvent( ColumnViewerEditorActivationEvent event ) {
+      boolean isTraversal = event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL;
       boolean isDoubleClick
-        = event.eventType
-          == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION;
-      boolean isProgrammatic
-        = event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
+        = event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION;
+      boolean isProgrammatic = event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
       return isTraversal || isDoubleClick || isProgrammatic;
     }
   }
@@ -536,7 +508,7 @@ public class TreeViewerExample implements IExamplePage {
     private String name;
     private TreeObject parent;
 
-    public TreeObject( final String name ) {
+    public TreeObject( String name ) {
       setName( name );
       children = new ArrayList<TreeObject>();
     }
@@ -553,7 +525,7 @@ public class TreeViewerExample implements IExamplePage {
       this.name = name;
     }
 
-    public String getName() {
+    public String getTitle() {
       return name;
     }
 
@@ -663,7 +635,7 @@ public class TreeViewerExample implements IExamplePage {
       String result = "";
       if( element instanceof City ) {
         City city = ( City )element;
-        String name = city.getName();
+        String name = city.getTitle();
         String timeZone = city.getTimeZone();
         String utcOffset = getUTCOffset( city );
         result = name + " (" + timeZone + ", " + utcOffset + ")";

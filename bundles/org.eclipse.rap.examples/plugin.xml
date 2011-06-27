@@ -2,10 +2,6 @@
 <?eclipse version="3.2"?>
 <plugin>
 
-   <extension-point id="pages"
-         name="RAP examples pages"
-         schema="schema/pages.exsd" />
-
    <extension
          point="org.eclipse.rap.ui.entrypoint">
       <entrypoint
@@ -16,75 +12,26 @@
    </extension>
 
    <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.eclipse.rap.examples.internal.ExamplePerspective"
-            id="org.eclipse.rap.examples.examplePerspective"
-            name="Examples">
-      </perspective>
-   </extension>
-
-   <extension
-         point="org.eclipse.ui.views">
-      <view
-            class="org.eclipse.rap.examples.internal.ExampleView"
-            id="org.eclipse.rap.examples.exampleView"
-            name="Example">
-      </view>
-      <view
-            class="org.eclipse.rap.examples.internal.NavigationView"
-            id="org.eclipse.rap.examples.navigationView"
-            name="Navigation">
-      </view>
-      <view
-            class="org.eclipse.rap.examples.internal.DescriptionView"
-            id="org.eclipse.rap.examples.descriptionView"
-            name="Description">
-      </view>
-   </extension>
-
-   <extension
          point="org.eclipse.rap.ui.branding">
       <branding
-            body="html/body.html"
+            id="org.eclipse.rap.examples.branding"
             defaultEntrypointId="org.eclipse.rap.examples.entryPoint"
             favicon="icons/favicon.png"
-            id="org.eclipse.rap.examples.branding"
             servletName="examples"
-            themeId="org.eclipse.rap.design.example.business.theme"
+            themeId="org.eclipse.rap.rwt.theme.Default"
+            body="html/body.html"
             title="RAP Examples">
-         <presentationFactory
-               defaultLayoutId="org.eclipse.rap.design.example.business.layout"
-               id="org.eclipse.rap.design.example.business.factory">
-            <defaultStackPresentation
-                  id="org.eclipse.rap.design.example.stack.view">
-            </defaultStackPresentation>
-         </presentationFactory>
       </branding>
    </extension>
+
    <extension
-         point="org.eclipse.rap.ui.layouts">
-      <layout
-            id="org.eclipse.rap.design.example.business.layout"
-            name="Business Layout Extended">
-         <layoutSet
-               class="org.eclipse.rap.examples.internal.design.BusinessLogoInitializer"
-               id="org.eclipse.rap.design.example.layoutset.logo.extended"
-               name="Logo Overridding"
-               overridesId="org.eclipse.rap.design.example.layoutset.logo">
-         </layoutSet>
-      </layout>
-      <layout
-            id="org.eclipse.rap.design.example.fancy.layout"
-            name="Fancy Layout Extended">
-         <layoutSet
-               class="org.eclipse.rap.examples.internal.design.FancyLogoInitializer"
-               id="org.eclipse.rap.design.example.layoutset.logo.extended"
-               name="Logo Overridding"
-               overridesId="org.eclipse.rap.design.example.layoutset.logo">
-         </layoutSet>
-      </layout>
+         point="org.eclipse.rap.ui.themes">
+      <themeContribution
+            file="theme/theme.css"
+            themeId="org.eclipse.rap.rwt.theme.Default">
+      </themeContribution>
    </extension>
+
    <extension
          point="org.eclipse.equinox.http.registry.resources">
       <resource
@@ -92,19 +39,13 @@
             base-name="/html/loading.gif">
       </resource>
    </extension>
+
    <extension
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
             alias="/"
             class="org.eclipse.rap.examples.internal.RedirectServlet">
       </servlet>
-   </extension>
-   <extension
-         point="org.eclipse.rap.ui.themes">
-      <themeContribution
-            file="theme/examples.business.css"
-            themeId="org.eclipse.rap.design.example.business.theme">
-      </themeContribution>
    </extension>
 
 </plugin>

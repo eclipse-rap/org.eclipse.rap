@@ -1,15 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.examples.pages;
 
-import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.examples.*;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -55,7 +56,7 @@ public class ThemingExample implements IExamplePage {
 
   private void createMenusArea( final Composite parent ) {
     Group group = createGroup( parent, "Menus", 1 );
-    group.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
+    group.setLayoutData( ExampleUtil.createFillData() );
     GridData layoutData = new GridData( SWT.FILL, SWT.TOP, true, false );
     ToolBar bar = new ToolBar( group, SWT.BORDER );
     bar.setData( WidgetUtil.CUSTOM_VARIANT, "themingDemo" );

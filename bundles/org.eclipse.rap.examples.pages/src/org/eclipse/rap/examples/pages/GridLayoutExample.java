@@ -1,15 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.examples.pages;
 
-import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.examples.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -19,23 +20,20 @@ import org.eclipse.swt.widgets.*;
 
 public class GridLayoutExample implements IExamplePage {
 
-  private Composite parent;
   private Composite layoutArea;
   private boolean propEqualWidth;
   private boolean propPrefSize;
 
   public void createControl( final Composite parent ) {
-    this.parent = parent;
-    parent.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 10 ) );
-    createLayoutArea();
+    parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
+    createLayoutArea( parent );
     createControlButtons( parent );
   }
 
-  private void createLayoutArea() {
-    if( layoutArea == null ) {
+  private void createLayoutArea( Composite parent ) {
+    if( layoutArea == null || layoutArea.isDisposed() ) {
       layoutArea = new Composite( parent, SWT.NONE );
-      GridData layoutData = new GridData( SWT.FILL, SWT.FILL, true, true );
-      layoutArea.setLayoutData( layoutData );
+      layoutArea.setLayoutData( ExampleUtil.createFillData() );
       FillLayout layout = new FillLayout();
       layout.spacing = 10;
       layoutArea.setLayout( layout );
@@ -49,12 +47,12 @@ public class GridLayoutExample implements IExamplePage {
   }
 
   private void createLayoutComp( final Composite parent ) {
-    Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayout( ExampleUtil.createGridLayout( 1, false ) );
-    new Label( composite, SWT.NONE ).setText( "GridLayout" );
-    Composite layoutComp = new Composite( composite, SWT.BORDER );
+    Group group = new Group( parent, SWT.NONE );
+    group.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 10 ) );
+    group.setText( "GridLayout" );
+    Composite layoutComp = new Composite( group, SWT.BORDER );
     if( !propPrefSize ) {
-      layoutComp.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
+      layoutComp.setLayoutData( ExampleUtil.createFillData() );
     }
     GridLayout layout = new GridLayout( 3, propEqualWidth );
     layoutComp.setLayout( layout );
@@ -84,7 +82,7 @@ public class GridLayoutExample implements IExamplePage {
 
       public void widgetSelected( final SelectionEvent e ) {
         propEqualWidth = equalWidthButton.getSelection();
-        createLayoutArea();
+        createLayoutArea( parent );
       }
     } );
     final Button preferredSizeButton = new Button( group, SWT.CHECK );
@@ -93,7 +91,7 @@ public class GridLayoutExample implements IExamplePage {
       
       public void widgetSelected( final SelectionEvent e ) {
         propPrefSize = preferredSizeButton.getSelection();
-        createLayoutArea();
+        createLayoutArea( parent );
       }
     } );
   }

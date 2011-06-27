@@ -8,15 +8,14 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.examples.internal;
-
-import org.eclipse.rwt.lifecycle.IEntryPoint;
+package org.eclipse.rap.examples;
 
 
-public class Application implements IEntryPoint {
+public interface IExampleContribution {
 
-  public int createUI() {
-    new MainUi().createUI();
-    return 0;
-  }
+  String getId();
+  
+  String getTitle();
+
+  IExamplePage createPage();
 }

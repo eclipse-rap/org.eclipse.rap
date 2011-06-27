@@ -1,40 +1,41 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2008, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.examples.internal;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 
-public class Activator extends AbstractUIPlugin {
-
-  public static final String PLUGIN_ID = "org.eclipse.rap.examples";
+public class Activator implements BundleActivator {
 
   private static Activator plugin;
+  private ExampleContributionsTracker serviceTracker;
 
-  public void start( final BundleContext context ) throws Exception {
-    super.start( context );
+  public void start( BundleContext context ) throws Exception {
     plugin = this;
+    serviceTracker = new ExampleContributionsTracker( context );
+    serviceTracker.open();
   }
 
-  public void stop( final BundleContext context ) throws Exception {
+  public void stop( BundleContext context ) throws Exception {
+    serviceTracker.close();
+    serviceTracker = null;
     plugin = null;
-    super.stop( context );
+  }
+
+  public ExampleContributionsTracker getExampleContributions() {
+    return serviceTracker;
   }
 
   public static Activator getDefault() {
     return plugin;
-  }
-
-  public static ImageDescriptor getImageDescriptor( final String path ) {
-    return imageDescriptorFromPlugin( PLUGIN_ID, path );
   }
 }

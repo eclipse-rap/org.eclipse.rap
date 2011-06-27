@@ -1,15 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.examples.pages;
 
-import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.examples.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -33,7 +34,7 @@ public class FormLayoutExample implements IExamplePage {
   private void createLayoutArea() {
     if( layoutArea == null ) {
       layoutArea = new Composite( parent, SWT.NONE );
-      GridData layoutData = new GridData( SWT.FILL, SWT.FILL, true, true );
+      GridData layoutData = ExampleUtil.createFillData();
       layoutArea.setLayoutData( layoutData );
       FillLayout layout = new FillLayout();
       layout.spacing = 10;
@@ -53,7 +54,7 @@ public class FormLayoutExample implements IExamplePage {
     new Label( composite, SWT.NONE ).setText( "FormLayout" );
     Composite layoutComp = new Composite( composite, SWT.BORDER );
     if( !propPrefSize ) {
-      layoutComp.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
+      layoutComp.setLayoutData( ExampleUtil.createFillData() );
     }
     FormLayout layout = new FormLayout();
     layoutComp.setLayout( layout );

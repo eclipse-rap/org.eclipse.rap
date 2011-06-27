@@ -1,17 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.examples.pages;
 
-import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.examples.*;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -36,9 +38,9 @@ public class FillLayoutExample implements IExamplePage {
   }
 
   private void createLayoutArea() {
-    if( layoutArea == null ) {
-      layoutArea = new Composite( parent, SWT.NONE );
-      GridData layoutData = new GridData( SWT.FILL, SWT.FILL, true, true );
+    if( layoutArea == null || layoutArea.isDisposed() ) {
+      layoutArea = new SashForm( parent, SWT.NONE );
+      GridData layoutData = ExampleUtil.createFillData();
       layoutArea.setLayoutData( layoutData );
       FillLayout layout = new FillLayout();
       layout.spacing = 10;
@@ -46,7 +48,9 @@ public class FillLayoutExample implements IExamplePage {
     }
     Control[] children = layoutArea.getChildren();
     for( int i = 0; i < children.length; i++ ) {
-      children[ i ].dispose();
+      if( !( children[ i ] instanceof Sash ) ) {
+        children[ i ].dispose();
+      }
     }
     createLayoutComp( layoutArea, SWT.HORIZONTAL );
     createLayoutComp( layoutArea, SWT.VERTICAL );
@@ -54,13 +58,14 @@ public class FillLayoutExample implements IExamplePage {
   }
 
   private void createLayoutComp( final Composite parent, final int style ) {
-    Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayout( ExampleUtil.createGridLayout( 1, false ) );
+    Group group = new Group( parent, SWT.NONE );
+    group.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 10 ) );
     String orientString = style == SWT.VERTICAL ? "Vertical" : "Horizontal";
-    new Label( composite, SWT.NONE ).setText( orientString + " FillLayout" );
-    Composite layoutComp = new Composite( composite, SWT.BORDER );
+    String message = orientString + " FillLayout";
+    group.setText( message );
+    Composite layoutComp = new Composite( group, SWT.BORDER );
     if( !propPrefSize ) {
-      layoutComp.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
+      layoutComp.setLayoutData( ExampleUtil.createFillData() );
     }
     FillLayout layout = new FillLayout( style );
     layout.marginWidth = 5;

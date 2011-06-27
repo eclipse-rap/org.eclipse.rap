@@ -1,17 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.examples.pages;
 
 import java.util.Arrays;
 
-import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.examples.*;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.*;
@@ -39,13 +40,17 @@ public class ListExample implements IExamplePage {
     "Svenska",
   };
 
-  public void createControl( final Composite parent ) {
-    parent.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 20 ) );
-    Composite composite = new Composite( parent, SWT.NONE );
+  public void createControl( Composite parent ) {
+    parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
+    Group group = new Group( parent, SWT.NONE );
+    group.setLayoutData( ExampleUtil.createFillData() );
+    group.setText( "Drag && Drop" );
+    group.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 20 ) );
+    Composite composite = new Composite( group, SWT.NONE );
     composite.setLayout( ExampleUtil.createGridLayout( 3, false, 5, 20 ) );
     composite.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
     final List leftList = new List( composite, LIST_STYLE );
-    leftList.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
+    leftList.setLayoutData( ExampleUtil.createFillData() );
     addDragSupport( leftList );
     addDropSupport( leftList );
     Composite buttons = new Composite( composite, SWT.NONE );
@@ -55,7 +60,7 @@ public class ListExample implements IExamplePage {
     final Button addButton = createButton( buttons, "Add", IMG_ADD );
     final Button removeButton = createButton( buttons, "Remove", IMG_REMOVE );
     final List rightList = new List( composite, LIST_STYLE );
-    rightList.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
+    rightList.setLayoutData( ExampleUtil.createFillData() );
     addDragSupport( rightList );
     addDropSupport( rightList );
     leftList.setItems( ELEMENTS );

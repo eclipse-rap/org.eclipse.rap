@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rap.examples.pages;
 
@@ -13,14 +14,13 @@ import java.util.*;
 import java.util.List;
 
 import org.eclipse.jface.viewers.*;
-import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rap.examples.*;
 import org.eclipse.rap.examples.pages.Elements.Element;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 
@@ -58,26 +58,27 @@ public class TableViewerExample implements IExamplePage {
     labelProvider = new ElementsLabelProvider();
   }
 
-  public void createControl( final Composite parent ) {
-    parent.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 20 ) );
+  public void createControl( Composite parent ) {
+    parent.setLayout( ExampleUtil.createMainLayout( 1 ) );
 
-    Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
-    composite.setLayout( new GridLayout( 2, false ) );
+    Group group = new Group( parent, SWT.NONE );
+    group.setText( "Table Viewer" );
+    group.setLayoutData( ExampleUtil.createFillData() );
+    group.setLayout( ExampleUtil.createGridLayout( 2, false, 10, 10 ) );
 
-    Label lblFilter = new Label( composite, SWT.NONE );
+    Label lblFilter = new Label( group, SWT.NONE );
     lblFilter.setText( "Filter" );
-    Text txtFilter = new Text( composite, SWT.BORDER );
+    Text txtFilter = new Text( group, SWT.BORDER );
     txtFilter.setLayoutData( new GridData( SWT.FILL, SWT.TOP, true, false ) );
     txtFilter.addModifyListener( new ModifyListener() {
-      public void modifyText( final ModifyEvent event ) {
+      public void modifyText( ModifyEvent event ) {
         Text text = ( Text )event.widget;
         viewerFilter.setText( text.getText() );
         viewer.refresh();
       }
     } );
     elements = Elements.getElements();
-    viewer = new TableViewer( composite, SWT.BORDER );
+    viewer = new TableViewer( group, SWT.BORDER );
     ColumnViewerToolTipSupport.enableFor( viewer );
     viewer.setUseHashlookup( true );
     viewer.setContentProvider( new ElementsContentProvider() );
@@ -91,7 +92,7 @@ public class TableViewerExample implements IExamplePage {
     viewer.setInput( elements );
     viewer.addFilter( viewerFilter );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
-      public void selectionChanged( final SelectionChangedEvent event ) {
+      public void selectionChanged( SelectionChangedEvent event ) {
         StructuredSelection sel = ( StructuredSelection )event.getSelection();
         Element firstElement = ( Element )sel.getFirstElement();
         if( firstElement != null ) {
@@ -106,20 +107,17 @@ public class TableViewerExample implements IExamplePage {
     } );
     viewer.getTable().setHeaderVisible( true );
     viewer.getTable().setLinesVisible( true );
-    GridData tableData = new GridData( SWT.FILL, SWT.FILL, true, true );
+    GridData tableData = ExampleUtil.createFillData();
     tableData.horizontalSpan = 2;
     viewer.getTable().setLayoutData( tableData );
-    lblSelection = new Label( composite, SWT.NONE );
-    GridData labelData = new GridData( SWT.FILL, SWT.FILL, true, true );
-    labelData.minimumHeight = 50;
+    lblSelection = new Label( group, SWT.NONE );
+    GridData labelData = ExampleUtil.createHorzFillData();
     labelData.horizontalSpan = 2;
+    labelData.minimumHeight = 50;
     lblSelection.setLayoutData( labelData );
   }
 
-  private TableViewerColumn createColumn( final String text,
-                                          final int width,
-                                          final int sortProperty )
-  {
+  private TableViewerColumn createColumn( String text, int width, final int sortProperty ) {
     TableViewerColumn result = new TableViewerColumn( viewer, SWT.NONE );
     result.setLabelProvider( labelProvider );
     TableColumn column = result.getColumn();
@@ -127,7 +125,7 @@ public class TableViewerExample implements IExamplePage {
     column.setWidth( width );
     column.setMoveable( true );
     column.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         int sortDirection = updateSortDirection( ( TableColumn )event.widget );
         sort( viewer, sortProperty, sortDirection == SWT.DOWN );
       }
@@ -163,7 +161,6 @@ public class TableViewerExample implements IExamplePage {
 
   private static final class ElementsContentProvider implements IStructuredContentProvider {
     Object[] elements;
-    
     public Object[] getElements( Object inputElement ) {
       return elements;
     }
@@ -172,7 +169,7 @@ public class TableViewerExample implements IExamplePage {
       if( newInput == null ) {
         elements = new Object[ 0 ];
       } else {
-        java.util.List elementsList = ( java.util.List )newInput;
+        List elementsList = ( List )newInput;
         elements = elementsList.toArray();
       }
     }
@@ -184,6 +181,7 @@ public class TableViewerExample implements IExamplePage {
 
   private static final class ElementsLabelProvider extends CellLabelProvider {
     public void update( ViewerCell cell ) {
+
       Element element = ( Element )cell.getElement();
       int columnIndex = cell.getColumnIndex();
       switch( columnIndex ) {
@@ -276,7 +274,7 @@ public class TableViewerExample implements IExamplePage {
   private static final class ElementsFilter extends ViewerFilter {
     private String text;
 
-    void setText( String string ) {
+    public void setText( String string ) {
       this.text = string;
     }
 
