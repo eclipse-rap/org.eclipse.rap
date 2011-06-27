@@ -2296,7 +2296,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var tree = this._createDefaultTree();
       tree.setLinesVisible( true );
       testUtil.flush();
-      var border = tree._getHorizontalGridBorder();
+      var border = tree._rowContainer._getHorizontalGridBorder();
       assertIdentical( border, tree._rowContainer._rowBorder );      
       tree.destroy();
     },

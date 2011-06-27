@@ -17,9 +17,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
     this._scrollLeft = 0;
     this._rowHeight = 16;
     this._rowWidth = 0;
-    this._rowAppearance = null;
+    this._horzGridBorder = null;
     this._rowBorder = null;
-    this._linesVisible = false;
+    this._baseAppearance = null;
     this._topItem = null;
     this._renderTime = null;
     this._topItemIndex = 0;
@@ -67,7 +67,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
         "itemImageLeft" : [],   
         "itemImageWidth" : [],   
         "itemTextLeft" : [],   
-        "itemTextWidth" : []   
+        "itemTextWidth" : []
       };
       return result;
     }
@@ -75,9 +75,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
   },
   
   members : {
-    
-    /////////////////////
-    // cunstructor helper
 
     /////////////
     // Public API
@@ -105,6 +102,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
       this._selectionProvider = [ func, context ];
     },
 
+    setBaseAppearance : function( value ) {
+      this._baseAppearance = value;
+    },
     setRowWidth : function( width ) {
       this._rowWidth = width;
       for( var i = 0; i < this._children.length; i++ ) {
@@ -120,27 +120,41 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
       this._updateRowCount();
     },
     
-    /**
-     * has to be set before creating any rows
-     */
-    setRowAppearance : function( value ) {
-      this._rowAppearance = value;
-    },
-
-    setRowBorder : function( border ) {
+    setRowLinesVisible : function( value ) {
+      var border = this._config.linesVisible ? this._getHorizontalGridBorder() : null;
       this._rowBorder = border;
       for( var i = 0; i < this._children.length; i++ ) {
         this._children[ i ].setBorder( border );
+        this._children[ i ].setState( "linesvisible", value );
       }
     },
-    
-    setRowLinesVisible : function( value ) {
-    	this._linesVisible = value;
-      for( var i = 0; i < this._children.length; i++ ) {
-        this._children[ i ].setLinesVisible( value );
+
+    _getHorizontalGridBorder : function() {
+      if( this._horzGridBorder === null ) { 
+        this._horzGridBorder = this._getGridBorder( { "horizontal" : true } );
       }
+      return this._horzGridBorder;
     },
-    
+
+    _getGridBorder : function( state ) {
+      var tvGrid = new org.eclipse.swt.theme.ThemeValues( state );
+      var cssElement = qx.lang.String.toFirstUp( this._baseAppearance ) + "-GridLine"; 
+      var gridColor = tvGrid.getCssColor( cssElement, "color" );
+      tvGrid.dispose();
+      var borderWidths = [ 0, 0, 0, 0 ];
+      gridColor = gridColor == "undefined" ? "transparent" : gridColor;
+      if( state.horizontal ) {
+        borderWidths[ 2 ] = 1;
+      } else if( state.vertical ) {
+        borderWidths[ 1 ] = 1;
+      }
+      return new org.eclipse.rwt.Border( borderWidths, "solid", gridColor );
+    },
+
+    _getRowAppearance : function() {
+      return this._baseAppearance + "-row";      
+    },
+
     setTopItem : function( item, index, render ) {
       // TODO [tb] : write test for optimized render
       this._topItem = item;
@@ -223,11 +237,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
       var rowsNeeded = Math.round( ( this.getHeight() / this._rowHeight ) + 0.5 );
       while( this._children.length < rowsNeeded ) {
         var row = new org.eclipse.rwt.widgets.TreeRow( this.getParent() );
-        row.setAppearance( this._rowAppearance ); 
+        row.setAppearance( this._getRowAppearance() ); 
         row.setWidth( this._rowWidth );
         row.setHeight( this._rowHeight );
         row.setBorder( this._rowBorder );
-        row.setLinesVisible( this._linesVisible );
+        row.setState( "linesvisible", this._config.linesVisible );
         this.add( row );
       }
       while( this._children.length > rowsNeeded ) {

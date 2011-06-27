@@ -111,7 +111,7 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       "setRowLinesVisible",
       "setToolTip",
       "renderItemQueue",
-      "setRowBorder"
+      "setBaseAppearance"
     ],
 
     _CONTAINER_GETTER_DELEGATES : [ 
@@ -186,7 +186,7 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
         }
         return result;
       },
-      
+
       renderAll : function() {
         this._updateConfig();
         this._container[ 0 ].renderAll();

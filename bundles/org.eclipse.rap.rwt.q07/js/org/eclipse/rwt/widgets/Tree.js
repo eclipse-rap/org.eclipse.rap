@@ -37,7 +37,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._mergeEventsTimer = new qx.client.Timer( 50 );
     this._sendRequestTimer = null;
     this._vertGridBorder = null;
-    this._horzGridBorder = null;
     // Subwidgets 
     this._rowContainer = org.eclipse.rwt.TreeUtil.createTreeRowContainer( argsMap );
     this._columnArea = new org.eclipse.rwt.widgets.TableHeader( argsMap );
@@ -133,8 +132,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     _parseArgsMap : function( map ) {
-      this._rowContainer.setRowAppearance( map.appearance + "-row" );
-      this.setAppearance( map.appearance );
       if( map.noScroll ) {
         this._rowContainer.removeEventListener( "mousewheel", this._onClientAreaMouseWheel, this );
       }
@@ -161,6 +158,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       if( typeof map.indentionWidth === "number" ) {
         this._config.indentionWidth = map.indentionWidth;
       }
+      this._rowContainer.setBaseAppearance( map.appearance );
+      this.setAppearance( map.appearance );
     },
 
     _createSendRequestTimer : function() {
@@ -269,16 +268,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._layoutX();
       this._layoutY();
     },
-    
+
     setHasSelectionListeners : function( value ) {
       this._hasSelectionListeners = value;
     },
-    
+
     setAlignment : function( column, value ) {
       this._config.alignment[ column ] = value;
       this._scheduleUpdate();
     },
-    
+
     setLinesVisible : function( value ) {
       this._config.linesVisible = value;
       if( value ) {
@@ -288,17 +287,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
       this._rowContainer.setRowLinesVisible( value );
       this._scheduleUpdate();
-      this._renderGridHorizontal();
       this._renderGridVertical();
     },
-    
+
     addState : function( state ) {
       this.base( arguments, state );
       if( state.slice( 0, 8 ) === "variant_" ) {
         this._config.variant = state;
       }
     },
-        
+
     removeState : function( state ) {
       if( this._config.variant === state ) {
         this._config.variant = null;
@@ -1098,18 +1096,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._vertGridLines[ number ] = line;
       }
       return this._vertGridLines[ number ];
-    },
-
-    _renderGridHorizontal : function() {
-      var border = this._config.linesVisible ? this._getHorizontalGridBorder() : null;
-      this._rowContainer.setRowBorder( border );
-    },
-
-    _getHorizontalGridBorder : function() {
-      if( this._horzGridBorder === null ) { 
-        this._horzGridBorder = this._getGridBorder( { "horizontal" : true } );
-      }
-      return this._horzGridBorder;
     },
 
     _getVerticalGridBorder : function() {

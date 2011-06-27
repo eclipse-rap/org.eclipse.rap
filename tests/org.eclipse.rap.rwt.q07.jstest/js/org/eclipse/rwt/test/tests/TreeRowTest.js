@@ -769,7 +769,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       tree.setLinesVisible( true );
       var row = this._createRow( tree );
       row.setHeight( 15 );
-      row.setLinesVisible( true );
+      row.setState( "linesvisible", true );
       this._addToDom( row );
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
@@ -1190,7 +1190,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.renderItem( item, tree._config, false, null );
       assertFalse( row.hasState( "selected" ) );
       assertTrue( row.hasState( "parent_unfocused" ) );
-      row._setState( "dnd_selected", true );
+      row.setState( "dnd_selected", true );
       testUtil.flush();
       row.renderItem( item, tree._config, false, null );
       assertTrue( row.hasState( "dnd_selected" ) );
@@ -1804,7 +1804,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           return { "backgroundImage" : result };
         }
       } );
-      var args = { "appearance": base };
+      var args = { "appearance" : base };
       args[ "selectionPadding" ] = [ 3, 1 ];
       args[ "indentionWidth" ] = 16;
       args[ option ] = true;
