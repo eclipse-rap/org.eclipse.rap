@@ -10,7 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.examples.pages;
 
-import org.eclipse.rap.examples.*;
+import org.eclipse.rap.examples.ExampleUtil;
+import org.eclipse.rap.examples.IExamplePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -18,8 +19,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.*;
 
-import com.eclipsesource.oscilloscope.DataProvider;
-import com.eclipsesource.oscilloscope.Oscilloscope;
+import com.eclipsesource.oscilloscope.*;
 
 
 public class OscilloscopeExample implements IExamplePage {
@@ -45,7 +45,6 @@ public class OscilloscopeExample implements IExamplePage {
       // NOTE [tb] : resizing the widget is currently strongly discouraged
       oscope.setLayoutData( new GridData( width, height ) );
       oscope.setDataProvider( getDataProvider( i, height ) );
-      oscope.setSpeed( getSpeed( i ) );
       Menu menu = createContextMenu( oscope );
       oscope.setMenu( menu );
       oscopes[ i ] = oscope;
@@ -80,10 +79,7 @@ public class OscilloscopeExample implements IExamplePage {
   }
 
   private int getSpeed( int oscopeNr ) {
-    // NOTE : bigger is slower (currently)
-    return oscopeNr < 2
-                       ? 20
-                       : 75;
+    return oscopeNr < 2 ? 25 : 50;
   }
 
   private DataProvider getDataProvider( int oscopeNr, int maxValue ) {
@@ -108,11 +104,13 @@ public class OscilloscopeExample implements IExamplePage {
       public void widgetSelected( SelectionEvent e ) {
         running = !running;
         for( int i = 0; i < oscopes.length; i++ ) {
-          oscopes[ i ].setRunning( running );
+          if( running ) {
+            oscopes[ i ].start( getSpeed( i ) );
+          } else {
+            oscopes[ i ].stop();
+          }
         }
-        button.setText( running
-                               ? "stop"
-                               : "start" );
+        button.setText( running ? "stop" : "start" );
       }
     } );
   }
@@ -128,18 +126,19 @@ public class OscilloscopeExample implements IExamplePage {
       this.noise = noise;
     }
 
-    public int[] readData( int position ) {
-      int[] result = new int[ 100 ];
-      for( int i = 0; i < result.length; i++ ) {
+    public Data readData( int position ) {
+      DataBuffer buffer = new DataBuffer( 200 );
+      for( int i = 0; i < 200; i++ ) {
         double value = 0.5 + Math.sin( lastX ) * 0.5 * Math.cos( lastX / 10 );
         value = Math.round( value * maxValue );
         value += ( Math.random() - 0.5 ) * noise;
-        result[ i ] = ( int )value;
+        buffer.append( i, ( int )value );
         lastX += 0.5;
       }
-      return result;
+      return buffer.createData();
     }
   }
+
   private final class SecondaryDataProvider implements DataProvider {
 
     private int maxValue;
@@ -148,16 +147,15 @@ public class OscilloscopeExample implements IExamplePage {
       this.maxValue = maxValue;
     }
 
-    public int[] readData( int position ) {
-      int[] result = new int[ 100 ];
-      for( int i = 0; i < result.length; i++ ) {
+    public Data readData( int position ) {
+      DataBuffer buffer = new DataBuffer( 200 );
+      for( int i = 0; i < 200; i++ ) {
         int absolutePos = position + i;
         int x = absolutePos % 50;
-        result[ i ] = ( int )( x < 30
-                                     ? maxValue * 0.3
-                                     : maxValue * 0.7 );
+        int value = ( int )( x < 30 ? maxValue * 0.3 : maxValue * 0.7 );
+        buffer.append( i, value );
       }
-      return result;
+      return buffer.createData();
     }
   }
 }
