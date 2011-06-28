@@ -100,7 +100,6 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       "addEventListener", 
       "removeEventListener",
       "setSelectionProvider",
-      "setRowAppearance",
       "setHeight",
       "setTop",
       "setBackgroundColor",
@@ -108,7 +107,6 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       "setRowHeight",
       "setTopItem",
       "renderItem",
-      "setRowLinesVisible",
       "setToolTip",
       "renderItemQueue",
       "setBaseAppearance"
@@ -185,6 +183,13 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
           result = this._container[ 1 ].findItemByRow( row );
         }
         return result;
+      },
+
+      updateRowLines : function() {
+        this._container[ 0 ].getRenderConfig().linesVisible = this._config.linesVisible;
+        this._container[ 0 ].updateRowLines();
+        this._container[ 1 ].getRenderConfig().linesVisible = this._config.linesVisible;
+        this._container[ 1 ].updateRowLines();
       },
 
       renderAll : function() {

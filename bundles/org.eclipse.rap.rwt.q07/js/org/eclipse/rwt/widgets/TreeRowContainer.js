@@ -21,6 +21,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
     this._rowBorder = null;
     this._baseAppearance = null;
     this._topItem = null;
+    this._vertGridLines = [];
+    this._vertGridBorder = null;
     this._renderTime = null;
     this._topItemIndex = 0;
     this._items = [];
@@ -105,6 +107,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
     setBaseAppearance : function( value ) {
       this._baseAppearance = value;
     },
+
+    // TODO [tb] : the rest of the setters could be refactored to "update" functions using _config.
+
     setRowWidth : function( width ) {
       this._rowWidth = width;
       for( var i = 0; i < this._children.length; i++ ) {
@@ -120,13 +125,61 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
       this._updateRowCount();
     },
     
-    setRowLinesVisible : function( value ) {
+    updateRowLines : function() {
       var border = this._config.linesVisible ? this._getHorizontalGridBorder() : null;
       this._rowBorder = border;
       for( var i = 0; i < this._children.length; i++ ) {
         this._children[ i ].setBorder( border );
-        this._children[ i ].setState( "linesvisible", value );
+        this._children[ i ].setState( "linesvisible", this._config.linesVisible );
       }
+    },
+    
+    _renderGridVertical : function() {
+      var linesNeeded = this._config.linesVisible ? this._config.columnCount : 0
+      for( var i = 0; i < linesNeeded; i++ ) {
+        this._renderVerticalGridline( i );          
+      }
+      while( this._vertGridLines.length > linesNeeded ) {
+        this._getTargetNode().removeChild( this._vertGridLines.pop() );
+      }
+    },
+
+    _renderVerticalGridline : function( column ) {
+      var clientWidth = this.getWidth();
+      var width = this._config.itemWidth[ column ];
+      var left = this._config.itemLeft[ column ] + width - 1;
+      if( width > 0 ) {
+        var line = this._getVerticalGridline( column );
+        line.style.left = left + "px";
+        line.style.height = this.getHeight() + "px";
+      }
+    },
+
+    _getVerticalGridline : function( number ) {
+      if( typeof this._vertGridLines[ number ] === "undefined" ) {
+        var line = document.createElement( "div" );
+        line.style.zIndex = 1;
+        line.style.position = "absolute";
+        line.style.top = "0px";
+        line.style.width = "0px";
+        this._getVerticalGridBorder().renderElement( line );
+        if( this._isCreated ) {
+          this._getTargetNode().appendChild( line );
+        } else {
+          this.addEventListener( "appear", function( event ) {
+            this._getTargetNode().appendChild( line );
+          }, this );
+        }
+        this._vertGridLines[ number ] = line;
+      }
+      return this._vertGridLines[ number ];
+    },
+
+    _getVerticalGridBorder : function() {
+      if( this._vertGridBorder === null ) {
+        this._vertGridBorder = this._getGridBorder( { "vertical" : true } );
+      }
+      return this._vertGridBorder;
     },
 
     _getHorizontalGridBorder : function() {
@@ -164,13 +217,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
         var forwards = delta > 0;
         delta = Math.abs( delta );
         if( delta >= this._children.length ) {
-          this.renderAll();
+          this._renderAll( true );
         } else {
           var numberOfShiftingRows = this._children.length - delta;
           var updateFromRow = forwards ? numberOfShiftingRows : 0;
           var newFirstRow = forwards ? delta : numberOfShiftingRows;
           this._switchRows( newFirstRow );
-          this._updateRows( updateFromRow, delta );
+          this._updateRows( updateFromRow, delta, true );
         }
       } else {
         this._topItemIndex = index;
@@ -178,14 +231,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
     },
 
     renderAll : function() {
-      var start = ( new Date() ).getTime();
-      this._updateRows( 0, this._children.length );
-      var renderTime = ( new Date() ).getTime() - start;
-      if( this._postRender ) {
-        this._postRender[ 0 ].call( this._postRender[ 1 ], renderTime );
-      }
+      this._renderAll( false );
     },
-    
+
     renderItemQueue : function( queue ) {
       for( var key in queue ) {
         var item = queue[ key ];
@@ -232,6 +280,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
     ////////////
     // Internals
 
+    _renderAll : function( contentOnly ) {
+      if( !contentOnly ) {
+        this._renderGridVertical();
+      }
+      var start = ( new Date() ).getTime();
+      this._updateRows( 0, this._children.length, contentOnly );
+      var renderTime = ( new Date() ).getTime() - start;
+      if( this._postRender ) {
+        this._postRender[ 0 ].call( this._postRender[ 1 ], renderTime );
+      }
+    },    
+
     _updateRowCount : function() {
       var height = this.getHeight()
       var rowsNeeded = Math.round( ( this.getHeight() / this._rowHeight ) + 0.5 );
@@ -262,7 +322,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
       return index !== -1 ? this._children[ index ] : null;
     },
 
-    _updateRows : function( from, delta ) {
+    // TODO [tb] : optimize for scrolling
+    _updateRows : function( from, delta, contentOnly ) {
       this._updateRowsEvenState();
       var item = this._topItem;
       var to = from + delta;

@@ -36,14 +36,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     // Timer & Border
     this._mergeEventsTimer = new qx.client.Timer( 50 );
     this._sendRequestTimer = null;
-    this._vertGridBorder = null;
     // Subwidgets 
     this._rowContainer = org.eclipse.rwt.TreeUtil.createTreeRowContainer( argsMap );
     this._columnArea = new org.eclipse.rwt.widgets.TableHeader( argsMap );
     this._horzScrollBar = new org.eclipse.rwt.widgets.ScrollBar( true );
     this._vertScrollBar = new org.eclipse.rwt.widgets.ScrollBar( false );
     this._hasScrollBarsSelectionListener = false;
-    this._vertGridLines = [];
     this.add( this._columnArea );
     this.add( this._rowContainer );
     this.add( this._horzScrollBar );
@@ -202,7 +200,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._config.columnCount = count;
       this._scheduleUpdate();
       this._updateScrollWidth();
-      this._renderGridVertical();
     },
     
     setItemMetrics : function( columnIndex, 
@@ -220,7 +217,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._config.itemTextLeft[ columnIndex ] = textLeft;
       this._config.itemTextWidth[ columnIndex ] = textWidth;
       this._scheduleUpdate();
-      this._renderGridVertical();
       this._updateScrollWidth();
     },
         
@@ -285,9 +281,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       } else {
         this.removeState( "linesvisible" );
       }
-      this._rowContainer.setRowLinesVisible( value );
+      this._rowContainer.updateRowLines();
       this._scheduleUpdate();
-      this._renderGridVertical();
     },
 
     addState : function( state ) {
@@ -374,7 +369,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _onHorzScrollBarChangeValue : function() {
       this._rowContainer.setScrollLeft( this._horzScrollBar.getValue() );
       this._columnArea.setScrollLeft( this._horzScrollBar.getValue() );
-      this._renderGridVertical();
       this._sendScrollLeftChange();
     },
 
@@ -648,11 +642,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
     },
 
-    _scheduleItemUpdate : function( item ) {
-      this._renderQueue[ item.toHashCode() ] = item;
-      this.addToQueue( "updateRows" );
-    },
-
+    /**
+     * This will schedule the entire content of the tree (visible rows and gridlines) 
+     * to be re-rendered. Additional tasks my be executed depending on "task" parameter.
+     * Is only used within a server-response or when expanding/collapsing. Not used
+     * when user is scrolling.
+     */
     _scheduleUpdate : function( task ) {
       if( task !== undefined ) {
         this.addToQueue( task );
@@ -661,6 +656,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this.addToQueue( "updateRows" );
     },
 
+    /**
+     * Optimized version of _scheduleUpdate. Used when server only changes specific items.
+     */
+    _scheduleItemUpdate : function( item ) {
+      this._renderQueue[ item.toHashCode() ] = item;
+      this.addToQueue( "updateRows" );
+    },
+    
     _layoutPost : function( changes ) {
       this.base( arguments, changes );
       if( changes[ "checkDisposedItems" ] ) {
@@ -697,6 +700,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
     },
     
+    /**
+     * NOTE: If render is true, the content will be updated immediately. The rendering
+     * assumes that no other parameter than topItem have changed and may optimize accordingly.
+     */
     _updateTopItem : function( render ) {
       var topItem = this._rootItem.findItemByFlatIndex( this._topItemIndex );
       this._rowContainer.setTopItem( topItem, this._topItemIndex, render );
@@ -1052,74 +1059,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._layoutY();
     },
 
-    _renderGridVertical : function() {
-      var lineNr = 0;
-      if( this._config.linesVisible ) {
-        for( var columnNr = 0; columnNr < this._config.columnCount; columnNr++ ) {
-          lineNr = this._renderVerticalGridline( columnNr, lineNr );          
-        }
-      }
-      while( this._vertGridLines.length > lineNr ) {
-        this._getTargetNode().removeChild( this._vertGridLines.pop() );
-      }
-    },
-
-    _renderVerticalGridline : function( columnNr, lineNr ) {
-      var newLineNr = lineNr;
-      var clientWidth = this._rowContainer.getWidth();
-      var left = this._config.itemLeft[ columnNr ] + this._config.itemWidth[ columnNr ] - 1;
-      left -= this._horzScrollBar.getValue(); 
-      if( left > 0 && left < clientWidth ) {
-        var line = this._getVerticalGridline( lineNr );
-        line.style.left = left + "px";
-        line.style.top = this._rowContainer.getTop() + "px";
-        line.style.height = this._rowContainer.getHeight() + "px";
-        newLineNr++
-      }
-      return newLineNr;
-    },
-
-    _getVerticalGridline : function( number ) {
-      if( typeof this._vertGridLines[ number ] === "undefined" ) {
-        var line = document.createElement( "div" );
-        line.style.zIndex = 1;
-        line.style.position = "absolute";
-        line.style.width = "0px";
-        this._getVerticalGridBorder().renderElement( line );
-        if( this._isCreated ) {
-          this._getTargetNode().appendChild( line );
-        } else {
-          this.addEventListener( "appear", function( event ) {
-            this._getTargetNode().appendChild( line );
-          }, this );
-        }
-        this._vertGridLines[ number ] = line;
-      }
-      return this._vertGridLines[ number ];
-    },
-
-    _getVerticalGridBorder : function() {
-      if( this._vertGridBorder === null ) {
-        this._vertGridBorder = this._getGridBorder( { "vertical" : true } );
-      }
-      return this._vertGridBorder;
-    },
-
-    _getGridBorder : function( state ) {
-      var tvGrid = new org.eclipse.swt.theme.ThemeValues( state );
-      var cssElement = qx.lang.String.toFirstUp( this.getAppearance() ) + "-GridLine"; 
-      var gridColor = tvGrid.getCssColor( cssElement, "color" );
-      tvGrid.dispose();
-      var borderWidths = [ 0, 0, 0, 0 ];
-      gridColor = gridColor == "undefined" ? "transparent" : gridColor;
-      if( state.horizontal ) {
-        borderWidths[ 2 ] = 1;
-      } else if( state.vertical ) {
-        borderWidths[ 1 ] = 1;
-      }
-      return new org.eclipse.rwt.Border( borderWidths, "solid", gridColor );
-    },
-
     _layoutX : function() {
       var width = this.getWidth() - this.getFrameWidth();
       if( this._columnArea.getDisplay() ) {
@@ -1132,7 +1071,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._horzScrollBar.setWidth( width );
       this._rowContainer.setWidth( width );
       this._updateScrollWidth();
-      this._renderGridVertical(); // TODO [tb] : optimize calls
     },
 
     _layoutY : function() {
@@ -1152,7 +1090,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._vertScrollBar.setTop( top );
       this._rowContainer.setTop( top );
       this._rowContainer.setHeight( height );
-      this._renderGridVertical();
       this._scheduleUpdate();
     },
 

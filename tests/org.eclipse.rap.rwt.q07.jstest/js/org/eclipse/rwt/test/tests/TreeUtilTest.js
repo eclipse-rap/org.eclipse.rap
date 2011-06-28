@@ -389,11 +389,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       }
       tree.setLinesVisible( true );
       testUtil.flush();
-      var border = tree._getHorizontalGridBorder();      
+      var border = tree._rowContainer.getSubContainer( 0 )._getHorizontalGridBorder();      
       var row = tree._rowContainer.getSubContainer( 0 )._children[ 0 ];
       assertTrue( tree.hasState( "linesvisible" ) );
       assertIdentical( border, row.getBorder() );      
-
       tree.destroy();
     },
 
@@ -405,7 +404,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var argsMap = { "fixedColumns" : 2 };
       var result = org.eclipse.rwt.TreeUtil.createTreeRowContainer( argsMap );
-      result.setRowAppearance( "table-row" );
+      result.setBaseAppearance( "table" );
       result.setSelectionProvider( function(){ return true; }, {} );
       result.setWidth( 100 );
       result.setHeight( 200 );
