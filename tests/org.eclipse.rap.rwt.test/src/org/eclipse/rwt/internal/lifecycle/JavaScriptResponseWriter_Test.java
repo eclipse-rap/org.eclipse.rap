@@ -12,20 +12,22 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.util.Locale;
 
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.TestResponse;
+import org.eclipse.rwt.internal.util.HTTP;
 
 
 public class JavaScriptResponseWriter_Test extends TestCase {
 
-  private StringWriter recorder;
+  private TestResponse response;
   private JavaScriptResponseWriter writer;
 
   protected void setUp() throws Exception {
-    recorder = new StringWriter();
-    writer = new JavaScriptResponseWriter( new PrintWriter( recorder ) );
+    response = new TestResponse();
+    writer = new JavaScriptResponseWriter( response );
   }
 
   public void testEmptyResponse() {
@@ -34,10 +36,19 @@ public class JavaScriptResponseWriter_Test extends TestCase {
 
   public void testWrite() throws Exception {
     writer.write( " Text " );
-    assertEquals( " Text ", getContents( ) );
+    assertEquals( " Text ", getContents() );
+  }
+  
+  public void testEncoding() {
+    String responseEncoding = response.getCharacterEncoding().toUpperCase( Locale.ENGLISH );
+    assertEquals( HTTP.CHARSET_UTF_8, responseEncoding );
+  }
+  
+  public void testContentType() {
+    assertEquals( HTTP.CONTENT_TEXT_JAVASCRIPT, response.getContentType() );
   }
 
   private String getContents() {
-    return recorder.getBuffer().toString();
+    return response.getContent();
   }
 }

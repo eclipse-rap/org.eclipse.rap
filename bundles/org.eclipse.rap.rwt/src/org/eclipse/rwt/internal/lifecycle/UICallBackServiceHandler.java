@@ -12,14 +12,12 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
-import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -33,9 +31,8 @@ public class UICallBackServiceHandler implements IServiceHandler {
     = "org.eclipse.swt.Request.getInstance().enableUICallBack();";
   private static final String JS_SEND_UI_REQUEST
     = "org.eclipse.swt.Request.getInstance().send();";
-
-  private static final String BUFFERED_SEND_CALLBACK_REQUEST
-    = UICallBackServiceHandler.class.getName() + "#jsUICallback";
+  private static final String JS_SEND_UI_AND_CALLBACK_REQUEST
+    = JS_SEND_UI_REQUEST + JS_SEND_CALLBACK_REQUEST;
 
   private static final String NEED_UI_CALLBACK_ACTIVATOR
     = UICallBackServiceHandler.class.getName() + "#needUICallBackActivator";
@@ -78,30 +75,15 @@ public class UICallBackServiceHandler implements IServiceHandler {
 
   static void writeResponse() throws IOException {
     HttpServletResponse response = ContextProvider.getResponse();
-    response.setContentType( HTTP.CONTENT_TEXT_JAVASCRIPT );
-    response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
-    PrintWriter writer = response.getWriter();
-    writer.print( jsUICallBack() );
-    writer.flush();
+    JavaScriptResponseWriter writer = new JavaScriptResponseWriter( response );
+    writer.write( jsUICallBack() );
   }
 
   private static String jsUICallBack() {
     String result;
     UICallBackManager uiCallbackManager = UICallBackManager.getInstance();
-    if(     uiCallbackManager.isUICallBackActive()
-        && !uiCallbackManager.isCallBackRequestBlocked() )
-    {
-      ISessionStore session = ContextProvider.getSession();
-      String bufferedCode
-        = ( String )session.getAttribute( BUFFERED_SEND_CALLBACK_REQUEST );
-      if( bufferedCode == null ) {
-        StringBuffer code = new StringBuffer();
-        code.append( JS_SEND_UI_REQUEST );
-        code.append( JS_SEND_CALLBACK_REQUEST );
-        bufferedCode = code.toString();
-        session.setAttribute( BUFFERED_SEND_CALLBACK_REQUEST, bufferedCode );
-      }
-      result = bufferedCode;
+    if( uiCallbackManager.isUICallBackActive() && !uiCallbackManager.isCallBackRequestBlocked() ) {
+      result = JS_SEND_UI_AND_CALLBACK_REQUEST;
     } else {
       result = JS_SEND_UI_REQUEST;
     }

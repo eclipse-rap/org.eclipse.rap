@@ -294,16 +294,15 @@ public class Fixture {
   }
 
   public static void fakeResponseWriter() {
-    PrintWriter writer;
+    TestResponse testResponse;
+    testResponse = ( TestResponse )ContextProvider.getResponse();
+    testResponse.clearContent();
     try {
-      TestResponse testResponse = ( TestResponse )ContextProvider.getResponse();
-      testResponse.clearContent();
-      writer = ContextProvider.getResponse().getWriter();
+      IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+      stateInfo.setResponseWriter( new JavaScriptResponseWriter( testResponse ) );
     } catch( IOException exception ) {
       throw new RuntimeException( exception );
     }
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setResponseWriter( new JavaScriptResponseWriter( writer ) );
   }
 
   public static void fakePhase( PhaseId phase ) {

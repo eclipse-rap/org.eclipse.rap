@@ -20,7 +20,6 @@ import javax.servlet.http.*;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.SingletonManager;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -108,9 +107,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     if( stateInfo.getResponseWriter() == null ) {
       HttpServletResponse response = ContextProvider.getResponse();
-      response.setContentType( HTTP.CONTENT_TEXT_JAVASCRIPT );
-      response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
-      stateInfo.setResponseWriter( new JavaScriptResponseWriter( response.getWriter() ) );
+      stateInfo.setResponseWriter( new JavaScriptResponseWriter( response ) );
     }
   }
 

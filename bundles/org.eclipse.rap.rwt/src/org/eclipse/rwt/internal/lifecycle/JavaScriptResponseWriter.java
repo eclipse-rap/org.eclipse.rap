@@ -11,18 +11,29 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
+import java.io.IOException;
 import java.io.PrintWriter;
+
+import javax.servlet.ServletResponse;
+
+import org.eclipse.rwt.internal.util.HTTP;
 
 
 public class JavaScriptResponseWriter {
 
   private final PrintWriter writer;
 
-  public JavaScriptResponseWriter( PrintWriter writer ) {
-    this.writer = writer;
+  public JavaScriptResponseWriter( ServletResponse response ) throws IOException {
+    configureResponseContentEncoding( response );
+    writer = response.getWriter();
   }
 
   public void write( String content ) {
     writer.write( content );
+  }
+
+  private static void configureResponseContentEncoding( ServletResponse response ) {
+    response.setContentType( HTTP.CONTENT_TEXT_JAVASCRIPT );
+    response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
   }
 }
