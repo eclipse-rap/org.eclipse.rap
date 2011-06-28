@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.widgets.JSExecutor;
+import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTError;
 import org.eclipse.swt.custom.CTabFolder;
@@ -101,6 +102,18 @@ public class ErrorHandlingTab extends ExampleTab {
     btnServerError.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         throw new SWTError( "Some error occured" );
+      }
+    } );
+    final Button btnStartUICallback = new Button( parent, SWT.CHECK );
+    btnStartUICallback.setText( "Enabled UICallback" );
+    btnStartUICallback.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        String uiCallbackId = ErrorHandlingTab.class.getName();
+        if( btnStartUICallback.getSelection() ) {
+          UICallBack.activate( uiCallbackId );
+        } else {
+          UICallBack.deactivate( uiCallbackId );
+        }
       }
     } );
   }
