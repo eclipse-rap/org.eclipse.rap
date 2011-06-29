@@ -30,6 +30,12 @@ public class JsonValue_Test extends TestCase {
     assertEquals( "-1.23E7", JsonValue.valueOf( -12300000f ).toString() );
   }
 
+  public void testValueOfDoubles() {
+    assertEquals( "10.0", JsonValue.valueOf( 10d ).toString() );
+    assertEquals( "1.23E-6", JsonValue.valueOf( 0.00000123d ).toString() );
+    assertEquals( "1.7976931348623157E308", JsonValue.valueOf( 1.7976931348623157E308d ).toString() );
+  }
+
   public void testValueOfBooleans() {
     assertEquals( "true", JsonValue.valueOf( true ).toString() );
     assertEquals( "false", JsonValue.valueOf( false ).toString() );

@@ -29,7 +29,12 @@ public abstract class JsonValue {
     return new JsonPrimitive( String.valueOf( value ) );
   }
 
+  // TODO not needed anymore, see double
   public static JsonValue valueOf( float value ) {
+    return new JsonPrimitive( String.valueOf( value ) );
+  }
+  
+  public static JsonValue valueOf( double value ) {
     return new JsonPrimitive( String.valueOf( value ) );
   }
 

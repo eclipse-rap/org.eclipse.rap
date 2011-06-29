@@ -16,20 +16,27 @@ import java.io.PrintWriter;
 
 import javax.servlet.ServletResponse;
 
+import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.util.HTTP;
 
 
 public class JavaScriptResponseWriter {
 
   private final PrintWriter writer;
+  private final ProtocolMessageWriter protocolWriter;
 
   public JavaScriptResponseWriter( ServletResponse response ) throws IOException {
     configureResponseContentEncoding( response );
     writer = response.getWriter();
+    protocolWriter = new ProtocolMessageWriter( writer );
   }
 
   public void write( String content ) {
     writer.write( content );
+  }
+
+  public ProtocolMessageWriter getProtocolWriter() {
+    return protocolWriter;
   }
 
   private static void configureResponseContentEncoding( ServletResponse response ) {
