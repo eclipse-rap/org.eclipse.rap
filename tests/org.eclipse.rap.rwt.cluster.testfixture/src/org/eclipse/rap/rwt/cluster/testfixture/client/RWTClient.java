@@ -17,14 +17,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
+import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
+import org.eclipse.rwt.service.IServiceHandler;
 
 
+@SuppressWarnings("restriction")
 public class RWTClient {
 
   private IServletEngine servletEngine;
+  private final Map<String,String> parameters;
   private String sessionId;
   private int requestCounter;
-  private final Map<String,String> parameters;
 
   public RWTClient( IServletEngine servletEngine ) {
     this.servletEngine = servletEngine;
@@ -87,8 +90,15 @@ public class RWTClient {
   public Response sendResourceRequest( String resourceLocation ) throws IOException {
     clearParameters();
     URL url = createUrl( resourceLocation );
-    HttpURLConnection connection = createConnection( url );
-    connection.connect();
+    HttpURLConnection connection = createConnection( url, 0 );
+    return new Response( connection );
+  }
+  
+  public Response sendUICallBackRequest( int timeout ) throws IOException {
+    clearParameters();
+    addParameter( IServiceHandler.REQUEST_PARAM, UICallBackServiceHandler.HANDLER_ID );
+    URL url = createUrl( IServletEngine.SERVLET_NAME );
+    HttpURLConnection connection = createConnection( url, timeout );
     return new Response( connection );
   }
   
@@ -97,8 +107,7 @@ public class RWTClient {
       addParameter( "requestCounter", String.valueOf( requestCounter ) );
     }
     URL url = createUrl( IServletEngine.SERVLET_NAME );
-    HttpURLConnection connection = createConnection( url );
-    connection.connect();
+    HttpURLConnection connection = createConnection( url, 0 );
     parseSessionId( connection );
     requestCounter++;
     return new Response( connection );
@@ -112,11 +121,14 @@ public class RWTClient {
     return urlBuilder.toUrl();
   }
 
-  private HttpURLConnection createConnection( URL url ) throws IOException {
+  private HttpURLConnection createConnection( URL url, int timeout ) throws IOException {
     HttpURLConnection result = servletEngine.createConnection( url );
     result.setInstanceFollowRedirects( false );
     result.setAllowUserInteraction( false );
     result.setRequestMethod( "GET" );
+    result.setConnectTimeout( timeout );
+    result.setReadTimeout( timeout );
+    result.connect();
     return result;
   }
   

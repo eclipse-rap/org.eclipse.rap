@@ -49,6 +49,19 @@ public class RWTClient_Test extends TestCase {
     assertEquals( "http://localhost:-1/foo/bar.gif", connectionUrl );
   }
   
+  public void testSendUICallBackRequest() throws IOException {
+    RWTClient client = new RWTClient( servletEngine );
+    servletEngine.setConnection( new TestHttpUrlConnection( "responseContent" ) );
+    
+    client.sendUICallBackRequest(2000);
+
+    String expectedUrl 
+      = "http://localhost:-1/rap?" 
+      + "custom_service_handler=org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler";
+    String connectionUrl = servletEngine.getConnectionUrl().toExternalForm();
+    assertEquals( expectedUrl, connectionUrl );
+  }
+  
   public void testRequestWithParameters() throws IOException {
     RWTClient client = new RWTClient( servletEngine );
     servletEngine.setConnection( new TestHttpUrlConnection( "" ) );

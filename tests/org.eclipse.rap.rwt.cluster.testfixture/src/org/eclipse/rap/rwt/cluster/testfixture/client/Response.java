@@ -50,14 +50,14 @@ public class Response {
   }
 
   private static byte[] readResponseContent( URLConnection connection ) throws IOException {
-    byte[] content;
+    byte[] result;
     InputStream inputStream = connection.getInputStream();
     try {
-      content = readResponseContent( inputStream );
+      result = readResponseContent( inputStream );
     } finally {
       inputStream.close();
     }
-    return content;
+    return result;
   }
 
   private static byte[] readResponseContent( InputStream inputStream ) throws IOException {
