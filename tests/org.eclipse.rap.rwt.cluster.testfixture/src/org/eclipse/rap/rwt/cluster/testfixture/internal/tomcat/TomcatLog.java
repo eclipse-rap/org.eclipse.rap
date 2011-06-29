@@ -23,6 +23,7 @@ class TomcatLog {
 
   static void silence() {
     configureLogger( "org.apache.catalina.core.StandardEngine" );
+    configureLogger( "org.apache.catalina.core.StandardWrapper" );
     configureLogger( "org.apache.catalina.ha.session.DeltaManager" );
     configureLogger( "org.apache.catalina.ha.tcp.SimpleTcpCluster" );
     configureLogger( "org.apache.catalina.ha.session.JvmRouteBinderValve" );
