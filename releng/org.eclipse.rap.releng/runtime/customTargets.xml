@@ -155,6 +155,7 @@
         <include name="org.mockito*/" />
         <include name="org.objenesis*/" />
         <include name="org.hamcrest*/" />
+        <include name="org.json*/" />
       </fileset>
     </path>
 
