@@ -675,7 +675,8 @@ qx.Class.define("qx.io.remote.Request",
     _applyMethod : function(value, old)
     {
       if (value === qx.net.Http.METHOD_POST) {
-        this.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        // always set UTF-8 character encoding (bug 348607)
+        this.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
       } else {
         this.removeRequestHeader("Content-Type");
       }
