@@ -1,12 +1,13 @@
-/******************************************************************************* 
-* Copyright (c) 2011 EclipseSource and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
+/*******************************************************************************
+* Copyright (c) 2011 EclipseSource and others.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
 *
 * Contributors:
-*   EclipseSource - initial API and implementation
-*******************************************************************************/ 
+*    EclipseSource - initial API and implementation
+*******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_PARENT;
@@ -29,6 +30,7 @@ import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_SET;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -38,7 +40,7 @@ import org.json.*;
 
 
 public class ClientObject_Test extends TestCase {
-  
+
   private Shell shell;
   private IClientObject clientObject;
 
@@ -49,14 +51,14 @@ public class ClientObject_Test extends TestCase {
     shell = new Shell( display );
     clientObject = ClientObjectFactory.getForWidget( shell );
   }
-  
+
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
 
-  public void testCreateWithNullParams() throws JSONException {    
+  public void testCreateWithNullParams() throws JSONException {
     clientObject.create( new String[] { "SHELL_TRIM" } );
-    
+
     JSONObject message = getMessage();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 0 );
@@ -66,9 +68,9 @@ public class ClientObject_Test extends TestCase {
     assertEquals( shell.getClass().getName(), details.getString( CREATE_TYPE ) );
   }
 
-  public void testClientWithParams() throws JSONException {    
+  public void testClientWithParams() throws JSONException {
     Object[] parameters = new Object[] { new Integer( 1 ), new Boolean( true ) };
-    
+
     clientObject.create( new String[] { "SHELL_TRIM" }, parameters );
 
     JSONObject message = getMessage();
@@ -82,7 +84,7 @@ public class ClientObject_Test extends TestCase {
     assertEquals( 1, params.getInt( 0 ) );
     assertEquals( true, params.getBoolean( 1 ) );
   }
-  
+
   public void testCreateStyles() throws JSONException {
     Button button = new Button( shell, SWT.PUSH | SWT.BORDER );
     IClientObject buttonObject = ClientObjectFactory.getForWidget( button );
@@ -101,13 +103,13 @@ public class ClientObject_Test extends TestCase {
     assertEquals( "PUSH", styles.getString( 0 ) );
     assertEquals( "BORDER", styles.getString( 1 ) );
   }
-  
+
   public void testSetProperty() throws JSONException {
     clientObject.setProperty( "key", ( Object )"value" );
     clientObject.setProperty( "key2", 2 );
     clientObject.setProperty( "key3", 3.5 );
     clientObject.setProperty( "key4", true );
-    clientObject.setProperty( "key5", "aString" );    
+    clientObject.setProperty( "key5", "aString" );
 
     JSONObject message = getMessage();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
@@ -121,10 +123,10 @@ public class ClientObject_Test extends TestCase {
     assertEquals( true, details.getBoolean( "key4" ) );
     assertEquals( "aString", details.getString( "key5" ) );
   }
-  
+
   public void testDestroy() throws JSONException {
     clientObject.destroy();
-    
+
     JSONObject message = getMessage();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 0 );
@@ -133,11 +135,11 @@ public class ClientObject_Test extends TestCase {
     Object details = operation.get( OPERATION_DETAILS );
     assertSame( JSONObject.NULL, details );
   }
-  
+
   public void testAddListener() throws JSONException {
     clientObject.addListener( "selection" );
     clientObject.addListener( "fake" );
-    
+
     JSONObject message = getMessage();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 0 );
@@ -163,7 +165,7 @@ public class ClientObject_Test extends TestCase {
     assertFalse( details.getBoolean( "fake" ) );
     assertTrue( details.getBoolean( "fake2" ) );
   }
-  
+
   public void testCall() throws JSONException {
     clientObject.call( "method" );
 
@@ -183,7 +185,7 @@ public class ClientObject_Test extends TestCase {
   public void testCallTwice() throws JSONException {
     clientObject.call( "method" );
     clientObject.call( "method2", new Object[] { "a", new Integer( 3 ) } );
-    
+
     JSONObject message = getMessage();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 1 );
@@ -195,10 +197,10 @@ public class ClientObject_Test extends TestCase {
     assertEquals( "a", list.getString( 0 ) );
     assertEquals( 3, list.getInt( 1 ) );
   }
-  
+
   public void testExecuteScript() throws JSONException {
     clientObject.executeScript( "text/javascript", "var x = 5;" );
-    
+
     JSONObject message = getMessage();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 0 );
@@ -208,17 +210,22 @@ public class ClientObject_Test extends TestCase {
     assertEquals( details.getString( EXECUTE_SCRIPT_TYPE ), "text/javascript" );
     assertEquals( "var x = 5;", details.getString( EXECUTE_SCRIPT_CONTENT ) );
   }
-  
+
   private JSONObject getMessage() throws JSONException {
     closeProtocolWriter();
     String markup = Fixture.getAllMarkup();
+    if( !markup.contains( JavaScriptResponseWriter.PROCESS_MESSAGE ) ) {
+      throw new RuntimeException( "Seems that message is not wrapped anymore - cleanup NOW!" );
+    }
+    markup = markup.replaceAll( "^" + JavaScriptResponseWriter.PROCESS_MESSAGE + "\\(", "" );
+    markup = markup.replaceAll( "\\);$", "" );
     return new JSONObject( markup );
   }
 
   private void closeProtocolWriter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    ProtocolMessageWriter writer = stateInfo.getResponseWriter().getProtocolWriter();
-    writer.writeMessage();
+    JavaScriptResponseWriter writer = stateInfo.getResponseWriter();
+    writer.finish();
   }
 
 }

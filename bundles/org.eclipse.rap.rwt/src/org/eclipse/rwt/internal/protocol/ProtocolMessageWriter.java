@@ -1,12 +1,13 @@
-/******************************************************************************* 
-* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
+/*******************************************************************************
+* Copyright (c) 2010, 2011 EclipseSource and others.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
 *
 * Contributors:
-*   EclipseSource - initial API and implementation
-*******************************************************************************/ 
+*    EclipseSource - initial API and implementation
+*******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_PARENT;
@@ -26,22 +27,22 @@ import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_EXECUTE_S
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_LISTEN;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_SET;
 
-import java.io.PrintWriter;
-
 import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
 import org.eclipse.rwt.internal.theme.*;
 
 
 public final class ProtocolMessageWriter {
 
-  private final PrintWriter decoratedWriter;
   private final JsonArray operations;
   private Operation pendingOperation;
-  private boolean alreadyWritten;
+  private boolean alreadyCreated;
 
-  public ProtocolMessageWriter( PrintWriter decoratedWriter ) {
-    this.decoratedWriter = decoratedWriter;
+  public ProtocolMessageWriter() {
     operations = new JsonArray();
+  }
+
+  public boolean hasOperations() {
+    return pendingOperation != null;
   }
 
   public void appendCreate( String target,
@@ -68,7 +69,7 @@ public final class ProtocolMessageWriter {
   public void appendSet( String target, String key, boolean value ) {
     appendSet( target, key, JsonValue.valueOf( value ) );
   }
-  
+
   public void appendSet( String target, String key, String value ) {
     appendSet( target, key, JsonValue.valueOf( value ) );
   }
@@ -86,7 +87,7 @@ public final class ProtocolMessageWriter {
     prepareOperation( target, TYPE_LISTEN );
     pendingOperation.appendProperty( listener, JsonValue.valueOf( listen ) );
   }
-                                  
+
   public void appendDo( String target, String name, Object[] parameters ) {
     prepareOperation( target, TYPE_DO );
     pendingOperation.appendProperty( DO_NAME, JsonValue.valueOf( name ) );
@@ -110,20 +111,19 @@ public final class ProtocolMessageWriter {
     }
   }
 
-  public void writeMessage() {
-    if( alreadyWritten ) {
-      throw new IllegalStateException( "Message already written" );
+  public String createMessage() {
+    if( alreadyCreated ) {
+      throw new IllegalStateException( "Message already created" );
     }
-    JsonObject message = createMessage();
-    decoratedWriter.write( message.toString() );
-    decoratedWriter.flush();
-    alreadyWritten = true;
+    alreadyCreated = true;
+    JsonObject message = createMessageObject();
+    return message.toString();
   }
 
-  private JsonObject createMessage() {
+  private JsonObject createMessageObject() {
     JsonObject message = new JsonObject();
     JsonObject meta = new JsonObject();
-    int requestCount = RWTRequestVersionControl.getInstance().nextRequestId().intValue();
+    int requestCount = RWTRequestVersionControl.getInstance().getCurrentRequestId().intValue();
     meta.append( META_REQUEST_COUNTER, requestCount );
     message.append( MESSAGE_META, meta );
     appendPendingOperation();
@@ -136,7 +136,7 @@ public final class ProtocolMessageWriter {
            && pendingOperation.matches( target, type )
            && isStreamableType( type );
   }
-  
+
   private void appendPendingOperation() {
     if( pendingOperation != null ) {
       operations.append( pendingOperation.toJson() );

@@ -1,12 +1,13 @@
-/******************************************************************************* 
-* Copyright (c) 2011 EclipseSource and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
+/*******************************************************************************
+* Copyright (c) 2011 EclipseSource and others.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
 *
 * Contributors:
-*   EclipseSource - initial API and implementation
-*******************************************************************************/ 
+*    EclipseSource - initial API and implementation
+*******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_PARENT;
@@ -28,10 +29,6 @@ import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_DO;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_EXECUTE_SCRIPT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_LISTEN;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_SET;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -44,8 +41,7 @@ import org.json.*;
 
 
 public class ProtocolMessageWriter_Test extends TestCase {
-  
-  private StringWriter stringWriter;
+
   private ProtocolMessageWriter writer;
   private Shell shell;
 
@@ -53,43 +49,48 @@ public class ProtocolMessageWriter_Test extends TestCase {
     Fixture.setUp();
     Display display = new Display();
     shell = new Shell( display );
-    stringWriter = new StringWriter();
-    PrintWriter printWriter = new PrintWriter( stringWriter );
-    writer = new ProtocolMessageWriter( printWriter );
+    writer = new ProtocolMessageWriter();
   }
-  
+
   protected void tearDown() throws Exception {
     Fixture.tearDown();
-  } 
-  
-  public void testEmptyMessage() throws JSONException {
-    writer.writeMessage();
+  }
 
-    JSONObject message = getMessageJson();
+  public void testHasNoOperations() {
+    assertFalse( writer.hasOperations() );
+  }
+
+  public void testHasOperationsAfterAppend() {
+    writer.appendSet( "target", "foo", 23 );
+
+    assertTrue( writer.hasOperations() );
+  }
+
+  public void testEmptyMessage() throws JSONException {
+    JSONObject message = createMessageJson();
     JSONObject meta = message.getJSONObject( MESSAGE_META );
     int requestCount = RWTRequestVersionControl.getInstance().getCurrentRequestId().intValue();
     assertEquals( requestCount, meta.getInt( META_REQUEST_COUNTER ) );
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     assertEquals( 0, operations.length() );
   }
-  
+
   public void testWriteMessageTwice() {
-    writer.writeMessage();
+    writer.createMessage();
     try {
-      writer.writeMessage();
+      writer.createMessage();
       fail();
     } catch( IllegalStateException expected ) {
     }
   }
-  
+
   public void testMessageWithDo() throws JSONException {
     String shellId = WidgetUtil.getId( shell );
     String methodName = "methodName";
 
     writer.appendDo( shellId, methodName, new Object[] { "a", "b" } );
-    writer.writeMessage();
 
-    JSONObject message = getMessageJson();
+    JSONObject message = createMessageJson();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 0 );
     assertEquals( shellId, operation.getString( OPERATION_TARGET ) );
@@ -100,17 +101,16 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( "a", params.getString( 0 ) );
     assertEquals( "b", params.getString( 1 ) );
   }
-  
+
   public void testMessageWithTwoDos() throws JSONException {
     String shellId = WidgetUtil.getId( shell );
     String methodName = "methodName";
     Object[] array = new Object[] { new Integer( 5 ), "b", new Boolean( false ) };
-    
+
     writer.appendDo( shellId, methodName, new Object[] { "a", "b" } );
     writer.appendDo( shellId, methodName, array );
-    writer.writeMessage();
 
-    JSONObject message = getMessageJson();
+    JSONObject message = createMessageJson();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 1 );
     assertEquals( TYPE_DO, operation.getString( OPERATION_TYPE ) );
@@ -130,9 +130,8 @@ public class ProtocolMessageWriter_Test extends TestCase {
     Object[] parameters = new Object[] { "a", "b" };
 
     writer.appendCreate( shellId, displayId, "org.Text", styles, parameters );
-    writer.writeMessage();
-    
-    JSONObject message = getMessageJson();
+
+    JSONObject message = createMessageJson();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 0 );
     assertEquals( TYPE_CREATE, operation.getString( OPERATION_TYPE ) );
@@ -144,18 +143,17 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( "a", details.getJSONArray( PARAMETER ).getString( 0 ) );
     assertEquals( "b", details.getJSONArray( PARAMETER ).getString( 1 ) );
   }
-  
+
   public void testMessageWithMultipleOperations() throws JSONException {
     Button button = new Button( shell, SWT.PUSH );
     String shellId = WidgetUtil.getId( shell );
     String displayId = DisplayUtil.getId( shell.getDisplay() );
     String buttonId = WidgetUtil.getId( button );
-    
+
     writer.appendCreate( shellId, displayId, "org.Text", null, null );
     writer.appendCreate( buttonId, shellId, "org.Shell", null, null );
-    writer.writeMessage();
-    
-    JSONObject message = getMessageJson();
+
+    JSONObject message = createMessageJson();
     JSONArray operationsArray = message.getJSONArray( MESSAGE_OPERATIONS );
     assertEquals( 2, operationsArray.length() );
   }
@@ -164,10 +162,10 @@ public class ProtocolMessageWriter_Test extends TestCase {
     Button wrongParameter = new Button( shell, SWT.PUSH );
 
     try {
-      writer.appendCreate( DisplayUtil.getId( shell.getDisplay() ), 
-                                 WidgetUtil.getId( shell ), 
+      writer.appendCreate( DisplayUtil.getId( shell.getDisplay() ),
+                                 WidgetUtil.getId( shell ),
                                  "org.Text",
-                                 new String[] { "TRIM" }, 
+                                 new String[] { "TRIM" },
                                  new Object[] { "a", wrongParameter } );
       fail();
     } catch ( IllegalArgumentException e ) {
@@ -176,46 +174,43 @@ public class ProtocolMessageWriter_Test extends TestCase {
 
   public void testMessageWithDestroy() throws JSONException {
     Button button = new Button( shell, SWT.PUSH );
-    String buttonId = WidgetUtil.getId( button );    
+    String buttonId = WidgetUtil.getId( button );
 
     writer.appendDestroy( buttonId );
-    writer.writeMessage();
 
-    JSONObject message = getMessageJson();
+    JSONObject message = createMessageJson();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 0 );
     assertEquals( TYPE_DESTROY, operation.getString( OPERATION_TYPE ) );
     assertEquals( buttonId, operation.getString( OPERATION_TARGET ) );
     assertEquals( JSONObject.NULL, operation.get( OPERATION_DETAILS ) );
   }
-  
+
   public void testMessageWithDestroyTwice() throws JSONException {
     Button button = new Button( shell, SWT.PUSH );
-    String shellId = WidgetUtil.getId( shell );    
-    String buttonId = WidgetUtil.getId( button );    
-    
+    String shellId = WidgetUtil.getId( shell );
+    String buttonId = WidgetUtil.getId( button );
+
     writer.appendDestroy( buttonId );
     writer.appendDestroy( shellId );
-    writer.writeMessage();
 
-    JSONObject message = getMessageJson();
+    JSONObject message = createMessageJson();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     assertEquals( 2, operations.length() );
     JSONObject operation = operations.getJSONObject( 1 );
     assertEquals( TYPE_DESTROY, operation.getString( OPERATION_TYPE ) );
     assertEquals( shellId, operation.getString( OPERATION_TARGET ) );
   }
-  
+
   public void testMessageWithListen() throws JSONException {
     Button button = new Button( shell, SWT.PUSH );
     String buttonId = WidgetUtil.getId( button );
-    
+
     writer.appendListen( buttonId, "selection", false );
     writer.appendListen( buttonId, "focus", true );
     writer.appendListen( buttonId, "fake", true );
-    writer.writeMessage();
 
-    JSONObject message = getMessageJson();
+    JSONObject message = createMessageJson();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 0 );
     assertEquals( buttonId, operation.getString( OPERATION_TARGET ) );
@@ -225,7 +220,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertTrue( details.getBoolean( "focus" ) );
     assertTrue( details.getBoolean( "fake" ) );
   }
-  
+
   public void testMessageWithExecuteScript() throws JSONException {
     Button button = new Button( shell, SWT.PUSH );
     String buttonId = WidgetUtil.getId( button );
@@ -233,9 +228,8 @@ public class ProtocolMessageWriter_Test extends TestCase {
     String script = "var c = 4; c++;";
 
     writer.appendExecuteScript( buttonId, scriptType, script );
-    writer.writeMessage();
-    
-    JSONObject message = getMessageJson();
+
+    JSONObject message = createMessageJson();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 0 );
     assertEquals( TYPE_EXECUTE_SCRIPT, operation.getString( OPERATION_TYPE ) );
@@ -244,19 +238,18 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( scriptType, details.getString( EXECUTE_SCRIPT_TYPE ) );
     assertEquals( script, details.getString( EXECUTE_SCRIPT_CONTENT ) );
   }
-  
+
   public void testMessageWithExecuteScriptTwice() throws JSONException {
     Button button = new Button( shell, SWT.PUSH );
-    String shellId = WidgetUtil.getId( shell );    
+    String shellId = WidgetUtil.getId( shell );
     String buttonId = WidgetUtil.getId( button );
     String scriptType = "text/vb";
     String script = "really bad VB;";
-    
+
     writer.appendExecuteScript( buttonId, "text/javascript", "var c = 4; c++;" );
     writer.appendExecuteScript( WidgetUtil.getId( shell ), scriptType, script );
-    writer.writeMessage();
 
-    JSONObject message = getMessageJson();
+    JSONObject message = createMessageJson();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 1 );
     assertEquals( TYPE_EXECUTE_SCRIPT, operation.getString( OPERATION_TYPE ) );
@@ -273,9 +266,8 @@ public class ProtocolMessageWriter_Test extends TestCase {
     writer.appendSet( buttonId, "text", "newText" );
     writer.appendSet( buttonId, "image", "aUrl" );
     writer.appendSet( buttonId, "fake", 1 );
-    writer.writeMessage();
 
-    JSONObject message = getMessageJson();
+    JSONObject message = createMessageJson();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 0 );
     assertEquals( TYPE_SET, operation.getString( OPERATION_TYPE ) );
@@ -297,9 +289,8 @@ public class ProtocolMessageWriter_Test extends TestCase {
     writer.appendSet( buttonId, "text", "newText" );
     writer.appendSet( buttonId, "image", true );
     writer.appendSet( buttonId, "fake", 1 );
-    writer.writeMessage();
 
-    JSONObject message = getMessageJson();
+    JSONObject message = createMessageJson();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 1 );
     assertEquals( TYPE_SET, operation.getString( OPERATION_TYPE ) );
@@ -327,13 +318,12 @@ public class ProtocolMessageWriter_Test extends TestCase {
     createShellOperations( shell );
     createButtonOperations( button );
 
-    writer.writeMessage();
-
-    assertShellCreated();
-    checkShellSet();      
-    checkShellListen();      
-    checkButtonCreate( button );      
-    checkButtonExecute( button );    
+    JSONObject message = createMessageJson();
+    assertShellCreated( message );
+    checkShellSet( message );
+    checkShellListen( message );
+    checkButtonCreate( message, button );
+    checkButtonExecute( message, button );
   }
 
   private void createShellOperations( Shell shell ) {
@@ -359,7 +349,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
 
   private void addShellListeners( Shell shell ) {
     for( int i = 0; i < 5; i++ ) {
-      boolean listen = i % 2 == 0 ? true : false; 
+      boolean listen = i % 2 == 0 ? true : false;
       writer.appendListen( WidgetUtil.getId( shell ), "listener" + i, listen );
     }
   }
@@ -374,8 +364,8 @@ public class ProtocolMessageWriter_Test extends TestCase {
     Object[] arguments = new Object[] { new Integer( 4 ), new Boolean( true ) };
     writer.appendCreate( WidgetUtil.getId( button ),
                                 WidgetUtil.getId( button.getParent() ),
-                                button.getClass().getName(), 
-                                styles, 
+                                button.getClass().getName(),
+                                styles,
                                 arguments );
   }
 
@@ -384,8 +374,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     writer.appendDo( WidgetUtil.getId( button ), "select", arguments );
   }
 
-  private void assertShellCreated() throws JSONException {
-    JSONObject message = getMessageJson();
+  private void assertShellCreated( JSONObject message ) throws JSONException {
     String shellId = WidgetUtil.getId( shell );
     String displayId = DisplayUtil.getId( shell.getDisplay() );
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
@@ -398,8 +387,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertSame( JSONObject.NULL, details.get( PARAMETER ) );
   }
 
-  private void checkShellSet() throws JSONException {
-    JSONObject message = getMessageJson();
+  private void checkShellSet( JSONObject message ) throws JSONException {
     String shellId = WidgetUtil.getId( shell );
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 1 );
@@ -412,8 +400,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     }
   }
 
-  private void checkShellListen() throws JSONException {
-    JSONObject message = getMessageJson();
+  private void checkShellListen( JSONObject message ) throws JSONException {
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 2 );
     String shellId = WidgetUtil.getId( shell );
@@ -424,8 +411,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertFalse( details.getBoolean( "listener1" ) );
   }
 
-  private void checkButtonCreate( Button button ) throws JSONException {
-    JSONObject message = getMessageJson();
+  private void checkButtonCreate( JSONObject message, Button button ) throws JSONException {
     String buttonId = WidgetUtil.getId( button );
     String shellId = WidgetUtil.getId( shell );
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
@@ -445,8 +431,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( "BORDER", styles.getString( 1 ) );
   }
 
-  private void checkButtonExecute( Widget button ) throws JSONException {
-    JSONObject message = getMessageJson();
+  private void checkButtonExecute( JSONObject message, Widget button ) throws JSONException {
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 4 );
     String buttonId = WidgetUtil.getId( button );
@@ -468,9 +453,8 @@ public class ProtocolMessageWriter_Test extends TestCase {
     writer.appendSet( shellId, "key2", "value2" );
     writer.appendSet( shellId, "key3", "value3" );
     writer.appendSet( buttonId, "key", "value" );
-    writer.writeMessage();
-    
-    JSONObject message = getMessageJson();
+
+    JSONObject message = createMessageJson();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     assertFirstOperation( operations );
     assertSecondOperation( operations );
@@ -512,9 +496,8 @@ public class ProtocolMessageWriter_Test extends TestCase {
     writer.appendCreate( buttonId, shellId, type, styles, null );
     writer.appendSet( buttonId, "key", "value" );
     writer.appendSet( buttonId, "key2", "value" );
-    writer.writeMessage();
-    
-    JSONObject message = getMessageJson();
+
+    JSONObject message = createMessageJson();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 1 );
     JSONObject details = operation.getJSONObject( OPERATION_DETAILS );
@@ -524,15 +507,14 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( "value", details2.getString( "key" ) );
     assertEquals( "value", details2.getString( "key2" ) );
   }
-  
+
   public void testAppendArrayParameter() throws JSONException {
     String shellId = WidgetUtil.getId( shell );
     Integer[] arrayParameter = new Integer[] { new Integer( 1 ), new Integer( 2 ) };
 
     writer.appendSet( shellId, "key", arrayParameter );
-    writer.writeMessage();
-    
-    JSONObject message = getMessageJson();
+
+    JSONObject message = createMessageJson();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 0 );
     JSONObject details = operation.getJSONObject( OPERATION_DETAILS );
@@ -543,11 +525,10 @@ public class ProtocolMessageWriter_Test extends TestCase {
   public void testAppendEmptyArrayParameter() throws JSONException {
     String shellId = WidgetUtil.getId( shell );
     Object[] emptyArray = new Object[ 0 ];
-    
-    writer.appendSet( shellId, "key", emptyArray );
-    writer.writeMessage();
 
-    JSONObject message = getMessageJson();
+    writer.appendSet( shellId, "key", emptyArray );
+
+    JSONObject message = createMessageJson();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 0 );
     JSONObject details = operation.getJSONObject( OPERATION_DETAILS );
@@ -558,11 +539,10 @@ public class ProtocolMessageWriter_Test extends TestCase {
   public void testAppendMixedArrayParameter() throws JSONException {
     String shellId = WidgetUtil.getId( shell );
     Object[] mixedArray = new Object[] { new Integer( 23 ), "Hello" };
-    
-    writer.appendSet( shellId, "key", mixedArray );
-    writer.writeMessage();
 
-    JSONObject message = getMessageJson();
+    writer.appendSet( shellId, "key", mixedArray );
+
+    JSONObject message = createMessageJson();
     JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
     JSONObject operation = operations.getJSONObject( 0 );
     JSONObject details = operation.getJSONObject( OPERATION_DETAILS );
@@ -570,9 +550,9 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( 2, value.length() );
     assertEquals( "Hello", value.getString( 1 ) );
   }
-  
-  private JSONObject getMessageJson() throws JSONException {
-    String actual = stringWriter.getBuffer().toString();
-    return new JSONObject( actual );
+
+  private JSONObject createMessageJson() throws JSONException {
+    String message = writer.createMessage();
+    return new JSONObject( message );
   }
 }

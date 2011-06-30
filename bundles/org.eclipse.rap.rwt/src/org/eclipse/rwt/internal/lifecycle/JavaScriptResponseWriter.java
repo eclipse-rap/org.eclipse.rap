@@ -22,21 +22,39 @@ import org.eclipse.rwt.internal.util.HTTP;
 
 public class JavaScriptResponseWriter {
 
+  public static final String PROCESS_MESSAGE = "org.eclipse.rwt.protocol.Processor.processMessage";
+
   private final PrintWriter writer;
-  private final ProtocolMessageWriter protocolWriter;
+  private ProtocolMessageWriter protocolWriter;
 
   public JavaScriptResponseWriter( ServletResponse response ) throws IOException {
     configureResponseContentEncoding( response );
     writer = response.getWriter();
-    protocolWriter = new ProtocolMessageWriter( writer );
   }
 
   public void write( String content ) {
+    writePendingProtocolMessage();
     writer.write( content );
   }
 
+  public void finish() {
+    writePendingProtocolMessage();
+  }
+
   public ProtocolMessageWriter getProtocolWriter() {
+    if( protocolWriter == null ) {
+      protocolWriter = new ProtocolMessageWriter();
+    }
     return protocolWriter;
+  }
+
+  private void writePendingProtocolMessage() {
+    if( protocolWriter != null && protocolWriter.hasOperations() ) {
+      writer.write( PROCESS_MESSAGE + "( " );
+      writer.write( protocolWriter.createMessage() );
+      writer.write( " );" );
+    }
+    protocolWriter = null;
   }
 
   private static void configureResponseContentEncoding( ServletResponse response ) {
