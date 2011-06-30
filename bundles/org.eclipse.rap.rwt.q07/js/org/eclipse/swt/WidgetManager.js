@@ -72,12 +72,13 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     /**
      * Registers the given widget under the given id at the WidgetManager.
      */
-    add : function( widget, id, isControl ) {
+    add : function( widget, id, isControl, type ) {
       this._map[ id ] = widget;
       if( isControl != "undefined" && isControl == true ) {
         widget.setUserData( "isControl", true );
       }
       widget.setUserData( "id", id );
+      widget.setUserData( "rwtType", type );
     },
 
     /**

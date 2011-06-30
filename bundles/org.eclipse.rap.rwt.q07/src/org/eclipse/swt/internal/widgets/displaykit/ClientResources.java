@@ -174,7 +174,6 @@ final class ClientResources {
     "org/eclipse/swt/Request.js",
     "org/eclipse/rwt/widgets/Menu.js",
     "org/eclipse/swt/EventUtil.js",
-    "org/eclipse/swt/WidgetManager.js",
     "org/eclipse/rwt/FadeAnimationMixin.js",
     "org/eclipse/rwt/AnimationRenderer.js",
     "org/eclipse/rwt/Animation.js",
@@ -245,7 +244,10 @@ final class ClientResources {
     "org/eclipse/swt/theme/AppearancesBase.js",
     "org/eclipse/rwt/widgets/ControlDecorator.js",
     "org/eclipse/rwt/MobileWebkitSupport.js",
-    "org/eclipse/swt/widgets/ToolTip.js"
+    "org/eclipse/swt/widgets/ToolTip.js",
+    "org/eclipse/swt/WidgetManager.js",
+    "org/eclipse/rwt/protocol/AdapterRegistry.js",
+    "org/eclipse/rwt/protocol/Processor.js",
   };
 
   private static final String[] WIDGET_IMAGES = new String[] {
