@@ -206,7 +206,7 @@ public class Display extends Device implements Adaptable {
   private String[] keys;
   private Object[] values;
 
-  private transient Synchronizer synchronizer;
+  private Synchronizer synchronizer;
   private transient TimerExecScheduler scheduler;
 
   /**
@@ -239,12 +239,12 @@ public class Display extends Device implements Adaptable {
     monitor = new Monitor( this );
     cursorLocation = new Point( 0, 0 );
     bounds = readInitialBounds();
+    synchronizer = new Synchronizer( this );
     initialize();
     register();
   }
 
   private void initialize() {
-    synchronizer = new Synchronizer( this );
     scheduler = new TimerExecScheduler( this );
   }
 

@@ -26,6 +26,18 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 
 public class DisplaySerialization_Test extends TestCase {
 
+  private static class BackgroundRunnable implements Runnable {
+    private final Display display;
+    
+    BackgroundRunnable( Display display ) {
+      this.display = display;
+    }
+
+    public void run() {
+      display.syncExec( new SerializableRunnable() );
+    }
+  }
+
   private static class SerializableRunnable implements Runnable, Serializable {
     private static final long serialVersionUID = 1L;
     static boolean wasInvoked;
@@ -161,7 +173,6 @@ public class DisplaySerialization_Test extends TestCase {
   }
   
   public void testDisposeExecRunnablesIsSerializable() throws Exception {
-    SerializableRunnable.wasInvoked = false;
     display.disposeExec( new SerializableRunnable() );
     Display deserializedDisplay = serializeAndDeserialize( display );
     
@@ -170,7 +181,29 @@ public class DisplaySerialization_Test extends TestCase {
     assertTrue( SerializableRunnable.wasInvoked );
   }
   
+  public void testAsyncExecIsSerializable() throws Exception {
+    display.asyncExec( new SerializableRunnable() );
+    
+    Display deserializedDisplay = serializeAndDeserialize( display );
+    deserializedDisplay.readAndDispatch();
+
+    assertTrue( SerializableRunnable.wasInvoked );
+  }
+  
+  public void testSyncExecIsSerializable() throws Exception {
+    Thread thread = new Thread( new BackgroundRunnable( display ) );
+    thread.setDaemon( true );
+    thread.start();
+    Thread.sleep( 100 );
+    
+    Display deserializedDisplay = serializeAndDeserialize( display );
+    deserializedDisplay.readAndDispatch();
+    
+    assertTrue( SerializableRunnable.wasInvoked );
+  }
+  
   protected void setUp() throws Exception {
+    SerializableRunnable.wasInvoked = false;
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();

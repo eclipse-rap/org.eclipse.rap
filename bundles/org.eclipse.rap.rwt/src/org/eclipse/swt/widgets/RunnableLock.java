@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.swt.internal.SerializableCompatibility;
+
 
 /**
  * Instances of this class are used to ensure that an
@@ -18,9 +20,11 @@ package org.eclipse.swt.widgets;
  * between widgets and background threads.
  */
 
-class RunnableLock {
-	Runnable runnable;
-	Thread thread;
+class RunnableLock implements SerializableCompatibility {
+	private static final long serialVersionUID = 1L;
+	
+  Runnable runnable;
+	transient Thread thread;
 	Throwable throwable;
 	
 RunnableLock (Runnable runnable) {

@@ -12,10 +12,12 @@ package org.eclipse.swt.widgets;
 
 
 import org.eclipse.rwt.internal.lifecycle.UICallBackManager;
+import org.eclipse.rwt.internal.util.SerializableLock;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.Compatibility;
+import org.eclipse.swt.internal.SerializableCompatibility;
  
 /**
  * Instances of this class provide synchronization support
@@ -38,11 +40,15 @@ import org.eclipse.swt.internal.Compatibility;
  * -->
  * @since 1.3
  */
-public class Synchronizer {
-	Display display;
+public class Synchronizer implements SerializableCompatibility {
+	private static final long serialVersionUID = 1L;
+	
+  Display display;
 	int messageCount;
 	RunnableLock [] messages;
-	Object messageLock = new Object ();
+// RAP [rh] mesageLock must be serializable	
+//	Object messageLock = new Object ();
+	Object messageLock = new SerializableLock();
 	Thread syncThread;
 	static final int GROW_SIZE = 4;
 	static final int MESSAGE_LIMIT = 64;
