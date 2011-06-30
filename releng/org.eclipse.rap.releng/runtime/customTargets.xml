@@ -108,11 +108,20 @@
       </path>
     </pathconvert>
     <fail unless="icuBaseAvailable" message="ICU base is not available in base platform." />
+    
+    <!-- Replace javax.servlet 3.0 with version 2.5 -->
+    <delete>
+      <fileset dir="${targetLocation}/eclipse/plugins" includes="javax.servlet_*.jar"/>
+      <fileset dir="${targetLocation}/eclipse/plugins" includes="javax.servlet.source_*.jar"/>
+    </delete>
+    <copy todir="${targetLocation}/eclipse/plugins">
+      <fileset dir="${baseLocation}/plugins" includes="javax.servlet_2.5*.jar"/>
+      <fileset dir="${baseLocation}/plugins" includes="javax.servlet.source_2.5*.jar"/>
+    </copy>
 
     <!-- zip target -->
     <zip destfile="${buildDirectory}/${buildLabel}/${buildLabel}.zip">
-      <fileset dir="${targetLocation}">
-      </fileset>
+      <fileset dir="${targetLocation}" />
     </zip>
 
   </target>
