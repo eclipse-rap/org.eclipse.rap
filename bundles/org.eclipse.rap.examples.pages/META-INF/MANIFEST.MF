@@ -8,10 +8,7 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.rap.examples;bundle-version="1.0.0",
  org.eclipse.rap.ui;bundle-version="[1.2.0,2.0.0)",
  org.eclipse.equinox.http.registry;bundle-version="1.0.100",
- com.eclipsesource.oscilloscope;bundle-version="1.0.0",
- org.eclipse.rap.widget.carousel;bundle-version="1.4.0",
- org.eclipse.rap.rwt.supplemental.filedialog;bundle-version="1.4.0",
- com.eclipsesource.widgets.gmaps;bundle-version="1.1.0"
+ org.eclipse.rap.rwt.supplemental.filedialog;bundle-version="1.4.0"
 Bundle-Vendor: Eclipse.org - RAP
 Export-Package: org.eclipse.rap.examples.pages
 Bundle-Activator: org.eclipse.rap.examples.pages.internal.Activator

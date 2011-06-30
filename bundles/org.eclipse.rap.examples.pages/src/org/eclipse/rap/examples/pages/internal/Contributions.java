@@ -42,7 +42,6 @@ class Contributions {
     addContribution( "row-layout", "Row Layout", RowLayoutExample.class );
     addContribution( "fill-layout", "Fill Layout", FillLayoutExample.class );
     addContribution( "grid-layout", "Grid Layout", GridLayoutExample.class );
-    addContribution( "oscilloscope", "Oscilloscope", OscilloscopeExample.class );
     addContribution( "file-upload", "File Upload", FileUploadExamplePage.class );
   }
 
