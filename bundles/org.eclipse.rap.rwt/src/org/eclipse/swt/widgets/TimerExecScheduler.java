@@ -15,29 +15,29 @@ import java.util.*;
 final class TimerExecScheduler {
 
   private final Display display;
-  private Collection<TimerTask> tasks;
+  private Collection<TimerExecTask> tasks;
   private Timer scheduler;
 
-  public TimerExecScheduler( final Display display ) {
+  TimerExecScheduler( Display display ) {
     this.display = display;
   }
 
-  void schedule( final int milliseconds, final Runnable runnable ) {
+  void schedule( int milliseconds, Runnable runnable ) {
     synchronized( display.getDeviceLock() ) {
       initialize();
-      TimerTask task = new TimerExecTask( runnable );
+      TimerExecTask task = new TimerExecTask( runnable );
       tasks.add( task );
       scheduler.schedule( task, milliseconds );
     }
   }
 
-  void cancel( final Runnable runnable ) {
+  void cancel( Runnable runnable ) {
     synchronized( display.getDeviceLock() ) {
       if( tasks != null ) {
-        Iterator iter = tasks.iterator();
+        Iterator<TimerExecTask> iter = tasks.iterator();
         boolean found = false;
         while( !found && iter.hasNext() ) {
-          TimerExecTask task = ( TimerExecTask )iter.next();
+          TimerExecTask task = iter.next();
           if( task.getRunnable() == runnable ) {
             removeTask( task );
             task.cancel();
@@ -64,7 +64,7 @@ final class TimerExecScheduler {
       scheduler = new Timer( true );
     }
     if( tasks == null ) {
-      tasks = new LinkedList<TimerTask>();
+      tasks = new LinkedList<TimerExecTask>();
     }
   }
 
@@ -76,18 +76,17 @@ final class TimerExecScheduler {
   /////////////////
   // Inner classes
 
-  private final class TimerExecTask extends TimerTask {
-
+  private class TimerExecTask extends TimerTask {
     private final Runnable runnable;
 
-    private TimerExecTask( final Runnable runnable ) {
+    TimerExecTask( Runnable runnable ) {
       this.runnable = runnable;
     }
 
     public void run() {
       synchronized( display.getDeviceLock() ) {
+        removeTask( this );
         if( !display.isDisposed() ) {
-          removeTask( this );
           display.asyncExec( runnable );
         }
       }
