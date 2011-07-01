@@ -139,6 +139,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     writeLinesVisible( table );
     writeTopIndex( table );
     writeScrollBarsVisible( table );
+    writeAlwaysHideSelection( table );
     writeSelectionListener( table );
     writeScrollBarsSelectionListener( table );
     writeHeaderHeight( table );
@@ -328,6 +329,12 @@ public final class TableLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( table );
     Boolean newValue = Boolean.valueOf( table.getLinesVisible() );
     writer.set( PROP_LINES_VISIBLE, "linesVisible", newValue, Boolean.FALSE );
+  }
+
+  private void writeAlwaysHideSelection( Table table ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( table );
+    Boolean newValue = alwaysHideSelection( table );
+    writer.set( PROP_ALWAYS_HIDE_SELECTION, "alwaysHideSelection", newValue, Boolean.FALSE );
   }
 
   private static void writeSelectionListener( final Table table ) throws IOException {

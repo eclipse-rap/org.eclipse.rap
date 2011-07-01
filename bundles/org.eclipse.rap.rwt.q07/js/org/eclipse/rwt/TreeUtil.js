@@ -94,7 +94,7 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
     ///////////////////
     // internal classes
 
-    _CONTAINER_DELEGATES : [ 
+    _CONTAINER_DELEGATES : [
       "setParent", 
       "destroy", 
       "addEventListener", 

@@ -1214,6 +1214,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
     
+    testRenderSelectionStateWithAlwaysHideSelection : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( true, "fullSelection" );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      tree.setAlwaysHideSelection( true );
+      row.renderItem( item, tree._config, true, null );
+      assertFalse( row.hasState( "selected" ) );
+      tree.destroy();
+      row.destroy();
+    },
+    
     testRenderThemingItemBackground : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createTree();

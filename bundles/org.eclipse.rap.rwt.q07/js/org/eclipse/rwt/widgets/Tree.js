@@ -285,6 +285,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._scheduleUpdate();
     },
 
+    setAlwaysHideSelection : function( value ) {
+      this._config.alwaysHideSelection = value;
+      this._scheduleUpdate();
+    },
+
+    //////////////
+    // Overwritten
+
     addState : function( state ) {
       this.base( arguments, state );
       if( state.slice( 0, 8 ) === "variant_" ) {

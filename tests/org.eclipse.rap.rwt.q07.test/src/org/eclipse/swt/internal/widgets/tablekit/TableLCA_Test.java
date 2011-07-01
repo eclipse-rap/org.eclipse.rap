@@ -825,11 +825,17 @@ public class TableLCA_Test extends TestCase {
     assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
   }
 
-  public void testAlwaysHideSelection() {
+  public void testAlwaysHideSelection() throws IOException {
     Table table = new Table( shell, SWT.NONE );
     assertEquals( Boolean.FALSE, TableLCA.alwaysHideSelection( table ) );
+    Fixture.fakeNewRequest();
     table.setData( Table.ALWAYS_HIDE_SELECTION, Boolean.TRUE );
     assertEquals( Boolean.TRUE, TableLCA.alwaysHideSelection( table ) );
+    TableLCA lca = new TableLCA();
+    lca.renderChanges( table );
+    String markup = Fixture.getAllMarkup();
+    String expected = "w.setAlwaysHideSelection( true )";
+    assertTrue( markup.indexOf( expected ) != -1 );
     table.setData( Table.ALWAYS_HIDE_SELECTION, "true" );
     assertEquals( Boolean.FALSE, TableLCA.alwaysHideSelection( table ) );
   }
