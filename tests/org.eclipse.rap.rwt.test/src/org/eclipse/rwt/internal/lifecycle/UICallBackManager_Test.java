@@ -18,6 +18,7 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.NoOpRunnable;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
@@ -35,10 +36,8 @@ public class UICallBackManager_Test extends TestCase {
   private static final int TIMER_EXEC_DELAY;
   private static final String RUN_ASYNC_EXEC = "run async exec|";
   private static final String RUN_TIMER_EXEC = "timerExecCode|";
-  private static final Runnable EMPTY_RUNNABLE = new Runnable() {
-    public void run() {
-    }
-  };
+  private static final Runnable EMPTY_RUNNABLE = new NoOpRunnable();
+  
   static {
     String sleepTimeProp = System.getProperty( SYS_PROP_SLEEP_TIME );
     SLEEP_TIME = sleepTimeProp == null ? 200 : Integer.parseInt( sleepTimeProp );
@@ -321,10 +320,7 @@ public class UICallBackManager_Test extends TestCase {
       public void run() {
         ContextProvider.setContext( context );
         Fixture.fakeResponseWriter();
-        Runnable doNothing = new Runnable() {
-          public void run() {
-          }
-        };
+        Runnable doNothing = new NoOpRunnable();
         display.syncExec( doNothing );
       }
     };

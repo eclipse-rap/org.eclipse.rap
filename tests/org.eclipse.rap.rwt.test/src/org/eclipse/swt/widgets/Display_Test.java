@@ -913,8 +913,7 @@ public class Display_Test extends TestCase {
     try {
       display.timerExec( 0, null );
       fail( "timerExec must throw exception when null-runnable is passed in " );
-    } catch( Exception e ) {
-      // expected
+    } catch( Exception expected ) {
     }
     // Further timerExec tests can be found in UICallbackManager_Test
   }
@@ -924,11 +923,7 @@ public class Display_Test extends TestCase {
     // Ensure that invoking from background thread throws InvalidThreadAccess
     Runnable runnable = new Runnable() {
       public void run() {
-        display.timerExec( 1, new Runnable() {
-          public void run() {
-            // do nothing
-          }
-        } );
+        display.timerExec( 1, new NoOpRunnable() );
       }
     };
 

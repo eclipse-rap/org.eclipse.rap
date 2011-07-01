@@ -13,6 +13,7 @@ package org.eclipse.rwt.lifecycle;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.NoOpRunnable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
@@ -117,10 +118,7 @@ public class UICallBack_Test extends TestCase {
   
   public void testRunNonUIThreadWithFakeContextWithNullDisplay() {
     try {
-      UICallBack.runNonUIThreadWithFakeContext( null, new Runnable() {
-        public void run() {
-        }
-      } );
+      UICallBack.runNonUIThreadWithFakeContext( null, new NoOpRunnable() );
       fail( "must not accept null-argument" );
     } catch( IllegalArgumentException expected ) {
     }

@@ -63,7 +63,7 @@ public class ApplicationContextUtil_Test extends TestCase {
     final ApplicationContext[] found = new ApplicationContext[ 1 ];
     Runnable runnable = new Runnable() {
       public void run() {
-        found[0] = ApplicationContextUtil.getInstance();
+        found[ 0 ] = ApplicationContextUtil.getInstance();
       }
     };
 
@@ -95,9 +95,7 @@ public class ApplicationContextUtil_Test extends TestCase {
   
   public void testParamApplicationContextNotNull() {
     try {
-      ApplicationContextUtil.runWith( null, new Runnable() {
-        public void run() {}
-      } );
+      ApplicationContextUtil.runWith( null, new NoOpRunnable() );
       fail();
     } catch( NullPointerException expected ) {
     }
