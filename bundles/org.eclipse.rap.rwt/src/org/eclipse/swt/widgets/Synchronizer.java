@@ -55,6 +55,7 @@ public class Synchronizer implements SerializableCompatibility {
 
 	//TEMPORARY CODE
 	static final boolean IS_CARBON = "carbon".equals (SWT.getPlatform ());
+	static final boolean IS_COCOA = "cocoa".equals (SWT.getPlatform ());
 	static final boolean IS_GTK = "gtk".equals (SWT.getPlatform ());
 
 /**
@@ -84,10 +85,14 @@ void addLast (RunnableLock lock) {
 		    }
 		  } );
 		}
+		runnableAdded( lock.runnable );
 // END RAP
 		wake = messageCount == 1;
 	}
 	if (wake) display.wakeThread ();
+}
+
+protected void runnableAdded( Runnable runnable ) {
 }
 
 /**
@@ -104,7 +109,7 @@ void addLast (RunnableLock lock) {
 protected void asyncExec (Runnable runnable) {
 	if (runnable == null) {
 		//TEMPORARY CODE
-		if (!(IS_CARBON || IS_GTK)) {
+		if (!(IS_CARBON || IS_GTK || IS_COCOA)) {
 			display.wake ();
 			return;
 		}

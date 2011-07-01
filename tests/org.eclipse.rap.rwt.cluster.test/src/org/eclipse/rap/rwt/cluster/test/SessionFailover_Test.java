@@ -114,7 +114,6 @@ public abstract class SessionFailover_Test extends TestCase {
     cluster.start( AsyncExecEntryPoint.class );
     client.sendStartupRequest();
     client.sendInitializationRequest();
-    
     AsyncExecEntryPoint.scheduleAsyncRunnable( getFirstDisplay( primary ) );
     
     cluster.removeServletEngine( primary );
@@ -124,9 +123,25 @@ public abstract class SessionFailover_Test extends TestCase {
     prepareExamination();
     HttpSession secondarySession = ClusterFixture.getFirstSession( secondary );
     ISessionStore secondarySessionStore = ClusterFixture.getSessionStore( secondarySession );
-    assertTrue( AsyncExecEntryPoint.wasAsyncRunnableExecuted( secondarySessionStore ) );
+    assertTrue( AsyncExecEntryPoint.wasRunnableExecuted( secondarySessionStore ) );
   }
 
+  public void testSyncExecEntryPoint() throws Exception {
+    cluster.start( AsyncExecEntryPoint.class );
+    client.sendStartupRequest();
+    client.sendInitializationRequest();
+    AsyncExecEntryPoint.scheduleSyncRunnable( getFirstDisplay( primary ) );
+    
+    cluster.removeServletEngine( primary );
+    client.changeServletEngine( secondary );
+    client.sendDisplayResizeRequest( 100, 100 );
+    
+    prepareExamination();
+    HttpSession secondarySession = ClusterFixture.getFirstSession( secondary );
+    ISessionStore secondarySessionStore = ClusterFixture.getSessionStore( secondarySession );
+    assertTrue( AsyncExecEntryPoint.wasRunnableExecuted( secondarySessionStore ) );
+  }
+  
   protected void setUp() throws Exception {
     ClusterFixture.setUp();
     cluster = getServletEngineFactory().createServletEngineCluster();
