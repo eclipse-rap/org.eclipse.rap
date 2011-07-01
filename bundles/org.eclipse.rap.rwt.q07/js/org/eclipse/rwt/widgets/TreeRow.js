@@ -411,7 +411,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     
     _renderAsSelected : function( config, selected ) {
     	var result =    ( selected || this.hasState( "dnd_selected" ) )
-    	             && ( config.focused || !config.hideSelection );
+    	             && ( !config.hideSelection || config.focused )
+    	             && !config.alwaysHideSelection;
     	return result;
     },
     
