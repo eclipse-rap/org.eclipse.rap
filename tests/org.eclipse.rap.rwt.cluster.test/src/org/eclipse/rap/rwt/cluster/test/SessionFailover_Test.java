@@ -10,8 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
@@ -36,6 +35,9 @@ import org.eclipse.swt.widgets.Shell;
 
 @SuppressWarnings("restriction")
 public abstract class SessionFailover_Test extends TestCase {
+  
+  public interface SerializableRunnable extends Runnable, Serializable {
+  }
 
   private IServletEngineCluster cluster;
   private IServletEngine primary;
@@ -108,6 +110,23 @@ public abstract class SessionFailover_Test extends TestCase {
     assertSame( secondaryShell.getDisplay(), secondaryImage.getDevice() );
   }
   
+  public void testAsyncExecEntryPoint() throws Exception {
+    cluster.start( AsyncExecEntryPoint.class );
+    client.sendStartupRequest();
+    client.sendInitializationRequest();
+    
+    AsyncExecEntryPoint.scheduleAsyncRunnable( getFirstDisplay( primary ) );
+    
+    cluster.removeServletEngine( primary );
+    client.changeServletEngine( secondary );
+    client.sendDisplayResizeRequest( 100, 100 );
+    
+    prepareExamination();
+    HttpSession secondarySession = ClusterFixture.getFirstSession( secondary );
+    ISessionStore secondarySessionStore = ClusterFixture.getSessionStore( secondarySession );
+    assertTrue( AsyncExecEntryPoint.wasAsyncRunnableExecuted( secondarySessionStore ) );
+  }
+
   protected void setUp() throws Exception {
     ClusterFixture.setUp();
     cluster = getServletEngineFactory().createServletEngineCluster();
@@ -121,21 +140,13 @@ public abstract class SessionFailover_Test extends TestCase {
     ClusterFixture.tearDown();
   }
 
-  private static boolean assertEquals( ImageData expected, ImageData actual ) {
-    boolean result;
+  private static void assertEquals( ImageData expected, ImageData actual ) {
     byte[] expectedBytes = getImageBytes( expected );
     byte[] actualBytes = getImageBytes( actual );
-    if( expectedBytes.length == actualBytes.length ) {
-      result = true;
-      for( int i = 0; result && i < actualBytes.length; i++ ) {
-        if( expectedBytes[ i ] != actualBytes[ i ] ) {
-          result = false;
-        }
-      }
-    } else {
-      result = false;
+    assertEquals( expectedBytes.length, actualBytes.length );
+    for( int i = 0; i < actualBytes.length; i++ ) {
+      assertEquals( expectedBytes[ i ], actualBytes[ i ] );
     }
-    return result;
   }
   
   private static byte[] getImageBytes( ImageData imageData ) {
@@ -182,6 +193,12 @@ public abstract class SessionFailover_Test extends TestCase {
 
   private static IDisplayAdapter getDisplayAdapter( Display display ) {
     return( ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class ) );
+  }
+
+  private static Display getFirstDisplay( IServletEngine servletEngine ) {
+    HttpSession primarySession = ClusterFixture.getFirstSession( servletEngine );
+    Display primaryDisplay = ClusterFixture.getSessionDisplay( primarySession );
+    return primaryDisplay;
   }
 
   private static Shell getFirstShell( IServletEngine servletEngine ) {
