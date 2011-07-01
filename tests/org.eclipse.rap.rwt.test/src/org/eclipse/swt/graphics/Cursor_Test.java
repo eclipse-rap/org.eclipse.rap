@@ -18,51 +18,50 @@ import org.eclipse.swt.widgets.Display;
 
 public class Cursor_Test extends TestCase {
 
-  public void testConstructor() {
+  private Display device;
+
+  public void testConstructorWithNullDevice() {
+    device.dispose();
     try {
       new Cursor( null, SWT.CURSOR_ARROW );
       fail( "Must provide device for cursor constructor" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    try {
-      new Cursor( new Display(), -8 );
-      fail( "Must not accept illegal style values" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
   
-  public void testConstructorWithNullDevice() {
-    Display device = new Display();
+  public void testConstructorWithInvaidStyle() {
+    try {
+      new Cursor( device, -8 );
+      fail( "Must not accept illegal style values" );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testGetDevice() {
     Cursor cursor = new Cursor( device, SWT.CURSOR_ARROW );
-    assertSame( Display.getCurrent(), cursor.getDevice() );
+    assertSame( device, cursor.getDevice() );
   }
   
   public void testEquality() {
-    Display device = new Display();
     Cursor cursor1 = device.getSystemCursor( SWT.CURSOR_ARROW );
     Cursor cursor2 = new Cursor( device, SWT.CURSOR_ARROW );
     assertTrue( cursor1.equals( cursor2 ) );
   }
 
   public void testIdentity() {
-    Display device = new Display();
     Cursor cursor1 = new Cursor( device, SWT.CURSOR_ARROW );
     Cursor cursor2 = device.getSystemCursor( SWT.CURSOR_ARROW );
     assertNotSame( cursor1, cursor2 );
   }
 
   public void testDispose() {
-    Display display = new Display();
-    Cursor cursor = new Cursor( display, SWT.CURSOR_ARROW );
+    Cursor cursor = new Cursor( device, SWT.CURSOR_ARROW );
     cursor.dispose();
     assertTrue( cursor.isDisposed() );
   }
   
   public void testDisposeFactoryCreated() {
-    Display display = new Display();
-    Cursor cursor = display.getSystemCursor( SWT.CURSOR_ARROW );
+    Cursor cursor = device.getSystemCursor( SWT.CURSOR_ARROW );
     try {
       cursor.dispose();
       fail( "It is not allowed to dispose of a factory-created cursor" );
@@ -72,8 +71,7 @@ public class Cursor_Test extends TestCase {
   }
   
   public void testSerializeSessionCursor() throws Exception {
-    Display display = new Display();
-    Cursor cursor = new Cursor( display, SWT.CURSOR_ARROW );
+    Cursor cursor = new Cursor( device, SWT.CURSOR_ARROW );
 
     Cursor deserializedCurosr = Fixture.serializeAndDeserialize( cursor );
     
@@ -84,8 +82,7 @@ public class Cursor_Test extends TestCase {
   }
   
   public void testSerializeSystemCursor() throws Exception {
-    Display display = new Display();
-    Cursor cursor = display.getSystemCursor( SWT.CURSOR_CROSS );
+    Cursor cursor = device.getSystemCursor( SWT.CURSOR_CROSS );
 
     Cursor deserializedCurosr = Fixture.serializeAndDeserialize( cursor );
     
@@ -105,6 +102,7 @@ public class Cursor_Test extends TestCase {
   
   protected void setUp() throws Exception {
     Fixture.setUp();
+    device = new Display();
   }
 
   protected void tearDown() throws Exception {

@@ -18,6 +18,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.widgets.Display;
 
 
 public class Transfer_Test extends TestCase {
@@ -73,7 +74,7 @@ public class Transfer_Test extends TestCase {
     assertTrue( transfer.getTypeIds().length > 0 );
   }
   
-  public void testImagaTransferConversion() {
+  public void testImageTransferConversion() {
     Fixture.useDefaultResourceManager();
     Transfer transfer = ImageTransfer.getInstance();
     TransferData data = transfer.getSupportedTypes()[ 0 ];
@@ -155,8 +156,7 @@ public class Transfer_Test extends TestCase {
     try {
       textTransfer.javaToNative( new Object(), data );
       fail( "Must not accept wrong input data" );
-    } catch( SWTException e ) {
-      // expected
+    } catch( SWTException expected ) {
     }
   }
   
@@ -170,6 +170,7 @@ public class Transfer_Test extends TestCase {
   protected void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
+    new Display();
   }
 
   protected void tearDown() {

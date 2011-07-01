@@ -23,8 +23,16 @@ import org.eclipse.swt.layout.GridLayout;
 
 public class ExpandItem_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+  private ExpandBar expandBar;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
+    expandBar = new ExpandBar( shell, SWT.NONE );
   }
 
   protected void tearDown() throws Exception {
@@ -32,9 +40,6 @@ public class ExpandItem_Test extends TestCase {
   }
 
   public void testCreation() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     // Add one item
     ExpandItem item1 = new ExpandItem( expandBar, SWT.NONE, 0 );
     assertEquals( 1, expandBar.getItemCount() );
@@ -55,9 +60,6 @@ public class ExpandItem_Test extends TestCase {
   }
 
   public void testParent() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     // Test creating with valid parent
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
     assertSame( expandBar, item.getParent() );
@@ -71,10 +73,6 @@ public class ExpandItem_Test extends TestCase {
   }
 
   public void testDispose() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     for( int i = 0; i < 10; i++ ) {
       new ExpandItem( expandBar, SWT.NONE );
     }
@@ -85,9 +83,6 @@ public class ExpandItem_Test extends TestCase {
   }
 
   public void testText() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
     assertEquals( "", item.getText() );
     item.setText( "abc" );
@@ -99,9 +94,6 @@ public class ExpandItem_Test extends TestCase {
 
   public void testImage() {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
     assertEquals( null, item.getImage() );
     item.setImage( image );
@@ -109,9 +101,6 @@ public class ExpandItem_Test extends TestCase {
   }
 
   public void testHeight() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     Composite composite = new Composite( expandBar, SWT.NONE );
     composite.setLayout( new GridLayout() );
     new Button( composite, SWT.PUSH ).setText( "SWT.PUSH" );
@@ -127,9 +116,6 @@ public class ExpandItem_Test extends TestCase {
   }
 
   public void testHeaderHeight() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
     ExpandItem item = new ExpandItem( expandBar, SWT.NONE );
     item.setText( "What is your favorite button?" );
     assertEquals( 24, item.getHeaderHeight() );

@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.SWT;
@@ -30,6 +31,8 @@ import org.eclipse.swt.widgets.Display;
 
 
 public class Graphics_Test extends TestCase {
+
+  private Display display;
 
   public void testGetColorWithNullArgument() {
     try {
@@ -81,7 +84,6 @@ public class Graphics_Test extends TestCase {
   }
   
   public void testGetAvgCharWidth() {
-    Display display = new Display();
     float result = Graphics.getAvgCharWidth( display.getSystemFont() );
     assertTrue( result > 0 );
   }
@@ -96,7 +98,6 @@ public class Graphics_Test extends TestCase {
   
   @SuppressWarnings("deprecation")
   public void testGetCursor() {
-    Display display = new Display();
     Cursor cursor = Graphics.getCursor( SWT.CURSOR_ARROW );
     assertSame( display.getSystemCursor( SWT.CURSOR_ARROW ), cursor );
   }
@@ -200,7 +201,6 @@ public class Graphics_Test extends TestCase {
   }
 
   public void testGetFontReturnsCurrentDisplay() {
-    new Display();
     Font font = Graphics.getFont( "roman", 1, SWT.NORMAL );
     assertSame( Display.getCurrent(), font.getDevice() );
   }
@@ -230,9 +230,47 @@ public class Graphics_Test extends TestCase {
     }
   }
   
+  public void testCheckThreadFromUIThread() {
+    try {
+      Graphics.checkThread();
+    } catch( Throwable notExpected ) {
+      fail();
+    }
+  }
+
+  public void testCheckThreadWithoutDisplay() {
+    display.dispose();
+    LifeCycleUtil.setSessionDisplay( null );
+    try {
+      Graphics.checkThread();
+      fail();
+    } catch( SWTException expected ) {
+      assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, expected.code );
+    }
+  }
+  
+  public void testCheckThreadFromBackgroundThread() throws InterruptedException {
+    final Throwable[] exception = { null };
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        try {
+          Graphics.checkThread();
+        } catch( Throwable expected ) {
+          exception[ 0 ] = expected;
+        }
+      }
+    } );
+    thread.start();
+    thread.join();
+    assertTrue( exception[ 0 ] instanceof SWTException );
+    SWTException swtException = ( SWTException )exception[ 0 ];
+    assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swtException.code );
+  }
+
   protected void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
+    display = new Display();
   }
 
   protected void tearDown() {

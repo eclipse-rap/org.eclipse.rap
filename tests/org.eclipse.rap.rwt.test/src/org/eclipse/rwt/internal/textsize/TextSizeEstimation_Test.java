@@ -17,6 +17,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Display;
 
 public class TextSizeEstimation_Test extends TestCase {
 
@@ -75,7 +76,7 @@ public class TextSizeEstimation_Test extends TestCase {
     assertTrue( stringExtent.y >= charHeight );
     assertTrue( stringExtent.y < charHeight * 1.5 );
     String testString2L = testString + "\r\n" + testString;
-    Point textExtent2L = TextSizeEstimation.textExtent( font10 , testString2L, 0 );
+    Point textExtent2L = TextSizeEstimation.textExtent( font10, testString2L, 0 );
     assertEquals( stringExtent.x, textExtent2L.x );
     assertTrue( textExtent2L.y >= charHeight * 2 );
     assertTrue( textExtent2L.y < charHeight * 3 );
@@ -95,6 +96,7 @@ public class TextSizeEstimation_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    new Display();
     font10 = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
   }
 

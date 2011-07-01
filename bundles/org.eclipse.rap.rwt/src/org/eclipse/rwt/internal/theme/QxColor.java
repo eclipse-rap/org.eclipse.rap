@@ -14,7 +14,7 @@ package org.eclipse.rwt.internal.theme;
 import java.text.MessageFormat;
 import java.util.*;
 
-import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.swt.graphics.Color;
 
 
@@ -220,7 +220,7 @@ public class QxColor implements QxType {
   public static Color createColor( QxColor color ) {
     Color result = null;
     if( color.alpha != 0f ) {
-      result = Graphics.getColor( color.red, color.green, color.blue );
+      result = RWTFactory.getResourceFactory().getColor( color.red, color.green, color.blue );
     }
     return result;
   }

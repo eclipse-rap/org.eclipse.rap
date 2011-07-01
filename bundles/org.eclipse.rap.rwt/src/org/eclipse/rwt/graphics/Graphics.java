@@ -14,10 +14,12 @@ package org.eclipse.rwt.graphics;
 import java.io.InputStream;
 
 import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.Display;
 
 
 /**
@@ -45,6 +47,7 @@ public final class Graphics {
    * @see Device#getSystemColor
    */
   public static Color getColor( RGB rgb ) {
+    checkThread();
     if( rgb == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -66,6 +69,7 @@ public final class Graphics {
    * @return the color
    */
   public static Color getColor( int red, int green, int blue ) {
+    checkThread();
     return RWTFactory.getResourceFactory().getColor( red, green, blue );
   }
 
@@ -85,6 +89,7 @@ public final class Graphics {
    * </ul>
    */
   public static Font getFont( FontData data ) {
+    checkThread();
     if( data == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -111,6 +116,7 @@ public final class Graphics {
    * </ul>
    */
   public static Font getFont( String name, int height, int style ) {
+    checkThread();
     return RWTFactory.getResourceFactory().getFont( new FontData( name, height, style ) );
   }
 
@@ -132,6 +138,7 @@ public final class Graphics {
    * </ul>
    */
   public static Image getImage( String path ) {
+    checkThread();
     if( path == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -161,6 +168,7 @@ public final class Graphics {
    * </ul>
    */
   public static Image getImage( String path, ClassLoader imageLoader ) {
+    checkThread();
     if( path == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -190,6 +198,7 @@ public final class Graphics {
    * </ul>
    */
   public static Image getImage( String path, InputStream inputStream ) {
+    checkThread();
     if( path == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -235,6 +244,7 @@ public final class Graphics {
    * Display#getSystemCursor(int)}
    */
   public static Cursor getCursor( int style ) {
+    checkThread();
     return RWTFactory.getResourceFactory().getCursor( style );
   }
 
@@ -263,6 +273,7 @@ public final class Graphics {
                                   final String string,
                                   final int wrapWidth )
   {
+    checkThread();
     if( font == null || string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -286,6 +297,7 @@ public final class Graphics {
    *                </ul>
    */
   public static Point stringExtent( Font font, String string ) {
+    checkThread();
     if( font == null || string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -299,6 +311,7 @@ public final class Graphics {
    * @return the height of the font
    */
   public static int getCharHeight( Font font ) {
+    checkThread();
     if( font == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -317,6 +330,21 @@ public final class Graphics {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     return TextSizeUtil.getAvgCharWidth( font );
+  }
+
+  static void checkThread() {
+    if( getDisplayThread() != Thread.currentThread () ) {
+      SWT.error( SWT.ERROR_THREAD_INVALID_ACCESS );
+    }
+  }
+
+  private static Thread getDisplayThread() {
+    Thread result = null;
+    Display display = LifeCycleUtil.getSessionDisplay();
+    if( display != null ) {
+      result = display.getThread();
+    }
+    return result;
   }
 
   private Graphics() {

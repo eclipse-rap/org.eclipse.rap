@@ -17,6 +17,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.widgets.Display;
 
 
 public class TextSizeUtilFacadeImpl_Test extends TestCase {
@@ -59,6 +60,7 @@ public class TextSizeUtilFacadeImpl_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    new Display();
     facade = new TextSizeUtilFacadeImpl();
   }
   

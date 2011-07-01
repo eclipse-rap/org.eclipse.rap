@@ -28,7 +28,10 @@ public class Image_Test extends TestCase {
   //////////////////////////
   // InputStream constructor
 
+  private Device device;
+
   public void testStreamConstructorWithNullDevice() {
+    device.dispose();
     try {
       new Image( null, new ByteArrayInputStream( new byte[ 0 ] ) );
       fail( "Must provide device for constructor" );
@@ -39,7 +42,7 @@ public class Image_Test extends TestCase {
 
   public void testStreamConstructorWithNullInputStream() {
     try {
-      new Image( new Display(), ( InputStream )null );
+      new Image( device, ( InputStream )null );
       fail( "Must provide input stream for constructor" );
     } catch( IllegalArgumentException e ) {
       assertEquals( "Argument cannot be null", e.getMessage() );
@@ -49,7 +52,6 @@ public class Image_Test extends TestCase {
   public void testStreamConstructorUsesDefaultDisplay() {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    new Display();
     Image image = new Image( null, stream );
     assertSame( Display.getCurrent(), image.getDevice() );
   }
@@ -57,16 +59,14 @@ public class Image_Test extends TestCase {
   public void testStreamConstructor() throws IOException {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Display display = new Display();
-    Image image = new Image( display, stream );
+    Image image = new Image( device, stream );
     assertEquals( new Rectangle( 0, 0, 58, 12 ), image.getBounds() );
     stream.close();
   }
 
   public void testStreamConstructorWithIllegalImage() {
-    Display display = new Display();
     try {
-      new Image( display, new ByteArrayInputStream( new byte[ 12 ] ) );
+      new Image( device, new ByteArrayInputStream( new byte[ 12 ] ) );
       fail( "Must throw exception when passing in invalid image data" );
     } catch( SWTException e ) {
       assertEquals( SWT.ERROR_UNSUPPORTED_FORMAT, e.code );
@@ -77,6 +77,7 @@ public class Image_Test extends TestCase {
   // Filename constructor
 
   public void testFileConstructorWithNullDevice() {
+    device.dispose();
     try {
       new Image( null, "" );
       fail( "Must provide device for constructor" );
@@ -87,7 +88,7 @@ public class Image_Test extends TestCase {
 
   public void testFileConstructorWithNullFileName() {
     try {
-      new Image( new Display(), (String)null );
+      new Image( device, ( String )null );
       fail( "Must provide filename for constructor" );
     } catch( IllegalArgumentException e ) {
       assertEquals( "Argument cannot be null", e.getMessage() );
@@ -95,28 +96,25 @@ public class Image_Test extends TestCase {
   }
 
   public void testFileConstructorUsesDefaultDisplay() throws IOException {
-    new Display();
     File imageFile = new File( Fixture.TEMP_DIR, "test.gif" );
     Fixture.copyTestResource( Fixture.IMAGE1, imageFile );
     Image image = new Image( null, imageFile.getAbsolutePath() );
-    assertSame( Display.getCurrent(), image.getDevice() );
+    assertSame( device, image.getDevice() );
     imageFile.delete();
   }
 
   public void testFileConstructor() throws IOException {
     File testImage = new File( Fixture.TEMP_DIR, "test.gif" );
     Fixture.copyTestResource( Fixture.IMAGE1, testImage );
-    Display display = new Display();
-    Image image = new Image( display, testImage.getAbsolutePath() );
+    Image image = new Image( device, testImage.getAbsolutePath() );
     assertEquals( new Rectangle( 0, 0, 58, 12 ), image.getBounds() );
     testImage.delete();
   }
 
   public void testFileConstructorWithMissingImage() {
-    Display display = new Display();
     File missingImage = new File( Fixture.TEMP_DIR, "not-existing.gif" );
     try {
-      new Image( display, missingImage.getAbsolutePath() );
+      new Image( device, missingImage.getAbsolutePath() );
       fail( "Image file must exist" );
     } catch( SWTException e ) {
       assertEquals( SWT.ERROR_IO, e.code );
@@ -128,7 +126,7 @@ public class Image_Test extends TestCase {
 
   public void testImageConstructorWithNullImage() {
     try {
-      new Image( new Display(), (Image)null, SWT.IMAGE_COPY );
+      new Image( device, ( Image )null, SWT.IMAGE_COPY );
       fail( "Must provide image for constructor" );
     } catch( IllegalArgumentException e ) {
       assertEquals( "Argument cannot be null", e.getMessage() );
@@ -138,10 +136,9 @@ public class Image_Test extends TestCase {
   public void testImageConstructorWithIllegalFlag() {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Display display = new Display();
-    Image image = new Image( display, stream );
+    Image image = new Image( device, stream );
     try {
-      new Image( display, image, SWT.PUSH );
+      new Image( device, image, SWT.PUSH );
       fail( "Must not allow invalid flag" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -151,9 +148,8 @@ public class Image_Test extends TestCase {
   public void testImageConstructor() {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Display display = new Display();
-    Image image = new Image( display, stream );
-    Image copiedImage = new Image( display, image, SWT.IMAGE_COPY );
+    Image image = new Image( device, stream );
+    Image copiedImage = new Image( device, image, SWT.IMAGE_COPY );
     assertEquals( image.getBounds(), copiedImage.getBounds() );
     assertSame( image.internalImage, copiedImage.internalImage );
     image.dispose();
@@ -164,16 +160,16 @@ public class Image_Test extends TestCase {
   // ImageData constructor
   
   public void testImageDataConstructor() {
-    Display display = new Display();
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
     ImageData imageData = new ImageData( stream );
-    Image image = new Image( display, imageData );
+    Image image = new Image( device, imageData );
     assertEquals( 100, image.getBounds().width );
     assertEquals( 50, image.getBounds().height );
   }
 
   public void testImageDataConstructorWithNullDevice() {
+    device.dispose();
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     ImageData imageData = new ImageData( stream );
@@ -187,7 +183,7 @@ public class Image_Test extends TestCase {
 
   public void testImageDataConstructorWithNullImageData() {
     try {
-      new Image( new Display(), ( ImageData )null );
+      new Image( device, ( ImageData )null );
       fail( "Must provide image data for constructor" );
     } catch( IllegalArgumentException e ) {
       assertEquals( "Argument cannot be null", e.getMessage() );
@@ -199,7 +195,6 @@ public class Image_Test extends TestCase {
   
   public void testWidthHeightConstructor() {
     Fixture.useDefaultResourceManager();
-    Display device = new Display();
     Image image = new Image( device, 1, 1 );
     ImageData imageData = image.getImageData();
     RGB[] rgbs = imageData.getRGBs();
@@ -208,6 +203,7 @@ public class Image_Test extends TestCase {
   }
 
   public void testWidthHeightConstructorWithNullDevice() {
+    device.dispose();
     try {
       new Image( null, 1, 1 );
       fail( "Must provide device for constructor" );
@@ -236,20 +232,18 @@ public class Image_Test extends TestCase {
 
   public void testGetBounds() {
     ClassLoader loader = Fixture.class.getClassLoader();
-    Display display = new Display();
     InputStream stream1 = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    Image image1 = new Image( display, stream1 );
+    Image image1 = new Image( device, stream1 );
     assertEquals( new Rectangle( 0, 0, 100, 50 ), image1.getBounds() );
     InputStream stream2 = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    Image image2 = new Image( display, stream2 );
+    Image image2 = new Image( device, stream2 );
     assertEquals( new Rectangle( 0, 0, 100, 50 ), image2.getBounds() );
   }
 
   public void testGetBoundsWhenDisposed() {
     ClassLoader loader = Fixture.class.getClassLoader();
-    Display display = new Display();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Image image = new Image( display, stream );
+    Image image = new Image( device, stream );
     image.dispose();
     try {
       image.getBounds();
@@ -264,7 +258,6 @@ public class Image_Test extends TestCase {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
     ImageData imageData = new ImageData( stream );
-    Device device = new Display();
     Image image = new Image( device, imageData );
     ImageData imageDataFromImage = image.getImageData();
     assertEquals( 100, imageDataFromImage.width );
@@ -273,9 +266,8 @@ public class Image_Test extends TestCase {
 
   public void testGetImageDataWhenDisposed() {
     ClassLoader loader = Fixture.class.getClassLoader();
-    Display display = new Display();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Image image = new Image( display, stream );
+    Image image = new Image( device, stream );
     image.dispose();
     try {
       image.getImageData();
@@ -286,24 +278,22 @@ public class Image_Test extends TestCase {
   }
 
   public void testSetBackgroundWhenDisposed() {
-    Display display = new Display();
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    Image image = new Image( display, stream );
+    Image image = new Image( device, stream );
     image.dispose();
     try {
-      image.setBackground( new Color( display, 0, 0, 0 ) );
+      image.setBackground( new Color( device, 0, 0, 0 ) );
       fail( "setBackground cannot be called on disposed image" );
     } catch( SWTException expected ) {
     }
   }
 
   public void testSetBackgroundWithDisposedColor() {
-    Display display = new Display();
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    Image image = new Image( display, stream );
-    Color disposedColor = new Color( display, 0, 0, 0 );
+    Image image = new Image( device, stream );
+    Color disposedColor = new Color( device, 0, 0, 0 );
     disposedColor.dispose();
     try {
       image.setBackground( disposedColor );
@@ -313,10 +303,9 @@ public class Image_Test extends TestCase {
   }
 
   public void testSetBackgroundWithNullColor() {
-    Display display = new Display();
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    Image image = new Image( display, stream );
+    Image image = new Image( device, stream );
     try {
       image.setBackground( null );
       fail( "setBackground must not accept null-color" );
@@ -325,18 +314,16 @@ public class Image_Test extends TestCase {
   }
 
   public void testGetBackground() {
-    Display display = new Display();
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    Image image = new Image( display, stream );
+    Image image = new Image( device, stream );
     assertNull( image.getBackground() );
   }
 
   public void testGetBackgroundWhenDisposed() {
-    Display display = new Display();
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE_100x50 );
-    Image image = new Image( display, stream );
+    Image image = new Image( device, stream );
     image.dispose();
     try {
       image.getBackground();
@@ -349,8 +336,7 @@ public class Image_Test extends TestCase {
   public void testDispose() {
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Display display = new Display();
-    Image image = new Image( display, stream );
+    Image image = new Image( device, stream );
     image.dispose();
     assertTrue( image.isDisposed() );
     try {
@@ -378,7 +364,6 @@ public class Image_Test extends TestCase {
     Image anotherImage = Graphics.getImage( Fixture.IMAGE2 );
     assertTrue( image1.equals( image2 ) );
     assertFalse( image1.equals( anotherImage ) );
-    Device device = new Display();
     stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     image1 = new Image( device, stream );
     stream = loader.getResourceAsStream( Fixture.IMAGE1 );
@@ -396,7 +381,6 @@ public class Image_Test extends TestCase {
     assertSame( image1, image2 );
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Device device = new Display();
     image1 = new Image( device, stream );
     image2 = Graphics.getImage( Fixture.IMAGE1 );
     assertNotSame( image1, image2 );
@@ -405,6 +389,7 @@ public class Image_Test extends TestCase {
   protected void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
+    device = new Display();
   }
 
   protected void tearDown() {

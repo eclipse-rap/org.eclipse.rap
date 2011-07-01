@@ -37,6 +37,7 @@ public class ImageSerialzation_Test extends TestCase {
     }
   }
 
+  private Display display;
   private ApplicationContext applicationContext;
 
   public void testSerializedSharedImage() throws Exception {
@@ -52,7 +53,6 @@ public class ImageSerialzation_Test extends TestCase {
   }
   
   public void testSerializeSessionImage() throws Exception {
-    Display display = new Display();
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream( Fixture.IMAGE1 );
     Image image = new Image( display, inputStream );
     inputStream.close();
@@ -80,6 +80,7 @@ public class ImageSerialzation_Test extends TestCase {
     Fixture.useDefaultResourceManager();
     applicationContext = ApplicationContextUtil.getInstance();
     ApplicationContextUtil.set( ContextProvider.getSession(), applicationContext );
+    display = new Display();
   }
 
   protected void tearDown() {

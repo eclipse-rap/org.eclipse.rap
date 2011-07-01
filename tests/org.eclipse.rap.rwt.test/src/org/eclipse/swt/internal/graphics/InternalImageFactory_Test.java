@@ -20,6 +20,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.widgets.Display;
 
 
 public class InternalImageFactory_Test extends TestCase {
@@ -75,6 +76,7 @@ public class InternalImageFactory_Test extends TestCase {
   }
 
   public void testInternalImagesFromImageDataAreCached() {
+    new Display();
     Fixture.useDefaultResourceManager();
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
     ImageData imageData1 = image.getImageData();

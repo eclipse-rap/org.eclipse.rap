@@ -20,6 +20,8 @@ import org.eclipse.swt.widgets.Display;
 
 public class Color_Test extends TestCase {
 
+  private Device device;
+
   public void testColorFromRGB() {
     Color salmon = Graphics.getColor( new RGB( 250, 128, 114 ) );
     assertEquals( 250, salmon.getRed() );
@@ -35,8 +37,7 @@ public class Color_Test extends TestCase {
   }
 
   public void testColorFromConstant() {
-    Device display = new Display();
-    Color color = display.getSystemColor( SWT.COLOR_RED );
+    Color color = device.getSystemColor( SWT.COLOR_RED );
     assertEquals( 255, color.getRed() );
     assertEquals( 0, color.getGreen() );
     assertEquals( 0, color.getBlue() );
@@ -48,7 +49,6 @@ public class Color_Test extends TestCase {
     Color chocolate = Graphics.getColor( 210, 105, 30 );
     assertTrue( salmon1.equals( salmon2 ) );
     assertFalse( salmon1.equals( chocolate ) );
-    Device device = new Display();
     salmon1 = new Color( device, 250, 128, 114 );
     salmon2 = new Color( device, 250, 128, 114 );
     assertTrue( salmon1.equals( salmon2 ) );
@@ -61,7 +61,6 @@ public class Color_Test extends TestCase {
     Color salmon1 = Graphics.getColor( 250, 128, 114 );
     Color salmon2 = Graphics.getColor( 250, 128, 114 );
     assertSame( salmon1, salmon2 );
-    Device device = new Display();
     salmon1 = new Color( device, 250, 128, 114 );
     salmon2 = Graphics.getColor( 250, 128, 114 );
     assertNotSame( salmon1, salmon2 );
@@ -73,6 +72,14 @@ public class Color_Test extends TestCase {
   }
   
   public void testConstructor() {
+    Color color = new Color( null, 0, 0, 0 );
+    assertSame( Display.getCurrent(), color.getDevice() );
+    color = new Color( null, new RGB( 0, 0, 0 ) );
+    assertSame( Display.getCurrent(), color.getDevice() );
+  }
+  
+  public void testConstructorWithoutDevice() {
+    device.dispose();
     try {
       new Color( null, new RGB( 0, 0, 0 ) );
       fail( "Must provide device for color constructor" );
@@ -85,58 +92,49 @@ public class Color_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // expected
     }
-    new Display();
-    Color color = new Color( null, 0, 0, 0 );
-    assertSame( Display.getCurrent(), color.getDevice() );
-    color = new Color( null, new RGB( 0, 0, 0 ) );
-    assertSame( Display.getCurrent(), color.getDevice() );
   }
   
   public void testConstructorWithInvalidRedValue() {
-    Display display = new Display();
     try {
-      new Color( display, -1, 0, 0 );
+      new Color( device, -1, 0, 0 );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
     try {
-      new Color( display, 300, 0, 0 );
+      new Color( device, 300, 0, 0 );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
   
   public void testConstructorWithInvalidGreenValue() {
-    Display display = new Display();
     try {
-      new Color( display, 0, -1, 0 );
+      new Color( device, 0, -1, 0 );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
     try {
-      new Color( display, 0, 300, 0 );
+      new Color( device, 0, 300, 0 );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
   
   public void testConstructorWithInvalidBlueValue() {
-    Display display = new Display();
     try {
-      new Color( display, 0, 0, -1 );
+      new Color( device, 0, 0, -1 );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
     try {
-      new Color( display, 0, 0, 300 );
+      new Color( device, 0, 0, 300 );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
   }
   
   public void testDispose() {
-    Display display = new Display();
-    Color color = new Color( display, new RGB( 0, 0, 0 ) );
+    Color color = new Color( device, new RGB( 0, 0, 0 ) );
     color.dispose();
     assertTrue( color.isDisposed() );
   }
@@ -152,36 +150,31 @@ public class Color_Test extends TestCase {
   }
   
   public void testGetAttributesAfterDispose() {
-    Color font = new Color( new Display(), 0, 0, 0 );
+    Color font = new Color( device, 0, 0, 0 );
     font.dispose();
     try {
       font.getRed();
       fail( "Must not allow to access attributes of disposed color" );
-    } catch( Exception e ) {
-      // expected
+    } catch( Exception expected ) {
     }
     try {
       font.getGreen();
       fail( "Must not allow to access attributes of disposed color" );
-    } catch( Exception e ) {
-      // expected
+    } catch( Exception expected ) {
     }
     try {
       font.getBlue();
       fail( "Must not allow to access attributes of disposed color" );
-    } catch( Exception e ) {
-      // expected
+    } catch( Exception expected ) {
     }
     try {
       font.getRGB();
       fail( "Must not allow to access attributes of disposed color" );
-    } catch( Exception e ) {
-      // expected
+    } catch( Exception expected ) {
     }
   }
   
   public void testSerializeSessionColor() throws Exception {
-    Device device = new Display();
     Color color = new Color( device, 1, 2, 3 );
     
     Color deserializedColor = Fixture.serializeAndDeserialize( color );
@@ -203,6 +196,7 @@ public class Color_Test extends TestCase {
   
   protected void setUp() throws Exception {
     Fixture.setUp();
+    device = new Display();
   }
 
   protected void tearDown() throws Exception {

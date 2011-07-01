@@ -19,7 +19,8 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -1015,7 +1016,7 @@ public class TableLCA_Test extends TestCase {
 
   public void testScrollbarsSelectionEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final ArrayList log = new ArrayList();
+    final java.util.List<String> log = new ArrayList<String>();
     Table table = new Table( shell, SWT.NONE );
     for( int i = 0; i < 20; i++ ) {
       new TableItem( table, SWT.NONE );
@@ -1044,7 +1045,7 @@ public class TableLCA_Test extends TestCase {
 
   public void testSelectionEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final ArrayList log = new ArrayList();
+    final java.util.List<Widget> log = new ArrayList<Widget>();
     Table table = new Table( shell, SWT.NONE );
     String tableId = WidgetUtil.getId( table );
     for( int i = 0; i < 5; i++ ) {
@@ -1071,7 +1072,7 @@ public class TableLCA_Test extends TestCase {
 
   public void testSelectionEvent_UnresolvedItem() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final ArrayList log = new ArrayList();
+    final java.util.List<Widget> log = new ArrayList<Widget>();
     Table table = new Table( shell, SWT.VIRTUAL );
     String tableId = WidgetUtil.getId( table );
     table.setItemCount( 3 );

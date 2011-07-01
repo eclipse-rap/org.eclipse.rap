@@ -270,9 +270,9 @@ public class JSWriter_Test extends TestCase {
   }
   
   public void testCallWithColorValue() throws IOException {
+    Display display = new Display();
     Color salmon = Graphics.getColor( 250, 128, 114 );
     Color chocolate = Graphics.getColor( 210, 105, 30 );
-    Display display = new Display();
     TestShell shell = new TestShell( display );
     JSWriter writer = JSWriter.getWriterFor( shell.button );
     writer.call( "foo", null ); // get rid of initialization Javascript code
