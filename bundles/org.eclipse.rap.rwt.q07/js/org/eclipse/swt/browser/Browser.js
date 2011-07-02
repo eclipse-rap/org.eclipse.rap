@@ -55,7 +55,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
       var domain = null;
       if( url !== null ) {
         var lowerCaseUrl = url.toLowerCase();
-        // Accepted limitation: In case of other protocls this detection fails. 
+        // Accepted limitation: In case of other protocols this detection fails. 
         if(    lowerCaseUrl.indexOf( "http://" ) === 0 
             || lowerCaseUrl.indexOf( "https://" ) === 0
             || lowerCaseUrl.indexOf( "ftp://" ) === 0
@@ -367,7 +367,7 @@ qx.Class.define( "org.eclipse.swt.browser.Browser", {
     
     destroy : function() {
       this.base( arguments );
-      // Needed for IE dipose fix in Iframe.js because _applySource is overwritten in Browser.js
+      // Needed for IE dispose fix in Iframe.js because _applySource is overwritten in Browser.js
       this.syncSource();
     }
     
