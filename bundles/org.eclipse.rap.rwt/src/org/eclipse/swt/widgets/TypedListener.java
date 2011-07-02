@@ -81,10 +81,10 @@ public void handleEvent (Event e) {
 			((ShellListener) eventListener).shellActivated(new ShellEvent(e));
 			break;
 		}
-//		case SWT.Arm: {
-//			((ArmListener) eventListener).widgetArmed (new ArmEvent (e));
-//			break;
-//		}
+		case SWT.Arm: {
+			((ArmListener) eventListener).widgetArmed (new ArmEvent (e));
+			break;
+		}
 		case SWT.Close: {
 			/* Fields set by Decorations */
 			ShellEvent event = new ShellEvent (e);
@@ -166,14 +166,14 @@ public void handleEvent (Event e) {
 			((ModifyListener) eventListener).modifyText(new ModifyEvent(e));
 			break;
 		}
-//		case SWT.MenuDetect: {
-//			MenuDetectEvent event = new MenuDetectEvent(e);
-//			((MenuDetectListener) eventListener).menuDetected(event);
-//			e.x = event.x;
-//			e.y = event.y;
-//			e.doit = event.doit;
-//			break;
-//		}
+		case SWT.MenuDetect: {
+			MenuDetectEvent event = new MenuDetectEvent(e);
+			((MenuDetectListener) eventListener).menuDetected(event);
+			e.x = event.x;
+			e.y = event.y;
+			e.doit = event.doit;
+			break;
+		}
 		case SWT.MouseDown: {
 			((MouseListener) eventListener).mouseDown(new MouseEvent(e));
 			break;
