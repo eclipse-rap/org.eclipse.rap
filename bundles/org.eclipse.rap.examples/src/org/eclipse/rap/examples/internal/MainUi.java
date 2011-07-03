@@ -17,10 +17,10 @@ import org.eclipse.rap.examples.*;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.events.BrowserHistoryEvent;
 import org.eclipse.rwt.events.BrowserHistoryListener;
+import org.eclipse.rwt.internal.widgets.JSExecutor;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
@@ -92,6 +92,7 @@ public class MainUi {
     logoLabel.setImage( rapLogo );
     logoLabel.setBounds( 30, 25, 196, 78 );
     logoLabel.moveAbove( bgLabel );
+    makeLink( logoLabel, "http://eclipse.org/rap/" );
     Label headerLabel = new Label( headerComp, SWT.NONE );
     headerLabel.setText( "Demo" );
     headerLabel.setForeground( display.getSystemColor( SWT.COLOR_WHITE ) );
@@ -242,5 +243,14 @@ public class MainUi {
       result = new Image( display, inputStream );
     }
     return result;
+  }
+
+  private static void makeLink( Label control, final String url ) {
+    control.setCursor( control.getDisplay().getSystemCursor( SWT.CURSOR_HAND ) );
+    control.addMouseListener( new MouseAdapter() {
+      public void mouseDown( MouseEvent e ) {
+        JSExecutor.executeJS( "window.location.href = '" + url + "'" );
+      }
+    } );
   }
 }
