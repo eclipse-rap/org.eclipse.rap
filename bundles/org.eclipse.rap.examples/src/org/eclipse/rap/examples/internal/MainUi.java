@@ -20,6 +20,7 @@ import org.eclipse.rwt.events.BrowserHistoryListener;
 import org.eclipse.rwt.internal.widgets.JSExecutor;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
@@ -30,6 +31,8 @@ import org.osgi.framework.Version;
 
 public class MainUi {
 
+  private static final String RAP_PAGE_URL = "http://eclipse.org/rap/";
+  private static final String WAR_DOWNLOAD_URL = "http://rap.eclipsesource.com/download/rapdemo.war";
   private static final String CONTRIBUTION_KEY = "contribution";
   private static final int HEADER_HEIGHT = 128;
   private static final int SIDEBAR_WIDTH = 200;
@@ -40,6 +43,7 @@ public class MainUi {
   private Composite mainArea;
   private Control sidebar;
   private Composite statusArea;
+  private Browser download;
 
   public int createUI() {
     Display display = new Display();
@@ -76,6 +80,7 @@ public class MainUi {
     mainArea.setLayoutData( createMainAreaFormData() );
     statusArea = createStatusArea( shell );
     statusArea.setLayoutData( createStatusAreaFormData() );
+    download = createDownloadWidget( shell );
   }
 
   private Control createHeader( Composite parent ) {
@@ -92,7 +97,7 @@ public class MainUi {
     logoLabel.setImage( rapLogo );
     logoLabel.setBounds( 30, 25, 196, 78 );
     logoLabel.moveAbove( bgLabel );
-    makeLink( logoLabel, "http://eclipse.org/rap/" );
+    makeLink( logoLabel, RAP_PAGE_URL );
     Label headerLabel = new Label( headerComp, SWT.NONE );
     headerLabel.setText( "Demo" );
     headerLabel.setForeground( display.getSystemColor( SWT.COLOR_WHITE ) );
@@ -172,19 +177,28 @@ public class MainUi {
   private Composite createStatusArea( Composite parent ) {
     Composite statusArea = new Composite( parent, SWT.NONE );
     statusArea.setData( WidgetUtil.CUSTOM_VARIANT, "statusarea" );
-    statusArea.setLayout( ExampleUtil.createGridLayout() );
+    statusArea.setLayout( ExampleUtil.createGridLayout( 2, false, 0, 10 ) );
     statusArea.setBackgroundMode( SWT.INHERIT_DEFAULT );
-    Label label = new Label( statusArea, SWT.RIGHT );
-    label.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, true ) );
-    label.setData( WidgetUtil.CUSTOM_VARIANT, "statusarea" );
+    Label versionLabel = new Label( statusArea, SWT.RIGHT );
+    versionLabel.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, true ) );
+    versionLabel.setData( WidgetUtil.CUSTOM_VARIANT, "statusarea" );
     String version = getRapVersion();
-    label.setText( "Running on RAP " + version );
+    versionLabel.setText( "Running on RAP " + version );
+    Link downloadLink = new Link( statusArea, SWT.RIGHT );
+    downloadLink.setText( "Download this demo as <a>WAR file</a>" );
+    downloadLink.setData( WidgetUtil.CUSTOM_VARIANT, "statusarea" );
+    downloadLink.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        download.setUrl( WAR_DOWNLOAD_URL );
+      }
+    } );
     return statusArea;
   }
 
-  private static String getRapVersion() {
-    Version version = FrameworkUtil.getBundle( RWT.class ).getVersion();
-    return version.toString();
+  private Browser createDownloadWidget( Composite parent ) {
+    Browser download = new Browser( parent, SWT.NONE );
+    download.setData( new FormData( 0, 0 ) );
+    return download;
   }
 
   private FormData createHeaderFormData() {
@@ -243,6 +257,20 @@ public class MainUi {
       result = new Image( display, inputStream );
     }
     return result;
+  }
+
+  private static String getRapVersion() {
+    Version version = FrameworkUtil.getBundle( RWT.class ).getVersion();
+    StringBuilder resultBuffer = new StringBuilder( 20 );
+    resultBuffer.append( version.getMajor() );
+    resultBuffer.append( '.' );
+    resultBuffer.append( version.getMinor() );
+    resultBuffer.append( '.' );
+    resultBuffer.append( version.getMicro() );
+    resultBuffer.append( " (Build " );
+    resultBuffer.append( version.getQualifier() );
+    resultBuffer.append( ')' );
+    return resultBuffer.toString();
   }
 
   private static void makeLink( Label control, final String url ) {
