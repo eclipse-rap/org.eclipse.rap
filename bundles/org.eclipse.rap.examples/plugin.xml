@@ -18,7 +18,7 @@
             defaultEntrypointId="org.eclipse.rap.examples.entryPoint"
             favicon="icons/favicon.png"
             servletName="examples"
-            themeId="org.eclipse.rap.rwt.theme.Default"
+            themeId="org.eclipse.rap.examples.demoTheme"
             body="html/body.html"
             title="RAP Examples">
       </branding>
@@ -26,10 +26,10 @@
 
    <extension
          point="org.eclipse.rap.ui.themes">
-      <themeContribution
-            file="theme/theme.css"
-            themeId="org.eclipse.rap.rwt.theme.Default">
-      </themeContribution>
+      <theme
+            id="org.eclipse.rap.examples.demoTheme"
+            file="theme/theme.css">
+      </theme>
    </extension>
 
    <extension
