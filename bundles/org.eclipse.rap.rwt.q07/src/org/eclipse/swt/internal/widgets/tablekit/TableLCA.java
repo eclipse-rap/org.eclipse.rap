@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablekit;
 
@@ -54,7 +54,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   private static final Integer DEFAULT_LEFT_OFFSET = new Integer( 0 );
   private static final Integer DEFAULT_COLUMN_COUNT = new Integer( 0 );
 
-  public void preserveValues( final Widget widget ) {
+  public void preserveValues( Widget widget ) {
     Table table = ( Table )widget;
     ControlLCAUtil.preserveValues( table );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( table );
@@ -70,7 +70,7 @@ public final class TableLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( SelectionEvent.hasListener( table ) ) );
     TableLCAUtil.preserveFocusIndex( table );
     WidgetLCAUtil.preserveCustomVariant( table );
-    adapter.preserve( PROP_ALWAYS_HIDE_SELECTION, alwaysHideSelection( table ) );
+    adapter.preserve( PROP_ALWAYS_HIDE_SELECTION, hasAlwaysHideSelection( table ) );
     adapter.preserve( PROP_HAS_H_SCROLL_BAR, hasHScrollBar( table ) );
     adapter.preserve( PROP_HAS_V_SCROLL_BAR, hasVScrollBar( table ) );
     adapter.preserve( PROP_LEFT_OFFSET, getLeftOffset( table ) );
@@ -79,7 +79,7 @@ public final class TableLCA extends AbstractWidgetLCA {
                       new Boolean( CellToolTipUtil.isEnabledFor( table ) ) );
   }
 
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
     Table table = ( Table )widget;
     readTopItemIndex( table );
     readScrollLeft( table );
@@ -93,7 +93,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     ControlLCAUtil.processMenuDetect( table );
   }
 
-  public void renderInitialization( final Widget widget ) throws IOException {
+  public void renderInitialization( Widget widget ) throws IOException {
     Table table = ( Table )widget;
     ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     JSWriter writer = JSWriter.getWriterFor( table );
@@ -124,7 +124,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     writer.set( "treeColumn", -1 );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     Table table = ( Table )widget;
     // Important: Order matters. Always call writeItemCount first. See bug 326941.
     writeItemCount( table );
@@ -147,12 +147,12 @@ public final class TableLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.writeCustomVariant( table );
   }
 
-  public void renderDispose( final Widget widget ) throws IOException {
+  public void renderDispose( Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
 
-  public void doRedrawFake( final Control control ) {
+  public void doRedrawFake( Control control ) {
     Table table = ( Table )control;
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
@@ -162,7 +162,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   ////////////////////////////////////////////////////
   // Helping methods to read client-side state changes
 
-  private static void readSelection( final Table table ) {
+  private static void readSelection( Table table ) {
     String value = WidgetLCAUtil.readPropertyValue( table, "selection" );
     if( value != null ) {
       int[] newSelection;
@@ -183,7 +183,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void readTopItemIndex( final Table table ) {
+  private static void readTopItemIndex( Table table ) {
     String value = WidgetLCAUtil.readPropertyValue( table, "topItemIndex" );
     if( value != null ) {
       int topIndex = NumberFormatUtil.parseInt( value );
@@ -193,7 +193,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void readFocusIndex( final Table table ) {
+  private static void readFocusIndex( Table table ) {
     String value = WidgetLCAUtil.readPropertyValue( table, "focusItem" );
     if( value != null ) {
       TableItem item = getItem( table, value );
@@ -202,7 +202,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void readScrollLeft( final Table table ) {
+  private static void readScrollLeft( Table table ) {
     String value = WidgetLCAUtil.readPropertyValue( table, "scrollLeft" );
     if( value != null ) {
       int leftOffset = NumberFormatUtil.parseInt( value );
@@ -213,7 +213,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void readWidgetSelected( final Table table ) {
+  private static void readWidgetSelected( Table table ) {
     if( WidgetLCAUtil.wasEventSent( table, JSConst.EVENT_WIDGET_SELECTED ) ) {
       HttpServletRequest request = ContextProvider.getRequest();
       String selectionId = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_ITEM );
@@ -232,7 +232,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void readWidgetDefaultSelected( final Table table ) {
+  private static void readWidgetDefaultSelected( Table table ) {
     String defaultSelectedParam = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
     if( WidgetLCAUtil.wasEventSent( table, defaultSelectedParam ) ) {
       // A default-selected event can occur without a selection being present.
@@ -258,7 +258,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     return "check".equals( value ) ? SWT.CHECK : SWT.NONE;
   }
 
-  private static TableItem getFocusedItem( final Table table ) {
+  private static TableItem getFocusedItem( Table table ) {
     TableItem result = null;
     ITableAdapter tableAdapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     int focusIndex = tableAdapter.getFocusIndex();
@@ -272,25 +272,25 @@ public final class TableLCA extends AbstractWidgetLCA {
   ///////////////////////////////////////////
   // Helping methods to write JavaScript code
 
-  private static void writeHeaderHeight( final Table table ) throws IOException {
+  private static void writeHeaderHeight( Table table ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( table );
     Integer newValue = new Integer( table.getHeaderHeight() );
     writer.set( PROP_HEADER_HEIGHT, "headerHeight", newValue, null );
   }
 
-  private static void writeHeaderVisible( final Table table ) throws IOException {
+  private static void writeHeaderVisible( Table table ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( table );
     Boolean newValue = Boolean.valueOf( table.getHeaderVisible() );
     writer.set( PROP_HEADER_VISIBLE, "headerVisible", newValue, Boolean.FALSE );
   }
 
-  private static void writeItemHeight( final Table table ) throws IOException {
+  private static void writeItemHeight( Table table ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( table );
     Integer newValue = new Integer( table.getItemHeight( ) );
     writer.set( PROP_ITEM_HEIGHT, "itemHeight", newValue, DEFAUT_ITEM_HEIGHT );
   }
 
-  private static void writeColumnCount( final Table table ) throws IOException {
+  private static void writeColumnCount( Table table ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( table );
     Integer newValue = new Integer( table.getColumnCount() );
     if( WidgetLCAUtil.hasChanged( table, PROP_COLUMN_COUNT, newValue ) ) {
@@ -298,19 +298,19 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeItemCount( final Table table ) throws IOException {
+  private static void writeItemCount( Table table ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( table );
     Integer newValue = new Integer( table.getItemCount() );
     writer.set( PROP_ITEM_COUNT, "itemCount", newValue, DEFAULT_ITEM_COUNT );
   }
 
-  private static void writeTopIndex( final Table table ) throws IOException {
+  private static void writeTopIndex( Table table ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( table );
     Integer newValue = new Integer( table.getTopIndex() );
     writer.set( PROP_TOP_ITEM_INDEX, "topItemIndex", newValue, DEFAULT_TOP_INDEX );
   }
 
-  private static void writeFocusItem( final Table table ) throws IOException {
+  private static void writeFocusItem( Table table ) throws IOException {
     if( TableLCAUtil.hasFocusIndexChanged( table ) ) {
       ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
       // TableItemLCA renders focusIndex in case != -1
@@ -321,7 +321,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeLinesVisible( final Table table ) throws IOException {
+  private static void writeLinesVisible( Table table ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( table );
     Boolean newValue = Boolean.valueOf( table.getLinesVisible() );
     writer.set( PROP_LINES_VISIBLE, "linesVisible", newValue, Boolean.FALSE );
@@ -329,11 +329,11 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   private void writeAlwaysHideSelection( Table table ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( table );
-    Boolean newValue = alwaysHideSelection( table );
+    Boolean newValue = hasAlwaysHideSelection( table );
     writer.set( PROP_ALWAYS_HIDE_SELECTION, "alwaysHideSelection", newValue, Boolean.FALSE );
   }
 
-  private static void writeSelectionListener( final Table table ) throws IOException {
+  private static void writeSelectionListener( Table table ) throws IOException {
     Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( table ) );
     String prop = PROP_SELECTION_LISTENERS;
     if( WidgetLCAUtil.hasChanged( table, prop, newValue, Boolean.FALSE ) ) {
@@ -342,7 +342,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeScrollBarsSelectionListener( final Table table ) throws IOException {
+  private static void writeScrollBarsSelectionListener( Table table ) throws IOException {
     Boolean newValue = hasScrollBarsSelectionListener( table );
     String prop = PROP_SCROLLBARS_SELECTION_LISTENER;
     if( WidgetLCAUtil.hasChanged( table, prop, newValue, Boolean.FALSE ) ) {
@@ -351,7 +351,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeScrollBarsVisible( final Table table ) throws IOException {
+  private static void writeScrollBarsVisible( Table table ) throws IOException {
     boolean hasHChanged = WidgetLCAUtil.hasChanged( table,
                                                     PROP_HAS_H_SCROLL_BAR,
                                                     hasHScrollBar( table ),
@@ -370,7 +370,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeLeftOffset( final Table table ) throws IOException {
+  private static void writeLeftOffset( Table table ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( table );
     Integer newValue = getLeftOffset( table );
     writer.set( PROP_LEFT_OFFSET, "scrollLeft", newValue, DEFAULT_LEFT_OFFSET );
@@ -379,14 +379,14 @@ public final class TableLCA extends AbstractWidgetLCA {
   ////////////////
   // Cell tooltips
 
-  private static void writeEnableCellToolTip( final Table table ) throws IOException {
+  private static void writeEnableCellToolTip( Table table ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( table );
     String prop = PROP_ENABLE_CELL_TOOLTIP;
     Boolean newValue = new Boolean( CellToolTipUtil.isEnabledFor( table ) );
     writer.set( prop, "enableCellToolTip", newValue, Boolean.FALSE );
   }
 
-  private static void readCellToolTipTextRequested( final Table table ) {
+  private static void readCellToolTipTextRequested( Table table ) {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
     adapter.setToolTipText( null );
     String event = JSConst.EVENT_CELL_TOOLTIP_REQUESTED;
@@ -408,7 +408,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeCellToolTipText( final Table table ) throws IOException {
+  private static void writeCellToolTipText( Table table ) throws IOException {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
     String text = adapter.getToolTipText();
     if( text != null ) {
@@ -419,7 +419,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static TableItem getItemById( final Table table, final String itemId )
+  private static TableItem getItemById( Table table, String itemId )
   {
     TableItem result = null;
     TableItem[] items = table.getItems();
@@ -446,25 +446,25 @@ public final class TableLCA extends AbstractWidgetLCA {
     return item;
   }
 
-  private static Boolean hasHScrollBar( final Table table ) {
+  private static Boolean hasHScrollBar( Table table ) {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     return Boolean.valueOf( tableAdapter.hasHScrollBar() );
   }
 
-  private static Boolean hasVScrollBar( final Table table ) {
+  private static Boolean hasVScrollBar( Table table ) {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     return Boolean.valueOf( tableAdapter.hasVScrollBar() );
   }
 
-  private static Integer getLeftOffset( final Table table ) {
+  private static Integer getLeftOffset( Table table ) {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     return new Integer( tableAdapter.getLeftOffset() );
   }
 
-  private static Boolean hasScrollBarsSelectionListener( final Table table ) {
+  private static Boolean hasScrollBarsSelectionListener( Table table ) {
     boolean result = false;
     ScrollBar horizontalBar = table.getHorizontalBar();
     if( horizontalBar != null ) {
@@ -477,22 +477,19 @@ public final class TableLCA extends AbstractWidgetLCA {
     return Boolean.valueOf( result );
   }
 
-  private static void processScrollBarSelection( final ScrollBar scrollBar,
-                                                 final int selection )
-  {
+  private static void processScrollBarSelection( ScrollBar scrollBar, int selection ) {
     if( scrollBar != null ) {
       scrollBar.setSelection( selection );
       if( SelectionEvent.hasListener( scrollBar ) ) {
         int eventId = SelectionEvent.WIDGET_SELECTED;
         SelectionEvent evt = new SelectionEvent( scrollBar, null, eventId );
-        evt.stateMask
-          = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+        evt.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
         evt.processEvent();
       }
     }
   }
 
-  static Boolean alwaysHideSelection( final Table table ) {
+  static Boolean hasAlwaysHideSelection( Table table ) {
     Boolean result = Boolean.FALSE;
     Object data = table.getData( Table.ALWAYS_HIDE_SELECTION );
     if( Boolean.TRUE.equals( data ) ) {
@@ -500,4 +497,5 @@ public final class TableLCA extends AbstractWidgetLCA {
     }
     return result;
   }
+
 }

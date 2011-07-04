@@ -6,18 +6,17 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 /**
- * Used to represent a visible TreeItem.
+ * Represents a visible TreeItem.
  */
- 
 qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
 
   extend : qx.ui.basic.Terminator,
-    
+
   construct : function() {
     this.base( arguments );
     this.setSelectable( false ); // Prevents user from selecting text
@@ -39,7 +38,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
   },
 
   members : {
-    
+
     renderItem : function( item, config, selected, hoverElement ) {
       this._usedNodes = 0;
       if( item != null ) {
@@ -65,7 +64,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
 
     isCheckBoxTarget : function( event ) {
       var node = event.getDomTarget();
-      return this._checkBoxElement !== null && this._checkBoxElement === node;      
+      return this._checkBoxElement !== null && this._checkBoxElement === node;
     },
 
     isSelectionClick : function( event, fullSelection ) {
@@ -78,11 +77,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       }
       return result;
     },
-    
+
     updateEvenState : function( index ) {
       this._setState( "even", index % 2 == 0 );
     },
-    
+
     setLinesVisible : function( value ) {
       this._setState( "linesvisible", value );
     },
@@ -126,18 +125,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         delete this.__states[ state ];
       }
     },
-    
+
     _getStyleMap : function() {
       var manager = qx.theme.manager.Appearance.getInstance();
-      return manager.styleFrom( this.getAppearance(), this.__states );      
+      return manager.styleFrom( this.getAppearance(), this.__states );
     },
-    
+
     _styleFromMap : function() {
-      // TODO [tb] : Overwrites (now) useless function from Widget.js 
+      // TODO [tb] : Overwrites (now) useless function from Widget.js
       //             Find a clean way to disable renderAppearance.
       //             This would need changes to Widget.js
     },
-    
+
     _renderBackground : function( item, config, selected ) {
       // TODO [tb] : Support gradient
       var color = null
@@ -149,17 +148,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       // Note: "undefined" is a string stored in the themestore
       this.setBackgroundColor( color != "undefined" ? color : null );
     },
-    
+
     _getRenderThemingBackground : function( item, config, selected ) {
       var renderFullSelection = selected && config.fullSelection;
       var hasItemBackground = item !== null && item.getBackground() !== null;
-      var result =    !hasItemBackground 
-                   || renderFullSelection 
-                   || this._hasHoverBackground() 
-                   || config.enabled === false; 
+      var result =    !hasItemBackground
+                   || renderFullSelection
+                   || this._hasHoverBackground()
+                   || config.enabled === false;
       return result;
     },
-    
+
     _hasHoverBackground : function() {
       // TODO [tb] : This detection is not prefect; Should the item be hovered,
       // but a hover-independent theming-background be set, this returns true.
@@ -198,11 +197,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
           states.expanded = true;
         } else {
           states.collapsed = true;
-        } 
+        }
       }
       if( hoverElement !== null && hoverElement === this._expandElement ) {
         states.over = true;
-      } 
+      }
       return this._getImageFromAppearance( "indent", states );
     },
 
@@ -211,21 +210,21 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       states.line = true;
       return this._getImageFromAppearance( "indent", states );
     },
-    
+
     _getParentStates : function( config ) {
       var result = {};
       if( config.variant ) {
-        result[ config.variant ] = true; 
+        result[ config.variant ] = true;
       }
       return result;
     },
 
     _getImageFromAppearance : function( image, states ) {
-      var appearance = this.getAppearance() + "-" + image; 
+      var appearance = this.getAppearance() + "-" + image;
       var manager = qx.theme.manager.Appearance.getInstance();
       var styleMap = manager.styleFrom( appearance, states );
       var valid = styleMap && styleMap.backgroundImage;
-      return valid ? styleMap.backgroundImage : null;      
+      return valid ? styleMap.backgroundImage : null;
     },
 
     _addIndentSymbol : function( level, config, source ) {
@@ -234,7 +233,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var cellWidth = config.itemWidth[ config.treeColumn ];
       if( nextLevelOffset <= cellWidth ) {
         var offset = level * config.indentionWidth;
-        var height = this.getHeight(); 
+        var height = this.getHeight();
         var width = nextLevelOffset - offset;
         var element = this._getImageElement( 3 );
         this._setImage( element, source, config.enabled );
@@ -263,7 +262,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
 
     _renderCells : function( item, config, selected, hoverElement ) {
       var columns = this._getColumnCount( config );
-      if( !config.fullSelection && selected ) { 
+      if( !config.fullSelection && selected ) {
         this._renderStates( item, config, false, hoverElement );
       }
       for( var i = 0; i < columns; i++ ) {
@@ -285,7 +284,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         }
       }
     },
-    
+
     _renderSelectionBackground : function( item, cell, config ) {
       if( this._styleMap.itemBackground !== null ) {
         var element = this._getBackgroundElement( 2 );
@@ -342,12 +341,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         //do not reset since we are about to reassign
         var left = this._getItemTextLeft( item, cell, config );
         var width = this._getItemTextWidth( item, cell, config );
-        element.style.verticalAlign = "middle";  
+        element.style.verticalAlign = "middle";
         element.style.whiteSpace = "nowrap";
         if( this._isTreeColumn( cell, config ) ) {
-          element.style.textAlign = "left";  
-        } else {          
-          element.style.textAlign = this._getAlignment( cell, config );  
+          element.style.textAlign = "left";
+        } else {
+          element.style.textAlign = this._getAlignment( cell, config );
         }
         element.innerHTML = text;
         this._setForeground( element, this._getCellColor( item, cell, config ) );
@@ -358,12 +357,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       }
       return element;
     },
-    
+
     _getCellBackground : function( item, cell, config ) {
       var result;
-      if(    this.hasState( "selected" ) 
-          || config.enabled === false 
-          || this._hasHoverBackground() 
+      if(    this.hasState( "selected" )
+          || config.enabled === false
+          || this._hasHoverBackground()
       ) {
         result = "undefined";
       } else {
@@ -371,23 +370,23 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       }
       return result;
     },
-    
+
     _getCellColor : function( item, cell, config ) {
       var result = item.getCellForeground( cell )
-      if(    result === null 
-          || result === "" 
-          || config.enabled === false 
-          || this.hasState( "selected" ) 
+      if(    result === null
+          || result === ""
+          || config.enabled === false
+          || this.hasState( "selected" )
           || this._hasHoverBackground()
       ) {
         result = this._styleMap.itemForeground;
-        if( result === "undefined" ) { 
+        if( result === "undefined" ) {
           result = config.textColor;
         }
       }
       return result;
     },
-    
+
     _getCellFont : function( item, cell, config ) {
       var result = item.getCellFont( cell );
       if( result === null || result === "" ) {
@@ -395,7 +394,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       }
       return result;
     },
-    
+
     _getVisualTextWidth : function( item, cell, config ) {
       var text = item.getText( cell );
       var font = this._getCellFont( item, cell, config );
@@ -404,18 +403,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       this._setFont( element, font );
       return element.scrollWidth;
     },
-    
+
     _renderAsUnfocused : function( config ) {
       return !config.focused && !this.hasState( "dnd_selected" );
     },
-    
+
     _renderAsSelected : function( config, selected ) {
     	var result =    ( selected || this.hasState( "dnd_selected" ) )
     	             && ( !config.hideSelection || config.focused )
     	             && !config.alwaysHideSelection;
     	return result;
     },
-    
+
     /////////////
     // DOM-Helper
 
@@ -449,7 +448,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
 
     _setBounds : function( element, x, y, width, height ) {
-      try{ 
+      try{
         element.style.left = x + "px";
         element.style.top = y + "px";
         element.style.width = width + "px";
@@ -467,7 +466,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var opacity = enabled ? 1 : 0.3;
       org.eclipse.rwt.HtmlUtil.setBackgroundImage( element, src, opacity );
     },
-    
+
     _getTextElement : function( zIndex ) {
       var result = this._getNextElement( zIndex );
       org.eclipse.rwt.HtmlUtil.setBackgroundImage( result, null );
@@ -475,21 +474,21 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       // NOTE: It's important for the iPad not to set innerHTML twice. See bug 323988
       return result;
     },
-    
+
     _getImageElement : function( zIndex ) {
       var result = this._getNextElement( zIndex );
       result.innerHTML = "";
       result.style.backgroundColor = "";
       return result;
     },
-        
+
     _getBackgroundElement : function( zIndex ) {
       var result = this._getNextElement( zIndex );
       org.eclipse.rwt.HtmlUtil.setBackgroundImage( result, null );
       result.innerHTML = "";
       return result;
     },
-        
+
     _getNextElement : function( zIndex ) {
       var result;
       var node = this._getTargetNode();
@@ -499,14 +498,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       } else {
         result = document.createElement( "div" );
         result.style.position = "absolute";
-        result.style.overflow = "hidden";  
+        result.style.overflow = "hidden";
         node.appendChild( result );
       }
       result.style.zIndex = zIndex;
       this._usedNodes++; //TODO store in element? (method could be static again)
       return result;
     },
-    
+
     _hideRemainingElements : function() {
       var node = this._getTargetNode();
       for( var i = this._usedNodes; i < node.childNodes.length; i++ ) {
@@ -520,7 +519,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     _getCheckBoxLeft : function( item, config ) {
       return this._correctOffset( config.checkBoxLeft, item, config );
     },
-    
+
     _getCheckBoxWidth : function( item, config ) {
       var result = config.checkBoxWidth;
       var offset = this._getCheckBoxLeft( item, config );
@@ -591,7 +590,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       // NOTE [tb] : Shoud actually add the treeColumns own offset, assumes 0 now.
       return config.indentionWidth * level;
     },
-    
+
     _getColumnCount : function( config ) {
       return Math.max( 1, config.columnCount );
     },
@@ -599,14 +598,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     _isTreeColumn : function( columnIndex, config ) {
       return columnIndex === config.treeColumn;
     },
-    
+
     //////////////
     // DND-Support
-    
+
    supportsDrop : function() {
      return true;
    }
-        
+
   }
-  
+
 } );

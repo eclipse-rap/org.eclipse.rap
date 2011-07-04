@@ -60,7 +60,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._registerListeners();
     this._parseArgsMap( argsMap );
   },
-  
+
   destruct : function() {
     this._rootItem.removeEventListener( "update", this._onItemUpdate, this );
     this._rootItem.dispose();
@@ -133,7 +133,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
       this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );
       this._rowContainer.setSelectionProvider( this.isItemSelected, this );
-      this._rowContainer.setPostRenderFunction( this._vertScrollBar.autoEnableMerge, 
+      this._rowContainer.setPostRenderFunction( this._vertScrollBar.autoEnableMerge,
                                                 this._vertScrollBar );
     },
 
@@ -181,11 +181,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     ///////////////////////////
     // API for server - general
-    
+
     setItemCount : function( value ) {
       this._rootItem.setItemCount( value );
     },
-    
+
     setHeaderVisible : function( value ) {
       this._columnArea.setDisplay( value );
       this._layoutX();
@@ -204,21 +204,21 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._rowContainer.setRowHeight( height );
       this._scheduleUpdate( "scrollHeight" );
     },
-    
+
     setColumnCount : function( count ) {
       this._config.columnCount = count;
       this._scheduleUpdate();
       this._updateScrollWidth();
       this._renderGridVertical();
     },
-    
-    setItemMetrics : function( columnIndex, 
-                               left, 
-                               width, 
-                               imageLeft, 
-                               imageWidth, 
-                               textLeft, 
-                               textWidth ) 
+
+    setItemMetrics : function( columnIndex,
+                               left,
+                               width,
+                               imageLeft,
+                               imageWidth,
+                               textLeft,
+                               textWidth )
     {
       this._config.itemLeft[ columnIndex ] = left;
       this._config.itemWidth[ columnIndex ] = width;
@@ -230,18 +230,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._renderGridVertical();
       this._updateScrollWidth();
     },
-        
+
     setTreeColumn : function( columnIndex ) {
       this._config.treeColumn = columnIndex;
     },
-    
+
     setTopItemIndex : function( index ) {
       this._updateScrollHeight();
       this._vertScrollBar.setValue( index * this._itemHeight );
       if( !this._inServerResponse() ) {
         qx.ui.core.Widget.flushGlobalQueues();
       }
-        
+
     },
 
     setScrollLeft: function( value ) {
@@ -252,12 +252,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._selectItem( item, false );
       this._scheduleItemUpdate( item );
     },
-    
+
     deselectItem : function( item ) {
       this._deselectItem( item, false );
       this._scheduleItemUpdate( item );
     },
-    
+
     setFocusItem : function( item ) {
       this._focusItem = item;
       this._sendItemFocusChange()
@@ -275,16 +275,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._layoutX();
       this._layoutY();
     },
-    
+
     setHasSelectionListeners : function( value ) {
       this._hasSelectionListeners = value;
     },
-    
+
     setAlignment : function( column, value ) {
       this._config.alignment[ column ] = value;
       this._scheduleUpdate();
     },
-    
+
     setLinesVisible : function( value ) {
       this._config.linesVisible = value;
       if( value ) {
@@ -298,6 +298,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._renderGridVertical();
     },
 
+    // Entirely hides the selection to allow for fake cell selection
+    // See SWT Table.ALWAYS_HIDE_SELECTION
     setAlwaysHideSelection : function( value ) {
       this._config.alwaysHideSelection = value;
       this._scheduleUpdate();
@@ -319,10 +321,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
       this.base( arguments, state );
     },
-        
+
     ////////////////////////
     // API for Tests and DND
-    
+
     getRenderConfig : function() {
       return this._config;
     },
@@ -330,25 +332,25 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     getRootItem : function() {
       return this._rootItem;
     },
-    
-    isFocusItem : function( item ) { 
+
+    isFocusItem : function( item ) {
       return this._focusItem === item;
     },
 
     isItemSelected : function( item ) {
       return this._selection.indexOf( item ) != -1;
     },
-    
+
     //////////////////////
     // API for TableColumn
-    
+
     _addColumn : function( column ) {
       column.setHeight( "100%" );
       column.addEventListener( "changeWidth", this._updateScrollWidth, this );
       this._hookColumnMove( column );
       this._columnArea.add( column );
     },
-    
+
     _hookColumnMove : function( column ) {
       column.addEventListener( "changeLeft", this._updateScrollWidth, this );
     },
@@ -359,8 +361,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _removeColumn : function( column ) {
       this._unhookColumnMove( column );
-      column.removeEventListener( "changeWidth", 
-                                  this._updateScrollWidth, 
+      column.removeEventListener( "changeWidth",
+                                  this._updateScrollWidth,
                                   this );
       this._columnArea.remove( column );
       this._updateScrollWidth();
@@ -390,7 +392,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _hideResizeLine : function() {
       this._resizeLine.setStyleProperty( "visibility", "hidden" );
     },
-    
+
     ////////////////
     // event handler
 
@@ -447,7 +449,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._onRowMouseDown( target, event );
       }
     },
-    
+
     _onMouseUp : function( event ) {
       if( this._delayedSelection ) {
         this._onMouseDown( event );
@@ -480,14 +482,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       } else {
         if( this._hasMultiSelection ) {
           if( !this._delayMultiSelect( event, item ) ) {
-            this._multiSelectItem( event, item );          
+            this._multiSelectItem( event, item );
           }
         } else {
-          this._singleSelectItem( event, item );            
+          this._singleSelectItem( event, item );
         }
-      }      
+      }
     },
-    
+
     _delayMultiSelect : function( event, item ) {
       if( this._isDragSource() && this.isItemSelected( item ) && event.getType() === "mousedown" ) {
         this._delayedSelection = true;
@@ -543,7 +545,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
       this._stopKeyEvent( event );
     },
-    
+
     _stopKeyEvent : function( event ) {
       switch( event.getKeyIdentifier() ) {
         case "Up":
@@ -563,14 +565,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _onColumnAreaAppear : function() {
       this._columnArea.setScrollLeft( this._horzScrollBar.getValue() );
     },
-    
+
     _handleKeyEnter : function( event ) {
       this._sendSelectionEvent( this._focusItem, true, null );
     },
-    
+
     _handleKeySpace : function( event ) {
       if( event.isCtrlPressed() || !this.isItemSelected( this._focusItem ) ) {
-        // NOTE: When space does not change the selection, the SWT Tree still fires an selection 
+        // NOTE: When space does not change the selection, the SWT Tree still fires an selection
         //       event, while the Table doesnt. Table behavior is used since it makes more sense.
         var itemIndex = this._focusItem.getFlatIndex();
         this._handleKeyboardSelect( event, this._focusItem, itemIndex );
@@ -579,7 +581,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._toggleCheckSelection( this._focusItem );
       }
     },
-    
+
     _handleKeyUp : function( event ) {
       var item = this._focusItem.getPreviousItem();
       if( item != null ) {
@@ -587,7 +589,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._handleKeyboardSelect( event, item, itemIndex );
       }
     },
-    
+
     _handleKeyDown : function( event ) {
       var item = this._focusItem.getNextItem();
       if( item != null ) {
@@ -595,7 +597,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._handleKeyboardSelect( event, item, itemIndex );
       }
     },
-    
+
     _handleKeyPageUp : function( event ) {
       var oldIndex = this._focusItem.getFlatIndex();
       var offset = this._rowContainer.getChildrenLength() - 2;
@@ -604,7 +606,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var itemIndex = item.getFlatIndex();
       this._handleKeyboardSelect( event, item, itemIndex );
     },
-    
+
     _handleKeyPageDown : function( event ) {
       var oldIndex = this._focusItem.getFlatIndex();
       var offset = this._rowContainer.getChildrenLength() - 2;
@@ -614,12 +616,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var itemIndex = item.getFlatIndex();
       this._handleKeyboardSelect( event, item, itemIndex );
     },
-    
+
     _handleKeyHome : function( event ) {
       var item = this.getRootItem().getChild( 0 );
       this._handleKeyboardSelect( event, item, 0 );
     },
-    
+
     _handleKeyEnd : function( event ) {
       var item = this.getRootItem().getLastChild();
       var time = new Date();
@@ -636,7 +638,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._handleKeyboardSelect( event, item, itemIndex, true );
       }
     },
-    
+
     _handleKeyRight : function( event ) {
       if( this._focusItem.hasChildren() ) {
         if( !this._focusItem.isExpanded() ) {
@@ -648,31 +650,31 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         }
       }
     },
-    
-    _handleKeyboardSelect : function( event, item, itemIndex, suppressMulti ) { 
+
+    _handleKeyboardSelect : function( event, item, itemIndex, suppressMulti ) {
       if( this._hasMultiSelection && !suppressMulti ) {
         this._multiSelectItem( event, item );
       } else {
-        this._singleSelectItem( event, item );            
+        this._singleSelectItem( event, item );
       }
       this._scrollIntoView( itemIndex );
     },
 
     /////////////////
     // render content
-    
+
     _renderItemUpdate : function( item, event ) {
-      if( item.isDisplayable() ) {      
+      if( item.isDisplayable() ) {
         switch( event.getData() ) {
           case "expanded":
           case "collapsed":
-            this._scheduleUpdate( "scrollHeight" ); 
+            this._scheduleUpdate( "scrollHeight" );
           break;
           case "add":
           case "remove":
             // NOTE: the added/removed item is a child of this item
             if( item.isExpanded() ) {
-              this._scheduleUpdate( "scrollHeight" ); 
+              this._scheduleUpdate( "scrollHeight" );
             } else {
               this._scheduleItemUpdate( item );
             }
@@ -682,17 +684,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
               this._scheduleItemUpdate( item );
             } else {
               this._rowContainer.renderItem( item );
-            }  
+            }
           break;
         }
       }
     },
-    
+
     _scheduleItemUpdate : function( item ) {
       this._renderQueue[ item.toHashCode() ] = item;
       this.addToQueue( "updateRows" );
     },
-    
+
     _scheduleUpdate : function( task ) {
       if( task !== undefined ) {
         this.addToQueue( task );
@@ -722,9 +724,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
     },
 
-    //////////// 
+    ////////////
     // scrolling
-    
+
     _updateScrollHeight : function() {
       var itemCount = this.getRootItem().getVisibleChildrenCount();
       var height = itemCount * this._itemHeight;
@@ -736,12 +738,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         }
       }
     },
-    
+
     _updateTopItem : function( render ) {
       var topItem = this._rootItem.findItemByFlatIndex( this._topItemIndex );
       this._rowContainer.setTopItem( topItem, this._topItemIndex, render );
     },
-    
+
     _updateScrollWidth : function() {
       var width = this._getItemWidth();
       this._rowContainer.setRowWidth( this._getRowWidth() );
@@ -763,7 +765,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._dummyColumn.setLeft( dummyLeft );
       this._dummyColumn.setWidth( dummyWidth );
     },
-    
+
     _getDummyColumnLeft : function() {
       var columns = this._columnArea.getChildren();
       var result = 0;
@@ -783,7 +785,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this.setTopItemIndex( index - this._rowContainer.getChildrenLength() + 2 );
       }
     },
-    
+
     setHasScrollBarsSelectionListener : function( value ) {
       this._hasScrollBarsSelectionListener = value;
       if( value ) {
@@ -799,7 +801,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         var req = org.eclipse.swt.Request.getInstance();
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var id = wm.findIdByWidget( this );
-        var selection = this._getSelectionList();        
+        var selection = this._getSelectionList();
         req.addParameter( id + ".selection", selection );
         this._sendSelectionEvent( item, false, null );
       }
@@ -808,7 +810,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _sendItemCheckedChange : function( item ) {
       if( !this._inServerResponse() ) {
         var req = org.eclipse.swt.Request.getInstance();
-        var wm = org.eclipse.swt.WidgetManager.getInstance();   
+        var wm = org.eclipse.swt.WidgetManager.getInstance();
         var itemId = wm.findIdByWidget( item );
         req.addParameter( itemId + ".checked", item.isChecked() );
         this._sendSelectionEvent( item, false, "check" );
@@ -835,7 +837,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _sendScrollLeftChange : function() {
       // TODO [tb] : There should be a check for _inServerResponse,
-      // but currently this is needed to sync the value with the 
+      // but currently this is needed to sync the value with the
       // server when the scrollbars are hidden by the server.
       var req = org.eclipse.swt.Request.getInstance();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
@@ -857,7 +859,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
           break;
           default:
         }
-      }      
+      }
     },
 
     _sendItemEvent : function( item, type ) {
@@ -883,7 +885,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
           req.addParameter( eventName + ".detail", detail );
         }
         req.send();
-      }      
+      }
     },
 
     _isDoubleClicked : function( event, item ) {
@@ -912,7 +914,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
       return result.join();
     },
-    
+
     _getItemId : function( item ) {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var result;
@@ -921,9 +923,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       } else {
         var parent = item.getParent()
         if( parent.isRootItem() ) {
-          result = wm.findIdByWidget( this );          
+          result = wm.findIdByWidget( this );
         } else {
-          result = wm.findIdByWidget( parent );          
+          result = wm.findIdByWidget( parent );
         }
         result += "#" + parent.indexOf( item );
       }
@@ -935,7 +937,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _singleSelectItem : function( event, item ) {
       if( event instanceof qx.event.type.KeyEvent && event.isCtrlPressed() ) {
-        // NOTE: Apparently in SWT this is only supported by Table, not Tree. 
+        // NOTE: Apparently in SWT this is only supported by Table, not Tree.
         //       No reason not to support it in RAP though.
         this._ctrlSelectItem( item );
       } else {
@@ -959,12 +961,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
           this._shiftSelectItem( item );
         } else {
           this._exclusiveSelectItem( item );
-        } 
+        }
       } else {
         this._exclusiveSelectItem( item );
       }
     },
-    
+
     _exclusiveSelectItem : function( item ) {
       this._deselectAll();
       this._leadItem = null;
@@ -1012,7 +1014,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._rowContainer.renderItem( item );
       }
     },
-    
+
     _deselectItem : function( item, render ) {
       if( this.isItemSelected( item ) ) {
         this._selection.splice( this._selection.indexOf( item ), 1 );
@@ -1029,7 +1031,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._rowContainer.renderItem( oldSelection[ i ] );
       }
     },
-    
+
     _toggleCheckSelection : function( item ) {
       if( item.isCached() ) {
         item.setChecked( !item.isChecked() );
@@ -1043,7 +1045,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       while( currentItem !== finalItem ) {
         this._deselectItem( currentItem, false );
         currentItem = currentItem.getNextItem();
-      } 
+      }
     },
 
     _applyFocused : function( newValue, oldValue ) {
@@ -1059,7 +1061,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     _checkDisposedItems : function() {
-      // NOTE : FocusItem might already been fixed by the server. But since this is not 
+      // NOTE : FocusItem might already been fixed by the server. But since this is not
       //        always the case (depending on the server-side widget), we also do it here.
       if( this._focusItem && this._focusItem.isDisposed() ) {
         this._focusItem = null;
@@ -1120,7 +1122,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var lineNr = 0;
       if( this._config.linesVisible ) {
         for( var columnNr = 0; columnNr < this._config.columnCount; columnNr++ ) {
-          lineNr = this._renderVerticalGridline( columnNr, lineNr );          
+          lineNr = this._renderVerticalGridline( columnNr, lineNr );
         }
       }
       while( this._vertGridLines.length > lineNr ) {
@@ -1132,7 +1134,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var newLineNr = lineNr;
       var clientWidth = this._rowContainer.getWidth();
       var left = this._config.itemLeft[ columnNr ] + this._config.itemWidth[ columnNr ] - 1;
-      left -= this._horzScrollBar.getValue(); 
+      left -= this._horzScrollBar.getValue();
       if( left > 0 && left < clientWidth ) {
         var line = this._getVerticalGridline( lineNr );
         line.setLeft( left );
@@ -1161,7 +1163,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     _getHorizontalGridBorder : function() {
-      if( this._horzGridBorder === null ) { 
+      if( this._horzGridBorder === null ) {
         this._horzGridBorder = this._getGridBorder( { "horizontal" : true } );
       }
       return this._horzGridBorder;
@@ -1176,7 +1178,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _getGridBorder : function( state ) {
       var tvGrid = new org.eclipse.swt.theme.ThemeValues( state );
-      var cssElement = qx.lang.String.toFirstUp( this.getAppearance() ) + "-GridLine"; 
+      var cssElement = qx.lang.String.toFirstUp( this.getAppearance() ) + "-GridLine";
       var gridColor = tvGrid.getCssColor( cssElement, "color" );
       tvGrid.dispose();
       var borderWidths = [ 0, 0, 0, 0 ];
@@ -1246,11 +1248,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     // helper
 
     _inServerResponse : function() {
-      return org.eclipse.swt.EventUtil.getSuspended();      
+      return org.eclipse.swt.EventUtil.getSuspended();
     },
 
     _isDragSource : function() {
-      return this.hasEventListeners( "dragstart" ); 
+      return this.hasEventListeners( "dragstart" );
     },
 
     ////////////////////////
@@ -1298,6 +1300,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         this._cellToolTip.setText( text );
       }
     }
-    
+
   }
+
 } );

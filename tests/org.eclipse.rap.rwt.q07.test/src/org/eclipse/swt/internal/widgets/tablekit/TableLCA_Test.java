@@ -334,15 +334,15 @@ public class TableLCA_Test extends TestCase {
 
   public void testWidgetSelectedWithCheck() {
     final SelectionEvent[] events = new SelectionEvent[ 1 ];
-    final Table table = new Table( shell, SWT.CHECK );
+    Table table = new Table( shell, SWT.CHECK );
     TableItem item1 = new TableItem( table, SWT.NONE );
-    final TableItem item2 = new TableItem( table, SWT.NONE );
+    TableItem item2 = new TableItem( table, SWT.NONE );
     table.setSelection( 0 );
     table.addSelectionListener( new SelectionListener() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         events[ 0 ] = event;
       }
-      public void widgetDefaultSelected( final SelectionEvent event ) {
+      public void widgetDefaultSelected( SelectionEvent event ) {
         fail( "unexpected event: widgetDefaultSelected" );
       }
     } );
@@ -369,15 +369,15 @@ public class TableLCA_Test extends TestCase {
 
   public void testWidgetDefaultSelected() {
     final SelectionEvent[] events = new SelectionEvent[ 1 ];
-    final Table table = new Table( shell, SWT.MULTI );
+    Table table = new Table( shell, SWT.MULTI );
     TableItem item1 = new TableItem( table, SWT.NONE );
-    final TableItem item2 = new TableItem( table, SWT.NONE );
+    TableItem item2 = new TableItem( table, SWT.NONE );
     table.setSelection( 0 );
     table.addSelectionListener( new SelectionListener() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         fail( "unexpected event: widgetSelected" );
       }
-      public void widgetDefaultSelected( final SelectionEvent event ) {
+      public void widgetDefaultSelected( SelectionEvent event ) {
         events[ 0 ] = event;
       }
     } );
@@ -464,7 +464,7 @@ public class TableLCA_Test extends TestCase {
     shell.setSize( 100, 100 );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         table[ 0 ] = new Table( shell, SWT.VIRTUAL );
         table[ 0 ].setItemCount( 500 );
         table[ 0 ].setSize( 90, 90 );
@@ -497,11 +497,11 @@ public class TableLCA_Test extends TestCase {
 
       private static final long serialVersionUID = 1L;
 
-      public void beforePhase( final PhaseEvent event ) {
+      public void beforePhase( PhaseEvent event ) {
         table.redraw();
       }
 
-      public void afterPhase( final PhaseEvent event ) {
+      public void afterPhase( PhaseEvent event ) {
       }
 
       public PhaseId getPhaseId() {
@@ -541,10 +541,10 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
-      public void beforePhase( final PhaseEvent event ) {
+      public void beforePhase( PhaseEvent event ) {
         table.clear( lastItemIndex );
       }
-      public void afterPhase( final PhaseEvent event ) {
+      public void afterPhase( PhaseEvent event ) {
       }
       public PhaseId getPhaseId() {
         return PhaseId.PROCESS_ACTION;
@@ -826,19 +826,30 @@ public class TableLCA_Test extends TestCase {
     assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
   }
 
-  public void testAlwaysHideSelection() throws IOException {
+  public void testHasAlwaysHideSelection_InitiallyFalse() {
     Table table = new Table( shell, SWT.NONE );
-    assertEquals( Boolean.FALSE, TableLCA.alwaysHideSelection( table ) );
-    Fixture.fakeNewRequest();
+
+    assertEquals( Boolean.FALSE, TableLCA.hasAlwaysHideSelection( table ) );
+  }
+
+  public void testHasAlwaysHideSelection_TrueAfterSetData() {
+    Table table = new Table( shell, SWT.NONE );
     table.setData( Table.ALWAYS_HIDE_SELECTION, Boolean.TRUE );
-    assertEquals( Boolean.TRUE, TableLCA.alwaysHideSelection( table ) );
+
+    assertEquals( Boolean.TRUE, TableLCA.hasAlwaysHideSelection( table ) );
+  }
+
+  public void testRenderAlwaysHideSelection() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+    table.setData( Table.ALWAYS_HIDE_SELECTION, Boolean.TRUE );
     TableLCA lca = new TableLCA();
+
+    Fixture.fakeNewRequest();
     lca.renderChanges( table );
+
     String markup = Fixture.getAllMarkup();
     String expected = "w.setAlwaysHideSelection( true )";
-    assertTrue( markup.indexOf( expected ) != -1 );
-    table.setData( Table.ALWAYS_HIDE_SELECTION, "true" );
-    assertEquals( Boolean.FALSE, TableLCA.alwaysHideSelection( table ) );
+    assertTrue( markup.contains( expected ) );
   }
 
   public void testWriteScrollbarsVisible() throws IOException {
@@ -958,7 +969,7 @@ public class TableLCA_Test extends TestCase {
     createTableItems( table, 5 );
     final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
     adapter.setCellToolTipProvider( new ICellToolTipProvider() {
-      public void getToolTipText( final Item item, final int columnIndex ) {
+      public void getToolTipText( Item item, int columnIndex ) {
         StringBuffer buffer = new StringBuffer();
         buffer.append( "[" );
         buffer.append( WidgetUtil.getId( item ) );
@@ -984,10 +995,10 @@ public class TableLCA_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 3 );
     final StringBuffer log = new StringBuffer();
-    final ICellToolTipAdapter tableAdapter
+    ICellToolTipAdapter tableAdapter
       = ( ICellToolTipAdapter )table.getAdapter( ICellToolTipAdapter.class );
     tableAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
-      public void getToolTipText( final Item item, final int columnIndex ) {
+      public void getToolTipText( Item item, int columnIndex ) {
         StringBuffer buffer = new StringBuffer();
         buffer.append( "[" );
         buffer.append( WidgetUtil.getId( item ) );
@@ -1137,22 +1148,19 @@ public class TableLCA_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  private static void createTableColumns( final Table table, final int count ) {
+  private static void createTableColumns( Table table, int count ) {
     for( int i = 0; i < count; i++ ) {
       new TableColumn( table, SWT.NONE );
     }
   }
 
-  private static void createTableItems( final Table table, final int count ) {
+  private static void createTableItems( Table table, int count ) {
     for( int i = 0; i < count; i++ ) {
       new TableItem( table, SWT.NONE );
     }
   }
 
-  private static void processCellToolTipRequest( final Table table,
-                                                 final String itemId,
-                                                 final int column )
-  {
+  private static void processCellToolTipRequest( Table table, String itemId, int column ) {
     Fixture.fakeNewRequest( table.getDisplay() );
     String tableId = WidgetUtil.getId( table );
     Fixture.fakeRequestParam( JSConst.EVENT_CELL_TOOLTIP_REQUESTED, tableId );
@@ -1161,7 +1169,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
   }
 
-  private static boolean isItemVirtual( final Table table, final int index ) {
+  private static boolean isItemVirtual( Table table, int index ) {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
     return tableAdapter.isItemVirtual( index );
@@ -1181,7 +1189,5 @@ public class TableLCA_Test extends TestCase {
   private static String indexToId( Table table, int index ) {
     return WidgetUtil.getId( table.getItem( index ) );
   }
-
-
 
 }

@@ -1,14 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {  
+qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
+
   extend : qx.ui.layout.VerticalBoxLayout,
 
   construct : function() {
@@ -41,12 +43,12 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
     this._hoverItem = null;
     this._hoverElement = null;
   },
-  
+
   statics : {
   },
-  
+
   members : {
-    
+
     /////////////////////
     // cunstructor helper
 
@@ -60,21 +62,21 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
         "fullSelection" : false,
         "hideSelection" : false,
         "alwaysHideSelection" : false,
-        "variant" : null, 
-        "selectionPadding" : null, 
-        "indentionWidth" : 16,   
+        "variant" : null,
+        "selectionPadding" : null,
+        "indentionWidth" : 16,
         "hasCheckBoxes" : false,
-        "checkBoxLeft" : null, 
-        "checkBoxWidth" : null, 
-        "columnCount" : 0,    
-        "treeColumn" : 0,    
-        "alignment" : [],   
-        "itemLeft" : [],   
-        "itemWidth" : [],   
-        "itemImageLeft" : [],   
-        "itemImageWidth" : [],   
-        "itemTextLeft" : [],   
-        "itemTextWidth" : []   
+        "checkBoxLeft" : null,
+        "checkBoxWidth" : null,
+        "columnCount" : 0,
+        "treeColumn" : 0,
+        "alignment" : [],
+        "itemLeft" : [],
+        "itemWidth" : [],
+        "itemImageLeft" : [],
+        "itemImageWidth" : [],
+        "itemTextLeft" : [],
+        "itemTextWidth" : []
       };
       return result;
     },
@@ -84,8 +86,8 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
 
     /**
      * Returns a map with values for treeRow configuration. (see _createRenderConfig).
-     * Will not be changed by TreeRow or TreeRowContainer. When doing changes renderAll must 
-     * be called for them take effect. 
+     * Will not be changed by TreeRow or TreeRowContainer. When doing changes renderAll must
+     * be called for them take effect.
      */
     getRenderConfig : function() {
       return this._config;
@@ -99,7 +101,7 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
     },
 
     /**
-     * Calls this function with an item as the parameter. Expects a boolean as return value. 
+     * Calls this function with an item as the parameter. Expects a boolean as return value.
      */
     setSelectionProvider : function( func, context ) {
       this._selectionProvider = [ func, context ];
@@ -119,7 +121,7 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
       }
       this._updateRowCount();
     },
-    
+
     /**
      * has to be set before creating any rows
      */
@@ -133,14 +135,14 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
         this._children[ i ].setBorder( border );
       }
     },
-    
+
     setRowLinesVisible : function( value ) {
     	this._linesVisible = value;
       for( var i = 0; i < this._children.length; i++ ) {
         this._children[ i ].setLinesVisible( value );
       }
     },
-    
+
     setTopItem : function( item, index, render ) {
       // TODO [tb] : write test for optimized render
       this._topItem = item;
@@ -171,7 +173,7 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
         this._postRender[ 0 ].call( this._postRender[ 1 ], renderTime );
       }
     },
-    
+
     renderItemQueue : function( queue ) {
       for( var key in queue ) {
         var item = queue[ key ];
@@ -181,7 +183,7 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
         }
       }
     },
-    
+
     renderItem : function( item ) {
       if( this._isCreated && item != null ) {
         var row = this._findRowByItem( item );
@@ -202,7 +204,7 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
       var index = this._children.indexOf( targetRow );
       return index !== -1 ? this._items[ index ] : null;
     },
-    
+
     getHoverItem : function() {
       return this._hoverItem;
     },
@@ -215,7 +217,7 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
       var rowsNeeded = Math.round( ( this.getHeight() / this._rowHeight ) + 0.5 );
       while( this._children.length < rowsNeeded ) {
         var row = new org.eclipse.rwt.widgets.TreeRow( this.getParent() );
-        row.setAppearance( this._rowAppearance ); 
+        row.setAppearance( this._rowAppearance );
         row.setWidth( this._rowWidth );
         row.setHeight( this._rowHeight );
         row.setBorder( this._rowBorder );
@@ -258,11 +260,11 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
         this._items[ row ] = null;
       }
     },
-    
+
     _renderRow : function( row, item ) {
-      row.renderItem( item, 
-                      this._config, 
-                      this._isSelected( item ), 
+      row.renderItem( item,
+                      this._config,
+                      this._isSelected( item ),
                       this._getHoverElement( item ) );
     },
 
@@ -285,7 +287,7 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
       var internal = row === event.getRelatedTarget();
       if( internal && row instanceof org.eclipse.rwt.widgets.TreeRow ) {
         var hoverable = row.isCheckBoxTarget( event ) || row.isExpandSymbolTarget( event );
-        if( this._hoverItem !== null && hoverable ) { 
+        if( this._hoverItem !== null && hoverable ) {
           this.renderItem( this._hoverItem );
         }
       }
@@ -297,7 +299,7 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
         if( event.getType() === "mouseout" ) {
           var oldItem = this._hoverItem;
           this._hoverItem = null;
-          this.renderItem( oldItem );          
+          this.renderItem( oldItem );
         } else {
           this._hoverItem = this.findItemByRow( target );
           this._renderRow( target, this._hoverItem );
@@ -322,7 +324,7 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
 
     _applyHeight : function( value, oldValue ) {
       this.base( arguments, value, oldValue );
-      this._updateRowCount();      
+      this._updateRowCount();
     },
 
     _afterAppear : function() {
@@ -331,4 +333,5 @@ qx.Class.define("org.eclipse.rwt.widgets.TreeRowContainer", {
     }
 
   }
+
 } );
