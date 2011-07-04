@@ -15,6 +15,18 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
 
   statics : {
     
+    /////////////////
+    // API for Server
+    
+    setFixedColumns : function( tree, value ) {
+      var container = tree.getRowContainer();
+      if( container.setFixedColumns ) {
+        container.setFixedColumns( value );
+        tree.update();
+      }
+    },
+
+    
     ///////////////
     // API for Tree
     
@@ -24,8 +36,8 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
 
     createTreeRowContainer : function( argsmap ) {
       var result;
-      if( typeof argsmap.fixedColumns === "number" ) {
-        result = this._createContainerWrapper( argsmap.fixedColumns );
+      if( argsmap.splitContainer ) {
+        result = this._createContainerWrapper();
       } else {
         result = new org.eclipse.rwt.widgets.TreeRowContainer();
       }
@@ -64,7 +76,7 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       return columnIndex;
     },
 
-    _createContainerWrapper : function( fixedColumns ) {
+    _createContainerWrapper : function() {
       if( !this._CONTAINERPROTO._protoInit ) {
         for( var i = 0; i < this._CONTAINER_DELEGATES.length; i++ ) {
           this._createContainerDelegater( this._CONTAINER_DELEGATES[ i ] );
@@ -75,7 +87,7 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
         this._CONTAINERPROTO._protoInit = true;
         this._CONTAINERCONSTR.prototype = this._CONTAINERPROTO;
       }
-      return new this._CONTAINERCONSTR( fixedColumns );
+      return new this._CONTAINERCONSTR();
     },
 
     _createContainerDelegater : function( funcName ) {
@@ -120,8 +132,8 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       "getChildrenLength"
     ],
 
-    _CONTAINERCONSTR : function( fixedColumns ) {
-      this._fixedColumns = fixedColumns;
+    _CONTAINERCONSTR : function() {
+      this._fixedColumns = 0;
       this._container = [];
       this._container[ 0 ] = new org.eclipse.rwt.widgets.TreeRowContainer();
       this._container[ 1 ] = new org.eclipse.rwt.widgets.TreeRowContainer();
@@ -132,9 +144,9 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       this.addEventListener( "mouseover", this._onRowOver, this );
       this.addEventListener( "mouseout", this._onRowOver, this );
     },
-    
+
     _CONTAINERPROTO : {
-      
+
       _protoInit : false,
 
       ///////////////////
@@ -142,6 +154,10 @@ qx.Class.define( "org.eclipse.rwt.TreeUtil", {
       
       getSubContainer : function( pos ) {
         return this._container[ pos ] || null;
+      },
+      
+      setFixedColumns : function( value ) {
+        this._fixedColumns = value;
       },
       
       getFixedColumns : function() {

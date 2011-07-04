@@ -141,7 +141,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
         this._renderVerticalGridline( i );          
       }
       while( this._vertGridLines.length > linesNeeded ) {
-        this._getTargetNode().removeChild( this._vertGridLines.pop() );
+        var line = this._vertGridLines.pop();
+        if( line ) {
+          this._getTargetNode().removeChild( line );
+        }
       }
     },
 

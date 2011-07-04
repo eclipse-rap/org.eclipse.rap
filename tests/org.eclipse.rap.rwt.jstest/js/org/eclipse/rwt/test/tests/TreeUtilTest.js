@@ -211,8 +211,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = new org.eclipse.rwt.widgets.Tree( { 
         "appearance": "table",
-        "fixedColumns" : 3
+        "splitContainer" : true
       } );
+      org.eclipse.rwt.TreeUtil.setFixedColumns( tree, 3 );
       // first 3 columns fixed -> one extra contianer for first 3
       assertIdentical( tree, tree._rowContainer.getSubContainer( 0 ).getParent() );
       assertIdentical( tree, tree._rowContainer.getSubContainer( 1 ).getParent() );
@@ -222,12 +223,33 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       tree.destroy();
     },
 
+    testIgnoreFixedColumnsWithoutSplitContainer : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = new org.eclipse.rwt.widgets.Tree( { 
+        "appearance": "table"
+      } );
+      org.eclipse.rwt.TreeUtil.setFixedColumns( tree, 3 );      
+      tree.addToDocument();
+      testUtil.flush();
+      assertTrue( tree._rowContainer instanceof org.eclipse.rwt.widgets.TreeRowContainer );
+      tree.destroy();
+    },
+
     testCreateNormalTreeWithFixedColumns : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       assertIdentical( tree, tree._rowContainer.getSubContainer( 0 ).getParent() );
       assertIdentical( tree, tree._rowContainer.getSubContainer( 1 ).getParent() );
       assertNull( tree, tree._rowContainer.getSubContainer( 2 ) );
+      tree.destroy();
+    },
+
+    testChangeFixedColumns : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createSplitTree();
+      assertEquals( 2, tree.getRowContainer().getFixedColumns() );
+      org.eclipse.rwt.TreeUtil.setFixedColumns( tree, 3 );      
+      assertEquals( 3, tree.getRowContainer().getFixedColumns() );      
       tree.destroy();
     },
 
@@ -402,8 +424,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     _createSplitContainer : function() {
       // column order: 2,0 - 1,3,4
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var argsMap = { "fixedColumns" : 2 };
+      var argsMap = { "splitContainer" : true };
       var result = org.eclipse.rwt.TreeUtil.createTreeRowContainer( argsMap );
+      result.setFixedColumns( 2 );
       result.setBaseAppearance( "table" );
       result.setSelectionProvider( function(){ return true; }, {} );
       result.setWidth( 100 );
@@ -428,7 +451,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var args = {
         "appearance" : "table",
-        "fixedColumns" : 2 
+        "splitContainer" : true 
       };
       if( option ) {
         args[ option ] = true;
@@ -440,6 +463,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       args[ "selectionPadding" ] = [ 2, 4 ];
       args[ "indentionWidth" ] = 16;
       var tree = new org.eclipse.rwt.widgets.Tree( args );
+      org.eclipse.rwt.TreeUtil.setFixedColumns( tree, 2 );
       tree.setTreeColumn( -1 );
       tree.setItemHeight( 20 );
       tree.setLeft( 0 );

@@ -2321,9 +2321,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setLinesVisible( true );
       testUtil.flush();
       var line = tree._rowContainer._getTargetNode().childNodes[ offset ];
-      assertTrue( line.style.border !== "" );
       assertEquals( 1, line.style.zIndex );
       assertEquals( "0px", line.style.width );
+      assertTrue( line.style.border !== "" || line.style.borderRight !== "" );
       tree.destroy();
     },
 
@@ -3309,10 +3309,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       if( option === "check" ) {
         args[ "checkBoxMetrics" ] = arg;
       }
+      if( option === "fixedColumns" ) {
+        args[ "splitContainer" ] = true;
+      }
       args[ "fullSelection" ] = true;
       args[ "selectionPadding" ] = [ 2, 4 ];
       args[ "indentionWidth" ] = 16;
       var tree = new org.eclipse.rwt.widgets.Tree( args );
+      if( option === "fixedColumns" ) {
+        org.eclipse.rwt.TreeUtil.setFixedColumns( tree, arg );
+      }
       tree.setItemHeight( 20 );
       tree.setLeft( 0 );
       tree.setTop( 0 );

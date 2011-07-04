@@ -98,6 +98,16 @@ public class TableLCA_Test extends TestCase {
     assertTrue( markup.indexOf( "\"checkBoxMetrics\": [ 3, 15" ) != -1 );
   }
 
+  public void testInitializationWithFixedColumns() throws Exception {
+    Table table = new Table( shell, SWT.NONE );
+    table.setData( "fixedColumns", new Integer( 0 ) );
+    TableLCA lca = new TableLCA();
+    Fixture.fakeResponseWriter();
+    lca.renderInitialization( table );
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.indexOf( "\"splitContainer\": true" ) != -1 );
+  }
+
   public void testPreserveValues() {
     Table table = new Table( shell, SWT.BORDER );
     Fixture.markInitialized( display );
@@ -1124,6 +1134,20 @@ public class TableLCA_Test extends TestCase {
     assertEquals( 1, metrics.length );
     assertEquals( 0, metrics[ 0 ].imageWidth );
   }
+
+
+  public void testWriteFixedColumns() throws IOException {
+    Table table = new Table( shell, SWT.NO_SCROLL );
+    table.setData( "fixedColumns", new Integer( 0 ) );
+    TableLCA lca = new TableLCA();
+    Fixture.fakeNewRequest();
+    lca.renderChanges( table );
+    String markup = Fixture.getAllMarkup();
+    String widgetRef = "wm.findWidgetById( \"" + WidgetUtil.getId( table ) + "\" )";
+    String expected = "TreeUtil.setFixedColumns( " + widgetRef + ", 0 )";
+    assertTrue( markup.indexOf( expected ) == -1 );
+  }
+
 
   protected void setUp() throws Exception {
     Fixture.setUp();

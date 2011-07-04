@@ -333,6 +333,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     getTableHeader : function() {
       return this._columnArea;
     },
+    
+    update : function() {
+      this._scheduleUpdate();
+    },
 
     ////////////////
     // event handler

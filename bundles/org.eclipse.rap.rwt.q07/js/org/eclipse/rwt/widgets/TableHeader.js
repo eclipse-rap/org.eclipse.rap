@@ -17,7 +17,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TableHeader", {
   construct : function( argsMap ) {
     this.base( arguments );
     this.setOverflow( "hidden" );
-    this._fixedColumns = argsMap.fixedColumns != undefined ? argsMap.fixedColumns : 0;
+    this._fixedColumns = argsMap.splitContainer;
     this._scrollWidth = 0;
     this._scrollLeft = 0;
     this._dummyColumn = new qx.ui.basic.Atom();
@@ -44,7 +44,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TableHeader", {
         this.base( arguments, value );
       }
       this._scrollLeft = value;
-      if( this._fixedColumns > 0 ) {
+      if( this._fixedColumns ) {
         for( var i = 0; i < this._children.length; i++ ) {
           if( this._children[ i ].isFixed && this._children[ i ].isFixed() ) {
             this._children[ i ].addToQueue( "left" );
