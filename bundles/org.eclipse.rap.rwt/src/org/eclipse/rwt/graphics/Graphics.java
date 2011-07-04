@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.graphics;
 
@@ -43,6 +43,11 @@ public final class Graphics {
    * @param rgb the RGB values of the desired color - must not be null
    * @return the color
    *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the rgb argument is null</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the current display's UI thread</li>
+   * </ul>
+   *
    * @see RGB
    * @see Device#getSystemColor
    */
@@ -67,6 +72,10 @@ public final class Graphics {
    * @param green the amount of green in the color
    * @param blue the amount of blue in the color
    * @return the color
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the current display's UI thread</li>
+   * </ul>
    */
   public static Color getColor( int red, int green, int blue ) {
     checkThread();
@@ -86,6 +95,7 @@ public final class Graphics {
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the data argument is null</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the current display's UI thread</li>
    * </ul>
    */
   public static Font getFont( FontData data ) {
@@ -113,6 +123,7 @@ public final class Graphics {
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the name argument is null</li>
    *    <li>ERROR_INVALID_ARGUMENT - if the height is negative</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the current display's UI thread</li>
    * </ul>
    */
   public static Font getFont( String name, int height, int style ) {
@@ -130,6 +141,9 @@ public final class Graphics {
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the path is null</li>
    *    <li>ERROR_ILLEGAL_ARGUMENT - if the path is invalid</li>
+   * </ul>
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the current display's UI thread</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_IO - if an IO error occurs while reading from the stream</li>
@@ -160,6 +174,7 @@ public final class Graphics {
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the path is null</li>
    *    <li>ERROR_ILLEGAL_ARGUMENT - if the path is invalid</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the current display's UI thread</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_IO - if an IO error occurs while reading from the stream</li>
@@ -190,6 +205,7 @@ public final class Graphics {
    *    <li>ERROR_NULL_ARGUMENT - if the path is null</li>
    *    <li>ERROR_NULL_ARGUMENT - if the inputStream is null</li>
    *    <li>ERROR_INVALID_ARGUMENT - if the path is invalid</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the current display's UI thread</li>
    * </ul>
    * @exception SWTException <ul>
    *    <li>ERROR_IO - if an IO error occurs while reading from the stream</li>
@@ -221,6 +237,11 @@ public final class Graphics {
    *
    * @param style the style of the cursor to create
    * @return the cursor
+   * 
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the current display's UI thread</li>
+   * </ul>
+   *
    * @see SWT#CURSOR_ARROW
    * @see SWT#CURSOR_WAIT
    * @see SWT#CURSOR_CROSS
@@ -264,15 +285,13 @@ public final class Graphics {
    * @param wrapWidth the maximum width of the text. The text will be wrapped to
    *          match this width. If set to 0, no wrapping will be performed.
    * @return a point containing the extent of the string
-   * @exception IllegalArgumentException
-   *              <ul>
-   *              <li>ERROR_NULL_ARGUMENT - if the string is null</li>
-   *              </ul>
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the font or string argument is null</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the current display's UI thread</li>
+   * </ul>
    */
-  public static Point textExtent( final Font font,
-                                  final String string,
-                                  final int wrapWidth )
-  {
+  public static Point textExtent( Font font, String string, int wrapWidth ) {
     checkThread();
     if( font == null || string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -291,10 +310,11 @@ public final class Graphics {
    * @param font the font for which the result is valid
    * @param string the string to measure
    * @return a point containing the extent of the string
-   * @exception IllegalArgumentException
-   *                <ul>
-   *                <li>ERROR_NULL_ARGUMENT - if the string is null</li>
-   *                </ul>
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the font or string arguemnt is null</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the current display's UI thread</li>
+   * </ul>
    */
   public static Point stringExtent( Font font, String string ) {
     checkThread();
@@ -309,6 +329,11 @@ public final class Graphics {
    *
    * @param font the font for which the result is valid
    * @return the height of the font
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the font argument is null</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the current display's UI thread</li>
+   * </ul>
    */
   public static int getCharHeight( Font font ) {
     checkThread();
@@ -324,6 +349,11 @@ public final class Graphics {
    *
    * @param font the font for which the result is valid
    * @return the average character width of the font
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the font argument is null</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the current display's UI thread</li>
+   * </ul>
    */
   public static float getAvgCharWidth( Font font ) {
     if( font == null ) {
