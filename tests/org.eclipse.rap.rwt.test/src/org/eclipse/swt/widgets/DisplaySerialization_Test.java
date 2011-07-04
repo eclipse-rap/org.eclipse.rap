@@ -10,17 +10,27 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.io.Serializable;
+
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.TestSession;
+import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 
 
@@ -55,6 +65,7 @@ public class DisplaySerialization_Test extends TestCase {
   }
 
   private Display display;
+  private ApplicationContext applicationContext;
   
   public void testDisposeIsSerializable() throws Exception {
     Display deserializedDisplay = serializeAndDeserialize( display );
@@ -194,7 +205,7 @@ public class DisplaySerialization_Test extends TestCase {
     Thread thread = new Thread( new BackgroundRunnable( display ) );
     thread.setDaemon( true );
     thread.start();
-    Thread.sleep( 100 );
+    Thread.sleep( 50 );
     
     Display deserializedDisplay = serializeAndDeserialize( display );
     deserializedDisplay.readAndDispatch();
@@ -202,22 +213,65 @@ public class DisplaySerialization_Test extends TestCase {
     assertTrue( SerializableRunnable.wasInvoked );
   }
   
+  public void testTimerExecIsSerializable() throws Exception {
+    display.timerExec( 10, new SerializableRunnable() );
+    
+    Display deserializedDisplay = serializeAndDeserialize( display );
+    display.dispose();
+    ContextProvider.disposeContext();
+    createServiceContext( deserializedDisplay );
+    runClusterSupportFilter();
+    Thread.sleep( 20 );
+    deserializedDisplay.readAndDispatch();
+    
+    assertTrue( SerializableRunnable.wasInvoked );
+  }
+  
   protected void setUp() throws Exception {
+    System.setProperty( "lifecycle", SimpleLifeCycle.class.getName() );
     SerializableRunnable.wasInvoked = false;
-    Fixture.setUp();
+    Fixture.createApplicationContext();
+    Fixture.createServiceContext();
+    Fixture.useDefaultResourceManager();
+    applicationContext = ApplicationContextUtil.getInstance();
+    ApplicationContextUtil.set( ContextProvider.getSession(), applicationContext );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
   }
 
   protected void tearDown() throws Exception {
     display.dispose();
-    Fixture.tearDown();
+    Fixture.disposeOfServiceContext();
+    Fixture.disposeOfApplicationContext();
+    System.getProperties().remove( "lifecycle" );
   }
 
   private static Display serializeAndDeserialize( Display display ) throws Exception {
     Display result = Fixture.serializeAndDeserialize( display );
     getDisplayAdapter( result ).attachThread();
     return result;
+  }
+
+  private void runClusterSupportFilter() throws Exception {
+    HttpServletRequest request = ContextProvider.getRequest();
+    HttpServletResponse response = ContextProvider.getResponse();
+    FilterChain filterChain = mock( FilterChain.class );
+    new RWTClusterSupport().doFilter( request, response, filterChain );
+  }
+
+  private void createServiceContext( Display display ) {
+    Fixture.createServiceContext();
+    TestSession session = ( TestSession )ContextProvider.getRequest().getSession();
+    ApplicationContextUtil.set( session.getServletContext(), applicationContext );
+    SessionStoreImpl sessionStore = ( SessionStoreImpl )getSessionStore( display );
+    SessionStoreImpl.attachInstanceToSession( session, sessionStore );
+    sessionStore.attachHttpSession( session );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+  }
+
+  private static ISessionStore getSessionStore( Display display ) {
+    IDisplayAdapter displayAdapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    return displayAdapter.getSessionStore();
   }
 
   private static IDisplayAdapter getDisplayAdapter( Display display ) {

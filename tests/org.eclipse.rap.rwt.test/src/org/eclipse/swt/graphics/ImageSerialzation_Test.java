@@ -10,10 +10,13 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import java.io.*;
+import static org.mockito.Mockito.mock;
+
+import java.io.InputStream;
+import java.io.NotSerializableException;
 import java.util.Arrays;
 
-import javax.servlet.*;
+import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,11 +35,6 @@ import org.eclipse.swt.widgets.Display;
 
 public class ImageSerialzation_Test extends TestCase {
   
-  private static class TestFilterChain implements FilterChain {
-    public void doFilter( ServletRequest request, ServletResponse response ) {
-    }
-  }
-
   private Display display;
   private ApplicationContext applicationContext;
 
@@ -68,12 +66,6 @@ public class ImageSerialzation_Test extends TestCase {
     assertEquals( imageData, deserializedImageData );
   }
 
-  private void runClusterSupportFilter() throws Exception {
-    HttpServletRequest request = ContextProvider.getRequest();
-    HttpServletResponse response = ContextProvider.getResponse();
-    new RWTClusterSupport().doFilter( request, response, new TestFilterChain() );
-  }
-
   protected void setUp() {
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
@@ -101,6 +93,13 @@ public class ImageSerialzation_Test extends TestCase {
     Display display = ( Display )device;
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
     return displayAdapter.getSessionStore();
+  }
+
+  private void runClusterSupportFilter() throws Exception {
+    HttpServletRequest request = ContextProvider.getRequest();
+    HttpServletResponse response = ContextProvider.getResponse();
+    FilterChain filterChain = mock( FilterChain.class );
+    new RWTClusterSupport().doFilter( request, response, filterChain );
   }
 
   private static void assertEquals( ImageData actual, ImageData expected ) {

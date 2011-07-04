@@ -207,7 +207,7 @@ public class Display extends Device implements Adaptable {
   private Object[] values;
 
   private Synchronizer synchronizer;
-  private transient TimerExecScheduler scheduler;
+  private TimerExecScheduler scheduler;
 
   /**
    * Constructs a new instance of this class.
@@ -240,12 +240,7 @@ public class Display extends Device implements Adaptable {
     cursorLocation = new Point( 0, 0 );
     bounds = readInitialBounds();
     synchronizer = new Synchronizer( this );
-    initialize();
     register();
-  }
-
-  private void initialize() {
-    scheduler = new TimerExecScheduler( this );
   }
 
   /**
@@ -694,7 +689,9 @@ public class Display extends Device implements Adaptable {
     disposeShells();
     runDisposeExecs();
     synchronizer.releaseSynchronizer();
-    scheduler.dispose();
+    if( scheduler != null ) {
+      scheduler.dispose();
+    }
   }
 
   protected void destroy() {
@@ -1084,10 +1081,13 @@ public class Display extends Device implements Adaptable {
    * @see #asyncExec
    * @since 1.2
    */
-  public void timerExec( final int milliseconds, final Runnable runnable ) {
+  public void timerExec( int milliseconds, Runnable runnable ) {
     checkDevice();
     if( runnable == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    if( scheduler == null ) {
+      scheduler = new TimerExecScheduler( this );
     }
     if( milliseconds < 0 ) {
       scheduler.cancel( runnable );
@@ -2275,11 +2275,6 @@ public class Display extends Device implements Adaptable {
     return result;
   }
   
-  private Object readResolve() {
-    initialize();
-    return this;
-  }
-
   /////////////////
   // Inner classes
 

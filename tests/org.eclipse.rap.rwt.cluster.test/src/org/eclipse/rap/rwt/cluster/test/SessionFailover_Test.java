@@ -25,6 +25,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.*;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
@@ -142,6 +143,24 @@ public abstract class SessionFailover_Test extends TestCase {
     assertTrue( AsyncExecEntryPoint.wasRunnableExecuted( secondarySessionStore ) );
   }
   
+  public void testTimerExecEntryPoint() throws Exception {
+    cluster.start( TimerExecEntryPoint.class );
+    client.sendStartupRequest();
+    client.sendInitializationRequest();
+
+    cluster.removeServletEngine( primary );
+    prepareExamination( primary );
+    disposeDisplay( getFirstDisplay( primary ) );
+    client.changeServletEngine( secondary );
+    Thread.sleep( TimerExecEntryPoint.TIMER_DELAY * 2 );
+    client.sendDisplayResizeRequest( 100, 100 );
+    
+    prepareExamination( secondary );
+    HttpSession secondarySession = ClusterFixture.getFirstSession( secondary );
+    ISessionStore secondarySessionStore = ClusterFixture.getSessionStore( secondarySession );
+    assertTrue( TimerExecEntryPoint.wasRunnableExecuted( secondarySessionStore ) );
+  }
+
   protected void setUp() throws Exception {
     ClusterFixture.setUp();
     cluster = getServletEngineFactory().createServletEngineCluster();
@@ -173,12 +192,25 @@ public abstract class SessionFailover_Test extends TestCase {
   }
 
   private void prepareExamination() {
-    attachApplicationContextToSession( primary );
-    attachCurrentThreadToDisplay( primary );
-    attachApplicationContextToSession( secondary );
-    attachCurrentThreadToDisplay( secondary );
+    prepareExamination( primary );
+    prepareExamination( secondary );
   }
   
+  private static void prepareExamination( IServletEngine servletEngine ) {
+    attachApplicationContextToSession( servletEngine );
+    attachCurrentThreadToDisplay( servletEngine );
+  }
+  
+  private static void disposeDisplay( final Display display ) {
+    if( display != null ) {
+      UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+        public void run() {
+          display.dispose();
+        }
+      } );
+    }
+  }
+
   private static void attachApplicationContextToSession( IServletEngine servletEngine ) {
     HttpSession session = ClusterFixture.getFirstSession( servletEngine );
     SessionStoreImpl sessionStore = SessionStoreImpl.getInstanceFromSession( session );
@@ -211,9 +243,8 @@ public abstract class SessionFailover_Test extends TestCase {
   }
 
   private static Display getFirstDisplay( IServletEngine servletEngine ) {
-    HttpSession primarySession = ClusterFixture.getFirstSession( servletEngine );
-    Display primaryDisplay = ClusterFixture.getSessionDisplay( primarySession );
-    return primaryDisplay;
+    HttpSession sessioin = ClusterFixture.getFirstSession( servletEngine );
+    return ClusterFixture.getSessionDisplay( sessioin );
   }
 
   private static Shell getFirstShell( IServletEngine servletEngine ) {

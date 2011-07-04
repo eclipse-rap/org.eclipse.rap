@@ -9,62 +9,79 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.io.*;
 import java.util.*;
 
+import org.eclipse.rwt.internal.engine.PostDeserialization;
+import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.swt.internal.SerializableCompatibility;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 
-final class TimerExecScheduler {
+
+final class TimerExecScheduler implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
   private final Display display;
-  private Collection<TimerExecTask> tasks;
-  private Timer scheduler;
+  private final Collection<TimerExecTask> tasks;
+  private transient Timer timer;
 
   TimerExecScheduler( Display display ) {
     this.display = display;
+    this.tasks = new LinkedList<TimerExecTask>();
   }
 
   void schedule( int milliseconds, Runnable runnable ) {
     synchronized( display.getDeviceLock() ) {
-      initialize();
-      TimerExecTask task = new TimerExecTask( runnable );
+      initializeTimer();
+      TimerExecTask task = new TimerExecTask( runnable, milliseconds );
       tasks.add( task );
-      scheduler.schedule( task, milliseconds );
+      timer.schedule( task, milliseconds );
     }
   }
 
   void cancel( Runnable runnable ) {
     synchronized( display.getDeviceLock() ) {
-      if( tasks != null ) {
-        Iterator<TimerExecTask> iter = tasks.iterator();
-        boolean found = false;
-        while( !found && iter.hasNext() ) {
-          TimerExecTask task = iter.next();
-          if( task.getRunnable() == runnable ) {
-            removeTask( task );
-            task.cancel();
-            found = true;
-          }
-        }
+      TimerExecTask task = findTask( runnable );
+      if( task != null ) {
+        removeTask( task );
+        task.cancel();
       }
     }
   }
 
   void dispose() {
     synchronized( display.getDeviceLock() ) {
-      if( scheduler != null ) {
-        scheduler.cancel();
+      if( timer != null ) {
+        timer.cancel();
       }
-      if( tasks != null ) {
-        tasks.clear();
-      }
+      tasks.clear();
     }
   }
-  
-  private void initialize() {
-    if( scheduler == null ) {
-      scheduler = new Timer( true );
+
+  private TimerExecTask findTask( Runnable runnable ) {
+    Iterator<TimerExecTask> iter = tasks.iterator();
+    TimerExecTask result = null;
+    while( result == null && iter.hasNext() ) {
+      TimerExecTask task = iter.next();
+      if( task.getRunnable() == runnable ) {
+        result = task;
+      }
     }
-    if( tasks == null ) {
-      tasks = new LinkedList<TimerExecTask>();
+    return result;
+  }
+
+  private void initializeTimer() {
+    if( timer == null ) {
+      timer = new Timer( "RWT timerExec scheduler", true );
+    }
+  }
+
+  private void rescheduleTasks() {
+    if( tasks.size() > 0 ) {
+      initializeTimer();
+      for( TimerExecTask task : tasks ) {
+        timer.schedule( task, task.getTime() );
+      }
     }
   }
 
@@ -72,15 +89,24 @@ final class TimerExecScheduler {
     // code is synchronized by caller
     tasks.remove( task );
   }
+  
+  private void readObject( ObjectInputStream stream ) throws IOException, ClassNotFoundException {
+    stream.defaultReadObject();
+    stream.registerValidation( new PostDeserializationValidation(), 0 );
+  }
 
   /////////////////
   // Inner classes
 
-  private class TimerExecTask extends TimerTask {
+  private class TimerExecTask extends TimerTask implements SerializableCompatibility {
+    private static final long serialVersionUID = 1L;
+    
     private final Runnable runnable;
+    private final Date time;
 
-    TimerExecTask( Runnable runnable ) {
+    TimerExecTask( Runnable runnable, long milliseconds ) {
       this.runnable = runnable;
+      this.time = new Date( System.currentTimeMillis() + milliseconds );
     }
 
     public void run() {
@@ -94,6 +120,26 @@ final class TimerExecScheduler {
 
     Runnable getRunnable() {
       return runnable;
+    }
+
+    Date getTime() {
+      return time;
+    }
+  }
+
+  private class PostDeserializationValidation implements ObjectInputValidation {
+    public void validateObject() throws InvalidObjectException {
+      ISessionStore sessionStore = getSessionStore();
+      PostDeserialization.addProcessor( sessionStore, new Runnable() {
+        public void run() {
+          rescheduleTasks();
+        }
+      } );
+    }
+
+    private ISessionStore getSessionStore() {
+      IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+      return adapter.getSessionStore();
     }
   }
 }
