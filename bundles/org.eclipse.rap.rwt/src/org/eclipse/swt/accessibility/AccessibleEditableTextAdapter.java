@@ -26,7 +26,6 @@ package org.eclipse.swt.accessibility;
  * @since 1.4
  */
 public class AccessibleEditableTextAdapter implements AccessibleEditableTextListener {
-	private static final long serialVersionUID = 1L;
 
   /**
 	 * Copies the substring beginning at the specified <code>start</code> offset

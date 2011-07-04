@@ -38,6 +38,7 @@ import org.eclipse.swt.layout.GridLayout;
  * @since 1.3
  */
 public class FontDialog extends Dialog {
+  private static final long serialVersionUID = 1L;
 
   private static final int BUTTON_WIDTH = 60;
 
@@ -67,7 +68,7 @@ public class FontDialog extends Dialog {
    *              subclass</li>
    *              </ul>
    */
-  public FontDialog( final Shell parent ) {
+  public FontDialog( Shell parent ) {
     this( parent, SWT.APPLICATION_MODAL );
   }
 
@@ -95,7 +96,7 @@ public class FontDialog extends Dialog {
    *              subclass</li>
    *              </ul>
    */
-  public FontDialog( final Shell parent, final int style ) {
+  public FontDialog( Shell parent, int style ) {
     super( parent, checkStyle( parent, style ) );
     checkSubclass();
     setText( RWTMessages.getMessage( "RWT_FontDialogTitle" ) );
@@ -124,7 +125,7 @@ public class FontDialog extends Dialog {
    *          let the platform select a default when open() is called
    * @see Font#getFontData
    */
-  public void setFontList( final FontData[] fontData ) {
+  public void setFontList( FontData[] fontData ) {
     if( fontData != null && fontData.length > 0 ) {
       this.fontData = fontData[ 0 ];
     } else {
@@ -151,7 +152,7 @@ public class FontDialog extends Dialog {
    *          select a default when open() is called
    * @see PaletteData#getRGBs
    */
-  public void setRGB( final RGB rgb ) {
+  public void setRGB( RGB rgb ) {
     this.rgb = rgb;
   }
 
@@ -191,7 +192,7 @@ public class FontDialog extends Dialog {
     }
   }
 
-  static String getFirstFontName( final String fontName ) {
+  static String getFirstFontName( String fontName ) {
     String result = fontName;
     int index = result.indexOf( ',' );
     if( index != -1 ) {
@@ -215,7 +216,7 @@ public class FontDialog extends Dialog {
     shell = new Shell( parent, style );
     shell.setText( getText() );
     shell.addShellListener( new ShellAdapter() {
-      public void shellClosed( final ShellEvent e ) {
+      public void shellClosed( ShellEvent event ) {
         handleShellClose();
       }
     } );
@@ -257,12 +258,12 @@ public class FontDialog extends Dialog {
     fillAvailableFonts();
   }
 
-  private void createLeftArea( final Composite parent ) {
+  private void createLeftArea( Composite parent ) {
     Composite leftArea = createVerticalArea( parent );
     createFontFamilyGroup( leftArea );
   }
 
-  private void createRightArea( final Composite parent ) {
+  private void createRightArea( Composite parent ) {
     Composite rightArea = createVerticalArea( parent );
     createFontSizeGroup( rightArea );
     createFontStyleGroup( rightArea );
@@ -279,7 +280,7 @@ public class FontDialog extends Dialog {
     return result;
   }
 
-  private void createFontFamilyGroup( final Composite parent ) {
+  private void createFontFamilyGroup( Composite parent ) {
     Group result = new Group( parent, SWT.NONE );
     result.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
     result.setText( RWTMessages.getMessage( "RWT_FontDialogFontFamilyTitle" ) );
@@ -291,7 +292,7 @@ public class FontDialog extends Dialog {
     GridData listData = new GridData( SWT.FILL, SWT.FILL, true, true );
     fontFamilyList.setLayoutData( listData );
     fontFamilyList.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent event ) {
         int selectionIndex = fontFamilyList.getSelectionIndex();
         if( selectionIndex != -1 ) {
           fontFamilyText.setText( fontFamilyList.getItem( selectionIndex ) );
@@ -300,7 +301,7 @@ public class FontDialog extends Dialog {
     } );
   }
 
-  private void createFontSizeGroup( final Composite parent ) {
+  private void createFontSizeGroup( Composite parent ) {
     Group result = new Group( parent, SWT.NONE );
     result.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, false ) );
     result.setText( RWTMessages.getMessage( "RWT_FontDialogFontSizeTitle" ) );
@@ -313,7 +314,7 @@ public class FontDialog extends Dialog {
     fontSizeSpinner.setLayoutData( spinnerData );
   }
 
-  private void createFontStyleGroup( final Composite parent ) {
+  private void createFontStyleGroup( Composite parent ) {
     Group result = new Group( parent, SWT.NONE );
     result.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
     result.setText( RWTMessages.getMessage( "RWT_FontDialogFontStyleTitle" ) );
@@ -336,7 +337,7 @@ public class FontDialog extends Dialog {
                                               SWT.ITALIC ) );
   }
 
-  private void createFontColorGroup( final Composite parent ) {
+  private void createFontColorGroup( Composite parent ) {
     Group result = new Group( parent, SWT.NONE );
     result.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, false ) );
     result.setText( RWTMessages.getMessage( "RWT_FontDialogFontColorTitle" ) );
@@ -347,7 +348,7 @@ public class FontDialog extends Dialog {
     String text = RWTMessages.getMessage( "RWT_FontDialogFontColorSelect" );
     changeColorButton.setText( text );
     changeColorButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent event ) {
         openColorDialog();
       }
     } );
@@ -365,7 +366,7 @@ public class FontDialog extends Dialog {
 
   private void addChangeListeners() {
     SelectionListener selectionListener = new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent event ) {
         updateFontData();
       }
     };
@@ -373,7 +374,7 @@ public class FontDialog extends Dialog {
     boldCheckbox.addSelectionListener( selectionListener );
     italicCheckbox.addSelectionListener( selectionListener );
     fontFamilyText.addModifyListener( new ModifyListener() {
-      public void modifyText( final ModifyEvent event ) {
+      public void modifyText( ModifyEvent event ) {
         String text = fontFamilyText.getText();
         selectFontFamilyInList( text );
         updateFontData();
@@ -381,7 +382,7 @@ public class FontDialog extends Dialog {
     } );
   }
 
-  private void createPreviewArea( final Composite parent ) {
+  private void createPreviewArea( Composite parent ) {
     Composite previewArea = new Composite( parent, SWT.BORDER );
     GridData areaData = new GridData( SWT.FILL, SWT.FILL, true, true );
     areaData.minimumWidth = 300;
@@ -399,7 +400,7 @@ public class FontDialog extends Dialog {
     previewArea.setBackgroundMode( SWT.INHERIT_DEFAULT );
   }
 
-  private void createButtonArea( final Composite parent ) {
+  private void createButtonArea( Composite parent ) {
     Composite buttonComposite = new Composite( parent, SWT.NONE );
     GridData layoutData = new GridData( SWT.RIGHT, SWT.CENTER, false, false );
     layoutData.horizontalSpan = 2;
@@ -415,19 +416,19 @@ public class FontDialog extends Dialog {
     String cancelText = SWT.getMessage( "SWT_Cancel" );
     Button cancelButton = createButton( buttonComposite, cancelText );
     okButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent event ) {
         committed = true;
         shell.close();
       }
     } );
     cancelButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent event ) {
         shell.close();
       }
     } );
   }
 
-  private static Button createButton( final Composite parent, final String text ) {
+  private static Button createButton( Composite parent, String text ) {
     Button result = new Button( parent, SWT.PUSH );
     result.setText( text );
     GridData data = new GridData( GridData.HORIZONTAL_ALIGN_FILL );
@@ -471,7 +472,7 @@ public class FontDialog extends Dialog {
     updatePreview();
   }
 
-  private void selectFontFamilyInList( final String fontFamily ) {
+  private void selectFontFamilyInList( String fontFamily ) {
     fontFamilyList.deselectAll();
     String[] items = fontFamilyList.getItems();
     for( int i = 0; i < items.length; i++ ) {

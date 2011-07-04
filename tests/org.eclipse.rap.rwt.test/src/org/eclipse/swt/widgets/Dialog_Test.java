@@ -104,4 +104,14 @@ public class Dialog_Test extends TestCase {
     int largePixels = Dialog.convertHorizontalDLUsToPixels( shell, 10 );
     assertTrue( smallPixels < largePixels );
   }
+  
+  public void testIsSerializable() throws Exception {
+    String text = "text";
+    TestDialog dialog = new TestDialog( shell );
+    dialog.setText( text );
+    
+    TestDialog deserializedDialog = Fixture.serializeAndDeserialize( dialog );
+    
+    assertEquals( text, deserializedDialog.getText() );
+  }
 }

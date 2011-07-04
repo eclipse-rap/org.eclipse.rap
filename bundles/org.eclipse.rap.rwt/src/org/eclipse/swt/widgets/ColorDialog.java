@@ -1,5 +1,5 @@
 /******************************************************************************* 
- * Copyright (c) 2010 EclipseSource and others. All rights reserved. This
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved. This
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
@@ -35,31 +35,30 @@ import org.eclipse.swt.layout.GridLayout;
  * @since 1.2
  */
 public class ColorDialog extends Dialog {
+  private static final long serialVersionUID = 1L;
 
   private class PaletteListener extends MouseAdapter {
-
     private RGB rgb;
 
-    public PaletteListener( final RGB rgb ) {
+    public PaletteListener( RGB rgb ) {
       this.rgb = rgb;
     }
 
-    public void mouseDown( final MouseEvent e ) {
+    public void mouseDown( MouseEvent event ) {
       setColorFromPalette( rgb );
     }
   }
   
   private class SpinnerListener implements ModifyListener {
-
     private final Spinner spinner;
     private final int colorIndex;
 
-    public SpinnerListener( final Spinner spinner, final int colorIndex ) {
+    public SpinnerListener( Spinner spinner, int colorIndex ) {
       this.spinner = spinner;
       this.colorIndex = colorIndex;
     }
 
-    public void modifyText( final ModifyEvent event ) {
+    public void modifyText( ModifyEvent event ) {
       setColorFomSpinner( colorIndex, spinner.getSelection() );
     }
   }
@@ -78,7 +77,7 @@ public class ColorDialog extends Dialog {
   private static final int BLUE = 2;
   
   // Palette colors
-  private static final RGB[] PALETTE_COLORS = new RGB[]{
+  private static final RGB[] PALETTE_COLORS = new RGB[] {
     new RGB( 0, 0, 0 ),
     new RGB( 70, 70, 70 ),
     new RGB( 120, 120, 120 ),
@@ -109,6 +108,7 @@ public class ColorDialog extends Dialog {
     new RGB( 181, 165, 213 )
   };
   
+  private Display display;
   private Shell shell;
   private RGB rgb;
   private Label colorDisplay;
@@ -134,7 +134,7 @@ public class ColorDialog extends Dialog {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public ColorDialog( final Shell parent ) {
+  public ColorDialog( Shell parent ) {
     this( parent, SWT.APPLICATION_MODAL );
   }
 
@@ -166,9 +166,10 @@ public class ColorDialog extends Dialog {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public ColorDialog( final Shell parent, final int style ) {
+  public ColorDialog( Shell parent, int style ) {
     super( parent, checkStyle( parent, style ) );
     checkSubclass();
+    display = parent.getDisplay();
     setText( RWTMessages.getMessage( "RWT_ColorDialogTitle" ) );
   }
 
@@ -185,22 +186,14 @@ public class ColorDialog extends Dialog {
    */
   public RGB open() {
     shell = new Shell( parent, SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL );
-    shell.setText( getText() );
-    createControls( shell );
+    createControls();
     if( rgb == null ) {
       rgb = new RGB( 255, 255, 255 );
     }
     updateColorDisplay();
     updateSpinners();
-    Rectangle parentSize = parent.getBounds();
-    Point prefSize = shell.computeSize( SWT.DEFAULT, SWT.DEFAULT );
-    shell.setSize( prefSize );
-    int locationX = ( parentSize.width - prefSize.x ) / 2 + parentSize.x;
-    int locationY = ( parentSize.height - prefSize.y ) / 2 + parentSize.y;
-    shell.setLocation( new Point( locationX, locationY ) );
-    shell.pack();
+    configureShell();
     shell.open();
-    Display display = parent.getDisplay();
     while( !shell.isDisposed() ) {
       if( !display.readAndDispatch() ) {
         display.sleep();
@@ -226,30 +219,36 @@ public class ColorDialog extends Dialog {
    *          platform select a default when open() is called
    * @see PaletteData#getRGBs
    */
-  public void setRGB( final RGB rgb ) {
+  public void setRGB( RGB rgb ) {
     this.rgb = rgb;
   }
 
-  private void updateColorDisplay() {
-    colorDisplay.setBackground( Graphics.getColor( rgb ) );
+  private void createControls() {
+    shell.setLayout( new GridLayout( 1, false ) );
+    createColorArea();
+    createPalette();
+    createButtons();
   }
 
-  private void updateSpinners() {
-    spRed.setSelection( rgb.red );
-    spGreen.setSelection( rgb.green );
-    spBlue.setSelection( rgb.blue );
+  private void createPalette() {
+    Composite paletteComp = new Composite( shell, SWT.NONE );
+    GridData palData = new GridData( SWT.CENTER, SWT.CENTER, true, false );
+    paletteComp.setLayoutData( palData );
+    paletteComp.setLayout( new GridLayout( PALETTE_BOXES_IN_ROW, true ) );
+    Label title = new Label( paletteComp, SWT.NONE );
+    String titleText = RWTMessages.getMessage( "RWT_ColorDialogLabelBasicColors" );
+    title.setText( titleText );
+    GridData titleData = new GridData( SWT.LEFT, SWT.CENTER, true, false );
+    titleData.horizontalSpan = PALETTE_BOXES_IN_ROW;
+    title.setLayoutData( titleData );
+    for( int i = 0; i < PALETTE_COLORS.length; i++ ) {
+      createPaletteColorBox( paletteComp, PALETTE_COLORS[ i ] );
+    }
   }
 
-  private void createControls( final Composite parent ) {
-    parent.setLayout( new GridLayout( 1, false ) );
-    createColorArea( parent );
-    createPalette( parent );
-    createButtons( parent );
-  }
-
-  private void createColorArea( final Composite parent ) {
+  private void createColorArea() {
     // Current color selection display
-    Composite areaComp = new Composite( parent, SWT.NONE );
+    Composite areaComp = new Composite( shell, SWT.NONE );
     GridData compData = new GridData( SWT.CENTER, SWT.CENTER, true, false );
     areaComp.setLayoutData( compData );
     areaComp.setLayout( new GridLayout( 2, true ) );
@@ -280,25 +279,39 @@ public class ColorDialog extends Dialog {
     spBlue.addModifyListener( new SpinnerListener( spBlue, BLUE ) );
   }
 
-  private void createPalette( final Composite parent ) {
-    Composite paletteComp = new Composite( parent, SWT.NONE );
-    GridData palData = new GridData( SWT.CENTER, SWT.CENTER, true, false );
-    paletteComp.setLayoutData( palData );
-    paletteComp.setLayout( new GridLayout( PALETTE_BOXES_IN_ROW, true ) );
-    Label title = new Label( paletteComp, SWT.NONE );
-    String titleText 
-      = RWTMessages.getMessage( "RWT_ColorDialogLabelBasicColors" );
-    title.setText( titleText );
-    GridData titleData = new GridData( SWT.LEFT, SWT.CENTER, true, false );
-    titleData.horizontalSpan = PALETTE_BOXES_IN_ROW;
-    title.setLayoutData( titleData );
-    for( int i = 0; i < PALETTE_COLORS.length; i++ ) {
-      createPaletteColorBox( paletteComp, PALETTE_COLORS[ i ] );
-    }
+  private void createButtons() {
+    Composite composite = new Composite( shell, SWT.NONE );
+    composite.setLayout( new GridLayout( 0, true ) );
+    GridData gridData = new GridData( SWT.RIGHT, SWT.CENTER, true, false );
+    composite.setLayoutData( gridData );
+    Button okButton = createButton( composite, SWT.getMessage( "SWT_OK" ), SWT.OK );
+    shell.setDefaultButton( okButton );
+    createButton( composite, SWT.getMessage( "SWT_Cancel" ), SWT.CANCEL );
+    okButton.forceFocus();
   }
 
-  private Label createPaletteColorBox( final Composite parent, final RGB color )
-  {
+  private void configureShell() {
+    shell.setText( title );
+    Rectangle parentSize = parent.getBounds();
+    Point prefSize = shell.computeSize( SWT.DEFAULT, SWT.DEFAULT );
+    shell.setSize( prefSize );
+    int locationX = ( parentSize.width - prefSize.x ) / 2 + parentSize.x;
+    int locationY = ( parentSize.height - prefSize.y ) / 2 + parentSize.y;
+    shell.setLocation( new Point( locationX, locationY ) );
+    shell.pack();
+  }
+
+  private void updateColorDisplay() {
+    colorDisplay.setBackground( Graphics.getColor( rgb ) );
+  }
+
+  private void updateSpinners() {
+    spRed.setSelection( rgb.red );
+    spGreen.setSelection( rgb.green );
+    spBlue.setSelection( rgb.blue );
+  }
+
+  private Label createPaletteColorBox( Composite parent, RGB color ) {
     Label result = new Label( parent, SWT.BORDER | SWT.FLAT );
     result.setBackground( Graphics.getColor( color ) );
     GridData data = new GridData();
@@ -309,21 +322,7 @@ public class ColorDialog extends Dialog {
     return result;
   }
 
-  private void createButtons( final Composite parent ) {
-    Composite buttonComp = new Composite( parent, SWT.NONE );
-    buttonComp.setLayout( new GridLayout( 0, true ) );
-    GridData buttonData = new GridData( SWT.RIGHT, SWT.CENTER, true, false );
-    buttonComp.setLayoutData( buttonData );
-    Button okButton
-      = createButton( buttonComp, SWT.getMessage( "SWT_OK" ), SWT.OK );
-    createButton( buttonComp, SWT.getMessage( "SWT_Cancel" ), SWT.CANCEL );
-    okButton.forceFocus();
-  }
-
-  private Button createButton( final Composite parent,
-                               final String text,
-                               final int returnCode )
-  {
+  private Button createButton( Composite parent, String text, final int returnCode ) {
     // Increment the number of columns in the button bar
     ( ( GridLayout )parent.getLayout() ).numColumns++;
     Button result = new Button( parent, SWT.PUSH );
@@ -336,7 +335,7 @@ public class ColorDialog extends Dialog {
     // Set text
     result.setText( text );
     result.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         if( returnCode == SWT.CANCEL ) {
           ColorDialog.this.rgb = null;
         }
@@ -346,7 +345,7 @@ public class ColorDialog extends Dialog {
     return result;
   }
 
-  private void setColorFomSpinner( final int colorIndex, final int value ) {
+  private void setColorFomSpinner( int colorIndex, int value ) {
     switch( colorIndex ) {
       case RED:
         rgb.red = value;
@@ -357,13 +356,11 @@ public class ColorDialog extends Dialog {
       case BLUE:
         rgb.blue = value;
       break;
-      default:
-      break;
     }
     updateColorDisplay();
   }
 
-  private void setColorFromPalette( final RGB selectedColor ) {
+  private void setColorFromPalette( RGB selectedColor ) {
     rgb.blue = selectedColor.blue;
     rgb.green = selectedColor.green;
     rgb.red = selectedColor.red;

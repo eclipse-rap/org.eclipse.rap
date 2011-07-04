@@ -18,8 +18,13 @@ import org.eclipse.swt.graphics.RGB;
 
 public class ColorDialog_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
   }
 
   protected void tearDown() throws Exception {
@@ -27,13 +32,14 @@ public class ColorDialog_Test extends TestCase {
   }
 
   public void testRGB() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     RGB rgb = new RGB( 255, 0, 0 );
     ColorDialog dialog = new ColorDialog( shell );
-    assertNull( dialog.getRGB() );
     dialog.setRGB( rgb );
     assertEquals( rgb, dialog.getRGB() );
   }
-
+  
+  public void testInitialRGBValue() {
+    ColorDialog dialog = new ColorDialog( shell );
+    assertNull( dialog.getRGB() );
+  }
 }
