@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +25,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
-import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -127,6 +129,15 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     Integer versionForNextRequest = RWTRequestVersionControl.getInstance().nextRequestId();
     
     assertFalse( versionAfterRestart.equals( versionForNextRequest ) );
+  }
+  
+  public void testFinishesJavaScriptResponseWriter() throws IOException {
+    JavaScriptResponseWriter fakeWriter = mock( JavaScriptResponseWriter.class );
+    ContextProvider.getStateInfo().setResponseWriter( fakeWriter  );
+    
+    simulateSessionRestart();
+    
+    verify( fakeWriter ).finish();
   }
 
   protected void setUp() {

@@ -58,6 +58,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     } else {
       handleInvalidRequestCounter();
     }
+    finishJavaScriptResponseWriter();
   }
 
   public static void initializeSession() {
@@ -109,6 +110,12 @@ public class LifeCycleServiceHandler implements IServiceHandler {
       HttpServletResponse response = ContextProvider.getResponse();
       stateInfo.setResponseWriter( new JavaScriptResponseWriter( response ) );
     }
+  }
+  
+  private static void finishJavaScriptResponseWriter() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
+    responseWriter.finish();
   }
 
   private static void handleInvalidRequestCounter() {
