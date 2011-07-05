@@ -162,11 +162,16 @@ public abstract class SessionFailover_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    ClusterFixture.setUp();
+    setupLifeCycle();
     cluster = getServletEngineFactory().createServletEngineCluster();
     primary = cluster.addServletEngine();
     secondary = cluster.addServletEngine();
     client = new RWTClient( primary );
+  }
+
+  /* Leave this method protected so that others can change the life cycle implementation */
+  protected void setupLifeCycle() {
+    ClusterFixture.setUp();
   }
 
   protected void tearDown() throws Exception {
