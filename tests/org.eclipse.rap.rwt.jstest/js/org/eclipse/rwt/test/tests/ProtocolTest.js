@@ -654,7 +654,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       } catch( ex ) {
         error = ex;
       }
-      console.log( error ); 
       assertTrue( error instanceof Error );
       var message = error.message.toLowerCase();
       var expected1 = "operation \"set\" on target \"dummyid\" of type \"myclass\"";
