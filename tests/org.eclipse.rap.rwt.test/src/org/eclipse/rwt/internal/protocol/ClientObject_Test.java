@@ -10,33 +10,24 @@
 *******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_PARENT;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_STYLE;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_TYPE;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.DO_NAME;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_CONTENT;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_TYPE;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.MESSAGE_OPERATIONS;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATION_DETAILS;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATION_TARGET;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATION_TYPE;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.PARAMETER;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_CREATE;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_DESTROY;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_DO;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_EXECUTE_SCRIPT;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_LISTEN;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_SET;
+import java.util.Arrays;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
+import org.eclipse.rwt.internal.protocol.util.*;
+import org.eclipse.rwt.internal.protocol.util.Message.CreateOperation;
+import org.eclipse.rwt.internal.protocol.util.Message.DestroyOperation;
+import org.eclipse.rwt.internal.protocol.util.Message.DoOperation;
+import org.eclipse.rwt.internal.protocol.util.Message.ExecuteScriptOperation;
+import org.eclipse.rwt.internal.protocol.util.Message.ListenOperation;
+import org.eclipse.rwt.internal.protocol.util.Message.SetOperation;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
-import org.json.*;
 
 
 public class ClientObject_Test extends TestCase {
@@ -56,162 +47,114 @@ public class ClientObject_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testCreateWithNullParams() throws JSONException {
+  public void testCreateWithNullParams() {
     clientObject.create( new String[] { "SHELL_TRIM" } );
 
-    JSONObject message = getMessage();
-    JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
-    JSONObject operation = operations.getJSONObject( 0 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getString( OPERATION_TARGET ) );
-    assertEquals( TYPE_CREATE, operation.getString( OPERATION_TYPE ) );
-    JSONObject details = operation.getJSONObject( OPERATION_DETAILS );
-    assertEquals( shell.getClass().getName(), details.getString( CREATE_TYPE ) );
+    CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
+    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
+    assertEquals( shell.getClass().getName(), operation.getType() );
   }
 
-  public void testClientWithParams() throws JSONException {
+  public void testClientWithParams() {
     Object[] parameters = new Object[] { new Integer( 1 ), new Boolean( true ) };
 
     clientObject.create( new String[] { "SHELL_TRIM" }, parameters );
 
-    JSONObject message = getMessage();
-    JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
-    JSONObject operation = operations.getJSONObject( 0 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getString( OPERATION_TARGET ) );
-    assertEquals( TYPE_CREATE, operation.getString( OPERATION_TYPE ) );
-    JSONObject details = operation.getJSONObject( OPERATION_DETAILS );
-    assertEquals( shell.getClass().getName(), details.getString( CREATE_TYPE ) );
-    JSONArray params = details.getJSONArray( PARAMETER );
-    assertEquals( 1, params.getInt( 0 ) );
-    assertEquals( true, params.getBoolean( 1 ) );
+    CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
+    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
+    assertEquals( shell.getClass().getName(), operation.getType() );
+    assertArrayEquals( parameters, operation.getParameters() );
   }
 
-  public void testCreateStyles() throws JSONException {
+  public void testCreateStyles() {
     Button button = new Button( shell, SWT.PUSH | SWT.BORDER );
     IClientObject buttonObject = ClientObjectFactory.getForWidget( button );
+    String[] styles = new String[] { "PUSH", "BORDER" };
 
-    buttonObject.create( new String[] { "PUSH", "BORDER" } );
+    buttonObject.create( styles );
 
-    JSONObject message = getMessage();
-    JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
-    JSONObject operation = operations.getJSONObject( 0 );
-    assertEquals( WidgetUtil.getId( button ), operation.getString( OPERATION_TARGET ) );
-    assertEquals( TYPE_CREATE, operation.getString( OPERATION_TYPE ) );
-    JSONObject details = operation.getJSONObject( OPERATION_DETAILS );
-    assertEquals( WidgetUtil.getId( shell ), details.getString( CREATE_PARENT ) );
-    assertEquals( button.getClass().getName(), details.getString( CREATE_TYPE ) );
-    JSONArray styles = details.getJSONArray( CREATE_STYLE );
-    assertEquals( "PUSH", styles.getString( 0 ) );
-    assertEquals( "BORDER", styles.getString( 1 ) );
+    CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
+    assertEquals( WidgetUtil.getId( button ), operation.getTarget() );
+    assertEquals( WidgetUtil.getId( shell ), operation.getParent() );
+    assertArrayEquals( styles, operation.getStyles() );
   }
 
-  public void testSetProperty() throws JSONException {
+  public void testSetProperty() {
     clientObject.setProperty( "key", ( Object )"value" );
     clientObject.setProperty( "key2", 2 );
     clientObject.setProperty( "key3", 3.5 );
     clientObject.setProperty( "key4", true );
     clientObject.setProperty( "key5", "aString" );
 
-    JSONObject message = getMessage();
-    JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
-    JSONObject operation = operations.getJSONObject( 0 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getString( OPERATION_TARGET ) );
-    assertEquals( TYPE_SET, operation.getString( OPERATION_TYPE ) );
-    JSONObject details = operation.getJSONObject( OPERATION_DETAILS );
-    assertEquals( "value", details.getString( "key" ) );
-    assertEquals( 2, details.getInt( "key2" ) );
-    assertEquals( 3.5, details.getDouble( "key3" ), 0.0 );
-    assertEquals( true, details.getBoolean( "key4" ) );
-    assertEquals( "aString", details.getString( "key5" ) );
+    SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
+    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
+    assertEquals( "value", operation.getProperty( "key" ) );
+    assertEquals( new Integer( 2 ), operation.getProperty( "key2" ) );
+    assertEquals( new Double( 3.5 ), operation.getProperty( "key3" ) );
+    assertEquals( Boolean.TRUE, operation.getProperty( "key4" ) );
+    assertEquals( "aString", operation.getProperty( "key5" ) );
   }
 
-  public void testDestroy() throws JSONException {
+  public void testDestroy() {
     clientObject.destroy();
 
-    JSONObject message = getMessage();
-    JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
-    JSONObject operation = operations.getJSONObject( 0 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getString( OPERATION_TARGET ) );
-    assertEquals( TYPE_DESTROY, operation.getString( OPERATION_TYPE ) );
-    Object details = operation.get( OPERATION_DETAILS );
-    assertSame( JSONObject.NULL, details );
+    DestroyOperation operation = ( DestroyOperation )getMessage().getOperation( 0 );
+    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
   }
 
-  public void testAddListener() throws JSONException {
+  public void testAddListener() {
     clientObject.addListener( "selection" );
     clientObject.addListener( "fake" );
 
-    JSONObject message = getMessage();
-    JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
-    JSONObject operation = operations.getJSONObject( 0 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getString( OPERATION_TARGET ) );
-    assertEquals( TYPE_LISTEN, operation.getString( OPERATION_TYPE ) );
-    JSONObject details = operation.getJSONObject( OPERATION_DETAILS );
-    assertTrue( details.getBoolean( "selection" ) );
-    assertTrue( details.getBoolean( "fake" ) );
+    ListenOperation operation = ( ListenOperation )getMessage().getOperation( 0 );
+    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
+    assertTrue( operation.listensTo( "selection" ) );
+    assertTrue( operation.listensTo( "fake" ) );
   }
 
-  public void testRemoveListener() throws JSONException {
+  public void testRemoveListener() {
     clientObject.removeListener( "selection" );
     clientObject.removeListener( "fake" );
     clientObject.addListener( "fake2" );
 
-    JSONObject message = getMessage();
-    JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
-    JSONObject operation = operations.getJSONObject( 0 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getString( OPERATION_TARGET ) );
-    assertEquals( TYPE_LISTEN, operation.getString( OPERATION_TYPE ) );
-    JSONObject details = operation.getJSONObject( OPERATION_DETAILS );
-    assertFalse( details.getBoolean( "selection" ) );
-    assertFalse( details.getBoolean( "fake" ) );
-    assertTrue( details.getBoolean( "fake2" ) );
+    ListenOperation operation = ( ListenOperation )getMessage().getOperation( 0 );
+    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
+    assertFalse( operation.listensTo( "selection" ) );
+    assertFalse( operation.listensTo( "fake" ) );
+    assertTrue( operation.listensTo( "fake2" ) );
   }
 
-  public void testCall() throws JSONException {
+  public void testCall() {
     clientObject.call( "method" );
 
-    JSONObject message = getMessage();
-    JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
-    JSONObject operation = operations.getJSONObject( 0 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getString( OPERATION_TARGET ) );
-    String actualOperationType = operation.getString( OPERATION_TYPE );
-    assertEquals( TYPE_DO, actualOperationType );
-    JSONObject details = operation.getJSONObject( OPERATION_DETAILS );
-    String method = details.getString( DO_NAME );
-    assertEquals( "method", method );
-    Object params = details.get( PARAMETER );
-    assertSame( JSONObject.NULL, params );
+    DoOperation operation = ( DoOperation )getMessage().getOperation( 0 );
+    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
+    assertEquals( "method", operation.getName() );
+    assertNull( operation.getParameters() );
   }
 
-  public void testCallTwice() throws JSONException {
+  public void testCallTwice() {
     clientObject.call( "method" );
-    clientObject.call( "method2", new Object[] { "a", new Integer( 3 ) } );
+    Object[] parameters = new Object[] { "a", new Integer( 3 ) };
+    clientObject.call( "method2", parameters );
 
-    JSONObject message = getMessage();
-    JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
-    JSONObject operation = operations.getJSONObject( 1 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getString( OPERATION_TARGET ) );
-    assertEquals( TYPE_DO, operation.getString( OPERATION_TYPE ) );
-    JSONObject details = operation.getJSONObject( OPERATION_DETAILS );
-    assertEquals( "method2", details.getString( DO_NAME ) );
-    JSONArray list = details.getJSONArray( PARAMETER );
-    assertEquals( "a", list.getString( 0 ) );
-    assertEquals( 3, list.getInt( 1 ) );
+    DoOperation operation = ( DoOperation )getMessage().getOperation( 1 );
+    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
+    assertEquals( "method2", operation.getName() );
+    assertArrayEquals( parameters, operation.getParameters() );
   }
 
-  public void testExecuteScript() throws JSONException {
+  public void testExecuteScript() {
     clientObject.executeScript( "text/javascript", "var x = 5;" );
 
-    JSONObject message = getMessage();
-    JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
-    JSONObject operation = operations.getJSONObject( 0 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getString( OPERATION_TARGET ) );
-    assertEquals( TYPE_EXECUTE_SCRIPT, operation.getString( OPERATION_TYPE ) );
-    JSONObject details = operation.getJSONObject( OPERATION_DETAILS );
-    assertEquals( details.getString( EXECUTE_SCRIPT_TYPE ), "text/javascript" );
-    assertEquals( "var x = 5;", details.getString( EXECUTE_SCRIPT_CONTENT ) );
+    ExecuteScriptOperation operation = ( ExecuteScriptOperation )getMessage().getOperation( 0 );
+    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
+    assertEquals( "text/javascript", operation.getScriptType() );
+    assertEquals( "var x = 5;", operation.getScript() );
   }
 
-  private JSONObject getMessage() throws JSONException {
+  // TODO: Move to Fixture
+  private Message getMessage() {
     closeProtocolWriter();
     String markup = Fixture.getAllMarkup();
     if( !markup.contains( JavaScriptResponseWriter.PROCESS_MESSAGE ) ) {
@@ -219,7 +162,7 @@ public class ClientObject_Test extends TestCase {
     }
     markup = markup.replaceAll( "^" + JavaScriptResponseWriter.PROCESS_MESSAGE + "\\(", "" );
     markup = markup.replaceAll( "\\);$", "" );
-    return new JSONObject( markup );
+    return new Message( markup );
   }
 
   private void closeProtocolWriter() {
@@ -227,5 +170,11 @@ public class ClientObject_Test extends TestCase {
     JavaScriptResponseWriter writer = stateInfo.getResponseWriter();
     writer.finish();
   }
-
+  
+  // TODO: Move to Fixture
+  private static void assertArrayEquals( Object[] expected, Object[] actual ) {
+    if( !Arrays.equals( expected, actual ) ) {
+      fail( "Expected:\n" + expected + "\n but was:\n" + actual );
+    }
+  }
 }
