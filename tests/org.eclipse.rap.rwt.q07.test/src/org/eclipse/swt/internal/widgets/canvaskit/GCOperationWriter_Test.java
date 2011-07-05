@@ -112,6 +112,20 @@ public class GCOperationWriter_Test extends TestCase {
     assertTrue( markup.contains ( "gc.setProperty( \"font\", \"1px font-name\" );" ) );
   }
   
+  // bug 351216: [GC] Throws unexpected "Graphic is diposed" exception
+  public void testWriteImageOperationWithDisposedImage() throws IOException {
+    Canvas canvas = createCanvas();
+    Image image = new Image( canvas.getDisplay(), 100, 100 );
+    GC gc = new GC( canvas );
+    gc.drawImage( image, 0, 0 );
+    image.dispose();
+    
+    writeGCOperations( canvas );
+    
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.contains ( "gc.drawImage(" ) );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
