@@ -31,13 +31,12 @@ public class ControlGC_Test extends TestCase {
     assertEquals( canvas.getForeground(), gc.getForeground() );
   }
 
-
   public void testSetFont() {
     Font font = createFont();
     gc.setFont( font );
     GCOperation[] gcOperations = getGCOperations( gc );
     SetFont operation = ( SetFont )gcOperations[ 0 ];
-    assertEquals( font, operation.font );
+    assertEquals( font.getFontData()[ 0 ], operation.fontData );
   }
   
   public void testSetFontWithNullFont() {

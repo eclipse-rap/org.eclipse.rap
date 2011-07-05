@@ -15,8 +15,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.GCOperation;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
 import org.eclipse.swt.widgets.*;
@@ -86,7 +85,7 @@ public class GCOperationWriter_Test extends TestCase {
   }
 
   // bug 351216: [GC] Throws unexpected "Graphic is diposed" exception
-  public void testWriteColorOperation() throws IOException {
+  public void testWriteColorOperationWithDisposedColor() throws IOException {
     Canvas canvas = createCanvas();
     Color color = new Color( canvas.getDisplay(), 1, 2, 3 );
     GC gc = new GC( canvas );
@@ -99,6 +98,20 @@ public class GCOperationWriter_Test extends TestCase {
     assertTrue( markup.contains ( "gc.setProperty( \"foreground\", \"#010203\" )" ) );
   }
 
+  // bug 351216: [GC] Throws unexpected "Graphic is diposed" exception
+  public void testWriteFontOperationWithDisposedFont() throws IOException {
+    Canvas canvas = createCanvas();
+    Font font = new Font( canvas.getDisplay(), "font-name", 1, SWT.NORMAL );
+    GC gc = new GC( canvas );
+    gc.setFont( font );
+    font.dispose();
+    
+    writeGCOperations( canvas );
+    
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.contains ( "gc.setProperty( \"font\", \"1px font-name\" );" ) );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();

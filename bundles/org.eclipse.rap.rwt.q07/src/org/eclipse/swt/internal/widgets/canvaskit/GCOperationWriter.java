@@ -39,7 +39,7 @@ final class GCOperationWriter {
       Object[] args = new Object[] {
         new Integer( size.x ),
         new Integer( size.y ),
-        toCSSFont( control.getFont() ),
+        toCSSFont( FontUtil.getData( control.getFont() ) ),
         control.getBackground(),
         control.getForeground()
       };
@@ -234,13 +234,12 @@ final class GCOperationWriter {
   }
 
   private void setFont( final SetFont operation ) throws IOException {
-    Object[] args = new Object[] { "font", toCSSFont( operation.font ) };
+    Object[] args = new Object[] { "font", toCSSFont( operation.fontData ) };
     writer.call( GC_VAR, "setProperty", args );
   }
 
-  private static String toCSSFont( final Font font ) {
+  private static String toCSSFont( final FontData fontData ) {
     StringBuffer result = new StringBuffer();
-    FontData fontData = FontUtil.getData( font );
     if( ( fontData.getStyle() & SWT.ITALIC ) != 0 ) {
       result.append( "italic " );
     }

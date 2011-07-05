@@ -25,9 +25,9 @@ public abstract class GCOperation {
     public final int id;
     public final Object value;
 
-    public SetProperty( final int id, final Color value ) {
+    public SetProperty( final int id, final RGB value ) {
       this.id = id;
-      this.value = value.getRGB();
+      this.value = value;
     }
 
     public SetProperty( final int id, final int value ) {
@@ -38,10 +38,10 @@ public abstract class GCOperation {
 
   public static final class SetFont extends GCOperation {
 
-    public final Font font;
+    public final FontData fontData;
 
-    public SetFont( final Font font ) {
-      this.font = font;
+    public SetFont( final FontData fontData ) {
+      this.fontData = fontData;
     }
   }
 

@@ -49,7 +49,7 @@ class ControlGC extends GCDelegate {
 
   void setBackground( final Color color ) {
     background = color;
-    GCOperation operation = new SetProperty( SetProperty.BACKGROUND, color );
+    GCOperation operation = new SetProperty( SetProperty.BACKGROUND, color.getRGB() );
     addGCOperation( operation );
   }
 
@@ -59,7 +59,7 @@ class ControlGC extends GCDelegate {
 
   void setForeground( final Color color ) {
     foreground = color;
-    GCOperation operation = new SetProperty( SetProperty.FOREGROUND, color );
+    GCOperation operation = new SetProperty( SetProperty.FOREGROUND, color.getRGB() );
     addGCOperation( operation );
   }
 
@@ -69,7 +69,7 @@ class ControlGC extends GCDelegate {
 
   void setFont( final Font font ) {
     this.font = font;
-    GCOperation operation = new SetFont( copyFont( font ) );
+    GCOperation operation = new SetFont( cloneFontData( FontUtil.getData( font ) ) );
     addGCOperation( operation );
   }
 
@@ -207,8 +207,9 @@ class ControlGC extends GCDelegate {
     }
   }
 
-  private Font copyFont( final Font font ) {
-    FontData[] fontData = font.getFontData();
-    return new Font( control.getDisplay(), fontData );
+  private static FontData cloneFontData( FontData fontData ) {
+    FontData result = new FontData( fontData.getName(), fontData.getHeight(), fontData.getStyle() );
+    result.setLocale( fontData.getLocale() );
+    return result;
   }
 }
