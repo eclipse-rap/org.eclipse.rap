@@ -12,11 +12,11 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.service.ServiceContext;
+import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.PhaseListener;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
 
@@ -73,6 +73,46 @@ public class SimpleLifeCycle extends LifeCycle {
     }
   }
 
+  private static class SimpleSessionShutdownAdapter implements ISessionShutdownAdapter {
+    private Runnable shutdownCallback;
+    private ISessionStore sessionStore;
+
+    public void setShutdownCallback( Runnable shutdownCallback ) {
+      this.shutdownCallback = shutdownCallback;
+    }
+  
+    public void setSessionStore( ISessionStore sessionStore ) {
+      this.sessionStore = sessionStore;
+    }
+  
+    public void interceptShutdown() {
+      final Display display = LifeCycleUtil.getSessionDisplay( sessionStore );
+      if( isDisplayActive( display ) && isApplicationContextActive() ) {
+        FakeContextUtil.runNonUIThreadWithFakeContext( display, new Runnable() {
+          public void run() {
+            attachThread( display );
+            CurrentPhase.set( PhaseId.PROCESS_ACTION );
+            display.dispose();
+          }
+        } );
+      }
+      shutdownCallback.run();
+    }
+
+    public void processShutdown() {
+      throw new UnsupportedOperationException();
+    }
+    
+    private static boolean isDisplayActive( Display display ) {
+      return display != null && !display.isDisposed();
+    }
+  
+    private boolean isApplicationContextActive() {
+      ApplicationContext applicationContext = ApplicationContextUtil.get( sessionStore );
+      return applicationContext != null && applicationContext.isActivated();
+    }
+  }
+
   private final PhaseListenerManager phaseListenerManager;
 
   public SimpleLifeCycle() {
@@ -81,12 +121,13 @@ public class SimpleLifeCycle extends LifeCycle {
   }
 
   public void execute() throws IOException {
-    attachThread();
+    installSessionShutdownAdapter();
+    attachThread( LifeCycleUtil.getSessionDisplay() );
     try {
       PhaseExecutor phaseExecutor = new SessionDisplayPhaseExecutor( phaseListenerManager );
       phaseExecutor.execute( PhaseId.PREPARE_UI_ROOT );
     } finally {
-      detachThread();
+      detachThread( LifeCycleUtil.getSessionDisplay() );
     }
   }
   
@@ -102,29 +143,31 @@ public class SimpleLifeCycle extends LifeCycle {
     phaseListenerManager.removePhaseListener( phaseListener );
   }
 
-  private static void attachThread() {
-    IDisplayAdapter displayAdapter = getDisplayAdapter();
-    if( displayAdapter != null ) {
-      displayAdapter.attachThread();
+  private static void installSessionShutdownAdapter() {
+    SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSession();
+    if( sessionStore.getShutdownAdapter() == null ) {
+      sessionStore.setShutdownAdapter( new SimpleSessionShutdownAdapter() );
     }
-    IUIThreadHolder uiThreadHolder = new SimpleUIThreadHolder( Thread.currentThread() );
-    LifeCycleUtil.setUIThread( RWT.getSessionStore(), uiThreadHolder );
   }
 
-  private static void detachThread() {
-    IDisplayAdapter displayAdapter = getDisplayAdapter();
-    if( displayAdapter != null ) {
-      displayAdapter.detachThread();
+  private static void attachThread( Display display ) {
+    if( display != null ) {
+      IDisplayAdapter displayAdapter = getDisplayAdapter( display );
+      displayAdapter.attachThread();
+      IUIThreadHolder uiThreadHolder = new SimpleUIThreadHolder( Thread.currentThread() );
+      LifeCycleUtil.setUIThread( displayAdapter.getSessionStore(), uiThreadHolder );
     }
-    LifeCycleUtil.setUIThread( RWT.getSessionStore(), null );
+  }
+
+  private static void detachThread( Display display ) {
+    if( display != null ) {
+      IDisplayAdapter displayAdapter = getDisplayAdapter( display );
+      displayAdapter.detachThread();
+      LifeCycleUtil.setUIThread( displayAdapter.getSessionStore(), null );
+    }
   }
   
-  private static IDisplayAdapter getDisplayAdapter() {
-    IDisplayAdapter result = null;
-    Display display = LifeCycleUtil.getSessionDisplay();
-    if( display != null ) {
-      result = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
-    }
-    return result;
+  private static IDisplayAdapter getDisplayAdapter( Display display ) {
+    return ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
   }
 }

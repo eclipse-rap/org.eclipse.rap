@@ -13,8 +13,7 @@ import java.lang.reflect.*;
 
 import javax.servlet.http.*;
 
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.ServiceContext;
+import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -73,7 +72,9 @@ public final class FakeContextUtil {
 
   public static ServiceContext createFakeContext( ISessionStore sessionStore ) {
     HttpServletRequest request = newRequest( sessionStore );
-    return new ServiceContext( request, RESPONSE_PROXY, sessionStore );
+    ServiceContext result = new ServiceContext( request, RESPONSE_PROXY, sessionStore );
+    result.setStateInfo( new ServiceStateInfo() );
+    return result;
   }
 
   private static IDisplayAdapter getDisplayAdapter( Display display ) {

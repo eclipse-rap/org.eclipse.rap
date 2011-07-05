@@ -60,6 +60,12 @@ public class FakeContextUtil_Test extends TestCase {
     }
   }
   
+  public void testFakedStateInfo() {
+    ServiceContext serviceContext = FakeContextUtil.createFakeContext( sessionStore );
+
+    assertNotNull( serviceContext.getStateInfo() );
+  }
+  
   protected void setUp() throws Exception {
     sessionStore = new SessionStoreImpl( new TestSession() );
   }

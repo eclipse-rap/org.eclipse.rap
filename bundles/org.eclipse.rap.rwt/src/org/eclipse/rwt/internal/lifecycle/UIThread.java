@@ -19,10 +19,7 @@ import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 
 
-final class UIThread
-  extends Thread
-  implements IUIThreadHolder, ISessionShutdownAdapter
-{
+final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdownAdapter {
 
   static final class UIThreadTerminatedError extends ThreadDeath {
     private static final long serialVersionUID = 1L;
@@ -40,7 +37,7 @@ final class UIThread
   //////////////////////////
   // interface IThreadHolder
 
-  public void setServiceContext( final ServiceContext serviceContext ) {
+  public void setServiceContext( ServiceContext serviceContext ) {
     this.serviceContext = serviceContext;
   }
 
@@ -81,7 +78,7 @@ final class UIThread
     }
   }
 
-  private void handleInterruptInSwitchThread( final InterruptedException e )
+  private void handleInterruptInSwitchThread( InterruptedException e )
     throws UIThreadTerminatedError
   {
     Thread.interrupted();
@@ -110,7 +107,7 @@ final class UIThread
   public void terminateThread() {
     // Prepare a service context to be used by the UI thread that may continue
     // to run as a result of the interrupt call
-    ServiceContext serviceContext = createServiceContext();
+    ServiceContext serviceContext = FakeContextUtil.createFakeContext( sessionStore );
     setServiceContext( serviceContext );
     uiThreadTerminating = true;
     // interrupt the UI thread that is expected to wait in switchThread or
@@ -138,11 +135,11 @@ final class UIThread
   ////////////////////////////////////
   // interface ISessionShutdownAdapter
 
-  public void setSessionStore( final ISessionStore sessionStore ) {
+  public void setSessionStore( ISessionStore sessionStore ) {
     this.sessionStore = sessionStore;
   }
 
-  public void setShutdownCallback( final Runnable shutdownCallback ) {
+  public void setShutdownCallback( Runnable shutdownCallback ) {
     this.shutdownCallback = shutdownCallback;
   }
 
@@ -156,7 +153,7 @@ final class UIThread
       // Simulate PROCESS_ACTION phase if the session times out
       CurrentPhase.set( PhaseId.PROCESS_ACTION );
       // TODO [rh] find a better decoupled way to dispose of the display
-      Display display = LifeCycleUtil.getSessionDisplay();
+      Display display = LifeCycleUtil.getSessionDisplay( sessionStore );
       // TODO [fappel]: Think about a better solution: isActivated() checks whether
       //                the applicationContext is still activated before starting
       //                cleanup. This is due to the missing possibility of OSGi HttpService
@@ -164,7 +161,7 @@ final class UIThread
       //                deactivation of ApplicationContext instances. In case the HttpService
       //                gets halted the corresponding ApplicationContext instances have already
       //                been deactivated and this will cause a NPE.
-      if( isActivated() && display != null ) {
+      if( isApplicationContextActive() && display != null ) {
         display.dispose();
       }
       shutdownCallback.run();
@@ -173,7 +170,7 @@ final class UIThread
     }
   }
 
-  private boolean isActivated() {
+  private boolean isApplicationContextActive() {
     ApplicationContext applicationContext = ApplicationContextUtil.get( sessionStore );
     return applicationContext != null && applicationContext.isActivated();
   }
@@ -181,9 +178,4 @@ final class UIThread
   //////////////////
   // Helping methods
 
-  private ServiceContext createServiceContext() {
-    ServiceContext result = FakeContextUtil.createFakeContext( sessionStore );
-    result.setStateInfo( new ServiceStateInfo() );
-    return result;
-  }
 }

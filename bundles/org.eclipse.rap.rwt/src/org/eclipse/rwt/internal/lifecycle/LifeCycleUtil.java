@@ -23,19 +23,23 @@ public class LifeCycleUtil {
     = LifeCycleUtil.class.getName() + "#sessionDisplay";
   private static final String ATTR_UI_THREAD = LifeCycleUtil.class.getName() + "#uiThread";
 
+  public static void setSessionDisplay( Display display ) {
+    ContextProvider.getSession().setAttribute( ATTR_SESSION_DISPLAY, display );
+  }
+
   public static Display getSessionDisplay() {
     Display result = null;
     if( ContextProvider.hasContext() ) {
       ISessionStore sessionStore = ContextProvider.getSession();
-      result = ( Display )sessionStore.getAttribute( ATTR_SESSION_DISPLAY );
+      result = getSessionDisplay( sessionStore );
     }
     return result;
   }
 
-  public static void setSessionDisplay( Display display ) {
-    ContextProvider.getSession().setAttribute( ATTR_SESSION_DISPLAY, display );
+  public static Display getSessionDisplay( ISessionStore sessionStore ) {
+    return ( Display )sessionStore.getAttribute( ATTR_SESSION_DISPLAY );
   }
-  
+
   public static void setUIThread( ISessionStore sessionStore, IUIThreadHolder threadHolder ) {
     sessionStore.setAttribute( ATTR_UI_THREAD, threadHolder );
   }

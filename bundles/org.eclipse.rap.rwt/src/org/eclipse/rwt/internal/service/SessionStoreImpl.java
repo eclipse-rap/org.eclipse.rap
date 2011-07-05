@@ -72,6 +72,10 @@ public final class SessionStoreImpl
     }
   }
   
+  public ISessionShutdownAdapter getShutdownAdapter() {
+    return shutdownAdapter;
+  }
+  
   //////////////////////////
   // interface ISessionStore
   

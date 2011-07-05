@@ -23,8 +23,6 @@ import org.eclipse.swt.widgets.Display;
 
 @SuppressWarnings("restriction")
 public class ClusterFixture {
-  private static final String ATTR_SESSION_DISPLAY 
-    = LifeCycleUtil.class.getName() + "#sessionDisplay";
 
   public static void setUp() {
     System.setProperty( "lifecycle", SimpleLifeCycle.class.getName() );
@@ -43,8 +41,7 @@ public class ClusterFixture {
   }
 
   public static Display getSessionDisplay( HttpSession httpSession ) {
-    ISessionStore sessionStore = getSessionStore( httpSession );
-    return ( Display )sessionStore.getAttribute( ATTR_SESSION_DISPLAY );
+    return LifeCycleUtil.getSessionDisplay( getSessionStore( httpSession ) );
   }
 
   private ClusterFixture() {

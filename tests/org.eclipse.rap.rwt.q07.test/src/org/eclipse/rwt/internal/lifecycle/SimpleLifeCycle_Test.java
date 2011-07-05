@@ -19,10 +19,12 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.LoggingPhaseListener.PhaseEventInfo;
+import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -181,6 +183,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
   
   public void testGetUIThreadWhileLifeCycleInExecute() throws IOException {
+    new Display();
     final Thread[] uiThread = { null };
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
@@ -207,9 +210,35 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertNull( threadHolder );
   }
   
+  public void testInvalidateDisposesDisplay() throws Throwable {
+    final ISessionStore sessionStore = ContextProvider.getSession();
+    Display display = new Display();
+    lifeCycle.execute();
+    
+    Fixture.runInThread( new Runnable() {
+      public void run() {
+        sessionStore.getHttpSession().invalidate();
+      }
+    } );
+    
+    assertTrue( display.isDisposed() );
+  }
+  
+  public void testSessionRestertDisposesDisplay() throws IOException {
+    final ISessionStore sessionStore = ContextProvider.getSession();
+    Display display = new Display();
+    lifeCycle.execute();
+    
+    sessionStore.getHttpSession().invalidate();
+    
+    assertTrue( display.isDisposed() );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
+    ISessionStore sessionSore = ContextProvider.getSession();
+    ApplicationContextUtil.set( sessionSore, ApplicationContextUtil.getInstance() );
     lifeCycle = new SimpleLifeCycle();
   }
 
