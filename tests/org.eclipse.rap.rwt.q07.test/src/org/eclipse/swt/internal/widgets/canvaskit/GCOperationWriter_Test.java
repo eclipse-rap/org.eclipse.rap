@@ -9,39 +9,50 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.canvaskit;
 
-import org.eclipse.swt.SWT;
-
 import junit.framework.TestCase;
+
+import org.eclipse.swt.SWT;
 
 public class GCOperationWriter_Test extends TestCase {
 
-  public void testProcessText() {
+  public void testProcessTextWithTabDelimiterMnemonicFlag() {
     String text = "text with \ttab, \nnew line and &mnemonic";
+    
     int flags = SWT.DRAW_TAB | SWT.DRAW_DELIMITER | SWT.DRAW_MNEMONIC;
-    String expected
-      = "text with &nbsp;&nbsp;&nbsp;&nbsp;tab, <br/>new line and mnemonic";
     String result = GCOperationWriter.processText( text, flags );
+    
+    String expected = "text with &nbsp;&nbsp;&nbsp;&nbsp;tab, <br/>new line and mnemonic";
     assertEquals( expected, result );
-
-    flags = SWT.DRAW_TAB | SWT.DRAW_DELIMITER;
-    expected
-      = "text with &nbsp;&nbsp;&nbsp;&nbsp;tab, <br/>new line and &amp;mnemonic";
-    result = GCOperationWriter.processText( text, flags );
+  }
+  
+  public void testProcessTextWithTabDelimiterFlag() {
+    String text = "text with \ttab, \nnew line and &mnemonic";
+    
+    String result = GCOperationWriter.processText( text, SWT.DRAW_TAB | SWT.DRAW_DELIMITER );
+    
+    String expected = "text with &nbsp;&nbsp;&nbsp;&nbsp;tab, <br/>new line and &amp;mnemonic";
     assertEquals( expected, result );
-
-    flags = SWT.DRAW_TAB;
-    expected
-      = "text with &nbsp;&nbsp;&nbsp;&nbsp;tab, new line and &amp;mnemonic";
-    result = GCOperationWriter.processText( text, flags );
+  }
+  
+  public void testProcessTextWithTabFlag() {
+    String text = "text with \ttab, \nnew line and &mnemonic";
+    
+    String result = GCOperationWriter.processText( text, SWT.DRAW_TAB );
+    
+    String expected = "text with &nbsp;&nbsp;&nbsp;&nbsp;tab, new line and &amp;mnemonic";
     assertEquals( expected, result );
-
-    flags = SWT.NONE;
-    expected = "text with tab, new line and &amp;mnemonic";
-    result = GCOperationWriter.processText( text, flags );
+  }
+  
+  public void testProcessTextWithNoFlag() {
+    String text = "text with \ttab, \nnew line and &mnemonic";
+    
+    String result = GCOperationWriter.processText( text, SWT.NONE );
+    
+    String expected = "text with tab, new line and &amp;mnemonic";
     assertEquals( expected, result );
   }
 
-  public void testProcessText_DrawMnemonic() {
+  public void testProcessTextWithDrawMnemonic() {
     String text = "text without mnemonic";
     String expected = text;
     String result = GCOperationWriter.processText( text, SWT.DRAW_MNEMONIC );
