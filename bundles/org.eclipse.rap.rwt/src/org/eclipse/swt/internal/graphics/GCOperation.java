@@ -27,7 +27,7 @@ public abstract class GCOperation {
 
     public SetProperty( final int id, final Color value ) {
       this.id = id;
-      this.value = value;
+      this.value = value.getRGB();
     }
 
     public SetProperty( final int id, final int value ) {

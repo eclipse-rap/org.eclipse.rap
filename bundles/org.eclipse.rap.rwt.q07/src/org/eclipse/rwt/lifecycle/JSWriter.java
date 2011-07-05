@@ -22,6 +22,7 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
 
@@ -836,6 +837,10 @@ public final class JSWriter {
           params.append( '"' );
           params.append( getColorValue( ( Color )args[ i ] ) );
           params.append( '"' );
+        } else if( args[ i ] instanceof RGB ) {
+          params.append( '"' );
+          params.append( getColorValue( ( RGB )args[ i ] ) );
+          params.append( '"' );
         } else if( args[ i ] instanceof Object[] ) {
           params.append( createArray( ( Object[] )args[ i ] ) );
         } else {
@@ -896,27 +901,31 @@ public final class JSWriter {
     return buffer.toString();
   }
 
-  private static String getColorValue( final Color color ) {
+  private static Object getColorValue( Color color ) {
+    return getColorValue( color.getRGB() );
+  }
+
+  private static String getColorValue( RGB rgb ) {
     StringBuffer buffer = new StringBuffer();
     buffer.append( "#" );
-    String red = Integer.toHexString( color.getRed() );
+    String red = Integer.toHexString( rgb.red );
     if( red.length() == 1  ) {
       buffer.append( "0" );
     }
     buffer.append( red );
-    String green = Integer.toHexString( color.getGreen() );
+    String green = Integer.toHexString( rgb.green );
     if( green.length() == 1  ) {
       buffer.append( "0" );
     }
     buffer.append( green );
-    String blue = Integer.toHexString( color.getBlue() );
+    String blue = Integer.toHexString( rgb.blue );
     if( blue.length() == 1  ) {
       buffer.append( "0" );
     }
     buffer.append( blue );
     return buffer.toString();
   }
-
+  
   ////////////////////////////////////////
   // Helping methods to manipulate strings
 

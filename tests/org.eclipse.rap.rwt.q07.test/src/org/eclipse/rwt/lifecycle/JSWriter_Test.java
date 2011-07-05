@@ -24,6 +24,7 @@ import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
@@ -284,6 +285,18 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     writer.call( "setColor", new Object[] { chocolate } );
     expected = "w.setColor( \"#d2691e\" );";
+    assertEquals( expected, Fixture.getAllMarkup() );
+  }
+  
+  public void testCallWithRGBValue() throws IOException {
+    Display display = new Display();
+    RGB salmon = Graphics.getColor( 250, 128, 114 ).getRGB();
+    TestShell shell = new TestShell( display );
+    JSWriter writer = JSWriter.getWriterFor( shell.button );
+    writer.call( "foo", null ); // get rid of initialization Javascript code
+    Fixture.fakeResponseWriter();
+    writer.call( "setColor", new Object[] { salmon } );
+    String expected = "w.setColor( \"#fa8072\" );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 

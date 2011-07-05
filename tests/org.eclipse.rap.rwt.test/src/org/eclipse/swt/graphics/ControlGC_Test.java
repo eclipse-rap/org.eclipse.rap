@@ -63,7 +63,7 @@ public class ControlGC_Test extends TestCase {
     GCOperation[] gcOperations = getGCOperations( gc );
     SetProperty operation = ( SetProperty )gcOperations[ 0 ];
     assertEquals( SetProperty.BACKGROUND, operation.id );
-    assertEquals( color, operation.value );
+    assertEquals( color.getRGB(), operation.value );
   }
 
   public void testSetForeground() {
@@ -74,7 +74,7 @@ public class ControlGC_Test extends TestCase {
     GCOperation[] gcOperations = getGCOperations( gc );
     SetProperty operation = ( SetProperty )gcOperations[ 0 ];
     assertEquals( SetProperty.FOREGROUND, operation.id );
-    assertEquals( color, operation.value );
+    assertEquals( color.getRGB(), operation.value );
   }
   
   public void testGetGCAdapterForCanvasWidget() {

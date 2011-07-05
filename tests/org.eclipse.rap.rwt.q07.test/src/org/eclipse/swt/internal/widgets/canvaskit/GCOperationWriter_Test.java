@@ -9,9 +9,17 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.canvaskit;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
+import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.internal.graphics.GCOperation;
+import org.eclipse.swt.internal.graphics.IGCAdapter;
+import org.eclipse.swt.widgets.*;
 
 public class GCOperationWriter_Test extends TestCase {
 
@@ -75,5 +83,43 @@ public class GCOperationWriter_Test extends TestCase {
     expected = "text with &amp;&amp;mnemonic";
     result = GCOperationWriter.processText( text, SWT.NONE );
     assertEquals( expected, result );
+  }
+
+  // bug 351216: [GC] Throws unexpected "Graphic is diposed" exception
+  public void testWriteColorOperation() throws IOException {
+    Canvas canvas = createCanvas();
+    Color color = new Color( canvas.getDisplay(), 1, 2, 3 );
+    GC gc = new GC( canvas );
+    gc.setForeground( color );
+    color.dispose();
+    
+    writeGCOperations( canvas );
+    
+    String markup = Fixture.getAllMarkup();
+    assertTrue( markup.contains ( "gc.setProperty( \"foreground\", \"#010203\" )" ) );
+  }
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakeResponseWriter();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
+  private static Canvas createCanvas() {
+    Display display = new Display();
+    Shell control = new Shell( display );
+    return new Canvas( control, SWT.NONE );
+  }
+
+  private static void writeGCOperations( Canvas canvas ) throws IOException {
+    IGCAdapter adapter = ( IGCAdapter )canvas.getAdapter( IGCAdapter.class );
+    GCOperation[] operations = adapter.getGCOperations();
+    GCOperationWriter operationWriter = new GCOperationWriter( canvas );
+    for( GCOperation operation : operations ) {
+      operationWriter.write( operation );
+    }
   }
 }
