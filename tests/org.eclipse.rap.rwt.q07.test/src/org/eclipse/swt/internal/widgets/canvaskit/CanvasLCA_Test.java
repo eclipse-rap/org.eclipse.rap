@@ -22,7 +22,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawLine;
-import org.eclipse.swt.internal.graphics.GCOperation.SetFont;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 import org.eclipse.swt.widgets.*;
 
@@ -118,7 +117,7 @@ public class CanvasLCA_Test extends TestCase {
     adapter.addGCOperation( new DrawLine( 1, 2, 3, 4 ) );
     adapter.addGCOperation( new DrawLine( 5, 6, 7, 8 ) );
     Font font = new Font( display, "Arial", 15, SWT.NORMAL );
-    adapter.addGCOperation( new SetFont( font.getFontData()[ 0 ] ) );
+    adapter.addGCOperation( new SetProperty( font.getFontData()[ 0 ] ) );
     SetProperty operation = new SetProperty( SetProperty.LINE_WIDTH, 5 );
     adapter.addGCOperation( operation );
     new CanvasLCA().renderChanges( canvas );
@@ -144,7 +143,7 @@ public class CanvasLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     GCAdapter adapter = ( GCAdapter )canvas.getAdapter( IGCAdapter.class );
     Font font = new Font( display, "Arial", 15, SWT.NORMAL );
-    adapter.addGCOperation( new SetFont( font.getFontData()[ 0 ] ) );
+    adapter.addGCOperation( new SetProperty( font.getFontData()[ 0 ] ) );
     SetProperty operation = new SetProperty( SetProperty.LINE_WIDTH, 5 );
     adapter.addGCOperation( operation );
     new CanvasLCA().renderChanges( canvas );

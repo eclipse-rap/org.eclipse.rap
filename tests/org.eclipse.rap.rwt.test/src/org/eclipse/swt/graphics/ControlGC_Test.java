@@ -35,8 +35,8 @@ public class ControlGC_Test extends TestCase {
     Font font = createFont();
     gc.setFont( font );
     GCOperation[] gcOperations = getGCOperations( gc );
-    SetFont operation = ( SetFont )gcOperations[ 0 ];
-    assertEquals( font.getFontData()[ 0 ], operation.fontData );
+    SetProperty operation = ( SetProperty )gcOperations[ 0 ];
+    assertEquals( font.getFontData()[ 0 ], operation.value );
   }
   
   public void testSetFontWithNullFont() {

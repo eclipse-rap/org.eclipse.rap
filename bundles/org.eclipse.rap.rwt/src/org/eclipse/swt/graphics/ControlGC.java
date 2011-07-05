@@ -21,7 +21,6 @@ import org.eclipse.swt.internal.graphics.GCOperation.DrawRectangle;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawRoundRectangle;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawText;
 import org.eclipse.swt.internal.graphics.GCOperation.FillGradientRectangle;
-import org.eclipse.swt.internal.graphics.GCOperation.SetFont;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 import org.eclipse.swt.widgets.Control;
 
@@ -69,7 +68,7 @@ class ControlGC extends GCDelegate {
 
   void setFont( final Font font ) {
     this.font = font;
-    GCOperation operation = new SetFont( cloneFontData( FontUtil.getData( font ) ) );
+    GCOperation operation = new SetProperty( cloneFontData( FontUtil.getData( font ) ) );
     addGCOperation( operation );
   }
 

@@ -12,7 +12,6 @@ package org.eclipse.swt.internal.graphics;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.swt.internal.graphics.GCOperation.SetFont;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 
 public final class GCAdapter implements IGCAdapter {
@@ -63,6 +62,6 @@ public final class GCAdapter implements IGCAdapter {
   }
 
   private static boolean isDrawOperation( GCOperation operation ) {
-    return !( operation instanceof SetProperty || operation instanceof SetFont );
+    return !( operation instanceof SetProperty );
   }
 }

@@ -21,6 +21,7 @@ public abstract class GCOperation {
     public static final int LINE_WIDTH = 3;
     public static final int LINE_CAP = 4;
     public static final int LINE_JOIN = 5;
+    public static final int FONT = 6;
 
     public final int id;
     public final Object value;
@@ -29,19 +30,15 @@ public abstract class GCOperation {
       this.id = id;
       this.value = value;
     }
+    
+    public SetProperty( final FontData value ) {
+      this.id = FONT;
+      this.value = value;
+    }
 
     public SetProperty( final int id, final int value ) {
       this.id = id;
       this.value = new Integer( value );
-    }
-  }
-
-  public static final class SetFont extends GCOperation {
-
-    public final FontData fontData;
-
-    public SetFont( final FontData fontData ) {
-      this.fontData = fontData;
     }
   }
 

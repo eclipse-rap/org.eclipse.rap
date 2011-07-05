@@ -70,8 +70,6 @@ final class GCOperationWriter {
       drawText( ( DrawText )operation );
     } else if( operation instanceof SetProperty ) {
       setProperty( ( SetProperty )operation );
-    } else if( operation instanceof SetFont ) {
-      setFont( ( SetFont )operation );
     } else {
       String name = operation.getClass().getName();
       throw new IllegalArgumentException( "Unsupported GCOperation: " + name );
@@ -205,37 +203,42 @@ final class GCOperationWriter {
   }
 
   private void setProperty( final SetProperty operation ) throws IOException {
-    String jsProperty;
+    String name;
+    Object value;
     switch( operation.id ) {
       case SetProperty.FOREGROUND:
-        jsProperty = "foreground";
+        name = "foreground";
+        value = operation.value;
       break;
       case SetProperty.BACKGROUND:
-        jsProperty = "background";
+        name = "background";
+        value = operation.value;
       break;
       case SetProperty.ALPHA:
-        jsProperty = "alpha";
+        name = "alpha";
+        value = operation.value;
       break;
       case SetProperty.LINE_WIDTH:
-        jsProperty = "lineWidth";
+        name = "lineWidth";
+        value = operation.value;
       break;
       case SetProperty.LINE_CAP:
-        jsProperty = "lineCap";
+        name = "lineCap";
+        value = operation.value;
       break;
       case SetProperty.LINE_JOIN:
-        jsProperty = "lineJoin";
+        name = "lineJoin";
+        value = operation.value;
+      break;
+      case SetProperty.FONT:
+        name = "font";
+        value = toCSSFont( ( FontData )operation.value );
       break;
       default:
         String msg = "Unsupported operation id: " + operation.id;
         throw new RuntimeException( msg );
     }
-    Object[] args = new Object[] { jsProperty, operation.value };
-    writer.call( GC_VAR, "setProperty", args );
-  }
-
-  private void setFont( final SetFont operation ) throws IOException {
-    Object[] args = new Object[] { "font", toCSSFont( operation.fontData ) };
-    writer.call( GC_VAR, "setProperty", args );
+    writer.call( GC_VAR, "setProperty", new Object[] { name, value } );
   }
 
   private static String toCSSFont( final FontData fontData ) {
