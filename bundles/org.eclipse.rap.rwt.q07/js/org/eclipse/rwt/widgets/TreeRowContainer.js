@@ -342,7 +342,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
       }
       for( var i = row; i < this._children.length; i++ ) {
         this._renderRow( this._children[ i ], null );
-        this._items[ row ] = null;
+        this._items[ i ] = null;
       }
     },
     

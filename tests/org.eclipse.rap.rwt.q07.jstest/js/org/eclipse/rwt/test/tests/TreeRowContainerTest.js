@@ -95,6 +95,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
       assertEquals( 20, bounds.height );
       tree.destroy();
     },
+
+    testRenderEmptyRowOnHoverBug : function() {
+      // See Bug 349310 - Mouseover on invisible items in SWT Tree
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      tree.setItemCount( 1 );
+      var root = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
+      root.setItemCount( 10 );
+      for( var i = 0; i < 10; i++ ) {
+        var item = new org.eclipse.rwt.widgets.TreeItem( root, i );
+        item.setTexts( [ "item" + i ] );
+      }
+      root.setExpanded( true );
+      testUtil.flush();
+      var node = tree._rowContainer._children[ 2 ]._getTargetNode();
+      assertEquals( "item1", node.firstChild.innerHTML );
+      assertEquals( "", node.firstChild.style.display );
+      root.setExpanded( false );
+      testUtil.flush();
+      assertEquals( "none", node.firstChild.style.display );
+      testUtil.mouseOver( tree._rowContainer._children[ 2 ] );
+      assertEquals( "none", node.firstChild.style.display );
+      tree.destroy();
+    },
     
     testChangeTreeRowBounds : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
