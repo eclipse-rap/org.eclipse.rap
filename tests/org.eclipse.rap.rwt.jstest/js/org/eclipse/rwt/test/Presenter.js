@@ -97,12 +97,26 @@ qx.Class.define("org.eclipse.rwt.test.Presenter", {
         bar.style.height = "10%";
       }
     },
-    
-    log : function( text, indent ) {
+
+    forceReload : function( e ) {
+      var current = location.toString();
+      var current = current.slice( 0, current.indexOf( "?" ) );
+      var event = e || window.event
+      var target = event.target || event.srcElement
+      var newLoc = current + "?" + target.link;
+      location.href = newLoc;
+    },
+
+    log : function( text, indent, link ) {
       var span = document.createElement( "span" );
       var msg = document.createTextNode( text );
       var br = document.createElement( "br" );
       span.appendChild( msg );
+      if( link ) {
+        span.style.cursor = "pointer";
+        span.link = link;
+        span.onclick = this.forceReload;
+      }
       span.appendChild( br );
       if( indent ) {
         span.style.marginLeft = '30px';
