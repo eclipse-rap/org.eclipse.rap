@@ -37,7 +37,42 @@ public class Message_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-  
+
+  public void testConstructWithNull() {
+    try {
+      new Message( null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+
+  public void testConstructWithInvalidJson() {
+    try {
+      new Message( "{" );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+      assertTrue( expected.getMessage().contains( "Could not parse json" ) );
+    }
+  }
+
+  public void testConstructWithoutOperations() {
+    try {
+      new Message( "{ \"foo\": 23 }" );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+      assertTrue( expected.getMessage().contains( "Missing operations array" ) );
+    }
+  }
+
+  public void testConstructWithInvalidOperations() {
+    try {
+      new Message( "{ \"operations\": 23 }" );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+      assertTrue( expected.getMessage().contains( "Missing operations array" ) );
+    }
+  }
+
   public void testGetOperation() {
     writer.appendDo( "w2", "method", null );
     
@@ -81,6 +116,16 @@ public class Message_Test extends TestCase {
     assertTrue( getMessage().getOperation( 0 ) instanceof DestroyOperation );
   }
   
+  public void testGetOperationWithUnknownType() {
+    Message message = new Message( "{ \"operations\" : [ { \"type\" : \"foo\" } ] }" );
+    
+    try {
+      message.getOperation( 0 );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
   public void testCreateOperation() {
     Object[] parameters = new Object[] { "a", new Integer( 2 ) };
     String[] styles = new String[] { "FOO", "BAR" };

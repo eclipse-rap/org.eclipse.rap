@@ -35,16 +35,21 @@ public final class Message {
   private JSONArray operations;
   
   public Message( String json ) {
+    JSONObject jsonObject;
     try {
-      JSONObject jsonObject = new JSONObject( json );
+      jsonObject = new JSONObject( json );
+    } catch( JSONException e ) {
+      throw new IllegalArgumentException( "Could not parse json: " + json );
+    }
+    try {
       operations = jsonObject.getJSONArray( MESSAGE_OPERATIONS );
     } catch( JSONException e ) {
-      throw new IllegalStateException( "Could not parse json: " + json );
+      throw new IllegalArgumentException( "Missing operations array: " + json );
     }
   }
 
   public Operation getOperation( int position ) {
-    Operation result = null;
+    Operation result;
     JSONObject operation = getOperationAsJson( position );
     String type = getOperationType( operation );
     if( type.equals( TYPE_CREATE ) ) {
@@ -59,12 +64,14 @@ public final class Message {
       result = new ExecuteScriptOperation( operation );
     } else if( type.equals( TYPE_DESTROY ) ) {
       result = new DestroyOperation( operation );
+    } else {
+      throw new IllegalArgumentException( "Unknown operation type: " + type );
     }
     return result;
   }
 
   private JSONObject getOperationAsJson( int position ) {
-    JSONObject result = null;
+    JSONObject result;
     try {
       result = operations.getJSONObject( position );
     } catch( JSONException e ) {
@@ -74,7 +81,7 @@ public final class Message {
   }
 
   private String getOperationType( JSONObject operation ) {
-    String type = null;
+    String type;
     try {
       type = operation.getString( OPERATION_TYPE );
     } catch( JSONException e ) {
@@ -83,7 +90,7 @@ public final class Message {
     return type;
   }
 
-  public class Operation {
+  public abstract class Operation {
     
     private String target;
     private JSONObject operation;
@@ -98,7 +105,7 @@ public final class Message {
     }
     
     protected Object getDetail( String key ) {
-      Object result = null;
+      Object result;
       try {
         JSONObject details = operation.getJSONObject( OPERATION_DETAILS );
         result = details.get( key );
@@ -107,28 +114,7 @@ public final class Message {
       }
       return result;
     }
-    
-    protected Object getValue( String key ) {
-      Object result = null;
-      try {
-        result = operation.get( key );
-      } catch( JSONException e ) {
-        throw new IllegalStateException( "Value is not valid for key: " + key );
-      }
-      return result;
-    }
-  }
-
-  private class OperationWithParameters extends Operation {
-  
-    private OperationWithParameters( JSONObject operation ) {
-      super( operation );
-    }
-    
-    public Object[] getParameters() {
-      return getParameters( PARAMETER );
-    }
-    
+        
     protected Object[] getParameters( String key) {
       Object detail = getDetail( key );
       Object[] result = null;
@@ -146,9 +132,19 @@ public final class Message {
       }
       return result;
     }
+
+    private Object getValue( String key ) {
+      Object result;
+      try {
+        result = operation.get( key );
+      } catch( JSONException e ) {
+        throw new IllegalStateException( "Value is not valid for key: " + key );
+      }
+      return result;
+    }
   }
 
-  public final class CreateOperation extends OperationWithParameters {
+  public final class CreateOperation extends Operation {
   
     private CreateOperation( JSONObject operation ) {
       super( operation );
@@ -165,9 +161,13 @@ public final class Message {
     public Object[] getStyles() {
       return getParameters( CREATE_STYLE );
     }
+
+    public Object[] getParameters() {
+      return getParameters( PARAMETER );
+    }
   }
 
-  public final class DoOperation extends OperationWithParameters {
+  public final class DoOperation extends Operation {
   
     private DoOperation( JSONObject operation ) {
       super( operation );
@@ -175,6 +175,10 @@ public final class Message {
   
     public String getName() {
       return ( String )getDetail( DO_NAME );
+    }
+
+    public Object[] getParameters() {
+      return getParameters( PARAMETER );
     }
   }
 
