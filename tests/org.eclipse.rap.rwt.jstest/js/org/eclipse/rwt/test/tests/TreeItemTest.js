@@ -560,14 +560,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
 
     testFindItemByFlatIndexFirstItemOfLayer : function() {
     	var root = this._createRoot();
-    	var item = root.findItemByFlatIndex( 1031 );
+    	item = root.findItemByFlatIndex( 1031 );
     	assertEquals( "y", item.getText( 0 ) );
     	root.dispose();
     },
 
     testFindItemByFlatIndexLastItemOfLayer : function() {
     	var root = this._createRoot();
-    	var item = root.findItemByFlatIndex( 1006 );
+    	item = root.findItemByFlatIndex( 1006 );
     	assertEquals( "z", item.getText( 0 ) );
     	root.dispose();
     },
@@ -645,7 +645,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       result.getChild( 10 ).getChild( 5 ).getChild( 3 ).setTexts( [ "x" ] );
       result.getChild( 15 ).setExpanded( true );
       result.getChild( 15 ).setItemCount( 400 );
-      result.getChild( 15 ).getChild( 0 ).setTexts( [ "y" ] ); 
+      result.getChild( 15 ).getChild( 0 ).setTexts( "y" ); 
       return result;
     }
     
