@@ -10,8 +10,7 @@
 *******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
-import java.util.Arrays;
-
+import static org.eclipse.rwt.internal.resources.TestUtil.assertArrayEquals;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -153,7 +152,6 @@ public class ClientObject_Test extends TestCase {
     assertEquals( "var x = 5;", operation.getScript() );
   }
 
-  // TODO: Move to Fixture
   private Message getMessage() {
     closeProtocolWriter();
     String markup = Fixture.getAllMarkup();
@@ -169,12 +167,5 @@ public class ClientObject_Test extends TestCase {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     JavaScriptResponseWriter writer = stateInfo.getResponseWriter();
     writer.finish();
-  }
-  
-  // TODO: Move to Fixture
-  private static void assertArrayEquals( Object[] expected, Object[] actual ) {
-    if( !Arrays.equals( expected, actual ) ) {
-      fail( "Expected:\n" + expected + "\n but was:\n" + actual );
-    }
   }
 }

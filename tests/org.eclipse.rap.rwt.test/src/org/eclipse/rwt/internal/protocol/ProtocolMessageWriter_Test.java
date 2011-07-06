@@ -13,9 +13,7 @@ package org.eclipse.rwt.internal.protocol;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.MESSAGE_META;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.MESSAGE_OPERATIONS;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META_REQUEST_COUNTER;
-
-import java.util.Arrays;
-
+import static org.eclipse.rwt.internal.resources.TestUtil.assertArrayEquals;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -215,10 +213,10 @@ public class ProtocolMessageWriter_Test extends TestCase {
     
     Message message = getMessage();
     assertTrue( message.getOperation( 0 ) instanceof ExecuteScriptOperation );
-    ExecuteScriptOperation operation = ( ExecuteScriptOperation )message.getOperation( 1 );
-    assertEquals( shellId, operation.getTarget() );
-    assertEquals( scriptType, operation.getScriptType() );
-    assertEquals( script, operation.getScript() );
+    ExecuteScriptOperation secondOperation = ( ExecuteScriptOperation )message.getOperation( 1 );
+    assertEquals( shellId, secondOperation.getTarget() );
+    assertEquals( scriptType, secondOperation.getScriptType() );
+    assertEquals( script, secondOperation.getScript() );
   }
 
   public void testMessageWithSet() {
@@ -472,12 +470,5 @@ public class ProtocolMessageWriter_Test extends TestCase {
 
   private Message getMessage() {
     return new Message( writer.createMessage() );
-  }
-
-  // TODO: Move to Fixture
-  private static void assertArrayEquals( Object[] expected, Object[] actual ) {
-    if( !Arrays.equals( expected, actual ) ) {
-      fail( "Expected:\n" + expected + "\n but was:\n" + actual );
-    }
   }
 }

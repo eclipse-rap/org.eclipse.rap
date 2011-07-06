@@ -11,7 +11,10 @@
 package org.eclipse.rwt.internal.resources;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.List;
+
+import junit.framework.TestCase;
 
 import org.mozilla.javascript.Token;
 
@@ -61,6 +64,15 @@ public class TestUtil {
         String litStr = TestAdapter.getLiteralString( type );
         System.out.println( n + ". literal: " + litStr );
       break;
+    }
+  }
+  
+  public static void assertArrayEquals( Object[] expected, Object[] actual ) {
+    if( !Arrays.equals( expected, actual ) ) {
+      TestCase.fail( "Expected:\n" 
+                     + Arrays.toString( expected ) 
+                     + "\n but was:\n" 
+                     + Arrays.toString( actual ) );
     }
   }
 }

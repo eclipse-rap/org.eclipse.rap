@@ -10,13 +10,17 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.protocol.util;
 
-import java.util.Arrays;
-
+import static org.eclipse.rwt.internal.resources.TestUtil.assertArrayEquals;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
-import org.eclipse.rwt.internal.protocol.util.Message.*;
+import org.eclipse.rwt.internal.protocol.util.Message.CreateOperation;
+import org.eclipse.rwt.internal.protocol.util.Message.DestroyOperation;
+import org.eclipse.rwt.internal.protocol.util.Message.DoOperation;
+import org.eclipse.rwt.internal.protocol.util.Message.ExecuteScriptOperation;
+import org.eclipse.rwt.internal.protocol.util.Message.ListenOperation;
+import org.eclipse.rwt.internal.protocol.util.Message.SetOperation;
 
 
 public class Message_Test extends TestCase {
@@ -159,12 +163,5 @@ public class Message_Test extends TestCase {
   
   private Message getMessage() {
     return new Message( writer.createMessage() );
-  }
-  
-  // TODO: Move to Fixture
-  private void assertArrayEquals( Object[] expected, Object[] actual ) {
-    if( !Arrays.equals( expected, actual ) ) {
-      fail( "Expected:\n" + expected + "\n but was:\n" + actual );
-    }
   }
 }
