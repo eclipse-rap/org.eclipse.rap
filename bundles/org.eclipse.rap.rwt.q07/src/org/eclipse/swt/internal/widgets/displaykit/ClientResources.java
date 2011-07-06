@@ -168,6 +168,7 @@ final class ClientResources {
     "org/eclipse/rwt/ErrorHandler.js",
     "org/eclipse/swt/LabelUtil.js",
     "org/eclipse/rwt/widgets/TreeRowContainer.js",
+    "org/eclipse/rwt/TreeRowContainerWrapper.js",
     "org/eclipse/rwt/TreeUtil.js",
     "org/eclipse/rwt/widgets/TreeRow.js",
     "org/eclipse/swt/Application.js",

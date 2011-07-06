@@ -40,9 +40,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.TableHeader", {
   members : {
 
     setScrollLeft : function( value ) {
-      if( this.isSeeable() ) {
-        this.base( arguments, value );
-      }
       this._scrollLeft = value;
       if( this._fixedColumns ) {
         for( var i = 0; i < this._children.length; i++ ) {
@@ -54,7 +51,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.TableHeader", {
           qx.ui.core.Widget.flushGlobalQueues();
         }
       }
-      
+      // NOTE [tb] : order is important to prevent flickering in IE
+      if( this.isSeeable() ) {
+        this.base( arguments, value );
+      }
     },
     
     getScrollLeft : function() {

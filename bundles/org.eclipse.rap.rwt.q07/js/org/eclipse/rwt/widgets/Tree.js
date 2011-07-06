@@ -55,8 +55,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._configureScrollBars();
     this._registerListeners();
     this._parseArgsMap( argsMap );
-    // TreeUtil handles all non SWT-based features.
-    org.eclipse.rwt.TreeUtil.init( this, argsMap );
   },
   
   destruct : function() {
