@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.widgets;
@@ -22,6 +22,7 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.widgets.ITableAdapter;
 
 
 
@@ -212,6 +213,18 @@ public class TableColumn_Test extends TestCase {
     assertTrue( column.getWidth() >= item.getBounds().width );
   }
 
+  public void testGetPreferredWidthMultiLineHeader() {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Table table = createMultiLineHeaderTable( shell );
+    table.setHeaderVisible( true );
+    TableColumn column = table.getColumn( 1 );
+
+    column.setText( "Multi\nLineText" );
+
+    assertEquals( 50, column.getPreferredWidth() );
+  }
+
   public void testPackWithVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<Widget> log = new ArrayList<Widget>();
@@ -356,4 +369,41 @@ public class TableColumn_Test extends TestCase {
     column2.setText( "Second Column" );
     column2.dispose();
   }
+
+  public void testIsFixedColumn() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    shell.setSize( 800, 600 );
+    Table table = createFixedColumnsTable( shell );
+    table.setSize( 300, 100 );
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    assertTrue( adapter.isFixedColumn( table.getColumn( 0 ) ) );
+    assertFalse( adapter.isFixedColumn( table.getColumn( 1 ) ) );
+    table.setColumnOrder( new int[]{ 1, 0, 2, 3, 4, 5, 6, 7, 8, 9 } );
+    assertFalse( adapter.isFixedColumn( table.getColumn( 0 ) ) );
+    assertTrue( adapter.isFixedColumn( table.getColumn( 1 ) ) );
+  }
+
+  private Table createFixedColumnsTable( Shell shell ) {
+    Table table = new Table( shell, SWT.NONE );
+    table.setData( "fixedColumns", new Integer( 1 ) );
+    for( int i = 0; i < 10; i++ ) {
+      TableColumn column = new TableColumn( table, SWT.NONE );
+      column.setWidth( 50 );
+    }
+    return table;
+  }
+
+  private Table createMultiLineHeaderTable( Shell shell ) {
+    Table table = new Table( shell, SWT.NONE );
+    for( int i = 0; i < 3; i++ ) {
+      TableColumn column = new TableColumn( table, SWT.NONE );
+      column.setWidth( 50 );
+      column.setText( "Column " + i );
+    }
+    table.setData( "multiLineHeader", Boolean.TRUE );
+    return table;
+  }
+
 }

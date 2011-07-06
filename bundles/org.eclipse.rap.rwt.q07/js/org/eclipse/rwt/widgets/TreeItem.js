@@ -122,7 +122,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
 
     getText : function( column ) {
       var result = this._texts[ column ];
-      return typeof result === "string" ? result : "";
+      return ( typeof result ) === "string" ? result : "";
     },
 
     setFont : function( font ) {

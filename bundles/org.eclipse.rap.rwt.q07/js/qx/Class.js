@@ -253,18 +253,9 @@ qx.Class.define("qx.Class",
           parent = parent[part];
         }
       }
-
-      // do not overwrite
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (parent[part] !== undefined) {
-          throw new Error("An object of the name '" + name + "' already exists and overwriting is not allowed!");
-        }
+      if (parent[part] === undefined) {
+        parent[part] = object;
       }
-
-      // store object
-      parent[part] = object;
-
       // return last part name (i.e. classname)
       return part;
     },

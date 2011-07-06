@@ -315,7 +315,11 @@ qx.Class.define( "org.eclipse.swt.Request", {
           if( text && text.length > 0 ) {
             org.eclipse.swt.EventUtil.setSuspended( true );
             window.eval( text );
-            qx.ui.core.Widget.flushGlobalQueues();
+            while( qx.ui.core.Widget._autoFlushTimeout !== null ) {
+              // NOTE [tb] : a flush can schedule more flushes, which need to be executed 
+              //             immediately to prevent flickering in certain cases
+              qx.ui.core.Widget.flushGlobalQueues();
+            }
             org.eclipse.swt.EventUtil.setSuspended( false );
           }
         } catch( ex ) {

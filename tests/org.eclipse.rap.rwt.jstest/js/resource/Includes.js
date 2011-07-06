@@ -142,7 +142,7 @@
     "qx/ui/popup/PopupManager.js",
     "qx/ui/selection/SelectionManager.js",
     "qx/ui/selection/Selection.js",
-    "org/eclipse/swt/widgets/AbstractSlider.js",    
+    "org/eclipse/swt/widgets/AbstractSlider.js",
     "org/eclipse/rwt/widgets/ScrollBar.js",
     "qx/application/Gui.js",
     "qx/io/image/PreloaderSystem.js",
@@ -178,6 +178,8 @@
     "org/eclipse/rwt/ErrorHandler.js",
     "org/eclipse/swt/LabelUtil.js",
     "org/eclipse/rwt/widgets/TreeRowContainer.js",
+    "org/eclipse/rwt/TreeRowContainerWrapper.js",
+    "org/eclipse/rwt/TreeUtil.js",
     "org/eclipse/rwt/widgets/TreeRow.js",
     "org/eclipse/swt/Application.js",
     "org/eclipse/rwt/AsyncKeyEventUtil.js",
@@ -207,6 +209,7 @@
     "org/eclipse/rwt/widgets/TreeItem.js",
     "org/eclipse/rwt/TreeDNDFeedback.js",
     "org/eclipse/swt/widgets/TableCellToolTip.js",
+    "org/eclipse/rwt/widgets/TableHeader.js",
     "org/eclipse/swt/widgets/TableColumn.js",
     "org/eclipse/swt/browser/Browser.js",
     "org/eclipse/rwt/widgets/ExternalBrowser.js",
@@ -254,9 +257,10 @@
     "org/eclipse/swt/theme/AppearancesBase.js",
     "org/eclipse/rwt/widgets/ControlDecorator.js",
     "org/eclipse/rwt/MobileWebkitSupport.js",
+    "org/eclipse/swt/widgets/ToolTip.js",
     "org/eclipse/swt/WidgetManager.js",
     "org/eclipse/rwt/protocol/AdapterRegistry.js",
-    "org/eclipse/rwt/protocol/Processor.js"
+    "org/eclipse/rwt/protocol/Processor.js",
   ];
   
   var testRunnerClasses = [

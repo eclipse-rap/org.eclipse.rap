@@ -35,6 +35,7 @@ public final class TableLCA extends AbstractWidgetLCA {
   static final String PROP_HEADER_HEIGHT = "headerHeight";
   static final String PROP_HEADER_VISIBLE = "headerVisible";
   static final String PROP_LINES_VISIBLE = "linesVisible";
+  static final String PROP_FIXED_COLUMNS = "fixedColumns";
   static final String PROP_ITEM_HEIGHT = "itemHeight";
   static final String PROP_COLUMN_COUNT = "columnCount";
   static final String PROP_TOP_ITEM_INDEX = "topIndex";
@@ -62,6 +63,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_HEADER_VISIBLE, Boolean.valueOf( table.getHeaderVisible() ) );
     adapter.preserve( PROP_LINES_VISIBLE, Boolean.valueOf( table.getLinesVisible() ) );
     adapter.preserve( PROP_ITEM_HEIGHT, new Integer( table.getItemHeight() ) );
+    adapter.preserve( PROP_FIXED_COLUMNS, widget.getData( "fixedColumns" ) );
     adapter.preserve( PROP_COLUMN_COUNT, new Integer( table.getColumnCount() ) );
     TableLCAUtil.preserveItemMetrics( table );
     adapter.preserve( PROP_ITEM_COUNT, new Integer( table.getItemCount() ) );
@@ -118,6 +120,10 @@ public final class TableLCA extends AbstractWidgetLCA {
       argsMap.append( "checkBoxMetrics", JsonArray.valueOf( checkMetrics ) );
     }
     argsMap.append( "indentionWidth", 0 );
+    Integer fixedColumns = ( Integer )widget.getData( "fixedColumns" );
+    if( fixedColumns != null ) {
+      argsMap.append( "splitContainer", true );
+    }
     Object[] args = new Object[]{ new JSVar( argsMap.toString() ) };
     writer.newWidget( "org.eclipse.rwt.widgets.Tree", args );
     ControlLCAUtil.writeStyleFlags( table );
@@ -133,6 +139,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     TableLCAUtil.writeItemMetrics( table );
     writeColumnCount( table );
     writeLinesVisible( table );
+    writeFixedColumns( table );
     writeTopIndex( table );
     writeScrollBarsVisible( table );
     writeAlwaysHideSelection( table );
@@ -325,6 +332,15 @@ public final class TableLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( table );
     Boolean newValue = Boolean.valueOf( table.getLinesVisible() );
     writer.set( PROP_LINES_VISIBLE, "linesVisible", newValue, Boolean.FALSE );
+  }
+
+  private static void writeFixedColumns( final Table table ) throws IOException {
+    Integer newValue = ( Integer )table.getData( "fixedColumns" );
+    if( WidgetLCAUtil.hasChanged( table, PROP_FIXED_COLUMNS, newValue, null ) ) {
+      JSWriter writer = JSWriter.getWriterFor( table );
+      Object[] args = new Object[]{ table, newValue };
+      writer.callStatic( "org.eclipse.rwt.TreeUtil.setFixedColumns", args );
+    }
   }
 
   private void writeAlwaysHideSelection( Table table ) throws IOException {

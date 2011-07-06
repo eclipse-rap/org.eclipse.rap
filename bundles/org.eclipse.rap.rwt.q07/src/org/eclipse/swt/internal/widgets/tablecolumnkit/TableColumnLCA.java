@@ -31,10 +31,10 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
   // Property names to preserve values
   static final String PROP_LEFT = "left";
   static final String PROP_WIDTH = "width";
-  static final String PROP_Z_INDEX = "zIndex";
   static final String PROP_SORT_DIRECTION = "sortDirection";
   static final String PROP_RESIZABLE = "resizable";
   static final String PROP_MOVEABLE = "moveable";
+  static final String PROP_FIXED = "fixed";
   private static final String PROP_SELECTION_LISTENERS = "selectionListeners";
 
   private static final Integer DEFAULT_LEFT = new Integer( 0 );
@@ -45,12 +45,12 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
     WidgetLCAUtil.preserveToolTipText( column, column.getToolTipText() );
     TableLCAUtil.preserveAlignment( column );
-    adapter.preserve( PROP_Z_INDEX, new Integer( getZIndex( column ) ) );
     adapter.preserve( PROP_LEFT, new Integer( getLeft( column ) ) );
     adapter.preserve( PROP_WIDTH, new Integer( column.getWidth() ) );
     adapter.preserve( PROP_SORT_DIRECTION, getSortDirection( column ) );
     adapter.preserve( PROP_RESIZABLE, Boolean.valueOf( column.getResizable() ) );
     adapter.preserve( PROP_MOVEABLE, Boolean.valueOf( column.getMoveable() ) );
+    adapter.preserve( PROP_FIXED, Boolean.valueOf( isFixed( column ) ) );
     adapter.preserve( PROP_SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( column ) ) );
     WidgetLCAUtil.preserveCustomVariant( column );
@@ -98,14 +98,15 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
 
   public void renderChanges( final Widget widget ) throws IOException {
     TableColumn column = ( TableColumn )widget;
-    ItemLCAUtil.writeChanges( column );
+    ItemLCAUtil.writeText( column, false, true );
+    ItemLCAUtil.writeImage( column );
     writeLeft( column );
     writeWidth( column );
-    writeZIndex( column );
     WidgetLCAUtil.writeToolTip( column, column.getToolTipText() );
     writeSortDirection( column );
     writeResizable( column );
     writeMoveable( column );
+    writeFixed( column );
     writeAlignment( column );
     writeSelectionListener( column );
     WidgetLCAUtil.writeCustomVariant( column );
@@ -132,14 +133,6 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     writer.set( PROP_WIDTH, "width", newValue, null );
   }
 
-  // TODO [rh] writing Z-Index seems unnecessary since it is relative to the
-  //      parent and thus could be hard-coded client-side
-  private static void writeZIndex( TableColumn column ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( column );
-    Integer newValue = new Integer( getZIndex( column ) );
-    writer.set( PROP_Z_INDEX, "zIndex", newValue, null );
-  }
-
   private static void writeSortDirection( TableColumn column ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( column );
     String newValue = getSortDirection( column );
@@ -156,6 +149,12 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( column );
     Boolean newValue = Boolean.valueOf( column.getMoveable() );
     writer.set( PROP_MOVEABLE, "moveable", newValue, Boolean.FALSE );
+  }
+  
+  private static void writeFixed( final TableColumn column ) throws IOException {
+    JSWriter writer = JSWriter.getWriterFor( column );
+    Boolean newValue = Boolean.valueOf( isFixed( column ) );
+    writer.set( PROP_FIXED, "fixed", newValue, Boolean.FALSE );
   }
 
   private static void writeAlignment( TableColumn column ) throws IOException {
@@ -189,8 +188,10 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     return tableAdapter.getColumnLeft( column );
   }
 
-  static int getZIndex( TableColumn column ) {
-    return ControlLCAUtil.getZIndex( column.getParent() ) + 1;
+  static boolean isFixed( TableColumn column ) {
+    Object adapter = column.getParent().getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    return tableAdapter.isFixedColumn( column );
   }
 
   static String getSortDirection( TableColumn column ) {
@@ -218,6 +219,9 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     columnOrder = arrayRemove( columnOrder, orderIndex );
     if( orderIndex < targetColumn ) {
       targetColumn--;
+    }
+    if( isFixed( column ) || isFixed( table.getColumn( targetColumn ) ) ) {
+      targetColumn = table.indexOf( column );
     }
     columnOrder = arrayInsert( columnOrder, targetColumn, index );
     if( Arrays.equals( columnOrder, table.getColumnOrder() ) ) {
@@ -249,11 +253,15 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
       result = 0;
     } else {
       for( int i = 0; result == -1 && i < columns.length; i++ ) {
-        int left = getLeft( columns[ columnOrder [ i ] ] );
-        int width = columns[ columnOrder [ i ] ].getWidth();
+        TableColumn column = columns[ columnOrder [ i ] ];
+        int left = getLeft( column );
+        int width = column.getWidth();
+        if( isFixed( column ) ) {
+          left += getLeftOffset( column );
+        }
         if( newLeft >= left && newLeft <= left + width ) {
           result = i;
-          if( newLeft >= left + width / 2 && result < columns.length ) {
+          if( newLeft >= left + width / 2 && result < columns.length && !isFixed( column ) ) {
             result++;
           }
         }
@@ -266,7 +274,14 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static int arrayIndexOf( int[] array, int value ) {
+  private static int getLeftOffset( TableColumn column ) {
+    Table table = column.getParent();
+    Object adapter = table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    return tableAdapter.getLeftOffset();
+  }
+
+  private static int arrayIndexOf( final int[] array, final int value ) {
     int result = -1;
     for( int i = 0; result == -1 && i < array.length; i++ ) {
       if( array[ i ] == value ) {

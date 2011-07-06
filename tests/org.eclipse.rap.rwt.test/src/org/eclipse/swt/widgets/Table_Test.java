@@ -37,7 +37,7 @@ public class Table_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-  
+
   public void testInitialValues() {
     Table table = new Table( shell, SWT.NONE );
 
@@ -130,6 +130,16 @@ public class Table_Test extends TestCase {
     assertEquals( 0, table.getHeaderHeight() );
     table.setHeaderVisible( true );
     assertTrue( table.getHeaderHeight() > 0 );
+  }
+
+  public void testMultiLineHeaderHeight() {
+    Table table = createMultiLineHeaderTable();
+    TableColumn column = table.getColumn( 1 );
+    table.setHeaderVisible( true );
+
+    column.setText( "Multi line\nHeader" );
+
+    assertEquals( 32, table.getHeaderHeight() );
   }
 
   public void testTableItemTexts() {
@@ -339,13 +349,13 @@ public class Table_Test extends TestCase {
     Object adapter = table.getAdapter( ICellToolTipAdapter.class );
     assertNotNull( adapter );
   }
-  
+
   public void testGetAdapterWithItemHolderAdapter() {
     Table table = new Table( shell, SWT.NONE );
     Object adapter = table.getAdapter( IItemHolderAdapter.class );
     assertNotNull( adapter );
   }
-  
+
   public void testReduceSetItemCountWithSelection() {
     // Create a table that is populated with setItemCount with all selected
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -2215,6 +2225,44 @@ public class Table_Test extends TestCase {
     assertEquals( 115, adapter.getLeftOffset() );
   }
 
+  public void testShowFixedColumn() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    shell.setSize( 800, 600 );
+    Table table = createFixedColumnsTable();
+    table.setSize( 300, 100 );
+    for( int i = 0; i < 10; i++ ) {
+      TableColumn column = new TableColumn( table, SWT.NONE );
+      column.setWidth( 50 );
+    }
+    for( int i = 0; i < 10; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+
+    adapter.setLeftOffset( 100 );
+    table.showColumn( table.getColumn( 0 ) );
+
+    assertEquals( 100, adapter.getLeftOffset() );
+  }
+
+  public void testShowColumnBehindFixedColumn() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    shell.setSize( 800, 600 );
+    Table table = createFixedColumnsTable();
+    table.setSize( 300, 100 );
+    for( int i = 0; i < 10; i++ ) {
+      TableColumn column = new TableColumn( table, SWT.NONE );
+      column.setWidth( 50 );
+    }
+    for( int i = 0; i < 10; i++ ) {
+      new TableItem( table, SWT.NONE );
+    }
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    adapter.setLeftOffset( 100 );
+    table.showColumn( table.getColumn( 1 ) );
+    assertEquals( 0, adapter.getLeftOffset() );
+  }
+
   public void testScrollBars() {
     Table table = new Table( shell, SWT.NONE );
     assertNotNull( table.getHorizontalBar() );
@@ -2266,7 +2314,7 @@ public class Table_Test extends TestCase {
     assertEquals( 33, table.getItemsPreferredWidth( 0 ) );
     assertEquals( 12, table.getItemsPreferredWidth( 1 ) );
   }
-  
+
   public void testRemoveArrayDuplicates() {
     Table table = new Table( shell, SWT.NONE );
     int number = 5;
@@ -2293,12 +2341,12 @@ public class Table_Test extends TestCase {
     } );
     redrawTable( table );
     eventLog.clear();
-    
+
     table.reskin( SWT.ALL );
-    
+
     assertEquals( 0, eventLog.size() );
   }
-  
+
   private static boolean find( final int element, final int[] array ) {
     boolean result = false;
     for( int i = 0; i < array.length; i++ ) {
@@ -2333,4 +2381,22 @@ public class Table_Test extends TestCase {
     ITableAdapter tableAdapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     tableAdapter.checkData();
   }
+
+  private Table createFixedColumnsTable() {
+    Table table = new Table( shell, SWT.NONE );
+    table.setData( "fixedColumns", new Integer( 1 ) );
+    return table;
+  }
+
+  private Table createMultiLineHeaderTable() {
+    Table table = new Table( shell, SWT.NONE );
+    for( int i = 0; i < 3; i++ ) {
+      TableColumn column = new TableColumn( table, SWT.NONE );
+      column.setWidth( 50 );
+      column.setText( "Column " + i );
+    }
+    table.setData( "multiLineHeader", Boolean.TRUE );
+    return table;
+  }
+
 }

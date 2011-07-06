@@ -22,33 +22,37 @@ public class ItemLCAUtil {
   private ItemLCAUtil() {
     // prevent instantiation
   }
-  
+
   public static void preserve( final Item item ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
     adapter.preserve( Props.TEXT, item.getText() );
     adapter.preserve( Props.IMAGE, item.getImage() );
   }
-  
-  public static void writeText( final Item item, final boolean escapeMnemonics )
+
+  public static void writeText( Item item, boolean escapeMnemonics, boolean replaceNewLines )
     throws IOException
   {
     String text = item.getText();
     if( WidgetLCAUtil.hasChanged( item, Props.TEXT, text ) ) {
       JSWriter writer = JSWriter.getWriterFor( item );
       text = WidgetLCAUtil.escapeText( text, escapeMnemonics );
+      if( replaceNewLines ) {
+        text = WidgetLCAUtil.replaceNewLines( text, "<br/>" );
+      }
       writer.set( JSConst.QX_FIELD_LABEL, text );
     }
   }
-  
+
   public static void writeImage( final Item item ) throws IOException {
-    WidgetLCAUtil.writeImage( item, 
-                              Props.IMAGE, 
-                              JSConst.QX_FIELD_ICON, 
+    WidgetLCAUtil.writeImage( item,
+                              Props.IMAGE,
+                              JSConst.QX_FIELD_ICON,
                               item.getImage() );
   }
-  
-  public static void writeChanges( final Item item ) throws IOException {
-    writeText( item, false );
+
+  public static void writeChanges( Item item ) throws IOException {
+    writeText( item, false, false );
     writeImage( item );
   }
+
 }

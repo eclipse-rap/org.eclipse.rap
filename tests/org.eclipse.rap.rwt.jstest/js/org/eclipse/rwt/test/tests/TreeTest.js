@@ -702,7 +702,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var row = tree._rowContainer._children[ 0 ]
       testUtil.hoverFromTo( document.body, row._getTargetNode() );
       var area = tree._rowContainer;
-      var dummy = tree._dummyColumn;
+      var dummy = tree._columnArea._dummyColumn;
       var hscroll = tree._horzScrollBar;
       var vscroll = tree._vertScrollBar;
       var resize = tree._resizeLine;
@@ -731,7 +731,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( requestTimer.isDisposed() );
       assertTrue( dummy.isDisposed() );
       assertNull( tree._rootItem );
-      assertNull( tree._dummyColumn );
       assertNull( tree._focusItem );
       assertNull( tree._leadItem );
       assertNull( tree._mergeEventsTimer );
@@ -1836,7 +1835,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setWidth( 600 );
       tree.setHeaderVisible( true );
       testUtil.flush();
-      var dummy = tree._dummyColumn;
+      var dummy = tree._columnArea._dummyColumn;
       assertEquals( tree._columnArea, column.getParent() );
       assertTrue( dummy.getVisibility() );
       assertTrue( dummy.hasState( "dummy" ) );
@@ -1857,7 +1856,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setWidth( 600 );
       tree.setHeaderVisible( true );
       testUtil.flush();
-      var dummy = tree._dummyColumn;
+      var dummy = tree._columnArea._dummyColumn;
       assertEquals( "table-column", dummy.getAppearance() );
       tree.destroy();
     },
@@ -1871,7 +1870,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setHeaderVisible( true );
       tree.setWidth( 490 );
       testUtil.flush();
-      var dummy = tree._dummyColumn;
+      var dummy = tree._columnArea._dummyColumn;
       assertEquals( tree._columnArea, dummy.getParent() );
       assertEquals( 0, dummy.getWidth() );
       assertTrue( dummy.hasState( "dummy" ) );
@@ -1881,6 +1880,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     testShowMinimalDummyColumn : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
+      tree.setHeaderHeight( 15 );
       tree.setScrollBarsVisible( true, true );
       var column = new org.eclipse.swt.widgets.TableColumn( tree );
       column.setLeft( 0 );
@@ -1889,7 +1889,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setWidth( 450 );
       testUtil.flush();
       var barWidth = tree._vertScrollBar.getWidth();
-      var dummy = tree._dummyColumn;
+      var dummy = tree._columnArea._dummyColumn;
       assertTrue( dummy.getVisibility() );
       assertEquals( 500, dummy.getLeft() );
       assertEquals( barWidth, dummy.getWidth() );
@@ -1902,10 +1902,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setHeaderVisible( true );
       tree.setScrollBarsVisible( true, true );
       testUtil.flush();
-      var dummy = tree._dummyColumn;
+      var dummy = tree._columnArea._dummyColumn;
       assertTrue( dummy.getVisibility() );
       assertEquals( 0, dummy.getLeft() );
-      assertEquals( 500, dummy.getWidth() );
+      //assertEquals( 500, dummy.getWidth() );
       assertTrue( dummy.hasState( "dummy" ) );
       tree.destroy();
     },
@@ -1919,15 +1919,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setWidth( 600 );
       tree.setHeaderVisible( true );
       testUtil.flush();
-      var dummy = tree._dummyColumn;
+      var dummy = tree._columnArea._dummyColumn;
       assertEquals( 500, dummy.getLeft() );
       assertEquals( 100, dummy.getWidth() );
       column.setWidth( 400 );
       assertEquals( 400, dummy.getLeft() );
       assertEquals( 200, dummy.getWidth() );
-      column.setLeft( 50 );
-      assertEquals( 450, dummy.getLeft() );
-      assertEquals( 150, dummy.getWidth() );
       tree.destroy();
     },
 
@@ -2064,12 +2061,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     
     testSetAlignment : function() {
       var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
-      tree.setAlignment( 0, "left" );
-      tree.setAlignment( 1, "center" );
-      tree.setAlignment( 2, "right" );
+      tree.setHeaderVisible( true );
+      var column1 = new org.eclipse.swt.widgets.TableColumn( tree );
+      var column2 = new org.eclipse.swt.widgets.TableColumn( tree );
+      var column3 = new org.eclipse.swt.widgets.TableColumn( tree );
+      column1.setAlignment( 0, "left" );
+      column2.setAlignment( 1, "center" );
+      column3.setAlignment( 2, "right" );
       assertEquals( "left", tree.getRenderConfig().alignment[ 0 ] );
       assertEquals( "center", tree.getRenderConfig().alignment[ 1 ] );
       assertEquals( "right", tree.getRenderConfig().alignment[ 2 ] );
+      assertEquals( "left", column1.getLabelObject().getTextAlign() );
+      assertEquals( "center", column2.getLabelObject().getTextAlign() );
+      assertEquals( "right", column3.getLabelObject().getTextAlign() );
       tree.destroy();
     },
 
@@ -2198,6 +2202,54 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.destroy();
     },
 
+    testDontScrollFixedColumn : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree( false, true, "fixedColumns", 1 );
+      tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
+      var columnX = new org.eclipse.swt.widgets.TableColumn( tree );
+      columnX.setLeft( 10 );
+      columnX.setWidth( 1100 );
+      columnX.setZIndex( 1 );
+      columnX.setFixed( true );
+      assertEquals( 1e7, columnX.getZIndex() );
+      testUtil.flush();
+      tree.setScrollLeft( 160 );
+      tree.setHeaderHeight( 30 );
+      tree.setHeaderVisible( true );
+      testUtil.flush();
+      assertEquals( 160, tree._columnArea.getScrollLeft() );      
+      assertEquals( 10, columnX.getLeft() );      
+      assertEquals( 170, parseInt( columnX.getElement().style.left ) );      
+      tree.setScrollLeft( 10 );
+      assertEquals( 20, parseInt( columnX.getElement().style.left ) );
+      columnX.setFixed( false );
+      assertEquals( 1, columnX.getZIndex() );
+      testUtil.flush();
+      assertEquals( 10, parseInt( columnX.getElement().style.left ) );
+      tree.destroy();
+    },
+
+    testFixedColumnDontFlushInServerResponse : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree( false, true, "fixedColumns", 1 );
+      tree.setItemMetrics( 0, 0, 1000, 0, 0, 0, 500 );
+      var columnX = new org.eclipse.swt.widgets.TableColumn( tree );
+      columnX.setLeft( 10 );
+      columnX.setWidth( 1100 );
+      columnX.setFixed( true );
+      testUtil.flush();
+      tree.setHeaderHeight( 30 );
+      tree.setHeaderVisible( true );
+      testUtil.flush();
+      org.eclipse.swt.EventUtil.setSuspended( true );
+      tree.setScrollLeft( 10 );
+      org.eclipse.swt.EventUtil.setSuspended( false );      
+      assertEquals( 10, parseInt( columnX.getElement().style.left ) );
+      testUtil.flush();
+      assertEquals( 20, parseInt( columnX.getElement().style.left ) );
+      tree.destroy();
+    },
+
     testRenderOnItemGrayed : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( false, false, "check", [ 5, 5 ] );
@@ -2244,7 +2296,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var tree = this._createDefaultTree();
       tree.setLinesVisible( true );
       testUtil.flush();
-      var border = tree._getHorizontalGridBorder();
+      var border = tree._rowContainer._getHorizontalGridBorder();
       assertIdentical( border, tree._rowContainer._rowBorder );      
       tree.destroy();
     },
@@ -2253,85 +2305,90 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
       tree.setColumnCount( 3 );
-      assertEquals( 4, tree.getChildren().length ); // clientArea, header, scrollbars      
+      testUtil.flush();
+      var offset = tree._rowContainer._getTargetNode().childNodes.length;
       tree.setLinesVisible( true );
       testUtil.flush();
-      assertEquals( 7, tree.getChildren().length );
-      assertTrue( tree.getChildren()[ 4 ] instanceof qx.ui.basic.Terminator );
-      assertTrue( tree.getChildren()[ 5 ] instanceof qx.ui.basic.Terminator );
-      assertTrue( tree.getChildren()[ 6 ] instanceof qx.ui.basic.Terminator );
+      assertEquals( offset + 3, tree._rowContainer._getTargetNode().childNodes.length );
       tree.destroy();
     },
 
     testGridLinesVerticalDefaultProperties : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
+      var offset = tree._rowContainer._getTargetNode().childNodes.length;
       tree.setColumnCount( 3 );
       tree.setLinesVisible( true );
       testUtil.flush();
-      var line = tree.getChildren()[ 4 ];
-      assertNotNull( line.getBorder() );
-      assertEquals( 1, line.getZIndex() );
-      assertEquals( 0, line.getWidth() );
+      var line = tree._rowContainer._getTargetNode().childNodes[ offset ];
+      assertEquals( 1, line.style.zIndex );
+      assertEquals( "0px", line.style.width );
+      assertTrue( line.style.border !== "" || line.style.borderRight !== "" );
       tree.destroy();
     },
 
     testAddGridLinesVertical : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
+      var offset = tree._rowContainer._getTargetNode().childNodes.length;
       tree.setLinesVisible( true );
       tree.setColumnCount( 1 );
       testUtil.flush();
-      assertEquals( 5, tree.getChildren().length );       
+      assertEquals( offset + 1, tree._rowContainer._getTargetNode().childNodes.length );       
       tree.setColumnCount( 3 );
       testUtil.flush();
-      assertEquals( 7, tree.getChildren().length );       
+      assertEquals( offset + 3  , tree._rowContainer._getTargetNode().childNodes.length );       
       tree.destroy();
     },
 
     testRemoveGridLinesVertical : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
+      var offset = tree._rowContainer._getTargetNode().childNodes.length;
       tree.setLinesVisible( true );
       tree.setColumnCount( 3 );
       testUtil.flush();
-      assertEquals( 7, tree.getChildren().length );       
+      assertEquals( offset + 3, tree._rowContainer._getTargetNode().childNodes.length );       
       tree.setColumnCount( 1 );
       testUtil.flush();
-      assertEquals( 5, tree.getChildren().length );       
+      assertEquals( offset + 1, tree._rowContainer._getTargetNode().childNodes.length );       
       tree.destroy();
     },
 
-    testDisableLinesVertical : function() {
+    testDisableGridLinesVertical : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
+      var offset = tree._rowContainer._getTargetNode().childNodes.length;
       tree.setLinesVisible( true );
       tree.setColumnCount( 3 );
       testUtil.flush();
-      assertEquals( 7, tree.getChildren().length );       
+      assertEquals( offset + 3, tree._rowContainer._getTargetNode().childNodes.length );       
       tree.setLinesVisible( false );
       testUtil.flush();
-      assertEquals( 4, tree.getChildren().length );       
+      assertEquals( offset, tree._rowContainer._getTargetNode().childNodes.length );       
       tree.destroy();
     },
 
     testGridLinesVerticalLayoutY : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
+      var offset = tree._rowContainer._getTargetNode().childNodes.length;
       tree.setWidth( 1000 );
       tree.setColumnCount( 3 );
       tree.setLinesVisible( true );
-      var line = tree.getChildren()[ 4 ];
-      assertEquals( 0, line.getTop() );
-      assertEquals( 500, line.getHeight() );
+      testUtil.flush();
+      var line = tree._rowContainer._getTargetNode().childNodes[ offset ];
+      assertEquals( "0px", line.style.top );
+      assertEquals( "500px", line.style.height );
       tree.setHeaderHeight( 20 );
       tree.setHeaderVisible( true );
-      assertEquals( 20, line.getTop() );
-      assertEquals( 480, line.getHeight() );
+      testUtil.flush();
+      assertEquals( "0px", line.style.top );
+      assertEquals( "480px", line.style.height );
       if( !testUtil.isMobileWebkit() ) {
 	      tree.setScrollBarsVisible( true, true );
-	      assertEquals( 20, line.getTop() );
-	      assertTrue( line.getHeight() < 480 );
+        assertEquals( "0px", line.style.top );
+        assertTrue( parseInt( line.style.top ) < 480 );
       }      
       tree.destroy();
     },
@@ -2339,80 +2396,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     testGridLinesVerticalPositionX : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();
+      var offset = tree._rowContainer._getTargetNode().childNodes.length;
       tree.setColumnCount( 3 );
       tree.setLinesVisible( true );
       tree.setItemMetrics( 0, 0, 202, 0, 0, 0, 400 );
       tree.setItemMetrics( 1, 205, 100, 0, 0, 0, 400 );
       tree.setItemMetrics( 2, 310, 50, 0, 0, 0, 400 );
-      var line1 = tree.getChildren()[ 4 ];
-      var line2 = tree.getChildren()[ 5 ];
-      var line3 = tree.getChildren()[ 6 ];
-      assertEquals( 201, line1.getLeft() );
-      assertEquals( 304, line2.getLeft() );
-      assertEquals( 359, line3.getLeft() );
-      tree.destroy();
-    },
-
-    testGridLinesVerticalPositionXScrolled : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createDefaultTree();
-      tree.setWidth( 170 );
-      tree.setColumnCount( 3 );
-      tree.setLinesVisible( true );
-      tree.setItemMetrics( 0, 0, 202, 0, 0, 0, 400 );
       testUtil.flush();
-      tree.setScrollLeft( 40 );
-      var line1 = tree.getChildren()[ 4 ];
-      testUtil.flush();
-      assertEquals( 161, line1.getLeft() );
-      tree.destroy();
-    },
-
-    testGridLinesVerticalPositionXScrolledOut : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createDefaultTree();
-      tree.setWidth( 170 );
-      tree.setColumnCount( 3 );
-      tree.setLinesVisible( true );
-      tree.setItemMetrics( 0, 0, 30, 0, 0, 0, 400 );
-      testUtil.flush();
-      tree.setScrollLeft( 40 );
-      testUtil.flush();
-      assertEquals( 4, tree.getChildren().length );
-      tree.destroy();
-    },
-
-    testGridLinesScrolledOutChangedColumnOrder : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createDefaultTree();
-      tree.setWidth( 170 );
-      tree.setColumnCount( 3 );
-      tree.setLinesVisible( true );
-      tree.setItemMetrics( 0, 0, 30, 0, 0, 0, 400 );
-      tree.setItemMetrics( 1, 200, 30, 0, 0, 0, 400 );
-      tree.setItemMetrics( 2, 40, 30, 0, 0, 0, 400 );
-      testUtil.flush();
-      var line1 = tree.getChildren()[ 4 ];
-      var line2 = tree.getChildren()[ 5 ];
-      assertEquals( 29, line1.getLeft() )
-      assertEquals( 69, line2.getLeft() )
-      testUtil.flush();
-      tree.destroy();
-    },
-
-    testGridLinesVerticalOverflow : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var tree = this._createDefaultTree();
-      tree.setScrollBarsVisible( true, true );
-      tree.setLinesVisible( true );
-      tree.setItemMetrics( 0, 0, 202, 0, 0, 0, 400 );
-      tree.setItemMetrics( 1, 205, 100, 0, 0, 0, 400 );
-      tree.setItemMetrics( 2, 310, 50, 0, 0, 0, 400 );
-      tree.setItemMetrics( 3, 360, 11, 0, 0, 0, 400 );
-      tree.setColumnCount( 4 );
-      tree.setWidth( 370 );
-      testUtil.flush();
-      assertEquals( 6, tree.getChildren().length );
+      var line1 = tree._rowContainer._getTargetNode().childNodes[ offset ];
+      var line2 = tree._rowContainer._getTargetNode().childNodes[ offset + 1 ];
+      var line3 = tree._rowContainer._getTargetNode().childNodes[ offset + 2 ];
+      assertEquals( 201, parseInt( line1.style.left ) );
+      assertEquals( 304, parseInt( line2.style.left ) );
+      assertEquals( 359, parseInt( line3.style.left ) );
       tree.destroy();
     },
 
@@ -2443,6 +2439,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( "blue", rows[ 2 ].getElement().style.backgroundColor );
       tree.destroy();
     },    
+
 
     testVirtualSendTopItemIndex : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -3307,15 +3304,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var appearance = asTable ? "table" : "tree"; 
       var args = { "appearance": appearance };
       if( option ) {
-        args[ option ] = true;
+        args[ option ] = arg ? arg : true;
       }
       if( option === "check" ) {
         args[ "checkBoxMetrics" ] = arg;
+      }
+      if( option === "fixedColumns" ) {
+        args[ "splitContainer" ] = true;
       }
       args[ "fullSelection" ] = true;
       args[ "selectionPadding" ] = [ 2, 4 ];
       args[ "indentionWidth" ] = 16;
       var tree = new org.eclipse.rwt.widgets.Tree( args );
+      if( option === "fixedColumns" ) {
+        org.eclipse.rwt.TreeUtil.setFixedColumns( tree, arg );
+      }
       tree.setItemHeight( 20 );
       tree.setLeft( 0 );
       tree.setTop( 0 );

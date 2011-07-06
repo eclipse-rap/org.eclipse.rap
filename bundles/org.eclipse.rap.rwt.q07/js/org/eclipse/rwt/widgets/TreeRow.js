@@ -79,21 +79,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
 
     updateEvenState : function( index ) {
-      this._setState( "even", index % 2 == 0 );
-    },
-
-    setLinesVisible : function( value ) {
-      this._setState( "linesvisible", value );
+      this.setState( "even", index % 2 == 0 );
     },
 
     ////////////
     // internals
 
     _renderStates : function( item, config, selected, hoverElement ) {
-      this._setState( "checked", item.isChecked() );
-      this._setState( "grayed", item.isGrayed() );
-      this._setState( "parent_unfocused", this._renderAsUnfocused( config ) );
-      this._setState( "selected", selected );
+      this.setState( "checked", item.isChecked() );
+      this.setState( "grayed", item.isGrayed() );
+      this.setState( "parent_unfocused", this._renderAsUnfocused( config ) );
+      this.setState( "selected", selected );
       this._renderVariant( item.getVariant() );
       this._renderOverState( hoverElement );
       this._styleMap = this._getStyleMap();
@@ -102,20 +98,20 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     _renderVariant : function( variant ) {
       if( this._variant != variant ) {
         if( this._variant != null ) {
-          this._setState( this._variant, false );
+          this.setState( this._variant, false );
         }
         this._variant = variant;
         if( this._variant != null ) {
-          this._setState( this._variant, true );
+          this.setState( this._variant, true );
         }
       }
     },
 
     _renderOverState : function( hoverElement ) {
-      this._setState( "over", hoverElement !== null );
+      this.setState( "over", hoverElement !== null );
     },
 
-    _setState : function( state, value ) {
+    setState : function( state, value ) {
       if( !this.__states ) {
         this.__states = {};
       }
@@ -247,7 +243,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       if( config.hasCheckBoxes ) {
         var oldCheckBox = this._checkBoxElement;
         var states = this.__states;
-        this._setState( "over", hoverElement !== null && hoverElement === oldCheckBox );
+        this.setState( "over", hoverElement !== null && hoverElement === oldCheckBox );
         var image = this._getImageFromAppearance( "check-box", states );
         this._renderOverState( hoverElement );
         var element = this._getImageElement( 3 );
@@ -262,25 +258,27 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
 
     _renderCells : function( item, config, selected, hoverElement ) {
       var columns = this._getColumnCount( config );
-      if( !config.fullSelection && selected ) {
+      if( !config.fullSelection && selected ) { 
         this._renderStates( item, config, false, hoverElement );
       }
       for( var i = 0; i < columns; i++ ) {
-        this._renderCellBackground( item, i, config );
-        if( !config.fullSelection && this._isTreeColumn( i, config ) ) {
-          if( selected ) {
-            this._renderStates( item, config, true, hoverElement );
+        if( this._getItemWidth( item, i, config ) > 0 ) {
+          this._renderCellBackground( item, i, config );
+          if( !config.fullSelection && this._isTreeColumn( i, config ) ) {
+            if( selected ) {
+              this._renderStates( item, config, true, hoverElement );
+            }
+            var imageElement = this._renderCellImage( item, i, config );
+            var labelElement = this._renderCellLabel( item, i, config );
+            this._selectionElements = [ imageElement, labelElement ];
+            if( selected ) {
+              this._renderSelectionBackground( item, i, config );
+              this._renderStates( item, config, false, hoverElement);
+            }
+          } else {
+            this._renderCellImage( item, i, config );
+            this._renderCellLabel( item, i, config );
           }
-          var imageElement = this._renderCellImage( item, i, config );
-          var labelElement = this._renderCellLabel( item, i, config );
-          this._selectionElements = [ imageElement, labelElement ];
-          if( selected ) {
-            this._renderSelectionBackground( item, i, config );
-            this._renderStates( item, config, false, hoverElement);
-          }
-        } else {
-          this._renderCellImage( item, i, config );
-          this._renderCellLabel( item, i, config );
         }
       }
     },

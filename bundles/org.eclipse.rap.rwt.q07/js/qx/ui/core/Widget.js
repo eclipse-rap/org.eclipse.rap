@@ -3765,9 +3765,9 @@ qx.Class.define( "qx.ui.core.Widget", {
     renderBorder : function( changes ) {
       var value = this.__borderObject;
       if( value ) {
-        value.render( this );
+        value.renderWidget( this );
       } else {
-        org.eclipse.rwt.Border.reset( this );
+        org.eclipse.rwt.Border.resetWidget( this );
       }
       // RAP: Fix for Bug 301709
       this._usesComplexBorder = this._computeUsesComplexBorder();

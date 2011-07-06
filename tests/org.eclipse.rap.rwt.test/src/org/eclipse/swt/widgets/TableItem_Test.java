@@ -163,6 +163,39 @@ public class TableItem_Test extends TestCase {
     assertEquals( column0Bounds.x, table.getItem( 0 ).getBounds( 1 ).x );
   }
 
+  public void testItemLeftWithFixedColumns() {
+    Table table = createFixedColumnsTable();
+    table.setSize( 100, 200 );
+    TableItem item = new TableItem( table, SWT.NONE );
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    column0.setWidth( 50 );
+    TableColumn column1 = new TableColumn( table, SWT.NONE );
+    column1.setWidth( 100 );
+
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    adapter.setLeftOffset( 20 );
+
+    assertEquals( 0, item.getBounds( 0 ).x );
+    assertEquals( 30, item.getBounds( 1 ).x );
+  }
+
+  public void testItemLeftWithFixedColumnsSwitchOrder() {
+    Table table = createFixedColumnsTable();
+    table.setSize( 100, 200 );
+    TableItem item = new TableItem( table, SWT.NONE );
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    column0.setWidth( 100 );
+    TableColumn column1 = new TableColumn( table, SWT.NONE );
+    column1.setWidth( 50 );
+    table.setColumnOrder( new int[]{ 1, 0 } );
+
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    adapter.setLeftOffset( 20 );
+
+    assertEquals( 0, item.getBounds( 1 ).x );
+    assertEquals( 30, item.getBounds( 0 ).x );
+  }
+
   public void testTextBounds() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -176,6 +209,24 @@ public class TableItem_Test extends TestCase {
     Rectangle textBounds1 = item.getTextBounds( 0 );
     Rectangle textBounds2 = item.getTextBounds( 1 );
     assertTrue( textBounds1.x + textBounds1.width <= textBounds2.x );
+  }
+
+  public void testTextLeftWithFixedColumns() {
+    Table table = createFixedColumnsTable();
+    table.setSize( 100, 200 );
+    TableItem item = new TableItem( table, SWT.NONE );
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    column0.setWidth( 50 );
+    TableColumn column1 = new TableColumn( table, SWT.NONE );
+    column1.setWidth( 100 );
+    item.setText( 0, "col1" );
+    item.setText( 1, "col2" );
+
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    adapter.setLeftOffset( 20 );
+
+    assertEquals( 3, item.getTextBounds( 0 ).x );
+    assertEquals( 33, item.getTextBounds( 1 ).x );
   }
 
   public void testTextBoundsWithInvalidIndex() {
@@ -236,8 +287,7 @@ public class TableItem_Test extends TestCase {
     item.setText( 0, " Item 0.0" );
     item.setText( 1, " Item 0.1" );
     Rectangle column0TextBounds = item.getTextBounds( 0 );
-    ITableAdapter adapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( column0.getWidth() );
     assertEquals( column0TextBounds.x, item.getTextBounds( 1 ).x );
   }
@@ -324,6 +374,23 @@ public class TableItem_Test extends TestCase {
       = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( column0.getWidth() );
     assertEquals( column0ImageBounds.x, item.getImageBounds( 1 ).x );
+  }
+
+  public void testImageLeftWithFixedColumns() {
+    Table table = createFixedColumnsTable();
+    table.setSize( 100, 200 );
+    TableItem item = new TableItem( table, SWT.NONE );
+    TableColumn column0 = new TableColumn( table, SWT.NONE );
+    column0.setWidth( 50 );
+    TableColumn column1 = new TableColumn( table, SWT.NONE );
+    column1.setWidth( 100 );
+    item.setImage( 0, Graphics.getImage( Fixture.IMAGE1 ) );
+
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    adapter.setLeftOffset( 20 );
+
+    assertEquals( 3, item.getImageBounds( 0 ).x );
+    assertEquals( 33, item.getImageBounds( 1 ).x );
   }
 
   public void testBoundsWithCheckedTable() {
@@ -909,7 +976,7 @@ public class TableItem_Test extends TestCase {
       // Expected Exception
     }
   }
-  
+
   public void testInsertColumn_ShiftData_Text() {
     Table table = new Table( shell, SWT.BORDER );
     for( int i = 0; i < 3; i++ ) {
@@ -954,7 +1021,7 @@ public class TableItem_Test extends TestCase {
       item.setFont( i, font );
     }
     new TableColumn( table, SWT.NONE, 1 );
-    assertEquals( 20, item.getFont( 0 ).getFontData()[ 0 ].getHeight() );    
+    assertEquals( 20, item.getFont( 0 ).getFontData()[ 0 ].getHeight() );
     assertEquals( item.getFont(), item.getFont( 1 ) );
     assertEquals( 21, item.getFont( 2 ).getFontData()[ 0 ].getHeight() );
     assertEquals( 22, item.getFont( 3 ).getFontData()[ 0 ].getHeight() );
@@ -1024,7 +1091,14 @@ public class TableItem_Test extends TestCase {
   private static int getCheckWidth( Table table ) {
     Object adapter = table.getAdapter( ITableAdapter.class );
     ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    int checkWidth = tableAdapter.getCheckWidth();
+    int checkWidth = tableAdapter.getCheckWidthWithMargin();
     return checkWidth;
   }
+
+  private Table createFixedColumnsTable() {
+    Table table = new Table( shell, SWT.NONE );
+    table.setData( "fixedColumns", new Integer( 1 ) );
+    return table;
+  }
+
 }

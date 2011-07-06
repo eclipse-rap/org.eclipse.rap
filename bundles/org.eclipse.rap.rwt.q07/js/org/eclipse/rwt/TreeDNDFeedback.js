@@ -85,7 +85,7 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
     },
     
     _renderFeedbackSelect : function( row, value ) {
-      row._setState( "dnd_selected", value );
+      row.setState( "dnd_selected", value );
       var item = this._tree._rowContainer.findItemByRow( row );
       this._tree._rowContainer.renderItem( item );
     },

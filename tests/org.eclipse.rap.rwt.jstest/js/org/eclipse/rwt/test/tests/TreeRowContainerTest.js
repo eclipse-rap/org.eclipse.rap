@@ -24,7 +24,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     
     testCreateTreeRowsWithAppearance : function() {
       var cont = this._createContainer();
-      cont.setRowAppearance( "table-row" );
+      cont.setBaseAppearance( "table" );
       cont.setRowHeight( 50 );
       cont.setHeight( 501 );
       assertEquals( 11, cont.getChildren().length );
@@ -167,7 +167,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
       assertFalse( testUtil.hasCssBorder( row.getElement() ) );
       tree.setLinesVisible( true );
       testUtil.flush();
-      var border = tree._getHorizontalGridBorder();
+      var border = tree._rowContainer._getHorizontalGridBorder();
       assertIdentical( border, row.getBorder() );      
       tree.destroy();
     },
@@ -179,7 +179,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
       tree.setLinesVisible( true );
       tree.setHeight( 100 );      
       testUtil.flush();
-      var border = tree._getHorizontalGridBorder();
+      var border = tree._rowContainer._getHorizontalGridBorder();
       var row = tree._rowContainer._children[ 0 ];
       assertIdentical( border, row.getBorder() );
       tree.destroy();
@@ -258,7 +258,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
     
     _createContainer : function() {
       var result = new org.eclipse.rwt.widgets.TreeRowContainer();
-      result.setRowAppearance( "tree-row" );
+      result.setBaseAppearance( "tree" );
       return result;
     }
 

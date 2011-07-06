@@ -533,12 +533,7 @@ qx.Class.define("qx.ui.core.Parent",
       for (var i=0, l=arguments.length; i<l; i++)
       {
         vWidget = arguments[i];
-
-        if (!(vWidget instanceof qx.ui.core.Parent) && !(vWidget instanceof qx.ui.basic.Terminator)) {
-          throw new Error("Invalid Widget: " + vWidget);
-        } else {
-          vWidget.setParent(this);
-        }
+        vWidget.setParent( this );
       }
 
       return this;

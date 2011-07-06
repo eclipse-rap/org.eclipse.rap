@@ -24,6 +24,7 @@ public interface ITableAdapter {
   int getFocusIndex();
   void setFocusIndex( int focusIndex );
 
+  int getColumnLeftOffset( int columnIndex );
   int getLeftOffset();
   void setLeftOffset( int leftOffset );
 
@@ -42,4 +43,5 @@ public interface ITableAdapter {
   boolean hasVScrollBar();
 
   TableItem getMeasureItem();
+  boolean isFixedColumn( TableColumn column );
 }

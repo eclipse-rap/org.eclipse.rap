@@ -204,6 +204,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
 
+    testIgnoreItemWidthZero : function() {
+      var tree = this._createTree();
+      tree.setItemMetrics( 1, 50, 0, 50, 12, 65, 12 );
+      tree.setItemMetrics( 2, 50, 40, 50, 12, 65, 12 );
+      tree.setColumnCount( 3 );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test1", "Test2", "Test3" ] );
+      row.renderItem( item, tree._config, false, null );
+      assertEquals( 3, row._getTargetNode().childNodes.length );
+      assertEquals( "Test1", row._getTargetNode().childNodes[ 1 ].innerHTML );
+      assertEquals( "Test3", row._getTargetNode().childNodes[ 2 ].innerHTML );
+      tree.destroy();
+      row.destroy();
+    },
+
     testLabelDefaultStyle : function() {
       var tree = this._createTree();
       var row = this._createRow( tree );
@@ -753,7 +770,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       tree.setLinesVisible( true );
       var row = this._createRow( tree );
       row.setHeight( 15 );
-      row.setLinesVisible( true );
+      row.setState( "linesvisible", true );
       this._addToDom( row );
       var item = this._createItem( tree );
       item.setTexts( [ "Test" ] );
@@ -1174,7 +1191,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.renderItem( item, tree._config, false, null );
       assertFalse( row.hasState( "selected" ) );
       assertTrue( row.hasState( "parent_unfocused" ) );
-      row._setState( "dnd_selected", true );
+      row.setState( "dnd_selected", true );
       testUtil.flush();
       row.renderItem( item, tree._config, false, null );
       assertTrue( row.hasState( "dnd_selected" ) );

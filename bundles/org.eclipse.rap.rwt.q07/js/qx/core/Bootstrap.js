@@ -119,4 +119,8 @@ qx.Class.define("qx.core.Bootstrap",
     /** Stores all defined classes */
     __registry : {}
   }
-});
+} );
+
+var namespace = function( value ) {
+  qx.Class.createNamespace( value, {} );
+};

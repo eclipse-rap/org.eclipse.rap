@@ -142,8 +142,17 @@ public class Table extends Composite {
       Table.this.setFocusIndex( focusIndex );
     }
 
+    public int getColumnLeftOffset( int columnIndex ) {
+      return Table.this.getColumnLeftOffset( columnIndex );
+    }
+
+    public int getColumnLeft( final TableColumn column ) {
+      int index = Table.this.indexOf( column );
+      return Table.this.getColumn( index ).getLeft();
+    }
+
     public int getLeftOffset() {
-      return Table.this.leftOffset;
+      return Table.this.getColumnLeftOffset( -1 );
     }
 
     public void setLeftOffset( final int leftOffset ) {
@@ -178,9 +187,8 @@ public class Table extends Composite {
       return result;
     }
 
-    public int getColumnLeft( final TableColumn column ) {
-      int index = Table.this.indexOf( column );
-      return Table.this.getColumn( index ).getLeft();
+    public boolean isFixedColumn( TableColumn column ) {
+      return Table.this.isFixedColumn( Table.this.indexOf( column ) );
     }
 
     public boolean isItemVisible( final TableItem item ) {
@@ -1603,11 +1611,11 @@ public class Table extends Composite {
         boolean found = false;
         for( int i = 0; i < columnOrder.length && !found; i++ ) {
           found = index == columnOrder[ i ];
-          if( !found ) {
+          if( !found && !isFixedColumn( i ) ) {
             leftColumnsWidth += getColumn( columnOrder[ i ] ).getWidth();
           }
         }
-        if( leftOffset > leftColumnsWidth ) {
+        if( getColumnLeftOffset( index ) > leftColumnsWidth ) {
           leftOffset = leftColumnsWidth;
         } else if( leftOffset < leftColumnsWidth + columnWidth - clientWidth ) {
           leftOffset = leftColumnsWidth + columnWidth - clientWidth;
@@ -1854,7 +1862,12 @@ public class Table extends Composite {
       int textHeight = Graphics.getCharHeight( headerFont );
       int imageHeight = 0;
       for( int i = 0; i < getColumnCount(); i++ ) {
-        Image image = getColumn( i ).getImage();
+        TableColumn column = getColumn( i );
+        if( isMultiLineHeader() && column.getText().indexOf( '\n' ) != -1 ) {
+          int columnTextHeight = Graphics.textExtent( headerFont, column.getText(), 0 ).y;
+          textHeight = Math.max( textHeight, columnTextHeight );
+        }
+        Image image = column.getImage();
         int height = image == null ? 0 : image.getBounds().height;
         if( height > imageHeight ) {
           imageHeight = height;
@@ -2458,6 +2471,55 @@ public class Table extends Composite {
     }
     return result;
   }
+
+  /**
+   * Returns the scroll-offset of the column, which is the leftOffset unless it is a fixed column.
+   */
+  final int getColumnLeftOffset( int columnIndex ) {
+    int result = leftOffset;
+    if( columnIndex >= 0 ) {
+      result = isFixedColumn( columnIndex ) ? 0 : leftOffset;
+    }
+    return result;
+  }
+
+  private boolean isFixedColumn( int index ) {
+    int[] columnOrder = getColumnOrder();
+    int visualIndex = -1;
+    for( int i = 0; i < columnOrder.length && visualIndex == -1; i++ ) {
+      if( index == columnOrder[ i ] ) {
+        visualIndex = i;
+      }
+    }
+    return visualIndex < getFixedColumns();
+  }
+
+  boolean isMultiLineHeader() {
+    boolean result = false;
+    try {
+      Boolean data = ( Boolean )getData( "multiLineHeader" );
+      if( data != null ) {
+        result = data.booleanValue();
+      }
+    } catch( ClassCastException ex ) {
+      // not a valid multiLineHeader value
+    }
+    return result;
+  }
+
+  private int getFixedColumns() {
+    int result = -1;
+    try {
+      Integer data = ( Integer )getData( "fixedColumns" );
+      if( data != null ) {
+        result = data.intValue();
+      }
+    } catch( ClassCastException ex ) {
+      // not a valid fixedColumns value
+    }
+    return result;
+  }
+
 
   final int getVisibleItemCount( final boolean includePartlyVisible ) {
     int clientHeight = getBounds().height - getHeaderHeight() - getHScrollBarHeight();
