@@ -5,7 +5,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="css"/>
 	<classpathentry kind="src" path="yui"/>
-	<classpathentry kind="src" path="q07"/>
 	<classpathentry kind="src" path="js"/>
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry exported="true" kind="lib" path="rhino"/>
