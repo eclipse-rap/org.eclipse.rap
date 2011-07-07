@@ -140,7 +140,6 @@
     <mkdir dir="${reports.tests}" />
     <path id="cp">
       <pathelement location="${host.tests}" />
-      <pathelement location="${fragment.tests}" />
       <pathelement location="${rwt_osgi.tests}" />
       <pathelement location="${forms.tests}" />
       <pathelement location="${themes.tests}" />
@@ -172,9 +171,6 @@
       <formatter type="xml" />
       <batchtest fork="yes" todir="${reports.tests}">
         <fileset dir="${host.tests}">
-          <include name="**/*_Test.class" />
-        </fileset>
-        <fileset dir="${fragment.tests}">
           <include name="**/*_Test.class" />
         </fileset>
         <fileset dir="${rwt_osgi.tests}">
