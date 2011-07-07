@@ -31,7 +31,7 @@
   qxsettings[ "qx.version" ] = "0.7.4 ";
   qxsettings[ "qx.isSource"] = true;
   qxsettings[ "qx.resourceUri" ] = "./js/resource";
-  qxsettings[ "qx.resourceUri" ] = "../org.eclipse.rap.rwt.q07/js/resource";    
+  qxsettings[ "qx.resourceUri" ] = "../org.eclipse.rap.rwt/js/resource";    
   qxsettings[ "qx.theme" ] = "org.eclipse.swt.theme.Default";
   qxvariants = {};
   qxvariants[ "qx.compatibility" ] = "off";
@@ -285,11 +285,11 @@
   };
   
   for( var i = 0; i < clientClasses.length; i++ ) {
-    include( "../org.eclipse.rap.rwt.q07/js/" + clientClasses[ i ] );
+    include( "../org.eclipse.rap.rwt/js/" + clientClasses[ i ] );
   }
 
   for( var i = 0; i < testRunnerClasses.length; i++ ) {
-    include( "../org.eclipse.rap.rwt.q07.jstest/js/" + testRunnerClasses[ i ] );
+    include( "../org.eclipse.rap.rwt.jstest/js/" + testRunnerClasses[ i ] );
   }
 
 } )();

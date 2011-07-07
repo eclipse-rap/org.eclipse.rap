@@ -22,9 +22,6 @@ plugin@org.eclipse.rap.ui.workbench=HEAD,:pserver:anonymous@dev.eclipse.org:/cvs
 # rwt osgi integration
 plugin@org.eclipse.rap.rwt.osgi=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt/org.eclipse.rap.rwt.osgi
 
-# rwt flavors
-fragment@org.eclipse.rap.rwt.q07=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt/org.eclipse.rap.rwt.q07
-
 # rwt themes
 plugin@org.eclipse.rap.rwt.theme.classic=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt/org.eclipse.rap.rwt.theme.classic
 
@@ -55,9 +52,6 @@ fragment@org.eclipse.rap.rwt.test.mockup=HEAD,:pserver:anonymous@dev.eclipse.org
 
 # rwt osgi integration
 fragment@org.eclipse.rap.rwt.osgi.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.osgi.test
-
-# tests for qx07 flavor
-fragment@org.eclipse.rap.rwt.q07.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.q07.test
 
 # tooling
 feature@org.eclipse.rap.tooling=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.releng/tooling/tooling-feature

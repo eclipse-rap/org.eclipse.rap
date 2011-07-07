@@ -13,7 +13,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
   
   members : {
 
-    BLANK : "../org.eclipse.rap.rwt.q07/resources/resource/static/html/blank.html",
+    BLANK : "../org.eclipse.rap.rwt/resources/resource/static/html/blank.html",
 
     testGetDomain : function() {
       var url1 = "HTtp://google.de/";

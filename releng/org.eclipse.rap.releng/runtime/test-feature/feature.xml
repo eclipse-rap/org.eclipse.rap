@@ -32,14 +32,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.rap.rwt.q07.test"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.rap.rwt.test.mockup"
          download-size="0"
          install-size="0"

@@ -20,7 +20,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends Plugin implements BundleActivator {
 
   private static final String PORT_PROPERTY_NAME = "org.osgi.service.http.port";
-  private static final String PATH_TO_TESTS = "/org.eclipse.rap.rwt.q07.jstest/index.html";
+  private static final String PATH_TO_TESTS = "/org.eclipse.rap.rwt.jstest/index.html";
   private static final String ADDRESS = "127.0.0.1";
   private static final String PROTOCOL = "http";
 

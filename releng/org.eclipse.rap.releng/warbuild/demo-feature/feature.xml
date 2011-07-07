@@ -143,14 +143,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.rap.rwt.q07"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.rap.ui.workbench"
          download-size="0"
          install-size="0"

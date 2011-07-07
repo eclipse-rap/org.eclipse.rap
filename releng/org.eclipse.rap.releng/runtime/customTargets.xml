@@ -132,7 +132,6 @@
   <target name="runTests">
   	<!-- set up class path -->
     <property name="host.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/@dot" />
-    <property name="fragment.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07.test/@dot" />
     <property name="rwt_osgi.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.osgi.test/@dot" />
     <property name="forms.tests" value="${buildDirectory}/plugins/org.eclipse.rap.ui.forms.test/@dot" />
     <property name="themes.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.themes.test/@dot" />
@@ -152,7 +151,6 @@
       </fileset>
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.testfixture/@dot" />
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test.mockup/@dot" />
-      <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.q07/@dot" />
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.theme.classic/@dot" />
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.design.example/@dot" />
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/lib/resource_manager_test.jar" />
