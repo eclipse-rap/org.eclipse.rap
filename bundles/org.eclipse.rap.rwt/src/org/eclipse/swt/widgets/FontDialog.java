@@ -212,8 +212,7 @@ public class FontDialog extends Dialog {
   }
 
   private void createShell() {
-    int style = SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL;
-    shell = new Shell( parent, style );
+    shell = new Shell( parent, SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL );
     shell.setText( getText() );
     shell.addShellListener( new ShellAdapter() {
       public void shellClosed( ShellEvent event ) {
@@ -241,7 +240,7 @@ public class FontDialog extends Dialog {
         display.sleep();
       }
     }
-    shell = null;
+    shell.dispose();
   }
 
   private void createControls() {
@@ -326,15 +325,13 @@ public class FontDialog extends Dialog {
     String bold = RWTMessages.getMessage( "RWT_FontDialogFontStyleBold" );
     boldCheckbox.setText( bold );
     FontData normalFont = boldCheckbox.getFont().getFontData()[ 0 ];
-    boldCheckbox.setFont( Graphics.getFont( normalFont.getName(),
-                                            normalFont.getHeight(),
-                                            SWT.BOLD ) );
+    Font boldFont = Graphics.getFont( normalFont.getName(), normalFont.getHeight(), SWT.BOLD );
+    boldCheckbox.setFont( boldFont );
     italicCheckbox = new Button( result, SWT.CHECK );
     String italic = RWTMessages.getMessage( "RWT_FontDialogFontStyleItalic" );
     italicCheckbox.setText( italic );
-    italicCheckbox.setFont( Graphics.getFont( normalFont.getName(),
-                                              normalFont.getHeight(),
-                                              SWT.ITALIC ) );
+    Font italicFont = Graphics.getFont( normalFont.getName(), normalFont.getHeight(), SWT.ITALIC );
+    italicCheckbox.setFont( italicFont );
   }
 
   private void createFontColorGroup( Composite parent ) {
