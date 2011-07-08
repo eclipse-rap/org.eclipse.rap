@@ -180,8 +180,7 @@ public final class DNDSupport {
       int operation = readOperationParam( EVENT_DRAG_ENTER_OPERATION );
       int feedback = readIntParam( EVENT_DRAG_ENTER_FEEDBACK );
       Item item = readItemParam( EVENT_DRAG_ENTER_ITEM );
-      TransferData[] validDataTypes
-        = determineDataTypes( dragSource, dropTarget );
+      TransferData[] validDataTypes = determineDataTypes( dragSource, dropTarget );
       TransferData dataType = validDataTypes[ 0 ];
       event.detail = operation;
       event.operations = getOperations( dragSource, dropTarget );
@@ -211,15 +210,12 @@ public final class DNDSupport {
       Control sourceControl = readControlParam( EVENT_DRAG_OVER_SOURCE );
       DragSource dragSource = getDragSource( sourceControl );
       IDNDAdapter dndAdapter = getDNDAdapter( dragSource );
-      int operation = readOperationParam( dndAdapter,
-                                          EVENT_DRAG_OVER_OPERATION );
+      int operation = readOperationParam( dndAdapter, EVENT_DRAG_OVER_OPERATION );
       int feedback = readFeedbackParam( dndAdapter, EVENT_DRAG_OVER_FEEDBACK );
-      TransferData dataType = readTransferDataParam( dndAdapter,
-                                                     EVENT_DRAG_OVER_DATATYPE );
+      TransferData dataType = readTransferDataParam( dndAdapter, EVENT_DRAG_OVER_DATATYPE );
       Point point = readXYParams( EVENT_DRAG_OVER_X, EVENT_DRAG_OVER_Y );
       Item item = readItemParam( EVENT_DRAG_OVER_ITEM );
-      DropTargetEvent event
-        = new DropTargetEvent( dropTarget, DropTargetEvent.DRAG_OVER );
+      DropTargetEvent event = new DropTargetEvent( dropTarget, DropTargetEvent.DRAG_OVER );
       event.detail = operation;
       event.feedback = feedback;
       event.operations = getOperations( dragSource, dropTarget );
@@ -247,24 +243,18 @@ public final class DNDSupport {
     Control control = readControlParam( EVENT_DRAG_OPERATION_CHANGED );
     if( control != null ) {
       DropTarget dropTarget = getDropTarget( control );
-      Control sourceControl
-        = readControlParam( EVENT_DRAG_OPERATION_CHANGED_SOURCE );
+      Control sourceControl = readControlParam( EVENT_DRAG_OPERATION_CHANGED_SOURCE );
       DragSource dragSource = getDragSource( sourceControl );
       IDNDAdapter dndAdapter = getDNDAdapter( dragSource );
       int operation
-        = readOperationParam( dndAdapter,
-                              EVENT_DRAG_OPERATION_CHANGED_OPERATION );
-      int feedback = readFeedbackParam( dndAdapter,
-                                        EVENT_DRAG_OPERATION_CHANGED_FEEDBACK );
+        = readOperationParam( dndAdapter, EVENT_DRAG_OPERATION_CHANGED_OPERATION );
+      int feedback = readFeedbackParam( dndAdapter, EVENT_DRAG_OPERATION_CHANGED_FEEDBACK );
       TransferData dataType
-        = readTransferDataParam( dndAdapter,
-                                 EVENT_DRAG_OPERATION_CHANGED_DATATYPE );
-      Point point = readXYParams( EVENT_DRAG_OPERATION_CHANGED_X,
-                                  EVENT_DRAG_OPERATION_CHANGED_Y );
+        = readTransferDataParam( dndAdapter, EVENT_DRAG_OPERATION_CHANGED_DATATYPE );
+      Point point = readXYParams( EVENT_DRAG_OPERATION_CHANGED_X, EVENT_DRAG_OPERATION_CHANGED_Y );
       Item item = readItemParam( EVENT_DRAG_OPERATION_CHANGED_ITEM );
       DropTargetEvent event
-      = new DropTargetEvent( dropTarget,
-                             DropTargetEvent.DRAG_OPERATION_CHANGED );
+      = new DropTargetEvent( dropTarget, DropTargetEvent.DRAG_OPERATION_CHANGED );
       event.detail = operation;
       event.feedback = feedback;
       event.currentDataType = dataType;
@@ -351,9 +341,7 @@ public final class DNDSupport {
   //////////////////////////
   // Create and fire events
 
-  private static DragDetectEvent createDragDetectEvent( final Control control,
-                                                        final Point point )
-  {
+  private static DragDetectEvent createDragDetectEvent( Control control, Point point ) {
     DragDetectEvent result = new DragDetectEvent( control );
     result.x = point.x;
     result.y = point.y;
@@ -363,12 +351,11 @@ public final class DNDSupport {
   }
 
   private static DragSourceEvent createDragStartEvent(
-    final DragSource dragSource,
-    final Point point,
-    final int time )
+    DragSource dragSource,
+    Point point,
+    int time )
   {
-    DragSourceEvent result
-      = new DragSourceEvent( dragSource, DragSourceEvent.DRAG_START );
+    DragSourceEvent result = new DragSourceEvent( dragSource, DragSourceEvent.DRAG_START );
     result.detail = DND.DROP_NONE;
     result.x = point.x;
     result.y = point.y;
@@ -378,12 +365,11 @@ public final class DNDSupport {
   }
 
   private static DragSourceEvent createDragSetDataEvent(
-    final DragSource dragSource,
-    final TransferData dataType,
-    final Point point )
+    DragSource dragSource,
+    TransferData dataType,
+    Point point )
   {
-    DragSourceEvent result
-      = new DragSourceEvent( dragSource, DragSourceEvent.DRAG_SET_DATA );
+    DragSourceEvent result = new DragSourceEvent( dragSource, DragSourceEvent.DRAG_SET_DATA );
     result.detail = DND.DROP_NONE;
     result.dataType = dataType;
     result.x = point.x;
@@ -394,14 +380,13 @@ public final class DNDSupport {
   }
 
   private static DropTargetEvent createDropAcceptEvent(
-    final DropTarget dropTarget,
-    final int operation,
-    final Point point,
-    final TransferData dataType,
-    final Item item )
+    DropTarget dropTarget,
+    int operation,
+    Point point,
+    TransferData dataType,
+    Item item )
   {
-    DropTargetEvent result
-      = new DropTargetEvent( dropTarget, DropTargetEvent.DROP_ACCEPT );
+    DropTargetEvent result = new DropTargetEvent( dropTarget, DropTargetEvent.DROP_ACCEPT );
     result.detail = operation;
     result.x = point.x;
     result.y = point.y;
@@ -410,13 +395,12 @@ public final class DNDSupport {
     return result;
   }
 
-  private static void fireDragLeave( final int operation,
-                                     final DropTarget dropTarget,
-                                     final Point point,
-                                     final int time )
+  private static void fireDragLeave( int operation,
+                                     DropTarget dropTarget,
+                                     Point point,
+                                     int time )
   {
-    DropTargetEvent event
-      = new DropTargetEvent( dropTarget, DropTargetEvent.DRAG_LEAVE );
+    DropTargetEvent event = new DropTargetEvent( dropTarget, DropTargetEvent.DRAG_LEAVE );
     event.detail = operation;
     event.x = point.x;
     event.y = point.y;
@@ -424,7 +408,7 @@ public final class DNDSupport {
     event.processEvent();
   }
 
-  private static void fireDragFinished( final int operation ) {
+  private static void fireDragFinished( int operation ) {
     Control dragSourceControl = readControlParam( EVENT_DRAG_FINISHED );
     if( dragSourceControl != null ) {
       // fire DRAG_END
@@ -433,10 +417,8 @@ public final class DNDSupport {
       dndAdapter.cancelDetailChanged();
       dndAdapter.cancelFeedbackChanged();
       dndAdapter.cancelDataTypeChanged();
-      Point point = readXYParams( EVENT_DRAG_FINISHED_X,
-                                  EVENT_DRAG_FINISHED_Y );
-      DragSourceEvent event
-        = new DragSourceEvent( dragSource, DragSourceEvent.DRAG_END );
+      Point point = readXYParams( EVENT_DRAG_FINISHED_X, EVENT_DRAG_FINISHED_Y );
+      DragSourceEvent event = new DragSourceEvent( dragSource, DragSourceEvent.DRAG_END );
       event.x = point.x;
       event.y = point.y;
       event.detail = operation;
@@ -451,21 +433,21 @@ public final class DNDSupport {
   //////////////////
   // Helping methods
 
-  private static IDNDAdapter getDNDAdapter( final DragSource dragSource ) {
+  private static IDNDAdapter getDNDAdapter( DragSource dragSource ) {
     return ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class );
   }
 
-  private static DropTarget getDropTarget( final Control control ) {
+  private static DropTarget getDropTarget( Control control ) {
     return ( DropTarget )control.getData( DND.DROP_TARGET_KEY );
   }
 
-  private static DragSource getDragSource( final Control control ) {
+  private static DragSource getDragSource( Control control ) {
     return ( DragSource )control.getData( DND.DRAG_SOURCE_KEY );
   }
 
-  private static Object transferData( final DropTarget dropTarget,
-                                      final TransferData dataType,
-                                      final DragSourceEvent setDataEvent )
+  private static Object transferData( DropTarget dropTarget,
+                                      TransferData dataType,
+                                      DragSourceEvent setDataEvent )
   {
     Object data = null;
     if( setDataEvent.doit ) {
@@ -476,9 +458,7 @@ public final class DNDSupport {
     return data;
   }
 
-  static TransferData[] determineDataTypes( final DragSource dragSource,
-                                            final DropTarget dropTarget )
-  {
+  static TransferData[] determineDataTypes( DragSource dragSource, DropTarget dropTarget ) {
     java.util.List<TransferData> supportedTypes = new ArrayList<TransferData>();
     Transfer[] dragSourceTransfers = dragSource.getTransfer();
     Transfer[] dropTargetTransfers = dropTarget.getTransfer();
@@ -499,8 +479,7 @@ public final class DNDSupport {
     return result;
   }
 
-  private static Transfer findTransferByType( final TransferData type,
-                                              final DropTarget dropTarget ) {
+  private static Transfer findTransferByType( TransferData type, DropTarget dropTarget ) {
     Transfer result = null;
     Transfer[] supported = dropTarget.getTransfer();
     for( int i = 0; result == null && i < supported.length; i++ ) {
@@ -511,7 +490,7 @@ public final class DNDSupport {
     return result;
   }
 
-  private static Widget findWidgetById( final String id ) {
+  private static Widget findWidgetById( String id ) {
     Widget result = null;
     Display display = LifeCycleUtil.getSessionDisplay();
     Shell[] shells = getDisplayAdapter( display ).getShells();
@@ -524,22 +503,22 @@ public final class DNDSupport {
     return result;
   }
 
-  private static IDisplayAdapter getDisplayAdapter( final Display display ) {
+  private static IDisplayAdapter getDisplayAdapter( Display display ) {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     return ( IDisplayAdapter )adapter;
   }
 
-  private static String readStringParam( final String paramName ) {
+  private static String readStringParam( String paramName ) {
     HttpServletRequest request = ContextProvider.getRequest();
     return request.getParameter( paramName );
   }
 
-  private static int readIntParam( final String paramName ) {
+  private static int readIntParam( String paramName ) {
     String value = readStringParam( paramName );
     return NumberFormatUtil.parseInt( value );
   }
 
-  private static Control readControlParam( final String paramName ) {
+  private static Control readControlParam( String paramName ) {
     Control result = null;
     String value = readStringParam( paramName );
     if( value != null ) {
@@ -548,7 +527,7 @@ public final class DNDSupport {
     return result;
   }
 
-  private static Item readItemParam( final String paramName ) {
+  private static Item readItemParam( String paramName ) {
     Item result = null;
     String value = readStringParam( paramName );
     if( value != null ) {
@@ -557,7 +536,7 @@ public final class DNDSupport {
     return result;
   }
 
-  private static TransferData readDataTypeParam( final String paramName ) {
+  private static TransferData readDataTypeParam( String paramName ) {
     TransferData result = null;
     String value = readStringParam( paramName );
     value = "null".equals( value ) ? null : value;
@@ -572,17 +551,13 @@ public final class DNDSupport {
   //                 Yes, a drag would have to be canceled for invalid
   //                 coordinates on DragDetect, and dragEnter/Leave COULD
   //                 be thrown before they would be in SWT. (Severe problem?)
-  private static Point readXYParams( final String xParamName,
-                                     final String yParamName )
-  {
+  private static Point readXYParams( String xParamName, String yParamName ) {
     int x = readIntParam( xParamName );
     int y = readIntParam( yParamName );
     return new Point( x,y );
   }
 
-  private static int readOperationParam( final IDNDAdapter dndAdapter,
-                                         final String paramName )
-  {
+  private static int readOperationParam( IDNDAdapter dndAdapter, String paramName ) {
     int result;
     if( dndAdapter.hasDetailChanged() ) {
       result = dndAdapter.getDetailChangedValue();
@@ -592,9 +567,7 @@ public final class DNDSupport {
     return result;
   }
 
-  private static int readFeedbackParam( final IDNDAdapter dndAdapter,
-                                        final String paramName )
-  {
+  private static int readFeedbackParam( IDNDAdapter dndAdapter, String paramName ) {
     int result;
     if( dndAdapter.hasFeedbackChanged() ) {
       result = dndAdapter.getFeedbackChangedValue();
@@ -604,9 +577,7 @@ public final class DNDSupport {
     return result;
   }
 
-  private static TransferData readTransferDataParam( final IDNDAdapter adapter,
-                                                     final String paramName )
-  {
+  private static TransferData readTransferDataParam( IDNDAdapter adapter, String paramName ) {
     TransferData result;
     if( adapter.hasDataTypeChanged() ) {
       result = adapter.getDataTypeChangedValue();
@@ -616,7 +587,7 @@ public final class DNDSupport {
     return result;
   }
 
-  private static int readOperationParam( final String paramName ) {
+  private static int readOperationParam( String paramName ) {
     int result = DND.DROP_NONE;
     String value = readStringParam( paramName );
     if( "copy".equals( value ) ) {
@@ -639,22 +610,21 @@ public final class DNDSupport {
     return result;
   }
 
-  private static void changeOperation( final DragSource dragSource,
-                                       final DropTarget dropTarget,
-                                       final int detail )
+  private static void changeOperation( DragSource dragSource,
+                                       DropTarget dropTarget,
+                                       int detail )
   {
     int checkedOperation = checkOperation( dragSource, dropTarget, detail );
     IDNDAdapter dndAdapter = getDNDAdapter( dragSource );
     dndAdapter.setDetailChanged( dropTarget.getControl(), checkedOperation );
   }
 
-  private static void changeDataType( final DragSource dragSource,
-                                      final DropTarget dropTarget,
-                                      final TransferData dataType )
+  private static void changeDataType( DragSource dragSource,
+                                      DropTarget dropTarget,
+                                      TransferData dataType )
   {
 
-    TransferData[] validDataTypes
-      = determineDataTypes( dragSource, dropTarget );
+    TransferData[] validDataTypes = determineDataTypes( dragSource, dropTarget );
     TransferData value = checkDataType( dataType, validDataTypes );
     // [tb] If the value is not valid, another valid value will be set.
     // This is simplified from SWT, where null would be set.
@@ -665,15 +635,13 @@ public final class DNDSupport {
     getDNDAdapter( dragSource ).setDataTypeChanged( control, value );
   }
 
-  private static int getOperations( final DragSource dragSource,
-                                    final DropTarget dropTarget )
-  {
+  private static int getOperations( DragSource dragSource, DropTarget dropTarget ) {
     return dragSource.getStyle() & dropTarget.getStyle();
   }
 
-  private static int checkOperation( final DragSource dragSource,
-                                     final DropTarget dropTarget,
-                                     final int operation )
+  private static int checkOperation( DragSource dragSource,
+                                     DropTarget dropTarget,
+                                     int operation )
   {
     int result = DND.DROP_NONE;
     int allowedOperations = getOperations( dragSource, dropTarget );
@@ -683,9 +651,7 @@ public final class DNDSupport {
     return result;
   }
 
-  private static TransferData checkDataType( final TransferData dataType,
-                                             final TransferData[] validTypes )
-  {
+  private static TransferData checkDataType( TransferData dataType, TransferData[] validTypes ) {
     boolean isValidType = false;
     for( int i = 0; i < validTypes.length; i++ ) {
       if( !isValidType ) {

@@ -72,7 +72,7 @@ public final class DNDAdapter implements IDNDAdapter {
     return ( Control )stateInfo.getAttribute( DETAIL_CHANGED_CONTROL );
   }
 
-  public void setFeedbackChanged( final Control control, final int feedback ) {
+  public void setFeedbackChanged( Control control, int feedback ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     stateInfo.setAttribute( FEEDBACK_CHANGED_VALUE, new Integer( feedback ) );
     stateInfo.setAttribute( FEEDBACK_CHANGED_CONTROL, control );
@@ -101,9 +101,7 @@ public final class DNDAdapter implements IDNDAdapter {
     return ( Control )stateInfo.getAttribute( FEEDBACK_CHANGED_CONTROL );
   }
 
-  public void setDataTypeChanged( final Control control,
-                                  final TransferData dataType )
-  {
+  public void setDataTypeChanged( Control control, TransferData dataType ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     stateInfo.setAttribute( DATATYPE_CHANGED_VALUE, dataType );
     stateInfo.setAttribute( DATATYPE_CHANGED_CONTROL, control );
@@ -130,5 +128,4 @@ public final class DNDAdapter implements IDNDAdapter {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     return ( Control )stateInfo.getAttribute( DATATYPE_CHANGED_CONTROL );
   }
-
 }
