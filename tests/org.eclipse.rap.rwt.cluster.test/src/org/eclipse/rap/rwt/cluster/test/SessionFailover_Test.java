@@ -25,6 +25,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.*;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
@@ -48,9 +49,7 @@ public abstract class SessionFailover_Test extends TestCase {
   abstract IServletEngineFactory getServletEngineFactory();
   
   public void testButtonEntryPoint() throws Exception {
-    cluster.start( ButtonEntryPoint.class );
-    client.sendStartupRequest();
-    client.sendInitializationRequest();
+    initializeClient( ButtonEntryPoint.class );
     // Click center button four times on primary
     clickCenterButton( 1, 4 );
     // Click center button four times on secondary
@@ -73,9 +72,7 @@ public abstract class SessionFailover_Test extends TestCase {
   }
 
   public void testResourcesEntryPoint() throws Exception {
-    cluster.start( ResourcesEntryPoint.class );
-    client.sendStartupRequest();
-    client.sendInitializationRequest();
+    initializeClient( ResourcesEntryPoint.class );
     
     client.changeServletEngine( secondary );
     client.sendDisplayResizeRequest( 400, 600 );
@@ -92,9 +89,7 @@ public abstract class SessionFailover_Test extends TestCase {
   }
   
   public void testImageEntryPoint() throws Exception {
-    cluster.start( ImageEntryPoint.class );
-    client.sendStartupRequest();
-    client.sendInitializationRequest();
+    initializeClient( ImageEntryPoint.class );
     client.sendResourceRequest( ImageEntryPoint.imagePath );
     
     client.changeServletEngine( secondary );
@@ -112,9 +107,7 @@ public abstract class SessionFailover_Test extends TestCase {
   }
   
   public void testAsyncExecEntryPoint() throws Exception {
-    cluster.start( AsyncExecEntryPoint.class );
-    client.sendStartupRequest();
-    client.sendInitializationRequest();
+    initializeClient( AsyncExecEntryPoint.class );
     AsyncExecEntryPoint.scheduleAsyncRunnable( getFirstDisplay( primary ) );
     
     cluster.removeServletEngine( primary );
@@ -128,9 +121,7 @@ public abstract class SessionFailover_Test extends TestCase {
   }
 
   public void testSyncExecEntryPoint() throws Exception {
-    cluster.start( AsyncExecEntryPoint.class );
-    client.sendStartupRequest();
-    client.sendInitializationRequest();
+    initializeClient( AsyncExecEntryPoint.class );
     AsyncExecEntryPoint.scheduleSyncRunnable( getFirstDisplay( primary ) );
     
     cluster.removeServletEngine( primary );
@@ -144,9 +135,7 @@ public abstract class SessionFailover_Test extends TestCase {
   }
   
   public void testTimerExecEntryPoint() throws Exception {
-    cluster.start( TimerExecEntryPoint.class );
-    client.sendStartupRequest();
-    client.sendInitializationRequest();
+    initializeClient( TimerExecEntryPoint.class );
 
     cluster.removeServletEngine( primary );
     prepareExamination( primary );
@@ -177,6 +166,12 @@ public abstract class SessionFailover_Test extends TestCase {
   protected void tearDown() throws Exception {
     cluster.stop();
     ClusterFixture.tearDown();
+  }
+
+  private void initializeClient( Class<? extends IEntryPoint> entryPoint ) throws Exception {
+    cluster.start( entryPoint );
+    client.sendStartupRequest();
+    client.sendInitializationRequest();
   }
 
   private static void assertEquals( ImageData expected, ImageData actual ) {
