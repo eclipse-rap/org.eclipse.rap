@@ -20,7 +20,6 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -504,7 +503,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA, tableId );
     Fixture.fakeRequestParam( JSConst.EVENT_SET_DATA_INDEX, "500,501,502,503" );
     Fixture.fakeRequestParam( tableId + ".topIndex", "500" );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
+    ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
 
       private static final long serialVersionUID = 1L;
@@ -529,7 +528,6 @@ public class TableLCA_Test extends TestCase {
 
   public void testClearVirtual() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     shell.setSize( 100, 100 );
     shell.setLayout( new FillLayout() );
     final Table table = new Table( shell, SWT.VIRTUAL );
@@ -551,6 +549,7 @@ public class TableLCA_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
     // run actual request
     Fixture.fakeNewRequest( display );
+    ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
       public void beforePhase( PhaseEvent event ) {

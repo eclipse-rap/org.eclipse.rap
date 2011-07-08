@@ -142,6 +142,11 @@ public class SimpleLifeCycle extends LifeCycle {
   public void removePhaseListener( PhaseListener phaseListener ) {
     phaseListenerManager.removePhaseListener( phaseListener );
   }
+  
+  public void sleep() {
+    String msg = "The " + getClass().getSimpleName() + " does not support Display#sleep().";
+    throw new UnsupportedOperationException( msg );
+  }
 
   private static void installSessionShutdownAdapter() {
     SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSession();

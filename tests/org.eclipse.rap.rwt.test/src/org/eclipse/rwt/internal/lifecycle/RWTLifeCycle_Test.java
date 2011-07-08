@@ -271,7 +271,6 @@ public class RWTLifeCycle_Test extends TestCase {
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestPhasesEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     PhaseListener listener = new PhaseListener() {
-
       private static final long serialVersionUID = 1L;
 
       public void afterPhase( PhaseEvent event ) {

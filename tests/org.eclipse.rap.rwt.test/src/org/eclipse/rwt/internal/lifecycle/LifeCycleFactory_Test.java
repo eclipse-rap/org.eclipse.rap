@@ -32,6 +32,8 @@ public class LifeCycleFactory_Test extends TestCase {
     }
     public void requestThreadExec( Runnable runnable ) {
     }
+    public void sleep() {
+    }
   }
   
   public void testActivateDeactivateCycle() {

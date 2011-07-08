@@ -477,7 +477,7 @@ public class UICallBackManager_Test extends TestCase {
     final ServiceContext context,
     final Throwable[] uiCallBackServiceHandlerThrowable )
   {
-    final RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
+    final ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
       public void afterPhase( final PhaseEvent event ) {
@@ -485,8 +485,7 @@ public class UICallBackManager_Test extends TestCase {
           public void run() {
             ContextProvider.setContext( context );
             Fixture.fakeResponseWriter();
-            UICallBackServiceHandler uiCallBackServiceHandler
-              = new UICallBackServiceHandler();
+            UICallBackServiceHandler uiCallBackServiceHandler = new UICallBackServiceHandler();
             try {
               uiCallBackServiceHandler.service();
             } catch( Throwable thr ) {

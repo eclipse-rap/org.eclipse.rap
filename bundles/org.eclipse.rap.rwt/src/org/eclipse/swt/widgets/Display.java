@@ -1166,7 +1166,7 @@ public class Display extends Device implements Adaptable {
    */
   public boolean sleep() {
     checkDevice();
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
+    LifeCycle lifeCycle = ( LifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.sleep();
     // return true as we cannot reliably determinate what actually caused
     // lifeCycle#sleep() to return

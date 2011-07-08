@@ -125,7 +125,7 @@ public class PreserveWidgets_Test extends TestCase {
     final Text text = new Text( shell, SWT.NONE );
     text.setText( "hello" );
     Fixture.markInitialized( display );
-    RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
+    ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
     final StringBuffer log = new StringBuffer();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;

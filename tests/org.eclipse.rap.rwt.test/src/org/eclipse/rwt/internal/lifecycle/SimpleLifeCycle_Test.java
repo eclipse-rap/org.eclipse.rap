@@ -224,7 +224,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertTrue( display.isDisposed() );
   }
   
-  public void testSessionRestertDisposesDisplay() throws IOException {
+  public void testSessionRestartDisposesDisplay() throws IOException {
     final ISessionStore sessionStore = ContextProvider.getSession();
     Display display = new Display();
     lifeCycle.execute();
@@ -232,6 +232,15 @@ public class SimpleLifeCycle_Test extends TestCase {
     sessionStore.getHttpSession().invalidate();
     
     assertTrue( display.isDisposed() );
+  }
+  
+  public void testSleep() {
+    try {
+      lifeCycle.sleep();
+      fail();
+    } catch( UnsupportedOperationException expected ) {
+      assertTrue( expected.getMessage().length() > 0 );
+    }
   }
   
   protected void setUp() throws Exception {

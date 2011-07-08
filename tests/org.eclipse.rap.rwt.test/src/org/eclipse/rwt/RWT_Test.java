@@ -43,6 +43,9 @@ public class RWT_Test extends TestCase {
     public void removePhaseListener( PhaseListener phaseListener ) {
     }
     
+    public void sleep() {
+    }
+    
     String getInvocationLog() {
       return invocationLog;
     }

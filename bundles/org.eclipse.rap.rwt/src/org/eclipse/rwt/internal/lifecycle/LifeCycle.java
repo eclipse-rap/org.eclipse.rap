@@ -25,4 +25,6 @@ public abstract class LifeCycle implements ILifeCycle {
 
   public abstract void addPhaseListener( PhaseListener phaseListener );
   public abstract void removePhaseListener( PhaseListener phaseListener );
+  
+  public abstract void sleep();
 }

@@ -46,7 +46,7 @@ public class Synchronizer implements SerializableCompatibility {
   Display display;
 	int messageCount;
 	RunnableLock [] messages;
-// RAP [rh] mesageLock must be serializable	
+// RAP [rh] mesageLock must be serializable	(bug 345842)
 //	Object messageLock = new Object ();
 	Object messageLock = new SerializableLock();
 	Thread syncThread;
