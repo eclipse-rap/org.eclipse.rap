@@ -12,9 +12,9 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
 import org.eclipse.swt.widgets.Widget;
 
@@ -28,11 +28,10 @@ public final class UITestUtil {
   }
 
   public static void writeId( final Widget widget ) throws IOException {
-    if( !isInitialized( widget ) && isEnabled() ) {
+    if( isEnabled() && !isInitialized( widget ) ) {
       String id = WidgetUtil.getId( widget );
       if( !isValidId( id ) ) {
-        String text = "The widget id contains illegal characters: ''{0}''";
-        String msg = MessageFormat.format( text, new Object[] { id } );
+        String msg = "The widget id contains illegal characters: " + id;
         throw new IllegalArgumentException( msg ) ;
       }
       DisplayLCAFacade.writeTestWidgetId( widget, id );
