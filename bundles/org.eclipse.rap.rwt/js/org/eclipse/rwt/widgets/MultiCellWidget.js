@@ -188,10 +188,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     },
     
     setCellWidth : function( cell, width ) {
-      this._setCellWidth( cell, width );
-      this._invalidateTotalSpacing(); 
-      this._invalidatePreferredInnerWidth(); 
-      this._scheduleLayoutX(); 
+      if( this._getCellWidth( cell ) !== width ) {
+        this._setCellWidth( cell, width );
+        this._invalidateTotalSpacing(); 
+        this._invalidatePreferredInnerWidth(); 
+        this._scheduleLayoutX(); 
+      }
     },
     
     setCellHeight : function( cell, height ) {
@@ -383,6 +385,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
 
     _setCellWidth : function( cell, width ) {
       this.__cellData[ cell ][ 2 ] = width;
+    },
+
+    _getCellWidth : function( cell ) {
+      return this.__cellData[ cell ][ 2 ];
     },
 
     _setCellHeight : function( cell, height ) {
