@@ -31,6 +31,7 @@ import org.eclipse.rwt.SessionSingletonBase;
  * @since 1.3
  */
 public class URLTransfer extends ByteArrayTransfer {
+  private static final long serialVersionUID = 1L;
 
   static final String TYPE_NAME = "url";
   static final int TYPE_ID = registerType( TYPE_NAME );

@@ -57,6 +57,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Fixture.markInitialized( twistie );
     Fixture.fakeNewRequest( display );
     Listener listener = new Listener() {
+      private static final long serialVersionUID = 1L;
       public void handleEvent( Event event ) {
       }
     };
@@ -72,6 +73,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
   private void testDefaultSelectionEvent( final ToggleHyperlink hyperlink ) {
     final StringBuffer log = new StringBuffer();
     Listener listener = new Listener() {
+      private static final long serialVersionUID = 1L;
       public void handleEvent( Event event ) {
         assertEquals( hyperlink, event.widget );
         assertEquals( null, event.item );

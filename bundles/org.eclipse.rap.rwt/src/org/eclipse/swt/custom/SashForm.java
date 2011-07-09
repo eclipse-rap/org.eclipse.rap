@@ -81,6 +81,7 @@ public SashForm(Composite parent, int style) {
   if ((style & SWT.BORDER) != 0) sashStyle |= SWT.BORDER;
   if ((style & SWT.SMOOTH) != 0) sashStyle |= SWT.SMOOTH;
   sashListener = new Listener() {
+    private static final long serialVersionUID = 1L;
     public void handleEvent(Event e) {
       onDragSash(e);
     }

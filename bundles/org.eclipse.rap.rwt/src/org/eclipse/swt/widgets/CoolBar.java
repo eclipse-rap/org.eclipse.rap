@@ -134,6 +134,7 @@ public class CoolBar extends Composite {
     }
     // dragCursor = new Cursor(display, SWT.CURSOR_SIZEALL);
     Listener listener = new Listener() {
+      private static final long serialVersionUID = 1L;
       public void handleEvent( Event event ) {
         switch (event.type) {
         case SWT.Dispose:

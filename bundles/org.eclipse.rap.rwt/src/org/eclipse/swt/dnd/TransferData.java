@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.swt.dnd;
 
+import org.eclipse.swt.internal.SerializableCompatibility;
+
 
 /**
  * The <code>TransferData</code> class is a platform specific data structure for
@@ -27,7 +29,8 @@ package org.eclipse.swt.dnd;
  *
  * @since 1.3
  */
-public class TransferData {
+public class TransferData implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
   /**
 	 * The type is a unique identifier of a system format or user defined format.

@@ -166,6 +166,29 @@ public class Transfer_Test extends TestCase {
     int barType = Transfer.registerType( "bar" );
     assertTrue( fooType != barType );
   }
+  
+  public void testIsTransferSerializable() throws Exception {
+    TextTransfer transfer = TextTransfer.getInstance();
+    
+    TextTransfer deserializedTransfer = Fixture.serializeAndDeserialize( transfer );
+    
+    TransferData type = transfer.getSupportedTypes()[ 0 ];
+    TransferData deserializedType = deserializedTransfer.getSupportedTypes()[ 0 ];
+    assertTrue( TransferData.sameType( type, deserializedType ) );
+  }
+  
+  public void testIsTransferDataSerializable() throws Exception {
+    TransferData transferData = new TransferData();
+    transferData.type = 123;
+    transferData.data = "data";
+    transferData.result = 456;
+    
+    TransferData deserializedTransferData = Fixture.serializeAndDeserialize( transferData );
+    
+    assertEquals( transferData.type, deserializedTransferData.type );
+    assertEquals( transferData.data, deserializedTransferData.data );
+    assertEquals( transferData.result, deserializedTransferData.result );
+  }
 
   protected void setUp() {
     Fixture.createApplicationContext();

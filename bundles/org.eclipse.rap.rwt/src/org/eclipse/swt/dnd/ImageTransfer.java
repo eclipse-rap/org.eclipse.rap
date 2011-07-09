@@ -30,6 +30,7 @@ import org.eclipse.swt.graphics.ImageData;
  * @since 1.3
  */
 public class ImageTransfer extends ByteArrayTransfer {
+  private static final long serialVersionUID = 1L;
 
   private static final String TYPE_NAME = "image";
   private static final int TYPE_ID = registerType( TYPE_NAME );

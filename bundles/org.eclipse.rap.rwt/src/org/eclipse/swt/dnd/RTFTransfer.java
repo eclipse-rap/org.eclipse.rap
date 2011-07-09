@@ -27,6 +27,7 @@ import org.eclipse.rwt.SessionSingletonBase;
  * @since 1.3
  */
 public class RTFTransfer extends ByteArrayTransfer {
+  private static final long serialVersionUID = 1L;
 
   private static final String CF_RTF = "rtf";
   private static final int CF_RTFID = registerType( CF_RTF );

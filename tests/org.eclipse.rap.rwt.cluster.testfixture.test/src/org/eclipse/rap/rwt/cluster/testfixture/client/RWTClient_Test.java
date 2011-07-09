@@ -12,6 +12,8 @@ package org.eclipse.rap.rwt.cluster.testfixture.client;
 
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -65,8 +67,9 @@ public class RWTClient_Test extends TestCase {
   public void testRequestWithParameters() throws IOException {
     RWTClient client = new RWTClient( servletEngine );
     servletEngine.setConnection( new TestHttpUrlConnection( "" ) );
-    client.addParameter( "foo", "bar" );
-    client.sendRequest();
+    Map<String,String> parameters = new HashMap<String,String>();
+    parameters.put( "foo", "bar" );
+    client.sendRequest( parameters );
     
     String connectionUrl = servletEngine.getConnectionUrl().toExternalForm();
     assertEquals( "http://localhost:-1/rap?foo=bar", connectionUrl );

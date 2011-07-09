@@ -150,7 +150,25 @@ public abstract class SessionFailover_Test extends TestCase {
     assertTrue( TimerExecEntryPoint.wasRunnableExecuted( secondarySessionStore ) );
   }
 
+  public void testDNDEntryPoint() throws Exception {
+    initializeClient( DNDEntryPoint.class );
+    client.sendDragStartRequest( DNDEntryPoint.ID_SOURCE_LABEL );
+    
+    cluster.removeServletEngine( primary );
+    client.changeServletEngine( secondary );
+    
+    client.sendDragFinishedRequest( DNDEntryPoint.ID_SOURCE_LABEL, 
+                                    DNDEntryPoint.ID_TARGET_LABEL );
+
+    prepareExamination( secondary );
+    HttpSession secondarySession = ClusterFixture.getFirstSession( secondary );
+    ISessionStore secondarySessionStore = ClusterFixture.getSessionStore( secondarySession );
+    assertTrue( DNDEntryPoint.isDragFinished( secondarySessionStore ) );
+    assertTrue( DNDEntryPoint.isDropFinished( secondarySessionStore ) );
+  }
+
   protected void setUp() throws Exception {
+    ClusterFixture.enableUITests( true );
     setupLifeCycle();
     cluster = getServletEngineFactory().createServletEngineCluster();
     primary = cluster.addServletEngine();

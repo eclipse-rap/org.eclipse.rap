@@ -10,11 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture;
 
+import java.lang.reflect.Field;
+
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
+import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
@@ -30,6 +31,16 @@ public class ClusterFixture {
 
   public static void tearDown() {
     System.getProperties().remove( "lifecycle" );
+  }
+  
+  public static void enableUITests( boolean enable ) {
+    try {
+      Field field = UITestUtil.class.getDeclaredField( "enabled" );
+      field.setAccessible( true );
+      field.set( null, Boolean.valueOf( enable ) );
+    } catch( Exception e ) {
+      throw new RuntimeException( "Failed to change enablement of UI Tests", e );
+    } 
   }
   
   public static HttpSession getFirstSession( IServletEngine servletEngine ) {

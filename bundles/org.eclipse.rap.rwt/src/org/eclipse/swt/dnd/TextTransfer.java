@@ -36,6 +36,7 @@ import org.eclipse.rwt.SessionSingletonBase;
  * @since 1.3
  */
 public class TextTransfer extends ByteArrayTransfer {
+  private static final long serialVersionUID = 1L;
 
   private static final String TYPE_NAME = "text";
   private static final int TYPE_ID = registerType( TYPE_NAME );
@@ -110,8 +111,7 @@ public class TextTransfer extends ByteArrayTransfer {
     byte[] bytes = null;
     try {
       bytes = string.getBytes( "UTF-8" );
-    } catch( UnsupportedEncodingException e ) {
-      // ignore
+    } catch( UnsupportedEncodingException ignore ) {
     }
     return bytes;
   }

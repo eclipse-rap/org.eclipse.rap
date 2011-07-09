@@ -118,6 +118,7 @@ package org.eclipse.swt.dnd;
  * @since 1.3
  */
 public abstract class ByteArrayTransfer extends Transfer {
+  private static final long serialVersionUID = 1L;
 
   public TransferData[] getSupportedTypes() {
     int[] types = getTypeIds();

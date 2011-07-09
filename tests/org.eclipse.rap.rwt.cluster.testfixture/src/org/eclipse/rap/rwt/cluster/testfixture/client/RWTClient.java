@@ -19,21 +19,25 @@ import java.util.Map;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.service.IServiceHandler;
+import org.eclipse.swt.dnd.Transfer;
 
 
 @SuppressWarnings("restriction")
 public class RWTClient {
-
+  // Keep "text" in sync with TextTransfer#TYPE_NAME 
+  private static final String TEXT_TRANSFER_DATA_TYPE
+    = String.valueOf( Transfer.registerType( "text" ) );
+  
+  private long startTime;
   private IServletEngine servletEngine;
-  private final Map<String,String> parameters;
   private String sessionId;
   private int requestCounter;
 
   public RWTClient( IServletEngine servletEngine ) {
     this.servletEngine = servletEngine;
+    this.startTime = System.currentTimeMillis();
     this.sessionId = "";
     this.requestCounter = -2;
-    this.parameters = new HashMap<String,String>();
   }
   
   public void changeServletEngine( IServletEngine servletEngine ) {
@@ -49,71 +53,96 @@ public class RWTClient {
   }
   
   public Response sendStartupRequest() throws IOException {
-    clearParameters();
-    return sendStartupRequest( "default" );
-  }
-  
-  public Response sendStartupRequest( String entryPoint ) throws IOException {
-    clearParameters();
-    addParameter( "startup", entryPoint );
+    Map<String,String> parameters = new HashMap<String,String>();
+    parameters.put( "startup", "default" );
     return sendRequest();
   }
   
   public Response sendInitializationRequest() throws IOException {
-    clearParameters();
-    addParameter( "rwt_initialize", "true" );
-    addParameter( "startup", "default" );
-    addParameter( "uiRoot", "w1" );
-    addParameter( "w4t_width", "800" );
-    addParameter( "w4t_height", "600" );
-    addParameter( "w1.dpi.x", "96" );
-    addParameter( "w1.dpi.y", "96" );
-    addParameter( "w1.colorDepth", "32" );
-    return sendRequest();
+    Map<String,String> parameters = new HashMap<String,String>();
+    parameters.put( "rwt_initialize", "true" );
+    parameters.put( "startup", "default" );
+    parameters.put( "uiRoot", "w1" );
+    parameters.put( "w4t_width", "800" );
+    parameters.put( "w4t_height", "600" );
+    parameters.put( "w1.dpi.x", "96" );
+    parameters.put( "w1.dpi.y", "96" );
+    parameters.put( "w1.colorDepth", "32" );
+    return sendRequest( parameters );
   }
   
   public Response sendDisplayResizeRequest( int width, int height ) throws IOException {
-    clearParameters();
-    addParameter( "uiRoot", "w1" );
-    addParameter( "w1.bounds.width", String.valueOf( width ) );
-    addParameter( "w1.bounds.height", String.valueOf( height ) );
-    return sendRequest();
+    Map<String, String> parameters = createDefaultParameters();
+    parameters.put( "w1.bounds.width", String.valueOf( width ) );
+    parameters.put( "w1.bounds.height", String.valueOf( height ) );
+    return sendRequest( parameters );
   }
   
   public Response sendWidgetSelectedRequest( String widgetId ) throws IOException {
-    clearParameters();
-    addParameter( "uiRoot", "w1" );
-    addParameter( "org.eclipse.swt.events.widgetSelected", widgetId );
-    return sendRequest();
+    Map<String, String> parameters = createDefaultParameters();
+    parameters.put( "org.eclipse.swt.events.widgetSelected", widgetId );
+    return sendRequest( parameters );
   }
   
+  public Response sendDragStartRequest( String widgetId ) throws IOException {
+    Map<String, String> parameters = createDefaultParameters();
+    parameters.put( "org.eclipse.swt.dnd.dragStart", widgetId );
+    parameters.put( "org.eclipse.swt.dnd.dragStart.x", "100" );
+    parameters.put( "org.eclipse.swt.dnd.dragStart.y", "100" );
+    parameters.put( "org.eclipse.swt.dnd.dragStart.time", createTimeParam() );
+    return sendRequest( parameters );
+  }
+  
+  public Response sendDragFinishedRequest( String sourceWidgetId, String targetWidgetId )
+    throws IOException 
+  {
+    Map<String, String> parameters = createDefaultParameters();
+    parameters.put( "org.eclipse.swt.dnd.dropAccept", targetWidgetId );
+    parameters.put( "org.eclipse.swt.dnd.dropAccept.x", "100" );
+    parameters.put( "org.eclipse.swt.dnd.dropAccept.y", "100" );
+    parameters.put( "org.eclipse.swt.dnd.dropAccept.item", null );
+    parameters.put( "org.eclipse.swt.dnd.dropAccept.operation", "move" );
+    parameters.put( "org.eclipse.swt.dnd.dropAccept.feedback", "0" );
+    parameters.put( "org.eclipse.swt.dnd.dropAccept.dataType", TEXT_TRANSFER_DATA_TYPE );
+    parameters.put( "org.eclipse.swt.dnd.dropAccept.source", sourceWidgetId );
+    parameters.put( "org.eclipse.swt.dnd.dropAccept.time", createTimeParam() );
+    parameters.put( "org.eclipse.swt.dnd.dragFinished", sourceWidgetId );
+    parameters.put( "org.eclipse.swt.dnd.dragFinished.x", "100" );
+    parameters.put( "org.eclipse.swt.dnd.dragFinished.y", "100" );
+    parameters.put( "org.eclipse.swt.dnd.dragFinished.time", createTimeParam() );
+    return sendRequest( parameters );
+  }
+
   public Response sendResourceRequest( String resourceLocation ) throws IOException {
-    clearParameters();
-    URL url = createUrl( resourceLocation );
+    URL url = createUrl( resourceLocation, new HashMap<String,String>() );
     HttpURLConnection connection = createConnection( url, 0 );
     return new Response( connection );
   }
   
   public Response sendUICallBackRequest( int timeout ) throws IOException {
-    clearParameters();
-    addParameter( IServiceHandler.REQUEST_PARAM, UICallBackServiceHandler.HANDLER_ID );
-    URL url = createUrl( IServletEngine.SERVLET_NAME );
+    Map<String,String> parameters = new HashMap<String,String>();
+    parameters.put( IServiceHandler.REQUEST_PARAM, UICallBackServiceHandler.HANDLER_ID );
+    URL url = createUrl( IServletEngine.SERVLET_NAME, parameters );
     HttpURLConnection connection = createConnection( url, timeout );
     return new Response( connection );
   }
   
   Response sendRequest() throws IOException {
+    return sendRequest( new HashMap<String,String>() );
+  }
+  
+  Response sendRequest( Map<String,String> parameters ) throws IOException {
     if( requestCounter >= 0 ) {
-      addParameter( "requestCounter", String.valueOf( requestCounter ) );
+      parameters.put( "requestCounter", String.valueOf( requestCounter ) );
     }
-    URL url = createUrl( IServletEngine.SERVLET_NAME );
+    URL url = createUrl( IServletEngine.SERVLET_NAME, parameters );
     HttpURLConnection connection = createConnection( url, 0 );
     parseSessionId( connection );
     requestCounter++;
     return new Response( connection );
   }
 
-  private URL createUrl( String path ) {
+  private URL createUrl( String path, Map<String,String> parameters ) {
     int port = servletEngine.getPort();
     HttpUrlBuilder urlBuilder = new HttpUrlBuilder( "localhost", port, path );
     urlBuilder.addParameters( parameters );
@@ -132,13 +161,14 @@ public class RWTClient {
     return result;
   }
   
-  void addParameter( String name, String value ) {
-    parameters.put( name, value );
+  private Map<String, String> createDefaultParameters() {
+    Map<String,String> result = new HashMap<String,String>();
+    result.put( "uiRoot", "w1" );
+    return result;
   }
-  
-  
-  private void clearParameters() {
-    parameters.clear();
+
+  private String createTimeParam() {
+    return String.valueOf( System.currentTimeMillis() - startTime );
   }
 
   private void parseSessionId( HttpURLConnection connection ) {

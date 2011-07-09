@@ -11,6 +11,8 @@
 
 package org.eclipse.swt.widgets;
 
+import org.eclipse.swt.internal.SerializableCompatibility;
+
 
 /**
  * Implementers of <code>Listener</code> provide a simple
@@ -36,7 +38,7 @@ package org.eclipse.swt.widgets;
  * @see java.util.EventListener
  * @see org.eclipse.swt.events
  */
-public interface Listener {
+public interface Listener extends SerializableCompatibility {
 
 /**
  * Sent when an event that the receiver has registered for occurs.

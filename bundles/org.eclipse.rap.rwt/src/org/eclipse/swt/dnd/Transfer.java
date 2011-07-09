@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.swt.dnd;
 
+import org.eclipse.swt.internal.SerializableCompatibility;
+
 /**
  * <code>Transfer</code> provides a mechanism for converting between a java
  * representation of data and a platform specific representation of data and
@@ -24,7 +26,8 @@ package org.eclipse.swt.dnd;
  * @see ByteArrayTransfer
  * @since 1.3
  */
-public abstract class Transfer {
+public abstract class Transfer implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
   /**
    * Returns a list of the platform specific data types that can be converted

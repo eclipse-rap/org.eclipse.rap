@@ -759,6 +759,7 @@ public class CoolItem extends Item {
           chevron.setBackground( Graphics.getColor( 255, 0, 0 ) );
           ToolItem toolItem = new ToolItem( chevron, SWT.PUSH );
           toolItem.addListener( SWT.Selection, new Listener() {
+            private static final long serialVersionUID = 1L;
             public void handleEvent( Event event ) {
               CoolItem.this.onSelection( event );
             }
