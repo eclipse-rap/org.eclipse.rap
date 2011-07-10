@@ -82,11 +82,7 @@ public class StackLayout extends Layout {
    */
   public Control topControl;
 
-  protected Point computeSize( Composite composite,
-                               int wHint,
-                               int hHint,
-                               boolean flushCache )
-  {
+  protected Point computeSize( Composite composite, int wHint, int hHint, boolean flushCache ) {
     Control children[] = composite.getChildren();
     int maxWidth = 0;
     int maxHeight = 0;

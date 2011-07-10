@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import java.util.Arrays;
@@ -27,9 +26,9 @@ import org.eclipse.swt.graphics.Point;
 
 public class List_Test extends TestCase {
 
+  private Shell shell;
+
   public void testGetItemsAndGetItemCount() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.NONE );
     assertEquals( 0, list.getItemCount() );
     assertEquals( 0, list.getItems().length );
@@ -77,8 +76,6 @@ public class List_Test extends TestCase {
   }
 
   public void testAdd() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.NONE );
 
     // add item at end of list
@@ -130,8 +127,6 @@ public class List_Test extends TestCase {
   }
 
   public void testRemove() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.NONE );
     list.add( "item1" );
 
@@ -243,9 +238,6 @@ public class List_Test extends TestCase {
   }
 
   public void testSelectionForSingle() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.SINGLE );
 
     // Test initials state of selection
@@ -524,8 +516,6 @@ public class List_Test extends TestCase {
   }
 
   public void testSelectionForMulti() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.MULTI );
 
     // Test initials state of selection
@@ -844,8 +834,6 @@ public class List_Test extends TestCase {
   }
 
   public void testSetItem() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.NONE );
 
     // Test setItem
@@ -875,8 +863,6 @@ public class List_Test extends TestCase {
   }
 
   public void testSetItems() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.NONE );
 
     // Test setItems on empty list
@@ -911,8 +897,6 @@ public class List_Test extends TestCase {
   }
 
   public void testGetItem() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.NONE );
 
     // Test getItem for existing item
@@ -935,8 +919,6 @@ public class List_Test extends TestCase {
   }
 
   public void testGetItems() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.NONE );
     assertEquals( 0, list.getItems().length );
     list.add( "item1" );
@@ -944,8 +926,6 @@ public class List_Test extends TestCase {
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     List list1 = new List( shell, SWT.NONE );
     assertTrue( ( list1.getStyle() & SWT.SINGLE ) != 0 );
 
@@ -960,9 +940,6 @@ public class List_Test extends TestCase {
   }
 
   public void testFocusIndexForSingle() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.SINGLE );
 
     // Initial focusIndex must be -1
@@ -1025,8 +1002,6 @@ public class List_Test extends TestCase {
   }
 
   public void testFocusIndexForMulti() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.MULTI );
 
     // Initial focusIndex must be -1
@@ -1073,8 +1048,6 @@ public class List_Test extends TestCase {
   }
 
   public void testTopIndex() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.NONE );
     list.add( "item0" );
     list.add( "item1" );
@@ -1106,8 +1079,6 @@ public class List_Test extends TestCase {
   }
 
   public void testDispose() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.NONE );
     list.add( "test" );
     list.dispose();
@@ -1115,9 +1086,6 @@ public class List_Test extends TestCase {
   }
 
   public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     List list = new List( shell, SWT.NONE );
     Point expected = new Point( 64, 64 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -1154,9 +1122,6 @@ public class List_Test extends TestCase {
   }
 
   public void testShowSelectionEmptyList() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     List list = new List( shell, SWT.NONE );
     list.showSelection();
     list.add( "1" );
@@ -1171,9 +1136,6 @@ public class List_Test extends TestCase {
   }
 
   public void testShowSelectionBottom() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     List list = new List( shell, SWT.NONE );
     list.setSize( 100, 20 );
     list.add( "1" );
@@ -1187,9 +1149,6 @@ public class List_Test extends TestCase {
   }
 
   public void testShowSelectionTop() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     List list = new List( shell, SWT.NONE );
     list.setSize( 100, 20 );
     list.add( "1" );
@@ -1203,8 +1162,6 @@ public class List_Test extends TestCase {
   }
 
   public void testHasScrollBar() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     List list = new List( shell, SWT.NONE );
     list.setSize( 10, 10 );
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
@@ -1243,8 +1200,6 @@ public class List_Test extends TestCase {
   }
 
   public void testGetScrollBarWidth() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.setSize( 10, 10 );
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
@@ -1257,8 +1212,6 @@ public class List_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnItemsChange() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.setSize( 200, 20 );
     assertFalse( list.hasVScrollBar() );
@@ -1276,9 +1229,6 @@ public class List_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnResize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.setSize( 20, 20 );
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
@@ -1290,8 +1240,6 @@ public class List_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnItemWidthChange() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.setSize( 60, 60 );
     list.add( "" );
@@ -1313,9 +1261,6 @@ public class List_Test extends TestCase {
   }
 
   public void testUpdateScrollBarWithInterDependencyHFirst() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.add( "" );
     list.setSize( 30, list.getItemHeight() + 4 );
@@ -1329,9 +1274,6 @@ public class List_Test extends TestCase {
   }
 
   public void testUpdateScrollBarWithInterDependencyVFirst() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.add( "123" );
     list.setSize( 30, 30 );
@@ -1345,9 +1287,6 @@ public class List_Test extends TestCase {
   }
 
   public void testItemDimensions() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     assertEquals( new Point( 0, 0 ), list.getItemDimensions() );
     list.add( "123" );
@@ -1361,9 +1300,22 @@ public class List_Test extends TestCase {
     list.add( "Very long list item" );
     assertEquals( new Point( 119, 18 ), list.getItemDimensions() );
   }
+  
+  public void testIsSerialized() throws Exception {
+    String listItem = "listItem";
+    List list = new List( shell, SWT.NONE  );
+    list.add( listItem );
+    
+    List deserializedList = Fixture.serializeAndDeserialize( list );
+    
+    assertEquals( listItem, deserializedList.getItem( 0 ) );
+  }
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {

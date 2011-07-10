@@ -37,7 +37,7 @@ import org.eclipse.swt.internal.widgets.*;
 public class Menu extends Widget {
   private static final long serialVersionUID = 1L;
 
-  private IMenuAdapter menuAdapter;
+  private transient IMenuAdapter menuAdapter;
   private final ItemHolder<MenuItem> itemHolder;
   private final Decorations parent;
   private int x;

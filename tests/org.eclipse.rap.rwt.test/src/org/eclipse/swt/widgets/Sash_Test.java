@@ -10,36 +10,32 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.Fixture;
+import org.eclipse.swt.SWT;
+
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.swt.internal.widgets.IControlAdapter;
 
+public class Sash_Test extends TestCase {
 
-public class ControlSerialization_Test extends TestCase {
+  private Shell shell;
 
-  private static class TestControl extends Control {
-    TestControl( Composite parent ) {
-      super( parent );
-      display = parent.getDisplay();
-    }
-  }
-  
-  private Control control;
-  
-  public void testControlAdapterIsNotSerializable() throws Exception {
-    Control deserializedControl = Fixture.serializeAndDeserialize( control );
-    assertNotNull( deserializedControl.getAdapter( IControlAdapter.class ) );
-  }
-  
-  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    control = new TestControl( new Shell( new Display() ) ); 
+    Display display = new Display();
+    shell = new Shell( display, SWT.NONE );
   }
-  
-  @Override
+
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  public void testIsSerializable() throws Exception {
+    Sash sash = new Sash( shell, SWT.NONE );
+    sash.setSize( 1, 2 );
+    
+    Sash deserializedSash = Fixture.serializeAndDeserialize( sash );
+    
+    assertEquals( sash.getSize(), deserializedSash.getSize() );
   }
 }

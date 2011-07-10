@@ -49,7 +49,6 @@ public class DisplaySerialization_Test extends TestCase {
   }
 
   private static class SerializableRunnable implements Runnable, Serializable {
-    private static final long serialVersionUID = 1L;
     static boolean wasInvoked;
     public void run() {
       wasInvoked = true;
@@ -57,7 +56,6 @@ public class DisplaySerialization_Test extends TestCase {
   }
 
   private static class SerializableListener implements Listener, Serializable {
-    private static final long serialVersionUID = 1L;
     static boolean wasInvoked;
     public void handleEvent( Event event ) {
       wasInvoked = true;

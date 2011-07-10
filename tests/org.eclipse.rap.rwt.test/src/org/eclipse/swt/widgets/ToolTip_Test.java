@@ -178,12 +178,21 @@ public class ToolTip_Test extends TestCase {
     assertTrue( toolTip.isDisposed() );
   }
   
+  public void testIsSerializable() throws Exception {
+    ToolTip toolTip = new ToolTip( shell, SWT.NONE );
+    toolTip.setMessage( "message" );
+    
+    ToolTip deserializedToolTip = Fixture.serializeAndDeserialize( toolTip );
+    
+    assertEquals( toolTip.getMessage(), deserializedToolTip.getMessage() );
+  }
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display , SWT.NONE );
   }
-
+  
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }

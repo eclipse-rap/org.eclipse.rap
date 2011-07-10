@@ -48,7 +48,7 @@ public class ExpandBar extends Composite {
 
   private final class ExpandBarAdapter implements IExpandBarAdapter {
 
-    public Rectangle getBounds( final ExpandItem item ) {
+    public Rectangle getBounds( ExpandItem item ) {
       int index = ExpandBar.this.indexOf( item );
       return ExpandBar.this.getItem( index ).getBounds();
     }
@@ -72,8 +72,8 @@ public class ExpandBar extends Composite {
   int spacing;
   int allItemsHeight;
   int charHeight;
+  private transient IExpandBarAdapter expandBarAdapter;
   private final ItemHolder<ExpandItem> itemHolder;
-  private final IExpandBarAdapter expandBarAdapter;
   private final ResizeListener resizeListener;
   private ScrollBar verticalBar;
 
@@ -109,7 +109,6 @@ public class ExpandBar extends Composite {
   public ExpandBar( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
     spacing = 4;
-    expandBarAdapter = new ExpandBarAdapter();
     createScrollBars();
     resizeListener = new ResizeListener();
     addControlListener( resizeListener );
@@ -476,11 +475,14 @@ public class ExpandBar extends Composite {
     return new Rectangle( spacing, allItemsHeight, 10, spacing );
   }
 
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
       result = itemHolder;
     } else if( adapter == IExpandBarAdapter.class ) {
+      if( expandBarAdapter == null ) {
+        expandBarAdapter = new ExpandBarAdapter();
+      }
       result = expandBarAdapter;
     } else {
       result = super.getAdapter( adapter );

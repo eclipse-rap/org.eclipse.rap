@@ -48,6 +48,28 @@ import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 public class CoolBar extends Composite {
   private static final long serialVersionUID = 1L;
 
+  private class CoolBarAdapter implements ICoolBarAdapter {
+    public void setItemOrder( int[] itemOrder ) {
+      CoolBar.this.setItemOrder( itemOrder );
+    }
+  }
+
+  private class CoolBarItemHolder implements IItemHolderAdapter {
+  
+    public void add( Item item ) {
+    }
+  
+    public Item[] getItems() {
+      return CoolBar.this.getItems();
+    }
+  
+    public void insert( Item item, int index ) {
+    }
+  
+    public void remove( Item item ) {
+    }
+  }
+
   CoolItem[][] items = new CoolItem[0][0];
   CoolItem[] originalItems = new CoolItem[0];
   // Cursor hoverCursor, dragCursor, cursor;
@@ -60,34 +82,8 @@ public class CoolBar extends Composite {
   static final int DEFAULT_COOLBAR_WIDTH = 0;
   static final int DEFAULT_COOLBAR_HEIGHT = 0;
 
-  private final IItemHolderAdapter itemHolder = new CoolBarItemHolder();
-
-  private final ICoolBarAdapter coolbarAdapter = new CoolBarAdapter();
-
-  private class CoolBarAdapter implements ICoolBarAdapter {
-
-    public void setItemOrder( int[] itemOrder ) {
-      CoolBar.this.setItemOrder( itemOrder );
-    }
-
-  }
-
-  private class CoolBarItemHolder implements IItemHolderAdapter {
-
-    public void add( Item item ) {
-    }
-
-    public Item[] getItems() {
-      return CoolBar.this.getItems();
-    }
-
-    public void insert( Item item, int index ) {
-    }
-
-    public void remove( Item item ) {
-    }
-
-  }
+  private transient IItemHolderAdapter itemHolder;
+  private transient ICoolBarAdapter coolBarAdapter;
 
   /**
    * Constructs a new instance of this class given its parent and a style value
@@ -1377,9 +1373,15 @@ public class CoolBar extends Composite {
   public Object getAdapter( final Class adapter ) {
     Object result;
     if ( adapter == IItemHolderAdapter.class ) {
+      if( itemHolder == null ) {
+        itemHolder = new CoolBarItemHolder();
+      }
       result = itemHolder;
     } else if ( adapter == ICoolBarAdapter.class ) {
-      result = coolbarAdapter;
+      if( coolBarAdapter == null ) {
+        coolBarAdapter = new CoolBarAdapter();
+      }
+      result = coolBarAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

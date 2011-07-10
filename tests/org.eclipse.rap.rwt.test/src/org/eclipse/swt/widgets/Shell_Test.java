@@ -191,7 +191,6 @@ public class Shell_Test extends TestCase {
     // during setVisible( true )
     final StringBuffer log = new StringBuffer();
     shell.setLayout( new Layout() {
-      private static final long serialVersionUID = 1L;
       protected Point computeSize( Composite composite, int hint, int hint2, boolean flushCache ) {
         return null;
       }
@@ -702,16 +701,14 @@ public class Shell_Test extends TestCase {
   }
   
   public void testGetToolTipsWhenNoToolTipWasCreated() {
-    IShellAdapter adapter
-      = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+    IShellAdapter adapter = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
     assertNotNull( adapter.getToolTips() );
     assertEquals( 0, adapter.getToolTips().length );
   }
 
   public void testGetToolTipsWhenToolTipWasCreated() {
     ToolTip toolTip = new ToolTip( shell, SWT.NONE );
-    IShellAdapter adapter
-      = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+    IShellAdapter adapter = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
     assertEquals( 1, adapter.getToolTips().length );
     assertEquals( toolTip, adapter.getToolTips()[ 0 ] );
   }
@@ -719,8 +716,7 @@ public class Shell_Test extends TestCase {
   public void testGetToolTipsAfterToolTipWasDisposed() {
     ToolTip toolTip = new ToolTip( shell, SWT.NONE );
     toolTip.dispose();
-    IShellAdapter adapter
-      = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+    IShellAdapter adapter = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
     assertNotNull( adapter.getToolTips() );
     assertEquals( 0, adapter.getToolTips().length );
   }
@@ -732,5 +728,13 @@ public class Shell_Test extends TestCase {
   private static IDisplayAdapter getDisplayAdapter( final Display display ) {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     return ( IDisplayAdapter )adapter;
+  }
+  
+  public void testIsSerializable() throws Exception {
+    shell.setText( "text" );
+    
+    Shell deserializedShell = Fixture.serializeAndDeserialize( shell );
+    
+    assertEquals( shell.getText(), deserializedShell.getText() );
   }
 }

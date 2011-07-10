@@ -21,8 +21,6 @@ public class ItemHolder_Test extends TestCase {
 
   
   private static class TestItem extends Item {
-    private static final long serialVersionUID = 1L;
-
     public TestItem( Widget parent ) {
       super( parent, 0 );
     }

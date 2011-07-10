@@ -234,8 +234,28 @@ public class CoolBar_Test extends TestCase {
     } );
     coolBar.dispose();
   }
+  
+  public void testIsSerializable() throws Exception {
+    CoolBar coolBar = new CoolBar( shell, SWT.NONE );
+    new CoolItem( coolBar, SWT.NONE );
+    
+    CoolBar deserializedCoolBar = Fixture.serializeAndDeserialize( coolBar );
+    
+    assertEquals( 1, deserializedCoolBar.getItemCount() );
+  }
 
-  private CoolItem createItem( final CoolBar coolBar ) {
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
+  private static CoolItem createItem( final CoolBar coolBar ) {
     ToolBar toolBar = new ToolBar( coolBar, SWT.FLAT );
     for( int i = 0; i < 3; i++ ) {
       ToolItem item = new ToolItem( toolBar, SWT.PUSH );
@@ -255,16 +275,5 @@ public class CoolBar_Test extends TestCase {
     for( int i = 0; i < expected.length; i++ ) {
       assertEquals( expected[ i ], actual[ i ] );
     }
-  }
-
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display = new Display();
-    shell = new Shell( display );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 }

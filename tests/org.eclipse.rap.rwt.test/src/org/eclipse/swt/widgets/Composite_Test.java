@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -138,5 +138,15 @@ public class Composite_Test extends TestCase {
     button.setBounds( clientArea.x, clientArea.y, 200, 50 );
     Point size = group.minimumSize( SWT.DEFAULT, SWT.DEFAULT, true );
     assertEquals( new Point( 200, 50 ), size );
+  }
+  
+  public void testIsSerializable() throws Exception {
+    Composite composite = new Composite( shell, SWT.NONE );
+    new Label( composite, SWT.NONE );
+    
+    Composite deserializedComposite = Fixture.serializeAndDeserialize( composite );
+    
+    assertEquals( 1, deserializedComposite.getChildren().length );
+    assertTrue( deserializedComposite.getChildren()[ 0 ] instanceof Label );
   }
 }

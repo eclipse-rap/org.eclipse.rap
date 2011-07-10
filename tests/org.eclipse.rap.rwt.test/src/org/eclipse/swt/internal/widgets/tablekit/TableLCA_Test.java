@@ -988,7 +988,7 @@ public class TableLCA_Test extends TestCase {
         buffer.append( "," );
         buffer.append( columnIndex );
         buffer.append( "]" );
-        adapter.setToolTipText( buffer.toString() );
+        adapter.setCellToolTipText( buffer.toString() );
       }
     } );
     Fixture.fakeNewRequest();

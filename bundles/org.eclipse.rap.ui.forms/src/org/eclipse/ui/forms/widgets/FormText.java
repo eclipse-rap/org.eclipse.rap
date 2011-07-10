@@ -196,7 +196,7 @@ public class FormText extends Canvas {
 	public int marginHeight = 1;
 
 	// RAP [if] Adapter to reach into widget implementation from within LCA
-	private IFormTextAdapter formTextAdapter;
+	private transient IFormTextAdapter formTextAdapter;
 	// RAP [if] Need to instruct LCA to relayout the segments to the client
 	private boolean hasLayoutChanged = false;
 

@@ -14,8 +14,7 @@ import org.eclipse.swt.widgets.Item;
 
 public interface ICellToolTipProvider {
 
-  String ENABLE_CELL_TOOLTIP
-    = ICellToolTipProvider.class.getName() + "#enableCellToolTip";
+  String ENABLE_CELL_TOOLTIP = ICellToolTipProvider.class.getName() + "#enableCellToolTip";
 
   void getToolTipText( Item item, int columnIndex );
 }

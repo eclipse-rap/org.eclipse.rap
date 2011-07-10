@@ -38,7 +38,7 @@ public class CTabItem extends Item {
 
   static final String ELLIPSIS = "...";
 
-  private final IWidgetFontAdapter widgetFontAdapter;
+  private transient IWidgetFontAdapter widgetFontAdapter;
   final CTabFolder parent;
   private Control control;
   private String toolTipText;
@@ -118,19 +118,21 @@ public class CTabItem extends Item {
    */
   public CTabItem( CTabFolder parent, int style, int index ) {
     super( parent, checkStyle( style ) );
-    showClose = ( style & SWT.CLOSE ) != 0;
+    this.showClose = ( style & SWT.CLOSE ) != 0;
     this.parent = parent;
-    widgetFontAdapter = new IWidgetFontAdapter() {
-      public Font getUserFont() {
-        return font;
-      }
-    };
     parent.createItem( this, index );
   }
 
   public Object getAdapter( Class adapter ) {
     Object result;
     if( adapter == IWidgetFontAdapter.class ) {
+      if( widgetFontAdapter == null ) {
+        widgetFontAdapter = new IWidgetFontAdapter() {
+          public Font getUserFont() {
+            return CTabItem.this.font;
+          }
+        };
+      }
       result = widgetFontAdapter;
     } else {
       result = super.getAdapter( adapter );

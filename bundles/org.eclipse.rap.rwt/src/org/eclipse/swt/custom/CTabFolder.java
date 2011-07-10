@@ -91,7 +91,7 @@ public class CTabFolder extends Composite {
    */
   public int marginHeight = 0;
 
-  private final ICTabFolderAdapter tabFolderAdapter;
+  private transient ICTabFolderAdapter tabFolderAdapter;
   private final IWidgetGraphicsAdapter selectionGraphicsAdapter;
   private final ItemHolder<CTabItem> itemHolder = new ItemHolder<CTabItem>( CTabItem.class );
   private final ControlListener resizeListener;
@@ -196,7 +196,6 @@ public class CTabFolder extends Composite {
     };
     addControlListener( resizeListener );
     registerDisposeListener();
-    tabFolderAdapter = new CTabFolderAdapter();
     selectionGraphicsAdapter = new WidgetGraphicsAdapter();
   }
 
@@ -1340,6 +1339,9 @@ public class CTabFolder extends Composite {
     if( adapter == IItemHolderAdapter.class ) {
       result = itemHolder;
     } else if( adapter == ICTabFolderAdapter.class ) {
+      if( tabFolderAdapter == null ) {
+        tabFolderAdapter = new CTabFolderAdapter();
+      }
       result = tabFolderAdapter;
     } else {
       result = super.getAdapter( adapter );

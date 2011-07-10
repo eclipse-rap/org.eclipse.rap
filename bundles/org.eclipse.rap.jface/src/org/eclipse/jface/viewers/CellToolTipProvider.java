@@ -58,7 +58,7 @@ final class CellToolTipProvider implements ICellToolTipProvider {
     if( labelProvider != null ) {
       String text = labelProvider.getToolTipText( element );
       ICellToolTipAdapter adapter = getAdapter( viewer );
-      adapter.setToolTipText( text );
+      adapter.setCellToolTipText( text );
     }
   }
 

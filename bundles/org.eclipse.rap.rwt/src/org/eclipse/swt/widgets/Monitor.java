@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -10,6 +10,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
 /**
  * Instances of this class are descriptions of monitors.
@@ -18,14 +19,14 @@ import org.eclipse.swt.graphics.Rectangle;
  * 
  * @since 1.2
  */
-public final class Monitor {
-
-  private final Display display;
+public final class Monitor implements SerializableCompatibility {
+  
+  final Display display;
 
   /**
    * Prevents uninitialized instances from being created outside the package.
    */
-  Monitor( final Display display ) {
+  Monitor( Display display ) {
     this.display = display;
   }
 

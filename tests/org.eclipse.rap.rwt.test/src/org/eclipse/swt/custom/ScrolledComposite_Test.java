@@ -22,9 +22,10 @@ import org.eclipse.swt.widgets.*;
 
 public class ScrolledComposite_Test extends TestCase {
   
+  private Display display;
+  private Shell shell;
+
   public void testCreation() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.NONE );
     assertNull( sc.getHorizontalBar() );
     assertNull( sc.getVerticalBar() );
@@ -40,10 +41,7 @@ public class ScrolledComposite_Test extends TestCase {
   }
   
   public void testDispose() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    ScrolledComposite sc = new ScrolledComposite( shell, 
-                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
     
@@ -57,10 +55,7 @@ public class ScrolledComposite_Test extends TestCase {
   }
   
   public void testContent() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    ScrolledComposite sc = new ScrolledComposite( shell, 
-                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     assertNull( sc.getContent() );
     Composite content = new Composite( sc, SWT.NONE );
     sc.setContent( content );
@@ -69,10 +64,7 @@ public class ScrolledComposite_Test extends TestCase {
   }
   
   public void testOrigin() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    ScrolledComposite sc = new ScrolledComposite( shell, 
-                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     assertEquals( new Point( 0, 0 ), sc.getOrigin() );
     // test without content
     sc.setOrigin( 10, 10 );
@@ -96,10 +88,7 @@ public class ScrolledComposite_Test extends TestCase {
   }
   
   public void testAlwaysShowScrollBars() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    ScrolledComposite sc = new ScrolledComposite( shell, 
-                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     sc.setSize( 100, 100 );
     Composite content = new Composite( sc, SWT.NONE );
     content.setSize( 50, 50 );
@@ -114,20 +103,14 @@ public class ScrolledComposite_Test extends TestCase {
   }
   
   public void testLayout() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    ScrolledComposite sc = new ScrolledComposite( shell, 
-                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     // test ignore layout
     sc.setLayout( new GridLayout() );
     assertFalse( sc.getLayout() instanceof GridLayout );
   }
   
   public void testMinSize() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    ScrolledComposite sc = new ScrolledComposite( shell, 
-                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     assertEquals( 0, sc.getMinWidth() );
     assertEquals( 0, sc.getMinHeight() );
     sc.setMinHeight( 10 );
@@ -151,10 +134,7 @@ public class ScrolledComposite_Test extends TestCase {
   }
   
   public void testExpand() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    ScrolledComposite sc = new ScrolledComposite( shell, 
-                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     assertFalse( sc.getExpandHorizontal() );
     assertFalse( sc.getExpandVertical() );
     sc.setExpandHorizontal( true );
@@ -164,10 +144,7 @@ public class ScrolledComposite_Test extends TestCase {
   }
   
   public void testClientArea() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    ScrolledComposite sc = new ScrolledComposite( shell, 
-                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     sc.setSize( 100, 100 );
     assertEquals( new Rectangle( 0, 0, 100, 100), sc.getClientArea() );
     sc.setAlwaysShowScrollBars( true );
@@ -175,10 +152,7 @@ public class ScrolledComposite_Test extends TestCase {
   }
   
   public void testNeedHScroll() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    ScrolledComposite sc = new ScrolledComposite( shell, 
-                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     sc.setSize( 100, 100 );
     assertFalse( sc.needHScroll( new Rectangle( 0, 0, 90, 90 ), false ) );
     assertTrue( sc.needHScroll( new Rectangle( 0, 0, 90, 90 ), true ) );
@@ -195,10 +169,7 @@ public class ScrolledComposite_Test extends TestCase {
   }
   
   public void testNeedVScroll() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    ScrolledComposite sc = new ScrolledComposite( shell, 
-                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     sc.setSize( 100, 100 );
     assertFalse( sc.needVScroll( new Rectangle( 0, 0, 90, 90 ), false ) );
     assertTrue( sc.needVScroll( new Rectangle( 0, 0, 90, 90 ), true ) );
@@ -215,47 +186,50 @@ public class ScrolledComposite_Test extends TestCase {
   }
   
   public void testShowFocusedControl() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    ScrolledComposite sc = new ScrolledComposite( shell, 
-                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     assertFalse( sc.getShowFocusedControl() );
     sc.setShowFocusedControl( true );
     assertTrue( sc.getShowFocusedControl() );
   }
   
   public void testShowControl() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    ScrolledComposite sc = new ScrolledComposite( shell, 
-                                                  SWT.V_SCROLL | SWT.H_SCROLL );
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     Composite content = new Composite( sc, SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
     sc.setContent( content );
     try {
       sc.showControl( null );
       fail( "Null value is not allowed" );
-    } catch( final IllegalArgumentException iae ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
     Button disposedControl = new Button( shell, SWT.PUSH );
     disposedControl.dispose();
     try {
       sc.showControl( disposedControl );
       fail( "Disposed control is not allowed" );
-    } catch( final IllegalArgumentException iae ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
     try {
       sc.showControl( button );
       fail( "Control that is not a child of the composite is not allowed" );
-    } catch( final IllegalArgumentException iae ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
+  }
+  
+  public void testIsSerializable() throws Exception {
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
+    sc.setContent( new Label( sc, SWT.NONE ) );
+    
+    ScrolledComposite deserializedSC = Fixture.serializeAndDeserialize( sc );
+    
+    assertTrue( deserializedSC.getContent() instanceof Label );
+    assertTrue( deserializedSC.getLayout() instanceof ScrolledCompositeLayout );
   }
   
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display , SWT.NONE );
   }
 
   protected void tearDown() throws Exception {

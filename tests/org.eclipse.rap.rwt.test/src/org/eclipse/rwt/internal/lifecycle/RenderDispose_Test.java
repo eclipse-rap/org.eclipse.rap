@@ -39,7 +39,6 @@ public class RenderDispose_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
-
       private static final long serialVersionUID = 1L;
 
       public void beforePhase( final PhaseEvent event ) {

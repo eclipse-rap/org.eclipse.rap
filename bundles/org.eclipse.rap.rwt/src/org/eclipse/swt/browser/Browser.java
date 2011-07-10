@@ -103,7 +103,7 @@ public class Browser extends Composite {
   private Boolean executeResult;
   private boolean executePending;
   private Object evaluateResult;
-  private final IBrowserAdapter browserAdapter;
+  private transient IBrowserAdapter browserAdapter;
   private List<BrowserFunction> functions;
 
   /**
@@ -141,7 +141,6 @@ public class Browser extends Composite {
     }
     html = "";
     url = "";
-    browserAdapter = new BrowserAdapter();
     functions = new ArrayList<BrowserFunction>();
   }
 
@@ -179,9 +178,7 @@ public class Browser extends Composite {
       event = new LocationEvent( this, LocationEvent.CHANGED, url );
       event.top = true;
       event.processEvent();
-
-      ProgressEvent progressEvent
-        = new ProgressEvent( this, ProgressEvent.CHANGED );
+      ProgressEvent progressEvent = new ProgressEvent( this, ProgressEvent.CHANGED );
       progressEvent.processEvent();
     }
     return result;
@@ -456,6 +453,9 @@ public class Browser extends Composite {
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( IBrowserAdapter.class.equals( adapter ) ) {
+      if( browserAdapter == null ) {
+        browserAdapter = new BrowserAdapter();
+      }
       result = browserAdapter;
     } else {
       result = super.getAdapter( adapter );

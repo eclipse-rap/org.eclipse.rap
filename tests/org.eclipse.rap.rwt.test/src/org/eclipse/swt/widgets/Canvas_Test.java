@@ -23,9 +23,16 @@ import org.eclipse.swt.internal.graphics.IGCAdapter;
 
 public class Canvas_Test extends TestCase {
 
+  private java.util.List<PaintEvent> paintEventLog;
+  private Canvas canvas;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    paintEventLog = new ArrayList<PaintEvent>();
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    canvas = new Canvas( shell, SWT.NONE );
   }
 
   protected void tearDown() throws Exception {
@@ -33,69 +40,58 @@ public class Canvas_Test extends TestCase {
   }
 
   public void testPaintEvent() {
-    final java.util.List<PaintEvent> log = new ArrayList<PaintEvent>();
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Canvas canvas = new Canvas( shell, SWT.NONE );
     canvas.addPaintListener( new PaintListener() {
       public void paintControl( final PaintEvent event ) {
-        log.add( event );
+        paintEventLog.add( event );
       }
     } );
-    assertEquals( 0, log.size() );
+    assertEquals( 0, paintEventLog.size() );
     canvas.redraw();
-    assertEquals( 1, log.size() );
-    PaintEvent event = log.get( 0 );
+    assertEquals( 1, paintEventLog.size() );
+    PaintEvent event = paintEventLog.get( 0 );
     assertSame( canvas, event.widget );
     assertTrue( event.gc.isDisposed() );
   }
   
   public void testRemovePaintListener() {
-    final java.util.List<PaintEvent> log = new ArrayList<PaintEvent>();
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Canvas canvas = new Canvas( shell, SWT.NONE );
     PaintListener listener = new PaintListener() {
       public void paintControl( final PaintEvent event ) {
-        log.add( event );
+        paintEventLog.add( event );
       }
     };
     canvas.addPaintListener( listener );
     canvas.removePaintListener( listener );
     canvas.redraw();
-    assertEquals( 0, log.size() );
+    assertEquals( 0, paintEventLog.size() );
   }
   
   public void testResize() {
-    final java.util.List<PaintEvent> log = new ArrayList<PaintEvent>();
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Canvas canvas = new Canvas( shell, SWT.NONE );
     canvas.addPaintListener( new PaintListener() {
       public void paintControl( final PaintEvent event ) {
-        log.add( event );
+        paintEventLog.add( event );
       }
     } );
-    assertEquals( 0, log.size() );
+    assertEquals( 0, paintEventLog.size() );
     canvas.setSize( 100, 100 );
-    assertEquals( 1, log.size() );
+    assertEquals( 1, paintEventLog.size() );
   }
   
   public void testMultiplePaintEvents() {
-    final java.util.List<PaintEvent> log = new ArrayList<PaintEvent>();
-    Display display = new Display();
-    Shell shell = new Shell( display );
-    Canvas canvas = new Canvas( shell, SWT.NONE );
     canvas.addPaintListener( new PaintListener() {
       public void paintControl( final PaintEvent event ) {
-        log.add( event );
+        paintEventLog.add( event );
         event.gc.drawLine( 1, 2, 3, 4 );
       }
     } );
     canvas.redraw();
     canvas.redraw();
-    assertEquals( 2, log.size() );
+    assertEquals( 2, paintEventLog.size() );
     IGCAdapter adapter = ( IGCAdapter )canvas.getAdapter( IGCAdapter.class );
     assertEquals( 1, adapter.getGCOperations().length );
+  }
+  
+  public void testIsSerializable() throws Exception {
+    Canvas deserializedCanvas = Fixture.serializeAndDeserialize( canvas );
+    assertNotNull( deserializedCanvas );
   }
 }

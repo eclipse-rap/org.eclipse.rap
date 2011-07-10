@@ -51,7 +51,7 @@ public class ToolTip extends Widget {
   private String message;
   private int x;
   private int y;
-  private IToolTipAdapter toolTipAdapter;
+  private transient IToolTipAdapter toolTipAdapter;
 
   /**
    * Constructs a new instance of this class given its parent

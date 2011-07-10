@@ -10,7 +10,10 @@
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
-class SashFormData {
+import org.eclipse.swt.internal.SerializableCompatibility;
+
+class SashFormData implements SerializableCompatibility {
+  private static final long serialVersionUID = 1L;
 
   long weight;
 

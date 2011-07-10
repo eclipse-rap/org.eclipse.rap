@@ -375,7 +375,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   private static void readCellToolTipTextRequested( final Tree tree ) {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
-    adapter.setToolTipText( null );
+    adapter.setCellToolTipText( null );
     String event = JSConst.EVENT_CELL_TOOLTIP_REQUESTED;
     if( WidgetLCAUtil.wasEventSent( tree, event ) ) {
       ICellToolTipProvider provider = adapter.getCellToolTipProvider();
@@ -396,7 +396,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   private static void writeCellToolTipText( final Tree tree ) throws IOException {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
-    String text = adapter.getToolTipText();
+    String text = adapter.getCellToolTipText();
     if( text != null ) {
       JSWriter writer = JSWriter.getWriterFor( tree );
       text = WidgetLCAUtil.escapeText( text, false );

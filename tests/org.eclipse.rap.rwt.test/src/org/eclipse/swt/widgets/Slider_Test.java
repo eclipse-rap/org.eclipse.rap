@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -141,5 +141,16 @@ public class Slider_Test extends TestCase {
 
     expected = new Point( 100, 100 );
     assertEquals( expected, slider.computeSize( 100, 100 ) );
+  }
+
+  public void testIsSerializable() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Slider slider = new Slider( shell, SWT.HORIZONTAL );
+    slider.setSelection( 2 );
+    
+    Slider deserializedSlider = Fixture.serializeAndDeserialize( slider );
+    
+    assertEquals( slider.getSelection(), deserializedSlider.getSelection() );
   }
 }

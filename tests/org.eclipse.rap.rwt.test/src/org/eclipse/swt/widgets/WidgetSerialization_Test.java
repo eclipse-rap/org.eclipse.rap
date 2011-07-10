@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.io.Serializable;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -22,14 +20,12 @@ import org.eclipse.swt.internal.widgets.WidgetAdapter;
 
 public class WidgetSerialization_Test extends TestCase {
   
-  private static class SerializableListener implements Listener, Serializable {
-    private static final long serialVersionUID = 1L;
+  private static class TestListener implements Listener {
     public void handleEvent( Event event ) {
     }
   }
 
   private static class TestWidget extends Widget {
-    private static final long serialVersionUID = 1L;
   }
   
   private Widget widget;
@@ -78,7 +74,7 @@ public class WidgetSerialization_Test extends TestCase {
   }
   
   public void testListenerIsSerializable() throws Exception {
-    widget.addListener( SWT.Dispose, new SerializableListener() );
+    widget.addListener( SWT.Dispose, new TestListener() );
     
     Widget deserializedWidget = Fixture.serializeAndDeserialize( widget );
     

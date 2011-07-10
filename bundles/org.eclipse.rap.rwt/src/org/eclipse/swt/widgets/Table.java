@@ -18,6 +18,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.events.SetDataEvent;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
@@ -108,7 +109,9 @@ public class Table extends Composite {
     }
   }
 
-  private final class TableAdapter implements ITableAdapter, ICellToolTipAdapter {
+  private final class TableAdapter 
+    implements ITableAdapter, ICellToolTipAdapter, SerializableCompatibility 
+  {
     private String toolTipText;
     private ICellToolTipProvider provider;
 
@@ -229,15 +232,15 @@ public class Table extends Composite {
       return provider;
     }
 
-    public void setCellToolTipProvider( final ICellToolTipProvider provider ) {
+    public void setCellToolTipProvider( ICellToolTipProvider provider ) {
       this.provider = provider;
     }
 
-    public String getToolTipText() {
+    public String getCellToolTipText() {
       return toolTipText;
     }
 
-    public void setToolTipText( final String toolTipText ) {
+    public void setCellToolTipText( String toolTipText ) {
       this.toolTipText = toolTipText;
     }
   }
@@ -264,7 +267,7 @@ public class Table extends Composite {
 
   private static final int[] EMPTY_SELECTION = new int[ 0 ];
 
-  final private CompositeItemHolder itemHolder;
+  private CompositeItemHolder itemHolder;
   private final ITableAdapter tableAdapter;
   private final ResizeListener resizeListener;
   private int itemCount;
@@ -328,7 +331,6 @@ public class Table extends Composite {
     focusIndex = -1;
     sortDirection = SWT.NONE;
     tableAdapter = new TableAdapter();
-    itemHolder = new CompositeItemHolder();
     columnHolder = new ItemHolder<TableColumn>( TableColumn.class );
     setTableEmpty();
     createScrollBars();
@@ -344,6 +346,9 @@ public class Table extends Composite {
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
+      if( itemHolder == null ) {
+        itemHolder = new CompositeItemHolder();
+      }
       result = itemHolder;
     } else if( adapter == ITableAdapter.class ) {
       result = tableAdapter;

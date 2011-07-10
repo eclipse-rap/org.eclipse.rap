@@ -19,7 +19,6 @@ import org.eclipse.swt.graphics.Device;
 public class DeviceSerialization_Test extends TestCase {
   
   private static class TestDevice extends Device {
-    private static final long serialVersionUID = 1L;
     Object getDeviceLock() {
       return deviceLock;
     }

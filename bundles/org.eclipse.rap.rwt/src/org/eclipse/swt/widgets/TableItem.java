@@ -100,7 +100,7 @@ public class TableItem extends Item {
     Color foreground;
   }
 
-  private final TableItemAdapter tableItemAdapter;
+  private transient TableItemAdapter tableItemAdapter;
   final Table parent;
   boolean cached;
   int index;
@@ -185,7 +185,6 @@ public class TableItem extends Item {
     super( parent, style );
     this.parent = parent;
     this.index = index;
-    tableItemAdapter = new TableItemAdapter();
     if( create ) {
       this.parent.createItem( this, index );
     }
@@ -197,6 +196,9 @@ public class TableItem extends Item {
         || adapter == IWidgetColorAdapter.class
         || adapter == ITableItemAdapter.class )
     {
+      if( tableItemAdapter == null ) {
+        tableItemAdapter = new TableItemAdapter();
+      }
       result = tableItemAdapter;
     } else {
       result = super.getAdapter( adapter );

@@ -137,8 +137,6 @@ public class ContextConfigurable_Test extends TestCase {
   private static class TestBranding extends AbstractBranding {}
   
   private static class TestWidget extends Composite {
-    private static final long serialVersionUID = 1L;
-
     TestWidget( Composite parent ) {
       super( parent, SWT.NONE );
     }

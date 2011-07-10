@@ -1410,6 +1410,17 @@ public class Tree_Test extends TestCase {
     
     assertFalse( item1.hasPreferredWidthBuffer() );
   }
+  
+  public void testIsSerializable() throws Exception {
+    Tree tree = new Tree( composite, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    
+    Tree deserializedTree = Fixture.serializeAndDeserialize( tree );
+    
+    assertEquals( 1, deserializedTree.getItemCount() );
+    assertEquals( 1, deserializedTree.getColumnCount() );
+  }
 
   protected void setUp() throws Exception {
     Fixture.setUp();
@@ -1441,7 +1452,7 @@ public class Tree_Test extends TestCase {
   }
 
   /////////
-  // HELPER
+  // Helper
 
   private static boolean contains( TreeItem[] items, TreeItem item ) {
     boolean result = false;

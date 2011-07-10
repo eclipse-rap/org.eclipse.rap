@@ -252,6 +252,15 @@ public class Browser_Test extends TestCase {
     Browser browser = new Browser( shell, SWT.NONE );
     assertNull( browser.getWebBrowser() );
   }
+  
+  public void testIsSerializable() throws Exception {
+    Browser browser = new Browser( shell, SWT.NONE );
+    browser.setUrl( "http://eclipse.org/rap" );
+    
+    Browser deserializedBrowser = Fixture.serializeAndDeserialize( browser );
+    
+    assertEquals( browser.getUrl(), deserializedBrowser.getUrl() );
+  }
 
   private static String getText( final Browser browser ) {
     Object adapter = browser.getAdapter( IBrowserAdapter.class );

@@ -42,7 +42,7 @@ import org.eclipse.swt.internal.graphics.IGCAdapter;
 public class Canvas extends Composite {
   private static final long serialVersionUID = 1L;
 
-  private GCAdapter gcAdapter;
+  private transient GCAdapter gcAdapter;
 
   Canvas( final Composite parent ) {
     // prevent instantiation from outside this package
@@ -78,7 +78,7 @@ public class Canvas extends Composite {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public Canvas( final Composite parent, final int style ) {
+  public Canvas( Composite parent, int style ) {
     super( parent, style );
     repaint();
   }
@@ -91,7 +91,7 @@ public class Canvas extends Composite {
    * from application code.
    * </p>
    */
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result;
     if( adapter == IGCAdapter.class ) {
       if( gcAdapter == null ) {
@@ -124,7 +124,7 @@ public class Canvas extends Composite {
    * @see #removePaintListener
    * @since 1.3
    */
-  public void addPaintListener( final PaintListener listener ) {
+  public void addPaintListener( PaintListener listener ) {
     checkWidget();
     PaintEvent.addListener( this, listener );
   }
@@ -147,7 +147,7 @@ public class Canvas extends Composite {
    * @see #addPaintListener
    * @since 1.3
    */
-  public void removePaintListener( final PaintListener listener ) {
+  public void removePaintListener( PaintListener listener ) {
     checkWidget();
     PaintEvent.removeListener( this, listener );
   }
@@ -155,14 +155,14 @@ public class Canvas extends Composite {
   /////////////
   // repainting
 
-  void notifyResize( final Point oldSize ) {
+  void notifyResize( Point oldSize ) {
     super.notifyResize( oldSize );
     if( !oldSize.equals( getSize() ) ) {
       repaint();
     }
   }
 
-  void internalSetRedraw( final boolean redraw ) {
+  void internalSetRedraw( boolean redraw ) {
     super.internalSetRedraw( redraw );
     if( redraw ) {
       repaint();

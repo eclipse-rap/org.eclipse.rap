@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,16 +22,14 @@ import org.eclipse.swt.internal.widgets.ILinkAdapter;
 
 public class Link_Test extends TestCase {
 
+  private Shell shell;
+
   public void testInitialValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Link link = new Link( shell, SWT.NONE );
     assertEquals( "", link.getText() );
   }
 
   public void testText() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Link link = new Link( shell, SWT.NONE );
     String text
       = "Visit the <A HREF=\"www.eclipse.org\">Eclipse.org</A> project and "
@@ -47,8 +45,6 @@ public class Link_Test extends TestCase {
   }
 
   public void testAdapter() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Link link = new Link( shell, SWT.NONE );
     String text
       = "Visit the <A HREF=\"www.eclipse.org\">Eclipse.org</A> project and "
@@ -64,9 +60,6 @@ public class Link_Test extends TestCase {
   }
 
   public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Link link = new Link( shell, SWT.NONE );
     Point expected = new Point( 4, 4 );
     assertEquals( expected, link.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -97,9 +90,22 @@ public class Link_Test extends TestCase {
     expected = new Point( 79, 19 );
     assertEquals( expected, link.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
+  
+  public void testIsSerializable() throws Exception {
+    String text = "text";
+    Link link = new Link( shell, SWT.NONE );
+    link.setText( text );
+
+    Link deserializedLink = Fixture.serializeAndDeserialize( link );
+    
+    assertEquals( text, deserializedLink.getText() );
+  }
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    shell = new Shell( display , SWT.NONE );
   }
 
   protected void tearDown() throws Exception {

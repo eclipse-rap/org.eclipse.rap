@@ -542,4 +542,15 @@ public class Text_Test extends TestCase {
       assertEquals( string.charAt( i ), result[ i ] );
     }
   }
+  
+  public void testIsSerializable() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Text text = new Text( shell, SWT.NONE );
+    text.setText( "foo" );
+
+    Text deserializedText = Fixture.serializeAndDeserialize( text );
+    
+    assertEquals( text.getText(), deserializedText.getText() );
+  }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -133,5 +133,16 @@ public class Scale_Test extends TestCase {
 
     expected = new Point( 102, 102 );
     assertEquals( expected, scale.computeSize( 100, 100 ) );
+  }
+  
+  public void testIsSerializable() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Scale scale = new Scale( shell, SWT.HORIZONTAL );
+    scale.setSelection( 12 );
+    
+    Scale deserializedScale = Fixture.serializeAndDeserialize( scale );
+    
+    assertEquals( scale.getSelection(), deserializedScale.getSelection() );
   }
 }

@@ -12,8 +12,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.events;
 
-import java.io.Serializable;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -26,11 +24,7 @@ import org.eclipse.swt.widgets.*;
 
 public class EventAdapter_Test extends TestCase {
   
-  private static class SerializableSelectionListener 
-    extends SelectionAdapter 
-    implements Serializable 
-  {
-    private static final long serialVersionUID = 1L;
+  private static class SerializableListener implements SWTEventListener {
   }
 
   private Widget widget;
@@ -95,12 +89,11 @@ public class EventAdapter_Test extends TestCase {
   
   public void testIsSerializable() throws Exception {
     IEventAdapter eventAdapter = ( IEventAdapter )widget.getAdapter( IEventAdapter.class );
-    eventAdapter.addListener( SelectionListener.class, new SerializableSelectionListener() );
+    eventAdapter.addListener( SerializableListener.class, new SerializableListener() );
 
     IEventAdapter deserialized = Fixture.serializeAndDeserialize( eventAdapter );
     
     assertEquals( 1, deserialized.getListeners().length );
-    assertEquals( SerializableSelectionListener.class, 
-                  deserialized.getListeners()[ 0 ].getClass() );
+    assertEquals( SerializableListener.class, deserialized.getListeners()[ 0 ].getClass() );
   }
 }

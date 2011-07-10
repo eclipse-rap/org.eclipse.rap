@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -292,5 +292,16 @@ public class Spinner_Test extends TestCase {
     assertEquals( 2, spinner.getDigits() );
     assertEquals( 5, spinner.getIncrement() );
     assertEquals( 10, spinner.getPageIncrement() );
+  }
+
+  public void testIsSerializable() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Spinner spinner = new Spinner( shell, SWT.HORIZONTAL );
+    spinner.setSelection( 2 );
+    
+    Spinner deserializedSpinner = Fixture.serializeAndDeserialize( spinner );
+    
+    assertEquals( spinner.getSelection(), deserializedSpinner.getSelection() );
   }
 }

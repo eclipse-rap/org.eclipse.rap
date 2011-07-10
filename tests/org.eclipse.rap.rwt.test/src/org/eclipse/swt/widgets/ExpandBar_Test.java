@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -166,5 +167,14 @@ public class ExpandBar_Test extends TestCase {
       }
     } );
     expandBar.dispose();
+  }
+  
+  public void testIsSerializable() throws Exception {
+    ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
+    new ExpandItem( expandBar, SWT.NONE );
+
+    ExpandBar deserializedExpandBar = Fixture.serializeAndDeserialize( expandBar );
+    
+    assertEquals( 1, deserializedExpandBar.getItemCount() );
   }
 }

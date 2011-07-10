@@ -20,8 +20,6 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 public class CompositeSerialization_Test extends TestCase {
 
   private static class TestControl extends Control {
-    private static final long serialVersionUID = 1L;
-
     TestControl( Composite parent ) {
       super( parent, 0 );
     }

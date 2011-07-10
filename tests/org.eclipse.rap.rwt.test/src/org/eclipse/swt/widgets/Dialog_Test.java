@@ -21,8 +21,6 @@ import org.eclipse.swt.graphics.Font;
 public class Dialog_Test extends TestCase {
 
   private static class TestDialog extends Dialog {
-    private static final long serialVersionUID = 1L;
-
     private TestDialog( Shell parent ) {
       super( parent );
     }

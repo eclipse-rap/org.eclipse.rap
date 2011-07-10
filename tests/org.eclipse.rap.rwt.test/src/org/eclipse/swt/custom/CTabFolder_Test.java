@@ -684,6 +684,18 @@ public class CTabFolder_Test extends TestCase {
     folder.dispose();
   }
 
+  public void testIsSerializable() throws Exception {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    CTabItem item = new CTabItem( folder, SWT.NONE );
+    item.setText( "item1" );
+    
+    CTabFolder deserializedFolder = Fixture.serializeAndDeserialize( folder );
+    
+    assertEquals( folder.getItemCount(), deserializedFolder.getItemCount() );
+    assertSame( deserializedFolder, deserializedFolder.getItem( 0 ).getParent() );
+    assertEquals( item.getText(), deserializedFolder.getItem( 0 ).getText() );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );

@@ -2347,6 +2347,17 @@ public class Table_Test extends TestCase {
     assertEquals( 0, eventLog.size() );
   }
 
+  public void testIsSerializable() throws Exception {
+    Table table = new Table( shell, SWT.VIRTUAL );
+    new TableItem( table, 0 );
+    new TableColumn( table, SWT.NONE );
+    
+    Table deserializedTable = Fixture.serializeAndDeserialize( table );
+    
+    assertEquals( 1, deserializedTable.getItemCount() );
+    assertEquals( 1, deserializedTable.getColumnCount() );
+  }
+  
   private static boolean find( final int element, final int[] array ) {
     boolean result = false;
     for( int i = 0; i < array.length; i++ ) {

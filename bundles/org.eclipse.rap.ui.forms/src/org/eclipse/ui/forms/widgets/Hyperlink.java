@@ -46,7 +46,7 @@ public class Hyperlink extends AbstractHyperlink {
 	private String appToolTipText;
 
   // RAP [rh] Adapter to reach into widget implementation from within LCA
-  private IHyperlinkAdapter hyperlinkAdapter;
+  private transient IHyperlinkAdapter hyperlinkAdapter;
 
   /**
 	 * Creates a new hyperlink control in the provided parent.

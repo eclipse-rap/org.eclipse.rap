@@ -723,6 +723,18 @@ public class Combo_Test extends TestCase {
     combo.setFont( null );
     assertEquals( 13, combo.getTextHeight() );
   }
+  
+  public void testIsSerializable() throws Exception {
+    String item = "foo";
+    Display display = new Display();
+    Shell shell = new Shell( display );
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.add( item );
+    
+    Combo deserializedCombo = Fixture.serializeAndDeserialize( combo );
+    
+    assertEquals( item, deserializedCombo.getItem( 0 ) );
+  }
 
   protected void setUp() throws Exception {
     Fixture.setUp();

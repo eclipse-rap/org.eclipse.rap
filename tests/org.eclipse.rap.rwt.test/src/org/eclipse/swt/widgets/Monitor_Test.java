@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -17,8 +17,9 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 
 public class Monitor_Test extends TestCase {
 
+  private Display display;
+
   public void testBounds() {
-    Display display = new Display();
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     Rectangle expectedBounds = new Rectangle( 10, 20, 30, 40 );
@@ -35,7 +36,6 @@ public class Monitor_Test extends TestCase {
   }
 
   public void testClientArea() {
-    Display display = new Display();
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     Rectangle expectedBounds = new Rectangle( 10, 20, 30, 40 );
@@ -52,17 +52,31 @@ public class Monitor_Test extends TestCase {
   }
 
   public void testEquals() {
-    Display display = new Display();
     Monitor primaryMonitor = display.getPrimaryMonitor();
     Monitor[] monitors = display.getMonitors();
     assertEquals( primaryMonitor, monitors[ 0 ] );
   }
+  
+  public void testIsSerializable() throws Exception {
+    Monitor monitor = display.getPrimaryMonitor();
+    Rectangle bounds = monitor.getBounds();
+    
+    Monitor deserializedMonitor = Fixture.serializeAndDeserialize( monitor );
+    getDisplayAdapter( deserializedMonitor.display ).attachThread();
+    
+    assertEquals( bounds, deserializedMonitor.getBounds() );
+  }
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
   }
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  private IDisplayAdapter getDisplayAdapter( Display display ) {
+    return( ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class ) );
   }
 }

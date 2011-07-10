@@ -69,7 +69,7 @@ public class Text extends Scrollable {
    */
   public static final String DELIMITER = "\n";
 
-  private final ITextAdapter textAdapter;
+  private ITextAdapter textAdapter;
   private String text;
   private String message;
   private int textLimit;
@@ -113,11 +113,6 @@ public class Text extends Scrollable {
    */
   public Text( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
-    textAdapter = new ITextAdapter() {
-      public void setText( final String text, final Point selection ) {
-        Text.this.setText( text, selection );
-      }
-    };
     textLimit = LIMIT;
     selection = new Point( 0, 0 );
     text = "";
@@ -139,6 +134,13 @@ public class Text extends Scrollable {
   public Object getAdapter( final Class adapter ) {
     Object result;
     if( ITextAdapter.class.equals( adapter ) ) {
+      if( textAdapter == null ) {
+        textAdapter = new ITextAdapter() {
+          public void setText( String text, Point selection ) {
+            Text.this.setText( text, selection );
+          }
+        };
+      }
       result = textAdapter;
     } else {
       result = super.getAdapter( adapter );

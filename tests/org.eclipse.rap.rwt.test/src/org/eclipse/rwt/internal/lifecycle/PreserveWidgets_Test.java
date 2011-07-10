@@ -67,7 +67,6 @@ public class PreserveWidgets_Test extends TestCase {
   }
 
   private static class CustomLCAWidget extends Composite {
-    private static final long serialVersionUID = 1L;
     
     private final AbstractWidgetLCA widgetLCA;
 

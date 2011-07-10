@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
@@ -192,5 +191,13 @@ public class Menu_Test extends TestCase {
     menu.setDefaultItem( item );
     assertNull( menu.getDefaultItem() );
   }
-  
+
+  public void testIsSerializable() throws Exception {
+    Menu menu = new Menu( shell, SWT.POP_UP );
+    new MenuItem( menu, SWT.PUSH );
+
+    Menu deserializedMenu = Fixture.serializeAndDeserialize( menu );
+    
+    assertEquals( 1, deserializedMenu.getItemCount() );
+  }
 }

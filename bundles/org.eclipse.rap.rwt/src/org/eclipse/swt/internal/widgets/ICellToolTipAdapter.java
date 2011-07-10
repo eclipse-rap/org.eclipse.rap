@@ -14,6 +14,6 @@ public interface ICellToolTipAdapter {
   ICellToolTipProvider getCellToolTipProvider();
   void setCellToolTipProvider( ICellToolTipProvider provider );
 
-  String getToolTipText();
-  void setToolTipText( String toolTipText );
+  String getCellToolTipText();
+  void setCellToolTipText( String toolTipText );
 }

@@ -182,4 +182,13 @@ public class ToolBar_Test extends TestCase {
     assertEquals( new Point( 153, 22 ), toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     assertEquals( new Point( 100, 100 ), toolbar.computeSize( 100, 100 ) );
   }
+  
+  public void testIsSerializable() throws Exception {
+    ToolBar toolBar = new ToolBar( shell, SWT.NONE );
+    new ToolItem( toolBar, SWT.PUSH );
+    
+    ToolBar deserializedToolBar = Fixture.serializeAndDeserialize( toolBar );
+    
+    assertEquals( 1, deserializedToolBar.getItemCount() );
+  }
 } 

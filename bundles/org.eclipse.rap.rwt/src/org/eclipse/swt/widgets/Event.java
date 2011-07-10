@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,11 +7,13 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.SerializableCompatibility;
 
 /**
  * Instances of this class provide a description of a particular event which
@@ -27,7 +29,7 @@ import org.eclipse.swt.graphics.Rectangle;
  * @see org.eclipse.swt.events.TypedEvent
  * @since 1.0
  */
-public class Event {
+public class Event implements SerializableCompatibility {
 
   /**
    * the display where the event occurred
@@ -184,7 +186,7 @@ public class Event {
    * 
    * @param rect the new rectangle
    */
-  public void setBounds( final Rectangle rect ) {
+  public void setBounds( Rectangle rect ) {
     this.x = rect.x;
     this.y = rect.y;
     this.width = rect.width;

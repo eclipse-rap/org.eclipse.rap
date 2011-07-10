@@ -23,7 +23,6 @@ import org.eclipse.swt.graphics.Image;
 public class Item_Test extends TestCase {
 
   private static class TestItem extends Item {
-    private static final long serialVersionUID = 1L;
     private TestItem( Widget parent, int style ) {
       super( parent, style );
     }

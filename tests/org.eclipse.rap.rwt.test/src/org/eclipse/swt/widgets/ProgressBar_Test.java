@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
@@ -105,5 +104,16 @@ public class ProgressBar_Test extends TestCase {
 
     expected = new Point( 102, 102 );
     assertEquals( expected, bar.computeSize( 100, 100 ) );
+  }
+  
+  public void testIsSerializable() throws Exception {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    ProgressBar bar = new ProgressBar( shell, SWT.HORIZONTAL );
+    bar.setSelection( 54 );
+    
+    ProgressBar deserializedBar = Fixture.serializeAndDeserialize( bar );
+    
+    assertEquals( bar.getSelection(), deserializedBar.getSelection() );
   }
 }

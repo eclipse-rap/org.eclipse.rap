@@ -54,7 +54,7 @@ public class ToolItem extends Item {
   private boolean visible;
   private Image disabledImage;
   private Image hotImage;
-  private final IToolItemAdapter toolItemAdapter;
+  private transient IToolItemAdapter toolItemAdapter;
 
 
   /**
@@ -134,14 +134,9 @@ public class ToolItem extends Item {
   public ToolItem( final ToolBar parent, final int style, final int index ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
-    visible = true;
+    this.visible = true;
     ItemHolder.getItemHolder( parent ).insert( this, index );
     computeInitialWidth();
-    toolItemAdapter = new IToolItemAdapter() {
-      public boolean getVisible() {
-        return ToolItem.this.visible;
-      }
-    };
   }
 
   /**
@@ -768,6 +763,13 @@ public class ToolItem extends Item {
   public Object getAdapter( final Class adapter ) {
     Object result;
     if ( adapter == IToolItemAdapter.class ) {
+      if( toolItemAdapter == null ) {
+        toolItemAdapter = new IToolItemAdapter() {
+          public boolean getVisible() {
+            return ToolItem.this.visible;
+          }
+        };
+      }
       result = toolItemAdapter;
     } else {
       result = super.getAdapter( adapter );

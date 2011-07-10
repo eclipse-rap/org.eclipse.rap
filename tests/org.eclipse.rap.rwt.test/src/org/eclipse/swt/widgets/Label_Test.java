@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,8 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
@@ -23,17 +23,15 @@ import org.eclipse.swt.graphics.Point;
 
 public class Label_Test extends TestCase {
 
+  private Shell shell;
+
   public void testInitialValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     assertEquals( "", label.getText() );
     assertEquals( SWT.LEFT, label.getAlignment() );
   }
 
   public void testText() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     label.setText( "abc" );
     assertEquals( "abc", label.getText() );
@@ -46,8 +44,6 @@ public class Label_Test extends TestCase {
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Label label;
 
     label = new Label( shell, SWT.NONE );
@@ -67,8 +63,6 @@ public class Label_Test extends TestCase {
   }
 
   public void testAlignment() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Label label;
 
     label = new Label( shell, SWT.NONE );
@@ -95,8 +89,6 @@ public class Label_Test extends TestCase {
   }
 
   public void testSeparatorLabel() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Label label = new Label( shell, SWT.SEPARATOR );
     label.setText( "bla" );
     assertEquals( "", label.getText() );
@@ -105,8 +97,6 @@ public class Label_Test extends TestCase {
   }
 
   public void testImageAndText() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     label.setText( "bla" );
     Image image = Graphics.getImage( Fixture.IMAGE1 );
@@ -119,8 +109,6 @@ public class Label_Test extends TestCase {
   }
 
   public void testSize() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Label labelWrap = new Label( shell, SWT.WRAP );
     Label labelNoWrap = new Label( shell, SWT.NONE );
     String wrapText = "Text that wraps. Text that wraps. Text that wraps. ";
@@ -144,9 +132,6 @@ public class Label_Test extends TestCase {
   }
 
   public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     Point expected = new Point( 0, 12 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -175,9 +160,22 @@ public class Label_Test extends TestCase {
     expected = new Point( 100, 100 );
     assertEquals( expected, label.computeSize( 100, 100 ) );
   }
+  
+  public void testIsSerializable() throws Exception {
+    String text = "labelText";
+    Label label = new Label( shell, SWT.NONE );
+    label.setText( text );
+
+    Label deserializedLabel = Fixture.serializeAndDeserialize( label );
+    
+    assertEquals( text, deserializedLabel.getText() );
+  }
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    shell = new Shell( display , SWT.NONE );
   }
 
   protected void tearDown() throws Exception {

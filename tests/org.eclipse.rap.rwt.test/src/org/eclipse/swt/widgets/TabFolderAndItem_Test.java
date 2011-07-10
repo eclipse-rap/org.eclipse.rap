@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
@@ -378,6 +377,18 @@ public class TabFolderAndItem_Test extends TestCase {
       }
     } );
     folder.dispose();
+  }
+
+  public void testIsSerializable() throws Exception {
+    TabFolder folder = new TabFolder( shell, SWT.NONE );
+    TabItem item = new TabItem( folder, SWT.NONE );
+    item.setText( "item1" );
+    
+    TabFolder deserializedFolder = Fixture.serializeAndDeserialize( folder );
+    
+    assertEquals( folder.getItemCount(), deserializedFolder.getItemCount() );
+    assertSame( deserializedFolder, deserializedFolder.getItem( 0 ).getParent() );
+    assertEquals( item.getText(), deserializedFolder.getItem( 0 ).getText() );
   }
 
   protected void setUp() throws Exception {

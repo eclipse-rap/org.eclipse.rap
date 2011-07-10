@@ -130,6 +130,28 @@ public class Shell extends Decorations {
   private static final int INITIAL_SIZE_PERCENT = 60;
   private static final int MIN_WIDTH_LIMIT = 80;
 
+  private class ShellAdapter implements IShellAdapter {
+    public Control getActiveControl() {
+      return Shell.this.lastActive;
+    }
+  
+    public void setActiveControl( final Control control ) {
+      Shell.this.setActiveControl( control );
+    }
+  
+    public Rectangle getMenuBounds() {
+      return Shell.this.getMenuBounds();
+    }
+  
+    public void setBounds( final Rectangle bounds ) {
+      Shell.this.setBounds( bounds, false );
+    }
+  
+    public ToolTip[] getToolTips() {
+      return Shell.this.getToolTips();
+    }
+  }
+
   private Control lastActive;
   private transient IShellAdapter shellAdapter;
   private String text;
@@ -590,23 +612,7 @@ public class Shell extends Decorations {
     Object result;
     if( adapter == IShellAdapter.class ) {
       if( shellAdapter == null ) {
-        shellAdapter = new IShellAdapter() {
-          public Control getActiveControl() {
-            return Shell.this.lastActive;
-          }
-          public void setActiveControl( final Control control ) {
-            Shell.this.setActiveControl( control );
-          }
-          public Rectangle getMenuBounds() {
-            return Shell.this.getMenuBounds();
-          }
-          public void setBounds( final Rectangle bounds ) {
-            Shell.this.setBounds( bounds, false );
-          }
-          public ToolTip[] getToolTips() {
-            return Shell.this.getToolTips();
-          }
-        };
+        shellAdapter = new ShellAdapter();
       }
       result = shellAdapter;
     } else {

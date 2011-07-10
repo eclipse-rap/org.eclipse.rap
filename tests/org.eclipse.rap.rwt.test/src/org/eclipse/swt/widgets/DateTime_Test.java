@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,8 +23,13 @@ import org.eclipse.swt.graphics.Point;
 
 public class DateTime_Test extends TestCase {
 
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    shell = new Shell( display, SWT.NONE );
   }
 
   protected void tearDown() throws Exception {
@@ -32,8 +37,6 @@ public class DateTime_Test extends TestCase {
   }
 
   public void testInvalidValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     DateTime dateTime = new DateTime( shell, SWT.NONE );
     dateTime.setDay( 1 );
     dateTime.setMonth( 0 );
@@ -107,8 +110,6 @@ public class DateTime_Test extends TestCase {
   }
 
   public void testSetDate() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     DateTime dateTime = new DateTime( shell, SWT.NONE );
 
     dateTime.setDate( 1985, 10, 29 );
@@ -123,8 +124,6 @@ public class DateTime_Test extends TestCase {
   }
 
   public void testSetTime() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     DateTime dateTime = new DateTime( shell, SWT.NONE );
 
     dateTime.setTime(2, 10, 30);
@@ -134,8 +133,6 @@ public class DateTime_Test extends TestCase {
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     // Test SWT.NONE
     DateTime dateTime = new DateTime( shell, SWT.NONE );
     assertTrue( ( dateTime.getStyle() & SWT.DATE ) != 0 );
@@ -162,59 +159,39 @@ public class DateTime_Test extends TestCase {
     dateTime = new DateTime( shell, SWT.CALENDAR );
     assertTrue( ( dateTime.getStyle() & SWT.CALENDAR ) != 0 );
     // Test combination of SWT.MEDIUM | SWT.SHORT | SWT.LONG
-    dateTime = new DateTime( shell, SWT.DATE
-                                  | SWT.MEDIUM
-                                  | SWT.SHORT
-                                  | SWT.LONG );
+    dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM | SWT.SHORT | SWT.LONG );
     assertTrue( ( dateTime.getStyle() & SWT.DATE ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.MEDIUM ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.SHORT ) == 0 );
     assertTrue( ( dateTime.getStyle() & SWT.LONG ) == 0 );
-    dateTime = new DateTime( shell, SWT.DATE
-                                  | SWT.MEDIUM
-                                  | SWT.SHORT );
+    dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM | SWT.SHORT );
     assertTrue( ( dateTime.getStyle() & SWT.DATE ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.MEDIUM ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.SHORT ) == 0 );
-    dateTime = new DateTime( shell, SWT.DATE
-                                  | SWT.MEDIUM
-                                  | SWT.LONG );
+    dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM | SWT.LONG );
     assertTrue( ( dateTime.getStyle() & SWT.DATE ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.MEDIUM ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.LONG ) == 0 );
-    dateTime = new DateTime( shell, SWT.TIME
-                                  | SWT.SHORT
-                                  | SWT.LONG );
+    dateTime = new DateTime( shell, SWT.TIME | SWT.SHORT | SWT.LONG );
     assertTrue( ( dateTime.getStyle() & SWT.TIME ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.SHORT ) != 0 );
     assertTrue( ( dateTime.getStyle() & SWT.LONG ) == 0 );
     // Test SWT.DROP_DOWN
-    dateTime = new DateTime( shell, SWT.DATE
-                                  | SWT.MEDIUM
-                                  | SWT.DROP_DOWN );
+    dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM | SWT.DROP_DOWN );
     assertTrue( ( dateTime.getStyle() & SWT.DROP_DOWN ) != 0 );
-    dateTime = new DateTime( shell, SWT.TIME
-                                  | SWT.MEDIUM
-                                  | SWT.DROP_DOWN );
+    dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM | SWT.DROP_DOWN );
     assertTrue( ( dateTime.getStyle() & SWT.DROP_DOWN ) == 0 );
-    dateTime = new DateTime( shell, SWT.CALENDAR
-                                  | SWT.MEDIUM
-                                  | SWT.DROP_DOWN );
+    dateTime = new DateTime( shell, SWT.CALENDAR | SWT.MEDIUM | SWT.DROP_DOWN );
     assertTrue( ( dateTime.getStyle() & SWT.DROP_DOWN ) == 0 );
   }
 
   public void testDispose() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
     dateTime.dispose();
     assertTrue( dateTime.isDisposed() );
   }
 
   public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     // The component computeSize depends on day/months names
     // which are locale dependent
     RWT.setLocale( Locale.US );
@@ -253,5 +230,27 @@ public class DateTime_Test extends TestCase {
 
     expected = new Point( 100, 100 );
     assertEquals( expected, dateTime.computeSize( 100, 100 ) );
+  }
+  
+  public void testDateIsSerializable() throws Exception {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+    dateTime.setDate( 2000, 1, 1 );
+    
+    DateTime deserializedDateTime = Fixture.serializeAndDeserialize( dateTime );
+    
+    assertEquals( 1, deserializedDateTime.getDay() );
+    assertEquals( 1, deserializedDateTime.getMonth() );
+    assertEquals( 2000, deserializedDateTime.getYear() );
+  }
+
+  public void testTimeIsSerializable() throws Exception {
+    DateTime dateTime = new DateTime( shell, SWT.TIME );
+    dateTime.setTime( 12, 12, 12 );
+    
+    DateTime deserializedDateTime = Fixture.serializeAndDeserialize( dateTime );
+    
+    assertEquals( 12, deserializedDateTime.getHours() );
+    assertEquals( 12, deserializedDateTime.getMinutes() );
+    assertEquals( 12, deserializedDateTime.getSeconds() );
   }
 }

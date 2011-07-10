@@ -21,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.events.SetDataEvent;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
@@ -157,7 +158,7 @@ public class Tree extends Composite {
   }
   
   private final class InternalTreeAdapter 
-    implements ITreeAdapter, ICellToolTipAdapter
+    implements ITreeAdapter, ICellToolTipAdapter, SerializableCompatibility
   {
     private String toolTipText;
     private ICellToolTipProvider provider;
@@ -247,11 +248,11 @@ public class Tree extends Composite {
       this.provider = provider;
     }
 
-    public String getToolTipText() {
+    public String getCellToolTipText() {
       return toolTipText;
     }
 
-    public void setToolTipText( String toolTipText ) {
+    public void setCellToolTipText( String toolTipText ) {
       this.toolTipText = toolTipText;
     }
 
@@ -1965,9 +1966,9 @@ public class Tree extends Composite {
       result = getTextOffset( columnIndex ) ;
       Rectangle padding = getCellPadding();
       result += Graphics.stringExtent( getFont(), item.getText( columnIndex, checkData ) ).x;
-      result += ( padding.width - padding.x );
+      result += padding.width - padding.x;
       if( isTreeColumn( columnIndex ) ) {
-        result += ( TEXT_MARGIN.width - TEXT_MARGIN.x );
+        result += TEXT_MARGIN.width - TEXT_MARGIN.x;
       }
       item.setPreferredWidthBuffer( result );
     }

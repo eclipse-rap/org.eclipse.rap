@@ -404,7 +404,7 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   private static void readCellToolTipTextRequested( Table table ) {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
-    adapter.setToolTipText( null );
+    adapter.setCellToolTipText( null );
     String event = JSConst.EVENT_CELL_TOOLTIP_REQUESTED;
     if( WidgetLCAUtil.wasEventSent( table, event ) ) {
       ICellToolTipProvider provider = adapter.getCellToolTipProvider();
@@ -426,7 +426,7 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   private static void writeCellToolTipText( Table table ) throws IOException {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
-    String text = adapter.getToolTipText();
+    String text = adapter.getCellToolTipText();
     if( text != null ) {
       JSWriter writer = JSWriter.getWriterFor( table );
       text = WidgetLCAUtil.escapeText( text, false );

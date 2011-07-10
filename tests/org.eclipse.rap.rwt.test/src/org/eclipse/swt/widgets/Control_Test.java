@@ -34,7 +34,6 @@ import org.eclipse.swt.layout.FillLayout;
 public class Control_Test extends TestCase {
 
   private static class RedrawLogginShell extends Shell {
-    private static final long serialVersionUID = 1L;
     private final List<Widget> log;
 
     private RedrawLogginShell( Display display, List<Widget> log ) {

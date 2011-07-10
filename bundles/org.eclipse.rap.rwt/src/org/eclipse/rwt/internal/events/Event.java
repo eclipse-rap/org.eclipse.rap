@@ -16,7 +16,6 @@ import java.util.EventObject;
 import org.eclipse.rwt.Adaptable;
 
 public abstract class Event extends EventObject {
-  
   private static final long serialVersionUID = 1L;
   
   private final Object source;

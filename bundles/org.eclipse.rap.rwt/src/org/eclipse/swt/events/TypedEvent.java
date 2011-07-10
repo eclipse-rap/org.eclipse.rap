@@ -41,7 +41,6 @@ import org.eclipse.swt.widgets.Widget;
  * @see org.eclipse.swt.widgets.Event
  */
 public class TypedEvent extends Event {
-
   private static final long serialVersionUID = 1L;
 
   private static final String ATTR_SCHEDULED_EVENT_LIST

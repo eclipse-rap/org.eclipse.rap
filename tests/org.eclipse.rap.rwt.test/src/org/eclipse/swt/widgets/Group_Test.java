@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,8 +23,13 @@ import org.eclipse.swt.layout.FillLayout;
 
 public class Group_Test extends TestCase {
 
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    shell = new Shell( display , SWT.NONE );
   }
 
   protected void tearDown() throws Exception {
@@ -32,8 +37,6 @@ public class Group_Test extends TestCase {
   }
 
   public void testText() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Group group = new Group( shell, SWT.NONE );
     assertEquals( "", group.getText() );
     group.setText( "xyz" );
@@ -47,9 +50,6 @@ public class Group_Test extends TestCase {
   }
 
   public void testComputeSize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Group group = new Group( shell, SWT.NONE );
     group.setLayout( new FillLayout( SWT.VERTICAL ) );
     new Button( group, SWT.RADIO ).setText( "Radio 1" );
@@ -74,9 +74,6 @@ public class Group_Test extends TestCase {
   }
 
   public void testComputeTrim() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Group group = new Group( shell, SWT.NONE );
     // trimmings = 3, 17, 6, 20
     Rectangle expected = new Rectangle( -3, -17, 6, 20 );
@@ -87,9 +84,6 @@ public class Group_Test extends TestCase {
   }
 
   public void testClientArea() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     Group group = new Group( shell, SWT.NONE );
     group.setText( "This is a very long group title." );
     group.setSize( 100, 100 );
@@ -100,5 +94,15 @@ public class Group_Test extends TestCase {
     // trimmings = 3, 17, 6, 20
     Rectangle expected = new Rectangle( 3, 17, 94, 80 );
     assertEquals( expected, group.getClientArea() );
+  }
+  
+  public void testIsSerializable() throws Exception {
+    String groupText = "text";
+    Group group = new Group( shell, SWT.NONE );
+    group.setText( groupText );
+    
+    Group deserializedGroup = Fixture.serializeAndDeserialize( group );
+    
+    assertEquals( groupText, deserializedGroup.getText() );
   }
 }

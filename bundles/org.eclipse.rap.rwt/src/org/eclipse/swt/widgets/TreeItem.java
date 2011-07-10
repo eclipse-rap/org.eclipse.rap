@@ -33,6 +33,8 @@ import org.eclipse.swt.internal.widgets.*;
 public class TreeItem extends Item {
   private static final long serialVersionUID = 1L;
 
+  private static final int EMPTY_PREFERED_WIDTH_BUFFER = -1;
+
   private final class TreeItemAdapter
     implements ITreeItemAdapter, IWidgetFontAdapter, IWidgetColorAdapter
   {
@@ -42,43 +44,41 @@ public class TreeItem extends Item {
     }
 
     public Color getUserBackgound() {
-      return background;
+      return TreeItem.this.background;
     }
 
     public Color getUserForegound() {
-      return foreground;
+      return TreeItem.this.foreground;
     }
 
     public Font getUserFont() {
-      return font;
+      return TreeItem.this.font;
     }
 
     public Color[] getCellBackgrounds() {
       Color[] backgrounds = null;
-      if( cellBackgrounds != null ) {
-        backgrounds = cellBackgrounds.clone();
+      if( TreeItem.this.cellBackgrounds != null ) {
+        backgrounds = TreeItem.this.cellBackgrounds.clone();
       }
       return backgrounds;
     }
 
     public Color[] getCellForegrounds() {
       Color[] foregrounds = null;
-      if( cellForegrounds != null ) {
-        foregrounds = cellForegrounds.clone();
+      if( TreeItem.this.cellForegrounds != null ) {
+        foregrounds = TreeItem.this.cellForegrounds.clone();
       }
       return foregrounds;
     }
 
     public Font[] getCellFonts() {
       Font[] fonts = null;
-      if( cellFonts != null ) {
-        fonts = cellFonts.clone();
+      if( TreeItem.this.cellFonts != null ) {
+        fonts = TreeItem.this.cellFonts.clone();
       }
       return fonts;
     }
   }
-
-  private static final int EMPTY_PREFERED_WIDTH_BUFFER = -1;
 
   private final class CompositeItemHolder implements IItemHolderAdapter {
     public void add( Item item ) {
@@ -102,7 +102,7 @@ public class TreeItem extends Item {
   final Tree parent;
   private TreeItem[] items;
   int itemCount;
-  private final ITreeItemAdapter treeItemAdapter;
+  private transient ITreeItemAdapter treeItemAdapter;
   int index;
   private Font font;
   private boolean expanded;
@@ -155,30 +155,6 @@ public class TreeItem extends Item {
    */
   public TreeItem( Tree parent, int style ) {
     this( parent, null, style, parent == null ? 0 : parent.getItemCount(), true );
-  }
-
-  public TreeItem[] getCreatedItems() {
-    TreeItem[] result;
-    if( parent.isVirtual() ) {
-      int count = 0;
-      for( int i = 0; i < itemCount; i++ ) {
-        if( items[ i ] != null ) {
-          count++;
-        }
-      }
-      result = new TreeItem[ count ];
-      count = 0;
-      for( int i = 0; i < itemCount; i++ ) {
-        if( items[ i ] != null ) {
-          result[ count ] = items[ i ];
-          count++;
-        }
-      }
-    } else {
-      result = new TreeItem[ itemCount ];
-      System.arraycopy( items, 0, result, 0, itemCount );
-    }
-    return result;
   }
 
   /**
@@ -298,9 +274,8 @@ public class TreeItem extends Item {
     this.parentItem = parentItem;
     this.index = index;
     int columnCount = parent.columnHolder.size();
-    texts = new String[ columnCount ];
-    images = new Image[ columnCount ];
-    treeItemAdapter = new TreeItemAdapter();
+    this.texts = new String[ columnCount ];
+    this.images = new Image[ columnCount ];
     if( parentItem != null ) {
       this.depth = parentItem.depth + 1;
     }
@@ -374,11 +349,13 @@ public class TreeItem extends Item {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
       result = new CompositeItemHolder();
-    } else if( adapter == IWidgetFontAdapter.class ) {
-      result = treeItemAdapter;
-    } else if( adapter == IWidgetColorAdapter.class ) {
-      result = treeItemAdapter;
-    } else if( adapter == ITreeItemAdapter.class ) {
+    } else if(    adapter == IWidgetFontAdapter.class 
+               || adapter == IWidgetColorAdapter.class
+               || adapter == ITreeItemAdapter.class )
+    {
+      if( treeItemAdapter == null ) {
+        treeItemAdapter = new TreeItemAdapter();
+      }
       result = treeItemAdapter;
     } else {
       result = super.getAdapter( adapter );
@@ -386,8 +363,9 @@ public class TreeItem extends Item {
     return result;
   }
 
-  // ///////////////////////
+  //////////////////////////
   // Parent/child relations
+  
   /**
    * Returns the receiver's parent, which must be a <code>Tree</code>.
    *
@@ -419,8 +397,9 @@ public class TreeItem extends Item {
     return parentItem;
   }
 
-  // //////////////
+  /////////////////
   // Getter/Setter
+  
   /**
    * Sets the expanded state of the receiver.
    * <p>
@@ -1443,8 +1422,9 @@ public class TreeItem extends Item {
     }
   }
 
-  // /////////////////////////////////////
+  ////////////////////////////////////////
   // Methods to maintain (sub-) TreeItems
+  
   /**
    * Returns a (possibly empty) array of <code>TreeItem</code>s which are the
    * direct item children of the receiver.
@@ -1478,6 +1458,30 @@ public class TreeItem extends Item {
       items[ index ] = new TreeItem( parent, this, SWT.NONE, index, false );
     }
     return items[ index ];
+  }
+
+  private TreeItem[] getCreatedItems() {
+    TreeItem[] result;
+    if( parent.isVirtual() ) {
+      int count = 0;
+      for( int i = 0; i < itemCount; i++ ) {
+        if( items[ i ] != null ) {
+          count++;
+        }
+      }
+      result = new TreeItem[ count ];
+      count = 0;
+      for( int i = 0; i < itemCount; i++ ) {
+        if( items[ i ] != null ) {
+          result[ count ] = items[ i ];
+          count++;
+        }
+      }
+    } else {
+      result = new TreeItem[ itemCount ];
+      System.arraycopy( items, 0, result, 0, itemCount );
+    }
+    return result;
   }
 
   /**
@@ -1616,8 +1620,9 @@ public class TreeItem extends Item {
     }
   }
 
-  // ///////////////////////////////
+  /////////////////////////////////
   // Methods to dispose of the item
+  
   final void releaseChildren() {
     TreeItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
@@ -1638,7 +1643,7 @@ public class TreeItem extends Item {
     super.releaseParent();
   }
 
-  // ////////////////
+  //////////////////
   // helping methods
 
   void clearPreferredWidthBuffer() {

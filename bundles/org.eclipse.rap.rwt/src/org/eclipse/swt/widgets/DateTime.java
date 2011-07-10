@@ -53,7 +53,6 @@ public class DateTime extends Composite {
   private static final long serialVersionUID = 1L;
 
   private final class DateTimeAdapter implements IDateTimeAdapter {
-
     public Rectangle getBounds( int widget ) {
       Rectangle result = new Rectangle( 0, 0, 0, 0 );
       switch( widget ) {
@@ -128,12 +127,12 @@ public class DateTime extends Composite {
     }
   }
 
-  private int V_PADDING = 1;
-  private int H_PADDING = 6;
-  private int CALENDAR_HEADER_HEIGHT = 24;
-  private int MIN_CELL_WIDTH = 24;
-  private int MIN_CELL_HEIGHT = 16;
-  private int CELL_PADDING = 2;
+  private static final int V_PADDING = 1;
+  private static final int H_PADDING = 6;
+  private static final int CALENDAR_HEADER_HEIGHT = 24;
+  private static final int MIN_CELL_WIDTH = 24;
+  private static final int MIN_CELL_HEIGHT = 16;
+  private static final int CELL_PADDING = 2;
 
   private String[] monthNames;
   private String[] weekdayNames;
@@ -141,10 +140,8 @@ public class DateTime extends Composite {
   private String dateSeparator;
   private String datePattern;
   private Point cellSize;
-
-  private final IDateTimeAdapter dateTimeAdapter;
+  private transient IDateTimeAdapter dateTimeAdapter;
   private Calendar rightNow;
-
   // Date fields
   private Rectangle weekdayTextFieldBounds;
   private Rectangle dayTextFieldBounds;
@@ -197,7 +194,6 @@ public class DateTime extends Composite {
    */
   public DateTime( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
-    dateTimeAdapter = new DateTimeAdapter();
     rightNow = Calendar.getInstance();
     DateFormatSymbols symbols = new DateFormatSymbols( RWT.getLocale() );
     monthNames = symbols.getMonths();
@@ -576,6 +572,9 @@ public class DateTime extends Composite {
   public Object getAdapter( Class adapter ) {
     Object result;
     if( adapter == IDateTimeAdapter.class ) {
+      if( dateTimeAdapter == null ) {
+        dateTimeAdapter = new DateTimeAdapter();
+      }
       result = dateTimeAdapter;
     } else {
       result = super.getAdapter( adapter );
@@ -625,8 +624,7 @@ public class DateTime extends Composite {
     int width = MIN_CELL_WIDTH;
     int height = MIN_CELL_HEIGHT;
     for( int i = 0; i < weekdayShortNames.length; i++ ) {
-      Point nameSize
-        = Graphics.stringExtent( getFont(), weekdayShortNames[ i ] );
+      Point nameSize = Graphics.stringExtent( getFont(), weekdayShortNames[ i ] );
       width = Math.max( width, nameSize.x + CELL_PADDING );
       height = Math.max( height, nameSize.y + CELL_PADDING );
     }
