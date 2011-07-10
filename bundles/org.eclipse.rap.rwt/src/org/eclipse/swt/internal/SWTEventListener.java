@@ -25,5 +25,5 @@ import java.util.EventListener;
  * Note: java.util.EventListener is not part of CDC and CLDC.
  * </p>
  */
-public interface SWTEventListener extends EventListener {
+public interface SWTEventListener extends EventListener, SerializableCompatibility {
 }
