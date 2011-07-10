@@ -10,73 +10,45 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.test;
 
-import java.io.Serializable;
-import java.util.*;
-
-import javax.servlet.http.HttpSession;
+import java.net.HttpURLConnection;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.cluster.test.entrypoints.ButtonEntryPoint;
-import org.eclipse.rap.rwt.cluster.testfixture.*;
+import org.eclipse.rap.rwt.cluster.test.entrypoints.WidgetsEntryPoint;
+import org.eclipse.rap.rwt.cluster.testfixture.ClusterFixture;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
-import org.eclipse.rap.rwt.cluster.testfixture.internal.jetty.JettyEngine;
+import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.jetty.JettyCluster;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineCluster;
 
 
 
 public class SessionSerialization_Test extends TestCase {
 
+  private IServletEngineCluster cluster;
   private IServletEngine servletEngine;
   private RWTClient client;
 
-  public void testSessionIsSerializable() throws Exception {
+  public void testIsSerializable() throws Exception {
     client.sendStartupRequest();
-    
     client.sendInitializationRequest();
+    Response response = client.sendDisplayResizeRequest( 600, 800 );
     
-    HttpSession httpSession = servletEngine.getSessions()[ 0 ];
-    ISessionStore sessionStore = ClusterFixture.getSessionStore( httpSession );
-    assertSerializable( httpSession );
-    assertSerializable( sessionStore );
+    assertEquals( HttpURLConnection.HTTP_OK, response.getResponseCode() );
+    assertTrue( response.isValidJavascript() );
   }
 
   protected void setUp() throws Exception {
     ClusterFixture.setUp();
-    servletEngine = new JettyEngine();
-    servletEngine.start( ButtonEntryPoint.class );
+    cluster = new JettyCluster();
+    servletEngine = cluster.addServletEngine();
+    cluster.start( WidgetsEntryPoint.class );
     client = new RWTClient( servletEngine );
   }
 
   protected void tearDown() throws Exception {
-    servletEngine.stop();
+    cluster.stop();
     ClusterFixture.tearDown();
-  }
-
-  private static void assertSerializable( HttpSession session ) {
-    Enumeration names = session.getAttributeNames();
-    while( names.hasMoreElements() ) {
-      String name = ( String )names.nextElement();
-      Object value = session.getAttribute( name );
-      String msg = "Session attribute not serializable: " + name;
-      assertIsSerializable( msg, value );
-    }
-  }
-
-  private static void assertSerializable( ISessionStore sessionStore ) {
-    Enumeration names = sessionStore.getAttributeNames();
-    while( names.hasMoreElements() ) {
-      String name = ( String )names.nextElement();
-      Object value = sessionStore.getAttribute( name );
-      String msg = "SessionStore attribute not serializable: " + name;
-      assertIsSerializable( msg, value );
-    }
-  }
-
-  private static void assertIsSerializable( String msg, Object value ) {
-    if( value != null ) {
-      assertTrue( msg, value instanceof Serializable );
-    }
   }
 }
