@@ -53,7 +53,7 @@ public class List extends Scrollable {
 
   private final ListModel model;
   private int focusIndex = -1;
-  private IListAdapter listAdapter;
+  private transient IListAdapter listAdapter;
   private final ResizeListener resizeListener;
   private int topIndex = 0;
   private ScrollBar verticalBar;

@@ -267,7 +267,7 @@ public class Table extends Composite {
 
   private static final int[] EMPTY_SELECTION = new int[ 0 ];
 
-  private CompositeItemHolder itemHolder;
+  private transient CompositeItemHolder itemHolder;
   private final ITableAdapter tableAdapter;
   private final ResizeListener resizeListener;
   private int itemCount;
