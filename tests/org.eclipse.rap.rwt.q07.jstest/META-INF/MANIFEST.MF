@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Javascript test suite
-Bundle-SymbolicName: org.eclipse.rap.rwt.jstest;singleton:=true
+Bundle-SymbolicName: org.eclipse.rap.rwt.jstest
 Bundle-Version: 1.5.0.qualifier
 Export-Package: org.eclipse.rwt.test,
  org.eclipse.rwt.test.fixture,
@@ -9,8 +9,11 @@ Export-Package: org.eclipse.rwt.test,
  resource
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.equinox.http.jetty;bundle-version="[2.0.0,4.0.0)",
- org.eclipse.osgi.services;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.core.runtime;bundle-version="[3.6.0,4.0.0)"
-Import-Package: javax.servlet.http;version="2.3.0"
-Bundle-Activator: org.eclipse.rap.rwt.q07.jstest.internal.Activator
+ org.eclipse.rap.rwt;bundle-version="1.5.0"
+Import-Package: javax.servlet;version="2.5.0",
+ javax.servlet.http;version="2.5.0",
+ org.osgi.framework;version="1.6.0",
+ org.osgi.service.http;version="1.2.1",
+ org.osgi.util.tracker;version="1.5.0"
 Bundle-Vendor: Eclipse.org - RAP
+Bundle-Activator: org.eclipse.rap.rwt.jstest.internal.Activator

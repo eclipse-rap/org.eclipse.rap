@@ -15,7 +15,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
     
   members : {
 
-    BLANK : "../org.eclipse.rap.rwt/resources/resource/static/html/blank.html",
+    BLANK : "../rwt-resources/resource/static/html/blank.html",
         
     testCreate : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;

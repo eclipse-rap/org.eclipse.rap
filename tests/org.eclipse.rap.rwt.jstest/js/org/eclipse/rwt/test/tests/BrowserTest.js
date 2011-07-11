@@ -1,19 +1,21 @@
 /*******************************************************************************
- * Copyright (c) 2010,2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
+
   extend : qx.core.Object,
-  
+
   members : {
 
-    BLANK : "../org.eclipse.rap.rwt/resources/resource/static/html/blank.html",
+    BLANK : "../rwt-resources/resource/static/html/blank.html",
 
     testGetDomain : function() {
       var url1 = "HTtp://google.de/";
@@ -51,7 +53,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         testUtil.store( browser );
       },
       function( browser ) {
-        //NOTE: Using "_isLoaded" instead of "isLoaded" because of IE. 
+        //NOTE: Using "_isLoaded" instead of "isLoaded" because of IE.
         assertTrue( "slow connection?", browser._isLoaded );
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         testUtil.initRequestLog();
@@ -70,7 +72,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         delete foo;
       }
     ],
-    
+
     testEvaluate :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -89,7 +91,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         browser.destroy();
       }
     ],
-    
+
     testExecuteFailed :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -108,7 +110,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         delete foo;
       }
     ],
-    
+
     testEvaluateReturnsRegexp :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -293,7 +295,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         browser.destroy();
       }
     ],
-    
+
     testCreateDestroyBrowserFunctionThenNavigate :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -318,7 +320,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         browser.destroy();
       }
     ],
-    
+
     testCreateBrowserFunctionThenSetSourceToOtherDomain :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -388,14 +390,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         testUtil.store( browser );
       },
       function( browser ) {
-        // NOTE: Some IE dont fire a load event for this scenario, 
+        // NOTE: Some IE dont fire a load event for this scenario,
         //       therefore can not check that side is loaded,
-        //       could lead to false negative (red) test  
+        //       could lead to false negative (red) test
         if( !qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
           assertTrue( "native loaded?", browser.getUserData( "nativeLoaded" ) );
         }
         var error = null;
-        try{ 
+        try{
           browser.createFunction( "abc" );
         }catch( ex ) {
           error = ex;
@@ -473,7 +475,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var wm = org.eclipse.swt.WidgetManager.getInstance();      
+        var wm = org.eclipse.swt.WidgetManager.getInstance();
         var el = browser._getTargetNode();
         var iframe = browser._iframeNode;
         assertTrue( iframe.parentNode === el );
@@ -561,7 +563,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     /////////////
     // helper
-    
+
     _createBrowser : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var browser = new org.eclipse.swt.browser.Browser();
@@ -569,13 +571,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       browser.setSpace( 10, 576, 57, 529 );
       browser.setSource( this.BLANK );
       browser.syncSource();
-      var wm = org.eclipse.swt.WidgetManager.getInstance();      
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.add( browser, "w6", true );
       testUtil.flush();
       return browser;
     }
-    
-    
+
  }
-  
+
 } );

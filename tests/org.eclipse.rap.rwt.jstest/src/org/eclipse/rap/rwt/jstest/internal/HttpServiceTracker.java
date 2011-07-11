@@ -1,0 +1,65 @@
+/*******************************************************************************
+ * Copyright (c) 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
+package org.eclipse.rap.rwt.jstest.internal;
+
+import javax.servlet.ServletException;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
+import org.osgi.util.tracker.ServiceTracker;
+
+
+public class HttpServiceTracker extends ServiceTracker<HttpService, HttpService> {
+
+  private static final String TEST_RESOURCES_PATH = "/test-resources";
+  private static final String RWT_SERVLET_PATH = "/rwt-resources";
+
+  public HttpServiceTracker( BundleContext context ) {
+    super( context, HttpService.class.getName(), null );
+  }
+
+  @Override
+  public HttpService addingService( ServiceReference<HttpService> reference ) {
+    HttpService httpService = super.addingService( reference );
+    try {
+      register( httpService );
+      String port = ( String )reference.getProperty( "http.port" );
+      printUrl( port );
+    } catch( Exception exception ) {
+      throw new RuntimeException( "Failed to add http service", exception );
+    }
+    return httpService;
+  }
+
+  @Override
+  public void removedService( ServiceReference<HttpService> reference, HttpService service ) {
+    unregister( service );
+  }
+
+  private void register( HttpService httpService ) throws NamespaceException, ServletException {
+    httpService.registerServlet( RWT_SERVLET_PATH, new RwtResourcesServlet(), null, null );
+    httpService.registerResources( TEST_RESOURCES_PATH, "/js", null );
+    httpService.registerResources( "/", "/htdocs", null );
+  }
+
+  private void unregister( HttpService service ) {
+    service.unregister( "/" );
+    service.unregister( TEST_RESOURCES_PATH );
+    service.unregister( RWT_SERVLET_PATH );
+  }
+
+  private void printUrl( String port ) {
+    System.out.println( "Open this URL to start the tests:" );
+    System.out.println( "http://localhost:" + port + "/index.html" );
+  }
+}
