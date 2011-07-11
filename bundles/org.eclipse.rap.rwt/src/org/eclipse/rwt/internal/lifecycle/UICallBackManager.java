@@ -26,37 +26,6 @@ public final class UICallBackManager implements SerializableCompatibility {
   private static final String FORCE_UI_CALLBACK
     = UICallBackManager.class.getName() + "#forceUICallBack";
 
-  static final class IdManager implements SerializableCompatibility {
-  
-    private final Set<String> ids;
-    private final SerializableLock lock;
-  
-    private IdManager() {
-      ids = new HashSet<String>();
-      lock = new SerializableLock();
-    }
-  
-    int add( String id ) {
-      synchronized( lock ) {
-        ids.add( id );
-        return ids.size();
-      }
-    }
-  
-    int remove( String id ) {
-      synchronized( lock ) {
-        ids.remove( id );
-        return ids.size();
-      }
-    }
-  
-    boolean isEmpty() {
-      synchronized( lock ) {
-        return ids.isEmpty();
-      }
-    }
-  }
-
   public static UICallBackManager getInstance() {
     return ( UICallBackManager )SessionSingletonBase.getInstance( UICallBackManager.class );
   }

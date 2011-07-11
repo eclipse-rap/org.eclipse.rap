@@ -15,7 +15,6 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.lifecycle.UICallBackManager.IdManager;
 import org.eclipse.rwt.internal.util.ClassUtil;
 
 
