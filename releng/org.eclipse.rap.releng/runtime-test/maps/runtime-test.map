@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2003-2011 by Innoopract Informationssysteme GmbH and others
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     Innoopract Informationssysteme GmbH - initial API and implementation
+#     EclipseSource - ongoing development
+###############################################################################
+
+fragment@org.eclipse.rap.ui.forms.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.ui.test/org.eclipse.rap.ui.forms.test
+
+#styled text
+plugin@org.eclipse.rwt.widgets.styledtext=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/sandbox/org.eclipse.rwt.widgets.styledtext
+plugin@org.eclipse.rwt.widgets.styledtext.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/sandbox/org.eclipse.rwt.widgets.styledtext.test
+
+# tests
+feature@org.eclipse.rap.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.releng/runtime/test-feature
+feature@org.eclipse.rap.pretest=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.releng/runtime/pretest-feature
+plugin@org.eclipse.rap.rwt.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.test
+plugin@org.eclipse.rap.rwt.themes.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.themes.test
+fragment@org.eclipse.rap.rwt.testfixture=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.testfixture
+
+# rwt osgi integration
+fragment@org.eclipse.rap.rwt.osgi.test=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt.test/org.eclipse.rap.rwt.osgi.test
+
