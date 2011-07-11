@@ -14,6 +14,8 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.custom.*;
+import org.eclipse.swt.internal.widgets.WidgetTreeVisitor;
+import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
 
@@ -40,9 +42,9 @@ public class WidgetsEntryPoint implements IEntryPoint {
     createDateTime();
     createGroup();
     createLabel();
-    Link createLink = new Link( shell, SWT.NONE );
-    List createList = new List( shell, SWT.NONE );
-    ProgressBar createProgressBar = new ProgressBar( shell, SWT.NONE );
+    createLink();
+    createList();
+    createProgressBar();
     createSashForm();
     createScale();
     createSlider();
@@ -52,8 +54,34 @@ public class WidgetsEntryPoint implements IEntryPoint {
     createText();
     createToolBar();
     createTree();
+    obtainAccessibles();
     shell.open();
     return 0;
+  }
+
+  @SuppressWarnings("restriction")
+  private void obtainAccessibles() {
+    AllWidgetTreeVisitor.accept( shell, new WidgetTreeVisitor() {
+      public boolean visit( Widget widget ) {
+        if( widget instanceof Control ) {
+          Control control = ( Control )widget;
+          control.getAccessible();
+        }
+        return true;
+      }
+    } );
+  }
+
+  private void createProgressBar() {
+    new ProgressBar( shell, SWT.NONE );
+  }
+
+  private void createList() {
+    new List( shell, SWT.NONE );
+  }
+
+  private void createLink() {
+    new Link( shell, SWT.NONE );
   }
 
   private void createTree() {

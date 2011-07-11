@@ -12,6 +12,7 @@ package org.eclipse.swt.accessibility;
 
 
 import org.eclipse.swt.*;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -37,7 +38,7 @@ import org.eclipse.swt.widgets.*;
  * 
  * @since 1.4
  */
-public class Accessible {
+public class Accessible implements SerializableCompatibility {
 	Control control;
 
 	/**
