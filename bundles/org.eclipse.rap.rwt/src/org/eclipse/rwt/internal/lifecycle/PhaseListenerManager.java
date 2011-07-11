@@ -25,7 +25,7 @@ class PhaseListenerManager {
   private final Object lock;
   private final Set<PhaseListener> phaseListeners;
   
-  public PhaseListenerManager( ILifeCycle eventSource ) {
+  PhaseListenerManager( ILifeCycle eventSource ) {
     this.eventSource = eventSource;
     this.lock = new Object();
     this.phaseListeners = new HashSet<PhaseListener>();
@@ -38,8 +38,6 @@ class PhaseListenerManager {
     }
   }
   
-  
-
   void addPhaseListeners( PhaseListener[] phaseListeners ) {
     ParamCheck.notNull( phaseListeners, "phaseListeners" );
     for( int i = 0; i < phaseListeners.length; i++ ) {
