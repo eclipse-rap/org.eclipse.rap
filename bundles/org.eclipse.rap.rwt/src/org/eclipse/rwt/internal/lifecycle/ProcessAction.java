@@ -22,8 +22,10 @@ final class ProcessAction implements IPhase {
   }
 
   public PhaseId execute( Display display ) {
+    UICallBackManager.getInstance().notifyUIThreadStart();
     while( display.readAndDispatch() ) {
     }
+    UICallBackManager.getInstance().notifyUIThreadEnd();
     return PhaseId.RENDER;
   }
 }
