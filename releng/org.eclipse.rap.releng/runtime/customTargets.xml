@@ -16,35 +16,6 @@
   <!-- ===================================================================== -->
   <target name="getMapFiles" depends="checkLocalMaps" unless="skipMaps">
     <cvs cvsRoot="${mapsRepo}" package="${mapsRoot}" dest="${buildDirectory}/maps" tag="${mapsCheckoutTag}" />
-    
-    <antcall target="createMockito" />
-  	
-  </target>
-
-  <target name="createMockito">
-  	<!-- Hack to integrate mockito: this should be removed once the signing and package
-  	     import problems are solved with mockito orbit jar are solved. We cannot use 
-  	     map file entries for this, since we need a certain CVS tag different from head,
-  	     additionally the manifest has to be patched to declare a bundle dependency to 
-  	     org.hamcrest. The package import doesn't work in build environment (shrug) -->
-  	<cvs cvsRoot=":pserver:anonymous@dev.eclipse.org:/cvsroot/tools"
-  	     package="org.eclipse.orbit/org.mockito" 
-  		   dest="${buildDirectory}/orbit"
-  		   tag="v1_8_4" />
-  	<delete dir="${baseLocation}/plugins/org.mockito_rwtbuild" />
-  	<copy todir="${baseLocation}/plugins/org.mockito_rwtbuild">
-  	  <fileset dir="${buildDirectory}/orbit/org.eclipse.orbit/org.mockito"/>
-  	</copy>
-  	<delete file="${baseLocation}/plugins/org.mockito_rwtbuild/META-INF/MANIFEST.MF" />
-    <copy file="${builder}/MOCKITO_MANIFEST_REPLACEMENT.MF"
-          tofile="${baseLocation}/plugins/org.mockito_rwtbuild/META-INF/MANIFEST.MF"/>
-  	<delete file="${baseLocation}/plugins/org.mockito_rwtbuild/.classPath" />
-  	<delete file="${baseLocation}/plugins/org.mockito_rwtbuild/.project" />
-  	<zip destfile="${baseLocation}/plugins/org.mockito.jar"
-  	     basedir="${baseLocation}/plugins/org.mockito_rwtbuild" />
-  	<delete dir="${baseLocation}/plugins/org.mockito_rwtbuild" />
-  	<!-- End of mockito hack-->
-  	
   </target>
 
   <target name="checkLocalMaps">
@@ -75,10 +46,6 @@
   <target name="preSetup">
     <!-- tidy up before build to clean broken build -->
     <antcall target="tidyup" />
-  	
-  	<!-- see comment at createMockito target -->
-  	<delete file="${baseLocation}/plugins/org.mockito.jar" />
-  	
   </target>
 
   <!-- ===================================================================== -->
@@ -109,83 +76,11 @@
     </pathconvert>
     <fail unless="icuBaseAvailable" message="ICU base is not available in base platform." />
     
-    <!-- Replace javax.servlet 3.0 with version 2.5 -->
-    <delete>
-      <fileset dir="${targetLocation}/eclipse/plugins" includes="javax.servlet_*.jar"/>
-      <fileset dir="${targetLocation}/eclipse/plugins" includes="javax.servlet.source_*.jar"/>
-    </delete>
-    <copy todir="${targetLocation}/eclipse/plugins">
-      <fileset dir="${baseLocation}/plugins" includes="javax.servlet_2.5*.jar"/>
-      <fileset dir="${baseLocation}/plugins" includes="javax.servlet.source_2.5*.jar"/>
-    </copy>
-
     <!-- zip target -->
     <zip destfile="${buildDirectory}/${buildLabel}/${buildLabel}.zip">
       <fileset dir="${targetLocation}" />
     </zip>
 
-  </target>
-
-  <!-- ===================================================================== -->
-  <!-- Steps to do to test the build results -->
-  <!-- ===================================================================== -->
-  <target name="runTests">
-  	<!-- set up class path -->
-    <property name="host.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/@dot" />
-    <property name="rwt_osgi.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.osgi.test/@dot" />
-    <property name="forms.tests" value="${buildDirectory}/plugins/org.eclipse.rap.ui.forms.test/@dot" />
-    <property name="themes.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.themes.test/@dot" />
-    <property name="styledtext.tests" value="${buildDirectory}/plugins/org.eclipse.rwt.widgets.styledtext.test/@dot" />
-    <property name="reports.tests" value="${buildDirectory}/test-reports" />
-    <mkdir dir="${reports.tests}" />
-    <path id="cp">
-      <pathelement location="${host.tests}" />
-      <pathelement location="${rwt_osgi.tests}" />
-      <pathelement location="${forms.tests}" />
-      <pathelement location="${themes.tests}" />
-      <pathelement location="${styledtext.tests}" />
-      <fileset dir="${buildDirectory}/${buildLabel}/target/eclipse/plugins">
-        <include name="**/*.jar" />
-        <exclude name="**/javax.servlet*.jar" />
-      </fileset>
-      <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.testfixture/@dot" />
-      <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.theme.classic/@dot" />
-      <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.design.example/@dot" />
-      <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/lib/resource_manager_test.jar" />
-      <pathelement path="${buildDirectory}/plugins/org.eclipse.rwt.widgets.styledtext/@dot" />
-      <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.ui.forms/@dot" />
-      <fileset dir="${baseLocation}/plugins">
-        <include name="javax.servlet_3*.jar" />
-        <include name="org.junit_3*/junit.jar" />
-        <include name="org.mockito*/" />
-        <include name="org.objenesis*/" />
-        <include name="org.hamcrest*/" />
-        <include name="org.json*/" />
-      </fileset>
-    </path>
-
-    <!-- run tests -->
-    <junit printsummary="yes" failureproperty="test.failed" fork="yes" forkmode="perTest">
-      <classpath refid="cp" />
-      <formatter type="xml" />
-      <batchtest fork="yes" todir="${reports.tests}">
-        <fileset dir="${host.tests}">
-          <include name="**/*_Test.class" />
-        </fileset>
-        <fileset dir="${rwt_osgi.tests}">
-          <include name="**/*_Test.class" />
-        </fileset>
-        <fileset dir="${forms.tests}">
-          <include name="**/*_Test.class" />
-        </fileset>
-        <fileset dir="${themes.tests}">
-          <include name="**/*_Test.class" />
-        </fileset>
-        <fileset dir="${styledtext.tests}">
-          <include name="**/*_Test.class" />
-        </fileset>
-      </batchtest>
-    </junit>
   </target>
 
   <!-- ===================================================================== -->
@@ -203,11 +98,6 @@
         <include name="${buildLabel}.zip" />
       </fileset>
     </copy>
-
-    <!-- copy test results -->
-    <copy todir="${buildOutputDirectory}/test-reports">
-      <fileset dir="${buildDirectory}/test-reports" />
-    </copy>
   </target>
 
   <target name="tidyup">
@@ -215,8 +105,7 @@
     <delete dir="${buildDirectory}" includeEmptyDirs="true" defaultexcludes="false" />
   </target>
 
-  <target name="finish" depends="gatherLogs,assembleTarget,runTests,publish,tidyup">
-    <fail if="test.failed" message="Test failed" />
+  <target name="finish" depends="gatherLogs,assembleTarget,publish,tidyup">
   </target>
 
   <!-- ===================================================================== -->
