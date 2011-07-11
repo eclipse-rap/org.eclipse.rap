@@ -137,8 +137,7 @@ public final class EncodingUtil {
       if( input.charAt( i ) == ' ' ) {
         buffer.append( NBSP );
       } else {
-        // Index should be greater then 1 for the case when the string begin
-        // with single white space.
+        // Index should be greater than 1 for the case when the string begins with a single space.
         if( i > 1 ){
           // Replaces back with ' ' the single white space between words
           // or the last white space in a white spaces sequence.
