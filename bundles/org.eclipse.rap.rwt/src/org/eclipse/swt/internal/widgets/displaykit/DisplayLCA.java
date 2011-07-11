@@ -23,7 +23,8 @@ import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.theme.Theme;
+import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.dnd.DragSource;
@@ -40,7 +41,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   private final static String PATTERN_REQUEST_COUNTER
     =   "var req = org.eclipse.swt.Request.getInstance();"
       + "req.setRequestCounter( \"{0,number,#}\" );";
-
+  
   static final String PROP_FOCUS_CONTROL = "focusControl";
   static final String PROP_CURR_THEME = "currTheme";
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
@@ -326,9 +327,10 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  private static void writeUICallBackActivation( Display display ) {
-    if( !display.isDisposed() ) {
-      UICallBackServiceHandler.writeActivation();
+  static void writeUICallBackActivation( Display display ) {
+    if( !display.isDisposed() && UICallBackManager.getInstance().needsActivation() ) {
+      JavaScriptResponseWriter writer = ContextProvider.getStateInfo().getResponseWriter();
+      writer.write( "org.eclipse.swt.Request.getInstance().enableUICallBack();" );
     }
   }
 

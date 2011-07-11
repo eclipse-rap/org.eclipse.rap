@@ -24,6 +24,9 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 public final class UICallBackManager implements SerializableCompatibility {
   private static final long serialVersionUID = 1L;
 
+  private static final String FORCE_UI_CALLBACK
+    = UICallBackManager.class.getName() + "#forceUICallBack";
+
   static final class IdManager implements SerializableCompatibility {
     private static final long serialVersionUID = 1L;
   
@@ -105,12 +108,15 @@ public final class UICallBackManager implements SerializableCompatibility {
     }
   }
 
-  public void setHasRunnables( final boolean hasRunnables ) {
+  public void setHasRunnables( boolean hasRunnables ) {
     synchronized( lock ) {
       this.hasRunnables = hasRunnables;
     }
+    if( hasRunnables && isUICallBackActive() ) {
+      ContextProvider.getStateInfo().setAttribute( FORCE_UI_CALLBACK, Boolean.TRUE );
+    }
   }
-
+  
   void notifyUIThreadStart() {
     synchronized( lock ) {
       uiThreadRunning = true;
@@ -171,25 +177,31 @@ public final class UICallBackManager implements SerializableCompatibility {
   }
 
   boolean isUICallBackActive() {
-    boolean result = !idManager.isEmpty();
-    if( !result ) {
-      result = hasRunnables();
-    }
-    return result;
+    return !idManager.isEmpty();
   }
 
   public void activateUICallBacksFor( final String id ) {
-    int size = idManager.add( id );
-    if( size == 1 ) {
-      UICallBackServiceHandler.registerUICallBackActivator();
-    }
+    idManager.add( id );
   }
 
   public void deactivateUICallBacksFor( final String id ) {
-    // release blocked callback handler request
     int size = idManager.remove( id );
     if( size == 0 ) {
       releaseBlockedRequest();
     }
+  }
+
+  public boolean needsActivation() {
+    boolean result;
+    if( isCallBackRequestBlocked() ) {
+      result = false;
+    } else {
+      result = isUICallBackActive() || forceUICallBackForPendingRunnables();
+    }
+    return result;
+  }
+
+  private static boolean forceUICallBackForPendingRunnables() {
+    return Boolean.TRUE.equals( ContextProvider.getStateInfo().getAttribute( FORCE_UI_CALLBACK ) );
   }
 }

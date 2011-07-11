@@ -34,6 +34,9 @@ import org.eclipse.swt.widgets.*;
 
 public class DisplayLCA_Test extends TestCase {
 
+  private static final String ENABLE_UI_CALL_BACK
+    = "org.eclipse.swt.Request.getInstance().enableUICallBack();";
+
   private static final List<Widget> log = new ArrayList<Widget>();
   private static final List<Widget> renderInitLog = new ArrayList<Widget>();
   private static final List<Widget> renderChangesLog = new ArrayList<Widget>();
@@ -378,6 +381,13 @@ public class DisplayLCA_Test extends TestCase {
     displayLCA.readData( display );
     
     assertEquals( new Point( 1, 2 ), display.getCursorLocation() );
+  }
+  
+  public void testWriteUICallBackActivation() throws Exception {
+    Display display = new Display();
+    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    DisplayLCA.writeUICallBackActivation( display );
+    assertEquals( ENABLE_UI_CALL_BACK, Fixture.getAllMarkup() );
   }
 
   protected void setUp() throws Exception {
