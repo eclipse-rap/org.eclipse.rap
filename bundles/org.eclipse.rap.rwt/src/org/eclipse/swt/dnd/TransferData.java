@@ -30,7 +30,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  * @since 1.3
  */
 public class TransferData implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   /**
 	 * The type is a unique identifier of a system format or user defined format.

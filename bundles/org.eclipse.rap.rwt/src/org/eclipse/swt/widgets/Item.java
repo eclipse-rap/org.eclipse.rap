@@ -26,7 +26,6 @@ import org.eclipse.swt.graphics.Image;
  * </dl>
  */
 public abstract class Item extends Widget {
-  private static final long serialVersionUID = 1L;
 
   String text;
   Image image;

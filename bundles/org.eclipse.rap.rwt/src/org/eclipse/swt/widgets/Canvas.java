@@ -41,7 +41,6 @@ import org.eclipse.swt.internal.graphics.IGCAdapter;
  * @since 1.0
  */
 public class Canvas extends Composite {
-  private static final long serialVersionUID = 1L;
 
   private transient GCAdapter gcAdapter;
 

@@ -39,7 +39,6 @@ import org.eclipse.swt.internal.widgets.expandbarkit.ExpandBarThemeAdapter;
  * @since 1.2
  */
 public class ExpandItem extends Item {
-  private static final long serialVersionUID = 1L;
 
   static final int LEFT_MARGIN = 4;
   static final int RIGHT_MARGIN = 24;

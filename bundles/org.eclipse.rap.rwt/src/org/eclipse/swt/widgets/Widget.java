@@ -59,7 +59,6 @@ import org.eclipse.swt.internal.widgets.*;
  * @since 1.0
  */
 public abstract class Widget implements Adaptable, SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   /* Default size for widgets */
   static final int DEFAULT_WIDTH = 64;

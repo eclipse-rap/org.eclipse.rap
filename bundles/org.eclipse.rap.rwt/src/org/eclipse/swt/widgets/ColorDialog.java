@@ -35,7 +35,6 @@ import org.eclipse.swt.layout.GridLayout;
  * @since 1.2
  */
 public class ColorDialog extends Dialog {
-  private static final long serialVersionUID = 1L;
 
   private class PaletteListener extends MouseAdapter {
     private RGB rgb;

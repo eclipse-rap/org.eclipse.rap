@@ -24,8 +24,6 @@ import org.eclipse.rwt.internal.service.ServiceContext;
 
 public class RWTDelegate extends HttpServlet {
 
-  private static final long serialVersionUID = 1L;
-
   ////////////////////
   // Servlet overrides
 

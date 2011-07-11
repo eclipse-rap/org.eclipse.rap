@@ -40,7 +40,6 @@ import org.eclipse.swt.internal.widgets.toolbarkit.ToolBarThemeAdapter;
  * </p>
  */
 public class ToolItem extends Item {
-  private static final long serialVersionUID = 1L;
 
   private static final int DEFAULT_WIDTH = 24;
   private static final int DEFAULT_HEIGHT = 22;

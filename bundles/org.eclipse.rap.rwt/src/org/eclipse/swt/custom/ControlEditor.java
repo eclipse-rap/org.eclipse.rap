@@ -60,11 +60,6 @@ import org.eclipse.swt.widgets.*;
  * @since 1.0
  */
 public class ControlEditor implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
-
-  // RAP Listener has to be serializable (bug 345699)
-  interface SerializableListener extends Listener, SerializableCompatibility {
-  }
 
   /**
    * Specifies how the editor should be aligned relative to the control. Allowed
@@ -124,8 +119,7 @@ public class ControlEditor implements SerializableCompatibility {
    */
   public ControlEditor( Composite parent ) {
     this.parent = parent;
-    controlListener = new SerializableListener() {
-      private static final long serialVersionUID = 1L;
+    controlListener = new Listener() {
       public void handleEvent( Event e ) {
         layout();
       }
@@ -133,8 +127,7 @@ public class ControlEditor implements SerializableCompatibility {
     for( int i = 0; i < EVENTS.length; i++ ) {
       parent.addListener( EVENTS[ i ], controlListener );
     }
-    scrollbarListener = new SerializableListener() {
-      private static final long serialVersionUID = 1L;
+    scrollbarListener = new Listener() {
       public void handleEvent( Event e ) {
         scroll( e );
       }

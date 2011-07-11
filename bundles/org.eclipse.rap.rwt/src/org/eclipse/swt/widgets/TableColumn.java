@@ -36,7 +36,6 @@ import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
  * </p>
  */
 public class TableColumn extends Item {
-  private static final long serialVersionUID = 1L;
 
   // TODO [rh] Fow now: keep in sync with settings in appearance theme, should
   //      be moved to theme adapter or similar

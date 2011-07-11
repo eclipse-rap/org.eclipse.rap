@@ -27,7 +27,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 public final class SessionStoreImpl 
   implements ISessionStore, HttpSessionBindingListener, SerializableCompatibility 
 {
-  private static final long serialVersionUID = 1L;
 
   public static final String ATTR_SESSION_STORE = SessionStoreImpl.class.getName();
   

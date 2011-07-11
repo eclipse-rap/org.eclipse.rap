@@ -32,7 +32,6 @@ import org.eclipse.swt.internal.widgets.*;
  * </p>
  */
 public class TableItem extends Item {
-  private static final long serialVersionUID = 1L;
 
   private final class TableItemAdapter implements ITableItemAdapter {
 

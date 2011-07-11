@@ -38,7 +38,6 @@ import org.eclipse.swt.layout.GridLayout;
  * @since 1.3
  */
 public class FontDialog extends Dialog {
-  private static final long serialVersionUID = 1L;
 
   private static final int BUTTON_WIDTH = 60;
 

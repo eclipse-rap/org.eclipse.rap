@@ -19,7 +19,6 @@ import org.eclipse.swt.internal.widgets.SlimList;
  * Holds the child controls of Composites
  */
 final class ControlHolder implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   private final List<Control> controls;
   

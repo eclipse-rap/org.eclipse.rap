@@ -21,7 +21,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 
 public class EventAdapter implements IEventAdapter, SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   private static final EventListener[] EMPTY_LISTENERS = new SWTEventListener[ 0 ];
 
@@ -32,7 +31,6 @@ public class EventAdapter implements IEventAdapter, SerializableCompatibility {
    * memory consumption.</p>
    */
   private static final class ListenerSet implements Set<EventListener>, SerializableCompatibility {
-    private static final long serialVersionUID = 1L;
 
     // Start with low capacity, assuming that only few listeners are added
     private final List<EventListener> list = new ArrayList<EventListener>( 3 );

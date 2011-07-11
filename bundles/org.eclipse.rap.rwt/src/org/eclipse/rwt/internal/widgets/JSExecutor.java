@@ -47,8 +47,6 @@ public final class JSExecutor {
   }
 
   private static class JSExecutorPhaseListener implements PhaseListener {
-    private static final long serialVersionUID = 1L;
-
     private final StringBuffer code;
     private final Display display;
 

@@ -38,8 +38,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 @SuppressWarnings("all")
 public final class RGB implements SerializableCompatibility {
 
-  private static final long serialVersionUID = 1L;
-  
   /**
    * the red component of the RGB
    */

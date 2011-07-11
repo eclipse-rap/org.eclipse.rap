@@ -21,7 +21,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Widget;
 
 public final class WidgetAdapter implements IWidgetAdapter, SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   private final String id;
   private boolean initialized;

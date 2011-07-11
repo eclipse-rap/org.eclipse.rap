@@ -26,7 +26,6 @@ import org.eclipse.rwt.SessionSingletonBase;
  * @see Transfer
  */
 public class HTMLTransfer extends ByteArrayTransfer {
-  private static final long serialVersionUID = 1L;
 
   static final String TYPE_NAME = "html";
   static final int TYPE_ID = registerType( TYPE_NAME );

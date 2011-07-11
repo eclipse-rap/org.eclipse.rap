@@ -21,7 +21,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  * Instances of this class hold the data associated with a particular image.
  */
 public final class InternalImage implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   private final String resourceName;
   private final int width;

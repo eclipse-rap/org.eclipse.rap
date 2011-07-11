@@ -20,8 +20,6 @@ public final class CurrentPhase {
   
   public static final class Listener implements PhaseListener {
 
-    private static final long serialVersionUID = 1L;
-
     public void beforePhase( final PhaseEvent event ) {
       set( event.getPhaseId() );
     }

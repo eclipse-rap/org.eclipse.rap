@@ -25,7 +25,6 @@ import org.eclipse.swt.internal.widgets.MenuHolder.IMenuHolderAdapter;
  * </p>
  */
 public class Decorations extends Canvas {
-  private static final long serialVersionUID = 1L;
 
   private Menu menuBar;
   private MenuHolder menuHolder;

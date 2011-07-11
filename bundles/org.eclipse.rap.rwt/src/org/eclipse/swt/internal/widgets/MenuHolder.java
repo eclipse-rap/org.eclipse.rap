@@ -18,7 +18,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Widget;
 
 public final class MenuHolder implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   public static interface IMenuHolderAdapter {
     // marker interface

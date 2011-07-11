@@ -36,7 +36,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  * @since 1.0
  */
 public final class RowData implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
   
   /**
    * width specifies the desired width in pixels. This value

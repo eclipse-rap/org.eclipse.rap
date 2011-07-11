@@ -35,7 +35,6 @@ import org.eclipse.swt.graphics.Point;
  * @since 1.0
  */
 public class Sash extends Control {
-  private static final long serialVersionUID = 1L;
 
   /**
 	 * Constructs a new instance of this class given its parent and a style

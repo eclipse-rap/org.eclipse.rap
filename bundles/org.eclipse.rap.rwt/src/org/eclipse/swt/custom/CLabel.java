@@ -51,15 +51,11 @@ import org.eclipse.swt.widgets.Composite;
 public class CLabel extends Canvas {
   
 	private class LabelDisposeListener implements DisposeListener, SerializableCompatibility  {
-    private static final long serialVersionUID = 1L;
-
     public void widgetDisposed( DisposeEvent event ) {
       onDispose( event );
     }
   }
 
-  private static final long serialVersionUID = 1L;
-	
   /** a string inserted in the middle of text that has been shortened */
 //  private static final String ELLIPSIS = "..."; //$NON-NLS-1$ // could use the ellipsis glyph on some platforms "\u2026"
   /** the alignment. Either CENTER, RIGHT, LEFT. Default is LEFT */

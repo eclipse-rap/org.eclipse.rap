@@ -21,7 +21,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  */
 
 class RunnableLock implements SerializableCompatibility {
-	private static final long serialVersionUID = 1L;
 	
   Runnable runnable;
 	transient Thread thread;

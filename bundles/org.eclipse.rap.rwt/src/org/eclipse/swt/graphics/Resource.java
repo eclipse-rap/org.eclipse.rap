@@ -37,7 +37,6 @@ import org.eclipse.swt.widgets.Display;
  * @since 1.0
  */
 public abstract class Resource implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   final Device device;
   private boolean disposed;

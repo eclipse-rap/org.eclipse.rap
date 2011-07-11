@@ -56,7 +56,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  
 @SuppressWarnings("all")
 public final class PaletteData implements SerializableCompatibility {
-    private static final long serialVersionUID = 1L;
 
     /**
      * true if the receiver is a direct palette, 

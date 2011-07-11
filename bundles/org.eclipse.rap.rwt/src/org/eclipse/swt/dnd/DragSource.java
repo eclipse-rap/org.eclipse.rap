@@ -96,7 +96,6 @@ import org.eclipse.swt.widgets.*;
  * @since 1.3
  */
 public class DragSource extends Widget {
-  private static final long serialVersionUID = 1L;
 
   transient IDNDAdapter dndAdapter;
 	// info for registering as a drag source
@@ -150,7 +149,6 @@ public DragSource(Control control, int style) {
 	control.setData(DND.DRAG_SOURCE_KEY, this);
 
 	controlListener = new Listener() {
-		private static final long serialVersionUID = 1L;
     public void handleEvent(Event event) {
 			if (event.type == SWT.Dispose) {
 				if (!DragSource.this.isDisposed()) {
@@ -168,7 +166,6 @@ public DragSource(Control control, int style) {
 	control.addListener(SWT.DragDetect, controlListener);
 	
 	this.addListener(SWT.Dispose, new Listener() {
-		private static final long serialVersionUID = 1L;
     public void handleEvent(Event e) {
 			DragSource.this.onDispose();
 		}

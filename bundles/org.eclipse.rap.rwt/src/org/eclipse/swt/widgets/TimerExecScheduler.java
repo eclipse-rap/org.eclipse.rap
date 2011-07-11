@@ -19,7 +19,6 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 
 
 final class TimerExecScheduler implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   private final Display display;
   private final Collection<TimerExecTask> tasks;
@@ -99,7 +98,6 @@ final class TimerExecScheduler implements SerializableCompatibility {
   // Inner classes
 
   private class TimerExecTask extends TimerTask implements SerializableCompatibility {
-    private static final long serialVersionUID = 1L;
     
     private final Runnable runnable;
     private final Date time;

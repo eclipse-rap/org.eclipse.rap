@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.*;
  * @see ScrolledComposite
  */
 final class ScrolledCompositeLayout extends Layout {
-  private static final long serialVersionUID = 1L;
 
   private static final int DEFAULT_WIDTH = 64;
   private static final int DEFAULT_HEIGHT = 64;

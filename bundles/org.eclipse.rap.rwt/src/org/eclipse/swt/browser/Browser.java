@@ -46,7 +46,6 @@ import org.eclipse.swt.widgets.Display;
 // TODO [rh] implement refresh method
 // TODO [rh] bring focus events to work
 public class Browser extends Composite {
-  private static final long serialVersionUID = 1L;
 
   private final class BrowserAdapter implements IBrowserAdapter {
 

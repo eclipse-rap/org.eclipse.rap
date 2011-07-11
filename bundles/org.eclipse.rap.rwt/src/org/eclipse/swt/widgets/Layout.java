@@ -20,7 +20,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  * @see Composite#setLayout(Layout)
  */
 public abstract class Layout implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   /**
 	 * Lays out the children of the specified composite according to this

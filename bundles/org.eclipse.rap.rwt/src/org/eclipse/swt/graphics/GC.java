@@ -65,7 +65,6 @@ import org.eclipse.swt.widgets.Control;
  * @since 1.3
  */
 public class GC extends Resource {
-  private static final long serialVersionUID = 1L;
   
   private final GCDelegate delegate;
   private boolean advanced;

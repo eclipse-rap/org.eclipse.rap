@@ -116,7 +116,6 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
  * @since 1.0
  */
 public class Display extends Device implements Adaptable {
-  private static final long serialVersionUID = 1L;
 
   private static final IFilterEntry[] EMPTY_FILTERS = new IFilterEntry[ 0 ];
   private final static String AVAILABLE_WIDTH = "w4t_width";
@@ -2279,7 +2278,6 @@ public class Display extends Device implements Adaptable {
   // Inner classes
 
   private static class FilterEntry implements IFilterEntry, SerializableCompatibility {
-    private static final long serialVersionUID = 1L;
 
     private final int eventType;
     private final Listener listener;

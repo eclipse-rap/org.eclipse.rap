@@ -29,7 +29,6 @@ import org.eclipse.swt.internal.SWTEventListener;
  * @see Listener
  */
 public class TypedListener implements Listener {
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The receiver's event listener

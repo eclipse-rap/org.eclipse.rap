@@ -16,7 +16,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.*;
 
 class FillData implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   int defaultWidth = -1, defaultHeight = -1;
   int currentWhint, currentHhint, currentWidth = -1, currentHeight = -1;

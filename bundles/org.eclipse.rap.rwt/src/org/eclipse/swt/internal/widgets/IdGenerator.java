@@ -23,7 +23,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  * </p>
  */
 final class IdGenerator implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   static IdGenerator getInstance() {
     return ( IdGenerator )SessionSingletonBase.getInstance( IdGenerator.class );

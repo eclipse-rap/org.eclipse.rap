@@ -69,7 +69,6 @@ public class RWTLifeCycle extends LifeCycle {
   };
 
   private static final class PhaseExecutionError extends ThreadDeath {
-    private static final long serialVersionUID = 1L;
     public PhaseExecutionError( final Throwable cause ) {
       initCause( cause );
     }

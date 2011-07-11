@@ -17,7 +17,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 class ProbeResult implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
   
   private final Point size;
   private final Probe probe;

@@ -40,8 +40,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  */
 public final class Point implements SerializableCompatibility {
   
-	private static final long serialVersionUID = 1L;
-
   /**
 	 * the x coordinate of the point
 	 */

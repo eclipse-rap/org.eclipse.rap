@@ -163,7 +163,6 @@ public final class BrowserLCA extends AbstractWidgetLCA {
       // important when Browser#execute is called from within a BrowserFunction,
       // because than, we have a synchronous requests.
       RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( new PhaseListener() {
-        private static final long serialVersionUID = 1L;
         public void beforePhase( final PhaseEvent event ) {
         }
         public void afterPhase( final PhaseEvent event ) {

@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.Display;
 class ImageSerializer {
   
   private static class SerializableBytes implements Serializable {
-    private static final long serialVersionUID = 1L;
     
     final byte[] data;
     

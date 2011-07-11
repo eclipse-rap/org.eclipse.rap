@@ -41,7 +41,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  * @since 1.3
  */
 public class Synchronizer implements SerializableCompatibility {
-	private static final long serialVersionUID = 1L;
 	
   Display display;
 	int messageCount;

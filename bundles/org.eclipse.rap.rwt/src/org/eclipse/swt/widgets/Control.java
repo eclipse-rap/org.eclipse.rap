@@ -43,7 +43,6 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
  * @since 1.0
  */
 public abstract class Control extends Widget implements Drawable {
-  private static final long serialVersionUID = 1L;
 
   private final class ControlAdapter implements IControlAdapter {
 

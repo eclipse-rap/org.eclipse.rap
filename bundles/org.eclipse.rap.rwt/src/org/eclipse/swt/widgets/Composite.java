@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.ControlHolder.IControlHolderAdapter;
  * </p>
  */
 public class Composite extends Scrollable {
-  private static final long serialVersionUID = 1L;
 
   private Layout layout;
   int layoutCount;

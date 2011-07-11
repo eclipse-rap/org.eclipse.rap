@@ -78,7 +78,6 @@ import org.eclipse.swt.widgets.*;
  * @since 1.0
  */
 public final class FormAttachment implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   /**
    * numerator specifies the numerator of the "a" term in the

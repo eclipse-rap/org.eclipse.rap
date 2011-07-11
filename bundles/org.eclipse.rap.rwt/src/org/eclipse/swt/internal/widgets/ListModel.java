@@ -19,7 +19,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 
 public final class ListModel implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   private static final int[] EMPTY_SELECTION = new int[ 0 ];
 

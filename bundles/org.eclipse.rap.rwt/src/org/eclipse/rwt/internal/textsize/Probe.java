@@ -16,7 +16,6 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 class Probe implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
   
   final static String DEFAULT_PROBE_STRING;
   static {

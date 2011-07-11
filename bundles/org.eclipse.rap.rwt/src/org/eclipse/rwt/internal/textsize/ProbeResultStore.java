@@ -21,7 +21,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 
 final class ProbeResultStore implements SerializableCompatibility  {
-  private static final long serialVersionUID = 1L;
 
   private final Map<FontData,ProbeResult> probeResults;
 

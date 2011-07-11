@@ -39,9 +39,7 @@ import org.eclipse.swt.internal.widgets.spinnerkit.SpinnerThemeAdapter;
  * </p>
  * @since 1.0
  */
-// TODO cut/copy/past not implemented
 public class Spinner extends Composite {
-  private static final long serialVersionUID = 1L;
 
   /**
    * the <!-- operating system --> limit for the number of characters

@@ -68,7 +68,6 @@ import org.eclipse.swt.widgets.*;
  * @since 1.3
  */
 public class DropTarget extends Widget {
-  private static final long serialVersionUID = 1L;
 	
   Control control;
 	Listener controlListener;
@@ -124,7 +123,6 @@ public DropTarget(Control control, int style) {
 	control.setData(DND.DROP_TARGET_KEY, this);
 	
 	controlListener = new Listener () {
-		private static final long serialVersionUID = 1L;
     public void handleEvent (Event event) {
 			if (!DropTarget.this.isDisposed()){
 				DropTarget.this.dispose();
@@ -134,7 +132,6 @@ public DropTarget(Control control, int style) {
 	control.addListener (SWT.Dispose, controlListener);
 	
 	this.addListener(SWT.Dispose, new Listener () {
-		private static final long serialVersionUID = 1L;
     public void handleEvent (Event event) {
 			onDispose();
 		}

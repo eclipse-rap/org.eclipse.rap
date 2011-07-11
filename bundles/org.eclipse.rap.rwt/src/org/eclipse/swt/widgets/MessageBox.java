@@ -45,7 +45,6 @@ import org.eclipse.swt.layout.GridLayout;
  * @since 1.2
  */
 public class MessageBox extends Dialog {
-  private static final long serialVersionUID = 1L;
 
   private static final int SPACING = 20;
   private static final int BUTTON_WIDTH = 61;

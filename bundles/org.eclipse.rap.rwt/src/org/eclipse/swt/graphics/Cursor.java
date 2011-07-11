@@ -38,7 +38,6 @@ import org.eclipse.swt.SWT;
  * @since 1.2
  */
 public final class Cursor extends Resource {
-  private static final long serialVersionUID = 1L;
 
   private final int value;
 

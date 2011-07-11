@@ -34,7 +34,6 @@ import org.eclipse.rwt.SessionSingletonBase;
  * @since 1.3
  */
 public class FileTransfer extends ByteArrayTransfer {
-  private static final long serialVersionUID = 1L;
 
   private static final String TYPE_NAME = "CF_HDROP "; //$NON-NLS-1$
   private static final int TYPE_ID = registerType( TYPE_NAME );

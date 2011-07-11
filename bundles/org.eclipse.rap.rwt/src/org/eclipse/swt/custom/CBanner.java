@@ -47,27 +47,22 @@ public class CBanner extends Composite {
     extends SelectionAdapter 
     implements SerializableCompatibility 
   {
-    private static final long serialVersionUID = 1L;
     public void widgetSelected( SelectionEvent event ) {
       onSepMove( event.x, event.width );
     }
   }
 
   private class BannerResizeListener extends ControlAdapter implements SerializableCompatibility {
-    private static final long serialVersionUID = 1L;
     public void controlResized( ControlEvent event ) {
       onResize();
     }
   }
 
   private class BannerDisposeListener implements DisposeListener, SerializableCompatibility {
-    private static final long serialVersionUID = 1L;
     public void widgetDisposed( DisposeEvent event ) {
       onDispose();
     }
   }
-
-  private static final long serialVersionUID = 1L;
 
   Control left;
   Control right;

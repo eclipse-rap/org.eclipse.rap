@@ -31,7 +31,6 @@ import org.eclipse.swt.internal.widgets.*;
  * </p>
  */
 public class TreeItem extends Item {
-  private static final long serialVersionUID = 1L;
 
   private static final int EMPTY_PREFERED_WIDTH_BUFFER = -1;
 

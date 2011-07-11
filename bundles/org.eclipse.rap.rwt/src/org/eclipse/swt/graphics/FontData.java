@@ -25,7 +25,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  * @since 1.0
  */
 public final class FontData implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   private String name;
   private int height;

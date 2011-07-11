@@ -27,7 +27,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  * @since 1.3
  */
 public abstract class Transfer implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   /**
    * Returns a list of the platform specific data types that can be converted

@@ -16,7 +16,6 @@ import java.util.*;
 
 
 public class SharedInstanceBuffer<K,I> implements Serializable {
-  private static final long serialVersionUID = 1L;
 
   public interface IInstanceCreator<T> {
     T createInstance();

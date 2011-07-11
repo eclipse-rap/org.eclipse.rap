@@ -13,7 +13,6 @@ package org.eclipse.swt.custom;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 class SashFormData implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   long weight;
 

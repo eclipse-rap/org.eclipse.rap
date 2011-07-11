@@ -32,8 +32,6 @@ public final class BrowserHistory
   implements IBrowserHistory, PhaseListener, Adaptable, SessionStoreListener
 {
 
-  private static final long serialVersionUID = 1L;
-  
   private static final String EVENT_HISTORY_NAVIGATED
     = "org.eclipse.rwt.events.historyNavigated";
   private static final String EVENT_HISTORY_NAVIGATED_ENTRY_ID

@@ -17,7 +17,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 public final class WidgetGraphicsAdapter 
   implements IWidgetGraphicsAdapter, SerializableCompatibility 
 {
-  private static final long serialVersionUID = 1L;
   
   private int roundedBorderWidth;
   private Color roundedBorderColor;

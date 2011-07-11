@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.*;
  * @see CBanner
  */
 class CBannerLayout extends Layout {
-  private static final long serialVersionUID = 1L;
 
   protected Point computeSize( Composite composite,
                                int wHint,

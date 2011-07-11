@@ -35,7 +35,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 @SuppressWarnings("all")
 public final class ImageData implements CloneableCompatibility, SerializableCompatibility {
-    private static final long serialVersionUID = 1L;
 
     /**
      * The width of the image, in pixels.

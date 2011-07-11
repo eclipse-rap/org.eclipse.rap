@@ -19,7 +19,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 
 public class SingletonManager implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   private static final String ATTR_SINGLETON_MANAGER
     = SingletonManager.class.getName() + "#instance";

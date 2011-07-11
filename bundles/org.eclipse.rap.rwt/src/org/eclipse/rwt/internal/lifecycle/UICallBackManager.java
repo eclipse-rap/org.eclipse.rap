@@ -22,13 +22,11 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 
 public final class UICallBackManager implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   private static final String FORCE_UI_CALLBACK
     = UICallBackManager.class.getName() + "#forceUICallBack";
 
   static final class IdManager implements SerializableCompatibility {
-    private static final long serialVersionUID = 1L;
   
     private final Set<String> ids;
     private final SerializableLock lock;

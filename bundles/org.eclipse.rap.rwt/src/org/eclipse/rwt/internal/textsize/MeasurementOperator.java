@@ -23,7 +23,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 class MeasurementOperator implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
   
   private final Set<Probe> probes;
   private final Set<MeasurementItem> items;

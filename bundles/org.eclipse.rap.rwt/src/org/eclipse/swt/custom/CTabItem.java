@@ -34,7 +34,6 @@ import org.eclipse.swt.widgets.*;
  * </p>
  */
 public class CTabItem extends Item {
-  private static final long serialVersionUID = 1L;
 
   static final String ELLIPSIS = "...";
 

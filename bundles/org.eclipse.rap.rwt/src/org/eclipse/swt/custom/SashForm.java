@@ -30,7 +30,6 @@ import org.eclipse.swt.graphics.*;
  * @since 1.0
  */
 public class SashForm extends Composite {
-  private static final long serialVersionUID = 1L;
 
   public int SASH_WIDTH = 3;
 
@@ -81,7 +80,6 @@ public SashForm(Composite parent, int style) {
   if ((style & SWT.BORDER) != 0) sashStyle |= SWT.BORDER;
   if ((style & SWT.SMOOTH) != 0) sashStyle |= SWT.SMOOTH;
   sashListener = new Listener() {
-    private static final long serialVersionUID = 1L;
     public void handleEvent(Event e) {
       onDragSash(e);
     }

@@ -44,8 +44,6 @@ import org.eclipse.swt.*;
  */
 public final class Rectangle implements SerializableCompatibility {
 	
-	private static final long serialVersionUID = 1L;
-
   /**
 	 * the x coordinate of the rectangle
 	 */

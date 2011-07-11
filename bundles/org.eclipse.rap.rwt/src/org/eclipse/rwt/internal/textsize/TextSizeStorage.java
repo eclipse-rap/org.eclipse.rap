@@ -40,7 +40,6 @@ public final class TextSizeStorage {
   }
   
   private static class EntryComparator implements Comparator<Entry>, Serializable {
-    private static final long serialVersionUID = 1L;
 
     public int compare( Entry entry1, Entry entry2 ) {
       int result = 0;

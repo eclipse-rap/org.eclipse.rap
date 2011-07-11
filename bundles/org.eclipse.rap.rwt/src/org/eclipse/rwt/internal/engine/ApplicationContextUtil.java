@@ -29,8 +29,6 @@ public class ApplicationContextUtil {
     = ApplicationContext.class.getName() + "#INSTANCE";
  
   private static class TransientValue implements Serializable {
-    private static final long serialVersionUID = 1L;
-    
     private final transient Object value;
 
     TransientValue( Object value ) {

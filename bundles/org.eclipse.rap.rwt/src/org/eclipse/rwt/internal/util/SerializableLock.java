@@ -14,5 +14,4 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 
 public class SerializableLock implements SerializableCompatibility{
-  private static final long serialVersionUID = 1L;
 }

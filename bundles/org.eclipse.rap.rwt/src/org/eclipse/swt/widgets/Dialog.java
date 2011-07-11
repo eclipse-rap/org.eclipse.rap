@@ -51,7 +51,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  * @see Shell
  */
 public abstract class Dialog implements SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   private static final int HORIZONTAL_DIALOG_UNIT_PER_CHAR = 4;
 

@@ -46,7 +46,6 @@ import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
  * @since 1.0
  */
 public class CoolBar extends Composite {
-  private static final long serialVersionUID = 1L;
 
   private class CoolBarAdapter implements ICoolBarAdapter {
     public void setItemOrder( int[] itemOrder ) {
@@ -130,7 +129,6 @@ public class CoolBar extends Composite {
     }
     // dragCursor = new Cursor(display, SWT.CURSOR_SIZEALL);
     Listener listener = new Listener() {
-      private static final long serialVersionUID = 1L;
       public void handleEvent( Event event ) {
         switch (event.type) {
         case SWT.Dispose:

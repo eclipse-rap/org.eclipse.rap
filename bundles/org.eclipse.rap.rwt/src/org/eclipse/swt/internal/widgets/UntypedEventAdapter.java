@@ -42,10 +42,8 @@ public final class UntypedEventAdapter
              MenuDetectListener,
              ArmListener
 {
-  private static final long serialVersionUID = 1L;
 
   private static final class Entry implements SerializableCompatibility {
-    private static final long serialVersionUID = 1L;
     final int eventType;
     final Listener listener;
     private Entry( int eventType, Listener listener ) {

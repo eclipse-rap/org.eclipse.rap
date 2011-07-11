@@ -24,7 +24,6 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  * </p> 
  */
 public final class SlimList<E> implements List<E>, SerializableCompatibility {
-  private static final long serialVersionUID = 1L;
 
   private static final Object[] EMPTY = new Object[ 0 ];
   
