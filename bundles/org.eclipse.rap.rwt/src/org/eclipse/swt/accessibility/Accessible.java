@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.*;
  * 
  * @since 1.4
  */
-public class Accessible implements SerializableCompatibility {
+public class Accessible {
 	Control control;
 
 	/**

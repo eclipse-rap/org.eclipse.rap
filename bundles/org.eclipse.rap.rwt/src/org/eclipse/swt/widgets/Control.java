@@ -112,7 +112,7 @@ public abstract class Control extends Widget implements Drawable {
   private Font font;
   private Cursor cursor;
   private Rectangle bufferedPadding;
-  private Accessible accessible;
+  private transient Accessible accessible;
   private boolean packed;
 
 

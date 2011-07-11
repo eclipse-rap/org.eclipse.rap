@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.swt.accessibility;
 
+import java.io.NotSerializableException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -18,14 +20,24 @@ import org.eclipse.swt.widgets.*;
 
 public class Accessible_Test extends TestCase {
 
-  public void testIsSerializable() throws Exception {
+  public void testIsNotSerializable() throws Exception {
     Display display = new Display();
     Control control = new Shell( display );
     Accessible accessible = new Accessible( control );
 
-    Accessible deserializedAccessible = Fixture.serializeAndDeserialize( accessible );
+    try {
+      Fixture.serializeAndDeserialize( accessible );
+    } catch( NotSerializableException expected ) {
+    }
+  }
+  
+  public void testAccessibleAfterDeserialization() throws Exception {
+    Display display = new Display();
+    Control control = new Shell( display );
     
-    assertTrue( deserializedAccessible.getControl() instanceof Shell );
+    Control deserializedControl = Fixture.serializeAndDeserialize( control );
+    
+    assertNotNull( deserializedControl.getAccessible() );
   }
   
   protected void setUp() throws Exception {
