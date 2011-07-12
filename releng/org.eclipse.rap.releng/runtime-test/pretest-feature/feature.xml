@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.rap.pretest"
+      label="Pretest Feature"
+      version="1.5.0">
+
+   <description url="http://www.example.com/description">
+      
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      
+   </license>
+
+   <plugin
+         id="org.eclipse.rap.rwt.testfixture"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.junit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.hamcrest.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.mockito"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.objenesis"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <!-- 
+     Though styledtext isn't part of the test infrastructure, it is of course required to run the 
+     styledtext tests. But since styledtext isn't part of the build, it cannot go into the Runtinme 
+     SDK Feature. That is why it is placed here until a more suitable place is found. 
+   -->
+   <plugin
+         id="org.eclipse.rwt.widgets.styledtext"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
