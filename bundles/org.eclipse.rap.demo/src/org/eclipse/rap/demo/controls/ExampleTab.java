@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import java.lang.reflect.Field;
@@ -49,7 +48,7 @@ abstract class ExampleTab {
   private boolean enabled = true;
   private Text text;
   private final StringBuffer content = new StringBuffer();
-  private SimpleFontDialog fontChooser;
+  private FontDialog fontChooser;
   private ColorChooser fgColorChooser;
   private ColorChooser bgColorChooser;
   private int defaultStyle = SWT.NONE;
@@ -381,15 +380,13 @@ abstract class ExampleTab {
     button.setText( "Font" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
-        fontChooser = new SimpleFontDialog( getShell() );
+        fontChooser = new FontDialog( getShell(), SWT.NONE );
         Control control = ( Control )controls.get( 0 );
-        fontChooser.setFont( control.getFont() );
-        fontChooser.open( new Runnable() {
-          public void run() {
-            font = fontChooser.getFont();
-            updateFont();
-          }
-        } );
+        fontChooser.setFontList( control.getFont().getFontData() );
+        if( fontChooser.open() != null ) {
+          font = new Font( control.getDisplay(), fontChooser.getFontList() );
+        }
+        updateFont();
       }
     } );
     return button;
