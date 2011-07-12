@@ -6,7 +6,9 @@
 #
 
 # Cleanup workspace dir
-test -d "$WORKSPACE" && rm -rf "$WORKSPACE"/*
+#test -d "$WORKSPACE" && rm -rf "$WORKSPACE"/*
+
+echo "START TESTS"
 
 scriptsDir=`dirname $0`
 
@@ -15,6 +17,6 @@ $scriptsDir/build-common.sh \
   --build-type "$BUILD_TYPE" \
   --work "$WORKSPACE" \
   --runtime "$RUNTIME_DIR" \
-  --base-platform "$PLATFORM_DIR" \
-  --builder "org.eclipse.rap/releng/org.eclipse.rap.releng/runtime" \
-  --output "$WORKSPACE" 
+  --base-platform "$PLATFORM_DIR/test-base-platform" \
+  --builder "org.eclipse.rap/releng/org.eclipse.rap.releng/runtime-test" \
+  --output "$WORKSPACE"
