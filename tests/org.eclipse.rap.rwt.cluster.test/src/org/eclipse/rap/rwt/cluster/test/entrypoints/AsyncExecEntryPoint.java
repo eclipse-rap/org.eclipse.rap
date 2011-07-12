@@ -60,8 +60,6 @@ public class AsyncExecEntryPoint implements IEntryPoint {
   }
   
   private static class AsyncExecRunnable implements Runnable, Serializable {
-    private static final long serialVersionUID = 1L;
-
     private final Display display;
 
     AsyncExecRunnable( Display display ) {
@@ -78,8 +76,6 @@ public class AsyncExecEntryPoint implements IEntryPoint {
   }
 
   private static class ClusteredSynchronizer extends Synchronizer {
-    private static final long serialVersionUID = 1L;
-
     private final String requestUrl;
     
     ClusteredSynchronizer( Display display ) {

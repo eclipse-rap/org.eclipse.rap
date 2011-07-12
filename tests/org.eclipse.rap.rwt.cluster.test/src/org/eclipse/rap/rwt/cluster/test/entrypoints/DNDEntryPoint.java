@@ -62,8 +62,7 @@ public class DNDEntryPoint implements IEntryPoint {
   }
 
   private static class LabelDragSourceListener extends DragSourceAdapter implements Serializable {
-    private static final long serialVersionUID = 1L;
-  
+
     public void dragSetData( DragSourceEvent event ) {
       event.data = TRANSFER_DATA;
     }
@@ -74,7 +73,6 @@ public class DNDEntryPoint implements IEntryPoint {
   }
 
   private static class LabelDropTargetListener extends DropTargetAdapter implements Serializable {
-    private static final long serialVersionUID = 1L;
 
     public void drop( DropTargetEvent event ) {
       if( TRANSFER_DATA.equals( event.data ) ) {

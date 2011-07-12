@@ -51,8 +51,6 @@ public class ButtonEntryPoint implements IEntryPoint {
   }
   
   private static class UpdateLabelListener extends SelectionAdapter implements Serializable {
-    private static final long serialVersionUID = 1L;
-
     private final int position;
     private final Label label;
     private final Integer globalCounter;

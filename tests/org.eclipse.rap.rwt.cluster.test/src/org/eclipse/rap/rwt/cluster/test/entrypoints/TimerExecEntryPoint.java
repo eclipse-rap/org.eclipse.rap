@@ -35,7 +35,6 @@ public class TimerExecEntryPoint implements IEntryPoint {
   }
 
   private static class TimerExecRunnable implements Runnable, Serializable {
-    private static final long serialVersionUID = 1L;
 
     public void run() {
       RWT.getSessionStore().setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
