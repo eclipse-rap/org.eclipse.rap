@@ -12,7 +12,6 @@ package org.eclipse.swt.accessibility;
 
 
 import org.eclipse.swt.*;
-import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.*;
 
 /**
