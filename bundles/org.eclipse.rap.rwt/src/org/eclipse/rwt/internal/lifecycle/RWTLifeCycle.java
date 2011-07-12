@@ -36,7 +36,7 @@ public class RWTLifeCycle extends LifeCycle {
 
   private static final IPhase[] PHASE_ORDER_STARTUP = new IPhase[] {
     new IInterruptible() {
-      public PhaseId execute(Display display) throws IOException {
+      public PhaseId execute( Display display ) throws IOException {
         return null;
       }
       public PhaseId getPhaseId() {
@@ -48,7 +48,7 @@ public class RWTLifeCycle extends LifeCycle {
 
   private static final IPhase[] PHASE_ORDER_SUBSEQUENT = new IPhase[] {
     new IPhase() {
-      public PhaseId execute(Display display) throws IOException {
+      public PhaseId execute( Display display ) throws IOException {
         return null;
       }
       public PhaseId getPhaseId() {
@@ -96,8 +96,7 @@ public class RWTLifeCycle extends LifeCycle {
           // In any case: wait for the thread to be terminated by session timeout
           uiThread.switchThread();
         } catch( UIThreadTerminatedError e ) {
-          // If we get here, the session is being invalidated, see
-          // UIThread#terminateThread()
+          // If we get here, the session is being invalidated, see UIThread#terminateThread()
           ( ( ISessionShutdownAdapter )uiThread ).processShutdown();
         }
       }
@@ -164,9 +163,8 @@ public class RWTLifeCycle extends LifeCycle {
       Integer currentPhase = getCurrentPhase();
       if( currentPhase != null ) {
         int phaseIndex = currentPhase.intValue();
-        // A non-null currentPhase indicates that an IInterruptible phase
-        // was executed before. In this case we now need to execute the
-        // AfterPhase events
+        // A non-null currentPhase indicates that an IInterruptible phase was executed before. In 
+        // this case we now need to execute the AfterPhase events
         phaseListenerManager.notifyAfterPhase( phaseOrder[ phaseIndex ].getPhaseId() );
         start = currentPhase.intValue() + 1;
       }
@@ -175,8 +173,8 @@ public class RWTLifeCycle extends LifeCycle {
         IPhase phase = phaseOrder[ i ];
         phaseListenerManager.notifyBeforePhase( phase.getPhaseId() );
         if( phase instanceof IInterruptible ) {
-          // IInterruptible phases return control to the user code, thus
-          // they don't call Phase#execute()
+          // IInterruptible phases return control to the user code, thus they don't call 
+          // Phase#execute()
           IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
           stateInfo.setAttribute( CURRENT_PHASE, new Integer( i ) );
           interrupted = true;
@@ -184,8 +182,8 @@ public class RWTLifeCycle extends LifeCycle {
           try {
             phase.execute( LifeCycleUtil.getSessionDisplay() );
           } catch( Throwable e ) {
-            // Wrap exception in a ThreadDeath-derived error to break out of
-            // the application call stack
+            // Wrap exception in a ThreadDeath-derived error to break out of the application 
+            // call stack
             throw new PhaseExecutionError( e );
           }
           phaseListenerManager.notifyAfterPhase( phase.getPhaseId() );
