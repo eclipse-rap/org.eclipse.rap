@@ -84,6 +84,12 @@ public class RWTClient {
     return sendRequest( parameters );
   }
   
+  public Response sendShellCloseRequest( String shellId ) throws IOException {
+    Map<String, String> parameters = createDefaultParameters();
+    parameters.put( "org.eclipse.swt.widgets.Shell_close", shellId );
+    return sendRequest( parameters );
+  }
+  
   public Response sendDragStartRequest( String widgetId ) throws IOException {
     Map<String, String> parameters = createDefaultParameters();
     parameters.put( "org.eclipse.swt.dnd.dragStart", widgetId );
