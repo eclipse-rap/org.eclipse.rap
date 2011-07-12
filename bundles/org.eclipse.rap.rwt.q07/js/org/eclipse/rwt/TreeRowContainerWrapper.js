@@ -90,6 +90,7 @@ org.eclipse.rwt.TreeRowContainerWrapper.prototype = {
   
   setFixedColumns : function( value ) {
     this._fixedColumns = value;
+    this._updateConfig();
   },
   
   getFixedColumns : function() {
