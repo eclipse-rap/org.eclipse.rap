@@ -15,7 +15,7 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.internal.lifecycle.UICallBackManager.DuplicateCallBackRequestException;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
@@ -30,19 +30,28 @@ public class UICallBackServiceHandler implements IServiceHandler {
     = "org.eclipse.swt.Request.getInstance().send();";
 
   public void service() throws IOException {
-    ISessionStore sessionStore = RWT.getSessionStore();
-    UICallBackManager.getInstance().blockCallBackRequest();
-    if( ContextProvider.hasContext() && sessionStore.isBound() ) {
-      writeResponse();
+    ISessionStore sessionStore = ContextProvider.getSession();
+    try {
+      UICallBackManager.getInstance().blockCallBackRequest( ContextProvider.getResponse() );
+      if( ContextProvider.hasContext() && sessionStore.isBound() ) {
+        writeResponse();
+      }
+    } catch( DuplicateCallBackRequestException dcbre ) {
+      sendErrorResponse();
     }
   }
 
   //////////////////////////
   // Service helping methods
-
+  
   static void writeResponse() throws IOException {
     HttpServletResponse response = ContextProvider.getResponse();
     JavaScriptResponseWriter writer = new JavaScriptResponseWriter( response );
     writer.write( JS_SEND_UI_REQUEST );
+  }
+
+  private static void sendErrorResponse() throws IOException {
+    HttpServletResponse response = ContextProvider.getResponse();
+    response.sendError( HttpServletResponse.SC_CONFLICT, "Duplicate callback request" );
   }
 }

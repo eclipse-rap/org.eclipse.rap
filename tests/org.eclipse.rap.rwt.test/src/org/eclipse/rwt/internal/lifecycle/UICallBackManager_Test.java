@@ -12,8 +12,11 @@
 
 package org.eclipse.rwt.internal.lifecycle;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.servlet.http.*;
 
 import junit.framework.TestCase;
 
@@ -52,12 +55,14 @@ public class UICallBackManager_Test extends TestCase {
 
   private Display display;
   private UICallBackManager manager;
+  private UICallBackServiceHandler uiCallBackServiceHandler;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     log = "";
     display  = new Display();
     manager = UICallBackManager.getInstance();
+    uiCallBackServiceHandler = new UICallBackServiceHandler();
   }
 
   protected void tearDown() throws Exception {
@@ -100,7 +105,7 @@ public class UICallBackManager_Test extends TestCase {
     simulateUiCallBackThread( uiCallBackServiceHandlerThrowable, context );
     assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
     display.wake();
-    assertTrue( UICallBackManager.getInstance().isCallBackRequestBlocked() );
+    assertTrue( manager.isCallBackRequestBlocked() );
     manager.releaseBlockedRequest();
   }
   
@@ -117,7 +122,6 @@ public class UICallBackManager_Test extends TestCase {
     } );
     thread.start();
     thread.join();
-    Thread.sleep( SLEEP_TIME );
     assertFalse( manager.isCallBackRequestBlocked() );
   }
 
@@ -201,6 +205,27 @@ public class UICallBackManager_Test extends TestCase {
     assertFalse( uiCallBackThread.isAlive() );
     assertNull( uiCallBackHandlerThrowable[ 0 ] );
   }
+  
+  public void testMultipleCallBackRequests() throws Exception {
+    manager.setRequestCheckInterval( 20 );
+    ServiceContext context1 = ContextProvider.getContext();
+    Throwable[] uiCallBackHandlerThrowable1 = { null };
+    Thread uiCallBackThread1 = simulateUiCallBackThread( uiCallBackHandlerThrowable1, context1 );
+    ServiceContext context2 = createServiceContext( context1.getSessionStore().getHttpSession() );
+    Throwable[] uiCallBackHandlerThrowable2 = { null };
+    Thread uiCallBackThread2 = simulateUiCallBackThread( uiCallBackHandlerThrowable2, context2 );
+    
+    Thread.sleep( SLEEP_TIME );
+    
+    assertTrue( manager.isCallBackRequestBlocked() );
+    assertNull( uiCallBackHandlerThrowable1[ 0 ] );
+    assertNull( uiCallBackHandlerThrowable2[ 0 ] );
+    assertTrue( uiCallBackThread1.isAlive() );
+    assertFalse( uiCallBackThread2.isAlive() );
+    TestResponse response = ( TestResponse )context2.getResponse();
+    assertEquals( HttpServletResponse.SC_CONFLICT, response.getErrorStatus() );
+  }
+  
   
   public void testAsyncExec() throws InterruptedException {
     final Throwable[] uiCallBackServiceHandlerThrowable = { null };
@@ -413,7 +438,7 @@ public class UICallBackManager_Test extends TestCase {
     manager.activateUICallBacksFor( "foo" );
     assertTrue( manager.mustBlockCallBackRequest() );
   }
-
+  
   public void testNeedActivationFromDifferentSession() throws Throwable {
     // test that on/off switching is managed in session scope
     manager.activateUICallBacksFor( ID_1 );
@@ -480,7 +505,6 @@ public class UICallBackManager_Test extends TestCase {
       public void run() {
         ContextProvider.setContext( context );
         Fixture.fakeResponseWriter();
-        UICallBackServiceHandler uiCallBackServiceHandler = new UICallBackServiceHandler();
         try {
           manager.activateUICallBacksFor( "foo" );
           uiCallBackServiceHandler.service();
@@ -544,7 +568,7 @@ public class UICallBackManager_Test extends TestCase {
     } );
   }
 
-  private static void simulateUICallBackThreadLockDuringLifeCycle(
+  private void simulateUICallBackThreadLockDuringLifeCycle(
     final ServiceContext context,
     final Throwable[] uiCallBackServiceHandlerThrowable )
   {
@@ -556,7 +580,6 @@ public class UICallBackManager_Test extends TestCase {
           public void run() {
             ContextProvider.setContext( context );
             Fixture.fakeResponseWriter();
-            UICallBackServiceHandler uiCallBackServiceHandler = new UICallBackServiceHandler();
             try {
               uiCallBackServiceHandler.service();
             } catch( Throwable thr ) {
@@ -592,5 +615,16 @@ public class UICallBackManager_Test extends TestCase {
 
   private IDisplayAdapter getDisplayAdapter() {
     return ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+  }
+
+  private static ServiceContext createServiceContext( HttpSession session ) throws IOException {
+    TestRequest request = new TestRequest();
+    TestResponse response = new TestResponse();
+    request.setSession( session );
+    ServiceContext result = new ServiceContext( request, response );
+    ServiceStateInfo stateInfo = new ServiceStateInfo();
+    result.setStateInfo( stateInfo );
+    stateInfo.setResponseWriter( new JavaScriptResponseWriter( response ) );
+    return result;
   }
 }

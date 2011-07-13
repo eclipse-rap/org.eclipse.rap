@@ -12,8 +12,6 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,10 +24,14 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 public final class UICallBackManager implements SerializableCompatibility {
 
+  
   private static final int DEFAULT_REQUEST_CHECK_INTERVAL = 30000;
 
   private static final String FORCE_UI_CALLBACK
     = UICallBackManager.class.getName() + "#forceUICallBack";
+  
+  class DuplicateCallBackRequestException extends RuntimeException {
+  }
   
   private static class UnblockSessionStoreListener
     implements SessionStoreListener, SerializableCompatibility
@@ -55,7 +57,7 @@ public final class UICallBackManager implements SerializableCompatibility {
   final SerializableLock lock;
   // contains a reference to the callback request thread that is currently
   // blocked.
-  private final Set<Thread> blockedCallBackRequests;
+  private transient Thread activeCallBackRequest;
   // Flag that indicates whether a request is processed. In that case no
   // notifications are sent to the client.
   private boolean uiThreadRunning;
@@ -67,7 +69,6 @@ public final class UICallBackManager implements SerializableCompatibility {
   private UICallBackManager() {
     lock = new SerializableLock();
     idManager = new IdManager();
-    blockedCallBackRequests = new HashSet<Thread>();
     uiThreadRunning = false;
     wakeCalled = false;
     requestCheckInterval = DEFAULT_REQUEST_CHECK_INTERVAL;
@@ -75,7 +76,7 @@ public final class UICallBackManager implements SerializableCompatibility {
 
   public boolean isCallBackRequestBlocked() {
     synchronized( lock ) {
-      return !blockedCallBackRequests.isEmpty();
+      return activeCallBackRequest != null;
     }
   }
 
@@ -128,26 +129,28 @@ public final class UICallBackManager implements SerializableCompatibility {
     }
   }
 
-  void blockCallBackRequest() {
+  void blockCallBackRequest( HttpServletResponse response ) {
     synchronized( lock ) {
-      if( blockedCallBackRequests.isEmpty() && mustBlockCallBackRequest() ) {
+      if( activeCallBackRequest != null ) {
+        throw new DuplicateCallBackRequestException();
+      }
+      if( mustBlockCallBackRequest() ) {
         Thread currentThread = Thread.currentThread();
         SessionStoreListener listener = new UnblockSessionStoreListener( currentThread );
         ISessionStore sessionStore = ContextProvider.getSession();
         sessionStore.addSessionStoreListener( listener );
-        blockedCallBackRequests.add( currentThread );
+        activeCallBackRequest = Thread.currentThread();
         try {
           boolean keepWaiting = true;
           wakeCalled = false;
           while( !wakeCalled && keepWaiting ) {
             lock.wait( requestCheckInterval );
-            keepWaiting 
-              = mustBlockCallBackRequest() && isConnectionAlive( ContextProvider.getResponse() );
+            keepWaiting = mustBlockCallBackRequest() && isConnectionAlive( response );
           }
         } catch( InterruptedException ie ) {
           Thread.interrupted(); // Reset interrupted state, see bug 300254
         } finally {
-          blockedCallBackRequests.remove( currentThread );
+          activeCallBackRequest = null;
           sessionStore.removeSessionStoreListener( listener );
         }
       }
