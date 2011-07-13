@@ -109,19 +109,19 @@ public class UICallBackManager_Test extends TestCase {
     manager.releaseBlockedRequest();
   }
   
-  public void testWaitOnBackgroundThread() throws Exception {
+  public void testWaitOnBackgroundThread() throws Throwable {
     final Throwable[] uiCallBackServiceHandlerThrowable = { null };
     ServiceContext context = ContextProvider.getContext();
     simulateUiCallBackThread( uiCallBackServiceHandlerThrowable, context );
     assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
     assertTrue( manager.isCallBackRequestBlocked() );
-    Thread thread = new Thread( new Runnable() {
+    Runnable runnable = new Runnable() {
       public void run() {
         display.wake();
       }
-    } );
-    thread.start();
-    thread.join();
+    };
+    Fixture.runInThread( runnable );
+    Thread.sleep( SLEEP_TIME );
     assertFalse( manager.isCallBackRequestBlocked() );
   }
 
