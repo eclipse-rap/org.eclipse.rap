@@ -16,17 +16,20 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.widgets.Widget;
 
-
+/**
+ * The only purpose of the {@link ClientObjectFactory} is to instantiate different
+ * {@link IClientObject}s regarding to their associated type e.g. Widget, Themestore and so on.
+ *
+ * @see IClientObject
+ * 
+ * @since 1.5
+ */
 public final class ClientObjectFactory {
 
   private static final String SYNCHRONIZER_MAP_KEY = "synchronizerMapKey";
 
-  private ClientObjectFactory() {
-    // prevent instantiation
-  }
-
   /**
-   * Creates a {@link IClientObject} for a specific Widget. The returned
+   * Creates a {@link IClientObject} for a specific Widget. The returned instance
    * is unique for the time a Request exists. Every {@link Widget} can have
    * one {@link IClientObject}. The relationship between these two is a 1:1
    * relationship.  
@@ -35,8 +38,6 @@ public final class ClientObjectFactory {
    * 
    * @return a request specific {@link IClientObject} instance for the passed
    * {@link Widget}.
-   * 
-   * @since 1.5
    */
   @SuppressWarnings( "unchecked" )
   public static IClientObject getForWidget( Widget widget ) {
@@ -58,6 +59,10 @@ public final class ClientObjectFactory {
       map.put( widget, result );
     }
     return result;
+  }
+  
+  private ClientObjectFactory() {
+    // prevent instantiation
   }
   
 }

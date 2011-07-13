@@ -13,10 +13,9 @@ import org.eclipse.swt.widgets.Widget;
 
 
 /**
- * A {@link IClientObject} acts as a broker between server and client widgets.
- * It provides helper methods to transfer changes from the server to the client 
- * side widgets. A {@link IClientObject} is unique per widget and should 
- * always be instantiated via the 
+ * A {@link IClientObject} acts as the connection between server and client objects e.g. widgets.
+ * It provides helper methods to transfer changes from the server to the client. A 
+ * {@link IClientObject} is unique per widget and should always be instantiated using the 
  * {@link ClientObjectFactory#getForWidget(Widget)} method.
  *
  * @see ClientObjectFactory
@@ -26,12 +25,14 @@ import org.eclipse.swt.widgets.Widget;
 public interface IClientObject {
 
   /**
-   * Creates a new widget on the client-side by creating an instance of the corresponding client
-   * class defined by the widget's class name. This is normally done in the
+   * Creates a new object on the client-side by creating an instance of the corresponding client
+   * class defined by the server object's class name. This is normally done in the
    * <code>renderInitialization</code> method of the widgets life-cycle adapter (LCA).
    * 
-   * @param styles TODO
-   * @param properties TODO
+   * @param styles The styles of the widget as a String array. Each Element must not start with 
+   * "SWT."
+   * @param properties The properties which are mandatory to construct this widget on the 
+   * client-side.
    */
   void create( String[] styles, Map<String, Object> properties );
 
@@ -76,38 +77,40 @@ public interface IClientObject {
   void setProperty( String name, Object value );
 
   /**
-   * This will add a listener to the client side widget of this {@link IClientObject}.
+   * This will add a listener to the client-side widget. This will tell the widget on which events
+   * it should react.
    * 
-   * @param eventName the name of the event the client widget should listen to.
+   * @param eventName the name of the event the client-widget should react to.
    */
   void addListener( String eventName );
 
   /**
    * This will remove a listener from the client side widget of this {@link IClientObject}.
    * 
-   * @param eventName the name of the event the client widget should no longer listen to.
+   * @param eventName the name of the event the client-widget should no longer react to.
    */
   void removeListener( String eventName );
 
   /**
-   * Calls a specific method of the widget on the client-side.
+   * Calls a specific method on the client-side widget.
    * 
-   * @param methodName the method name.
-   * @param properties TODO
+   * @param methodName the method name to call.
+   * @param properties named properties to pass in the method call.
    */
   void call( String methodName, Map<String, Object> properties );
 
   /**
-   * Executes a script on the client side.
+   * Tells the client that it should execute a script when the given mimetype is supported.
    * 
-   * @param type the type of the script, value should be something like "text/javascript".
-   * @param script the content of the script which will be executed.
+   * @param type the mimetype of the script, value should be something like "text/javascript".
+   * @param script the content of the script which will be executed. The server does not validate 
+   * the content.
    */
   void executeScript( String type, String script );
 
   /**
-   * DisposeWidget is used to dispose of the widget of this {@link IClientObject} on the client
-   * side.
+   * This method should be called right before a server-side widget will be disposed. 
+   * After calling this method the client should destroy the client-object too.
    */
   void destroy();
   
