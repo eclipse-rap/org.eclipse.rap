@@ -76,10 +76,12 @@ final class TimerExecScheduler implements SerializableCompatibility {
   }
 
   private void rescheduleTasks() {
-    if( tasks.size() > 0 ) {
-      initializeTimer();
-      for( TimerExecTask task : tasks ) {
-        timer.schedule( task, task.getTime() );
+    synchronized( display.getDeviceLock() ) {
+      if( tasks.size() > 0 ) {
+        initializeTimer();
+        for( TimerExecTask task : tasks ) {
+          timer.schedule( task, task.getTime() );
+        }
       }
     }
   }
