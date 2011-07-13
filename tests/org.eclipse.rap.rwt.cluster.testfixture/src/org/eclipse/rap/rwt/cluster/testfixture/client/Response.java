@@ -13,7 +13,6 @@ package org.eclipse.rap.rwt.cluster.testfixture.client;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
-import java.nio.charset.Charset;
 
 
 public class Response {
@@ -38,7 +37,13 @@ public class Response {
   }
   
   public String getContentText() {
-    return new String( content, Charset.forName( "utf-8" ) );
+    String result;
+    try {
+      result = new String( content, "UTF-8" );
+    } catch( UnsupportedEncodingException unexpected ) {
+      throw new RuntimeException( unexpected );
+    }
+    return result;
   }
 
   public boolean isValidJavascript() {
