@@ -116,23 +116,26 @@ public class ProgressBarTab extends ExampleTab {
           } catch( final Throwable shouldNotHappen ) {
             shouldNotHappen.printStackTrace();
           }
-          // perform process bar update
-          display.syncExec( new Runnable() {
-            public void run() {
-              if( !progressBar.isDisposed() ) {
-                progressBar.setSelection( selection );
-                if( selection == maximum ) {
-                  button.setEnabled( true );
-                  // deactivate UI-callback mechanism
-                  String id = ProgressBarTab.class.getName();
-                  UICallBack.deactivate( id );
-                  if( panel[ 0 ] != null ) {
-                    panel[ 0 ].dispose();
+          if( !display.isDisposed() ) {
+            // perform process bar update
+            display.syncExec( new Runnable() {
+
+              public void run() {
+                if( !progressBar.isDisposed() ) {
+                  progressBar.setSelection( selection );
+                  if( selection == maximum ) {
+                    button.setEnabled( true );
+                    // deactivate UI-callback mechanism
+                    String id = ProgressBarTab.class.getName();
+                    UICallBack.deactivate( id );
+                    if( panel[ 0 ] != null ) {
+                      panel[ 0 ].dispose();
+                    }
                   }
                 }
               }
-            }
-          } );
+            } );
+          }
         }
       }
     };
