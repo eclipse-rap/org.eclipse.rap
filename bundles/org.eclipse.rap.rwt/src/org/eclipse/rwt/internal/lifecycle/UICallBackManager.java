@@ -55,9 +55,7 @@ public final class UICallBackManager implements SerializableCompatibility {
 
   // synchronization object to control access to the runnables List
   final SerializableLock lock;
-  // contains a reference to the callback request thread that is currently
-  // blocked.
-  private transient Thread activeCallBackRequest;
+  private transient boolean hasBlockedCallBackRequest;
   // Flag that indicates whether a request is processed. In that case no
   // notifications are sent to the client.
   private boolean uiThreadRunning;
@@ -76,7 +74,7 @@ public final class UICallBackManager implements SerializableCompatibility {
 
   public boolean isCallBackRequestBlocked() {
     synchronized( lock ) {
-      return activeCallBackRequest != null;
+      return hasBlockedCallBackRequest;
     }
   }
 
@@ -131,7 +129,7 @@ public final class UICallBackManager implements SerializableCompatibility {
 
   void blockCallBackRequest( HttpServletResponse response ) {
     synchronized( lock ) {
-      if( activeCallBackRequest != null ) {
+      if( hasBlockedCallBackRequest ) {
         throw new DuplicateCallBackRequestException();
       }
       if( mustBlockCallBackRequest() ) {
@@ -139,7 +137,7 @@ public final class UICallBackManager implements SerializableCompatibility {
         SessionStoreListener listener = new UnblockSessionStoreListener( currentThread );
         ISessionStore sessionStore = ContextProvider.getSession();
         sessionStore.addSessionStoreListener( listener );
-        activeCallBackRequest = Thread.currentThread();
+        hasBlockedCallBackRequest = true;
         try {
           boolean keepWaiting = true;
           wakeCalled = false;
@@ -150,7 +148,7 @@ public final class UICallBackManager implements SerializableCompatibility {
         } catch( InterruptedException ie ) {
           Thread.interrupted(); // Reset interrupted state, see bug 300254
         } finally {
-          activeCallBackRequest = null;
+          hasBlockedCallBackRequest = false;
           sessionStore.removeSessionStoreListener( listener );
         }
       }
