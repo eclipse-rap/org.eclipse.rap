@@ -26,7 +26,7 @@ import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
 import org.eclipse.rwt.internal.protocol.util.*;
 import org.eclipse.rwt.internal.protocol.util.Message.CreateOperation;
 import org.eclipse.rwt.internal.protocol.util.Message.DestroyOperation;
-import org.eclipse.rwt.internal.protocol.util.Message.DoOperation;
+import org.eclipse.rwt.internal.protocol.util.Message.CallOperation;
 import org.eclipse.rwt.internal.protocol.util.Message.ExecuteScriptOperation;
 import org.eclipse.rwt.internal.protocol.util.Message.ListenOperation;
 import org.eclipse.rwt.internal.protocol.util.Message.Operation;
@@ -82,23 +82,23 @@ public class ProtocolMessageWriter_Test extends TestCase {
     }
   }
 
-  public void testMessageWithDo() {
+  public void testMessageWithCall() {
     String shellId = WidgetUtil.getId( shell );
     String methodName = "methodName";
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "key1", "a" );
     properties.put( "key2", "b" );
     
-    writer.appendDo( shellId, methodName, properties );
+    writer.appendCall( shellId, methodName, properties );
     
-    DoOperation operation = (DoOperation)getMessage().getOperation( 0 );
+    CallOperation operation = (CallOperation)getMessage().getOperation( 0 );
     assertEquals( shellId, operation.getTarget() );
-    assertEquals( methodName, operation.getName() );
+    assertEquals( methodName, operation.getMethodName() );
     assertEquals( "a", operation.getProperty( "key1" ) );
     assertEquals( "b", operation.getProperty( "key2" ) );
   }
 
-  public void testMessageWithTwoDos() {
+  public void testMessageWithTwoCallss() {
     String shellId = WidgetUtil.getId( shell );
     String methodName = "methodName";
     Map<String, Object> properties = new HashMap<String, Object>();
@@ -106,12 +106,12 @@ public class ProtocolMessageWriter_Test extends TestCase {
     properties.put( "key2", "b" );
     properties.put( "key3", Boolean.FALSE );
 
-    writer.appendDo( shellId, methodName, null );
-    writer.appendDo( shellId, methodName, properties );
+    writer.appendCall( shellId, methodName, null );
+    writer.appendCall( shellId, methodName, properties );
     
-    DoOperation operation = ( DoOperation )getMessage().getOperation( 1 );
+    CallOperation operation = ( CallOperation )getMessage().getOperation( 1 );
     assertEquals( shellId, operation.getTarget() );
-    assertEquals( methodName, operation.getName() );
+    assertEquals( methodName, operation.getMethodName() );
     assertEquals( new Integer( 5 ), operation.getProperty( "key1" ) );
     assertEquals( "b", operation.getProperty( "key2" ) );
     assertEquals( Boolean.FALSE, operation.getProperty( "key3" ) );
@@ -294,7 +294,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     checkShellSet( message );
     checkShellListen( message );
     checkButtonCreate( message, button );
-    checkButtonDo( message, button );
+    checkButtonCall( message, button );
   }
 
   private void createShellOperations( Shell shell ) {
@@ -327,7 +327,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
 
   private void createButtonOperations( Button button ) {
     addButtonCreate( button );
-    addButtonDo( button );
+    addButtonCall( button );
   }
 
   private void addButtonCreate( Button button ) {
@@ -343,11 +343,11 @@ public class ProtocolMessageWriter_Test extends TestCase {
                                 properties );
   }
 
-  private void addButtonDo( Button button ) {
+  private void addButtonCall( Button button ) {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "key1", "a1" );
     
-    writer.appendDo( WidgetUtil.getId( button ), "select", properties );
+    writer.appendCall( WidgetUtil.getId( button ), "select", properties );
   }
 
   private void assertShellCreated( Message message ) {
@@ -394,12 +394,12 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( "BORDER", operation.getStyles()[ 1 ] );
   }
 
-  private void checkButtonDo( Message message, Widget button ) {
+  private void checkButtonCall( Message message, Widget button ) {
     String buttonId = WidgetUtil.getId( button );
 
-    DoOperation operation = ( DoOperation )message.getOperation( 4 );
+    CallOperation operation = ( CallOperation )message.getOperation( 4 );
     assertEquals( buttonId, operation.getTarget() );
-    assertEquals( "select", operation.getName() );
+    assertEquals( "select", operation.getMethodName() );
     assertEquals( "a1", operation.getProperty( "key1" ) );
   }
 

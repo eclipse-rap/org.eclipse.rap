@@ -13,7 +13,7 @@ package org.eclipse.rwt.internal.protocol;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_PARENT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_STYLE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_TYPE;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.DO_NAME;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CALL_METHOD_NAME;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_CONTENT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_TYPE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.MESSAGE_META;
@@ -21,7 +21,7 @@ import static org.eclipse.rwt.internal.protocol.ProtocolConstants.MESSAGE_OPERAT
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META_REQUEST_COUNTER;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_CREATE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_DESTROY;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_DO;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_CALL;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_EXECUTE_SCRIPT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_LISTEN;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_SET;
@@ -89,9 +89,9 @@ public final class ProtocolMessageWriter {
     pendingOperation.appendProperty( listener, JsonValue.valueOf( listen ) );
   }
 
-  public void appendDo( String target, String name, Map<String, Object> properties ) {
-    prepareOperation( target, TYPE_DO );
-    pendingOperation.appendDetail( DO_NAME, JsonValue.valueOf( name ) );
+  public void appendCall( String target, String methodName, Map<String, Object> properties ) {
+    prepareOperation( target, TYPE_CALL );
+    pendingOperation.appendDetail( CALL_METHOD_NAME, JsonValue.valueOf( methodName ) );
     pendingOperation.appendProperties( properties );
   }
 

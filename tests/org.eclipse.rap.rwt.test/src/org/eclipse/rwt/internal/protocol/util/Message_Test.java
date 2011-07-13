@@ -21,7 +21,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.protocol.util.Message.CreateOperation;
 import org.eclipse.rwt.internal.protocol.util.Message.DestroyOperation;
-import org.eclipse.rwt.internal.protocol.util.Message.DoOperation;
+import org.eclipse.rwt.internal.protocol.util.Message.CallOperation;
 import org.eclipse.rwt.internal.protocol.util.Message.ExecuteScriptOperation;
 import org.eclipse.rwt.internal.protocol.util.Message.ListenOperation;
 import org.eclipse.rwt.internal.protocol.util.Message.SetOperation;
@@ -78,7 +78,7 @@ public class Message_Test extends TestCase {
   }
 
   public void testGetOperation() {
-    writer.appendDo( "w2", "method", null );
+    writer.appendCall( "w2", "method", null );
     
     assertNotNull( getMessage().getOperation( 0 ) );
   }
@@ -92,10 +92,10 @@ public class Message_Test extends TestCase {
     assertTrue( getMessage().getOperation( 0 ) instanceof CreateOperation );
   }
   
-  public void testGetDoOperation() {
-    writer.appendDo( "w2", "method", null );
+  public void testGetCallOperation() {
+    writer.appendCall( "w2", "method", null );
     
-    assertTrue( getMessage().getOperation( 0 ) instanceof DoOperation );
+    assertTrue( getMessage().getOperation( 0 ) instanceof CallOperation );
   }
 
   public void testGetSetOperation() {
@@ -148,15 +148,15 @@ public class Message_Test extends TestCase {
     assertEquals( new Integer( 2 ), operation.getProperty( "key2" ) );
   }
   
-  public void testDoOperation() {
+  public void testCallOperation() {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "key1", "a" );
     properties.put( "key2", new Integer( 2 ) );
-    writer.appendDo( "w2", "method", properties );
+    writer.appendCall( "w2", "method", properties );
     
-    DoOperation operation = ( DoOperation )getMessage().getOperation( 0 );
+    CallOperation operation = ( CallOperation )getMessage().getOperation( 0 );
     assertEquals( "w2", operation.getTarget() );
-    assertEquals( "method", operation.getName() );
+    assertEquals( "method", operation.getMethodName() );
     assertEquals( "a", operation.getProperty( "key1" ) );
     assertEquals( new Integer( 2 ), operation.getProperty( "key2" ) );
   }

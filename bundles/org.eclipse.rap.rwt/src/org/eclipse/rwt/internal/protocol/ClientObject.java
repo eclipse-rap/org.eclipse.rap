@@ -78,7 +78,7 @@ public final class ClientObject implements IClientObject {
   }
 
   public void call( String methodName, Map<String, Object> properties ) {
-    writer.appendDo( targetId, methodName, properties );
+    writer.appendCall( targetId, methodName, properties );
   }
 
   public void executeScript( String type, String script ) {

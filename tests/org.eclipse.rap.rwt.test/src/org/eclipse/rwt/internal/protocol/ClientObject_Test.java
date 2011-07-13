@@ -22,7 +22,7 @@ import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.protocol.util.*;
 import org.eclipse.rwt.internal.protocol.util.Message.CreateOperation;
 import org.eclipse.rwt.internal.protocol.util.Message.DestroyOperation;
-import org.eclipse.rwt.internal.protocol.util.Message.DoOperation;
+import org.eclipse.rwt.internal.protocol.util.Message.CallOperation;
 import org.eclipse.rwt.internal.protocol.util.Message.ExecuteScriptOperation;
 import org.eclipse.rwt.internal.protocol.util.Message.ListenOperation;
 import org.eclipse.rwt.internal.protocol.util.Message.SetOperation;
@@ -133,9 +133,9 @@ public class ClientObject_Test extends TestCase {
   public void testCall() {
     clientObject.call( "method", null );
 
-    DoOperation operation = ( DoOperation )getMessage().getOperation( 0 );
+    CallOperation operation = ( CallOperation )getMessage().getOperation( 0 );
     assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
-    assertEquals( "method", operation.getName() );
+    assertEquals( "method", operation.getMethodName() );
   }
 
   public void testCallTwice() {
@@ -146,9 +146,9 @@ public class ClientObject_Test extends TestCase {
 
     clientObject.call( "method2", properties );
 
-    DoOperation operation = ( DoOperation )getMessage().getOperation( 1 );
+    CallOperation operation = ( CallOperation )getMessage().getOperation( 1 );
     assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
-    assertEquals( "method2", operation.getName() );
+    assertEquals( "method2", operation.getMethodName() );
     assertEquals( "a", operation.getProperty( "key1" ) );
     assertEquals( new Integer( 3 ), operation.getProperty( "key2" ) );
   }

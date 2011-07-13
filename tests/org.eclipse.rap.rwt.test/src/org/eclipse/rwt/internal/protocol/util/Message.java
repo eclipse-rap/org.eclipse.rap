@@ -13,7 +13,7 @@ package org.eclipse.rwt.internal.protocol.util;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_PARENT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_STYLE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_TYPE;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.DO_NAME;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CALL_METHOD_NAME;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_CONTENT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_TYPE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.MESSAGE_OPERATIONS;
@@ -22,7 +22,7 @@ import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATION_PROP
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATION_TARGET;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_CREATE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_DESTROY;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_DO;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_CALL;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_EXECUTE_SCRIPT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_LISTEN;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_SET;
@@ -53,8 +53,8 @@ public final class Message {
     String action = getOperationAction( operation );
     if( action.equals( TYPE_CREATE ) ) {
       result = new CreateOperation( operation );
-    } else if( action.equals( TYPE_DO ) ) {
-      result = new DoOperation( operation );
+    } else if( action.equals( TYPE_CALL ) ) {
+      result = new CallOperation( operation );
     } else if( action.equals( TYPE_SET ) ) {
       result = new SetOperation( operation );
     } else if( action.equals( TYPE_LISTEN ) ) {
@@ -158,14 +158,14 @@ public final class Message {
     }
   }
 
-  public final class DoOperation extends Operation {
+  public final class CallOperation extends Operation {
   
-    private DoOperation( JSONObject operation ) {
+    private CallOperation( JSONObject operation ) {
       super( operation );
     }
   
-    public String getName() {
-      return ( String )getDetail( DO_NAME );
+    public String getMethodName() {
+      return ( String )getDetail( CALL_METHOD_NAME );
     }
   }
 
