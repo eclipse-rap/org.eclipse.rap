@@ -17,8 +17,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.NoOpRunnable;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
@@ -65,7 +64,7 @@ public class UICallBackManager_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testWaitFor() throws InterruptedException {
+  public void testWakeClient() throws InterruptedException {
     final Throwable[] uiCallBackServiceHandlerThrowable = { null };
     final ServiceContext context[] = { ContextProvider.getContext() };
     Thread thread = new Thread( new Runnable() {
@@ -90,9 +89,8 @@ public class UICallBackManager_Test extends TestCase {
     assertTrue( manager.isCallBackRequestBlocked() );
 
     manager.wakeClient();
-    Thread.sleep( SLEEP_TIME );
+    thread.join();
     assertFalse( manager.isCallBackRequestBlocked() );
-    Thread.sleep( SLEEP_TIME );
     assertFalse( thread.isAlive() );
   }
   
@@ -189,6 +187,21 @@ public class UICallBackManager_Test extends TestCase {
     assertEquals( "", log );
   }
   
+  public void testCallBackRequestIsReleasedOnSessionInvalidate() throws Exception {
+    Throwable[] uiCallBackHandlerThrowable = { null };
+    ServiceContext context = ContextProvider.getContext();
+    Thread uiCallBackThread = simulateUiCallBackThread( uiCallBackHandlerThrowable, context );
+    
+    context.getSessionStore().getHttpSession().invalidate();
+    uiCallBackThread.join();
+    
+    TestResponse response = ( TestResponse )context.getResponse();
+    assertEquals( "", response.getContent().trim() );
+    assertFalse( manager.isCallBackRequestBlocked() );
+    assertFalse( uiCallBackThread.isAlive() );
+    assertNull( uiCallBackHandlerThrowable[ 0 ] );
+  }
+  
   public void testAsyncExec() throws InterruptedException {
     final Throwable[] uiCallBackServiceHandlerThrowable = { null };
     ServiceContext context = ContextProvider.getContext();
@@ -206,9 +219,7 @@ public class UICallBackManager_Test extends TestCase {
 
     // test blocking of incomming uiCallBack thread while UI thread is running
     fakeRequestParam( display );
-    simulateUICallBackThreadLockDuringLifeCycle(
-      context,
-      uiCallBackServiceHandlerThrowable );
+    simulateUICallBackThreadLockDuringLifeCycle( context, uiCallBackServiceHandlerThrowable );
     Fixture.executeLifeCycleFromServerThread();
     if( uiCallBackServiceHandlerThrowable[ 0 ] != null ) {
       uiCallBackServiceHandlerThrowable[ 0 ].printStackTrace();

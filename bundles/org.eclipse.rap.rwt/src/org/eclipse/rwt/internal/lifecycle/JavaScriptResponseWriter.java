@@ -37,6 +37,10 @@ public class JavaScriptResponseWriter {
     writer.write( content );
   }
 
+  public boolean checkError() {
+    return writer.checkError();
+  }
+
   public void finish() {
     writePendingProtocolMessage();
   }

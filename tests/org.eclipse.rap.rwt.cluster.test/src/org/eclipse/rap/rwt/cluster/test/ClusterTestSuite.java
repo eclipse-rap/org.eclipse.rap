@@ -23,6 +23,7 @@ public class ClusterTestSuite {
     suite.addTestSuite( TomcatSessionFailover_Test.class );
     suite.addTestSuite( TomcatSessionCleanup_Test.class );
     suite.addTestSuite( SessionSerialization_Test.class );
+    suite.addTestSuite( UICallBack_Test.class );
     return suite;
   }
 }

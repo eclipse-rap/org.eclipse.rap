@@ -31,10 +31,8 @@ public class UICallBackServiceHandler implements IServiceHandler {
 
   public void service() throws IOException {
     ISessionStore sessionStore = RWT.getSessionStore();
-    if(    !UICallBackManager.getInstance().blockCallBackRequest()
-        && ContextProvider.hasContext()
-        && sessionStore.isBound() )
-    {
+    UICallBackManager.getInstance().blockCallBackRequest();
+    if( ContextProvider.hasContext() && sessionStore.isBound() ) {
       writeResponse();
     }
   }

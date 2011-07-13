@@ -11,8 +11,11 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.service.ContextProvider;
@@ -23,8 +26,24 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 public final class UICallBackManager implements SerializableCompatibility {
 
+  private static final int DEFAULT_REQUEST_CHECK_INTERVAL = 30000;
+
   private static final String FORCE_UI_CALLBACK
     = UICallBackManager.class.getName() + "#forceUICallBack";
+  
+  private static class UnblockSessionStoreListener
+    implements SessionStoreListener, SerializableCompatibility
+  {
+    private transient final Thread currentThread;
+
+    private UnblockSessionStoreListener( Thread currentThread ) {
+      this.currentThread = currentThread;
+    }
+
+    public void beforeDestroy( SessionStoreEvent event ) {
+      currentThread.interrupt();
+    }
+  }
 
   public static UICallBackManager getInstance() {
     return ( UICallBackManager )SessionSingletonBase.getInstance( UICallBackManager.class );
@@ -46,6 +65,8 @@ public final class UICallBackManager implements SerializableCompatibility {
   private boolean waitForUIThread;
   // indicates whether the display has runnables to execute
   private boolean hasRunnables;
+  private boolean wakeCalled;
+  private int requestCheckInterval;
 
   private UICallBackManager() {
     lock = new SerializableLock();
@@ -53,9 +74,11 @@ public final class UICallBackManager implements SerializableCompatibility {
     blockedCallBackRequests = new HashSet<Thread>();
     uiThreadRunning = false;
     waitForUIThread = false;
+    wakeCalled = false;
+    requestCheckInterval = DEFAULT_REQUEST_CHECK_INTERVAL;
   }
 
-  boolean isCallBackRequestBlocked() {
+  public boolean isCallBackRequestBlocked() {
     synchronized( lock ) {
       return !blockedCallBackRequests.isEmpty();
     }
@@ -71,6 +94,7 @@ public final class UICallBackManager implements SerializableCompatibility {
 
   public void releaseBlockedRequest() {
     synchronized( lock ) {
+      wakeCalled = true;
       lock.notifyAll();
     }
   }
@@ -84,6 +108,10 @@ public final class UICallBackManager implements SerializableCompatibility {
     }
   }
   
+  public void setRequestCheckInterval( int requestCheckInterval ) {
+    this.requestCheckInterval = requestCheckInterval;
+  }
+
   void notifyUIThreadStart() {
     synchronized( lock ) {
       uiThreadRunning = true;
@@ -106,41 +134,49 @@ public final class UICallBackManager implements SerializableCompatibility {
     }
   }
 
-  boolean blockCallBackRequest() {
-    boolean result = false;
+  void blockCallBackRequest() {
     synchronized( lock ) {
-      final Thread currentThread = Thread.currentThread();
-      SessionStoreListener listener = new SessionStoreListener() {
-        public void beforeDestroy( final SessionStoreEvent event ) {
-          currentThread.interrupt();
-        }
-      };
-      try {
-        if( mustBlockCallBackRequest() ) {
-          blockedCallBackRequests.add( currentThread );
-          ISessionStore session = ContextProvider.getSession();
-          session.addSessionStoreListener( listener );
-          lock.wait();
-        }
-      } catch( InterruptedException ie ) {
-        result = true;
-        Thread.interrupted(); // Reset interrupted state, see bug 300254
-      } finally {
-        blockedCallBackRequests.remove( currentThread );
-        if( !result ) {
-          ContextProvider.getSession().removeSessionStoreListener( listener );
+      if( blockedCallBackRequests.isEmpty() && mustBlockCallBackRequest() ) {
+        Thread currentThread = Thread.currentThread();
+        SessionStoreListener listener = new UnblockSessionStoreListener( currentThread );
+        ISessionStore sessionStore = ContextProvider.getSession();
+        sessionStore.addSessionStoreListener( listener );
+        blockedCallBackRequests.add( currentThread );
+        try {
+          boolean keepWaiting = true;
+          wakeCalled = false;
+          while( !wakeCalled && keepWaiting ) {
+            lock.wait( requestCheckInterval );
+            keepWaiting 
+              = mustBlockCallBackRequest() && isConnectionAlive( ContextProvider.getResponse() );
+          }
+        } catch( InterruptedException ie ) {
+          Thread.interrupted(); // Reset interrupted state, see bug 300254
+        } finally {
+          blockedCallBackRequests.remove( currentThread );
+          sessionStore.removeSessionStoreListener( listener );
         }
       }
       waitForUIThread = true;
+    }
+  }
+
+  private static boolean isConnectionAlive( HttpServletResponse response ) {
+    boolean result;
+    try {
+      JavaScriptResponseWriter responseWriter = new JavaScriptResponseWriter( response );
+      responseWriter.write( " " );
+      result = !responseWriter.checkError();
+    } catch( IOException ioe ) {
+      result = false;
     }
     return result;
   }
 
   boolean mustBlockCallBackRequest() {
-    boolean noPendingCallbackRequests = blockedCallBackRequests.isEmpty();
     boolean prevent = !waitForUIThread && !uiThreadRunning && hasRunnables;
     boolean isActive = !idManager.isEmpty();
-    return isActive && noPendingCallbackRequests && !prevent;
+    return isActive && !prevent;
   }
 
   boolean isUICallBackActive() {
