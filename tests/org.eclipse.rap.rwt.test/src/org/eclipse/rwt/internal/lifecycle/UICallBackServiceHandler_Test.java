@@ -16,25 +16,14 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.TestResponse;
-import org.eclipse.rwt.internal.service.ContextProvider;
 
 
 public class UICallBackServiceHandler_Test extends TestCase {
   
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-  
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
-  
   public void testResponseContentType() throws IOException {
-    Fixture.fakeResponseWriter();
-    TestResponse response = ( TestResponse )ContextProvider.getResponse();
-    UICallBackServiceHandler.writeResponse();
+    TestResponse response = new TestResponse();
+    UICallBackServiceHandler.writeResponse( response );
     assertEquals( "text/javascript; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }
 }

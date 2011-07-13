@@ -30,11 +30,12 @@ public class UICallBackServiceHandler implements IServiceHandler {
     = "org.eclipse.swt.Request.getInstance().send();";
 
   public void service() throws IOException {
+    HttpServletResponse response = ContextProvider.getResponse();
     ISessionStore sessionStore = ContextProvider.getSession();
     try {
-      UICallBackManager.getInstance().blockCallBackRequest( ContextProvider.getResponse() );
+      UICallBackManager.getInstance().blockCallBackRequest( response );
       if( ContextProvider.hasContext() && sessionStore.isBound() ) {
-        writeResponse();
+        writeResponse( response );
       }
     } catch( DuplicateCallBackRequestException dcbre ) {
       sendErrorResponse();
@@ -44,8 +45,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
   //////////////////////////
   // Service helping methods
   
-  static void writeResponse() throws IOException {
-    HttpServletResponse response = ContextProvider.getResponse();
+  static void writeResponse( HttpServletResponse response ) throws IOException {
     JavaScriptResponseWriter writer = new JavaScriptResponseWriter( response );
     writer.write( JS_SEND_UI_REQUEST );
   }
