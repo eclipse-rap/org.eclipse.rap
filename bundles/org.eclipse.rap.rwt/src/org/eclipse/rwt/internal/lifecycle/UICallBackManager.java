@@ -59,10 +59,6 @@ public final class UICallBackManager implements SerializableCompatibility {
   // Flag that indicates whether a request is processed. In that case no
   // notifications are sent to the client.
   private boolean uiThreadRunning;
-  // Flag that indicates that a notification was sent to the client. If the new
-  // callback thread returns earlier than the UI Thread the callback thread
-  // must be blocked although the runnables are not empty
-  private boolean waitForUIThread;
   // indicates whether the display has runnables to execute
   private boolean hasRunnables;
   private boolean wakeCalled;
@@ -73,7 +69,6 @@ public final class UICallBackManager implements SerializableCompatibility {
     idManager = new IdManager();
     blockedCallBackRequests = new HashSet<Thread>();
     uiThreadRunning = false;
-    waitForUIThread = false;
     wakeCalled = false;
     requestCheckInterval = DEFAULT_REQUEST_CHECK_INTERVAL;
   }
@@ -115,7 +110,6 @@ public final class UICallBackManager implements SerializableCompatibility {
   void notifyUIThreadStart() {
     synchronized( lock ) {
       uiThreadRunning = true;
-      waitForUIThread = false;
     }
   }
 
@@ -157,7 +151,6 @@ public final class UICallBackManager implements SerializableCompatibility {
           sessionStore.removeSessionStoreListener( listener );
         }
       }
-      waitForUIThread = true;
     }
   }
 
@@ -174,9 +167,7 @@ public final class UICallBackManager implements SerializableCompatibility {
   }
 
   boolean mustBlockCallBackRequest() {
-    boolean prevent = !waitForUIThread && !uiThreadRunning && hasRunnables;
-    boolean isActive = !idManager.isEmpty();
-    return isActive && !prevent;
+    return isUICallBackActive() && ( uiThreadRunning || !hasRunnables );
   }
 
   boolean isUICallBackActive() {
