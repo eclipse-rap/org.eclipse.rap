@@ -9,6 +9,8 @@
 *******************************************************************************/ 
 package org.eclipse.rwt.internal.protocol;
 
+import java.util.Map;
+
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.*;
@@ -26,14 +28,10 @@ public final class ClientObject implements IClientObject {
     writer = ContextProvider.getStateInfo().getResponseWriter().getProtocolWriter();
   }
 
-  public void create( String[] styles, Object... arguments ) {
+  public void create( String[] styles, Map<String, Object> properties ) {
     String parentId = getParentId();
     String type = target.getClass().getName();
-    if( arguments.length == 0 ) {
-      writer.appendCreate( targetId, parentId, type, styles, null );
-    } else {
-      writer.appendCreate( targetId, parentId, type, styles, arguments );
-    }
+    writer.appendCreate( targetId, parentId, type, styles, properties );
   }
 
   private String getParentId() {
@@ -79,12 +77,8 @@ public final class ClientObject implements IClientObject {
     writer.appendListen( targetId, eventName, false );
   }
 
-  public void call( String methodName, Object... arguments ) {
-    if( arguments.length == 0 ) {
-      writer.appendDo( targetId, methodName, null );
-    } else {
-      writer.appendDo( targetId, methodName, arguments );
-    }
+  public void call( String methodName, Map<String, Object> properties ) {
+    writer.appendDo( targetId, methodName, properties );
   }
 
   public void executeScript( String type, String script ) {

@@ -11,6 +11,10 @@
 package org.eclipse.rwt.internal.protocol;
 
 import static org.eclipse.rwt.internal.resources.TestUtil.assertArrayEquals;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -47,7 +51,7 @@ public class ClientObject_Test extends TestCase {
   }
 
   public void testCreateWithNullParams() {
-    clientObject.create( new String[] { "SHELL_TRIM" } );
+    clientObject.create( new String[] { "SHELL_TRIM" }, null );
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
     assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
@@ -55,14 +59,17 @@ public class ClientObject_Test extends TestCase {
   }
 
   public void testClientWithParams() {
-    Object[] parameters = new Object[] { new Integer( 1 ), new Boolean( true ) };
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "key1", new Integer( 1 ) );
+    properties.put( "key2", Boolean.TRUE );
 
-    clientObject.create( new String[] { "SHELL_TRIM" }, parameters );
+    clientObject.create( new String[] { "SHELL_TRIM" }, properties );
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
     assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
     assertEquals( shell.getClass().getName(), operation.getType() );
-    assertArrayEquals( parameters, operation.getParameters() );
+    assertEquals( new Integer( 1 ), operation.getProperty( "key1" ) );
+    assertEquals( Boolean.TRUE, operation.getProperty( "key2" ) );
   }
 
   public void testCreateStyles() {
@@ -70,7 +77,7 @@ public class ClientObject_Test extends TestCase {
     IClientObject buttonObject = ClientObjectFactory.getForWidget( button );
     String[] styles = new String[] { "PUSH", "BORDER" };
 
-    buttonObject.create( styles );
+    buttonObject.create( styles, null );
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
     assertEquals( WidgetUtil.getId( button ), operation.getTarget() );
@@ -124,23 +131,26 @@ public class ClientObject_Test extends TestCase {
   }
 
   public void testCall() {
-    clientObject.call( "method" );
+    clientObject.call( "method", null );
 
     DoOperation operation = ( DoOperation )getMessage().getOperation( 0 );
     assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
     assertEquals( "method", operation.getName() );
-    assertNull( operation.getParameters() );
   }
 
   public void testCallTwice() {
-    clientObject.call( "method" );
-    Object[] parameters = new Object[] { "a", new Integer( 3 ) };
-    clientObject.call( "method2", parameters );
+    clientObject.call( "method", null );
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "key1", "a" );
+    properties.put( "key2", new Integer( 3 ) );
+
+    clientObject.call( "method2", properties );
 
     DoOperation operation = ( DoOperation )getMessage().getOperation( 1 );
     assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
     assertEquals( "method2", operation.getName() );
-    assertArrayEquals( parameters, operation.getParameters() );
+    assertEquals( "a", operation.getProperty( "key1" ) );
+    assertEquals( new Integer( 3 ), operation.getProperty( "key2" ) );
   }
 
   public void testExecuteScript() {

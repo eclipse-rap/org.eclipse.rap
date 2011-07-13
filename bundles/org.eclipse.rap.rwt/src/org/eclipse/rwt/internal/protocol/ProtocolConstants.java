@@ -23,8 +23,8 @@ public final class ProtocolConstants {
   public static final String META_REQUEST_COUNTER = "requestCounter";
 
   public static final String OPERATION_TARGET = "target";
-  public static final String OPERATION_TYPE = "type";
-  public static final String OPERATION_DETAILS = "details";
+  public static final String OPERATION_ACTION = "action";
+  public static final String OPERATION_PROPERTIES = "properties";
   
   public static final String TYPE_SET = "set";
   public static final String TYPE_LISTEN = "listen";
@@ -33,7 +33,6 @@ public final class ProtocolConstants {
   public static final String TYPE_DO = "do";
   public static final String TYPE_EXECUTE_SCRIPT = "executeScript";
   
-  public static final String PARAMETER = "parameter";
   public static final String DO_NAME = "name";
   public static final String CREATE_PARENT = "parent";
   public static final String CREATE_TYPE = "type";

@@ -19,13 +19,14 @@ import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.MESSAGE_META;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.MESSAGE_OPERATIONS;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META_REQUEST_COUNTER;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.PARAMETER;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_CREATE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_DESTROY;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_DO;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_EXECUTE_SCRIPT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_LISTEN;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_SET;
+
+import java.util.Map;
 
 import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
 import org.eclipse.rwt.internal.theme.*;
@@ -49,13 +50,13 @@ public final class ProtocolMessageWriter {
                             String parentId,
                             String type,
                             String[] styles,
-                            Object[] parameters )
+                            Map<String, Object> properties )
   {
     prepareOperation( target, TYPE_CREATE );
+    pendingOperation.appendDetail( CREATE_TYPE, JsonValue.valueOf( type ) );
     pendingOperation.appendProperty( CREATE_PARENT, JsonValue.valueOf( parentId ) );
-    pendingOperation.appendProperty( CREATE_TYPE, JsonValue.valueOf( type ) );
     pendingOperation.appendProperty( CREATE_STYLE, JsonUtil.createJsonArray( styles ) );
-    pendingOperation.appendProperty( PARAMETER, JsonUtil.createJsonArray( parameters ) );
+    pendingOperation.appendProperties( properties );
   }
 
   public void appendSet( String target, String key, int value ) {
@@ -88,16 +89,16 @@ public final class ProtocolMessageWriter {
     pendingOperation.appendProperty( listener, JsonValue.valueOf( listen ) );
   }
 
-  public void appendDo( String target, String name, Object[] parameters ) {
+  public void appendDo( String target, String name, Map<String, Object> properties ) {
     prepareOperation( target, TYPE_DO );
-    pendingOperation.appendProperty( DO_NAME, JsonValue.valueOf( name ) );
-    pendingOperation.appendProperty( PARAMETER, JsonUtil.createJsonArray( parameters ) );
+    pendingOperation.appendDetail( DO_NAME, JsonValue.valueOf( name ) );
+    pendingOperation.appendProperties( properties );
   }
 
   public void appendExecuteScript( String target, String type, String content ) {
     prepareOperation( target, TYPE_EXECUTE_SCRIPT );
-    pendingOperation.appendProperty( EXECUTE_SCRIPT_TYPE, JsonValue.valueOf( type ) );
-    pendingOperation.appendProperty( EXECUTE_SCRIPT_CONTENT, JsonValue.valueOf( content ) );
+    pendingOperation.appendDetail( EXECUTE_SCRIPT_TYPE, JsonValue.valueOf( type ) );
+    pendingOperation.appendDetail( EXECUTE_SCRIPT_CONTENT, JsonValue.valueOf( content ) );
   }
 
   public void appendDestroy( String target ) {

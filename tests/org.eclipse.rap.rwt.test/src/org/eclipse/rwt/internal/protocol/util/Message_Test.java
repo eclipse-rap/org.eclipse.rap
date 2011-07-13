@@ -11,6 +11,10 @@
 package org.eclipse.rwt.internal.protocol.util;
 
 import static org.eclipse.rwt.internal.resources.TestUtil.assertArrayEquals;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -80,8 +84,10 @@ public class Message_Test extends TestCase {
   }
   
   public void testGetCreateOperation() {
-    Object[] parameters = new Object[] { "a", new Integer( 2) };
-    writer.appendCreate( "w1", "w0", "type", new String[] { "FOO" }, parameters );
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "key1", "a" );
+    properties.put( "key2", new Integer( 2 ) );
+    writer.appendCreate( "w1", "w0", "type", new String[] { "FOO" }, properties );
     
     assertTrue( getMessage().getOperation( 0 ) instanceof CreateOperation );
   }
@@ -117,7 +123,7 @@ public class Message_Test extends TestCase {
   }
   
   public void testGetOperationWithUnknownType() {
-    Message message = new Message( "{ \"operations\" : [ { \"type\" : \"foo\" } ] }" );
+    Message message = new Message( "{ \"operations\" : [ { \"action\" : \"foo\" } ] }" );
     
     try {
       message.getOperation( 0 );
@@ -127,26 +133,32 @@ public class Message_Test extends TestCase {
   }
 
   public void testCreateOperation() {
-    Object[] parameters = new Object[] { "a", new Integer( 2 ) };
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "key1", "a" );
+    properties.put( "key2", new Integer( 2 ) );
     String[] styles = new String[] { "FOO", "BAR" };
-    writer.appendCreate( "w1", "w0", "type", styles, parameters );
+    writer.appendCreate( "w1", "w0", "type", styles, properties );
     
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
     assertEquals( "w1", operation.getTarget() );
     assertEquals( "w0", operation.getParent() );
     assertEquals( "type", operation.getType() );
     assertArrayEquals( styles, operation.getStyles() );
-    assertArrayEquals( parameters, operation.getParameters() );
+    assertEquals( "a", operation.getProperty( "key1" ) );
+    assertEquals( new Integer( 2 ), operation.getProperty( "key2" ) );
   }
   
   public void testDoOperation() {
-    Object[] parameters = new Object[] { "a", new Integer( 2 ) };
-    writer.appendDo( "w2", "method", parameters );
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "key1", "a" );
+    properties.put( "key2", new Integer( 2 ) );
+    writer.appendDo( "w2", "method", properties );
     
     DoOperation operation = ( DoOperation )getMessage().getOperation( 0 );
     assertEquals( "w2", operation.getTarget() );
     assertEquals( "method", operation.getName() );
-    assertArrayEquals( parameters, operation.getParameters() );
+    assertEquals( "a", operation.getProperty( "key1" ) );
+    assertEquals( new Integer( 2 ), operation.getProperty( "key2" ) );
   }
   
   public void testSetOperation() {

@@ -7,6 +7,10 @@
  *******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
+import java.util.Map;
+
+import org.eclipse.swt.widgets.Widget;
+
 
 /**
  * A {@link IClientObject} acts as a broker between server and client widgets.
@@ -27,9 +31,9 @@ public interface IClientObject {
    * <code>renderInitialization</code> method of the widgets life-cycle adapter (LCA).
    * 
    * @param styles TODO
-   * @param parameters the parameters which are passed to the client widget's constructor.
+   * @param properties TODO
    */
-  void create( String[] styles, Object... parameters );
+  void create( String[] styles, Map<String, Object> properties );
 
   /**
    * Sets the specified property of the client-side widget to a new value.
@@ -89,9 +93,9 @@ public interface IClientObject {
    * Calls a specific method of the widget on the client-side.
    * 
    * @param methodName the method name.
-   * @param parameters the parameters which are passed to the specified method.
+   * @param properties TODO
    */
-  void call( String methodName, Object... parameters );
+  void call( String methodName, Map<String, Object> properties );
 
   /**
    * Executes a script on the client side.

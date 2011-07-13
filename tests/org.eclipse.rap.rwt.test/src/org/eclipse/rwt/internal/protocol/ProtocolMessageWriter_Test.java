@@ -14,6 +14,10 @@ import static org.eclipse.rwt.internal.protocol.ProtocolConstants.MESSAGE_META;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.MESSAGE_OPERATIONS;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META_REQUEST_COUNTER;
 import static org.eclipse.rwt.internal.resources.TestUtil.assertArrayEquals;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
@@ -81,44 +85,55 @@ public class ProtocolMessageWriter_Test extends TestCase {
   public void testMessageWithDo() {
     String shellId = WidgetUtil.getId( shell );
     String methodName = "methodName";
-    Object[] parameters = new Object[] { "a", "b" };
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "key1", "a" );
+    properties.put( "key2", "b" );
     
-    writer.appendDo( shellId, methodName, parameters );
+    writer.appendDo( shellId, methodName, properties );
     
     DoOperation operation = (DoOperation)getMessage().getOperation( 0 );
     assertEquals( shellId, operation.getTarget() );
     assertEquals( methodName, operation.getName() );
-    assertArrayEquals( parameters, operation.getParameters() );
+    assertEquals( "a", operation.getProperty( "key1" ) );
+    assertEquals( "b", operation.getProperty( "key2" ) );
   }
 
   public void testMessageWithTwoDos() {
     String shellId = WidgetUtil.getId( shell );
     String methodName = "methodName";
-    Object[] parameters = new Object[] { new Integer( 5 ), "b", new Boolean( false ) };
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "key1", new Integer( 5 ) );
+    properties.put( "key2", "b" );
+    properties.put( "key3", Boolean.FALSE );
 
-    writer.appendDo( shellId, methodName, new Object[] { "a", "b" } );
-    writer.appendDo( shellId, methodName, parameters );
+    writer.appendDo( shellId, methodName, null );
+    writer.appendDo( shellId, methodName, properties );
     
     DoOperation operation = ( DoOperation )getMessage().getOperation( 1 );
     assertEquals( shellId, operation.getTarget() );
     assertEquals( methodName, operation.getName() );
-    assertArrayEquals( parameters, operation.getParameters() );
+    assertEquals( new Integer( 5 ), operation.getProperty( "key1" ) );
+    assertEquals( "b", operation.getProperty( "key2" ) );
+    assertEquals( Boolean.FALSE, operation.getProperty( "key3" ) );
   }
 
   public void testMessageWithCreate() {
     String displayId = DisplayUtil.getId( shell.getDisplay() );
     String shellId = WidgetUtil.getId( shell );
     String[] styles = new String[] { "TRIM", "FOO" };
-    Object[] parameters = new Object[] { "a", "b" };
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "key1", "a" );
+    properties.put( "key2", "b" );
 
-    writer.appendCreate( shellId, displayId, "org.Text", styles, parameters );
+    writer.appendCreate( shellId, displayId, "org.Text", styles, properties );
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
     assertEquals( shellId, operation.getTarget() );
     assertEquals( displayId, operation.getParent() );
     assertEquals( "org.Text", operation.getType() );
     assertArrayEquals( styles, operation.getStyles() );
-    assertArrayEquals( parameters, operation.getParameters() );
+    assertEquals( "a", operation.getProperty( "key1" ) );
+    assertEquals( "b", operation.getProperty( "key2" ) );
   }
 
   public void testMessageWithMultipleOperations() {
@@ -137,15 +152,19 @@ public class ProtocolMessageWriter_Test extends TestCase {
 
   public void testMessageWithIllegalParameterType() {
     Button wrongParameter = new Button( shell, SWT.PUSH );
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "key1", "a" );
+    properties.put( "key2", wrongParameter );
 
     try {
+      
       writer.appendCreate( DisplayUtil.getId( shell.getDisplay() ),
                                  WidgetUtil.getId( shell ),
                                  "org.Text",
                                  new String[] { "TRIM" },
-                                 new Object[] { "a", wrongParameter } );
+                                 properties );
       fail();
-    } catch ( IllegalArgumentException e ) {
+    } catch ( IllegalArgumentException expected ) {
     }
   }
 
@@ -275,7 +294,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     checkShellSet( message );
     checkShellListen( message );
     checkButtonCreate( message, button );
-    checkButtonExecute( message, button );
+    checkButtonDo( message, button );
   }
 
   private void createShellOperations( Shell shell ) {
@@ -313,17 +332,22 @@ public class ProtocolMessageWriter_Test extends TestCase {
 
   private void addButtonCreate( Button button ) {
     String[] styles = new String[] { "PUSH", "BORDER" };
-    Object[] arguments = new Object[] { new Integer( 4 ), new Boolean( true ) };
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "key1", new Integer( 4 ) );
+    properties.put( "key2", Boolean.TRUE );
+    
     writer.appendCreate( WidgetUtil.getId( button ),
                                 WidgetUtil.getId( button.getParent() ),
                                 button.getClass().getName(),
                                 styles,
-                                arguments );
+                                properties );
   }
 
   private void addButtonDo( Button button ) {
-    Object[] arguments = new Object[] { "a1" };
-    writer.appendDo( WidgetUtil.getId( button ), "select", arguments );
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "key1", "a1" );
+    
+    writer.appendDo( WidgetUtil.getId( button ), "select", properties );
   }
 
   private void assertShellCreated( Message message ) {
@@ -334,7 +358,6 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertEquals( shellId, operation.getTarget() );
     assertEquals( displayId, operation.getParent() );
     assertEquals( "SHELL_TRIM", operation.getStyles()[ 0 ] );
-    assertNull( operation.getParameters() );
   }
 
   private void checkShellSet( Message message ) {
@@ -364,20 +387,20 @@ public class ProtocolMessageWriter_Test extends TestCase {
     CreateOperation operation = ( CreateOperation )message.getOperation( 3 );
     assertEquals( buttonId, operation.getTarget() );
     assertEquals( shellId, operation.getParent() );
-    assertEquals( new Integer( 4 ), operation.getParameters()[ 0 ] );
-    assertTrue( ( ( Boolean )operation.getParameters()[ 1 ] ).booleanValue() );
+    assertEquals( new Integer( 4 ), operation.getProperty( "key1" ) );
+    assertTrue( ( ( Boolean )operation.getProperty( "key2" ) ).booleanValue() );
     assertEquals( button.getClass().getName(), operation.getType() );
     assertEquals( "PUSH", operation.getStyles()[ 0 ] );
     assertEquals( "BORDER", operation.getStyles()[ 1 ] );
   }
 
-  private void checkButtonExecute( Message message, Widget button ) {
+  private void checkButtonDo( Message message, Widget button ) {
     String buttonId = WidgetUtil.getId( button );
 
     DoOperation operation = ( DoOperation )message.getOperation( 4 );
     assertEquals( buttonId, operation.getTarget() );
     assertEquals( "select", operation.getName() );
-    assertEquals( "a1", operation.getParameters()[ 0 ] );
+    assertEquals( "a1", operation.getProperty( "key1" ) );
   }
 
   public void testAppendsToExistingOperation() {

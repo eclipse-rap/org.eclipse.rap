@@ -17,10 +17,9 @@ import static org.eclipse.rwt.internal.protocol.ProtocolConstants.DO_NAME;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_CONTENT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_TYPE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.MESSAGE_OPERATIONS;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATION_DETAILS;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATION_ACTION;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATION_PROPERTIES;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATION_TARGET;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATION_TYPE;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.PARAMETER;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_CREATE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_DESTROY;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_DO;
@@ -51,21 +50,21 @@ public final class Message {
   public Operation getOperation( int position ) {
     Operation result;
     JSONObject operation = getOperationAsJson( position );
-    String type = getOperationType( operation );
-    if( type.equals( TYPE_CREATE ) ) {
+    String action = getOperationAction( operation );
+    if( action.equals( TYPE_CREATE ) ) {
       result = new CreateOperation( operation );
-    } else if( type.equals( TYPE_DO ) ) {
+    } else if( action.equals( TYPE_DO ) ) {
       result = new DoOperation( operation );
-    } else if( type.equals( TYPE_SET ) ) {
+    } else if( action.equals( TYPE_SET ) ) {
       result = new SetOperation( operation );
-    } else if( type.equals( TYPE_LISTEN ) ) {
+    } else if( action.equals( TYPE_LISTEN ) ) {
       result = new ListenOperation( operation );
-    } else if( type.equals( TYPE_EXECUTE_SCRIPT ) ) {
+    } else if( action.equals( TYPE_EXECUTE_SCRIPT ) ) {
       result = new ExecuteScriptOperation( operation );
-    } else if( type.equals( TYPE_DESTROY ) ) {
+    } else if( action.equals( TYPE_DESTROY ) ) {
       result = new DestroyOperation( operation );
     } else {
-      throw new IllegalArgumentException( "Unknown operation type: " + type );
+      throw new IllegalArgumentException( "Unknown operation action: " + action );
     }
     return result;
   }
@@ -80,14 +79,14 @@ public final class Message {
     return result;
   }
 
-  private String getOperationType( JSONObject operation ) {
-    String type;
+  private String getOperationAction( JSONObject operation ) {
+    String action;
     try {
-      type = operation.getString( OPERATION_TYPE );
+      action = operation.getString( OPERATION_ACTION );
     } catch( JSONException e ) {
-      throw new IllegalStateException( "Could not find type for operation " + operation );
+      throw new IllegalStateException( "Could not find action for operation " + operation );
     }
-    return type;
+    return action;
   }
 
   public abstract class Operation {
@@ -97,43 +96,25 @@ public final class Message {
   
     private Operation( JSONObject operation ) {
       this.operation = operation;
-      target = ( String )getValue( OPERATION_TARGET );
+      target = ( String )getDetail( OPERATION_TARGET );
     }
   
     public String getTarget() {
       return target;
     }
     
-    protected Object getDetail( String key ) {
+    public Object getProperty( String key ) {
       Object result;
       try {
-        JSONObject details = operation.getJSONObject( OPERATION_DETAILS );
-        result = details.get( key );
+        JSONObject properties = operation.getJSONObject( OPERATION_PROPERTIES );
+        result = properties.get( key );
       } catch( JSONException e ) {
-        throw new IllegalStateException( "Detail does not exist for key: " + key );
-      }
-      return result;
-    }
-        
-    protected Object[] getParameters( String key) {
-      Object detail = getDetail( key );
-      Object[] result = null;
-      if( !detail.equals( JSONObject.NULL ) ) {
-        JSONArray parameters = ( JSONArray )detail;
-        result = new Object[ parameters.length() ];
-        for( int i = 0; i < parameters.length(); i++ ) {
-          try {
-            result[ i ] = parameters.get( i );
-          } catch( JSONException e ) {
-            String message = "Parameter array is not valid for operation ";
-            throw new IllegalStateException( message );
-          }
-        }
+        throw new IllegalStateException( "Property does not exist for key: " + key );
       }
       return result;
     }
 
-    private Object getValue( String key ) {
+    protected Object getDetail( String key ) {
       Object result;
       try {
         result = operation.get( key );
@@ -151,7 +132,7 @@ public final class Message {
     }
   
     public String getParent() {
-      return ( String )getDetail( CREATE_PARENT );
+      return ( String )getProperty( CREATE_PARENT );
     }
   
     public String getType() {
@@ -159,11 +140,21 @@ public final class Message {
     }
 
     public Object[] getStyles() {
-      return getParameters( CREATE_STYLE );
-    }
-
-    public Object[] getParameters() {
-      return getParameters( PARAMETER );
+      Object detail = getProperty( CREATE_STYLE );
+      Object[] result = null;
+      if( !detail.equals( JSONObject.NULL ) ) {
+        JSONArray parameters = ( JSONArray )detail;
+        result = new Object[ parameters.length() ];
+        for( int i = 0; i < parameters.length(); i++ ) {
+          try {
+            result[ i ] = parameters.get( i );
+          } catch( JSONException e ) {
+            String message = "Style array is not valid for operation ";
+            throw new IllegalStateException( message );
+          }
+        }
+      }
+      return result;
     }
   }
 
@@ -176,20 +167,12 @@ public final class Message {
     public String getName() {
       return ( String )getDetail( DO_NAME );
     }
-
-    public Object[] getParameters() {
-      return getParameters( PARAMETER );
-    }
   }
 
   public final class SetOperation extends Operation {
   
     private SetOperation( JSONObject operation ) {
       super( operation );
-    }
-  
-    public Object getProperty( String key ) {
-      return getDetail( key );
     }
   }
 
@@ -200,7 +183,7 @@ public final class Message {
     }
   
     public boolean listensTo( String eventName ) {
-      return ( ( Boolean )getDetail( eventName ) ).booleanValue();
+      return ( ( Boolean )getProperty( eventName ) ).booleanValue();
     }
   }
 

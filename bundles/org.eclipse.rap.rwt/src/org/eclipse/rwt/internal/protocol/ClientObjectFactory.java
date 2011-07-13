@@ -12,7 +12,6 @@ package org.eclipse.rwt.internal.protocol;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.internal.protocol.ClientObject;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.widgets.Widget;
