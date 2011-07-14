@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,11 @@
  *
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.service;
+
+import org.eclipse.swt.internal.SerializableCompatibility;
 
 /**
  * <code>SessionStoreListener</code>s are
@@ -16,7 +19,7 @@ package org.eclipse.rwt.service;
  * 
  * @since 1.0
  */
-public interface SessionStoreListener {
+public interface SessionStoreListener extends SerializableCompatibility {
   
   /**
    * Notification callback before the session store of interest is

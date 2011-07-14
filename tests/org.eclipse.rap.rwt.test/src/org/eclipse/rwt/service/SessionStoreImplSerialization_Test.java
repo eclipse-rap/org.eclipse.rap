@@ -21,7 +21,7 @@ import org.eclipse.rwt.internal.service.SessionStoreImpl;
 
 public class SessionStoreImplSerialization_Test extends TestCase {
 
-  private static class LoggingSessionStoreListener implements SessionStoreListener, Serializable {
+  private static class LoggingSessionStoreListener implements SessionStoreListener {
     private static final long serialVersionUID = 1L;
     static boolean wasCalled;
     public void beforeDestroy( SessionStoreEvent event ) {
@@ -54,7 +54,7 @@ public class SessionStoreImplSerialization_Test extends TestCase {
   }
   
   public void testListenersAreSerializable() throws Exception {
-    LoggingSessionStoreListener listener = new LoggingSessionStoreListener();
+    SessionStoreListener listener = new LoggingSessionStoreListener();
     sessionStore.addSessionStoreListener( listener );
     SessionStoreImpl deserializedSession = Fixture.serializeAndDeserialize( sessionStore );
     TestSession newHttpSession = new TestSession();
