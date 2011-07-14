@@ -37,7 +37,6 @@ class Contributions {
     addContribution( "drag-and-drop", "Drag & Drop", ListExample.class );
     addContribution( "treeviewer", "TreeViewer", TreeViewerExample.class );
     addContribution( "tableviewer", "TableViewer", TableViewerExample.class );
-    addContribution( "complex-data", "Complex Data", EnronExamplePage.class );
     addContribution( "canvas", "Canvas", CanvasExamplePage.class );
     addContribution( "row-layout", "Row Layout", RowLayoutExample.class );
     addContribution( "fill-layout", "Fill Layout", FillLayoutExample.class );
