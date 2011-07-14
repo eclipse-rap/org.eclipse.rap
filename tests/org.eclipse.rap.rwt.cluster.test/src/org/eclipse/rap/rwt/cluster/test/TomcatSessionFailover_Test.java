@@ -14,7 +14,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
 import org.eclipse.rap.rwt.cluster.testfixture.server.TomcatFactory;
 
 
-public class TomcatSessionFailover_Test extends SessionFailover_Test {
+public class TomcatSessionFailover_Test extends SessionFailoverTestBase {
   IServletEngineFactory getServletEngineFactory() {
     return new TomcatFactory();
   }

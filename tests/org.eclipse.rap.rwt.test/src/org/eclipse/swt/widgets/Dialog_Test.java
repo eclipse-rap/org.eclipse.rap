@@ -11,9 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.widgets.IDialogAdapter;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.widgets.DialogCallback;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 
@@ -28,6 +33,11 @@ public class Dialog_Test extends TestCase {
     private TestDialog( Shell parent, int style ) {
       super( parent, style );
     }
+    
+    @Override
+    protected void prepareOpen() {
+      shell = new Shell( parent );
+    }
   }
 
   private Display display;
@@ -35,6 +45,7 @@ public class Dialog_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
   }
@@ -107,9 +118,42 @@ public class Dialog_Test extends TestCase {
     String text = "text";
     TestDialog dialog = new TestDialog( shell );
     dialog.setText( text );
+    IDialogAdapter adapter = ( IDialogAdapter )dialog.getAdapter( IDialogAdapter.class );
+    adapter.openNonBlocking( mock( DialogCallback.class ) );
     
     TestDialog deserializedDialog = Fixture.serializeAndDeserialize( dialog );
     
     assertEquals( text, deserializedDialog.getText() );
+  }
+  
+  public void testGetAdapter() {
+    Dialog dialog = new TestDialog( shell );
+    
+    Object adapter = dialog.getAdapter( IDialogAdapter.class );
+    
+    assertTrue( adapter instanceof IDialogAdapter );
+  }
+  
+  public void testNonBlockingDialogWithDefaultReturnCode() {
+    Dialog dialog = new TestDialog( shell );
+    IDialogAdapter adapter = ( IDialogAdapter )dialog.getAdapter( IDialogAdapter.class );
+    DialogCallback dialogCallback = mock( DialogCallback.class );
+    
+    adapter.openNonBlocking( dialogCallback );
+    dialog.shell.close();
+    
+    verify( dialogCallback ).dialogClosed( SWT.CANCEL );
+  }
+
+  public void testNonBlockingDialogWithCustomReturnCode() {
+    Dialog dialog = new TestDialog( shell );
+    IDialogAdapter adapter = ( IDialogAdapter )dialog.getAdapter( IDialogAdapter.class );
+    DialogCallback dialogCallback = mock( DialogCallback.class );
+    
+    adapter.openNonBlocking( dialogCallback );
+    dialog.returnCode = SWT.OK;
+    dialog.shell.close();
+    
+    verify( dialogCallback ).dialogClosed( SWT.OK );
   }
 }

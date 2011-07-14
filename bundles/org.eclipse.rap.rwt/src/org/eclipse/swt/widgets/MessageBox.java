@@ -48,13 +48,10 @@ public class MessageBox extends Dialog {
 
   private static final int SPACING = 20;
   private static final int BUTTON_WIDTH = 61;
-  private static final int HORIZONTAL_DIALOG_UNIT_PER_CHAR = 4;
   private static final int MAX_WIDTH = 640;
 
-  private Shell shell;
   private Image image;
   private String message;
-  private int returnCode;
 
   /**
    * Constructs a new instance of this class given only its parent.
@@ -126,7 +123,7 @@ public class MessageBox extends Dialog {
    */
   public void setMessage( String string ) {
     if( string == null ) {
-      error( SWT.ERROR_NULL_ARGUMENT );
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     message = string;
   }
@@ -144,20 +141,18 @@ public class MessageBox extends Dialog {
    * </ul>
    */
   public int open() {
+    prepareOpen();
+    runEventLoop( shell );
+    return returnCode;
+  }
+  
+  protected void prepareOpen() {
     determineImageFromStyle();
     shell = new Shell( parent, SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL );
     shell.setText( title );
     createControls();
     shell.setBounds( computeShellBounds() );
     shell.pack();
-    shell.open();
-    Display display = shell.getDisplay();
-    while( !shell.isDisposed() ) {
-      if( !display.readAndDispatch() ) {
-        display.sleep();
-      }
-    }
-    return returnCode;
   }
 
   private void determineImageFromStyle() {
@@ -236,19 +231,19 @@ public class MessageBox extends Dialog {
     buttonArea.getChildren()[ 0 ].forceFocus();
   }
 
-  private void createButton( Composite parent, String text, final int buttonType ) {
-    if( ( style & buttonType ) == buttonType ) {
+  private void createButton( Composite parent, String text, final int buttonId ) {
+    if( ( style & buttonId ) == buttonId ) {
       ( ( GridLayout ) parent.getLayout() ).numColumns++;
       Button result = new Button( parent, SWT.PUSH );
       GridData data = new GridData( GridData.HORIZONTAL_ALIGN_FILL );
-      int widthHint = convertHorizontalDLUsToPixels( BUTTON_WIDTH );
+      int widthHint = convertHorizontalDLUsToPixels( shell, BUTTON_WIDTH );
       Point minSize = result.computeSize( SWT.DEFAULT, SWT.DEFAULT, true );
       data.widthHint = Math.max( widthHint, minSize.x );
       result.setLayoutData( data );
       result.setText( text );
       result.addSelectionListener( new SelectionAdapter() {
         public void widgetSelected( SelectionEvent event ) {
-          MessageBox.this.returnCode = buttonType;
+          MessageBox.this.returnCode = buttonId;
           shell.close();
         }
       } );
@@ -265,13 +260,6 @@ public class MessageBox extends Dialog {
       result = Math.max( result, lineWidth );
     }
     return result;
-  }
-
-  private int convertHorizontalDLUsToPixels( int dlus ) {
-    Font dialogFont = shell.getFont();
-    float charWidth = Graphics.getAvgCharWidth( dialogFont );
-    float width = charWidth * dlus + HORIZONTAL_DIALOG_UNIT_PER_CHAR / 2;
-    return ( int )( width / HORIZONTAL_DIALOG_UNIT_PER_CHAR );
   }
 
   private static int checkStyle( int style ) {

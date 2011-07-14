@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.widgets.IDialogAdapter;
+import org.eclipse.rwt.widgets.DialogCallback;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
@@ -50,12 +57,27 @@ import org.eclipse.swt.internal.SerializableCompatibility;
  * 
  * @see Shell
  */
-public abstract class Dialog implements SerializableCompatibility {
+public abstract class Dialog implements Adaptable, SerializableCompatibility {
 
   private static final int HORIZONTAL_DIALOG_UNIT_PER_CHAR = 4;
 
+  private class DialogAdapter implements IDialogAdapter, SerializableCompatibility {
+    public void openNonBlocking( final DialogCallback dialogCallback ) {
+      prepareOpen();
+      returnCode = SWT.CANCEL;
+      shell.open();
+      shell.addShellListener( new ShellAdapter() {
+        public void shellClosed( ShellEvent event ) {
+          dialogCallback.dialogClosed( returnCode );
+        }
+      } );
+    }
+  }
+
   final int style;
   final Shell parent;
+  protected Shell shell;
+  protected int returnCode;
   String title;
 
   /**
@@ -176,26 +198,53 @@ public abstract class Dialog implements SerializableCompatibility {
    */
   public void setText( String string ) {
     if( string == null ) {
-      error( SWT.ERROR_NULL_ARGUMENT );
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     title = string;
   }
-
+  
+  /**
+   * Implementation of the <code>Adaptable</code> interface.
+   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
+   * public API. It is marked public only so that it can be shared
+   * within the packages provided by RWT. It should never be accessed
+   * from application code.
+   * </p>
+   */
+  public Object getAdapter( Class adapter ) {
+    Object result;
+    if( adapter == IDialogAdapter.class ) {
+      result = new DialogAdapter();
+    } else {
+      result = RWTFactory.getAdapterManager().getAdapter( this, adapter );
+    }
+    return result;
+  }
+  
+  protected void prepareOpen() {
+  }
+  
   protected void checkSubclass() {
     if( !Display.isValidClass( getClass() ) ) {
-      error( SWT.ERROR_INVALID_SUBCLASS );
+      SWT.error( SWT.ERROR_INVALID_SUBCLASS );
     }
   }
 
-  void checkParent( Shell parent ) {
-    if( parent == null ) {
-      error( SWT.ERROR_NULL_ARGUMENT );
+  protected void runEventLoop( Shell shell ) {
+    shell.open();
+    Display display = shell.getDisplay();
+    while( !shell.isDisposed() ) {
+      if( !display.readAndDispatch() ) {
+        display.sleep();
+      }
     }
-    parent.checkWidget();
   }
 
-  void error( int code ) {
-    SWT.error( code );
+  static int convertHorizontalDLUsToPixels( Control control, int dlus ) {
+    Font dialogFont = control.getFont();
+    float charWidth = Graphics.getAvgCharWidth( dialogFont );
+    float width = charWidth * dlus + HORIZONTAL_DIALOG_UNIT_PER_CHAR / 2;
+    return ( int )( width / HORIZONTAL_DIALOG_UNIT_PER_CHAR );
   }
 
   static int checkStyle( Shell parent, int style ) {
@@ -220,10 +269,10 @@ public abstract class Dialog implements SerializableCompatibility {
     return result;
   }
 
-  static int convertHorizontalDLUsToPixels( Control control, int dlus ) {
-    Font dialogFont = control.getFont();
-    float charWidth = Graphics.getAvgCharWidth( dialogFont );
-    float width = charWidth * dlus + HORIZONTAL_DIALOG_UNIT_PER_CHAR / 2;
-    return ( int )( width / HORIZONTAL_DIALOG_UNIT_PER_CHAR );
+  private void checkParent( Shell parent ) {
+    if( parent == null ) {
+      SWT.error( SWT.ERROR_NULL_ARGUMENT );
+    }
+    parent.checkWidget();
   }
 }

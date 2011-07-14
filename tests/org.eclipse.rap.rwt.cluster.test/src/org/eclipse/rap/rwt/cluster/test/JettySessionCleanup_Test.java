@@ -14,7 +14,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
 import org.eclipse.rap.rwt.cluster.testfixture.server.JettyFactory;
 
 
-public class JettySessionCleanup_Test extends SessionCleanup_Test {
+public class JettySessionCleanup_Test extends SessionCleanupTestBase {
 
   IServletEngineFactory getServletEngineFactory() {
     return new JettyFactory();

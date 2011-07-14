@@ -12,6 +12,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.GridData;
@@ -35,7 +36,7 @@ import org.eclipse.swt.layout.GridLayout;
  * @since 1.2
  */
 public class ColorDialog extends Dialog {
-
+  
   private class PaletteListener extends MouseAdapter {
     private RGB rgb;
 
@@ -107,8 +108,6 @@ public class ColorDialog extends Dialog {
     new RGB( 181, 165, 213 )
   };
   
-  private Display display;
-  private Shell shell;
   private RGB rgb;
   private Label colorDisplay;
   private Spinner spRed; 
@@ -168,7 +167,6 @@ public class ColorDialog extends Dialog {
   public ColorDialog( Shell parent, int style ) {
     super( parent, checkStyle( parent, style ) );
     checkSubclass();
-    display = parent.getDisplay();
     setText( RWTMessages.getMessage( "RWT_ColorDialogTitle" ) );
   }
 
@@ -184,20 +182,8 @@ public class ColorDialog extends Dialog {
    *              </ul>
    */
   public RGB open() {
-    shell = new Shell( parent, SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL );
-    createControls();
-    if( rgb == null ) {
-      rgb = new RGB( 255, 255, 255 );
-    }
-    updateColorDisplay();
-    updateSpinners();
-    configureShell();
-    shell.open();
-    while( !shell.isDisposed() ) {
-      if( !display.readAndDispatch() ) {
-        display.sleep();
-      }
-    }
+    prepareOpen();
+    runEventLoop( shell );
     return rgb;
   }
 
@@ -222,8 +208,30 @@ public class ColorDialog extends Dialog {
     this.rgb = rgb;
   }
 
-  private void createControls() {
+  protected void prepareOpen() {
+    createShell();
+    createControls();
+    if( rgb == null ) {
+      rgb = new RGB( 255, 255, 255 );
+    }
+    updateColorDisplay();
+    updateSpinners();
+    configureShell();
+  }
+
+  private void createShell() {
+    shell = new Shell( parent, SWT.TITLE | SWT.BORDER | SWT.APPLICATION_MODAL );
+    shell.addShellListener( new ShellAdapter() {
+      public void shellClosed( ShellEvent event ) {
+        if( returnCode == SWT.CANCEL ) {
+          ColorDialog.this.rgb = null;
+        }
+      }
+    } );
     shell.setLayout( new GridLayout( 1, false ) );
+  }
+
+  private void createControls() {
     createColorArea();
     createPalette();
     createButtons();
@@ -321,23 +329,18 @@ public class ColorDialog extends Dialog {
     return result;
   }
 
-  private Button createButton( Composite parent, String text, final int returnCode ) {
-    // Increment the number of columns in the button bar
+  private Button createButton( Composite parent, String text, final int buttonId ) {
     ( ( GridLayout )parent.getLayout() ).numColumns++;
     Button result = new Button( parent, SWT.PUSH );
-    // Set button layout data
     GridData data = new GridData( GridData.HORIZONTAL_ALIGN_FILL );
     int widthHint = convertHorizontalDLUsToPixels( shell, BUTTON_WIDTH );
     Point minSize = result.computeSize( SWT.DEFAULT, SWT.DEFAULT, true );
     data.widthHint = Math.max( widthHint, minSize.x );
     result.setLayoutData( data );
-    // Set text
     result.setText( text );
     result.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
-        if( returnCode == SWT.CANCEL ) {
-          ColorDialog.this.rgb = null;
-        }
+        ColorDialog.this.returnCode = buttonId;
         shell.close();
       }
     } );

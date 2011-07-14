@@ -14,7 +14,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
 import org.eclipse.rap.rwt.cluster.testfixture.server.TomcatFactory;
 
 
-public class TomcatSessionCleanup_Test extends SessionCleanup_Test {
+public class TomcatSessionCleanup_Test extends SessionCleanupTestBase {
 
   IServletEngineFactory getServletEngineFactory() {
     return new TomcatFactory();

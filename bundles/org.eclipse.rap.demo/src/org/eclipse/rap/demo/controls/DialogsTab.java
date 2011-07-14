@@ -17,6 +17,8 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.window.Window;
+import org.eclipse.rwt.widgets.DialogCallback;
+import org.eclipse.rwt.widgets.DialogUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -51,6 +53,7 @@ public class DialogsTab extends ExampleTab {
   private Button showMessageBoxDlgButton;
   private Button showColorDialogButton;
   private Button showFontDialogButton;
+  protected boolean useDialogCallback;
 
   public DialogsTab( final CTabFolder topFolder ) {
     super( topFolder, "Dialogs" );
@@ -58,7 +61,6 @@ public class DialogsTab extends ExampleTab {
 
   protected void createStyleControls( final Composite parent ) {
     parent.setLayout( new GridLayout( 1, true ) );
-
     createMessageBoxStyleControls( parent );
   }
 
@@ -181,6 +183,16 @@ public class DialogsTab extends ExampleTab {
     swtDialogsGroup.setText( "SWT Dialogs" );
     swtDialogsGroup.setLayout( new GridLayout( 3, true ) );
 
+    final Button cbUseDialogCallback = new Button( swtDialogsGroup, SWT.CHECK );
+    cbUseDialogCallback.setText( "Use DialogCallback" );
+    cbUseDialogCallback.setSelection( useDialogCallback );
+    cbUseDialogCallback.setLayoutData( new GridData( SWT.LEFT, SWT.CENTER, false, false, 3, 1 ) );
+    cbUseDialogCallback.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent event ) {
+        useDialogCallback = cbUseDialogCallback.getSelection();
+      }
+    } );
+    
     showMessageBoxDlgButton = new Button( swtDialogsGroup, SWT.PUSH );
     showMessageBoxDlgButton.setText( "MessageBox Dialog" );
     showMessageBoxDlgButton.addSelectionListener( new SelectionAdapter() {
@@ -395,59 +407,59 @@ public class DialogsTab extends ExampleTab {
     if( iconWorkingButton.getEnabled() && iconWorkingButton.getSelection() ) {
       style |= SWT.ICON_WORKING;
     }
-
     String title = "MessageBox Title";
     String mesg = "Lorem ipsum dolor sit amet consectetuer adipiscing elit.";
     MessageBox mb = new MessageBox( getShell(), style );
     mb.setText( title );
     mb.setMessage( mesg );
-    int result = mb.open();
-    String strResult = "";
-    switch( result ) {
-      case SWT.OK:
-        strResult = "SWT.OK";
-      break;
-      case SWT.YES:
-        strResult = "SWT.YES";
-      break;
-      case SWT.NO:
-        strResult = "SWT.NO";
-      break;
-      case SWT.CANCEL:
-        strResult = "SWT.CANCEL";
-      break;
-      case SWT.ABORT:
-        strResult = "SWT.ABORT";
-      break;
-      case SWT.RETRY:
-        strResult = "SWT.RETRY";
-      break;
-      case SWT.IGNORE:
-        strResult = "SWT.IGNORE";
-      break;
-      default:
-        strResult = "" + result;
-      break;
+    if( useDialogCallback ) {
+      DialogUtil.open( mb, new DialogCallback() {
+        public void dialogClosed( int returnCode ) {
+          String returnCodeText = returnCodeText( returnCode );
+          messageBoxDlgResLabel.setText( "Result: " + returnCodeText );
+          messageBoxDlgResLabel.pack();
+        }
+      } );
+    } else {
+      int result = mb.open();
+      String returnCodeText = returnCodeText( result );
+      messageBoxDlgResLabel.setText( "Result: " + returnCodeText );
+      messageBoxDlgResLabel.pack();
     }
-    messageBoxDlgResLabel.setText( "Result: " + strResult );
-    messageBoxDlgResLabel.pack();
   }
 
   private void showColorDialog() {
-    ColorDialog dialog = new ColorDialog( getShell() );
-    RGB result = dialog.open();
-    messageBoxDlgResLabel.setText( "Result: " + result );
-    messageBoxDlgResLabel.pack();
+    final ColorDialog dialog = new ColorDialog( getShell() );
+    if( useDialogCallback ) {
+      DialogUtil.open( dialog, new DialogCallback() {
+        public void dialogClosed( int returnCode ) {
+          RGB result = dialog.getRGB();
+          messageBoxDlgResLabel.setText( "Result: " + result );
+          messageBoxDlgResLabel.pack();
+        }
+      } );
+    } else {
+      RGB result = dialog.open();
+      messageBoxDlgResLabel.setText( "Result: " + result );
+      messageBoxDlgResLabel.pack();
+    }
   }
 
   protected void showFontDialog() {
-    FontDialog dialog = new FontDialog( getShell(), SWT.SHELL_TRIM );
-    FontData result = dialog.open();
-    messageBoxDlgResLabel.setText( "Result: "
-                                   + result
-                                   + " / "
-                                   + dialog.getRGB() );
-    messageBoxDlgResLabel.pack();
+    final FontDialog dialog = new FontDialog( getShell(), SWT.SHELL_TRIM );
+    if( useDialogCallback ) {
+      DialogUtil.open( dialog, new DialogCallback() {
+        public void dialogClosed( int returnCode ) {
+          FontData fontData = dialog.getFontList()[ 0 ];
+          messageBoxDlgResLabel.setText( "Result: " + fontData + " / " + dialog.getRGB() );
+          messageBoxDlgResLabel.pack();
+        }
+      } );
+    } else {
+      FontData result = dialog.open();
+      messageBoxDlgResLabel.setText( "Result: " + result + " / " + dialog.getRGB() );
+      messageBoxDlgResLabel.pack();
+    }
   }
 
   private void createMessageBoxStyleControls( final Composite parent ) {
@@ -496,5 +508,36 @@ public class DialogsTab extends ExampleTab {
     noIconButton = new Button( group, SWT.RADIO );
     noIconButton.setText( "No Icon" );
     noIconButton.setSelection( true );
+  }
+
+  private static String returnCodeText( int result ) {
+    String strResult = "";
+    switch( result ) {
+      case SWT.OK:
+        strResult = "SWT.OK";
+      break;
+      case SWT.YES:
+        strResult = "SWT.YES";
+      break;
+      case SWT.NO:
+        strResult = "SWT.NO";
+      break;
+      case SWT.CANCEL:
+        strResult = "SWT.CANCEL";
+      break;
+      case SWT.ABORT:
+        strResult = "SWT.ABORT";
+      break;
+      case SWT.RETRY:
+        strResult = "SWT.RETRY";
+      break;
+      case SWT.IGNORE:
+        strResult = "SWT.IGNORE";
+      break;
+      default:
+        strResult = "" + result;
+      break;
+    }
+    return strResult;
   }
 }

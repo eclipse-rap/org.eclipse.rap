@@ -47,6 +47,10 @@ public class ClusterFixture {
     return servletEngine.getSessions()[ 0 ];
   }
   
+  public static ISessionStore getFirstSessionStore( IServletEngine servletEngine ) {
+    return getSessionStore( getFirstSession( servletEngine ) );
+  }
+  
   public static ISessionStore getSessionStore( HttpSession httpSession ) {
     return ( ISessionStore )httpSession.getAttribute( SessionStoreImpl.ATTR_SESSION_STORE );
   }

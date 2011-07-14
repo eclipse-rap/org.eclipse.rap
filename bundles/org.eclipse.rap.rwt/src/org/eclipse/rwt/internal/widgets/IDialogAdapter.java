@@ -8,14 +8,11 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.cluster.test;
+package org.eclipse.rwt.internal.widgets;
 
-import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
-import org.eclipse.rap.rwt.cluster.testfixture.server.JettyFactory;
+import org.eclipse.rwt.widgets.DialogCallback;
 
 
-public class JettySessionFailover_Test extends SessionFailoverTestBase {
-  IServletEngineFactory getServletEngineFactory() {
-    return new JettyFactory();
-  }
+public interface IDialogAdapter {
+  void openNonBlocking( DialogCallback dialogCallback );
 }

@@ -25,8 +25,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.*;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
-import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
@@ -36,7 +35,7 @@ import org.eclipse.swt.widgets.Shell;
 
 
 @SuppressWarnings("restriction")
-public abstract class SessionFailover_Test extends TestCase {
+public abstract class SessionFailoverTestBase extends TestCase {
   
   public interface SerializableRunnable extends Runnable, Serializable {
   }
@@ -115,8 +114,7 @@ public abstract class SessionFailover_Test extends TestCase {
     client.sendDisplayResizeRequest( 100, 100 );
     
     prepareExamination();
-    HttpSession secondarySession = ClusterFixture.getFirstSession( secondary );
-    ISessionStore secondarySessionStore = ClusterFixture.getSessionStore( secondarySession );
+    ISessionStore secondarySessionStore = ClusterFixture.getFirstSessionStore( secondary );
     assertTrue( AsyncExecEntryPoint.wasRunnableExecuted( secondarySessionStore ) );
   }
 
@@ -129,8 +127,7 @@ public abstract class SessionFailover_Test extends TestCase {
     client.sendDisplayResizeRequest( 100, 100 );
     
     prepareExamination();
-    HttpSession secondarySession = ClusterFixture.getFirstSession( secondary );
-    ISessionStore secondarySessionStore = ClusterFixture.getSessionStore( secondarySession );
+    ISessionStore secondarySessionStore = ClusterFixture.getFirstSessionStore( secondary );
     assertTrue( AsyncExecEntryPoint.wasRunnableExecuted( secondarySessionStore ) );
   }
   
@@ -145,8 +142,7 @@ public abstract class SessionFailover_Test extends TestCase {
     client.sendDisplayResizeRequest( 100, 100 );
     
     prepareExamination( secondary );
-    HttpSession secondarySession = ClusterFixture.getFirstSession( secondary );
-    ISessionStore secondarySessionStore = ClusterFixture.getSessionStore( secondarySession );
+    ISessionStore secondarySessionStore = ClusterFixture.getFirstSessionStore( secondary );
     assertTrue( TimerExecEntryPoint.wasRunnableExecuted( secondarySessionStore ) );
   }
 
@@ -157,14 +153,28 @@ public abstract class SessionFailover_Test extends TestCase {
     cluster.removeServletEngine( primary );
     client.changeServletEngine( secondary );
     
-    client.sendDragFinishedRequest( DNDEntryPoint.ID_SOURCE_LABEL, 
-                                    DNDEntryPoint.ID_TARGET_LABEL );
+    client.sendDragFinishedRequest( DNDEntryPoint.ID_SOURCE_LABEL, DNDEntryPoint.ID_TARGET_LABEL );
 
     prepareExamination( secondary );
-    HttpSession secondarySession = ClusterFixture.getFirstSession( secondary );
-    ISessionStore secondarySessionStore = ClusterFixture.getSessionStore( secondarySession );
+    ISessionStore secondarySessionStore = ClusterFixture.getFirstSessionStore( secondary );
     assertTrue( DNDEntryPoint.isDragFinished( secondarySessionStore ) );
     assertTrue( DNDEntryPoint.isDropFinished( secondarySessionStore ) );
+  }
+  
+  public void testDialogEntryPoint() throws Exception {
+    initializeClient( DialogEntryPoint.class );
+    cluster.removeServletEngine( primary );
+    prepareExamination( primary );
+    Shell dialogShell = getFirstDisplay( primary ).getShells()[ 1 ];
+    String dialogShellId = WidgetUtil.getId( dialogShell );
+
+    client.changeServletEngine( secondary );
+    client.sendShellCloseRequest( dialogShellId );
+
+    prepareExamination( secondary );
+    ISessionStore sessionStore = ClusterFixture.getFirstSessionStore( secondary );
+    assertEquals( 1, getFirstDisplay( secondary ).getShells().length );
+    assertEquals( SWT.CANCEL, DialogEntryPoint.getDialogReturnCode( sessionStore ) );
   }
 
   protected void setUp() throws Exception {

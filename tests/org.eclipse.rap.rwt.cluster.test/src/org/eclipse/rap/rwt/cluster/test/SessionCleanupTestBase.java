@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
 import org.eclipse.swt.widgets.Display;
 
 
-public abstract class SessionCleanup_Test extends TestCase {
+public abstract class SessionCleanupTestBase extends TestCase {
   
   private IServletEngine servletEngine;
   private RWTClient client;
