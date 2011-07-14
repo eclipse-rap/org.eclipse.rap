@@ -59,34 +59,34 @@ public final class ProtocolMessageWriter {
     pendingOperation.appendProperties( properties );
   }
 
-  public void appendSet( String target, String key, int value ) {
-    appendSet( target, key, JsonValue.valueOf( value ) );
+  public void appendSet( String target, String property, int value ) {
+    appendSet( target, property, JsonValue.valueOf( value ) );
   }
 
-  public void appendSet( String target, String key, double value ) {
-    appendSet( target, key, JsonValue.valueOf( value ) );
+  public void appendSet( String target, String property, double value ) {
+    appendSet( target, property, JsonValue.valueOf( value ) );
   }
 
-  public void appendSet( String target, String key, boolean value ) {
-    appendSet( target, key, JsonValue.valueOf( value ) );
+  public void appendSet( String target, String property, boolean value ) {
+    appendSet( target, property, JsonValue.valueOf( value ) );
   }
 
-  public void appendSet( String target, String key, String value ) {
-    appendSet( target, key, JsonValue.valueOf( value ) );
+  public void appendSet( String target, String property, String value ) {
+    appendSet( target, property, JsonValue.valueOf( value ) );
   }
 
-  public void appendSet( String target, String key, Object value ) {
-    appendSet( target, key, JsonUtil.createJsonValue( value ) );
+  public void appendSet( String target, String property, Object value ) {
+    appendSet( target, property, JsonUtil.createJsonValue( value ) );
   }
 
-  private void appendSet( String target, String key, JsonValue value ) {
+  private void appendSet( String target, String property, JsonValue value ) {
     prepareOperation( target, ACTION_SET );
-    pendingOperation.appendProperty( key, value );
+    pendingOperation.appendProperty( property, value );
   }
 
-  public void appendListen( String target, String listener, boolean listen ) {
+  public void appendListen( String target, String eventType, boolean listen ) {
     prepareOperation( target, ACTION_LISTEN );
-    pendingOperation.appendProperty( listener, JsonValue.valueOf( listen ) );
+    pendingOperation.appendProperty( eventType, JsonValue.valueOf( listen ) );
   }
 
   public void appendCall( String target, String methodName, Map<String, Object> properties ) {
@@ -95,10 +95,10 @@ public final class ProtocolMessageWriter {
     pendingOperation.appendProperties( properties );
   }
 
-  public void appendExecuteScript( String target, String type, String content ) {
+  public void appendExecuteScript( String target, String scriptType, String code ) {
     prepareOperation( target, ACTION_EXECUTE_SCRIPT );
-    pendingOperation.appendDetail( EXECUTE_SCRIPT_TYPE, JsonValue.valueOf( type ) );
-    pendingOperation.appendDetail( EXECUTE_SCRIPT_CONTENT, JsonValue.valueOf( content ) );
+    pendingOperation.appendDetail( EXECUTE_SCRIPT_TYPE, JsonValue.valueOf( scriptType ) );
+    pendingOperation.appendDetail( EXECUTE_SCRIPT_CONTENT, JsonValue.valueOf( code ) );
   }
 
   public void appendDestroy( String target ) {
