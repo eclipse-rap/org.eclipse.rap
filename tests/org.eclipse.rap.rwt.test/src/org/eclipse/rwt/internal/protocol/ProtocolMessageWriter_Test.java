@@ -10,8 +10,8 @@
 *******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.MESSAGE_META;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.MESSAGE_OPERATIONS;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATIONS;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META_REQUEST_COUNTER;
 import static org.eclipse.rwt.internal.resources.TestUtil.assertArrayEquals;
 
@@ -23,14 +23,12 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
-import org.eclipse.rwt.internal.protocol.util.*;
-import org.eclipse.rwt.internal.protocol.util.Message.CreateOperation;
-import org.eclipse.rwt.internal.protocol.util.Message.DestroyOperation;
-import org.eclipse.rwt.internal.protocol.util.Message.CallOperation;
-import org.eclipse.rwt.internal.protocol.util.Message.ExecuteScriptOperation;
-import org.eclipse.rwt.internal.protocol.util.Message.ListenOperation;
-import org.eclipse.rwt.internal.protocol.util.Message.Operation;
-import org.eclipse.rwt.internal.protocol.util.Message.SetOperation;
+import org.eclipse.rwt.internal.protocol.Message.CallOperation;
+import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
+import org.eclipse.rwt.internal.protocol.Message.DestroyOperation;
+import org.eclipse.rwt.internal.protocol.Message.ExecuteScriptOperation;
+import org.eclipse.rwt.internal.protocol.Message.ListenOperation;
+import org.eclipse.rwt.internal.protocol.Message.SetOperation;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
@@ -66,10 +64,10 @@ public class ProtocolMessageWriter_Test extends TestCase {
   public void testEmptyMessage() throws JSONException {
     String messageString = writer.createMessage();
     JSONObject message = new JSONObject( messageString );
-    JSONObject meta = message.getJSONObject( MESSAGE_META );
+    JSONObject meta = message.getJSONObject( META );
     int requestCount = RWTRequestVersionControl.getInstance().getCurrentRequestId().intValue();
     assertEquals( requestCount, meta.getInt( META_REQUEST_COUNTER ) );
-    JSONArray operations = message.getJSONArray( MESSAGE_OPERATIONS );
+    JSONArray operations = message.getJSONArray( OPERATIONS );
     assertEquals( 0, operations.length() );
   }
 
@@ -421,19 +419,19 @@ public class ProtocolMessageWriter_Test extends TestCase {
     assertThirdOperation( buttonId, message.getOperation( 2 ) );
   }
 
-  private void assertFirstOperation( Operation operation ) {
+  private void assertFirstOperation( Message.Operation operation ) {
     CreateOperation createOperation = ( CreateOperation )operation;
     assertEquals( "parentId", createOperation.getParent() );
   }
 
-  private void assertSecondOperation( Operation operation ) {
+  private void assertSecondOperation( Message.Operation operation ) {
     SetOperation setOperation = ( SetOperation )operation;
     assertEquals( "value", setOperation.getProperty( "key" ) );
     assertEquals( "value2", setOperation.getProperty( "key2" ) );
     assertEquals( "value3", setOperation.getProperty( "key3" ) );
   }
 
-  private void assertThirdOperation( String buttonId, Operation operation ) {
+  private void assertThirdOperation( String buttonId, Message.Operation operation ) {
     SetOperation setOperation = ( SetOperation )operation;
     assertEquals( buttonId, operation.getTarget() );
     assertEquals( "value", setOperation.getProperty( "key" ) );

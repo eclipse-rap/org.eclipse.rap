@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.protocol.util;
+package org.eclipse.rwt.internal.protocol;
 
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_PARENT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_STYLE;
@@ -16,18 +16,19 @@ import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_TYPE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CALL_METHOD_NAME;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_CONTENT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_TYPE;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.MESSAGE_OPERATIONS;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATIONS;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATION_ACTION;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATION_PROPERTIES;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATION_TARGET;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_CREATE;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_DESTROY;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_CALL;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_EXECUTE_SCRIPT;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_LISTEN;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_SET;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_CREATE;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_DESTROY;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_CALL;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_EXECUTE_SCRIPT;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_LISTEN;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_SET;
 
 import org.json.*;
+
 
 public final class Message {
 
@@ -41,7 +42,7 @@ public final class Message {
       throw new IllegalArgumentException( "Could not parse json: " + json );
     }
     try {
-      operations = jsonObject.getJSONArray( MESSAGE_OPERATIONS );
+      operations = jsonObject.getJSONArray( OPERATIONS );
     } catch( JSONException e ) {
       throw new IllegalArgumentException( "Missing operations array: " + json );
     }
@@ -51,17 +52,17 @@ public final class Message {
     Operation result;
     JSONObject operation = getOperationAsJson( position );
     String action = getOperationAction( operation );
-    if( action.equals( TYPE_CREATE ) ) {
+    if( action.equals( ACTION_CREATE ) ) {
       result = new CreateOperation( operation );
-    } else if( action.equals( TYPE_CALL ) ) {
+    } else if( action.equals( ACTION_CALL ) ) {
       result = new CallOperation( operation );
-    } else if( action.equals( TYPE_SET ) ) {
+    } else if( action.equals( ACTION_SET ) ) {
       result = new SetOperation( operation );
-    } else if( action.equals( TYPE_LISTEN ) ) {
+    } else if( action.equals( ACTION_LISTEN ) ) {
       result = new ListenOperation( operation );
-    } else if( action.equals( TYPE_EXECUTE_SCRIPT ) ) {
+    } else if( action.equals( ACTION_EXECUTE_SCRIPT ) ) {
       result = new ExecuteScriptOperation( operation );
-    } else if( action.equals( TYPE_DESTROY ) ) {
+    } else if( action.equals( ACTION_DESTROY ) ) {
       result = new DestroyOperation( operation );
     } else {
       throw new IllegalArgumentException( "Unknown operation action: " + action );

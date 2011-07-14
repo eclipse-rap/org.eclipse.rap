@@ -16,15 +16,15 @@ import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_TYPE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CALL_METHOD_NAME;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_CONTENT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_TYPE;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.MESSAGE_META;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.MESSAGE_OPERATIONS;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATIONS;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META_REQUEST_COUNTER;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_CREATE;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_DESTROY;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_CALL;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_EXECUTE_SCRIPT;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_LISTEN;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.TYPE_SET;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_CREATE;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_DESTROY;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_CALL;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_EXECUTE_SCRIPT;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_LISTEN;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_SET;
 
 import java.util.Map;
 
@@ -52,7 +52,7 @@ public final class ProtocolMessageWriter {
                             String[] styles,
                             Map<String, Object> properties )
   {
-    prepareOperation( target, TYPE_CREATE );
+    prepareOperation( target, ACTION_CREATE );
     pendingOperation.appendDetail( CREATE_TYPE, JsonValue.valueOf( type ) );
     pendingOperation.appendProperty( CREATE_PARENT, JsonValue.valueOf( parentId ) );
     pendingOperation.appendProperty( CREATE_STYLE, JsonUtil.createJsonArray( styles ) );
@@ -80,29 +80,29 @@ public final class ProtocolMessageWriter {
   }
 
   private void appendSet( String target, String key, JsonValue value ) {
-    prepareOperation( target, TYPE_SET );
+    prepareOperation( target, ACTION_SET );
     pendingOperation.appendProperty( key, value );
   }
 
   public void appendListen( String target, String listener, boolean listen ) {
-    prepareOperation( target, TYPE_LISTEN );
+    prepareOperation( target, ACTION_LISTEN );
     pendingOperation.appendProperty( listener, JsonValue.valueOf( listen ) );
   }
 
   public void appendCall( String target, String methodName, Map<String, Object> properties ) {
-    prepareOperation( target, TYPE_CALL );
+    prepareOperation( target, ACTION_CALL );
     pendingOperation.appendDetail( CALL_METHOD_NAME, JsonValue.valueOf( methodName ) );
     pendingOperation.appendProperties( properties );
   }
 
   public void appendExecuteScript( String target, String type, String content ) {
-    prepareOperation( target, TYPE_EXECUTE_SCRIPT );
+    prepareOperation( target, ACTION_EXECUTE_SCRIPT );
     pendingOperation.appendDetail( EXECUTE_SCRIPT_TYPE, JsonValue.valueOf( type ) );
     pendingOperation.appendDetail( EXECUTE_SCRIPT_CONTENT, JsonValue.valueOf( content ) );
   }
 
   public void appendDestroy( String target ) {
-    prepareOperation( target, TYPE_DESTROY );
+    prepareOperation( target, ACTION_DESTROY );
   }
 
   private void prepareOperation( String target, String type ) {
@@ -126,9 +126,9 @@ public final class ProtocolMessageWriter {
     JsonObject meta = new JsonObject();
     int requestCount = RWTRequestVersionControl.getInstance().getCurrentRequestId().intValue();
     meta.append( META_REQUEST_COUNTER, requestCount );
-    message.append( MESSAGE_META, meta );
+    message.append( META, meta );
     appendPendingOperation();
-    message.append( MESSAGE_OPERATIONS, operations );
+    message.append( OPERATIONS, operations );
     return message;
   }
 
@@ -145,6 +145,6 @@ public final class ProtocolMessageWriter {
   }
 
   private static boolean isStreamableType( String type ) {
-    return type.equals( TYPE_SET  ) || type.equals( TYPE_LISTEN );
+    return type.equals( ACTION_SET  ) || type.equals( ACTION_LISTEN );
   }
 }

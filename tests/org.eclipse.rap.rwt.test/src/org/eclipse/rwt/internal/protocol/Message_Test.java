@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.protocol.util;
+package org.eclipse.rwt.internal.protocol;
 
 import static org.eclipse.rwt.internal.resources.TestUtil.assertArrayEquals;
 
@@ -19,12 +19,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
-import org.eclipse.rwt.internal.protocol.util.Message.CreateOperation;
-import org.eclipse.rwt.internal.protocol.util.Message.DestroyOperation;
-import org.eclipse.rwt.internal.protocol.util.Message.CallOperation;
-import org.eclipse.rwt.internal.protocol.util.Message.ExecuteScriptOperation;
-import org.eclipse.rwt.internal.protocol.util.Message.ListenOperation;
-import org.eclipse.rwt.internal.protocol.util.Message.SetOperation;
+import org.eclipse.rwt.internal.protocol.Message.*;
 
 
 public class Message_Test extends TestCase {
