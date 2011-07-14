@@ -6,9 +6,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
- *     Rüdiger Herrmann - bug 335112
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Rüdiger Herrmann - bug 335112
  ******************************************************************************/
 
 qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
@@ -81,10 +81,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {
         cursor : "default",
         animation : tv.getCssAnimation( "Shell-DisplayOverlay", "animation" ),
-        backgroundColor : tv.getCssColor( "Shell-DisplayOverlay",
-                                          "background-color" ),
-        backgroundImage : tv.getCssImage( "Shell-DisplayOverlay",
-                                          "background-image" ),
+        backgroundColor : tv.getCssColor( "Shell-DisplayOverlay", "background-color" ),
+        backgroundImage : tv.getCssImage( "Shell-DisplayOverlay", "background-image" ),
         opacity : tv.getCssFloat( "Shell-DisplayOverlay", "opacity" )
       };
       if(    result.backgroundImage == null 
@@ -100,12 +98,12 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   "atom" : {
     style : function( states ) {
       return {
-        cursor                        : "default",
-        spacing                       : 4,
-        width                         : "auto",
-        height                        : "auto",
-        horizontalChildrenAlign       : "center",
-        verticalChildrenAlign         : "middle"
+        cursor : "default",
+        spacing : 4,
+        width : "auto",
+        height : "auto",
+        horizontalChildrenAlign : "center",
+        verticalChildrenAlign : "middle"
       };
     }
   },
@@ -166,8 +164,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.border = tv.getCssBorder( "CLabel", "border" );
       }
       result.backgroundImage = tv.getCssImage( "CLabel", "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "CLabel", 
-                                                     "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "CLabel", "background-image" );
       result.cursor = tv.getCssCursor( "CLabel", "cursor" );
       result.padding = tv.getCssBoxDimensions( "CLabel", "padding" );
       result.spacing = tv.getCssDimension( "CLabel", "spacing" );
@@ -319,8 +316,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         backgroundGradient : tv.getCssGradient( "Button", "background-image" ),
         spacing : tv.getCssDimension( "Button", "spacing" ),
         padding : tv.getCssBoxDimensions( "Button", "padding" ),
-        selectionIndicator : tv.getCssSizedImage( "Button-CheckIcon", 
-                                                  "background-image" ),
+        selectionIndicator : tv.getCssSizedImage( "Button-CheckIcon", "background-image" ),
         cursor : tv.getCssCursor( "Button", "cursor" ),
         opacity : tv.getCssFloat( "Button", "opacity" )
       }
@@ -343,8 +339,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         backgroundGradient : tv.getCssGradient( "Button", "background-image" ),
         spacing : tv.getCssDimension( "Button", "spacing" ),
         padding : tv.getCssBoxDimensions( "Button", "padding" ),
-        selectionIndicator : tv.getCssSizedImage( "Button-RadioIcon", 
-                                                  "background-image" ),
+        selectionIndicator : tv.getCssSizedImage( "Button-RadioIcon", "background-image" ),
         cursor : tv.getCssCursor( "Button", "cursor" ),
         opacity : tv.getCssFloat( "Button", "opacity" )
       }
@@ -385,15 +380,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = null;
       if( states.vertical ) {
         result = {
-          left   : 2,
+          left : 2,
           height : 2,
-          right  : 2,
+          right : 2,
           border : tv.getCssNamedBorder( "verticalDivider" )
         };        
       } else {
         result = {
-          top    : 2,
-          width  : 2,
+          top : 2,
+          width : 2,
           bottom : 2,
           border : tv.getCssNamedBorder( "horizontalDivider" )
         };                
@@ -417,16 +412,13 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundColor = tv.getCssColor( "ToolItem", "background-color" );
       result.opacity = tv.getCssFloat( "ToolItem", "opacity" );
       result.backgroundImage = tv.getCssImage( "ToolItem", "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "ToolItem",
-                                                     "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "ToolItem", "background-image" );
       result.border = tv.getCssBorder( "ToolItem", "border" );
       result.padding = tv.getCssBoxDimensions( "ToolItem", "padding" );
       result.horizontalChildrenAlign = states.rwt_VERTICAL ? "left" : "center";
       if( states.dropDown ) {
-        result.dropDownArrow = tv.getCssSizedImage( "ToolItem-DropDownIcon",
-                                                    "background-image" );
-        result.separatorBorder = tv.getCssBorder( "ToolItem-DropDownIcon", 
-                                                  "border" );
+        result.dropDownArrow = tv.getCssSizedImage( "ToolItem-DropDownIcon", "background-image" );
+        result.separatorBorder = tv.getCssBorder( "ToolItem-DropDownIcon", "border" );
       } else {
         result.dropDownArrow = null;
         result.separatorBorder = null; 
@@ -652,7 +644,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         height : "auto",
         marginTop : 3,
         marginBottom : 2,
-        paddingLeft  : 3,
+        paddingLeft : 3,
         paddingRight : 3
       };
     }
@@ -662,8 +654,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        right  : 0,
-        left   : 0,
+        right : 0,
+        left : 0,
         height : 0,
         border : tv.getCssNamedBorder( "verticalDivider" )
       };
@@ -828,8 +820,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       }      
       result.backgroundGradient = tv.getCssGradient( "Combo-Button", "background-image" );
       // TODO [rst] rather use button.bgcolor?
-      result.backgroundColor = tv.getCssColor( "Combo-Button",
-                                               "background-color" );
+      result.backgroundColor = tv.getCssColor( "Combo-Button", "background-color" );
       result.cursor = tv.getCssCursor( "Combo-Button", "cursor" );
       return result;
     }
@@ -902,14 +893,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "CCombo-Button", "background-image" );
       } else {
-        result.backgroundImage = tv.getCssImage( "CCombo-Button", 
-                                                 "background-image" );
+        result.backgroundImage = tv.getCssImage( "CCombo-Button", "background-image" );
       }      
-      result.backgroundGradient = tv.getCssGradient( "CCombo-Button", 
-                                                     "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "CCombo-Button", "background-image" );
       // TODO [rst] rather use button.bgcolor?
-      result.backgroundColor = tv.getCssColor( "CCombo-Button",
-                                               "background-color" );
+      result.backgroundColor = tv.getCssColor( "CCombo-Button", "background-color" );
       result.cursor = tv.getCssCursor( "CCombo-Button", "cursor" );
       return result;
     }
@@ -1048,10 +1036,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 //      style : function( states ) {
 //        return {
 // TODO [rst] disappeared in qx 0.7
-//          top    : 0,
-//          right  : 0,
+//          top : 0,
+//          right : 0,
 //          bottom : 0,
-//          left   : 0
+//          left : 0
 //        };
 //      }
   },
@@ -1163,11 +1151,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var margin = tv.getCssBoxDimensions( "Group-Frame", "margin" );
       return {
-        top     : margin[ 0 ],
-        right   : margin[ 1 ],
-        bottom  : margin[ 2 ],
-        left    : margin[ 3 ],
-        border  : tv.getCssBorder( "Group-Frame", "border" )
+        top : margin[ 0 ],
+        right : margin[ 1 ],
+        bottom : margin[ 2 ],
+        left : margin[ 3 ],
+        border : tv.getCssBorder( "Group-Frame", "border" )
       };
     }
   },
@@ -1195,7 +1183,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
-
       // [if] Do not apply top/bottom paddings on the client
       var cssPadding = tv.getCssBoxDimensions( "Spinner-Field", "padding" );
       result.paddingRight = cssPadding[ 1 ];
@@ -1204,7 +1191,6 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.left = 0;
       result.right = 0;
       result.bottom = 0;
-
       return result;
     }
   },
@@ -1218,14 +1204,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "Spinner-UpButton", "background-image" );
       } else {
-        result.backgroundImage = tv.getCssImage( "Spinner-UpButton", 
-                                                 "background-image" );
+        result.backgroundImage = tv.getCssImage( "Spinner-UpButton", "background-image" );
       }      
-      result.backgroundGradient = tv.getCssGradient( "Spinner-UpButton", 
-                                                     "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Spinner-UpButton", "background-image" );
       result.border = tv.getCssBorder( "Spinner-UpButton", "border" );
-      result.backgroundColor = tv.getCssColor( "Spinner-UpButton",
-                                               "background-color" );
+      result.backgroundColor = tv.getCssColor( "Spinner-UpButton", "background-color" );
       result.cursor = tv.getCssCursor( "Spinner-UpButton", "cursor" );
       return result;
     }
@@ -1240,14 +1223,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "Spinner-DownButton", "background-image" );
       } else {
-        result.backgroundImage = tv.getCssImage( "Spinner-DownButton", 
-                                                 "background-image" );
+        result.backgroundImage = tv.getCssImage( "Spinner-DownButton", "background-image" );
       }      
-      result.backgroundGradient = tv.getCssGradient( "Spinner-DownButton", 
-                                                     "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Spinner-DownButton", "background-image" );
       result.border = tv.getCssBorder( "Spinner-DownButton", "border" );
-      result.backgroundColor = tv.getCssColor( "Spinner-DownButton",
-                                               "background-color" );
+      result.backgroundColor = tv.getCssColor( "Spinner-DownButton", "background-color" );
       result.cursor = tv.getCssCursor( "Spinner-DownButton", "cursor" );
       return result;
     }
@@ -1321,8 +1301,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.source = tv.getCssImage( "TableColumn-SortIndicator",
-                                      "background-image" );
+      result.source = tv.getCssImage( "TableColumn-SortIndicator", "background-image" );
       return result;
     }
   },
@@ -1371,11 +1350,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         backgroundColor : tv.getCssColor( "Sash", "background-color" ),
         backgroundImage : tv.getCssImage( "Sash", "background-image" ),
         border : tv.getCssBorder( "Sash", "border" ),
-        cursor : states.disabled
-                 ? "undefined"
-                 : states.horizontal
-                   ? "row-resize"
-                   : "col-resize"
+        cursor : states.disabled ? "undefined" : states.horizontal ? "row-resize" : "col-resize"
       };
     }
   },
@@ -1485,8 +1460,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.textColor = tv.getCssColor( "CTabItem", "color" );
       var color = tv.getCssColor( "CTabFolder", "border-color" );
       // create a copy of the radii from theme
-      var radii
-         = tv.getCssBoxDimensions( "CTabFolder", "border-radius" ).slice( 0 );
+      var radii = tv.getCssBoxDimensions( "CTabFolder", "border-radius" ).slice( 0 );
       // cut off rounded corners at opposite side of tabs
       if( states.barTop ) {
         radii[ 2 ] = 0;
@@ -1553,8 +1527,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );      
-      result.icon = tv.getCssImage( "CTabFolder-DropDownButton-Icon",
-                                    "background-image" );      
+      result.icon = tv.getCssImage( "CTabFolder-DropDownButton-Icon", "background-image" );
       return result;
     }
   },  
@@ -1564,9 +1537,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
 
     style : function( states ) {
       return {
-        source : states.over
-          ? "widget/ctabfolder/close_hover.gif"
-          : "widget/ctabfolder/close.gif"
+        source : states.over ? "widget/ctabfolder/close_hover.gif" : "widget/ctabfolder/close.gif"
       }
     }
   },
@@ -1580,8 +1551,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.backgroundColor = tv.getCssColor( "Composite", "background-color" );
       result.backgroundImage = tv.getCssImage( "Composite", "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "Composite",
-                                                     "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Composite", "background-image" );
       result.border = tv.getCssBorder( "Composite", "border" );
       result.opacity = tv.getCssFloat( "Composite", "opacity" );
       result.shadow = tv.getCssShadow( "Composite", "box-shadow" );
@@ -1613,10 +1583,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "*", "border" );
-      result.backgroundGradient = tv.getCssGradient( "CoolBar",
-                                                     "background-image" );
-      result.backgroundImage = tv.getCssImage( "CoolBar",
-                                               "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "CoolBar", "background-image" );
+      result.backgroundImage = tv.getCssImage( "CoolBar", "background-image" );
       return result;
     }
   },
@@ -1697,12 +1665,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       if( borderName ) {
         result.border = tv.getCssNamedBorder( borderName );
       }
-      result.backgroundColor = tv.getCssColor( "Label-SeparatorLine", 
-                                               "background-color" );
-      result.backgroundImage = tv.getCssImage( "Label-SeparatorLine",
-                                               "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "Label-SeparatorLine",
-                                                     "background-image" );      
+      result.backgroundColor = tv.getCssColor( "Label-SeparatorLine", "background-color" );
+      result.backgroundImage = tv.getCssImage( "Label-SeparatorLine", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Label-SeparatorLine", "background-image" );
       return result;
     }
   },
@@ -1740,22 +1705,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "ProgressBar", "border" );
-      result.backgroundColor = tv.getCssColor( "ProgressBar",
-                                               "background-color" );
-      result.backgroundImageSized = tv.getCssSizedImage( "ProgressBar",
-                                                         "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "ProgressBar",
-                                                     "background-image" );
-      result.separatorBorder = tv.getCssBorder( "ProgressBar-Indicator", 
-                                                "border" );
-      result.indicatorColor = tv.getCssColor( "ProgressBar-Indicator",
-                                               "background-color" );
-      result.indicatorImage = tv.getCssSizedImage( "ProgressBar-Indicator",
-                                                   "background-image" );
-      result.indicatorGradient = tv.getCssGradient( "ProgressBar-Indicator",
-                                                     "background-image" );
-      result.indicatorOpacity = tv.getCssFloat( "ProgressBar-Indicator",
-                                                "opacity" );
+      result.backgroundColor = tv.getCssColor( "ProgressBar", "background-color" );
+      result.backgroundImageSized = tv.getCssSizedImage( "ProgressBar", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "ProgressBar", "background-image" );
+      result.separatorBorder = tv.getCssBorder( "ProgressBar-Indicator", "border" );
+      result.indicatorColor = tv.getCssColor( "ProgressBar-Indicator", "background-color" );
+      result.indicatorImage = tv.getCssSizedImage( "ProgressBar-Indicator", "background-image" );
+      result.indicatorGradient = tv.getCssGradient( "ProgressBar-Indicator", "background-image" );
+      result.indicatorOpacity = tv.getCssFloat( "ProgressBar-Indicator", "opacity" );
       return result;
     }
   },
@@ -1913,15 +1870,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        cursor    : "default",
+        cursor : "default",
         textAlign : "center",
-        padding   : [ 0, 3 ]
+        padding : [ 0, 3 ]
       };
       if( states.selected ) {
         result.textColor = tv.getCssColor( "DateTime-Field", "color" );
         result.backgroundColor = tv.getCssColor( "DateTime-Field", "background-color" );
       } else {
-        result.textColor = "undefined";
+      	result.textColor = "undefined";
         result.backgroundColor = "undefined";
       }
       return result;
@@ -1932,7 +1889,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        cursor     : "default"
+        cursor : "default"
       };
       return result;
     }
@@ -1948,14 +1905,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "DateTime-UpButton", "background-image" );
       } else {
-        result.backgroundImage = tv.getCssImage( "DateTime-UpButton", 
-                                                 "background-image" );
+        result.backgroundImage = tv.getCssImage( "DateTime-UpButton", "background-image" );
       }      
-      result.backgroundGradient = tv.getCssGradient( "DateTime-UpButton", 
-                                                     "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "DateTime-UpButton", "background-image" );
       result.border = tv.getCssBorder( "DateTime-UpButton", "border" );
-      result.backgroundColor = tv.getCssColor( "DateTime-UpButton",
-                                               "background-color" );
+      result.backgroundColor = tv.getCssColor( "DateTime-UpButton", "background-color" );
       result.cursor = tv.getCssCursor( "DateTime-UpButton", "cursor" );
       return result;
     }
@@ -1966,19 +1920,15 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       result.width = tv.getCssDimension( "DateTime-DownButton", "width" );
-      result.icon = tv.getCssImage( "DateTime-DownButton-Icon",
-                                    "background-image" );
+      result.icon = tv.getCssImage( "DateTime-DownButton-Icon", "background-image" );
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "DateTime-DownButton", "background-image" );
       } else {
-        result.backgroundImage = tv.getCssImage( "DateTime-DownButton", 
-                                                 "background-image" );
+        result.backgroundImage = tv.getCssImage( "DateTime-DownButton", "background-image" );
       }      
-      result.backgroundGradient = tv.getCssGradient( "DateTime-DownButton", 
-                                                     "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "DateTime-DownButton", "background-image" );
       result.border = tv.getCssBorder( "DateTime-DownButton", "border" );
-      result.backgroundColor = tv.getCssColor( "DateTime-DownButton",
-                                               "background-color" );
+      result.backgroundColor = tv.getCssColor( "DateTime-DownButton", "background-color" );
       result.cursor = tv.getCssCursor( "DateTime-DownButton", "cursor" );
       return result;
     }
@@ -1989,19 +1939,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.border = tv.getCssBorder( "DateTime-DropDownButton", "border" );      
-      result.icon = tv.getCssImage( "DateTime-DropDownButton-Icon",
-                                    "background-image" );
+      result.icon = tv.getCssImage( "DateTime-DropDownButton-Icon", "background-image" );
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
-        result.icon = tv.getCssImage( "DateTime-DropDownButton",
-                                      "background-image" );
+        result.icon = tv.getCssImage( "DateTime-DropDownButton", "background-image" );
       } else {
-        result.backgroundImage = tv.getCssImage( "DateTime-DropDownButton", 
-                                                 "background-image" );
+        result.backgroundImage = tv.getCssImage( "DateTime-DropDownButton", "background-image" );
       }      
-      result.backgroundGradient = tv.getCssGradient( "DateTime-DropDownButton", 
-                                                     "background-image" );
-      result.backgroundColor = tv.getCssColor( "DateTime-DropDownButton",
-                                               "background-color" );
+      result.backgroundGradient = tv.getCssGradient( "DateTime-DropDownButton", "background-image" );
+      result.backgroundColor = tv.getCssColor( "DateTime-DropDownButton", "background-color" );
       result.cursor = tv.getCssCursor( "DateTime-DropDownButton", "cursor" );
       return result;
     }
@@ -2025,8 +1970,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         border : tv.getCssBorder( "DateTime-Calendar-Navbar", "border" ),
-        backgroundColor : tv.getCssColor( "DateTime-Calendar-Navbar", 
-                                          "background-color" ),
+        backgroundColor : tv.getCssColor( "DateTime-Calendar-Navbar", "background-color" ),
         padding : [ 4, 4, 4, 4 ]
       };
     }
@@ -2057,10 +2001,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        icon : tv.getCssImage( "DateTime-Calendar-PreviousYearButton",
-                               "background-image" ),
-        cursor : tv.getCssCursor( "DateTime-Calendar-PreviousYearButton",
-                                  "cursor" )
+        icon : tv.getCssImage( "DateTime-Calendar-PreviousYearButton", "background-image" ),
+        cursor : tv.getCssCursor( "DateTime-Calendar-PreviousYearButton", "cursor" )
       };
     }
   },
@@ -2071,10 +2013,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        icon : tv.getCssImage( "DateTime-Calendar-PreviousMonthButton",
-                               "background-image" ),
-        cursor : tv.getCssCursor( "DateTime-Calendar-PreviousMonthButton",
-                                  "cursor" )
+        icon : tv.getCssImage( "DateTime-Calendar-PreviousMonthButton", "background-image" ),
+        cursor : tv.getCssCursor( "DateTime-Calendar-PreviousMonthButton", "cursor" )
       };
     }
   },
@@ -2085,10 +2025,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        icon : tv.getCssImage( "DateTime-Calendar-NextMonthButton",
-                               "background-image" ),
-        cursor : tv.getCssCursor( "DateTime-Calendar-NextMonthButton",
-                                  "cursor" )
+        icon : tv.getCssImage( "DateTime-Calendar-NextMonthButton", "background-image" ),
+        cursor : tv.getCssCursor( "DateTime-Calendar-NextMonthButton", "cursor" )
       };
     }
   },
@@ -2099,10 +2037,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        icon : tv.getCssImage( "DateTime-Calendar-NextYearButton",
-                               "background-image" ),
-        cursor : tv.getCssCursor( "DateTime-Calendar-NextYearButton",
-                                  "cursor" )
+        icon : tv.getCssImage( "DateTime-Calendar-NextYearButton", "background-image" ),
+        cursor : tv.getCssCursor( "DateTime-Calendar-NextYearButton", "cursor" )
       };
     }
   },
@@ -2111,11 +2047,11 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        font          : tv.getCssFont( "DateTime-Calendar-Navbar", "font" ),
-        textAlign     : "center",
-        textColor     : tv.getCssColor( "DateTime-Calendar-Navbar", "color" ),
+        font : tv.getCssFont( "DateTime-Calendar-Navbar", "font" ),
+        textAlign : "center",
+        textColor : tv.getCssColor( "DateTime-Calendar-Navbar", "color" ),
         verticalAlign : "middle",
-        cursor        : "default"
+        cursor : "default"
       };
     }
   },
@@ -2137,9 +2073,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         var border = new org.eclipse.rwt.Border( [ 0, 1, 0, 0 ], "solid", "gray" );
       }
       return {
-        textAlign       : "center",
-        verticalAlign   : "middle",
-        border          : border
+        textAlign : "center",
+        verticalAlign : "middle",
+        border : border
       };
     }
   },
@@ -2156,9 +2092,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       smallFont.setBold( font.getBold() );
       smallFont.setItalic( font.getItalic() );
       return {
-        font            : smallFont,
-        border          : border,
-        textAlign       : "center"
+        font : smallFont,
+        border : border,
+        textAlign : "center"
       };
     }
   },
@@ -2167,14 +2103,12 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
-        textAlign       : "center",
-        verticalAlign   : "middle"
+        textAlign : "center",
+        verticalAlign : "middle"
       };
-      if( !states.disabled 
-          && ( states.selected || states.otherMonth || states.over ) ) {
+      if( !states.disabled && ( states.selected || states.otherMonth || states.over ) ) {
         result.textColor = tv.getCssColor( "DateTime-Calendar-Day", "color" );
-        result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day",
-                                                 "background-color" );
+        result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day", "background-color" );
       } else {
         result.textColor = "undefined";
         result.backgroundColor = "undefined";
@@ -2237,13 +2171,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.paddingLeft = 4;
       result.paddingRight = 24;
       result.border = tv.getCssBorder( "ExpandItem-Header", "border" );
-      result.backgroundColor
-        = tv.getCssColor( "ExpandItem-Header", "background-color" );
+      result.backgroundColor = tv.getCssColor( "ExpandItem-Header", "background-color" );
       result.cursor = tv.getCssCursor( "ExpandItem-Header", "cursor" );
-      result.backgroundImage = tv.getCssImage( "ExpandItem-Header",
-                                               "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "ExpandItem-Header",
-                                                     "background-image" );
+      result.backgroundImage = tv.getCssImage( "ExpandItem-Header", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "ExpandItem-Header", "background-image" );
       return result;
     }
   },
@@ -2268,13 +2199,10 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.backgroundColor = tv.getCssColor( "Slider-Thumb",
-                                               "background-color" );
+      result.backgroundColor = tv.getCssColor( "Slider-Thumb", "background-color" );
       result.border = tv.getCssBorder( "Slider-Thumb", "border" );
-      result.backgroundImage = tv.getCssImage( "Slider-Thumb",
-                                               "background-image" );
-      result.backgroundGradient = tv.getCssGradient( "Slider-Thumb", 
-                                                     "background-image" );
+      result.backgroundImage = tv.getCssImage( "Slider-Thumb", "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Slider-Thumb", "background-image" );
       return result;
     }
   },
@@ -2288,19 +2216,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.textColor = tv.getCssColor( "Button", "color" );
       result.spacing = tv.getCssDimension( "Button", "spacing" );
       result.padding = tv.getCssBoxDimensions( "Button", "padding" );
-      result.backgroundColor = tv.getCssColor( "Slider-DownButton", 
-                                               "background-color" );
-      result.icon = tv.getCssSizedImage( "Slider-DownButton-Icon", 
-                                         "background-image" );
+      result.backgroundColor = tv.getCssColor( "Slider-DownButton", "background-color" );
+      result.icon = tv.getCssSizedImage( "Slider-DownButton-Icon", "background-image" );
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
-        result.icon = tv.getCssSizedImage( "Slider-DownButton", 
-                                           "background-image" );
+        result.icon = tv.getCssSizedImage( "Slider-DownButton", "background-image" );
       } else {
-        result.backgroundImage = tv.getCssImage( "Slider-DownButton", 
-                                                 "background-image" );
+        result.backgroundImage = tv.getCssImage( "Slider-DownButton", "background-image" );
       }      
-      result.backgroundGradient = tv.getCssGradient( "Slider-DownButton", 
-                                                     "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Slider-DownButton", "background-image" );
       result.border = tv.getCssBorder( "Slider-DownButton", "border" );
       if( states[ "rwt_HORIZONTAL" ] ){
         result.width = 16;
@@ -2321,19 +2244,14 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.textColor = tv.getCssColor( "Button", "color" );
       result.spacing = tv.getCssDimension( "Button", "spacing" );
       result.padding = tv.getCssBoxDimensions( "Button", "padding" );
-      result.backgroundColor = tv.getCssColor( "Slider-UpButton", 
-                                               "background-color" );
-      result.icon = tv.getCssSizedImage( "Slider-UpButton-Icon", 
-                                         "background-image" );
+      result.backgroundColor = tv.getCssColor( "Slider-UpButton", "background-color" );
+      result.icon = tv.getCssSizedImage( "Slider-UpButton-Icon", "background-image" );
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
-        result.icon = tv.getCssSizedImage( "Slider-UpButton", 
-                                           "background-image" );
+        result.icon = tv.getCssSizedImage( "Slider-UpButton", "background-image" );
       } else {
-        result.backgroundImage = tv.getCssImage( "Slider-UpButton", 
-                                                 "background-image" );
+        result.backgroundImage = tv.getCssImage( "Slider-UpButton", "background-image" );
       }      
-      result.backgroundGradient = tv.getCssGradient( "Slider-UpButton", 
-                                                     "background-image" );
+      result.backgroundGradient = tv.getCssGradient( "Slider-UpButton", "background-image" );
       result.border = tv.getCssBorder( "Slider-UpButton", "border" );
       if( states[ "rwt_HORIZONTAL" ] ) {
         result.width = 16;
@@ -2438,4 +2356,5 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   }
 
 }
+
 } );
