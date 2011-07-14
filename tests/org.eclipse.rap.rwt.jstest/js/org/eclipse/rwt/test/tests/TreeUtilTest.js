@@ -401,7 +401,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       tree.destroy();
     },
 
-    testLinesVisibleForSplitTree: function() {
+    testLinesVisibleForSplitTree : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       for( var i = 0; i < 5; i++ ) {
@@ -419,6 +419,43 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       var row = tree._rowContainer.getSubContainer( 0 )._children[ 0 ];
       assertTrue( tree.hasState( "linesvisible" ) );
       assertIdentical( border, row.getBorder() );      
+      tree.destroy();
+    },
+
+    testVerticalGridLayoutOnSplitTree : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createSplitTree();
+      testUtil.flush();
+      var cont1 = tree.getRowContainer().getSubContainer( 0 )._getTargetNode();
+      var cont2 = tree.getRowContainer().getSubContainer( 1 )._getTargetNode();
+      var offset1 = cont1.childNodes.length;
+      var offset2 = cont2.childNodes.length;
+      tree.setLinesVisible( true );
+      testUtil.flush();
+      assertEquals( offset1 + 2, cont1.childNodes.length );
+      assertEquals( offset2 + 3, cont2.childNodes.length ); // column count is 5
+      assertEquals( 49, parseInt( cont1.childNodes[ offset1 ].style.left ) );
+      assertEquals( 21, parseInt( cont1.childNodes[ offset1 + 1 ].style.left )  );
+      assertEquals( 20, parseInt( cont2.childNodes[ offset2 ].style.left )  );
+      assertEquals( 52, parseInt( cont2.childNodes[ offset2 + 1 ].style.left )  );
+      assertEquals( 52, parseInt( cont2.childNodes[ offset2 + 2 ].style.left )  );
+      tree.destroy();
+    },
+
+    testVerticalGridLayoutOnChangeFixedColumns : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createSplitTree();
+      testUtil.flush();
+      var cont1 = tree.getRowContainer().getSubContainer( 0 )._getTargetNode();
+      var cont2 = tree.getRowContainer().getSubContainer( 1 )._getTargetNode();
+      var offset1 = cont1.childNodes.length;
+      var offset2 = cont2.childNodes.length;
+      tree.setLinesVisible( true );
+      testUtil.flush();
+      org.eclipse.rwt.TreeUtil.setFixedColumns( tree, 0 );
+      testUtil.flush();
+      assertEquals( offset1, cont1.childNodes.length );
+      assertEquals( offset2 + 5, cont2.childNodes.length ); // column count is 5
       tree.destroy();
     },
 

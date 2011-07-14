@@ -121,7 +121,7 @@ org.eclipse.rwt.TreeRowContainerWrapper.prototype = {
     this._rowWidth = value;
     this._layoutX();
   },
-  
+
   setScrollLeft : function( value ) {
     this._container[ 1 ].setScrollLeft( value );
   },
@@ -146,7 +146,7 @@ org.eclipse.rwt.TreeRowContainerWrapper.prototype = {
     this._container[ 0 ].renderAll();
     this._container[ 1 ].renderAll();
   },
-  
+
   _updateConfig : function() {
     var configLeft = this._container[ 0 ].getRenderConfig();
     var configRight = this._container[ 1 ].getRenderConfig();
