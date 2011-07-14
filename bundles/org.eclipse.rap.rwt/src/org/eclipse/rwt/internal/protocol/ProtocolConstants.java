@@ -32,7 +32,7 @@ final class ProtocolConstants {
 
   // Common properties
   public static final String META_REQUEST_COUNTER = "requestCounter";
-  public static final String CALL_METHOD_NAME = "name";
+  public static final String CALL_METHOD_NAME = "method";
   public static final String CREATE_PARENT = "parent";
   public static final String CREATE_TYPE = "type";
   public static final String CREATE_STYLE = "style";

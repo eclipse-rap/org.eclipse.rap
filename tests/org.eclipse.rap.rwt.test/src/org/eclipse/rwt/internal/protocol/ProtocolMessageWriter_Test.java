@@ -10,9 +10,6 @@
 *******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATIONS;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META_REQUEST_COUNTER;
 import static org.eclipse.rwt.internal.resources.TestUtil.assertArrayEquals;
 
 import java.util.HashMap;
@@ -64,10 +61,10 @@ public class ProtocolMessageWriter_Test extends TestCase {
   public void testEmptyMessage() throws JSONException {
     String messageString = writer.createMessage();
     JSONObject message = new JSONObject( messageString );
-    JSONObject meta = message.getJSONObject( META );
+    JSONObject meta = message.getJSONObject( "meta" );
     int requestCount = RWTRequestVersionControl.getInstance().getCurrentRequestId().intValue();
-    assertEquals( requestCount, meta.getInt( META_REQUEST_COUNTER ) );
-    JSONArray operations = message.getJSONArray( OPERATIONS );
+    assertEquals( requestCount, meta.getInt( "requestCounter" ) );
+    JSONArray operations = message.getJSONArray( "operations" );
     assertEquals( 0, operations.length() );
   }
 
