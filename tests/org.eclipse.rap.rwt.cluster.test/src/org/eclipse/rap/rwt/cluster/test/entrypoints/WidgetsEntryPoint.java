@@ -20,7 +20,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
 
 
-@SuppressWarnings("unused")
+@SuppressWarnings({ "unused", "restriction" })
 public class WidgetsEntryPoint implements IEntryPoint {
 
   private Shell shell;
@@ -59,7 +59,6 @@ public class WidgetsEntryPoint implements IEntryPoint {
     return 0;
   }
 
-  @SuppressWarnings("restriction")
   private void obtainAccessibles() {
     AllWidgetTreeVisitor.accept( shell, new WidgetTreeVisitor() {
       public boolean visit( Widget widget ) {
