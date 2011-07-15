@@ -18,7 +18,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 
-public final class TestResponse implements HttpServletResponse {
+public class TestResponse implements HttpServletResponse {
 
   private TestServletOutputStream outStream;
   private String contentType;

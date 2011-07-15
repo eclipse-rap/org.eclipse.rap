@@ -12,6 +12,8 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,38 +26,18 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 
 public final class UICallBackManager implements SerializableCompatibility {
 
-  
   private static final int DEFAULT_REQUEST_CHECK_INTERVAL = 30000;
 
   private static final String FORCE_UI_CALLBACK
     = UICallBackManager.class.getName() + "#forceUICallBack";
-  
-  class DuplicateCallBackRequestException extends RuntimeException {
-  }
-  
-  private static class UnblockSessionStoreListener
-    implements SessionStoreListener, SerializableCompatibility
-  {
-    private transient final Thread currentThread;
-
-    private UnblockSessionStoreListener( Thread currentThread ) {
-      this.currentThread = currentThread;
-    }
-
-    public void beforeDestroy( SessionStoreEvent event ) {
-      currentThread.interrupt();
-    }
-  }
 
   public static UICallBackManager getInstance() {
     return ( UICallBackManager )SessionSingletonBase.getInstance( UICallBackManager.class );
   }
-  
+
   private final IdManager idManager;
 
-  // synchronization object to control access to the runnables List
-  final SerializableLock lock;
-  private transient boolean hasBlockedCallBackRequest;
+  private final SerializableLock lock;
   // Flag that indicates whether a request is processed. In that case no
   // notifications are sent to the client.
   private boolean uiThreadRunning;
@@ -63,6 +45,7 @@ public final class UICallBackManager implements SerializableCompatibility {
   private boolean hasRunnables;
   private boolean wakeCalled;
   private int requestCheckInterval;
+  private transient CallBackRequestTracker callBackRequestTracker;
 
   private UICallBackManager() {
     lock = new SerializableLock();
@@ -70,11 +53,12 @@ public final class UICallBackManager implements SerializableCompatibility {
     uiThreadRunning = false;
     wakeCalled = false;
     requestCheckInterval = DEFAULT_REQUEST_CHECK_INTERVAL;
+    callBackRequestTracker = new CallBackRequestTracker();
   }
 
   public boolean isCallBackRequestBlocked() {
     synchronized( lock ) {
-      return hasBlockedCallBackRequest;
+      return !callBackRequestTracker.hasActive();
     }
   }
 
@@ -101,7 +85,7 @@ public final class UICallBackManager implements SerializableCompatibility {
       ContextProvider.getStateInfo().setAttribute( FORCE_UI_CALLBACK, Boolean.TRUE );
     }
   }
-  
+
   public void setRequestCheckInterval( int requestCheckInterval ) {
     this.requestCheckInterval = requestCheckInterval;
   }
@@ -127,33 +111,40 @@ public final class UICallBackManager implements SerializableCompatibility {
     }
   }
 
-  void blockCallBackRequest( HttpServletResponse response ) {
+  boolean processCallBackRequest( HttpServletResponse response ) {
+    boolean result = true;
     synchronized( lock ) {
-      if( hasBlockedCallBackRequest ) {
-        throw new DuplicateCallBackRequestException();
+      if( isCallBackRequestBlocked() ) {
+        releaseBlockedRequest();
       }
       if( mustBlockCallBackRequest() ) {
         Thread currentThread = Thread.currentThread();
+        callBackRequestTracker.activate( currentThread );
         SessionStoreListener listener = new UnblockSessionStoreListener( currentThread );
         ISessionStore sessionStore = ContextProvider.getSession();
         sessionStore.addSessionStoreListener( listener );
-        hasBlockedCallBackRequest = true;
         try {
           boolean keepWaiting = true;
           wakeCalled = false;
           while( !wakeCalled && keepWaiting ) {
             lock.wait( requestCheckInterval );
-            keepWaiting = mustBlockCallBackRequest() && isConnectionAlive( response );
+            keepWaiting
+              =  mustBlockCallBackRequest()
+              && isConnectionAlive( response )
+              && callBackRequestTracker.isActive( currentThread );
           }
         } catch( InterruptedException ie ) {
           Thread.interrupted(); // Reset interrupted state, see bug 300254
         } finally {
-          hasBlockedCallBackRequest = false;
           sessionStore.removeSessionStoreListener( listener );
+          result = callBackRequestTracker.isActive( currentThread );
+          callBackRequestTracker.deactivate( currentThread );
         }
       }
     }
+    return result;
   }
+
 
   private static boolean isConnectionAlive( HttpServletResponse response ) {
     boolean result;
@@ -196,7 +187,51 @@ public final class UICallBackManager implements SerializableCompatibility {
     return result;
   }
 
+  private Object readResolve() {
+    callBackRequestTracker = new CallBackRequestTracker();
+    return this;
+  }
+
   private static boolean forceUICallBackForPendingRunnables() {
     return Boolean.TRUE.equals( ContextProvider.getStateInfo().getAttribute( FORCE_UI_CALLBACK ) );
+  }
+
+  private static class UnblockSessionStoreListener
+    implements SessionStoreListener, SerializableCompatibility
+  {
+    private transient final Thread currentThread;
+
+    private UnblockSessionStoreListener( Thread currentThread ) {
+      this.currentThread = currentThread;
+    }
+
+    public void beforeDestroy( SessionStoreEvent event ) {
+      currentThread.interrupt();
+    }
+  }
+
+  private static class CallBackRequestTracker {
+
+    private transient List<Thread> callBackRequests;
+
+    CallBackRequestTracker() {
+      callBackRequests = new LinkedList<Thread>();
+    }
+
+    void deactivate( Thread thread ) {
+      callBackRequests.remove( thread );
+    }
+
+    void activate( Thread thread ) {
+      callBackRequests.add( 0, thread );
+    }
+
+    boolean hasActive() {
+      return callBackRequests.isEmpty();
+    }
+
+    boolean isActive( Thread thread ) {
+      return !hasActive() && callBackRequests.get( 0 ) == thread;
+    }
   }
 }
