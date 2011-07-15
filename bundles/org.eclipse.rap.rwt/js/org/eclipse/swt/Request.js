@@ -130,7 +130,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
                                  this );
       request.setParameter(
         "custom_service_handler",
-        "org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler" );
+        "org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler" );
       this._sendStandalone( request );
     },
     
