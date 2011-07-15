@@ -38,6 +38,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
     // References the currently running request or null if no request is active
     this._currentRequest = null;
     this._timeoutPage = "";
+    this._uiCallBackRetryInterval = 0;
   },
 
   destruct : function() {
@@ -125,8 +126,8 @@ qx.Class.define( "org.eclipse.swt.Request", {
       request.addEventListener( "completed", 
                                  this._handleUICallBackFinished, 
                                  this );
-      request.addEventListener( "failed", 
-                                 this._handleUICallBackFinished, 
+      request.addEventListener( "failed",
+                                 this._handleUICallBackFailed,
                                  this );
       request.setParameter(
         "custom_service_handler",
@@ -147,6 +148,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
         } catch( ex ) {
           throw new Error( "Could not execute javascript: [" + text + "]", ex );
         }
+        this._uiCallBackRetryInterval = 0;
       }
       // Transport is normally disposed of in RequestQueue but UICallBackReuests
       // bypass the queue 
@@ -154,6 +156,24 @@ qx.Class.define( "org.eclipse.swt.Request", {
       var request = transport.getRequest();
       transport.dispose();
       request.dispose();
+    },
+
+    _handleUICallBackFailed : function( event ) {
+      if( this._isConnectionError( event.getStatusCode() ) ) {
+        var that = this;
+        window.setTimeout( function() {
+        	that.enableUICallBack();
+        }, this._uiCallBackRetryInterval );
+        this._increaseUICallBackRetryInterval();
+      }
+    },
+
+    _increaseUICallBackRetryInterval : function() {
+      if( this._uiCallBackRetryInterval == 0 ) {
+      	this._uiCallBackRetryInterval = 1000;
+      } else if( this._uiCallBackRetryInterval < 60 * 1000 ) {
+      	this._uiCallBackRetryInterval *= 2;
+      }
     },
 
     /**
