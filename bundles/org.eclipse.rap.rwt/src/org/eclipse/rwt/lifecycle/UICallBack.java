@@ -13,6 +13,7 @@ package org.eclipse.rwt.lifecycle;
 
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 

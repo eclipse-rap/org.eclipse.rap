@@ -12,9 +12,9 @@ package org.eclipse.rwt.internal.engine.configurables;
 
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.Configurable;
-import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.ServiceManager;
+import org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler;
 
 
 public class ServiceManagerConfigurable implements Configurable {

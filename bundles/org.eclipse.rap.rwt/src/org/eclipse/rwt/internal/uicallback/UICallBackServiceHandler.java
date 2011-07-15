@@ -9,12 +9,13 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rwt.internal.lifecycle;
+package org.eclipse.rwt.internal.uicallback;
 
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;

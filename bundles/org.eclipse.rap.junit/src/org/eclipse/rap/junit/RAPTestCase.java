@@ -14,7 +14,7 @@ package org.eclipse.rap.junit;
 import junit.framework.ComparisonFailure;
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.internal.lifecycle.UICallBackManager;
+import org.eclipse.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.swt.widgets.Display;
 
 public class RAPTestCase extends TestCase {

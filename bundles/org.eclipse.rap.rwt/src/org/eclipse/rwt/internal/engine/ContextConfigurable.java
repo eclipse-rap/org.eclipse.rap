@@ -13,11 +13,13 @@ package org.eclipse.rwt.internal.engine;
 import javax.servlet.ServletContext;
 
 import org.eclipse.rwt.engine.Configurator;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.ApplicationStoreImpl;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.textsize.MeasurementListener;
+import org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler;
 import org.eclipse.rwt.service.IApplicationStore;
 import org.eclipse.rwt.service.RWTFileSettingStoreFactory;
 import org.eclipse.swt.widgets.Display;

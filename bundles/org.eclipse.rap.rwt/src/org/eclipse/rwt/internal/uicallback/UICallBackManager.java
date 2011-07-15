@@ -9,7 +9,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rwt.internal.lifecycle;
+package org.eclipse.rwt.internal.uicallback;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -18,6 +18,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.SerializableLock;
 import org.eclipse.rwt.service.*;
@@ -90,13 +91,13 @@ public final class UICallBackManager implements SerializableCompatibility {
     this.requestCheckInterval = requestCheckInterval;
   }
 
-  void notifyUIThreadStart() {
+  public void notifyUIThreadStart() {
     synchronized( lock ) {
       uiThreadRunning = true;
     }
   }
 
-  void notifyUIThreadEnd() {
+  public void notifyUIThreadEnd() {
     synchronized( lock ) {
       uiThreadRunning = false;
       if( hasRunnables ) {

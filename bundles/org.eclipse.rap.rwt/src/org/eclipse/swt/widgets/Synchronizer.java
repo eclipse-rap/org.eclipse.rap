@@ -11,7 +11,7 @@
 package org.eclipse.swt.widgets;
 
 
-import org.eclipse.rwt.internal.lifecycle.UICallBackManager;
+import org.eclipse.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rwt.internal.util.SerializableLock;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;

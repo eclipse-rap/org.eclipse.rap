@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.TomcatFactory;
-import org.eclipse.rwt.internal.lifecycle.UICallBackManager;
+import org.eclipse.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 

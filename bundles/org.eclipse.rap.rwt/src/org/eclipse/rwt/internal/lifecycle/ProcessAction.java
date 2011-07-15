@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
+import org.eclipse.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.widgets.Display;
 

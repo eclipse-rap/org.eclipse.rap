@@ -16,9 +16,9 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.internal.engine.ApplicationContext;
-import org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.ServiceManager;
+import org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler;
 import org.eclipse.rwt.service.IServiceHandler;
 
 

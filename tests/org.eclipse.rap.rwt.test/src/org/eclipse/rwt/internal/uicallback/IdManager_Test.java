@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.lifecycle;
+package org.eclipse.rwt.internal.uicallback;
 
 import java.io.IOException;
 

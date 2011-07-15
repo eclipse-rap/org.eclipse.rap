@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
-package org.eclipse.rwt.internal.lifecycle;
+package org.eclipse.rwt.internal.uicallback;
 
 import java.io.IOException;
 
