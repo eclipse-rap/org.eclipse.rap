@@ -15,7 +15,6 @@ package org.eclipse.rwt.internal.service;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.IServiceManager;
@@ -26,7 +25,7 @@ public class ServiceManager implements IServiceManager {
   private final IServiceHandler handlerDispatcher;
   private final IServiceHandler lifeCycleRequestHandler;
   
-  private final class HandlerDispatcher implements IServiceHandler {
+  private class HandlerDispatcher implements IServiceHandler {
     public void service() throws ServletException, IOException {
       if( isCustomHandler() ) {
         IServiceHandler customHandler = getCustomHandler();
@@ -55,12 +54,8 @@ public class ServiceManager implements IServiceManager {
     return handlerDispatcher;
   }
 
-  public void activate() {
-    customHandlers.activate();
-  }
-
-  public void deactivate() {
-    customHandlers.deactivate();
+  public void clear() {
+    customHandlers.clear();
   }
   
   public IServiceHandler getCustomHandler( String customHandlerId ) {
@@ -71,8 +66,7 @@ public class ServiceManager implements IServiceManager {
   // helping methods
   
   private static String getCustomHandlerId() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    return request.getParameter( IServiceHandler.REQUEST_PARAM );
+    return ContextProvider.getRequest().getParameter( IServiceHandler.REQUEST_PARAM );
   }
   
   private IServiceHandler getLifeCycleRequestHandler() {

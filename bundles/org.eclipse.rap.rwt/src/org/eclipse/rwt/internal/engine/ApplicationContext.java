@@ -40,9 +40,6 @@ public class ApplicationContext {
   // TODO [fappel]: the testMode flag is used to ignore resource deletion. Think about
   //                a less intrusive solution.
   static boolean ignoreResoureDeletion;
-  // TODO [fappel]: the testMode flag is used to ignore service handler registration via
-  //                servicehandler.xml. Think about a less intrusive solution
-  static boolean ignoreServiceHandlerRegistration;
   // TODO [fappel]: themeManager isn't final for performance reasons of the testsuite.
   //                TestServletContext#setAttribute(String,Object) will replace the runtime
   //                implementation with an optimized version for testing purpose. Think about
@@ -273,9 +270,6 @@ public class ApplicationContext {
   private void doActivateInstances() {
     // TODO [SystemStart]: Unit testing
     lifeCycleFactory.activate();
-    if( !ignoreServiceHandlerRegistration ) {
-      serviceManager.activate();
-    }
     // Note: order is crucial here
     jsLibraryConcatenator.startJSConcatenation();
     if( !ignoreResoureRegistration ) {
@@ -303,7 +297,7 @@ public class ApplicationContext {
     // TODO [SystemStart]: Unit testing
     jsLibraryConcatenator.deactivate();
     lifeCycleFactory.deactivate();
-    serviceManager.deactivate();
+    serviceManager.clear();
     themeManager.deactivate();
     
     // TODO [fappel]: think of better solution. This maps directly to the 

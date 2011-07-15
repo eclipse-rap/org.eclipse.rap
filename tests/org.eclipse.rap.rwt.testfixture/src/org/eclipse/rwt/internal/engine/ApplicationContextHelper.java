@@ -23,14 +23,6 @@ public class ApplicationContextHelper {
     ApplicationContext.ignoreResoureDeletion = ignore;
   }
 
-  public static void setIgnoreServiceHandlerRegistration( boolean ignore ) {
-    ApplicationContext.ignoreServiceHandlerRegistration = ignore;
-  }
-  
-  public static boolean isIgnoreServiceHandlerRegistration() {
-    return ApplicationContext.ignoreServiceHandlerRegistration;
-  }
-
   public static void useDefaultResourceManager() {
     ApplicationContext.testResourceManager = null;
   }

@@ -26,7 +26,6 @@ import javax.servlet.ServletException;
  * <li>Implementing the IServiceHandler interface, e.g.
  * <pre>
  * public class MyServiceHandler implements IServiceHandler {
- * 
  *   public void service() throws IOException, ServletException {
  *     HttpServletResponse response = RWT.getResponse();
  *     response.getWriter().write( &quot;Hello World&quot; );

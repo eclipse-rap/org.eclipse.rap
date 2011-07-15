@@ -52,7 +52,6 @@ public class Fixture {
     ThemeManagerHelper.replaceStandardResourceLoader();
     setIgnoreResourceRegistration( usePerformanceOptimizations() );
     setIgnoreResourceDeletion( usePerformanceOptimizations() );
-    setIgnoreServiceHandlerRegistration( usePerformanceOptimizations() );
   }
   
   private static TestServletContext servletContext;
@@ -326,10 +325,6 @@ public class Fixture {
   
   public static boolean usePerformanceOptimizations() {
     return Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS );
-  }
-
-  public static void setIgnoreServiceHandlerRegistration( boolean usePerformanceOptimizations ) {
-    ApplicationContextHelper.setIgnoreServiceHandlerRegistration( usePerformanceOptimizations );
   }
 
   public static void setIgnoreResourceDeletion( boolean usePerformanceOptimizations ) {
