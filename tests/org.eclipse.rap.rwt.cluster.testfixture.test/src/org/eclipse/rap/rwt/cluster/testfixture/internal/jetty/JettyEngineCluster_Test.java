@@ -10,12 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.internal.jetty;
 
-import org.eclipse.rap.rwt.cluster.testfixture.internal.server.ServletEngineCluster_Test;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.server.ServletEngineClusterTestBase;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
 import org.eclipse.rap.rwt.cluster.testfixture.server.JettyFactory;
 
 
-public class JettyEngineCluster_Test extends ServletEngineCluster_Test {
+public class JettyEngineCluster_Test extends ServletEngineClusterTestBase {
 
   protected IServletEngineFactory getServletEngineFactory() {
     return new JettyFactory();

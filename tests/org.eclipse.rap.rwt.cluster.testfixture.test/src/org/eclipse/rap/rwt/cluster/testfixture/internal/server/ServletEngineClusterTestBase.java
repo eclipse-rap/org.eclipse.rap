@@ -19,7 +19,7 @@ import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
 
 
 @SuppressWarnings("restriction")
-public abstract class ServletEngineCluster_Test extends TestCase {
+public abstract class ServletEngineClusterTestBase extends TestCase {
 
   private IServletEngineCluster cluster;
 

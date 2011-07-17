@@ -32,7 +32,7 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 
 @SuppressWarnings("restriction")
-public abstract class ServletEngine_Test extends TestCase {
+public abstract class ServletEngineTestBase extends TestCase {
 
   private List<IServletEngine> startedEngines;
   private PrintStream bufferedSystemErr;

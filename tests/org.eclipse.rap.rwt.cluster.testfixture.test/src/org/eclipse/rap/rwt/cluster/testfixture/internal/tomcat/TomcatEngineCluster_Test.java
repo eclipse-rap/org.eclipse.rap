@@ -10,12 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.internal.tomcat;
 
-import org.eclipse.rap.rwt.cluster.testfixture.internal.server.ServletEngineCluster_Test;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.server.ServletEngineClusterTestBase;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
 import org.eclipse.rap.rwt.cluster.testfixture.server.TomcatFactory;
 
 
-public class TomcatEngineCluster_Test extends ServletEngineCluster_Test {
+public class TomcatEngineCluster_Test extends ServletEngineClusterTestBase {
 
   protected IServletEngineFactory getServletEngineFactory() {
     return new TomcatFactory();
