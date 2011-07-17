@@ -59,7 +59,7 @@ public class RWTClient_Test extends TestCase {
 
     String expectedUrl 
       = "http://localhost:-1/rap?" 
-      + "custom_service_handler=org.eclipse.rwt.internal.lifecycle.UICallBackServiceHandler";
+      + "custom_service_handler=org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler";
     String connectionUrl = servletEngine.getConnectionUrl().toExternalForm();
     assertEquals( expectedUrl, connectionUrl );
   }
