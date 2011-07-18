@@ -56,6 +56,12 @@
         </description>
     </property>
 
+    <property name="text-shadow">
+      <description>
+        Shadow for text.
+      </description>
+    </property>
+
     <state name="disabled"
         description="Applies to disabled CCombos." />
 

@@ -114,7 +114,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
       widgetNormal.destroy();
       widgetTransp.destroy();
     },
-    
+
+    testSetRemoveTextShadow : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var htmlUtil = org.eclipse.rwt.HtmlUtil;
+      var widget = this._createWidget( true );
+      var shadow = [ false, 1, 1, 0, 0, "#ff0000", 0.5 ];
+      widget.setTextShadow( shadow );
+      testUtil.flush();
+      var element = widget.getElement();
+      var css = element.style.cssText.toLowerCase();
+      console.log( css );
+      assertTrue( css.indexOf( "text-shadow:" ) != -1 );
+      widget.setTextShadow( null );
+      testUtil.flush();
+      css = element.style.cssText.toLowerCase();
+      assertTrue( css.indexOf( "text-shadow:" ) == -1 );
+      widget.destroy();
+    },
+
     /////////
    // Helper
         

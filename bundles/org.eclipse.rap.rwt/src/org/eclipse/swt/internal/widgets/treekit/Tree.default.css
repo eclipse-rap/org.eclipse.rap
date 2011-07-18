@@ -26,6 +26,7 @@ TreeItem {
   background-color: transparent;
   color: inherit;
   text-decoration: none;
+  text-shadow: none;
 }
 
 TreeItem:hover {
@@ -71,6 +72,7 @@ TreeColumn {
   color: #666666;
   font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border-bottom:none;
+  text-shadow: none;
 }
 
 TreeColumn:hover {

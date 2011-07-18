@@ -1,12 +1,13 @@
 /*******************************************************************************
-* Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   EclipseSource - initial API and implementation
-*******************************************************************************/
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
 
 /* Menu default theme */
 
@@ -27,16 +28,19 @@ MenuItem {
   color: black;
   background-color: transparent;
   opacity: 1;
+  text-shadow: none;
 }
 
 MenuItem:hover {
   background-color: #dae9f7;
   color: #4a4a4a;
+  text-shadow: none;
 }
 
 MenuItem[BAR]:pressed {
   background-color: #00589f;
   color: white;
+  text-shadow: none;
 }
 
 MenuItem-CheckIcon {

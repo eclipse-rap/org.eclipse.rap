@@ -334,12 +334,13 @@ qx.Class.define("qx.ui.form.TextField",
           istyle.margin = "1px 0 1px -1px";
         }
 
-        // Sync font, color, textAlign and cursor
+        // Sync font, color, textAlign, cursor and text shadow
         this._renderFont();
         this._renderTextColor();
         this._renderTextAlign();
         this._renderCursor();
         this._renderSpellCheck();
+        this._renderTextShadow();
 
         // Register inline event
         if (qx.core.Variant.isSet("qx.client", "mshtml")) {
@@ -648,7 +649,16 @@ qx.Class.define("qx.ui.form.TextField",
       }
     },
 
+    _applyTextShadow : function( value, oldValue ) {
+      this.__textShadow = value;
+      if( this._inputElement ) {
+        this._renderTextShadow();
+      }   
+    },
 
+    _renderTextShadow : function() {
+      org.eclipse.rwt.HtmlUtil.setTextShadow( this._inputElement, this.__textShadow );
+    },
 
 
 

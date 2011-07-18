@@ -1,12 +1,13 @@
 /*******************************************************************************
-* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   EclipseSource - initial API and implementation
-*******************************************************************************/
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
 
 /* List default theme */
 
@@ -24,6 +25,7 @@ List-Item {
   background-color: transparent;
   color: inherit;
   background-image: none;
+  text-shadow: none;
 }
 
 List-Item:hover {
@@ -33,6 +35,7 @@ List-Item:hover {
     from( #dae9f7 ),
     to( #d2e0ee )
   );
+  text-shadow: none;
 }
 
 List-Item:selected {
@@ -43,6 +46,7 @@ List-Item:selected {
     from( #0078Bf ),
     to( #00589f )
   );
+  text-shadow: none;
 }
 
 List-Item:selected:unfocused {
@@ -53,14 +57,17 @@ List-Item:selected:unfocused {
     from( #A5A5A5 ),
     to( #858585 )
   );
+  text-shadow: none;
 }
 
 List-Item:even {
   background-color: #f3f3f4;
+  text-shadow: none;
 }
 
 List-Item:even:hover {
   background-color: #dae9f7;
+  text-shadow: none;
 }
 
 List-Item:even:selected {
@@ -71,6 +78,7 @@ List-Item:even:selected {
     from( #0078Bf ),
     to( #00589f )
   );
+  text-shadow: none;
 }
 
 List-Item:even:selected:unfocused {
@@ -81,4 +89,5 @@ List-Item:even:selected:unfocused {
     from( #A5A5A5 ),
     to( #858585 )
   );
+  text-shadow: none;
 }

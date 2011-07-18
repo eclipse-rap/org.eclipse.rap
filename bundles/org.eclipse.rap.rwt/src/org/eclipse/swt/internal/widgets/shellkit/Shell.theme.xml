@@ -98,6 +98,9 @@
       <property name="height"
           description="Height of the title bar." />
 
+      <property name="text-shadow" 
+          description="Shadow for title bar text." />
+
       <state name="inactive"
           description="Applies for all shells except the active shell." />
 

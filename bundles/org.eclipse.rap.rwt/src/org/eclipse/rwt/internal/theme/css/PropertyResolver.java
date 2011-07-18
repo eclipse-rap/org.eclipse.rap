@@ -95,10 +95,7 @@ public final class PropertyResolver {
     BORDER_STYLES.add( OUTSET );
   }
 
-  public static QxType resolveProperty( final String name,
-                                        final LexicalUnit unit,
-                                        final ResourceLoader loader )
-  {
+  public static QxType resolveProperty( String name, LexicalUnit unit, ResourceLoader loader ) {
     QxType result;
     if( isBorderProperty( name ) ) {
       result = readBorder( unit );
@@ -128,11 +125,11 @@ public final class PropertyResolver {
     return result;
   }
 
-  static boolean isColorProperty( final String property ) {
+  static boolean isColorProperty( String property ) {
     return "color".equals( property ) || property.endsWith( "-color" );
   }
 
-  static QxColor readColor( final LexicalUnit unit ) {
+  static QxColor readColor(  LexicalUnit unit ) {
     QxColor result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_RGBCOLOR ) {
@@ -186,7 +183,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  static QxColor readColorWithAlpha( final LexicalUnit unit ) {
+  static QxColor readColorWithAlpha( LexicalUnit unit ) {
     QxColor result = null;
     int[] values = new int[ 3 ];
     float alpha = 1f;
@@ -241,14 +238,14 @@ public final class PropertyResolver {
     return result;
   }
 
-  static boolean isDimensionProperty( final String property ) {
+  static boolean isDimensionProperty( String property ) {
     return    "spacing".equals( property )
            || "width".equals( property )
            || "height".equals( property )
            || "min-height".equals( property );
   }
 
-  static QxDimension readDimension( final LexicalUnit unit ) {
+  static QxDimension readDimension( LexicalUnit unit ) {
     QxDimension result = null;
     Integer length = readSingleLengthUnit( unit );
     if( length != null ) {
@@ -261,11 +258,11 @@ public final class PropertyResolver {
     return result;
   }
 
-  static boolean isBorderProperty( final String property ) {
+  static boolean isBorderProperty( String property ) {
     return "border".equals( property ) || "border-bottom".equals( property );
   }
 
-  static QxBorder readBorder( final LexicalUnit unit ) {
+  static QxBorder readBorder( LexicalUnit unit ) {
     QxBorder result = null;
     QxColor color = null;
     String style = null;
@@ -301,13 +298,13 @@ public final class PropertyResolver {
     return result;
   }
 
-  static boolean isBoxDimensionProperty( final String property ) {
+  static boolean isBoxDimensionProperty( String property ) {
     return    "padding".equals( property )
            || "margin".equals( property )
            || "border-radius".equals( property );
   }
 
-  static QxBoxDimensions readBoxDimensions( final LexicalUnit unit ) {
+  static QxBoxDimensions readBoxDimensions( LexicalUnit unit ) {
     QxBoxDimensions result = null;
     Integer value1 = readSingleLengthUnit( unit );
     if( value1 != null ) {
@@ -343,7 +340,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  static String readBorderStyle( final LexicalUnit unit ) {
+  static String readBorderStyle( LexicalUnit unit ) {
     String result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_IDENT ) {
@@ -355,7 +352,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  static int readBorderWidth( final LexicalUnit unit ) {
+  static int readBorderWidth( LexicalUnit unit ) {
     int result = -1;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_IDENT ) {
@@ -381,7 +378,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  static boolean isFontProperty( final String property ) {
+  static boolean isFontProperty( String property ) {
     return "font".equals( property ) || property.endsWith( "-fontlist" );
   }
 
@@ -390,7 +387,7 @@ public final class PropertyResolver {
   // followed by the URI itself, followed by an optional single quote (') or
   // double quote (") character followed by optional whitespace followed by ')'.
   // The two quote characters must be the same.
-  static QxFont readFont( final LexicalUnit unit ) {
+  static QxFont readFont( LexicalUnit unit ) {
     QxFont result = null;
     String[] family = null;
     String style = null;
@@ -434,7 +431,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  static String readFontStyle( final LexicalUnit unit ) {
+  static String readFontStyle( LexicalUnit unit ) {
     String result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_IDENT ) {
@@ -448,7 +445,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  static String readFontWeight( final LexicalUnit unit ) {
+  static String readFontWeight( LexicalUnit unit ) {
     String result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_IDENT ) {
@@ -462,7 +459,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  static int readFontSize( final LexicalUnit unit ) {
+  static int readFontSize( LexicalUnit unit ) {
     int result = -1;
     Integer length = readSingleLengthUnit( unit );
     if( length != null ) {
@@ -474,7 +471,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  static String[] readFontFamily( final LexicalUnit unit ) {
+  static String[] readFontFamily( LexicalUnit unit ) {
     List<String> list = new ArrayList<String>();
     LexicalUnit nextUnit = unit;
     boolean ok = true;
@@ -507,13 +504,11 @@ public final class PropertyResolver {
     return result;
   }
 
-  static boolean isImageProperty( final String property ) {
+  static boolean isImageProperty( String property ) {
     return property.endsWith( "-image" );
   }
 
-  static QxImage readBackgroundImage( final LexicalUnit unit,
-                                      final ResourceLoader loader )
-  {
+  static QxImage readBackgroundImage( LexicalUnit unit, ResourceLoader loader ) {
     QxImage result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_URI ) {
@@ -537,7 +532,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  static QxImage readGradient( final LexicalUnit unit ) {
+  static QxImage readGradient( LexicalUnit unit ) {
     QxImage result = null;
     boolean vertical;
     LexicalUnit nextUnit = unit.getParameters();
@@ -587,7 +582,7 @@ public final class PropertyResolver {
     }
     nextUnit = nextUnit.getNextLexicalUnit();
     nextUnit = nextUnit.getNextLexicalUnit();
-    TreeMap gradient = readGradientColorsPercents( nextUnit );
+    TreeMap<Float, String> gradient = readGradientColorsPercents( nextUnit );
     if( gradient.size() > 0 ) {
       gradient = normalizeGradientValue( gradient );
       String[] gradientColors = getGradientColors( gradient );
@@ -598,7 +593,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  static String readGradientType( final LexicalUnit unit ) {
+  static String readGradientType( LexicalUnit unit ) {
     String result = null;
     if( unit != null && unit.getLexicalUnitType() == LexicalUnit.SAC_IDENT ) {
       result = unit.getStringValue();
@@ -606,7 +601,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  static String[] readGradientPoint( final LexicalUnit unit ) {
+  static String[] readGradientPoint( LexicalUnit unit ) {
     String[] result = new String[ 2 ];
     LexicalUnit x = unit;
     LexicalUnit y = null;
@@ -629,8 +624,8 @@ public final class PropertyResolver {
     return result;
   }
 
-  static TreeMap readGradientColorsPercents( final LexicalUnit unit ) {
-    TreeMap result = new TreeMap();
+  static TreeMap<Float, String> readGradientColorsPercents( LexicalUnit unit ) {
+    TreeMap<Float, String> result = new TreeMap<Float, String>();
     LexicalUnit nextUnit = unit;
     while( nextUnit != null ) {
       Float percent = null;
@@ -668,12 +663,12 @@ public final class PropertyResolver {
     return result;
   }
 
-  static String readGradientColor( final LexicalUnit unit ) {
+  static String readGradientColor( LexicalUnit unit ) {
     QxColor result = readColor( unit );
     return result != null ? result.toDefaultString() : null;
   }
 
-  static Float readGradientPercent( final LexicalUnit unit ) {
+  static Float readGradientPercent( LexicalUnit unit ) {
     Float result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_PERCENTAGE ) {
@@ -684,11 +679,11 @@ public final class PropertyResolver {
     return result;
   }
 
-  static boolean isTextDecorationProperty( final String property ) {
+  static boolean isTextDecorationProperty( String property ) {
     return "text-decoration".equals( property );
   }
 
-  static QxIdentifier readTextDecoration( final LexicalUnit unit ) {
+  static QxIdentifier readTextDecoration( LexicalUnit unit ) {
     QxIdentifier result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_IDENT ) {
@@ -711,13 +706,11 @@ public final class PropertyResolver {
     return result;
   }
 
-  static boolean isCursorProperty( final String property ) {
+  static boolean isCursorProperty( String property ) {
     return "cursor".equals( property );
   }
 
-  static QxCursor readCursor( final LexicalUnit unit,
-                              final ResourceLoader loader )
-  {
+  static QxCursor readCursor( LexicalUnit unit, ResourceLoader loader ) {
     QxCursor result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_URI ) {
@@ -734,11 +727,11 @@ public final class PropertyResolver {
     return result;
   }
 
-  static boolean isFloatProperty( final String property ) {
+  static boolean isFloatProperty( String property ) {
     return "opacity".equals( property );
   }
 
-  static QxFloat readFloat( final LexicalUnit unit ) {
+  static QxFloat readFloat( LexicalUnit unit ) {
     QxFloat result;
     if(    unit.getLexicalUnitType() == LexicalUnit.SAC_REAL
         || unit.getLexicalUnitType() == LexicalUnit.SAC_INTEGER )
@@ -761,11 +754,11 @@ public final class PropertyResolver {
     return result;
   }
 
-  static boolean isAnimationProperty( final String property ) {
+  static boolean isAnimationProperty( String property ) {
     return "animation".equals( property );
   }
 
-  static QxAnimation readAnimation( final LexicalUnit unit ) {
+  static QxAnimation readAnimation( LexicalUnit unit ) {
     QxAnimation result = new QxAnimation();
     LexicalUnit nextUnit = unit;
     short type = nextUnit.getLexicalUnitType();
@@ -830,11 +823,11 @@ public final class PropertyResolver {
     return result;
   }
 
-  static boolean isShadowProperty( final String property ) {
-    return "box-shadow".equals( property );
+  static boolean isShadowProperty( String property ) {
+    return "box-shadow".equals( property ) || "text-shadow".equals( property );
   }
 
-  static QxShadow readShadow( final LexicalUnit unit ) {
+  static QxShadow readShadow( LexicalUnit unit ) {
     QxShadow result = null;
     boolean inset = false;
     Integer offsetX = null;
@@ -898,7 +891,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  private static Integer readSingleLengthUnit( final LexicalUnit unit ) {
+  private static Integer readSingleLengthUnit( LexicalUnit unit ) {
     Integer result = null;
     short type = unit.getLexicalUnitType();
     if( type == LexicalUnit.SAC_INTEGER ) {
@@ -912,7 +905,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  private static int normalizeRGBValue( final int input ) {
+  private static int normalizeRGBValue( int input ) {
     int result = input;
     if( input < 0 ) {
       result = 0;
@@ -922,7 +915,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  private static float normalizeAlphaValue( final float input ) {
+  private static float normalizeAlphaValue( float input ) {
     float result = input;
     if( input < 0 ) {
       result = 0f;
@@ -932,7 +925,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  private static float normalizePercentValue( final float input ) {
+  private static float normalizePercentValue( float input ) {
     float result = input;
     if( input < 0f ) {
       result = 0f;
@@ -942,24 +935,24 @@ public final class PropertyResolver {
     return result;
   }
 
-  private static TreeMap normalizeGradientValue( final TreeMap gradient ) {
-    TreeMap result = gradient;
+  private static TreeMap<Float, String> normalizeGradientValue( TreeMap<Float, String> gradient ) {
+    TreeMap<Float, String> result = gradient;
     if( gradient.size() > 0 ) {
       Float zero = new Float( 0f );
       Float hundred = new Float( 100f );
       if( gradient.get( zero ) == null ) {
-        String firstColor = ( String )gradient.get( gradient.firstKey() );
+        String firstColor = gradient.get( gradient.firstKey() );
         result.put( zero, firstColor );
       }
       if( gradient.get( hundred ) == null ) {
-        String lastColor = ( String )gradient.get( gradient.lastKey() );
+        String lastColor = gradient.get( gradient.lastKey() );
         result.put( hundred, lastColor );
       }
     }
     return result;
   }
 
-  private static String[] getGradientColors( final TreeMap gradient ) {
+  private static String[] getGradientColors( TreeMap gradient ) {
     Object[] values = gradient.values().toArray();
     String[] result = new String[ values.length ];
     for( int i = 0; i < values.length; i++ ) {
@@ -968,7 +961,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  private static float[] getGradientPercents( final TreeMap gradient ) {
+  private static float[] getGradientPercents( TreeMap gradient ) {
     Object[] keys = gradient.keySet().toArray();
     float[] result = new float[ keys.length ];
     for( int i = 0; i < keys.length; i++ ) {
@@ -977,7 +970,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  static boolean checkComma( final LexicalUnit unit ) {
+  static boolean checkComma( LexicalUnit unit ) {
     boolean result = false;
     if(    unit != null
         && unit.getLexicalUnitType() == LexicalUnit.SAC_OPERATOR_COMMA )
@@ -987,7 +980,7 @@ public final class PropertyResolver {
     return result;
   }
 
-  static String toString( final LexicalUnit value ) {
+  static String toString( LexicalUnit value ) {
     StringBuffer buffer = new StringBuffer();
     short type = value.getLexicalUnitType();
     if( type == LexicalUnit.SAC_ATTR ) {

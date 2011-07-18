@@ -1,12 +1,13 @@
 /*******************************************************************************
-* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   EclipseSource - initial API and implementation
-*******************************************************************************/
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
 
 /* ToolBar default theme */
 
@@ -34,11 +35,13 @@ ToolItem {
   spacing: 4px;
   opacity: 1;
   animation: none;
+  text-shadow: none;
 }
 
 ToolItem[FLAT] {
   border: none;
   padding: 3px 4px;
+  text-shadow: none;
 }
 
 ToolItem:hover {
@@ -46,6 +49,7 @@ ToolItem:hover {
   border: 1px solid #a4a4a4;
   border-radius: 2px 2px 2px 2px;
   padding: 2px 3px;
+  text-shadow: none;
 }
 
 ToolItem:pressed, ToolItem:selected {
@@ -53,6 +57,7 @@ ToolItem:pressed, ToolItem:selected {
   border-radius: 2px;
   padding: 3px 2px 1px 4px;
   background-image: url( resource/static/image/dotted_white.gif );
+  text-shadow: none;
 }
 
 ToolItem-DropDownIcon {

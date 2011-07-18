@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
@@ -44,7 +44,10 @@
           description="Background color for list items." />
           
       <property name="background-image"
-          description="Background image or gradient for list items." />      
+          description="Background image or gradient for list items." />
+
+      <property name="text-shadow"
+          description="Shadow for items text." />
 
       <state name="selected"
           description="Applies to selected items." />

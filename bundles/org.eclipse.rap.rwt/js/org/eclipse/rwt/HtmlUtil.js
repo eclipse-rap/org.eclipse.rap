@@ -137,6 +137,19 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
       }
     },
 
+    setTextShadow: function( target, shadowObject ) {
+      var property = "textShadow";
+      if( shadowObject ) {
+        var string = shadowObject.slice( 1, 4 ).join( "px " ) + "px";
+        var rgba = qx.util.ColorUtil.stringToRgb( shadowObject[ 5 ] );
+        rgba.push( shadowObject[ 6 ] );
+        string += " rgba(" + rgba.join() + ")";
+        this.setStyleProperty( target, property, string );
+      } else {
+        this.removeStyleProperty( target, property );
+      }
+    },
+
     setPointerEvents : function( target, value ) {
       var version = org.eclipse.rwt.Client.getVersion();
       var ffSupport = org.eclipse.rwt.Client.getEngine() === "gecko" && version >= 1.9;

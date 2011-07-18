@@ -8,6 +8,7 @@
 
  Contributors:
      Rüdiger Herrmann - initial API and implementation
+     EclipseSource - ongoing development
  -->
 
 <theme>
@@ -98,6 +99,9 @@
       <property name="font"
           description="Text font" />
 
+      <property name="text-shadow"
+          description="Shadow for text." />
+
     </element>
 
     <element name="ToolTip-Message" 
@@ -108,6 +112,9 @@
         
       <property name="font"
           description="Text font" />
+
+      <property name="text-shadow"
+          description="Shadow for text." />
 
     </element>
 

@@ -50,6 +50,9 @@
       <property name="spacing"
           description="Spacing between text and image" />
 
+      <property name="text-shadow"
+          description="Shadow for text." />
+
       <state name="selected"
           description="Applies to the selected item." />
 

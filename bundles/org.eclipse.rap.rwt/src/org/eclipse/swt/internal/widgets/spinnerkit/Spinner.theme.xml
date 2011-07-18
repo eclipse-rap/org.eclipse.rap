@@ -43,6 +43,9 @@
     <property name="padding"
         description="Padding for spinner." />
 
+    <property name="text-shadow"
+        description="Shadow for text." />
+
     <style name="BORDER"
         description="Style constant for bordered behavior." />
 

@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 /**
@@ -87,10 +88,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
 
     _applyTextColor : function( value, old ) {
       this.base( arguments, value, old );
-      var themeValues
-        = new org.eclipse.swt.theme.ThemeValues( this._getStates() );
-      this._linkColor = themeValues.getCssColor( "Link-Hyperlink", "color" );
-      themeValues.dispose();
       this._applyHyperlinksStyleProperties();
     },
 
@@ -153,15 +150,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     },
 
     _applyHyperlinksStyleProperties : function() {
+      var themeValues = new org.eclipse.swt.theme.ThemeValues( this._getStates() );
+      var linkColor = themeValues.getCssColor( "Link-Hyperlink", "color" );
+      var linkShadow = themeValues.getCssShadow( "Link-Hyperlink", "text-shadow" );
+      themeValues.dispose();
       var hyperlinks = this._getHyperlinkElements();
       for( i = 0; i < hyperlinks.length; i++ ) {
-        if( this._linkColor ) {
-          if( this.isEnabled() ) {
-            hyperlinks[ i ].style.color = this._linkColor;
-          } else {
-            hyperlinks[ i ].style.color = "";
-          }
-        }
+        org.eclipse.rwt.HtmlUtil.setStyleProperty( hyperlinks[ i ], "color", linkColor );
+        org.eclipse.rwt.HtmlUtil.setTextShadow( hyperlinks[ i ], linkShadow );
         if( this.isEnabled() ) {
           hyperlinks[ i ].style.cursor = "pointer";
         } else {

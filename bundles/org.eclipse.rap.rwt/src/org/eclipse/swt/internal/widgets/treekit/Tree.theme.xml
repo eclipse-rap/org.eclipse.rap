@@ -45,6 +45,9 @@
       <property name="text-decoration"
           description="Decoration for item text." />
 
+      <property name="text-shadow"
+          description="Shadow for item text." />
+
       <state name="selected"
           description="When the tree item is selected" />
 
@@ -85,6 +88,9 @@
 
       <property name="padding"
           description="Padding for the content of tree columns headers." />
+
+      <property name="text-shadow"
+          description="Shadow for item text." />
 
       <state name="hover"
           description="Mouse over state" />

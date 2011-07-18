@@ -29,6 +29,7 @@ MenuItem {
   color: black;
   background-color: transparent;
   opacity: 1;
+  text-shadow: none;
 }
 
 MenuItem:hover {

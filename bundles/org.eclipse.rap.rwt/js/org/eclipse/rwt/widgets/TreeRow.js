@@ -351,6 +351,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         this._setBounds( element, left, 0, width, this.getHeight() );
         this._setFont( element, this._getCellFont( item, cell, config ) );
         this._setTextDecoration( element, this._styleMap.textDecoration );
+        org.eclipse.rwt.HtmlUtil.setTextShadow( element, this._styleMap.textShadow );
         element.style.lineHeight = element.style.height;
       }
       return element;

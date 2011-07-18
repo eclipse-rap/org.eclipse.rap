@@ -1,12 +1,13 @@
 /*******************************************************************************
-* Copyright (c) 2010 EclipseSource and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   EclipseSource - initial API and implementation
-*******************************************************************************/
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
 
 /* TabFolder default theme */
 
@@ -15,6 +16,7 @@ TabItem {
   border-top-color: white;
   border-bottom-color: white;
   background-image: none;
+  text-shadow: none;
 }
 
 TabItem:selected {
@@ -22,9 +24,11 @@ TabItem:selected {
   border-top-color: #00589f;
   border-bottom-color: #00589f;
   background-image: none;
+  text-shadow: none;
 }
 
 TabItem:hover {
   background-color: #dae9f7;
   background-image: none;
+  text-shadow: none;
 }

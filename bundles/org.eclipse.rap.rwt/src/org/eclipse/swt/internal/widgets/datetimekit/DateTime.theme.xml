@@ -47,6 +47,9 @@
     <property name="padding"
         description="Padding for DateTime Date/Time." />
 
+    <property name="text-shadow"
+        description="Shadow for text." />
+
     <state name="disabled"
         description="Applies to disbled DateTime controls." />
 
@@ -65,6 +68,9 @@
       <property name="padding"
           description="Padding for DateTime Date/Time field part." />
 
+      <property name="text-shadow"
+          description="Shadow for text." />
+
       <state name="selected"
           description="Applies to selected DateTime fields." />
 
@@ -78,6 +84,9 @@
 
       <property name="background-color"
           description="Background color" />
+
+      <property name="text-shadow"
+          description="Shadow for text." />
 
       <state name="selected"
           description="Applies to selected day." />
@@ -117,6 +126,9 @@
           Text font for the Calendar navigation bar.
         </description>
       </property>
+
+      <property name="text-shadow"
+        description="Shadow for text." />
       
       <state name="disabled"
         description="Applies to disbled DateTime controls." />

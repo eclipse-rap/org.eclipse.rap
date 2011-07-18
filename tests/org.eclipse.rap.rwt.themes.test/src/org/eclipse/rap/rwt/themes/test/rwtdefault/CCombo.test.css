@@ -1,12 +1,13 @@
 /*******************************************************************************
-* Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   EclipseSource - initial API and implementation
-*******************************************************************************/
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
 
 /* CCombo default theme */
 
@@ -17,6 +18,7 @@ CCombo {
   color: #464a4e;
   border-radius: 2px;
   background-image: none;
+  text-shadow: none;
 }
 
 CCombo[BORDER] {
@@ -28,6 +30,7 @@ CCombo[BORDER] {
     color-stop( 15%, #f8f8f8 ),
     to( #fbfbfb )
   );
+  text-shadow: none;
 }
 
 CCombo-Button {

@@ -145,6 +145,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.border = tv.getCssBorder( "Label", "border" );
       result.cursor = tv.getCssCursor( "Label", "cursor" );
       result.opacity = tv.getCssFloat( "Label", "opacity" );
+      result.textShadow = tv.getCssShadow( "Label", "text-shadow" );
       return result;
     }
   },
@@ -169,6 +170,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.padding = tv.getCssBoxDimensions( "CLabel", "padding" );
       result.spacing = tv.getCssDimension( "CLabel", "spacing" );
       result.opacity = tv.getCssFloat( "CLabel", "opacity" );
+      result.textShadow = tv.getCssShadow( "CLabel", "text-shadow" );
       return result;
     }
   },
@@ -240,7 +242,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         font : tv.getCssFont( "ToolTip-Text", "font" ),
-        textColor : tv.getCssColor( "ToolTip-Text", "color" )
+        textColor : tv.getCssColor( "ToolTip-Text", "color" ),
+        textShadow : tv.getCssShadow( "ToolTip-Text", "text-shadow" )
       };
       return result;
     }
@@ -251,7 +254,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         font : tv.getCssFont( "ToolTip-Message", "font" ),
-        textColor : tv.getCssColor( "ToolTip-Message", "color" )
+        textColor : tv.getCssColor( "ToolTip-Message", "color" ),
+        textShadow : tv.getCssShadow( "ToolTip-Message", "text-shadow" )
       };
       return result;
     }
@@ -286,6 +290,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.padding = tv.getCssBoxDimensions( "Button", "padding" );
       result.cursor = tv.getCssCursor( "Button", "cursor" );
       result.opacity = tv.getCssFloat( "Button", "opacity" );
+      result.textShadow = tv.getCssShadow( "Button", "text-shadow" );
       return result;
     }
   },
@@ -318,7 +323,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         padding : tv.getCssBoxDimensions( "Button", "padding" ),
         selectionIndicator : tv.getCssSizedImage( "Button-CheckIcon", "background-image" ),
         cursor : tv.getCssCursor( "Button", "cursor" ),
-        opacity : tv.getCssFloat( "Button", "opacity" )
+        opacity : tv.getCssFloat( "Button", "opacity" ),
+        textShadow : tv.getCssShadow( "Button", "text-shadow" )
       }
     }
   },
@@ -341,7 +347,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         padding : tv.getCssBoxDimensions( "Button", "padding" ),
         selectionIndicator : tv.getCssSizedImage( "Button-RadioIcon", "background-image" ),
         cursor : tv.getCssCursor( "Button", "cursor" ),
-        opacity : tv.getCssFloat( "Button", "opacity" )
+        opacity : tv.getCssFloat( "Button", "opacity" ),
+        textShadow : tv.getCssShadow( "Button", "text-shadow" )
       }
     }
   },
@@ -409,6 +416,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.spacing = tv.getCssDimension( "ToolItem", "spacing" );
       result.animation = tv.getCssAnimation( "ToolItem", "animation" );
       result.textColor = tv.getCssColor( "ToolItem", "color" );
+      result.textShadow = tv.getCssShadow( "ToolItem", "text-shadow" );
       result.backgroundColor = tv.getCssColor( "ToolItem", "background-color" );
       result.opacity = tv.getCssFloat( "ToolItem", "opacity" );
       result.backgroundImage = tv.getCssImage( "ToolItem", "background-image" );
@@ -470,6 +478,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.minHeight = 0;
       }
       result.maxHeight = result.minHeight;
+      result.textShadow = tv.getCssShadow( "Shell-Titlebar", "text-shadow" );
       return result;
     }
   },
@@ -607,7 +616,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         backgroundGradient : tv.getCssGradient( "MenuItem", "background-image" ),
         backgroundColor : tv.getCssColor( "MenuItem", "background-color" ),
         height : states.bar ? "100%" : "auto",
-        opacity : tv.getCssFloat( "MenuItem", "opacity" )
+        opacity : tv.getCssFloat( "MenuItem", "opacity" ),
+        textShadow : tv.getCssShadow( "MenuItem", "text-shadow" )
       };
       result.textColor = tv.getCssColor( "MenuItem", "color" );
       if( states.cascade ) {
@@ -697,6 +707,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundColor = tv.getCssColor( "List-Item", "background-color" );
       result.backgroundImage = tv.getCssImage( "List-Item", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "List-Item", "background-image" );
+      result.textShadow = tv.getCssShadow( "List-Item", "text-shadow" );
       return result;
     }
   },
@@ -721,6 +732,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var cssPadding = tv.getCssBoxDimensions( "Text", "padding" );
       result.paddingRight = cssPadding[ 1 ];
       result.paddingLeft = cssPadding[ 3 ];
+      result.textShadow = tv.getCssShadow( "Text", "text-shadow" );
       return result;
     }
   },
@@ -736,6 +748,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.paddingRight = cssPadding[ 1 ];
       result.paddingLeft = cssPadding[ 3 ];
       result.horizontalChildrenAlign = "left";
+      result.textShadow = tv.getCssShadow( "Text-Message", "text-shadow" );
       return result;
     }
   },
@@ -778,6 +791,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.font = tv.getCssFont( "*", "font" );
       result.backgroundColor = tv.getCssColor( "Combo", "background-color" );
       result.shadow = tv.getCssShadow( "Combo-List", "box-shadow" );
+      result.textShadow = tv.getCssShadow( "Combo", "text-shadow" );
       return result;
     }
   },
@@ -798,6 +812,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.top = 0;
       result.bottom = 0;
       result.textColor = tv.getCssColor( "Combo", "color" );
+      result.textShadow = tv.getCssShadow( "Combo", "text-shadow" );
       return result;
     }
   },
@@ -855,6 +870,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.font = tv.getCssFont( "*", "font" );
       result.backgroundColor = tv.getCssColor( "CCombo", "background-color" );
       result.shadow = tv.getCssShadow( "CCombo-List", "box-shadow" );
+      result.textShadow = tv.getCssShadow( "CCombo", "text-shadow" );
       return result;
     }
   },
@@ -875,6 +891,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.top = 0;
       result.bottom = 0;
       result.textColor = tv.getCssColor( "CCombo", "color" );
+      result.textShadow = tv.getCssShadow( "CCombo", "text-shadow" );
       return result;
     }
   },
@@ -929,6 +946,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.itemBackground = tv.getCssColor( "TreeItem", "background-color" );
       result.itemForeground = tv.getCssColor( "TreeItem", "color" );
       result.textDecoration = tv.getCssIdentifier( "TreeItem", "text-decoration" );
+      result.textShadow = tv.getCssShadow( "TreeItem", "text-shadow" );
       return result;
     }
   },
@@ -980,6 +998,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       borderStyles[ 2 ] = borderBottom.getStyleBottom();
       borderColors[ 2 ] = borderBottom.getColorBottom();
       result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
+      result.textShadow = tv.getCssShadow( "TreeColumn", "text-shadow" );
       return result;
     }
   },
@@ -1107,6 +1126,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.backgroundColor = tv.getCssColor( "TabItem", "background-color" );
       result.backgroundImage = tv.getCssImage( "TabItem", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "TabItem", "background-image" );
+      result.textShadow = tv.getCssShadow( "TabItem", "text-shadow" );
       return result;
     }
   },
@@ -1141,7 +1161,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         margin : tv.getCssBoxDimensions( "Group-Label", "margin" ),
         backgroundColor : tv.getCssColor( "Group-Label", "background-color" ),
         font : tv.getCssFont( "Group", "font"),
-        textColor : tv.getCssColor( "Group-Label", "color" )
+        textColor : tv.getCssColor( "Group-Label", "color" ),
+        textShadow : tv.getCssShadow( "Group-Label", "text-shadow" )
       };
     }
   },
@@ -1191,6 +1212,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.left = 0;
       result.right = 0;
       result.bottom = 0;
+      result.textShadow = tv.getCssShadow( "Spinner", "text-shadow" );
       return result;
     }
   },
@@ -1283,6 +1305,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       borderStyles[ 2 ] = borderBottom.getStyleBottom();
       borderColors[ 2 ] = borderBottom.getColorBottom();
       result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
+      result.textShadow = tv.getCssShadow( "TableColumn", "text-shadow" );
       return result;
     }
   },
@@ -1313,8 +1336,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.itemBackground = tv.getCssColor( "TableItem", "background-color" );
       result.itemForeground = tv.getCssColor( "TableItem", "color" );
       result.textDecoration = tv.getCssIdentifier( "TableItem", "text-decoration" );
-      // TODO [tb]
-      //result.textDecoration = tv.getCssIdentifier( "TableItem", "text-decoration" );
+      result.textShadow = tv.getCssShadow( "TableItem", "text-shadow" );
       return result;
     }
   },
@@ -1458,6 +1480,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.paddingRight = padding[ 1 ];
       result.spacing = tv.getCssDimension( "CTabItem", "spacing" );
       result.textColor = tv.getCssColor( "CTabItem", "color" );
+      result.textShadow = tv.getCssShadow( "CTabItem", "text-shadow" );
       var color = tv.getCssColor( "CTabFolder", "border-color" );
       // create a copy of the radii from theme
       var radii = tv.getCssBoxDimensions( "CTabFolder", "border-radius" ).slice( 0 );
@@ -1683,7 +1706,8 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         padding : 2,
         font : tv.getCssFont( "Link", "font" ),
         border : tv.getCssBorder( "Link", "border" ),
-        textColor : tv.getCssColor( "*", "color" )
+        textColor : tv.getCssColor( "*", "color" ),
+        textShadow : tv.getCssShadow( "Link", "text-shadow" )
       }
     }
   },
@@ -1837,6 +1861,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.textColor = tv.getCssColor( "DateTime", "color" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
       result.backgroundGradient = tv.getCssGradient( "DateTime", "background-image" );
+      result.textShadow = tv.getCssShadow( "DateTime", "text-shadow" );
       return result;
     }
   },
@@ -1850,6 +1875,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.textColor = tv.getCssColor( "DateTime", "color" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
       result.backgroundGradient = tv.getCssGradient( "DateTime", "background-image" );
+      result.textShadow = tv.getCssShadow( "DateTime", "text-shadow" );
       return result;
     }
   },
@@ -1862,6 +1888,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.font = tv.getCssFont( "*", "font" );
       result.textColor = tv.getCssColor( "DateTime", "color" );
       result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
+      result.textShadow = tv.getCssShadow( "DateTime", "text-shadow" );
       return result;
     }
   },
@@ -1881,6 +1908,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       	result.textColor = tv.getCssColor( "*", "color" );
         result.backgroundColor = "undefined";
       }
+      result.textShadow = tv.getCssShadow( "DateTime-Field", "text-shadow" );
       return result;
     }
   },
@@ -2050,6 +2078,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         font : tv.getCssFont( "DateTime-Calendar-Navbar", "font" ),
         textAlign : "center",
         textColor : tv.getCssColor( "DateTime-Calendar-Navbar", "color" ),
+        textShadow : tv.getCssShadow( "DateTime-Calendar-Navbar", "text-shadow" ),
         verticalAlign : "middle",
         cursor : "default"
       };
@@ -2113,6 +2142,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
         result.textColor = tv.getCssColor( "*", "color" );
         result.backgroundColor = "undefined";
       }
+      result.textShadow = tv.getCssShadow( "DateTime-Calendar-Day", "text-shadow" );
       var borderColor = states.disabled ? tv.getCssColor( "*", "color" ) : "red";
       var border = new org.eclipse.rwt.Border( 1, "solid", borderColor );
       result.border = states.today ? border : "undefined";
@@ -2175,6 +2205,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.cursor = tv.getCssCursor( "ExpandItem-Header", "cursor" );
       result.backgroundImage = tv.getCssImage( "ExpandItem-Header", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "ExpandItem-Header", "background-image" );
+      result.textShadow = tv.getCssShadow( "ExpandItem-Header", "text-shadow" );
       return result;
     }
   },

@@ -48,6 +48,9 @@
       <property name="text-decoration"
           description="Decoration for item text." />
 
+      <property name="text-shadow"
+          description="Shadow for item text." />
+
       <state name="selected"
           description="Applies when table item is selected." />
 
@@ -88,6 +91,9 @@
 
       <property name="padding"
           description="Padding for table columns." />
+
+      <property name="text-shadow"
+          description="Shadow for table columns." />
 
       <state name="hover"
           description="On mouse over" />

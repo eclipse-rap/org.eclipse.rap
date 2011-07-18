@@ -880,6 +880,7 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testIsShadowProperty() {
     assertTrue( PropertyResolver.isShadowProperty( "box-shadow" ) );
+    assertTrue( PropertyResolver.isShadowProperty( "text-shadow" ) );
   }
 
   public void testResolveProperty() throws Exception {

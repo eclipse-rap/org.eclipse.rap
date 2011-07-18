@@ -18,6 +18,7 @@ Spinner {
   color: #464a4e;
   background-color: #fcfcfc;
   background-image: none;
+  text-shadow: none;
 }
 
 Spinner-Field {

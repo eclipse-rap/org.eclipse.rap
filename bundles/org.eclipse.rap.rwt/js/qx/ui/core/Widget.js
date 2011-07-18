@@ -765,6 +765,15 @@ qx.Class.define( "qx.ui.core.Widget", {
       themeable : true
     },
 
+    textShadow : {
+      check : "Array",
+      nullable : true,
+      init : null,
+      apply : "_applyTextShadow",
+      event : "changeTextShadow",      
+      themeable : true
+   },
+
     /**
      * The color (textColor) style property of the rendered widget.
      */
@@ -3697,6 +3706,10 @@ qx.Class.define( "qx.ui.core.Widget", {
 
     _applyShadow : function( value, oldValue ) {
       org.eclipse.rwt.HtmlUtil.setBoxShadow( this, value );      
+    },
+
+    _applyTextShadow : function( value, oldValue ) {
+      org.eclipse.rwt.HtmlUtil.setTextShadow( this, value );      
     },
 
     _styleBackgroundColor : function(value) {

@@ -1,12 +1,13 @@
 /*******************************************************************************
-* Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   EclipseSource - initial API and implementation
-*******************************************************************************/
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
 
 /* DateTime default theme */
 
@@ -17,10 +18,12 @@ DateTime {
   padding: 1px 2px;
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-image: none;
+  text-shadow: none;
 }
 
 DateTime-Field {
   padding: 2px 3px;
+  text-shadow: none;
 }
 
 DateTime[BORDER] {
@@ -37,24 +40,29 @@ DateTime[BORDER] {
 DateTime-Field:selected, DateTime-Calendar-Day:selected {
   background-color: #D2D2D2;
   color: #4a4a4a;
+  text-shadow: none;
 }
 
 DateTime-Calendar-Day:selected:hover {
   background-color: #00569c;
   color: white;
+  text-shadow: none;
 }
 
 DateTime-Calendar-Day:selected:unfocused {
   background-color: #c0c0c0;
+  text-shadow: none;
 }
 
 DateTime-Calendar-Day:otherMonth {
   background-color: transparent;
   color: #808080;
+  text-shadow: none;
 }
 
 DateTime-Calendar-Day:hover {
   background-color: #d9e3f3;
+  text-shadow: none;
 }
 
 DateTime-Calendar-Navbar {
@@ -62,6 +70,7 @@ DateTime-Calendar-Navbar {
   background-color: #00569c;
   color: white;
   font: bold 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  text-shadow: none;
 }
 
 DateTime-Calendar-PreviousMonthButton {

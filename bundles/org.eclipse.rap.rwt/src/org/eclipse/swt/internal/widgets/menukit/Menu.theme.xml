@@ -71,6 +71,9 @@
       <property name="opacity" 
           description="The opacity of the item. A value between 0 and 1." />
 
+      <property name="text-shadow"
+          description="Shadow for text." />
+
       <style name="PUSH"
           description="Style constant for push menu item behavior." />
 
