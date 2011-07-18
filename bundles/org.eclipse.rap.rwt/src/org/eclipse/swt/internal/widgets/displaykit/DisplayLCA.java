@@ -26,6 +26,7 @@ import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.uicallback.UICallBackManager;
+import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.dnd.DragSource;
@@ -42,7 +43,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   private final static String PATTERN_REQUEST_COUNTER
     =   "var req = org.eclipse.swt.Request.getInstance();"
       + "req.setRequestCounter( \"{0,number,#}\" );";
-  
+
   static final String PROP_FOCUS_CONTROL = "focusControl";
   static final String PROP_CURR_THEME = "currTheme";
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
@@ -155,7 +156,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       ActiveKeysUtil.writeActiveKeys( display );
     }
   }
-  
+
   public void clearPreserved( Display display ) {
     WidgetAdapter widgetAdapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
     widgetAdapter.clearPreserved();
@@ -242,9 +243,10 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
                        ? oldExitConfirmation != null
                        : !exitConfirmation.equals( oldExitConfirmation );
     if( hasChanged ) {
-      String exitConfirmationStr = exitConfirmation == null
-                                   ? "null"
-                                   : "\"" + exitConfirmation + "\"";
+      String exitConfirmationStr = "null";
+      if( exitConfirmation != null ) {
+        exitConfirmationStr = "\"" + EncodingUtil.escapeDoubleQuoted( exitConfirmation ) + "\"";
+      }
       String code = "qx.core.Init.getInstance().getApplication()"
                     + ".setExitConfirmation( "
                     + exitConfirmationStr
