@@ -28,13 +28,10 @@ public interface IClientObject {
    * Creates a new object on the client-side by creating an instance of the corresponding client
    * class defined by the server object's class name. This is normally done in the
    * <code>renderInitialization</code> method of the widgets life-cycle adapter (LCA).
-   * 
-   * @param styles The styles of the widget as a String array. Each Element must not start with 
-   * "SWT."
-   * @param properties The properties which are mandatory to construct this widget on the 
+   * @param properties The properties which are mandatory to construct this object on the 
    * client-side.
    */
-  void create( String[] styles, Map<String, Object> properties );
+  void create( Map<String, Object> properties );
 
   /**
    * Sets the specified property of the client-side widget to a new value.
@@ -94,10 +91,10 @@ public interface IClientObject {
   /**
    * Calls a specific method on the client-side widget.
    * 
-   * @param methodName the method name to call.
+   * @param method the method name to call.
    * @param properties named properties to pass in the method call.
    */
-  void call( String methodName, Map<String, Object> properties );
+  void call( String method, Map<String, Object> properties );
 
   /**
    * Tells the client that it should execute a script when the given mimetype is supported.

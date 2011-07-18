@@ -28,10 +28,10 @@ public final class ClientObject implements IClientObject {
     writer = ContextProvider.getStateInfo().getResponseWriter().getProtocolWriter();
   }
 
-  public void create( String[] styles, Map<String, Object> properties ) {
+  public void create( Map<String, Object> properties ) {
     String parentId = getParentId();
     String type = target.getClass().getName();
-    writer.appendCreate( targetId, parentId, type, styles, properties );
+    writer.appendCreate( targetId, parentId, type, properties );
   }
 
   private String getParentId() {
@@ -77,8 +77,8 @@ public final class ClientObject implements IClientObject {
     writer.appendListen( targetId, eventName, false );
   }
 
-  public void call( String methodName, Map<String, Object> properties ) {
-    writer.appendCall( targetId, methodName, properties );
+  public void call( String method, Map<String, Object> properties ) {
+    writer.appendCall( targetId, method, properties );
   }
 
   public void executeScript( String type, String script ) {

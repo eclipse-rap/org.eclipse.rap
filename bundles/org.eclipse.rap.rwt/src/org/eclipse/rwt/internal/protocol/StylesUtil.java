@@ -47,7 +47,7 @@ public final class StylesUtil {
     }
   }
   
-  public static String[] getContainedStyles( Widget widget, String... allowedStyles ) {
+  public static String[] filterStyles( Widget widget, String... allowedStyles ) {
     List<String> containedStyles = findContainedStyles( widget, allowedStyles );
     if( containedStyles.isEmpty() ) {
       containedStyles.add( "NONE" );

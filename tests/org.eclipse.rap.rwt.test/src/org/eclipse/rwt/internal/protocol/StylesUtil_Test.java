@@ -10,11 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
+import junit.framework.TestCase;
+
 import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
-
-import junit.framework.TestCase;
 
 public class StylesUtil_Test extends TestCase {
   
@@ -35,7 +35,7 @@ public class StylesUtil_Test extends TestCase {
   public void testHasOneStyle() {
     Button button = new Button( shell, SWT.PUSH );
     
-    String[] styles = StylesUtil.getContainedStyles( button, new String[] { "PUSH" } );
+    String[] styles = StylesUtil.filterStyles( button, new String[] { "PUSH" } );
     
     assertEquals( 1, styles.length );
     assertEquals( "PUSH", styles[ 0 ] );
@@ -44,7 +44,7 @@ public class StylesUtil_Test extends TestCase {
   public void testHasTwoStyles() {
     Button button = new Button( shell, SWT.PUSH  | SWT.BORDER );
     
-    String[] styles = StylesUtil.getContainedStyles( button, new String[] { "PUSH", "BORDER" } );
+    String[] styles = StylesUtil.filterStyles( button, new String[] { "PUSH", "BORDER" } );
     
     assertEquals( 2, styles.length );
     assertEquals( "PUSH", styles[ 0 ] );
@@ -54,7 +54,7 @@ public class StylesUtil_Test extends TestCase {
   public void testHasOnlyOneOfTwoPossibleStyles() {
     Button button = new Button( shell, SWT.PUSH  );
     
-    String[] styles = StylesUtil.getContainedStyles( button, new String[] { "PUSH", "BORDER" } );
+    String[] styles = StylesUtil.filterStyles( button, new String[] { "PUSH", "BORDER" } );
     
     assertEquals( 1, styles.length );
     assertEquals( "PUSH", styles[ 0 ] );
@@ -63,7 +63,7 @@ public class StylesUtil_Test extends TestCase {
   public void testHasNoAllowedStyles() {
     Button button = new Button( shell, SWT.NONE  );
     
-    String[] styles = StylesUtil.getContainedStyles( button, new String[] {} );
+    String[] styles = StylesUtil.filterStyles( button, new String[] {} );
     
     assertEquals( 1, styles.length );
     assertEquals( "NONE", styles[ 0 ] );
@@ -72,7 +72,7 @@ public class StylesUtil_Test extends TestCase {
   public void testNoneStyles() {
     Composite composite = new Composite( shell, SWT.NONE  );
     
-    String[] styles = StylesUtil.getContainedStyles( composite, new String[] { "NO_RADIO_GROUP" } );
+    String[] styles = StylesUtil.filterStyles( composite, new String[] { "NO_RADIO_GROUP" } );
     
     assertEquals( 1, styles.length );
     assertEquals( "NONE", styles[ 0 ] );
@@ -82,7 +82,7 @@ public class StylesUtil_Test extends TestCase {
     Button button = new Button( shell, SWT.NONE  );
     
     try {
-      StylesUtil.getContainedStyles( button, new String[] { "FOO" } );
+      StylesUtil.filterStyles( button, new String[] { "FOO" } );
       fail();
     } catch( IllegalArgumentException expected ) {
     }

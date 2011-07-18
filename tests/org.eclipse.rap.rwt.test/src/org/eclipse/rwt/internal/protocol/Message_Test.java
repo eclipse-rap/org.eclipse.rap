@@ -18,8 +18,12 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
-import org.eclipse.rwt.internal.protocol.Message.*;
+import org.eclipse.rwt.internal.protocol.Message.CallOperation;
+import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
+import org.eclipse.rwt.internal.protocol.Message.DestroyOperation;
+import org.eclipse.rwt.internal.protocol.Message.ExecuteScriptOperation;
+import org.eclipse.rwt.internal.protocol.Message.ListenOperation;
+import org.eclipse.rwt.internal.protocol.Message.SetOperation;
 
 
 public class Message_Test extends TestCase {
@@ -82,7 +86,7 @@ public class Message_Test extends TestCase {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "key1", "a" );
     properties.put( "key2", new Integer( 2 ) );
-    writer.appendCreate( "w1", "w0", "type", new String[] { "FOO" }, properties );
+    writer.appendCreate( "w1", "w0", "type", properties );
     
     assertTrue( getMessage().getOperation( 0 ) instanceof CreateOperation );
   }
@@ -132,7 +136,9 @@ public class Message_Test extends TestCase {
     properties.put( "key1", "a" );
     properties.put( "key2", new Integer( 2 ) );
     String[] styles = new String[] { "FOO", "BAR" };
-    writer.appendCreate( "w1", "w0", "type", styles, properties );
+    properties.put( ProtocolConstants.CREATE_STYLE, styles );
+    
+    writer.appendCreate( "w1", "w0", "type", properties );
     
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
     assertEquals( "w1", operation.getTarget() );

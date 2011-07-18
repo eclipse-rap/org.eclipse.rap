@@ -10,21 +10,20 @@
 *******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_PARENT;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_STYLE;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_TYPE;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CALL_METHOD_NAME;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_CONTENT;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_TYPE;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATIONS;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META_REQUEST_COUNTER;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_CALL;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_CREATE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_DESTROY;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_CALL;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_EXECUTE_SCRIPT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_LISTEN;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_SET;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CALL_METHOD_NAME;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_PARENT;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_TYPE;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_CONTENT;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_TYPE;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META_REQUEST_COUNTER;
+import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATIONS;
 
 import java.util.Map;
 
@@ -49,13 +48,11 @@ public final class ProtocolMessageWriter {
   public void appendCreate( String target,
                             String parentId,
                             String type,
-                            String[] styles,
                             Map<String, Object> properties )
   {
     prepareOperation( target, ACTION_CREATE );
     pendingOperation.appendDetail( CREATE_TYPE, JsonValue.valueOf( type ) );
     pendingOperation.appendProperty( CREATE_PARENT, JsonValue.valueOf( parentId ) );
-    pendingOperation.appendProperty( CREATE_STYLE, JsonUtil.createJsonArray( styles ) );
     pendingOperation.appendProperties( properties );
   }
 

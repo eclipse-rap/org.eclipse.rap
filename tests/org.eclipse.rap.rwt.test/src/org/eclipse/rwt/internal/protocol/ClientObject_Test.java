@@ -50,7 +50,7 @@ public class ClientObject_Test extends TestCase {
   }
 
   public void testCreateWithNullParams() {
-    clientObject.create( new String[] { "SHELL_TRIM" }, null );
+    clientObject.create( null );
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
     assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
@@ -62,7 +62,7 @@ public class ClientObject_Test extends TestCase {
     properties.put( "key1", new Integer( 1 ) );
     properties.put( "key2", Boolean.TRUE );
 
-    clientObject.create( new String[] { "SHELL_TRIM" }, properties );
+    clientObject.create( properties );
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
     assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
@@ -74,9 +74,11 @@ public class ClientObject_Test extends TestCase {
   public void testCreateStyles() {
     Button button = new Button( shell, SWT.PUSH | SWT.BORDER );
     IClientObject buttonObject = ClientObjectFactory.getForWidget( button );
+    Map<String, Object> properties = new HashMap<String, Object>();
     String[] styles = new String[] { "PUSH", "BORDER" };
+    properties.put( ProtocolConstants.CREATE_STYLE, styles );
 
-    buttonObject.create( styles, null );
+    buttonObject.create( properties );
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
     assertEquals( WidgetUtil.getId( button ), operation.getTarget() );

@@ -115,12 +115,13 @@ public class ProtocolMessageWriter_Test extends TestCase {
   public void testMessageWithCreate() {
     String displayId = DisplayUtil.getId( shell.getDisplay() );
     String shellId = WidgetUtil.getId( shell );
-    String[] styles = new String[] { "TRIM", "FOO" };
     Map<String, Object> properties = new HashMap<String, Object>();
+    String[] styles = new String[] { "TRIM", "FOO" };
+    properties.put( ProtocolConstants.CREATE_STYLE, styles );
     properties.put( "key1", "a" );
     properties.put( "key2", "b" );
 
-    writer.appendCreate( shellId, displayId, "org.Text", styles, properties );
+    writer.appendCreate( shellId, displayId, "org.Text", properties );
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
     assertEquals( shellId, operation.getTarget() );
@@ -137,8 +138,8 @@ public class ProtocolMessageWriter_Test extends TestCase {
     String displayId = DisplayUtil.getId( shell.getDisplay() );
     String buttonId = WidgetUtil.getId( button );
 
-    writer.appendCreate( shellId, displayId, "org.Text", null, null );
-    writer.appendCreate( buttonId, shellId, "org.Shell", null, null );
+    writer.appendCreate( shellId, displayId, "org.Text", null );
+    writer.appendCreate( buttonId, shellId, "org.Shell", null );
 
     Message message = getMessage();
     assertTrue( message.getOperation( 0 ) instanceof CreateOperation );
@@ -156,7 +157,6 @@ public class ProtocolMessageWriter_Test extends TestCase {
       writer.appendCreate( DisplayUtil.getId( shell.getDisplay() ),
                                  WidgetUtil.getId( shell ),
                                  "org.Text",
-                                 new String[] { "TRIM" },
                                  properties );
       fail();
     } catch ( IllegalArgumentException expected ) {
@@ -299,12 +299,13 @@ public class ProtocolMessageWriter_Test extends TestCase {
   }
 
   private void addShellCreate( Shell shell ) {
+    Map<String, Object> properties = new HashMap<String, Object>();
     String[] styles = new String[]{ "SHELL_TRIM" };
+    properties.put( ProtocolConstants.CREATE_STYLE, styles );
     writer.appendCreate( WidgetUtil.getId( shell ),
                                DisplayUtil.getId( shell.getDisplay() ),
                                shell.getClass().getName(),
-                               styles,
-                               null );
+                               properties );
   }
 
   private void addShellSet( Shell shell ) {
@@ -326,15 +327,15 @@ public class ProtocolMessageWriter_Test extends TestCase {
   }
 
   private void addButtonCreate( Button button ) {
-    String[] styles = new String[] { "PUSH", "BORDER" };
     Map<String, Object> properties = new HashMap<String, Object>();
+    String[] styles = new String[] { "PUSH", "BORDER" };
+    properties.put( ProtocolConstants.CREATE_STYLE, styles );
     properties.put( "key1", new Integer( 4 ) );
     properties.put( "key2", Boolean.TRUE );
     
     writer.appendCreate( WidgetUtil.getId( button ),
                                 WidgetUtil.getId( button.getParent() ),
                                 button.getClass().getName(),
-                                styles,
                                 properties );
   }
 
@@ -402,9 +403,11 @@ public class ProtocolMessageWriter_Test extends TestCase {
     Button button = new Button( shell, SWT.PUSH );
     String shellId = WidgetUtil.getId( shell );
     String buttonId = WidgetUtil.getId( button );
+    Map<String, Object> properties = new HashMap<String, Object>();
     String[] styles = new String[] { "SYSTEM_MODAL" };
+    properties.put( ProtocolConstants.CREATE_STYLE, styles );
 
-    writer.appendCreate( shellId, "parentId", "foo.Class", styles, null );
+    writer.appendCreate( shellId, "parentId", "foo.Class", properties );
     writer.appendSet( shellId, "key", "value" );
     writer.appendSet( shellId, "key2", "value2" );
     writer.appendSet( shellId, "key3", "value3" );
@@ -439,10 +442,12 @@ public class ProtocolMessageWriter_Test extends TestCase {
     Button button = new Button( shell, SWT.PUSH );
     String buttonId = WidgetUtil.getId( button );
     String type = button.getClass().getName();
+    Map<String, Object> properties = new HashMap<String, Object>();
     String[] styles = new String[] { "PUSH" };
+    properties.put( ProtocolConstants.CREATE_STYLE, styles );
 
-    writer.appendCreate( shellId, "parentId", "foo.Class", styles, null );
-    writer.appendCreate( buttonId, shellId, type, styles, null );
+    writer.appendCreate( shellId, "parentId", "foo.Class", properties );
+    writer.appendCreate( buttonId, shellId, type, null );
     writer.appendSet( buttonId, "key", "value" );
     writer.appendSet( buttonId, "key2", "value" );
 
