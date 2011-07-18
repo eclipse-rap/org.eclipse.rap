@@ -36,9 +36,9 @@ import org.eclipse.swt.widgets.*;
 public class DisplayLCA_Test extends TestCase {
 
   private static final String ENABLE_UI_CALL_BACK
-    = "org.eclipse.swt.Request.getInstance().enableUICallBack( true );";
+    = "org.eclipse.swt.Request.getInstance().setUiCallBackActive( true );";
   private static final String DISABLE_UI_CALL_BACK
-  = "org.eclipse.swt.Request.getInstance().enableUICallBack( false );";
+    = "org.eclipse.swt.Request.getInstance().setUiCallBackActive( false );";
 
   private static final List<Widget> log = new ArrayList<Widget>();
   private static final List<Widget> renderInitLog = new ArrayList<Widget>();
