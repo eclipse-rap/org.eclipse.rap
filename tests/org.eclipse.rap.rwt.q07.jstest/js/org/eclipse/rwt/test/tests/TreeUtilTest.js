@@ -236,7 +236,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
     },
 
     testCreateNormalTreeWithFixedColumns : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       assertIdentical( tree, tree._rowContainer.getSubContainer( 0 ).getParent() );
       assertIdentical( tree, tree._rowContainer.getSubContainer( 1 ).getParent() );
@@ -248,8 +247,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createSplitTree();
       assertEquals( 2, tree.getRowContainer().getFixedColumns() );
-      org.eclipse.rwt.TreeUtil.setFixedColumns( tree, 3 );      
-      assertEquals( 3, tree.getRowContainer().getFixedColumns() );      
+      var containerEl = tree.getRowContainer().getSubContainer( 0 ).getElement();
+      var orgWidth = parseInt( containerEl.style.width );
+      org.eclipse.rwt.TreeUtil.setFixedColumns( tree, 3 );
+      assertEquals( 3, tree.getRowContainer().getFixedColumns() );
+      testUtil.flush();
+      var newWidth = parseInt( containerEl.style.width );
+      assertTrue( newWidth > orgWidth ); 
       tree.destroy();
     },
 
