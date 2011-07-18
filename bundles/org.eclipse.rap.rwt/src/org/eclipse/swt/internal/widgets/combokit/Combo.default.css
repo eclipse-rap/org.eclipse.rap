@@ -30,7 +30,6 @@ Combo {
 Combo[BORDER] {
   border: 1px solid #c1c1c1;
   border-radius: 2px;
-  text-shadow: none;
 }
 
 Combo-Button {

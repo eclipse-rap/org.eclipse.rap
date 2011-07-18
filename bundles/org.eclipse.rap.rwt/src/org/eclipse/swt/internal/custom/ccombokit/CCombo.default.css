@@ -30,7 +30,6 @@ CCombo[BORDER] {
     color-stop( 15%, #f8f8f8 ),
     to( #fbfbfb )
   );
-  text-shadow: none;
 }
 
 CCombo-Button {
