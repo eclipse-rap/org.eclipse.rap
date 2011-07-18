@@ -24,7 +24,6 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
-import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.*;
@@ -252,29 +251,19 @@ public class UICallBackManager_Test extends TestCase {
   }  
   
   public void testAsyncExec() throws InterruptedException {
-    final Throwable[] uiCallBackServiceHandlerThrowable = { null };
+    Throwable[] uiCallBackServiceHandlerThrowable = { null };
     ServiceContext context = ContextProvider.getContext();
     // test runnables addition while no uiCallBack thread is not blocked
     Thread uiCallBackThread
       = simulateUiCallBackThread( uiCallBackServiceHandlerThrowable, context );
     manager.notifyUIThreadEnd();
     simulateBackgroundAddition( context );
+    fakeRequestParam( display );
+    Fixture.executeLifeCycleFromServerThread();
+
     assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
     assertFalse( manager.isCallBackRequestBlocked() );
-    // since no UI thread is running and
-    // runnables available do not block
     assertFalse( uiCallBackThread.isAlive() );
-    manager.notifyUIThreadStart();
-
-    // test blocking of incomming uiCallBack thread while UI thread is running
-    fakeRequestParam( display );
-    simulateUICallBackThreadLockDuringLifeCycle( context, uiCallBackServiceHandlerThrowable );
-    Fixture.executeLifeCycleFromServerThread();
-    if( uiCallBackServiceHandlerThrowable[ 0 ] != null ) {
-      uiCallBackServiceHandlerThrowable[ 0 ].printStackTrace();
-    }
-    assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
-    assertTrue( manager.isCallBackRequestBlocked() );
     assertEquals( RUN_ASYNC_EXEC + RUN_ASYNC_EXEC, log );
   }
 
@@ -588,43 +577,6 @@ public class UICallBackManager_Test extends TestCase {
         } catch( InterruptedException e ) {
           e.printStackTrace();
         }
-      }
-    } );
-  }
-
-  private void simulateUICallBackThreadLockDuringLifeCycle(
-    final ServiceContext context,
-    final Throwable[] uiCallBackServiceHandlerThrowable )
-  {
-    final ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
-    lifeCycle.addPhaseListener( new PhaseListener() {
-      private static final long serialVersionUID = 1L;
-      public void afterPhase( final PhaseEvent event ) {
-        Thread uiCallBackThread = new Thread( new Runnable() {
-          public void run() {
-            ContextProvider.setContext( context );
-            Fixture.fakeResponseWriter();
-            try {
-              uiCallBackServiceHandler.service();
-            } catch( Throwable thr ) {
-              uiCallBackServiceHandlerThrowable[ 0 ] = thr;
-            }
-          }
-        } );
-        uiCallBackThread.start();
-        try {
-          Thread.sleep( SLEEP_TIME );
-        } catch( InterruptedException e ) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-        lifeCycle.removePhaseListener( this );
-      }
-
-      public void beforePhase( final PhaseEvent event ) {
-      }
-      public PhaseId getPhaseId() {
-        return PhaseId.READ_DATA;
       }
     } );
   }

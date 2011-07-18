@@ -146,7 +146,6 @@ public final class UICallBackManager implements SerializableCompatibility {
     return result;
   }
 
-
   private static boolean isConnectionAlive( HttpServletResponse response ) {
     boolean result;
     try {
@@ -160,7 +159,7 @@ public final class UICallBackManager implements SerializableCompatibility {
   }
 
   boolean mustBlockCallBackRequest() {
-    return isUICallBackActive() && ( uiThreadRunning || !hasRunnables );
+    return isUICallBackActive() && !hasRunnables;
   }
 
   boolean isUICallBackActive() {
