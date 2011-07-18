@@ -141,11 +141,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
       for( var i = 0; i < linesNeeded; i++ ) {
         this._renderVerticalGridline( i );          
       }
-      while( this._vertGridLines.length > linesNeeded ) {
-        var line = this._vertGridLines.pop();
-        if( line ) {
-          this._getTargetNode().removeChild( line );
-        }
+      for( var i = linesNeeded; i < this._vertGridLines.length; i++ ) {
+        this._removeGridLine( i );
       }
     },
 
@@ -157,11 +154,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
         var line = this._getVerticalGridline( column );
         line.style.left = left + "px";
         line.style.height = this.getHeight() + "px";
+      } else {
+        this._removeGridLine( column );
       }
     },
 
-    _getVerticalGridline : function( number ) {
-      if( typeof this._vertGridLines[ number ] === "undefined" ) {
+    _getVerticalGridline : function( column ) {
+      if( typeof this._vertGridLines[ column ] === "undefined" ) {
         var line = document.createElement( "div" );
         line.style.zIndex = 1;
         line.style.position = "absolute";
@@ -175,9 +174,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
             this._getTargetNode().appendChild( line );
           }, this );
         }
-        this._vertGridLines[ number ] = line;
+        this._vertGridLines[ column ] = line;
       }
-      return this._vertGridLines[ number ];
+      return this._vertGridLines[ column ];
+    },
+
+    _removeGridLine : function( column ) {
+      if( this._vertGridLines[ column ] ) {
+        this._getTargetNode().removeChild( this._vertGridLines[ column ] );
+        delete this._vertGridLines[ column ];
+      }
     },
 
     _getVerticalGridBorder : function() {
