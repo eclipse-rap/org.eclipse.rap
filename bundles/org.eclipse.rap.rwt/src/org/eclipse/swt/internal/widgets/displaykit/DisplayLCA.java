@@ -53,13 +53,13 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
     private IOException ioProblem;
 
-    public boolean doVisit( final Widget widget ) {
+    public boolean doVisit( Widget widget ) {
       ioProblem = null;
       boolean result = true;
       try {
         render( widget );
         runRenderRunnable( widget );
-      } catch( final IOException ioe ) {
+      } catch( IOException ioe ) {
         ioProblem = ioe;
         result = false;
       }
@@ -72,11 +72,11 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       }
     }
 
-    private static void render( final Widget widget ) throws IOException {
+    private static void render( Widget widget ) throws IOException {
       WidgetUtil.getLCA( widget ).render( widget );
     }
 
-    private static void runRenderRunnable( final Widget widget )
+    private static void runRenderRunnable( Widget widget )
       throws IOException
     {
       WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
@@ -96,7 +96,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     readFocusControl( display );
     ActiveKeysUtil.readKeyEvents( display );
     WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
+      public boolean doVisit( Widget widget ) {
         IWidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );
         adapter.readData( widget );
         return true;
@@ -117,7 +117,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     DNDSupport.processEvents();
   }
 
-  public void preserveValues( final Display display ) {
+  public void preserveValues( Display display ) {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_FOCUS_CONTROL, display.getFocusControl() );
     adapter.preserve( PROP_CURR_THEME, ThemeUtil.getCurrentThemeId() );
@@ -128,7 +128,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       Shell[] shells = getShells( display );
       for( int i = 0; i < shells.length; i++ ) {
         WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
-          public boolean doVisit( final Widget widget ) {
+          public boolean doVisit( Widget widget ) {
             AbstractWidgetLCA widgetLCA = WidgetUtil.getLCA( widget );
             widgetLCA.preserveValues( widget );
             return true;
@@ -138,7 +138,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  public void render( final Display display ) throws IOException {
+  public void render( Display display ) throws IOException {
     HttpServletRequest request = ContextProvider.getRequest();
     // Note [rst] Startup page created in LifecycleServiceHandler#runLifeCycle
     // TODO [rh] should be replaced by requestCounter != 0
@@ -163,7 +163,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     Composite[] shells = getShells( display );
     for( int i = 0; i < shells.length; i++ ) {
       WidgetTreeVisitor.accept( shells[ i ], new AllWidgetTreeVisitor() {
-        public boolean doVisit( final Widget widget ) {
+        public boolean doVisit( Widget widget ) {
           WidgetAdapter widgetAdapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
           widgetAdapter.clearPreserved();
           return true;
@@ -316,7 +316,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         // TODO [rst] Added null check as a NPE occurred in some rare cases
         Control focusControl = display.getFocusControl();
         if( focusControl != null ) {
-          // TODO [rh] use JSWriter to output focus JavaScript
           StringBuffer buffer = new StringBuffer();
           buffer.append( "org.eclipse.swt.WidgetManager.getInstance()." );
           buffer.append( "focus( \"" );
@@ -341,37 +340,33 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   //      The reason why this is currently done here is, that the control to
   //      activate might not yet be created client-side, when ShellLCA writes
   //      the statement to set the active control.
-  private static void writeActiveControls( final Display display )
-    throws IOException
-  {
+  private static void writeActiveControls( Display display ) throws IOException {
     Shell[] shells = getShells( display );
     for( int i = 0; i < shells.length; i++ ) {
       ShellLCA.writeActiveControl( shells[ i ] );
     }
   }
 
-  private static void markInitialized( final Display display ) {
+  private static void markInitialized( Display display ) {
     WidgetAdapter adapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
     adapter.setInitialized( true );
   }
 
-  static void readBounds( final Display display ) {
+  static void readBounds( Display display ) {
     Rectangle oldBounds = display.getBounds();
-    int width
-      = readIntPropertyValue( display, "bounds.width", oldBounds.width );
-    int height
-      = readIntPropertyValue( display, "bounds.height", oldBounds.height );
+    int width = readIntPropertyValue( display, "bounds.width", oldBounds.width );
+    int height = readIntPropertyValue( display, "bounds.height", oldBounds.height );
     Rectangle bounds = new Rectangle( 0, 0, width, height );
     getDisplayAdapter( display ).setBounds( bounds );
   }
 
-  private static void readCursorLocation( final Display display ) {
+  private static void readCursorLocation( Display display ) {
     int x = readIntPropertyValue( display, "cursorLocation.x", 0 );
     int y = readIntPropertyValue( display, "cursorLocation.y", 0 );
     getDisplayAdapter( display ).setCursorLocation( x, y );
   }
 
-  static void readFocusControl( final Display display ) {
+  static void readFocusControl( Display display ) {
     // TODO [rh] revise this: traversing the widget tree once more only to find
     //      out which control is focused. Could that be optimized?
     HttpServletRequest request = ContextProvider.getRequest();
@@ -399,9 +394,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  private static String readPropertyValue( final Display display,
-                                           final String propertyName )
-  {
+  private static String readPropertyValue( Display display, String propertyName ) {
     HttpServletRequest request = ContextProvider.getRequest();
     StringBuffer key = new StringBuffer();
     key.append( DisplayUtil.getId( display ) );
@@ -410,9 +403,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     return request.getParameter( key.toString() );
   }
 
-  private static int readIntPropertyValue( final Display display,
-                                           final String propertyName,
-                                           final int defaultValue )
+  private static int readIntPropertyValue( Display display, String propertyName, int defaultValue )
   {
     String value = readPropertyValue( display, propertyName );
     int result;
@@ -424,12 +415,12 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     return result;
   }
 
-  private static IDisplayAdapter getDisplayAdapter( final Display display ) {
+  private static IDisplayAdapter getDisplayAdapter( Display display ) {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     return ( IDisplayAdapter )adapter;
   }
 
-  private static Shell[] getShells( final Display display ) {
+  private static Shell[] getShells( Display display ) {
     return getDisplayAdapter( display ).getShells();
   }
 }
