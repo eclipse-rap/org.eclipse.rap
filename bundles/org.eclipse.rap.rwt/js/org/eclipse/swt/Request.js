@@ -39,6 +39,8 @@ qx.Class.define( "org.eclipse.swt.Request", {
     this._currentRequest = null;
     this._timeoutPage = "";
     this._uiCallBackRetryInterval = 0;
+    this._uiCallBackActive = false;
+    this._uiCallBackRunning = false;
   },
 
   destruct : function() {
@@ -114,28 +116,25 @@ qx.Class.define( "org.eclipse.swt.Request", {
       this._parameters[ eventType ] = sourceId;
     },
 
-    /**
-     * To enable server callbacks to the UI this method sends a request
-     * that will be blocked by the server till background activities
-     * require UI updates.
-     */
-    enableUICallBack : function() {
-      var request = new qx.io.remote.Request( this._url,
-                                              qx.net.Http.METHOD_GET,
-                                              qx.util.Mime.JAVASCRIPT );
-      request.addEventListener( "completed", 
-                                 this._handleUICallBackFinished, 
-                                 this );
-      request.addEventListener( "failed",
-                                 this._handleUICallBackFailed,
-                                 this );
-      request.setParameter(
-        "custom_service_handler",
-        "org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler" );
-      this._sendStandalone( request );
+    setUiCallBackActive : function( active ) {
+    	this._uiCallBackActive = active;
+    },
+
+    _sendUICallBack : function() {
+      if( !this._uiCallBackRunning ) {
+        this._uiCallBackRunning = true;
+        var request = new qx.io.remote.Request( this._url, "GET", "application/javascript" );
+        request.addEventListener( "completed", this._handleUICallBackFinished, this );
+        request.addEventListener( "failed", this._handleUICallBackFailed, this );
+        request.setParameter(
+          "custom_service_handler",
+          "org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler" );
+        this._sendStandalone( request );
+      }
     },
     
     _handleUICallBackFinished : function( event ) {
+      this._uiCallBackRunning = false;
       if( event.getType() === "completed" ) {
         // NOTE: this was originally done almost exactly like this in 
         // XmlHttpTransport.getResponseContent, but is now done here for
@@ -159,11 +158,9 @@ qx.Class.define( "org.eclipse.swt.Request", {
     },
 
     _handleUICallBackFailed : function( event ) {
+      this._uiCallBackRunning = false;
       if( this._isConnectionError( event.getStatusCode() ) ) {
-        var that = this;
-        window.setTimeout( function() {
-        	that.enableUICallBack();
-        }, this._uiCallBackRetryInterval );
+      	qx.client.Timer.once( this._sendUICallBack, this, this._uiCallBackRetryInterval );
         this._increaseUICallBackRetryInterval();
       }
     },
@@ -244,9 +241,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
     },
 
     _createRequest : function() {
-      var result = new qx.io.remote.Request( this._url,
-                                             qx.net.Http.METHOD_POST,
-                                             qx.util.Mime.JAVASCRIPT );
+      var result = new qx.io.remote.Request( this._url, "POST", "application/javascript" );
       result.addEventListener( "sending", this._handleSending, this );
       result.addEventListener( "completed", this._handleCompleted, this );
       result.addEventListener( "failed", this._handleFailed, this );
@@ -264,13 +259,13 @@ qx.Class.define( "org.eclipse.swt.Request", {
       var vTransport = new qx.io.remote.Exchange(vRequest);
       // Establish event connection between qx.io.remote.Exchange instance and
       // qx.io.remote.Request
-      vTransport.addEventListener("sending", vRequest._onsending, vRequest);
-      vTransport.addEventListener("receiving", vRequest._onreceiving, vRequest);
-      vTransport.addEventListener("completed", vRequest._oncompleted, vRequest);
-      vTransport.addEventListener("aborted", vRequest._onaborted, vRequest);
-      vTransport.addEventListener("timeout", vRequest._ontimeout, vRequest);
-      vTransport.addEventListener("failed", vRequest._onfailed, vRequest);
-      vTransport._start = (new Date).valueOf();
+      vTransport.addEventListener( "sending", vRequest._onsending, vRequest );
+      vTransport.addEventListener( "receiving", vRequest._onreceiving, vRequest );
+      vTransport.addEventListener( "completed", vRequest._oncompleted, vRequest );
+      vTransport.addEventListener( "aborted", vRequest._onaborted, vRequest );
+      vTransport.addEventListener( "timeout", vRequest._ontimeout, vRequest );
+      vTransport.addEventListener( "failed", vRequest._onfailed, vRequest );
+      vTransport._start = ( new Date ).valueOf();
       vTransport.send();
       // END WORKAROUND
     },
@@ -336,6 +331,9 @@ qx.Class.define( "org.eclipse.swt.Request", {
             org.eclipse.swt.EventUtil.setSuspended( true );
             window.eval( text );
             org.eclipse.swt.EventUtil.setSuspended( false );
+          }
+          if( this._uiCallBackActive && !this._uiCallBackRunning ) {
+            this._sendUICallBack();
           }
         } catch( ex ) {
           org.eclipse.rwt.ErrorHandler.processJavaScriptErrorInResponse( text,

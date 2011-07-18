@@ -179,13 +179,7 @@ public final class UICallBackManager implements SerializableCompatibility {
   }
 
   public boolean needsActivation() {
-    boolean result;
-    if( isCallBackRequestBlocked() ) {
-      result = false;
-    } else {
-      result = isUICallBackActive() || forceUICallBackForPendingRunnables();
-    }
-    return result;
+    return isUICallBackActive() || forceUICallBackForPendingRunnables();
   }
 
   private Object readResolve() {

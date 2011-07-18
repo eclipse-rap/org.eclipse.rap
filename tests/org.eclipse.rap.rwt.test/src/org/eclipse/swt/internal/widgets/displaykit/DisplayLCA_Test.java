@@ -36,7 +36,9 @@ import org.eclipse.swt.widgets.*;
 public class DisplayLCA_Test extends TestCase {
 
   private static final String ENABLE_UI_CALL_BACK
-    = "org.eclipse.swt.Request.getInstance().enableUICallBack();";
+    = "org.eclipse.swt.Request.getInstance().enableUICallBack( true );";
+  private static final String DISABLE_UI_CALL_BACK
+  = "org.eclipse.swt.Request.getInstance().enableUICallBack( false );";
 
   private static final List<Widget> log = new ArrayList<Widget>();
   private static final List<Widget> renderInitLog = new ArrayList<Widget>();
@@ -387,8 +389,41 @@ public class DisplayLCA_Test extends TestCase {
   public void testWriteUICallBackActivation() throws Exception {
     Display display = new Display();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    
     DisplayLCA.writeUICallBackActivation( display );
+    
     assertEquals( ENABLE_UI_CALL_BACK, Fixture.getAllMarkup() );
+  }
+
+  public void testWriteUICallBackDeactivation() throws Exception {
+    Display display = new Display();
+    DisplayLCA displayLCA = new DisplayLCA();
+    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    displayLCA.preserveValues( display );
+    UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
+
+    DisplayLCA.writeUICallBackActivation( display );
+    
+    assertEquals( DISABLE_UI_CALL_BACK, Fixture.getAllMarkup() );
+  }
+
+  public void testPreserveUICallBack() throws Exception {
+    Display display = new Display();
+    DisplayLCA displayLCA = new DisplayLCA();
+    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    displayLCA.preserveValues( display );
+    
+    DisplayLCA.writeUICallBackActivation( display );
+    
+    assertEquals( "", Fixture.getAllMarkup() );
+  }
+
+  public void testNoUICallBackByDefault() throws Exception {
+    Display display = new Display();
+    
+    DisplayLCA.writeUICallBackActivation( display );
+    
+    assertEquals( "", Fixture.getAllMarkup() );
   }
 
   protected void setUp() throws Exception {

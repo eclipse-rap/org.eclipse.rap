@@ -18,7 +18,7 @@ qx.Class.define("qx.util.Mime",
 {
   statics :
   {
-    JAVASCRIPT : "text/javascript",
+    JAVASCRIPT : "application/javascript",
 
     /** this has been changed from text/json to application/json */
     JSON       : "application/json",

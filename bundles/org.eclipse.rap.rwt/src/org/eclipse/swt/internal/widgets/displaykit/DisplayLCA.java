@@ -48,6 +48,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   static final String PROP_CURR_THEME = "currTheme";
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
   static final String PROP_TIMEOUT_PAGE = "timeoutPage";
+  private static final String PROP_NEEDS_UICALLBACK = "needsUICallback";
 
   private static final class RenderVisitor extends AllWidgetTreeVisitor {
 
@@ -123,6 +124,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     adapter.preserve( PROP_CURR_THEME, ThemeUtil.getCurrentThemeId() );
     adapter.preserve( PROP_TIMEOUT_PAGE, getTimeoutPage() );
     adapter.preserve( PROP_EXIT_CONFIRMATION, getExitConfirmation() );
+    Boolean needsUICallBack = Boolean.valueOf( UICallBackManager.getInstance().needsActivation() );
+    adapter.preserve( PROP_NEEDS_UICALLBACK, needsUICallBack );
     ActiveKeysUtil.preserveActiveKeys( display );
     if( adapter.isInitialized() ) {
       Shell[] shells = getShells( display );
@@ -330,9 +333,19 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   static void writeUICallBackActivation( Display display ) {
-    if( !display.isDisposed() && UICallBackManager.getInstance().needsActivation() ) {
-      JavaScriptResponseWriter writer = ContextProvider.getStateInfo().getResponseWriter();
-      writer.write( "org.eclipse.swt.Request.getInstance().enableUICallBack();" );
+    if( !display.isDisposed() ) {
+      WidgetAdapter adapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
+      boolean actual = UICallBackManager.getInstance().needsActivation();
+      Boolean preserved = ( Boolean )adapter.getPreserved( PROP_NEEDS_UICALLBACK );
+      if( preserved == null ) {
+        preserved = Boolean.FALSE;
+      }
+      if( preserved.booleanValue() != actual ) {
+        JavaScriptResponseWriter writer = ContextProvider.getStateInfo().getResponseWriter();
+        writer.write(   "org.eclipse.swt.Request.getInstance().setUiCallBackActive( "
+                      + Boolean.toString( actual )
+                      + " );" );
+      }
     }
   }
 
