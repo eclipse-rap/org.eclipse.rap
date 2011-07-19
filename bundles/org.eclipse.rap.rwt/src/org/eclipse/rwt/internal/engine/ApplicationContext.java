@@ -111,6 +111,7 @@ public class ApplicationContext {
   }
 
   public void deactivate() {
+    checkIsNotActivated();
     try {
       doDeactivate();
     } finally {
@@ -280,7 +281,6 @@ public class ApplicationContext {
   }
 
   private void doDeactivate() {
-    checkIsNotActivated();
     deactivateInstances();
     notifyConfigurablesAboutDeactivation();
   }
