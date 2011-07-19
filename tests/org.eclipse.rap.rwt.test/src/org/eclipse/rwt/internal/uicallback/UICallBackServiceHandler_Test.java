@@ -29,7 +29,8 @@ import org.eclipse.swt.widgets.Display;
 
 public class UICallBackServiceHandler_Test extends TestCase {
 
-  private static final String SEND_UI_REQUEST = "org.eclipse.swt.Request.getInstance().send();";
+  private static final String SEND_UI_REQUEST
+    = "org.eclipse.swt.Request.getInstance()._sendImmediate( true );";
   private static final String ENABLE_UI_CALLBACK
     = "org.eclipse.swt.Request.getInstance().setUiCallBackActive( true );";
   private static final String DISABLE_UI_CALLBACK

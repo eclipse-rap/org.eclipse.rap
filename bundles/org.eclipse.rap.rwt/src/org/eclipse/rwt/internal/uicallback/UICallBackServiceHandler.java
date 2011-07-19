@@ -21,7 +21,6 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -31,10 +30,10 @@ public class UICallBackServiceHandler implements IServiceHandler {
   public final static String HANDLER_ID = UICallBackServiceHandler.class.getName();
 
   private static final String JS_SEND_UI_REQUEST
-    = "org.eclipse.swt.Request.getInstance().send();";
+    = "org.eclipse.swt.Request.getInstance()._sendImmediate( true );";
 
   private static final String ATTR_NEEDS_UICALLBACK
-    = DisplayLCA.class.getName() + ".needsUICallback";
+    = UICallBackServiceHandler.class.getName() + ".needsUICallback";
 
   public void service() throws IOException {
     HttpServletResponse response = ContextProvider.getResponse();

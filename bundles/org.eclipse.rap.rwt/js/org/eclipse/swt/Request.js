@@ -180,10 +180,9 @@ qx.Class.define( "org.eclipse.swt.Request", {
     send : function() {
       if( !this._inDelayedSend ) {
         this._inDelayedSend = true;
-        // Wait and then actually send the request
-        // TODO [rh] optimize wait interval (below 60ms seems to not work
-        //      reliable)
-        var func = function() { this._sendImmediate( true ) };
+        var func = function() {
+        	this._sendImmediate( true );
+        };
         qx.client.Timer.once( func, this, 60 );
       }
     },
