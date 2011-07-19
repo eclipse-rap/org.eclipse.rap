@@ -29,6 +29,7 @@ import org.eclipse.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.graphics.Rectangle;
@@ -48,7 +49,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   static final String PROP_CURR_THEME = "currTheme";
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
   static final String PROP_TIMEOUT_PAGE = "timeoutPage";
-  private static final String PROP_NEEDS_UICALLBACK = "needsUICallback";
+  private static final String ATTR_NEEDS_UICALLBACK
+    = DisplayLCA.class.getName() + ".needsUICallback";
 
   private static final class RenderVisitor extends AllWidgetTreeVisitor {
 
@@ -124,8 +126,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     adapter.preserve( PROP_CURR_THEME, ThemeUtil.getCurrentThemeId() );
     adapter.preserve( PROP_TIMEOUT_PAGE, getTimeoutPage() );
     adapter.preserve( PROP_EXIT_CONFIRMATION, getExitConfirmation() );
-    Boolean needsUICallBack = Boolean.valueOf( UICallBackManager.getInstance().needsActivation() );
-    adapter.preserve( PROP_NEEDS_UICALLBACK, needsUICallBack );
     ActiveKeysUtil.preserveActiveKeys( display );
     if( adapter.isInitialized() ) {
       Shell[] shells = getShells( display );
@@ -334,9 +334,9 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   static void writeUICallBackActivation( Display display ) {
     if( !display.isDisposed() ) {
-      WidgetAdapter adapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
       boolean actual = UICallBackManager.getInstance().needsActivation();
-      Boolean preserved = ( Boolean )adapter.getPreserved( PROP_NEEDS_UICALLBACK );
+      ISessionStore sessionStore = ContextProvider.getSession();
+      Boolean preserved = ( Boolean )sessionStore.getAttribute( ATTR_NEEDS_UICALLBACK );
       if( preserved == null ) {
         preserved = Boolean.FALSE;
       }
@@ -345,6 +345,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         writer.write(   "org.eclipse.swt.Request.getInstance().setUiCallBackActive( "
                       + Boolean.toString( actual )
                       + " );" );
+        sessionStore.setAttribute( ATTR_NEEDS_UICALLBACK, Boolean.valueOf( actual ) );
       }
     }
   }

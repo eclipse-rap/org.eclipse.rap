@@ -386,7 +386,7 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( new Point( 1, 2 ), display.getCursorLocation() );
   }
   
-  public void testWriteUICallBackActivation() throws Exception {
+  public void testWriteUICallBackActivate() throws Exception {
     Display display = new Display();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
     
@@ -395,26 +395,27 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( ENABLE_UI_CALL_BACK, Fixture.getAllMarkup() );
   }
 
-  public void testWriteUICallBackDeactivation() throws Exception {
+  public void testWriteUICallBackDeactivate() throws Exception {
     Display display = new Display();
-    DisplayLCA displayLCA = new DisplayLCA();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    displayLCA.preserveValues( display );
-    UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
-
+    DisplayLCA.writeUICallBackActivation( display );
+    
+    Fixture.fakeNewRequest();
+    UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );    
     DisplayLCA.writeUICallBackActivation( display );
     
     assertEquals( DISABLE_UI_CALL_BACK, Fixture.getAllMarkup() );
   }
 
-  public void testPreserveUICallBack() throws Exception {
+  public void testWriteUICallBackActivateTwice() throws Exception {
     Display display = new Display();
-    DisplayLCA displayLCA = new DisplayLCA();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    displayLCA.preserveValues( display );
-    
     DisplayLCA.writeUICallBackActivation( display );
-    
+
+    Fixture.fakeNewRequest();
+    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    DisplayLCA.writeUICallBackActivation( display );
+
     assertEquals( "", Fixture.getAllMarkup() );
   }
 
