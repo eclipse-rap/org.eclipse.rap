@@ -36,8 +36,13 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   private static final String PROP_H_BAR_SELECTION = "hBarSelection";
   private static final String PROP_SHOW_FOCUSED_CONTROL = "showFocusedControl";
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
@@ -45,8 +50,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     int scStyle = SWT.H_SCROLL | SWT.V_SCROLL;
     ScrolledComposite sc = new ScrolledComposite( shell, scStyle );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( sc );
@@ -62,12 +65,9 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     sc.setBounds( rectangle );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
-    assertEquals( new Integer( 23 ),
-                  adapter.getPreserved( PROP_H_BAR_SELECTION ) );
-    assertEquals( new Integer( 42 ),
-                  adapter.getPreserved( PROP_V_BAR_SELECTION ) );
-    assertEquals( Boolean.TRUE,
-                  adapter.getPreserved( PROP_SHOW_FOCUSED_CONTROL ) );
+    assertEquals( new Integer( 23 ), adapter.getPreserved( PROP_H_BAR_SELECTION ) );
+    assertEquals( new Integer( 42 ), adapter.getPreserved( PROP_V_BAR_SELECTION ) );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( PROP_SHOW_FOCUSED_CONTROL ) );
     Object bounds = adapter.getPreserved( ScrolledCompositeLCA.PROP_BOUNDS );
     assertEquals( rectangle, bounds );
     // bound
@@ -116,8 +116,7 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     sc.setEnabled( true );
     // selection listeners
     Fixture.preserveWidgets();
-    Boolean hasListeners
-      = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
     SelectionListener listener = new SelectionAdapter() {};
@@ -199,8 +198,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   }
 
   public void testPreserveHasScrollBars() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     int scStyle = SWT.H_SCROLL | SWT.V_SCROLL;
     ScrolledComposite sc = new ScrolledComposite( shell, scStyle );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( sc );
@@ -219,8 +216,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
   public void testNoBounds() throws Exception {
     // For direct children of ScrolledComposites, no bounds must not be written.
     // This results in negative locations which destroys client-side layout.
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     int scStyle = SWT.H_SCROLL | SWT.V_SCROLL;
     ScrolledComposite sc = new ScrolledComposite( shell, scStyle );
     Button button = new Button( sc, SWT.PUSH );
@@ -235,8 +230,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
 
   public void testReadData() {
     final ArrayList<String> log = new ArrayList<String>();
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     int scStyle = SWT.H_SCROLL | SWT.V_SCROLL;
     ScrolledComposite sc = new ScrolledComposite( shell, scStyle );
     sc.setContent( new Composite( sc, SWT.NONE ) );
