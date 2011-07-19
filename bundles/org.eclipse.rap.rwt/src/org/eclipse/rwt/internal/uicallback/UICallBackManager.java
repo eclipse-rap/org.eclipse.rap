@@ -107,13 +107,24 @@ public final class UICallBackManager implements SerializableCompatibility {
     }
   }
 
+  public void activateUICallBacksFor( final String id ) {
+    idManager.add( id );
+  }
+
+  public void deactivateUICallBacksFor( final String id ) {
+    int size = idManager.remove( id );
+    if( size == 0 ) {
+      releaseBlockedRequest();
+    }
+  }
+
   boolean hasRunnables() {
     synchronized( lock ) {
       return hasRunnables;
     }
   }
 
-  boolean processCallBackRequest( HttpServletResponse response ) {
+  boolean processRequest( HttpServletResponse response ) {
     boolean result = true;
     synchronized( lock ) {
       if( isCallBackRequestBlocked() ) {
@@ -122,18 +133,15 @@ public final class UICallBackManager implements SerializableCompatibility {
       if( mustBlockCallBackRequest() ) {
         Thread currentThread = Thread.currentThread();
         callBackRequestTracker.activate( currentThread );
-        SessionStoreListener listener = new UnblockSessionStoreListener( currentThread );
+        SessionStoreListener listener = new UnblockSessionStoreListener();
         ISessionStore sessionStore = ContextProvider.getSession();
         sessionStore.addSessionStoreListener( listener );
         try {
-          boolean keepWaiting = true;
+          boolean canRelease = false;
           wakeCalled = false;
-          while( !wakeCalled && keepWaiting ) {
+          while( !wakeCalled && !canRelease ) {
             lock.wait( requestCheckInterval );
-            keepWaiting
-              =  mustBlockCallBackRequest()
-              && isConnectionAlive( response )
-              && callBackRequestTracker.isActive( currentThread );
+            canRelease = canReleaseBlockedRequest( response );
           }
         } catch( InterruptedException ie ) {
           Thread.interrupted(); // Reset interrupted state, see bug 300254
@@ -147,14 +155,14 @@ public final class UICallBackManager implements SerializableCompatibility {
     return result;
   }
 
-  private static boolean isConnectionAlive( HttpServletResponse response ) {
-    boolean result;
-    try {
-      JavaScriptResponseWriter responseWriter = new JavaScriptResponseWriter( response );
-      responseWriter.write( " " );
-      result = !responseWriter.checkError();
-    } catch( IOException ioe ) {
-      result = false;
+  private boolean canReleaseBlockedRequest( HttpServletResponse response ) {
+    boolean result = false;
+    if( !mustBlockCallBackRequest() ) {
+      result = true;
+    } else if( !isConnectionAlive( response ) ) {
+      result = true;
+    } else if( !callBackRequestTracker.isActive( Thread.currentThread() ) ) {
+      result = true;
     }
     return result;
   }
@@ -167,17 +175,6 @@ public final class UICallBackManager implements SerializableCompatibility {
     return !idManager.isEmpty();
   }
 
-  public void activateUICallBacksFor( final String id ) {
-    idManager.add( id );
-  }
-
-  public void deactivateUICallBacksFor( final String id ) {
-    int size = idManager.remove( id );
-    if( size == 0 ) {
-      releaseBlockedRequest();
-    }
-  }
-
   boolean needsActivation() {
     return isUICallBackActive() || forceUICallBackForPendingRunnables();
   }
@@ -185,6 +182,18 @@ public final class UICallBackManager implements SerializableCompatibility {
   private Object readResolve() {
     callBackRequestTracker = new CallBackRequestTracker();
     return this;
+  }
+
+  private static boolean isConnectionAlive( HttpServletResponse response ) {
+    boolean result;
+    try {
+      JavaScriptResponseWriter responseWriter = new JavaScriptResponseWriter( response );
+      responseWriter.write( " " );
+      result = !responseWriter.checkError();
+    } catch( IOException ioe ) {
+      result = false;
+    }
+    return result;
   }
 
   private static boolean forceUICallBackForPendingRunnables() {
@@ -201,8 +210,8 @@ public final class UICallBackManager implements SerializableCompatibility {
   {
     private transient final Thread currentThread;
 
-    private UnblockSessionStoreListener( Thread currentThread ) {
-      this.currentThread = currentThread;
+    private UnblockSessionStoreListener() {
+      this.currentThread = Thread.currentThread();
     }
 
     public void beforeDestroy( SessionStoreEvent event ) {
