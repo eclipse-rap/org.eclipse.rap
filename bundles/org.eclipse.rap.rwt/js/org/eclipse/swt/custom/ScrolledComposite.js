@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,7 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
         this._content.removeEventListener( "changeHeight", 
                                           this._onContentResize, 
                                           this );
+        this._clientArea.remove( this._content );
       }
       this._content = widget;
       this._onContentResize();

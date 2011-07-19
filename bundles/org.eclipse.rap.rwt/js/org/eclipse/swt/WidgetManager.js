@@ -144,7 +144,8 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       //      when using add sizes and clipping are treated differently
       // parent.add( widget );
       if( parent instanceof org.eclipse.swt.custom.ScrolledComposite ) {
-        parent.setContent( widget );
+        // [if] do nothing, parent is set in ScrolledComposite#setContent which is called from the 
+        // server-side - see bug 349161
       } else if( parent instanceof org.eclipse.swt.widgets.ExpandBar ) {
         parent.addWidget( widget );
       } else {

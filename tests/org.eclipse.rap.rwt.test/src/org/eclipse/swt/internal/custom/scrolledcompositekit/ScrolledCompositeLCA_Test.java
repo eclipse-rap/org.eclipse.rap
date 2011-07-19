@@ -213,6 +213,43 @@ public class ScrolledCompositeLCA_Test extends TestCase {
                   adapter.getPreserved( ScrolledCompositeLCA.PROP_HAS_V_SCROLL_BAR ) );
   }
 
+  public void testPreserveContent_WithoutContent() {
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+
+    Fixture.preserveWidgets();
+
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( sc );
+    assertNull( adapter.getPreserved( ScrolledCompositeLCA.PROP_CONTENT ) );
+  }
+
+  public void testPreserveContent_WithContent() {
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Composite content = new Composite( sc, SWT.NONE );
+    sc.setContent( content );
+
+    Fixture.preserveWidgets();
+
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( sc );
+    assertSame( content, adapter.getPreserved( ScrolledCompositeLCA.PROP_CONTENT ) );
+  }
+
+  public void testWriteContent() {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.NONE );
+    Fixture.fakeNewRequest( display );
+    Composite content = new Composite( sc, SWT.NONE );
+    sc.setContent( content );
+    String contentId = WidgetUtil.getId( content );
+
+    Fixture.executeLifeCycleFromServerThread();
+
+    String expected = "w.setContent( wm.findWidgetById( \"" + contentId + "\" ) );";
+    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+  }
+
   public void testNoBounds() throws Exception {
     // For direct children of ScrolledComposites, no bounds must not be written.
     // This results in negative locations which destroys client-side layout.

@@ -13,6 +13,7 @@ package org.eclipse.swt.internal.custom.scrolledcompositekit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
@@ -22,12 +23,14 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
 
 
 public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
 
   private static final String QX_TYPE = "org.eclipse.swt.custom.ScrolledComposite";
+  private static final String SET_CONTENT = "setContent";
 
   private static final Integer ZERO = new Integer( 0 );
 
@@ -42,7 +45,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   private static final String PROP_H_BAR_SELECTION = "hBarSelection";
   private static final String PROP_V_BAR_SELECTION = "vBarSelection";
   private static final String PROP_SHOW_FOCUSED_CONTROL = "showFocusedControl";
-
+  static final String PROP_CONTENT = "content";
 
   public void preserveValues( Widget widget ) {
     ScrolledComposite composite = ( ScrolledComposite )widget;
@@ -57,6 +60,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( hasSelectionListener( composite ) ) );
     adapter.preserve( PROP_SHOW_FOCUSED_CONTROL,
                       Boolean.valueOf( composite.getShowFocusedControl() ) );
+    adapter.preserve( PROP_CONTENT, composite.getContent() );
     WidgetLCAUtil.preserveCustomVariant( composite );
   }
 
@@ -92,6 +96,7 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   public void renderChanges( Widget widget ) throws IOException {
     ScrolledComposite composite = ( ScrolledComposite )widget;
     ControlLCAUtil.writeChanges( composite );
+    writeContent( composite );
     writeClipBounds( composite );
     // TODO [rh] initial positioning of the client-side scroll bar does not work
     writeBarSelection( composite );
@@ -110,6 +115,25 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
 
   ///////////////////////////////////
   // Helping methods to write changes
+
+  private static void writeContent( ScrolledComposite composite ) throws IOException {
+    Control content = composite.getContent();
+    if( WidgetLCAUtil.hasChanged( composite, PROP_CONTENT, content, null ) ) {
+      final JSWriter writer = JSWriter.getWriterFor( composite );
+      final Object[] args = new Object[] { content };
+      if( content != null ) {
+        // defer call since content is rendered after composite
+        WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( content );
+        adapter.setRenderRunnable( new IRenderRunnable() {
+          public void afterRender() throws IOException {
+            writer.call( SET_CONTENT, args );
+          }
+        } );
+      } else {
+        writer.call( SET_CONTENT, args );
+      }
+    }
+  }
 
   private static void writeScrollBars( ScrolledComposite composite ) throws IOException {
     boolean hasHBar = hasHScrollBar( composite );
