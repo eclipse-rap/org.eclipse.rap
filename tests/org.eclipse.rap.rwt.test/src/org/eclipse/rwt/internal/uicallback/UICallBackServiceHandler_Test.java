@@ -54,42 +54,50 @@ public class UICallBackServiceHandler_Test extends TestCase {
   }
   
   public void testWriteUICallBackActivate() throws Exception {
-    Display display = new Display();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
     
-    UICallBackServiceHandler.writeUICallBackActivation( display, getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
     
     assertEquals( ENABLE_UI_CALLBACK, Fixture.getAllMarkup() );
   }
 
   public void testWriteUICallBackDeactivate() throws Exception {
-    Display display = new Display();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( display, getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
     
     Fixture.fakeNewRequest();
     UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( display, getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    
+    assertEquals( DISABLE_UI_CALLBACK, Fixture.getAllMarkup() );
+  }
+
+  public void testWriteUICallBackDeactivateWithDisposedDisplay() throws Exception {
+    Display display = new Display();
+    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    
+    Fixture.fakeNewRequest();
+    display.dispose();
+    UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
+    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
     
     assertEquals( DISABLE_UI_CALLBACK, Fixture.getAllMarkup() );
   }
 
   public void testWriteUICallBackActivateTwice() throws Exception {
-    Display display = new Display();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( display, getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
 
     Fixture.fakeNewRequest();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( display, getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
 
     assertEquals( "", Fixture.getAllMarkup() );
   }
 
   public void testNoUICallBackByDefault() throws Exception {
-    Display display = new Display();
-    
-    UICallBackServiceHandler.writeUICallBackActivation( display, getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
     
     assertEquals( "", Fixture.getAllMarkup() );
   }
@@ -97,7 +105,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
   public void testUICallBackActivationUpdated() throws Exception {
     Display display = new Display();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( display, getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
     Fixture.fakeNewRequest();
     UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
     display.asyncExec( new NoOpRunnable() );    
@@ -108,7 +116,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
   }
 
   public void testWriteUICallBackActivationWithoutDisplay() throws Exception {
-    UICallBackServiceHandler.writeUICallBackActivation( null, getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
 
     assertEquals( "", Fixture.getAllMarkup() );
   }
@@ -116,7 +124,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
   public void testWriteUiRequestNeeded() throws IOException {
     Display display = new Display();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( display, getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
     Fixture.fakeNewRequest();
 
     display.asyncExec( new NoOpRunnable() );
@@ -126,9 +134,8 @@ public class UICallBackServiceHandler_Test extends TestCase {
   }
   
   public void testWriteUiRequestNeededAfterDeactivate() throws IOException {
-    Display display = new Display();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( display, getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
     Fixture.fakeNewRequest();
     
     UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
@@ -140,7 +147,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
   public void testWriteUiRequestNeededAfterDeactivateWithRunnable() throws IOException {
     Display display = new Display();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( display, getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
     Fixture.fakeNewRequest();
     
     display.asyncExec( new NoOpRunnable() );
@@ -151,13 +158,11 @@ public class UICallBackServiceHandler_Test extends TestCase {
   }
 
   public void testWriteUICallBackActivateWithoutStateInfo2() throws Exception {
-    // Service handler request don't have a state info set, so ensure they don't access it
-    Display display = new Display();
     replaceStateInfo( null );
 
     JavaScriptResponseWriter responseWriter = mock( JavaScriptResponseWriter.class );
     try {
-      UICallBackServiceHandler.writeUICallBackActivation( display, responseWriter );
+      UICallBackServiceHandler.writeUICallBackActivation( responseWriter );
     } catch( NullPointerException notExpected ) {
       fail();
     }

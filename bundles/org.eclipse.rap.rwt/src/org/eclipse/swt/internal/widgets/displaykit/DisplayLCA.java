@@ -342,7 +342,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static void writeUiCallBackAcvtivation( Display display ) {
     JavaScriptResponseWriter responseWriter = ContextProvider.getStateInfo().getResponseWriter();
-    UICallBackServiceHandler.writeUICallBackActivation( display, responseWriter );
+    UICallBackServiceHandler.writeUICallBackActivation( responseWriter );
   }
 
   private static void markInitialized( Display display ) {

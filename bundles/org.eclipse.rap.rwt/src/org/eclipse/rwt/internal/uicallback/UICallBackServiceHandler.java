@@ -16,12 +16,9 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
-import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.widgets.Display;
 
 
 public class UICallBackServiceHandler implements IServiceHandler {
@@ -41,26 +38,23 @@ public class UICallBackServiceHandler implements IServiceHandler {
     boolean isActiveRequest = UICallBackManager.getInstance().processCallBackRequest( response );
     if( sessionStore.isBound() && isActiveRequest ) {
       JavaScriptResponseWriter writer = new JavaScriptResponseWriter( response );
-      writeUICallBackActivation( LifeCycleUtil.getSessionDisplay(), writer );
+      writeUICallBackActivation( writer );
       writeUiRequestNeeded( writer );
     }
   }
 
-  public static void writeUICallBackActivation( Display display, JavaScriptResponseWriter writer ) {
-    if( display != null && !display.isDisposed() ) {
-      boolean actual = UICallBackManager.getInstance().needsActivation();
-      IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
-      ISessionStore sessionStore = adapter.getSessionStore();
-      Boolean preserved = ( Boolean )sessionStore.getAttribute( ATTR_NEEDS_UICALLBACK );
-      if( preserved == null ) {
-        preserved = Boolean.FALSE;
-      }
-      if( preserved.booleanValue() != actual ) {
-        writer.write(   "org.eclipse.swt.Request.getInstance().setUiCallBackActive( "
-                      + Boolean.toString( actual )
-                      + " );" );
-        sessionStore.setAttribute( ATTR_NEEDS_UICALLBACK, Boolean.valueOf( actual ) );
-      }
+  public static void writeUICallBackActivation( JavaScriptResponseWriter writer ) {
+    boolean actual = UICallBackManager.getInstance().needsActivation();
+    ISessionStore sessionStore = ContextProvider.getSession();
+    Boolean preserved = ( Boolean )sessionStore.getAttribute( ATTR_NEEDS_UICALLBACK );
+    if( preserved == null ) {
+      preserved = Boolean.FALSE;
+    }
+    if( preserved.booleanValue() != actual ) {
+      writer.write(   "org.eclipse.swt.Request.getInstance().setUiCallBackActive( "
+                    + Boolean.toString( actual )
+                    + " );" );
+      sessionStore.setAttribute( ATTR_NEEDS_UICALLBACK, Boolean.valueOf( actual ) );
     }
   }
 
