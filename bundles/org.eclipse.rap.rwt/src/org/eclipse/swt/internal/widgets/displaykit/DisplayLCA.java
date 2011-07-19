@@ -25,11 +25,10 @@ import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
-import org.eclipse.rwt.internal.uicallback.UICallBackManager;
+import org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.graphics.Rectangle;
@@ -49,9 +48,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   static final String PROP_CURR_THEME = "currTheme";
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
   static final String PROP_TIMEOUT_PAGE = "timeoutPage";
-  private static final String ATTR_NEEDS_UICALLBACK
-    = DisplayLCA.class.getName() + ".needsUICallback";
-
+  
   private static final class RenderVisitor extends AllWidgetTreeVisitor {
 
     private IOException ioProblem;
@@ -154,7 +151,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       renderShells( display );
       writeActiveControls( display );
       writeFocus( display );
-      writeUICallBackActivation( display );
+      writeUiCallBackAcvtivation( display );
       markInitialized( display );
       ActiveKeysUtil.writeActiveKeys( display );
     }
@@ -332,24 +329,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  static void writeUICallBackActivation( Display display ) {
-    if( !display.isDisposed() ) {
-      boolean actual = UICallBackManager.getInstance().needsActivation();
-      ISessionStore sessionStore = ContextProvider.getSession();
-      Boolean preserved = ( Boolean )sessionStore.getAttribute( ATTR_NEEDS_UICALLBACK );
-      if( preserved == null ) {
-        preserved = Boolean.FALSE;
-      }
-      if( preserved.booleanValue() != actual ) {
-        JavaScriptResponseWriter writer = ContextProvider.getStateInfo().getResponseWriter();
-        writer.write(   "org.eclipse.swt.Request.getInstance().setUiCallBackActive( "
-                      + Boolean.toString( actual )
-                      + " );" );
-        sessionStore.setAttribute( ATTR_NEEDS_UICALLBACK, Boolean.valueOf( actual ) );
-      }
-    }
-  }
-
   // TODO [rh] writing activeControl should be handled by the ShellLCA itself
   //      The reason why this is currently done here is, that the control to
   //      activate might not yet be created client-side, when ShellLCA writes
@@ -359,6 +338,11 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     for( int i = 0; i < shells.length; i++ ) {
       ShellLCA.writeActiveControl( shells[ i ] );
     }
+  }
+
+  private static void writeUiCallBackAcvtivation( Display display ) {
+    JavaScriptResponseWriter responseWriter = ContextProvider.getStateInfo().getResponseWriter();
+    UICallBackServiceHandler.writeUICallBackActivation( display, responseWriter );
   }
 
   private static void markInitialized( Display display ) {

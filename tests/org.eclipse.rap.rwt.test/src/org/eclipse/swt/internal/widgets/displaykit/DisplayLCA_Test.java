@@ -35,11 +35,6 @@ import org.eclipse.swt.widgets.*;
 
 public class DisplayLCA_Test extends TestCase {
 
-  private static final String ENABLE_UI_CALL_BACK
-    = "org.eclipse.swt.Request.getInstance().setUiCallBackActive( true );";
-  private static final String DISABLE_UI_CALL_BACK
-    = "org.eclipse.swt.Request.getInstance().setUiCallBackActive( false );";
-
   private static final List<Widget> log = new ArrayList<Widget>();
   private static final List<Widget> renderInitLog = new ArrayList<Widget>();
   private static final List<Widget> renderChangesLog = new ArrayList<Widget>();
@@ -385,46 +380,16 @@ public class DisplayLCA_Test extends TestCase {
     
     assertEquals( new Point( 1, 2 ), display.getCursorLocation() );
   }
-  
-  public void testWriteUICallBackActivate() throws Exception {
+
+  public void testUICallBackUpdated() throws IOException {
     Display display = new Display();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    
-    DisplayLCA.writeUICallBackActivation( display );
-    
-    assertEquals( ENABLE_UI_CALL_BACK, Fixture.getAllMarkup() );
-  }
 
-  public void testWriteUICallBackDeactivate() throws Exception {
-    Display display = new Display();
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    DisplayLCA.writeUICallBackActivation( display );
+    Fixture.fakeNewRequest( display );
+    displayLCA.render( display );
     
-    Fixture.fakeNewRequest();
-    UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );    
-    DisplayLCA.writeUICallBackActivation( display );
-    
-    assertEquals( DISABLE_UI_CALL_BACK, Fixture.getAllMarkup() );
-  }
-
-  public void testWriteUICallBackActivateTwice() throws Exception {
-    Display display = new Display();
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    DisplayLCA.writeUICallBackActivation( display );
-
-    Fixture.fakeNewRequest();
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    DisplayLCA.writeUICallBackActivation( display );
-
-    assertEquals( "", Fixture.getAllMarkup() );
-  }
-
-  public void testNoUICallBackByDefault() throws Exception {
-    Display display = new Display();
-    
-    DisplayLCA.writeUICallBackActivation( display );
-    
-    assertEquals( "", Fixture.getAllMarkup() );
+    String expected = "org.eclipse.swt.Request.getInstance().setUiCallBackActive";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   protected void setUp() throws Exception {

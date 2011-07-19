@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.SerializableLock;
 import org.eclipse.rwt.service.*;
 import org.eclipse.swt.internal.SerializableCompatibility;
@@ -177,7 +178,7 @@ public final class UICallBackManager implements SerializableCompatibility {
     }
   }
 
-  public boolean needsActivation() {
+  boolean needsActivation() {
     return isUICallBackActive() || forceUICallBackForPendingRunnables();
   }
 
@@ -187,7 +188,12 @@ public final class UICallBackManager implements SerializableCompatibility {
   }
 
   private static boolean forceUICallBackForPendingRunnables() {
-    return Boolean.TRUE.equals( ContextProvider.getStateInfo().getAttribute( FORCE_UI_CALLBACK ) );
+    boolean result = false;
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    if( stateInfo != null ) {
+      result = Boolean.TRUE.equals( stateInfo.getAttribute( FORCE_UI_CALLBACK ) );
+    }
+    return result;
   }
 
   private static class UnblockSessionStoreListener

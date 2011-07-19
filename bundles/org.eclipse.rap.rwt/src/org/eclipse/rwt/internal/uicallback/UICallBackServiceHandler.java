@@ -16,9 +16,13 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.swt.internal.widgets.IDisplayAdapter;
+import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
+import org.eclipse.swt.widgets.Display;
 
 
 public class UICallBackServiceHandler implements IServiceHandler {
@@ -29,20 +33,41 @@ public class UICallBackServiceHandler implements IServiceHandler {
   private static final String JS_SEND_UI_REQUEST
     = "org.eclipse.swt.Request.getInstance().send();";
 
+  private static final String ATTR_NEEDS_UICALLBACK
+    = DisplayLCA.class.getName() + ".needsUICallback";
+
   public void service() throws IOException {
     HttpServletResponse response = ContextProvider.getResponse();
     ISessionStore sessionStore = ContextProvider.getSession();
-    boolean needsUiRequest = UICallBackManager.getInstance().processCallBackRequest( response );
-    if( sessionStore.isBound() && needsUiRequest ) {
-      writeResponse( response );
+    boolean isActiveRequest = UICallBackManager.getInstance().processCallBackRequest( response );
+    if( sessionStore.isBound() && isActiveRequest ) {
+      JavaScriptResponseWriter writer = new JavaScriptResponseWriter( response );
+      writeUICallBackActivation( LifeCycleUtil.getSessionDisplay(), writer );
+      writeUiRequestNeeded( writer );
     }
   }
 
-  //////////////////////////
-  // Service helping methods
-  
-  static void writeResponse( HttpServletResponse response ) throws IOException {
-    JavaScriptResponseWriter writer = new JavaScriptResponseWriter( response );
-    writer.write( JS_SEND_UI_REQUEST );
+  public static void writeUICallBackActivation( Display display, JavaScriptResponseWriter writer ) {
+    if( display != null && !display.isDisposed() ) {
+      boolean actual = UICallBackManager.getInstance().needsActivation();
+      IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+      ISessionStore sessionStore = adapter.getSessionStore();
+      Boolean preserved = ( Boolean )sessionStore.getAttribute( ATTR_NEEDS_UICALLBACK );
+      if( preserved == null ) {
+        preserved = Boolean.FALSE;
+      }
+      if( preserved.booleanValue() != actual ) {
+        writer.write(   "org.eclipse.swt.Request.getInstance().setUiCallBackActive( "
+                      + Boolean.toString( actual )
+                      + " );" );
+        sessionStore.setAttribute( ATTR_NEEDS_UICALLBACK, Boolean.valueOf( actual ) );
+      }
+    }
+  }
+
+  static void writeUiRequestNeeded( JavaScriptResponseWriter writer ) {
+    if( UICallBackManager.getInstance().hasRunnables() ) {
+      writer.write( JS_SEND_UI_REQUEST );
+    }
   }
 }
