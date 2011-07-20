@@ -10,7 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.internal.server;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.LinkedList;

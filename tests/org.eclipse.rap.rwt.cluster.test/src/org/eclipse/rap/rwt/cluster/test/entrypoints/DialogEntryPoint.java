@@ -16,7 +16,9 @@ import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.rwt.widgets.DialogCallback;
 import org.eclipse.rwt.widgets.DialogUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.ColorDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 
 public class DialogEntryPoint implements IEntryPoint {

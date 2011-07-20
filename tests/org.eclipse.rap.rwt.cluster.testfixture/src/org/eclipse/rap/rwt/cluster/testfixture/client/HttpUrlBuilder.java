@@ -12,7 +12,9 @@ package org.eclipse.rap.rwt.cluster.testfixture.client;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 
 class HttpUrlBuilder {

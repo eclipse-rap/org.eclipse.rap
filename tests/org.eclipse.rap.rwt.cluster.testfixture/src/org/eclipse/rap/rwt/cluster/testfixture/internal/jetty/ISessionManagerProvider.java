@@ -10,7 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.internal.jetty;
 
-import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.SessionIdManager;
+import org.eclipse.jetty.server.SessionManager;
 
 
 interface ISessionManagerProvider {

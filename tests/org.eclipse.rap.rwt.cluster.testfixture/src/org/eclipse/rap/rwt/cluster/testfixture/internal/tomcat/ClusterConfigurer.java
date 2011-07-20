@@ -11,7 +11,10 @@
 package org.eclipse.rap.rwt.cluster.testfixture.internal.tomcat;
 
 import org.apache.catalina.Engine;
-import org.apache.catalina.ha.session.*;
+import org.apache.catalina.ha.session.ClusterSessionListener;
+import org.apache.catalina.ha.session.DeltaManager;
+import org.apache.catalina.ha.session.JvmRouteBinderValve;
+import org.apache.catalina.ha.session.JvmRouteSessionIDBinderListener;
 import org.apache.catalina.ha.tcp.ReplicationValve;
 import org.apache.catalina.ha.tcp.SimpleTcpCluster;
 import org.apache.catalina.tribes.Channel;

@@ -10,25 +10,40 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.test;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.cluster.test.entrypoints.*;
+import org.eclipse.rap.rwt.cluster.test.entrypoints.AsyncExecEntryPoint;
+import org.eclipse.rap.rwt.cluster.test.entrypoints.ButtonEntryPoint;
+import org.eclipse.rap.rwt.cluster.test.entrypoints.DNDEntryPoint;
+import org.eclipse.rap.rwt.cluster.test.entrypoints.DialogEntryPoint;
+import org.eclipse.rap.rwt.cluster.test.entrypoints.ImageEntryPoint;
+import org.eclipse.rap.rwt.cluster.test.entrypoints.ResourcesEntryPoint;
+import org.eclipse.rap.rwt.cluster.test.entrypoints.TimerExecEntryPoint;
 import org.eclipse.rap.rwt.cluster.testfixture.ClusterFixture;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
-import org.eclipse.rap.rwt.cluster.testfixture.server.*;
+import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
+import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineCluster;
+import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rwt.lifecycle.UICallBack;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;

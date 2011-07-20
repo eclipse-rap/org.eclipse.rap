@@ -13,8 +13,12 @@ package org.eclipse.rap.rwt.cluster.testfixture.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.rap.rwt.cluster.testfixture.client.*;
-import org.eclipse.rap.rwt.cluster.testfixture.internal.jetty.*;
+import org.eclipse.rap.rwt.cluster.testfixture.client.HttpUrlBuilder_Test;
+import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient_Test;
+import org.eclipse.rap.rwt.cluster.testfixture.client.Response_Test;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.jetty.DatabaseServer_Test;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.jetty.JettyEngineCluster_Test;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.jetty.JettyEngine_Test;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.server.DelegatingServletEngine_Test;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.tomcat.TomcatEngineCluster_Test;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.tomcat.TomcatEngine_Test;

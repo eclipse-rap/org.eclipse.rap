@@ -9,7 +9,10 @@ import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 
-import org.apache.catalina.*;
+import org.apache.catalina.Context;
+import org.apache.catalina.Engine;
+import org.apache.catalina.Session;
+import org.apache.catalina.Wrapper;
 import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
 import org.apache.catalina.servlets.DefaultServlet;
@@ -18,7 +21,9 @@ import org.eclipse.rap.rwt.cluster.testfixture.internal.server.DelegatingServlet
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.FileUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rwt.internal.engine.RWTClusterSupport;
+import org.eclipse.rwt.internal.engine.RWTDelegate;
+import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 

@@ -12,9 +12,9 @@ package org.eclipse.rap.rwt.cluster.testfixture.client;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.cluster.testfixture.test.TestHttpUrlConnection;
-
 import junit.framework.TestCase;
+
+import org.eclipse.rap.rwt.cluster.testfixture.test.TestHttpUrlConnection;
 
 
 public class Response_Test extends TestCase {

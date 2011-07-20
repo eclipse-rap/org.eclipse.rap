@@ -14,7 +14,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.rap.rwt.cluster.testfixture.internal.server.DelegatingServletEngine;
-import org.eclipse.rap.rwt.cluster.testfixture.server.*;
+import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
+import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineCluster;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 

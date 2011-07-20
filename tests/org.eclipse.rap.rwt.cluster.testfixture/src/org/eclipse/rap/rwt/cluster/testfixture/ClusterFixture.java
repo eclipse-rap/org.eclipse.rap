@@ -15,7 +15,9 @@ import java.lang.reflect.Field;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
+import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
+import org.eclipse.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;

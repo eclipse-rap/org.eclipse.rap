@@ -10,8 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.test;
 
-import java.io.*;
-import java.net.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 public class TestHttpUrlConnection extends HttpURLConnection {

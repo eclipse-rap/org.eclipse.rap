@@ -11,7 +11,8 @@
 package org.eclipse.rap.rwt.cluster.testfixture.internal.server;
 
 import java.io.IOException;
-import java.net.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 

@@ -10,7 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.client;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
 
