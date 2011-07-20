@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import junit.framework.TestCase;
 
@@ -1351,6 +1352,31 @@ public class Display_Test extends TestCase {
   public void testGetSystemMenu() {
     Display display = new Display();
     assertNull( display.getSystemMenu() );
+  }
+  
+  public void testSyncExecIsReleasedOnSessionTimeout() throws Exception {
+    final AtomicBoolean executed = new AtomicBoolean( false );
+    final Display display = new Display();
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        display.syncExec( new Runnable() {
+          public void run() {
+            executed.set( true );
+          }
+        } );
+      }
+    } );
+    thread.setDaemon( true );
+    thread.start();
+    while( display.getSynchronizer().getMessageCount() < 1 ) {
+      Thread.yield();
+    }
+    
+    display.dispose();
+    
+    thread.join( 5000 );
+    assertFalse( thread.isAlive() );
+    assertFalse( executed.get() );
   }
   
   protected void setUp() throws Exception {

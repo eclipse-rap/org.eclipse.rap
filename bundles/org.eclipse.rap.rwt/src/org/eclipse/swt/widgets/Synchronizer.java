@@ -123,6 +123,18 @@ int getMessageCount () {
 }
 
 void releaseSynchronizer () {
+  // RAP [rh] release all threads that are waiting in syncExec(), see bug 352437
+  RunnableLock runnableLock = removeFirst();
+  while( runnableLock != null ) {
+    if( runnableLock.thread != null ) {
+      runnableLock.runnable = null;
+      synchronized( runnableLock ) {
+        runnableLock.notify();
+      }
+    }
+    runnableLock = removeFirst();
+  }
+  // END RAP 
 //	display = null;
 	messages = null;
 	messageLock = null;
