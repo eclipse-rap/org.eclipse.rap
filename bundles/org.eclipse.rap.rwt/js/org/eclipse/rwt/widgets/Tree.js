@@ -1151,12 +1151,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _onClientAreaMouseMove : function( evt ) {
       if( this._cellToolTip != null ) {
+        var itemId = null;
+        var columnIndex = -1;
         if( this._rowContainer.getHoverItem() ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-          var itemId = widgetManager.findIdByWidget( this._rowContainer.getHoverItem() );
-          var columnIndex = org.eclipse.rwt.TreeUtil.getColumnByPageX( this, evt.getPageX() );
-          this._cellToolTip.setCell( itemId, columnIndex );
+          itemId = widgetManager.findIdByWidget( this._rowContainer.getHoverItem() );
+          columnIndex = org.eclipse.rwt.TreeUtil.getColumnByPageX( this, evt.getPageX() );
         }
+        this._cellToolTip.setCell( itemId, columnIndex );
       }
     },
 

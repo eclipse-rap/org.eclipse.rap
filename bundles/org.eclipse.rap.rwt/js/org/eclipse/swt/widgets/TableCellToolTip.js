@@ -28,7 +28,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableCellToolTip", {
     },
 
     setText : function( text ) {
-      if( text && text != "" ) {
+      if( this._isValidToolTip( text ) ) {
         this.getAtom().setLabel( text );
         this.setLeft( qx.event.type.MouseEvent.getPageX() + this.getMousePointerOffsetX() );
         this.setTop( qx.event.type.MouseEvent.getPageY() + this.getMousePointerOffsetY() );
@@ -41,20 +41,32 @@ qx.Class.define( "org.eclipse.swt.widgets.TableCellToolTip", {
         this._itemId = itemId;
         this._columnIndex = columnIndex;
         this.hide();
-        if( !this._showTimer.getEnabled() && itemId != null && columnIndex != -1 ) {
-          this._showTimer.start();
+        if( this._isValidCell() ) {
+          this._startShowTimer();
+        } else {
+          this._stopShowTimer();
         }
       }
     },
 
     _requestCellToolTipText : function() {
-      if( this._itemId != null && this._columnIndex != -1 ) {
+      if( this._isValidCell() ) {
         var req = org.eclipse.swt.Request.getInstance();
         req.addEvent( "org.eclipse.swt.events.cellToolTipTextRequested", this._controlId );
-        var cell = this._itemId + "," + this._columnIndex;
-        req.addParameter( "org.eclipse.swt.events.cellToolTipTextRequested.cell", cell );
+        this._requestedCell = this._itemId + "," + this._columnIndex;
+        req.addParameter( "org.eclipse.swt.events.cellToolTipTextRequested.cell",
+                          this._requestedCell );
         req.send();
       }
+    },
+
+    _isValidCell : function() {
+      return this._itemId != null && this._columnIndex != -1;
+    },
+
+    _isValidToolTip : function( text ) {
+      var currentCell = this._itemId + "," + this._columnIndex;
+      return text && text !== "" && currentCell === this._requestedCell;
     }
 
   }
