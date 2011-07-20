@@ -15,14 +15,14 @@ package org.eclipse.rwt.internal.uicallback;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.NoOpRunnable;
+import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.swt.widgets.Display;
@@ -49,8 +49,9 @@ public class UICallBackServiceHandler_Test extends TestCase {
   
   public void testResponseContentType() {
     UICallBackServiceHandler.writeUiRequestNeeded( getResponseWriter() );
-    HttpServletResponse response = ContextProvider.getResponse();
-    assertEquals( "text/javascript; charset=UTF-8", response.getHeader( "Content-Type" ) );
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    Collection<String> contentTypeHeaders = response.getHeaders( "Content-Type" );
+    assertTrue( contentTypeHeaders.contains( "text/javascript; charset=UTF-8" ) );
   }
   
   public void testWriteUICallBackActivate() throws Exception {
