@@ -24,7 +24,7 @@ public class LifeCycleFactory {
 
   
   public LifeCycleFactory( RWTConfiguration configuration ) {
-    ParamCheck.notNull( configuration, "configuratino" );
+    ParamCheck.notNull( configuration, "configuration" );
     this.configuration = configuration;
   }
   public ILifeCycle getLifeCycle() {
