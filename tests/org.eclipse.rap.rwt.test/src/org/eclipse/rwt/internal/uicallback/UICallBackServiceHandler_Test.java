@@ -156,7 +156,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
     assertEquals( SEND_UI_REQUEST, Fixture.getAllMarkup() );
   }
 
-  public void testWriteUICallBackActivateWithoutStateInfo2() throws Exception {
+  public void testWriteUICallBackActivateWithoutStateInfo() throws Exception {
     replaceStateInfo( null );
 
     JavaScriptResponseWriter responseWriter = mock( JavaScriptResponseWriter.class );
@@ -166,7 +166,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
       fail();
     }
   }
-
+  
   private static void replaceStateInfo( IServiceStateInfo stateInfo ) {
     HttpServletRequest request = ContextProvider.getRequest();
     HttpServletResponse response = ContextProvider.getResponse();
