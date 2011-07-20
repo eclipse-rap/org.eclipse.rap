@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.widgets.TableCellToolTip", {
@@ -29,10 +30,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableCellToolTip", {
     setText : function( text ) {
       if( text && text != "" ) {
         this.getAtom().setLabel( text );
-        this.setLeft(   qx.event.type.MouseEvent.getPageX()
-                      + this.getMousePointerOffsetX());
-        this.setTop(   qx.event.type.MouseEvent.getPageY()
-                     + this.getMousePointerOffsetY());
+        this.setLeft( qx.event.type.MouseEvent.getPageX() + this.getMousePointerOffsetX() );
+        this.setTop( qx.event.type.MouseEvent.getPageY() + this.getMousePointerOffsetY() );
         this.show();
       }
     },
@@ -42,10 +41,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableCellToolTip", {
         this._itemId = itemId;
         this._columnIndex = columnIndex;
         this.hide();
-        if(   !this._showTimer.getEnabled()
-            && itemId != null
-            && columnIndex != -1 )
-        {
+        if( !this._showTimer.getEnabled() && itemId != null && columnIndex != -1 ) {
           this._showTimer.start();
         }
       }
@@ -54,11 +50,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableCellToolTip", {
     _requestCellToolTipText : function() {
       if( this._itemId != null && this._columnIndex != -1 ) {
         var req = org.eclipse.swt.Request.getInstance();
-        req.addEvent( "org.eclipse.swt.events.cellToolTipTextRequested",
-                      this._controlId );
+        req.addEvent( "org.eclipse.swt.events.cellToolTipTextRequested", this._controlId );
         var cell = this._itemId + "," + this._columnIndex;
-        req.addParameter( "org.eclipse.swt.events.cellToolTipTextRequested.cell",
-                          cell );
+        req.addParameter( "org.eclipse.swt.events.cellToolTipTextRequested.cell", cell );
         req.send();
       }
     }
