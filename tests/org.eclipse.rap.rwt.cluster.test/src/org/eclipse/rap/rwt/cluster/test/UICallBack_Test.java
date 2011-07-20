@@ -59,7 +59,7 @@ public class UICallBack_Test extends TestCase {
     Response response = client.sendUICallBackRequest( 0 );
     thread.join();
 
-    String expected = "org.eclipse.swt.Request.getInstance().send();";
+    String expected = "org.eclipse.swt.Request.getInstance()._sendImmediate( true );";
     assertEquals( expected, response.getContentText().trim() );
   }
 
