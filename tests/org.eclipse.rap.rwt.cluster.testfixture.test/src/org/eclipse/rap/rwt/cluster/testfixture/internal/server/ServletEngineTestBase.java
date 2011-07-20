@@ -130,6 +130,18 @@ public abstract class ServletEngineTestBase extends TestCase {
     assertNotSame( session1.getServletContext(), session2.getServletContext() );
   }
   
+  public void testSessionAttributeNeedNotBeSerializable() throws Exception {
+    IServletEngine engine = startServletEngine( TestEntryPoint.class );
+    sendStartupRequest( engine );
+    HttpSession session = engine.getSessions()[ 0 ];
+    
+    String name = "name";
+    Object nonSerializable = new Object();
+    session.setAttribute( name, nonSerializable );
+    
+    assertSame( nonSerializable, session.getAttribute( name ) );
+  }
+  
   protected void setUp() throws Exception {
     System.setProperty( "lifecycle", SimpleLifeCycle.class.getName() );
     TestEntryPoint.reset();

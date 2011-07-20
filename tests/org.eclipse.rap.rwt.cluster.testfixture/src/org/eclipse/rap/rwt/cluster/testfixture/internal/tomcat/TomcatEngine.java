@@ -90,7 +90,9 @@ public class TomcatEngine implements IServletEngine {
   }
 
   private void configureContext( Class<? extends IEntryPoint> entryPointClass ) {
-    context.setDistributable( true );
+    if( tomcat.getEngine().getCluster() != null ) {
+      context.setDistributable( true );
+    }
     context.setSessionTimeout( -1 );
     context.addParameter( "org.eclipse.rwt.entryPoints", entryPointClass.getName() );
     context.addApplicationListener( RWTServletContextListener.class.getName() );

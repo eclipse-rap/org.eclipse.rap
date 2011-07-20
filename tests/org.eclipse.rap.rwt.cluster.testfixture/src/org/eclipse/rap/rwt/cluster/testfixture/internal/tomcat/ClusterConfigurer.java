@@ -84,6 +84,7 @@ class ClusterConfigurer {
 
   private DeltaManager createDeltaManager() {
     DeltaManager result = new DeltaManager();
+    result.setDistributable( true );
     result.setExpireSessionsOnShutdown( false );
     result.setNotifySessionListenersOnReplication( true );
     return result;
