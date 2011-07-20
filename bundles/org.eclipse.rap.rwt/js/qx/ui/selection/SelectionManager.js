@@ -1668,10 +1668,6 @@ qx.Class.define("qx.ui.selection.SelectionManager",
      */
     getPageUp : function(vItem)
     {
-      var vBoundedWidget = this.getBoundedWidget();
-      var vParentScrollTop = vBoundedWidget.getScrollTop();
-      var vParentClientHeight = vBoundedWidget.getClientHeight();
-
       // Find next item
       var nextItem = this.getLeadItem();
 
@@ -1679,39 +1675,44 @@ qx.Class.define("qx.ui.selection.SelectionManager",
         nextItem = this.getFirst();
       }
 
-      // Normally we should reach the status "lead" for the
-      // nextItem after two iterations.
-      var tryLoops = 0;
+      var vBoundedWidget = this.getBoundedWidget();
+      if( vBoundedWidget.isCreated() ) {
+        var vParentScrollTop = vBoundedWidget.getScrollTop();
+        var vParentClientHeight = vBoundedWidget.getClientHeight();
+        // Normally we should reach the status "lead" for the
+        // nextItem after two iterations.
+        var tryLoops = 0;
 
-      while (tryLoops < 2)
-      {
-        while (nextItem && (this.getItemTop(nextItem) - this.getItemHeight(nextItem) >= vParentScrollTop)) {
-          nextItem = this.getUp(nextItem);
-        }
-
-        // This should never occour after the fix above
-        if (nextItem == null) {
-          break;
-        }
-
-        // If the nextItem is not anymore the leadItem
-        // Means: There has occured a change.
-        // We break here. This is normally the second step.
-        if (nextItem != this.getLeadItem())
+        while (tryLoops < 2)
         {
-          // be sure that the top is reached
-          this.scrollItemIntoView(nextItem, true);
-          break;
+          while (nextItem && (this.getItemTop(nextItem) - this.getItemHeight(nextItem) >= vParentScrollTop)) {
+            nextItem = this.getUp(nextItem);
+          }
+
+          // This should never occour after the fix above
+          if (nextItem == null) {
+            break;
+          }
+
+          // If the nextItem is not anymore the leadItem
+          // Means: There has occured a change.
+          // We break here. This is normally the second step.
+          if (nextItem != this.getLeadItem())
+          {
+            // be sure that the top is reached
+            this.scrollItemIntoView(nextItem, true);
+            break;
+          }
+
+          // Update scrolling (this is normally the first step)
+          vBoundedWidget.setScrollTop(vParentScrollTop - vParentClientHeight - this.getItemHeight(nextItem));
+
+          // Use the real applied value instead of the calulated above
+          vParentScrollTop = vBoundedWidget.getScrollTop();
+
+          // Increment counter
+          tryLoops++;
         }
-
-        // Update scrolling (this is normally the first step)
-        vBoundedWidget.setScrollTop(vParentScrollTop - vParentClientHeight - this.getItemHeight(nextItem));
-
-        // Use the real applied value instead of the calulated above
-        vParentScrollTop = vBoundedWidget.getScrollTop();
-
-        // Increment counter
-        tryLoops++;
       }
 
       return nextItem;
@@ -1729,48 +1730,50 @@ qx.Class.define("qx.ui.selection.SelectionManager",
      */
     getPageDown : function(vItem)
     {
-      var vBoundedWidget = this.getBoundedWidget();
-      var vParentScrollTop = vBoundedWidget.getScrollTop();
-      var vParentClientHeight = vBoundedWidget.getClientHeight();
-
       // Find next item
       var nextItem = this.getLeadItem();
 
       if (!nextItem) {
         nextItem = this.getFirst();
       }
+      
+      var vBoundedWidget = this.getBoundedWidget();
+      if( vBoundedWidget.isCreated() ) {
+        var vParentScrollTop = vBoundedWidget.getScrollTop();
+        var vParentClientHeight = vBoundedWidget.getClientHeight();
 
-      // Normally we should reach the status "lead" for the
-      // nextItem after two iterations.
-      var tryLoops = 0;
+        // Normally we should reach the status "lead" for the
+        // nextItem after two iterations.
+        var tryLoops = 0;
 
-      while (tryLoops < 2)
-      {
-        // Find next
-        while (nextItem && ((this.getItemTop(nextItem) + (2 * this.getItemHeight(nextItem))) <= (vParentScrollTop + vParentClientHeight))) {
-          nextItem = this.getDown(nextItem);
+        while (tryLoops < 2)
+        {
+          // Find next
+          while (nextItem && ((this.getItemTop(nextItem) + (2 * this.getItemHeight(nextItem))) <= (vParentScrollTop + vParentClientHeight))) {
+            nextItem = this.getDown(nextItem);
+          }
+
+          // This should never occour after the fix above
+          if (nextItem == null) {
+            break;
+          }
+
+          // If the nextItem is not anymore the leadItem
+          // Means: There has occured a change.
+          // We break here. This is normally the second step.
+          if (nextItem != this.getLeadItem()) {
+            break;
+          }
+
+          // Update scrolling (this is normally the first step)
+          vBoundedWidget.setScrollTop(vParentScrollTop + vParentClientHeight - 2 * this.getItemHeight(nextItem));
+
+          // Use the real applied value instead of the calulated above
+          vParentScrollTop = vBoundedWidget.getScrollTop();
+
+          // Increment counter
+          tryLoops++;
         }
-
-        // This should never occour after the fix above
-        if (nextItem == null) {
-          break;
-        }
-
-        // If the nextItem is not anymore the leadItem
-        // Means: There has occured a change.
-        // We break here. This is normally the second step.
-        if (nextItem != this.getLeadItem()) {
-          break;
-        }
-
-        // Update scrolling (this is normally the first step)
-        vBoundedWidget.setScrollTop(vParentScrollTop + vParentClientHeight - 2 * this.getItemHeight(nextItem));
-
-        // Use the real applied value instead of the calulated above
-        vParentScrollTop = vBoundedWidget.getScrollTop();
-
-        // Increment counter
-        tryLoops++;
       }
 
       return nextItem;
