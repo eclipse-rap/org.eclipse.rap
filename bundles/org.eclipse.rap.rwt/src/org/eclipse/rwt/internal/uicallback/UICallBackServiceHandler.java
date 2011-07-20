@@ -35,8 +35,8 @@ public class UICallBackServiceHandler implements IServiceHandler {
   public void service() throws IOException {
     HttpServletResponse response = ContextProvider.getResponse();
     ISessionStore sessionStore = ContextProvider.getSession();
-    boolean isActiveRequest = UICallBackManager.getInstance().processRequest( response );
-    if( sessionStore.isBound() && isActiveRequest ) {
+    boolean success = UICallBackManager.getInstance().processRequest( response );
+    if( success && sessionStore.isBound() ) {
       JavaScriptResponseWriter writer = new JavaScriptResponseWriter( response );
       writeUICallBackActivation( writer );
       writeUiRequestNeeded( writer );

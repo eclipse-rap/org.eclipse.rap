@@ -133,9 +133,7 @@ public final class UICallBackManager implements SerializableCompatibility {
       if( mustBlockCallBackRequest() ) {
         Thread currentThread = Thread.currentThread();
         callBackRequestTracker.activate( currentThread );
-        SessionStoreListener listener = new UnblockSessionStoreListener();
-        ISessionStore sessionStore = ContextProvider.getSession();
-        sessionStore.addSessionStoreListener( listener );
+        SessionTerminationListener listener = attachSessionTerminationListener();
         try {
           boolean canRelease = false;
           wakeCalled = false;
@@ -143,11 +141,12 @@ public final class UICallBackManager implements SerializableCompatibility {
             lock.wait( requestCheckInterval );
             canRelease = canReleaseBlockedRequest( response );
           }
+          result = callBackRequestTracker.isActive( currentThread );
         } catch( InterruptedException ie ) {
+          result = false;
           Thread.interrupted(); // Reset interrupted state, see bug 300254
         } finally {
-          sessionStore.removeSessionStoreListener( listener );
-          result = callBackRequestTracker.isActive( currentThread );
+          listener.detach();
           callBackRequestTracker.deactivate( currentThread );
         }
       }
@@ -184,6 +183,13 @@ public final class UICallBackManager implements SerializableCompatibility {
     return this;
   }
 
+  private static SessionTerminationListener attachSessionTerminationListener() {
+    ISessionStore sessionStore = ContextProvider.getSession();
+    SessionTerminationListener result = new SessionTerminationListener( sessionStore );
+    result.attach();
+    return result;
+  }
+
   private static boolean isConnectionAlive( HttpServletResponse response ) {
     boolean result;
     try {
@@ -205,13 +211,23 @@ public final class UICallBackManager implements SerializableCompatibility {
     return result;
   }
 
-  private static class UnblockSessionStoreListener
+  private static class SessionTerminationListener
     implements SessionStoreListener, SerializableCompatibility
   {
     private transient final Thread currentThread;
+    private transient final ISessionStore sessionStore;
 
-    private UnblockSessionStoreListener() {
+    private SessionTerminationListener( ISessionStore sessionStore ) {
+      this.sessionStore = sessionStore;
       this.currentThread = Thread.currentThread();
+    }
+
+    public void attach() {
+      sessionStore.addSessionStoreListener( this );
+    }
+
+    public void detach() {
+      sessionStore.removeSessionStoreListener( this );
     }
 
     public void beforeDestroy( SessionStoreEvent event ) {
