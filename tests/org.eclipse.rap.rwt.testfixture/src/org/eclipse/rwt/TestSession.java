@@ -24,6 +24,7 @@ public class TestSession implements HttpSession {
   private ServletContext servletContext;
   private boolean isInvalidated;
   private boolean newSession;
+  private int maxInactiveInterval;
   
   public TestSession() {
     attributes = new HashMap<String,Object>();
@@ -59,11 +60,12 @@ public class TestSession implements HttpSession {
     this.servletContext = servletContext;
   }
   
-  public void setMaxInactiveInterval( final int arg0 ) {
+  public void setMaxInactiveInterval( final int maxInactiveInterval ) {
+    this.maxInactiveInterval = maxInactiveInterval;
   }
   
   public int getMaxInactiveInterval() {
-    return 0;
+    return maxInactiveInterval;
   }
   
   /**

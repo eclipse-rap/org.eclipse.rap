@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionBindingListener;
 
 import junit.framework.TestCase;
 
@@ -208,6 +209,19 @@ public class UICallBackManager_Test extends TestCase {
     assertFalse( manager.isCallBackRequestBlocked() );
     assertFalse( uiCallBackThread.isAlive() );
     assertNull( uiCallBackHandlerThrowable[ 0 ] );
+  }
+  
+  public void testCallBackRequestIsReleasedWhenSessionExpires() throws Exception {
+    HttpSession httpSession = ContextProvider.getSession().getHttpSession();
+    httpSession.setMaxInactiveInterval( 1 );
+    HttpSessionBindingListener sessionListener = mock( HttpSessionBindingListener.class );
+    httpSession.setAttribute( "listener", sessionListener );
+    manager.setRequestCheckInterval( 10 );
+    
+    manager.activateUICallBacksFor( "id" );
+    boolean success = manager.processRequest( ContextProvider.getResponse() );
+    
+    assertFalse( success );
   }
   
   public void testMultipleCallBackRequests() throws Exception {
@@ -507,6 +521,30 @@ public class UICallBackManager_Test extends TestCase {
   public void testNeedActivationWithPendingRunnablesDoesntEnableUICallback() throws Exception {
     display.asyncExec( EMPTY_RUNNABLE );
     assertFalse( manager.needsActivation() );
+  }
+  
+  public void testIsSessionExpiredWithInfiniteSessionTimeout() {
+    ContextProvider.getSession().getHttpSession().setMaxInactiveInterval( -1 );
+    
+    boolean sessionExpired = UICallBackManager.isSessionExpired( 1, 2 );
+    
+    assertFalse( sessionExpired );
+  }
+  
+  public void testIsSessionExpiredWhenSessionTimedOut() {
+    ContextProvider.getSession().getHttpSession().setMaxInactiveInterval( 10 );
+    
+    boolean sessionExpired = UICallBackManager.isSessionExpired( 1, 20000 );
+    
+    assertTrue( sessionExpired );
+  }
+  
+  public void testIsSessionExpiredWhenSessionActive() {
+    ContextProvider.getSession().getHttpSession().setMaxInactiveInterval( 10 );
+    
+    boolean sessionExpired = UICallBackManager.isSessionExpired( 1, 9000 );
+    
+    assertFalse( sessionExpired );
   }
   
   private Thread simulateUiCallBackThread(

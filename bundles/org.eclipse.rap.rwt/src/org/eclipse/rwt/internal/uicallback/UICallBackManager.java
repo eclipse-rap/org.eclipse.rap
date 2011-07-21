@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
@@ -131,36 +132,43 @@ public final class UICallBackManager implements SerializableCompatibility {
         releaseBlockedRequest();
       }
       if( mustBlockCallBackRequest() ) {
-        Thread currentThread = Thread.currentThread();
-        callBackRequestTracker.activate( currentThread );
+        long requestStartTime = System.currentTimeMillis();
+        callBackRequestTracker.activate( Thread.currentThread() );
         SessionTerminationListener listener = attachSessionTerminationListener();
         try {
           boolean canRelease = false;
           wakeCalled = false;
           while( !wakeCalled && !canRelease ) {
             lock.wait( requestCheckInterval );
-            canRelease = canReleaseBlockedRequest( response );
+            canRelease = canReleaseBlockedRequest( response, requestStartTime );
           }
-          result = callBackRequestTracker.isActive( currentThread );
+          result = callBackRequestTracker.isActive( Thread.currentThread() );
+          if( isSessionExpired( requestStartTime ) ) {
+            result = false;
+          }
         } catch( InterruptedException ie ) {
           result = false;
           Thread.interrupted(); // Reset interrupted state, see bug 300254
         } finally {
           listener.detach();
-          callBackRequestTracker.deactivate( currentThread );
+          callBackRequestTracker.deactivate( Thread.currentThread() );
         }
       }
     }
     return result;
   }
 
-  private boolean canReleaseBlockedRequest( HttpServletResponse response ) {
+  private boolean canReleaseBlockedRequest( HttpServletResponse response, 
+                                            long requestStartTime ) 
+  {
     boolean result = false;
     if( !mustBlockCallBackRequest() ) {
       result = true;
     } else if( !isConnectionAlive( response ) ) {
       result = true;
     } else if( !callBackRequestTracker.isActive( Thread.currentThread() ) ) {
+      result = true;
+    } else if( isSessionExpired( requestStartTime ) ) {
       result = true;
     }
     return result;
@@ -187,6 +195,20 @@ public final class UICallBackManager implements SerializableCompatibility {
     ISessionStore sessionStore = ContextProvider.getSession();
     SessionTerminationListener result = new SessionTerminationListener( sessionStore );
     result.attach();
+    return result;
+  }
+
+  private boolean isSessionExpired( long requestStartTime ) {
+    return isSessionExpired( requestStartTime, System.currentTimeMillis() );
+  }
+
+  static boolean isSessionExpired( long requestStartTime, long currentTime ) {
+    boolean result = false;
+    HttpSession httpSession = ContextProvider.getSession().getHttpSession();
+    int maxInactiveInterval = httpSession.getMaxInactiveInterval();
+    if( maxInactiveInterval > 0 ) {
+      result = currentTime > requestStartTime + maxInactiveInterval * 1000;
+    }
     return result;
   }
 
