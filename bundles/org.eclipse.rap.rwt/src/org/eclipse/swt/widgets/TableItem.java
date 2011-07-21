@@ -787,10 +787,13 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setChecked( final boolean checked ) {
+  public void setChecked( boolean checked ) {
     checkWidget();
     if( ( parent.style & SWT.CHECK ) != 0 ) {
-      this.checked = checked;
+      if( this.checked != checked ) {
+        this.checked = checked;
+        markCached();
+      }
     }
   }
 
@@ -829,10 +832,13 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setGrayed( final boolean grayed ) {
+  public void setGrayed( boolean grayed ) {
     checkWidget();
     if( ( parent.style & SWT.CHECK ) != 0 ) {
-      this.grayed = grayed;
+      if( this.grayed != grayed ) {
+        this.grayed = grayed;
+        markCached();
+      }
     }
   }
 

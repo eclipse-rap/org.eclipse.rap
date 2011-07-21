@@ -1085,6 +1085,26 @@ public class TableItem_Test extends TestCase {
     assertEquals( "cell0", item.getText( 0 ) );
   }
 
+  public void testMarkCachedOnSetChecked() {
+    Table table = new Table( shell, SWT.VIRTUAL | SWT.CHECK );
+    table.setItemCount( 1 );
+    ITableAdapter adapter = getTableAdapter( table );
+
+    table.getItem( 0 ).setChecked( true );
+
+    assertFalse( adapter.isItemVirtual( 0 ) );
+  }
+
+  public void testMarkCachedOnSetGrayed() {
+    Table table = new Table( shell, SWT.VIRTUAL | SWT.CHECK );
+    table.setItemCount( 1 );
+    ITableAdapter adapter = getTableAdapter( table );
+
+    table.getItem( 0 ).setGrayed( true );
+
+    assertFalse( adapter.isItemVirtual( 0 ) );
+  }
+
   /////////////////
   // helper methods
 
@@ -1099,6 +1119,10 @@ public class TableItem_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     table.setData( "fixedColumns", new Integer( 1 ) );
     return table;
+  }
+
+  private ITableAdapter getTableAdapter( Table table ) {
+    return ( ITableAdapter )table.getAdapter( ITableAdapter.class );
   }
 
 }
