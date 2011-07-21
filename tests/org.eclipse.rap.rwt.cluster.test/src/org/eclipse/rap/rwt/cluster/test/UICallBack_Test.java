@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.cluster.test.entrypoints.SessionTimeoutEntryPoint;
 import org.eclipse.rap.rwt.cluster.test.entrypoints.UICallbackEntryPoint;
 import org.eclipse.rap.rwt.cluster.testfixture.ClusterFixture;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
@@ -80,6 +81,24 @@ public class UICallBack_Test extends TestCase {
     
     UICallBackManager uiCallBackManager = getUICallBackManager();
     assertFalse( uiCallBackManager.isCallBackRequestBlocked() );
+  }
+
+  public void testUICallBackRequestDoesNotKeepSessionAlive() throws Exception {
+    servletEngine.start( SessionTimeoutEntryPoint.class );
+    client.sendStartupRequest();
+    client.sendInitializationRequest();
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        try {
+          client.sendUICallBackRequest( 0 );
+        } catch( IOException ignore ) {
+        }
+      }
+    } );
+    thread.start();
+    Thread.sleep( SessionTimeoutEntryPoint.SESSION_SWEEP_INTERVAL );
+    
+    assertTrue( SessionTimeoutEntryPoint.isSessionInvalidated() );
   }
 
   protected void setUp() throws Exception {

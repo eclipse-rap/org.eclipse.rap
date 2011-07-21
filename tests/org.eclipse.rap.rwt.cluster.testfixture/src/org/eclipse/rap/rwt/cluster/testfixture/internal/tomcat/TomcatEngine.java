@@ -16,6 +16,7 @@ import org.apache.catalina.Wrapper;
 import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
 import org.apache.catalina.servlets.DefaultServlet;
+import org.apache.catalina.session.ManagerBase;
 import org.apache.catalina.startup.Tomcat;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.server.DelegatingServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.FileUtil;
@@ -60,6 +61,7 @@ public class TomcatEngine implements IServletEngine {
     prepareWebAppsDir();
     configureContext( entryPointClass );
     tomcat.start();
+    configureSessionSweepInterval();
   }
 
   public void stop() throws Exception {
@@ -99,6 +101,7 @@ public class TomcatEngine implements IServletEngine {
       context.setDistributable( true );
     }
     context.setSessionTimeout( -1 );
+    context.setBackgroundProcessorDelay( 1 );
     context.addParameter( "org.eclipse.rwt.entryPoints", entryPointClass.getName() );
     context.addApplicationListener( RWTServletContextListener.class.getName() );
     Wrapper rwtServlet = addServlet( "rwtServlet", new RWTDelegate() );
@@ -106,6 +109,11 @@ public class TomcatEngine implements IServletEngine {
     Wrapper defaultServlet = addServlet( "defaultServlet", new DefaultServlet() );
     context.addServletMapping( "/", defaultServlet.getName() );
     addFilter( rwtServlet, new RWTClusterSupport() );
+  }
+
+  private void configureSessionSweepInterval() {
+    ManagerBase manager = ( ManagerBase )context.getManager();
+    manager.setProcessExpiresFrequency( 1 );
   }
 
   private Wrapper addServlet( String name, HttpServlet servlet ) {

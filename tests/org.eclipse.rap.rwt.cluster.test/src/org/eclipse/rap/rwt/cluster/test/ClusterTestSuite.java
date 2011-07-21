@@ -17,13 +17,13 @@ import junit.framework.TestSuite;
 public class ClusterTestSuite {
 
   public static Test suite() {
-    TestSuite suite = new TestSuite( ClusterTestSuite.class.getName() );
-    suite.addTestSuite( JettySessionFailover_Test.class );
-    suite.addTestSuite( JettySessionCleanup_Test.class );
-    suite.addTestSuite( TomcatSessionFailover_Test.class );
-    suite.addTestSuite( TomcatSessionCleanup_Test.class );
-    suite.addTestSuite( SessionSerialization_Test.class );
-    suite.addTestSuite( UICallBack_Test.class );
-    return suite;
+    TestSuite result = new TestSuite( ClusterTestSuite.class.getName() );
+    result.addTestSuite( JettySessionFailover_Test.class );
+    result.addTestSuite( JettySessionCleanup_Test.class );
+    result.addTestSuite( TomcatSessionFailover_Test.class );
+    result.addTestSuite( TomcatSessionCleanup_Test.class );
+    result.addTestSuite( SessionSerialization_Test.class );
+    result.addTestSuite( UICallBack_Test.class );
+    return result;
   }
 }
