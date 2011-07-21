@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.test.entrypoints;
 
-import java.io.Serializable;
-
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
@@ -44,7 +42,7 @@ public class SessionTimeoutEntryPoint implements IEntryPoint {
   }
 
   private static class SessionInvalidationListener 
-    implements HttpSessionBindingListener, Serializable 
+    implements HttpSessionBindingListener
   {
 
     public void valueUnbound( HttpSessionBindingEvent event ) {
