@@ -20,10 +20,11 @@ public class ClusterTestSuite {
     TestSuite result = new TestSuite( ClusterTestSuite.class.getName() );
     result.addTestSuite( JettySessionFailover_Test.class );
     result.addTestSuite( JettySessionCleanup_Test.class );
+    result.addTestSuite( JettyUICallBack_Test.class );
     result.addTestSuite( TomcatSessionFailover_Test.class );
     result.addTestSuite( TomcatSessionCleanup_Test.class );
+    result.addTestSuite( TomcatUICallBack_Test.class );
     result.addTestSuite( SessionSerialization_Test.class );
-    result.addTestSuite( UICallBack_Test.class );
     return result;
   }
 }

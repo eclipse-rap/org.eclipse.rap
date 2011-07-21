@@ -164,11 +164,11 @@ public final class UICallBackManager implements SerializableCompatibility {
     boolean result = false;
     if( !mustBlockCallBackRequest() ) {
       result = true;
+    } else if( isSessionExpired( requestStartTime ) ) {
+      result = true;
     } else if( !isConnectionAlive( response ) ) {
       result = true;
     } else if( !callBackRequestTracker.isActive( Thread.currentThread() ) ) {
-      result = true;
-    } else if( isSessionExpired( requestStartTime ) ) {
       result = true;
     }
     return result;

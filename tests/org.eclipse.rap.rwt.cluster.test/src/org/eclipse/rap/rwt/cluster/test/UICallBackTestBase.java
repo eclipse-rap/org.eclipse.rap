@@ -22,17 +22,19 @@ import org.eclipse.rap.rwt.cluster.testfixture.ClusterFixture;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rap.rwt.cluster.testfixture.server.TomcatFactory;
+import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
 import org.eclipse.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 
 
 @SuppressWarnings("restriction")
-public class UICallBack_Test extends TestCase {
+public abstract class UICallBackTestBase extends TestCase {
 
   private IServletEngine servletEngine;
   private RWTClient client;
+  
+  abstract IServletEngineFactory getServletEngineFactory();
   
   public void testUICallbackRequestResponse() throws Exception {
     servletEngine.start( UICallbackEntryPoint.class );
@@ -77,7 +79,7 @@ public class UICallBack_Test extends TestCase {
       assertEquals( "Read timed out", expected.getMessage() );
     }
     
-    sleep( 800 );
+    Thread.sleep( 800 );
     
     UICallBackManager uiCallBackManager = getUICallBackManager();
     assertFalse( uiCallBackManager.isCallBackRequestBlocked() );
@@ -87,23 +89,17 @@ public class UICallBack_Test extends TestCase {
     servletEngine.start( SessionTimeoutEntryPoint.class );
     client.sendStartupRequest();
     client.sendInitializationRequest();
-    Thread thread = new Thread( new Runnable() {
-      public void run() {
-        try {
-          client.sendUICallBackRequest( 0 );
-        } catch( IOException ignore ) {
-        }
-      }
-    } );
-    thread.start();
+    getUICallBackManager().setRequestCheckInterval( 100 );
+    
+    asyncSendUICallBackRequest();
     Thread.sleep( SessionTimeoutEntryPoint.SESSION_SWEEP_INTERVAL );
     
     assertTrue( SessionTimeoutEntryPoint.isSessionInvalidated() );
   }
-
+  
   protected void setUp() throws Exception {
     ClusterFixture.setUp();
-    servletEngine = new TomcatFactory().createServletEngine();
+    servletEngine = getServletEngineFactory().createServletEngine();
     client = new RWTClient( servletEngine );
   }
 
@@ -130,6 +126,19 @@ public class UICallBack_Test extends TestCase {
     } catch( InterruptedException ie ) {
       throw new RuntimeException( ie );
     }
+  }
+
+  private void asyncSendUICallBackRequest() {
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        try {
+          client.sendUICallBackRequest( 0 );
+        } catch( IOException ignore ) {
+        }
+      }
+    } );
+    thread.setDaemon( true );
+    thread.start();
   }
 
   private void configureCallbackRequestCheckInterval( final int interval ) {
