@@ -30,7 +30,11 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       var html = content.replace( /{HREF_URL}/, hrefAttr );
       this._freezeApplication();
       this._createOverlay();
-      this._createTimeoutArea( 400, 100 ).innerHTML = html;
+      var element = this._createTimeoutArea( 400, 100 );
+      element.innerHTML = html;
+      var hyperlink = element.getElementsByTagName( "a" )[ 0 ];
+      hyperlink.style.outline = "none";
+      hyperlink.focus();
     },
 
     processJavaScriptErrorInResponse : function( script, error, currentRequest ) {
