@@ -301,7 +301,7 @@ public class TreeItem extends Item {
       parent.updateScrollBars();
     }
   }
-  
+
   private void setEmpty() {
     items = new TreeItem[ 4 ];
   }
@@ -348,7 +348,7 @@ public class TreeItem extends Item {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
       result = new CompositeItemHolder();
-    } else if(    adapter == IWidgetFontAdapter.class 
+    } else if(    adapter == IWidgetFontAdapter.class
                || adapter == IWidgetColorAdapter.class
                || adapter == ITreeItemAdapter.class )
     {
@@ -364,7 +364,7 @@ public class TreeItem extends Item {
 
   //////////////////////////
   // Parent/child relations
-  
+
   /**
    * Returns the receiver's parent, which must be a <code>Tree</code>.
    *
@@ -398,7 +398,7 @@ public class TreeItem extends Item {
 
   /////////////////
   // Getter/Setter
-  
+
   /**
    * Sets the expanded state of the receiver.
    * <p>
@@ -895,7 +895,7 @@ public class TreeItem extends Item {
   public void setChecked( boolean checked ) {
     checkWidget();
     if( ( parent.getStyle() & SWT.CHECK ) != 0 ) {
-      if( checked != this.checked ) {
+      if( this.checked != checked ) {
         this.checked = checked;
         markCached();
       }
@@ -923,17 +923,17 @@ public class TreeItem extends Item {
    * Sets the grayed state of the checkbox for this item. This state change only
    * applies if the Tree was created with the SWT.CHECK style.
    *
-   * @param value the new grayed state of the checkbox
+   * @param grayed the new grayed state of the checkbox
    * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
    *              has been disposed</li> <li>ERROR_THREAD_INVALID_ACCESS - if
    *              not called from the thread that created the receiver</li>
    *              </ul>
    */
-  public void setGrayed( boolean value ) {
+  public void setGrayed( boolean grayed ) {
     checkWidget();
     if( ( parent.getStyle() & SWT.CHECK ) != 0 ) {
-      if( grayed != value ) {
-        grayed = value;
+      if( this.grayed != grayed ) {
+        this.grayed = grayed;
         markCached();
       }
     }
@@ -1250,7 +1250,7 @@ public class TreeItem extends Item {
     if( index < 0 || index >= itemCount ) {
       error( SWT.ERROR_INVALID_RANGE );
     }
-    TreeItem item = items[ index ];    
+    TreeItem item = items[ index ];
     if( item != null ) {
       item.clear();
       if( recursive ) {
@@ -1423,7 +1423,7 @@ public class TreeItem extends Item {
 
   ////////////////////////////////////////
   // Methods to maintain (sub-) TreeItems
-  
+
   /**
    * Returns a (possibly empty) array of <code>TreeItem</code>s which are the
    * direct item children of the receiver.
@@ -1451,7 +1451,7 @@ public class TreeItem extends Item {
     }
     return result;
   }
-  
+
   private TreeItem _getItem( int index ) {
     if( parent.isVirtual() && items[ index ] == null ) {
       items[ index ] = new TreeItem( parent, this, SWT.NONE, index, false );
@@ -1621,7 +1621,7 @@ public class TreeItem extends Item {
 
   /////////////////////////////////
   // Methods to dispose of the item
-  
+
   final void releaseChildren() {
     TreeItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
