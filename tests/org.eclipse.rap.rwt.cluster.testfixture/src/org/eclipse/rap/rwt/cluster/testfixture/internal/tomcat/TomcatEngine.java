@@ -17,6 +17,7 @@ import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
 import org.apache.catalina.servlets.DefaultServlet;
 import org.apache.catalina.session.ManagerBase;
+import org.apache.catalina.session.StandardManager;
 import org.apache.catalina.startup.Tomcat;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.server.DelegatingServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.FileUtil;
@@ -62,6 +63,7 @@ public class TomcatEngine implements IServletEngine {
     configureContext( entryPointClass );
     tomcat.start();
     configureSessionSweepInterval();
+    configureSessionPersistence();
   }
 
   public void stop() throws Exception {
@@ -114,6 +116,13 @@ public class TomcatEngine implements IServletEngine {
   private void configureSessionSweepInterval() {
     ManagerBase manager = ( ManagerBase )context.getManager();
     manager.setProcessExpiresFrequency( 1 );
+  }
+  
+  private void configureSessionPersistence() {
+    if( context.getManager() instanceof StandardManager ) {
+      StandardManager standardManager = ( StandardManager )context.getManager();
+      standardManager.setPathname( null );
+    }
   }
 
   private Wrapper addServlet( String name, HttpServlet servlet ) {
