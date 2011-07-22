@@ -94,13 +94,14 @@ public class Link_Test extends TestCase {
   public void testIsSerializable() throws Exception {
     String text = "text";
     Link link = new Link( shell, SWT.NONE );
+    link.getAdapter( ILinkAdapter.class );
     link.setText( text );
 
     Link deserializedLink = Fixture.serializeAndDeserialize( link );
     
     assertEquals( text, deserializedLink.getText() );
   }
-
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );

@@ -46,7 +46,7 @@ public class Link extends Control {
   private Point[] offsets;
   private String[] ids;
   private int[] mnemonics;
-  private ILinkAdapter linkAdapter;
+  private transient ILinkAdapter linkAdapter;
 
   /**
    * Constructs a new instance of this class given its parent
