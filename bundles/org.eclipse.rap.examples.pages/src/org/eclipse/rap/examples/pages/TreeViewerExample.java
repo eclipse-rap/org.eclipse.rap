@@ -334,8 +334,7 @@ public class TreeViewerExample implements IExamplePage {
     
     private TreeObject getTreeObject( int x, int y ) {
       TreeObject result = null;
-      Point point = viewer.getTree().toControl( x, y );
-      ViewerCell cell = viewer.getCell( point );
+      ViewerCell cell = viewer.getCell( new Point( x, y ) );
       if( cell != null ) {
         result = ( TreeObject )cell.getElement();
       }
