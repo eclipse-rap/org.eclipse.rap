@@ -12,6 +12,9 @@
 
 package org.eclipse.rap.demo.controls;
 
+import java.io.InputStream;
+import java.io.Serializable;
+
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
@@ -20,13 +23,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
 
 @SuppressWarnings("restriction")
-public class ControlsDemo implements IEntryPoint {
+public class ControlsDemo implements IEntryPoint, Serializable {
 
   public int createUI() {
     Display display = new Display();
@@ -34,7 +37,7 @@ public class ControlsDemo implements IEntryPoint {
     shell.setBounds( 10, 10, 850, 600 );
     createContent( shell );
     shell.setText( "SWT Controls Demo" );
-    Image image = Graphics.getImage( "resources/shell.gif", getClass().getClassLoader() );
+    Image image = loadImage( display, "resources/shell.gif" );
     shell.setImage( image );
     shell.layout();
     shell.open();
@@ -115,5 +118,12 @@ public class ControlsDemo implements IEntryPoint {
     if( result < 18 ) {
       folder.setTabHeight( 18 );
     }
+  }
+
+  private Image loadImage( Display display, String name ) {
+    InputStream stream = getClass().getClassLoader().getResourceAsStream( name );
+    ImageLoader imageLoader = new ImageLoader();
+    ImageData[] imageData = imageLoader.load( stream );
+    return new Image( display, imageData[ 0 ] );
   }
 }

@@ -11,8 +11,10 @@
 
 package org.eclipse.rap.demo.controls;
 
+import java.io.Serializable;
 
-public class ColorChooser {
+
+public class ColorChooser implements Serializable {
   
   
 }

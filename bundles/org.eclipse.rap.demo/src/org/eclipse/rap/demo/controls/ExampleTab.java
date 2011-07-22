@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
+import java.io.InputStream;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
@@ -27,7 +29,7 @@ import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 
-abstract class ExampleTab {
+abstract class ExampleTab implements Serializable {
 
   private boolean contentCreated;
   private final CTabFolder folder;
@@ -90,10 +92,6 @@ abstract class ExampleTab {
     "CURSOR_HAND",
     "CURSOR_UPARROW"
   };
-
-  public static Image BG_PATTERN_IMAGE
-    = Graphics.getImage( "resources/pattern.png",
-                         ExampleTab.class.getClassLoader() );
 
   public ExampleTab( final CTabFolder parent, final String title ) {
     folder = parent;
@@ -613,10 +611,14 @@ abstract class ExampleTab {
   }
 
   private void updateBgImage() {
+    InputStream stream = getClass().getClassLoader().getResourceAsStream( "resources/pattern.png" );
+    ImageLoader imageLoader = new ImageLoader();
+    ImageData[] imageData = imageLoader.load( stream );
     Iterator iter = controls.iterator();
     while( iter.hasNext() ) {
       Control control = ( Control )iter.next();
-      control.setBackgroundImage( showBgImage ? BG_PATTERN_IMAGE : null );
+      Image image = new Image( control.getDisplay(), imageData[ 0 ] );
+      control.setBackgroundImage( showBgImage ? image : null );
     }
   }
 

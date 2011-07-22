@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
+import java.io.InputStream;
 import java.util.Iterator;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -391,8 +392,13 @@ public class CTabFolderTab extends ExampleTab {
       Control control = ( Control )iter.next();
       if( control instanceof CTabFolder ) {
         CTabFolder folder = ( CTabFolder )control;
+        InputStream stream 
+          = getClass().getClassLoader().getResourceAsStream( "resources/pattern.png" );
+        ImageLoader imageLoader = new ImageLoader();
+        ImageData[] imageData = imageLoader.load( stream );
+        Image image = new Image( control.getDisplay(), imageData[ 0 ] );
         if( showSelectionBgImage ) {
-          folder.setSelectionBackground( BG_PATTERN_IMAGE );
+          folder.setSelectionBackground( image );
         } else {
           folder.setSelectionBackground( ( Image )null );
         }
