@@ -15,6 +15,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.*;
 
 
@@ -91,7 +92,7 @@ public class TableItem extends Item {
     }
   }
 
-  private static final class Data {
+  private static final class Data implements SerializableCompatibility {
     String text = "";
     Image image;
     Font font;

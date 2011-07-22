@@ -1104,6 +1104,17 @@ public class TableItem_Test extends TestCase {
 
     assertFalse( adapter.isItemVirtual( 0 ) );
   }
+  
+  public void testIsSerializable() throws Exception {
+    String itemText = "text";
+    Table table = new Table( shell, SWT.VIRTUAL | SWT.CHECK );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setText( itemText );
+    
+    TableItem deserializedItem = Fixture.serializeAndDeserialize( item );
+    
+    assertEquals( itemText, deserializedItem.getText() );
+  }
 
   /////////////////
   // helper methods
