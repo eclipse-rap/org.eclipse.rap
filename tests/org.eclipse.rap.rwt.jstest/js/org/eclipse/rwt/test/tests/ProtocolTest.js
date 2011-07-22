@@ -297,7 +297,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        knownActions : [ "doFoo" ]
+        knownMethods : [ "doFoo" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
       var properties = {
@@ -314,11 +314,36 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       registry.remove( "dummyType" );
     },
 
+    testProcessCustomCall : function() {
+      var registry = org.eclipse.rwt.protocol.AdapterRegistry;
+      var processor = org.eclipse.rwt.protocol.Processor;
+      registry.add( "dummyType", {
+        knownMethods : [ "doBar" ],
+        methodHandler : {
+          "doBar" : function( widget, properties ) {
+            widget.doFoo( properties );
+          }
+        }
+      } );
+      var targetObject = this._getDummyTarget( "dummyId" );
+      var properties = {};
+      var operation = {
+        "target" : "dummyId",
+        "action" : "call",
+        "method" : "doBar",
+        "properties" : properties
+      };
+      processor.processOperation( operation );
+      assertEquals( "foo", targetObject.getLog()[ 0 ] );
+      assertIdentical( properties, targetObject.getLog()[ 1 ] );
+      registry.remove( "dummyType" );
+    },
+
     testProcessCallWithParameters : function() {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        knownActions : [ "doFoo" ]
+        knownMethods : [ "doFoo" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
       var properties = {
@@ -337,12 +362,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       registry.remove( "dummyType" );
     },
     
-    testProcessCallUnkownAction : function() {
+    testProcessCallUnkownMethod : function() {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        knownActions : [ "doBar" ]
+        knownMethods : [ "doBar" ]
       } );
+      var targetObject = this._getDummyTarget( "dummyId" );
+      var properties = {
+        name : "doFoo"
+      };
+      var operation = {
+        "target" : "dummyId",
+        "action" : "call",
+        "properties" : properties
+      };
+      processor.processOperation( operation );
+      assertEquals( 0, targetObject.getLog().length );
+      registry.remove( "dummyType" );
+    },
+    
+    testProcessCallNoKownMethod : function() {
+      var registry = org.eclipse.rwt.protocol.AdapterRegistry;
+      var processor = org.eclipse.rwt.protocol.Processor;
+      registry.add( "dummyType", { } );
       var targetObject = this._getDummyTarget( "dummyId" );
       var properties = {
         name : "doFoo"
@@ -361,7 +404,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        knownEvents : [ "focus" ]
+        knownListeners : [ "focus" ]
       } );
       var targetObject = this._getDummyWidget( "dummyId" );
       var properties = {
@@ -395,7 +438,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        knownEvents : [ "mouse" ]
+        knownListeners : [ "mouse" ]
       } );
       var targetObject = this._getDummyWidget( "dummyId" );
       var properties = {
@@ -429,7 +472,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        knownEvents : [ "focus" ]
+        knownListeners : [ "focus" ]
       } );
       var targetObject = this._getDummyWidget( "dummyId" );
       var properties = {
@@ -444,7 +487,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       // NOTE: hasEventListeners may return "undefined" instead of "false"      
       assertTrue( !targetObject.hasEventListeners( "mousedown" ) );
       assertTrue( !targetObject.hasEventListeners( "mouseup" ) );
-      processor._addListener( targetObject, "mouse" );
+      processor._addListener( {}, targetObject, "mouse" );
       properties = {
         remove : [ "mouse" ]
       };
@@ -462,7 +505,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       targetObject.destroy();
     },
 
-    testProcessNoKnownListener : function() {
+    testProcessNoknownListeners : function() {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {} );
@@ -479,7 +522,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       // NOTE: hasEventListeners may return "undefined" instead of "false"      
       assertTrue( !targetObject.hasEventListeners( "mousedown" ) );
       assertTrue( !targetObject.hasEventListeners( "mouseup" ) );
-      processor._addListener( targetObject, "mouse" );
+      processor._addListener( {}, targetObject, "mouse" );
       properties = {
         remove : [ "mouse" ]
       };
@@ -497,42 +540,67 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       targetObject.destroy();
     },
 
-    testProcessListenerDoesNotExistFails : function() {
+    testProcessSetterListener : function() {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        knownEvents : [ "foo", "bar" ]
+        knownListeners : [ "foo", "bar" ]
       } );
-      var targetObject = this._getDummyWidget( "dummyId" );
+      var targetObject = this._getDummyTarget( "dummyId" );
       var properties = {
         "foo" : true
       };
-      var log = [];
-      try {
-        var operation = {
-          "target" : "dummyId",
-          "action" : "listen",
-          "properties" : properties
-        };
-        processor.processOperation( operation );
-      } catch( ex ) {
-        log.push( ex );
-      }
+      var operation = {
+        "target" : "dummyId",
+        "action" : "listen",
+        "properties" : properties
+      };
+      processor.processOperation( operation );
+      properties = {
+        "foo" : false
+      };
+      var operation = {
+        "target" : "dummyId",
+        "action" : "listen",
+        "properties" : properties
+      };
+      processor.processOperation( operation );
+      assertEquals(  [ "fooListener", true, "fooListener", false ], targetObject.getLog() );
+      targetObject.destroy();
+    },
+
+    testProcessCustomListener : function() {
+      var registry = org.eclipse.rwt.protocol.AdapterRegistry;
+      var processor = org.eclipse.rwt.protocol.Processor;
+      registry.add( "dummyType", {
+        knownListeners : [ "foo", "bar" ],
+        listenerHandler : {
+          "bar" : function( targetObject, value ) {
+            targetObject.setUserData( "barListener", value ? true : null );
+          }
+        }
+      } );
+      var targetObject = this._getDummyTarget( "dummyId" );
+      var properties = {
+        "bar" : true
+      };
+      var operation = {
+        "target" : "dummyId",
+        "action" : "listen",
+        "properties" : properties
+      };
+      processor.processOperation( operation );
+      assertTrue( targetObject.getUserData( "barListener" ) );
       properties = {
         "bar" : false
       };
-      try {
-        var operation = {
-          "target" : "dummyId",
-          "action" : "listen",
-          "properties" : properties
-        };
-        processor.processOperation( operation );
-      } catch( ex ) {
-        log.push( ex );
-      }
-      assertEquals( 2, log.length );
-      registry.remove( "dummyType" );
+      var operation = {
+        "target" : "dummyId",
+        "action" : "listen",
+        "properties" : properties
+      };
+      processor.processOperation( operation );
+      assertNull( targetObject.getUserData( "barListener" ) );
       targetObject.destroy();
     },
 
@@ -725,6 +793,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
         setToolTip : function() {
           // NOTE: Currently needed (as getDisposed) by WidgetManager
           // should not be the case. 
+        },
+        setHasFooListener : function( value ) {
+          log.push( "fooListener", value );
         },
         classname : "myclass"
       };

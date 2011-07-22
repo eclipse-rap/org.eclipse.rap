@@ -90,26 +90,30 @@ org.eclipse.rwt.protocol.Processor = {
 
   _processCall : function( targetId, method, properties ) {
     var adapter = this._getAdapter( targetId );
-    if( adapter.knownActions.indexOf( method ) !== -1 ) {
+    if( adapter.knownMethods instanceof Array  && adapter.knownMethods.indexOf( method ) !== -1 ) {
       var targetObject = this._getTarget( targetId );
-      targetObject[ method ].call( targetObject, properties );
+      if( adapter.methodHandler && adapter.methodHandler[ method ] ) {
+        adapter.methodHandler[ method ]( targetObject, properties );
+      } else {
+        targetObject[ method ]( properties );
+      }
     }
   },
 
   _processListen : function( targetId, properties ) {
     var adapter = this._getAdapter( targetId );
-    if( adapter.knownEvents instanceof Array ) {
+    if( adapter.knownListeners instanceof Array ) {
       var targetObject = this._getTarget( targetId );
-      for( var i = 0; i < adapter.knownEvents.length; i++ ) {
-        var type = adapter.knownEvents[ i ];
+      for( var i = 0; i < adapter.knownListeners.length; i++ ) {
+        var type = adapter.knownListeners[ i ];
         if( properties[ type ] === true ) {
-          this._addListener( targetObject, type );
+          this._addListener( adapter, targetObject, type );
         } if( properties[ type ] === false ) {
-          this._removeListener( targetObject, type );            
+          this._removeListener( adapter, targetObject, type );            
         }
       }
     }
- },
+  },
 
  _processExecute : function( targetId, scriptType, content ) {
    if( scriptType === "text/javascript" ) {
@@ -134,15 +138,6 @@ org.eclipse.rwt.protocol.Processor = {
     msg += "\n" + error;
     throw new Error( msg );
   },
-
-  _getSetterName : function( adapter, property ) {
-    var clientProperty = property;
-    if( adapter.propertyMapping && adapter.propertyMapping[ property ] ) {
-      clientProperty = adapter.propertyMapping[ property ];
-    } 
-    return "set" + qx.lang.String.toFirstUp( clientProperty );
-  },
-
   _addTarget : function( target, targetId, isControl, type ) {
     var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
     widgetManager.add( target, targetId, isControl === true, type );
@@ -171,22 +166,48 @@ org.eclipse.rwt.protocol.Processor = {
     return result;
   },
 
-  _addListener : function( targetObject, eventType ) {
-    var list = this._listenerMap[ eventType ];
-    for( var i = 0; i < list.length; i++ ) {
-      targetObject.addEventListener( list[ i ].nativeType, 
-                                     list[ i ].listener, 
-                                     list[ i ].context );
+  _addListener : function( adapter, targetObject, eventType ) {
+    if( adapter.listenerHandler &&  adapter.listenerHandler[ eventType ] ) {
+      adapter.listenerHandler[ eventType ]( targetObject, true );
+    } else if( this._listenerMap[ eventType ] ) {
+      var list = this._listenerMap[ eventType ];
+      for( var i = 0; i < list.length; i++ ) {
+        targetObject.addEventListener( list[ i ].nativeType, 
+                                       list[ i ].listener, 
+                                       list[ i ].context );
+      }
+    } else {
+      var setterName = this._getListenerSetterName( eventType );
+      targetObject[ setterName ]( true );
     }
   },
 
-  _removeListener : function( targetObject, eventType ) {
-    var list = this._listenerMap[ eventType ];
-    for( var i = 0; i < list.length; i++ ) {
-      targetObject.removeEventListener( list[ i ].nativeType, 
-                                        list[ i ].listener, 
-                                        list[ i ].context );
+  _removeListener : function( adapter, targetObject, eventType ) {
+    if( adapter.listenerHandler &&  adapter.listenerHandler[ eventType ] ) {
+      adapter.listenerHandler[ eventType ]( targetObject, false );
+    } else if( this._listenerMap[ eventType ] ) {
+      var list = this._listenerMap[ eventType ];
+      for( var i = 0; i < list.length; i++ ) {
+        targetObject.removeEventListener( list[ i ].nativeType, 
+                                          list[ i ].listener, 
+                                          list[ i ].context );
+      }
+    } else {
+      var setterName = this._getListenerSetterName( eventType );
+      targetObject[ setterName ]( false );
     }
+  },
+
+  _getSetterName : function( adapter, property ) {
+    var clientProperty = property;
+    if( adapter.propertyMapping && adapter.propertyMapping[ property ] ) {
+      clientProperty = adapter.propertyMapping[ property ];
+    } 
+    return "set" + qx.lang.String.toFirstUp( clientProperty );
+  },
+
+  _getListenerSetterName : function( eventType ) {
+    return "setHas" + qx.lang.String.toFirstUp( eventType ) + "Listener";
   },
   
   _listenerMap : {
@@ -213,7 +234,26 @@ org.eclipse.rwt.protocol.Processor = {
         context : org.eclipse.swt.EventUtil, 
         listener : org.eclipse.swt.EventUtil.mouseUp
       }
-    ]
+    ],
+    "menuDetect" : [
+      { 
+        nativeType : "keydown", 
+        context : undefined, 
+        listener : org.eclipse.swt.EventUtil.menuDetectedByKey
+      },
+      { 
+        nativeType : "mouseup", 
+        context : undefined, 
+        listener : org.eclipse.swt.EventUtil.menuDetectedByMouse
+      }
+    ],
+    "help" : [
+      { 
+        nativeType : "keydown", 
+        context : undefined, 
+        listener : org.eclipse.swt.EventUtil.helpRequested
+      }
+    ],
   }
 
 };
