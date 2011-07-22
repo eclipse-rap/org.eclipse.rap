@@ -103,6 +103,7 @@ public final class ProtocolMessageWriter {
   }
 
   private void prepareOperation( String target, String type ) {
+    ensureMessagePending();
     if( !canAppendToCurrentOperation( target, type ) ) {
       appendPendingOperation();
       pendingOperation = new Operation( target, type );
@@ -110,12 +111,16 @@ public final class ProtocolMessageWriter {
   }
 
   public String createMessage() {
-    if( alreadyCreated ) {
-      throw new IllegalStateException( "Message already created" );
-    }
+    ensureMessagePending();
     alreadyCreated = true;
     JsonObject message = createMessageObject();
     return message.toString();
+  }
+
+  private void ensureMessagePending() {
+    if( alreadyCreated ) {
+      throw new IllegalStateException( "Message already created" );
+    }
   }
 
   private JsonObject createMessageObject() {

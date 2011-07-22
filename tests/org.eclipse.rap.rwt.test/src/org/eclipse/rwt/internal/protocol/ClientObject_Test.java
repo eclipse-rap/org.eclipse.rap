@@ -12,12 +12,14 @@ package org.eclipse.rwt.internal.protocol;
 
 import static org.eclipse.rwt.internal.resources.TestUtil.assertArrayEquals;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.TestResponse;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.protocol.Message.CallOperation;
 import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
@@ -161,6 +163,23 @@ public class ClientObject_Test extends TestCase {
     assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
     assertEquals( "text/javascript", operation.getScriptType() );
     assertEquals( "var x = 5;", operation.getScript() );
+  }
+  
+  public void testDoeNotCashProtocolWriter() throws IOException {
+    // See bug 352738
+    TestResponse response = new TestResponse();
+    JavaScriptResponseWriter writer = new JavaScriptResponseWriter( response );
+    ContextProvider.getStateInfo().setResponseWriter( writer );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+    
+    clientObject.create( null );
+    writer.write( "var x =5;" );
+    clientObject.setProperty( "key", "value" );
+    writer.finish();
+    
+    String message = response.getContent();
+    assertTrue( message.contains( ProtocolConstants.ACTION_CREATE ) );
+    assertTrue( message.contains( ProtocolConstants.ACTION_SET ) );
   }
 
   private Message getMessage() {

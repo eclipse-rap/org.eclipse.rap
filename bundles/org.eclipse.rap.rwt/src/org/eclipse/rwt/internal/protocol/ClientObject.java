@@ -20,18 +20,16 @@ public final class ClientObject implements IClientObject {
 
   private final Object target;
   private final String targetId;
-  private final ProtocolMessageWriter writer;
 
   public ClientObject( Widget widget ) {
     target = widget;
     targetId = WidgetUtil.getId( widget );
-    writer = ContextProvider.getStateInfo().getResponseWriter().getProtocolWriter();
   }
 
   public void create( Map<String, Object> properties ) {
     String parentId = getParentId();
     String type = target.getClass().getName();
-    writer.appendCreate( targetId, parentId, type, properties );
+    getWriter().appendCreate( targetId, parentId, type, properties );
   }
 
   private String getParentId() {
@@ -46,43 +44,47 @@ public final class ClientObject implements IClientObject {
   }
 
   public void destroy() {
-    writer.appendDestroy( targetId );
+    getWriter().appendDestroy( targetId );
   }
   
   public void setProperty( String name, int value ) {
-    writer.appendSet( targetId, name, value );
+    getWriter().appendSet( targetId, name, value );
   }
   
   public void setProperty( String name, double value ) {
-    writer.appendSet( targetId, name, value );
+    getWriter().appendSet( targetId, name, value );
   }
   
   public void setProperty( String name, boolean value ) {
-    writer.appendSet( targetId, name, value );
+    getWriter().appendSet( targetId, name, value );
   }
   
   public void setProperty( String name, String value ) {
-    writer.appendSet( targetId, name, value );
+    getWriter().appendSet( targetId, name, value );
   }
 
   public void setProperty( String name, Object value ) {
-    writer.appendSet( targetId, name, value );
+    getWriter().appendSet( targetId, name, value );
   }
 
   public void addListener( String eventName ) {
-    writer.appendListen( targetId, eventName, true );
+    getWriter().appendListen( targetId, eventName, true );
   }
 
   public void removeListener( String eventName ) {
-    writer.appendListen( targetId, eventName, false );
+    getWriter().appendListen( targetId, eventName, false );
   }
 
   public void call( String method, Map<String, Object> properties ) {
-    writer.appendCall( targetId, method, properties );
+    getWriter().appendCall( targetId, method, properties );
   }
 
   public void executeScript( String type, String script ) {
-    writer.appendExecuteScript( targetId, type, script );
+    getWriter().appendExecuteScript( targetId, type, script );
+  }
+  
+  private static ProtocolMessageWriter getWriter() {
+    return ContextProvider.getStateInfo().getResponseWriter().getProtocolWriter();
   }
    
 }

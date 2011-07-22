@@ -76,6 +76,15 @@ public class ProtocolMessageWriter_Test extends TestCase {
     } catch( IllegalStateException expected ) {
     }
   }
+  
+  public void testAppendAfterCreate() {
+    writer.createMessage();
+    try {
+      writer.appendDestroy( "target" );
+      fail();
+    } catch( IllegalStateException expected ) {
+    }
+  }
 
   public void testMessageWithCall() {
     String shellId = WidgetUtil.getId( shell );
