@@ -48,6 +48,10 @@ public class DelegatingServletEngine_Test extends TestCase {
       invocations.add( STOP );
     }
 
+    public void stop( int timeout ) throws Exception {
+      invocations.add( STOP );
+    }
+    
     public int getPort() {
       invocations.add( GET_PORT );
       return 0;
@@ -125,6 +129,15 @@ public class DelegatingServletEngine_Test extends TestCase {
     engine.start( TestEntryPoint.class );
 
     engine.stop();
+    
+    assertTrue( testServletEngine.invocations.contains( TestServletEngine.STOP ) );
+  }
+  
+  public void testStopTimeoutDelegates() throws Exception {
+    IServletEngine engine = new DelegatingServletEngine( testServletEngine );
+    engine.start( TestEntryPoint.class );
+    
+    engine.stop( 0 );
     
     assertTrue( testServletEngine.invocations.contains( TestServletEngine.STOP ) );
   }

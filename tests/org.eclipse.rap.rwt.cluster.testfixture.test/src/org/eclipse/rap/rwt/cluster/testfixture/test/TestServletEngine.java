@@ -38,6 +38,9 @@ public class TestServletEngine implements IServletEngine {
   public void stop() throws Exception {
   }
 
+  public void stop( int timeout ) throws Exception {
+  }
+  
   public int getPort() {
     return port;
   }
