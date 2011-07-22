@@ -379,8 +379,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
       var row = event.getTarget();
       var internal = row === event.getRelatedTarget();
       if( internal && row instanceof org.eclipse.rwt.widgets.TreeRow ) {
-        var hoverable = row.isCheckBoxTarget( event ) || row.isExpandSymbolTarget( event );
-        if( this._hoverItem !== null && hoverable ) { 
+        if( this._hoverItem !== null ) { 
           this.renderItem( this._hoverItem );
         }
       }

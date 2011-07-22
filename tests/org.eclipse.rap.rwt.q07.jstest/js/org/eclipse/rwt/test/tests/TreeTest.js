@@ -1644,8 +1644,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setItemCount( 1 );
       var item = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       testUtil.flush()
-      var rowNode = tree._rowContainer._children[ 0 ]._getTargetNode();
+      var row = tree._rowContainer._children[ 0 ];
+      var rowNode = row._getTargetNode();
       testUtil.hoverFromTo( document.body, rowNode );
+      assertTrue( row.hasState( "over" ) );
       var normal = testUtil.getCssBackgroundImage( rowNode.firstChild );
       testUtil.hoverFromTo( rowNode, rowNode.firstChild );
       var over = testUtil.getCssBackgroundImage( rowNode.firstChild );
@@ -1654,6 +1656,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( normal.indexOf( "normal.gif" ) != -1 );
       assertTrue( over.indexOf( "over.gif" ) != -1 );
       assertTrue( normalAgain.indexOf( "normal.gif" ) != -1 );
+      assertTrue( row.hasState( "over" ) );
       tree.destroy();
     },
 
