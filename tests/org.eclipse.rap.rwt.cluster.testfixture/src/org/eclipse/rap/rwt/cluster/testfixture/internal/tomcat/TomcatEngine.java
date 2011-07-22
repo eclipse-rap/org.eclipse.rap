@@ -65,14 +65,18 @@ public class TomcatEngine implements IServletEngine {
     configureSessionSweepInterval();
     configureSessionPersistence();
   }
-
+  
   public void stop() throws Exception {
+    stop( 0 );
+  }
+  
+  public void stop( int timeout ) throws Exception {
     tomcat.getEngine().setCluster( null );
     tomcat.stop();
     tomcat.destroy();
     FileUtil.deleteDirectory( getBaseDir() );
   }
-  
+
   public int getPort() {
     return tomcat.getConnector().getPort();
   }

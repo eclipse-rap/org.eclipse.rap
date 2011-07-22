@@ -97,6 +97,21 @@ public abstract class UICallBackTestBase extends TestCase {
     assertTrue( SessionTimeoutEntryPoint.isSessionInvalidated() );
   }
   
+  public void testUICallBackRequestDoesNotPreventEngineShutdown() throws Exception {
+    servletEngine.start( SessionTimeoutEntryPoint.class );
+    client.sendStartupRequest();
+    client.sendInitializationRequest();
+    UICallBackManager uiCallBackManager = getUICallBackManager();
+    asyncSendUICallBackRequest();
+    while( !uiCallBackManager.isCallBackRequestBlocked() ) {
+      Thread.yield();
+    }
+
+    servletEngine.stop( 2000 );
+    
+    assertTrue( SessionTimeoutEntryPoint.isSessionInvalidated() );
+  }
+
   protected void setUp() throws Exception {
     ClusterFixture.setUp();
     servletEngine = getServletEngineFactory().createServletEngine();

@@ -68,6 +68,7 @@ public class JettyEngine implements IServletEngine {
   JettyEngine( ISessionManagerProvider sessionManagerProvider, int port ) {
     this.sessionManagerProvider = sessionManagerProvider;
     this.server = new Server( port );
+    this.server.setGracefulShutdown( 2000 );
     this.contextHandlers = new ContextHandlerCollection();
     this.server.setHandler( contextHandlers );
   }
@@ -79,6 +80,11 @@ public class JettyEngine implements IServletEngine {
   }
 
   public void stop() throws Exception {
+    stop( 0 );
+  }
+  
+  public void stop( int timeout ) throws Exception {
+    server.setGracefulShutdown( timeout );
     server.stop();
     cleanUp();
   }

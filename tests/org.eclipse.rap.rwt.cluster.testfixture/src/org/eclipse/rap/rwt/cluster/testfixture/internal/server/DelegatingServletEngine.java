@@ -52,12 +52,16 @@ public class DelegatingServletEngine implements IServletEngine {
   }
 
   public void stop() throws Exception {
+    stop( 0 );
+  }
+
+  public void stop( int timeout ) throws Exception {
     if( running ) {
-      delegate.stop();
+      delegate.stop( timeout );
       running = false;
     }
   }
-
+  
   public int getPort() {
     return delegate.getPort();
   }
