@@ -253,7 +253,7 @@ org.eclipse.rwt.protocol.Processor = {
         context : undefined, 
         listener : org.eclipse.swt.EventUtil.helpRequested
       }
-    ],
+    ]
   }
 
 };
