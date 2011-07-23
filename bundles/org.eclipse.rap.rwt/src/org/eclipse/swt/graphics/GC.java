@@ -15,9 +15,9 @@ import org.eclipse.swt.*;
 import org.eclipse.swt.widgets.Control;
 
 /**
- * Class <code>GC</code> is provided to ease single-sourcing SWT and RWT code.
- * Its text measurement methods directly delegate to the respective
- * <code>Graphics</code> methods.
+ * Class <code>GC</code> is where all of the drawing capabilities that are
+ * supported by SWT are located. Instances are used to draw on a
+ * <code>Control</code>.
  * <!--
  * Class <code>GC</code> is where all of the drawing capabilities that are
  * supported by SWT are located. Instances are used to draw on either an
@@ -28,13 +28,13 @@ import org.eclipse.swt.widgets.Control;
  * <dd>LEFT_TO_RIGHT <!--, RIGHT_TO_LEFT --></dd>
  * </dl>
  *
- * <!--
  * <p>
  * The SWT drawing coordinate system is the two-dimensional space with the origin
  * (0,0) at the top left corner of the drawing area and with (x,y) values increasing
  * to the right and downward respectively.
  * </p>
  *
+ * <!--
  * <p>
  * The result of drawing on an image that was created with an indexed
  * palette using a color that is not in the palette is platform specific.
@@ -56,8 +56,10 @@ import org.eclipse.swt.widgets.Control;
  * <p>
  * Note: Only one of LEFT_TO_RIGHT and RIGHT_TO_LEFT may be specified.
  * </p>
+ * -->
  *
  * @see org.eclipse.swt.events.PaintEvent
+ * <!--
  * @see <a href="http://www.eclipse.org/swt/snippets/#gc">GC snippets</a>
  * @see <a href="http://www.eclipse.org/swt/examples.php">SWT Examples: GraphicsExample, PaintExample</a>
  * @see <a href="http://www.eclipse.org/swt/">Sample code and further information</a>
