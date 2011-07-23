@@ -352,7 +352,7 @@ public class Browser extends Composite {
     buffer.append( "})();" );
     boolean success = execute( buffer.toString() );
     if( !success ) {
-      String errorString = "Failed to evaluate javascript expression";
+      String errorString = "Failed to evaluate Javascript expression";
       throw new SWTException( SWT.ERROR_FAILED_EVALUATE, errorString );
     }
     return evaluateResult;
