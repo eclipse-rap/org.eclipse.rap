@@ -1956,8 +1956,12 @@ public class Table extends Composite {
     SelectionEvent.removeListener( this, listener );
   }
 
-  public void setFont( final Font font ) {
+  public void setFont( Font font ) {
     super.setFont( font );
+    TableItem[] tableItems = getCreatedItems();
+    for( int i = 0; i < tableItems.length; i++ ) {
+      tableItems[ i ].clearTextWidths();
+    }
     updateScrollBars();
   }
 

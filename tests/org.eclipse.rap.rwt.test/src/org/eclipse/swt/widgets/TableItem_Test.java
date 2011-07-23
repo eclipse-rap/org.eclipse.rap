@@ -266,6 +266,18 @@ public class TableItem_Test extends TestCase {
     assertEquals( origBounds, actualBounds );
   }
 
+  public void testTextBoundsWithChangedTableFont() {
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setText( "abc" );
+    Rectangle origBounds = item.getTextBounds( 0 );
+    
+    table.setFont( Graphics.getFont( "Helvetica", 50, SWT.BOLD ) );
+    Rectangle actualBounds = item.getTextBounds( 0 );
+
+    assertTrue( actualBounds.width > origBounds.width );
+  }
+  
   public void testTextBoundsWithCheckboxTable() {
     Table table = new Table( shell, SWT.CHECK );
     TableColumn column = new TableColumn( table, SWT.LEFT );
@@ -291,7 +303,31 @@ public class TableItem_Test extends TestCase {
     adapter.setLeftOffset( column0.getWidth() );
     assertEquals( column0TextBounds.x, item.getTextBounds( 1 ).x );
   }
+  
+  public void testTextBoundsWithChangedText() {
+    String itemText = "text";
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
 
+    item.setText( itemText );
+    int shortWidth = item.getTextBounds( 0 ).width;
+    item.setText( itemText + itemText );
+    int longWidth = item.getTextBounds( 0 ).width;
+    
+    assertTrue( shortWidth < longWidth );
+  }
+
+  public void testTextBoundsWithEmptyText() {
+    Table table = new Table( shell, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    item.setText( "" );
+    
+    Rectangle textBounds = item.getTextBounds( 0 );
+    
+    assertEquals( 0, textBounds.width );
+    assertTrue( textBounds.height > 0 );
+  }
+  
   public void testImageBoundsWithoutColumns() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );

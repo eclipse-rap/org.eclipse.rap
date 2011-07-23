@@ -93,7 +93,9 @@ public class TableItem extends Item {
   }
 
   private static final class Data implements SerializableCompatibility {
+    static final int UNKNOWN_WIDTH = -1;
     String text = "";
+    int textWidth = UNKNOWN_WIDTH;
     Image image;
     Font font;
     Color background;
@@ -253,6 +255,7 @@ public class TableItem extends Item {
       ensureData( index, count );
       if( !text.equals( data[ index ].text ) ) {
         data[ index ].text = text;
+        data[ index ].textWidth = Data.UNKNOWN_WIDTH;
         markCached();
         if( parent.getColumnCount() == 0 ) {
           parent.updateScrollBars();
@@ -313,11 +316,7 @@ public class TableItem extends Item {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
     String result = "";
-    if(    data != null
-        && index >= 0
-        && index < data.length
-        && data[ index ] != null )
-    {
+    if( hasData( index ) ) {
       result = data[ index ].text;
     }
     return result;
@@ -422,7 +421,7 @@ public class TableItem extends Item {
 
   Image getImageInternal( final int index ) {
     Image result = null;
-    if( data != null && index >= 0 && index < data.length && data[ index ] != null ) {
+    if( hasData( index ) ) {
       result = data[ index ].image;
     }
     return result;
@@ -532,12 +531,7 @@ public class TableItem extends Item {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
     Color result = getBackground();
-    if(    data != null
-        && index >= 0
-        && index < data.length
-        && data[ index ] != null
-        && data[ index ].background != null )
-    {
+    if( hasData( index ) && data[ index ].background != null ) {
       result = data[ index ].background;
     }
     return result;
@@ -647,12 +641,7 @@ public class TableItem extends Item {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
     Color result = getForeground();
-    if(    data != null
-        && index >= 0
-        && index < data.length
-        && data[ index ] != null
-        && data[ index ].foreground != null )
-    {
+    if( hasData( index ) && data[ index ].foreground != null ) {
       result = data[ index ].foreground;
     }
     return result;
@@ -673,13 +662,14 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setFont( final Font font ) {
+  public void setFont( Font font ) {
     checkWidget();
     if( font != null && font.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
     if( !equals( this.font, font ) ) {
       this.font = font;
+      clearTextWidths();
       markCached();
       if( parent.getColumnCount() == 0 ) {
         parent.updateScrollBars();
@@ -729,7 +719,7 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setFont( final int index, final Font font ) {
+  public void setFont( int index, Font font ) {
     checkWidget();
     if( font != null && font.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -739,6 +729,7 @@ public class TableItem extends Item {
       ensureData( index, count );
       if( !equals( font, data[ index ].font ) ) {
         data[ index ].font = font;
+        data[ index ].textWidth = Data.UNKNOWN_WIDTH;
         markCached();
         parent.redraw();
       }
@@ -763,16 +754,13 @@ public class TableItem extends Item {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
     Font result = getFont();
-    if(    data != null
-        && index >= 0
-        && index < data.length
-        && data[ index ] != null
-        && data[ index ].font != null )
-    {
+    if( hasData( index ) && data[ index ].font != null ) {
       result = data[ index ].font;
     }
     return result;
   }
+
+  
 
   ///////////////////
   // Checked & Grayed
@@ -1007,8 +995,7 @@ public class TableItem extends Item {
       }
       left = getLeft( 0 ) + cellPadding.x + imageWidth + spacing;
       top = getTop( itemIndex );
-      Font font = getFont();
-      width = Graphics.stringExtent( font, getText( 0 ) ).x;
+      width = getTextWidth( 0, getFont() );
     } else if( itemIndex != -1 && index < parent.getColumnCount() ) {
       int imageWidth = 0;
       if( parent.hasColumnImages( index ) ) {
@@ -1044,14 +1031,14 @@ public class TableItem extends Item {
     return result;
   }
 
-  private int getTop( final int itemIndex ) {
+  private int getTop( int itemIndex ) {
     int relativeItemIndex = itemIndex - parent.getTopIndex();
     int headerHeight = parent.getHeaderHeight();
     int itemHeight = parent.getItemHeight();
     return headerHeight + relativeItemIndex * itemHeight;
   }
 
-  private int getHeight( final int index ) {
+  private int getHeight( int index ) {
     int result = 0;
     int columnCount = parent.getColumnCount();
     boolean singleColumn = index == 0 && columnCount == 0;
@@ -1062,19 +1049,19 @@ public class TableItem extends Item {
     return result;
   }
 
-  final int getPackWidth( final int index ) {
+  final int getPackWidth( int index ) {
     return
         getImageWidth( index )
       + getSpacing( index )
-      + getTextWidth( index )
+      + getTextWidth( index, parent.getFont() )
       + parent.getCellPadding().width;
   }
 
-  final int getCheckWidth( final int index ) {
+  final int getCheckWidth( int index ) {
     return parent.getCheckSize( index ).x;
   }
 
-  private int getImageWidth( final int index ) {
+  private int getImageWidth( int index ) {
     int result = 0;
     Image image = getImage( index );
     if( image != null ) {
@@ -1083,13 +1070,25 @@ public class TableItem extends Item {
     return result;
   }
 
-  private int getTextWidth( final int index ) {
+  private int getTextWidth( int index, Font font ) {
     int result = 0;
-    String text = getText( index );
-    if( text.length() > 0 ) {
-      result = Graphics.stringExtent( parent.getFont(), text ).x;
+    if( hasData( index ) ) {
+      if( data[ index ].textWidth == Data.UNKNOWN_WIDTH ) {
+        data[ index ].textWidth = Graphics.stringExtent( font, data[ index ].text ).x;
+      }
+      result = data[ index ].textWidth;
     }
     return result;
+  }
+
+  void clearTextWidths() {
+    if( data != null ) {
+      for( int i = 0; i < data.length; i++ ) {
+        if( data[ i ] != null ) {
+          data[ i ].textWidth = Data.UNKNOWN_WIDTH;
+        }
+      }
+    }
   }
 
   private int getSpacing( final int index ) {
@@ -1159,7 +1158,7 @@ public class TableItem extends Item {
     }
   }
 
-  private void ensureData( final int index, final int columnCount ) {
+  private void ensureData( int index, int columnCount ) {
     if( data == null ) {
       data = new Data[ columnCount ];
     } else if( data.length < columnCount ) {
@@ -1172,7 +1171,11 @@ public class TableItem extends Item {
     }
   }
 
-  private static boolean equals( final Object object1, final Object object2 ) {
+  private boolean hasData( int index ) {
+    return data != null && index >= 0 && index < data.length && data[ index ] != null;
+  }
+
+  private static boolean equals( Object object1, Object object2 ) {
     boolean result;
     if( object1 == object2 ) {
       result = true;
@@ -1184,7 +1187,7 @@ public class TableItem extends Item {
     return result;
   }
 
-  private static Table checkNull( final Table table ) {
+  private static Table checkNull( Table table ) {
     if( table == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }

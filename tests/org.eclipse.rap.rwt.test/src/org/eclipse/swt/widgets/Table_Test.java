@@ -2369,8 +2369,7 @@ public class Table_Test extends TestCase {
   }
 
   private static int countResolvedItems( final Table table ) {
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
+    ITableAdapter tableAdapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     int result = 0;
     TableItem[] createdItems = tableAdapter.getCreatedItems();
     for( int i = 0; i < createdItems.length; i++ ) {
@@ -2394,20 +2393,20 @@ public class Table_Test extends TestCase {
   }
 
   private Table createFixedColumnsTable() {
-    Table table = new Table( shell, SWT.NONE );
-    table.setData( "fixedColumns", new Integer( 1 ) );
-    return table;
+    Table result = new Table( shell, SWT.NONE );
+    result.setData( "fixedColumns", new Integer( 1 ) );
+    return result;
   }
 
   private Table createMultiLineHeaderTable() {
-    Table table = new Table( shell, SWT.NONE );
+    Table result = new Table( shell, SWT.NONE );
     for( int i = 0; i < 3; i++ ) {
-      TableColumn column = new TableColumn( table, SWT.NONE );
+      TableColumn column = new TableColumn( result, SWT.NONE );
       column.setWidth( 50 );
       column.setText( "Column " + i );
     }
-    table.setData( "multiLineHeader", Boolean.TRUE );
-    return table;
+    result.setData( "multiLineHeader", Boolean.TRUE );
+    return result;
   }
 
 }
