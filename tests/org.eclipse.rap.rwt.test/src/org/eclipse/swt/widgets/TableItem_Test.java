@@ -45,53 +45,57 @@ public class TableItem_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testCreation() {
+  public void testConstructor() {
     Table table = new Table( shell, SWT.NONE );
-    // Add one item
+    
     TableItem item1 = new TableItem( table, SWT.NONE );
+    
     assertEquals( 1, table.getItemCount() );
     assertSame( item1, table.getItem( 0 ) );
-    // Insert an item before first item
+  }
+  
+  public void testConstructorThatInsertsItem() {
+    Table table = new Table( shell, SWT.NONE );
+    new TableItem( table, SWT.NONE );
+
     TableItem item0 = new TableItem( table, SWT.NONE, 0 );
+    
     assertEquals( 2, table.getItemCount() );
     assertSame( item0, table.getItem( 0 ) );
-    // Try to add an item with an index which is out of bounds
-    try {
-      new TableItem( table, SWT.NONE, table.getItemCount() + 8 );
-      String msg
-        = "Index out of bounds expected when creating an item with "
-        + "index > itemCount";
-      fail( msg );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    // Try to add an item with a negative index
+  }
+  
+  public void testConstructorWithNegativeIndex() {
+    Table table = new Table( shell, SWT.NONE );
     try {
       new TableItem( table, SWT.NONE, -1 );
-      String msg
-        = "Index out of bounds expected when creating an item with "
-        + "index == -1";
-      fail( msg );
-    } catch( IllegalArgumentException e ) {
-      // expected
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testConstructorWithTooHighIndex() {
+    Table table = new Table( shell, SWT.NONE );
+    try {
+      new TableItem( table, SWT.NONE, 123 );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testConstructorWithNullParent() {
+    try {
+      new TableItem( null, SWT.NONE );
+      fail();
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testParent() {
     Table table = new Table( shell, SWT.NONE );
-    // Test creating column with valid parent
-    new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     assertSame( table, item.getParent() );
-    // Test creating column without parent
-    try {
-      new TableItem( null, SWT.NONE );
-      fail( "Must not allow to create TableColumn withh null-parent." );
-    } catch( IllegalArgumentException iae ) {
-      // expected
-    }
   }
-
+  
   public void testBounds() {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -157,8 +161,7 @@ public class TableItem_Test extends TestCase {
     // ensure that horizontal scrolling is detected
     table.setTopIndex( 0 );
     Rectangle column0Bounds = table.getItem( 0 ).getBounds( 0 );
-    ITableAdapter adapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( column0.getWidth() );
     assertEquals( column0Bounds.x, table.getItem( 0 ).getBounds( 1 ).x );
   }
@@ -509,7 +512,7 @@ public class TableItem_Test extends TestCase {
     assertEquals( "", item.getText() );
   }
 
-  public void testImage() {
+  public void testImage() throws IOException {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     Table table = new Table( shell, SWT.NONE );
     // Test with no columns at all
@@ -539,17 +542,10 @@ public class TableItem_Test extends TestCase {
     image2.dispose();
     try {
       item.setImage( image2 );
-      fail( "No exception thrown for a disposed image" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-    finally {
-      try {
-        stream.close();
-      }
-      catch(IOException e) {
-        fail("Unable to close input stream.");
-      }
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    } finally {
+      stream.close();
     }
   }
 
@@ -612,7 +608,7 @@ public class TableItem_Test extends TestCase {
     }
   }
 
-  public void testCheckedAndGrayed() {
+  public void testCheckedAndGrayedWithSimpleTable() {
     // Ensure that checked and grayed only work with SWT.CHECK
     Table simpleTable = new Table( shell, SWT.NONE );
     TableItem simpleItem = new TableItem( simpleTable, SWT.NONE );
@@ -623,8 +619,9 @@ public class TableItem_Test extends TestCase {
     assertEquals( false, simpleItem.getChecked() );
     simpleItem.setGrayed( true );
     assertEquals( false, simpleItem.getGrayed() );
-
-    // Test checked and grayed with a SWT.CHECK table
+  }
+  
+  public void testCheckedAndGrayedWithCheckTable() {
     Table checkedTable = new Table( shell, SWT.CHECK );
     TableItem checkedItem = new TableItem( checkedTable, SWT.NONE );
     assertEquals( false, checkedItem.getChecked() );
@@ -900,13 +897,17 @@ public class TableItem_Test extends TestCase {
     assertEquals( color, tableItem.getBackground() );
     tableItem.setBackground( null );
     assertEquals( table.getBackground(), tableItem.getBackground() );
-    Color color2 = new Color( display, 0, 255, 0 );
-    color2.dispose();
+  }
+  
+  public void testSetBackgroundWithDisposedColor() {
+    Table table = new Table( shell, SWT.NONE );
+    TableItem tableItem = new TableItem( table, SWT.NONE );
+    Color disposedColor = new Color( display, 0, 255, 0 );
+    disposedColor.dispose();
     try {
-      tableItem.setBackground( color2 );
-      fail( "Disposed Image must not be set." );
-    } catch( IllegalArgumentException e ) {
-      // Expected Exception
+      tableItem.setBackground( disposedColor );
+      fail();
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -918,21 +919,24 @@ public class TableItem_Test extends TestCase {
     assertEquals( color, tableItem.getBackground(0) );
     tableItem.setBackground( 0, null );
     assertEquals( table.getBackground(), tableItem.getBackground() );
-    Color color2 = new Color( display, 0, 255, 0 );
-    color2.dispose();
-    // Test for the method TableItem#setBackground( int, Color)
+  }
+  
+  public void testSetBackgroundIWidthDisposedColor() {
+    Table table = new Table( shell, SWT.NONE );
+    TableItem tableItem = new TableItem( table, SWT.NONE );
+    Color disposedColor = new Color( display, 0, 255, 0 );
+    disposedColor.dispose();
     try {
-      tableItem.setBackground( 10, color2 );
-      fail( "Disposed Image must not be set." );
-    } catch( IllegalArgumentException e ) {
-      // Expected Exception
+      tableItem.setBackground( 0, disposedColor );
+      fail();
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testSetFont() {
     Table table = new Table( shell, SWT.NONE );
     TableItem tableItem = new TableItem( table, SWT.NONE );
-    Font tableFont = Graphics.getFont( "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
+    Font tableFont = Graphics.getFont( "BeautifullyCraftedTableFont", 15, SWT.BOLD );
     tableItem.setFont( tableFont );
     table.setFont( tableFont );
     assertSame( tableFont, tableItem.getFont() );
@@ -941,14 +945,17 @@ public class TableItem_Test extends TestCase {
     assertSame( itemFont, tableItem.getFont() );
     tableItem.setFont( null );
     assertSame( tableFont, tableItem.getFont() );
-    // Test with images, that should appear on unselected tabs
+  }
+  
+  public void testSetFontWithDisposedFont() {
+    Table table = new Table( shell, SWT.NONE );
+    TableItem tableItem = new TableItem( table, SWT.NONE );
     Font font = new Font( display, "Testfont", 10, SWT.BOLD );
     font.dispose();
     try {
       tableItem.setFont( font );
-      fail( "Disposed Image must not be set." );
-    } catch( IllegalArgumentException e ) {
-      // Expected Exception
+      fail();
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -964,15 +971,17 @@ public class TableItem_Test extends TestCase {
     assertSame( itemFont, tableItem.getFont() );
     tableItem.setFont( null );
     assertSame( tableFont, tableItem.getFont() );
-    // Test with images, that should appear on unselected tabs
+  }
+  
+  public void testFontFontIWithDisposedFont() {
+    Table table = new Table( shell, SWT.NONE );
+    TableItem tableItem = new TableItem( table, SWT.NONE );
     Font font = new Font( display, "Testfont", 10, SWT.BOLD );
     font.dispose();
-    // Test for the method TableItem#setFont( int, Font)
     try {
       tableItem.setFont( 3, font );
-      fail( "Disposed Image must not be set." );
-    } catch( IllegalArgumentException e ) {
-      // Expected Exception
+      fail();
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -984,13 +993,17 @@ public class TableItem_Test extends TestCase {
     assertEquals( color, tableItem.getForeground() );
     tableItem.setForeground( null );
     assertEquals( table.getForeground(), tableItem.getForeground() );
-    Color color2 = new Color( display, 255, 0, 0 );
-    color2.dispose();
+  }
+  
+  public void testSetForegroundWithDisposedColor() {
+    Table table = new Table( shell, SWT.NONE );
+    TableItem tableItem = new TableItem( table, SWT.NONE );
+    Color disposedColor = new Color( display, 255, 0, 0 );
+    disposedColor.dispose();
     try {
-      tableItem.setForeground( color2 );
-      fail( "Disposed Image must not be set." );
-    } catch( IllegalArgumentException e ) {
-      // Expected Exception
+      tableItem.setForeground( disposedColor );
+      fail();
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -1002,14 +1015,17 @@ public class TableItem_Test extends TestCase {
     assertEquals( color, tableItem.getForeground( 0 ) );
     tableItem.setForeground( null );
     assertEquals( table.getForeground(), tableItem.getForeground() );
-    Color color2 = new Color( display, 255, 0, 0 );
-    color2.dispose();
-    // Test for the method TableItem#setForeground( int, Font)
+  }
+
+  public void testSetForegroundIWithDisposedColor() {
+    Table table = new Table( shell, SWT.NONE );
+    TableItem tableItem = new TableItem( table, SWT.NONE );
+    Color disposedColor = new Color( display, 255, 0, 0 );
+    disposedColor.dispose();
     try {
-      tableItem.setForeground( 150, color2 );
-      fail( "Disposed Image must not be set." );
-    } catch( IllegalArgumentException e ) {
-      // Expected Exception
+      tableItem.setForeground( 0, disposedColor );
+      fail();
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
