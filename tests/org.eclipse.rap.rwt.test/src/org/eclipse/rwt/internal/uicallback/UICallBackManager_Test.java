@@ -283,8 +283,7 @@ public class UICallBackManager_Test extends TestCase {
 
   public void testExceptionInAsyncExec() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final RuntimeException exception
-      = new RuntimeException( "bad things happen" );
+    final RuntimeException exception = new RuntimeException( "bad things happen" );
     Runnable runnable = new Runnable() {
       public void run() {
         throw exception;
@@ -546,7 +545,19 @@ public class UICallBackManager_Test extends TestCase {
     
     assertFalse( sessionExpired );
   }
-  
+
+  public void testSetHasRunnablesWithoutStateInfo() {
+    // Service handlers don't have a state info
+    manager.activateUICallBacksFor( "foo" );
+    Fixture.replaceStateInfo( null );
+
+    try {
+      manager.setHasRunnables( true );
+    } catch( NullPointerException notExpected ) {
+      fail();
+    }
+  }
+
   private Thread simulateUiCallBackThread(
     final Throwable[] uiCallBackServiceHandlerThrowable,
     final ServiceContext context )

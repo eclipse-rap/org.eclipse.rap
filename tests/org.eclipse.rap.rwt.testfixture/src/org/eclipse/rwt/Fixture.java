@@ -318,7 +318,17 @@ public class Fixture {
     }
     lifeCycle.sleep();
   }
-  
+
+  public static void replaceStateInfo( IServiceStateInfo stateInfo ) {
+    HttpServletRequest request = ContextProvider.getRequest();
+    HttpServletResponse response = ContextProvider.getResponse();
+    ServiceContext context = new ServiceContext( request, response );
+    if( stateInfo != null ) {
+      context.setStateInfo( stateInfo );
+    }
+    ContextProvider.disposeContext();
+    ContextProvider.setContext( context );
+  }  
   
   ////////////////
   // general stuff

@@ -16,15 +16,13 @@ import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.swt.widgets.Display;
+
 
 public class UICallBackServiceHandler_Test extends TestCase {
 
@@ -157,7 +155,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
   }
 
   public void testWriteUICallBackActivateWithoutStateInfo() throws Exception {
-    replaceStateInfo( null );
+    Fixture.replaceStateInfo( null );
 
     JavaScriptResponseWriter responseWriter = mock( JavaScriptResponseWriter.class );
     try {
@@ -167,17 +165,6 @@ public class UICallBackServiceHandler_Test extends TestCase {
     }
   }
   
-  private static void replaceStateInfo( IServiceStateInfo stateInfo ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    HttpServletResponse response = ContextProvider.getResponse();
-    ServiceContext context = new ServiceContext( request, response );
-    if( stateInfo != null ) {
-      context.setStateInfo( stateInfo );
-    }
-    ContextProvider.disposeContext();
-    ContextProvider.setContext( context );
-  }
-
   private static JavaScriptResponseWriter getResponseWriter() {
     return ContextProvider.getStateInfo().getResponseWriter();
   }

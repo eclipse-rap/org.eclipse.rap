@@ -84,8 +84,9 @@ public final class UICallBackManager implements SerializableCompatibility {
     synchronized( lock ) {
       this.hasRunnables = hasRunnables;
     }
-    if( hasRunnables && isUICallBackActive() ) {
-      ContextProvider.getStateInfo().setAttribute( FORCE_UI_CALLBACK, Boolean.TRUE );
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    if( stateInfo != null && hasRunnables && isUICallBackActive() ) {
+      stateInfo.setAttribute( FORCE_UI_CALLBACK, Boolean.TRUE );
     }
   }
 
