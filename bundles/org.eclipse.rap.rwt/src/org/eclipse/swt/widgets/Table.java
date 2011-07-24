@@ -249,6 +249,7 @@ public class Table extends Composite {
       if( ( Table.this.style & SWT.VIRTUAL ) != 0 ) {
         Table.this.checkData();
       }
+      Table.this.clearItemsTextWidths();
       Table.this.updateScrollBars();
     }
   }
@@ -1958,10 +1959,7 @@ public class Table extends Composite {
 
   public void setFont( Font font ) {
     super.setFont( font );
-    TableItem[] tableItems = getCreatedItems();
-    for( int i = 0; i < tableItems.length; i++ ) {
-      tableItems[ i ].clearTextWidths();
-    }
+    clearItemsTextWidths();
     updateScrollBars();
   }
 
@@ -2022,6 +2020,13 @@ public class Table extends Composite {
       }
     }
     return width;
+  }
+
+  private void clearItemsTextWidths() {
+    TableItem[] items = getCreatedItems();
+    for( int i = 0; i < items.length; i++ ) {
+      items[ i ].clearTextWidths();
+    }
   }
 
   /////////////////////////////
