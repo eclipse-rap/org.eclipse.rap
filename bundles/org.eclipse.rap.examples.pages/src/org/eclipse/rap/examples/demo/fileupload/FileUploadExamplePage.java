@@ -11,20 +11,14 @@
 package org.eclipse.rap.examples.demo.fileupload;
 
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.rap.examples.*;
-import org.eclipse.rwt.widgets.FileUpload;
+import org.eclipse.rap.examples.ExampleUtil;
+import org.eclipse.rap.examples.IExamplePage;
+import org.eclipse.rwt.widgets.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.*;
 
 
 public class FileUploadExamplePage implements IExamplePage {
@@ -53,11 +47,10 @@ public class FileUploadExamplePage implements IExamplePage {
     fileUpload.setText( "Select File" );
     fileNameLabel = new Label( group, SWT.NONE );
     fileNameLabel.setText( "no file selected" );
-    fileNameLabel.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true,  false ) );
+    fileNameLabel.setLayoutData( ExampleUtil.createHorzFillData() );
     uploadButton = new Button( group, SWT.PUSH );
     uploadButton.setText( "Upload" );
     fileUpload.addSelectionListener( new SelectionAdapter() {
-      
       @Override
       public void widgetSelected( SelectionEvent e ) {
         String fileName = fileUpload.getFileName();
@@ -65,7 +58,7 @@ public class FileUploadExamplePage implements IExamplePage {
       }
     } );
     uploadButton.addSelectionListener( new SelectionAdapter() {
-    
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         fileUpload.submit( "http://localhost/" );
       }
@@ -77,90 +70,89 @@ public class FileUploadExamplePage implements IExamplePage {
     Group group = new Group( parent, SWT.NONE );
     group.setText( "File Dialog" );
     group.setLayout( ExampleUtil.createGridLayout( 1, false, 10, 10 ) );
-    Composite btnComp = new Composite( group, SWT.NONE );
-    GridDataFactory factory = GridDataFactory.fillDefaults();
-    btnComp.setLayoutData( factory.create() );
-    btnComp.setLayout( new GridLayout( 1, true ) );
-    Button addBtn = new Button( btnComp, SWT.PUSH );
+    Composite buttonComposite = new Composite( group, SWT.NONE );
+    buttonComposite.setLayoutData( GridDataFactory.fillDefaults().create() );
+    buttonComposite.setLayout( new GridLayout( 1, true ) );
+    createAddSingleButton( buttonComposite );
+    createAddMultiButton( buttonComposite );
+    createClearButton( buttonComposite );
+    createStatsLabel( group );
+    return group;
+  }
+
+  private void createAddSingleButton( Composite parent ) {
+    Button addBtn = new Button( parent, SWT.PUSH );
     addBtn.setText( "Add Single File" );
     addBtn.setToolTipText( "Launches file dialog for single file selection." );
-    addBtn.setLayoutData( factory.create() );
+    final Shell parentShell = parent.getShell();
     addBtn.addSelectionListener( new SelectionAdapter() {
-  
+      @Override
       public void widgetSelected( SelectionEvent e ) {
-        FileDialog fd = new FileDialog( Display.getDefault().getActiveShell(),
-                                        SWT.SHELL_TRIM | SWT.APPLICATION_MODAL );
-        fd.setAutoUpload( true );
-        fd.setText( "Upload Single File" );
-        fd.setFilterPath( "C:/" );
-        String[] filterExt = {
-          "*.mp4", "*.*"
-        };
-        fd.setFilterExtensions( filterExt );
-        String[] filterNames = {
-          "Videos", "All Files"
-        };
-        fd.setFilterNames( filterNames );
-        String selected = fd.open();
-        if( selected != null ) {
-          showUploadResults( selected );
-        }
+        openFileDialog( parentShell, false );
       }
     } );
-    Button addMultiBtn = new Button( btnComp, SWT.PUSH );
+  }
+
+  private void createAddMultiButton( Composite parent ) {
+    Button addMultiBtn = new Button( parent, SWT.PUSH );
     addMultiBtn.setText( "Add Multiple Files" );
     addMultiBtn.setToolTipText( "Launches file dialog for multiple file selection." );
-    addMultiBtn.setLayoutData( factory.create() );
+    final Shell parentShell = parent.getShell();
     addMultiBtn.addSelectionListener( new SelectionAdapter() {
-  
+      @Override
       public void widgetSelected( SelectionEvent e ) {
-        FileDialog fd = new FileDialog( Display.getDefault().getActiveShell(),
-                                        SWT.SHELL_TRIM
-                                            | SWT.MULTI
-                                            | SWT.APPLICATION_MODAL );
-        fd.setAutoUpload( true );
-        fd.setText( "Upload Multiple Files" );
-        fd.setFilterPath( "C:/" );
-        String[] filterExt = {
-          "*.mp4", "*.*"
-        };
-        fd.setFilterExtensions( filterExt );
-        String[] filterNames = {
-          "Videos", "All Files"
-        };
-        fd.setFilterNames( filterNames );
-        String selected = fd.open();
-        if( selected != null && selected.length() > 0 ) {
-          showUploadResults( fd.getFileNames() );
-        }
+        openFileDialog( parentShell, true );
       }
     } );
-    Button clearBtn = new Button( btnComp, SWT.PUSH );
+  }
+  
+  private void createClearButton( Composite parent ) {
+    Button clearBtn = new Button( parent, SWT.PUSH );
     clearBtn.setText( "Clear" );
     clearBtn.setToolTipText( "Clears the results list" );
-    clearBtn.setLayoutData( factory.create() );
     clearBtn.addSelectionListener( new SelectionAdapter() {
-  
+      @Override
       public void widgetSelected( SelectionEvent e ) {
         statsLabel.setText( "" );
       }
     } );
+  }
+
+  private void createStatsLabel( Group group ) {
     statsLabel = new Label( group, SWT.NONE );
     statsLabel.setText( INITIAL_TEXT );
     statsLabel.setLayoutData( ExampleUtil.createFillData() );
-    return group;
   }
 
-  private void showUploadResults( String fileName ) {
-    statsLabel.setText( "Result:\n" + fileName + "\n" );
+  private void openFileDialog( Shell parent, boolean multi ) {
+    int style = getDialogStyle( multi );
+    final FileDialog fileDialog = new FileDialog( parent, style );
+    fileDialog.setAutoUpload( true );
+    fileDialog.setText( multi ? "Upload Multiple Files" : "Upload Single File" );
+    fileDialog.setFilterExtensions( new String[] { "*.txt", "*.*" } );
+    fileDialog.setFilterNames( new String[] { "Text Files", "All Files" } );
+    DialogUtil.open( fileDialog, new DialogCallback() {
+      public void dialogClosed( int returnCode ) {
+        showUploadResults( fileDialog );
+      }
+    } );
   }
 
-  private void showUploadResults( String[] fileNames ) {
-    String text = "Results:\n";
-    for( int i = 0; i < fileNames.length; i++ ) {
-      String fileName = fileNames[ i ];
-      text += fileName + "\n";
+  private void showUploadResults( FileDialog fileDialog ) {
+    StringBuilder builder = new StringBuilder();
+    builder.append( "Results:\n" );
+    String[] selectedFiles = fileDialog.getFileNames();
+    for( String fileName : selectedFiles ) {
+      builder.append( fileName + "\n" );
     }
-    statsLabel.setText( text );
+    statsLabel.setText( builder.toString() );
+  }
+
+  private static int getDialogStyle( boolean multi ) {
+    int result = SWT.SHELL_TRIM | SWT.APPLICATION_MODAL;
+    if( multi ) {
+      result |= SWT.MULTI;
+    }
+    return result;
   }
 }
