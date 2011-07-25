@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.*;
 
 
@@ -55,27 +56,42 @@ public class TreeItem extends Item {
     }
 
     public Color[] getCellBackgrounds() {
-      Color[] backgrounds = null;
-      if( TreeItem.this.cellBackgrounds != null ) {
-        backgrounds = TreeItem.this.cellBackgrounds.clone();
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      Color[] result = new Color[ columnCount ];
+      if( data != null ) {
+        for( int i = 0; i < data.length; i++ ) {
+          if( data[ i ] != null ) {
+            result[ i ] = data[ i ].background;
+          }
+        }
       }
-      return backgrounds;
+      return result;
     }
 
     public Color[] getCellForegrounds() {
-      Color[] foregrounds = null;
-      if( TreeItem.this.cellForegrounds != null ) {
-        foregrounds = TreeItem.this.cellForegrounds.clone();
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      Color[] result = new Color[ columnCount ];
+      if( data != null ) {
+        for( int i = 0; i < data.length; i++ ) {
+          if( data[ i ] != null ) {
+            result[ i ] = data[ i ].foreground;
+          }
+        }
       }
-      return foregrounds;
+      return result;
     }
 
     public Font[] getCellFonts() {
-      Font[] fonts = null;
-      if( TreeItem.this.cellFonts != null ) {
-        fonts = TreeItem.this.cellFonts.clone();
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      Font[] result = new Font[ columnCount ];
+      if( data != null ) {
+        for( int i = 0; i < data.length; i++ ) {
+          if( data[ i ] != null ) {
+            result[ i ] = data[ i ].font;
+          }
+        }
       }
-      return fonts;
+      return result;
     }
   }
 
@@ -96,6 +112,16 @@ public class TreeItem extends Item {
       return result;
     }
   }
+  
+  private static final class Data implements SerializableCompatibility {
+    static final int UNKNOWN_WIDTH = -1;
+    String text = "";
+    int textWidth = UNKNOWN_WIDTH;
+    Image image;
+    Font font;
+    Color background;
+    Color foreground;
+  }
 
   private final TreeItem parentItem;
   final Tree parent;
@@ -103,16 +129,13 @@ public class TreeItem extends Item {
   int itemCount;
   private transient ITreeItemAdapter treeItemAdapter;
   int index;
+  private Data[] data;
   private Font font;
   private boolean expanded;
   private boolean checked;
   private Color background;
   private Color foreground;
   private boolean grayed;
-  private String[] texts;
-  private Image[] images;
-  Color[] cellForegrounds, cellBackgrounds;
-  Font[] cellFonts;
   int depth;
   private boolean cached;
   int flatIndex;
@@ -272,9 +295,6 @@ public class TreeItem extends Item {
     this.parent = parent;
     this.parentItem = parentItem;
     this.index = index;
-    int columnCount = parent.columnHolder.size();
-    this.texts = new String[ columnCount ];
-    this.images = new Image[ columnCount ];
     if( parentItem != null ) {
       this.depth = parentItem.depth + 1;
     }
@@ -499,7 +519,7 @@ public class TreeItem extends Item {
   /**
    * Returns the background color at the given column index in the receiver.
    *
-   * @param columnIndex the column index
+   * @param index the column index
    * @return the background color
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
@@ -508,17 +528,14 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public Color getBackground( int columnIndex ) {
+  public Color getBackground( int index ) {
     checkWidget();
     // if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
-    int validColumnCount = Math.max( 1, parent.columnHolder.size() );
-    if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
-      return getBackground();
+    Color result = getBackground();
+    if( hasData( index ) && data[ index ].background != null ) {
+      result = data[ index ].background;
     }
-    if( cellBackgrounds == null || cellBackgrounds[ columnIndex ] == null ) {
-      return getBackground();
-    }
-    return cellBackgrounds[ columnIndex ];
+    return result;
   }
 
   /**
@@ -539,26 +556,23 @@ public class TreeItem extends Item {
     return getFont( columnIndex, true );
   }
 
-  Font getFont( int columnIndex, boolean checkData ) {
+  Font getFont( int index, boolean checkData ) {
     // if (checkData && !parent.checkData (this, true)) error
     // (SWT.ERROR_WIDGET_DISPOSED);
-    int validColumnCount = Math.max( 1, parent.columnHolder.size() );
-    if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
-      return getFont( checkData );
-    }
-    if( cellFonts == null || cellFonts[ columnIndex ] == null ) {
-      return getFont( checkData );
-    }
     if( checkData ) {
       materialize();
     }
-    return cellFonts[ columnIndex ];
+    Font result = getFont();
+    if( hasData( index ) && data[ index ].font != null ) {
+      result = data[ index ].font;
+    }
+    return result;
   }
 
   /**
    * Returns the foreground color at the given column index in the receiver.
    *
-   * @param columnIndex the column index
+   * @param index the column index
    * @return the foreground color
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
@@ -567,17 +581,14 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public Color getForeground( int columnIndex ) {
+  public Color getForeground( int index ) {
     checkWidget();
     // if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
-    int validColumnCount = Math.max( 1, parent.columnHolder.size() );
-    if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
-      return getForeground();
+    Color result = getForeground();
+    if( hasData( index ) && data[ index ].foreground != null ) {
+      result = data[ index ].foreground;
     }
-    if( cellForegrounds == null || cellForegrounds[ columnIndex ] == null ) {
-      return getForeground();
-    }
-    return cellForegrounds[ columnIndex ];
+    return result;
   }
 
   /**
@@ -585,8 +596,8 @@ public class TreeItem extends Item {
    * color specified by the argument, or to the default system color for the
    * item if the argument is null.
    *
-   * @param columnIndex the column index
-   * @param value the new color (or null)
+   * @param index the column index
+   * @param color the new color (or null)
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed
    *              </li>
@@ -598,32 +609,20 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setBackground( int columnIndex, Color value ) {
+  public void setBackground( int index, Color color ) {
     checkWidget();
-    if( value != null && value.isDisposed() ) {
+    if( color != null && color.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    int validColumnCount = Math.max( 1, parent.columnHolder.size() );
-    if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
-      return;
+    int count = Math.max( 1, parent.getColumnCount() );
+    if( index >= 0 && index < count ) {
+      ensureData( index, count );
+      if( !equals( data[ index ].background, color ) ) {
+        data[ index ].background = color;
+        markCached();
+        parent.redraw();
+      }
     }
-    if( cellBackgrounds == null ) {
-      cellBackgrounds = new Color[ validColumnCount ];
-    } else if( cellBackgrounds.length < validColumnCount ) {
-      Color[] newCellBackgrounds = new Color[ validColumnCount ];
-      System.arraycopy( cellBackgrounds, 0, newCellBackgrounds, 0, cellBackgrounds.length );
-      cellBackgrounds = newCellBackgrounds;
-    }
-    if( cellBackgrounds[ columnIndex ] == value ) {
-      return;
-    }
-    if( cellBackgrounds[ columnIndex ] != null
-        && cellBackgrounds[ columnIndex ].equals( value ) )
-    {
-      return;
-    }
-    cellBackgrounds[ columnIndex ] = value;
-    markCached();
   }
 
   /**
@@ -631,8 +630,8 @@ public class TreeItem extends Item {
    * the specified cell in this item to the font specified by the argument, or
    * to the default font for that kind of control if the argument is null.
    *
-   * @param columnIndex the column index
-   * @param value the new font (or null)
+   * @param index the column index
+   * @param font the new font (or null)
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed
    *              </li>
@@ -644,33 +643,21 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setFont( int columnIndex, Font value ) {
+  public void setFont( int index, Font font ) {
     checkWidget();
-    if( value != null && value.isDisposed() ) {
+    if( font != null && font.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    int validColumnCount = Math.max( 1, parent.columnHolder.size() );
-    if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
-      return;
-    }
-    if( cellFonts == null ) {
-      if( value == null ) {
-        return;
+    int count = Math.max( 1, parent.getColumnCount() );
+    if( index >= 0 && index < count ) {
+      ensureData( index, count );
+      if( !equals( font, data[ index ].font ) ) {
+        data[ index ].font = font;
+        data[ index ].textWidth = Data.UNKNOWN_WIDTH;
+        markCached();
+        parent.redraw();
       }
-      cellFonts = new Font[ validColumnCount ];
-    } else if( cellFonts.length < validColumnCount ) {
-      Font[] newCellFonts = new Font[ validColumnCount ];
-      System.arraycopy( cellFonts, 0, newCellFonts, 0, cellFonts.length );
-      cellFonts = newCellFonts;
     }
-    if( cellFonts[ columnIndex ] == value ) {
-      return;
-    }
-    if( cellFonts[ columnIndex ] != null && cellFonts[ columnIndex ].equals( value ) ) {
-      return;
-    }
-    cellFonts[ columnIndex ] = value;
-    markCached();
   }
 
   /**
@@ -678,8 +665,8 @@ public class TreeItem extends Item {
    * color specified by the argument, or to the default system color for the
    * item if the argument is null.
    *
-   * @param columnIndex the column index
-   * @param value the new color (or null)
+   * @param index the column index
+   * @param color the new color (or null)
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_INVALID_ARGUMENT - if the argument has been disposed
    *              </li>
@@ -691,31 +678,19 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setForeground( int columnIndex, Color value ) {
+  public void setForeground( int index, Color color ) {
     checkWidget();
-    if( value != null && value.isDisposed() ) {
+    if( color != null && color.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    int validColumnCount = Math.max( 1, parent.columnHolder.size() );
-    if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
-      return;
-    }
-    if( cellForegrounds == null ) {
-      cellForegrounds = new Color[ validColumnCount ];
-    } else if( cellForegrounds.length < validColumnCount ) {
-      Color[] newCellForegrounds = new Color[ validColumnCount ];
-      System.arraycopy( cellForegrounds, 0, newCellForegrounds, 0, cellForegrounds.length );
-      cellForegrounds = newCellForegrounds;
-    }
-    if( cellForegrounds[ columnIndex ] == value ) {
-      return;
-    }
-    if( cellForegrounds[ columnIndex ] != null && cellForegrounds[ columnIndex ].equals( value ) ) {
-      return;
-    }
-    cellForegrounds[ columnIndex ] = value;
-    if( parent.isVirtual() ) {
-      cached = true;
+    int count = Math.max( 1, parent.getColumnCount() );
+    if( index >= 0 && index < count ) {
+      ensureData( index, count );
+      if( !equals( data[ index ].foreground, color ) ) {
+        data[ index ].foreground = color;
+        markCached();
+        parent.redraw();
+      }
     }
   }
 
@@ -961,7 +936,7 @@ public class TreeItem extends Item {
    * Returns the text stored at the given column index in the receiver, or empty
    * string if the text has not been set.
    *
-   * @param columnIndex the column index
+   * @param index the column index
    * @return the text stored at the given column index in the receiver
    * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
    *              has been disposed</li> <li>ERROR_THREAD_INVALID_ACCESS - if
@@ -969,9 +944,9 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public String getText( int columnIndex ) {
+  public String getText( int index ) {
     checkWidget();
-    return getText( columnIndex, true );
+    return getText( index, true );
   }
 
   /**
@@ -987,24 +962,18 @@ public class TreeItem extends Item {
   public String getText() {
     checkWidget();
     materialize();
-    return super.getText();
+    return getText( 0 );
   }
 
-  String getText( int columnIndex, boolean checkData ) {
+  String getText( int index, boolean checkData ) {
     if( checkData && !isCached() ) {
       parent.checkData( this, this.index );
     }
-    int validColumnCount = Math.max( 1, parent.columnHolder.size() );
-    if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
-      return ""; //$NON-NLS-1$
+    String result = "";
+    if( hasData( index ) ) {
+      result = data[ index ].text;
     }
-    if( columnIndex == 0 ) {
-      return super.getText(); /* super is intentional here */
-    }
-    if( texts[ columnIndex ] == null ) {
-      return ""; //$NON-NLS-1$
-    }
-    return texts[ columnIndex ];
+    return result;
   }
 
   /**
@@ -1062,8 +1031,8 @@ public class TreeItem extends Item {
   /**
    * Sets the receiver's text at a column
    *
-   * @param columnIndex the column index
-   * @param value the new text
+   * @param index the column index
+   * @param text the new text
    * @exception IllegalArgumentException <ul> <li>ERROR_NULL_ARGUMENT - if the
    *              text is null</li> </ul>
    * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
@@ -1072,28 +1041,26 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setText( int columnIndex, String value ) {
+  public void setText( int index, String text ) {
     checkWidget();
-    if( value == null ) {
+    if( text == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    int validColumnCount = Math.max( 1, parent.columnHolder.size() );
-    if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
-      return;
+    int count = Math.max( 1, parent.getColumnCount() );
+    if( index >= 0 && index < count ) {
+      ensureData( index, count );
+      if( !text.equals( data[ index ].text ) ) {
+        data[ index ].text = text;
+        // TODO: Move buffered value to Data class
+        // data[ index ].textWidth = Data.UNKNOWN_WIDTH;
+        clearPreferredWidthBuffer();
+        markCached();
+        if( parent.getColumnCount() == 0 ) {
+          parent.updateScrollBars();
+        }
+        parent.redraw();
+      }
     }
-    if( value.equals( getText( columnIndex, false ) ) ) {
-      return;
-    }
-    if( columnIndex == 0 ) {
-      super.setText( value );
-    } else {
-      texts[ columnIndex ] = value;
-    }
-    clearPreferredWidthBuffer();
-    if( parent.getColumnCount() == 0 ) {
-      parent.updateScrollBars();
-    }
-    markCached();
   }
 
   /**
@@ -1111,6 +1078,22 @@ public class TreeItem extends Item {
     checkWidget();
     setText( 0, text );
   }
+  
+  /**
+   * Returns the receiver's image if it has one, or null
+   * if it does not.
+   *
+   * @return the receiver's image
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   * @since 1.4
+   */
+  public Image getImage() {
+    return getImage( 0 );
+  }
 
   /**
    * Returns the image stored at the given column index in the receiver, or null
@@ -1127,22 +1110,6 @@ public class TreeItem extends Item {
   public Image getImage( int columnIndex ) {
     checkWidget();
     return getImage( columnIndex, true );
-  }
-
-  /**
-   * Returns the receiver's image if it has one, or null
-   * if it does not.
-   *
-   * @return the receiver's image
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   * @since 1.4
-   */
-  public Image getImage() {
-    return getImage( 0 );
   }
 
   /**
@@ -1178,19 +1145,17 @@ public class TreeItem extends Item {
     return result;
   }
 
-  Image getImage( int columnIndex, boolean checkData ) {
-    // if( checkData ) parent.checkData( this, this.index );
-    int validColumnCount = Math.max( 1, parent.columnHolder.size() );
-    if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
-      return null;
-    }
+  Image getImage( int index, boolean checkData ) {
+    // TODO Why is this line commented?
+    // if( checkData ) parent.checkData( this, this.index );    
     if( checkData ) {
       materialize();
     }
-    if( columnIndex == 0 ) {
-      return super.getImage(); /* super is intentional here */
+    Image result = null;
+    if( hasData( index ) ) {
+      result = data[ index ].image;
     }
-    return images[ columnIndex ];
+    return result;
   }
 
   /*
@@ -1201,25 +1166,14 @@ public class TreeItem extends Item {
   }
 
   void clear() {
+    data = null;
     checked = false;
     grayed = false;
-    texts = null;
-    images = null;
-    foreground = background = null;
-    cellForegrounds = cellBackgrounds = null;
+    foreground = null;
+    background = null;
     font = null;
-    cellFonts = null;
-    setText( "" );
-    setImage( ( Image )null );
-    int columnCount = parent.columnHolder.size();
-    if( columnCount > 0 ) {
-      // displayTexts = new String[ columnCount ];
-      if( columnCount > 1 ) {
-        texts = new String[ columnCount ];
-        images = new Image[ columnCount ];
-      }
-    }
     clearCached();
+    clearPreferredWidthBuffer();
     parent.updateScrollBars();
   }
 
@@ -1259,48 +1213,6 @@ public class TreeItem extends Item {
     }
   }
 
-  /*
-   * Updates internal structures in the receiver and its child items to handle
-   * the creation of a new column.
-   */
-  void addColumn( TreeColumn column ) {
-    int index = column.getIndex();
-    int columnCount = parent.columnHolder.size();
-    if( columnCount > 1 ) {
-      if( columnCount == 2 ) {
-        texts = new String[ 2 ];
-      } else {
-        String[] newTexts = new String[ columnCount ];
-        System.arraycopy( texts, 0, newTexts, 0, index );
-        System.arraycopy( texts, index, newTexts, index + 1, columnCount - index - 1 );
-        texts = newTexts;
-      }
-      if( index == 0 ) {
-        texts[ 1 ] = text;
-        text = ""; //$NON-NLS-1$
-      }
-      if( columnCount == 2 ) {
-        images = new Image[ 2 ];
-      } else {
-        Image[] newImages = new Image[ columnCount ];
-        System.arraycopy( images, 0, newImages, 0, index );
-        System.arraycopy( images, index, newImages, index + 1, columnCount - index - 1 );
-        images = newImages;
-      }
-      if( index == 0 ) {
-        images[ 1 ] = image;
-        image = null;
-      }
-    }
-    /* notify all child items as well */
-    for( int i = 0; i < itemCount; i++ ) {
-      TreeItem item = items[ i ];
-      if( item != null ) {
-        item.addColumn( column );
-      }
-    }
-  }
-
   public void setImage( Image image ) {
     checkWidget();
     setImage( 0, image );
@@ -1309,8 +1221,8 @@ public class TreeItem extends Item {
   /**
    * Sets the receiver's image at a column.
    *
-   * @param columnIndex the column index
-   * @param value the new image
+   * @param index the column index
+   * @param image the new image
    * @exception IllegalArgumentException <ul>
    *              <li>ERROR_INVALID_ARGUMENT - if the image has been disposed
    *              </li>
@@ -1322,34 +1234,25 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public void setImage( int columnIndex, Image value ) {
+  public void setImage( int index, Image image ) {
     checkWidget();
-    if( value != null && value.isDisposed() ) {
+    if( image != null && image.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    TreeColumn[] columns = parent.columnHolder.getItems();
-    int validColumnCount = Math.max( 1, columns.length );
-    if( !( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
-      return;
-    }
-    Image image = getImage( columnIndex, false );
-    if( value == image ) {
-      return;
-    }
-    if( value != null && value.equals( image ) ) {
-      return;
-    }
-    parent.updateColumnImageCount( columnIndex, image, value );
-    parent.updateItemImageSize( value );
-    if( columnIndex == 0 ) {
-      super.setImage( value );
-    } else {
-      images[ columnIndex ] = value;
-    }
-    markCached();
-    clearPreferredWidthBuffer();
-    if( parent.getColumnCount() == 0 ) {
-      parent.updateScrollBars();
+    int count = Math.max( 1, parent.getColumnCount() );
+    if( index >= 0 && index < count ) {
+      ensureData( index, count );
+      if( !equals( data[ index ].image, image ) ) {
+        parent.updateColumnImageCount( index, data[ index ].image, image );
+        data[ index ].image = image;
+        parent.updateItemImageSize( image );
+        markCached();
+        clearPreferredWidthBuffer();
+        if( parent.getColumnCount() == 0 ) {
+          parent.updateScrollBars();
+        }
+        parent.redraw();
+      }
     }
   }
 
@@ -1696,6 +1599,58 @@ public class TreeItem extends Item {
       result = cached;
     }
     return result;
+  }
+  
+  private static boolean equals( Object object1, Object object2 ) {
+    boolean result;
+    if( object1 == object2 ) {
+      result = true;
+    } else if( object1 == null ) {
+      result = false;
+    } else {
+      result = object1.equals( object2 );
+    }
+    return result;
+  }
+  
+  ////////////////////////////////////////
+  // Manage item data (texts, images, etc)
+    
+  private void ensureData( int index, int columnCount ) {
+    if( data == null ) {
+      data = new Data[ columnCount ];
+    } else if( data.length < columnCount ) {
+      Data[] newData = new Data[ columnCount ];
+      System.arraycopy( data, 0, newData, 0, data.length );
+      data = newData;
+    }
+    if( data[ index ] == null ) {
+      data[ index ] = new Data();
+    }
+  }
+  
+  private boolean hasData( int index ) {
+    return data != null && index >= 0 && index < data.length && data[ index ] != null;
+  }
+  
+  final void shiftData( int index ) {
+    if( data != null && data.length > index && parent.getColumnCount() > 1 ) {
+      Data[] newData = new Data[ data.length + 1 ];
+      System.arraycopy( data, 0, newData, 0, index );
+      int offSet = data.length - index;
+      System.arraycopy( data, index, newData, index + 1, offSet );
+      data = newData;
+    }
+  }
+
+  final void removeData( int index ) {
+    if( data != null && data.length > index && parent.getColumnCount() > 1 ) {
+      Data[] newData = new Data[ data.length - 1 ];
+      System.arraycopy( data, 0, newData, 0, index );
+      int offSet = data.length - index - 1;
+      System.arraycopy( data, index + 1, newData, index, offSet );
+      data = newData;
+    }
   }
 
 }

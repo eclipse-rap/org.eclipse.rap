@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -781,10 +781,16 @@ public class Tree_Test extends TestCase {
 
     item.setImage( ( Image )null );
     assertFalse( tree.hasHScrollBar() );
+  }
 
+  public void testUpdateScrollBarOnClearAll() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    tree.setSize( 100, 100 );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( "Very long long long long long long long long text" );
-    item.setImage( image );
+    
     tree.clearAll( true );
+ 
     assertFalse( tree.hasHScrollBar() );
   }
 

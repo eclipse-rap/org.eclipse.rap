@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -336,6 +336,7 @@ public class Tree extends Composite {
   
   private void setTreeEmpty() {
     items = new TreeItem[ 4 ];
+    // TODO: Not sure if we have to clear the image size???!!!
 //    clearItemImageSize();
   }
 
@@ -1254,11 +1255,9 @@ public class Tree extends Composite {
       columnOrder = newColumnOrder;
       columnOrder[ index ] = index;
     }
-    // allow all items to update their internal structures accordingly
     for( int i = 0; i < itemCount; i++ ) {
-      TreeItem item = items[ i ];
-      if( item != null ) {
-        item.addColumn( column );
+      if( items[ i ] != null ) {
+        items[ i ].shiftData( index );
       }
     }
     updateScrollBars();
@@ -1268,11 +1267,11 @@ public class Tree extends Composite {
     if( !isInDispose() ) {
       int index = indexOf( column );
       // Remove data from TreeItems
-      // TreeItem[] items = getItems();
-      // TODO [bm] dipose unneccesary data
-      // for( int i = 0; i < items.length; i++ ) {
-      // items[ i ].removeData( index );
-      // }
+      for( int i = 0; i < itemCount; i++ ) {
+        if( items[ i ] != null ) {
+          items[ i ].removeData( index );
+        }
+      }
       // Reset sort column if necessary
       if( column == sortColumn ) {
         sortColumn = null;

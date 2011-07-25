@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2187,7 +2187,6 @@ public class Table extends Composite {
       System.arraycopy( columnImageCount, index, newColumnImageCount, index + 1, length - index );
       columnImageCount = newColumnImageCount;
     }
-    // Shift data if needed
     for( int i = 0; i < itemCount; i++ ) {
       if( items[ i ] != null ) {
         items[ i ].shiftData( index );

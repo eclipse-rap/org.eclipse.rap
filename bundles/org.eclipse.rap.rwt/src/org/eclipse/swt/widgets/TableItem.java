@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -377,7 +377,7 @@ public class TableItem extends Item {
     int count = Math.max( 1, parent.getColumnCount() );
     if( index >= 0 && index < count ) {
       ensureData( index, count );
-      if( !equals( data[ index].image, image ) ) {
+      if( !equals( data[ index ].image, image ) ) {
         parent.updateColumnImageCount( index, data[ index ].image, image );
         data[ index ].image = image;
         parent.updateItemImageSize( image );

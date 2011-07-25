@@ -1,17 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treeitemkit;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
@@ -74,12 +75,10 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( colorAdapter.getUserForegound(), foreground );
     Font[] fonts = ( Font[] )adapter.getPreserved( TreeItemLCA.PROP_FONT );
     assertNull( fonts );
-    Color[] backgrounds
-      = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_BACKGROUNDS );
-    assertNull( backgrounds );
-    Color[] foregrounds
-      = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FOREGROUNDS );
-    assertNull( foregrounds );
+    Color[] backgrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_BACKGROUNDS );
+    assertTrue( Arrays.equals( new Color[ 3 ], backgrounds ) );
+    Color[] foregrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FOREGROUNDS );
+    assertTrue( Arrays.equals( new Color[ 3 ], foregrounds ) );
     Object materialized = adapter.getPreserved( TreeItemLCA.PROP_MATERIALIZED );
     assertEquals( Boolean.TRUE, materialized );
     Fixture.clearPreserved();

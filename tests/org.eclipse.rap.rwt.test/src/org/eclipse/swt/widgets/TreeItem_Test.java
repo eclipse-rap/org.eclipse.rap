@@ -1,19 +1,19 @@
 /******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -251,6 +251,17 @@ public class TreeItem_Test extends TestCase {
     newTree.dispose();
   }
 
+  public void testSetTextOnCell() {
+    Display display = new Display();
+    Shell shell = new Shell( display, SWT.NONE );
+    Tree tree = new Tree( shell, SWT.CHECK );
+    TreeItem treeItem = new TreeItem( tree, 0 );
+
+    treeItem.setText( 0, "foo" );
+
+    assertEquals( "foo", treeItem.getText( 0 ) );
+  }
+
   public void testSetText() {
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
@@ -262,14 +273,14 @@ public class TreeItem_Test extends TestCase {
      * Test the getText/setText API with a Tree that has only the default
      * column.
      */
-    assertEquals( 0, treeItem.getText( 1 ).length() );
+    assertEquals( "", treeItem.getText( 1 ) );
     treeItem.setText( 1, testString );
-    assertEquals( 0, treeItem.getText( 1 ).length() );
-    assertEquals( 0, treeItem.getText( 0 ).length() );
+    assertEquals( "", treeItem.getText( 1 ) );
+    assertEquals( "", treeItem.getText( 0 ) );
     treeItem.setText( 0, testString );
     assertEquals( testString, treeItem.getText( 0 ) );
     treeItem.setText( -1, testStrings[ 1 ] );
-    assertEquals( 0, treeItem.getText( -1 ).length() );
+    assertEquals( "", treeItem.getText( -1 ) );
     /*
      * Test the getText/setText API with a Tree that enough columns to fit all
      * test item texts.
@@ -857,9 +868,9 @@ public class TreeItem_Test extends TestCase {
     createColumns( tree, columnCount );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     ITreeItemAdapter adapter = ( ITreeItemAdapter )item.getAdapter( ITreeItemAdapter.class );
-    assertNull( adapter.getCellBackgrounds() );
-    assertNull( adapter.getCellForegrounds() );
-    assertNull( adapter.getCellFonts() );
+    assertTrue( Arrays.equals( new Color[ 3 ], adapter.getCellBackgrounds() ) );
+    assertTrue( Arrays.equals( new Color[ 3 ], adapter.getCellForegrounds() ) );
+    assertTrue( Arrays.equals( new Font[ 3 ], adapter.getCellFonts() ) );
     Color bgColor = display.getSystemColor( SWT.COLOR_YELLOW );
     Color fgColor = display.getSystemColor( SWT.COLOR_BLUE );
     Font font = Graphics.getFont( "Helvetica", 12, SWT.NORMAL );

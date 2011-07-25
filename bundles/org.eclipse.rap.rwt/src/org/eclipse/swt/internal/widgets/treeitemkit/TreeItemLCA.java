@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treeitemkit;
 
@@ -22,6 +22,7 @@ import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
+
 
 public final class TreeItemLCA extends AbstractWidgetLCA {
 
@@ -219,19 +220,16 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.writeFont( treeItem, font );
   }
 
-  private static void writeCellFonts( final TreeItem item ) throws IOException {
+  private static void writeCellFonts( TreeItem item ) throws IOException {
     ITreeItemAdapter itemAdapter = ( ITreeItemAdapter )item.getAdapter( ITreeItemAdapter.class );
     Font[] fonts = itemAdapter.getCellFonts();
     JSWriter writer = JSWriter.getWriterFor( item );
-    // TODO [rst] Revise when properly implemented in TreeItem.js
-    // writer.set( PROP_CELL_FONTS, "fonts", fonts, null );
-    if( WidgetLCAUtil.hasChanged( item, PROP_CELL_FONTS, fonts, null ) ) {
+    Font[] defValue = new Font[ fonts.length ];
+    if( WidgetLCAUtil.hasChanged( item, PROP_CELL_FONTS, fonts, defValue ) ) {
       String[] css = null;
-      if( fonts != null ) {
-        css = new String[ fonts.length ];
-        for( int i = 0; i < fonts.length; i++ ) {
-          css[ i ] = toCss( fonts[ i ] );
-        }
+      css = new String[ fonts.length ];
+      for( int i = 0; i < fonts.length; i++ ) {
+        css[ i ] = toCss( fonts[ i ] );
       }
       writer.set( "cellFonts", new Object[]{ css } );
     }
@@ -257,18 +255,20 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeCellBackgrounds( final TreeItem item ) throws IOException {
+  private static void writeCellBackgrounds( TreeItem item ) throws IOException {
     ITreeItemAdapter itemAdapter = ( ITreeItemAdapter )item.getAdapter( ITreeItemAdapter.class );
     Color[] backgrounds = itemAdapter.getCellBackgrounds();
+    Color[] defValue = new Color[ getColumnCount( item ) ];
     JSWriter writer = JSWriter.getWriterFor( item );
-    writer.set( PROP_CELL_BACKGROUNDS, "cellBackgrounds", backgrounds, null );
+    writer.set( PROP_CELL_BACKGROUNDS, "cellBackgrounds", backgrounds, defValue );
   }
 
-  private static void writeCellForegrounds( final TreeItem item ) throws IOException {
+  private static void writeCellForegrounds( TreeItem item ) throws IOException {
     ITreeItemAdapter itemAdapter = ( ITreeItemAdapter )item.getAdapter( ITreeItemAdapter.class );
     Color[] foregrounds = itemAdapter.getCellForegrounds();
+    Color[] defValue = new Color[ getColumnCount( item ) ];
     JSWriter writer = JSWriter.getWriterFor( item );
-    writer.set( PROP_CELL_FOREGROUNDS, "cellForegrounds", foregrounds, null );
+    writer.set( PROP_CELL_FOREGROUNDS, "cellForegrounds", foregrounds, defValue );
   }
 
   private static void writeTexts( final TreeItem item ) throws IOException {
