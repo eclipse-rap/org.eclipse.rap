@@ -8,19 +8,19 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.internal.widgets.tableitemkit;
+package org.eclipse.swt.internal.widgets;
 
 import java.util.Map;
 
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.widgets.IRichTextParserCallback;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
-class RichTextToHtmlTransformer implements IRichTextParserCallback {
+public class RichTextToHtmlTransformer implements IRichTextParserCallback {
   private final StringBuilder buffer;
-  private final Map<String, Image> imageMap;
+  private final Map<String,Image> imageMap;
 
   public RichTextToHtmlTransformer( TableItem tableItem ) {
     this.buffer = new StringBuilder();
@@ -50,8 +50,12 @@ class RichTextToHtmlTransformer implements IRichTextParserCallback {
   }
 
   public void image( String src ) {
+    Image image = imageMap.get( src );
+    Rectangle imageBounds = image.getBounds();
     buffer.append( "<img" );
-    appendAttribute( "src", ImageFactory.getImagePath( imageMap.get( src ) ) );
+    appendAttribute( "src", ImageFactory.getImagePath( image ) );
+    appendAttribute( "width", imageBounds.width + "px" );
+    appendAttribute( "height", image.getBounds().height + "px" );
     buffer.append( " />" );
   }
 
@@ -63,7 +67,7 @@ class RichTextToHtmlTransformer implements IRichTextParserCallback {
     buffer.append( text );
   }
 
-  String getHtml() {
+  public String getHtml() {
     return buffer.toString();
   }
   
@@ -76,7 +80,7 @@ class RichTextToHtmlTransformer implements IRichTextParserCallback {
   }
 
   @SuppressWarnings("unchecked")
-  private static Map<String, Image> getImageMap( TableItem tableItem ) {
-    return ( Map<String, Image> )tableItem.getParent().getData( Table.IMAGE_MAP );
+  private static Map<String,Image> getImageMap( TableItem tableItem ) {
+    return ( Map<String,Image> )tableItem.getParent().getData( Table.IMAGE_MAP );
   }
 }
