@@ -25,12 +25,11 @@ org.eclipse.rwt.protocol.Processor = {
       switch( operation.action ) {
         case "create":
           this._processCreate( operation.target, operation.type, operation.properties );
+        case "set":
+          this._processSet( operation.target, operation.properties );
         break; 
         case "destroy":
           this._processDestroy( operation.target );
-        break; 
-        case "set":
-          this._processSet( operation.target, operation.properties );
         break; 
         case "call":
           this._processCall( operation.target, operation.method, operation.properties );
@@ -48,22 +47,29 @@ org.eclipse.rwt.protocol.Processor = {
   },
 
   // TODO [tb] : move  
-  addStatesForStyles : function( targetOject, styleMap ) {
-    for( key in styleMap ) {
-      targetOject.addState( "rwt_" + key );
+  addStatesForStyles : function( targetOject, styleArray ) {
+    for( var i = 0; i < styleArray.length; i++ ) {
+      targetOject.addState( "rwt_" + styleArray[ i ] );
     }
   },
-  
+
+  createStyleMap : function( styleArray ) {
+    var result = {};
+    for( var i = 0; i < styleArray.length; i++ ) {
+      result[ styleArray[ i ] ] = true;
+    }
+    return result;
+  },
+
   ////////////
   // Internals
 
   _processCreate : function( targetId, type, properties ) {
     var adapter = org.eclipse.rwt.protocol.AdapterRegistry.getAdapter( type );
-    var styleMap = this._createStylesMap( properties.style );
-    var targetObject = new adapter.constructor( styleMap );
+    var targetObject = new adapter.constructor( properties );
     this._addTarget( targetObject, targetId, adapter.isControl, type );
- },
-  
+  },
+
   _processDestroy : function( targetId ) {
     var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
     widgetManager.dispose( targetId );      
@@ -158,14 +164,6 @@ org.eclipse.rwt.protocol.Processor = {
     return adapter;
   },
   
-  _createStylesMap : function( style ) {
-    var result = {};
-    for( var i = 0; i < style.length; i++ ) {
-      result[ style[ i ] ] = true;
-    }
-    return result;
-  },
-
   _addListener : function( adapter, targetObject, eventType ) {
     if( adapter.listenerHandler &&  adapter.listenerHandler[ eventType ] ) {
       adapter.listenerHandler[ eventType ]( targetObject, true );
@@ -210,6 +208,7 @@ org.eclipse.rwt.protocol.Processor = {
     return "setHas" + qx.lang.String.toFirstUp( eventType ) + "Listener";
   },
   
+  // TODO [tb] : remove feature and use Adapter instead?
   _listenerMap : {
     "focus" : [ 
       { 
