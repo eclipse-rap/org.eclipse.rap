@@ -142,8 +142,10 @@
       <pathelement location="${forms.tests}" />
       <pathelement location="${themes.tests}" />
       <pathelement location="${styledtext.tests}" />
+      <!--
       <pathelement location="${cluster.tests}" />
       <pathelement location="${clusterfixture.tests}" />
+      -->
       <fileset dir="${baseLocation}/eclipse/plugins">
         <include name="**/*.jar" />
         <exclude name="**/javax.servlet*.jar" />
@@ -190,12 +192,14 @@
         <fileset dir="${styledtext.tests}">
           <include name="**/*_Test.class" />
         </fileset>
+        <!--
         <fileset dir="${cluster.tests}">
           <include name="**/*_Test.class" />
         </fileset>
         <fileset dir="${clusterfixture.tests}">
           <include name="**/*_Test.class" />
         </fileset>
+        -->
       </batchtest>
     </junit>
   </target>
