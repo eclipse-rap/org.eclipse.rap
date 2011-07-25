@@ -30,6 +30,17 @@ public class Tree_Test extends TestCase {
 
   private Display display;
   private Composite composite;
+  
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    composite = new Shell( display, SWT.NONE );
+  }
+  
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testGetItemsAndGetItemCount() {
     Tree tree = new Tree( composite, SWT.NONE );
@@ -1389,22 +1400,22 @@ public class Tree_Test extends TestCase {
     Tree tree = new Tree( composite, SWT.NONE );
     
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
-    assertEquals( 11, item1.getPreferredWidthBuffer() );
+    assertEquals( 11, item1.getPreferredWidthBuffer( 0 ) );
     
     item1.setText( "text" );
-    assertEquals( 34, item1.getPreferredWidthBuffer() );
+    assertEquals( 34, item1.getPreferredWidthBuffer( 0 ) );
 
     item1.setText( 0, "anotherText" );
-    assertEquals( 74, item1.getPreferredWidthBuffer() );
+    assertEquals( 74, item1.getPreferredWidthBuffer( 0 ) );
    
     // unfortunately tree doesn't allow to set images with different sizes
     // therefore the size of the first image gets cached -> we only test
     // the setImage(int,image) method
     item1.setImage( 0, Graphics.getImage( Fixture.IMAGE1 ) );
-    assertEquals( 135, item1.getPreferredWidthBuffer() );
+    assertEquals( 135, item1.getPreferredWidthBuffer( 0 ) );
     
     tree.setFont( new Font( display, "arial", 40, SWT.BOLD ) );
-    assertEquals( 378, item1.getPreferredWidthBuffer() );
+    assertEquals( 378, item1.getPreferredWidthBuffer( 0 ) );
   }
 
   public void testChanged() {
@@ -1414,7 +1425,7 @@ public class Tree_Test extends TestCase {
 
     tree.changed( tree.getChildren() );
     
-    assertFalse( item1.hasPreferredWidthBuffer() );
+    assertFalse( item1.hasPreferredWidthBuffer( 0 ) );
   }
   
   public void testIsSerializable() throws Exception {
@@ -1427,18 +1438,28 @@ public class Tree_Test extends TestCase {
     assertEquals( 1, deserializedTree.getItemCount() );
     assertEquals( 1, deserializedTree.getColumnCount() );
   }
-
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    display = new Display();
-    composite = new Shell( display, SWT.NONE );
+  
+  public void testGetPreferredCellWidthForColumn() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    createColumns( tree, 3 );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item.setText( 0, "short" );
+    item.setText( 1, "very long text" );
+    
+    int width1 = tree.getPreferredCellWidth( item, 0, false );
+    int width2 = tree.getPreferredCellWidth( item, 1, false );
+    assertTrue( width2 > width1 );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  /////////
+  // Helper
+  
+  private static void createColumns( Tree tree, int count ) {
+    for( int i = 0; i < count; i++ ) {
+      new TreeColumn( tree, SWT.NONE );
+    }
   }
-
+  
   private static Listener createSetDataListener() {
     return new Listener() {
       public void handleEvent( Event event ) {
@@ -1456,9 +1477,6 @@ public class Tree_Test extends TestCase {
       }
     };
   }
-
-  /////////
-  // Helper
 
   private static boolean contains( TreeItem[] items, TreeItem item ) {
     boolean result = false;

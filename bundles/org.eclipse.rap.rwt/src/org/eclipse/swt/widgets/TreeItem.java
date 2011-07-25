@@ -33,8 +33,6 @@ import org.eclipse.swt.internal.widgets.*;
  */
 public class TreeItem extends Item {
 
-  private static final int EMPTY_PREFERED_WIDTH_BUFFER = -1;
-
   private final class TreeItemAdapter
     implements ITreeItemAdapter, IWidgetFontAdapter, IWidgetColorAdapter
   {
@@ -116,7 +114,10 @@ public class TreeItem extends Item {
   private static final class Data implements SerializableCompatibility {
     static final int UNKNOWN_WIDTH = -1;
     String text = "";
-    int textWidth = UNKNOWN_WIDTH;
+    // Note [fappel]: Yourkit analysis with the UI workbench testsuite showed an extensive
+    //                appearance of preferred width calculations. Buffering the preferred width
+    //                speeds up the suite on my machine to 1/4th of the time needed without buffering.
+    int preferredWidthBuffer = UNKNOWN_WIDTH;
     Image image;
     Font font;
     Color background;
@@ -139,11 +140,6 @@ public class TreeItem extends Item {
   int depth;
   private boolean cached;
   int flatIndex;
-
-  // Note [fappel]: Yourkit analysis with the UI workbench testsuite showed an extensive
-  //                appearance of preferred width calculations. Buffering the preferred width
-  //                speeds up the suite on my machine to 1/4th of the time needed without buffering.
-  private int preferredWidthBuffer;
 
   /**
    * Constructs a new instance of this class given its parent (which must be a
@@ -298,7 +294,6 @@ public class TreeItem extends Item {
     if( parentItem != null ) {
       this.depth = parentItem.depth + 1;
     }
-    clearPreferredWidthBuffer();
     setEmpty();
     if( create ) {
       int numberOfItems;
@@ -653,7 +648,7 @@ public class TreeItem extends Item {
       ensureData( index, count );
       if( !equals( font, data[ index ].font ) ) {
         data[ index ].font = font;
-        data[ index ].textWidth = Data.UNKNOWN_WIDTH;
+        data[ index ].preferredWidthBuffer = Data.UNKNOWN_WIDTH;
         markCached();
         parent.redraw();
       }
@@ -1051,9 +1046,7 @@ public class TreeItem extends Item {
       ensureData( index, count );
       if( !text.equals( data[ index ].text ) ) {
         data[ index ].text = text;
-        // TODO: Move buffered value to Data class
-        // data[ index ].textWidth = Data.UNKNOWN_WIDTH;
-        clearPreferredWidthBuffer();
+        data[ index ].preferredWidthBuffer = Data.UNKNOWN_WIDTH;
         markCached();
         if( parent.getColumnCount() == 0 ) {
           parent.updateScrollBars();
@@ -1173,7 +1166,6 @@ public class TreeItem extends Item {
     background = null;
     font = null;
     clearCached();
-    clearPreferredWidthBuffer();
     parent.updateScrollBars();
   }
 
@@ -1245,9 +1237,9 @@ public class TreeItem extends Item {
       if( !equals( data[ index ].image, image ) ) {
         parent.updateColumnImageCount( index, data[ index ].image, image );
         data[ index ].image = image;
+        data[ index ].preferredWidthBuffer = Data.UNKNOWN_WIDTH;
         parent.updateItemImageSize( image );
         markCached();
-        clearPreferredWidthBuffer();
         if( parent.getColumnCount() == 0 ) {
           parent.updateScrollBars();
         }
@@ -1548,20 +1540,31 @@ public class TreeItem extends Item {
   //////////////////
   // helping methods
 
-  void clearPreferredWidthBuffer() {
-    preferredWidthBuffer = EMPTY_PREFERED_WIDTH_BUFFER;
+  boolean hasPreferredWidthBuffer( int index ) {
+    return getPreferredWidthBuffer( index ) != Data.UNKNOWN_WIDTH;
   }
 
-  void setPreferredWidthBuffer( int preferredWidthBuffer ) {
-    this.preferredWidthBuffer = preferredWidthBuffer;
+  int getPreferredWidthBuffer( int index ) {
+    int result = Data.UNKNOWN_WIDTH;
+    if( hasData( index ) ) {
+      result = data[ index ].preferredWidthBuffer;
+    }
+    return result;
   }
 
-  boolean hasPreferredWidthBuffer() {
-    return preferredWidthBuffer != EMPTY_PREFERED_WIDTH_BUFFER;
+  void setPreferredWidthBuffer( int index, int preferredWidthBuffer ) {
+    int count = Math.max( 1, parent.getColumnCount() );
+    ensureData( index, count );
+    data[ index ].preferredWidthBuffer = preferredWidthBuffer;
   }
 
-  int getPreferredWidthBuffer() {
-    return preferredWidthBuffer;
+  void clearPreferredWidthBuffers() {
+    int count = Math.max( 1, parent.getColumnCount() );
+    for( int i = 0; i < count; i++ ) {
+      if( hasData( i ) ) {
+        data[ i ].preferredWidthBuffer = Data.UNKNOWN_WIDTH;
+      }
+    }
   }
 
   int getInnerHeight() {

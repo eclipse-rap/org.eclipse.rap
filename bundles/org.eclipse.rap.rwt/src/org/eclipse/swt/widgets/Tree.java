@@ -362,7 +362,7 @@ public class Tree extends Composite {
     super.setFont( font );
     TreeItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
-      items[ i ].clearPreferredWidthBuffer();
+      items[ i ].clearPreferredWidthBuffers();
     }
     updateScrollBars();
   }
@@ -1214,7 +1214,7 @@ public class Tree extends Composite {
     for( int i = 0; i < itemCount; i++ ) {
       TreeItem item = items[ i ];
       if( item != null ) {
-        item.clearPreferredWidthBuffer();
+        item.clearPreferredWidthBuffers();
       }
     }
   }
@@ -1959,8 +1959,8 @@ public class Tree extends Composite {
   }
 
   int getPreferredCellWidth( TreeItem item, int columnIndex, boolean checkData ) {
-    int result = item.getPreferredWidthBuffer();
-    if( !item.hasPreferredWidthBuffer() ) {
+    int result = item.getPreferredWidthBuffer( columnIndex );
+    if( !item.hasPreferredWidthBuffer( columnIndex ) ) {
       result = getTextOffset( columnIndex ) ;
       Rectangle padding = getCellPadding();
       result += Graphics.stringExtent( getFont(), item.getText( columnIndex, checkData ) ).x;
@@ -1968,7 +1968,7 @@ public class Tree extends Composite {
       if( isTreeColumn( columnIndex ) ) {
         result += TEXT_MARGIN.width - TEXT_MARGIN.x;
       }
-      item.setPreferredWidthBuffer( result );
+      item.setPreferredWidthBuffer( columnIndex, result );
     }
     return result;
   }

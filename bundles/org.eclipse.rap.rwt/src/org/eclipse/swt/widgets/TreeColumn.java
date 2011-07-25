@@ -379,7 +379,7 @@ public class TreeColumn extends Item {
       newWidth += SORT_INDICATOR_WIDTH + MARGIN_IMAGE;
     }
     for( int i = 0; i < availableItems.length; i++ ) {
-      availableItems[ i ].clearPreferredWidthBuffer();
+      availableItems[ i ].clearPreferredWidthBuffers();
       int width = availableItems[ i ].getPreferredWidth( index, false );
       /* ensure that receiver and parent were not disposed in a callback */
       if( parent.isDisposed() || isDisposed() ) {
