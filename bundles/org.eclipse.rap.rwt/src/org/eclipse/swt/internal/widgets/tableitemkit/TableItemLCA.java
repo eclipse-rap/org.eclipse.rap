@@ -175,10 +175,10 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   private static void transformTexts( TableItem item, String[] texts ) {
     for( int i = 0; i < texts.length; i++ ) {
       if( isRichTextEnabled( item ) && RichTextParser.isRichText( texts[ i ] ) ) {
-        RichTextToHtmlTransformer callback = new RichTextToHtmlTransformer( item );
-        RichTextParser richTextParser = new RichTextParser( callback );
+        RichTextToHtmlTransformer transformer = new RichTextToHtmlTransformer( item );
+        RichTextParser richTextParser = new RichTextParser( transformer );
         richTextParser.parse( texts[ i ] );
-        texts[ i ] = callback.getHtml();
+        texts[ i ] = transformer.getHtml();
       } else {
         texts[ i ] = WidgetLCAUtil.escapeText( item.getText( i ), false );
         texts[ i ] = EncodingUtil.replaceWhiteSpaces( texts[ i ] );

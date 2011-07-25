@@ -19,6 +19,10 @@ import org.xml.sax.helpers.DefaultHandler;
 
 
 public class RichTextParser {
+  private static final SAXParserFactory SAX_PARSER_FACTORY;
+  static {
+    SAX_PARSER_FACTORY = SAXParserFactory.newInstance();
+  }
   
   public static boolean isRichText( String text ) {
     return text.startsWith( "<html>" );
@@ -32,15 +36,6 @@ public class RichTextParser {
     this.saxParser = createSaxParser();
   }
 
-  private SAXParser createSaxParser() {
-    SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-    try {
-      return saxParserFactory.newSAXParser();
-    } catch( Exception e ) {
-      throw new RichTextParserException( "Failed to create SAX parser.", e );
-    } 
-  }
-  
   public void parse( String richText ) {
     InputSource inputSource = new InputSource( new StringReader( richText ) );
     try {
@@ -50,6 +45,14 @@ public class RichTextParser {
     } catch( Exception e ) {
       throw new RichTextParserException( "Failed to parse rich text.", e );
     }
+  }
+
+  private static SAXParser createSaxParser() {
+    try {
+      return SAX_PARSER_FACTORY.newSAXParser();
+    } catch( Exception e ) {
+      throw new RichTextParserException( "Failed to create SAX parser.", e );
+    } 
   }
 
   private static class RichTextHandler extends DefaultHandler {
