@@ -3,18 +3,15 @@
       id="org.eclipse.rap.test"
       label="RAP Test Feature"
       version="1.5.0.qualifier"
-      provider-name="Eclipse.org">
+      provider-name="Eclipse.org - RAP">
 
-   <description url="http://www.example.com/description">
-      
+   <description url="">
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      
+   <copyright url="">
    </copyright>
 
-   <license url="http://www.example.com/license">
-      
+   <license url="">
    </license>
 
    <plugin
@@ -57,6 +54,27 @@
 
    <plugin
          id="org.eclipse.rwt.widgets.styledtext.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.rap.rwt.cluster.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.rap.rwt.cluster.testfixture"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.rap.rwt.cluster.testfixture.test"
          download-size="0"
          install-size="0"
          version="0.0.0"

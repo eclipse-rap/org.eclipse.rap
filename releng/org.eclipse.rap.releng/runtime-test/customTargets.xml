@@ -130,6 +130,8 @@
     <property name="forms.tests" value="${buildDirectory}/plugins/org.eclipse.rap.ui.forms.test/@dot" />
     <property name="themes.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.themes.test/@dot" />
     <property name="styledtext.tests" value="${buildDirectory}/plugins/org.eclipse.rwt.widgets.styledtext.test/@dot" />
+    <property name="cluster.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.cluster.test/@dot" />
+    <property name="clusterfixture.tests" value="${buildDirectory}/plugins/org.eclipse.rap.rwt.cluster.testfixture.test/@dot" />
     <property name="reports.tests" value="${buildDirectory}/test-reports" />
     <mkdir dir="${reports.tests}" />
     <path id="cp">
@@ -138,6 +140,8 @@
       <pathelement location="${forms.tests}" />
       <pathelement location="${themes.tests}" />
       <pathelement location="${styledtext.tests}" />
+      <pathelement location="${cluster.tests}" />
+      <pathelement location="${clusterfixture.tests}" />
       <fileset dir="${baseLocation}/eclipse/plugins">
         <include name="**/*.jar" />
         <exclude name="**/javax.servlet*.jar" />
@@ -148,6 +152,7 @@
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.test/lib/resource_manager_test.jar" />
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rwt.widgets.styledtext/@dot" />
       <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.ui.forms/@dot" />
+      <pathelement path="${buildDirectory}/plugins/org.eclipse.rap.rwt.cluster.testfixture/@dot" />
       <fileset dir="${baseLocation}/plugins">
         <include name="javax.servlet_3*.jar" />
         <include name="org.junit_3*/junit.jar" />
@@ -155,6 +160,9 @@
         <include name="org.objenesis*/" />
         <include name="org.hamcrest*/" />
         <include name="org.json*/" />
+        <include name="org.apache.tomcat_*.jar" />
+        <include name="jetty-*.jar" />
+        <include name="org.h2_*.jar" />
       </fileset>
     </path>
 
@@ -176,6 +184,12 @@
           <include name="**/*_Test.class" />
         </fileset>
         <fileset dir="${styledtext.tests}">
+          <include name="**/*_Test.class" />
+        </fileset>
+        <fileset dir="${cluster.tests}">
+          <include name="**/*_Test.class" />
+        </fileset>
+        <fileset dir="${clusterfixture.tests}">
           <include name="**/*_Test.class" />
         </fileset>
       </batchtest>
@@ -208,7 +222,7 @@
     <echo message="You must specify a target when invoking this file" />
   </target>
 
-  <!-- not used targets -->
+  <!-- unused targets -->
   <target name="tagMapFiles" if="tagMaps"></target>
   <target name="postSetup"></target>
   <target name="preFetch"></target>
