@@ -28,17 +28,10 @@ import org.eclipse.swt.internal.widgets.ITableAdapter;
 
 public class TableColumn_Test extends TestCase {
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
+  private Display display;
+  private Shell shell;
 
   public void testCreation() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     // Add one item
     TableColumn col1 = new TableColumn( table, SWT.NONE );
@@ -51,18 +44,12 @@ public class TableColumn_Test extends TestCase {
     // Try to add an item whit an index which is out of bounds
     try {
       new TableColumn ( table, SWT.NONE, table.getColumnCount() + 8 );
-      String msg
-        = "Index out of bounds expected when creating a column with "
-        + "index > columnCount";
-      fail( msg );
-    } catch( IllegalArgumentException e ) {
-      // expected
+      fail();
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testParent() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     // Test creating column with valid parent
     TableColumn column = new TableColumn( table, SWT.NONE );
@@ -77,18 +64,13 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testDisplay() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
     assertSame( display, column.getDisplay() );
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
-
     TableColumn column = new TableColumn( table, SWT.NONE );
     assertTrue( ( column.getStyle() & SWT.LEFT ) != 0 );
     column = new TableColumn( table, SWT.LEFT | SWT.RIGHT | SWT.CENTER );
@@ -98,11 +80,8 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testInitialValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
-
     assertEquals( 0, column.getWidth() );
     assertEquals( "", column.getText() );
     assertEquals( null, column.getToolTipText() );
@@ -113,8 +92,6 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testAlignment() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
 
     TableColumn column;
@@ -132,24 +109,25 @@ public class TableColumn_Test extends TestCase {
     column.setAlignment( 4712 );
     assertEquals( SWT.LEFT, column.getAlignment() );
   }
-
-  public void testWidth() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
+  
+  public void testInitialWidth() {
     Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
-
-    // Initial value
     assertEquals( 0, column.getWidth() );
+  }
 
-    // Setting 'normal' width
+  public void testWidth() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
     column.setWidth( 70 );
     assertEquals( 70, column.getWidth() );
     column.setWidth( 0 );
     assertEquals( 0, column.getWidth() );
-
-    // Setting a negative is ignored
+  }
+  
+  public void testWidthWithNegativeValue() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
     column.setWidth( 4711 );
     column.setWidth( -1 );
     assertEquals( 4711, column.getWidth() );
@@ -160,15 +138,12 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testPack() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<Widget> log = new ArrayList<Widget>();
     ControlAdapter resizeListener = new ControlAdapter() {
       public void controlResized( ControlEvent e ) {
         log.add( e.widget );
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     table.setHeaderVisible( true );
     TableColumn column = new TableColumn( table, SWT.NONE );
@@ -196,7 +171,7 @@ public class TableColumn_Test extends TestCase {
     // Test that an image on a column is taken into account
     column = new TableColumn( table, SWT.NONE );
     Image image = Graphics.getImage( "resources/images/test-50x100.png",
-                              TableColumn_Test.class.getClassLoader() );
+                                     TableColumn_Test.class.getClassLoader() );
     column.setImage( image );
     column.pack();
     assertTrue( column.getWidth() >= image.getBounds().width );
@@ -214,8 +189,6 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testGetPreferredWidthMultiLineHeader() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = createMultiLineHeaderTable( shell );
     table.setHeaderVisible( true );
     TableColumn column = table.getColumn( 1 );
@@ -226,7 +199,6 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testPackWithVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<Widget> log = new ArrayList<Widget>();
     Listener setDataListener = new Listener() {
       public void handleEvent( final Event event ) {
@@ -238,8 +210,6 @@ public class TableColumn_Test extends TestCase {
         log.add( event.widget );
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table;
     TableColumn column;
 
@@ -264,10 +234,7 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testResizeEvent() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     final TableColumn column = new TableColumn( table, SWT.NONE );
     column.addControlListener( new ControlListener() {
@@ -295,10 +262,7 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testMoveEvent() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     final TableColumn column = new TableColumn( table, SWT.NONE );
     column.addControlListener( new ControlListener() {
@@ -331,8 +295,6 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testDisposeLast() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column0 = new TableColumn( table, SWT.NONE );
     TableColumn column1 = new TableColumn( table, SWT.NONE );
@@ -354,8 +316,6 @@ public class TableColumn_Test extends TestCase {
   // TableItems) results in an ArrayIndexOutOfBoundsException
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=323179
   public void testCreateDisposeColumnWithoutDataUpdate() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column1 = new TableColumn( table, SWT.NONE );
     column1.setText( "First Column" );
@@ -371,9 +331,6 @@ public class TableColumn_Test extends TestCase {
   }
 
   public void testIsFixedColumn() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.setSize( 800, 600 );
     Table table = createFixedColumnsTable( shell );
     table.setSize( 300, 100 );
@@ -385,25 +342,35 @@ public class TableColumn_Test extends TestCase {
     assertTrue( adapter.isFixedColumn( table.getColumn( 1 ) ) );
   }
 
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   private Table createFixedColumnsTable( Shell shell ) {
-    Table table = new Table( shell, SWT.NONE );
-    table.setData( "fixedColumns", new Integer( 1 ) );
+    Table result = new Table( shell, SWT.NONE );
+    result.setData( "fixedColumns", new Integer( 1 ) );
     for( int i = 0; i < 10; i++ ) {
-      TableColumn column = new TableColumn( table, SWT.NONE );
+      TableColumn column = new TableColumn( result, SWT.NONE );
       column.setWidth( 50 );
     }
-    return table;
+    return result;
   }
 
   private Table createMultiLineHeaderTable( Shell shell ) {
-    Table table = new Table( shell, SWT.NONE );
+    Table result = new Table( shell, SWT.NONE );
     for( int i = 0; i < 3; i++ ) {
-      TableColumn column = new TableColumn( table, SWT.NONE );
+      TableColumn column = new TableColumn( result, SWT.NONE );
       column.setWidth( 50 );
       column.setText( "Column " + i );
     }
-    table.setData( "multiLineHeader", Boolean.TRUE );
-    return table;
+    result.setData( "multiLineHeader", Boolean.TRUE );
+    return result;
   }
-
 }
