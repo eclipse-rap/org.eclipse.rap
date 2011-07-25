@@ -2358,6 +2358,77 @@ public class Table_Test extends TestCase {
     assertEquals( 1, deserializedTable.getColumnCount() );
   }
   
+  public void testSetPredefinedItemHeight() {
+    Table table = new Table( shell, SWT.NONE );
+    table.setData( Table.ITEM_HEIGHT, new Integer( 123 ) );
+    assertEquals( 123, table.getItemHeight() );
+  }
+  
+  public void testGetPredefinedItemHeight() {
+    Integer itemHeight = new Integer( 123 );
+    Table table = new Table( shell, SWT.NONE );
+    table.setData( Table.ITEM_HEIGHT, itemHeight );
+
+    Object returnedItemHeight = table.getData( Table.ITEM_HEIGHT );
+    
+    assertEquals( itemHeight, returnedItemHeight );
+  }
+
+  public void testResetPredefinedItemHeight() {
+    Table table = new Table( shell, SWT.NONE );
+    int calculatedItemHeight = table.getItemHeight();
+    table.setData( Table.ITEM_HEIGHT, new Integer( 123 ) );
+    table.setData( Table.ITEM_HEIGHT, null );
+    assertEquals( calculatedItemHeight, table.getItemHeight() );
+  }
+
+  public void testDefaultPredefinedItemHeight() {
+    Table table = new Table( shell, SWT.NONE );
+    assertEquals( 19, table.getItemHeight() );
+  }
+
+  public void testSetPredefinedItemHeightWithNegativeValue() {
+    Table table = new Table( shell, SWT.NONE );
+    try {
+      table.setData( Table.ITEM_HEIGHT, new Integer( -1 ) );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testSetPredefinedItemHeightWithNonIntegerValue() {
+    Table table = new Table( shell, SWT.NONE );
+    try {
+      table.setData( Table.ITEM_HEIGHT, new Object() );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
+  public void testRichTextWithoutEnableRichText() {
+    Table table = new Table( shell, SWT.NONE );
+    table.setData( Table.ENABLE_RICH_TEXT, Boolean.FALSE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    
+    try {
+      item.setText( "<html> invalid xml: <<&>> </html>" );
+    } catch( Exception notExpected ) {
+      fail();
+    }
+  }
+  
+  public void testRichTextWithEnableRichText() {
+    Table table = new Table( shell, SWT.NONE );
+    table.setData( Table.ENABLE_RICH_TEXT, Boolean.TRUE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    
+    try {
+      item.setText( "<html> invalid xml: <<&>> </html>" );
+      fail();
+    } catch( RichTextParserException expected ) {
+    }
+  }
+  
   private static boolean find( final int element, final int[] array ) {
     boolean result = false;
     for( int i = 0; i < array.length; i++ ) {

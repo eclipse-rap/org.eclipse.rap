@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import junit.framework.TestCase;
 
@@ -329,6 +330,32 @@ public class TableItem_Test extends TestCase {
     
     assertEquals( 0, textBounds.width );
     assertTrue( textBounds.height > 0 );
+  }
+  
+  public void testGetItemBoundsWithRichText() {
+    Table table = new Table( shell, SWT.NONE );
+    table.setData( Table.ENABLE_RICH_TEXT, Boolean.TRUE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    HashMap<String,Image> imageMap = new HashMap<String,Image>();
+    imageMap.put( "foo", Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    table.setData( Table.IMAGE_MAP, imageMap );
+    item.setText( "<html><img src=\"foo\"/></html>" );
+    
+    Rectangle textBounds = item.getTextBounds( 0 );
+    
+    assertEquals( 100, textBounds.width );
+  }
+  
+  public void testGetItemBoundsWithRichtTextForUnknownImage() {
+    Table table = new Table( shell, SWT.NONE );
+    table.setData( Table.ENABLE_RICH_TEXT, Boolean.TRUE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    
+    try {
+      item.setText( "<html><img src=\"foo\"/></html>" );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+    }
   }
   
   public void testImageBoundsWithoutColumns() {

@@ -45,7 +45,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   static final String PROP_CACHED = "cached";
   static final String PROP_VARIANT = "variant";
 
-  public void preserveValues( final Widget widget ) {
+  public void preserveValues( Widget widget ) {
     TableItem item = ( TableItem )widget;
     Table table = item.getParent();
     int index = item.getParent().indexOf( item );
@@ -74,11 +74,9 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_CACHED, Boolean.valueOf( isCached( table, index ) ) );
   }
 
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
     TableItem item = ( TableItem )widget;
     readChecked( item );
-//    readWidgetSelected( item );
-//    readWidgetDefaultSelected( item );
   }
 
   public void renderInitialization( final Widget widget ) throws IOException {
@@ -116,7 +114,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
    * The client-side representation of a TableItem is not a qooxdoo widget.
    * Therefore the standard mechanism for dispoing of a widget is not used.
    */
-  public void renderDispose( final Widget widget ) throws IOException {
+  public void renderDispose( Widget widget ) throws IOException {
     TableItem item = ( TableItem )widget;
     if( !isParentDisposed( item ) ) {
       JSWriter writer = JSWriter.getWriterFor( item );
@@ -167,17 +165,28 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     String[] texts = getTexts( item );
     boolean result = WidgetLCAUtil.hasChanged( item, PROP_TEXTS, texts );
     if( result ) {
-      for( int i = 0; i < texts.length; i++ ) {
-        texts[ i ] = WidgetLCAUtil.escapeText( item.getText( i ), false );
-        texts[ i ] = EncodingUtil.replaceWhiteSpaces( texts[ i ] );
-      }
+      transformTexts( item, texts );
       JSWriter writer = JSWriter.getWriterFor( item );
       writer.set( "texts", new Object[] { texts } );
     }
     return result;
   }
 
-  private static boolean writeImages( final TableItem item ) throws IOException {
+  private static void transformTexts( TableItem item, String[] texts ) {
+    for( int i = 0; i < texts.length; i++ ) {
+      if( isRichTextEnabled( item ) && RichTextParser.isRichText( texts[ i ] ) ) {
+        RichTextToHtmlTransformer callback = new RichTextToHtmlTransformer( item );
+        RichTextParser richTextParser = new RichTextParser( callback );
+        richTextParser.parse( texts[ i ] );
+        texts[ i ] = callback.getHtml();
+      } else {
+        texts[ i ] = WidgetLCAUtil.escapeText( item.getText( i ), false );
+        texts[ i ] = EncodingUtil.replaceWhiteSpaces( texts[ i ] );
+      }
+    }
+  }
+  
+  private static boolean writeImages( TableItem item ) throws IOException {
     Image[] images = getImages( item );
     Image[] defValue = new Image[ images.length ];
     boolean result = WidgetLCAUtil.hasChanged( item, PROP_IMAGES, images, defValue );
@@ -193,9 +202,8 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   private static boolean writeBackground( final TableItem item ) throws IOException {
-    Object adapter = item.getAdapter( ITableItemAdapter.class );
-    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
-    Color background = tableItemAdapter.getUserBackground();
+    ITableItemAdapter adapter = ( ITableItemAdapter )item.getAdapter( ITableItemAdapter.class );
+    Color background = adapter.getUserBackground();
     JSWriter writer = JSWriter.getWriterFor( item );
     return writer.set( PROP_BACKGROUND, "background", background, null );
   }
@@ -221,20 +229,18 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static boolean writeCellBackgrounds( final TableItem item ) throws IOException {
-    Object adapter = item.getAdapter( ITableItemAdapter.class );
-    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
-    Color[] backgrounds = tableItemAdapter.getCellBackgrounds();
+  private static boolean writeCellBackgrounds( TableItem item ) throws IOException {
+    ITableItemAdapter adapter = ( ITableItemAdapter )item.getAdapter( ITableItemAdapter.class );
+    Color[] backgrounds = adapter.getCellBackgrounds();
     // default values are null
     Color[] defValue = new Color[ getColumnCount( item ) ];
     JSWriter writer = JSWriter.getWriterFor( item );
     return writer.set( PROP_CELL_BACKGROUNDS, "cellBackgrounds", backgrounds, defValue );
   }
 
-  private static boolean writeCellForegrounds( final TableItem item ) throws IOException {
-    Object adapter = item.getAdapter( ITableItemAdapter.class );
-    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
-    Color[] foregrounds = tableItemAdapter.getCellForegrounds();
+  private static boolean writeCellForegrounds( TableItem item ) throws IOException {
+    ITableItemAdapter adapter = ( ITableItemAdapter )item.getAdapter( ITableItemAdapter.class );
+    Color[] foregrounds = adapter.getCellForegrounds();
     // default values are null
     Color[] defValue = new Color[ getColumnCount( item ) ];
     JSWriter writer = JSWriter.getWriterFor( item );
@@ -315,7 +321,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static String toCss( final Font font ) {
+  private static String toCss( Font font ) {
     StringBuffer result = new StringBuffer();
     FontData fontData = FontUtil.getData( font );
     if( ( fontData.getStyle() & SWT.ITALIC ) != 0 ) {
@@ -332,7 +338,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return result.toString();
   }
 
-  private static boolean hasIndexChanged( final TableItem item ) {
+  private static boolean hasIndexChanged( TableItem item ) {
     int index = item.getParent().indexOf( item );
     return WidgetLCAUtil.hasChanged( item, PROP_INDEX, new Integer( index ) );
   }
@@ -412,8 +418,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return ( ITableAdapter )item.getParent().getAdapter( ITableAdapter.class );
   }
 
-  private static void preservingInitialized( final TableItem item,
-                                             final IRenderRunnable runnable )
+  private static void preservingInitialized( TableItem item, IRenderRunnable runnable )
     throws IOException
   {
     boolean initialized = WidgetUtil.getAdapter( item ).isInitialized();
@@ -421,17 +426,18 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     setInitialized( item, initialized );
   }
 
-  private static void setInitialized( final TableItem item,
-                                      final boolean initialized )
-  {
-    WidgetAdapter adapter
-      = ( WidgetAdapter )item.getAdapter( IWidgetAdapter.class );
+  private static void setInitialized( TableItem item, boolean initialized ) {
+    WidgetAdapter adapter = ( WidgetAdapter )item.getAdapter( IWidgetAdapter.class );
     adapter.setInitialized( initialized );
   }
 
-  private boolean isParentDisposed( final TableItem item ) {
-    ITableItemAdapter adapter
-      = ( ITableItemAdapter )item.getAdapter( ITableItemAdapter.class );
+  private static boolean isRichTextEnabled( TableItem item ) {
+    ITableItemAdapter adapter = ( ITableItemAdapter )item.getAdapter( ITableItemAdapter.class );
+    return adapter.isRichTextEnabled();
+  }
+
+  private boolean isParentDisposed( TableItem item ) {
+    ITableItemAdapter adapter = ( ITableItemAdapter )item.getAdapter( ITableItemAdapter.class );
     return adapter.isParentDisposed();
   }
 }

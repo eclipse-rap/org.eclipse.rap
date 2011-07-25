@@ -241,13 +241,12 @@ public class TableColumn extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setWidth( final int width ) {
+  public void setWidth( int width ) {
     checkWidget();
     if( width >= 0 ) {
       this.width = width;
       parent.updateScrollBars();
-      int eventId = ControlEvent.CONTROL_RESIZED;
-      ControlEvent event = new ControlEvent( this, eventId );
+      ControlEvent event = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
       event.processEvent();
       processNextColumnsMoveEvent();
     }
@@ -474,9 +473,8 @@ public class TableColumn extends Item {
       if( parent.getSortColumn() == this && parent.getSortDirection() != SWT.NONE ) {
         width += SORT_INDICATOR_WIDTH + SPACING;
       }
-      TableThemeAdapter themeAdapter
-        = ( TableThemeAdapter )parent.getAdapter( IThemeAdapter.class );
-      width += themeAdapter.getHeaderPadding( parent ).width;
+      TableThemeAdapter adapter = ( TableThemeAdapter )parent.getAdapter( IThemeAdapter.class );
+      width += adapter.getHeaderPadding( parent ).width;
     }
     // Mimic Windows behaviour that forces first item to resolve
     if( parent.getItemCount() > 0 && parent.getCachedItems().length == 0 ) {
@@ -523,11 +521,11 @@ public class TableColumn extends Item {
   //////////////////
   // Helping methods
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     return checkBits( style, SWT.LEFT, SWT.CENTER, SWT.RIGHT, 0, 0, 0 );
   }
 
-  private static Table checkNull( final Table table ) {
+  private static Table checkNull( Table table ) {
     if( table == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -542,8 +540,7 @@ public class TableColumn extends Item {
       if( column == this ) {
         found = true;
       } else if( found ) {
-        int eventId = ControlEvent.CONTROL_MOVED;
-        ControlEvent event = new ControlEvent( column, eventId );
+        ControlEvent event = new ControlEvent( column, ControlEvent.CONTROL_MOVED );
         event.processEvent();
       }
     }

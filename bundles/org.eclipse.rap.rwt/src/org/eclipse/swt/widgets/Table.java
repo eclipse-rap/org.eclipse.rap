@@ -148,9 +148,9 @@ public class Table extends Composite {
       return Table.this.getColumnLeftOffset( columnIndex );
     }
 
-    public int getColumnLeft( final TableColumn column ) {
+    public int getColumnLeft( TableColumn column ) {
       int index = Table.this.indexOf( column );
-      return Table.this.getColumn( index ).getLeft();
+      return Table.this.columnHolder.getItem( index ).getLeft();
     }
 
     public int getLeftOffset() {
@@ -260,16 +260,120 @@ public class Table extends Composite {
    * within the packages provided by SWT. It should never be accessed from
    * application code.
    */
-  public static final String ALWAYS_HIDE_SELECTION
-    = Table.class.getName() + "#alwaysHideSelection";
+  public static final String ALWAYS_HIDE_SELECTION = Table.class.getName() + "#alwaysHideSelection";
+
+  /**
+   * Controls whether the use of <em>rich text</em> in table items is enabled. With richt text 
+   * enabled, it is possible to have multiple images, different fonts, line breaks etc. in a 
+   * single table cell.  
+   * To enable rich text, this constant must be passed to <code>setData()</code> with a value 
+   * of <code>Boolean.TRUE</code>. 
+   * <p>
+   * For example:
+   * <code>table.setData( Table.ENABLE_RICH_TEXT, Boolean.TRUE );</code>
+   * </p>
+   * <p>
+   * If rich text is enabled, then text that is passed to one of the <code>setText()</code> methods 
+   * of <code>TableItem</code> is interpreted. If the given text starts with {@literal <html>},
+   * it is expected to contain 
+   * <a href="http://en.wikipedia.org/wiki/XML#Well-formedness_and_error-handling">well-formed XML</a>
+   * that describes how the table cell is to be rendered. 
+   * </p>
+   * <p>
+   * The rich text markup tries to align with the elements and attributes known from HTML wherever 
+   * possible. Specifying an unsupported element leads to an exception. The following table lists 
+   * all supported elements and their meaning. 
+   * <dl>
+   *   <dt>{@literal <html>}</dt>
+   *   <dd>Marks the beginning and end of rich text. Text may directly be embedded. Note that no 
+   *     text must be given before the opening {@literal <html>} element or after the closing 
+   *     {@literal </html>} element.</dd>
+   *   <dt>{@literal <font>}</dt>
+   *   <dd>Changes the font for the enclosed text. The attributes <strong>name</strong> and
+   *     <strong>height</strong> must be given and specify the name and height of the font.
+   *     The example below how the {@<font> element} can be used to display text in an alternte
+   *     font.
+   *     <code><pre>
+   *     table.setData( Table.ENABLE_RICH_TEXT, Boolean.TRUE );
+   *     Tableitem item = new TableItem( table, SWT.NONE );
+   *     item.setText( {@literal "<html>default and <font name="Helvetica" height="40">enlarged</font>text</html>"} );
+   *     </pre></code>
+   *   </dd>
+   *   <dt>{@literal <br>}</dt>
+   *   <dd>A line break</dd>
+   *   <dt>{@literal <img>}</dt>
+   *   <dd>Renders an image. The <strong>src</strong> attribute is mandatory and denotes the image
+   *     name. An {@link #IMAGE_MAP image map} associates the name given here with the actual 
+   *     {@link Image image} that should be displayed. The example below shows how the
+   *     {@literal <img>} element and an image map can be used to display an image. 
+   *     <code><pre>
+   *     table.setData( Table.ENABLE_RICH_TEXT, Boolean.TRUE );
+   *     Map imageMap = new hashMap();
+   *     imageMap( "foo", new Image( table.getDisplay(), inputStream );
+   *     table.setData( Table.IMAGE_MAP, imageMap );
+   *     Tableitem item = new TableItem( table, SWT.NONE );
+   *     item.setText( "&lt;html&gt;&lt;img src="foo" /&gt;&lt;/html&gt;" );
+   *     </pre></code>
+   *   </dd>
+   * </dl>
+   * </p>
+   * 
+   * <p>
+   * <strong>PROVISIONAL</strong>: This constant has been added as part of a work in progress. 
+   * There is no guarantee that this API will remain the same. Please use this API with caution. 
+   * </p>
+   * 
+   * @see #ITEM_HEIGHT
+   * @see #IMAGE_MAP
+   * @see TableItem#setText(String);
+   * @since 1.5
+   */
+  public static final String ENABLE_RICH_TEXT = Table.class.getName() + "#enableRichText";
+  
+  /**
+   * If rich text for a table is enabled, the application programmer must provide the item height.
+   * The item height must be specified as an <code>Integer</code> and passed to
+   * <code>setData()</code> with this constant as the key. 
+   * <p>
+   * For example:
+   * <code>table.setData( Table.ITEM_HEIGHT, new Integer( 45 ) );</code>
+   * </p>
+   * 
+   * <p>
+   * <strong>PROVISIONAL</strong>: This constant has been added as part of a work in progress. 
+   * There is no guarantee that this API will remain the same. Please use this API with caution. 
+   * </p>
+   * 
+   * @see #ENABLE_RICH_TEXT 
+   * @since 1.5
+   */
+  public static final String ITEM_HEIGHT = Table.class.getName() + "#itemHeight";
+
+  /**
+   * Associates image names from {@literal <img>} elements with their actual {@link Image images}. 
+   * The image map must be specified as a <code>{@literal Map<String,Image>}</code> and passed to 
+   * <code>setData()</code> with this constant as the key. 
+   * <p>
+   * Currently, images must be listed in this map <strong>before</strong> they are referenced
+   * from rich text (i.e. by calling <code>TableItem#setText()</code>).
+   * </p>
+   * <p>
+   * <strong>PROVISIONAL</strong>: This constant has been added as part of a work in progress. 
+   * There is no guarantee that this API will remain the same. Please use this API with caution. 
+   * </p>
+   * 
+   * @see #ENABLE_RICH_TEXT 
+   * @since 1.5
+   */
+  public static final String IMAGE_MAP = Table.class.getName() + "#imageMap";
 
   private static final int GRID_WIDTH = 1;
-
   private static final int[] EMPTY_SELECTION = new int[ 0 ];
 
   private transient CompositeItemHolder itemHolder;
   private final ITableAdapter tableAdapter;
-  private final ResizeListener resizeListener;
+  private final ControlListener resizeListener;
+  private int predefinedItemHeight;
   private int itemCount;
   private TableItem[] items;
   private final ItemHolder<TableColumn> columnHolder;
@@ -288,8 +392,9 @@ public class Table extends Composite {
   private TableColumn sortColumn;
   private int sortDirection;
   private Point itemImageSize;
-  private Rectangle bufferedCellPadding = null;
-  private int bufferedCellSpacing = -1;
+  private Rectangle bufferedCellPadding;
+  private int bufferedCellSpacing;
+  boolean richTextEnabled;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -326,7 +431,7 @@ public class Table extends Composite {
    *
    * @since 1.0
    */
-  public Table( final Composite parent, final int style ) {
+  public Table( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
     focusIndex = -1;
     sortDirection = SWT.NONE;
@@ -335,7 +440,9 @@ public class Table extends Composite {
     setTableEmpty();
     createScrollBars();
     selection = EMPTY_SELECTION;
+    predefinedItemHeight = -1;
     resizeListener = new ResizeListener();
+    bufferedCellSpacing = -1;
     addControlListener( resizeListener );
   }
 
@@ -343,7 +450,7 @@ public class Table extends Composite {
     state &= ~( /* CANVAS | */ THEME_BACKGROUND );
   }
 
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
       if( itemHolder == null ) {
@@ -358,6 +465,15 @@ public class Table extends Composite {
       result = super.getAdapter( adapter );
     }
     return result;
+  }
+  
+  public void setData( String key, Object value ) {
+    if( ITEM_HEIGHT.equals( key ) ) {
+      setPredefinedItemHeight( value );
+    } else if( ENABLE_RICH_TEXT.equals( key ) ) {
+      richTextEnabled = Boolean.TRUE.equals( value );
+    }
+    super.setData( key, value );
   }
 
   ///////////////////////////
@@ -441,7 +557,7 @@ public class Table extends Composite {
    * @see TableColumn#setMoveable(boolean)
    * @see SWT#Move
    */
-  public TableColumn getColumn( final int index ) {
+  public TableColumn getColumn( int index ) {
     checkWidget();
     return columnHolder.getItem( index );
   }
@@ -493,12 +609,12 @@ public class Table extends Composite {
    * @see TableColumn#setMoveable(boolean)
    * @see SWT#Move
    */
-  public void setColumnOrder( final int[] order ) {
+  public void setColumnOrder( int[] order ) {
     checkWidget();
     if( order == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    int columnCount = getColumnCount();
+    int columnCount = columnHolder.size();
     if( order.length != columnCount ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
@@ -524,7 +640,7 @@ public class Table extends Composite {
         System.arraycopy( order, 0, columnOrder, 0, columnOrder.length );
         for( int i = 0; i < seen.length; i++ ) {
           if( oldOrder[ i ] != columnOrder[ i ] ) {
-            TableColumn column = getColumn( columnOrder[ i ] );
+            TableColumn column = columnHolder.getItem( columnOrder[ i ] );
             int controlMoved = ControlEvent.CONTROL_MOVED;
             ControlEvent controlEvent = new ControlEvent( column, controlMoved );
             controlEvent.processEvent();
@@ -678,7 +794,7 @@ public class Table extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public TableItem getItem( final int index ) {
+  public TableItem getItem( int index ) {
     checkWidget();
     if( index < 0 || index >= itemCount ) {
       SWT.error( SWT.ERROR_INVALID_RANGE );
@@ -709,7 +825,7 @@ public class Table extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public TableItem getItem( final Point point ) {
+  public TableItem getItem( Point point ) {
     checkWidget();
     if( point == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -749,7 +865,7 @@ public class Table extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int indexOf( final TableItem item ) {
+  public int indexOf( TableItem item ) {
     checkWidget();
     if( item == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -791,7 +907,7 @@ public class Table extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void remove( final int start, final int end ) {
+  public void remove( int start, int end ) {
     checkWidget();
     if( start <= end ) {
       if( !( 0 <= start && start <= end && end < itemCount ) ) {
@@ -819,7 +935,7 @@ public class Table extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void remove( final int index ) {
+  public void remove( int index ) {
     checkWidget();
     if( !( 0 <= index && index < itemCount ) ) {
       SWT.error( SWT.ERROR_ITEM_NOT_REMOVED );
@@ -845,7 +961,7 @@ public class Table extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void remove( final int[] indices ) {
+  public void remove( int[] indices ) {
     checkWidget();
     if( indices == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -1516,7 +1632,7 @@ public class Table extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setTopIndex( final int topIndex ) {
+  public void setTopIndex( int topIndex ) {
     checkWidget();
     if( this.topIndex != topIndex && topIndex >= 0 && topIndex < itemCount ) {
       this.topIndex = topIndex;
@@ -1561,7 +1677,7 @@ public class Table extends Composite {
    *
    * @see Table#showSelection()
    */
-  public void showItem( final TableItem item ) {
+  public void showItem( TableItem item ) {
     checkWidget();
     if( item == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -1598,7 +1714,7 @@ public class Table extends Composite {
    *
    * @since 1.3
    */
-  public void showColumn( final TableColumn column ) {
+  public void showColumn( TableColumn column ) {
     checkWidget();
     if( column == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -1608,7 +1724,7 @@ public class Table extends Composite {
     }
     if( column.getParent() == this ) {
       int index = indexOf( column );
-      if( 0 <= index && index < getColumnCount() ) {
+      if( 0 <= index && index < columnHolder.size() ) {
         int leftColumnsWidth = 0;
         int columnWidth = column.getWidth();
         int clientWidth = getClientArea().width;
@@ -1617,7 +1733,7 @@ public class Table extends Composite {
         for( int i = 0; i < columnOrder.length && !found; i++ ) {
           found = index == columnOrder[ i ];
           if( !found && !isFixedColumn( i ) ) {
-            leftColumnsWidth += getColumn( columnOrder[ i ] ).getWidth();
+            leftColumnsWidth += columnHolder.getItem( columnOrder[ i ] ).getWidth();
           }
         }
         if( getColumnLeftOffset( index ) > leftColumnsWidth ) {
@@ -1668,7 +1784,7 @@ public class Table extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setHeaderVisible( final boolean headerVisible ) {
+  public void setHeaderVisible( boolean headerVisible ) {
     checkWidget();
     boolean changed = headerVisible != this.headerVisible;
     this.headerVisible = headerVisible;
@@ -1737,7 +1853,7 @@ public class Table extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setLinesVisible( final boolean linesVisible ) {
+  public void setLinesVisible( boolean linesVisible ) {
     checkWidget();
     this.linesVisible = linesVisible;
   }
@@ -1757,7 +1873,7 @@ public class Table extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSortColumn( final TableColumn column ) {
+  public void setSortColumn( TableColumn column ) {
     checkWidget();
     if( column != null && column.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -1795,7 +1911,7 @@ public class Table extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSortDirection( final int direction ) {
+  public void setSortDirection( int direction ) {
     checkWidget();
     if( ( direction & ( SWT.UP | SWT.DOWN ) ) != 0 || direction == SWT.NONE ) {
       sortDirection = direction;
@@ -1837,13 +1953,16 @@ public class Table extends Composite {
    */
   public int getItemHeight() {
     checkWidget();
-    int textHeight = Graphics.getCharHeight( getFont() );
-    int paddingHeight = getCellPadding().height;
-    textHeight += Math.max( paddingHeight, 4 );
-    int itemImageHeight = getItemImageSize().y + paddingHeight;
-    int result = Math.max( itemImageHeight, textHeight );
-    if( ( style & SWT.CHECK ) != 0 ) {
-      result = Math.max( getCheckSize().y, result );
+    int result = predefinedItemHeight;
+    if( result == -1 ) {
+      int textHeight = Graphics.getCharHeight( getFont() );
+      int paddingHeight = getCellPadding().height;
+      textHeight += Math.max( paddingHeight, 4 );
+      int itemImageHeight = getItemImageSize().y + paddingHeight;
+      result = Math.max( itemImageHeight, textHeight );
+      if( ( style & SWT.CHECK ) != 0 ) {
+        result = Math.max( getCheckSize().y, result );
+      }
     }
     return result;
   }
@@ -1866,9 +1985,9 @@ public class Table extends Composite {
       Font headerFont = themeAdapter.getHeaderFont( this );
       int textHeight = Graphics.getCharHeight( headerFont );
       int imageHeight = 0;
-      for( int i = 0; i < getColumnCount(); i++ ) {
-        TableColumn column = getColumn( i );
-        if( isMultiLineHeader() && column.getText().indexOf( '\n' ) != -1 ) {
+      for( int i = 0; i < columnHolder.size(); i++ ) {
+        TableColumn column = columnHolder.getItem( i );
+        if( isMultiLineHeader() && column.getText().contains( "\n" ) ) {
           int columnTextHeight = Graphics.textExtent( headerFont, column.getText(), 0 ).y;
           textHeight = Math.max( textHeight, columnTextHeight );
         }
@@ -1930,7 +2049,7 @@ public class Table extends Composite {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -1952,7 +2071,7 @@ public class Table extends Composite {
    * @see SelectionListener
    * @see #addSelectionListener(SelectionListener)
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
@@ -1966,16 +2085,13 @@ public class Table extends Composite {
   ////////////////////
   // Widget dimensions
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
     int height = 0;
-    if( getColumnCount() > 0 ) {
-      for( int i = 0; i < getColumnCount(); i++ ) {
-        width += getColumn( i ).getWidth();
+    if( columnHolder.size() > 0 ) {
+      for( int i = 0; i < columnHolder.size(); i++ ) {
+        width += columnHolder.getItem( i ).getWidth();
       }
     } else {
       width = getItemsPreferredWidth( 0 );
@@ -2006,7 +2122,22 @@ public class Table extends Composite {
     return new Point( width, height );
   }
 
-  final int getItemsPreferredWidth( final int columnIndex ) {
+  private void setPredefinedItemHeight( Object value ) {
+    if( value == null ) {
+      predefinedItemHeight = -1;
+    } else {
+      if( !( value instanceof Integer ) ) {
+        error( SWT.ERROR_INVALID_ARGUMENT );
+      }
+      int itemHeight = ( ( Integer )value ).intValue();
+      if( itemHeight < 0 ) {
+        error( SWT.ERROR_INVALID_RANGE );
+      }
+      predefinedItemHeight = itemHeight;
+    }
+  }
+
+  final int getItemsPreferredWidth( int columnIndex ) {
     // Mimic Windows behaviour that has a minimal width
     int width = getCheckSize( columnIndex ).x + 12;
     // dont't access virtual items, they would get resolved unintentionally
@@ -2049,7 +2180,7 @@ public class Table extends Composite {
     }
     if( columnImageCount == null ) {
       columnImageCount = new int[] { 0 };
-    } else if( getColumnCount() > 1 ) {
+    } else if( columnHolder.size() > 1 ) {
       int length = columnImageCount.length;
       int[] newColumnImageCount = new int[ length + 1 ];
       System.arraycopy( columnImageCount, 0, newColumnImageCount, 0, index );
@@ -2209,7 +2340,7 @@ public class Table extends Composite {
   ///////////////////////////////////
   // Helping methods - item retrieval
 
-  private TableItem _getItem( final int index ) {
+  private TableItem _getItem( int index ) {
     if( ( style & SWT.VIRTUAL ) != 0 && items[ index ] == null ) {
       items[ index ] = new TableItem( this, SWT.NONE, index, false );
     }
@@ -2280,7 +2411,7 @@ public class Table extends Composite {
     }
   }
 
-  final boolean checkData( final TableItem item, final int index ) {
+  final boolean checkData( TableItem item, int index ) {
     boolean result = true;
     boolean virtual = ( style & SWT.VIRTUAL ) != 0;
     if( virtual && !item.cached && index >= 0 && index < itemCount ) {
@@ -2298,10 +2429,7 @@ public class Table extends Composite {
   ////////////////////////////////////
   // Helping methods - item image size
 
-  final void updateColumnImageCount( final int columnIndex,
-                                     final Image oldImage,
-                                     final Image newImage )
-  {
+  final void updateColumnImageCount( int columnIndex, Image oldImage, Image newImage ) {
     int delta = 0;
     if( oldImage == null && newImage != null ) {
       delta = +1;
@@ -2317,11 +2445,11 @@ public class Table extends Composite {
     }
   }
 
-  final boolean hasColumnImages( final int columnIndex ) {
+  final boolean hasColumnImages( int columnIndex ) {
     return columnImageCount == null ? false : columnImageCount[ columnIndex ] > 0;
   }
 
-  final void updateItemImageSize( final Image image ) {
+  final void updateItemImageSize( Image image ) {
     if( image != null && itemImageSize == null ) {
       Rectangle imageBounds = image.getBounds();
       itemImageSize = new Point( imageBounds.width, imageBounds.height );
@@ -2448,7 +2576,7 @@ public class Table extends Composite {
   ////////////////////////////
   // Helping methods - various
 
-  final Point getCheckSize( final int index ) {
+  final Point getCheckSize( int index ) {
     Point result = new Point( 0, 0 );
     if( index == 0 && getColumnCount() == 0 ) {
       result = getCheckSize();
@@ -2534,7 +2662,7 @@ public class Table extends Composite {
   }
 
 
-  final int getVisibleItemCount( final boolean includePartlyVisible ) {
+  final int getVisibleItemCount( boolean includePartlyVisible ) {
     int clientHeight = getBounds().height - getHeaderHeight() - getHScrollBarHeight();
     int result = 0;
     if( clientHeight >= 0 ) {
@@ -2547,13 +2675,13 @@ public class Table extends Composite {
     return result;
   }
 
-  private void setFocusIndex( final int focusIndex ) {
+  private void setFocusIndex( int focusIndex ) {
     if( focusIndex >= 0 ) {
       this.focusIndex = focusIndex;
     }
   }
 
-  private void removeItem( final int index ) {
+  private void removeItem( int index ) {
     TableItem item = items[ index ];
     if( item != null && !item.isDisposed() ) {
       item.dispose();
@@ -2562,7 +2690,7 @@ public class Table extends Composite {
     }
   }
 
-  private void removeFromSelection( final int index ) {
+  private void removeFromSelection( int index ) {
     if( index >= 0 && index < itemCount ) {
       boolean found = false;
       for( int i = 0; !found && i < selection.length; i++ ) {
@@ -2580,7 +2708,7 @@ public class Table extends Composite {
     }
   }
 
-  private void adjustSelectionIdices( final int removedIndex ) {
+  private void adjustSelectionIdices( int removedIndex ) {
     for( int i = 0; i < selection.length; i++ ) {
       if( selection[ i ] >= removedIndex ) {
         selection[ i ] = selection[ i ] - 1;
@@ -2601,7 +2729,7 @@ public class Table extends Composite {
     focusIndex = getSelectionIndex();
   }
 
-  private void adjustItemIndices( final int start ) {
+  private void adjustItemIndices( int start ) {
     for( int i = start; i < itemCount; i++ ) {
       if( items[ i ] != null ) {
         items[ i ].index = i;
@@ -2609,7 +2737,7 @@ public class Table extends Composite {
     }
   }
 
-  private boolean isItemVisible( final int index ) {
+  private boolean isItemVisible( int index ) {
     boolean result = false;
     int visibleItemCount = getVisibleItemCount( true );
     if( visibleItemCount > 0 ) {
@@ -2618,7 +2746,7 @@ public class Table extends Composite {
     return result;
   }
 
-  private static void sort( final int[] items ) {
+  private static void sort( int[] items ) {
     /* Shell Sort from K&R, pg 108 */
     int length = items.length;
     for( int gap = length / 2; gap > 0; gap /= 2 ) {
@@ -2639,7 +2767,7 @@ public class Table extends Composite {
     clearItemImageSize();
   }
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     int result = style;
     if( ( style & SWT.NO_SCROLL ) == 0 ) {
       result |= SWT.H_SCROLL | SWT.V_SCROLL;
@@ -2657,11 +2785,11 @@ public class Table extends Composite {
   boolean needsHScrollBar() {
     boolean result = false;
     int availableWidth = getClientArea().width;
-    int columnCount = getColumnCount();
+    int columnCount = columnHolder.size();
     if( columnCount > 0 ) {
       int totalWidth = 0;
       for( int i = 0; i < columnCount; i++ ) {
-        TableColumn column = getColumn( i );
+        TableColumn column = columnHolder.getItem( i );
         totalWidth += column.getWidth();
       }
       result = totalWidth > availableWidth;
@@ -2678,7 +2806,7 @@ public class Table extends Composite {
   TableItem getMeasureItem() {
     TableItem[] items = tableAdapter.getCachedItems();
     TableItem result = null;
-    if( getColumnCount() == 0 ) {
+    if( columnHolder.size() == 0 ) {
       // Find item with longest text because the imaginary only column stretches
       // as wide as the longest item (images cannot differ in width)
       for( int i = 0; i < items.length; i++ ) {
@@ -2712,7 +2840,7 @@ public class Table extends Composite {
   ///////////////////
   // Skinning support
 
-  void reskinChildren( final int flags ) {
+  void reskinChildren( int flags ) {
     if( items != null ) {
       for( int i = 0; i < items.length; i++ ) {
         TableItem item = items[ i ];
@@ -2732,5 +2860,4 @@ public class Table extends Composite {
     }
     super.reskinChildren( flags );
   }
-
 }

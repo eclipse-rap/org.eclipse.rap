@@ -11,12 +11,15 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.util.Map;
+
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.RichTextUtil.IImageSizeProvider;
 
 
 /**
@@ -34,7 +37,7 @@ import org.eclipse.swt.internal.widgets.*;
  */
 public class TableItem extends Item {
 
-  private final class TableItemAdapter implements ITableItemAdapter {
+  private class TableItemAdapter implements ITableItemAdapter {
 
     public Color getUserBackground() {
       return background;
@@ -90,6 +93,28 @@ public class TableItem extends Item {
     public boolean isParentDisposed() {
       return TableItem.this.parent.isDisposed();
     }
+    
+    public boolean isRichTextEnabled() {
+      return TableItem.this.parent.richTextEnabled;
+    }
+  }
+
+  private class TableImageSizeProvider implements IImageSizeProvider {
+    
+    public Rectangle getImageSize( String imageName ) {
+      Image image = getImage( imageName );
+      return image.getBounds();
+    }
+  
+    @SuppressWarnings("unchecked")
+    private Image getImage( String imageName ) {
+      Map<String,Image> imageMap = ( Map<String,Image> )parent.getData( Table.IMAGE_MAP );
+      Image result = imageMap == null ? null : imageMap.get( imageName );
+      if( result == null ) {
+        throw new IllegalArgumentException( "Unknown image name: " + imageName );
+      }
+      return result;
+    }
   }
 
   private static final class Data implements SerializableCompatibility {
@@ -143,7 +168,7 @@ public class TableItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public TableItem( final Table parent, final int style ) {
+  public TableItem( Table parent, int style ) {
     this( parent, style, checkNull( parent).getItemCount() );
   }
 
@@ -179,11 +204,11 @@ public class TableItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public TableItem( final Table parent, final int style, final int index ) {
+  public TableItem( Table parent, int style, int index ) {
     this( parent, style, index, true );
   }
 
-  TableItem( final Table parent, final int style, final int index, final boolean create ) {
+  TableItem( Table parent, int style, int index, boolean create ) {
     super( parent, style );
     this.parent = parent;
     this.index = index;
@@ -192,7 +217,7 @@ public class TableItem extends Item {
     }
   }
 
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result;
     if(    adapter == IWidgetFontAdapter.class
         || adapter == IWidgetColorAdapter.class
@@ -226,7 +251,7 @@ public class TableItem extends Item {
   ///////////////////////////
   // Methods to get/set texts
 
-  public void setText( final String text ) {
+  public void setText( String text ) {
     checkWidget();
     setText( 0, text );
   }
@@ -245,7 +270,7 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setText( final int index, final String text ) {
+  public void setText( int index, String text ) {
     checkWidget();
     if( text == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -280,7 +305,7 @@ public class TableItem extends Item {
    *
    * @since 1.2
    */
-  public void setText( final String[] strings ) {
+  public void setText( String[] strings ) {
     checkWidget();
     if( strings == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -310,7 +335,7 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public String getText( final int index ) {
+  public String getText( int index ) {
     checkWidget();
     if( !parent.checkData( this, parent.indexOf( this ) ) ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
@@ -325,7 +350,7 @@ public class TableItem extends Item {
   ////////////////////////////
   // Methods to get/set images
 
-  public void setImage( final Image image ) {
+  public void setImage( Image image ) {
     checkWidget();
     setImage( 0, image );
   }
@@ -344,7 +369,7 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setImage( final int index, final Image image ) {
+  public void setImage( int index, Image image ) {
     checkWidget();
     if( image != null && image.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -379,7 +404,7 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setImage( final Image[] images ) {
+  public void setImage( Image[] images ) {
     checkWidget();
     if( images == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -885,7 +910,7 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public Rectangle getBounds( final int index ) {
+  public Rectangle getBounds( int index ) {
     checkWidget();
     if( !parent.checkData( this, parent.indexOf( this ) ) ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
@@ -928,7 +953,7 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public Rectangle getImageBounds( final int index ) {
+  public Rectangle getImageBounds( int index ) {
     checkWidget();
     if( !parent.checkData( this, parent.indexOf( this ) ) ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
@@ -976,7 +1001,7 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public Rectangle getTextBounds( final int index ) {
+  public Rectangle getTextBounds( int index ) {
     checkWidget();
     int itemIndex = parent.indexOf( this );
     if( !parent.checkData( this, itemIndex ) ) {
@@ -1013,12 +1038,12 @@ public class TableItem extends Item {
     return new Rectangle( left, top, width, height );
   }
 
-  private int getColumnWidth( final int index ) {
+  private int getColumnWidth( int index ) {
     TableColumn column = parent.getColumn( index );
     return column.getWidth() - getCheckWidth( index );
   }
 
-  private int getLeft( final int index ) {
+  private int getLeft( int index ) {
     int result = 0;
     int columnCount = parent.getColumnCount();
     if( index == 0 && columnCount == 0 ) {
@@ -1074,7 +1099,13 @@ public class TableItem extends Item {
     int result = 0;
     if( hasData( index ) ) {
       if( data[ index ].textWidth == Data.UNKNOWN_WIDTH ) {
-        data[ index ].textWidth = Graphics.stringExtent( font, data[ index ].text ).x;
+        if( parent.richTextEnabled ) {
+          String text = data[ index ].text;
+          IImageSizeProvider imageSizeProvider = new TableImageSizeProvider();
+          data[ index ].textWidth = RichTextUtil.getTextWidth( text, font, imageSizeProvider );
+        } else {
+          data[ index ].textWidth = Graphics.stringExtent( font, data[ index ].text ).x;
+        }
       }
       result = data[ index ].textWidth;
     }
@@ -1091,7 +1122,7 @@ public class TableItem extends Item {
     }
   }
 
-  private int getSpacing( final int index ) {
+  private int getSpacing( int index ) {
     int result = 0;
     if( parent.hasColumnImages( index ) ) {
       result = parent.getCellSpacing();
