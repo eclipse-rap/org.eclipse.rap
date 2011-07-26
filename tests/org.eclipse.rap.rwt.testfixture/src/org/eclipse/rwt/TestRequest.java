@@ -39,7 +39,7 @@ public final class TestRequest implements HttpServletRequest {
   private Map<String,String[]> parameters;
   private Map<String,String> headers;
   private Map<String,Object> attributes;
-  private Set<Cookie> cookies;
+  private Collection<Cookie> cookies;
   private Locale locale;
   private String contentType;
   private String body;
@@ -55,7 +55,7 @@ public final class TestRequest implements HttpServletRequest {
     parameters = new HashMap<String,String[]>();
     headers = new HashMap<String, String>();
     attributes = new HashMap<String,Object>();
-    cookies = new HashSet<Cookie>();
+    cookies = new LinkedList<Cookie>();
   }
 
   public String getAuthType() {
