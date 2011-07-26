@@ -1545,29 +1545,32 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
     },
 
     _sendResolveItemsRequest : function( evt ) {
-      var scrollDiff = Math.abs( this._topIndex - this._resolveItemsFor );
-      this._resolveItemsFor = null;
-      if( scrollDiff > this._rows.length - 2 ) {
-        this._scheduleResolveItems();         
-      } else {
-        var unresolved = [];
-        for( var i = 0; i < this._rows.length; i++ ) {
-          var index = this._getItemIndexFromRowIndex( i );
-          if( index >= 0 && index < this._itemCount ) {
-            var item = this._items[ index ];
-            if( item === undefined || ( item !== null && !item.getCached() ) ) {
-              unresolved.push( index );
+      // at this point table could be disposed - see bug 349649
+      if( !this.isDisposed() ) {
+        var scrollDiff = Math.abs( this._topIndex - this._resolveItemsFor );
+        this._resolveItemsFor = null;
+        if( scrollDiff > this._rows.length - 2 ) {
+          this._scheduleResolveItems();         
+        } else {
+          var unresolved = [];
+          for( var i = 0; i < this._rows.length; i++ ) {
+            var index = this._getItemIndexFromRowIndex( i );
+            if( index >= 0 && index < this._itemCount ) {
+              var item = this._items[ index ];
+              if( item === undefined || ( item !== null && !item.getCached() ) ) {
+                unresolved.push( index );
+              }
             }
           }
-        }
-        if( unresolved.length > 0 ) {
-          var indices = unresolved.join( "," );
-          var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-          var id = widgetManager.findIdByWidget( this );
-          var req = org.eclipse.swt.Request.getInstance();
-          req.addParameter( "org.eclipse.swt.events.setData.index", indices );
-          req.addEvent( "org.eclipse.swt.events.setData", id );
-          req.send();
+          if( unresolved.length > 0 ) {
+            var indices = unresolved.join( "," );
+            var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+            var id = widgetManager.findIdByWidget( this );
+            var req = org.eclipse.swt.Request.getInstance();
+            req.addParameter( "org.eclipse.swt.events.setData.index", indices );
+            req.addEvent( "org.eclipse.swt.events.setData", id );
+            req.send();
+          }
         }
       }
     },
