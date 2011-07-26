@@ -14,7 +14,6 @@ package org.eclipse.swt.widgets;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.*;
@@ -1344,6 +1343,36 @@ public class Display_Test extends TestCase {
   public void testGetSystemMenu() {
     Display display = new Display();
     assertNull( display.getSystemMenu() );
+  }
+  
+  public void testSyncExecIsReleasedOnSessionTimeout() throws Exception {
+    final Object executedLock = new Object();
+    final boolean[] executed = { false };
+    final Display display = new Display();
+    Thread thread = new Thread( new Runnable() {
+      public void run() {
+        display.syncExec( new Runnable() {
+          public void run() {
+            synchronized ( executedLock ) {
+              executed[ 0 ] = true;
+            }
+          }
+        } );
+      }
+    } );
+    thread.setDaemon( true );
+    thread.start();
+    while( display.getSynchronizer().getMessageCount() < 1 ) {
+      Thread.yield();
+    }
+    
+    display.dispose();
+    
+    thread.join( 5000 );
+    assertFalse( thread.isAlive() );
+    synchronized ( executedLock ) {
+      assertFalse( executed[ 0 ] );
+    }
   }
   
   protected void setUp() throws Exception {

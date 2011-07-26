@@ -113,6 +113,18 @@ int getMessageCount () {
 }
 
 void releaseSynchronizer () {
+  // RAP [rh] terminate all pending syncExec's
+  RunnableLock runnableLock = removeFirst();
+  while( runnableLock != null ) {
+    if( runnableLock.thread != null ) {
+      runnableLock.runnable = null;
+      synchronized( runnableLock ) {
+        runnableLock.notify();
+      }
+    }
+    runnableLock = removeFirst();
+  }
+  // END RAP 
 //	display = null;
 	messages = null;
 	messageLock = null;
