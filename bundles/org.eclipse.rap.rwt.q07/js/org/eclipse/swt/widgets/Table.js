@@ -1758,21 +1758,23 @@ qx.Class.define( "org.eclipse.swt.widgets.Table", {
         var pageX = evt.getPageX();
         var pageY = evt.getPageY();
         var row = this._getRowAtPoint( pageX, pageY );
-        var itemIndex = row.getItemIndex();
-        if( itemIndex != -1 ) {
-	        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-	        var itemId = widgetManager.findIdByWidget( this._items[ itemIndex ] );
-	        var columns = this.getColumns();
-	        var columnIndex = columns.length == 0 ? 0 : -1;
-	        var element = this._clientArea.getElement();
-	        var leftOffset = qx.bom.element.Location.getLeft( element );
-	        for( var i = 0; columnIndex == -1 && i < columns.length; i++ ) {
-	          var pageLeft = leftOffset + this._itemLeft[ i ];
-	          if( pageX >= pageLeft && pageX < pageLeft + this._itemWidth[ i ] ) {
-	            columnIndex = i;
-	          }
-	        }        
-	        this._cellToolTip.setCell( itemId, columnIndex );
+        if( row != null ) {
+          var itemIndex = row.getItemIndex();
+          if( itemIndex != -1 ) {
+            var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+            var itemId = widgetManager.findIdByWidget( this._items[ itemIndex ] );
+            var columns = this.getColumns();
+            var columnIndex = columns.length == 0 ? 0 : -1;
+            var element = this._clientArea.getElement();
+            var leftOffset = qx.bom.element.Location.getLeft( element );
+            for( var i = 0; columnIndex == -1 && i < columns.length; i++ ) {
+              var pageLeft = leftOffset + this._itemLeft[ i ];
+              if( pageX >= pageLeft && pageX < pageLeft + this._itemWidth[ i ] ) {
+                columnIndex = i;
+              }
+            }
+            this._cellToolTip.setCell( itemId, columnIndex );
+          }
         }
       }
     },
