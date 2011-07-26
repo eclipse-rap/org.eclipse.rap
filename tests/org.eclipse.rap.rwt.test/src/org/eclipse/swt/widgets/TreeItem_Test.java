@@ -27,9 +27,20 @@ import org.eclipse.swt.internal.widgets.ITreeItemAdapter;
 
 public class TreeItem_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testConstructor() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     assertSame( display, item.getDisplay() );
@@ -69,8 +80,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testRemoveAll() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     TreeItem item11 = new TreeItem( item1, SWT.NONE );
@@ -85,8 +94,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testFont() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     Font treeFont = Graphics.getFont( "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
     tree.setFont( treeFont );
@@ -100,8 +107,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testChecked() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     Tree checkedTree = new Tree( shell, SWT.CHECK );
@@ -119,8 +124,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetExpanded() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     treeItem.setExpanded( true );
@@ -134,8 +137,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testBackgroundColor() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     // initial background color should match the parents one
@@ -147,8 +148,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testForegroundColor() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     // initial foreground color should match the parents one
@@ -160,8 +159,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testClear() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE | SWT.CHECK );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeItem subItem = new TreeItem( item, SWT.NONE );
@@ -184,8 +181,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testClearRecursive() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE | SWT.CHECK );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeItem subItem = new TreeItem( item, SWT.NONE );
@@ -198,8 +193,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testClearNonRecursive() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE | SWT.CHECK );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeItem subItem = new TreeItem( item, SWT.NONE );
@@ -212,8 +205,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testClearAll() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE | SWT.CHECK );
     TreeItem root = new TreeItem( tree, SWT.NONE );
     for( int i = 0; i < 2; i++ ) {
@@ -239,8 +230,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testSetGrayed() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree newTree = new Tree( shell, SWT.CHECK );
     TreeItem tItem = new TreeItem( newTree, 0 );
     assertEquals( false, tItem.getGrayed() );
@@ -252,8 +241,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testSetTextOnCell() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, 0 );
 
@@ -263,8 +250,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testSetText() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, 0 );
     String testString = "test";
@@ -322,8 +307,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testSetImage() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, 0 );
     Image[] images = new Image[]{
@@ -391,8 +374,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testSetImageI() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, 0 );
     Image[] images = new Image[]{
@@ -444,8 +425,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testSetForeground() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, 0 );
     Color color = display.getSystemColor( SWT.COLOR_RED );
@@ -464,8 +443,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testSetBackground() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, 0 );
     Color color = display.getSystemColor( SWT.COLOR_RED );
@@ -485,8 +462,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testSetForegroundI() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, 0 );
     Color red = display.getSystemColor( SWT.COLOR_RED );
@@ -527,8 +502,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testSetFontI() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, 0 );
     Font font = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
@@ -570,8 +543,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testSetFont() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     Font treeFont = Graphics.getFont( "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
     tree.setFont( treeFont );
@@ -594,8 +565,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testSetBackgroundI() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, 0 );
     Color red = display.getSystemColor( SWT.COLOR_RED );
@@ -638,8 +607,6 @@ public class TreeItem_Test extends TestCase {
 
   public void testGetBoundsEmptyItem() {
     final Rectangle NULL_RECT = new Rectangle( 0, 0, 0, 0 );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     tree.setSize( 200, 200 );
     TreeItem treeItem = new TreeItem( tree, 0 );
@@ -651,8 +618,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetBoundsForInvalidColumns() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, 0 );
     tree.setSize( 200, 200 );
     TreeItem treeItem = new TreeItem( tree, 0 );
@@ -665,8 +630,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetBoundsCollapsedSubItem() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, 0 );
     tree.setSize( 200, 200 );
     TreeItem treeItem = new TreeItem( tree, 0 );
@@ -682,8 +645,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetBoundsExpandedSubItem() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     String string = "hello";
     Tree tree = new Tree( shell, 0 );
     tree.setSize( 200, 200 );
@@ -701,8 +662,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetBoundsWithText() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     String string = "hello";
     Tree tree = new Tree( shell, 0 );
     tree.setSize( 200, 200 );
@@ -720,8 +679,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetBoundsWithImage() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     Rectangle imageBounds = image.getBounds();
     Tree tree = new Tree( shell, 0 );
@@ -738,8 +695,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetBoundsWithTextAndImage() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     Rectangle imageBounds = image.getBounds();
     String string = "hello";
@@ -759,8 +714,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetBoundsSubsequentRootItems() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem rootItem = new TreeItem( tree, 0 );
     TreeItem subItem = new TreeItem( rootItem, 0 );
@@ -775,8 +728,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetBoundsWithColumns() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
     column1.setText( "foo" );
@@ -804,8 +755,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetBoundsWithVisibleHeader() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     tree.setHeaderVisible( true );
     TreeItem item = new TreeItem( tree, 0 );
@@ -814,8 +763,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testBoundsSubItemBug219374() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem root = new TreeItem( tree, SWT.NONE );
     TreeItem root2 = new TreeItem( tree, SWT.NONE );
@@ -835,8 +782,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetBoundsWithColumnsAndScrolling() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.NONE );
     tree.setSize( 150, 200 );
     TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
@@ -861,8 +806,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testTreeItemAdapter() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE );
     int columnCount = 3;
     createColumns( tree, columnCount );
@@ -889,8 +832,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetImageBoundsInvalidIndex() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), item.getImageBounds( 1 ) );
@@ -898,8 +839,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetImageBoundsColumns() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeColumn c1 = new TreeColumn( tree, SWT.NONE );
@@ -947,8 +886,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetImageBoundsIndexOutOfBoundsBug() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE );
     new TreeItem( tree, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
@@ -999,8 +936,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testDynamicColumnCountAttributes() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.SINGLE );
     createColumns( tree, 1 );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
@@ -1016,9 +951,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testTextBounds() {
-    // Test setup
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
@@ -1034,9 +966,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testTextBoundsWithInvalidIndex() {
-    // Test setup
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( "abc" );
@@ -1048,9 +977,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testTextBoundsWithImageAndColumns() {
-    // Test setup
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
@@ -1064,8 +990,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testTextBoundsWithChangedFont() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( "abc" );
@@ -1079,8 +1003,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testTextBoundsWithCheckboxTree() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.CHECK );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     column.setWidth( 100 );
@@ -1092,8 +1014,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testTextBoundsWithCollapsedParentItem() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     column.setWidth( 100 );
@@ -1109,8 +1029,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testNewItemWithIndex() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     treeItem.setText( "1" );
@@ -1141,8 +1059,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testNewItemWithIndexAsChild() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem root = new TreeItem( tree, SWT.NONE );
     root.setText( "root" );
@@ -1159,8 +1075,6 @@ public class TreeItem_Test extends TestCase {
   // VIRTUAL
 
   public void testVirtualGetItemOutOfBounds() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setItemCount( 10 );
@@ -1175,8 +1089,6 @@ public class TreeItem_Test extends TestCase {
   public void testVirtualGetItemDoesNotFireSetDataEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final LoggingListener log = new LoggingListener();
-    final Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.setItemCount( 100 );
     tree.setSize( 100, 100 );
@@ -1187,8 +1099,6 @@ public class TreeItem_Test extends TestCase {
 
   public void testVirtualGetters() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.CHECK );
     tree.setItemCount( 100 );
     tree.setSize( 100, 100 );
@@ -1219,8 +1129,6 @@ public class TreeItem_Test extends TestCase {
   public void testGetterFireSetDataOnlyOnce() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final LoggingListener log = new LoggingListener();
-    final Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree1 = new Tree( shell, SWT.VIRTUAL );
     tree1.setItemCount( 100 );
     tree1.setSize( 100, 100 );
@@ -1236,8 +1144,6 @@ public class TreeItem_Test extends TestCase {
 
   public void testVirtualSetExpanded() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    final Shell shell = new Shell( display );
     final Tree tree = new Tree( shell, SWT.VIRTUAL );
     final LoggingListener log = new LoggingListener();
     tree.addListener( SWT.SetData, log );
@@ -1253,11 +1159,9 @@ public class TreeItem_Test extends TestCase {
 
   public void testVirtualSetter() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
     Color color = display.getSystemColor( SWT.COLOR_RED );
     Font font = new Font( display, new FontData( "serif", 10, 0 ) );
     Image image = display.getSystemImage( SWT.ICON_ERROR );
-    final Shell shell = new Shell( display );
     final Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.CHECK );
     final LoggingListener log = new LoggingListener();
     tree.addListener( SWT.SetData, log );
@@ -1302,8 +1206,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testVirtualNonCheckTreeSetter() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.setItemCount( 100 );
     shell.open();
@@ -1315,8 +1217,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testVirtualCheckTreeSetter() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.CHECK );
     tree.setItemCount( 100 );
     shell.open();
@@ -1329,8 +1229,6 @@ public class TreeItem_Test extends TestCase {
 
   public void testVirtualSetItemCount() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     LoggingListener log = new LoggingListener();
     tree.addListener( SWT.SetData, log );
@@ -1350,8 +1248,6 @@ public class TreeItem_Test extends TestCase {
 
   public void testVirtualSetExpandedWithSetItemCount() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     LoggingListener log = new LoggingListener();
     tree.addListener( SWT.SetData, log );
@@ -1368,8 +1264,6 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testVirtualSetExpandedWithoutSetItemCount() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.VIRTUAL );
     Tree tree = new Tree( shell, SWT.SINGLE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     treeItem.setExpanded( true );
@@ -1380,16 +1274,12 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testVirtualSetItemCountNegative() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.setItemCount( -100 );
     assertEquals( 0, tree.getItemCount() );
   }
 
   public void testVirtualClear() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     TreeItem parentItem = new TreeItem( tree, SWT.NONE );
     TreeItem item = new TreeItem( parentItem, SWT.NONE );
@@ -1401,8 +1291,6 @@ public class TreeItem_Test extends TestCase {
 
   public void testVirtualSetDataEventsOnSetExpand() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    final Shell shell = new Shell( display );
     final Tree tree = new Tree( shell, SWT.VIRTUAL );
     final List<Event> log = new ArrayList<Event>();
     tree.addListener( SWT.SetData, new Listener() {
@@ -1420,12 +1308,44 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 10, log.size() );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
+  public void testInsertColumn_ShiftData_() {
+    Tree tree = new Tree( shell, SWT.BORDER );
+    createColumns( tree, 3 );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    TreeItem subitem = new TreeItem( item, SWT.NONE );
+    for( int i = 0; i < 3; i++ ) {
+      item.setText( i, "cell" + i );
+      subitem.setText( i, "subcell" + i );
+    }
+
+    new TreeColumn( tree, SWT.NONE, 1 );
+
+    assertEquals( "cell0", item.getText( 0 ) );
+    assertEquals( "", item.getText( 1 ) );
+    assertEquals( "cell1", item.getText( 2 ) );
+    assertEquals( "cell2", item.getText( 3 ) );
+    assertEquals( "subcell0", subitem.getText( 0 ) );
+    assertEquals( "", subitem.getText( 1 ) );
+    assertEquals( "subcell1", subitem.getText( 2 ) );
+    assertEquals( "subcell2", subitem.getText( 3 ) );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testRemoveColumn_RemoveData_() {
+    Tree tree = new Tree( shell, SWT.BORDER );
+    createColumns( tree, 3 );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    TreeItem subitem = new TreeItem( item, SWT.NONE );
+    for( int i = 0; i < 3; i++ ) {
+      item.setText( i, "cell" + i );
+      subitem.setText( i, "subcell" + i );
+    }
+
+    tree.getColumn( 1 ).dispose();
+
+    assertEquals( "cell0", item.getText( 0 ) );
+    assertEquals( "cell2", item.getText( 1 ) );
+    assertEquals( "subcell0", subitem.getText( 0 ) );
+    assertEquals( "subcell2", subitem.getText( 1 ) );
   }
 
   private static TreeColumn[] createColumns( Tree tree, int count ) {

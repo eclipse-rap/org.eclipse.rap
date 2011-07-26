@@ -110,7 +110,7 @@ public class TreeItem extends Item {
       return result;
     }
   }
-  
+
   private static final class Data implements SerializableCompatibility {
     static final int UNKNOWN_WIDTH = -1;
     String text = "";
@@ -1071,7 +1071,7 @@ public class TreeItem extends Item {
     checkWidget();
     setText( 0, text );
   }
-  
+
   /**
    * Returns the receiver's image if it has one, or null
    * if it does not.
@@ -1140,7 +1140,7 @@ public class TreeItem extends Item {
 
   Image getImage( int index, boolean checkData ) {
     // TODO Why is this line commented?
-    // if( checkData ) parent.checkData( this, this.index );    
+    // if( checkData ) parent.checkData( this, this.index );
     if( checkData ) {
       materialize();
     }
@@ -1603,7 +1603,7 @@ public class TreeItem extends Item {
     }
     return result;
   }
-  
+
   private static boolean equals( Object object1, Object object2 ) {
     boolean result;
     if( object1 == object2 ) {
@@ -1615,10 +1615,10 @@ public class TreeItem extends Item {
     }
     return result;
   }
-  
+
   ////////////////////////////////////////
   // Manage item data (texts, images, etc)
-    
+
   private void ensureData( int index, int columnCount ) {
     if( data == null ) {
       data = new Data[ columnCount ];
@@ -1631,11 +1631,11 @@ public class TreeItem extends Item {
       data[ index ] = new Data();
     }
   }
-  
+
   private boolean hasData( int index ) {
     return data != null && index >= 0 && index < data.length && data[ index ] != null;
   }
-  
+
   final void shiftData( int index ) {
     if( data != null && data.length > index && parent.getColumnCount() > 1 ) {
       Data[] newData = new Data[ data.length + 1 ];
@@ -1643,6 +1643,11 @@ public class TreeItem extends Item {
       int offSet = data.length - index;
       System.arraycopy( data, index, newData, index + 1, offSet );
       data = newData;
+    }
+    for( int i = 0; i < itemCount; i++ ) {
+      if( items[ i ] != null ) {
+        items[ i ].shiftData( index );
+      }
     }
   }
 
@@ -1653,6 +1658,11 @@ public class TreeItem extends Item {
       int offSet = data.length - index - 1;
       System.arraycopy( data, index + 1, newData, index, offSet );
       data = newData;
+    }
+    for( int i = 0; i < itemCount; i++ ) {
+      if( items[ i ] != null ) {
+        items[ i ].removeData( index );
+      }
     }
   }
 
