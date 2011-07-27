@@ -51,11 +51,6 @@ public class RWT_Test extends TestCase {
     }
   }
 
-  private static class EmptyRunnable implements Runnable {
-    public void run() {
-    }
-  }
-
   public void testGetApplicationStore() {
     Fixture.setUp();
     
@@ -68,7 +63,7 @@ public class RWT_Test extends TestCase {
     Fixture.setUp();
     Runnable runnable = new Runnable() {
       public void run() {
-        RWT.requestThreadExec( new EmptyRunnable() );
+        RWT.requestThreadExec( new NoOpRunnable() );
       }
     };
     try {
@@ -102,7 +97,7 @@ public class RWT_Test extends TestCase {
 
   public void testRequestThreadExecWithoutDisplay() {
     Fixture.setUp();
-    Runnable runnable = new EmptyRunnable();
+    Runnable runnable = new NoOpRunnable();
     try {
       RWT.requestThreadExec( runnable );
       fail();
@@ -116,7 +111,7 @@ public class RWT_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     display.dispose();
-    Runnable runnable = new EmptyRunnable();
+    Runnable runnable = new NoOpRunnable();
     try {
       RWT.requestThreadExec( runnable );
       fail();
@@ -141,7 +136,7 @@ public class RWT_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     new Display();
     
-    RWT.requestThreadExec( new EmptyRunnable() );
+    RWT.requestThreadExec( new NoOpRunnable() );
     
     TestLifeCycle lifeCycle = ( TestLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     assertEquals( TestLifeCycle.REQUEST_THREAD_EXEC, lifeCycle.getInvocationLog() );
