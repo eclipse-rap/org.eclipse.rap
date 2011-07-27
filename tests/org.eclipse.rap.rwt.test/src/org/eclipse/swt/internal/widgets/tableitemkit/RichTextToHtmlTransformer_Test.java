@@ -60,6 +60,30 @@ public class RichTextToHtmlTransformer_Test extends TestCase {
     assertEquals( expected, transformer.getHtml() );
   }
 
+  public void testParseWithFontElement() {
+    RichTextParser parser = new RichTextParser( transformer );
+    
+    parser.parse( "<html><font name=\"font-name\" height=\"1\">foo</font></html>" );
+    
+    String expected
+      = "<div style=\"line-height:normal;\">" 
+      + "<span style=\"font-family:font-name;font-size:1px\">foo</span>" 
+      + "</div>";
+    assertEquals( expected, transformer.getHtml() );
+  }
+  
+  public void testParseWithFontElementWithQuotedFontName() {
+    RichTextParser parser = new RichTextParser( transformer );
+    
+    parser.parse( "<html><font name='\"font name\"' height=\"1\">foo</font></html>" );
+    
+    String expected
+      = "<div style=\"line-height:normal;\">" 
+      + "<span style=\"font-family:&quot;font name&quot;;font-size:1px\">foo</span>" 
+      + "</div>";
+    assertEquals( expected, transformer.getHtml() );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
     Display display = new Display();

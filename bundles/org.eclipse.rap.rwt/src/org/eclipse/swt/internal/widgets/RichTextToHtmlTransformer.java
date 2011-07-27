@@ -12,6 +12,7 @@ package org.eclipse.swt.internal.widgets;
 
 import java.util.Map;
 
+import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
@@ -39,14 +40,15 @@ public class RichTextToHtmlTransformer implements IRichTextParserCallback {
   }
 
   public void beginFont( String name, int height ) {
-    buffer.append( "<font" );
-    appendAttribute( "face", name );
-    appendAttribute( "height", String.valueOf( height ) );
+    buffer.append( "<span" );
+    String encodeName = EncodingUtil.encodeHTMLEntities( name );
+    String fontStyle = "font-family:" + encodeName + ";font-size:" + height + "px";
+    appendAttribute( "style", fontStyle );
     buffer.append( ">" );
   }
 
   public void endFont() {
-    buffer.append( "</font>" );
+    buffer.append( "</span>" );
   }
 
   public void image( String src ) {
