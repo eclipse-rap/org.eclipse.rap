@@ -126,12 +126,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
       testUtil.flush();
       var element = widget.getElement();
       var css = element.style.cssText.toLowerCase();
-      console.log( css );
-      assertTrue( css.indexOf( "text-shadow:" ) != -1 );
+      var isMshtml = org.eclipse.rwt.Client.isMshtml();
+      if( isMshtml ) {
+        assertFalse( css.indexOf( "text-shadow:" ) !== -1 );
+      } else {
+        assertTrue( css.indexOf( "text-shadow:" ) !== -1 );
+      }
       widget.setTextShadow( null );
       testUtil.flush();
       css = element.style.cssText.toLowerCase();
-      assertTrue( css.indexOf( "text-shadow:" ) == -1 );
+      assertTrue( css.indexOf( "text-shadow:" ) === -1 );
       widget.destroy();
     },
 
