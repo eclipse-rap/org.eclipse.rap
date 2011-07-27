@@ -154,8 +154,8 @@ public class Tree extends Composite {
       return result;
     }
   }
-  
-  private final class InternalTreeAdapter 
+
+  private final class InternalTreeAdapter
     implements ITreeAdapter, ICellToolTipAdapter, SerializableCompatibility
   {
     private String toolTipText;
@@ -332,7 +332,7 @@ public class Tree extends Composite {
     }
     return result;
   }
-  
+
   private void setTreeEmpty() {
     items = new TreeItem[ 4 ];
     // TODO: Not sure if we have to clear the image size???!!!
@@ -1206,7 +1206,7 @@ public class Tree extends Composite {
       }
     }
   }
-  
+
   public void changed( Control[] changed ) {
     clearItemsPreferredWidthBuffer();
     super.changed( changed );
@@ -2085,17 +2085,15 @@ public class Tree extends Composite {
       checkDataRecursively( items[ i ], i );
     }
   }
-  
+
   private void checkDataRecursively( TreeItem item, int index ) {
     if( isItemVisible( item ) ) {
       checkData( item, index );
-      if( item.getExpanded() ) {
-        int itemCount = item.getItemCount();
-        for( int i = 0; i < itemCount; i++ ) {
-          // TODO this could materialize items
-          TreeItem subItem = item.getItem( i );
-          checkDataRecursively( subItem, i );
-        }
+    }
+    if( item.isCached() && item.getExpanded() ) {
+      for( int i = 0; i < item.itemCount; i++ ) {
+        // TODO this could materialize items
+        checkDataRecursively( item.getItem( i ), i );
       }
     }
   }
@@ -2364,7 +2362,7 @@ public class Tree extends Composite {
     adjustItemIndices( index );
   }
 
-  void destroyItem( TreeItem treeItem, int index ) {    
+  void destroyItem( TreeItem treeItem, int index ) {
     itemCount--;
     if( itemCount == 0 ) {
       setTreeEmpty();
@@ -2374,7 +2372,7 @@ public class Tree extends Composite {
     }
     adjustItemIndices( index );
   }
-  
+
   private void adjustItemIndices( int start ) {
     for( int i = start; i < itemCount; i++ ) {
       if( items[ i ] != null ) {

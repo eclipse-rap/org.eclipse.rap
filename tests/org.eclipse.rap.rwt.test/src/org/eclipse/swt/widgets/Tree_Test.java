@@ -29,14 +29,14 @@ public class Tree_Test extends TestCase {
 
   private Display display;
   private Composite composite;
-  
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     composite = new Shell( display, SWT.NONE );
   }
-  
+
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -196,9 +196,9 @@ public class Tree_Test extends TestCase {
       new TreeItem( tree, SWT.NONE );
     }
     TreeItem item8 = tree.getItem( 8 );
-    
+
     tree.getItem( 3 ).dispose();
-    
+
     assertEquals( 7, tree.indexOf( item8 ) );
   }
 
@@ -208,9 +208,9 @@ public class Tree_Test extends TestCase {
       new TreeItem( tree, SWT.NONE );
     }
     TreeItem item8 = tree.getItem( 8 );
-    
+
     new TreeItem( tree, SWT.NONE, 3 );
-    
+
     assertEquals( 9, tree.indexOf( item8 ) );
   }
 
@@ -219,16 +219,16 @@ public class Tree_Test extends TestCase {
     tree.setItemCount( 10 );
 
     new TreeItem( tree, SWT.NONE );
-    
+
     assertEquals( 11, tree.getItemCount() );
   }
 
   public void testGetItemCountAfterRemove() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setItemCount( 10 );
-    
+
     tree.getItem( 3 ).dispose();
-    
+
     assertEquals( 9, tree.getItemCount() );
   }
 
@@ -798,9 +798,9 @@ public class Tree_Test extends TestCase {
     tree.setSize( 100, 100 );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( "Very long long long long long long long long text" );
-    
+
     tree.clearAll( true );
- 
+
     assertFalse( tree.hasHScrollBar() );
   }
 
@@ -1150,7 +1150,7 @@ public class Tree_Test extends TestCase {
     assertFalse( item.getItems()[ 0 ].isCached() );
     assertEquals( 1, log.size() );
   }
-  
+
   public void testVirtualItemIsResolved() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setItemCount( 10 );
@@ -1166,9 +1166,9 @@ public class Tree_Test extends TestCase {
     tree.setItemCount( 10 );
     TreeItem item3 = tree.getItem( 3 );
     TreeItem item9 = tree.getItem( 9 );
-    
+
     tree.setItemCount( 5 );
-    
+
     assertEquals( 5, tree.getItemCount() );
     assertFalse( item3.isDisposed() );
     assertTrue( item9.isDisposed() );
@@ -1182,13 +1182,13 @@ public class Tree_Test extends TestCase {
     tree.getItem( 0 ).getText(); // force set data
     tree.getItem( 0 ).setText( "custom" );
     tree.getItem( 0 ).getItem( 0 ).setText( "custom" );
-    
+
     tree.clearAll( false );
-    
+
     assertEquals( "node 0", tree.getItem( 0 ).getText() );
     assertEquals( "custom", tree.getItem( 0 ).getItem( 0 ).getText() );
   }
-  
+
   public void testVirtualClearAllRecursive() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setSize( 100, 160 );
@@ -1203,7 +1203,7 @@ public class Tree_Test extends TestCase {
     assertEquals( "node 0", tree.getItem( 0 ).getText() );
     assertEquals( "node 0 - 0", tree.getItem( 0 ).getItem( 0 ).getText() );
   }
-  
+
   public void testVirtualClearNonRecursive() {
     Tree tree = new Tree( composite, SWT.VIRTUAL | SWT.BORDER );
     tree.setSize( 100, 160 );
@@ -1213,7 +1213,7 @@ public class Tree_Test extends TestCase {
     tree.getItem( 0 ).setText( "custom" );
     tree.getItem( 0 ).getItem( 0 ).setText( "custom" );
     tree.getItem( 1 ).setText( "custom" );
-    
+
     tree.clear( 0, false );
 
     assertEquals( "node 0", tree.getItem( 0 ).getText() );
@@ -1230,14 +1230,14 @@ public class Tree_Test extends TestCase {
     tree.getItem( 0 ).setText( "custom" );
     tree.getItem( 0 ).getItem( 0 ).setText( "custom" );
     tree.getItem( 1 ).setText( "custom" );
-    
+
     tree.clear( 0, true );
-    
+
     assertEquals( "node 0", tree.getItem( 0 ).getText() );
     assertEquals( "node 0 - 0", tree.getItem( 0 ).getItem( 0 ).getText() );
     assertEquals( "custom", tree.getItem( 1 ).getText() );
   }
-  
+
   public void testVirtualComputeSize() {
     Tree tree = new Tree( composite, SWT.BORDER | SWT.VIRTUAL );
     tree.setItemCount( 10 );
@@ -1389,30 +1389,30 @@ public class Tree_Test extends TestCase {
     Tree tree = new Tree( composite, SWT.NONE );
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     tree.setSize( 100, 100 );
-    
+
     TreeItem result = tree.getItem( new Point( 5, 5 ) );
-    
+
     assertSame( item1, result );
   }
 
   public void testPreferredWidthBufferHandlingOfTreeItem() {
     Tree tree = new Tree( composite, SWT.NONE );
-    
+
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
     assertEquals( 11, item1.getPreferredWidthBuffer( 0 ) );
-    
+
     item1.setText( "text" );
     assertEquals( 34, item1.getPreferredWidthBuffer( 0 ) );
 
     item1.setText( 0, "anotherText" );
     assertEquals( 74, item1.getPreferredWidthBuffer( 0 ) );
-   
+
     // unfortunately tree doesn't allow to set images with different sizes
     // therefore the size of the first image gets cached -> we only test
     // the setImage(int,image) method
     item1.setImage( 0, Graphics.getImage( Fixture.IMAGE1 ) );
     assertEquals( 135, item1.getPreferredWidthBuffer( 0 ) );
-    
+
     tree.setFont( new Font( display, "arial", 40, SWT.BOLD ) );
     assertEquals( 378, item1.getPreferredWidthBuffer( 0 ) );
   }
@@ -1423,28 +1423,28 @@ public class Tree_Test extends TestCase {
     item1.setText( "text" );
 
     tree.changed( tree.getChildren() );
-    
+
     assertFalse( item1.hasPreferredWidthBuffer( 0 ) );
   }
-  
+
   public void testIsSerializable() throws Exception {
     Tree tree = new Tree( composite, SWT.NONE );
     new TreeItem( tree, SWT.NONE );
     new TreeColumn( tree, SWT.NONE );
-    
+
     Tree deserializedTree = Fixture.serializeAndDeserialize( tree );
-    
+
     assertEquals( 1, deserializedTree.getItemCount() );
     assertEquals( 1, deserializedTree.getColumnCount() );
   }
-  
+
   public void testGetPreferredCellWidthForColumn() {
     Tree tree = new Tree( composite, SWT.NONE );
     createColumns( tree, 3 );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setText( 0, "short" );
     item.setText( 1, "very long text" );
-    
+
     int width1 = tree.getPreferredCellWidth( item, 0, false );
     int width2 = tree.getPreferredCellWidth( item, 1, false );
     assertTrue( width2 > width1 );
@@ -1453,21 +1453,34 @@ public class Tree_Test extends TestCase {
   public void testVirtualSetItemCountDoesMaterializeItems() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setSize( 300, 50 );
-    
+
     tree.setItemCount( 1 );
-    
+
     assertFalse( tree.getItem( 0 ).isCached() );
+  }
+
+  public void testVirtualMaterializeItemOnScroll() throws Exception {
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
+    tree.setSize( 300, 300 );
+    tree.setItemCount( 1 );
+    TreeItem item = tree.getItem( 0 );
+    item.setItemCount( 50 );
+
+    TreeItem subItem = item.getItem( 20 );
+    tree.setTopItem( subItem );
+
+    assertTrue( item.getItem( 25 ).isCached() );
   }
 
   /////////
   // Helper
-  
+
   private static void createColumns( Tree tree, int count ) {
     for( int i = 0; i < count; i++ ) {
       new TreeColumn( tree, SWT.NONE );
     }
   }
-  
+
   private static Listener createSetDataListener() {
     return new Listener() {
       public void handleEvent( Event event ) {
