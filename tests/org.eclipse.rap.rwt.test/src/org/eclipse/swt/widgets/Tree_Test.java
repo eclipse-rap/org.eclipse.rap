@@ -1459,7 +1459,7 @@ public class Tree_Test extends TestCase {
     assertFalse( tree.getItem( 0 ).isCached() );
   }
 
-  public void testVirtualMaterializeItemOnScroll() throws Exception {
+  public void testVirtualMaterializeItemOnScroll() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setSize( 300, 300 );
     tree.setItemCount( 1 );
