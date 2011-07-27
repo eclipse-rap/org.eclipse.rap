@@ -277,10 +277,13 @@ public final class RWT {
   }
   
   /**
-   * Returns the <code>HttpServletRequest</code> that is currently
-   * processed.
-   * 
+   * Returns the <code>HttpServletRequest</code> that is currently processed.
+   * <p>
+   * Typical application code rarely needs to call this method. It is meant mainly for 
+   * service handlers obtain parameters of the request to process.
+   * </p> 
    * @return instance of {@link HttpServletRequest}
+   * @see IServiceHandler
    */
   public static HttpServletRequest getRequest() {
     checkHasSessionContext();
@@ -290,8 +293,14 @@ public final class RWT {
   /**
    * Returns the <code>HttpServletResponse</code> that is mapped
    * to the currently processed request.
-   * 
+   * <p>
+   * Typical application code <em>never</em> needs to call this method. It is meant only for 
+   * service handlers to be able to write output and control other aspects of the response.
+   * Calling this method from a life cycle request (e.g. in an  SWT event listener) is almost 
+   * certainly an error.
+   * </p> 
    * @return instance of {@link HttpServletResponse}
+   * @see IServiceHandler
    */
   public static HttpServletResponse getResponse() {
     checkHasSessionContext();
