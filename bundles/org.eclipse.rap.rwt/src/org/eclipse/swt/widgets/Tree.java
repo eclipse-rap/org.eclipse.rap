@@ -1920,11 +1920,11 @@ public class Tree extends Composite {
     return result;
   }
 
-  int getVisualCellWidth( int index, TreeItem item, boolean checkData ) {
+  int getVisualCellWidth( int index, TreeItem item ) {
     int result;
     if( getColumnCount() == 0 && index == 0 ) {
-      String text = item.getText( 0, checkData );
-      int textWidth = Graphics.stringExtent( item.getFont( checkData ), text ).x;
+      String text = item.getText( 0 );
+      int textWidth = Graphics.stringExtent( item.getFont(), text ).x;
       result = getCellPadding().width
                + getItemImageOuterWidth( index )
                + textWidth
@@ -1963,7 +1963,7 @@ public class Tree extends Composite {
     if( !item.hasPreferredWidthBuffer( columnIndex ) ) {
       result = getTextOffset( columnIndex ) ;
       Rectangle padding = getCellPadding();
-      result += Graphics.stringExtent( getFont(), item.getText( columnIndex, checkData ) ).x;
+      result += Graphics.stringExtent( getFont(), item.getTextWithoutMaterialize( columnIndex ) ).x;
       result += padding.width - padding.x;
       if( isTreeColumn( columnIndex ) ) {
         result += TEXT_MARGIN.width - TEXT_MARGIN.x;
@@ -2153,16 +2153,18 @@ public class Tree extends Composite {
     return newFlatIndex;
   }
 
-  final void checkData( TreeItem item, int index ) {
+  final boolean checkData( TreeItem item, int index ) {
+    boolean result = true;
     if( isVirtual() && !item.isCached() ) {
       item.markCached();
       SetDataEvent event = new SetDataEvent( Tree.this, item, index );
       event.processEvent();
       // widget could be disposed at this point
       if( isDisposed() || item.isDisposed() ) {
-        SWT.error( SWT.ERROR_WIDGET_DISPOSED );
+        result = false;
       }
     }
+    return result;
   }
 
   private static int checkStyle( int style ) {

@@ -246,7 +246,7 @@ public class TreeItem extends Item {
     this( parentItem == null ? null : parentItem.parent,
           parentItem,
           style,
-          parentItem == null ? 0 : parentItem.getItemCount( false ), true );
+          parentItem == null ? 0 : parentItem.itemCount, true );
   }
 
   /**
@@ -298,7 +298,7 @@ public class TreeItem extends Item {
     if( create ) {
       int numberOfItems;
       if( parentItem != null ) {
-        numberOfItems = parentItem.getItemCount( false );
+        numberOfItems = parentItem.itemCount;
       } else {
         // If there is no parent item, get the next index of the tree
         numberOfItems = parent.getItemCount();
@@ -483,14 +483,10 @@ public class TreeItem extends Item {
    */
   public Rectangle getBounds( int columnIndex ) {
     checkWidget();
-    return getBounds( columnIndex, true );
-  }
-
-  Rectangle getBounds( int columnIndex, boolean checkData ) {
     Rectangle result = new Rectangle( 0, 0, 0, 0 );
     if( isVisible() && isValidColumn( columnIndex ) ) {
       int left = parent.getVisualCellLeft( columnIndex, this );
-      int width = parent.getVisualCellWidth( columnIndex, this, checkData );
+      int width = parent.getVisualCellWidth( columnIndex, this );
       result = new Rectangle( left, getItemTop(), width, parent.getItemHeight() );
     }
     return result;
@@ -525,10 +521,16 @@ public class TreeItem extends Item {
    */
   public Color getBackground( int index ) {
     checkWidget();
-    // if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
-    Color result = getBackground();
+    if( !parent.checkData( this, this.index ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
+    Color result;
     if( hasData( index ) && data[ index ].background != null ) {
       result = data[ index ].background;
+    } else if( background == null ) {
+      result = parent.getBackground();
+    } else {
+      result = background;
     }
     return result;
   }
@@ -546,20 +548,18 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public Font getFont( int columnIndex ) {
+  public Font getFont( int index ) {
     checkWidget();
-    return getFont( columnIndex, true );
-  }
-
-  Font getFont( int index, boolean checkData ) {
-    // if (checkData && !parent.checkData (this, true)) error
-    // (SWT.ERROR_WIDGET_DISPOSED);
-    if( checkData ) {
-      materialize();
+    if( !parent.checkData( this, this.index ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
     }
-    Font result = getFont();
+    Font result;
     if( hasData( index ) && data[ index ].font != null ) {
       result = data[ index ].font;
+    } else if( font == null ) {
+      result = parent.getFont();
+    } else {
+      result = font;
     }
     return result;
   }
@@ -578,10 +578,16 @@ public class TreeItem extends Item {
    */
   public Color getForeground( int index ) {
     checkWidget();
-    // if (!parent.checkData (this, true)) error (SWT.ERROR_WIDGET_DISPOSED);
-    Color result = getForeground();
+    if( !parent.checkData( this, this.index ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
+    Color result;
     if( hasData( index ) && data[ index ].foreground != null ) {
       result = data[ index ].foreground;
+    } else if( foreground == null ) {
+      result = parent.getForeground();
+    } else {
+      result = foreground;
     }
     return result;
   }
@@ -729,17 +735,16 @@ public class TreeItem extends Item {
    */
   public Font getFont() {
     checkWidget();
-    return getFont( true );
-  }
-
-  Font getFont( boolean checkData ) {
-    if( checkData ) {
-      materialize();
+    if( !parent.checkData( this, index ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
     }
-    if( font != null ) {
-      return font;
+    Font result;
+    if( font == null ) {
+      result = parent.getFont();
+    } else {
+      result = font;
     }
-    return parent.getFont();
+    return result;
   }
 
   /**
@@ -787,14 +792,16 @@ public class TreeItem extends Item {
    */
   public Color getBackground() {
     checkWidget();
-    if( isDisposed() ) {
+    if( !parent.checkData( this, index ) ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
-    materialize();
-    if( background != null ) {
-      return background;
+    Color result;
+    if( background == null ) {
+      result = parent.getBackground();
+    } else {
+      result = background;
     }
-    return parent.getBackground();
+    return result;
   }
 
   /**
@@ -810,14 +817,16 @@ public class TreeItem extends Item {
    */
   public Color getForeground() {
     checkWidget();
-    if( isDisposed() ) {
+    if( !parent.checkData( this, index ) ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
     }
-    materialize();
-    if( foreground != null ) {
-      return foreground;
+    Color result;
+    if( foreground == null ) {
+      result = parent.getForeground();
+    } else {
+      result = foreground;
     }
-    return parent.getForeground();
+    return result;
   }
 
   /**
@@ -885,7 +894,9 @@ public class TreeItem extends Item {
    */
   public boolean getChecked() {
     checkWidget();
-    materialize();
+    if( !parent.checkData( this, index ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     return checked;
   }
 
@@ -922,9 +933,25 @@ public class TreeItem extends Item {
    */
   public boolean getGrayed() {
     checkWidget();
-    materialize();
-    // error( SWT.ERROR_WIDGET_DISPOSED );
+    if( !parent.checkData( this, index ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     return grayed;
+  }
+
+  /**
+   * Returns the receiver's text, which will be an empty string if it has never
+   * been set.
+   *
+   * @return the receiver's text
+   * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
+   *              has been disposed</li> <li>ERROR_THREAD_INVALID_ACCESS - if
+   *              not called from the thread that created the receiver</li>
+   *              </ul>
+   */
+  public String getText() {
+    checkWidget();
+    return getText( 0 );
   }
 
   /**
@@ -941,29 +968,13 @@ public class TreeItem extends Item {
    */
   public String getText( int index ) {
     checkWidget();
-    return getText( index, true );
-  }
-
-  /**
-   * Returns the receiver's text, which will be an empty string if it has never
-   * been set.
-   *
-   * @return the receiver's text
-   * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
-   *              has been disposed</li> <li>ERROR_THREAD_INVALID_ACCESS - if
-   *              not called from the thread that created the receiver</li>
-   *              </ul>
-   */
-  public String getText() {
-    checkWidget();
-    materialize();
-    return getText( 0 );
-  }
-
-  String getText( int index, boolean checkData ) {
-    if( checkData && !isCached() ) {
-      parent.checkData( this, this.index );
+    if( !parent.checkData( this, this.index ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
     }
+    return getTextWithoutMaterialize( index );
+  }
+
+  String getTextWithoutMaterialize( int index ) {
     String result = "";
     if( hasData( index ) ) {
       result = data[ index ].text;
@@ -1024,6 +1035,22 @@ public class TreeItem extends Item {
   }
 
   /**
+   * Sets the receiver's text.
+   *
+   * @param text the new text
+   * @exception IllegalArgumentException <ul> <li>ERROR_NULL_ARGUMENT - if the
+   *              text is null</li> </ul>
+   * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
+   *              has been disposed</li> <li>ERROR_THREAD_INVALID_ACCESS - if
+   *              not called from the thread that created the receiver</li>
+   *              </ul>
+   */
+  public void setText( String text ) {
+    checkWidget();
+    setText( 0, text );
+  }
+
+  /**
    * Sets the receiver's text at a column
    *
    * @param index the column index
@@ -1057,22 +1084,6 @@ public class TreeItem extends Item {
   }
 
   /**
-   * Sets the receiver's text.
-   *
-   * @param text the new text
-   * @exception IllegalArgumentException <ul> <li>ERROR_NULL_ARGUMENT - if the
-   *              text is null</li> </ul>
-   * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
-   *              has been disposed</li> <li>ERROR_THREAD_INVALID_ACCESS - if
-   *              not called from the thread that created the receiver</li>
-   *              </ul>
-   */
-  public void setText( String text ) {
-    checkWidget();
-    setText( 0, text );
-  }
-
-  /**
    * Returns the receiver's image if it has one, or null
    * if it does not.
    *
@@ -1085,6 +1096,7 @@ public class TreeItem extends Item {
    * @since 1.4
    */
   public Image getImage() {
+    checkWidget();    
     return getImage( 0 );
   }
 
@@ -1092,7 +1104,7 @@ public class TreeItem extends Item {
    * Returns the image stored at the given column index in the receiver, or null
    * if the image has not been set or if the column does not exist.
    *
-   * @param columnIndex the column index
+   * @param index the column index
    * @return the image stored at the given column index in the receiver
    * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
    *              has been disposed</li> <li>ERROR_THREAD_INVALID_ACCESS - if
@@ -1100,9 +1112,16 @@ public class TreeItem extends Item {
    *              </ul>
    * @since 1.0
    */
-  public Image getImage( int columnIndex ) {
+  public Image getImage( int index ) {
     checkWidget();
-    return getImage( columnIndex, true );
+    if( !parent.checkData( this, this.index ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
+    Image result = null;
+    if( hasData( index ) ) {
+      result = data[ index ].image;
+    }
+    return result;
   }
 
   /**
@@ -1134,19 +1153,6 @@ public class TreeItem extends Item {
       result.y = getItemTop();
     } else {
       result = new Rectangle( 0, 0, 0, 0 );
-    }
-    return result;
-  }
-
-  Image getImage( int index, boolean checkData ) {
-    // TODO Why is this line commented?
-    // if( checkData ) parent.checkData( this, this.index );
-    if( checkData ) {
-      materialize();
-    }
-    Image result = null;
-    if( hasData( index ) ) {
-      result = data[ index ].image;
     }
     return result;
   }
@@ -1415,13 +1421,9 @@ public class TreeItem extends Item {
    *              </ul>
    */
   public int getItemCount() {
-    return getItemCount( true );
-  }
-
-  int getItemCount( boolean checkData ) {
     checkWidget();
-    if( checkData ) {
-      materialize();
+    if( !parent.checkData( this, index ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
     }
     return itemCount;
   }
@@ -1488,7 +1490,7 @@ public class TreeItem extends Item {
    */
   public void setItemCount( int count ) {
     checkWidget();
-    int oldItemCount = this.getItemCount( false );
+    int oldItemCount = itemCount;
     int newItemCount = Math.max( 0, count );
     if( newItemCount != oldItemCount ) {
 //      TreeItem[] items = this.getItems();
@@ -1576,12 +1578,6 @@ public class TreeItem extends Item {
       }
     }
     return innerHeight;
-  }
-
-  private void materialize() {
-    if( !isCached() ) {
-      parent.checkData( this, this.index );
-    }
   }
 
   void markCached() {
