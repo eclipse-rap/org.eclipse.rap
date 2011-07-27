@@ -280,7 +280,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
         constructor : this._getDummyContructor()
       } );
       var properties = {
-        style : [ "BORDER", "FLAT" ],
+        style : [ "BORDER", "FLAT" ]
       };
       var operation = {
         type : "dummyType",
