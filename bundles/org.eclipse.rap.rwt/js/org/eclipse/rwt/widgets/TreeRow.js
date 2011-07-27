@@ -50,7 +50,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
           this._renderIndention( item, config, hoverElement );
         }
         this._renderCheckBox( item, config, hoverElement );
-        this._renderCells( item, config, renderSelected );
+        this._renderCells( item, config, renderSelected, hoverElement );
       } else {
         this.setBackgroundColor( null );
       }

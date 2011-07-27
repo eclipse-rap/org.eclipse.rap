@@ -1501,6 +1501,43 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
 
+    testSelectionWithItemForeground : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree();
+      tree.setItemMetrics( 1, 50, 40, 50, 12, 65, 12 );
+      tree.setColumnCount( 2 );
+      testUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          var result = {
+            "itemBackground" : null,
+            "checkBox" : null
+          };
+          if( states.selected ) {
+            result.itemForeground = "white";
+          } else {
+            result.itemForeground = "black";
+          }
+          return result;
+        }
+      } );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      row.setAppearance( "tree-row" );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test1", "Test2" ] );
+      item.setCellForegrounds( [ "red", "red" ] );
+      row.renderItem( item, tree._config, false, null );
+      nodes = row._getTargetNode().childNodes;
+      assertEquals( 3, nodes.length );
+      assertEquals( "red", nodes[ 1 ].style.color );
+      assertEquals( "red", nodes[ 2 ].style.color );
+      row.renderItem( item, tree._config, true, null );
+      assertEquals( "white", nodes[ 1 ].style.color );
+      assertEquals( "red", nodes[ 2 ].style.color );
+      tree.destroy();
+      row.destroy();
+    },
+
     testSelectionForegroundThemingFullSelection : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createTree( false, false, "fullSelection" );
@@ -1530,6 +1567,43 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       assertEquals( 3, nodes.length );
       assertEquals( "black", nodes[ 1 ].style.color );
       assertEquals( "black", nodes[ 2 ].style.color );
+      row.renderItem( item, tree._config, true, null );
+      assertEquals( "white", nodes[ 1 ].style.color );
+      assertEquals( "white", nodes[ 2 ].style.color );
+      tree.destroy();
+      row.destroy();
+    },
+
+    tesFullSelecitonWithItemForeground : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree( false, false, "fullSelection" );
+      tree.setItemMetrics( 1, 50, 40, 50, 12, 65, 12 );
+      tree.setColumnCount( 2 );
+      testUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          var result = {
+            "itemBackground" : null,
+            "checkBox" : null
+          };
+          if( states.selected ) {
+            result.itemForeground = "white";
+          } else {
+            result.itemForeground = "black";
+          }
+          return result;
+        }
+      } );
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      row.setAppearance( "tree-row" );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test1", "Test2" ] );
+      item.setCellForegrounds( [ "red", "red" ] );
+      row.renderItem( item, tree._config, false, null );
+      var nodes = row._getTargetNode().childNodes;
+      assertEquals( 3, nodes.length );
+      assertEquals( "red", nodes[ 1 ].style.color );
+      assertEquals( "red", nodes[ 2 ].style.color );
       row.renderItem( item, tree._config, true, null );
       assertEquals( "white", nodes[ 1 ].style.color );
       assertEquals( "white", nodes[ 2 ].style.color );
