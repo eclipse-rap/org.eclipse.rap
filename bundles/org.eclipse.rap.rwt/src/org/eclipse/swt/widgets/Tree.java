@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
-import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
@@ -384,21 +383,24 @@ public class Tree extends Composite {
     int oldItemCount = itemCount;
     int newItemCount = Math.max( 0, count );
     if( newItemCount != oldItemCount ) {
-      int index = oldItemCount - 1;
-      while( index >= newItemCount ) {
-        TreeItem item = items[ index ];
+      int deleteIndex = oldItemCount - 1;
+      while( deleteIndex >= newItemCount ) {
+        TreeItem item = items[ deleteIndex ];
         if( item != null && !item.isDisposed() ) {
           item.dispose();
+        } else {
+          destroyItem( null, deleteIndex );
         }
-        index--;
+        deleteIndex--;
       }
       int length = Math.max( 4, ( newItemCount + 3 ) / 4 * 4 );
       TreeItem[] newItems = new TreeItem[ length ];
       System.arraycopy( items, 0, newItems, 0, Math.min( newItemCount, itemCount ) );
       items = newItems;
-      // TODO [rst]: surround by if( !parent.isVirtual() ) { ...
-      for( int i = oldItemCount; i < newItemCount; i++ ) {
-        new TreeItem( this, SWT.NONE, i );
+      if( !isVirtual() ) {
+        for( int i = itemCount; i < newItemCount; i++ ) {
+          items[ i ] = new TreeItem( this, SWT.NONE, i );
+        }
       }
       itemCount = newItemCount;
       updateScrollBars();
@@ -2078,34 +2080,24 @@ public class Tree extends Composite {
 
   void checkAllData() {
     // TODO [tb] : call only in doRedrawFake?
-    ProcessActionRunner.add( new Runnable() {
-      public void run() {
-        WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
-          int flatIndex = 0;
-          public boolean doVisit( Widget widget ) {
-            boolean result = true;
-            if( widget instanceof TreeItem ) { // ignore tree
-              TreeItem item = ( TreeItem )widget;
-              result = item.getExpanded();
-              int index;
-              TreeItem parentItem = item.getParentItem();
-              if( parentItem != null ) {
-                index = parentItem.indexOf( item );
-              } else {
-                index = Tree.this.indexOf( item );
-              }
-              item.flatIndex = flatIndex;
-              flatIndex++;
-              if( !item.isCached() && Tree.this.isItemVisible( item ) ) {
-                Tree.this.checkData( item, index );
-              }
-            }
-            return result;
-          }
-        };
-        WidgetTreeVisitor.accept( Tree.this, visitor );
+    updateFlatIndices();
+    for( int i = 0; i < itemCount; i++ ) {
+      checkDataRecursively( items[ i ], i );
+    }
+  }
+  
+  private void checkDataRecursively( TreeItem item, int index ) {
+    if( isItemVisible( item ) ) {
+      checkData( item, index );
+      if( item.getExpanded() ) {
+        int itemCount = item.getItemCount();
+        for( int i = 0; i < itemCount; i++ ) {
+          // TODO this could materialize items
+          TreeItem subItem = item.getItem( i );
+          checkDataRecursively( subItem, i );
+        }
       }
-    } );
+    }
   }
 
   private boolean isItemVisible( TreeItem item ) {

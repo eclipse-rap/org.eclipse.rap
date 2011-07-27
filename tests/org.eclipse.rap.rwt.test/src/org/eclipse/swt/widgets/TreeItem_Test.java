@@ -244,7 +244,7 @@ public class TreeItem_Test extends TestCase {
 
   public void testSetTextOnCell() {
     Tree tree = new Tree( shell, SWT.CHECK );
-    TreeItem treeItem = new TreeItem( tree, 0 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
 
     treeItem.setText( 0, "foo" );
 
@@ -253,7 +253,7 @@ public class TreeItem_Test extends TestCase {
 
   public void testSetText() {
     Tree tree = new Tree( shell, SWT.CHECK );
-    TreeItem treeItem = new TreeItem( tree, 0 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     String testString = "test";
     String testStrings[] = new String[]{ testString, testString + "1", testString + "2" };
     /*
@@ -273,7 +273,7 @@ public class TreeItem_Test extends TestCase {
      * test item texts.
      */
     tree = new Tree( shell, SWT.CHECK );
-    treeItem = new TreeItem( tree, 0 );
+    treeItem = new TreeItem( tree, SWT.NONE );
     // tree.setText(TestStrings); // create anough columns for
     // TreeItem.setText(String[]) to work
     int columnCount = tree.getColumnCount();
@@ -310,7 +310,7 @@ public class TreeItem_Test extends TestCase {
 
   public void testSetImage() {
     Tree tree = new Tree( shell, SWT.CHECK );
-    TreeItem treeItem = new TreeItem( tree, 0 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Image[] images = new Image[]{
       Graphics.getImage( Fixture.IMAGE1 ),
       Graphics.getImage( Fixture.IMAGE2 ),
@@ -377,7 +377,7 @@ public class TreeItem_Test extends TestCase {
 
   public void testSetImageI() {
     Tree tree = new Tree( shell, SWT.CHECK );
-    TreeItem treeItem = new TreeItem( tree, 0 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Image[] images = new Image[]{
       Graphics.getImage( Fixture.IMAGE1 ),
       Graphics.getImage( Fixture.IMAGE2 ),
@@ -428,7 +428,7 @@ public class TreeItem_Test extends TestCase {
 
   public void testSetForeground() {
     Tree tree = new Tree( shell, SWT.CHECK );
-    TreeItem treeItem = new TreeItem( tree, 0 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Color color = display.getSystemColor( SWT.COLOR_RED );
     treeItem.setForeground( color );
     assertEquals( color, treeItem.getForeground() );
@@ -446,7 +446,7 @@ public class TreeItem_Test extends TestCase {
 
   public void testSetBackground() {
     Tree tree = new Tree( shell, SWT.CHECK );
-    TreeItem treeItem = new TreeItem( tree, 0 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Color color = display.getSystemColor( SWT.COLOR_RED );
     treeItem.setBackground( color );
     assertEquals( color, treeItem.getBackground() );
@@ -465,7 +465,7 @@ public class TreeItem_Test extends TestCase {
 
   public void testSetForegroundI() {
     Tree tree = new Tree( shell, SWT.NONE );
-    TreeItem treeItem = new TreeItem( tree, 0 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Color red = display.getSystemColor( SWT.COLOR_RED );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
     // no columns
@@ -505,7 +505,7 @@ public class TreeItem_Test extends TestCase {
 
   public void testSetFontI() {
     Tree tree = new Tree( shell, SWT.NONE );
-    TreeItem treeItem = new TreeItem( tree, 0 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Font font = Graphics.getFont( "Helvetica", 10, SWT.NORMAL );
     // no columns
     assertTrue( tree.getFont().equals( treeItem.getFont( 0 ) ) );
@@ -568,7 +568,7 @@ public class TreeItem_Test extends TestCase {
 
   public void testSetBackgroundI() {
     Tree tree = new Tree( shell, SWT.NONE );
-    TreeItem treeItem = new TreeItem( tree, 0 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Color red = display.getSystemColor( SWT.COLOR_RED );
     Color blue = display.getSystemColor( SWT.COLOR_BLUE );
     // no columns
@@ -608,21 +608,20 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetBoundsEmptyItem() {
-    final Rectangle NULL_RECT = new Rectangle( 0, 0, 0, 0 );
     Tree tree = new Tree( shell, SWT.NONE );
     tree.setSize( 200, 200 );
-    TreeItem treeItem = new TreeItem( tree, 0 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     TreeItem subItem = new TreeItem( treeItem, 0 );
-    assertEquals( NULL_RECT, subItem.getBounds() );
+    assertEquals( new Rectangle( 0, 0, 0, 0 ), subItem.getBounds() );
     treeItem.setText( "foo" );
     assertTrue( treeItem.getBounds().height > 0 );
     assertTrue( treeItem.getBounds().width > 0 );
   }
 
   public void testGetBoundsForInvalidColumns() {
-    Tree tree = new Tree( shell, 0 );
+    Tree tree = new Tree( shell, SWT.NONE );
     tree.setSize( 200, 200 );
-    TreeItem treeItem = new TreeItem( tree, 0 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Rectangle bounds = treeItem.getBounds( 0 );
     assertTrue( bounds.x > 0 && bounds.height > 0 );
     bounds = treeItem.getBounds( -1 );
@@ -632,9 +631,9 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetBoundsCollapsedSubItem() {
-    Tree tree = new Tree( shell, 0 );
+    Tree tree = new Tree( shell, SWT.NONE );
     tree.setSize( 200, 200 );
-    TreeItem treeItem = new TreeItem( tree, 0 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     TreeItem subItem = new TreeItem( treeItem, SWT.NONE );
     Rectangle bounds = subItem.getBounds( 0 );
     assertTrue( bounds.equals( new Rectangle( 0, 0, 0, 0 ) ) );
@@ -647,27 +646,27 @@ public class TreeItem_Test extends TestCase {
   }
 
   public void testGetBoundsExpandedSubItem() {
-    String string = "hello";
-    Tree tree = new Tree( shell, 0 );
+    Tree tree = new Tree( shell, SWT.NONE );
     tree.setSize( 200, 200 );
-    TreeItem treeItem = new TreeItem( tree, 0 );
-    Point stringExtent = Graphics.stringExtent( treeItem.getFont(), string );
-    TreeItem subItem = new TreeItem( treeItem, SWT.NONE );
-    treeItem.setExpanded( true );
-    subItem.setText( string );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    TreeItem subItem = new TreeItem( item, SWT.NONE );
+    item.setExpanded( true );
+    subItem.setText( "hello" );
+    
     Rectangle subItemBounds = subItem.getBounds( 0 );
-    Rectangle itemBounds = treeItem.getBounds( 0 );
+    Rectangle itemBounds = item.getBounds( 0 );
     assertTrue( subItemBounds.x > itemBounds.x );
     assertTrue( subItemBounds.y >= itemBounds.y + itemBounds.height );
+    Point stringExtent = Graphics.stringExtent( item.getFont(), "hello" );
     assertTrue( subItemBounds.height > stringExtent.y );
     assertTrue( subItemBounds.width > stringExtent.x );
   }
 
   public void testGetBoundsWithText() {
     String string = "hello";
-    Tree tree = new Tree( shell, 0 );
+    Tree tree = new Tree( shell, SWT.NONE );
     tree.setSize( 200, 200 );
-    TreeItem treeItem = new TreeItem( tree, 0 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Point stringExtent = Graphics.stringExtent( treeItem.getFont(), string );
     treeItem.setText( string );
     Rectangle withTextBounds = treeItem.getBounds( 0 );
@@ -683,9 +682,9 @@ public class TreeItem_Test extends TestCase {
   public void testGetBoundsWithImage() {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     Rectangle imageBounds = image.getBounds();
-    Tree tree = new Tree( shell, 0 );
+    Tree tree = new Tree( shell, SWT.NONE );
     tree.setSize( 200, 200 );
-    TreeItem treeItem = new TreeItem( tree, 0 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     treeItem.setImage( image );
     Rectangle boundsWithImage = treeItem.getBounds( 0 );
     treeItem.setImage( ( Image )null );
@@ -700,9 +699,9 @@ public class TreeItem_Test extends TestCase {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     Rectangle imageBounds = image.getBounds();
     String string = "hello";
-    Tree tree = new Tree( shell, 0 );
+    Tree tree = new Tree( shell, SWT.NONE );
     tree.setSize( 200, 200 );
-    TreeItem treeItem = new TreeItem( tree, 0 );
+    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Point stringExtent = Graphics.stringExtent( treeItem.getFont(), string );
     treeItem.setText( string );
     Rectangle boundsTextOnly = treeItem.getBounds( 0 );
@@ -717,16 +716,30 @@ public class TreeItem_Test extends TestCase {
 
   public void testGetBoundsSubsequentRootItems() {
     Tree tree = new Tree( shell, SWT.NONE );
-    TreeItem rootItem = new TreeItem( tree, 0 );
+    TreeItem rootItem = new TreeItem( tree, SWT.NONE );
     TreeItem subItem = new TreeItem( rootItem, 0 );
-    TreeItem rootItem2 = new TreeItem( tree, 0 );
-    Rectangle b1 = rootItem.getBounds();
-    Rectangle b2 = rootItem2.getBounds();
-    assertTrue( b2.y > b1.y );
+    TreeItem rootItem2 = new TreeItem( tree, SWT.NONE );
+    Rectangle bounds1 = rootItem.getBounds();
+    Rectangle bounds2 = rootItem2.getBounds();
+    assertTrue( bounds2.y >= bounds1.y + bounds1.height );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), subItem.getBounds() );
     rootItem.setExpanded( true );
+    
     assertTrue( subItem.getBounds().y >= rootItem.getBounds().y + rootItem.getBounds().height );
     assertTrue( rootItem2.getBounds().y >= subItem.getBounds().y + subItem.getBounds().height );
+  }
+
+  public void testGetBoundsSubsequentRootItems2() {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    new TreeItem( item1, 0 );
+    TreeItem item2 = new TreeItem( tree, SWT.NONE );
+    Rectangle before = item2.getBounds();
+
+    item1.setExpanded( true );
+
+    Rectangle after = item2.getBounds();
+    assertTrue( after.y > before.y );
   }
 
   public void testGetBoundsWithColumns() {
@@ -740,9 +753,9 @@ public class TreeItem_Test extends TestCase {
     TreeColumn column3 = new TreeColumn( tree, SWT.NONE );
     column3.setText( "foo" );
     column3.setWidth( 100 );
-    TreeItem rootItem = new TreeItem( tree, 0 );
-    TreeItem rootItem2 = new TreeItem( tree, 0 );
-    TreeItem rootItem3 = new TreeItem( tree, 0 );
+    TreeItem rootItem = new TreeItem( tree, SWT.NONE );
+    TreeItem rootItem2 = new TreeItem( tree, SWT.NONE );
+    TreeItem rootItem3 = new TreeItem( tree, SWT.NONE );
     TreeItem subItem = new TreeItem( rootItem, 0 );
     int rootItemWidth = rootItem.getBounds( 0 ).width;
     assertTrue( rootItemWidth < 100 ); // swt substracts indent
@@ -759,7 +772,7 @@ public class TreeItem_Test extends TestCase {
   public void testGetBoundsWithVisibleHeader() {
     Tree tree = new Tree( shell, SWT.NONE );
     tree.setHeaderVisible( true );
-    TreeItem item = new TreeItem( tree, 0 );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
     Rectangle bounds = item.getBounds();
     assertTrue( bounds.y >= tree.getHeaderHeight() );
   }
@@ -795,7 +808,7 @@ public class TreeItem_Test extends TestCase {
     TreeColumn column3 = new TreeColumn( tree, SWT.NONE );
     column3.setText( "foo" );
     column3.setWidth( 100 );
-    TreeItem rootItem = new TreeItem( tree, 0 );
+    TreeItem rootItem = new TreeItem( tree, SWT.NONE );
     TreeItem subItem = new TreeItem( rootItem, 0 );
     rootItem.setExpanded( true );
     tree.showColumn( column3 );

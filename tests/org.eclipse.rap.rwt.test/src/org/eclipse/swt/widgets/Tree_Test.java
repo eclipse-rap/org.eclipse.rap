@@ -22,8 +22,7 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.widgets.ITreeAdapter;
-import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.*;
 
 
 public class Tree_Test extends TestCase {
@@ -1449,6 +1448,15 @@ public class Tree_Test extends TestCase {
     int width1 = tree.getPreferredCellWidth( item, 0, false );
     int width2 = tree.getPreferredCellWidth( item, 1, false );
     assertTrue( width2 > width1 );
+  }
+
+  public void testVirtualSetItemCountDoesMaterializeItems() {
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
+    tree.setSize( 300, 50 );
+    
+    tree.setItemCount( 1 );
+    
+    assertFalse( tree.getItem( 0 ).isCached() );
   }
 
   /////////
