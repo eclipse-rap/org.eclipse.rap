@@ -53,7 +53,7 @@ public class RwtResourcesServlet extends HttpServlet {
   }
 
   private void writeLoadRwtResources( HttpServletResponse response ) throws IOException {
-    response.setContentType( "application/javascript" );
+    response.setContentType( "text/javascript" );
     PrintWriter writer = response.getWriter();
     writer.write( "( function() {\n" );
     writeIncludeFunction( writer );
@@ -65,7 +65,7 @@ public class RwtResourcesServlet extends HttpServlet {
   private void writeIncludeFunction( PrintWriter writer ) {
     writer.write( "var include = function( src ) {\n" );
     writer.write(   "  document.write( '<script src=\"' + src + '\""
-                  + " type=\"application/javascript\"></script>' );\n" );
+                  + " type=\"text/javascript\"></script>' );\n" );
     writer.write( "};\n" );
   }
 
@@ -118,7 +118,7 @@ public class RwtResourcesServlet extends HttpServlet {
   private static String getContentTypeForResource( String resourceName ) {
     String result = null;
     if( resourceName.endsWith( ".js" ) ) {
-      result = "application/javascript";
+      result = "text/javascript";
     } else if( resourceName.endsWith( ".html" ) ) {
       result = "text/html";
     } else if( resourceName.endsWith( ".gif" ) ) {
