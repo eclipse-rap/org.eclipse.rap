@@ -713,7 +713,7 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public Font getFont () {
+  public Font getFont() {
     checkWidget ();
     if( !parent.checkData( this, parent.indexOf( this ) ) ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
