@@ -1194,6 +1194,21 @@ public class TableItem_Test extends TestCase {
     
     assertEquals( itemText, deserializedItem.getText() );
   }
+  
+  public void testVirtualGetBoundsMaterializeItems() {
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( Event event ) {
+        TableItem item = ( TableItem )event.item;
+        item.setText( "Very long long long long long text" );
+      }      
+    } );
+    table.setItemCount( 5 );
+    
+    Rectangle bounds =  table.getItem( 0 ).getBounds();
+    
+    assertTrue( bounds.width > 100 );
+  }
 
   /////////////////
   // helper methods
@@ -1211,7 +1226,7 @@ public class TableItem_Test extends TestCase {
     return table;
   }
 
-  private ITableAdapter getTableAdapter( Table table ) {
+  private static ITableAdapter getTableAdapter( Table table ) {
     return ( ITableAdapter )table.getAdapter( ITableAdapter.class );
   }
 
