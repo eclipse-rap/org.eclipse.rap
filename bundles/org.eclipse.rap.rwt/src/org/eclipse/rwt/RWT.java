@@ -275,13 +275,13 @@ public final class RWT {
   public static IApplicationStore getApplicationStore() {
     return RWTFactory.getApplicationStore();
   }
-  
+
   /**
    * Returns the <code>HttpServletRequest</code> that is currently processed.
    * <p>
    * Typical application code rarely needs to call this method. It is meant mainly for 
    * service handlers obtain parameters of the request to process.
-   * </p> 
+   * </p>
    * @return instance of {@link HttpServletRequest}
    * @see IServiceHandler
    */
@@ -296,7 +296,7 @@ public final class RWT {
    * <p>
    * Typical application code <em>never</em> needs to call this method. It is meant only for 
    * service handlers to be able to write output and control other aspects of the response.
-   * Calling this method from a life cycle request (e.g. in an  SWT event listener) is almost 
+   * Calling this method from a UI request (e.g. in an  SWT event listener) is almost 
    * certainly an error.
    * </p> 
    * @return instance of {@link HttpServletResponse}
