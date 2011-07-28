@@ -154,6 +154,31 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       upload.destroy();       
     },
 
+    testInputLayoutNotVisible : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var upload = this._createFileUpload( true );
+      upload.setVisibility( false );
+      testUtil.flush();
+      upload.setVisibility( true );
+      testUtil.flush();
+      this._checkInputLayout( upload );
+      upload.destroy();       
+    },
+
+    testInputLayoutParentNotVisible : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var upload = this._createFileUpload( true );
+      var parent = new org.eclipse.swt.widgets.Composite();
+      parent.addToDocument();
+      upload.setParent( parent );
+      upload.getParent().setVisibility( false );
+      testUtil.flush();
+      upload.getParent().setVisibility( true );
+      testUtil.flush();
+      this._checkInputLayout( upload );
+      upload.destroy();       
+    },
+
     testCursor : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var upload = this._createFileUpload( true );
