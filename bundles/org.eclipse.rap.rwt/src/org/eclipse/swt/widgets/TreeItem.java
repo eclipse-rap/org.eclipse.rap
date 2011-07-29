@@ -1485,7 +1485,6 @@ public class TreeItem extends Item {
       }
     }
     setEmpty();
-    // TODO what happens when the selected item is removed?
   }
 
   /**

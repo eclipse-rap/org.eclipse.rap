@@ -1920,6 +1920,17 @@ public class TreeItem_Test extends TestCase {
     assertTrue( item.getCreatedItems().length < 10 );
   }
 
+  public void testUpdateSelectionOnRemoveAll() {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    TreeItem subItem = new TreeItem( item, SWT.NONE );
+    tree.setSelection( subItem );
+
+    item.removeAll();
+
+    assertEquals( 0, tree.getSelectionCount() );
+  }
+
   //////////////////
   // Helping methods
 
