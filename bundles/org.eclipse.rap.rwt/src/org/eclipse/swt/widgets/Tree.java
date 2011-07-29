@@ -359,9 +359,10 @@ public class Tree extends Composite {
 
   public void setFont( Font font ) {
     super.setFont( font );
-    TreeItem[] items = getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      items[ i ].clearPreferredWidthBuffers();
+    for( int i = 0; i < itemCount; i++ ) {
+      if( items[ i ] != null ) {
+        items[ i ].clearPreferredWidthBuffers();
+      }
     }
     updateScrollBars();
   }
@@ -540,10 +541,14 @@ public class Tree extends Composite {
    */
   public void removeAll() {
     checkWidget();
-    TreeItem[] items = getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      items[ i ].dispose();
+    for( int i = itemCount - 1; i >= 0; i-- ) {
+      if( items[ i ] != null ) {
+        items[ i ].dispose();
+      } else {
+        itemCount--;
+      }
     }
+    setTreeEmpty();
     selection = EMPTY_SELECTION;
   }
 
@@ -656,7 +661,7 @@ public class Tree extends Composite {
   public TreeItem getTopItem() {
     checkWidget();
     TreeItem result = null;
-    if( getItemCount() > 0 ) {
+    if( itemCount > 0 ) {
       List visibleItems = collectVisibleItems( null );
       result = ( TreeItem )visibleItems.get( topItemIndex );
     }
@@ -1127,18 +1132,18 @@ public class Tree extends Composite {
     return result;
   }
 
-  private List<TreeItem> collectVisibleItems( TreeItem parent ) {
+  private List<TreeItem> collectVisibleItems( TreeItem parentItem ) {
     List<TreeItem> result = new ArrayList<TreeItem>();
     TreeItem[] children;
-    if( parent == null ) {
-      children = getItems();
+    if( parentItem == null ) {
+      children = Arrays.copyOf( items, itemCount );
     } else {
-      children = parent.getItems();
+      children = Arrays.copyOf( parentItem.items, parentItem.itemCount );
     }
     for( int i = 0; i < children.length; i++ ) {
       TreeItem item = children[ i ];
       result.add( item );
-      if( item.getExpanded() ) {
+      if( item != null && item.getExpanded() ) {
         result.addAll( collectVisibleItems( item ) );
       }
     }
@@ -1766,9 +1771,10 @@ public class Tree extends Composite {
   }
 
   void releaseChildren() {
-    TreeItem[] items = getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      items[ i ].dispose();
+    for( int i = items.length - 1; i >= 0; i-- ) {
+      if( items[ i ] != null ) {
+        items[ i ].dispose();
+      }
     }
     TreeColumn[] cols = columnHolder.getItems();
     for( int c = 0; c < cols.length; c++ ) {
@@ -1808,21 +1814,21 @@ public class Tree extends Composite {
         width += getColumn( i ).getWidth();
       }
     } else {
-      for( int i = 0; i < getItemCount(); i++ ) {
+      for( int i = 0; i < itemCount; i++ ) {
         TreeItem item = getItem( i );
         if( item.isCached() ) {
           int itemWidth = item.getPreferredWidth( 0, false );
           width = Math.max( width, itemWidth );
           if( item.getExpanded() ) {
-            int innerWidth = getMaxInnerWidth( item.getItems(), 1 );
+            int innerWidth = getMaxInnerWidth( item.items, 1 );
             width = Math.max( width, innerWidth );
           }
         }
       }
     }
     height += getHeaderHeight();
-    height += getItemCount() * getItemHeight();
-    for( int i = 0; i < getItemCount(); i++ ) {
+    height += itemCount * getItemHeight();
+    for( int i = 0; i < itemCount; i++ ) {
       TreeItem item = getItem( i );
       if( !item.isInDispose() && item.getExpanded() ) {
         height += item.getInnerHeight();
@@ -1863,7 +1869,7 @@ public class Tree extends Composite {
         int itemWidth = items[ i ].getPreferredWidth( 0, false ) + indention;
         maxInnerWidth = Math.max( maxInnerWidth, itemWidth );
         if( items[ i ].getExpanded() ) {
-          int innerWidth = getMaxInnerWidth( items[ i ].getItems(), level + 1 );
+          int innerWidth = getMaxInnerWidth( items[ i ].items, level + 1 );
           maxInnerWidth = Math.max( maxInnerWidth, innerWidth );
         }
       }
@@ -1877,7 +1883,7 @@ public class Tree extends Composite {
 
   private int getCellWidth( int index ) {
     return   getColumnCount() == 0 && index == 0
-           ? getMaxInnerWidth( getItems(), 1 )
+           ? getMaxInnerWidth( items, 1 )
            : getColumn( index ).getWidth();
   }
 
@@ -2120,24 +2126,29 @@ public class Tree extends Composite {
   // TODO [tb] : alternative: Only index when needed.
   /* package */void updateFlatIndices() {
     int flatIndex = 0;
-    TreeItem[] uItems = getItems();
-    for( int i = 0; i < uItems.length; i++ ) {
-      TreeItem treeItem = uItems[ i ];
-      treeItem.flatIndex = flatIndex;
+    for( int i = 0; i < itemCount; i++ ) {
+      if( items[ i ] != null ) {
+        items[ i ].flatIndex = flatIndex;
+      }
       flatIndex++;
-      flatIndex = updateFlatIndicesSub( treeItem, flatIndex );
+      if( items[ i ] != null ) {
+        flatIndex = updateFlatIndicesSub( items[ i ], flatIndex );
+      }
     }
   }
 
   private int updateFlatIndicesSub( TreeItem item, int flatIndex ) {
     int newFlatIndex = flatIndex;
     if( item.getExpanded() ) {
-      TreeItem[] subItems = item.getItems();
-      for( int i = 0; i < subItems.length; i++ ) {
-        TreeItem subItem = subItems[ i ];
-        subItem.flatIndex = newFlatIndex;
+      for( int i = 0; i < item.itemCount; i++ ) {
+        TreeItem subItem = item.items[ i ];
+        if( subItem != null ) {
+          subItem.flatIndex = newFlatIndex;
+        }
         newFlatIndex++;
-        newFlatIndex = updateFlatIndicesSub( subItem, newFlatIndex );
+        if( subItem != null ) {
+          newFlatIndex = updateFlatIndicesSub( subItem, newFlatIndex );
+        }
       }
     }
     return newFlatIndex;
@@ -2262,10 +2273,10 @@ public class Tree extends Composite {
   boolean needsVScrollBar() {
     int availableHeight = getClientArea().height;
     int height = getHeaderHeight();
-    height += getItemCount() * getItemHeight();
-    for( int i = 0; i < getItemCount(); i++ ) {
+    height += itemCount * getItemHeight();
+    for( int i = 0; i < itemCount; i++ ) {
       TreeItem item = getItem( i );
-      if( item.getExpanded() ) {
+      if( item != null && item.getExpanded() ) {
         height += item.getInnerHeight();
       }
     }
@@ -2285,13 +2296,13 @@ public class Tree extends Composite {
       result = totalWidth > availableWidth;
     } else {
       int maxWidth = 0;
-      for( int i = 0; i < getItemCount(); i++ ) {
+      for( int i = 0; i < itemCount; i++ ) {
         TreeItem item = getItem( i );
         if( item != null && !item.isInDispose() && item.isCached() ) {
           int itemWidth = item.getPreferredWidth( 0, false );
           maxWidth = Math.max( maxWidth, itemWidth );
           if( item.getExpanded() ) {
-            int innerWidth = getMaxInnerWidth( item.getItems(), 1 );
+            int innerWidth = getMaxInnerWidth( item.items, 1 );
             maxWidth = Math.max( maxWidth, innerWidth );
           }
         }
@@ -2318,13 +2329,9 @@ public class Tree extends Composite {
   // Skinning support
 
   void reskinChildren( int flags ) {
-    TreeItem[] items = getItems();
-    if( items != null ) {
-      for( int i = 0; i < items.length; i++ ) {
-        TreeItem item = items[ i ];
-        if( item != null ) {
-          item.reskinChildren( flags );
-        }
+    for( int i = 0; i < itemCount; i++ ) {
+      if( items[ i ] != null ) {
+        items[ i ].reskinChildren( flags );
       }
     }
     TreeColumn[] columns = getColumns();

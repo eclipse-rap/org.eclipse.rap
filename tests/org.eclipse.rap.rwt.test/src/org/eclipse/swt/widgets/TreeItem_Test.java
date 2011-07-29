@@ -87,12 +87,29 @@ public class TreeItem_Test extends TestCase {
     TreeItem item11 = new TreeItem( item1, SWT.NONE );
     TreeItem item111 = new TreeItem( item11, SWT.NONE );
     TreeItem item2 = new TreeItem( tree, SWT.NONE );
+
     item1.removeAll();
+
     assertEquals( false, item1.isDisposed() );
     assertEquals( true, item11.isDisposed() );
     assertEquals( true, item111.isDisposed() );
     assertEquals( 0, item1.getItemCount() );
     assertEquals( false, item2.isDisposed() );
+  }
+
+
+  public void testVirtualRemoveAll() {
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setItemCount( 1 );
+    TreeItem item = tree.getItem( 0 );
+    item.setItemCount( 100 );
+    TreeItem lastSubItem = item.getItem( 99 );
+
+    assertFalse( lastSubItem.isDisposed() );
+
+    item.removeAll();
+
+    assertTrue( lastSubItem.isDisposed() );
   }
 
   public void testFont() {

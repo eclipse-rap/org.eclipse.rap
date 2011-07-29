@@ -126,7 +126,7 @@ public class TreeItem extends Item {
 
   private final TreeItem parentItem;
   final Tree parent;
-  private TreeItem[] items;
+  TreeItem[] items;
   int itemCount;
   private transient ITreeItemAdapter treeItemAdapter;
   int index;
@@ -428,7 +428,7 @@ public class TreeItem extends Item {
   public void setExpanded( boolean expanded ) {
     checkWidget();
     markCached();
-    if( !expanded || getItemCount() > 0 ) {
+    if( !expanded || itemCount > 0 ) {
       this.expanded = expanded;
       parent.updateFlatIndices();
       parent.updateScrollBars();
@@ -1570,8 +1570,8 @@ public class TreeItem extends Item {
   }
 
   int getInnerHeight() {
-    int innerHeight = getItemCount() * parent.getItemHeight();
-    for( int i = 0; i < getItemCount(); i++ ) {
+    int innerHeight = itemCount * parent.getItemHeight();
+    for( int i = 0; i < itemCount; i++ ) {
       TreeItem item = getItem( i );
       if( item.getExpanded() ) {
         innerHeight += item.getInnerHeight();

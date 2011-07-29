@@ -505,26 +505,41 @@ public class Tree_Test extends TestCase {
     assertTrue( contains( tree.getSelection(), item2 ) );
   }
 
-  public void testRemoveAll() {
+  public void testRemoveAllOnEmptyTree() {
     Tree tree = new Tree( composite, SWT.MULTI );
 
-    // Test removeAll on empty tree
     tree.removeAll();
-    assertEquals( 0, tree.getItemCount() );
-    assertEquals( 0, tree.getSelection().length );
 
-    // Test removeAll on populated tree
-    new TreeItem( tree, SWT.NONE );
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    TreeItem subTreeItem = new TreeItem( treeItem, SWT.NONE );
-    tree.setSelection( treeItem );
-    tree.removeAll();
     assertEquals( 0, tree.getItemCount() );
     assertEquals( 0, tree.getSelection().length );
-    assertEquals( true, treeItem.isDisposed() );
-    assertEquals( true, subTreeItem.isDisposed() );
   }
 
+  public void testRemoveAll() {
+    Tree tree = new Tree( composite, SWT.MULTI );
+    new TreeItem( tree, SWT.NONE );
+    TreeItem item2 = new TreeItem( tree, SWT.NONE );
+    TreeItem item2_1 = new TreeItem( item2, SWT.NONE );
+    tree.setSelection( item2 );
+
+    tree.removeAll();
+
+    assertEquals( 0, tree.getItemCount() );
+    assertEquals( 0, tree.getSelection().length );
+    assertTrue( item2.isDisposed() );
+    assertTrue( item2_1.isDisposed() );
+  }
+
+  public void testVirtualRemoveAll() {
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
+    tree.setItemCount( 100 );
+    TreeItem item = tree.getItem( 99 );
+    assertFalse( item.isDisposed() );
+
+    tree.removeAll();
+
+    assertTrue( item.isDisposed() );
+  }
+  
   public void testInitialGetTopItemIndex() {
     Tree tree = new Tree( composite, SWT.NONE );
     ITreeAdapter adapter = getTreeAdapter( tree );
@@ -1316,9 +1331,11 @@ public class Tree_Test extends TestCase {
     int counter = 0;
     for( int i = 0; i < 10; i++ ) {
       TreeItem item = new TreeItem( tree, SWT.NONE );
+      item.setText( "item" + i );
       items[ counter++ ] = item;
       for( int j = 0; j < 5; j++ ) {
         TreeItem subitem = new TreeItem( item, SWT.NONE );
+        subitem.setText( "subitem" + i + ", " + j );
         items[ counter++ ] = subitem;
       }
     }
@@ -1338,6 +1355,29 @@ public class Tree_Test extends TestCase {
     tree.setTopItem( items[ 58 ] );
     assertEquals( items[ 56 ], tree.getTopItem() );
     assertTrue( items[ 54 ].getExpanded() );
+  }
+
+  public void testSetTopItemTwice() {
+    Tree tree = new Tree( composite, SWT.NONE );
+    tree.setSize( 300, 85 );
+    TreeItem[] items = new TreeItem[ 60 ];
+    int counter = 0;
+    for( int i = 0; i < 10; i++ ) {
+      TreeItem item = new TreeItem( tree, SWT.NONE );
+      item.setText( "item" + i );
+      items[ counter++ ] = item;
+      for( int j = 0; j < 5; j++ ) {
+        TreeItem subitem = new TreeItem( item, SWT.NONE );
+        subitem.setText( "subitem" + i + ", " + j );
+        items[ counter++ ] = subitem;
+      }
+    }
+
+    tree.setTopItem( items[ 4 ] );
+    tree.setTopItem( items[ 20 ] );
+
+    assertEquals( items[ 20 ], tree.getTopItem() );
+    assertTrue( items[ 18 ].getExpanded() );
   }
 
   public void testScrollBars() {
