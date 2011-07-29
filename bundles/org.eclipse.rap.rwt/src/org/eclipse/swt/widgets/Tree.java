@@ -1142,9 +1142,11 @@ public class Tree extends Composite {
     List<TreeItem> result = new ArrayList<TreeItem>();
     TreeItem[] children;
     if( parentItem == null ) {
-      children = Arrays.copyOf( items, itemCount );
+      children = new TreeItem[ itemCount ];
+      System.arraycopy( items, 0, children, 0, itemCount );
     } else {
-      children = Arrays.copyOf( parentItem.items, parentItem.itemCount );
+      children = new TreeItem[ parentItem.itemCount ];
+      System.arraycopy( parentItem.items, 0, children, 0, parentItem.itemCount );
     }
     for( int i = 0; i < children.length; i++ ) {
       TreeItem item = children[ i ];
