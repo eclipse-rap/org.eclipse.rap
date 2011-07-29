@@ -31,16 +31,15 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     = "qx.core.Init.getInstance().getApplication().reload( \"{0}\" )";
   static final String SESSION_INITIALIZED
     = LifeCycleServiceHandler.class.getName() + "#isSessionInitialized";
-  
+
   private final LifeCycleFactory lifeCycleFactory;
   private final StartupPage startupPage;
-  
 
   public LifeCycleServiceHandler( LifeCycleFactory lifeCycleFactory, StartupPage startupPage ) {
     this.lifeCycleFactory = lifeCycleFactory;
     this.startupPage = startupPage;
   }
-  
+
   public void service() throws IOException {
     synchronized( ContextProvider.getSession() ) {
       synchronizedService();
@@ -48,7 +47,6 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   }
 
   void synchronizedService() throws IOException {
-    initializeStateInfo();
     initializeJavaScriptResponseWriter();
     if(    RWTRequestVersionControl.getInstance().isValid()
         || isSessionRestart()
@@ -96,14 +94,6 @@ public class LifeCycleServiceHandler implements IServiceHandler {
            || startup && isSessionInitialized();
   }
 
-  private static void initializeStateInfo() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    if( stateInfo == null ) {
-      stateInfo = new ServiceStateInfo();
-      ContextProvider.getContext().setStateInfo( stateInfo );
-    }
-  }
-
   private static void initializeJavaScriptResponseWriter() throws IOException {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     if( stateInfo.getResponseWriter() == null ) {
@@ -111,7 +101,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
       stateInfo.setResponseWriter( new JavaScriptResponseWriter( response ) );
     }
   }
-  
+
   private static void finishJavaScriptResponseWriter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();

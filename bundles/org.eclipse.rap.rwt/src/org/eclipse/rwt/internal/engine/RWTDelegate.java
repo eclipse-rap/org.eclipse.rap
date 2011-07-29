@@ -13,13 +13,12 @@
 package org.eclipse.rwt.internal.engine;
 
 import java.io.IOException;
-import java.util.Enumeration;
+import java.util.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.ServiceContext;
+import org.eclipse.rwt.internal.service.*;
 
 
 public class RWTDelegate extends HttpServlet {
@@ -27,35 +26,52 @@ public class RWTDelegate extends HttpServlet {
   ////////////////////
   // Servlet overrides
 
+  @Override
   public void doGet( HttpServletRequest request, HttpServletResponse response )
     throws ServletException, IOException
   {
     doPost( request, response );
   }
 
+  @Override
   public void doPost( HttpServletRequest request, HttpServletResponse response )
     throws ServletException, IOException
   {
     if( request.getPathInfo() == null ) {
-      ServiceContext context = new ServiceContext( request, response );
-      ContextProvider.setContext( context );
-      try {
-        createSessionStore();
-        RWTFactory.getServiceManager().getHandler().service();
-      } finally {
-        ContextProvider.disposeContext();
-      }
+      handleValidRequest( request, response );
     } else {
       handleInvalidRequest( request, response );
     }
   }
 
+  @Override
   public String getServletInfo() {
     return "RWT Servlet";
   }
 
   //////////////////
   // Helping methods
+
+  private void handleValidRequest( HttpServletRequest request, HttpServletResponse response )
+    throws IOException, ServletException
+  {
+    ServiceContext context = createStateInfo( request, response );
+    ContextProvider.setContext( context );
+    try {
+      createSessionStore();
+      RWTFactory.getServiceManager().getHandler().service();
+    } finally {
+      ContextProvider.disposeContext();
+    }
+  }
+
+  private static ServiceContext createStateInfo( HttpServletRequest request,
+                                                 HttpServletResponse response )
+  {
+    ServiceContext context = new ServiceContext( request, response );
+    context.setStateInfo( new ServiceStateInfo() );
+    return context;
+  }
 
   private void createSessionStore() {
     // Ensure that there is exactly one ISessionStore per session created
