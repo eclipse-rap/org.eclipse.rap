@@ -27,7 +27,7 @@ public class ServiceManager_Test extends TestCase {
   private IServiceHandler lifeCycleServiceHandler;
   private ServiceManager serviceManager;
   
-  public void testRegsiterServiceHandler() throws Exception {
+  public void testRegisterServiceHandler() throws Exception {
     IServiceHandler serviceHandler = mock( IServiceHandler.class );
     serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, serviceHandler );
 
@@ -37,7 +37,7 @@ public class ServiceManager_Test extends TestCase {
     verify( serviceHandler ).service();
   }
 
-  public void testRegsiterServiceHandlerTwice() throws Exception {
+  public void testRegisterServiceHandlerTwice() throws Exception {
     IServiceHandler firstHandler = mock( IServiceHandler.class );
     serviceManager.registerServiceHandler( SERVICE_HANDLER_ID, firstHandler );
     IServiceHandler secondHandler = mock( IServiceHandler.class );
