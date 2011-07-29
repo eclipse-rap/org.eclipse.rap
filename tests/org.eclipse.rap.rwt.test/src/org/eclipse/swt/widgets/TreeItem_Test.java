@@ -669,7 +669,7 @@ public class TreeItem_Test extends TestCase {
     TreeItem subItem = new TreeItem( item, SWT.NONE );
     item.setExpanded( true );
     subItem.setText( "hello" );
-    
+
     Rectangle subItemBounds = subItem.getBounds( 0 );
     Rectangle itemBounds = item.getBounds( 0 );
     assertTrue( subItemBounds.x > itemBounds.x );
@@ -741,7 +741,7 @@ public class TreeItem_Test extends TestCase {
     assertTrue( bounds2.y >= bounds1.y + bounds1.height );
     assertEquals( new Rectangle( 0, 0, 0, 0 ), subItem.getBounds() );
     rootItem.setExpanded( true );
-    
+
     assertTrue( subItem.getBounds().y >= rootItem.getBounds().y + rootItem.getBounds().height );
     assertTrue( rootItem2.getBounds().y >= subItem.getBounds().y + subItem.getBounds().height );
   }
@@ -1371,16 +1371,16 @@ public class TreeItem_Test extends TestCase {
     assertEquals( "subcell0", subitem.getText( 0 ) );
     assertEquals( "subcell2", subitem.getText( 1 ) );
   }
-  
+
   public void testVirtualItemNotCachedInitially() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     assertFalse( item.isCached() );
   }
-  
+
   public void testVirtualGetBackground() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new Listener() {
@@ -1389,9 +1389,9 @@ public class TreeItem_Test extends TestCase {
         item.setBackground( display.getSystemColor( SWT.COLOR_BLUE ) );
       }
     } );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     assertEquals( display.getSystemColor( SWT.COLOR_BLUE ), item.getBackground() );
     assertTrue( item.isCached() );
@@ -1400,9 +1400,9 @@ public class TreeItem_Test extends TestCase {
   public void testVirtualGetBackgroundWithDisposedItem() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new DisposingSetDataListener() );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     try {
       item.getBackground();
@@ -1411,7 +1411,7 @@ public class TreeItem_Test extends TestCase {
       assertEquals( "Widget is disposed", expected.getMessage() );
     }
   }
-  
+
   public void testVirtualGetCellBackground() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
@@ -1421,21 +1421,21 @@ public class TreeItem_Test extends TestCase {
         item.setBackground( 1, display.getSystemColor( SWT.COLOR_BLUE ) );
       }
     } );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     assertEquals( display.getSystemColor( SWT.COLOR_BLUE ), item.getBackground( 1 ) );
     assertTrue( item.isCached() );
   }
-  
+
   public void testVirtualGetCellBackgroundWithDisposedItem() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
     tree.addListener( SWT.SetData, new DisposingSetDataListener() );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     try {
       item.getBackground( 1 );
@@ -1444,7 +1444,7 @@ public class TreeItem_Test extends TestCase {
       assertEquals( "Widget is disposed", expected.getMessage() );
     }
   }
-  
+
   public void testVirtualGetForeground() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new Listener() {
@@ -1453,9 +1453,9 @@ public class TreeItem_Test extends TestCase {
         item.setForeground( display.getSystemColor( SWT.COLOR_BLUE ) );
       }
     } );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     assertEquals( display.getSystemColor( SWT.COLOR_BLUE ), item.getForeground() );
     assertTrue( item.isCached() );
@@ -1464,9 +1464,9 @@ public class TreeItem_Test extends TestCase {
   public void testVirtualGetForegroundWithDisposedItem() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new DisposingSetDataListener() );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     try {
       item.getForeground();
@@ -1475,7 +1475,7 @@ public class TreeItem_Test extends TestCase {
       assertEquals( "Widget is disposed", expected.getMessage() );
     }
   }
-  
+
   public void testVirtualGetCellForeground() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
@@ -1485,21 +1485,21 @@ public class TreeItem_Test extends TestCase {
         item.setForeground( 1, display.getSystemColor( SWT.COLOR_BLUE ) );
       }
     } );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     assertEquals( display.getSystemColor( SWT.COLOR_BLUE ), item.getForeground( 1 ) );
     assertTrue( item.isCached() );
   }
-  
+
   public void testVirtualGetCellForegroundWithDisposedItem() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
     tree.addListener( SWT.SetData, new DisposingSetDataListener() );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     try {
       item.getForeground( 1 );
@@ -1508,7 +1508,7 @@ public class TreeItem_Test extends TestCase {
       assertEquals( "Widget is disposed", expected.getMessage() );
     }
   }
-  
+
   public void testVirtualGetText() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new Listener() {
@@ -1517,9 +1517,9 @@ public class TreeItem_Test extends TestCase {
         item.setText( "foo" );
       }
     } );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     assertEquals( "foo", item.getText() );
     assertTrue( item.isCached() );
@@ -1528,9 +1528,9 @@ public class TreeItem_Test extends TestCase {
   public void testVirtualGetTextWithDisposedItem() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new DisposingSetDataListener() );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     try {
       item.getText();
@@ -1539,7 +1539,7 @@ public class TreeItem_Test extends TestCase {
       assertEquals( "Widget is disposed", expected.getMessage() );
     }
   }
-  
+
   public void testVirtualGetCellText() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
@@ -1549,21 +1549,21 @@ public class TreeItem_Test extends TestCase {
         item.setText( 1, "foo" );
       }
     } );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     assertEquals( "foo", item.getText( 1 ) );
     assertTrue( item.isCached() );
   }
-  
+
   public void testVirtualGetCellTextWithDisposedItem() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
     tree.addListener( SWT.SetData, new DisposingSetDataListener() );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     try {
       item.getText( 1 );
@@ -1572,7 +1572,7 @@ public class TreeItem_Test extends TestCase {
       assertEquals( "Widget is disposed", expected.getMessage() );
     }
   }
-  
+
   public void testVirtualGetFont() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new Listener() {
@@ -1581,9 +1581,9 @@ public class TreeItem_Test extends TestCase {
         item.setFont( new Font( display, "Times", 10, SWT.BOLD ) );
       }
     } );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     assertEquals( new Font( display, "Times", 10, SWT.BOLD ), item.getFont() );
     assertTrue( item.isCached() );
@@ -1592,9 +1592,9 @@ public class TreeItem_Test extends TestCase {
   public void testVirtualGetFontWithDisposedItem() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new DisposingSetDataListener() );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     try {
       item.getFont();
@@ -1603,7 +1603,7 @@ public class TreeItem_Test extends TestCase {
       assertEquals( "Widget is disposed", expected.getMessage() );
     }
   }
-  
+
   public void testVirtualGetCellFont() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
@@ -1613,21 +1613,21 @@ public class TreeItem_Test extends TestCase {
         item.setFont( 1, new Font( display, "Times", 10, SWT.BOLD ) );
       }
     } );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     assertEquals( new Font( display, "Times", 10, SWT.BOLD ), item.getFont( 1 ) );
     assertTrue( item.isCached() );
   }
-  
+
   public void testVirtualGetCellFontWithDisposedItem() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
     tree.addListener( SWT.SetData, new DisposingSetDataListener() );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     try {
       item.getFont( 1 );
@@ -1636,7 +1636,7 @@ public class TreeItem_Test extends TestCase {
       assertEquals( "Widget is disposed", expected.getMessage() );
     }
   }
-  
+
   public void testVirtualGetImage() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     final Image image = new Image( display, 100, 100 );
@@ -1646,9 +1646,9 @@ public class TreeItem_Test extends TestCase {
         item.setImage( image );
       }
     } );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     assertSame( image, item.getImage() );
     assertTrue( item.isCached() );
@@ -1657,9 +1657,9 @@ public class TreeItem_Test extends TestCase {
   public void testVirtualGetImageWithDisposedItem() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new DisposingSetDataListener() );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     try {
       item.getImage();
@@ -1668,7 +1668,7 @@ public class TreeItem_Test extends TestCase {
       assertEquals( "Widget is disposed", expected.getMessage() );
     }
   }
-  
+
   public void testVirtualGetCellImage() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
@@ -1679,21 +1679,21 @@ public class TreeItem_Test extends TestCase {
         item.setImage( 1, image );
       }
     } );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     assertSame( image, item.getImage( 1 ) );
     assertTrue( item.isCached() );
   }
-  
+
   public void testVirtualGetCellImageWithDisposedItem() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
     tree.addListener( SWT.SetData, new DisposingSetDataListener() );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     try {
       item.getImage( 1 );
@@ -1702,22 +1702,101 @@ public class TreeItem_Test extends TestCase {
       assertEquals( "Widget is disposed", expected.getMessage() );
     }
   }
-  
+
   public void testVirtualGetBoundsMaterializeItems() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.addListener( SWT.SetData, new Listener() {
       public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         item.setText( "Very long long long long long text" );
-      }      
+      }
     } );
     tree.setItemCount( 5 );
-    
+
     Rectangle bounds =  tree.getItem( 0 ).getBounds();
 
     assertTrue( bounds.width > 100 );
   }
-  
+
+  public void testVirtualGetBoundsWithDisposedItem() {
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    createColumns( tree, 3 );
+    tree.addListener( SWT.SetData, new DisposingSetDataListener() );
+
+    tree.setItemCount( 1 );
+
+    TreeItem item = tree.getItem( 0 );
+    try {
+      item.getBounds();
+      fail();
+    } catch( SWTException expected ) {
+      assertEquals( "Widget is disposed", expected.getMessage() );
+    }
+  }
+
+  public void testVirtualGetImageBoundsMaterializeItems() {
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( Event event ) {
+        TreeItem item = ( TreeItem )event.item;
+        Image image = display.getSystemImage( SWT.ICON_ERROR );
+        item.setImage( 0, image );
+      }
+    } );
+    tree.setItemCount( 5 );
+
+    Rectangle bounds =  tree.getItem( 0 ).getImageBounds( 0 );
+
+    assertTrue( bounds.width > 10 );
+  }
+
+  public void testVirtualGetImageBoundsWithDisposedItem() {
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    createColumns( tree, 3 );
+    tree.addListener( SWT.SetData, new DisposingSetDataListener() );
+
+    tree.setItemCount( 1 );
+
+    TreeItem item = tree.getItem( 0 );
+    try {
+      item.getImageBounds( 0 );
+      fail();
+    } catch( SWTException expected ) {
+      assertEquals( "Widget is disposed", expected.getMessage() );
+    }
+  }
+
+  public void testVirtualGetTextBoundsMaterializeItems() {
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.addListener( SWT.SetData, new Listener() {
+      public void handleEvent( Event event ) {
+        TreeItem item = ( TreeItem )event.item;
+        item.setText( 0, "Very long long long long long text" );
+      }
+    } );
+    tree.setItemCount( 5 );
+
+    Rectangle bounds =  tree.getItem( 0 ).getTextBounds( 0 );
+
+    assertTrue( bounds.width > 100 );
+  }
+
+  public void testVirtualGetTextBoundsWithDisposedItem() {
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    createColumns( tree, 3 );
+    tree.addListener( SWT.SetData, new DisposingSetDataListener() );
+
+    tree.setItemCount( 1 );
+
+    TreeItem item = tree.getItem( 0 );
+    try {
+      item.getTextBounds( 0 );
+      fail();
+    } catch( SWTException expected ) {
+      assertEquals( "Widget is disposed", expected.getMessage() );
+    }
+  }
+
   public void testVirtualGetItemCount() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
@@ -1727,21 +1806,21 @@ public class TreeItem_Test extends TestCase {
         item.setItemCount( 1 );
       }
     } );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     assertEquals( 1, item.getItemCount() );
     assertTrue( item.isCached() );
   }
-  
+
   public void testVirtualGetItemCountWithDisposedItem() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     createColumns( tree, 3 );
     tree.addListener( SWT.SetData, new DisposingSetDataListener() );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     try {
       item.getItemCount();
@@ -1750,7 +1829,7 @@ public class TreeItem_Test extends TestCase {
       assertEquals( "Widget is disposed", expected.getMessage() );
     }
   }
-  
+
   public void testVirtualGetChecked() {
     Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.CHECK );
     createColumns( tree, 3 );
@@ -1760,21 +1839,21 @@ public class TreeItem_Test extends TestCase {
         item.setChecked( true );
       }
     } );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     assertTrue( item.getChecked() );
     assertTrue( item.isCached() );
   }
-  
+
   public void testVirtualGetCheckedWithDisposedItem() {
     Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.CHECK );
     createColumns( tree, 3 );
     tree.addListener( SWT.SetData, new DisposingSetDataListener() );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     try {
       item.getChecked();
@@ -1783,7 +1862,7 @@ public class TreeItem_Test extends TestCase {
       assertEquals( "Widget is disposed", expected.getMessage() );
     }
   }
-  
+
   public void testVirtualGetGrayed() {
     Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.CHECK );
     createColumns( tree, 3 );
@@ -1793,21 +1872,21 @@ public class TreeItem_Test extends TestCase {
         item.setGrayed( true );
       }
     } );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     assertTrue( item.getGrayed() );
     assertTrue( item.isCached() );
   }
-  
+
   public void testVirtualGetGrayedWithDisposedItem() {
     Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.CHECK );
     createColumns( tree, 3 );
     tree.addListener( SWT.SetData, new DisposingSetDataListener() );
-    
+
     tree.setItemCount( 1 );
-    
+
     TreeItem item = tree.getItem( 0 );
     try {
       item.getGrayed();
@@ -1816,10 +1895,34 @@ public class TreeItem_Test extends TestCase {
       assertEquals( "Widget is disposed", expected.getMessage() );
     }
   }
-  
+
+  public void testSetExpandUpdatesFlatIndices() {
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setSize( 100, 100 );
+    tree.setItemCount( 1 );
+    TreeItem item = tree.getItem( 0 );
+    item.setItemCount( 1 );
+
+    item.setExpanded( true );
+
+    assertEquals( 1, item.getItem( 0 ).flatIndex );
+  }
+
+  public void testVirtualDoesNotCreateUnneccessaryItems() {
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setSize( 100, 100 );
+    tree.setItemCount( 1 );
+    TreeItem item = tree.getItem( 0 );
+    item.setItemCount( 100 );
+
+    item.setExpanded( true );
+
+    assertTrue( item.getCreatedItems().length < 10 );
+  }
+
   //////////////////
   // Helping methods
-  
+
   private static TreeColumn[] createColumns( Tree tree, int count ) {
     TreeColumn[] result = new TreeColumn[ count ];
     for( int i = 0; i < count; i++ ) {

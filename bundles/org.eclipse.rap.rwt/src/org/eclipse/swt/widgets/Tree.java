@@ -309,7 +309,7 @@ public class Tree extends Composite {
     addControlListener( resizeListener );
   }
 
-  private TreeItem[] getCreatedItems() {
+  TreeItem[] getCreatedItems() {
     TreeItem[] result;
     if( isVirtual() ) {
       int count = 0;
@@ -585,6 +585,9 @@ public class Tree extends Composite {
       parent.setExpanded( true );
       parent = parent.getParentItem();
     }
+    if( isVirtual() && !item.isCached() ) {
+      updateFlatIndices();
+    }
     if( item.flatIndex <= topItemIndex ) {
       setTopItemIndex( item.flatIndex );
     } else {
@@ -629,6 +632,9 @@ public class Tree extends Composite {
       while( parent != null ) {
         parent.setExpanded( true );
         parent = parent.getParentItem();
+      }
+      if( isVirtual() && !item.isCached() ) {
+        updateFlatIndices();
       }
       int visibleItemsCount = collectVisibleItems( null ).size();
       int itemsAreaHeight = getClientArea().height - getHeaderHeight();
@@ -1815,8 +1821,8 @@ public class Tree extends Composite {
       }
     } else {
       for( int i = 0; i < itemCount; i++ ) {
-        TreeItem item = getItem( i );
-        if( item.isCached() ) {
+        TreeItem item = items[ i ];
+        if( item != null && item.isCached() ) {
           int itemWidth = item.getPreferredWidth( 0, false );
           width = Math.max( width, itemWidth );
           if( item.getExpanded() ) {
@@ -1829,8 +1835,8 @@ public class Tree extends Composite {
     height += getHeaderHeight();
     height += itemCount * getItemHeight();
     for( int i = 0; i < itemCount; i++ ) {
-      TreeItem item = getItem( i );
-      if( !item.isInDispose() && item.getExpanded() ) {
+      TreeItem item = items[ i ];
+      if( item != null && !item.isInDispose() && item.getExpanded() ) {
         height += item.getInnerHeight();
       }
     }
@@ -2083,39 +2089,42 @@ public class Tree extends Composite {
   ///////////////////
   // Helping methods
 
-
   void checkAllData() {
-    // TODO [tb] : call only in doRedrawFake?
-    updateFlatIndices();
-    for( int i = 0; i < itemCount; i++ ) {
-      checkDataRecursively( items[ i ], i );
+    int flatIndex = 0;
+    for( int index = 0; index < itemCount; index++ ) {
+      flatIndex = checkDataRecursively( null, index, flatIndex );
     }
   }
 
-  private void checkDataRecursively( TreeItem item, int index ) {
-    if( isItemVisible( item ) ) {
+  private int checkDataRecursively( TreeItem parent, int index, int flatIndex ) {
+    int newFlatIndex = flatIndex;
+    TreeItem item = parent == null ? items[ index ] : parent.items[ index ];
+    if( isItemVisible( flatIndex ) ) {
+      if( item == null ) {
+        item = parent == null ? _getItem( index ) : parent._getItem( index );
+      }
       checkData( item, index );
     }
-    if( item.isCached() && item.getExpanded() ) {
+    if( item != null ) {
+      item.flatIndex = newFlatIndex;
+    }
+    newFlatIndex++;
+    if( item != null && item.isCached() && item.getExpanded() ) {
       for( int i = 0; i < item.itemCount; i++ ) {
-        // TODO this could materialize items
-        checkDataRecursively( item.getItem( i ), i );
+        newFlatIndex = checkDataRecursively( item, i, newFlatIndex );
       }
     }
+    return newFlatIndex;
   }
 
-  private boolean isItemVisible( TreeItem item ) {
+  private boolean isItemVisible( int flatIndex ) {
     boolean result = false;
-    int itemPosition = item.getItemTop();
+    int headerHeight = getHeaderHeight();
+    int itemHeight = getItemHeight();
+    int itemPosition = headerHeight + ( flatIndex - getTopIndex() ) * itemHeight;
+    // TODO shouldn't we call getclientArea() instead?
     if( itemPosition >= 0 && itemPosition <= getSize().y ) {
-      TreeItem parentItem = item.getParentItem();
-      if( parentItem != null ) {
-        if( parentItem.getExpanded() ) {
-          result = true;
-        }
-      } else {
-        result = true;
-      }
+      result = true;
     }
     return result;
   }
@@ -2275,7 +2284,7 @@ public class Tree extends Composite {
     int height = getHeaderHeight();
     height += itemCount * getItemHeight();
     for( int i = 0; i < itemCount; i++ ) {
-      TreeItem item = getItem( i );
+      TreeItem item = items[ i ];
       if( item != null && item.getExpanded() ) {
         height += item.getInnerHeight();
       }
@@ -2297,7 +2306,7 @@ public class Tree extends Composite {
     } else {
       int maxWidth = 0;
       for( int i = 0; i < itemCount; i++ ) {
-        TreeItem item = getItem( i );
+        TreeItem item = items[ i ];
         if( item != null && !item.isInDispose() && item.isCached() ) {
           int itemWidth = item.getPreferredWidth( 0, false );
           maxWidth = Math.max( maxWidth, itemWidth );

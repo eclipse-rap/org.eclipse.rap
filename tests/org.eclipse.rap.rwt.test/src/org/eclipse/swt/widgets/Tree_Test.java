@@ -22,7 +22,8 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.ITreeAdapter;
+import org.eclipse.swt.internal.widgets.ItemHolder;
 
 
 public class Tree_Test extends TestCase {
@@ -539,7 +540,7 @@ public class Tree_Test extends TestCase {
 
     assertTrue( item.isDisposed() );
   }
-  
+
   public void testInitialGetTopItemIndex() {
     Tree tree = new Tree( composite, SWT.NONE );
     ITreeAdapter adapter = getTreeAdapter( tree );
@@ -1324,6 +1325,28 @@ public class Tree_Test extends TestCase {
     assertTrue( log.getItems().contains( tree.getItem( 30 ) ) );
   }
 
+  public void testVirtualSetFlatIndexOnShowItem() {
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
+    tree.setItemCount( 100 );
+    tree.setSize( 100, 100 );
+
+    TreeItem item = tree.getItem( 30 );
+    tree.showItem( item );
+
+    assertEquals( 30, item.flatIndex );
+  }
+
+  public void testVirtualSetFlatIndexOnSetTopItem() {
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
+    tree.setItemCount( 100 );
+    tree.setSize( 100, 100 );
+
+    TreeItem item = tree.getItem( 30 );
+    tree.setTopItem( item );
+
+    assertEquals( 30, item.flatIndex );
+  }
+
   public void testTopItem() {
     Tree tree = new Tree( composite, SWT.NONE );
     tree.setSize( 300, 85 );
@@ -1510,6 +1533,14 @@ public class Tree_Test extends TestCase {
     tree.setTopItem( subItem );
 
     assertTrue( item.getItem( 25 ).isCached() );
+  }
+
+  public void testVirtualDoesNotCreateUnneccessaryItems() {
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
+    tree.setItemCount( 100 );
+    tree.setSize( 100, 100 );
+
+    assertTrue( tree.getCreatedItems().length < 10 );
   }
 
   /////////

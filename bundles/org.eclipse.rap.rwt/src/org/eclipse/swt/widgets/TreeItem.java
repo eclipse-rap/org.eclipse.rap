@@ -430,7 +430,6 @@ public class TreeItem extends Item {
     markCached();
     if( !expanded || itemCount > 0 ) {
       this.expanded = expanded;
-      parent.updateFlatIndices();
       parent.updateScrollBars();
       parent.checkAllData();
     }
@@ -464,7 +463,6 @@ public class TreeItem extends Item {
    *              </ul>
    */
   public Rectangle getBounds() {
-    checkWidget();
     return getBounds( 0 );
   }
 
@@ -483,6 +481,9 @@ public class TreeItem extends Item {
    */
   public Rectangle getBounds( int columnIndex ) {
     checkWidget();
+    if( !parent.checkData( this, index ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     Rectangle result = new Rectangle( 0, 0, 0, 0 );
     if( isVisible() && isValidColumn( columnIndex ) ) {
       int left = parent.getVisualCellLeft( columnIndex, this );
@@ -999,6 +1000,9 @@ public class TreeItem extends Item {
    */
   public Rectangle getTextBounds( int index ) {
     checkWidget();
+    if( !parent.checkData( this, index ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     Rectangle result = new Rectangle( 0, 0, 0, 0 );
     if( isVisible() && isValidColumn( index ) ) {
       result.x = parent.getVisualTextLeft( index, this );
@@ -1096,7 +1100,7 @@ public class TreeItem extends Item {
    * @since 1.4
    */
   public Image getImage() {
-    checkWidget();    
+    checkWidget();
     return getImage( 0 );
   }
 
@@ -1137,7 +1141,9 @@ public class TreeItem extends Item {
    */
   public Rectangle getImageBounds( int columnIndex ) {
     checkWidget();
-    // parent.checkData( this, parent.indexOf( this ) );
+    if( !parent.checkData( this, index ) ) {
+      error( SWT.ERROR_WIDGET_DISPOSED );
+    }
     Rectangle result = null;
     int validColumnCount = Math.max( 1, parent.columnHolder.size() );
     if( ( 0 <= columnIndex && columnIndex < validColumnCount ) ) {
@@ -1353,14 +1359,14 @@ public class TreeItem extends Item {
     return result;
   }
 
-  private TreeItem _getItem( int index ) {
+  TreeItem _getItem( int index ) {
     if( parent.isVirtual() && items[ index ] == null ) {
       items[ index ] = new TreeItem( parent, this, SWT.NONE, index, false );
     }
     return items[ index ];
   }
 
-  private TreeItem[] getCreatedItems() {
+  TreeItem[] getCreatedItems() {
     TreeItem[] result;
     if( parent.isVirtual() ) {
       int count = 0;
@@ -1471,10 +1477,15 @@ public class TreeItem extends Item {
    */
   public void removeAll() {
     checkWidget();
-    TreeItem[] items = getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      items[ i ].dispose();
+    for( int i = itemCount - 1; i >= 0; i-- ) {
+      if( items[ i ] != null ) {
+        items[ i ].dispose();
+      } else {
+        itemCount--;
+      }
     }
+    setEmpty();
+    // TODO what happens when the selected item is removed?
   }
 
   /**
@@ -1493,7 +1504,6 @@ public class TreeItem extends Item {
     int oldItemCount = itemCount;
     int newItemCount = Math.max( 0, count );
     if( newItemCount != oldItemCount ) {
-//      TreeItem[] items = this.getItems();
       int index = oldItemCount - 1;
       while( index >= newItemCount ) {
         TreeItem item = items[ index ];
@@ -1520,9 +1530,10 @@ public class TreeItem extends Item {
   // Methods to dispose of the item
 
   final void releaseChildren() {
-    TreeItem[] items = getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      items[ i ].dispose();
+    for( int i = items.length - 1; i >= 0; i-- ) {
+      if( items[ i ] != null ) {
+        items[ i ].dispose();
+      }
     }
   }
 
@@ -1572,8 +1583,8 @@ public class TreeItem extends Item {
   int getInnerHeight() {
     int innerHeight = itemCount * parent.getItemHeight();
     for( int i = 0; i < itemCount; i++ ) {
-      TreeItem item = getItem( i );
-      if( item.getExpanded() ) {
+      TreeItem item = items[ i ];
+      if( item != null && item.getExpanded() ) {
         innerHeight += item.getInnerHeight();
       }
     }
