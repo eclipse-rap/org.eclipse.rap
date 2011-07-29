@@ -1044,7 +1044,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       item.setTexts( [ "Test" ] );
       row.renderItem( item, tree._config, false, null );
       row.addEventListener( "mousedown", function( event ) {
-        log.push( row.isExpandSymbolTarget( event ) );
+        log.push( row.getTargetIdentifier( event ) === "expandIcon" );
       } );
       testUtil.clickDOM( row._getTargetNode().childNodes[ 0 ] );
       testUtil.clickDOM( row._getTargetNode().childNodes[ 1 ] );
@@ -1074,7 +1074,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       assertNull( row._textNodes );
       assertNull( row._expandElement );
       assertNull( row._checkBoxElement );
-      assertNull( row._selectionElements );
+      assertNull( row._treeColumnElements );
       tree.destroy();
       row.destroy();
     },
@@ -1141,7 +1141,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       item.setTexts( [ "Test" ] );
       row.renderItem( item, tree._config, false, null );
       row.addEventListener( "mousedown", function( event ) {
-        log.push( row.isCheckBoxTarget( event ) );
+        log.push( row.getTargetIdentifier( event ) === "checkBox" );
       } );
       testUtil.clickDOM( row._getTargetNode().childNodes[ 0 ] );
       testUtil.clickDOM( row._getTargetNode().childNodes[ 1 ] );
@@ -1626,7 +1626,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.renderItem( item, tree._config, false, null );
       var log = [];
       row.addEventListener( "mousedown", function( event ) {
-        log.push( row.isSelectionClick( event, false ) );
+        log.push( row.getTargetIdentifier( event ) === "treeColumn" );
       } );
       var nodes = row._getTargetNode().childNodes;
       testUtil.clickDOM( nodes[ 0 ] ); // expandimage
@@ -1656,7 +1656,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.renderItem( item, tree._config, false, null );
       var log = [];
       row.addEventListener( "mousedown", function( event ) {
-        log.push( row.isSelectionClick( event, true ) );
+        log.push( row.getTargetIdentifier( event ) !== "checkBox" );
       } );
       var nodes = row._getTargetNode().childNodes;
       testUtil.clickDOM( nodes[ 0 ] ); // expandimage

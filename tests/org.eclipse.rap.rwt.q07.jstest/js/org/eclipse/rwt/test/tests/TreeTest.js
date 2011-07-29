@@ -1605,7 +1605,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var rowNode = tree._rowContainer._children[ 0 ]._getTargetNode();
       testUtil.hoverFromTo( document.body, rowNode );
       testUtil.hoverFromTo( rowNode, rowNode.firstChild );
-      assertIdentical( rowNode.firstChild, tree._rowContainer._hoverElement );
+      assertEquals( "other", tree._rowContainer._hoverElement );
       tree.destroy();
     },
 
@@ -1625,8 +1625,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var style = tree._rowContainer._children[ 0 ]._getTargetNode().style;
       assertEquals( "green", style.backgroundColor );
       testUtil.mouseOver( tree._rowContainer._children[ 0 ] );
+      testUtil.forceInterval( tree._rowContainer._asyncTimer );
       assertEquals( "red", style.backgroundColor );
       testUtil.mouseOut( tree._rowContainer._children[ 0 ] );
+      testUtil.forceInterval( tree._rowContainer._asyncTimer );
       assertEquals( "green", style.backgroundColor );
       tree.destroy();
     },
@@ -1647,11 +1649,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var row = tree._rowContainer._children[ 0 ];
       var rowNode = row._getTargetNode();
       testUtil.hoverFromTo( document.body, rowNode );
+      testUtil.forceInterval( tree._rowContainer._asyncTimer );
       assertTrue( row.hasState( "over" ) );
       var normal = testUtil.getCssBackgroundImage( rowNode.firstChild );
       testUtil.hoverFromTo( rowNode, rowNode.firstChild );
+      testUtil.forceInterval( tree._rowContainer._asyncTimer );
       var over = testUtil.getCssBackgroundImage( rowNode.firstChild );
       testUtil.hoverFromTo( rowNode.firstChild, rowNode );
+      testUtil.forceInterval( tree._rowContainer._asyncTimer );
       var normalAgain = testUtil.getCssBackgroundImage( rowNode.firstChild );
       assertTrue( normal.indexOf( "normal.gif" ) != -1 );
       assertTrue( over.indexOf( "over.gif" ) != -1 );
@@ -1677,11 +1682,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var rowNode1 = tree._rowContainer._children[ 0 ]._getTargetNode();
       var rowNode2 = tree._rowContainer._children[ 1 ]._getTargetNode();
       testUtil.hoverFromTo( document.body, rowNode1.firstChild );
+      testUtil.forceInterval( tree._rowContainer._asyncTimer );
       var check1 = testUtil.getCssBackgroundImage( rowNode1.firstChild );
       var check2 = testUtil.getCssBackgroundImage( rowNode2.firstChild );
       assertTrue( check1.indexOf( "over.gif" ) != -1 );
       assertTrue( check2.indexOf( "normal.gif" ) != -1 );
       testUtil.hoverFromTo( rowNode1.firstChild, rowNode2.firstChild );
+      testUtil.forceInterval( tree._rowContainer._asyncTimer );
       check1 = testUtil.getCssBackgroundImage( rowNode1.firstChild );
       check2 = testUtil.getCssBackgroundImage( rowNode2.firstChild );
       assertTrue( check1.indexOf( "normal.gif" ) != -1 );
@@ -1708,10 +1715,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.flush()
       var rowNode = tree._rowContainer._children[ 0 ]._getTargetNode();
       testUtil.hoverFromTo( document.body, rowNode );
+      testUtil.forceInterval( tree._rowContainer._asyncTimer );
       var normal = testUtil.getCssBackgroundImage( rowNode.firstChild );
       testUtil.hoverFromTo( rowNode, rowNode.firstChild );
+      testUtil.forceInterval( tree._rowContainer._asyncTimer );
       var over = testUtil.getCssBackgroundImage( rowNode.firstChild );
       testUtil.hoverFromTo( rowNode.firstChild, rowNode );
+      testUtil.forceInterval( tree._rowContainer._asyncTimer );
       var normalAgain = testUtil.getCssBackgroundImage( rowNode.firstChild );
       assertTrue( normal.indexOf( "normal.gif" ) != -1 );
       assertTrue( over.indexOf( "over.gif" ) != -1 );

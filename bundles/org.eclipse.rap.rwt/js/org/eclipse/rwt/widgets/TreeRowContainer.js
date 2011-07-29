@@ -27,12 +27,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
     this._renderTime = null;
     this._topItemIndex = 0;
     this._items = [];
+    this._asyncQueue = {};
+    this._asyncTimer = new qx.client.Timer( 0 );
+    this._asyncTimer.addEventListener( "interval", this._onAsyncTimer, this );
     this._hoverItem = null;
     this._hoverElement = null;
     this._config = org.eclipse.rwt.widgets.TreeRowContainer.createRenderConfig();
     this.addEventListener( "mouseover", this._onRowOver, this );
     this.addEventListener( "mouseout", this._onRowOver, this );
-    this.addEventListener( "elementOut", this._onElementOver, this );
     this.addEventListener( "elementOver", this._onElementOver, this );
   },
 
@@ -283,7 +285,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
     // NOTE: Used only by TreeUtil.js
     setHoverItem : function( item ) {
       if( item ) {
-        this._hoverElement = row = this._findRowByItem( item ).getElement();
+        this._hoverElement = "other";
       }
       this._setHoverItem( item );
     },
@@ -374,13 +376,13 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
     },
 
     _onElementOver : function( event ) {
-      var isOver = event.getType() === "elementOver";
-      this._hoverElement = isOver ? event.getDomTarget() : null;
-      var row = event.getTarget();
-      var internal = row === event.getRelatedTarget();
-      if( internal && row instanceof org.eclipse.rwt.widgets.TreeRow ) {
-        if( this._hoverItem !== null ) { 
-          this.renderItem( this._hoverItem );
+      var target = event.getTarget();
+      var internal = target === event.getRelatedTarget();
+      if( target instanceof org.eclipse.rwt.widgets.TreeRow && internal && this._hoverItem ) {
+        var hoverElement = target.getTargetIdentifier( event )
+        if( this._hoverElement !== hoverElement ) {
+          this._hoverElement = hoverElement;
+          this._setHoverItem( this._hoverItem );
         }
       }
     },
@@ -389,9 +391,14 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
       var target = event.getOriginalTarget();
       if( target instanceof org.eclipse.rwt.widgets.TreeRow ) {
         if( event.getType() === "mouseout" ) {
+          this._hoverElement = null
           this._setHoverItem( null );
         } else {
-          this._setHoverItem( this.findItemByRow( target ) );
+          this._hoverElement = target.getTargetIdentifier( event );
+          var item = this.findItemByRow( target );
+          if( item !== this._hoverItem ) { // can happen due to use of innerHTML/replacing elements
+            this._setHoverItem( item );
+          }
         }
       }
     },
@@ -399,8 +406,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
     _setHoverItem : function( item ) {
       var oldItem = this._hoverItem;
       this._hoverItem = item;
-      this.renderItem( oldItem );
-      this.renderItem( this._hoverItem );          
+      if( oldItem !== item ) {
+        this._renderAsync( oldItem );
+      }
+      this._renderAsync( item );
     },
 
     _getHoverElement : function( item ) {
@@ -409,6 +418,21 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
         result = this._hoverElement;
       }
       return result;
+    },
+    
+    _renderAsync : function( item ) {
+      // async rendering needed in some cases where webkit (and possibly other browser) get confused 
+      // when changing dom-elements in "mouseover" events 
+      if( item !== null ) {
+        this._asyncQueue[ item.toHashCode() ] = item;
+        this._asyncTimer.start();
+      }
+    },
+    
+    _onAsyncTimer : function() {
+      this._asyncTimer.stop();
+      this.renderItemQueue( this._asyncQueue );
+      this._asyncQueue = {};
     },
 
     _isSelected : function( item ) {

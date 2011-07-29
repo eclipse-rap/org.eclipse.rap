@@ -23,18 +23,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     this.setHeight( 16 );
     this._textNodes = [];
     this._usedNodes = 0;
-    this._expandElement = null;
-    this._checkBoxElement = null;
-    this._selectionElements = [];
     this._styleMap = null;
     this._variant = null;
+    // TODO [tb] : store all elements by type for better re-use, currently only needed to identify
+    this._expandElement = null;
+    this._checkBoxElement = null;
+    this._treeColumnElements = [];
   },
 
   destruct : function() {
     this._textNodes = null;
     this._expandElement = null;
     this._checkBoxElement = null;
-    this._selectionElements = null;
+    this._treeColumnElements = null;
   },
 
   members : {
@@ -56,24 +57,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       }
       this._hideRemainingElements();
     },
-
-    isExpandSymbolTarget : function( event ) {
+    
+    getTargetIdentifier : function( event ) {
       var node = event.getDomTarget();
-      return this._expandElement !== null && this._expandElement === node;
-    },
-
-    isCheckBoxTarget : function( event ) {
-      var node = event.getDomTarget();
-      return this._checkBoxElement !== null && this._checkBoxElement === node;
-    },
-
-    isSelectionClick : function( event, fullSelection ) {
-      var result;
-      var node = event.getDomTarget();
-      if( fullSelection ) {
-        result = this._checkBoxElement !== node;
-      } else {
-        result = this._selectionElements.indexOf( node ) != -1;
+      var result = "other";
+      if( this._treeColumnElements.indexOf( node ) != -1 ) {
+        result = "treeColumn";
+      } else if( this._expandElement !== null && this._expandElement === node ) {
+        result = "expandIcon";
+      } else if( this._checkBoxElement !== null && this._checkBoxElement === node ) {
+        result = "checkBox";        
       }
       return result;
     },
@@ -163,10 +156,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
 
     _renderIndention : function( item, config, hoverElement ) {
       var expandSymbol = this._getExpandSymbol( item, config, hoverElement );
-      this._expandElement = null;
       if( expandSymbol != null ) {
         var element =  this._addIndentSymbol( item.getLevel(), config, expandSymbol );
         this._expandElement = element;
+      } else {
+        this._expandElement = null;
       }
       var lineSymbol = this._getLineSymbol( item, config );
       if( lineSymbol != null ) {
@@ -195,7 +189,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
           states.collapsed = true;
         }
       }
-      if( hoverElement !== null && hoverElement === this._expandElement ) {
+      if( hoverElement === "expandIcon" ) {
         states.over = true;
       }
       return this._getImageFromAppearance( "indent", states );
@@ -241,9 +235,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
 
     _renderCheckBox : function( item, config, hoverElement ) {
       if( config.hasCheckBoxes ) {
-        var oldCheckBox = this._checkBoxElement;
         var states = this.__states;
-        this.setState( "over", hoverElement !== null && hoverElement === oldCheckBox );
+        this.setState( "over", hoverElement !== null && hoverElement === "checkBox" );
         var image = this._getImageFromAppearance( "check-box", states );
         this._renderOverState( hoverElement );
         var element = this._getImageElement( 3 );
@@ -270,7 +263,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
             }
             var imageElement = this._renderCellImage( item, i, config );
             var labelElement = this._renderCellLabel( item, i, config );
-            this._selectionElements = [ imageElement, labelElement ];
+            this._treeColumnElements = [ imageElement, labelElement ];
             if( selected ) {
               this._renderSelectionBackground( item, i, config );
               this._renderStates( item, config, false, hoverElement);

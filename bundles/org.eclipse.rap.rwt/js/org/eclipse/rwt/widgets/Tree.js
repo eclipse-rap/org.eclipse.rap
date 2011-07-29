@@ -399,18 +399,29 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     _onRowMouseDown : function( row, event ) {
       var item = this._rowContainer.findItemByRow( row );
       if( item != null ) {
-        if( row.isExpandSymbolTarget( event ) && item.hasChildren() ) {
+        var identifier = row.getTargetIdentifier( event );
+        if( identifier === "expandIcon" && item.hasChildren() ) {
           var expanded = !item.isExpanded();
           if( !expanded ) {
             this._deselectVisibleChildren( item );
           }
           item.setExpanded( expanded );
-        } else if( row.isCheckBoxTarget( event ) ) {
+        } else if( identifier === "checkBox" ) {
           this._toggleCheckSelection( item );
-        } else if( row.isSelectionClick( event, this._config.fullSelection ) ) {
+        } else if( this._isSelectionClick( identifier ) ) {
           this._onSelectionClick( event, item );
         }
       }
+    },
+    
+    _isSelectionClick : function( identifier ) {
+      var result;
+      if( this._config.fullSelection ) {
+        result = identifier !== "checkBox";
+      } else {
+        result = identifier === "treeColumn";        
+      }
+      return result;
     },
 
     _onSelectionClick : function( event, item ) {

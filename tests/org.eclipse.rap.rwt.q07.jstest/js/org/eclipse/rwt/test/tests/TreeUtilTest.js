@@ -325,6 +325,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeUtilTest", {
       var rowNode = tree._rowContainer.getSubContainer( 0 )._children[ 0 ]._getTargetNode();
       testUtil.hoverFromTo( document.body, rowNode );
       testUtil.hoverFromTo( rowNode, rowNode.firstChild );
+      testUtil.forceInterval( tree._rowContainer.getSubContainer( 1 )._asyncTimer );
       assertIdentical( item, tree._rowContainer.getSubContainer( 0 ).getHoverItem() );
       assertIdentical( item, tree._rowContainer.getSubContainer( 1 ).getHoverItem() );
       assertTrue( tree._rowContainer.getSubContainer( 1 ).getChildren()[ 0 ].hasState( "over" ) );
