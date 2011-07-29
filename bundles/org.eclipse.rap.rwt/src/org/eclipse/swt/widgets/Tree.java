@@ -162,11 +162,11 @@ public class Tree extends Composite {
     private ICellToolTipProvider provider;
 
     public void setScrollLeft( int left ) {
-      Tree.this.scrollLeft = left;
+      scrollLeft = left;
     }
 
     public int getScrollLeft() {
-      return Tree.this.scrollLeft;
+      return scrollLeft;
     }
 
     public boolean isCached( TreeItem item ) {
@@ -202,11 +202,11 @@ public class Tree extends Composite {
     }
 
     public int getTextMaxWidth( int index ) {
-      return Tree.this.getTextWidth( index );
+      return getTextWidth( index );
     }
 
     public int getCheckWidth() {
-      return Tree.this.getCheckImageSize().x;
+      return getCheckImageSize().x;
     }
 
     public int getImageOffset( int index ) {
@@ -226,7 +226,7 @@ public class Tree extends Composite {
     }
 
     public int getTopItemIndex() {
-      return Tree.this.getTopIndex();
+      return getTopIndex();
     }
 
     public void setTopItemIndex( int index ) {
@@ -235,7 +235,7 @@ public class Tree extends Composite {
 
     public int getColumnLeft( TreeColumn column ) {
       int index = Tree.this.indexOf( column );
-      return Tree.this.getColumn( index ).getLeft();
+      return getColumn( index ).getLeft();
     }
 
     public ICellToolTipProvider getCellToolTipProvider() {
@@ -257,6 +257,7 @@ public class Tree extends Composite {
   }
 
   private static final class ResizeListener extends ControlAdapter {
+    @Override
     public void controlResized( ControlEvent event ) {
       Tree tree = ( Tree )event.widget;
       if( tree.isVirtual() ) {
@@ -314,14 +315,14 @@ public class Tree extends Composite {
     if( isVirtual() ) {
       int count = 0;
       for( int i = 0; i < itemCount; i++ ) {
-        if( items[ i ] != null ) {
+        if( items[ i ] != null && items[ i ].isCached() ) {
           count++;
         }
       }
       result = new TreeItem[ count ];
       count = 0;
       for( int i = 0; i < itemCount; i++ ) {
-        if( items[ i ] != null ) {
+        if( items[ i ] != null && items[ i ].isCached() ) {
           result[ count ] = items[ i ];
           count++;
         }
@@ -339,10 +340,12 @@ public class Tree extends Composite {
 //    clearItemImageSize();
   }
 
+  @Override
   void initState() {
     state &= ~( /* CANVAS | */THEME_BACKGROUND );
   }
 
+  @Override
   public Object getAdapter( Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
@@ -357,6 +360,7 @@ public class Tree extends Composite {
     return result;
   }
 
+  @Override
   public void setFont( Font font ) {
     super.setFont( font );
     for( int i = 0; i < itemCount; i++ ) {
@@ -942,7 +946,7 @@ public class Tree extends Composite {
     if( ( style & SWT.MULTI ) != 0 ) {
       final java.util.List<TreeItem> allItems = new ArrayList<TreeItem>();
       WidgetTreeVisitor.accept( this, new AllWidgetTreeVisitor() {
-
+        @Override
         public boolean doVisit( Widget widget ) {
           if( widget instanceof TreeItem ) {
             allItems.add( ( TreeItem )widget );
@@ -999,7 +1003,7 @@ public class Tree extends Composite {
    */
   public void deselectAll() {
     checkWidget();
-    this.selection = EMPTY_SELECTION;
+    selection = EMPTY_SELECTION;
   }
 
   /**
@@ -1220,6 +1224,7 @@ public class Tree extends Composite {
     }
   }
 
+  @Override
   public void changed( Control[] changed ) {
     clearItemsPreferredWidthBuffer();
     super.changed( changed );
@@ -1771,6 +1776,7 @@ public class Tree extends Composite {
   /////////////////////////////////
   // Methods to cleanup on dispose
 
+  @Override
   void releaseWidget() {
     if( resizeListener != null ) {
       removeControlListener( resizeListener );
@@ -1778,6 +1784,7 @@ public class Tree extends Composite {
     super.releaseWidget();
   }
 
+  @Override
   void releaseChildren() {
     for( int i = items.length - 1; i >= 0; i-- ) {
       if( items[ i ] != null ) {
@@ -1813,6 +1820,7 @@ public class Tree extends Composite {
   /////////////////////
   // Widget dimensions
 
+  @Override
   public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
@@ -1922,7 +1930,7 @@ public class Tree extends Composite {
   }
 
   int getIndentionOffset( TreeItem item ) {
-    return this.getIndentionWidth() * ( item.depth + 1);
+    return getIndentionWidth() * ( item.depth + 1);
   }
 
   int getVisualCellLeft( int index, TreeItem item ) {
@@ -2230,6 +2238,7 @@ public class Tree extends Composite {
    * @since 1.4
    */
   // TODO [if] move to Scrollable as in SWT
+  @Override
   public ScrollBar getHorizontalBar() {
     checkWidget();
     return horizontalBar;
@@ -2249,6 +2258,7 @@ public class Tree extends Composite {
    * @since 1.4
    */
   //  TODO [if] move to Scrollable as in SWT
+  @Override
   public ScrollBar getVerticalBar() {
     checkWidget();
     return verticalBar;
@@ -2265,6 +2275,7 @@ public class Tree extends Composite {
     return hasHScrollBar;
   }
 
+  @Override
   int getVScrollBarWidth() {
     int result = 0;
     if( hasVScrollBar() ) {
@@ -2273,6 +2284,7 @@ public class Tree extends Composite {
     return result;
   }
 
+  @Override
   int getHScrollBarHeight() {
     int result = 0;
     if( hasHScrollBar() ) {
@@ -2339,6 +2351,7 @@ public class Tree extends Composite {
   ///////////////////
   // Skinning support
 
+  @Override
   void reskinChildren( int flags ) {
     for( int i = 0; i < itemCount; i++ ) {
       if( items[ i ] != null ) {

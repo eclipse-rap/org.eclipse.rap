@@ -38,19 +38,19 @@ public class TreeItem extends Item {
   {
 
     public boolean isParentDisposed() {
-      return TreeItem.this.parent.isDisposed();
+      return parent.isDisposed();
     }
 
     public Color getUserBackgound() {
-      return TreeItem.this.background;
+      return background;
     }
 
     public Color getUserForegound() {
-      return TreeItem.this.foreground;
+      return foreground;
     }
 
     public Font getUserFont() {
-      return TreeItem.this.font;
+      return font;
     }
 
     public Color[] getCellBackgrounds() {
@@ -292,7 +292,7 @@ public class TreeItem extends Item {
     this.parentItem = parentItem;
     this.index = index;
     if( parentItem != null ) {
-      this.depth = parentItem.depth + 1;
+      depth = parentItem.depth + 1;
     }
     setEmpty();
     if( create ) {
@@ -359,6 +359,7 @@ public class TreeItem extends Item {
     }
   }
 
+  @Override
   public Object getAdapter( Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
@@ -950,6 +951,7 @@ public class TreeItem extends Item {
    *              not called from the thread that created the receiver</li>
    *              </ul>
    */
+  @Override
   public String getText() {
     checkWidget();
     return getText( 0 );
@@ -1049,6 +1051,7 @@ public class TreeItem extends Item {
    *              not called from the thread that created the receiver</li>
    *              </ul>
    */
+  @Override
   public void setText( String text ) {
     checkWidget();
     setText( 0, text );
@@ -1099,6 +1102,7 @@ public class TreeItem extends Item {
    * </ul>
    * @since 1.4
    */
+  @Override
   public Image getImage() {
     checkWidget();
     return getImage( 0 );
@@ -1217,6 +1221,7 @@ public class TreeItem extends Item {
     }
   }
 
+  @Override
   public void setImage( Image image ) {
     checkWidget();
     setImage( 0, image );
@@ -1371,14 +1376,14 @@ public class TreeItem extends Item {
     if( parent.isVirtual() ) {
       int count = 0;
       for( int i = 0; i < itemCount; i++ ) {
-        if( items[ i ] != null ) {
+        if( items[ i ] != null && items[ i ].isCached() ) {
           count++;
         }
       }
       result = new TreeItem[ count ];
       count = 0;
       for( int i = 0; i < itemCount; i++ ) {
-        if( items[ i ] != null ) {
+        if( items[ i ] != null && items[ i ].isCached() ) {
           result[ count ] = items[ i ];
           count++;
         }
@@ -1528,6 +1533,7 @@ public class TreeItem extends Item {
   /////////////////////////////////
   // Methods to dispose of the item
 
+  @Override
   final void releaseChildren() {
     for( int i = items.length - 1; i >= 0; i-- ) {
       if( items[ i ] != null ) {
@@ -1536,6 +1542,7 @@ public class TreeItem extends Item {
     }
   }
 
+  @Override
   final void releaseParent() {
     if( parentItem != null ) {
       parentItem.destroyItem( this, index );

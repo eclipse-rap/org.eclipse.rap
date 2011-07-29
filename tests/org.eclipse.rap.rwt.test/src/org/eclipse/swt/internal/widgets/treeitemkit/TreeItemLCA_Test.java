@@ -34,6 +34,7 @@ public class TreeItemLCA_Test extends TestCase {
   private Display display;
   private Shell shell;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -41,6 +42,7 @@ public class TreeItemLCA_Test extends TestCase {
     Fixture.fakeResponseWriter();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -79,8 +81,6 @@ public class TreeItemLCA_Test extends TestCase {
     assertTrue( Arrays.equals( new Color[ 3 ], backgrounds ) );
     Color[] foregrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FOREGROUNDS );
     assertTrue( Arrays.equals( new Color[ 3 ], foregrounds ) );
-    Object materialized = adapter.getPreserved( TreeItemLCA.PROP_MATERIALIZED );
-    assertEquals( Boolean.TRUE, materialized );
     Fixture.clearPreserved();
     treeItem.setText( 0, "item11" );
     treeItem.setText( 1, "item12" );
@@ -156,7 +156,7 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   public void testPreserveVariant() {
-    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
@@ -171,14 +171,6 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( "abc", variant );
   }
 
-  public void testMaterializedPreserveValues() {
-    Tree tree = new Tree( shell, SWT.VIRTUAL );
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    Fixture.markInitialized( display );
-    Fixture.preserveWidgets();
-    assertEquals( Boolean.FALSE, getPreservedProperty( treeItem, TreeItemLCA.PROP_MATERIALIZED ) );
-  }
-  
   public void testLcaDoesNotMaterializeItem() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.setItemCount( 100 );
@@ -281,7 +273,7 @@ public class TreeItemLCA_Test extends TestCase {
     expected = "w.setForeground( \"#00ff00\" );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
-  
+
   public void testRenderSelection() throws IOException {
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
@@ -308,7 +300,7 @@ public class TreeItemLCA_Test extends TestCase {
     assertTrue( markup.indexOf( expectedSelect ) != -1 );
     assertTrue( markup.indexOf( expectedFocus ) != -1 );
   }
-  
+
   public void testRenderDeselection() throws IOException {
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
@@ -329,22 +321,19 @@ public class TreeItemLCA_Test extends TestCase {
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( expected ) != -1 );
   }
-  
+
   public void testDontRenderDeselectionOnMaterialize() throws IOException {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     shell.open();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    Fixture.markInitialized( tree );
-    Fixture.markInitialized( treeItem );
     Fixture.clearPreserved();
     Fixture.preserveWidgets();
-    treeItem.getBackground(); // Materialize
-    TreeItemLCA tiLCA = new TreeItemLCA();
-    tiLCA.renderChanges( treeItem );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "deselectItem" ) == -1 );
+    treeItem.getBackground(); // materialize
+    TreeItemLCA lca = new TreeItemLCA();
+
+    lca.renderChanges( treeItem );
+
+    assertFalse( Fixture.getAllMarkup().contains( "deselectItem" ) );
   }
 
   public void testRenderMultiSelection() throws IOException {
@@ -445,11 +434,11 @@ public class TreeItemLCA_Test extends TestCase {
   public void testPreserveItemCount() {
     Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
-    Fixture.markInitialized( display );    
-    
+    Fixture.markInitialized( display );
+
     item.setItemCount( 10 );
     Fixture.preserveWidgets();
-    
+
     assertEquals( new Integer( 10 ), getPreservedProperty( item, TreeItemLCA.PROP_ITEM_COUNT ) );
   }
 

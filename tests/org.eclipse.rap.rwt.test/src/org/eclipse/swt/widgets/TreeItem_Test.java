@@ -31,6 +31,7 @@ public class TreeItem_Test extends TestCase {
   private Display display;
   private Shell shell;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -38,6 +39,7 @@ public class TreeItem_Test extends TestCase {
     shell = new Shell( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -1908,7 +1910,7 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 1, item.getItem( 0 ).flatIndex );
   }
 
-  public void testVirtualDoesNotCreateUnneccessaryItems() {
+  public void testGetCreatedItems_DoesNotContainNullItems() {
     Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.setSize( 100, 100 );
     tree.setItemCount( 1 );
@@ -1916,6 +1918,19 @@ public class TreeItem_Test extends TestCase {
     item.setItemCount( 100 );
 
     item.setExpanded( true );
+
+    assertTrue( item.getCreatedItems().length < 10 );
+  }
+
+  public void testGetCreatedItems_DoesNotContainPlaceholderItems() {
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setSize( 100, 100 );
+    tree.setItemCount( 1 );
+    TreeItem item = tree.getItem( 0 );
+    item.setItemCount( 100 );
+
+    item.setExpanded( true );
+    item.getItems(); // create placeholder items
 
     assertTrue( item.getCreatedItems().length < 10 );
   }

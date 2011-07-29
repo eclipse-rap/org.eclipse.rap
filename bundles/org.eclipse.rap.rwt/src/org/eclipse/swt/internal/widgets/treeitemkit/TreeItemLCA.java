@@ -39,11 +39,11 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   static final String PROP_GRAYED = "grayed";
   static final String PROP_TEXTS = "texts";
   static final String PROP_IMAGES = "images";
-  static final String PROP_MATERIALIZED = "materialized";
   static final String PROP_VARIANT = "variant";
 
   private static final Integer DEFAULT_ITEM_COUNT = new Integer( 0 );
 
+  @Override
   public void preserveValues( final Widget widget ) {
     TreeItem treeItem = ( TreeItem )widget;
     Tree tree = treeItem.getParent();
@@ -71,7 +71,6 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       adapter.preserve( PROP_CELL_FONTS, itemAdapter.getCellFonts() );
       adapter.preserve( PROP_GRAYED, Boolean.valueOf( treeItem.getGrayed() ) );
     }
-    adapter.preserve( PROP_MATERIALIZED, Boolean.valueOf( treeAdapter.isCached( treeItem ) ) );
     adapter.preserve( PROP_VARIANT, WidgetUtil.getVariant( treeItem ) );
   }
 
@@ -85,7 +84,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       // The event is fired before the setter is called. Order like in SWT.
       processTreeExpandedEvent( treeItem );
       ProcessActionRunner.add( new Runnable() {
-        public void run() {          
+        public void run() {
           treeItem.setExpanded( true );
         }
       } );
@@ -93,13 +92,14 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.wasEventSent( treeItem, JSConst.EVENT_TREE_COLLAPSED ) ) {
       processTreeCollapsedEvent( treeItem );
       ProcessActionRunner.add( new Runnable() {
-        public void run() {         
+        public void run() {
           treeItem.setExpanded( false );
         }
       } );
     }
   }
 
+  @Override
   public void renderInitialization( final Widget widget ) throws IOException {
     TreeItem treeItem = ( TreeItem )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
@@ -120,6 +120,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     writer.callStatic( "org.eclipse.rwt.widgets.TreeItem.createItem", args );
   }
 
+  @Override
   public void renderChanges( final Widget widget ) throws IOException {
     TreeItem treeItem = ( TreeItem )widget;
     Tree tree = treeItem.getParent();
@@ -142,6 +143,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     writeVariant( treeItem );
   }
 
+  @Override
   public void renderDispose( final Widget widget ) throws IOException {
     TreeItem item = ( TreeItem )widget;
     ITreeItemAdapter itemAdapter = ( ITreeItemAdapter )item.getAdapter( ITreeItemAdapter.class );

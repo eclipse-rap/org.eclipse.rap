@@ -31,6 +31,7 @@ public class Tree_Test extends TestCase {
   private Display display;
   private Composite composite;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -38,6 +39,7 @@ public class Tree_Test extends TestCase {
     composite = new Shell( display, SWT.NONE );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -719,6 +721,7 @@ public class Tree_Test extends TestCase {
     final Tree tree = new Tree( composite, SWT.VIRTUAL | SWT.BORDER );
     final List<ControlEvent> log = new ArrayList<ControlEvent>();
     tree.addControlListener( new ControlAdapter() {
+      @Override
       public void controlResized( ControlEvent event ) {
         log.add( event );
       }
@@ -1535,10 +1538,20 @@ public class Tree_Test extends TestCase {
     assertTrue( item.getItem( 25 ).isCached() );
   }
 
-  public void testVirtualDoesNotCreateUnneccessaryItems() {
+  public void testGetCreatedItems_DoesNotContainNullItems() {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     tree.setItemCount( 100 );
     tree.setSize( 100, 100 );
+
+    assertTrue( tree.getCreatedItems().length < 10 );
+  }
+
+  public void testGetCreatedItems_DoesNotContainPlaceholderItems() {
+    Tree tree = new Tree( composite, SWT.VIRTUAL );
+    tree.setItemCount( 100 );
+    tree.setSize( 100, 100 );
+
+    tree.getItems(); // create placeholder items
 
     assertTrue( tree.getCreatedItems().length < 10 );
   }
