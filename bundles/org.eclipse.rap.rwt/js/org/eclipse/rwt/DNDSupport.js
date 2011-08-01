@@ -272,7 +272,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       } 
     },
     
-    _attachTropTargetEvents : function() {
+    _attachDropTargetEvents : function() {
       var req = org.eclipse.swt.Request.getInstance();
       var events = this._dropTargetEventQueue;
       for( var type in events ) {
@@ -449,7 +449,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     // eventhandler
 
     _onSend : function( event ) {
-      this._attachTropTargetEvents();
+      this._attachDropTargetEvents();
       this._requestScheduled = false;
       this._blockDrag = false;
       var req = org.eclipse.swt.Request.getInstance();
