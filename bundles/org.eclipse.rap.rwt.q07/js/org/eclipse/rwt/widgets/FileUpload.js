@@ -134,7 +134,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.FileUpload", {
     },
 
     _layoutInputElement : function() {
-      if( this.getEnabled() && this.isInDom() ) {
+      if( this.getEnabled() && this.isSeeable() ) {
         //Assumed maximal padding between input button and input outer dimensions:
         var padding = 10; 
         this._layoutInputElementHorizontal( padding );
@@ -193,6 +193,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.FileUpload", {
         this._inputElement.style.display = value ? "" : "none";
         this._layoutInputElement();
       }
+    },
+
+    _afterAppear : function() {
+      this.base( arguments );
+      this._layoutInputElement();
     },
 
     ////////////////
