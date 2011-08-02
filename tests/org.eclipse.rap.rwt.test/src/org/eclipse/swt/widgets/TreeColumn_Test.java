@@ -26,8 +26,13 @@ import org.eclipse.swt.graphics.Image;
 
 public class TreeColumn_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
   }
 
   protected void tearDown() throws Exception {
@@ -35,8 +40,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testCreation() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     // Add one item
     TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
@@ -58,8 +61,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testParent() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     // Test creating column with valid parent
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
@@ -74,16 +75,12 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testDisplay() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     assertSame( display, column.getDisplay() );
   }
 
   public void testStyle() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     assertTrue( ( column.getStyle() & SWT.LEFT ) != 0 );
@@ -94,8 +91,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testInitialValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     assertEquals( 0, column.getWidth() );
@@ -108,8 +103,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testAlignment() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column;
     column = new TreeColumn( tree, SWT.NONE );
@@ -128,8 +121,6 @@ public class TreeColumn_Test extends TestCase {
 
   public void testWidth() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     // Initial value
@@ -158,9 +149,8 @@ public class TreeColumn_Test extends TestCase {
         log.add( e.widget );
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
+    tree.setHeaderVisible( true );
     TreeColumn column = new TreeColumn( tree, SWT.NONE );
     column.addControlListener( resizeListener );
     // Ensure that controlResized is fired when pack changes the width
@@ -196,7 +186,23 @@ public class TreeColumn_Test extends TestCase {
     tree.setSortDirection( SWT.UP );
     column.pack();
     assertTrue( column.getWidth() > widthNoSortIndicator);
-    
+
+  }
+
+  public void testPackRespectSubItems() {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item.setText( "Item 0" );
+    TreeItem subitem = new TreeItem( item, SWT.NONE );
+    subitem.setText( "Subitem 0.0" );
+    column.pack();
+    int columnWidth = column.getWidth();
+    item.setExpanded( true );
+
+    column.pack();
+
+    assertTrue( column.getWidth() > columnWidth );
   }
 
   public void testPackWithVirtual() {
@@ -214,8 +220,6 @@ public class TreeColumn_Test extends TestCase {
         log.add( event.widget );
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree;
     TreeColumn column;
     // Must not try to access items if there aren't any
@@ -240,8 +244,6 @@ public class TreeColumn_Test extends TestCase {
   public void testResizeEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     final TreeColumn column = new TreeColumn( tree, SWT.NONE );
     column.addControlListener( new ControlListener() {
@@ -269,8 +271,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testDisposeLast() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn column0 = new TreeColumn( tree, SWT.NONE );
     TreeColumn column1 = new TreeColumn( tree, SWT.NONE );
@@ -287,8 +287,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testSetResizable() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn treeColumn = new TreeColumn( tree, SWT.NONE );
     assertTrue( ":a:", treeColumn.getResizable() == true );
@@ -301,8 +299,6 @@ public class TreeColumn_Test extends TestCase {
   }
 
   public void testSetToolTip() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     Tree tree = new Tree( shell, SWT.NONE );
     TreeColumn treeColumn = new TreeColumn( tree, SWT.NONE );
     String tooltip = "foobar";

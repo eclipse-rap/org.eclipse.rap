@@ -941,7 +941,7 @@ public class Tree_Test extends TestCase {
     col1.pack();
     col2.pack();
     col3.pack();
-    expected = new Point( 255, 229 );
+    expected = new Point( 271, 229 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.setWidth( 10 );

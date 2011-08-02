@@ -1829,7 +1829,7 @@ public class Tree extends Composite {
           int itemWidth = item.getPreferredWidth( 0, false );
           width = Math.max( width, itemWidth );
           if( item.getExpanded() ) {
-            int innerWidth = getMaxInnerWidth( item.items, 1 );
+            int innerWidth = getMaxInnerWidth( item.items, 0, 1, false );
             width = Math.max( width, innerWidth );
           }
         }
@@ -1870,15 +1870,24 @@ public class Tree extends Composite {
   /////////////////////
   // item layout helper
 
-  private int getMaxInnerWidth( TreeItem[] items, int level ) {
+  int getMaxContentWidth( TreeColumn column ) {
+    return getMaxInnerWidth( items, indexOf( column ), 1, true );
+  }
+
+  private int getMaxInnerWidth( TreeItem[] items, int columnIndex, int level, boolean clearBuffer )
+  {
     int maxInnerWidth = 0;
     for( int i = 0; i < items.length; i++ ) {
-      if( items[ i ] != null && items[ i ].isCached() ) {
-        int indention = level * getIndentionWidth(); // TODO [tb] : test
-        int itemWidth = items[ i ].getPreferredWidth( 0, false ) + indention;
+      TreeItem item = items[ i ];
+      if( item != null && item.isCached() ) {
+        int indention = columnIndex == 0 ? level * getIndentionWidth() : 0; // TODO [tb] : test
+        if( clearBuffer ) {
+          item.clearPreferredWidthBuffers();
+        }
+        int itemWidth = item.getPreferredWidth( columnIndex, false ) + indention;
         maxInnerWidth = Math.max( maxInnerWidth, itemWidth );
-        if( items[ i ].getExpanded() ) {
-          int innerWidth = getMaxInnerWidth( items[ i ].items, level + 1 );
+        if( item.getExpanded() ) {
+          int innerWidth = getMaxInnerWidth( item.items, columnIndex, level + 1, clearBuffer );
           maxInnerWidth = Math.max( maxInnerWidth, innerWidth );
         }
       }
@@ -1892,7 +1901,7 @@ public class Tree extends Composite {
 
   private int getCellWidth( int index ) {
     return   getColumnCount() == 0 && index == 0
-           ? getMaxInnerWidth( items, 1 )
+           ? getMaxInnerWidth( items, 0, 1, false )
            : getColumn( index ).getWidth();
   }
 
@@ -2318,7 +2327,7 @@ public class Tree extends Composite {
           int itemWidth = item.getPreferredWidth( 0, false );
           maxWidth = Math.max( maxWidth, itemWidth );
           if( item.getExpanded() ) {
-            int innerWidth = getMaxInnerWidth( item.items, 1 );
+            int innerWidth = getMaxInnerWidth( item.items, 0, 1, false );
             maxWidth = Math.max( maxWidth, innerWidth );
           }
         }

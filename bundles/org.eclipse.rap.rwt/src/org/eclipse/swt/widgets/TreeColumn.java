@@ -289,21 +289,8 @@ public class TreeColumn extends Item {
     return parent;
   }
 
-  int getIndex() {
-    for( int i = 0; i < parent.columnHolder.size(); i++ ) {
-      if( parent.columnHolder.getItem( i ) == this ) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
   int getPreferredWidth() {
-    if( !parent.getHeaderVisible() ) {
-      return 0;
-    }
-    int result = getContentWidth();
-    return result;
+    return parent.getHeaderVisible() ? getContentWidth() : 0;
   }
 
   /**
@@ -365,35 +352,14 @@ public class TreeColumn extends Item {
    *              </ul>
    */
   public void pack() {
-    // TODO: [if] does not respect inner items width if expanded
     checkWidget();
-    TreeItem[] availableItems = parent.getItems();
-    int index = getIndex();
-    int newWidth;
-    newWidth = Graphics.stringExtent( parent.getFont(), getText() ).x;
-    newWidth = Math.max( getPreferredWidth(), newWidth );
-    if( image != null ) {
-      newWidth += image.getBounds().width + MARGIN_IMAGE;
-    }
-    if( parent.getSortColumn() == this && parent.getSortDirection() != SWT.NONE ) {
-      newWidth += SORT_INDICATOR_WIDTH + MARGIN_IMAGE;
-    }
-    for( int i = 0; i < availableItems.length; i++ ) {
-      availableItems[ i ].clearPreferredWidthBuffers();
-      int width = availableItems[ i ].getPreferredWidth( index, false );
-      /* ensure that receiver and parent were not disposed in a callback */
-      if( parent.isDisposed() || isDisposed() ) {
-        return;
-      }
-      if( !availableItems[ i ].isDisposed() ) {
-        newWidth = Math.max( newWidth, width );
-      }
-    }
+    int newWidth = getPreferredWidth();
+    int contentWidth = parent.getMaxContentWidth( this );
+    newWidth = Math.max( newWidth, contentWidth );
     // Mimic Windows behaviour that has a minimal width
     if( newWidth < 12 ) {
       newWidth = 12;
     }
-    // if (newWidth != width) parent.updateColumnWidth (this, newWidth);
     setWidth( newWidth );
   }
 
@@ -561,18 +527,12 @@ public class TreeColumn extends Item {
   public void setWidth( int value ) {
     // TODO: [bm] add support for ellipsis
     checkWidget();
-    if( value < 0 ) {
-      return;
+    if( value >= 0 && width != value ) {
+      width = value;
+      parent.updateScrollBars();
+      ControlEvent event = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
+      event.processEvent();
     }
-    if( width == value ) {
-      return; /* same value */
-    }
-    this.width = value;
-    parent.updateScrollBars();
-    int eventId = ControlEvent.CONTROL_RESIZED;
-    ControlEvent event = new ControlEvent( this, eventId );
-    event.processEvent();
-    // parent.updateColumnWidth (this, value);
   }
 
   void releaseParent() {
