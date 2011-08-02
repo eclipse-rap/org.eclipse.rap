@@ -112,6 +112,14 @@ public class TreeTab extends ExampleTab {
         }
       }
     } );
+    Button columnsPackButton = createPropertyButton( "Pack all columns", SWT.PUSH );
+    columnsPackButton.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        for( int i = 0; i < tree.getColumnCount(); i++ ) {
+          tree.getColumn( i ).pack();
+        }
+      }
+    } );
     Button cbAddMouseListener = new Button( parent, SWT.CHECK );
     cbAddMouseListener.setText( "Attach MouseListener" );
     cbAddMouseListener.addSelectionListener( new SelectionAdapter() {
@@ -271,7 +279,7 @@ public class TreeTab extends ExampleTab {
     int columns = item.getParent().getColumnCount();
     int index = -1;
     if( item.getParentItem() == null ) {
-      index = item.getParent().indexOf( item );      
+      index = item.getParent().indexOf( item );
     } else {
       index = item.getParentItem().indexOf( item );
     }
@@ -466,7 +474,7 @@ public class TreeTab extends ExampleTab {
         if( selectedItems.length > 0 ) {
           selectedItems[ 0 ].setItemCount( itemCount );
         } else {
-          tree.setItemCount( itemCount );          
+          tree.setItemCount( itemCount );
         }
         tree.redraw();
       }
