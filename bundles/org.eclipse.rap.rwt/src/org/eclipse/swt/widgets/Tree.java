@@ -1134,7 +1134,6 @@ public class Tree extends Composite {
     }
     TreeItem result = null;
     int index = ( point.y - getHeaderHeight() ) / getItemHeight() + topItemIndex;
-    // collect all visible items
     List visibleItems = collectVisibleItems( null );
     if( 0 <= index && index < visibleItems.size() ) {
       result = ( TreeItem )visibleItems.get( index );
@@ -1144,16 +1143,10 @@ public class Tree extends Composite {
 
   private List<TreeItem> collectVisibleItems( TreeItem parentItem ) {
     List<TreeItem> result = new ArrayList<TreeItem>();
-    TreeItem[] children;
-    if( parentItem == null ) {
-      children = new TreeItem[ itemCount ];
-      System.arraycopy( items, 0, children, 0, itemCount );
-    } else {
-      children = new TreeItem[ parentItem.itemCount ];
-      System.arraycopy( parentItem.items, 0, children, 0, parentItem.itemCount );
-    }
-    for( int i = 0; i < children.length; i++ ) {
-      TreeItem item = children[ i ];
+    TreeItem[] items = parentItem == null ? this.items : parentItem.items;
+    int itemCount = parentItem == null ? this.itemCount : parentItem.itemCount;
+    for( int i = 0; i < itemCount; i++ ) {
+      TreeItem item = items[ i ];
       result.add( item );
       if( item != null && item.getExpanded() ) {
         result.addAll( collectVisibleItems( item ) );
