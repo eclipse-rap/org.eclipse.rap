@@ -13,10 +13,8 @@
 qx.Class.define( "org.eclipse.swt.widgets.Shell", {
   extend : qx.ui.window.Window,
 
-  construct : function( properties ) {
+  construct : function( styles ) {
     this.base( arguments );
-    org.eclipse.rwt.protocol.Processor.addStatesForStyles( this, properties.style );
-    var styles = org.eclipse.rwt.protocol.Processor.createStyleMap( properties.style );
     this.setShowMinimize( styles.MIN === true );
     this.setAllowMinimize( styles.MIN === true  );
     this.setShowMaximize( styles.MAX === true  );
@@ -56,7 +54,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.removeEventListener( "mousedown", this._onwindowmousedown );
     this.addEventListener( "create", this._onCreate, this );
     this.__onwindowmousedown = qx.lang.Function.bind( this._onwindowmousedown, this );
-    this.initialize();
     this.addToDocument();
   },
 

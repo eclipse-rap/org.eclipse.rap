@@ -10,11 +10,14 @@
 
 org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
   
-  constructor : org.eclipse.swt.widgets.Shell,
-  
-  constructorProperties : [ "parent", "style" ],
-  
-  isControl : true,
+  factory : function( properties ) {
+    var styles = org.eclipse.rwt.protocol.Processor.createStyleMap( properties.style );
+    var result = new org.eclipse.swt.widgets.Shell( styles );
+    org.eclipse.rwt.protocol.Processor.addStatesForStyles( result, properties.style );
+    result.initialize();
+    result.setUserData( "isControl", true );
+    return result;
+  },
 
   properties : [
     "showMinimize", 

@@ -66,18 +66,8 @@ org.eclipse.rwt.protocol.Processor = {
 
   _processCreate : function( targetId, type, properties ) {
     var adapter = org.eclipse.rwt.protocol.AdapterRegistry.getAdapter( type );
-    var targetObject
-    if( adapter.constructorProperties ) {
-      var contructorArg = {};
-      var keys = adapter.constructorProperties;
-      for( var i = 0; i < keys.length; i++ ) {
-        contructorArg[ keys[ i ] ] = properties[ keys[ i ] ];
-      }
-      targetObject = new adapter.constructor( contructorArg );
-    } else {
-      targetObject = new adapter.constructor();
-    }
-    this._addTarget( targetObject, targetId, adapter.isControl, type );
+    var targetObject = adapter.factory( properties );
+    this._addTarget( targetObject, targetId, type );
   },
 
   _processDestroy : function( targetId ) {
@@ -154,9 +144,10 @@ org.eclipse.rwt.protocol.Processor = {
     msg += "\n" + error;
     throw new Error( msg );
   },
-  _addTarget : function( target, targetId, isControl, type ) {
+
+  _addTarget : function( target, targetId, type ) {
     var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-    widgetManager.add( target, targetId, isControl === true, type );
+    widgetManager.add( target, targetId, false, type );
   },
 
   _getTarget : function( targetId ) {

@@ -161,9 +161,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
     testProcessCreate : function() {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
-      var constr = this._getDummyContructor();
+      var factory = this._getDummyFactory();
       registry.add( "dummyType", {
-        constructor : constr
+        factory : factory
       } );
       var properties = {
         style : []
@@ -176,7 +176,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       };
       processor.processOperation( operation );
       var result = this._getTargetById( "dummyId" );
-      assertTrue( result instanceof constr );
+      assertEquals( "myclass", result.classname );
       registry.remove( "dummyType" );
     },
 
@@ -203,34 +203,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       registry.remove( "dummyType" );
     },
 
-    testProcessCreateControl : function() {
-      var registry = org.eclipse.rwt.protocol.AdapterRegistry;
-      var processor = org.eclipse.rwt.protocol.Processor;
-      registry.add( "dummyType", {
-        constructor : this._getDummyContructor(),
-        isControl : true
-      } );
-      var properties = {
-        style : []
-      };
-      var operation = {
-        "action" : "create",
-        "type" : "dummyType",
-        "target" : "dummyId",
-        "properties" : properties
-      };
-      processor.processOperation( operation );
-      var result = this._getTargetById( "dummyId" );
-      assertTrue( this._isControl( result ) );
-      registry.remove( "dummyType" );
-    },
-
     testProcessCreateWithStyleStates : function() {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        constructor : this._getDummyContructor(),
-        constructorProperties : [ "style" ]
+        factory : this._getDummyFactory()
       } );
       var properties = {
         style : [ "BORDER", "FLAT" ]
@@ -253,8 +230,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        constructor : this._getDummyContructor(),
-        constructorProperties : [ "style" ]
+        factory : this._getDummyFactory()
       } );
       var properties = {
         style : [ "BORDER", "FLAT" ]
@@ -277,8 +253,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        constructor : this._getDummyContructor(),
-        constructorProperties : [ "style" ]
+        factory : this._getDummyFactory()
       } );
       var properties = {
         style : [ "BORDER", "FLAT" ]
@@ -299,7 +274,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        constructor : this._getDummyContructor(),
+        factory : this._getDummyFactory(),
         properties : [ "width", "height" ]
       } );
       var properties = {
@@ -322,7 +297,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
 //      var registry = org.eclipse.rwt.protocol.AdapterRegistry;
 //      var processor = org.eclipse.rwt.protocol.Processor;
 //      registry.add( "dummyType", {
-//         constructor : this._getDummyContructor()
+//         factory : this._getDummyFactory()
 //      } );
 //      var properties = {
 //        parent : "dummyParentId",
@@ -885,7 +860,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       return targetObject;
     },
 
-    _getDummyContructor : function() {
+    _getDummyFactory : function() {
       var constr = function( properties ) {
         if( properties ) {
           org.eclipse.rwt.protocol.Processor.addStatesForStyles( this, properties.style );
@@ -893,7 +868,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
         this._prop = properties;
       };
       constr.prototype = this._getDummyTarget();
-      return constr;
+      var result = function( prop ) {
+        return new constr( prop );
+      };
+      return result;
     },
 
     _getTargetById : function( id ) {
