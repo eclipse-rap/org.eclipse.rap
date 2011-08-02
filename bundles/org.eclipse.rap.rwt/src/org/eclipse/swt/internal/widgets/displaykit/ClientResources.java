@@ -59,6 +59,7 @@ final class ClientResources {
     "qx/core/Init.js",
     "qx/util/manager/MConnectedObject.js",
     "org/eclipse/rwt/HtmlUtil.js",
+    "org/eclipse/rwt/protocol/AdapterRegistry.js",
     "qx/ui/core/Widget.js",
     "org/eclipse/rwt/WidgetRenderAdapter.js",
     "qx/html/Dimension.js",
@@ -208,6 +209,7 @@ final class ClientResources {
     "org/eclipse/rwt/widgets/ToolItem.js",
     "org/eclipse/swt/widgets/Group.js",
     "org/eclipse/swt/widgets/Shell.js",
+    "org/eclipse/swt/widgets/ShellAdapter.js",
     "org/eclipse/swt/widgets/ProgressBar.js",
     "org/eclipse/swt/widgets/Link.js",
     "org/eclipse/swt/widgets/Scrollable.js",
@@ -249,7 +251,6 @@ final class ClientResources {
     "org/eclipse/rwt/MobileWebkitSupport.js",
     "org/eclipse/swt/widgets/ToolTip.js",
     "org/eclipse/swt/WidgetManager.js",
-    "org/eclipse/rwt/protocol/AdapterRegistry.js",
     "org/eclipse/rwt/protocol/Processor.js",
   };
 

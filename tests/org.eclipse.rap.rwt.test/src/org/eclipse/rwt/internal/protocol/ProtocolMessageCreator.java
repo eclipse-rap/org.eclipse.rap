@@ -21,7 +21,7 @@ public class ProtocolMessageCreator {
     String[] allowedShellStyles = RWTStylesUtil.getAllowedStylesForWidget( shell );
     String[] shellStyles = StylesUtil.filterStyles( shell, allowedShellStyles );
     shellProperties.put( ProtocolConstants.CREATE_STYLE, shellStyles );
-    clientShell.create( shellProperties  );
+    clientShell.create( shellProperties );
     IClientObject clientButton = ClientObjectFactory.getForWidget( button );
     Map<String, Object> buttonProperties = new HashMap<String, Object>();
     String[] allowedButtonStyles = RWTStylesUtil.getAllowedStylesForWidget( button );

@@ -8,8 +8,9 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.protocol;
+package org.eclipse.rwt;
 
+import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.json.*;
 
 
@@ -17,7 +18,13 @@ public final class Message {
 
   private JSONArray operations;
   
-  public Message( String json ) {
+  public Message( String javaScript ) {
+    String prefix = JavaScriptResponseWriter.PROCESS_MESSAGE + "(";
+    int index = javaScript.indexOf( prefix );
+    String json = "{ operations: [] }";
+    if( index != -1 ) {
+      json = javaScript.substring( index + prefix.length() );
+    }
     JSONObject jsonObject;
     try {
       jsonObject = new JSONObject( json );
@@ -29,6 +36,10 @@ public final class Message {
     } catch( JSONException e ) {
       throw new IllegalArgumentException( "Missing operations array: " + json );
     }
+  }
+
+  public int getOperationCount() {
+    return operations.length();
   }
 
   public Operation getOperation( int position ) {

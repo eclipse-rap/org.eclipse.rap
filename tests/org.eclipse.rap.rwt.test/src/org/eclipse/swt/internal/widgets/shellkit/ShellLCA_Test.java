@@ -12,10 +12,13 @@
 package org.eclipse.swt.internal.widgets.shellkit;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.*;
+import org.eclipse.rwt.Message.CreateOperation;
+import org.eclipse.rwt.Message.SetOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
@@ -390,58 +393,115 @@ public class ShellLCA_Test extends TestCase {
   }
 
   public void testWriteStyleFlags() throws Exception {
-    Shell shell = new Shell( display , SWT.SHELL_TRIM );
-    assertTrue( ( shell.getStyle() & SWT.TITLE ) != 0 );
+    Shell shell = new Shell( display , SWT.NO_TRIM );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     ShellLCA lca = new ShellLCA();
+
     lca.renderInitialization( shell );
-    String expected = "addState( \"rwt_TITLE\" )";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = ( CreateOperation )message.getOperation( 0 );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "NO_TRIM" ) );
   }
 
-  public void testTitleImage() throws Exception {
+  public void testWriteText() throws Exception {
     Shell shell = new Shell( display , SWT.SHELL_TRIM );
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     ShellLCA lca = new ShellLCA();
-    // with caption bar
+
+    shell.setText( "foo" );
+    lca.renderChanges( shell );
+    Message message = Fixture.getProtocolMessage();
+    SetOperation operation = ( SetOperation )message.getOperation( 0 );
+    assertEquals( "foo", operation.getProperty( "text" ) );
+  }
+
+  public void testWriteParentShellForDialogShell() throws Exception {
+    Shell parentShell = new Shell( display );
+    Shell dialogShell = new Shell( parentShell );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( parentShell );
+    Fixture.preserveWidgets();
+    Fixture.fakeResponseWriter();
+    ShellLCA lca = new ShellLCA();
+
+    lca.renderInitialization( dialogShell );
+    
+    String parentRef = "wm.findWidgetById( \"" + WidgetUtil.getId( parentShell ) + "\" )";
+    String expected = "w.setParentShell( " + parentRef + " );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
+  }
+
+  public void testTitleImageWithCaptionBar() throws Exception {
+    Shell shell = new Shell( display , SWT.SHELL_TRIM );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.preserveWidgets();
+    Fixture.fakeResponseWriter();
+    ShellLCA lca = new ShellLCA();
+    
     shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     lca.renderChanges( shell );
-    String expected = "w.setIcon( \""
-                    + ImageFactory.getImagePath( shell.getImage() )
-                    + "\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    // without caption bar
-    Fixture.fakeNewRequest();
-    shell = new Shell( display, SWT.NO_TRIM );
+    
+    Message message = Fixture.getProtocolMessage();
+    SetOperation operation = ( SetOperation )message.getOperation( 0 );
+    String expected = ImageFactory.getImagePath( shell.getImage() );
+    assertEquals( expected, operation.getProperty( "image" ) );
+  }
+
+  public void testTitleImageWithoutCaptionBar() throws Exception {
+    Shell shell = new Shell( display, SWT.NO_TRIM );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.preserveWidgets();
+    Fixture.fakeResponseWriter();
+    ShellLCA lca = new ShellLCA();
+
     shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     lca.renderChanges( shell );
-    expected = "w.setIcon( \""
-             + ImageFactory.getImagePath( shell.getImage() )
-             + "\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) == -1 );
-    // with caption bar, without MIN, MAX, CLOSE
-    Fixture.fakeNewRequest();
-    shell = new Shell( display, SWT.TITLE );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
+  }
+
+  public void testTitleImageWithCaptionBarWihoutMinMaxClose() throws Exception {
+    Shell shell = new Shell( display, SWT.TITLE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.preserveWidgets();
+    Fixture.fakeResponseWriter();
+    ShellLCA lca = new ShellLCA();
+
     shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     lca.renderChanges( shell );
-    expected = "w.setIcon( \""
-             + ImageFactory.getImagePath( shell.getImage() )
-             + "\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    // with multiple images
-    Fixture.fakeNewRequest();
-    shell = new Shell( display, SWT.TITLE );
+    
+    Message message = Fixture.getProtocolMessage();
+    SetOperation operation = ( SetOperation )message.getOperation( 0 );
+    String expected = ImageFactory.getImagePath( shell.getImage() );
+    assertEquals( expected, operation.getProperty( "image" ) );
+  }
+
+  public void testTitleImageWithMultipleImages() throws Exception {
+    Shell shell = new Shell( display, SWT.TITLE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.preserveWidgets();
+    Fixture.fakeResponseWriter();
+    ShellLCA lca = new ShellLCA();
+
     shell.setImages( new Image[] { Graphics.getImage( Fixture.IMAGE1 ) } );
     lca.renderChanges( shell );
-    expected = "w.setIcon( \""
-             + ImageFactory.getImagePath( shell.getImages()[0] )
-             + "\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    
+    Message message = Fixture.getProtocolMessage();
+    SetOperation operation = ( SetOperation )message.getOperation( 0 );
+    String expected = ImageFactory.getImagePath( shell.getImages()[0] );
+    assertEquals( expected, operation.getProperty( "image" ) );
   }
 
   // see bug 223879

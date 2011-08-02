@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,14 @@
 package org.eclipse.swt.internal.widgets.shellkit;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -29,11 +32,6 @@ import org.eclipse.swt.widgets.*;
 
 
 public final class ShellLCA extends AbstractWidgetLCA {
-
-  private static final int MODAL
-    = SWT.APPLICATION_MODAL | SWT.SYSTEM_MODAL | SWT.PRIMARY_MODAL;
-
-  private static final String QX_TYPE = "org.eclipse.swt.widgets.Shell";
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
@@ -85,39 +83,17 @@ public final class ShellLCA extends AbstractWidgetLCA {
   }
 
   public void renderInitialization( Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
     Shell shell = ( Shell )widget;
-    writer.newWidget( QX_TYPE );
-    ControlLCAUtil.writeStyleFlags( shell );
-    int style = widget.getStyle();
-    if( ( style & MODAL ) != 0 ) {
-      writer.call( "addState", new Object[] { "rwt_APPLICATION_MODAL" } );
-    }
-    if( ( style & SWT.ON_TOP ) != 0 ) {
-      writer.call( "addState", new Object[] { "rwt_ON_TOP" } );
-    }
-    if( ( style & SWT.TITLE ) != 0 ) {
-      writer.call( "addState", new Object[]{ "rwt_TITLE" } );
-    }
-    if( ( style & SWT.TOOL ) != 0 ) {
-      writer.call( "addState", new Object[]{ "rwt_TOOL" } );
-    }
-    if( ( style & SWT.SHEET ) != 0 ) {
-      writer.call( "addState", new Object[]{ "rwt_SHEET" } );
-    }
-    writer.set( "showMinimize", ( style & SWT.MIN ) != 0 );
-    writer.set( "allowMinimize", ( style & SWT.MIN ) != 0 );
-    writer.set( "showMaximize", ( style & SWT.MAX ) != 0 );
-    writer.set( "allowMaximize", ( style & SWT.MAX ) != 0 );
-    writer.set( "showClose", ( style & SWT.CLOSE ) != 0 );
-    writer.set( "allowClose", ( style & SWT.CLOSE ) != 0 );
-    Boolean resizable = Boolean.valueOf( ( style & SWT.RESIZE ) != 0 );
-    writer.set( "resizable", new Object[] { resizable, resizable, resizable, resizable } );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+    String[] allowedStyles = RWTStylesUtil.getAllowedStylesForWidget( shell );
+    String[] styles = StylesUtil.filterStyles( shell, allowedStyles );
+    Map<String, Object> args = new HashMap<String, Object>();
+    args.put( "style", styles );
+    clientObject.create( args );
     Composite parent = shell.getParent();
     if( parent instanceof Shell ) {
-      writer.set( "parentShell", parent );
+      JSWriter.getWriterFor( widget ).set( "parentShell", parent );
     }
-    writer.call( "initialize", null );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
@@ -150,12 +126,12 @@ public final class ShellLCA extends AbstractWidgetLCA {
   //////////////////
   // Helping methods
 
-  private static void writeText( Shell shell ) throws IOException {
+  private static void writeText( Shell shell ) {
     String text = shell.getText();
     if( WidgetLCAUtil.hasChanged( shell, PROP_TEXT, text, "" ) ) {
-      JSWriter writer = JSWriter.getWriterFor( shell );
       text = WidgetLCAUtil.escapeText( text, false );
-      writer.set( JSConst.QX_FIELD_CAPTION, text );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+      clientObject.setProperty( "text", text );
     }
   }
 
@@ -189,9 +165,9 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeDefaultButton( Shell shell ) throws IOException
-  {
+  private static void writeDefaultButton( Shell shell ) throws IOException {
     Button defaultButton = shell.getDefaultButton();
+    // NOTE [tb] : set happens in PushButtonLCA - can all be handled here?
     if( defaultButton != null && defaultButton.isDisposed() ) {
       JSWriter writer = JSWriter.getWriterFor( shell );
       writer.call( "setDefaultButton", NULL_PARAMETER );
@@ -294,7 +270,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeImage( Shell shell ) throws IOException {
+  private static void writeImage( Shell shell ) {
     if( ( shell.getStyle() & SWT.TITLE ) != 0 ) {
       Image image = shell.getImage();
       if( image == null ) {
@@ -304,8 +280,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
         }
       }
       if( WidgetLCAUtil.hasChanged( shell, PROP_IMAGE, image, null ) ) {
-        JSWriter writer = JSWriter.getWriterFor( shell );
-        writer.set( JSConst.QX_FIELD_ICON, ImageFactory.getImagePath( image ) );
+        IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+        clientObject.setProperty( "image", ImageFactory.getImagePath( image ) );
       }
     }
   }

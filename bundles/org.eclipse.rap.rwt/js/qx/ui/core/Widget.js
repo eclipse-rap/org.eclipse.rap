@@ -1485,10 +1485,11 @@ qx.Class.define( "qx.ui.core.Widget", {
     _computedMaxHeightTypePercent : false,
     _computedMaxHeightTypeAuto : false,
     _computedMaxHeightTypeFlex : false,
-    
+    _customVariant : null,
+
     ///////////////
     // apply layout
-
+    
     _applyLeft : function(value, old) {
       this._unitDetectionPixelPercent("left", value);
       this.addToQueue("left");
@@ -2854,6 +2855,16 @@ qx.Class.define( "qx.ui.core.Widget", {
 
     /////////////////
     // STATE HANDLING
+    
+    setCustomVariant : function( value ) {
+      if( this._customVariant !== null ) {
+        this.removeState( this._customVariant );
+      }
+      this._customVariant = value;
+      if( this._customVariant !== null ) {
+        this.addState( this._customVariant );
+      }
+    },
 
     hasState : function(vState) {
       return this.__states && this.__states[vState] ? true : false;

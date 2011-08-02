@@ -102,7 +102,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
     testOnCanvasAppearOnEnhancedBorder : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
-      var shell = new org.eclipse.swt.widgets.Shell();
+      var shell = new org.eclipse.swt.widgets.Shell( { "style" : [] } );
       shell.setShadow( null );
       shell.addToDocument();
       shell.setBackgroundColor( null );

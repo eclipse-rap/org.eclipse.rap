@@ -269,6 +269,11 @@ public class Fixture {
     return response.getContent();
   }
 
+  public static Message getProtocolMessage() {
+    ContextProvider.getStateInfo().getResponseWriter().finish();
+    return new Message( getAllMarkup() );
+  }
+
   public static void fakeNewRequest( Display display ) {
     fakeNewRequest();
     fakeRequestParam( RequestParams.UIROOT, DisplayUtil.getId( display ) );

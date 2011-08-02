@@ -66,7 +66,17 @@ org.eclipse.rwt.protocol.Processor = {
 
   _processCreate : function( targetId, type, properties ) {
     var adapter = org.eclipse.rwt.protocol.AdapterRegistry.getAdapter( type );
-    var targetObject = new adapter.constructor( properties );
+    var targetObject
+    if( adapter.constructorProperties ) {
+      var contructorArg = {};
+      var keys = adapter.constructorProperties;
+      for( var i = 0; i < keys.length; i++ ) {
+        contructorArg[ keys[ i ] ] = properties[ keys[ i ] ];
+      }
+      targetObject = new adapter.constructor( contructorArg );
+    } else {
+      targetObject = new adapter.constructor();
+    }
     this._addTarget( targetObject, targetId, adapter.isControl, type );
   },
 
@@ -77,10 +87,10 @@ org.eclipse.rwt.protocol.Processor = {
 
   _processSet : function( targetId, properties ) {
     var adapter = this._getAdapter( targetId );
-    if( adapter.knownProperties instanceof Array ) {
+    if( adapter.properties  instanceof Array ) {
       var targetObject = this._getTarget( targetId );
-      for( var i = 0; i < adapter.knownProperties.length; i++ ) {
-        var property = adapter.knownProperties[ i ];
+      for( var i = 0; i < adapter.properties .length; i++ ) {
+        var property = adapter.properties [ i ];
         var value = properties[ property ];
         if( value !== undefined ) {
           if( adapter.propertyHandler && adapter.propertyHandler[ property ] ) {

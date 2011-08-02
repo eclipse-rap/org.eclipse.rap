@@ -54,8 +54,7 @@ public class UICallBackManager_Test extends TestCase {
     String timerExecDelayProp = System.getProperty( SYS_PROP_TIMER_EXEC_DELAY );
     TIMER_EXEC_DELAY = timerExecDelayProp == null ? 5000 :Integer.parseInt( timerExecDelayProp );
   }
-  
-  
+    
   private static String log = "";
 
   private Display display;

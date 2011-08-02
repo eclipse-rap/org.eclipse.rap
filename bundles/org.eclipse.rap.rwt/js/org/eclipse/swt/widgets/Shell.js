@@ -13,8 +13,20 @@
 qx.Class.define( "org.eclipse.swt.widgets.Shell", {
   extend : qx.ui.window.Window,
 
-  construct : function() {
+  construct : function( properties ) {
     this.base( arguments );
+    org.eclipse.rwt.protocol.Processor.addStatesForStyles( this, properties.style );
+    var styles = org.eclipse.rwt.protocol.Processor.createStyleMap( properties.style );
+    this.setShowMinimize( styles.MIN === true );
+    this.setAllowMinimize( styles.MIN === true  );
+    this.setShowMaximize( styles.MAX === true  );
+    this.setAllowMaximize(styles.MAX === true  );
+    this.setShowClose( styles.CLOSE === true  );
+    this.setAllowClose( styles.CLOSE === true  );
+    this.setResizableWest( styles.RESIZE === true  );
+    this.setResizableNorth( styles.RESIZE === true  );
+    this.setResizableEast( styles.RESIZE === true  );
+    this.setResizableSouth( styles.RESIZE === true  );
     this.setOverflow( qx.constant.Style.OVERFLOW_HIDDEN );
     // Note: This prevents a laoyut-glitch on the ipad:
     this.setRestrictToPageOnOpen( false );
@@ -26,6 +38,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this._activateListenerWidgets = new Array();
     this._parentShell = null;
     this._renderZIndex = true;
+    this._hasShellListener = false;
     // TODO [rh] check whether these listeners must be removed upon disposal
     this.addEventListener( "changeActiveChild", this._onChangeActiveChild );
     this.addEventListener( "changeFocusedChild", this._onChangeFocusedChild );
@@ -43,6 +56,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.removeEventListener( "mousedown", this._onwindowmousedown );
     this.addEventListener( "create", this._onCreate, this );
     this.__onwindowmousedown = qx.lang.Function.bind( this._onwindowmousedown, this );
+    this.initialize();
+    this.addToDocument();
   },
 
   statics : {
@@ -177,6 +192,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
   },
 
   members : {
+    
+    destroy : function() {
+      this.doClose();
+      this.base( arguments );
+    },
+    
     _onCreate : function( evt ) {
       qx.html.EventRegistration.addEventListener( this.getElement(),
                                                   "mousedown",
@@ -597,5 +618,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
         this._captionBar.setDisplay( this.hasState( "rwt_TITLE" ) );
       }
     }
+    
   }
 } );

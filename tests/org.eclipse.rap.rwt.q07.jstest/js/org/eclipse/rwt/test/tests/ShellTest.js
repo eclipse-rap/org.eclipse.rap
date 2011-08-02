@@ -27,10 +27,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
 // fake the ThemeStore. Reactivate when the ThemeStore fixture is available.
 //    assertEquals( "undefined", backgroundColor );
       // create shell like the LCA would do:
-      var shell = new org.eclipse.swt.widgets.Shell();
-      shell.addToDocument();
-      shell.addState( "rwt_APPLICATION_MODAL" );
-      shell.initialize()
+      var args = {
+        "style" : [ "APPLICATION_MODAL" ]
+      };
+      var shell = new org.eclipse.swt.widgets.Shell( args );
       shell.open();
       shell.setActive( true );
       shell.setSpace( 50, 300, 50, 200 );
@@ -52,9 +52,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
     
     testDisplayOverlayCopyStates : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = new org.eclipse.swt.widgets.Shell();
-      shell.addToDocument();
-      shell.addState( "rwt_APPLICATION_MODAL" );
+      var args = {
+        "style" : [ "APPLICATION_MODAL" ]
+      };
+      var shell = new org.eclipse.swt.widgets.Shell( args );
       shell.addState( "rwt_myTest" );
       shell.initialize()
       shell.open();
@@ -76,10 +77,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
 
     testDisplayOverlayAddStates : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = new org.eclipse.swt.widgets.Shell();
-      shell.addToDocument();
-      shell.addState( "rwt_APPLICATION_MODAL" );
-      shell.initialize()
+      var args = {
+        "style" : [ "APPLICATION_MODAL" ]
+      };
+      var shell = new org.eclipse.swt.widgets.Shell( args );
       shell.open();
       shell.setActive( true );
       shell.setSpace( 50, 300, 50, 200 );
@@ -107,20 +108,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       overlay.addEventListener( "changeVisibility", function( event) {
         visibilityChanges++;
       } );
-      var shell = new org.eclipse.swt.widgets.Shell();
-      shell.addToDocument();
-      shell.addState( "rwt_APPLICATION_MODAL" );
-      shell.initialize()
+      var args = {
+        "style" : [ "APPLICATION_MODAL" ]
+      };
+      var shell = new org.eclipse.swt.widgets.Shell( args );
       shell.open();
       shell.setActive( true );
       shell.setSpace( 50, 300, 50, 200 );
       shell.setVisibility( true );
       testUtil.flush();
-      var shell2 = new org.eclipse.swt.widgets.Shell();
-      shell2.addToDocument();
-      shell2.addState( "rwt_APPLICATION_MODAL" );
+      var shell2 = new org.eclipse.swt.widgets.Shell( args );
       shell2.addState( "rwt_myTest2" );
-      shell2.initialize()
       shell2.open();
       shell2.setActive( true );
       shell2.setSpace( 100, 300, 50, 200 );
@@ -155,7 +153,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
 
     testCustomVariant : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = new org.eclipse.swt.widgets.Shell();
+      var args = {
+        "style" : []
+      };
+      var shell = new org.eclipse.swt.widgets.Shell( args );
       var variant = "variant_myCustomVariant";
       shell.addState( variant );
       assertTrue( shell._captionBar.hasState( variant) );

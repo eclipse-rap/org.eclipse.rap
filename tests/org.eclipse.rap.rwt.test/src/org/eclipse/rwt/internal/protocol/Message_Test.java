@@ -18,16 +18,14 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.protocol.Message.CallOperation;
-import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
-import org.eclipse.rwt.internal.protocol.Message.DestroyOperation;
-import org.eclipse.rwt.internal.protocol.Message.ExecuteScriptOperation;
-import org.eclipse.rwt.internal.protocol.Message.ListenOperation;
-import org.eclipse.rwt.internal.protocol.Message.SetOperation;
+import org.eclipse.rwt.Message;
+import org.eclipse.rwt.Message.*;
 
 
 public class Message_Test extends TestCase {
   
+  private static final String SUFFIX = " );";
+  private static final String PREFIX = "org.eclipse.rwt.protocol.Processor.processMessage( ";
   private ProtocolMessageWriter writer;
 
   @Override
@@ -51,7 +49,7 @@ public class Message_Test extends TestCase {
 
   public void testConstructWithInvalidJson() {
     try {
-      new Message( "{" );
+      new Message( PREFIX + "{" + SUFFIX );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Could not parse json" ) );
@@ -60,7 +58,7 @@ public class Message_Test extends TestCase {
 
   public void testConstructWithoutOperations() {
     try {
-      new Message( "{ \"foo\": 23 }" );
+      new Message( PREFIX + "{ \"foo\": 23 }" + SUFFIX );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Missing operations array" ) );
@@ -69,11 +67,22 @@ public class Message_Test extends TestCase {
 
   public void testConstructWithInvalidOperations() {
     try {
-      new Message( "{ \"operations\": 23 }" );
+      new Message( PREFIX + "{ \"operations\": 23 }" + SUFFIX );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Missing operations array" ) );
     }
+  }
+
+  public void testGetOperationCountWhenEmpty() {
+    assertEquals( 0, getMessage().getOperationCount() );
+  }
+
+  public void testGetOperationCount() {
+    writer.appendCall( "w1", "method1", null );
+    writer.appendCall( "w2", "method2", null );
+
+    assertEquals( 2, getMessage().getOperationCount() );
   }
 
   public void testGetOperation() {
@@ -122,8 +131,9 @@ public class Message_Test extends TestCase {
   }
   
   public void testGetOperationWithUnknownType() {
-    Message message = new Message( "{ \"operations\" : [ { \"action\" : \"foo\" } ] }" );
-    
+    Message message = new Message( PREFIX
+                                   + "{ \"operations\" : [ { \"action\" : \"foo\" } ] }"
+                                   + SUFFIX );    
     try {
       message.getOperation( 0 );
       fail();
@@ -220,6 +230,7 @@ public class Message_Test extends TestCase {
   }
   
   private Message getMessage() {
-    return new Message( writer.createMessage() );
+    return new Message( PREFIX + writer.createMessage() + SUFFIX );
   }
+
 }

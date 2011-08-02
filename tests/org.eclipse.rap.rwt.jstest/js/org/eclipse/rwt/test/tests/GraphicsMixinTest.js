@@ -806,7 +806,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     // Helper
 
     _createShell : function() {
-      var result = new org.eclipse.swt.widgets.Shell();
+      var result = new org.eclipse.swt.widgets.Shell( { "style" : [] } );
       result.addToDocument();
       result.setBackgroundColor( null );
       result.setBackgroundGradient( null );
