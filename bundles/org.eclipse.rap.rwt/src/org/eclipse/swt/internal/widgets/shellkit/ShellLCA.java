@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.shellkit;
 
@@ -47,6 +47,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   private final static Object[] NULL_PARAMETER = new Object[] { null };
 
+  @Override
   public void preserveValues( final Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
     Shell shell = ( Shell )widget;
@@ -82,6 +83,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( shell );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
@@ -96,6 +98,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
     WidgetLCAUtil.writeCustomVariant( shell ); // Order matters for animation
@@ -117,6 +120,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeChanges( shell );
   }
 
+  @Override
   public void renderDispose( final Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.call( "doClose", null );
