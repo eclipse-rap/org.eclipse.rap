@@ -116,156 +116,7 @@ public class Tree extends Composite {
   private ScrollBar verticalBar;
   private ScrollBar horizontalBar;
   private Point itemImageSize;
-  private Rectangle bufferedCellPadding = null;
-  private int bufferedCellSpacing = -1;
-  private Rectangle bufferedCheckBoxMargin = null;
-
-  private final class CompositeItemHolder implements IItemHolderAdapter {
-    public void add( Item item ) {
-      if( item instanceof TreeColumn ) {
-        columnHolder.add( ( TreeColumn )item );
-      } else {
-        String msg = "Only TreeColumns may be added to CompositeItemHolder";
-        throw new IllegalArgumentException( msg );
-      }
-    }
-    public void insert( Item item, int index ) {
-      if( item instanceof TreeColumn ) {
-        columnHolder.insert( ( TreeColumn )item, index );
-      } else {
-        String msg = "Only TreeColumns may be inserted to CompositeItemHolder";
-        throw new IllegalArgumentException( msg );
-      }
-    }
-    public void remove( Item item ) {
-      if( item instanceof TreeColumn ) {
-        columnHolder.remove( ( TreeColumn )item );
-      } else {
-        String msg = "Only TreeColumns may be removed from CompositeItemHolder";
-        throw new IllegalArgumentException( msg );
-      }
-    }
-    public Item[] getItems() {
-      TreeItem[] items = getCreatedItems();
-      Item[] columns = columnHolder.getItems();
-      Item[] result = new Item[ columns.length + items.length ];
-      System.arraycopy( columns, 0, result, 0, columns.length );
-      System.arraycopy( items, 0, result, columns.length, items.length );
-      return result;
-    }
-  }
-
-  private final class InternalTreeAdapter
-    implements ITreeAdapter, ICellToolTipAdapter, SerializableCompatibility
-  {
-    private String toolTipText;
-    private ICellToolTipProvider provider;
-
-    public void setScrollLeft( int left ) {
-      scrollLeft = left;
-    }
-
-    public int getScrollLeft() {
-      return scrollLeft;
-    }
-
-    public boolean isCached( TreeItem item ) {
-      return item.isCached();
-    }
-
-    public void checkAllData( Tree tree ) {
-      tree.checkAllData();
-    }
-
-    public boolean hasHScrollBar() {
-      return Tree.this.hasHScrollBar();
-    }
-
-    public boolean hasVScrollBar() {
-      return Tree.this.hasVScrollBar();
-    }
-
-    public Point getItemImageSize( int index ) {
-      return Tree.this.getItemImageSize( index );
-    }
-
-    public int getCellLeft( int index ) {
-      return Tree.this.getCellLeft( index );
-    }
-
-    public int getCellWidth( int index ) {
-      return Tree.this.getCellWidth( index );
-    }
-
-    public int getTextOffset( int index ) {
-      return Tree.this.getTextOffset( index );
-    }
-
-    public int getTextMaxWidth( int index ) {
-      return getTextWidth( index );
-    }
-
-    public int getCheckWidth() {
-      return getCheckImageSize().x;
-    }
-
-    public int getImageOffset( int index ) {
-      return Tree.this.getImageOffset( index );
-    }
-
-    public int getIndentionWidth() {
-      return Tree.this.getIndentionWidth();
-    }
-
-    public int getCheckLeft() {
-      return getCheckBoxMargin().x;
-    }
-
-    public Rectangle getTextMargin() {
-      return TEXT_MARGIN;
-    }
-
-    public int getTopItemIndex() {
-      return getTopIndex();
-    }
-
-    public void setTopItemIndex( int index ) {
-      Tree.this.setTopItemIndex( index );
-    }
-
-    public int getColumnLeft( TreeColumn column ) {
-      int index = Tree.this.indexOf( column );
-      return getColumn( index ).getLeft();
-    }
-
-    public ICellToolTipProvider getCellToolTipProvider() {
-      return provider;
-    }
-
-    public void setCellToolTipProvider( ICellToolTipProvider provider ) {
-      this.provider = provider;
-    }
-
-    public String getCellToolTipText() {
-      return toolTipText;
-    }
-
-    public void setCellToolTipText( String toolTipText ) {
-      this.toolTipText = toolTipText;
-    }
-
-  }
-
-  private static final class ResizeListener extends ControlAdapter {
-    @Override
-    public void controlResized( ControlEvent event ) {
-      Tree tree = ( Tree )event.widget;
-      if( tree.isVirtual() ) {
-        tree.checkAllData();
-      }
-      tree.updateScrollBars();
-    }
-  }
+  transient LayoutCache layoutCache;
 
   /**
    * Constructs a new instance of this class given its parent and a style value
@@ -308,6 +159,7 @@ public class Tree extends Composite {
     selection = EMPTY_SELECTION;
     resizeListener = new ResizeListener();
     addControlListener( resizeListener );
+    layoutCache = new LayoutCache();
   }
 
   TreeItem[] getCreatedItems() {
@@ -368,6 +220,7 @@ public class Tree extends Composite {
         items[ i ].clearPreferredWidthBuffers();
       }
     }
+    layoutCache.invalidateItemHeight();
     updateScrollBars();
   }
 
@@ -581,24 +434,23 @@ public class Tree extends Composite {
     if( item.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    if( item.getParent() != this ) {
-      return;
-    }
-    TreeItem parent = item.getParentItem();
-    while( parent != null ) {
-      parent.setExpanded( true );
-      parent = parent.getParentItem();
-    }
-    if( isVirtual() && !item.isCached() ) {
-      updateFlatIndices();
-    }
-    if( item.flatIndex <= topItemIndex ) {
-      setTopItemIndex( item.flatIndex );
-    } else {
-      int itemsAreaHeight = getClientArea().height - getHeaderHeight();
-      int rows = ( int )Math.floor( itemsAreaHeight / getItemHeight() );
-      if( item.flatIndex >= topItemIndex + rows ) {
-        setTopItemIndex( item.flatIndex - rows + 1 );
+    if( item.getParent() == this ) {
+      TreeItem parent = item.getParentItem();
+      while( parent != null ) {
+        parent.setExpanded( true );
+        parent = parent.getParentItem();
+      }
+      if( isVirtual() && !item.isCached() ) {
+        updateAllItems();
+      }
+      if( item.flatIndex <= topItemIndex ) {
+        setTopItemIndex( item.flatIndex );
+      } else {
+        int itemsAreaHeight = getClientArea().height - getHeaderHeight();
+        int rows = ( int )Math.floor( itemsAreaHeight / getItemHeight() );
+        if( item.flatIndex >= topItemIndex + rows ) {
+          setTopItemIndex( item.flatIndex - rows + 1 );
+        }
       }
     }
   }
@@ -637,10 +489,7 @@ public class Tree extends Composite {
         parent.setExpanded( true );
         parent = parent.getParentItem();
       }
-      if( isVirtual() && !item.isCached() ) {
-        updateFlatIndices();
-      }
-      int visibleItemsCount = collectVisibleItems( null ).size();
+      int visibleItemsCount = updateAllItems();
       int itemsAreaHeight = getClientArea().height - getHeaderHeight();
       int rows = ( int )Math.floor( itemsAreaHeight / getItemHeight() );
       if(    item.flatIndex <= topItemIndex
@@ -681,7 +530,7 @@ public class Tree extends Composite {
   private void setTopItemIndex( int index ) {
     if( index != topItemIndex ) {
       topItemIndex = index;
-      checkAllData();
+      updateAllItems();
     }
   }
 
@@ -1170,17 +1019,10 @@ public class Tree extends Composite {
    */
   public int getItemHeight() {
     checkWidget();
-    Rectangle padding = getCellPadding();
-    int textHeight = Graphics.getCharHeight( getFont() );
-    textHeight += TEXT_MARGIN.height + padding.height;
-    int itemImageHeight = getItemImageSize().y + padding.height;
-    int result = Math.max( itemImageHeight, textHeight );
-    if( hasCheckBoxes( 0 )) {
-      result = Math.max( getCheckImageOuterSize().y, result );
+    if( !layoutCache.hasItemHeight() ) {
+      layoutCache.itemHeight = computeItemHeight();
     }
-    result += 1; // The space needed for horizontal gridline is always added, even if not visible
-    result = Math.max( result, MIN_ITEM_HEIGHT );
-    return result;
+    return layoutCache.itemHeight;
   }
 
   /**
@@ -1210,10 +1052,8 @@ public class Tree extends Composite {
         }
       }
     }
-    if( itemCount != 0 ) {
-      if( isVirtual() ) {
-        checkAllData();
-      }
+    if( isVirtual() && itemCount != 0 ) {
+      updateAllItems();
     }
   }
 
@@ -1322,24 +1162,10 @@ public class Tree extends Composite {
    */
   public int getHeaderHeight() {
     checkWidget();
-    int result = 0;
-    if( headerVisible ) {
-      TreeThemeAdapter themeAdapter = getThemeAdapter();
-      Font headerFont = themeAdapter.getHeaderFont( this );
-      int textHeight = Graphics.getCharHeight( headerFont );
-      int imageHeight = 0;
-      for( int i = 0; i < getColumnCount(); i++ ) {
-        Image image = getColumn( i ).getImage();
-        int height = image == null ? 0 : image.getBounds().height;
-        if( height > imageHeight ) {
-          imageHeight = height;
-        }
-      }
-      result = Math.max( textHeight, imageHeight );
-      result += themeAdapter.getHeaderBorderBottomWidth( this );
-      result += themeAdapter.getHeaderPadding( this ).height;
+    if( !layoutCache.hasHeaderHeight() ) {
+      layoutCache.headerHeight = computeHeaderHeight();
     }
-    return result;
+    return layoutCache.headerHeight;
   }
 
   /**
@@ -1360,11 +1186,11 @@ public class Tree extends Composite {
    */
   public void setHeaderVisible( boolean value ) {
     checkWidget();
-    if( headerVisible == value ) {
-      return; /* no change */
+    if( headerVisible != value ) {
+      headerVisible = value;
+      layoutCache.invalidateHeaderHeight();
+      updateScrollBars();
     }
-    headerVisible = value;
-    updateScrollBars();
   }
 
   /**
@@ -2034,6 +1860,7 @@ public class Tree extends Composite {
     if( image != null && itemImageSize == null ) {
       Rectangle imageBounds = image.getBounds();
       itemImageSize = new Point( imageBounds.width, imageBounds.height );
+      layoutCache.invalidateItemHeight();
     }
   }
 
@@ -2088,30 +1915,66 @@ public class Tree extends Composite {
   }
 
   private Rectangle getCheckBoxMargin() {
-    if( bufferedCheckBoxMargin == null ) {
-      bufferedCheckBoxMargin = getThemeAdapter().getCheckBoxMargin( this );
+    if( !layoutCache.hasCheckBoxMargin() ) {
+      layoutCache.checkBoxMargin = getThemeAdapter().getCheckBoxMargin( this );
     }
-    return bufferedCheckBoxMargin;
+    return layoutCache.checkBoxMargin;
   }
 
   private int getIndentionWidth() {
     return getThemeAdapter().getIndentionWidth( this );
   }
 
+  private int computeHeaderHeight() {
+    int result = 0;
+    if( headerVisible ) {
+      TreeThemeAdapter themeAdapter = getThemeAdapter();
+      Font headerFont = themeAdapter.getHeaderFont( this );
+      int textHeight = Graphics.getCharHeight( headerFont );
+      int imageHeight = 0;
+      for( int i = 0; i < getColumnCount(); i++ ) {
+        Image image = getColumn( i ).getImage();
+        int height = image == null ? 0 : image.getBounds().height;
+        if( height > imageHeight ) {
+          imageHeight = height;
+        }
+      }
+      result = Math.max( textHeight, imageHeight );
+      result += themeAdapter.getHeaderBorderBottomWidth( this );
+      result += themeAdapter.getHeaderPadding( this ).height;
+    }
+    return result;
+  }
+
+  private int computeItemHeight() {
+    Rectangle padding = getCellPadding();
+    int textHeight = Graphics.getCharHeight( getFont() );
+    textHeight += TEXT_MARGIN.height + padding.height;
+    int itemImageHeight = getItemImageSize().y + padding.height;
+    int result = Math.max( itemImageHeight, textHeight );
+    if( hasCheckBoxes( 0 ) ) {
+      result = Math.max( getCheckImageOuterSize().y, result );
+    }
+    result += 1; // The space needed for horizontal gridline is always added, even if not visible
+    result = Math.max( result, MIN_ITEM_HEIGHT );
+    return result;
+  }
+
   ///////////////////
   // Helping methods
 
-  void checkAllData() {
+  int updateAllItems() {
     int flatIndex = 0;
     for( int index = 0; index < itemCount; index++ ) {
-      flatIndex = checkDataRecursively( null, index, flatIndex );
+      flatIndex = updateAllItemsRecursively( null, index, flatIndex );
     }
+    return flatIndex;
   }
 
-  private int checkDataRecursively( TreeItem parent, int index, int flatIndex ) {
+  private int updateAllItemsRecursively( TreeItem parent, int index, int flatIndex ) {
     int newFlatIndex = flatIndex;
     TreeItem item = parent == null ? items[ index ] : parent.items[ index ];
-    if( isItemVisible( flatIndex ) ) {
+    if( isVirtual() && isItemVisible( flatIndex ) ) {
       if( item == null ) {
         item = parent == null ? _getItem( index ) : parent._getItem( index );
       }
@@ -2123,7 +1986,7 @@ public class Tree extends Composite {
     newFlatIndex++;
     if( item != null && item.isCached() && item.getExpanded() ) {
       for( int i = 0; i < item.itemCount; i++ ) {
-        newFlatIndex = checkDataRecursively( item, i, newFlatIndex );
+        newFlatIndex = updateAllItemsRecursively( item, i, newFlatIndex );
       }
     }
     return newFlatIndex;
@@ -2134,45 +1997,11 @@ public class Tree extends Composite {
     int headerHeight = getHeaderHeight();
     int itemHeight = getItemHeight();
     int itemPosition = headerHeight + ( flatIndex - getTopIndex() ) * itemHeight;
-    // TODO shouldn't we call getclientArea() instead?
+    // TODO shouldn't we call getClientArea() instead?
     if( itemPosition >= 0 && itemPosition <= getSize().y ) {
       result = true;
     }
     return result;
-  }
-
-  // TODO [bm]: performance impact - replace this with logic to only partly
-  // update the flat indices when there are changes in the visibility hierarchy
-  // like new items, removed items, expand/
-  // TODO [tb] : alternative: Only index when needed.
-  /* package */void updateFlatIndices() {
-    int flatIndex = 0;
-    for( int i = 0; i < itemCount; i++ ) {
-      if( items[ i ] != null ) {
-        items[ i ].flatIndex = flatIndex;
-      }
-      flatIndex++;
-      if( items[ i ] != null ) {
-        flatIndex = updateFlatIndicesSub( items[ i ], flatIndex );
-      }
-    }
-  }
-
-  private int updateFlatIndicesSub( TreeItem item, int flatIndex ) {
-    int newFlatIndex = flatIndex;
-    if( item.getExpanded() ) {
-      for( int i = 0; i < item.itemCount; i++ ) {
-        TreeItem subItem = item.items[ i ];
-        if( subItem != null ) {
-          subItem.flatIndex = newFlatIndex;
-        }
-        newFlatIndex++;
-        if( subItem != null ) {
-          newFlatIndex = updateFlatIndicesSub( subItem, newFlatIndex );
-        }
-      }
-    }
-    return newFlatIndex;
   }
 
   final boolean checkData( TreeItem item, int index ) {
@@ -2198,17 +2027,17 @@ public class Tree extends Composite {
   }
 
   Rectangle getCellPadding() {
-    if( bufferedCellPadding == null ) {
-      bufferedCellPadding = getThemeAdapter().getCellPadding( this );
+    if( !layoutCache.hasCellPadding() ) {
+      layoutCache.cellPadding = getThemeAdapter().getCellPadding( this );
     }
-    return bufferedCellPadding;
+    return layoutCache.cellPadding;
   }
 
   int getCellSpacing() {
-    if( bufferedCellSpacing < 0 ) {
-      bufferedCellSpacing = getThemeAdapter().getCellSpacing( this );
+    if( !layoutCache.hasCellSpacing() ) {
+      layoutCache.cellSpacing = getThemeAdapter().getCellSpacing( this );
     }
-    return bufferedCellSpacing;
+    return layoutCache.cellSpacing;
   }
 
   /////////////
@@ -2350,28 +2179,6 @@ public class Tree extends Composite {
     }
   }
 
-  ///////////////////
-  // Skinning support
-
-  @Override
-  void reskinChildren( int flags ) {
-    for( int i = 0; i < itemCount; i++ ) {
-      if( items[ i ] != null ) {
-        items[ i ].reskinChildren( flags );
-      }
-    }
-    TreeColumn[] columns = getColumns();
-    if( columns != null ) {
-      for( int i = 0; i < columns.length; i++ ) {
-        TreeColumn column = columns[ i ];
-        if( !column.isDisposed() ) {
-          column.reskinChildren( flags );
-        }
-      }
-    }
-    super.reskinChildren( flags );
-  }
-
   boolean isVirtual() {
     return ( style & SWT.VIRTUAL ) != 0;
   }
@@ -2411,6 +2218,222 @@ public class Tree extends Composite {
       if( items[ i ] != null ) {
         items[ i ].index = i;
       }
+    }
+  }
+
+  ///////////////////
+  // Skinning support
+
+  @Override
+  void reskinChildren( int flags ) {
+    for( int i = 0; i < itemCount; i++ ) {
+      if( items[ i ] != null ) {
+        items[ i ].reskinChildren( flags );
+      }
+    }
+    TreeColumn[] columns = getColumns();
+    if( columns != null ) {
+      for( int i = 0; i < columns.length; i++ ) {
+        TreeColumn column = columns[ i ];
+        if( !column.isDisposed() ) {
+          column.reskinChildren( flags );
+        }
+      }
+    }
+    super.reskinChildren( flags );
+  }
+
+  ////////////////
+  // Inner classes
+
+  private final class CompositeItemHolder implements IItemHolderAdapter {
+    public void add( Item item ) {
+      if( item instanceof TreeColumn ) {
+        columnHolder.add( ( TreeColumn )item );
+      } else {
+        String msg = "Only TreeColumns may be added to CompositeItemHolder";
+        throw new IllegalArgumentException( msg );
+      }
+    }
+    public void insert( Item item, int index ) {
+      if( item instanceof TreeColumn ) {
+        columnHolder.insert( ( TreeColumn )item, index );
+      } else {
+        String msg = "Only TreeColumns may be inserted to CompositeItemHolder";
+        throw new IllegalArgumentException( msg );
+      }
+    }
+    public void remove( Item item ) {
+      if( item instanceof TreeColumn ) {
+        columnHolder.remove( ( TreeColumn )item );
+      } else {
+        String msg = "Only TreeColumns may be removed from CompositeItemHolder";
+        throw new IllegalArgumentException( msg );
+      }
+    }
+    public Item[] getItems() {
+      TreeItem[] items = getCreatedItems();
+      Item[] columns = columnHolder.getItems();
+      Item[] result = new Item[ columns.length + items.length ];
+      System.arraycopy( columns, 0, result, 0, columns.length );
+      System.arraycopy( items, 0, result, columns.length, items.length );
+      return result;
+    }
+  }
+
+  private final class InternalTreeAdapter
+    implements ITreeAdapter, ICellToolTipAdapter, SerializableCompatibility
+  {
+    private String toolTipText;
+    private ICellToolTipProvider provider;
+
+    public void setScrollLeft( int left ) {
+      scrollLeft = left;
+    }
+
+    public int getScrollLeft() {
+      return scrollLeft;
+    }
+
+    public boolean isCached( TreeItem item ) {
+      return item.isCached();
+    }
+
+    public boolean hasHScrollBar() {
+      return Tree.this.hasHScrollBar();
+    }
+
+    public boolean hasVScrollBar() {
+      return Tree.this.hasVScrollBar();
+    }
+
+    public Point getItemImageSize( int index ) {
+      return Tree.this.getItemImageSize( index );
+    }
+
+    public int getCellLeft( int index ) {
+      return Tree.this.getCellLeft( index );
+    }
+
+    public int getCellWidth( int index ) {
+      return Tree.this.getCellWidth( index );
+    }
+
+    public int getTextOffset( int index ) {
+      return Tree.this.getTextOffset( index );
+    }
+
+    public int getTextMaxWidth( int index ) {
+      return getTextWidth( index );
+    }
+
+    public int getCheckWidth() {
+      return getCheckImageSize().x;
+    }
+
+    public int getImageOffset( int index ) {
+      return Tree.this.getImageOffset( index );
+    }
+
+    public int getIndentionWidth() {
+      return Tree.this.getIndentionWidth();
+    }
+
+    public int getCheckLeft() {
+      return getCheckBoxMargin().x;
+    }
+
+    public Rectangle getTextMargin() {
+      return TEXT_MARGIN;
+    }
+
+    public int getTopItemIndex() {
+      return getTopIndex();
+    }
+
+    public void setTopItemIndex( int index ) {
+      Tree.this.setTopItemIndex( index );
+    }
+
+    public int getColumnLeft( TreeColumn column ) {
+      int index = Tree.this.indexOf( column );
+      return getColumn( index ).getLeft();
+    }
+
+    public ICellToolTipProvider getCellToolTipProvider() {
+      return provider;
+    }
+
+    public void setCellToolTipProvider( ICellToolTipProvider provider ) {
+      this.provider = provider;
+    }
+
+    public String getCellToolTipText() {
+      return toolTipText;
+    }
+
+    public void setCellToolTipText( String toolTipText ) {
+      this.toolTipText = toolTipText;
+    }
+
+  }
+
+  private static final class ResizeListener extends ControlAdapter {
+    @Override
+    public void controlResized( ControlEvent event ) {
+      Tree tree = ( Tree )event.widget;
+      tree.updateAllItems();
+      tree.updateScrollBars();
+    }
+  }
+
+  static final class LayoutCache {
+    private static final int UNKNOWN = -1;
+
+    int headerHeight = UNKNOWN;
+    int itemHeight = UNKNOWN;
+    int cellSpacing = UNKNOWN;
+    Rectangle cellPadding;
+    Rectangle checkBoxMargin;
+
+    public boolean hasHeaderHeight() {
+      return headerHeight != UNKNOWN;
+    }
+
+    public void invalidateHeaderHeight() {
+      headerHeight = UNKNOWN;
+    }
+
+    public boolean hasItemHeight() {
+      return itemHeight != UNKNOWN;
+    }
+
+    public void invalidateItemHeight() {
+      itemHeight = UNKNOWN;
+    }
+
+    public boolean hasCellSpacing() {
+      return cellSpacing != UNKNOWN;
+    }
+
+    public void invalidateCellSpacing() {
+      cellSpacing = UNKNOWN;
+    }
+
+    public boolean hasCellPadding() {
+      return cellPadding != null;
+    }
+
+    public void invalidateCellPadding() {
+      cellPadding = null;
+    }
+
+    public boolean hasCheckBoxMargin() {
+      return checkBoxMargin != null;
+    }
+
+    public void invalidateCheckBoxMargin() {
+      checkBoxMargin = null;
     }
   }
 }

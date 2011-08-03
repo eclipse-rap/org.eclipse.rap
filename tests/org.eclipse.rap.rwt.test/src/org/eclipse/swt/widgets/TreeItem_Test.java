@@ -1181,10 +1181,30 @@ public class TreeItem_Test extends TestCase {
     shell.open();
     tree.setSize( 100, 100 );
     log.clear();
-    // Windows does not materialize the item on setExpanded, GTK and RAP do
-    tree.getItem( 99 ).setExpanded( true );
+
+    TreeItem item = tree.getItem( 99 );
+    item.setItemCount( 1 );
+    item.setExpanded( true );
+
     assertEquals( 0, log.size() );
-    assertTrue( tree.getItem( 99 ).isCached() );
+    assertTrue( item.isCached() );
+  }
+
+  public void testVirtualSetExpandedWithoutSubItems() {
+    final Tree tree = new Tree( shell, SWT.VIRTUAL );
+    final LoggingListener log = new LoggingListener();
+    tree.addListener( SWT.SetData, log );
+    tree.setItemCount( 100 );
+    shell.open();
+    tree.setSize( 100, 100 );
+    log.clear();
+
+    TreeItem item = tree.getItem( 99 );
+    item.setExpanded( true );
+
+    assertEquals( 0, log.size() );
+    assertFalse( item.getExpanded() );
+    assertFalse( item.isCached() );
   }
 
   public void testVirtualSetter() {
@@ -1908,6 +1928,18 @@ public class TreeItem_Test extends TestCase {
     item.setExpanded( true );
 
     assertEquals( 1, item.getItem( 0 ).flatIndex );
+  }
+
+  public void testUpdateFlatIndicesOnItemDispose() {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    TreeItem item2 = new TreeItem( tree, SWT.NONE );
+    TreeItem subItem = new TreeItem( item2, SWT.NONE );
+    item2.setExpanded( true );
+
+    item1.dispose();
+
+    assertEquals( 1, subItem.flatIndex );
   }
 
   public void testGetCreatedItems_DoesNotContainNullItems() {

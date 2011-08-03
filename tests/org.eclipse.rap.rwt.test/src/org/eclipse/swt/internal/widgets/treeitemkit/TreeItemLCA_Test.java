@@ -368,8 +368,9 @@ public class TreeItemLCA_Test extends TestCase {
     TreeItem rootItem = new TreeItem( tree, 0 );
     TreeItem rootItem2 = new TreeItem( tree, 0 );
     TreeItem rootItem3 = new TreeItem( tree, 0 );
-    ITreeAdapter treeAdapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
-    treeAdapter.checkAllData( tree );
+
+    TreeTestAdapter.checkAllData( tree );
+
     assertEquals( 0, rootItem.getBounds().y );
     assertEquals( 18, rootItem2.getBounds().y );
     assertEquals( 36, rootItem3.getBounds().y );

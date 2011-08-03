@@ -312,7 +312,7 @@ public class TreeItem extends Item {
       } else {
         parent.createItem( this, index );
       }
-      parent.updateFlatIndices();
+      parent.updateAllItems();
       parent.updateScrollBars();
     }
   }
@@ -428,11 +428,11 @@ public class TreeItem extends Item {
    */
   public void setExpanded( boolean expanded ) {
     checkWidget();
-    markCached();
-    if( !expanded || itemCount > 0 ) {
+    if( this.expanded != expanded && ( !expanded || itemCount > 0 ) ) {
       this.expanded = expanded;
+      markCached();
       parent.updateScrollBars();
-      parent.checkAllData();
+      parent.updateAllItems();
     }
   }
 
@@ -719,8 +719,14 @@ public class TreeItem extends Item {
     if( font != null && font.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    this.font = font;
-    markCached();
+    if( !equals( this.font, font ) ) {
+      this.font = font;
+      markCached();
+      if( parent.getColumnCount() == 0 ) {
+        parent.updateScrollBars();
+      }
+      parent.redraw();
+    }
   }
 
   /**
@@ -771,14 +777,10 @@ public class TreeItem extends Item {
     if( value != null && value.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    if( background == value ) {
-      return;
+    if( !equals( background, value ) ) {
+      background = value;
+      markCached();
     }
-    if( background != null && background.equals( value ) ) {
-      return;
-    }
-    background = value;
-    markCached();
   }
 
   /**
@@ -854,11 +856,9 @@ public class TreeItem extends Item {
     if( value != null && value.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    if( foreground != value ) {
-      if( foreground == null || !foreground.equals( value ) ) {
-        foreground = value;
-        markCached();
-      }
+    if( !equals( foreground, value ) ) {
+      foreground = value;
+      markCached();
     }
   }
 
@@ -1550,6 +1550,7 @@ public class TreeItem extends Item {
       parent.destroyItem( this, index );
     }
     if( !parent.isInDispose() ) {
+      parent.updateAllItems();
       parent.removeFromSelection( this );
       parent.updateScrollBars();
     }

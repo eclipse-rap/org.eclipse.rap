@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.treekit.TreeThemeAdapter;
 
 
@@ -191,10 +192,9 @@ public class TreeColumn extends Item {
   }
 
   public void dispose() {
-    if( isDisposed() ) {
-      return;
+    if( !isDisposed() ) {
+      dispose( true );
     }
-    dispose( true );
   }
 
   void dispose( boolean notifyParent ) {
@@ -474,10 +474,9 @@ public class TreeColumn extends Item {
   }
 
   void setSortDirection( int value ) {
-    if( value == sort ) {
-      return;
+    if( value != sort ) {
+      sort = value;
     }
-    sort = value;
   }
 
   public void setText( String value ) {
@@ -485,10 +484,9 @@ public class TreeColumn extends Item {
     if( value == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
-    if( value.equals( text ) ) {
-      return; /* same value */
+    if( !value.equals( text ) ) {
+      super.setText( value );
     }
-    super.setText( value );
   }
 
   /**
@@ -533,6 +531,11 @@ public class TreeColumn extends Item {
       ControlEvent event = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
       event.processEvent();
     }
+  }
+
+  public void setImage( Image image ) {
+    super.setImage( image );
+    parent.layoutCache.invalidateHeaderHeight();
   }
 
   void releaseParent() {
