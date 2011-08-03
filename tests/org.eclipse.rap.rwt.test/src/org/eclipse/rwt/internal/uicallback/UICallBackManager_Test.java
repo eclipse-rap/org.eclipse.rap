@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Display;
 public class UICallBackManager_Test extends TestCase {
   public static final String SYS_PROP_SLEEP_TIME = "sleepTime";
   public static final String SYS_PROP_TIMER_EXEC_DELAY = "timerExecDelay";
- 
+
   private static final int SLEEP_TIME;
   private static final int TIMER_EXEC_DELAY;
 
@@ -47,14 +47,14 @@ public class UICallBackManager_Test extends TestCase {
   private static final String RUN_ASYNC_EXEC = "run async exec|";
   private static final String RUN_TIMER_EXEC = "timerExecCode|";
   private static final Runnable EMPTY_RUNNABLE = new NoOpRunnable();
-  
+
   static {
     String sleepTimeProp = System.getProperty( SYS_PROP_SLEEP_TIME );
     SLEEP_TIME = sleepTimeProp == null ? 200 : Integer.parseInt( sleepTimeProp );
     String timerExecDelayProp = System.getProperty( SYS_PROP_TIMER_EXEC_DELAY );
     TIMER_EXEC_DELAY = timerExecDelayProp == null ? 5000 :Integer.parseInt( timerExecDelayProp );
   }
-    
+
   private static String log = "";
 
   private Display display;
@@ -102,7 +102,7 @@ public class UICallBackManager_Test extends TestCase {
     assertFalse( manager.isCallBackRequestBlocked() );
     assertFalse( thread.isAlive() );
   }
-  
+
   public void testWaitOnUIThread() throws Exception {
     final Throwable[] uiCallBackServiceHandlerThrowable = { null };
     ServiceContext context = ContextProvider.getContext();
@@ -112,7 +112,7 @@ public class UICallBackManager_Test extends TestCase {
     assertTrue( manager.isCallBackRequestBlocked() );
     manager.releaseBlockedRequest();
   }
-  
+
   public void testWaitOnBackgroundThread() throws Throwable {
     final Throwable[] uiCallBackServiceHandlerThrowable = { null };
     ServiceContext context = ContextProvider.getContext();
@@ -156,14 +156,14 @@ public class UICallBackManager_Test extends TestCase {
     simulateBackgroundAdditionDuringLifeCycle( display );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display.readAndDispatch();
-    assertEquals( 1, getDisplayAdapter().getAsyncRunnablesCount() );    
+    assertEquals( 1, getDisplayAdapter().getAsyncRunnablesCount() );
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( RUN_ASYNC_EXEC, log );
     assertFalse( manager.isCallBackRequestBlocked() );
   }
-  
-  public void testAsyncExecWithBackgroundAndLifeCycleRunnables() 
-    throws Exception 
+
+  public void testAsyncExecWithBackgroundAndLifeCycleRunnables()
+    throws Exception
   {
     // test unblocking in case of background addition of runnables
     simulateBackgroundAddition( ContextProvider.getContext() );
@@ -175,7 +175,7 @@ public class UICallBackManager_Test extends TestCase {
     assertFalse( manager.isCallBackRequestBlocked() );
     assertEquals( RUN_ASYNC_EXEC + RUN_ASYNC_EXEC + RUN_ASYNC_EXEC, log );
   }
-  
+
   public void testCallBackRequestBlocking() throws Exception {
     final Throwable[] uiCallBackServiceHandlerThrowable = { null };
     ServiceContext context = ContextProvider.getContext();
@@ -194,35 +194,35 @@ public class UICallBackManager_Test extends TestCase {
     assertFalse( uiCallBackThread.isAlive() );
     assertEquals( "", log );
   }
-  
+
   public void testCallBackRequestIsReleasedOnSessionInvalidate() throws Exception {
     Throwable[] uiCallBackHandlerThrowable = { null };
     ServiceContext context = ContextProvider.getContext();
     Thread uiCallBackThread = simulateUiCallBackThread( uiCallBackHandlerThrowable, context );
-    
+
     context.getSessionStore().getHttpSession().invalidate();
     uiCallBackThread.join();
-    
+
     TestResponse response = ( TestResponse )context.getResponse();
     assertEquals( "", response.getContent().trim() );
     assertFalse( manager.isCallBackRequestBlocked() );
     assertFalse( uiCallBackThread.isAlive() );
     assertNull( uiCallBackHandlerThrowable[ 0 ] );
   }
-  
+
   public void testCallBackRequestIsReleasedWhenSessionExpires() throws Exception {
     HttpSession httpSession = ContextProvider.getSession().getHttpSession();
     httpSession.setMaxInactiveInterval( 1 );
     HttpSessionBindingListener sessionListener = mock( HttpSessionBindingListener.class );
     httpSession.setAttribute( "listener", sessionListener );
     manager.setRequestCheckInterval( 10 );
-    
+
     manager.activateUICallBacksFor( "id" );
     boolean success = manager.processRequest( ContextProvider.getResponse() );
-    
+
     assertFalse( success );
   }
-  
+
   public void testMultipleCallBackRequests() throws Exception {
     manager.setRequestCheckInterval( 20 );
     ServiceContext context1 = ContextProvider.getContext();
@@ -231,9 +231,9 @@ public class UICallBackManager_Test extends TestCase {
     ServiceContext context2 = createServiceContext( context1.getSessionStore().getHttpSession() );
     Throwable[] uiCallBackHandlerThrowable2 = { null };
     Thread uiCallBackThread2 = simulateUiCallBackThread( uiCallBackHandlerThrowable2, context2 );
-    
+
     Thread.sleep( SLEEP_TIME );
-    
+
     assertTrue( manager.isCallBackRequestBlocked() );
     assertNull( uiCallBackHandlerThrowable1[ 0 ] );
     assertNull( uiCallBackHandlerThrowable2[ 0 ] );
@@ -256,13 +256,14 @@ public class UICallBackManager_Test extends TestCase {
     ServiceContext context2 = createServiceContext( httpSession, response );
     Throwable[] uiCallBackHandlerThrowable = { null };
     Thread uiCallBackThread = simulateUiCallBackThread( uiCallBackHandlerThrowable, context2 );
-    
+
     Thread.sleep( SLEEP_TIME );
-    
+
     assertFalse( manager.isCallBackRequestBlocked() );
+    uiCallBackThread.join( 100 );
     assertFalse( uiCallBackThread.isAlive() );
-  }  
-  
+  }
+
   public void testAsyncExec() throws InterruptedException {
     Throwable[] uiCallBackServiceHandlerThrowable = { null };
     ServiceContext context = ContextProvider.getContext();
@@ -315,7 +316,7 @@ public class UICallBackManager_Test extends TestCase {
     display.readAndDispatch();
     assertEquals( RUN_TIMER_EXEC, log.toString() );
   }
-  
+
   public void testTimerExecWithIllegalArgument() {
     try {
       display.timerExec( 1, null );
@@ -323,7 +324,7 @@ public class UICallBackManager_Test extends TestCase {
     } catch( IllegalArgumentException expected ) {
     }
   }
-  
+
   public void testTimerExecFromBackgroundThread() throws Exception {
     final Throwable[] exceptionInTimerExec = { null };
     Runnable runnable = new Runnable() {
@@ -371,7 +372,7 @@ public class UICallBackManager_Test extends TestCase {
     assertEquals( 0, getDisplayAdapter().getAsyncRunnablesCount() );
     assertEquals( "", log );
   }
-  
+
   public void testRemoveNonExistingTimerExec() {
     display.timerExec( -1, EMPTY_RUNNABLE );
     // must not cause any exception
@@ -414,8 +415,8 @@ public class UICallBackManager_Test extends TestCase {
     IDisplayAdapter adapter = getDisplayAdapter();
     assertEquals( 0, adapter.getAsyncRunnablesCount() );
   }
-  
-  // This test ensures that SyncRunnable releases the blocked thread in case of 
+
+  // This test ensures that SyncRunnable releases the blocked thread in case of
   // an exception
   public void testAddSyncWithExceptionInRunnable() throws Exception {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -439,7 +440,7 @@ public class UICallBackManager_Test extends TestCase {
         }
       }
     };
-    
+
     Thread bgThread = new Thread( bgRunnable );
     bgThread.setDaemon( true );
     bgThread.start();
@@ -463,7 +464,7 @@ public class UICallBackManager_Test extends TestCase {
     manager.activateUICallBacksFor( "foo" );
     assertTrue( manager.mustBlockCallBackRequest() );
   }
-  
+
   public void testNeedActivationFromDifferentSession() throws Throwable {
     // test that on/off switching is managed in session scope
     manager.activateUICallBacksFor( ID_1 );
@@ -473,35 +474,35 @@ public class UICallBackManager_Test extends TestCase {
         Fixture.createServiceContext();
         new Display();
         otherSession[ 0 ] = UICallBackManager.getInstance().needsActivation();
-      } 
+      }
     };
     Fixture.runInThread( runnable );
     assertFalse( otherSession[ 0 ] );
   }
-  
+
   public void testNeedActivationWithoutActivateCall() throws Exception {
     boolean needsActivation = manager.needsActivation();
     assertFalse( needsActivation );
   }
-  
+
   public void testNeedActivationAfterDeactivate() throws Exception {
     manager.deactivateUICallBacksFor( ID_1 );
     assertFalse( manager.needsActivation() );
   }
-  
+
   public void testNeedActivationWithDifferentIds() throws Exception {
     manager.activateUICallBacksFor( ID_1 );
     manager.activateUICallBacksFor( ID_2 );
     assertTrue( manager.needsActivation() );
   }
-  
+
   public void testNeedActivationAfterActivateTwoDeactivateOne() throws Exception {
     manager.activateUICallBacksFor( ID_1 );
     manager.activateUICallBacksFor( ID_2 );
     manager.deactivateUICallBacksFor( ID_1 );
     assertTrue( manager.needsActivation() );
   }
-  
+
   public void testNeedActivateTwice() throws Exception {
     manager.activateUICallBacksFor( ID_1 );
     manager.deactivateUICallBacksFor( ID_1 );
@@ -520,28 +521,28 @@ public class UICallBackManager_Test extends TestCase {
     display.asyncExec( EMPTY_RUNNABLE );
     assertFalse( manager.needsActivation() );
   }
-  
+
   public void testIsSessionExpiredWithInfiniteSessionTimeout() {
     ContextProvider.getSession().getHttpSession().setMaxInactiveInterval( -1 );
-    
+
     boolean sessionExpired = UICallBackManager.isSessionExpired( 1, 2 );
-    
+
     assertFalse( sessionExpired );
   }
-  
+
   public void testIsSessionExpiredWhenSessionTimedOut() {
     ContextProvider.getSession().getHttpSession().setMaxInactiveInterval( 10 );
-    
+
     boolean sessionExpired = UICallBackManager.isSessionExpired( 1, 20000 );
-    
+
     assertTrue( sessionExpired );
   }
-  
+
   public void testIsSessionExpiredWhenSessionActive() {
     ContextProvider.getSession().getHttpSession().setMaxInactiveInterval( 10 );
-    
+
     boolean sessionExpired = UICallBackManager.isSessionExpired( 1, 9000 );
-    
+
     assertFalse( sessionExpired );
   }
 
@@ -645,8 +646,8 @@ public class UICallBackManager_Test extends TestCase {
     return createServiceContext( httpSession, new TestResponse() );
   }
 
-  private static ServiceContext createServiceContext( HttpSession session, TestResponse response ) 
-    throws IOException 
+  private static ServiceContext createServiceContext( HttpSession session, TestResponse response )
+    throws IOException
   {
     TestRequest request = new TestRequest();
     request.setSession( session );
