@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
@@ -1592,6 +1593,13 @@ public class Tree extends Composite {
     TreeEvent.removeListener( this, listener );
   }
 
+  public void setData( String key, Object value ) {
+    super.setData( key, value );
+    if( WidgetUtil.CUSTOM_VARIANT.equals( key ) ) {
+      layoutCache.invalidateAll();
+    }
+  }
+
   /////////////////////////////////
   // Methods to cleanup on dispose
 
@@ -2434,6 +2442,14 @@ public class Tree extends Composite {
 
     public void invalidateCheckBoxMargin() {
       checkBoxMargin = null;
+    }
+
+    public void invalidateAll() {
+      invalidateHeaderHeight();
+      invalidateItemHeight();
+      invalidateCellSpacing();
+      invalidateCellPadding();
+      invalidateCheckBoxMargin();
     }
   }
 }
