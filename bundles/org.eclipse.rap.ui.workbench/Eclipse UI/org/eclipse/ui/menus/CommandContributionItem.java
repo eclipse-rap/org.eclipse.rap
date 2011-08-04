@@ -1029,7 +1029,7 @@ public class CommandContributionItem extends ContributionItem {
      *         helpContextId, mnemonic, tooltip. The Object will never be
      *         <code>null</code>, although any of the fields may be
      *         <code>null</code>.
-     * @since 3.7
+     * @since 1.5
      */
     public CommandContributionItemParameter getData() {
         CommandContributionItemParameter data = new CommandContributionItemParameter(
