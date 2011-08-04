@@ -104,20 +104,22 @@ public class Tree extends Composite {
   private TreeItem[] selection;
   private boolean linesVisible;
   private int[] columnOrder;
-  private int itemImageCount = 0;
+  private int itemImageCount;
   private TreeColumn sortColumn;
-  private int sortDirection = SWT.NONE;
-  private boolean headerVisible = false;
+  private int sortDirection;
+  private boolean headerVisible;
   private final ResizeListener resizeListener;
   private final ITreeAdapter treeAdapter;
-  private int scrollLeft = 0;
-  private int topItemIndex = 0;
+  private int scrollLeft;
+  private int topItemIndex;
   private boolean hasVScrollBar;
   private boolean hasHScrollBar;
   private ScrollBar verticalBar;
   private ScrollBar horizontalBar;
   private Point itemImageSize;
   transient LayoutCache layoutCache;
+  boolean isFlatIndexValid;
+  private int visibleItemsCount;
 
   /**
    * Constructs a new instance of this class given its parent and a style value
@@ -157,6 +159,7 @@ public class Tree extends Composite {
     treeAdapter = new InternalTreeAdapter();
     setTreeEmpty();
     createScrollBars();
+    sortDirection = SWT.NONE;
     selection = EMPTY_SELECTION;
     resizeListener = new ResizeListener();
     addControlListener( resizeListener );
@@ -262,6 +265,7 @@ public class Tree extends Composite {
         }
       }
       itemCount = newItemCount;
+      isFlatIndexValid = false;
       updateScrollBars();
     }
     redraw();
@@ -441,16 +445,14 @@ public class Tree extends Composite {
         parent.setExpanded( true );
         parent = parent.getParentItem();
       }
-      if( isVirtual() && !item.isCached() ) {
-        updateAllItems();
-      }
-      if( item.flatIndex <= topItemIndex ) {
-        setTopItemIndex( item.flatIndex );
+      int flatIndex = item.getFlatIndex();
+      if( flatIndex <= topItemIndex ) {
+        setTopItemIndex( flatIndex );
       } else {
         int itemsAreaHeight = getClientArea().height - getHeaderHeight();
         int rows = ( int )Math.floor( itemsAreaHeight / getItemHeight() );
-        if( item.flatIndex >= topItemIndex + rows ) {
-          setTopItemIndex( item.flatIndex - rows + 1 );
+        if( flatIndex >= topItemIndex + rows ) {
+          setTopItemIndex( flatIndex - rows + 1 );
         }
       }
     }
@@ -490,13 +492,11 @@ public class Tree extends Composite {
         parent.setExpanded( true );
         parent = parent.getParentItem();
       }
-      int visibleItemsCount = updateAllItems();
       int itemsAreaHeight = getClientArea().height - getHeaderHeight();
       int rows = ( int )Math.floor( itemsAreaHeight / getItemHeight() );
-      if(    item.flatIndex <= topItemIndex
-          || item.flatIndex + rows <= visibleItemsCount )
-      {
-        setTopItemIndex( item.flatIndex );
+      int flatIndex = item.getFlatIndex();
+      if( flatIndex <= topItemIndex || flatIndex + rows <= visibleItemsCount ) {
+        setTopItemIndex( flatIndex );
       } else {
         int index = Math.max( 0, visibleItemsCount - rows );
         setTopItemIndex( index );
@@ -1971,12 +1971,13 @@ public class Tree extends Composite {
   ///////////////////
   // Helping methods
 
-  int updateAllItems() {
+  void updateAllItems() {
     int flatIndex = 0;
     for( int index = 0; index < itemCount; index++ ) {
       flatIndex = updateAllItemsRecursively( null, index, flatIndex );
     }
-    return flatIndex;
+    isFlatIndexValid = true;
+    visibleItemsCount = flatIndex;
   }
 
   private int updateAllItemsRecursively( TreeItem parent, int index, int flatIndex ) {
@@ -1989,7 +1990,7 @@ public class Tree extends Composite {
       checkData( item, index );
     }
     if( item != null ) {
-      item.flatIndex = newFlatIndex;
+      item.setFlatIndex( newFlatIndex );
     }
     newFlatIndex++;
     if( item != null && item.isCached() && item.getExpanded() ) {

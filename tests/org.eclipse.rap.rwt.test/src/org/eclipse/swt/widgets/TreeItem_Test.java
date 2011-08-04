@@ -1927,7 +1927,7 @@ public class TreeItem_Test extends TestCase {
 
     item.setExpanded( true );
 
-    assertEquals( 1, item.getItem( 0 ).flatIndex );
+    assertEquals( 1, item.getItem( 0 ).getFlatIndex() );
   }
 
   public void testUpdateFlatIndicesOnItemDispose() {
@@ -1939,7 +1939,7 @@ public class TreeItem_Test extends TestCase {
 
     item1.dispose();
 
-    assertEquals( 1, subItem.flatIndex );
+    assertEquals( 1, subItem.getFlatIndex() );
   }
 
   public void testGetCreatedItems_DoesNotContainNullItems() {

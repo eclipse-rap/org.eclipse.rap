@@ -1336,7 +1336,7 @@ public class Tree_Test extends TestCase {
     TreeItem item = tree.getItem( 30 );
     tree.showItem( item );
 
-    assertEquals( 30, item.flatIndex );
+    assertEquals( 30, item.getFlatIndex() );
   }
 
   public void testVirtualSetFlatIndexOnSetTopItem() {
@@ -1347,7 +1347,7 @@ public class Tree_Test extends TestCase {
     TreeItem item = tree.getItem( 30 );
     tree.setTopItem( item );
 
-    assertEquals( 30, item.flatIndex );
+    assertEquals( 30, item.getFlatIndex() );
   }
 
   public void testTopItem() {

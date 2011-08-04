@@ -48,7 +48,7 @@ public class TreeItem extends Item {
   private boolean grayed;
   int depth;
   private boolean cached;
-  int flatIndex;
+  private int flatIndex;
 
   /**
    * Constructs a new instance of this class given its parent (which must be a
@@ -203,6 +203,7 @@ public class TreeItem extends Item {
     if( parentItem != null ) {
       depth = parentItem.depth + 1;
     }
+    parent.isFlatIndexValid = false;
     setEmpty();
     if( create ) {
       int numberOfItems;
@@ -221,7 +222,6 @@ public class TreeItem extends Item {
       } else {
         parent.createItem( this, index );
       }
-      parent.updateAllItems();
       parent.updateScrollBars();
     }
   }
@@ -401,21 +401,6 @@ public class TreeItem extends Item {
       result = new Rectangle( left, getItemTop(), width, parent.getItemHeight() );
     }
     return result;
-  }
-
-  private boolean isValidColumn( int index ) {
-    int columnCount = parent.getColumnCount();
-    return ( columnCount == 0 && index == 0 ) || ( index >= 0 && index < columnCount );
-  }
-
-  private boolean isVisible() {
-    return getParentItem() == null || getParentItem().getExpanded();
-  }
-
-  int getItemTop() {
-    int headerHeight = parent.getHeaderHeight();
-    int itemHeight = parent.getItemHeight();
-    return headerHeight + ( flatIndex - parent.getTopIndex() ) * itemHeight;
   }
 
   /**
@@ -1435,6 +1420,7 @@ public class TreeItem extends Item {
         }
       }
       itemCount = newItemCount;
+      parent.isFlatIndexValid = false;
       parent.updateScrollBars();
     }
   }
@@ -1459,7 +1445,7 @@ public class TreeItem extends Item {
       parent.destroyItem( this, index );
     }
     if( !parent.isInDispose() ) {
-      parent.updateAllItems();
+      parent.isFlatIndexValid = false;
       parent.removeFromSelection( this );
       parent.updateScrollBars();
     }
@@ -1468,6 +1454,32 @@ public class TreeItem extends Item {
 
   //////////////////
   // helping methods
+
+  private boolean isValidColumn( int index ) {
+    int columnCount = parent.getColumnCount();
+    return ( columnCount == 0 && index == 0 ) || ( index >= 0 && index < columnCount );
+  }
+
+  private boolean isVisible() {
+    return getParentItem() == null || getParentItem().getExpanded();
+  }
+
+  int getItemTop() {
+    int headerHeight = parent.getHeaderHeight();
+    int itemHeight = parent.getItemHeight();
+    return headerHeight + ( getFlatIndex() - parent.getTopIndex() ) * itemHeight;
+  }
+
+  int getFlatIndex() {
+    if( !parent.isFlatIndexValid ) {
+      parent.updateAllItems();
+    }
+    return flatIndex;
+  }
+
+  void setFlatIndex( int flatIndex ) {
+    this.flatIndex = flatIndex;
+  }
 
   boolean hasPreferredWidthBuffer( int index ) {
     return getPreferredWidthBuffer( index ) != Data.UNKNOWN_WIDTH;
