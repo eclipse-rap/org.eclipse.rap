@@ -24,6 +24,7 @@ import org.eclipse.rwt.engine.Context;
 import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.engine.configurables.AdapterManagerConfigurable;
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.protocol.Message;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.service.*;

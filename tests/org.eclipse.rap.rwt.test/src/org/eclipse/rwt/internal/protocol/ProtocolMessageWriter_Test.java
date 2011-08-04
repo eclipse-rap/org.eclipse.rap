@@ -18,9 +18,13 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.Message;
-import org.eclipse.rwt.Message.*;
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.protocol.Message.CallOperation;
+import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
+import org.eclipse.rwt.internal.protocol.Message.DestroyOperation;
+import org.eclipse.rwt.internal.protocol.Message.ExecuteScriptOperation;
+import org.eclipse.rwt.internal.protocol.Message.ListenOperation;
+import org.eclipse.rwt.internal.protocol.Message.SetOperation;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;

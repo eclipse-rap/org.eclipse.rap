@@ -16,11 +16,12 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.*;
-import org.eclipse.rwt.Message.CreateOperation;
-import org.eclipse.rwt.Message.SetOperation;
+import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.*;
+import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
+import org.eclipse.rwt.internal.protocol.Message.SetOperation;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -180,6 +181,7 @@ public class ShellLCA_Test extends TestCase {
     shell.open();
     shell.addShellListener( new ShellAdapter() {
 
+      @Override
       public void shellClosed( final ShellEvent event ) {
         log.append( "closed" );
       }
@@ -272,10 +274,12 @@ public class ShellLCA_Test extends TestCase {
     };
     final StringBuffer shellEventLog = new StringBuffer();
     ShellListener shellListener = new ShellAdapter() {
+      @Override
       public void shellActivated( ShellEvent event ) {
         Shell shell = ( Shell )event.getSource();
         shellEventLog.append( "activated:" + shell.getData() + "|" );
       }
+      @Override
       public void shellDeactivated( ShellEvent event ) {
         Shell shell = ( Shell )event.getSource();
         shellEventLog.append( "deactivated:" + shell.getData() + "|" );
@@ -432,7 +436,7 @@ public class ShellLCA_Test extends TestCase {
     ShellLCA lca = new ShellLCA();
 
     lca.renderInitialization( dialogShell );
-    
+
     String parentRef = "wm.findWidgetById( \"" + WidgetUtil.getId( parentShell ) + "\" )";
     String expected = "w.setParentShell( " + parentRef + " );";
     assertTrue( Fixture.getAllMarkup().contains( expected ) );
@@ -445,10 +449,10 @@ public class ShellLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     ShellLCA lca = new ShellLCA();
-    
+
     shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = ( SetOperation )message.getOperation( 0 );
     String expected = ImageFactory.getImagePath( shell.getImage() );
@@ -465,7 +469,7 @@ public class ShellLCA_Test extends TestCase {
 
     shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
   }
@@ -480,7 +484,7 @@ public class ShellLCA_Test extends TestCase {
 
     shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = ( SetOperation )message.getOperation( 0 );
     String expected = ImageFactory.getImagePath( shell.getImage() );
@@ -497,7 +501,7 @@ public class ShellLCA_Test extends TestCase {
 
     shell.setImages( new Image[] { Graphics.getImage( Fixture.IMAGE1 ) } );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = ( SetOperation )message.getOperation( 0 );
     String expected = ImageFactory.getImagePath( shell.getImages()[0] );
@@ -526,11 +530,13 @@ public class ShellLCA_Test extends TestCase {
     assertTrue( createMenuScriptIndex < setShellMenuScriptIndex );
   }
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
