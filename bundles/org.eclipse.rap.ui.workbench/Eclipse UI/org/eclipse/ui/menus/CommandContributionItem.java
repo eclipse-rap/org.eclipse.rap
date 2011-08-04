@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2009 IBM Corporation and others.
+ * Copyright (c) 2006, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -176,6 +176,8 @@ public class CommandContributionItem extends ContributionItem {
 
 	private ImageDescriptor contributedHoverIcon;
 
+	private IServiceLocator serviceLocator;
+
 	/**
 	 * Create a CommandContributionItem to place in a ContributionManager.
 	 * 
@@ -202,12 +204,13 @@ public class CommandContributionItem extends ContributionItem {
 		this.helpContextId = contributionParameters.helpContextId;
 		this.visibleEnabled = contributionParameters.visibleEnabled;
 		this.mode = contributionParameters.mode;
+		this.serviceLocator = contributionParameters.serviceLocator;
 
-		menuService = (IMenuService) contributionParameters.serviceLocator
+		menuService = (IMenuService) serviceLocator
 				.getService(IMenuService.class);
-		commandService = (ICommandService) contributionParameters.serviceLocator
+		commandService = (ICommandService) serviceLocator
 				.getService(ICommandService.class);
-		handlerService = (IHandlerService) contributionParameters.serviceLocator
+		handlerService = (IHandlerService) serviceLocator
 				.getService(IHandlerService.class);
 		// RAP [bm]: Bindings
 //		bindingService = (IBindingService) contributionParameters.serviceLocator
@@ -265,7 +268,7 @@ public class CommandContributionItem extends ContributionItem {
 						// it's OK to not have a helpContextId
 					}
 				}
-				IWorkbenchLocationService wls = (IWorkbenchLocationService) contributionParameters.serviceLocator
+				IWorkbenchLocationService wls = (IWorkbenchLocationService) serviceLocator
 						.getService(IWorkbenchLocationService.class);
 				final IWorkbench workbench = wls.getWorkbench();
 				if (workbench != null && helpContextId != null) {
@@ -425,7 +428,8 @@ public class CommandContributionItem extends ContributionItem {
 	 * state.
 	 * </p>
 	 * 
-	 * @return The parameterized command for this contribution.
+	 * @return The parameterized command for this contribution. May be
+	 *         <code>null</code>.
 	 * 
 	 * @since 3.5
 	 */
@@ -643,10 +647,15 @@ public class CommandContributionItem extends ContributionItem {
 		ToolItem item = (ToolItem) widget;
 
 		String text = label;
+		String tooltip = label;
 		if (text == null) {
 			if (command != null) {
 				try {
 					text = command.getCommand().getName();
+					tooltip = command.getCommand().getDescription();
+					if (tooltip == null || tooltip.trim().length() == 0) {
+						tooltip = text;
+					}
 				} catch (NotDefinedException e) {
 					StatusManager.getManager().handle(
 							StatusUtil.newStatus(IStatus.ERROR,
@@ -661,7 +670,7 @@ public class CommandContributionItem extends ContributionItem {
 			item.setText(text);
 		}
 
-		String toolTipText = getToolTipText(text);
+		String toolTipText = getToolTipText(tooltip);
 		item.setToolTipText(toolTipText);
 
 		if (item.getSelection() != checkedState) {
@@ -1012,6 +1021,28 @@ public class CommandContributionItem extends ContributionItem {
 
 	};
 	
+	/**
+     * Provide info on the rendering data contained in this item.
+     * 
+     * @return a {@link CommandContributionItemParameter}. Valid fields are
+     *         serviceLocator, id, style, icon, disabledIcon, hoverIcon, label,
+     *         helpContextId, mnemonic, tooltip. The Object will never be
+     *         <code>null</code>, although any of the fields may be
+     *         <code>null</code>.
+     * @since 3.7
+     */
+    public CommandContributionItemParameter getData() {
+        CommandContributionItemParameter data = new CommandContributionItemParameter(
+                serviceLocator, getId(), null, style);
+        data.icon = contributedIcon;
+        data.disabledIcon = contributedDisabledIcon;
+        data.hoverIcon = contributedHoverIcon;
+        data.label = contributedLabel;
+        data.helpContextId = helpContextId;
+        data.mnemonic = mnemonic;
+        data.tooltip = tooltip;
+        return data;
+    }	
 
 	/**
 	 * RAP [hs]: This mehtod is needed to access the menu for the styling. It is 
