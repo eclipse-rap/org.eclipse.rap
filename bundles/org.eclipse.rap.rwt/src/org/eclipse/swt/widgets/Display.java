@@ -2409,5 +2409,9 @@ public class Display extends Device implements Adaptable {
     public void detachThread() {
       Display.this.detachThread();
     }
+
+    public boolean isValidThread() {
+      return Display.this.isValidThread();
+    }
   }
 }

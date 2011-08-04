@@ -36,4 +36,5 @@ public interface IDisplayAdapter {
   int getAsyncRunnablesCount();
   void attachThread();
   void detachThread();
+  boolean isValidThread();
 }
