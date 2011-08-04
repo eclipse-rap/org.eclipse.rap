@@ -33,97 +33,6 @@ import org.eclipse.swt.internal.widgets.*;
  */
 public class TreeItem extends Item {
 
-  private final class TreeItemAdapter
-    implements ITreeItemAdapter, IWidgetFontAdapter, IWidgetColorAdapter
-  {
-
-    public boolean isParentDisposed() {
-      return parent.isDisposed();
-    }
-
-    public Color getUserBackgound() {
-      return background;
-    }
-
-    public Color getUserForegound() {
-      return foreground;
-    }
-
-    public Font getUserFont() {
-      return font;
-    }
-
-    public Color[] getCellBackgrounds() {
-      int columnCount = Math.max( 1, getParent().getColumnCount() );
-      Color[] result = new Color[ columnCount ];
-      if( data != null ) {
-        for( int i = 0; i < data.length; i++ ) {
-          if( data[ i ] != null ) {
-            result[ i ] = data[ i ].background;
-          }
-        }
-      }
-      return result;
-    }
-
-    public Color[] getCellForegrounds() {
-      int columnCount = Math.max( 1, getParent().getColumnCount() );
-      Color[] result = new Color[ columnCount ];
-      if( data != null ) {
-        for( int i = 0; i < data.length; i++ ) {
-          if( data[ i ] != null ) {
-            result[ i ] = data[ i ].foreground;
-          }
-        }
-      }
-      return result;
-    }
-
-    public Font[] getCellFonts() {
-      int columnCount = Math.max( 1, getParent().getColumnCount() );
-      Font[] result = new Font[ columnCount ];
-      if( data != null ) {
-        for( int i = 0; i < data.length; i++ ) {
-          if( data[ i ] != null ) {
-            result[ i ] = data[ i ].font;
-          }
-        }
-      }
-      return result;
-    }
-  }
-
-  private final class CompositeItemHolder implements IItemHolderAdapter {
-    public void add( Item item ) {
-      throw new UnsupportedOperationException();
-    }
-    public void insert( Item item, int index ) {
-      throw new UnsupportedOperationException();
-    }
-    public void remove( Item item ) {
-      throw new UnsupportedOperationException();
-    }
-    public Item[] getItems() {
-      TreeItem[] items = getCreatedItems();
-      Item[] result = new Item[ items.length ];
-      System.arraycopy( items, 0, result, 0, items.length );
-      return result;
-    }
-  }
-
-  private static final class Data implements SerializableCompatibility {
-    static final int UNKNOWN_WIDTH = -1;
-    String text = "";
-    // Note [fappel]: Yourkit analysis with the UI workbench testsuite showed an extensive
-    //                appearance of preferred width calculations. Buffering the preferred width
-    //                speeds up the suite on my machine to 1/4th of the time needed without buffering.
-    int preferredWidthBuffer = UNKNOWN_WIDTH;
-    Image image;
-    Font font;
-    Color background;
-    Color foreground;
-  }
-
   private final TreeItem parentItem;
   final Tree parent;
   TreeItem[] items;
@@ -1680,4 +1589,101 @@ public class TreeItem extends Item {
     }
   }
 
+  ////////////////
+  // Inner classes
+
+  private final class TreeItemAdapter
+    implements ITreeItemAdapter, IWidgetFontAdapter, IWidgetColorAdapter
+  {
+
+    public boolean isParentDisposed() {
+      return parent.isDisposed();
+    }
+
+    public Color getUserBackgound() {
+      return background;
+    }
+
+    public Color getUserForegound() {
+      return foreground;
+    }
+
+    public Font getUserFont() {
+      return font;
+    }
+
+    public Color[] getCellBackgrounds() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      Color[] result = new Color[ columnCount ];
+      if( data != null ) {
+        for( int i = 0; i < data.length; i++ ) {
+          if( data[ i ] != null ) {
+            result[ i ] = data[ i ].background;
+          }
+        }
+      }
+      return result;
+    }
+
+    public Color[] getCellForegrounds() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      Color[] result = new Color[ columnCount ];
+      if( data != null ) {
+        for( int i = 0; i < data.length; i++ ) {
+          if( data[ i ] != null ) {
+            result[ i ] = data[ i ].foreground;
+          }
+        }
+      }
+      return result;
+    }
+
+    public Font[] getCellFonts() {
+      int columnCount = Math.max( 1, getParent().getColumnCount() );
+      Font[] result = new Font[ columnCount ];
+      if( data != null ) {
+        for( int i = 0; i < data.length; i++ ) {
+          if( data[ i ] != null ) {
+            result[ i ] = data[ i ].font;
+          }
+        }
+      }
+      return result;
+    }
+  }
+
+  private final class CompositeItemHolder implements IItemHolderAdapter {
+
+    public void add( Item item ) {
+      throw new UnsupportedOperationException();
+    }
+
+    public void insert( Item item, int index ) {
+      throw new UnsupportedOperationException();
+    }
+
+    public void remove( Item item ) {
+      throw new UnsupportedOperationException();
+    }
+
+    public Item[] getItems() {
+      TreeItem[] items = getCreatedItems();
+      Item[] result = new Item[ items.length ];
+      System.arraycopy( items, 0, result, 0, items.length );
+      return result;
+    }
+  }
+
+  private static final class Data implements SerializableCompatibility {
+    static final int UNKNOWN_WIDTH = -1;
+    String text = "";
+    // Note [fappel]: Yourkit analysis with the UI workbench testsuite showed an extensive
+    //                appearance of preferred width calculations. Buffering the preferred width
+    //                speeds up the suite on my machine to 1/4th of the time needed without buffering.
+    int preferredWidthBuffer = UNKNOWN_WIDTH;
+    Image image;
+    Font font;
+    Color background;
+    Color foreground;
+  }
 }
