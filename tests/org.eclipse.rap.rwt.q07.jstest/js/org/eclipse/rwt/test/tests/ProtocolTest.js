@@ -838,6 +838,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
           log.push( "foo", arg );
         },
         destroy : function() {
+          this.setParent( null );
           log.push( "destroy" );
         },
         getDisposed : function() {

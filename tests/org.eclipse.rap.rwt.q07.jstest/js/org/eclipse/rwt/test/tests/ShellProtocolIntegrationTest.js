@@ -41,6 +41,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       assertTrue( shell.getShowCaption() );
       assertTrue( shell._onTop );
       assertTrue( shell._appModal );
+      org.eclipse.rwt.test.fixture.TestUtil.flush();
+      assertTrue( shell.isSeeable() );
       this._disposeShell();
     },
 
@@ -132,6 +134,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       } );
       assertIdentical( button, shell.getDefaultButton() );
       button.destroy();
+      this._disposeShell();
+    },
+
+    testSetParentShell : function() {
+      var shell = this._protocolCreateShell();
+      var shell2 = new org.eclipse.swt.widgets.Shell( { "style" : [] } );
+      org.eclipse.rwt.test.fixture.TestUtil.flush();      
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      widgetManager.add( shell2, "wParent", true );
+      // done in PushButtonLCA
+      this._protocolSet( {
+        "parentShell" : "wParent"
+      } );
+      assertIdentical( shell2, shell.getTopLevelShell() );
+      shell2.destroy();
+      org.eclipse.rwt.test.fixture.TestUtil.flush();      
       this._disposeShell();
     },
 
@@ -377,7 +395,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var shell = widgetManager.findWidgetById( "w3" );
       shell.getWindowManager().setActiveWindow( null ); // remove shell without setting another
-      shell.doClose();
       widgetManager.dispose( "w3" );
     },
     

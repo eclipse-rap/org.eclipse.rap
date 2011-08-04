@@ -20,6 +20,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.protocol.Message;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -41,15 +42,19 @@ public class ControlLCAUtil_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private Control control;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
     display = new Display();
     shell = new Shell( display );
+    control = new Button( shell, SWT.PUSH );
+    control.setSize( 10, 10 ); // Would be rendered as invisible otherwise
   }
 
   protected void tearDown() throws Exception {
+    display.dispose();
     Fixture.tearDown();
   }
 
@@ -618,4 +623,35 @@ public class ControlLCAUtil_Test extends TestCase {
     String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"menuDetect\", true );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
+  
+  //////////////////////////////////////////////
+  // Tests for new render methods using protocol
+  
+  public void testWriteVisibilityIntiallyFalse() throws IOException {   
+    control.setVisible( false );
+    ControlLCAUtil.renderVisible( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findSetProperty( control, "visibility" ) );
+  }
+
+  public void testWriteVisibilityInitiallyTrue() throws IOException {
+    ControlLCAUtil.renderVisible( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "visibility" ) );
+  }
+
+  public void testWriteVisibilityUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.setVisible( false );
+
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderVisible( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "visibility" ) );    
+  }
+
 }

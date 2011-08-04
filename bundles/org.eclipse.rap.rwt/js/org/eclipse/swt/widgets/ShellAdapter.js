@@ -10,7 +10,7 @@
  ******************************************************************************/
 
 org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
-  
+
   factory : function( properties ) {
     var styles = org.eclipse.rwt.protocol.Processor.createStyleMap( properties.style );
     var result = new org.eclipse.swt.widgets.Shell( styles );
@@ -66,6 +66,10 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
     "defaultButton" : function( shell, value ) {
       var button = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( value );
       shell.setDefaultButton( button );
+    },
+    "parentShell" : function( shell, value ) {
+      var parent = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( value );
+      shell.setParentShell( parent );
     },
     "menu" : function( shell, value ) {
       var menu = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( value );
@@ -154,7 +158,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
     "help",
     "activate"
   ],
-  
+
   listenerHandler : {
     "activate" : function( widget, value ) {
       var shell = widget;
@@ -177,12 +181,12 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
       widget.setUserData( "traverseListener", value ? true : null );
     }
   },
-  
+
   knownMethods : [
     "allowEvent",
     "cancelEvent"
   ],
-  
+
   methodHandler : {
     "allowEvent" : function( widget, properties ) {
       org.eclipse.rwt.KeyEventUtil.getInstance().allowEvent();

@@ -18,6 +18,8 @@ import java.lang.reflect.Field;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.service.IServiceStore;
@@ -205,9 +207,27 @@ public class ControlLCAUtil {
     // we only need getVisible here (not isVisible), as qooxdoo also hides/shows
     // contained controls
     Boolean newValue = Boolean.valueOf( getVisible( control ) );
-    Boolean defValue = control instanceof Shell ? Boolean.FALSE : Boolean.TRUE;
+    Boolean defValue = Boolean.TRUE;
     JSWriter writer = JSWriter.getWriterFor( control );
     writer.set( Props.VISIBLE, JSConst.QX_FIELD_VISIBLE, newValue, defValue );
+  }
+
+  /**
+   * Determines whether the visibility of the given control has changed during
+   * the processing of the current request and if so, writes JavaScript code to
+   * the response that updates the client-side visibility.
+   *
+   * @param control the control whose visibility to write
+   * @throws IOException
+   */
+  public static void renderVisible( Control control ) throws IOException {
+    Boolean newValue = Boolean.valueOf( getVisible( control ) );
+    Boolean defValue = Boolean.TRUE;
+    // TODO [tb] : Can we have a shorthand for this, like in JSWriter?
+    if( WidgetLCAUtil.hasChanged( control, Props.VISIBLE, newValue, defValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+      clientObject.setProperty( JSConst.QX_FIELD_VISIBLE, newValue );
+    }
   }
 
   // [if] Fix for bug 263025, 297466, 223873 and more
@@ -270,6 +290,61 @@ public class ControlLCAUtil {
     writeToolTip( control );
     writeMenu( control );
     writeVisible( control );
+    writeEnabled( control );
+    writeForeground( control );
+    writeBackground( control );
+    writeBackgroundImage( control );
+    writeFont( control );
+    writeCursor( control );
+//    TODO [rst] missing: writeControlListener( control );
+    writeActivateListener( control );
+    writeFocusListener( control );
+    writeMouseListener( control );
+    writeKeyListener( control );
+    writeTraverseListener( control );
+    writeKeyEventResponse( control );
+    writeMenuDetectListener( control );
+    WidgetLCAUtil.writeHelpListener( control );
+  }
+  
+  /**
+   * Determines for all of the following properties of the specified control
+   * whether the property has changed during the processing of the current
+   * request and if so, writes JavaScript code to the response that updates the
+   * corresponding client-side property.
+   * <ul>
+   * <li>bounds</li>
+   * <li>z-index (except for Shells)</li>
+   * <li>tab index</li>
+   * <li>tool tip text</li>
+   * <li>menu</li>
+   * <li>visible</li>
+   * <li>enabled</li>
+   * <li>foreground</li>
+   * <li>background</li>
+   * <li>background image</li>
+   * <li>font</li>
+   * <li>cursor</li>
+   * <!--li>whether ControlListeners are registered</li-->
+   * <li>whether ActivateListeners are registered</li>
+   * <li>whether MouseListeners are registered</li>
+   * <li>whether FocusListeners are registered</li>
+   * <li>whether KeyListeners are registered</li>
+   * <li>whether TraverseListeners are registered</li>
+   * <li>whether HelpListeners are registered</li>
+   * </ul>
+   *
+   * @param control the control whose properties to set
+   * @throws IOException
+   * @see #preserveValues(Control)
+   */
+  public static void renderChanges( Control control ) throws IOException {
+    renderVisible( control );
+    writeBounds( control );
+    writeZIndex( control );
+    writeTabIndex( control );
+    writeToolTip( control );
+    writeMenu( control );
     writeEnabled( control );
     writeForeground( control );
     writeBackground( control );

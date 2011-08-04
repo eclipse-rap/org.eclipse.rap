@@ -21,6 +21,7 @@ import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.theme.JsonArray;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellEvent;
@@ -44,8 +45,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
   static final String PROP_SHELL_LISTENER = "shellListener";
   private static final String PROP_SHELL_MENU  = "menuBar";
   private static final String PROP_SHELL_MENU_BOUNDS = "menuBarShellClientArea";
-
-  private final static Object[] NULL_PARAMETER = new Object[] { null };
 
   @Override
   public void preserveValues( final Widget widget ) {
@@ -94,7 +93,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     clientObject.create( args );
     Composite parent = shell.getParent();
     if( parent instanceof Shell ) {
-      JSWriter.getWriterFor( widget ).set( "parentShell", parent );
+      clientObject.setProperty( "parentShell", WidgetUtil.getId( parent ) );
     }
   }
 
@@ -105,9 +104,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writeImage( shell );
     writeText( shell );
     writeAlpha( shell );
-    // Important: Order matters, writing setActive() before open() leads to
-    //            strange behavior!
-    writeOpen( shell );
     writeActiveShell( shell );
     // Important: Order matters, write setMode() after open() and before
     // setBounds() - see bug 302224
@@ -117,14 +113,13 @@ public final class ShellLCA extends AbstractWidgetLCA {
     writeMinimumSize( shell );
     writeDefaultButton( shell );
     writePopupMenu( shell );
-    ControlLCAUtil.writeChanges( shell );
+    ControlLCAUtil.renderChanges( shell );
   }
 
   @Override
   public void renderDispose( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.call( "doClose", null );
-    writer.dispose();
+    IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+    clientObject.destroy();
   }
 
   //////////////////
@@ -139,42 +134,32 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void writeAlpha( Shell shell ) throws IOException {
+  private void writeAlpha( Shell shell ) {
     int alpha = shell.getAlpha();
     if( WidgetLCAUtil.hasChanged( shell, PROP_ALPHA, new Integer( alpha ), new Integer( 0xFF ) ) ) {
-      JSWriter writer = JSWriter.getWriterFor( shell );
-      float opacity = ( alpha & 0xFF ) * 1000 / 0xFF / 1000.0f;
-      writer.set( "opacity", opacity );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+      clientObject.setProperty( "alpha", alpha );
     }
   }
 
-  private static void writeOpen( Shell shell ) throws IOException {
-    // TODO [rst] workaround: qx window should be opened only once.
-    Boolean defValue = Boolean.FALSE;
-    Boolean actValue = Boolean.valueOf( shell.getVisible() );
-    if(    WidgetLCAUtil.hasChanged( shell, Props.VISIBLE, actValue, defValue )
-        && shell.getVisible() )
-    {
-      JSWriter writer = JSWriter.getWriterFor( shell );
-      writer.call( "open", null );
-    }
-  }
-
-  private static void writeMinimumSize( Shell shell ) throws IOException {
+  private static void writeMinimumSize( Shell shell ) {
     Point newValue = shell.getMinimumSize();
     if( WidgetLCAUtil.hasChanged( shell, PROP_MINIMUM_SIZE, newValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( shell );
-      writer.set( "minWidth", new Integer( newValue.x ) );
-      writer.set( "minHeight", new Integer( newValue.y ) );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+      // TODO [tb] : crate a setter for int[]?
+      JsonArray arg = new JsonArray();
+      arg.append( newValue.x );
+      arg.append( newValue.y );
+      clientObject.setProperty( "minimumSize", arg );
     }
   }
 
-  private static void writeDefaultButton( Shell shell ) throws IOException {
+  private static void writeDefaultButton( Shell shell ) {
     Button defaultButton = shell.getDefaultButton();
     // NOTE [tb] : set happens in PushButtonLCA - can all be handled here?
     if( defaultButton != null && defaultButton.isDisposed() ) {
-      JSWriter writer = JSWriter.getWriterFor( shell );
-      writer.call( "setDefaultButton", NULL_PARAMETER );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+      clientObject.setProperty( "defaultButton", null );
     }
   }
 
@@ -197,12 +182,12 @@ public final class ShellLCA extends AbstractWidgetLCA {
   /////////////////////////////////////////////
   // Methods to read and write the active shell
 
-  private static void writeActiveShell( Shell shell ) throws IOException {
+  private static void writeActiveShell( Shell shell ) {
     Shell activeShell = shell.getDisplay().getActiveShell();
     boolean hasChanged = WidgetLCAUtil.hasChanged( shell, PROP_ACTIVE_SHELL, activeShell, null );
     if( shell == activeShell && hasChanged ) {
-      JSWriter writer = JSWriter.getWriterFor( shell );
-      writer.set( "active", true );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+      clientObject.setProperty( "active", true );
     }
   }
 
@@ -232,12 +217,13 @@ public final class ShellLCA extends AbstractWidgetLCA {
   /* (intentionally non-JavaDoc'ed)
    * This method is declared public only to be accessible from DisplayLCA
    */
-  public static void writeActiveControl( Shell shell ) throws IOException {
+  public static void writeActiveControl( Shell shell ) {
     final Control activeControl = getActiveControl( shell );
     String prop = PROP_ACTIVE_CONTROL;
     if( WidgetLCAUtil.hasChanged( shell, prop, activeControl, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( shell );
-      writer.set( "activeControl", new Object[] { activeControl } );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+      // TODO [tb] : introduce setter for widgets?
+      clientObject.setProperty( "activeControl", WidgetUtil.getId( activeControl ) );
     }
   }
 
@@ -311,28 +297,29 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeMode( Shell shell ) throws IOException {
+  private static void writeMode( Shell shell ) {
     Object defValue = null;
     Object newValue = getMode( shell );
     if( WidgetLCAUtil.hasChanged( shell, PROP_MODE, newValue, defValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( shell );
-      writer.set( "mode", newValue );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+      clientObject.setProperty( "mode", newValue );
     }
   }
 
-  private static void writeCloseListener( Shell shell ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( shell );
+  private static void writeCloseListener( Shell shell ) {
     Boolean newValue = Boolean.valueOf( ShellEvent.hasListener( shell ) );
-    Boolean defValue = Boolean.FALSE;
-    writer.set( PROP_SHELL_LISTENER, "hasShellListener", newValue, defValue );
+    if( WidgetLCAUtil.hasChanged( shell, PROP_SHELL_LISTENER, newValue, Boolean.FALSE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+      clientObject.addListener( "shell" );
+    }
   }
 
-  private static void writeFullScreen( Shell shell ) throws IOException {
+  private static void writeFullScreen( Shell shell ) {
     Object defValue = Boolean.FALSE;
     Boolean newValue = Boolean.valueOf( shell.getFullScreen() );
     if( WidgetLCAUtil.hasChanged( shell, PROP_FULLSCREEN, newValue, defValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( shell );
-      writer.set( "fullScreen", newValue );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
+      clientObject.setProperty( "fullscreen", true );
     }
   }
 
@@ -353,4 +340,5 @@ public final class ShellLCA extends AbstractWidgetLCA {
     IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( shell );
     widgetAdapter.preserve( PROP_SHELL_MENU_BOUNDS, menuBounds );
   }
+
 }

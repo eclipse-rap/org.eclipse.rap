@@ -21,6 +21,8 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.Message.DestroyOperation;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.uicallback.UICallBackManager;
@@ -316,9 +318,10 @@ public class DisplayLCA_Test extends TestCase {
     } );
     
     lifeCycle.execute();
-    
-    String expected = "wm.dispose( \"w2\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != - 1 );
+
+    Message message = Fixture.getProtocolMessage();
+    assertTrue( message.getOperation( 0 ) instanceof DestroyOperation );
+    assertEquals( "w2", message.getOperation( 0 ).getTarget() );
   }
 
   public void testFocusControl() {

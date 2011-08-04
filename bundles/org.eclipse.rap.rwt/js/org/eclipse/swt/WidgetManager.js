@@ -58,12 +58,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
         this.remove( widget );
         if( !widget.getDisposed() ) {
           this._removeToolTipPopup( widget );
-          // TODO [rh] workaround for disposing of a Sash: if( parent && ...
-          var parent = widget.getParent();
-          if( parent && parent.getChildren() ) {
-            widget.setParent( null );
-          }
-          // [if] Replace dispose() with destroy()
           widget.destroy();
         }
       }

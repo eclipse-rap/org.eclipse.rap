@@ -13,6 +13,8 @@ package org.eclipse.swt.internal.widgets.buttonkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -61,14 +63,14 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
     writeDefault( button );
   }
 
-  static void writeDefault( final Button button ) throws IOException {
+  static void writeDefault( final Button button ) {
     boolean isDefault = isDefaultButton( button );
     Boolean defValue = Boolean.FALSE;
     Boolean actValue = Boolean.valueOf( isDefault );
     if( WidgetLCAUtil.hasChanged( button, PROP_DEFAULT, actValue, defValue ) ) {
       if( isDefault ) {
-        JSWriter writer = JSWriter.getWriterFor( button.getShell() );
-        writer.set( "defaultButton", new Object[] { button } );
+        IClientObject clientObject = ClientObjectFactory.getForWidget( button.getShell() );
+        clientObject.setProperty( "defaultButton", WidgetUtil.getId( button ) );
       }
     }
   }
