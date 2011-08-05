@@ -63,6 +63,10 @@ public final class ClientObject implements IClientObject {
   public void setProperty( String name, String value ) {
     getWriter().appendSet( targetId, name, value );
   }
+  
+  public void setProperty( String name, int[] value ) {
+    getWriter().appendSet( targetId, name, value );
+  }
 
   public void setProperty( String name, Object value ) {
     getWriter().appendSet( targetId, name, value );

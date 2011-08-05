@@ -30,7 +30,10 @@ import org.eclipse.rwt.internal.protocol.Message.SetOperation;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 
 public class ClientObject_Test extends TestCase {
@@ -84,6 +87,17 @@ public class ClientObject_Test extends TestCase {
     assertEquals( new Double( 3.5 ), operation.getProperty( "key3" ) );
     assertEquals( Boolean.TRUE, operation.getProperty( "key4" ) );
     assertEquals( "aString", operation.getProperty( "key5" ) );
+  }
+  
+  public void testSetPropertyForIntArray() throws JSONException {
+    clientObject.setProperty( "key", new int[]{ 1, 2, 3 } );
+
+    SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
+    JSONArray result = ( JSONArray )operation.getProperty( "key" );
+    assertEquals( 3, result.length() );
+    assertEquals( 1, result.getInt( 0 ) );
+    assertEquals( 2, result.getInt( 1 ) );
+    assertEquals( 3, result.getInt( 2 ) );
   }
 
   public void testCreatePropertyGetStyle() {

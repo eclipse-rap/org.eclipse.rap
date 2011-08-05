@@ -59,6 +59,8 @@ final class JsonUtil {
       result = JsonObject.valueOf( ( ( Double )value ).doubleValue() );
     } else if( value instanceof Boolean ) {
       result = JsonObject.valueOf( ( ( Boolean )value ).booleanValue() );
+    } else if( value instanceof int[] ) {
+      result = JsonArray.valueOf( ( int[] )value );
     } else if( value instanceof Object[] ) {
       result = createJsonArray( ( Object[] )value );
     } else if( value instanceof JsonValue ) {

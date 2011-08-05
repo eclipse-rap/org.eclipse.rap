@@ -18,7 +18,6 @@ import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.theme.JsonArray;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellEvent;
@@ -143,11 +142,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     Point newValue = shell.getMinimumSize();
     if( WidgetLCAUtil.hasChanged( shell, PROP_MINIMUM_SIZE, newValue ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
-      // TODO [tb] : crate a setter for int[]?
-      JsonArray arg = new JsonArray();
-      arg.append( newValue.x );
-      arg.append( newValue.y );
-      clientObject.setProperty( "minimumSize", arg );
+      clientObject.setProperty( "minimumSize", new int[]{ newValue.x, newValue.y } );
     }
   }
 
