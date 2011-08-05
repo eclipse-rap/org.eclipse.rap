@@ -109,6 +109,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     renderMinimumSize( shell );
     renderDefaultButton( shell );
     renderPopupMenu( shell );
+    renderActiveControl( shell );
     ControlLCAUtil.renderChanges( shell );
   }
 
@@ -206,18 +207,11 @@ public final class ShellLCA extends AbstractWidgetLCA {
     displayAdapter.setActiveShell( shell );
   }
 
-  /////////////////////////////////////////////////////
-  // Methods to handle activeControl and ActivateEvents
-
-  /* (intentionally non-JavaDoc'ed)
-   * This method is declared public only to be accessible from DisplayLCA
-   */
-  public static void writeActiveControl( Shell shell ) {
+  private static void renderActiveControl( Shell shell ) {
     final Control activeControl = getActiveControl( shell );
     String prop = PROP_ACTIVE_CONTROL;
     if( WidgetLCAUtil.hasChanged( shell, prop, activeControl, null ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
-      // TODO [tb] : introduce setter for widgets?
       clientObject.setProperty( "activeControl", WidgetUtil.getId( activeControl ) );
     }
   }

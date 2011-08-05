@@ -412,18 +412,6 @@ public class ShellLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, operation.getProperty( "fullscreen" ) );
   }
 
-  public void testRenderActiveControl() throws Exception {
-    Button button = new Button( shell, SWT.PUSH );
-    IShellAdapter adapter = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
-
-    adapter.setActiveControl( button );
-    ShellLCA.writeActiveControl( shell ); // TODO [tb] : should be renderChanges
-
-    Message message = Fixture.getProtocolMessage();
-    SetOperation operation = ( SetOperation )message.getOperation( 0 );
-    assertEquals( WidgetUtil.getId( button ), operation.getProperty( "activeControl" ) );
-  }
-
   public void testRenderDefaultButtonIntiallyNull() throws IOException {
     ShellLCA lca = new ShellLCA();
 
@@ -456,6 +444,43 @@ public class ShellLCA_Test extends TestCase {
     
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( shell, "defaultButton" ) );
+  }
+
+  public void testRenderActiveControlIntiallyNull() throws IOException {
+    ShellLCA lca = new ShellLCA();
+    
+    lca.renderChanges( shell );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( shell, "activeControl" ) );
+  }
+  
+  public void testRenderActiveControlInitiallySet() throws Exception {
+    ShellLCA lca = new ShellLCA();
+    Button button = new Button( shell, SWT.PUSH );
+    IShellAdapter adapter = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+    
+    adapter.setActiveControl( button );
+    lca.renderChanges( shell );
+    
+    Message message = Fixture.getProtocolMessage();
+    SetOperation operation = ( SetOperation )message.getOperation( 0 );
+    assertEquals( WidgetUtil.getId( button ), operation.getProperty( "activeControl" ) );
+  }
+  
+  public void testRenderActiveControlUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Button button = new Button( shell, SWT.PUSH );
+    IShellAdapter adapter = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+    adapter.setActiveControl( button );
+    ShellLCA lca = new ShellLCA();
+    
+    Fixture.preserveWidgets();
+    lca.renderChanges( shell );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( shell, "activeControl" ) );
   }
 
   public void testRenderInitialBounds() throws Exception {

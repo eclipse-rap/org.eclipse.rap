@@ -12,7 +12,21 @@
 namespace( "org.eclipse.rwt.protocol" );
 
 org.eclipse.rwt.protocol.AdapterUtil = {
-    
+
+  addStatesForStyles : function( targetOject, styleArray ) {
+    for( var i = 0; i < styleArray.length; i++ ) {
+      targetOject.addState( "rwt_" + styleArray[ i ] );
+    }
+  },
+
+  createStyleMap : function( styleArray ) {
+    var result = {};
+    for( var i = 0; i < styleArray.length; i++ ) {
+      result[ styleArray[ i ] ] = true;
+    }
+    return result;
+  },
+
   callbackForTargetId : function( id, fun ) {
     var wm = org.eclipse.swt.WidgetManager.getInstance();
     if( id === null ) {

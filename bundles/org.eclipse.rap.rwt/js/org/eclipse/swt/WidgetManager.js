@@ -75,8 +75,10 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       widget.setUserData( "id", id );
       widget.setUserData( "rwtType", type );
       if( this._callbacks[ id ] ) {
-         this._callbacks[ id ]( widget );
-         delete this._callbacks[ id ];
+        for( var i = 0; i < this._callbacks[ id ].length; i++ ) {
+           this._callbacks[ id ][ i ]( widget );
+        }
+        delete this._callbacks[ id ];
       }
     },
 
@@ -90,7 +92,10 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     },
     
     addRegistrationCallback : function( id, fun ) {
-      this._callbacks[ id ] = fun; // TODO [tb] : can multiple callbacks be needed?
+      if( !this._callbacks[ id ] ) {
+        this._callbacks[ id ] = [];
+      }
+      this._callbacks[ id ].push( fun );
     },
 
     /**

@@ -12,9 +12,9 @@
 org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
 
   factory : function( properties ) {
-    var styles = org.eclipse.rwt.protocol.Processor.createStyleMap( properties.style );
+    var styles = org.eclipse.rwt.protocol.AdapterUtil.createStyleMap( properties.style );
     var result = new org.eclipse.swt.widgets.Shell( styles );
-    org.eclipse.rwt.protocol.Processor.addStatesForStyles( result, properties.style );
+    org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
     result.initialize();
     result.setUserData( "isControl", true );
     return result;
@@ -39,6 +39,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
     "minimumSize",
     "defaultButton",
     "menu",
+    "activeControl",
     // ControlLCAUtil properties from there on
     "zIndex",
     "tabIndex",
@@ -66,6 +67,11 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
     "defaultButton" : function( shell, value ) {
       org.eclipse.rwt.protocol.AdapterUtil.callbackForTargetId( value, function( widget ) {
         shell.setDefaultButton( widget );
+      } );
+    },
+    "activeControl" : function( shell, value ) {
+      org.eclipse.rwt.protocol.AdapterUtil.callbackForTargetId( value, function( widget ) {
+        shell.setActiveControl( widget );
       } );
     },
     "parentShell" : function( shell, value ) {

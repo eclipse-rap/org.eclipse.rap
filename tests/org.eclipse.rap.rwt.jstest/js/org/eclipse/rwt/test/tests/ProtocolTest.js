@@ -832,7 +832,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
           return this._prop;
         },
         getStyleMap : function() {
-          return org.eclipse.rwt.protocol.Processor.createStyleMap( this._prop.style );
+          return org.eclipse.rwt.protocol.AdapterUtil.createStyleMap( this._prop.style );
         },
         doFoo : function( arg ) {
           log.push( "foo", arg );
@@ -866,7 +866,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
     _getDummyFactory : function() {
       var constr = function( properties ) {
         if( properties ) {
-          org.eclipse.rwt.protocol.Processor.addStatesForStyles( this, properties.style );
+          org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( this, properties.style );
         }
         this._prop = properties;
       };

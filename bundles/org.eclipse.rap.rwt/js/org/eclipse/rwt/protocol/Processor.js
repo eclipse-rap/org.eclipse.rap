@@ -47,21 +47,6 @@ org.eclipse.rwt.protocol.Processor = {
     }
   },
 
-  // TODO [tb] : move  
-  addStatesForStyles : function( targetOject, styleArray ) {
-    for( var i = 0; i < styleArray.length; i++ ) {
-      targetOject.addState( "rwt_" + styleArray[ i ] );
-    }
-  },
-
-  createStyleMap : function( styleArray ) {
-    var result = {};
-    for( var i = 0; i < styleArray.length; i++ ) {
-      result[ styleArray[ i ] ] = true;
-    }
-    return result;
-  },
-
   ////////////
   // Internals
 

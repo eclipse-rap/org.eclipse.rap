@@ -128,7 +128,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var button = new org.eclipse.rwt.widgets.Button( "push" );
       widgetManager.add( button, "wButton", true );
-      // done in PushButtonLCA
       this._protocolSet( {
         "defaultButton" : "wButton"
       } );
@@ -143,7 +142,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var button = new org.eclipse.rwt.widgets.Button( "push" );
       widgetManager.add( button, "wButton", true );
-      // done in PushButtonLCA
       this._protocolSet( {
         "defaultButton" : "wButton"
       } );
@@ -165,6 +163,50 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       } );
       var button = new org.eclipse.rwt.widgets.Button( "push" );
       widgetManager.add( button, "wButton", true );
+      assertIdentical( button, shell.getDefaultButton() );
+      widgetManager.remove( button );
+      button.destroy();
+      this._disposeShell();
+    },
+
+    testSetActiveControl : function() {
+      var shell = this._protocolCreateShell();
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      widgetManager.add( button, "wButton", true );
+      this._protocolSet( {
+        "activeControl" : "wButton"
+      } );
+      assertIdentical( button, shell._activeControl );
+      widgetManager.remove( button );
+      button.destroy();
+      this._disposeShell();
+    },
+
+    testSetActiveControlBeforeCreate : function() {
+      var shell = this._protocolCreateShell();
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      this._protocolSet( {
+        "activeControl" : "wButton"
+      } );
+      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      widgetManager.add( button, "wButton", true );
+      assertIdentical( button, shell._activeControl );
+      widgetManager.remove( button );
+      button.destroy();
+      this._disposeShell();
+    },
+
+    testSetDefaultButtonAsActiveControlBeforeCreate : function() {
+      var shell = this._protocolCreateShell();
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      this._protocolSet( {
+        "defaultButton" : "wButton",
+        "activeControl" : "wButton"
+      } );
+      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      widgetManager.add( button, "wButton", true );
+      assertIdentical( button, shell._activeControl );
       assertIdentical( button, shell.getDefaultButton() );
       widgetManager.remove( button );
       button.destroy();

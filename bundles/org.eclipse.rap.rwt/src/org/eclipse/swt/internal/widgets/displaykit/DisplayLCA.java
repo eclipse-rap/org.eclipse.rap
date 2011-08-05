@@ -34,7 +34,6 @@ import org.eclipse.swt.dnd.DropTarget;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
-import org.eclipse.swt.internal.widgets.shellkit.ShellLCA;
 import org.eclipse.swt.widgets.*;
 
 
@@ -149,7 +148,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       writeErrorPages( display );
       writeExitConfirmation( display );
       renderShells( display );
-      writeActiveControls( display );
       writeFocus( display );
       writeUiCallBackAcvtivation( display );
       markInitialized( display );
@@ -326,17 +324,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
           responseWriter.write( buffer.toString() );
         }
       }
-    }
-  }
-
-  // TODO [rh] writing activeControl should be handled by the ShellLCA itself
-  //      The reason why this is currently done here is, that the control to
-  //      activate might not yet be created client-side, when ShellLCA writes
-  //      the statement to set the active control.
-  private static void writeActiveControls( Display display ) throws IOException {
-    Shell[] shells = getShells( display );
-    for( int i = 0; i < shells.length; i++ ) {
-      ShellLCA.writeActiveControl( shells[ i ] );
     }
   }
 
