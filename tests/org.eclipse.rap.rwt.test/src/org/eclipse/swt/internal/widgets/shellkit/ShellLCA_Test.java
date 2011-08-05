@@ -39,6 +39,7 @@ public class ShellLCA_Test extends TestCase {
   private Display display;
   private Shell shell;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
@@ -46,6 +47,7 @@ public class ShellLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     display.dispose();
     Fixture.tearDown();
@@ -193,7 +195,7 @@ public class ShellLCA_Test extends TestCase {
     final StringBuffer log = new StringBuffer();
     shell.open();
     shell.addShellListener( new ShellAdapter() {
-
+      @Override
       public void shellClosed( final ShellEvent event ) {
         log.append( "closed" );
       }
@@ -211,14 +213,12 @@ public class ShellLCA_Test extends TestCase {
     String labelId = WidgetUtil.getId( label );
     String otherLabelId = WidgetUtil.getId( otherLabel );
     setActiveControl( shell, otherLabel );
-    //Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( shellId + ".activeControl", labelId );
     Fixture.readDataAndProcessAction( display );
     assertSame( label, getActiveControl( shell ) );
     // Ensure that if there is both, an avtiveControl parameter and a
     // controlActivated event, the activeControl parameter is ignored
     setActiveControl( shell, otherLabel );
-    //Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( shellId + ".activeControl", otherLabelId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_ACTIVATED, labelId );
     Fixture.readDataAndProcessAction( display );
@@ -306,10 +306,12 @@ public class ShellLCA_Test extends TestCase {
     };
     final StringBuffer shellEventLog = new StringBuffer();
     ShellListener shellListener = new ShellAdapter() {
+      @Override
       public void shellActivated( ShellEvent event ) {
         Shell shell = ( Shell )event.getSource();
         shellEventLog.append( "activated:" + shell.getData() + "|" );
       }
+      @Override
       public void shellDeactivated( ShellEvent event ) {
         Shell shell = ( Shell )event.getSource();
         shellEventLog.append( "deactivated:" + shell.getData() + "|" );
@@ -333,13 +335,13 @@ public class ShellLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, WidgetUtil.getId( shellToActivate ) );
 
     Fixture.executeLifeCycleFromServerThread();
-    
+
     assertSame( shellToActivate, display.getActiveShell() );
     String expected = "deactivated:activeShell|activated:shellToActivate|";
     assertEquals( expected, activateEventLog.toString() );
     assertEquals( expected, shellEventLog.toString() );
     // Ensure that no setActive javaScript code is rendered for client-side activated Shell
-    
+
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( shellToActivate, "active" ) );
   }
@@ -357,7 +359,6 @@ public class ShellLCA_Test extends TestCase {
       // expected
     }
     // no deactivation event must be created for a null active shell
-    //Fixture.fakeNewRequest( display );
     String shell1Id = WidgetUtil.getId( shell );
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_ACTIVATED, shell1Id );
     Fixture.readDataAndProcessAction( display );
@@ -367,7 +368,6 @@ public class ShellLCA_Test extends TestCase {
   public void testDisposeSingleShell() {
     shell.open();
     String shellId = WidgetUtil.getId( shell );
-    //Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_SHELL_CLOSED, shellId );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 0, display.getShells().length );
@@ -381,7 +381,7 @@ public class ShellLCA_Test extends TestCase {
 
     shell.setAlpha( 23 );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = ( SetOperation )message.getOperation( 0 );
     assertEquals( new Integer( 23 ), operation.getProperty( "alpha" ) );
@@ -390,22 +390,22 @@ public class ShellLCA_Test extends TestCase {
   public void testWriteMode() throws Exception {
     shell.open();
     AbstractWidgetLCA lca = WidgetUtil.getLCA( shell );
-    
+
     shell.setMaximized( true );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = ( SetOperation )message.getOperation( 0 );
     assertEquals( "maximized", operation.getProperty( "mode" ) );
   }
-  
+
   public void testWriteFullscreen() throws Exception {
     shell.open();
     AbstractWidgetLCA lca = WidgetUtil.getLCA( shell );
-    
+
     shell.setFullScreen( true );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = ( SetOperation )message.getOperation( 0 );
     assertEquals( Boolean.TRUE, operation.getProperty( "fullscreen" ) );
@@ -414,10 +414,10 @@ public class ShellLCA_Test extends TestCase {
   public void testWriteActiveControl() throws Exception {
     Button button = new Button( shell, SWT.PUSH );
     IShellAdapter adapter = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
-    
+
     adapter.setActiveControl( button );
     ShellLCA.writeActiveControl( shell ); // TODO [tb] : should be renderChanges
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = ( SetOperation )message.getOperation( 0 );
     assertEquals( WidgetUtil.getId( button ), operation.getProperty( "activeControl" ) );
@@ -426,10 +426,10 @@ public class ShellLCA_Test extends TestCase {
   public void testWriteDefaultButton() throws Exception {
     Button button = new Button( shell, SWT.PUSH );
     AbstractWidgetLCA lca = WidgetUtil.getLCA( button );
-    
+
     shell.setDefaultButton( button );
     lca.renderChanges( button );
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = ( SetOperation )message.getOperation( 0 );
     assertEquals( WidgetUtil.getId( button ), operation.getProperty( "defaultButton" ) );
@@ -453,7 +453,7 @@ public class ShellLCA_Test extends TestCase {
     ShellLCA lca = new ShellLCA();
 
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = ( SetOperation )message.getOperation( 0 );
     assertEquals( "[100,200]", operation.getProperty( "minimumSize" ).toString() );
@@ -494,15 +494,15 @@ public class ShellLCA_Test extends TestCase {
     Fixture.markInitialized( shell );
     Fixture.preserveWidgets();
     ShellLCA lca = new ShellLCA();
-    
+
     shell.addShellListener( new ShellAdapter(){ } );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     ListenOperation operation = ( ListenOperation )message.getOperation( 0 );
     assertEquals( Boolean.TRUE, operation.getProperty( "shell" ) );
   }
-  
+
   public void testWriteActive() throws Exception {
     Shell shell = new Shell( display , SWT.SHELL_TRIM );
     shell.open();
@@ -528,7 +528,7 @@ public class ShellLCA_Test extends TestCase {
     ShellLCA lca = new ShellLCA();
 
     lca.renderInitialization( dialogShell );
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = ( SetOperation )message.getOperation( 1 );
     assertEquals( WidgetUtil.getId( parentShell ), operation.getProperty( "parentShell" ) );
@@ -540,10 +540,10 @@ public class ShellLCA_Test extends TestCase {
     Fixture.markInitialized( shell );
     Fixture.preserveWidgets();
     ShellLCA lca = new ShellLCA();
-    
+
     shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = ( SetOperation )message.getOperation( 0 );
     String expected = ImageFactory.getImagePath( shell.getImage() );
@@ -559,7 +559,7 @@ public class ShellLCA_Test extends TestCase {
 
     shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( 0, message.getOperationCount() );
   }
@@ -573,7 +573,7 @@ public class ShellLCA_Test extends TestCase {
 
     shell.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = ( SetOperation )message.getOperation( 0 );
     String expected = ImageFactory.getImagePath( shell.getImage() );
@@ -589,7 +589,7 @@ public class ShellLCA_Test extends TestCase {
 
     shell.setImages( new Image[] { Graphics.getImage( Fixture.IMAGE1 ) } );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = ( SetOperation )message.getOperation( 0 );
     String expected = ImageFactory.getImagePath( shell.getImages()[0] );
@@ -615,15 +615,15 @@ public class ShellLCA_Test extends TestCase {
     assertTrue( setShellMenuScriptIndex != -1 );
     assertTrue( createMenuScriptIndex < setShellMenuScriptIndex );
   }
-  
+
   ///////////////////
   // ControlLCA tests
-  
+
   public void testWriteVisibilityIntiallyFalse() throws IOException {
     AbstractWidgetLCA lca = new ShellLCA();
-    
+
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findSetProperty( shell, "visibility" ) );
   }
@@ -632,7 +632,7 @@ public class ShellLCA_Test extends TestCase {
     // Client shell is initially visible, SWT shell is not
     AbstractWidgetLCA lca = new ShellLCA();
 
-    shell.open(); 
+    shell.open();
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
@@ -646,9 +646,9 @@ public class ShellLCA_Test extends TestCase {
 
     Fixture.preserveWidgets();
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( shell, "visibility" ) );    
+    assertNull( message.findSetOperation( shell, "visibility" ) );
   }
 
   private static Control getActiveControl( Shell shell ) {
