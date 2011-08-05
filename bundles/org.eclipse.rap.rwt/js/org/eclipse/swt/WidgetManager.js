@@ -24,6 +24,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     // Holds the association between widget-id's and widget-instances.
     // Key: id (string), value: widget instanace (qx.ui.core.Widget)
     this._map = {};
+    this._callbacks = {};
     
     // this field is needed as Opera has some problems with
     // accessing local variables in eval expressions.
@@ -73,6 +74,10 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       }
       widget.setUserData( "id", id );
       widget.setUserData( "rwtType", type );
+      if( this._callbacks[ id ] ) {
+         this._callbacks[ id ]( widget );
+         delete this._callbacks[ id ];
+      }
     },
 
     /**
@@ -82,6 +87,10 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     remove : function( widget ) {
       var id = this.findIdByWidget( widget );
       delete this._map[ id ];
+    },
+    
+    addRegistrationCallback : function( id, fun ) {
+      this._callbacks[ id ] = fun; // TODO [tb] : can multiple callbacks be needed?
     },
 
     /**

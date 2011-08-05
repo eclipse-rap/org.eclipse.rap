@@ -27,13 +27,8 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
   private static final Object[] PARAM_PUSH = new Object[] { "push" };
   private static final Object[] PARAM_TOGGLE = new Object[] { "toggle" };
 
-  static final String PROP_DEFAULT = "defaultButton";
-
   void preserveValues( final Button button ) {    
     ButtonLCAUtil.preserveValues( button );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    adapter.preserve( PROP_DEFAULT,
-                      Boolean.valueOf( isDefaultButton( button ) ) );
   }
 
   void readData( final Button button ) {
@@ -60,22 +55,6 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
   // TODO [rh] highlight default button (e.g. with thick border as in Windows)
   void renderChanges( final Button button ) throws IOException {
     ButtonLCAUtil.writeChanges( button );
-    writeDefault( button );
   }
 
-  static void writeDefault( final Button button ) {
-    boolean isDefault = isDefaultButton( button );
-    Boolean defValue = Boolean.FALSE;
-    Boolean actValue = Boolean.valueOf( isDefault );
-    if( WidgetLCAUtil.hasChanged( button, PROP_DEFAULT, actValue, defValue ) ) {
-      if( isDefault ) {
-        IClientObject clientObject = ClientObjectFactory.getForWidget( button.getShell() );
-        clientObject.setProperty( "defaultButton", WidgetUtil.getId( button ) );
-      }
-    }
-  }
-
-  static boolean isDefaultButton( final Button button ) {
-    return button.getShell().getDefaultButton() == button;
-  }
 }

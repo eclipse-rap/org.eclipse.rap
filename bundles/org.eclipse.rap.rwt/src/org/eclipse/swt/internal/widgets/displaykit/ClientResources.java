@@ -60,6 +60,7 @@ final class ClientResources {
     "qx/util/manager/MConnectedObject.js",
     "org/eclipse/rwt/HtmlUtil.js",
     "org/eclipse/rwt/protocol/AdapterRegistry.js",
+    "org/eclipse/rwt/protocol/AdapterUtil.js",
     "qx/ui/core/Widget.js",
     "org/eclipse/rwt/WidgetRenderAdapter.js",
     "qx/html/Dimension.js",

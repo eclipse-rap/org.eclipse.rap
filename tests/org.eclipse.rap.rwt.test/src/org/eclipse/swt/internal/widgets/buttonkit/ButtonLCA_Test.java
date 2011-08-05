@@ -46,22 +46,6 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testPushPreserveValues() {
-    Button button = new Button( shell, SWT.PUSH );
-    Fixture.markInitialized( display );
-    testPreserveValues( display, button );
-    //default
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    Boolean isDefault = ( Boolean )adapter.getPreserved( PushButtonDelegateLCA.PROP_DEFAULT );
-    assertEquals( Boolean.FALSE, isDefault );
-    button.getShell().setDefaultButton( button );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    isDefault = ( Boolean )adapter.getPreserved( PushButtonDelegateLCA.PROP_DEFAULT );
-    assertEquals( Boolean.TRUE, isDefault );
-  }
-
   public void testRadioPreserveValues() {
     Button button = new Button( shell, SWT.RADIO );
     Fixture.markInitialized( display );
@@ -360,13 +344,6 @@ public class ButtonLCA_Test extends TestCase {
     pushLCA.renderChanges( wrapButton );
     expected = "\"Some<br/>Text\"";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-  }
-  
-  public void testDefaultButton() {
-    Button button = new Button( shell, SWT.PUSH );
-    assertFalse( PushButtonDelegateLCA.isDefaultButton( button ) );
-    shell.setDefaultButton( button );
-    assertTrue( PushButtonDelegateLCA.isDefaultButton( button ) );
   }
 
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=224872

@@ -52,7 +52,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
     "customVariant",
     "bounds",
     "font"
-  ], 
+  ],
 
   propertyMapping : {
     "image" : "icon",
@@ -64,8 +64,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
       shell.setOpacity( alpha / 255 );
     },
     "defaultButton" : function( shell, value ) {
-      var button = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( value );
-      shell.setDefaultButton( button );
+      org.eclipse.rwt.protocol.AdapterUtil.callbackForTargetId( value, function( widget ) {
+        shell.setDefaultButton( widget );
+      } );
     },
     "parentShell" : function( shell, value ) {
       var parent = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( value );

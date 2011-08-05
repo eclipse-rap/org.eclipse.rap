@@ -78,16 +78,28 @@ public final class Message {
   }
 
   public Object findSetProperty( Widget widget, String property ) {
-    SetOperation operation = findSetOperation( widget, property );
-    return operation.getProperty( property );
+    String target = WidgetUtil.getId( widget );    
+    return findSetProperty( target, property );
   }
 
+  public Object findSetProperty( String target, String property ) {
+    SetOperation operation = findSetOperation( target, property );
+    if( operation == null ) {
+      throw new IllegalStateException( "operation not found" );
+    }
+    return operation.getProperty( property );
+  }
+  
   public SetOperation findSetOperation( Widget widget, String property ) {
+    String target = WidgetUtil.getId( widget );
+    return findSetOperation( target, property );
+  }
+
+  public SetOperation findSetOperation( String target, String property ) {
     SetOperation result = null;
-    String id = WidgetUtil.getId( widget );
     for( int i = 0; i < getOperationCount(); i++ ) {
       Operation operation = getOperation( i );
-      if(    operation.getTarget().equals( id )
+      if(    operation.getTarget().equals( target )
           && operation instanceof SetOperation
           && operation.getPropertyNames().contains( property ) )
       {
@@ -95,6 +107,35 @@ public final class Message {
       }
     }
     return result;
+  }
+  
+  public CreateOperation findCreateOperation( Widget widget, String property ) {
+    String target = WidgetUtil.getId( widget );
+    return findCreateOperation( target );
+  }
+  
+  public CreateOperation findCreateOperation( String target ) {
+    CreateOperation result = null;
+    for( int i = 0; i < getOperationCount(); i++ ) {
+      Operation operation = getOperation( i );
+      if( operation.getTarget().equals( target ) && operation instanceof CreateOperation ) {
+        result = ( CreateOperation )operation;
+      }
+    }
+    return result;
+  }
+
+  public Object findCreateProperty( Widget widget, String property ) {
+    String target = WidgetUtil.getId( widget );
+    return findCreateProperty( target, property );
+  }
+  
+  public Object findCreateProperty( String target, String property ) {
+    CreateOperation operation = findCreateOperation( target );
+    if( operation == null || operation.getPropertyNames().indexOf( property ) == -1 ) {
+      throw new IllegalStateException( "operation not found" );
+    }
+    return operation.getProperty( property );
   }
 
   private JSONObject getOperationAsJson( int position ) {

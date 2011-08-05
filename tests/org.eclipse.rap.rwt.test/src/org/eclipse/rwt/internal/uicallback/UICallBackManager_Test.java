@@ -162,9 +162,7 @@ public class UICallBackManager_Test extends TestCase {
     assertFalse( manager.isCallBackRequestBlocked() );
   }
 
-  public void testAsyncExecWithBackgroundAndLifeCycleRunnables()
-    throws Exception
-  {
+  public void testAsyncExecWithBackgroundAndLifeCycleRunnables() throws Exception {
     // test unblocking in case of background addition of runnables
     simulateBackgroundAddition( ContextProvider.getContext() );
     // test runnables execution during lifecycle with interlocked additions

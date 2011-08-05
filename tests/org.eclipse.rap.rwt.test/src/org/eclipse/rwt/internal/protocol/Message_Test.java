@@ -215,6 +215,101 @@ public class Message_Test extends TestCase {
     } catch( IllegalStateException expected ) {
     }
   }
+  
+  public void testFindSetOperation() {
+    writer.appendSet( "w1", "key", true );
+    
+    Message message = getMessage(); 
+    
+    SetOperation operation = message.findSetOperation( "w1", "key" );
+    assertEquals( Boolean.TRUE, operation.getProperty( "key" ) );
+  }
+  
+  public void testFindSetOperationFailed() {
+    writer.appendSet( "w1", "key1", true );
+    
+    Message message = getMessage(); 
+
+    assertNull( message.findSetOperation( "w1", "key2" ) );
+    assertNull( message.findSetOperation( "w2", "key1" ) );
+  }
+  
+  public void testFindSetProperty() {
+    writer.appendSet( "w1", "key", true );
+    
+    Message message = getMessage(); 
+    
+    assertEquals( Boolean.TRUE, message.findSetProperty( "w1", "key" ) );
+  }
+  
+  public void testFindSetPropertyFailed() {
+    writer.appendSet( "w1", "key1", true );
+    
+    Message message = getMessage(); 
+    
+    try {
+      message.findSetProperty( "w1", "key2" );      
+      fail();
+    } catch( IllegalStateException exception ) {
+      //expected
+    }
+    try {
+      message.findSetProperty( "w2", "key1" );      
+      fail();
+    } catch( IllegalStateException exception ) {
+      //expected
+    }
+  }
+
+  public void testFindCreateOperation() {
+    writer.appendCreate( "w2", "w1", "myType" );
+    writer.appendSet( "w2", "key", true );
+    
+    Message message = getMessage(); 
+    
+    CreateOperation operation = message.findCreateOperation( "w2" );
+    assertEquals( "w2", operation.getTarget() );
+    assertEquals( "myType", operation.getType() );
+    assertEquals( Boolean.TRUE, operation.getProperty( "key" ) );
+  }
+  
+  public void testFindCreateFailed() {
+    writer.appendCreate( "w2", "w1", "myType" );
+    
+    Message message = getMessage(); 
+    
+    assertNull( message.findCreateOperation( "w1" ) );
+  }
+
+  public void testFindCreateProperty() {
+    writer.appendCreate( "w2", "w1", "myType" );
+    writer.appendSet( "w2", "key", true );
+    
+    Message message = getMessage(); 
+    
+    assertEquals( Boolean.TRUE, message.findCreateProperty( "w2", "key" ) );
+  }
+  
+  public void testFindCreatePropertyFailed() {
+    writer.appendCreate( "w2", "w1", "myType" );
+    writer.appendSet( "w2", "key1", true );
+    
+    Message message = getMessage(); 
+    
+    try {
+      message.findCreateProperty( "w1", "key1" );      
+      fail();
+    } catch( IllegalStateException exception ) {
+      //expected
+    }
+    try {
+      message.findCreateProperty( "w2", "key2" );      
+      fail();
+    } catch( IllegalStateException exception ) {
+      //expected
+    }
+  }
+  
 
   public void testOperationGetProperty() {
     writer.appendSet( "w1", "foo", 23 );
@@ -234,6 +329,7 @@ public class Message_Test extends TestCase {
     }
   }
 
+  
   public void testNonExistingOperation() {
     writer.appendSet( "w1", "key", true );
 

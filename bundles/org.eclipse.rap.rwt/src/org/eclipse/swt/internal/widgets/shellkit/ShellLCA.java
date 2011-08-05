@@ -42,6 +42,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   static final String PROP_SHELL_LISTENER = "shellListener";
   private static final String PROP_SHELL_MENU  = "menuBar";
   private static final String PROP_SHELL_MENU_BOUNDS = "menuBarShellClientArea";
+  private static final String PROP_DEFAULT_BUTTON = "defaultButton";
 
   @Override
   public void preserveValues( final Widget widget ) {
@@ -58,6 +59,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_SHELL_LISTENER, Boolean.valueOf( ShellEvent.hasListener( shell ) ) );
     adapter.preserve( PROP_SHELL_MENU, shell.getMenuBar() );
     adapter.preserve( PROP_MINIMUM_SIZE, shell.getMinimumSize() );
+    adapter.preserve( PROP_DEFAULT_BUTTON, shell.getDefaultButton() );
     WidgetLCAUtil.preserveCustomVariant( shell );
   }
 
@@ -95,18 +97,18 @@ public final class ShellLCA extends AbstractWidgetLCA {
   public void renderChanges( Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
     WidgetLCAUtil.writeCustomVariant( shell ); // Order matters for animation
-    writeImage( shell );
-    writeText( shell );
-    writeAlpha( shell );
-    writeActiveShell( shell );
+    renderImage( shell );
+    renderText( shell );
+    renderAlpha( shell );
+    renderActiveShell( shell );
     // Important: Order matters, write setMode() after open() and before
     // setBounds() - see bug 302224
-    writeMode( shell );
-    writeFullScreen( shell );
-    writeCloseListener( shell );
-    writeMinimumSize( shell );
-    writeDefaultButton( shell );
-    writePopupMenu( shell );
+    renderMode( shell );
+    renderFullScreen( shell );
+    renderCloseListener( shell );
+    renderMinimumSize( shell );
+    renderDefaultButton( shell );
+    renderPopupMenu( shell );
     ControlLCAUtil.renderChanges( shell );
   }
 
@@ -119,7 +121,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   //////////////////
   // Helping methods
 
-  private static void writeText( Shell shell ) {
+  private static void renderText( Shell shell ) {
     String text = shell.getText();
     if( WidgetLCAUtil.hasChanged( shell, PROP_TEXT, text, "" ) ) {
       text = WidgetLCAUtil.escapeText( text, false );
@@ -128,7 +130,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private void writeAlpha( Shell shell ) {
+  private void renderAlpha( Shell shell ) {
     int alpha = shell.getAlpha();
     if( WidgetLCAUtil.hasChanged( shell, PROP_ALPHA, new Integer( alpha ), new Integer( 0xFF ) ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
@@ -136,7 +138,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeMinimumSize( Shell shell ) {
+  private static void renderMinimumSize( Shell shell ) {
     Point newValue = shell.getMinimumSize();
     if( WidgetLCAUtil.hasChanged( shell, PROP_MINIMUM_SIZE, newValue ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
@@ -148,16 +150,15 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeDefaultButton( Shell shell ) {
+  private static void renderDefaultButton( Shell shell ) {
     Button defaultButton = shell.getDefaultButton();
-    // NOTE [tb] : set happens in PushButtonLCA - can all be handled here?
-    if( defaultButton != null && defaultButton.isDisposed() ) {
+    if( WidgetLCAUtil.hasChanged( shell, PROP_DEFAULT_BUTTON, defaultButton, null ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
-      clientObject.setProperty( "defaultButton", null );
+      clientObject.setProperty( "defaultButton", WidgetUtil.getId( defaultButton ) );
     }
   }
 
-  private static void writePopupMenu( final Shell shell ) throws IOException {
+  private static void renderPopupMenu( final Shell shell ) throws IOException {
     final Menu menu = shell.getMenu();
     if( WidgetLCAUtil.hasChanged( shell, Props.MENU, menu, null ) ) {
       if( menu != null ) {
@@ -176,7 +177,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   /////////////////////////////////////////////
   // Methods to read and write the active shell
 
-  private static void writeActiveShell( Shell shell ) {
+  private static void renderActiveShell( Shell shell ) {
     Shell activeShell = shell.getDisplay().getActiveShell();
     boolean hasChanged = WidgetLCAUtil.hasChanged( shell, PROP_ACTIVE_SHELL, activeShell, null );
     if( shell == activeShell && hasChanged ) {
@@ -254,7 +255,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeImage( Shell shell ) {
+  private static void renderImage( Shell shell ) {
     if( ( shell.getStyle() & SWT.TITLE ) != 0 ) {
       Image image = shell.getImage();
       if( image == null ) {
@@ -291,7 +292,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeMode( Shell shell ) {
+  private static void renderMode( Shell shell ) {
     Object defValue = null;
     Object newValue = getMode( shell );
     if( WidgetLCAUtil.hasChanged( shell, PROP_MODE, newValue, defValue ) ) {
@@ -300,7 +301,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeCloseListener( Shell shell ) {
+  private static void renderCloseListener( Shell shell ) {
     Boolean newValue = Boolean.valueOf( ShellEvent.hasListener( shell ) );
     if( WidgetLCAUtil.hasChanged( shell, PROP_SHELL_LISTENER, newValue, Boolean.FALSE ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
@@ -308,7 +309,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeFullScreen( Shell shell ) {
+  private static void renderFullScreen( Shell shell ) {
     Object defValue = Boolean.FALSE;
     Boolean newValue = Boolean.valueOf( shell.getFullScreen() );
     if( WidgetLCAUtil.hasChanged( shell, PROP_FULLSCREEN, newValue, defValue ) ) {
