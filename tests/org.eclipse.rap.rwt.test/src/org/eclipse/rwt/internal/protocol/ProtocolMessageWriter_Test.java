@@ -36,6 +36,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
   private ProtocolMessageWriter writer;
   private Shell shell;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Display display = new Display();
@@ -43,6 +44,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     writer = new ProtocolMessageWriter();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -75,7 +77,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     } catch( IllegalStateException expected ) {
     }
   }
-  
+
   public void testAppendAfterCreate() {
     writer.createMessage();
     try {
@@ -91,9 +93,9 @@ public class ProtocolMessageWriter_Test extends TestCase {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "key1", "a" );
     properties.put( "key2", "b" );
-    
+
     writer.appendCall( shellId, methodName, properties );
-    
+
     CallOperation operation = (CallOperation)getMessage().getOperation( 0 );
     assertEquals( shellId, operation.getTarget() );
     assertEquals( methodName, operation.getMethodName() );
@@ -111,7 +113,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
 
     writer.appendCall( shellId, methodName, null );
     writer.appendCall( shellId, methodName, properties );
-    
+
     CallOperation operation = ( CallOperation )getMessage().getOperation( 1 );
     assertEquals( shellId, operation.getTarget() );
     assertEquals( methodName, operation.getMethodName() );
@@ -161,7 +163,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     properties.put( "key2", wrongParameter );
 
     try {
-      
+
       writer.appendCreate( DisplayUtil.getId( shell.getDisplay() ),
                                  WidgetUtil.getId( shell ),
                                  "org.Text",
@@ -201,7 +203,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     writer.appendListen( buttonId, "selection", false );
     writer.appendListen( buttonId, "focus", true );
     writer.appendListen( buttonId, "fake", true );
-    
+
     ListenOperation operation = ( ListenOperation )getMessage().getOperation( 0 );
     assertEquals( buttonId, operation.getTarget() );
     assertFalse( operation.listensTo( "selection" ) );
@@ -216,7 +218,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
     String script = "var c = 4; c++;";
 
     writer.appendExecuteScript( buttonId, scriptType, script );
-    
+
     ExecuteScriptOperation operation = ( ExecuteScriptOperation )getMessage().getOperation( 0 );
     assertEquals( buttonId, operation.getTarget() );
     assertEquals( scriptType, operation.getScriptType() );
@@ -232,7 +234,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
 
     writer.appendExecuteScript( buttonId, "text/javascript", "var c = 4; c++;" );
     writer.appendExecuteScript( WidgetUtil.getId( shell ), scriptType, script );
-    
+
     Message message = getMessage();
     assertTrue( message.getOperation( 0 ) instanceof ExecuteScriptOperation );
     ExecuteScriptOperation secondOperation = ( ExecuteScriptOperation )message.getOperation( 1 );
@@ -289,182 +291,114 @@ public class ProtocolMessageWriter_Test extends TestCase {
 
   public void testMessageWithMixedOperations() {
     Button button = new Button( shell, SWT.PUSH );
-    createShellOperations( shell );
-    createButtonOperations( button );
+    addShellCreate( shell );
+    addShellListeners( shell );
+    addButtonCreate( button );
+    addButtonCall( button );
+    String shellId = WidgetUtil.getId( shell );
+    String buttonId = WidgetUtil.getId( button );
 
     Message message = getMessage();
-    assertShellCreated( message );
-    checkShellSet( message );
-    checkShellListen( message );
-    checkButtonCreate( message, button );
-    checkButtonCall( message, button );
-  }
+    assertEquals( 4, message.getOperationCount() );
 
-  private void createShellOperations( Shell shell ) {
-    addShellCreate( shell );
-    addShellSet( shell );
-    addShellListeners( shell );
+    CreateOperation shellCreateOperation = ( CreateOperation )message.getOperation( 0 );
+    assertEquals( shellId, shellCreateOperation.getTarget() );
+    assertEquals( 3, shellCreateOperation.getPropertyNames().size() );
+
+    ListenOperation shellListenOperation = ( ListenOperation )message.getOperation( 1 );
+    assertEquals( shellId, shellListenOperation.getTarget() );
+    assertEquals( 2, shellListenOperation.getPropertyNames().size() );
+
+    CreateOperation buttonCreateOperation = ( CreateOperation )message.getOperation( 2 );
+    assertEquals( buttonId, buttonCreateOperation.getTarget() );
+    assertEquals( 3, buttonCreateOperation.getPropertyNames().size() );
+
+    CallOperation buttonCallOperation = ( CallOperation )message.getOperation( 3 );
+    assertEquals( buttonId, buttonCallOperation.getTarget() );
+    assertEquals( 1, buttonCallOperation.getPropertyNames().size() );
   }
 
   private void addShellCreate( Shell shell ) {
-    Map<String, Object> properties = new HashMap<String, Object>();
-    String[] styles = new String[]{ "SHELL_TRIM" };
-    properties.put( ProtocolConstants.CREATE_STYLE, styles );
-    writer.appendCreate( WidgetUtil.getId( shell ),
-                               DisplayUtil.getId( shell.getDisplay() ),
-                               shell.getClass().getName(),
-                               properties );
-  }
-
-  private void addShellSet( Shell shell ) {
-    for( int i = 0; i < 5; i++ ) {
-      writer.appendSet( WidgetUtil.getId( shell ), "key" + i, "value" + i );
-    }
+    String shellId = WidgetUtil.getId( shell );
+    String displayId = DisplayUtil.getId( shell.getDisplay() );
+    writer.appendCreate( shellId, displayId, "org.eclipse.swt.widgets.Shell", null );
+    writer.appendSet( shellId, "styles", new String[]{ "SHELL_TRIM" } );
+    writer.appendSet( shellId, "foo", 23 );
   }
 
   private void addShellListeners( Shell shell ) {
-    for( int i = 0; i < 5; i++ ) {
-      boolean listen = i % 2 == 0 ? true : false;
-      writer.appendListen( WidgetUtil.getId( shell ), "listener" + i, listen );
-    }
-  }
-
-  private void createButtonOperations( Button button ) {
-    addButtonCreate( button );
-    addButtonCall( button );
+    writer.appendListen( WidgetUtil.getId( shell ), "event1", true );
+    writer.appendListen( WidgetUtil.getId( shell ), "event2", false );
   }
 
   private void addButtonCreate( Button button ) {
-    Map<String, Object> properties = new HashMap<String, Object>();
-    String[] styles = new String[] { "PUSH", "BORDER" };
-    properties.put( ProtocolConstants.CREATE_STYLE, styles );
-    properties.put( "key1", new Integer( 4 ) );
-    properties.put( "key2", Boolean.TRUE );
-    
-    writer.appendCreate( WidgetUtil.getId( button ),
-                                WidgetUtil.getId( button.getParent() ),
-                                button.getClass().getName(),
-                                properties );
+    String buttonId = WidgetUtil.getId( button );
+    String parentId = WidgetUtil.getId( button.getParent() );
+    writer.appendCreate( buttonId, parentId, "org.eclipse.swt.widgets.Button", null );
+    writer.appendSet( buttonId, "styles", new String[] { "PUSH", "BORDER" } );
+    writer.appendSet( buttonId, "text", "foo" );
   }
 
   private void addButtonCall( Button button ) {
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "key1", "a1" );
-    
     writer.appendCall( WidgetUtil.getId( button ), "select", properties );
   }
 
-  private void assertShellCreated( Message message ) {
-    String shellId = WidgetUtil.getId( shell );
-    String displayId = DisplayUtil.getId( shell.getDisplay() );
-    
-    CreateOperation operation = ( CreateOperation )message.getOperation( 0 );
-    assertEquals( shellId, operation.getTarget() );
-    assertEquals( displayId, operation.getParent() );
-    assertEquals( "SHELL_TRIM", operation.getStyles()[ 0 ] );
-  }
-
-  private void checkShellSet( Message message ) {
-    String shellId = WidgetUtil.getId( shell );
-    
-    SetOperation operation = ( SetOperation )message.getOperation( 1 );
-    assertEquals( shellId, operation.getTarget() );
-    for( int i = 0; i < 5; i++ ) {
-      String value = ( String )operation.getProperty( "key" + i );
-      assertEquals( "value" + i, value );
-    }
-  }
-
-  private void checkShellListen( Message message ) {
+  public void testAppendsToExistingSetOperation() {
     String shellId = WidgetUtil.getId( shell );
 
-    ListenOperation operation = ( ListenOperation )message.getOperation( 2 );
-    assertEquals( shellId, operation.getTarget() );
-    assertTrue( operation.listensTo( "listener0" ) );
-    assertFalse( operation.listensTo( "listener1" ) );
+    writer.appendSet( shellId, "key1", "value1" );
+    writer.appendSet( shellId, "key2", "value2" );
+
+    Message message = getMessage();
+    SetOperation operation = ( SetOperation )message.getOperation( 0 );
+    assertEquals( "value1", operation.getProperty( "key1" ) );
+    assertEquals( "value2", operation.getProperty( "key2" ) );
   }
 
-  private void checkButtonCreate( Message message, Button button ) {
-    String buttonId = WidgetUtil.getId( button );
+  public void testAppendsToExistingCreateOperation() {
     String shellId = WidgetUtil.getId( shell );
-    
-    CreateOperation operation = ( CreateOperation )message.getOperation( 3 );
-    assertEquals( buttonId, operation.getTarget() );
-    assertEquals( shellId, operation.getParent() );
-    assertEquals( new Integer( 4 ), operation.getProperty( "key1" ) );
-    assertTrue( ( ( Boolean )operation.getProperty( "key2" ) ).booleanValue() );
-    assertEquals( button.getClass().getName(), operation.getType() );
-    assertEquals( "PUSH", operation.getStyles()[ 0 ] );
-    assertEquals( "BORDER", operation.getStyles()[ 1 ] );
+
+    writer.appendCreate( shellId, "parentId", "foo.Class", null );
+    writer.appendSet( shellId, "key1", "value1" );
+    writer.appendSet( shellId, "key2", "value2" );
+
+    Message message = getMessage();
+    CreateOperation createOperation = ( CreateOperation )message.getOperation( 0 );
+    assertEquals( "value1", createOperation.getProperty( "key1" ) );
+    assertEquals( "value2", createOperation.getProperty( "key2" ) );
   }
 
-  private void checkButtonCall( Message message, Widget button ) {
-    String buttonId = WidgetUtil.getId( button );
-
-    CallOperation operation = ( CallOperation )message.getOperation( 4 );
-    assertEquals( buttonId, operation.getTarget() );
-    assertEquals( "select", operation.getMethodName() );
-    assertEquals( "a1", operation.getProperty( "key1" ) );
-  }
-
-  public void testAppendsToExistingOperation() {
+  public void testDoesNotAppendToOtherWidgetsOperation() {
     Button button = new Button( shell, SWT.PUSH );
     String shellId = WidgetUtil.getId( shell );
     String buttonId = WidgetUtil.getId( button );
-    Map<String, Object> properties = new HashMap<String, Object>();
-    String[] styles = new String[] { "SYSTEM_MODAL" };
-    properties.put( ProtocolConstants.CREATE_STYLE, styles );
 
-    writer.appendCreate( shellId, "parentId", "foo.Class", properties );
-    writer.appendSet( shellId, "key", "value" );
-    writer.appendSet( shellId, "key2", "value2" );
-    writer.appendSet( shellId, "key3", "value3" );
-    writer.appendSet( buttonId, "key", "value" );
+    writer.appendSet( shellId, "key1", "value1" );
+    writer.appendSet( buttonId, "key2", "value2" );
 
     Message message = getMessage();
-    assertFirstOperation( message.getOperation( 0 ) );
-    assertSecondOperation( message.getOperation( 1 ) );
-    assertThirdOperation( buttonId, message.getOperation( 2 ) );
-  }
-
-  private void assertFirstOperation( Message.Operation operation ) {
-    CreateOperation createOperation = ( CreateOperation )operation;
-    assertEquals( "parentId", createOperation.getParent() );
-  }
-
-  private void assertSecondOperation( Message.Operation operation ) {
-    SetOperation setOperation = ( SetOperation )operation;
-    assertEquals( "value", setOperation.getProperty( "key" ) );
-    assertEquals( "value2", setOperation.getProperty( "key2" ) );
-    assertEquals( "value3", setOperation.getProperty( "key3" ) );
-  }
-
-  private void assertThirdOperation( String buttonId, Message.Operation operation ) {
-    SetOperation setOperation = ( SetOperation )operation;
-    assertEquals( buttonId, operation.getTarget() );
-    assertEquals( "value", setOperation.getProperty( "key" ) );
+    SetOperation firstOperation = ( SetOperation )message.getOperation( 0 );
+    assertEquals( "value1", firstOperation.getProperty( "key1" ) );
+    assertFalse( firstOperation.getPropertyNames().contains( "key2" ) );
   }
 
   public void testStartsNewOperation() {
-    String shellId = WidgetUtil.getId( shell );
     Button button = new Button( shell, SWT.PUSH );
+    String shellId = WidgetUtil.getId( shell );
     String buttonId = WidgetUtil.getId( button );
-    String type = button.getClass().getName();
-    Map<String, Object> properties = new HashMap<String, Object>();
-    String[] styles = new String[] { "PUSH" };
-    properties.put( ProtocolConstants.CREATE_STYLE, styles );
 
-    writer.appendCreate( shellId, "parentId", "foo.Class", properties );
-    writer.appendCreate( buttonId, shellId, type, null );
-    writer.appendSet( buttonId, "key", "value" );
-    writer.appendSet( buttonId, "key2", "value" );
+    writer.appendCreate( shellId, "parentId", "foo.Class", null );
+    writer.appendCreate( buttonId, shellId, "org.eclipse.swt.widgets.Button", null );
+    writer.appendSet( buttonId, "key1", "value1" );
+    writer.appendSet( buttonId, "key2", "value2" );
 
     Message message = getMessage();
     CreateOperation createOperation = ( CreateOperation )message.getOperation( 1 );
     assertEquals( shellId, createOperation.getParent() );
-    SetOperation setOperation = ( SetOperation )message.getOperation( 2 );
-    assertEquals( "value", setOperation.getProperty( "key" ) );
-    assertEquals( "value", setOperation.getProperty( "key2" ) );
+    assertEquals( "value1", createOperation.getProperty( "key1" ) );
+    assertEquals( "value2", createOperation.getProperty( "key2" ) );
   }
 
   public void testAppendArrayParameter() throws JSONException {
@@ -500,10 +434,8 @@ public class ProtocolMessageWriter_Test extends TestCase {
   }
 
   private Message getMessage() {
-    String javaScript = JavaScriptResponseWriter.PROCESS_MESSAGE
-                        + "( "
-                        + writer.createMessage()
-                        + " );";
+    String message = writer.createMessage();
+    String javaScript = JavaScriptResponseWriter.PROCESS_MESSAGE + "( " + message + " );";
     return new Message( javaScript );
   }
 }

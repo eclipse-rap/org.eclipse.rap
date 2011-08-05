@@ -88,6 +88,16 @@ public class ClientObject_Test extends TestCase {
     assertArrayEquals( styles, operation.getStyles() );
   }
 
+  public void testCreateIncludesSetProperties() {
+    clientObject.create( null );
+    clientObject.setProperty( "foo", 23 );
+
+    Message message = getMessage();
+    assertEquals( 1, message.getOperationCount() );
+    assertTrue( message.getOperation( 0 ) instanceof CreateOperation );
+    assertEquals( new Integer( 23 ), message.getOperation( 0 ).getProperty( "foo" ) );
+  }
+
   public void testSetProperty() {
     clientObject.setProperty( "key", ( Object )"value" );
     clientObject.setProperty( "key2", 2 );

@@ -134,19 +134,22 @@ public final class ProtocolMessageWriter {
     return message;
   }
 
-  private boolean canAppendToCurrentOperation( String target, String type ) {
-    return    pendingOperation != null
-           && pendingOperation.matches( target, type )
-           && isStreamableType( type );
+  private boolean canAppendToCurrentOperation( String target, String action ) {
+    boolean result = false;
+    if( pendingOperation != null && pendingOperation.getTarget().equals( target ) ) {
+      String pendingAction = pendingOperation.getAction();
+      if( ACTION_LISTEN.equals( action ) ) {
+        result = pendingAction.equals( ACTION_LISTEN );
+      } else if( ACTION_SET.equals( action ) ) {
+        result = pendingAction.equals( ACTION_CREATE ) || pendingAction.equals( ACTION_SET );
+      }
+    }
+    return result;
   }
 
   private void appendPendingOperation() {
     if( pendingOperation != null ) {
       operations.append( pendingOperation.toJson() );
     }
-  }
-
-  private static boolean isStreamableType( String type ) {
-    return type.equals( ACTION_SET  ) || type.equals( ACTION_LISTEN );
   }
 }

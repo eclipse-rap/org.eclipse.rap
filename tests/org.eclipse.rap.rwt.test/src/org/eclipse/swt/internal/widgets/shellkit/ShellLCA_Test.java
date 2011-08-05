@@ -530,7 +530,7 @@ public class ShellLCA_Test extends TestCase {
     lca.renderInitialization( dialogShell );
 
     Message message = Fixture.getProtocolMessage();
-    SetOperation operation = ( SetOperation )message.getOperation( 1 );
+    CreateOperation operation = ( CreateOperation )message.getOperation( 0 );
     assertEquals( WidgetUtil.getId( parentShell ), operation.getProperty( "parentShell" ) );
   }
 

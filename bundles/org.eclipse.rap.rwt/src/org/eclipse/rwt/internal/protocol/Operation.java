@@ -33,9 +33,13 @@ final class Operation {
     details = new LinkedHashMap<String, Object>();
     properties = new LinkedHashMap<String, Object>();
   }
-  
-  boolean matches( String target, String action ) {
-    return target.equals( this.target ) && action.equals( this.action );
+
+  String getTarget() {
+    return target;
+  }
+
+  String getAction() {
+    return action;
   }
 
   void appendProperty( String key, JsonValue value ) {

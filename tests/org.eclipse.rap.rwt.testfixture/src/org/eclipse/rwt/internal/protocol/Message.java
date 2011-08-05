@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
-import java.util.Arrays;
+import java.util.*;
 
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -21,7 +21,7 @@ import org.json.*;
 public final class Message {
 
   private JSONArray operations;
-  
+
   public Message( String javaScript ) {
     String prefix = JavaScriptResponseWriter.PROCESS_MESSAGE + "(";
     int index = javaScript.indexOf( prefix );
@@ -41,9 +41,14 @@ public final class Message {
       throw new IllegalArgumentException( "Missing operations array: " + json );
     }
   }
-  
+
+  @Override
   public String toString() {
-    return operations.toString();
+    try {
+      return operations.toString( 2 );
+    } catch( JSONException e ) {
+      throw new RuntimeException( "Formatting failed" );
+    }
   }
 
   public int getOperationCount() {
@@ -84,7 +89,7 @@ public final class Message {
       Operation operation = getOperation( i );
       if(    operation.getTarget().equals( id )
           && operation instanceof SetOperation
-          && operation.hasProperty( property ) )
+          && operation.getPropertyNames().contains( property ) )
       {
         result = ( SetOperation )operation;
       }
@@ -113,40 +118,44 @@ public final class Message {
   }
 
   public abstract class Operation {
-    
-    private String target;
-    private JSONObject operation;
-  
+
+    private final String target;
+    private final JSONObject operation;
+
     private Operation( JSONObject operation ) {
       this.operation = operation;
       target = ( String )getDetail( "target" );
     }
-  
+
     public String getTarget() {
       return target;
     }
 
-    public boolean hasProperty( String name ) {
-      boolean result = false;
-      try {
-        JSONObject properties = operation.getJSONObject( "properties" );
-        String[] names = JSONObject.getNames( properties );
-        result = Arrays.asList( names ).contains( name );
-      } catch( JSONException exception ) {
-        throw new IllegalStateException( "properties object does not exist in message", exception );
-      }
-      return result;
+    public List<String> getPropertyNames() {
+      JSONObject properties = getProperties();
+      String[] names = JSONObject.getNames( properties );
+      return Arrays.asList( names );
     }
 
     public Object getProperty( String key ) {
       Object result;
       try {
-        JSONObject properties = operation.getJSONObject( "properties" );
+        JSONObject properties = getProperties();
         result = properties.get( key );
-      } catch( JSONException e ) {
+      } catch( JSONException exception ) {
         throw new IllegalStateException( "Property does not exist for key: " + key );
       }
       return result;
+    }
+
+    protected JSONObject getProperties() {
+      JSONObject properties;
+      try {
+        properties = operation.getJSONObject( "properties" );
+      } catch( JSONException exception ) {
+        throw new IllegalStateException( "Properties object missing in operation" );
+      }
+      return properties;
     }
 
     protected Object getDetail( String key ) {
@@ -161,15 +170,15 @@ public final class Message {
   }
 
   public final class CreateOperation extends Operation {
-  
+
     private CreateOperation( JSONObject operation ) {
       super( operation );
     }
-  
+
     public String getParent() {
       return ( String )getProperty( "parent" );
     }
-  
+
     public String getType() {
       return ( String )getDetail( "type" );
     }
@@ -194,51 +203,51 @@ public final class Message {
   }
 
   public final class CallOperation extends Operation {
-  
+
     private CallOperation( JSONObject operation ) {
       super( operation );
     }
-  
+
     public String getMethodName() {
       return ( String )getDetail( "method" );
     }
   }
 
   public final class SetOperation extends Operation {
-  
+
     private SetOperation( JSONObject operation ) {
       super( operation );
     }
   }
 
   public final class ListenOperation extends Operation {
-  
+
     private ListenOperation( JSONObject operation ) {
       super( operation );
     }
-  
+
     public boolean listensTo( String eventName ) {
       return ( ( Boolean )getProperty( eventName ) ).booleanValue();
     }
   }
 
   public final class ExecuteScriptOperation extends Operation {
-  
+
     private ExecuteScriptOperation( JSONObject operation ) {
       super( operation );
     }
-  
+
     public String getScriptType() {
       return ( String )getDetail( "scriptType" );
     }
-  
+
     public String getScript() {
       return ( String )getDetail( "content" );
     }
   }
 
   public final class DestroyOperation extends Operation {
-  
+
     private DestroyOperation( JSONObject operation ) {
       super( operation );
     }
