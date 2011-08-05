@@ -197,17 +197,6 @@ public class Message_Test extends TestCase {
     assertEquals( "content", operation.getScript() );
   }
 
-  public void testNonExistingValue() {
-    writer.appendSet( "w1", "key", true );
-
-    SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
-    try {
-      operation.getProperty( "key2" );
-      fail();
-    } catch ( IllegalStateException expected ) {
-    }
-  }
-
   public void testOperationGetPropertyNames() {
     writer.appendSet( "w1", "key", true );
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
@@ -224,6 +213,24 @@ public class Message_Test extends TestCase {
       operation.getPropertyNames();
       fail();
     } catch( IllegalStateException expected ) {
+    }
+  }
+
+  public void testOperationGetProperty() {
+    writer.appendSet( "w1", "foo", 23 );
+    SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
+
+    assertEquals( Integer.valueOf( 23 ), operation.getProperty( "foo" ) );
+  }
+
+  public void testOperationGetPropertyWithNonExistingValue() {
+    writer.appendSet( "w1", "foo", 23 );
+
+    SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
+    try {
+      operation.getProperty( "bar" );
+      fail();
+    } catch ( IllegalStateException expected ) {
     }
   }
 

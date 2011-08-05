@@ -139,8 +139,8 @@ public final class Message {
 
     public Object getProperty( String key ) {
       Object result;
+      JSONObject properties = getProperties();
       try {
-        JSONObject properties = getProperties();
         result = properties.get( key );
       } catch( JSONException exception ) {
         throw new IllegalStateException( "Property does not exist for key: " + key );
