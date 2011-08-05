@@ -1,12 +1,13 @@
-/******************************************************************************* 
-* Copyright (c) 2011 EclipseSource and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
+/*******************************************************************************
+* Copyright (c) 2011 EclipseSource and others.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
 *
 * Contributors:
-*   EclipseSource - initial API and implementation
-*******************************************************************************/ 
+*    EclipseSource - initial API and implementation
+*******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
 import java.util.Map;
@@ -26,10 +27,10 @@ public final class ClientObject implements IClientObject {
     targetId = WidgetUtil.getId( widget );
   }
 
-  public void create( Map<String, Object> properties ) {
+  public void create() {
     String parentId = getParentId();
     String type = target.getClass().getName();
-    getWriter().appendCreate( targetId, parentId, type, properties );
+    getWriter().appendCreate( targetId, parentId, type );
   }
 
   private String getParentId() {
@@ -38,7 +39,7 @@ public final class ClientObject implements IClientObject {
       Composite parent = ( ( Control )target ).getParent();
       if( parent != null ) {
         parentId = WidgetUtil.getId( parent );
-      } 
+      }
     }
     return parentId;
   }
@@ -46,19 +47,19 @@ public final class ClientObject implements IClientObject {
   public void destroy() {
     getWriter().appendDestroy( targetId );
   }
-  
+
   public void setProperty( String name, int value ) {
     getWriter().appendSet( targetId, name, value );
   }
-  
+
   public void setProperty( String name, double value ) {
     getWriter().appendSet( targetId, name, value );
   }
-  
+
   public void setProperty( String name, boolean value ) {
     getWriter().appendSet( targetId, name, value );
   }
-  
+
   public void setProperty( String name, String value ) {
     getWriter().appendSet( targetId, name, value );
   }
@@ -82,9 +83,9 @@ public final class ClientObject implements IClientObject {
   public void executeScript( String type, String script ) {
     getWriter().appendExecuteScript( targetId, type, script );
   }
-  
+
   private static ProtocolMessageWriter getWriter() {
     return ContextProvider.getStateInfo().getResponseWriter().getProtocolWriter();
   }
-   
+
 }

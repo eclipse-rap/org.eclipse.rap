@@ -16,6 +16,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
 
@@ -28,17 +29,11 @@ public class ProtocolMessageCreator {
     Button button = new Button( shell, SWT.TOGGLE );
     // create client objects
     IClientObject clientShell = ClientObjectFactory.getForWidget( shell );
-    Map<String, Object> shellProperties = new HashMap<String, Object>();
-    String[] allowedShellStyles = RWTStylesUtil.getAllowedStylesForWidget( shell );
-    String[] shellStyles = StylesUtil.filterStyles( shell, allowedShellStyles );
-    shellProperties.put( ProtocolConstants.CREATE_STYLE, shellStyles );
-    clientShell.create( shellProperties );
+    clientShell.create();
+    clientShell.setProperty( "style", WidgetLCAUtil.getStyles( shell ) );
     IClientObject clientButton = ClientObjectFactory.getForWidget( button );
-    Map<String, Object> buttonProperties = new HashMap<String, Object>();
-    String[] allowedButtonStyles = RWTStylesUtil.getAllowedStylesForWidget( button );
-    String[] buttonStyles = StylesUtil.filterStyles( button, allowedButtonStyles );
-    buttonProperties.put( ProtocolConstants.CREATE_STYLE, buttonStyles );
-    clientButton.create( buttonProperties );
+    clientButton.create();
+    clientButton.setProperty( "style", WidgetLCAUtil.getStyles( button ) );
     // set some properties
     clientShell.setProperty( "foo", "bar" );
     clientShell.setProperty( "bar", new Object[] { "foo", new Integer( 42 ) } );
@@ -64,7 +59,7 @@ public class ProtocolMessageCreator {
     // finish message
     return getMessage();
   }
-  
+
   private String getMessage() {
     closeProtocolWriter();
     String markup = Fixture.getAllMarkup();
@@ -78,7 +73,7 @@ public class ProtocolMessageCreator {
     JavaScriptResponseWriter writer = stateInfo.getResponseWriter();
     writer.finish();
   }
-  
+
   public static void main( String... args ) {
     Fixture.setUp();
     Fixture.fakeResponseWriter();

@@ -125,13 +125,12 @@ public class ProtocolMessageWriter_Test extends TestCase {
   public void testMessageWithCreate() {
     String displayId = DisplayUtil.getId( shell.getDisplay() );
     String shellId = WidgetUtil.getId( shell );
-    Map<String, Object> properties = new HashMap<String, Object>();
     String[] styles = new String[] { "TRIM", "FOO" };
-    properties.put( ProtocolConstants.CREATE_STYLE, styles );
-    properties.put( "key1", "a" );
-    properties.put( "key2", "b" );
 
-    writer.appendCreate( shellId, displayId, "org.Text", properties );
+    writer.appendCreate( shellId, displayId, "org.Text" );
+    writer.appendSet( shellId, "style", styles );
+    writer.appendSet( shellId, "key1", "a" );
+    writer.appendSet( shellId, "key2", "b" );
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
     assertEquals( shellId, operation.getTarget() );
@@ -148,8 +147,8 @@ public class ProtocolMessageWriter_Test extends TestCase {
     String displayId = DisplayUtil.getId( shell.getDisplay() );
     String buttonId = WidgetUtil.getId( button );
 
-    writer.appendCreate( shellId, displayId, "org.Text", null );
-    writer.appendCreate( buttonId, shellId, "org.Shell", null );
+    writer.appendCreate( shellId, displayId, "org.Text" );
+    writer.appendCreate( buttonId, shellId, "org.Shell" );
 
     Message message = getMessage();
     assertTrue( message.getOperation( 0 ) instanceof CreateOperation );
@@ -158,16 +157,10 @@ public class ProtocolMessageWriter_Test extends TestCase {
 
   public void testMessageWithIllegalParameterType() {
     Button wrongParameter = new Button( shell, SWT.PUSH );
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( "key1", "a" );
-    properties.put( "key2", wrongParameter );
+    String shellId = WidgetUtil.getId( shell );
 
     try {
-
-      writer.appendCreate( DisplayUtil.getId( shell.getDisplay() ),
-                                 WidgetUtil.getId( shell ),
-                                 "org.Text",
-                                 properties );
+      writer.appendSet( shellId, "text", wrongParameter );
       fail();
     } catch ( IllegalArgumentException expected ) {
     }
@@ -321,7 +314,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
   private void addShellCreate( Shell shell ) {
     String shellId = WidgetUtil.getId( shell );
     String displayId = DisplayUtil.getId( shell.getDisplay() );
-    writer.appendCreate( shellId, displayId, "org.eclipse.swt.widgets.Shell", null );
+    writer.appendCreate( shellId, displayId, "org.eclipse.swt.widgets.Shell" );
     writer.appendSet( shellId, "styles", new String[]{ "SHELL_TRIM" } );
     writer.appendSet( shellId, "foo", 23 );
   }
@@ -334,7 +327,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
   private void addButtonCreate( Button button ) {
     String buttonId = WidgetUtil.getId( button );
     String parentId = WidgetUtil.getId( button.getParent() );
-    writer.appendCreate( buttonId, parentId, "org.eclipse.swt.widgets.Button", null );
+    writer.appendCreate( buttonId, parentId, "org.eclipse.swt.widgets.Button" );
     writer.appendSet( buttonId, "styles", new String[] { "PUSH", "BORDER" } );
     writer.appendSet( buttonId, "text", "foo" );
   }
@@ -360,7 +353,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
   public void testAppendsToExistingCreateOperation() {
     String shellId = WidgetUtil.getId( shell );
 
-    writer.appendCreate( shellId, "parentId", "foo.Class", null );
+    writer.appendCreate( shellId, "parentId", "foo.Class" );
     writer.appendSet( shellId, "key1", "value1" );
     writer.appendSet( shellId, "key2", "value2" );
 
@@ -389,8 +382,8 @@ public class ProtocolMessageWriter_Test extends TestCase {
     String shellId = WidgetUtil.getId( shell );
     String buttonId = WidgetUtil.getId( button );
 
-    writer.appendCreate( shellId, "parentId", "foo.Class", null );
-    writer.appendCreate( buttonId, shellId, "org.eclipse.swt.widgets.Button", null );
+    writer.appendCreate( shellId, "parentId", "foo.Class" );
+    writer.appendCreate( buttonId, shellId, "org.eclipse.swt.widgets.Button" );
     writer.appendSet( buttonId, "key1", "value1" );
     writer.appendSet( buttonId, "key2", "value2" );
 

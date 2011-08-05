@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
-import static org.eclipse.rwt.internal.resources.TestUtil.assertArrayEquals;
-
 import java.util.*;
 
 import junit.framework.TestCase;
@@ -95,10 +93,7 @@ public class Message_Test extends TestCase {
   }
 
   public void testGetCreateOperation() {
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( "key1", "a" );
-    properties.put( "key2", new Integer( 2 ) );
-    writer.appendCreate( "w1", "w0", "type", properties );
+    writer.appendCreate( "w1", "w0", "type" );
 
     assertTrue( getMessage().getOperation( 0 ) instanceof CreateOperation );
   }
@@ -145,21 +140,12 @@ public class Message_Test extends TestCase {
   }
 
   public void testCreateOperation() {
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( "key1", "a" );
-    properties.put( "key2", new Integer( 2 ) );
-    String[] styles = new String[] { "FOO", "BAR" };
-    properties.put( ProtocolConstants.CREATE_STYLE, styles );
-
-    writer.appendCreate( "w1", "w0", "type", properties );
+    writer.appendCreate( "w1", "w0", "type" );
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
     assertEquals( "w1", operation.getTarget() );
     assertEquals( "w0", operation.getParent() );
     assertEquals( "type", operation.getType() );
-    assertArrayEquals( styles, operation.getStyles() );
-    assertEquals( "a", operation.getProperty( "key1" ) );
-    assertEquals( new Integer( 2 ), operation.getProperty( "key2" ) );
   }
 
   public void testCallOperation() {

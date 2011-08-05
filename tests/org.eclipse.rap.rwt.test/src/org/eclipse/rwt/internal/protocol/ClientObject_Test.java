@@ -30,7 +30,6 @@ import org.eclipse.rwt.internal.protocol.Message.SetOperation;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
 
 
@@ -39,6 +38,7 @@ public class ClientObject_Test extends TestCase {
   private Shell shell;
   private IClientObject clientObject;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
@@ -47,49 +47,21 @@ public class ClientObject_Test extends TestCase {
     clientObject = ClientObjectFactory.getForWidget( shell );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
 
-  public void testCreateWithNullParams() {
-    clientObject.create( null );
+  public void testCreate() {
+    clientObject.create();
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
     assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
     assertEquals( shell.getClass().getName(), operation.getType() );
-  }
-
-  public void testClientWithParams() {
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put( "key1", new Integer( 1 ) );
-    properties.put( "key2", Boolean.TRUE );
-
-    clientObject.create( properties );
-
-    CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
-    assertEquals( shell.getClass().getName(), operation.getType() );
-    assertEquals( new Integer( 1 ), operation.getProperty( "key1" ) );
-    assertEquals( Boolean.TRUE, operation.getProperty( "key2" ) );
-  }
-
-  public void testCreateStyles() {
-    Button button = new Button( shell, SWT.PUSH | SWT.BORDER );
-    IClientObject buttonObject = ClientObjectFactory.getForWidget( button );
-    Map<String, Object> properties = new HashMap<String, Object>();
-    String[] styles = new String[] { "PUSH", "BORDER" };
-    properties.put( ProtocolConstants.CREATE_STYLE, styles );
-
-    buttonObject.create( properties );
-
-    CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
-    assertEquals( WidgetUtil.getId( button ), operation.getTarget() );
-    assertEquals( WidgetUtil.getId( shell ), operation.getParent() );
-    assertArrayEquals( styles, operation.getStyles() );
   }
 
   public void testCreateIncludesSetProperties() {
-    clientObject.create( null );
+    clientObject.create();
     clientObject.setProperty( "foo", 23 );
 
     Message message = getMessage();
@@ -112,6 +84,14 @@ public class ClientObject_Test extends TestCase {
     assertEquals( new Double( 3.5 ), operation.getProperty( "key3" ) );
     assertEquals( Boolean.TRUE, operation.getProperty( "key4" ) );
     assertEquals( "aString", operation.getProperty( "key5" ) );
+  }
+
+  public void testCreatePropertyGetStyle() {
+    clientObject.create();
+    clientObject.setProperty( "style", new String[] { "PUSH", "BORDER" } );
+
+    CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
+    assertArrayEquals( new String[] { "PUSH", "BORDER" }, operation.getStyles() );
   }
 
   public void testDestroy() {
@@ -174,19 +154,19 @@ public class ClientObject_Test extends TestCase {
     assertEquals( "text/javascript", operation.getScriptType() );
     assertEquals( "var x = 5;", operation.getScript() );
   }
-  
+
   public void testDoeNotCashProtocolWriter() throws IOException {
     // See bug 352738
     TestResponse response = new TestResponse();
     JavaScriptResponseWriter writer = new JavaScriptResponseWriter( response );
     ContextProvider.getStateInfo().setResponseWriter( writer );
     IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
-    
-    clientObject.create( null );
+
+    clientObject.create();
     writer.write( "var x =5;" );
     clientObject.setProperty( "key", "value" );
     writer.finish();
-    
+
     String message = response.getContent();
     assertTrue( message.contains( ProtocolConstants.ACTION_CREATE ) );
     assertTrue( message.contains( ProtocolConstants.ACTION_SET ) );

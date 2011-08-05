@@ -12,9 +12,6 @@
 package org.eclipse.swt.internal.widgets.shellkit;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
@@ -86,11 +83,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
   public void renderInitialization( Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
-    String[] allowedStyles = RWTStylesUtil.getAllowedStylesForWidget( shell );
-    String[] styles = StylesUtil.filterStyles( shell, allowedStyles );
-    Map<String, Object> args = new HashMap<String, Object>();
-    args.put( "style", styles );
-    clientObject.create( args );
+    clientObject.create();
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( shell ) );
     Composite parent = shell.getParent();
     if( parent instanceof Shell ) {
       clientObject.setProperty( "parentShell", WidgetUtil.getId( parent ) );

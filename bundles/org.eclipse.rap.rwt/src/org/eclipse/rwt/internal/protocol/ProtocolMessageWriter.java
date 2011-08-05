@@ -45,15 +45,10 @@ public final class ProtocolMessageWriter {
     return pendingOperation != null;
   }
 
-  public void appendCreate( String target,
-                            String parentId,
-                            String type,
-                            Map<String, Object> properties )
-  {
+  public void appendCreate( String target, String parentId, String type ) {
     prepareOperation( target, ACTION_CREATE );
     pendingOperation.appendDetail( CREATE_TYPE, JsonValue.valueOf( type ) );
     pendingOperation.appendProperty( CREATE_PARENT, JsonValue.valueOf( parentId ) );
-    pendingOperation.appendProperties( properties );
   }
 
   public void appendSet( String target, String property, int value ) {

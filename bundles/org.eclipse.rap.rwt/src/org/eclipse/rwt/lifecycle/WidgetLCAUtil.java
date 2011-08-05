@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.RWTStylesUtil;
+import org.eclipse.rwt.internal.protocol.StylesUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.*;
 import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
@@ -953,6 +955,11 @@ public final class WidgetLCAUtil {
     }
   }
 
+  public static String[] getStyles( Widget widget ) {
+    String[] allowedStyles = RWTStylesUtil.getAllowedStylesForWidget( widget );
+    return StylesUtil.filterStyles( widget, allowedStyles );
+  }
+
   private static String readPropertyValue( final String widgetId,
                                            final String propertyName )
   {
@@ -1095,6 +1102,7 @@ public final class WidgetLCAUtil {
    * @deprecated As of 1.3, server-side widget pooling is no longer required.
    *             This method does nothing.
    */
+  @Deprecated
   public static void resetBounds() throws IOException {
   }
 
@@ -1108,6 +1116,7 @@ public final class WidgetLCAUtil {
    * @deprecated As of 1.3, server-side widget pooling is no longer required.
    *             This method does nothing.
    */
+  @Deprecated
   public static void resetMenu() throws IOException {
   }
 
@@ -1121,6 +1130,7 @@ public final class WidgetLCAUtil {
    * @deprecated As of 1.3, server-side widget pooling is no longer required.
    *             This method does nothing.
    */
+  @Deprecated
   public static void resetToolTip() throws IOException {
   }
 
@@ -1134,6 +1144,7 @@ public final class WidgetLCAUtil {
    * @deprecated As of 1.3, server-side widget pooling is no longer required.
    *             This method does nothing.
    */
+  @Deprecated
   public static void resetFont() throws IOException {
   }
 
@@ -1147,6 +1158,7 @@ public final class WidgetLCAUtil {
    * @deprecated As of 1.3, server-side widget pooling is no longer required.
    *             This method does nothing.
    */
+  @Deprecated
   public static void resetForeground() throws IOException {
   }
 
@@ -1160,6 +1172,7 @@ public final class WidgetLCAUtil {
    * @deprecated As of 1.3, server-side widget pooling is no longer required.
    *             This method does nothing.
    */
+  @Deprecated
   public static void resetBackground() throws IOException {
   }
 
@@ -1173,6 +1186,7 @@ public final class WidgetLCAUtil {
    * @deprecated As of 1.3, server-side widget pooling is no longer required.
    *             This method does nothing.
    */
+  @Deprecated
   public static void resetEnabled() throws IOException {
   }
 }
