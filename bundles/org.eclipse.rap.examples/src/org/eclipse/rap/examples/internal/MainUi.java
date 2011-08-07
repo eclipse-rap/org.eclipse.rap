@@ -184,14 +184,14 @@ public class MainUi {
     versionLabel.setData( WidgetUtil.CUSTOM_VARIANT, "statusarea" );
     String version = getRapVersion();
     versionLabel.setText( "Running on RAP " + version );
-    Link downloadLink = new Link( statusArea, SWT.RIGHT );
-    downloadLink.setText( "Download this demo as <a>WAR file</a>" );
-    downloadLink.setData( WidgetUtil.CUSTOM_VARIANT, "statusarea" );
-    downloadLink.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
-        download.setUrl( WAR_DOWNLOAD_URL );
-      }
-    } );
+//    Link downloadLink = new Link( statusArea, SWT.RIGHT );
+//    downloadLink.setText( "Download this demo as <a>WAR file</a>" );
+//    downloadLink.setData( WidgetUtil.CUSTOM_VARIANT, "statusarea" );
+//    downloadLink.addSelectionListener( new SelectionAdapter() {
+//      public void widgetSelected( SelectionEvent e ) {
+//        download.setUrl( WAR_DOWNLOAD_URL );
+//      }
+//    } );
     return statusArea;
   }
 
