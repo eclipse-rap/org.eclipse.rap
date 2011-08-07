@@ -13,7 +13,7 @@
     <p2.composite.repository>
       <repository compressed="true" location="${repoDir}" />
       <add>
-        <repository location="${repoChild}" />
+        <repository location="${repoName}" />
       </add>
     </p2.composite.repository>
   </target>
@@ -22,7 +22,7 @@
     <p2.composite.repository>
       <repository compressed="true" location="${repoDir}" />
       <remove>
-        <repository location="${repoChild}" />
+        <repository location="${repoName}" />
       </remove>
     </p2.composite.repository>
   </target>
