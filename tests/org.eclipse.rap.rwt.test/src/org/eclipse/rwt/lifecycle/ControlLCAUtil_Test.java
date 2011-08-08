@@ -655,7 +655,7 @@ public class ControlLCAUtil_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "visibility" ) );    
   }
-  
+
   public void testRenderBoundsIntiallyZero() throws IOException, JSONException {
     control = new Button( shell, SWT.PUSH );
     ControlLCAUtil.renderBounds( control );
@@ -692,6 +692,34 @@ public class ControlLCAUtil_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "bounds" ) );    
+  }
+
+  public void testRenderIntialZIndex() throws IOException {   
+    control.setVisible( false );
+    ControlLCAUtil.renderZIndex( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 300 ), message.findSetProperty( control, "zIndex" ) );
+  }
+
+  public void testRenderZIndex() throws IOException {
+    control.moveBelow( new Button( shell, SWT.PUSH ) );
+    ControlLCAUtil.renderZIndex( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 299 ), message.findSetProperty( control, "zIndex" ) );
+  }
+
+  public void testRenderZIndexUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.moveBelow( new Button( shell, SWT.PUSH ) );
+
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderVisible( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "zIndex" ) );    
   }
 
 }

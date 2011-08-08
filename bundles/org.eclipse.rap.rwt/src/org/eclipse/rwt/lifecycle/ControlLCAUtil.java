@@ -203,6 +203,26 @@ public class ControlLCAUtil {
       writer.set( Props.Z_INDEX, JSConst.QX_FIELD_Z_INDEX, newValue, null );
     }
   }
+  
+  /**
+   * Determines whether the z-index of the given control has changed during the
+   * processing of the current request and if so, writes JavaScript code to the
+   * response that updates the client-side z-index.
+   *
+   * @param control the control whose z-index to write
+   * @throws IOException
+   */
+  public static void renderZIndex( Control control ) throws IOException {
+    // TODO [rst] remove surrounding if statement as soon as z-order on shells
+    //      is completely implemented
+    if( !( control instanceof Shell ) ) {
+      Integer newValue = new Integer( getZIndex( control ) );
+      if( WidgetLCAUtil.hasChanged( control, Props.Z_INDEX, newValue ) ) {
+        IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+        clientObject.setProperty( "zIndex", newValue );        
+      }
+    }
+  }
 
   /**
    * Determines whether the visibility of the given control has changed during
@@ -239,7 +259,7 @@ public class ControlLCAUtil {
     // TODO [tb] : Can we have a shorthand for this, like in JSWriter?
     if( WidgetLCAUtil.hasChanged( control, Props.VISIBLE, newValue, defValue ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-      clientObject.setProperty( JSConst.QX_FIELD_VISIBLE, newValue );
+      clientObject.setProperty( "visibility", newValue );
     }
   }
 
