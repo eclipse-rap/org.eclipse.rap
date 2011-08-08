@@ -545,6 +545,33 @@ public final class WidgetLCAUtil {
       writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_TOOL_TIP, args );
     }
   }
+  
+  /**
+   * Determines whether the property <code>toolTip</code> of the given widget
+   * has changed during the processing of the current request and if so, writes
+   * a protocol message to the response that updates the client-side toolTip
+   * property of the specified widget. For instances of {@link Control}, use
+   * the method {@link ControlLCAUtil#writeToolTip(Control)} instead.
+   *
+   * @param widget the widget whose toolTip property to set
+   * @param toolTip the new value of the property
+   * @throws IOException
+   * @see #preserveToolTipText(Widget, String)
+   */
+  public static void renderToolTip( final Widget widget, final String toolTip )
+      throws IOException
+      {
+    String text = toolTip == null ? "" : toolTip;
+    if( hasChanged( widget, WidgetLCAUtil.PROP_TOOL_TIP_TEXT, text, "" ) ) {
+      // Under Windows, ampersand characters are not correctly displayed:
+      // https://bugs.eclipse.org/bugs/show_bug.cgi?id=188271
+      // However, it is correct not to escape mnemonics in tool tips
+      text = escapeText( text, false );
+      text = replaceNewLines( text, "<br/>" );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( "toolTip", text );
+    }
+  }
 
   /**
    * Determines whether the property <code>image</code> of the given widget

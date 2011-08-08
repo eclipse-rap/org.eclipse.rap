@@ -32,6 +32,7 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA;
 import org.eclipse.swt.internal.widgets.compositekit.CompositeLCA;
 import org.eclipse.swt.internal.widgets.labelkit.LabelLCA;
+import org.eclipse.swt.internal.widgets.shellkit.ShellLCA;
 import org.eclipse.swt.widgets.*;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -695,7 +696,6 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testRenderIntialZIndex() throws IOException {   
-    control.setVisible( false );
     ControlLCAUtil.renderZIndex( control );
     
     Message message = Fixture.getProtocolMessage();
@@ -716,10 +716,73 @@ public class ControlLCAUtil_Test extends TestCase {
     control.moveBelow( new Button( shell, SWT.PUSH ) );
 
     Fixture.preserveWidgets();
-    ControlLCAUtil.renderVisible( control );
+    ControlLCAUtil.renderZIndex( control );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "zIndex" ) );    
   }
+  
+  public void testRenderIntialTabIndex() throws IOException {
+    ShellLCA shellLCA = new ShellLCA();
+    shellLCA.renderChanges( shell );
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.renderTabIndex( control );
 
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 1 ), message.findSetProperty( control, "tabIndex" ) );
+  }
+
+  public void testRenderTabIndex() throws IOException {
+    shell.setTabList( new Control[]{ new Button( shell, SWT.PUSH ), control } );
+    ShellLCA shellLCA = new ShellLCA();
+    shellLCA.renderChanges( shell );
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.renderTabIndex( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 2 ), message.findSetProperty( control, "tabIndex" ) );
+  }
+
+  public void testRenderTabIndexUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.moveBelow( new Button( shell, SWT.PUSH ) );
+    ShellLCA shellLCA = new ShellLCA();
+    shellLCA.renderChanges( shell );
+    Fixture.fakeResponseWriter();
+
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderTabIndex( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "tabIndex" ) );    
+  }
+
+  public void testRenderIntialToolTip() throws IOException {   
+    ControlLCAUtil.renderToolTip( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "toolTip" ) );    
+  }
+
+  public void testRenderToolTip() throws IOException {
+    control.setToolTipText( "foo" );
+    ControlLCAUtil.renderToolTip( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "foo", message.findSetProperty( control, "toolTip" ) );
+  }
+  
+  public void testRenderToolTipUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.setToolTipText( "foo" );
+    
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderToolTip( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "toolTIp" ) );    
+  }
+  
 }

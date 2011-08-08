@@ -343,7 +343,7 @@ public class ControlLCAUtil {
   /**
    * Determines for all of the following properties of the specified control
    * whether the property has changed during the processing of the current
-   * request and if so, writes JavaScript code to the response that updates the
+   * request and if so, writes a protocol message to the response that updates the
    * corresponding client-side property.
    * <ul>
    * <li>bounds</li>
@@ -374,9 +374,9 @@ public class ControlLCAUtil {
   public static void renderChanges( Control control ) throws IOException {
     renderVisible( control );
     renderBounds( control );
-    writeZIndex( control );
-    writeTabIndex( control );
-    writeToolTip( control );
+    renderZIndex( control );
+    renderTabIndex( control );
+    renderToolTip( control );
     writeMenu( control );
     writeEnabled( control );
     writeForeground( control );
@@ -423,6 +423,18 @@ public class ControlLCAUtil {
    */
   public static void writeToolTip( Control control ) throws IOException {
     WidgetLCAUtil.writeToolTip( control, control.getToolTipText() );
+  }
+  
+  /**
+   * Determines whether the tool tip of the given control has changed during the
+   * processing of the current request and if so, writes JavaScript code to the
+   * response that updates the client-side tool tip.
+   *
+   * @param control the control whose tool tip to write
+   * @throws IOException
+   */
+  public static void renderToolTip( Control control ) throws IOException {
+    WidgetLCAUtil.renderToolTip( control, control.getToolTipText() );
   }
 
   /**
@@ -715,6 +727,20 @@ public class ControlLCAUtil {
     JSWriter writer = JSWriter.getWriterFor( control );
     // there is no reliable default value for all controls
     writer.set( PROP_TAB_INDEX, JSConst.QX_FIELD_TAB_INDEX, newValue );
+  }
+
+  public static void renderTabIndex( Control control ) {
+    if( control instanceof Shell ) {
+      resetTabIndices( ( Shell )control );
+      // tabIndex must be a positive value
+      computeTabIndices( ( Shell )control, 1 );
+    }
+    Integer newValue = new Integer( getTabIndex( control ) );
+    // there is no reliable default value for all controls
+    if( WidgetLCAUtil.hasChanged( control, PROP_TAB_INDEX, newValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+      clientObject.setProperty( "tabIndex", newValue );        
+    }
   }
 
   /**
