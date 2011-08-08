@@ -30,7 +30,6 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.*;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
 import org.eclipse.swt.widgets.*;
 
 
@@ -640,26 +639,6 @@ public class ShellLCA_Test extends TestCase {
     SetOperation operation = ( SetOperation )message.getOperation( 0 );
     String expected = ImageFactory.getImagePath( shell.getImages()[0] );
     assertEquals( expected, operation.getProperty( "image" ) );
-  }
-
-  // see bug 223879
-  public void testRenderPopupMenu() throws IOException {
-    // TODO [tb] : WidgetLCAUtil can not be simply changed to protocol
-    Fixture.markInitialized( display );
-    shell.setMinimumSize( 100, 100 );
-    Menu menu = new Menu( shell, SWT.POP_UP );
-    shell.setMenu( menu );
-    new DisplayLCA().render( display );
-    String markup = Fixture.getAllMarkup();
-    String createMenuScript
-      = "var w = new org.eclipse.rwt.widgets.Menu();"
-      + "wm.add( w, \"w3\", false );";
-    int createMenuScriptIndex = markup.indexOf( createMenuScript );
-    String setShellMenuScript = "wm.setContextMenu( wm.findWidgetById( \"w2\" ), w );";
-    int setShellMenuScriptIndex = markup.indexOf( setShellMenuScript );
-    assertTrue( createMenuScriptIndex != -1 );
-    assertTrue( setShellMenuScriptIndex != -1 );
-    assertTrue( createMenuScriptIndex < setShellMenuScriptIndex );
   }
 
   public void testRenderVisibilityIntiallyFalse() throws IOException {

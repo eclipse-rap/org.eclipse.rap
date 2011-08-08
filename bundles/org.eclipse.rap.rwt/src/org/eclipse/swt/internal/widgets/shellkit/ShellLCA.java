@@ -12,9 +12,9 @@
 package org.eclipse.swt.internal.widgets.shellkit;
 
 import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
@@ -107,7 +107,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
     renderCloseListener( shell );
     renderMinimumSize( shell );
     renderDefaultButton( shell );
-    renderPopupMenu( shell );
     renderActiveControl( shell );
     ControlLCAUtil.renderChanges( shell );
   }
@@ -151,22 +150,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
     if( WidgetLCAUtil.hasChanged( shell, PROP_DEFAULT_BUTTON, defaultButton, null ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
       clientObject.setProperty( "defaultButton", WidgetUtil.getId( defaultButton ) );
-    }
-  }
-
-  private static void renderPopupMenu( final Shell shell ) throws IOException {
-    final Menu menu = shell.getMenu();
-    if( WidgetLCAUtil.hasChanged( shell, Props.MENU, menu, null ) ) {
-      if( menu != null ) {
-        WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( menu );
-        adapter.setRenderRunnable( new IRenderRunnable() {
-          public void afterRender() throws IOException {
-            WidgetLCAUtil.writeMenu( shell, menu );
-          }
-        } );
-      } else {
-        WidgetLCAUtil.writeMenu( shell, menu );
-      }
     }
   }
 

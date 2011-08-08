@@ -377,7 +377,7 @@ public class ControlLCAUtil {
     renderZIndex( control );
     renderTabIndex( control );
     renderToolTip( control );
-    writeMenu( control );
+    renderMenu( control );
     writeEnabled( control );
     writeForeground( control );
     writeBackground( control );
@@ -411,6 +411,19 @@ public class ControlLCAUtil {
     if( !( control instanceof Shell ) ) {
       WidgetLCAUtil.writeMenu( control, control.getMenu() );
     }
+  }
+  
+  /**
+   * Determines whether the property <code>menu</code> of the given control
+   * has changed during the processing of the current request and if so, writes
+   * a protocol message to the response that updates the client-side menu
+   * property.
+   *
+   * @param control the control whose menu property to write
+   * @throws IOException
+   */
+  public static void renderMenu( Control control ) throws IOException {
+    WidgetLCAUtil.renderMenu( control, control.getMenu() );
   }
 
   /**

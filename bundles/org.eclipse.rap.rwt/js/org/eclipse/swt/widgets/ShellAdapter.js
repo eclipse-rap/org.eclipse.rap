@@ -79,15 +79,15 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
       shell.setParentShell( parent );
     },
     "menu" : function( shell, value ) {
-      var menu = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( value );
-      shell.setContextMenu( menu );
-      var listener = org.eclipse.rwt.widgets.Menu.contextMenuHandler;
-      if( menu == null ) {
-        shell.removeEventListener( "contextmenu", listener ); 
-      } else {
-        shell.addEventListener( "contextmenu", listener );
-      }
-      
+      org.eclipse.rwt.protocol.AdapterUtil.callbackForTargetId( value, function( menu ) {
+        shell.setContextMenu( menu );
+        var listener = org.eclipse.rwt.widgets.Menu.contextMenuHandler;
+        if( menu == null ) {
+          shell.removeEventListener( "contextmenu", listener ); 
+        } else {
+          shell.addEventListener( "contextmenu", listener );
+        }
+      } );     
     },
     "mode" : function( shell, value ) {
       var fullscreen = value === "fullscreen";

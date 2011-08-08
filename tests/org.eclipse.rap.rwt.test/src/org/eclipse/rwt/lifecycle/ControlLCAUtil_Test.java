@@ -782,7 +782,35 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderToolTip( control );
     
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "toolTIp" ) );    
+    assertNull( message.findSetOperation( control, "toolTip" ) );    
   }
   
+  public void testRenderIntialMenu() throws IOException {
+    ControlLCAUtil.renderMenu( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "menu" ) );    
+  }
+  
+  public void testRenderMenu() throws IOException {
+    control.setMenu( new Menu( shell ) );
+    ControlLCAUtil.renderMenu( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    String expected = WidgetUtil.getId( control.getMenu() );
+    assertEquals( expected, message.findSetProperty( control, "menu" ) );
+  }
+  
+  public void testRenderMenuUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.setMenu( new Menu( shell ) );
+    
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderMenu( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "menu" ) );    
+  }
+
 }

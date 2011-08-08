@@ -239,6 +239,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       } );
       assertIdentical( menu, shell.getContextMenu() );
       assertTrue( shell.hasEventListeners( "contextmenu" ) );
+      widgetManager.remove( menu );
+      this._disposeShell();
+    },
+
+    testSetMenuBeforeCreate : function() {
+      var shell = this._protocolCreateShell();
+      var menu = new org.eclipse.rwt.widgets.Menu();
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      this._protocolSet( { 
+        "menu" : "wMenu" 
+      } );
+      widgetManager.add( menu, "wMenu", true );
+      assertIdentical( menu, shell.getContextMenu() );
+      assertTrue( shell.hasEventListeners( "contextmenu" ) );
+      widgetManager.remove( menu );
       this._disposeShell();
     },
 

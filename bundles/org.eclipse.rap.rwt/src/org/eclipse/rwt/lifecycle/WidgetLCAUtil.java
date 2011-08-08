@@ -517,6 +517,24 @@ public final class WidgetLCAUtil {
       writer.call( JSWriter.WIDGET_MANAGER_REF, "setContextMenu", new Object[] { widget, menu } );
     }
   }
+  
+  /**
+   * Determines whether the property <code>menu</code> of the given widget has
+   * changed during the processing of the current request and if so, writes
+   * a protocol message to the response that updates the client-side menu property
+   * of the specified widget. For instances of {@link Control}, use the method
+   * {@link ControlLCAUtil#writeMenu(Control)} instead.
+   *
+   * @param widget the widget whose menu property to set
+   * @param menu the new value of the property
+   * @throws IOException
+   */
+  public static void renderMenu( Widget widget, Menu menu ) throws IOException {
+    if( WidgetLCAUtil.hasChanged( widget, Props.MENU, menu, null ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( "menu", WidgetUtil.getId( menu ) );
+    }
+  }
 
   /**
    * Determines whether the property <code>toolTip</code> of the given widget
