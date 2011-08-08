@@ -132,7 +132,7 @@ public class MainUi {
       }
     } );
   }
-  
+
   private void selectContribution( IExampleContribution contribution ) {
     selectButton( contribution );
     activate( contribution );
@@ -239,11 +239,11 @@ public class MainUi {
 
   private void attachHistoryListener() {
     RWT.getBrowserHistory().addBrowserHistoryListener( new BrowserHistoryListener() {
-      
+
       public void navigated( BrowserHistoryEvent event ) {
         IExampleContribution page = Examples.getInstance().getContribution( event.entryId );
         if( page != null ) {
-          activate( page );
+          selectContribution( page );
         }
       }
     } );
