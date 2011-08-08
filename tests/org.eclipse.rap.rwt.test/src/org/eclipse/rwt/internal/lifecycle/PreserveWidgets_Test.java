@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.protocol.Message;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.Props;
@@ -184,7 +185,8 @@ public class PreserveWidgets_Test extends TestCase {
     Fixture.fakeResponseWriter();
     Fixture.fakeNewRequest( LifeCycleUtil.getSessionDisplay() );
     lifeCycle.execute();
-    assertTrue( Fixture.getAllMarkup().indexOf( "setSpace" ) != -1 );
+    Message message = Fixture.getProtocolMessage();
+    assertTrue( message.getOperationCount()> 0 );
   }
   
   public void testClearPreservedWithDisposedDisplay() {
