@@ -19,8 +19,7 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.protocol.RWTStylesUtil;
-import org.eclipse.rwt.internal.protocol.StylesUtil;
+import org.eclipse.rwt.internal.protocol.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.*;
 import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
@@ -463,6 +462,44 @@ public final class WidgetLCAUtil {
     }
   }
 
+  /**
+   * Determines whether the bounds of the given widget have changed during the
+   * processing of the current request and if so, writes a set opration the
+   * response that updates the client-side bounds of the specified widget. For
+   * instances of {@link Control}, use the method
+   * {@link ControlLCAUtil#renderBounds(Control)} instead.
+   *
+   * @param widget the widget whose bounds to write
+   * @param parent the parent of the widget or <code>null</code> if the widget
+   *            does not have a parent
+   * @param bounds the new bounds of the widget
+   * @throws IOException
+   */
+  public static void renderBounds( final Widget widget,
+                                   final Control parent,
+                                   final Rectangle bounds )
+    throws IOException
+  {
+    if( WidgetLCAUtil.hasChanged( widget, Props.BOUNDS, bounds ) ) {
+      // the SWT coordinates for the client area differ in some cases from
+      // the widget realization of qooxdoo
+      Rectangle newBounds = bounds;
+      if( parent != null ) {
+        AbstractWidgetLCA parentLCA = WidgetUtil.getLCA( parent );
+        newBounds = parentLCA.adjustCoordinates( widget, newBounds );
+      }
+      // TODO [tb] : switch for ScrolledComposite
+      int[] args = new int[] {
+        newBounds.x, 
+        newBounds.y,
+        newBounds.width,
+        newBounds.height
+      };
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( "bounds", args );
+    }
+  }
+  
   /**
    * Determines whether the property <code>menu</code> of the given widget has
    * changed during the processing of the current request and if so, writes

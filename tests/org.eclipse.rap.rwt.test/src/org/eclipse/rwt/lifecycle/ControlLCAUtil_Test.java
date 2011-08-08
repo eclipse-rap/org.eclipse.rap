@@ -33,6 +33,8 @@ import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA;
 import org.eclipse.swt.internal.widgets.compositekit.CompositeLCA;
 import org.eclipse.swt.internal.widgets.labelkit.LabelLCA;
 import org.eclipse.swt.widgets.*;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 
 public class ControlLCAUtil_Test extends TestCase {
@@ -627,7 +629,7 @@ public class ControlLCAUtil_Test extends TestCase {
   //////////////////////////////////////////////
   // Tests for new render methods using protocol
   
-  public void testWriteVisibilityIntiallyFalse() throws IOException {   
+  public void testRenderVisibilityIntiallyFalse() throws IOException {   
     control.setVisible( false );
     ControlLCAUtil.renderVisible( control );
     
@@ -635,14 +637,14 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findSetProperty( control, "visibility" ) );
   }
 
-  public void testWriteVisibilityInitiallyTrue() throws IOException {
+  public void testRenderVisibilityInitiallyTrue() throws IOException {
     ControlLCAUtil.renderVisible( control );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "visibility" ) );
   }
 
-  public void testWriteVisibilityUnchanged() throws IOException {
+  public void testRenderVisibilityUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.setVisible( false );
@@ -652,6 +654,44 @@ public class ControlLCAUtil_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "visibility" ) );    
+  }
+  
+  public void testRenderBoundsIntiallyZero() throws IOException, JSONException {
+    control = new Button( shell, SWT.PUSH );
+    ControlLCAUtil.renderBounds( control );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray bounds = ( JSONArray )message.findSetProperty( control, "bounds" );
+    assertEquals( 4, bounds.length() );
+    assertEquals( 0, bounds.getInt( 0 ) );
+    assertEquals( 0, bounds.getInt( 1 ) );
+    assertEquals( 0, bounds.getInt( 2 ) );
+    assertEquals( 0, bounds.getInt( 3 ) );
+  }
+  
+  public void testRenderBoundsInitiallySet() throws IOException, JSONException {
+    control.setBounds( 10, 20, 100, 200 );
+    ControlLCAUtil.renderBounds( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    JSONArray bounds = ( JSONArray )message.findSetProperty( control, "bounds" );
+    assertEquals( 4, bounds.length() );
+    assertEquals( 10, bounds.getInt( 0 ) );
+    assertEquals( 20, bounds.getInt( 1 ) );
+    assertEquals( 100, bounds.getInt( 2 ) );
+    assertEquals( 200, bounds.getInt( 3 ) );
+  }
+  
+  public void testRenderBoundsUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.setBounds( 10, 20, 100, 200 );
+
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderBounds( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "bounds" ) );    
   }
 
 }

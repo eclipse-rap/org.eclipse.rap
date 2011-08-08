@@ -174,6 +174,19 @@ public class ControlLCAUtil {
   }
 
   /**
+   * Determines whether the bounds of the given control have changed during the
+   * processing of the current request and if so, writes JavaScript code to the
+   * response that updates the client-side bounds.
+   *
+   * @param control the control whose bounds to write
+   * @throws IOException
+   */
+  public static void renderBounds( Control control ) throws IOException {
+    Composite parent = control.getParent();
+    WidgetLCAUtil.renderBounds( control, parent, control.getBounds() );
+  }
+
+  /**
    * Determines whether the z-index of the given control has changed during the
    * processing of the current request and if so, writes JavaScript code to the
    * response that updates the client-side z-index.
@@ -340,7 +353,7 @@ public class ControlLCAUtil {
    */
   public static void renderChanges( Control control ) throws IOException {
     renderVisible( control );
-    writeBounds( control );
+    renderBounds( control );
     writeZIndex( control );
     writeTabIndex( control );
     writeToolTip( control );
