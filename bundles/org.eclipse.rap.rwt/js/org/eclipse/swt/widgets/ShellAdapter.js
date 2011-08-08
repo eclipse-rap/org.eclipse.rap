@@ -65,12 +65,12 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
       shell.setOpacity( alpha / 255 );
     },
     "defaultButton" : function( shell, value ) {
-      org.eclipse.rwt.protocol.AdapterUtil.callbackForTargetId( value, function( widget ) {
+      org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( widget ) {
         shell.setDefaultButton( widget );
       } );
     },
     "activeControl" : function( shell, value ) {
-      org.eclipse.rwt.protocol.AdapterUtil.callbackForTargetId( value, function( widget ) {
+      org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( widget ) {
         shell.setActiveControl( widget );
       } );
     },
@@ -79,7 +79,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
       shell.setParentShell( parent );
     },
     "menu" : function( shell, value ) {
-      org.eclipse.rwt.protocol.AdapterUtil.callbackForTargetId( value, function( menu ) {
+      org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( menu ) {
         shell.setContextMenu( menu );
         var listener = org.eclipse.rwt.widgets.Menu.contextMenuHandler;
         if( menu == null ) {

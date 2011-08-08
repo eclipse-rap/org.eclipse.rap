@@ -27,7 +27,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     return result;
   },
 
-  callbackForTargetId : function( id, fun ) {
+  callWithTarget : function( id, fun ) {
     var wm = org.eclipse.swt.WidgetManager.getInstance();
     if( id === null ) {
       fun( null );
