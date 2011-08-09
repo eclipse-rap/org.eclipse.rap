@@ -72,6 +72,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TableHeader", {
       this.base( arguments, column );
       if( column !== this._dummyColumn ) {
         column.addEventListener( "changeWidth", this._fireUpdateEvent, this );
+        column.addEventListener( "changeLeft", this._renderDummyColumn, this );
       }
     },
     
@@ -79,6 +80,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TableHeader", {
       this.base( arguments, column );
       if( column !== this._dummyColumn ) {
         column.removeEventListener( "changeWidth", this._fireUpdateEvent, this );
+        column.removeEventListener( "changeLeft", this._renderDummyColumn, this );
         this._fireUpdateEvent();
       }
     },
