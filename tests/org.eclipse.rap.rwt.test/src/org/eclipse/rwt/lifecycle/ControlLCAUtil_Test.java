@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.lifecycle;
 
@@ -47,6 +47,7 @@ public class ControlLCAUtil_Test extends TestCase {
   private Shell shell;
   private Control control;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
@@ -56,6 +57,7 @@ public class ControlLCAUtil_Test extends TestCase {
     control.setSize( 10, 10 ); // Would be rendered as invisible otherwise
   }
 
+  @Override
   protected void tearDown() throws Exception {
     display.dispose();
     Fixture.tearDown();
@@ -626,14 +628,14 @@ public class ControlLCAUtil_Test extends TestCase {
     String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"menuDetect\", true );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
-  
+
   //////////////////////////////////////////////
   // Tests for new render methods using protocol
-  
-  public void testRenderVisibilityIntiallyFalse() throws IOException {   
+
+  public void testRenderVisibilityIntiallyFalse() throws IOException {
     control.setVisible( false );
     ControlLCAUtil.renderVisible( control );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findSetProperty( control, "visibility" ) );
   }
@@ -654,10 +656,10 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderVisible( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "visibility" ) );    
+    assertNull( message.findSetOperation( control, "visibility" ) );
   }
 
-  // TODO [tb] : Move to WidgetLCAUtil_Test? 
+  // TODO [tb] : Move to WidgetLCAUtil_Test?
   public void testRenderBoundsIntiallyZero() throws IOException, JSONException {
     control = new Button( shell, SWT.PUSH );
     ControlLCAUtil.renderBounds( control );
@@ -670,12 +672,12 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( 0, bounds.getInt( 2 ) );
     assertEquals( 0, bounds.getInt( 3 ) );
   }
-  
-  // TODO [tb] : Move to WidgetLCAUtil_Test? 
+
+  // TODO [tb] : Move to WidgetLCAUtil_Test?
   public void testRenderBoundsInitiallySet() throws IOException, JSONException {
     control.setBounds( 10, 20, 100, 200 );
     ControlLCAUtil.renderBounds( control );
-    
+
     Message message = Fixture.getProtocolMessage();
     JSONArray bounds = ( JSONArray )message.findSetProperty( control, "bounds" );
     assertEquals( 4, bounds.length() );
@@ -684,8 +686,8 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( 100, bounds.getInt( 2 ) );
     assertEquals( 200, bounds.getInt( 3 ) );
   }
-  
-  // TODO [tb] : Move to WidgetLCAUtil_Test? 
+
+  // TODO [tb] : Move to WidgetLCAUtil_Test?
   public void testRenderBoundsUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -695,12 +697,12 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderBounds( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "bounds" ) );    
+    assertNull( message.findSetOperation( control, "bounds" ) );
   }
 
-  public void testRenderIntialZIndex() throws IOException {   
+  public void testRenderIntialZIndex() throws IOException {
     ControlLCAUtil.renderZIndex( control );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( new Integer( 300 ), message.findSetProperty( control, "zIndex" ) );
   }
@@ -722,9 +724,9 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderZIndex( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "zIndex" ) );    
+    assertNull( message.findSetOperation( control, "zIndex" ) );
   }
-  
+
   public void testRenderIntialTabIndex() throws IOException {
     ShellLCA shellLCA = new ShellLCA();
     shellLCA.renderChanges( shell );
@@ -756,90 +758,90 @@ public class ControlLCAUtil_Test extends TestCase {
 
     Fixture.preserveWidgets();
     ControlLCAUtil.renderTabIndex( control );
-    
+
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "tabIndex" ) );    
+    assertNull( message.findSetOperation( control, "tabIndex" ) );
   }
 
-  // TODO [tb] : Move to WidgetLCAUtil_Test? 
-  public void testRenderIntialToolTip() throws IOException {   
+  // TODO [tb] : Move to WidgetLCAUtil_Test?
+  public void testRenderIntialToolTip() throws IOException {
     ControlLCAUtil.renderToolTip( control );
-    
+
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "toolTip" ) );    
+    assertNull( message.findSetOperation( control, "toolTip" ) );
   }
 
-  // TODO [tb] : Move to WidgetLCAUtil_Test? 
+  // TODO [tb] : Move to WidgetLCAUtil_Test?
   public void testRenderToolTip() throws IOException {
     control.setToolTipText( "foo" );
     ControlLCAUtil.renderToolTip( control );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( control, "toolTip" ) );
   }
 
-  // TODO [tb] : Move to WidgetLCAUtil_Test? 
+  // TODO [tb] : Move to WidgetLCAUtil_Test?
   public void testRenderToolTipUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.setToolTipText( "foo" );
-    
+
     Fixture.preserveWidgets();
     ControlLCAUtil.renderToolTip( control );
-    
+
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "toolTip" ) );    
+    assertNull( message.findSetOperation( control, "toolTip" ) );
   }
-  
-  // TODO [tb] : Move to WidgetLCAUtil_Test? 
+
+  // TODO [tb] : Move to WidgetLCAUtil_Test?
   public void testRenderIntialMenu() throws IOException {
     ControlLCAUtil.renderMenu( control );
-    
+
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "menu" ) );    
+    assertNull( message.findSetOperation( control, "menu" ) );
   }
-  
-  // TODO [tb] : Move to WidgetLCAUtil_Test? 
+
+  // TODO [tb] : Move to WidgetLCAUtil_Test?
   public void testRenderMenu() throws IOException {
     control.setMenu( new Menu( shell ) );
     ControlLCAUtil.renderMenu( control );
-    
+
     Message message = Fixture.getProtocolMessage();
     String expected = WidgetUtil.getId( control.getMenu() );
     assertEquals( expected, message.findSetProperty( control, "menu" ) );
   }
-  
-  // TODO [tb] : Move to WidgetLCAUtil_Test? 
+
+  // TODO [tb] : Move to WidgetLCAUtil_Test?
   public void testRenderMenuUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.setMenu( new Menu( shell ) );
-    
+
     Fixture.preserveWidgets();
     ControlLCAUtil.renderMenu( control );
-    
+
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "menu" ) );    
+    assertNull( message.findSetOperation( control, "menu" ) );
   }
 
-  // TODO [tb] : Move to WidgetLCAUtil_Test? 
+  // TODO [tb] : Move to WidgetLCAUtil_Test?
   public void testRenderIntialEnabled() throws IOException {
     ControlLCAUtil.renderEnabled( control );
-    
+
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "enabled" ) );    
+    assertNull( message.findSetOperation( control, "enabled" ) );
   }
-  
-  // TODO [tb] : Move to WidgetLCAUtil_Test? 
+
+  // TODO [tb] : Move to WidgetLCAUtil_Test?
   public void testRenderEnabled() throws IOException {
     control.setEnabled( false );
     ControlLCAUtil.renderEnabled( control );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findSetProperty( control, "enabled" ) );
   }
 
-  // TODO [tb] : Move to WidgetLCAUtil_Test? 
+  // TODO [tb] : Move to WidgetLCAUtil_Test?
   public void testRenderEnabledUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -849,18 +851,18 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderEnabled( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "enabled" ) );    
+    assertNull( message.findSetOperation( control, "enabled" ) );
   }
 
-  // TODO [tb] : Move to WidgetLCAUtil_Test? 
+  // TODO [tb] : Move to WidgetLCAUtil_Test?
   public void testRenderIntialForeground() throws IOException {
     ControlLCAUtil.renderForeground( control );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "foreground" ) );
   }
-  
-  // TODO [tb] : Move to WidgetLCAUtil_Test? 
+
+  // TODO [tb] : Move to WidgetLCAUtil_Test?
   public void testRenderForeground() throws IOException {
     control.setForeground( new Color( display, 0, 16, 255 ) );
     ControlLCAUtil.renderForeground( control );
@@ -868,8 +870,8 @@ public class ControlLCAUtil_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertEquals( "#0010ff", message.findSetProperty( control, "foreground" ) );
   }
-  
-  // TODO [tb] : Move to WidgetLCAUtil_Test? 
+
+  // TODO [tb] : Move to WidgetLCAUtil_Test?
   public void testRenderForegroundUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -881,30 +883,30 @@ public class ControlLCAUtil_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "foreground" ) );
   }
-  
+
   public void testRenderIntialBackgroundImage() throws IOException {
     ControlLCAUtil.renderForeground( control );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "foreground" ) );
   }
-  
+
   public void testRenderBackgroundImage() throws IOException {
     control.setForeground( new Color( display, 0, 16, 255 ) );
     ControlLCAUtil.renderForeground( control );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( "#0010ff", message.findSetProperty( control, "foreground" ) );
   }
-  
+
   public void testRenderBackgroundImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.setForeground( new Color( display, 0, 16, 255 ) );
-    
+
     Fixture.preserveWidgets();
     ControlLCAUtil.renderForeground( control );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "foreground" ) );
   }

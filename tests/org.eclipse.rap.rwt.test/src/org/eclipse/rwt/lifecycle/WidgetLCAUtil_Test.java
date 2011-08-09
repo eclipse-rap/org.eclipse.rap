@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.lifecycle;
 
 import java.io.IOException;
@@ -39,6 +38,7 @@ public class WidgetLCAUtil_Test extends TestCase {
   private Shell shell;
   private Control widget;
 
+  @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
@@ -47,6 +47,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     widget = new Button( shell, SWT.PUSH );
   }
 
+  @Override
   protected void tearDown() throws Exception {
     display.dispose();
     Fixture.tearDown();
@@ -632,10 +633,10 @@ public class WidgetLCAUtil_Test extends TestCase {
     String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"help\", true );";
     assertEquals( expected, Fixture.getAllMarkup() );
   }
-  
+
   //////////////////////////////////////////////
   // Tests for new render methods using protocol
-  
+
 
   public void testRenderIntialBackgroundNull() throws IOException {
     WidgetLCAUtil.renderBackground( widget, null );
@@ -643,14 +644,14 @@ public class WidgetLCAUtil_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( widget, "background" ) );
   }
-  
+
   public void testRenderBackground() throws IOException {
     WidgetLCAUtil.renderBackground( widget, new Color( display, 0, 16, 255 ) );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( "#0010ff", message.findSetProperty( widget, "background" ) );
   }
-  
+
   public void testRenderBackgroundUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
@@ -669,7 +670,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertEquals( "transparent", message.findSetProperty( widget, "background" ) );
   }
-  
+
   public void testRenderBackgroundTransparencyUnchanged() throws IOException {
     widget = new Button( shell, SWT.CHECK );
     shell.setBackgroundMode( SWT.INHERIT_DEFAULT );
@@ -680,11 +681,11 @@ public class WidgetLCAUtil_Test extends TestCase {
 
     Fixture.preserveWidgets();
     WidgetLCAUtil.renderBackground( widget, null, true );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( widget, "background" ) );
   }
-  
+
   public void testRenderBackgroundNoMoreTransparent() throws IOException {
     widget = new Button( shell, SWT.CHECK );
     shell.setBackgroundMode( SWT.INHERIT_DEFAULT );
@@ -692,10 +693,10 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.markInitialized( widget );
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( widget );
     assertTrue( controlAdapter.getBackgroundTransparency() );
-    
+
     Fixture.preserveWidgets();
     WidgetLCAUtil.renderBackground( widget, new Color( display, 0, 16, 255 ), false );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( "#0010ff", message.findSetProperty( widget, "background" ) );
   }
@@ -704,10 +705,10 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
     widget.setBackground( new Color( display, 0, 16, 255 ) );
-    
+
     Fixture.preserveWidgets();
     WidgetLCAUtil.renderBackground( widget, null );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( JSONObject.NULL, message.findSetProperty( widget, "background" ) );
   }

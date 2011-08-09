@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.lifecycle;
 
 import java.io.IOException;
@@ -203,7 +202,7 @@ public class ControlLCAUtil {
       writer.set( Props.Z_INDEX, JSConst.QX_FIELD_Z_INDEX, newValue, null );
     }
   }
-  
+
   /**
    * Determines whether the z-index of the given control has changed during the
    * processing of the current request and if so, writes JavaScript code to the
@@ -219,7 +218,7 @@ public class ControlLCAUtil {
       Integer newValue = new Integer( getZIndex( control ) );
       if( WidgetLCAUtil.hasChanged( control, Props.Z_INDEX, newValue ) ) {
         IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-        clientObject.setProperty( "zIndex", newValue );        
+        clientObject.setProperty( "zIndex", newValue );
       }
     }
   }
@@ -284,7 +283,7 @@ public class ControlLCAUtil {
     // enabled/disabled controls.
     WidgetLCAUtil.writeEnabled( control, control.getEnabled() );
   }
-  
+
   /**
    * Determines whether the property <code>enabled</code> of the given control
    * has changed during the processing of the current request and if so, writes
@@ -354,7 +353,7 @@ public class ControlLCAUtil {
     writeMenuDetectListener( control );
     WidgetLCAUtil.writeHelpListener( control );
   }
-  
+
   /**
    * Determines for all of the following properties of the specified control
    * whether the property has changed during the processing of the current
@@ -427,7 +426,7 @@ public class ControlLCAUtil {
       WidgetLCAUtil.writeMenu( control, control.getMenu() );
     }
   }
-  
+
   /**
    * Determines whether the property <code>menu</code> of the given control
    * has changed during the processing of the current request and if so, writes
@@ -452,7 +451,7 @@ public class ControlLCAUtil {
   public static void writeToolTip( Control control ) throws IOException {
     WidgetLCAUtil.writeToolTip( control, control.getToolTipText() );
   }
-  
+
   /**
    * Determines whether the tool tip of the given control has changed during the
    * processing of the current request and if so, writes JavaScript code to the
@@ -478,7 +477,7 @@ public class ControlLCAUtil {
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     WidgetLCAUtil.writeForeground( control, controlAdapter.getUserForeground() );
   }
-  
+
   /**
    * Determines whether the property <code>foreground</code> of the given
    * control has changed during the processing of the current request and if so,
@@ -524,7 +523,7 @@ public class ControlLCAUtil {
                                     controlAdapter.getUserBackground(),
                                     controlAdapter.getBackgroundTransparency() );
   }
-  
+
   /**
    * Preserves the value of the specified widget's background image.
    *
@@ -797,7 +796,7 @@ public class ControlLCAUtil {
     // there is no reliable default value for all controls
     if( WidgetLCAUtil.hasChanged( control, PROP_TAB_INDEX, newValue ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-      clientObject.setProperty( "tabIndex", newValue );        
+      clientObject.setProperty( "tabIndex", newValue );
     }
   }
 
@@ -1229,186 +1228,4 @@ public class ControlLCAUtil {
     return result;
   }
 
-  /////////////////////////////////////
-  // deprecated pooling-related methods
-
-  /**
-   * Writes JavaScript code to the response that resets the bounds of a control.
-   * This method is intended to be used by implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   * @deprecated As of 1.3, server-side widget pooling is no longer required.
-   *             This method does nothing.
-   */
-  public static void resetBounds() throws IOException {
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the z-index property of
-   * a control. This method is intended to be used by implementations of the
-   * method {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   * @deprecated As of 1.3, server-side widget pooling is no longer required.
-   *             This method does nothing.
-   */
-  public static void resetZIndex() throws IOException {
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>visible</code> of a control. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   * @deprecated As of 1.3, server-side widget pooling is no longer required.
-   *             This method does nothing.
-   */
-  public static void resetVisible() throws IOException {
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>enabled</code> of a control. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   * @deprecated As of 1.3, server-side widget pooling is no longer required.
-   *             This method does nothing.
-   */
-  public static void resetEnabled() throws IOException {
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the following properties
-   * of a control.
-   * <ul>
-   * <li>bounds</li>
-   * <li>z-index (except for Shells)</li>
-   * <li>tab index</li>
-   * <li>tool tip text</li>
-   * <li>menu</li>
-   * <li>visible</li>
-   * <li>enabled</li>
-   * <li>foreground</li>
-   * <li>background</li>
-   * <li>font</li>
-   * <!--li>whether ControlListeners are registered</li>
-   * <li>whether ActivateListeners are registered</li>
-   * <li>whether FocusListeners are registered</li-->
-   * </ul>
-   * This method is intended to be used by implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   * @deprecated As of 1.3, server-side widget pooling is no longer required.
-   *             This method does nothing.
-   */
-  public static void resetChanges() throws IOException {
-  }
-
-  /**
-   * Writes JavaScript code to the response that removes the client-side resize
-   * notification listeners from a control.
-   *
-   * @throws IOException
-   * @deprecated As of 1.3, server-side widget pooling is no longer required.
-   *             This method does nothing.
-   */
-  public static void resetResizeNotificator()
-    throws IOException
-  {
-  }
-
-  /**
-   * Writes JavaScript code to the response that removes the client-side move
-   * notification listeners from a control.
-   *
-   * @throws IOException
-   * @deprecated As of 1.3, server-side widget pooling is no longer required.
-   *             This method does nothing.
-   */
-  public static void resetMoveNotificator()
-    throws IOException
-  {
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>menu</code> of a control. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   * @deprecated As of 1.3, server-side widget pooling is no longer required.
-   *             This method does nothing.
-   */
-  public static void resetMenu() throws IOException {
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the tool tip of a
-   * control. This method is intended to be used by implementations of the
-   * method {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   * @deprecated As of 1.3, server-side widget pooling is no longer required.
-   *             This method does nothing.
-   */
-  public static void resetToolTip() throws IOException {
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>foreground</code> of a control. This method is intended to be used
-   * by implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   * @deprecated As of 1.3, server-side widget pooling is no longer required.
-   *             This method does nothing.
-   */
-  public static void resetForeground() throws IOException {
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>background</code> of a control. This method is intended to be used
-   * by implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   * @deprecated As of 1.3, server-side widget pooling is no longer required.
-   *             This method does nothing.
-   */
-  public static void resetBackground() throws IOException {
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the style flags.
-   * <p>This method is intended to be used by implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.</p>
-   *
-   * @throws IOException
-   * @deprecated As of 1.3, server-side widget pooling is no longer required.
-   *             This method does nothing.
-   */
-  public static void resetStyleFlags() throws IOException {
-  }
-
-  /**
-   * Writes JavaScript code to the response that resets the property
-   * <code>font</code> of a control. This method is intended to be used by
-   * implementations of the method
-   * {@link AbstractWidgetLCA#createResetHandlerCalls(String)}.
-   *
-   * @throws IOException
-   * @deprecated As of 1.3, server-side widget pooling is no longer required.
-   *             This method does nothing.
-   */
-  public static void resetFont() throws IOException {
-  }
 }
