@@ -657,6 +657,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "visibility" ) );    
   }
 
+  // TODO [tb] : Move to WidgetLCAUtil_Test? 
   public void testRenderBoundsIntiallyZero() throws IOException, JSONException {
     control = new Button( shell, SWT.PUSH );
     ControlLCAUtil.renderBounds( control );
@@ -670,6 +671,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( 0, bounds.getInt( 3 ) );
   }
   
+  // TODO [tb] : Move to WidgetLCAUtil_Test? 
   public void testRenderBoundsInitiallySet() throws IOException, JSONException {
     control.setBounds( 10, 20, 100, 200 );
     ControlLCAUtil.renderBounds( control );
@@ -683,6 +685,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( 200, bounds.getInt( 3 ) );
   }
   
+  // TODO [tb] : Move to WidgetLCAUtil_Test? 
   public void testRenderBoundsUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -758,6 +761,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "tabIndex" ) );    
   }
 
+  // TODO [tb] : Move to WidgetLCAUtil_Test? 
   public void testRenderIntialToolTip() throws IOException {   
     ControlLCAUtil.renderToolTip( control );
     
@@ -765,6 +769,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "toolTip" ) );    
   }
 
+  // TODO [tb] : Move to WidgetLCAUtil_Test? 
   public void testRenderToolTip() throws IOException {
     control.setToolTipText( "foo" );
     ControlLCAUtil.renderToolTip( control );
@@ -772,7 +777,8 @@ public class ControlLCAUtil_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertEquals( "foo", message.findSetProperty( control, "toolTip" ) );
   }
-  
+
+  // TODO [tb] : Move to WidgetLCAUtil_Test? 
   public void testRenderToolTipUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -785,6 +791,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "toolTip" ) );    
   }
   
+  // TODO [tb] : Move to WidgetLCAUtil_Test? 
   public void testRenderIntialMenu() throws IOException {
     ControlLCAUtil.renderMenu( control );
     
@@ -792,6 +799,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "menu" ) );    
   }
   
+  // TODO [tb] : Move to WidgetLCAUtil_Test? 
   public void testRenderMenu() throws IOException {
     control.setMenu( new Menu( shell ) );
     ControlLCAUtil.renderMenu( control );
@@ -801,6 +809,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( expected, message.findSetProperty( control, "menu" ) );
   }
   
+  // TODO [tb] : Move to WidgetLCAUtil_Test? 
   public void testRenderMenuUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -813,6 +822,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "menu" ) );    
   }
 
+  // TODO [tb] : Move to WidgetLCAUtil_Test? 
   public void testRenderIntialEnabled() throws IOException {
     ControlLCAUtil.renderEnabled( control );
     
@@ -820,6 +830,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "enabled" ) );    
   }
   
+  // TODO [tb] : Move to WidgetLCAUtil_Test? 
   public void testRenderEnabled() throws IOException {
     control.setEnabled( false );
     ControlLCAUtil.renderEnabled( control );
@@ -828,6 +839,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findSetProperty( control, "enabled" ) );
   }
 
+  // TODO [tb] : Move to WidgetLCAUtil_Test? 
   public void testRenderEnabledUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -840,6 +852,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "enabled" ) );    
   }
 
+  // TODO [tb] : Move to WidgetLCAUtil_Test? 
   public void testRenderIntialForeground() throws IOException {
     ControlLCAUtil.renderForeground( control );
 
@@ -847,6 +860,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "foreground" ) );
   }
   
+  // TODO [tb] : Move to WidgetLCAUtil_Test? 
   public void testRenderForeground() throws IOException {
     control.setForeground( new Color( display, 0, 16, 255 ) );
     ControlLCAUtil.renderForeground( control );
@@ -855,6 +869,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( "#0010ff", message.findSetProperty( control, "foreground" ) );
   }
   
+  // TODO [tb] : Move to WidgetLCAUtil_Test? 
   public void testRenderForegroundUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -863,6 +878,33 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.preserveWidgets();
     ControlLCAUtil.renderForeground( control );
 
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "foreground" ) );
+  }
+  
+  public void testRenderIntialBackgroundImage() throws IOException {
+    ControlLCAUtil.renderForeground( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "foreground" ) );
+  }
+  
+  public void testRenderBackgroundImage() throws IOException {
+    control.setForeground( new Color( display, 0, 16, 255 ) );
+    ControlLCAUtil.renderForeground( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "#0010ff", message.findSetProperty( control, "foreground" ) );
+  }
+  
+  public void testRenderBackgroundImageUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.setForeground( new Color( display, 0, 16, 255 ) );
+    
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderForeground( control );
+    
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "foreground" ) );
   }

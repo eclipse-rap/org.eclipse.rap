@@ -834,6 +834,61 @@ public final class WidgetLCAUtil {
   }
 
   /**
+   * Determines whether the property <code>background</code> of the given
+   * widget has changed during the processing of the current request and if so,
+   * writes a protocol message to the response that updates the client-side
+   * background property of the specified widget. For instances of
+   * {@link Control}, use the method
+   * {@link ControlLCAUtil#writeBackground(Control)} instead.
+   *
+   * @param widget the widget whose background property to set
+   * @param newColor the new value of the property
+   * @throws IOException
+   * @see #preserveBackground(Widget, Color)
+   */
+  public static void renderBackground( final Widget widget,
+                                       final Color newColor )
+    throws IOException
+  {
+    renderBackground( widget, newColor, false );
+  }
+  
+  /**
+   * Determines whether the property <code>background</code> of the given
+   * widget has changed during the processing of the current request and if so,
+   * writes a protocol message to the response that updates the client-side
+   * background property of the specified widget. For instances of
+   * {@link Control}, use the method
+   * {@link ControlLCAUtil#writeBackground(Control)} instead.
+   *
+   * @param widget the widget whose background property to set
+   * @param background the new background color
+   * @param transparency the new background transparency, if <code>true</code>,
+   *            the <code>background</code> parameter is ignored
+   * @throws IOException
+   * @see {@link #preserveBackground(Widget, Color, boolean)}
+   */
+  public static void renderBackground( Widget widget, Color background, boolean transparency )
+    throws IOException
+  {
+    boolean transparencyChanged = WidgetLCAUtil.hasChanged( widget,
+                                                            PROP_BACKGROUND_TRANSPARENCY,
+                                                            Boolean.valueOf( transparency ),
+                                                            Boolean.FALSE );
+    boolean colorChanged = WidgetLCAUtil.hasChanged( widget, PROP_BACKGROUND, background, null );
+    if( transparencyChanged || colorChanged ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      String color = null; 
+      if( transparency ) {
+        color = "transparent";
+      } else if( background != null ) {
+        color = getColorValue( background.getRGB() );
+      }
+      clientObject.setProperty( "background", color );
+    }
+  }
+  
+  /**
    * Determines whether the background gradient properties of the
    * given widget have changed during the processing of the current request and
    * if so, writes JavaScript code to the response that updates the client-side

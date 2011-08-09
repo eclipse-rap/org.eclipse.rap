@@ -395,7 +395,7 @@ public class ControlLCAUtil {
     renderMenu( control );
     renderEnabled( control );
     renderForeground( control );
-    writeBackground( control );
+    renderBackground( control );
     writeBackgroundImage( control );
     writeFont( control );
     writeCursor( control );
@@ -509,6 +509,22 @@ public class ControlLCAUtil {
                                    controlAdapter.getBackgroundTransparency() );
   }
 
+  /**
+   * Determines whether the property <code>background</code> of the given
+   * control has changed during the processing of the current request and if so,
+   * writes a protocol message to the response that updates the client-side
+   * background property.
+   *
+   * @param control the control whose background property to write
+   * @throws IOException
+   */
+  public static void renderBackground( Control control ) throws IOException {
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
+    WidgetLCAUtil.renderBackground( control,
+                                    controlAdapter.getUserBackground(),
+                                    controlAdapter.getBackgroundTransparency() );
+  }
+  
   /**
    * Preserves the value of the specified widget's background image.
    *
