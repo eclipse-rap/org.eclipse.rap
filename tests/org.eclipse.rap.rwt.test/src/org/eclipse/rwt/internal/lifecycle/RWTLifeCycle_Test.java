@@ -989,7 +989,10 @@ public class RWTLifeCycle_Test extends TestCase {
       assertNull( "switchThread must not unblock when thread is interrupted",
                   errorInUIThread[ 0 ] );
     }
-    uiThread[ 0 ].switchThread();
+    // unblock ui thread, see bug 351277
+    synchronized( uiThread[ 0 ].getLock() ) {
+      uiThread[ 0 ].getLock().notifyAll();
+    }
   }
 
   public void testGetUIThreadWhileLifeCycleInExecute() throws IOException {
