@@ -813,4 +813,58 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "menu" ) );    
   }
 
+  public void testRenderIntialEnabled() throws IOException {
+    ControlLCAUtil.renderEnabled( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "enabled" ) );    
+  }
+  
+  public void testRenderEnabled() throws IOException {
+    control.setEnabled( false );
+    ControlLCAUtil.renderEnabled( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findSetProperty( control, "enabled" ) );
+  }
+
+  public void testRenderEnabledUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.setEnabled( false );
+
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderEnabled( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "enabled" ) );    
+  }
+
+  public void testRenderIntialForeground() throws IOException {
+    ControlLCAUtil.renderForeground( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "foreground" ) );
+  }
+  
+  public void testRenderForeground() throws IOException {
+    control.setForeground( new Color( display, 0, 16, 255 ) );
+    ControlLCAUtil.renderForeground( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "#0010ff", message.findSetProperty( control, "foreground" ) );
+  }
+  
+  public void testRenderForegroundUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.setForeground( new Color( display, 0, 16, 255 ) );
+
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderForeground( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "foreground" ) );
+  }
+
 }

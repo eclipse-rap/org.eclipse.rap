@@ -284,6 +284,21 @@ public class ControlLCAUtil {
     // enabled/disabled controls.
     WidgetLCAUtil.writeEnabled( control, control.getEnabled() );
   }
+  
+  /**
+   * Determines whether the property <code>enabled</code> of the given control
+   * has changed during the processing of the current request and if so, writes
+   * a protocol message to the response that updates the client-side enabled
+   * property.
+   *
+   * @param control the control whose enabled property to write
+   * @throws IOException
+   */
+  public static void renderEnabled( Control control ) throws IOException {
+    // Using isEnabled() would result in unnecessarily updating child widgets of
+    // enabled/disabled controls.
+    WidgetLCAUtil.renderEnabled( control, control.getEnabled() );
+  }
 
   /**
    * Determines for all of the following properties of the specified control
@@ -378,8 +393,8 @@ public class ControlLCAUtil {
     renderTabIndex( control );
     renderToolTip( control );
     renderMenu( control );
-    writeEnabled( control );
-    writeForeground( control );
+    renderEnabled( control );
+    renderForeground( control );
     writeBackground( control );
     writeBackgroundImage( control );
     writeFont( control );
@@ -462,6 +477,20 @@ public class ControlLCAUtil {
   public static void writeForeground( Control control ) throws IOException {
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     WidgetLCAUtil.writeForeground( control, controlAdapter.getUserForeground() );
+  }
+  
+  /**
+   * Determines whether the property <code>foreground</code> of the given
+   * control has changed during the processing of the current request and if so,
+   * writes a protocol message to the response that updates the client-side
+   * foreground property.
+   *
+   * @param control the control whose foreground property to write
+   * @throws IOException
+   */
+  public static void renderForeground( Control control ) throws IOException {
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
+    WidgetLCAUtil.renderForeground( control, controlAdapter.getUserForeground() );
   }
 
   /**
@@ -1183,7 +1212,6 @@ public class ControlLCAUtil {
     }
     return result;
   }
-
 
   /////////////////////////////////////
   // deprecated pooling-related methods

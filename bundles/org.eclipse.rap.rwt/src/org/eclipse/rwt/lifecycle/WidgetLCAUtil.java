@@ -728,6 +728,50 @@ public final class WidgetLCAUtil {
       }
     }
   }
+  
+  /**
+   * Determines whether the property <code>foreground</code> of the given
+   * widget has changed during the processing of the current request and if so,
+   * writes a protocol message to the response that updates the client-side
+   * foreground property of the specified widget. For instances of
+   * {@link Control}, use the method
+   * {@link ControlLCAUtil#writeForeground(Control)} instead.
+   *
+   * @param widget the widget whose foreground property to set
+   * @param newColor the new value of the property
+   * @throws IOException
+   * @see #preserveForeground(Widget, Color)
+   */
+  public static void renderForeground( final Widget widget,
+                                       final Color newColor )
+    throws IOException
+  {
+    if( WidgetLCAUtil.hasChanged( widget, PROP_FOREGROUND, newColor, null ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( "foreground", getColorValue( newColor.getRGB() ) );
+    }
+  }
+
+  private static String getColorValue( RGB rgb ) {
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( "#" );
+    String red = Integer.toHexString( rgb.red );
+    if( red.length() == 1  ) {
+      buffer.append( "0" );
+    }
+    buffer.append( red );
+    String green = Integer.toHexString( rgb.green );
+    if( green.length() == 1  ) {
+      buffer.append( "0" );
+    }
+    buffer.append( green );
+    String blue = Integer.toHexString( rgb.blue );
+    if( blue.length() == 1  ) {
+      buffer.append( "0" );
+    }
+    buffer.append( blue );
+    return buffer.toString();
+  }  
 
   /**
    * Determines whether the property <code>background</code> of the given
@@ -925,6 +969,29 @@ public final class WidgetLCAUtil {
     JSWriter writer = JSWriter.getWriterFor( widget );
     Boolean defValue = Boolean.TRUE;
     writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
+  }
+  
+  /**
+   * Determines whether the property <code>enabled</code> of the given widget
+   * has changed during the processing of the current request and if so, writes
+   * a protocol message to the response that updates the client-side enabled
+   * property of the specified widget. For instances of {@link Control}, use
+   * the method {@link ControlLCAUtil#writeEnabled(Control)} instead.
+   *
+   * @param widget the widget whose enabled property to set
+   * @param enabled the new value of the property
+   * @throws IOException
+   * @see #preserveEnabled(Widget, boolean)
+   */
+  public static void renderEnabled( final Widget widget, final boolean enabled )
+      throws IOException
+  {
+    Boolean newValue = Boolean.valueOf( enabled );
+    Boolean defValue = Boolean.TRUE;
+    if( WidgetLCAUtil.hasChanged( widget, Props.ENABLED, newValue, defValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( "enabled", newValue );
+    }
   }
 
 
