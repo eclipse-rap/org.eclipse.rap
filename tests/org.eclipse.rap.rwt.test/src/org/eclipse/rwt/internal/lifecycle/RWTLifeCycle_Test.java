@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.*;
+
 
 public class RWTLifeCycle_Test extends TestCase {
 
@@ -167,22 +168,27 @@ public class RWTLifeCycle_Test extends TestCase {
       public BuggyShell( Display display ) {
         super( display );
       }
+      @Override
       public Object getAdapter( Class adapter ) {
         Object result;
         if( adapter.equals( ILifeCycleAdapter.class ) ) {
           result = new AbstractWidgetLCA() {
+            @Override
             public void preserveValues( Widget widget ) {
             }
             public void readData( Widget widget ) {
             }
+            @Override
             public void renderInitialization( Widget widget )
               throws IOException
             {
               throw new RuntimeException( EXCEPTION_IN_RENDER );
             }
+            @Override
             public void renderChanges( Widget widget ) throws IOException {
               throw new RuntimeException( EXCEPTION_IN_RENDER );
             }
+            @Override
             public void renderDispose( Widget widget ) throws IOException {
             }
           };
@@ -243,7 +249,7 @@ public class RWTLifeCycle_Test extends TestCase {
 
   public void testDefaultEntryPoint() throws IOException {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, 
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT,
                                                 TestEntryPointWithLog.class );
     lifeCycle.execute();
     assertEquals( DISPLAY_CREATED, log.toString() );
@@ -537,11 +543,13 @@ public class RWTLifeCycle_Test extends TestCase {
     log.setLength( 0 );
     Shell widget = new Shell( display ) {
       private static final long serialVersionUID = 1L;
+      @Override
       public boolean getVisible() {
         return true;
       }
     };
     SelectionAdapter listener = new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         log.append( "eventExecuted" );
       }
@@ -564,11 +572,13 @@ public class RWTLifeCycle_Test extends TestCase {
     final Display display = new Display();
     Shell widget = new Shell( display ) {
       private static final long serialVersionUID = 1L;
+      @Override
       public boolean getVisible() {
         return true;
       }
     };
     SelectionAdapter listener = new SelectionAdapter() {
+      @Override
       public void widgetSelected( SelectionEvent event ) {
         display.readAndDispatch();
       }
@@ -954,10 +964,10 @@ public class RWTLifeCycle_Test extends TestCase {
     invalidateSession( session );
     assertEquals( "disposeEvent, beforeDestroy", log.toString() );
   }
-  
+
   public void testSwitchThreadCannotBeInterrupted() throws Exception {
     final Throwable[] errorInUIThread = { new Exception( "did not run" ) };
-    final UIThread[] uiThread =  { null };
+    final UIThread[] uiThread = { null };
     uiThread[ 0 ] = new UIThread( new Runnable() {
       public void run() {
         try {
@@ -981,10 +991,10 @@ public class RWTLifeCycle_Test extends TestCase {
     }
     uiThread[ 0 ].switchThread();
   }
-  
+
   public void testGetUIThreadWhileLifeCycleInExecute() throws IOException {
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle(); 
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
     final Thread[] currentThread = { null };
     final Thread[] uiThread = { null };
     lifeCycle.addPhaseListener( new PhaseListener() {
@@ -999,22 +1009,22 @@ public class RWTLifeCycle_Test extends TestCase {
         uiThread[ 0 ] = LifeCycleUtil.getUIThread( ContextProvider.getSession() ).getThread();
       }
     } );
-    
+
     lifeCycle.execute();
-    
+
     assertSame( currentThread[ 0 ], uiThread[ 0 ] );
   }
-  
+
   public void testGetUIThreadAfterLifeCycleExecuted() throws IOException {
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle(); 
+    RWTLifeCycle lifeCycle = new RWTLifeCycle();
     lifeCycle.execute();
-    
+
     Thread uiThread = LifeCycleUtil.getUIThread( ContextProvider.getSession() ).getThread();
 
     assertNotNull( uiThread );
   }
-  
+
   private static void invalidateSession( final ISessionStore session ) throws Throwable {
     Runnable runnable = new Runnable() {
       public void run() {
@@ -1042,12 +1052,14 @@ public class RWTLifeCycle_Test extends TestCase {
     return ( UIThread )LifeCycleUtil.getUIThread( session );
   }
 
+  @Override
   protected void setUp() throws Exception {
     log.setLength( 0 );
     Fixture.setUp();
     Fixture.fakeResponseWriter();
   }
 
+  @Override
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }

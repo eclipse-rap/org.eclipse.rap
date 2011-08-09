@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,7 +72,7 @@ public class JavaScriptResponseWriter_Test extends TestCase {
     writer.write( "javascript;" );
     writer.finish();
 
-    assertTrue( getMessage().endsWith( "} );javascript;" ) );
+    assertTrue( getMessage().endsWith( "} );/*EOM*/javascript;" ) );
   }
 
   public void testJavascriptJsonJavascript() {
@@ -83,7 +83,7 @@ public class JavaScriptResponseWriter_Test extends TestCase {
 
     String message = getMessage();
     assertTrue( message.startsWith( "javascript;" + PROCESS_MESSAGE + "( {" ) );
-    assertTrue( message.endsWith( "} );javascript2;" ) );
+    assertTrue( message.endsWith( "} );/*EOM*/javascript2;" ) );
   }
 
   public void testJsonJavascriptJson() {
