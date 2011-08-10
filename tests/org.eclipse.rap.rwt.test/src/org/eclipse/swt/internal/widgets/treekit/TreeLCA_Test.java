@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
@@ -35,21 +35,19 @@ import org.eclipse.swt.widgets.*;
 
 public class TreeLCA_Test extends TestCase {
 
-  private static class LoggingSelectionListener extends SelectionAdapter {
-    private final List<SelectionEvent> events;
-    private LoggingSelectionListener( List<SelectionEvent> events ) {
-      this.events = events;
-    }
-    public void widgetSelected( SelectionEvent event ) {
-      events.add( event );
-    }
-    public void widgetDefaultSelected( SelectionEvent event ) {
-      events.add( event );
-    }
-  }
-
   private Display display;
   private Shell shell;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakeResponseWriter();
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testMinimalInitialization() throws Exception {
     Tree tree = new Tree( shell, SWT.NONE );
@@ -535,7 +533,7 @@ public class TreeLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
   }
-  
+
   public void testPreserveEnableCellToolTip() {
     Tree tree = new Tree( shell, SWT.BORDER );
     Fixture.markInitialized( display );
@@ -575,6 +573,45 @@ public class TreeLCA_Test extends TestCase {
     assertEquals( 0, event.y );
     assertEquals( 0, event.width );
     assertEquals( 0, event.height );
+  }
+
+  public void testVirtualSelectionEvent() {
+    java.util.List<SelectionEvent> events = new LinkedList<SelectionEvent>();
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setItemCount( 100 );
+    tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
+    tree.addSelectionListener( new LoggingSelectionListener( events ) );
+    String treeId = WidgetUtil.getId( tree );
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, treeId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".item", treeId + "#" + 50 );
+    Fixture.readDataAndProcessAction( display );
+    assertEquals( 1, events.size() );
+    SelectionEvent event = events.get( 0 );
+    assertEquals( tree, event.getSource() );
+    assertSame( tree.getItem( 50 ), event.item );
+  }
+
+  public void testVirtualSelectionEventWithSubitem() {
+    java.util.List<SelectionEvent> events = new LinkedList<SelectionEvent>();
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setItemCount( 1 );
+    TreeItem item = tree.getItem( 0 );
+    // Important: parent item must be materialized
+    item.setText( "item 1" );
+    String itemId = WidgetUtil.getId( item );
+    item.setItemCount( 100 );
+    tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
+    tree.addSelectionListener( new LoggingSelectionListener( events ) );
+    String treeId = WidgetUtil.getId( tree );
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, treeId );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".item", itemId + "#" + 50 );
+    Fixture.readDataAndProcessAction( display );
+    assertEquals( 1, events.size() );
+    SelectionEvent event = events.get( 0 );
+    assertEquals( tree, event.getSource() );
+    assertSame( item.getItem( 50 ), event.item );
   }
 
   public void testDefaultSelectionEvent() {
@@ -676,7 +713,7 @@ public class TreeLCA_Test extends TestCase {
     String expected = "w.setHasScrollBarsSelectionListener( true );";
     assertTrue( markup.indexOf( expected ) != -1 );
   }
-  
+
   public void testWriteEnableCellToolTip() throws IOException {
     Tree tree = new Tree( shell, SWT.NONE );
     createTreeItems( tree, 5 );
@@ -785,7 +822,7 @@ public class TreeLCA_Test extends TestCase {
     processCellToolTipRequest( tree, itemId, 2 );
     assertEquals( "", log.toString() );
   }
-  
+
   public void testCreateVirtualItems() {
     final Tree tree = new Tree( shell, SWT.VIRTUAL );
     tree.setSize( 200, 200 );
@@ -801,7 +838,7 @@ public class TreeLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.fakeNewRequest( display );
-    
+
     Fixture.executeLifeCycleFromServerThread();
 
     assertEquals( 7, countOccurences( "TreeItem.createItem(", Fixture.getAllMarkup() ) );
@@ -810,17 +847,17 @@ public class TreeLCA_Test extends TestCase {
   public void testPreserveItemCount() {
     Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
-    
+
     Fixture.preserveWidgets();
-    
+
     IWidgetAdapter adapter = WidgetUtil.getAdapter( tree );
     Integer preserved = ( Integer )adapter.getPreserved( TreeLCA.PROP_ITEM_COUNT );
     assertEquals( new Integer( 0 ), preserved );
-    
+
     Fixture.clearPreserved();
     tree.setItemCount( 10 );
     Fixture.preserveWidgets();
-    
+
     preserved = ( Integer )adapter.getPreserved( TreeLCA.PROP_ITEM_COUNT );
     assertEquals( new Integer( 10 ), preserved );
   }
@@ -838,6 +875,35 @@ public class TreeLCA_Test extends TestCase {
     assertTrue( markup.indexOf( "setItemCount( 10 )" ) != -1 );
   }
 
+  public void testVirtualReadSelection() {
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setItemCount( 100 );
+    tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
+    String treeId = WidgetUtil.getId( tree );
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( treeId + ".selection", treeId + "#" + 50 );
+    Fixture.readDataAndProcessAction( display );
+    assertEquals( 1, tree.getSelection().length );
+    assertSame( tree.getItem( 50 ), tree.getSelection()[ 0 ] );
+  }
+
+  public void testVirtualReadSelectionWithSubitem() {
+    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree.setItemCount( 1 );
+    TreeItem item = tree.getItem( 0 );
+    // Important: parent item must be materialized
+    item.setText( "item 1" );
+    String itemId = WidgetUtil.getId( item );
+    item.setItemCount( 100 );
+    tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
+    String treeId = WidgetUtil.getId( tree );
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( treeId + ".selection", itemId + "#" + 50 );
+    Fixture.readDataAndProcessAction( display );
+    assertEquals( 1, tree.getSelection().length );
+    assertSame( item.getItem( 50 ), tree.getSelection()[ 0 ] );
+  }
+
   private static int countOccurences( String searchString, String stringToSearch ) {
     int result = 0;
     int index = stringToSearch.indexOf( searchString );
@@ -848,15 +914,15 @@ public class TreeLCA_Test extends TestCase {
     return result;
   }
 
-  private static void createTreeColumns( final Tree tree, final int count ) {
+  private static void createTreeColumns( Tree tree, int count ) {
     for( int i = 0; i < count; i++ ) {
       new TreeColumn( tree, SWT.NONE );
     }
   }
 
-  private static void createTreeItems( final Tree tree, final int count ) {
+  private static void createTreeItems( Tree tree, int count ) {
     for( int i = 0; i < count; i++ ) {
-      TreeItem item = new TreeItem( tree, SWT.NONE );      
+      TreeItem item = new TreeItem( tree, SWT.NONE );
       for( int j = 0; j < count; j++ ) {
         new TreeItem( item, SWT.NONE );
       }
@@ -864,10 +930,7 @@ public class TreeLCA_Test extends TestCase {
     }
   }
 
-  private static void processCellToolTipRequest( final Tree tree,
-                                                 final String itemId,
-                                                 final int column )
-  {
+  private static void processCellToolTipRequest( Tree tree, String itemId, int column ) {
     Fixture.fakeNewRequest( tree.getDisplay() );
     String treeId = WidgetUtil.getId( tree );
     Fixture.fakeRequestParam( JSConst.EVENT_CELL_TOOLTIP_REQUESTED, treeId );
@@ -876,16 +939,16 @@ public class TreeLCA_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
   }
 
-  // TODO [tb] : Test for fake redraw calls checkAllData
-
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakeResponseWriter();
-    display = new Display();
-    shell = new Shell( display );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  private static class LoggingSelectionListener extends SelectionAdapter {
+    private final List<SelectionEvent> events;
+    private LoggingSelectionListener( List<SelectionEvent> events ) {
+      this.events = events;
+    }
+    public void widgetSelected( SelectionEvent event ) {
+      events.add( event );
+    }
+    public void widgetDefaultSelected( SelectionEvent event ) {
+      events.add( event );
+    }
   }
 }

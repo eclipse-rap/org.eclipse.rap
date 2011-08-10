@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treekit;
 
@@ -73,7 +73,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveCustomVariant( tree );
   }
 
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
     Tree tree = ( Tree )widget;
     readSelection( tree );
     readScrollLeft( tree );
@@ -87,7 +87,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( tree );
   }
 
-  public void renderInitialization( final Widget widget ) throws IOException {
+  public void renderInitialization( Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
     ITreeAdapter adapter = getTreeAdapter( tree );
     JSWriter writer = JSWriter.getWriterFor( tree );
@@ -120,7 +120,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     ControlLCAUtil.writeStyleFlags( tree );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     Tree tree = ( Tree )widget;
     writeItemCount( tree );
     ControlLCAUtil.writeChanges( tree );
@@ -142,24 +142,24 @@ public final class TreeLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.writeCustomVariant( tree );
   }
 
-  public void renderDispose( final Widget widget ) throws IOException {
+  public void renderDispose( Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
 
-  public void doRedrawFake( final Control control ) {
+  public void doRedrawFake( Control control ) {
     int evtId = ControlEvent.CONTROL_RESIZED;
     ControlEvent evt = new ControlEvent( control, evtId );
     evt.processEvent();
   }
 
-  private static void processWidgetSelectedEvent( final Tree tree ) {
+  private static void processWidgetSelectedEvent( Tree tree ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String eventName = JSConst.EVENT_WIDGET_SELECTED;
     if( WidgetLCAUtil.wasEventSent( tree, eventName ) ) {
       Rectangle bounds = new Rectangle( 0, 0, 0, 0 );
       String itemId = request.getParameter( eventName + ".item" );
-      Item treeItem = ( Item )WidgetUtil.find( tree, itemId );
+      Item treeItem = getItem( tree, itemId );
       String detailStr = request.getParameter( eventName + ".detail" );
       int detail = "check".equals( detailStr ) ? SWT.CHECK : SWT.NONE;
       int eventType = SelectionEvent.WIDGET_SELECTED;
@@ -176,16 +176,15 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void processWidgetDefaultSelectedEvent( final Tree tree ) {
+  private static void processWidgetDefaultSelectedEvent( Tree tree ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String eventName = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
     if( WidgetLCAUtil.wasEventSent( tree, eventName ) ) {
       String itemId = request.getParameter( eventName + ".item" );
-      Item treeItem = ( Item )WidgetUtil.find( tree, itemId );
+      Item treeItem = getItem( tree, itemId );
       int eventType = SelectionEvent.WIDGET_DEFAULT_SELECTED;
       SelectionEvent event = new SelectionEvent( tree, treeItem, eventType );
-      event.stateMask
-        = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+      event.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
       event.processEvent();
     }
   }
@@ -193,14 +192,14 @@ public final class TreeLCA extends AbstractWidgetLCA {
   /////////////////////////////////////////////
   // Helping methods to read client-side state
 
-  private static void readSelection( final Tree tree ) {
+  private static void readSelection( Tree tree ) {
     String value = WidgetLCAUtil.readPropertyValue( tree, "selection" );
     if( value != null ) {
       String[] values = value.split( "," );
       TreeItem[] selectedItems = new TreeItem[ values.length ];
       boolean validItemFound = false;
       for( int i = 0; i < values.length; i++ ) {
-        selectedItems[ i ] = ( TreeItem )WidgetUtil.find( tree, values[ i ] );
+        selectedItems[ i ] = getItem( tree, values[ i ] );
         if( selectedItems[ i ] != null ) {
           validItemFound = true;
         }
@@ -212,7 +211,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void readScrollLeft( final Tree tree ) {
+  private static void readScrollLeft( Tree tree ) {
     String left = WidgetLCAUtil.readPropertyValue( tree, "scrollLeft" );
     if( left != null ) {
       int leftOffset = parsePosition( left );
@@ -246,7 +245,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   //////////////////////////////////////////////////////////////
   // Helping methods to write JavaScript for changed properties
 
-  private static void writeItemHeight( final Tree tree ) throws IOException {
+  private static void writeItemHeight( Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = new Integer( tree.getItemHeight( ) );
     if( WidgetLCAUtil.hasChanged( tree, PROP_ITEM_HEIGHT, newValue ) ) {
@@ -278,14 +277,14 @@ public final class TreeLCA extends AbstractWidgetLCA {
       }
     }
   }
-  
-  private static void writeHeaderHeight( final Tree tree ) throws IOException {
+
+  private static void writeHeaderHeight( Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = new Integer( tree.getHeaderHeight() );
     writer.set( PROP_HEADER_HEIGHT, "headerHeight", newValue, null );
   }
 
-  private static void writeColumnCount( final Tree tree ) throws IOException {
+  private static void writeColumnCount( Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = new Integer( tree.getColumnCount() );
     if( WidgetLCAUtil.hasChanged( tree, PROP_COLUMN_COUNT, newValue ) ) {
@@ -293,7 +292,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeTreeColumn( final Tree tree ) throws IOException {
+  private static void writeTreeColumn( Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = getTreeColumn( tree );
     if( WidgetLCAUtil.hasChanged( tree, PROP_TREE_COLUMN, newValue ) ) {
@@ -301,7 +300,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeTopItem( final Tree tree ) throws IOException {
+  private static void writeTopItem( Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = new Integer( getTopItemIndex( tree ) );
     if( WidgetLCAUtil.hasChanged( tree, PROP_TOP_ITEM_INDEX, newValue ) ) {
@@ -309,19 +308,19 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeHeaderVisible( final Tree tree ) throws IOException {
+  private static void writeHeaderVisible( Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Boolean newValue = Boolean.valueOf( tree.getHeaderVisible() );
     writer.set( PROP_HEADER_VISIBLE, "headerVisible", newValue, Boolean.FALSE );
   }
 
-  private static void writeScrollLeft( final Tree tree ) throws IOException {
+  private static void writeScrollLeft( Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Integer newValue = getScrollLeft( tree );
     writer.set( PROP_SCROLL_LEFT, "scrollLeft", newValue, ZERO );
   }
 
-  private static void writeScrollBars( final Tree tree ) throws IOException {
+  private static void writeScrollBars( Tree tree ) throws IOException {
     boolean hasHChanged = WidgetLCAUtil.hasChanged( tree,
                                                     PROP_HAS_H_SCROLL_BAR,
                                                     hasHScrollBar( tree ),
@@ -338,14 +337,13 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeLinesVisible( final Tree tree ) throws IOException
-  {
+  private static void writeLinesVisible( Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     Boolean newValue = Boolean.valueOf( tree.getLinesVisible() );
     writer.set( PROP_LINES_VISIBLE, "linesVisible", newValue, Boolean.FALSE );
   }
 
-  private static void updateSelectionListener( final Tree tree ) throws IOException {
+  private static void updateSelectionListener( Tree tree ) throws IOException {
     Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( tree ) );
     String prop = PROP_SELECTION_LISTENERS;
     if( WidgetLCAUtil.hasChanged( tree, prop, newValue, Boolean.FALSE ) ) {
@@ -354,7 +352,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeScrollBarsSelectionListener( final Tree tree ) throws IOException {
+  private static void writeScrollBarsSelectionListener( Tree tree ) throws IOException {
     Boolean newValue = hasScrollBarsSelectionListener( tree );
     String prop = PROP_SCROLLBARS_SELECTION_LISTENER;
     if( WidgetLCAUtil.hasChanged( tree, prop, newValue, Boolean.FALSE ) ) {
@@ -366,14 +364,14 @@ public final class TreeLCA extends AbstractWidgetLCA {
   ////////////////
   // Cell tooltips
 
-  private static void writeEnableCellToolTip( final Tree tree ) throws IOException {
+  private static void writeEnableCellToolTip( Tree tree ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( tree );
     String prop = PROP_ENABLE_CELL_TOOLTIP;
     Boolean newValue = new Boolean( CellToolTipUtil.isEnabledFor( tree ) );
     writer.set( prop, "enableCellToolTip", newValue, Boolean.FALSE );
   }
 
-  private static void readCellToolTipTextRequested( final Tree tree ) {
+  private static void readCellToolTipTextRequested( Tree tree ) {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
     adapter.setCellToolTipText( null );
     String event = JSConst.EVENT_CELL_TOOLTIP_REQUESTED;
@@ -381,12 +379,11 @@ public final class TreeLCA extends AbstractWidgetLCA {
       ICellToolTipProvider provider = adapter.getCellToolTipProvider();
       if( provider != null ) {
         HttpServletRequest request = ContextProvider.getRequest();
-        String cell
-          = request.getParameter( JSConst.EVENT_CELL_TOOLTIP_DETAILS );
+        String cell = request.getParameter( JSConst.EVENT_CELL_TOOLTIP_DETAILS );
         String[] details = cell.split( "," );
         String itemId = details[ 0 ];
         int columnIndex = NumberFormatUtil.parseInt( details[ 1 ] );
-        TreeItem item = getItemById( tree.getItems(), itemId );
+        TreeItem item = getItem( tree, itemId );
         if( item != null && ( columnIndex == 0 || columnIndex < tree.getColumnCount() ) ) {
           provider.getToolTipText( item, columnIndex );
         }
@@ -394,7 +391,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeCellToolTipText( final Tree tree ) throws IOException {
+  private static void writeCellToolTipText( Tree tree ) throws IOException {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
     String text = adapter.getCellToolTipText();
     if( text != null ) {
@@ -405,54 +402,40 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static TreeItem getItemById( final TreeItem[] items,
-                                       final String itemId )
-  {
-    TreeItem result = null;
-    for( int i = 0; i < items.length && result == null; i++ ) {
-      if( WidgetUtil.getId( items[ i ] ).equals( itemId ) ) {
-        result = items[ i ];
-      } else if( items[ i ].getExpanded() ) {
-        result = getItemById( items[ i ].getItems(), itemId );
-      }
-    }
-    return result;
-  }
-
   //////////////////
   // Helping methods
 
-  private static Integer getScrollLeft( final Tree tree ) {
+  private static Integer getScrollLeft( Tree tree ) {
     ITreeAdapter treeAdapter = getTreeAdapter( tree );
     return new Integer( treeAdapter.getScrollLeft() );
   }
 
-  private static int getTopItemIndex( final Tree tree ) {
+  private static int getTopItemIndex( Tree tree ) {
     ITreeAdapter treeAdapter = getTreeAdapter( tree );
     return treeAdapter.getTopItemIndex();
   }
 
-  private static Boolean hasHScrollBar( final Tree tree ) {
+  private static Boolean hasHScrollBar( Tree tree ) {
     ITreeAdapter treeAdapter = getTreeAdapter( tree );
     return Boolean.valueOf( treeAdapter.hasHScrollBar() );
   }
 
-  private static Boolean hasVScrollBar( final Tree tree ) {
+  private static Boolean hasVScrollBar( Tree tree ) {
     ITreeAdapter treeAdapter = getTreeAdapter( tree );
     return Boolean.valueOf( treeAdapter.hasVScrollBar() );
   }
 
-  private static Integer getTreeColumn( final Tree tree ) {
+  private static Integer getTreeColumn( Tree tree ) {
     int[] values = tree.getColumnOrder();
     return new Integer( values.length > 0 ? values[ 0 ] : 0 );
   }
 
-  private static ITreeAdapter getTreeAdapter( final Tree tree ) {
+  private static ITreeAdapter getTreeAdapter( Tree tree ) {
     Object adapter = tree.getAdapter( ITreeAdapter.class );
     return ( ITreeAdapter )adapter;
   }
 
-  private static Boolean hasScrollBarsSelectionListener( final Tree tree ) {
+  private static Boolean hasScrollBarsSelectionListener( Tree tree ) {
     boolean result = false;
     ScrollBar horizontalBar = tree.getHorizontalBar();
     if( horizontalBar != null ) {
@@ -465,19 +448,35 @@ public final class TreeLCA extends AbstractWidgetLCA {
     return Boolean.valueOf( result );
   }
 
-  private static void processScrollBarSelection( final ScrollBar scrollBar,
-                                                 final int selection )
-  {
+  private static void processScrollBarSelection( ScrollBar scrollBar, int selection ) {
     if( scrollBar != null ) {
       scrollBar.setSelection( selection );
       if( SelectionEvent.hasListener( scrollBar ) ) {
         int eventId = SelectionEvent.WIDGET_SELECTED;
         SelectionEvent evt = new SelectionEvent( scrollBar, null, eventId );
-        evt.stateMask
-          = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+        evt.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
         evt.processEvent();
       }
     }
+  }
+
+  private static TreeItem getItem( Tree tree, String itemId ) {
+    TreeItem item = null;
+    String[] idParts = itemId.split( "#" );
+    if( idParts.length == 2 ) {
+      Widget parent = WidgetUtil.find( tree, idParts[ 0 ] );
+      if( parent != null ) {
+        int itemIndex = Integer.parseInt( idParts[ 1 ] );
+        if( WidgetUtil.getId( tree ).equals( idParts[ 0 ] ) ) {
+          item = tree.getItem( itemIndex );
+        } else {
+          item = ( ( TreeItem )parent ).getItem( itemIndex );
+        }
+      }
+    } else {
+      item = ( TreeItem )WidgetUtil.find( tree, itemId );
+    }
+    return item;
   }
 
   /////////////////
@@ -493,7 +492,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     int textLeft;
     int textWidth;
 
-    public boolean equals( final Object obj ) {
+    public boolean equals( Object obj ) {
       boolean result;
       if( obj == this ) {
         result = true;
@@ -517,8 +516,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-
-  static ItemMetrics[] getItemMetrics( final Tree tree ) {
+  static ItemMetrics[] getItemMetrics( Tree tree ) {
     int columnCount = Math.max( 1, tree.getColumnCount() );
     ItemMetrics[] result = new ItemMetrics[ columnCount ];
     for( int i = 0; i < columnCount; i++ ) {
@@ -536,14 +534,12 @@ public final class TreeLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static void preserveItemMetrics( final Tree tree ) {
+  private static void preserveItemMetrics( Tree tree ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( tree );
     adapter.preserve( PROP_ITEM_METRICS, getItemMetrics( tree ) );
   }
 
-  private static boolean hasItemMetricsChanged( final Tree tree,
-                                                final ItemMetrics[] metrics  )
-  {
+  private static boolean hasItemMetricsChanged( Tree tree, ItemMetrics[] metrics  ) {
     return WidgetLCAUtil.hasChanged( tree, PROP_ITEM_METRICS, metrics );
   }
 }
