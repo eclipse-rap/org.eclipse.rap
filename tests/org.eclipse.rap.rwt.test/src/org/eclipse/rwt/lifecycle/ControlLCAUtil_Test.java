@@ -34,8 +34,7 @@ import org.eclipse.swt.internal.widgets.compositekit.CompositeLCA;
 import org.eclipse.swt.internal.widgets.labelkit.LabelLCA;
 import org.eclipse.swt.internal.widgets.shellkit.ShellLCA;
 import org.eclipse.swt.widgets.*;
-import org.json.JSONArray;
-import org.json.JSONException;
+import org.json.*;
 
 
 public class ControlLCAUtil_Test extends TestCase {
@@ -916,6 +915,81 @@ public class ControlLCAUtil_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "backgroundImage" ) );
+  }
+
+  public void testRenderInitialFont() throws IOException {
+    ControlLCAUtil.renderFont( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "font" ) );
+  }
+
+  public void testRenderFont() throws IOException, JSONException {
+    control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
+    ControlLCAUtil.renderFont( control );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray result = ( JSONArray )message.findSetProperty( control, "font" );
+    assertEquals( 4, result.length() );
+    assertEquals( "Arial", ( ( JSONArray )result.get( 0 ) ).getString( 0 ) );
+    assertEquals( 12, result.getInt( 1 ) );
+    assertEquals( false, result.getBoolean( 2 ) );
+    assertEquals( false, result.getBoolean( 3 ) );
+  }
+  
+  public void testRenderFontBold() throws IOException, JSONException {
+    control.setFont( new Font( display, "Arial", 12, SWT.BOLD ) );
+    ControlLCAUtil.renderFont( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    JSONArray result = ( JSONArray )message.findSetProperty( control, "font" );
+    assertEquals( true, result.getBoolean( 2 ) );
+    assertEquals( false, result.getBoolean( 3 ) );
+  }
+  
+  public void testRenderFontItalic() throws IOException, JSONException {
+    control.setFont( new Font( display, "Arial", 12, SWT.ITALIC ) );
+    ControlLCAUtil.renderFont( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    JSONArray result = ( JSONArray )message.findSetProperty( control, "font" );
+    assertEquals( false, result.getBoolean( 2 ) );
+    assertEquals( true, result.getBoolean( 3 ) );
+  }
+  
+  public void testRenderFontItalicAndBold() throws IOException, JSONException {
+    control.setFont( new Font( display, "Arial", 12, SWT.ITALIC | SWT.BOLD ) );
+    ControlLCAUtil.renderFont( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    JSONArray result = ( JSONArray )message.findSetProperty( control, "font" );
+    assertEquals( true, result.getBoolean( 2 ) );
+    assertEquals( true, result.getBoolean( 3 ) );
+  }
+
+  public void testRenderFontUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
+
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderFont( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "font" ) );
+  }
+  
+  public void testResetFont() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.setFont( new Font( display, "Arial", 12, SWT.NORMAL ) );
+    
+    Fixture.preserveWidgets();
+    control.setFont( null );
+    ControlLCAUtil.renderFont( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( control, "font" ) );
   }
 
 }

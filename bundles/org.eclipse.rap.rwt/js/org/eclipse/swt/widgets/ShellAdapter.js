@@ -154,10 +154,14 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
     },
     "font" : function( widget, fontData ) {
       if( widget.setFont ) { // test if font property is supported - why wouldn't it? [tb]
-        var wm = org.eclipse.swt.WidgetManager.getInstance();
-        // TODO [tb] : move helper
-        var font = wm._createFont.apply( wm, fontData );
-        widget.setFont( font );
+        if( fontData === null ) {
+          widget.resetFont();
+        } else {
+          var wm = org.eclipse.swt.WidgetManager.getInstance();
+          // TODO [tb] : move helper
+          var font = wm._createFont.apply( wm, fontData );
+          widget.setFont( font );
+        }
       }
     }
     

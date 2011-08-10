@@ -363,6 +363,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       this._disposeShell();
     },
 
+    testResetFont : function() {
+      var shell = this._protocolCreateShell();
+      var org = shell.getFont();
+      this._protocolSet( { "font" : [ [ "Arial" ], 12, false, false ] } );
+      this._protocolSet( { "font" : null } );
+      assertEquals( org, shell.getFont() );
+      this._disposeShell();
+    },
+
     testSetBackgroundImage : function() {
       var shell = this._protocolCreateShell();
       this._protocolSet( { "backgroundImage" : [ "foo.jpg", 10, 20 ] } );

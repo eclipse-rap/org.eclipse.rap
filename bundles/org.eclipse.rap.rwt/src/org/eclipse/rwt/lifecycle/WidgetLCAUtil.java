@@ -643,9 +643,7 @@ public final class WidgetLCAUtil {
    * @throws IOException
    * @see #preserveFont(Widget, Font)
    */
-  public static void writeFont( Widget widget, Font font )
-    throws IOException
-  {
+  public static void writeFont( Widget widget, Font font ) throws IOException {
     if( WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
       if( font != null ) {
@@ -662,6 +660,36 @@ public final class WidgetLCAUtil {
       } else {
         writer.reset( JSConst.QX_FIELD_FONT );
       }
+    }
+  }
+  
+  /**
+   * Determines whether the property <code>font</code> of the given widget has
+   * changed during the processing of the current request and if so, writes
+   * JavaScript code to the response that updates the client-side font property
+   * of the specified widget. For instances of {@link Control}, use the method
+   * {@link ControlLCAUtil#writeFont(Control)} instead.
+   *
+   * @param widget the widget whose font property to set
+   * @param font the new value of the property
+   * @throws IOException
+   * @see #preserveFont(Widget, Font)
+   */
+  public static void renderFont( Widget widget, Font font ) throws IOException {
+    if( WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, null ) ) {
+      Object[] fontArray = null;
+      if( font != null ) {
+        FontData fontData = FontUtil.getData( font );
+        String[] names = parseFontName( fontData.getName() );
+        fontArray = new Object[]{
+          names,
+          new Integer( fontData.getHeight() ),
+          Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 ),
+          Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 )
+        };
+      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( "font", fontArray );
     }
   }
 
@@ -1027,6 +1055,26 @@ public final class WidgetLCAUtil {
         args = new Object[] { "variant_" + newValue };
         writer.call( JSConst.QX_FUNC_ADD_STATE, args );
       }
+    }
+  }
+
+  /**
+   * Determines whether the custom variant of the given widget
+   * has changed during the processing of the current request and if so, writes
+   * a protocol Message to the response that updates the client-side variant.
+   *
+   * @param widget the widget whose custom variant to write
+   * @throws IOException
+   */
+  public static void renderCustomVariant( Widget widget ) throws IOException {
+    String newValue = WidgetUtil.getVariant( widget );
+    if( WidgetLCAUtil.hasChanged( widget, PROP_VARIANT, newValue, null ) ) {
+      String value = null;
+      if( newValue != null ) {
+        value = "variant_" + newValue;
+      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( "customVariant", value );
     }
   }
 

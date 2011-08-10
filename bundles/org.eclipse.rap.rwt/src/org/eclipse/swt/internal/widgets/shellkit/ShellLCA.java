@@ -95,7 +95,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   @Override
   public void renderChanges( Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
-    WidgetLCAUtil.writeCustomVariant( shell ); // Order matters for animation
+    WidgetLCAUtil.renderCustomVariant( shell ); // Order matters for animation
     renderImage( shell );
     renderText( shell );
     renderAlpha( shell );

@@ -713,4 +713,31 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( widget, "background" ) );
   }
 
+  public void testRenderInitialCustomVariant() throws IOException {
+    WidgetLCAUtil.renderCustomVariant( widget );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( widget, "customVariant" ) );
+  }
+
+  public void testRenderCustomVariant() throws IOException {
+    widget.setData( WidgetUtil.CUSTOM_VARIANT, "my_variant" );
+    WidgetLCAUtil.renderCustomVariant( widget );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "variant_my_variant", message.findSetProperty( widget, "customVariant" ) );
+  }
+
+  public void testRenderCustomVariantUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( widget );
+    widget.setData( WidgetUtil.CUSTOM_VARIANT, "my_variant" );
+
+    Fixture.preserveWidgets();
+    WidgetLCAUtil.renderCustomVariant( widget );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( widget, "customVariant" ) );
+  }
+  
 }
