@@ -978,7 +978,7 @@ public class ControlLCAUtil_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "font" ) );
   }
-  
+
   public void testResetFont() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
@@ -990,6 +990,46 @@ public class ControlLCAUtil_Test extends TestCase {
     
     Message message = Fixture.getProtocolMessage();
     assertEquals( JSONObject.NULL, message.findSetProperty( control, "font" ) );
+  }
+
+  public void testRenderInitialCursor() {
+    ControlLCAUtil.renderCursor( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "cursor" ) );
+  }
+
+  public void testRenderCursor() {
+    control.setCursor( display.getSystemCursor( SWT.CURSOR_HAND ) );
+    ControlLCAUtil.renderCursor( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "pointer", message.findSetProperty( control, "cursor" ) );
+  }
+
+  public void testRenderCursorUnchanged() {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.setCursor( display.getSystemCursor( SWT.CURSOR_HAND ) );
+
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderCursor( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "cursor" ) );
+  }
+
+  public void testResetCursor() {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.setCursor( display.getSystemCursor( SWT.CURSOR_HAND ) );
+
+    Fixture.preserveWidgets();
+    control.setCursor( null );
+    ControlLCAUtil.renderCursor( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( control, "cursor" ) );
   }
 
 }

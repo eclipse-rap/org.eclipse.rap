@@ -397,7 +397,7 @@ public class ControlLCAUtil {
     renderBackground( control );
     renderBackgroundImage( control );
     renderFont( control );
-    writeCursor( control );
+    renderCursor( control );
 //    TODO [rst] missing: writeControlListener( control );
     writeActivateListener( control );
     writeFocusListener( control );
@@ -649,6 +649,14 @@ public class ControlLCAUtil {
       } else {
         writer.set( JSConst.QX_FIELD_CURSOR, qxCursor );
       }
+    }
+  }
+  
+  static void renderCursor( Control control ) {
+    Cursor newValue = control.getCursor();
+    if( WidgetLCAUtil.hasChanged( control, PROP_CURSOR, newValue, null ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+      clientObject.setProperty( "cursor", getQxCursor( newValue ) );
     }
   }
 
@@ -1193,6 +1201,7 @@ public class ControlLCAUtil {
     String result = null;
     if( newValue != null ) {
       // TODO [rst] Find a better way of obtaining the Cursor value
+      // TODO [tb] adjust strings to match name of constants
       int value = 0;
       try {
         Class cursorClass = Cursor.class;
