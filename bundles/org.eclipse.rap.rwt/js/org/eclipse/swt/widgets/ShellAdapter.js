@@ -48,7 +48,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
     "enabled",
     "foreground",
     "background",
-    "backgroundGradient",
+    "backgroundImage",
     "cursor",
     "customVariant",
     "bounds",
@@ -113,6 +113,15 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
       } else {
         widget.setBackgroundGradient( null );
         widget.setBackgroundColor( value );
+      }
+    },
+    "backgroundImage" : function( widget, value ) {
+      if( value === null ) {
+        widget.resetBackgroundImage();
+        widget.setUserData( "backgroundImageSize", null );
+      } else {
+        widget.setBackgroundImage( value[ 0 ] );
+        widget.setUserData( "backgroundImageSize", value.slice( 1 ) );
       }
     },
     "cursor" : function( widget, value ) {

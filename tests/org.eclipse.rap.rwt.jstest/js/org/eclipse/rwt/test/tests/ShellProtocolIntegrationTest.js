@@ -363,6 +363,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       this._disposeShell();
     },
 
+    testSetBackgroundImage : function() {
+      var shell = this._protocolCreateShell();
+      this._protocolSet( { "backgroundImage" : [ "foo.jpg", 10, 20 ] } );
+      assertEquals( "foo.jpg", shell.getBackgroundImage() );
+      assertEquals( [ 10, 20 ], shell.getUserData( "backgroundImageSize") );
+      this._disposeShell();
+    },
+
+    testResetBackgroundImage : function() {
+      var shell = this._protocolCreateShell();
+      this._protocolSet( { "backgroundImage" : [ "foo.jpg", 10, 20 ] } );
+      this._protocolSet( { "backgroundImage" : null } );
+      assertNull( shell.getBackgroundImage() );
+      assertNull( shell.getUserData( "backgroundImageSize") );
+      this._disposeShell();
+    },
+
     testSetCursor : function() {
       var shell = this._protocolCreateShell();
       this._protocolSet( { "cursor" : "wait" } );

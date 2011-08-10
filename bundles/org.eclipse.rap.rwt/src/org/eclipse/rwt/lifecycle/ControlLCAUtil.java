@@ -20,6 +20,7 @@ import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.theme.JsonArray;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
@@ -395,7 +396,7 @@ public class ControlLCAUtil {
     renderEnabled( control );
     renderForeground( control );
     renderBackground( control );
-    writeBackgroundImage( control );
+    renderBackgroundImage( control );
     writeFont( control );
     writeCursor( control );
 //    TODO [rst] missing: writeControlListener( control );
@@ -571,6 +572,33 @@ public class ControlLCAUtil {
     }
   }
 
+  
+  /**
+   * Determines whether the background image of the given control has changed
+   * during the processing of the current request and if so, writes a protocol
+   * message to the response that updates the client-side background image
+   * property.
+   *
+   * @param control the control whose background image property to write
+   * @throws IOException
+   */
+  public static void renderBackgroundImage( Control control ) throws IOException {
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
+    Image image = controlAdapter.getUserBackgroundImage();
+    if( WidgetLCAUtil.hasChanged( control, PROP_BACKGROUND_IMAGE, image, null ) ) {
+      Object[] imageArray = null;
+      if( image != null ) {
+        imageArray = new Object[]{ 
+          ImageFactory.getImagePath( image ), 
+          new Integer( image.getBounds().width ), 
+          new Integer( image.getBounds().height ) 
+        };
+      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+      clientObject.setProperty( "backgroundImage", imageArray );        
+    }
+  }
+  
   /**
    * Checks the given control for common SWT style flags (e.g.
    * <code>SWT.BORDER</code>) and if present, writes code to pass the according

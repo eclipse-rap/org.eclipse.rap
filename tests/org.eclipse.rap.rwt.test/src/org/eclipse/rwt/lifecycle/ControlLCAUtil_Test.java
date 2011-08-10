@@ -885,30 +885,37 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testRenderIntialBackgroundImage() throws IOException {
-    ControlLCAUtil.renderForeground( control );
+    ControlLCAUtil.renderBackgroundImage( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "foreground" ) );
+    assertNull( message.findSetOperation( control, "backgroundImage" ) );
   }
 
-  public void testRenderBackgroundImage() throws IOException {
-    control.setForeground( new Color( display, 0, 16, 255 ) );
-    ControlLCAUtil.renderForeground( control );
+  public void testRenderBackgroundImage() throws IOException, JSONException {
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
+
+    control.setBackgroundImage( image );
+    ControlLCAUtil.renderBackgroundImage( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "#0010ff", message.findSetProperty( control, "foreground" ) );
+    String imageLocation = ImageFactory.getImagePath( image );
+    JSONArray args = ( JSONArray )message.findSetProperty( control, "backgroundImage" );
+    assertEquals( 3, args.length() );
+    assertEquals( imageLocation, args.getString( 0 ) );
+    assertEquals( 58, args.getInt( 1 ) );
+    assertEquals( 12, args.getInt( 2 ) );
   }
 
   public void testRenderBackgroundImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
-    control.setForeground( new Color( display, 0, 16, 255 ) );
+    control.setBackgroundImage( Graphics.getImage( Fixture.IMAGE1 ) );
 
     Fixture.preserveWidgets();
-    ControlLCAUtil.renderForeground( control );
+    ControlLCAUtil.renderBackgroundImage( control );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "foreground" ) );
+    assertNull( message.findSetOperation( control, "backgroundImage" ) );
   }
 
 }
