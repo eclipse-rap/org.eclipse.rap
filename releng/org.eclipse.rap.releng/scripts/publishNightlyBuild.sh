@@ -71,7 +71,7 @@ targetDir=$targetMainDir/$timeStamp
 echo "Target directory: $targetDir"
 
 if [ -e $targetDir ]; then
-  echo >&2 "Target directory exists already, exiting"
+  echo "Target directory exists already. Nothing to do, exiting"
   exit 0
 fi
 
@@ -122,15 +122,15 @@ java -cp $launcher org.eclipse.core.launcher.Main \
    -compress || exit 1
 
 # Add to composite repository
-$SCRIPTS_DIR/repo-tool.sh $targetMainDir add $timeStamp
+$SCRIPTS_DIR/repo-tool.sh $targetMainDir add $timeStamp || exit 1
 
 # TODO Delete old directories
 i=0
-for dir in `ls -1 $targetMainDir`; do
+for dir in `ls -r -1 $targetMainDir`; do
   if [ $i -ge 3 -a -d $targetMainDir/$dir ]; then
-    echo TODO remove $dir;
-    echo sh $SCRIPTS_DIR/repo-tool.sh $targetMainDir remove $dir
-    echo rm -r $targetMainDir/$dir
+    echo "Removing outdated $dir"
+    $SCRIPTS_DIR/repo-tool.sh $targetMainDir remove $dir || exit 1
+    rm -r $targetMainDir/$dir || exit 1
   fi;
   let i=i+1;
 done
@@ -139,3 +139,7 @@ done
 echo "Clean up work directory"
 cd ..
 rm -rf $workingDir
+
+echo "done"
+echo
+
