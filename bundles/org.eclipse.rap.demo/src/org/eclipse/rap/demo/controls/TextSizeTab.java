@@ -1,32 +1,34 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
+
+import java.util.Iterator;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.*;
 
 public class TextSizeTab extends ExampleTab {
 
   private static String[] testStrings;
-
   private boolean propFixedSize;
-
   private int nextIndex = 0;
-
   private String labelText = "";
+  private Font font;
 
   public TextSizeTab( final CTabFolder parent ) {
     super( parent, "TextSize" );
@@ -61,23 +63,28 @@ public class TextSizeTab extends ExampleTab {
     label1.setBackground( Graphics.getColor( 0xcc, 0xb7, 0x91 ) );
     label1.setText( labelText );
     label1.setLocation( 10, 10 );
-    if( propFixedSize ) {
-      label1.setSize( label1.computeSize( 200, SWT.DEFAULT ) );
-    } else {
-      label1.pack();
-    }
+    registerControl( label1 );
 
     Text text1 = new Text( parent, style );
     text1.setBackground( Graphics.getColor( 0xcc, 0xb7, 0x91 ) );
     text1.setText( labelText );
-    text1.setLocation( 220, 10 );
-    if( propFixedSize ) {
-      text1.setSize( text1.computeSize( 200, SWT.DEFAULT ) );
-    } else {
-      text1.pack();
-    }
+    text1.setLocation( 10, 100 );
+    registerControl( text1 );
 
-    registerControl( label1 );
+    updateControls();
+  }
+
+  private void updateControls() {
+    Iterator iter = controls.iterator();
+    while( iter.hasNext() ) {
+      Control control = ( Control )iter.next();
+      control.setFont( font );
+      if( propFixedSize ) {
+        control.setSize( control.computeSize( 200, SWT.DEFAULT ) );
+      } else {
+        control.pack();
+      }
+    }
   }
 
   private void switchText() {
@@ -110,5 +117,22 @@ public class TextSizeTab extends ExampleTab {
       ""
     };
     return result;
+  }
+
+  protected Button createFontChooser() {
+    final Button button = new Button( styleComp, SWT.PUSH );
+    button.setText( "Font" );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        FontDialog fontChooser = new FontDialog( getShell(), SWT.NONE );
+        Control control = ( Control )controls.get( 0 );
+        fontChooser.setFontList( control.getFont().getFontData() );
+        if( fontChooser.open() != null ) {
+          font = new Font( control.getDisplay(), fontChooser.getFontList() );
+        }
+        updateControls();
+      }
+    } );
+    return button;
   }
 }
