@@ -5,6 +5,10 @@
 SCRIPTS_DIR=$(dirname $(readlink -nm $0))
 DOWNLOAD_DIR=/home/data/httpd/download.eclipse.org/rt/rap
 
+if [ -z "$RUNTIME_DIR" ]; then
+  RUNTIME_DIR=/shared/rt/rap/build-runtimes/eclipse-3.6.1
+fi
+
 mode=
 repoDir=
 repoName=
