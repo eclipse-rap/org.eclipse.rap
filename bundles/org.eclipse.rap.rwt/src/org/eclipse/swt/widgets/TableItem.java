@@ -34,6 +34,8 @@ import org.eclipse.swt.internal.widgets.RichTextUtil.IImageSizeProvider;
  * <p>
  * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
+ *
+ * @since 1.0
  */
 public class TableItem extends Item {
 
@@ -93,19 +95,19 @@ public class TableItem extends Item {
     public boolean isParentDisposed() {
       return TableItem.this.parent.isDisposed();
     }
-    
+
     public boolean isRichTextEnabled() {
       return TableItem.this.parent.richTextEnabled;
     }
   }
 
   private class TableImageSizeProvider implements IImageSizeProvider {
-    
+
     public Rectangle getImageSize( String imageName ) {
       Image image = getImage( imageName );
       return image.getBounds();
     }
-  
+
     @SuppressWarnings("unchecked")
     private Image getImage( String imageName ) {
       Map<String,Image> imageMap = ( Map<String,Image> )parent.getData( Table.IMAGE_MAP );
@@ -785,7 +787,7 @@ public class TableItem extends Item {
     return result;
   }
 
-  
+
 
   ///////////////////
   // Checked & Grayed

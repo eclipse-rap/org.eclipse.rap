@@ -268,7 +268,6 @@ public class TreeColumn extends Item {
    * @see Tree#setColumnOrder(int[])
    * @see TreeColumn#setMoveable(boolean)
    * @see SWT#Move
-   * @since 1.0
    */
   public boolean getMoveable() {
     checkWidget();
@@ -319,7 +318,6 @@ public class TreeColumn extends Item {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 1.0
    */
   public String getToolTipText() {
     checkWidget();
@@ -451,7 +449,6 @@ public class TreeColumn extends Item {
    * @see Tree#getColumnOrder()
    * @see TreeColumn#getMoveable()
    * @see SWT#Move
-   * @since 1.0
    */
   public void setMoveable( boolean moveable ) {
     checkWidget();
@@ -500,7 +497,6 @@ public class TreeColumn extends Item {
    *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
    *              thread that created the receiver</li>
    *              </ul>
-   * @since 1.0
    */
   public void setToolTipText( String string ) {
     checkWidget();
