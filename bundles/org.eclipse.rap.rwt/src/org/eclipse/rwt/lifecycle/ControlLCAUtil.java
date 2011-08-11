@@ -391,7 +391,7 @@ public class ControlLCAUtil {
       renderFont( control );
       renderCursor( control );
   //    TODO [rst] missing: writeControlListener( control );
-      writeActivateListener( control );
+      renderListenActivate( control );
       writeFocusListener( control );
       writeMouseListener( control );
       writeKeyListener( control );
@@ -806,7 +806,24 @@ public class ControlLCAUtil {
     }
   }
 
+  public static void renderListenActivate( Control control ) {
+    if( !control.isDisposed() ) {
+      Boolean newValue = Boolean.valueOf( ActivateEvent.hasListener( control ) );
+      Boolean defValue = Boolean.FALSE;
+      if( WidgetLCAUtil.hasChanged( control, PROP_ACTIVATE_LISTENER, newValue, defValue ) ) {
+        IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+        // TODO [tb] : consider to introduce clientObject.setListen, makes this code much shorter 
+        if( newValue.booleanValue() ) {
+          clientObject.addListener( "activate" );
+        } else {
+          clientObject.removeListener( "activate" );
+        }
+      }
+    }
+  }
+  
   static void resetActivateListener( Control control ) throws IOException {
+    // TODO [tb] : could be handled by client in adapter
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     Shell shell = controlAdapter.getShell();
     if( !shell.isDisposed() && ActivateEvent.hasListener( control ) ) {

@@ -1032,4 +1032,66 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( control, "cursor" ) );
   }
 
+  public void testRenderInitialListenActivate() {
+    ControlLCAUtil.renderListenActivate( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( control, "activate" ) );
+  }
+
+  public void testRenderListenActivate() {
+    ActivateAdapter listener = new ActivateAdapter() {
+    };
+    ActivateEvent.addListener( control, listener );
+
+    ControlLCAUtil.renderListenActivate( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, "activate" ) );
+  }
+
+  public void testRenderListenActivateUnchanged() {
+    ActivateAdapter listener = new ActivateAdapter() {
+    };
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    ActivateEvent.addListener( control, listener );
+    
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderListenActivate( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( control, "activate" ) );
+  }
+  
+  public void testRenderListenActivateRemoved() {
+    ActivateAdapter listener = new ActivateAdapter() {
+    };
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    ActivateEvent.addListener( control, listener );
+    Fixture.preserveWidgets();
+    
+    ActivateEvent.removeListener( control, listener );
+    ControlLCAUtil.renderListenActivate( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, "activate" ) );
+  }
+  
+  public void testRenderNoListenActivateOnDispose() {
+    ActivateAdapter listener = new ActivateAdapter() {
+    };
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    Fixture.preserveWidgets();
+    ActivateEvent.addListener( control, listener );
+    
+    control.dispose();
+    ControlLCAUtil.renderListenActivate( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( control, "activate" ) );
+  }
+
 }

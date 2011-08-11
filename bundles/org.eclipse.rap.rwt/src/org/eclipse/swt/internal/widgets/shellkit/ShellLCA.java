@@ -104,11 +104,11 @@ public final class ShellLCA extends AbstractWidgetLCA {
     // setBounds() - see bug 302224
     renderMode( shell );
     renderFullScreen( shell );
-    renderCloseListener( shell );
     renderMinimumSize( shell );
     renderDefaultButton( shell );
     renderActiveControl( shell );
     ControlLCAUtil.renderChanges( shell );
+    renderShellListener( shell );
   }
 
   @Override
@@ -273,7 +273,13 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void renderCloseListener( Shell shell ) {
+  private static void renderShellListener( Shell shell ) {
+    // Note that a "shell" listener also implies an "activate" listener, but "shellActivated"
+    // events are sent by the client in any case. "Shell_close" events are also always being sent,    
+    // but with a listener the shell is not closed by the client itself but by the server.
+    // Also, the "shellActivated" events are different from the "activeControl" property and 
+    // "controlActivated" event also sent by the shell and processed in ShellLCA#processActivate.
+    // The listener property for this event is rendered by ControlLCAUtil#renderActivateListener
     Boolean newValue = Boolean.valueOf( ShellEvent.hasListener( shell ) );
     if( WidgetLCAUtil.hasChanged( shell, PROP_SHELL_LISTENER, newValue, Boolean.FALSE ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( shell );

@@ -182,7 +182,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
   listenerHandler : {
     "activate" : function( widget, value ) {
       var shell = widget;
-      while( shell && ! ( shell instanceof org.eclipse.swt.widgets.Shell ) ) {
+      while( shell && !( shell instanceof org.eclipse.swt.widgets.Shell ) ) {
         shell = shell.getParent();
       }
       if( shell ) {

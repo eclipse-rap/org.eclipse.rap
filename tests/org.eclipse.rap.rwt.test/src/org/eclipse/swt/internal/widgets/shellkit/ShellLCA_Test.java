@@ -544,6 +544,7 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
+    // TODO [tb] : refactor to use "findListenProperty", rename to ListenShell
     ListenOperation operation = ( ListenOperation )message.getOperation( 0 );
     assertEquals( Boolean.TRUE, operation.getProperty( "shell" ) );
   }
