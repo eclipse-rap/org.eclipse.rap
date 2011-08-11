@@ -503,6 +503,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       org.eclipse.rwt.test.fixture.TestUtil.flush();
       assertTrue( shell.isDisposed() );
     },
+    
+    testDisposeShellWithActivateListener : function() {
+      var shell = this._protocolCreateShell();
+      this._protocolListen( { "activate" : true } );
+      assertEquals( [ shell ], shell._activateListenerWidgets );            
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "destroy"
+      } );
+      assertFalse( shell.isDisposed() );
+      assertEquals( [], shell._activateListenerWidgets );      
+      org.eclipse.rwt.test.fixture.TestUtil.flush();
+      assertTrue( shell.isDisposed() );
+    },
 
     /////////
     // Helper

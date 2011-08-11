@@ -39,6 +39,14 @@ org.eclipse.rwt.protocol.AdapterUtil = {
         wm.addRegistrationCallback( id, fun );
       }
     }
+  },
+
+  getShell : function( widget ) {
+    var result = widget;
+    while( result && !( result instanceof org.eclipse.swt.widgets.Shell ) ) {
+      result = result.getParent();
+    }
+    return result;
   }
 
 };

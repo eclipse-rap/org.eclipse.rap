@@ -57,8 +57,16 @@ org.eclipse.rwt.protocol.Processor = {
   },
 
   _processDestroy : function( targetId ) {
+    var target = this._getTarget( targetId );
+    var type = this._getTargetType( target );
+    var adapter = org.eclipse.rwt.protocol.AdapterRegistry.getAdapter( type );
     var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-    widgetManager.dispose( targetId );      
+    if( adapter.destructor ) {
+      adapter.destructor( target );
+      widgetManager.remove( target );
+    } else {
+      widgetManager.dispose( targetId ); // TODO [tb] : remove or call dispose directly
+    }
   },
 
   _processSet : function( targetId, properties ) {
@@ -146,9 +154,14 @@ org.eclipse.rwt.protocol.Processor = {
   _getAdapter : function( targetId ) {
     // TODO [tb] : support objects not implementing setUserData 
     var target = this._getTarget( targetId );
-    var type = target.getUserData( "rwtType" );
+    var type = this._getTargetType( target );
     var adapter = org.eclipse.rwt.protocol.AdapterRegistry.getAdapter( type );
     return adapter;
+  },
+  
+  // TODO [tb] : use targetId instead
+  _getTargetType : function ( target ) {
+    return target.getUserData( "rwtType" );
   },
   
   _addListener : function( adapter, targetObject, eventType ) {

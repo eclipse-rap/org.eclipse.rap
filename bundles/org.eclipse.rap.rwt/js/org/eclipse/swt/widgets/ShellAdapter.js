@@ -20,6 +20,17 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
     return result;
   },
 
+  destructor : function( widget ) {
+    var shell = org.eclipse.rwt.protocol.AdapterUtil.getShell( widget );
+    if( shell ) {
+      // remove from shells list of widgets listening for activate events (if present)
+      shell.removeActivateListenerWidget( widget );          
+    }
+    widget.setToolTip( null );
+    widget.setUserData( "toolTipText", null );
+    widget.destroy();
+  },
+
   properties : [
     "showMinimize", 
     "allowMinimize", 
@@ -181,10 +192,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
 
   listenerHandler : {
     "activate" : function( widget, value ) {
-      var shell = widget;
-      while( shell && !( shell instanceof org.eclipse.swt.widgets.Shell ) ) {
-        shell = shell.getParent();
-      }
+      var shell = org.eclipse.rwt.protocol.AdapterUtil.getShell( widget );
       if( shell ) {
         if( value ) {
           shell.addActivateListenerWidget( widget );

@@ -339,6 +339,31 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       registry.remove( "dummyType" );
     },
 
+    testProcessDestroyWithDestructor : function() {
+      var registry = org.eclipse.rwt.protocol.AdapterRegistry;
+      var processor = org.eclipse.rwt.protocol.Processor;
+      registry.add( "dummyType", {
+        "destructor" : function( widget ) {
+          widget.addState( "foo" );
+          widget.destroy();
+        }
+      } );
+      var target = this._getDummyTarget( "dummyId" );
+      target.setParent( {
+        getChildren : function() {
+          return [ target ];
+        }
+      } );
+      var operation = {
+        "target" : "dummyId",
+        "action" : "destroy"
+      };
+      processor.processOperation( operation );
+      assertEquals( [ "foo", "destroy" ], target.getLog() );
+      assertTrue( this._getTargetById( "dummyId" ) === undefined );
+      registry.remove( "dummyType" );
+    },
+
     testProcessCall : function() {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
