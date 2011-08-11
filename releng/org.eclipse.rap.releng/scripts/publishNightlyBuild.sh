@@ -124,15 +124,17 @@ java -cp $launcher org.eclipse.core.launcher.Main \
 # Add to composite repository
 $SCRIPTS_DIR/repo-tool.sh $targetMainDir add $timeStamp || exit 1
 
-# TODO Delete old directories
+# Delete old directories
 i=0
 for dir in `ls -r -1 $targetMainDir`; do
-  if [ $i -ge 3 -a -d $targetMainDir/$dir ]; then
-    echo "Removing outdated $dir"
-    $SCRIPTS_DIR/repo-tool.sh $targetMainDir remove $dir || exit 1
-    rm -r $targetMainDir/$dir || exit 1
-  fi;
-  let i=i+1;
+  if [ -d $targetMainDir/$dir ]; then
+    if [ $i -ge 3 ]; then
+      echo "Removing outdated $dir"
+      $SCRIPTS_DIR/repo-tool.sh $targetMainDir remove $dir || exit 1
+      rm -r $targetMainDir/$dir || exit 1
+    fi
+    let i=i+1;
+  fi
 done
 
 # Remove working directory
