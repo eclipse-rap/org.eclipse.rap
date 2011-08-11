@@ -81,6 +81,9 @@ public class ControlLCAUtil {
     // prevent instance creation
   }
 
+  //////////////////
+  // Preserve values
+
   /**
    * Preserves the values of the following properties of the specified control:
    * <ul>
@@ -145,6 +148,35 @@ public class ControlLCAUtil {
   }
 
   /**
+   * Preserves the value of the specified widget's background image.
+   *
+   * @param control the control whose background image property to preserve
+   * @see #writeBackgroundImage(Control)
+   */
+  public static void preserveBackgroundImage( Control control ) {
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
+    Image image = controlAdapter.getUserBackgroundImage();
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    adapter.preserve( PROP_BACKGROUND_IMAGE, image );
+  }
+  
+  //////////////////
+  // read properties
+  
+  /**
+   * Preserves whether the given <code>widget</code> has one or more
+   * <code>MenuDetect</code>s attached.
+   *
+   * @param control the widget to preserve
+   * @since 1.3
+   */
+  public static void preserveMenuDetectListener( Control control ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    boolean hasListener = MenuDetectEvent.hasListener( control );
+    adapter.preserve( PROP_MENU_DETECT_LISTENER, Boolean.valueOf( hasListener ) );
+  }
+
+  /**
    * Reads the bounds of the specified control from the current request and
    * applies it to the control. If no bounds are not submitted for the control,
    * it remains unchanged.
@@ -158,6 +190,216 @@ public class ControlLCAUtil {
     Rectangle newBounds = WidgetLCAUtil.readBounds( control, current );
     control.setBounds( newBounds );
   }
+
+  /////////////////
+  // process events
+
+  public static void processMouseEvents( Control control ) {
+    if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_DOWN ) ) {
+      MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_DOWN );
+      event.button = readIntParam( JSConst.EVENT_MOUSE_DOWN_BUTTON );
+      Point point = readXYParams( control, JSConst.EVENT_MOUSE_DOWN_X, JSConst.EVENT_MOUSE_DOWN_Y );
+      event.x = point.x;
+      event.y = point.y;
+      event.time = readIntParam( JSConst.EVENT_MOUSE_DOWN_TIME );
+      event.stateMask =   EventLCAUtil.readStateMask( JSConst.EVENT_MOUSE_DOWN_MODIFIER )
+                        | EventLCAUtil.translateButton( event.button );
+      checkAndProcessMouseEvent( event );
+    }
+    String eventId = JSConst.EVENT_MOUSE_DOUBLE_CLICK;
+    if( WidgetLCAUtil.wasEventSent( control, eventId ) ) {
+      MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_DOUBLE_CLICK );
+      event.button = readIntParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_BUTTON );
+      Point point = readXYParams( control,
+                                  JSConst.EVENT_MOUSE_DOUBLE_CLICK_X,
+                                  JSConst.EVENT_MOUSE_DOUBLE_CLICK_Y );
+      event.x = point.x;
+      event.y = point.y;
+      event.time = readIntParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_TIME );
+      String stateMaskParam = JSConst.EVENT_MOUSE_DOUBLE_CLICK_MODIFIER;
+      event.stateMask =   EventLCAUtil.readStateMask( stateMaskParam )
+                        | EventLCAUtil.translateButton( event.button );
+      checkAndProcessMouseEvent( event );
+    }
+    if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_UP ) ) {
+      MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_UP );
+      event.button = readIntParam( JSConst.EVENT_MOUSE_UP_BUTTON );
+      Point point = readXYParams( control, JSConst.EVENT_MOUSE_UP_X, JSConst.EVENT_MOUSE_UP_Y );
+      event.x = point.x;
+      event.y = point.y;
+      event.time = readIntParam( JSConst.EVENT_MOUSE_UP_TIME );
+      event.stateMask =   EventLCAUtil.readStateMask( JSConst.EVENT_MOUSE_UP_MODIFIER )
+                        | EventLCAUtil.translateButton( event.button );
+      checkAndProcessMouseEvent( event );
+    }
+  }
+
+  public static void processKeyEvents( final Control control ) {
+    if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_KEY_DOWN ) ) {
+      final int keyCode = readIntParam( JSConst.EVENT_KEY_DOWN_KEY_CODE );
+      final int charCode = readIntParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE );
+      final int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_KEY_DOWN_MODIFIER );
+      final int traverseKey = getTraverseKey( keyCode, stateMask );
+      ProcessActionRunner.add( new Runnable() {
+        public void run() {
+          boolean allow = true;
+          if( traverseKey != SWT.TRAVERSE_NONE ) {
+            TraverseEvent traverseEvent = new TraverseEvent( control );
+            initializeKeyEvent( traverseEvent, keyCode, charCode, stateMask );
+            traverseEvent.detail = traverseKey;
+            traverseEvent.processEvent();
+            if( !traverseEvent.doit ) {
+              allow = false;
+            }
+          }
+          KeyEvent pressedEvent = new KeyEvent( control, KeyEvent.KEY_PRESSED );
+          initializeKeyEvent( pressedEvent, keyCode, charCode, stateMask );
+          pressedEvent.processEvent();
+          if( pressedEvent.doit ) {
+            KeyEvent releasedEvent = new KeyEvent( control, KeyEvent.KEY_RELEASED );
+            initializeKeyEvent( releasedEvent, keyCode, charCode, stateMask );
+            releasedEvent.processEvent();
+          } else {
+            allow = false;
+          }
+          if( allow ) {
+            allowKeyEvent( control );
+          } else {
+            cancelKeyEvent( control );
+          }
+        }
+      } );
+    }
+  }
+
+  public static void processSelection( Widget widget, Item item, boolean readBounds ) {
+    String eventId = JSConst.EVENT_WIDGET_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( widget, eventId ) ) {
+      SelectionEvent event;
+      event = createSelectionEvent( widget, item, readBounds, SelectionEvent.WIDGET_SELECTED );
+      event.processEvent();
+    }
+    eventId = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
+    if( WidgetLCAUtil.wasEventSent( widget, eventId ) ) {
+      SelectionEvent event;
+      int widgetDefaultSelected = SelectionEvent.WIDGET_DEFAULT_SELECTED;
+      event = createSelectionEvent( widget, item, readBounds, widgetDefaultSelected );
+      event.processEvent();
+    }
+  }
+
+  ////////////////////
+  // render properties
+  
+  /**
+     * Determines for all of the following properties of the specified control
+     * whether the property has changed during the processing of the current
+     * request and if so, writes JavaScript code to the response that updates the
+     * corresponding client-side property.
+     * <ul>
+     * <li>bounds</li>
+     * <li>z-index (except for Shells)</li>
+     * <li>tab index</li>
+     * <li>tool tip text</li>
+     * <li>menu</li>
+     * <li>visible</li>
+     * <li>enabled</li>
+     * <li>foreground</li>
+     * <li>background</li>
+     * <li>background image</li>
+     * <li>font</li>
+     * <li>cursor</li>
+     * <!--li>whether ControlListeners are registered</li-->
+     * <li>whether ActivateListeners are registered</li>
+     * <li>whether MouseListeners are registered</li>
+     * <li>whether FocusListeners are registered</li>
+     * <li>whether KeyListeners are registered</li>
+     * <li>whether TraverseListeners are registered</li>
+     * <li>whether HelpListeners are registered</li>
+     * </ul>
+     *
+     * @param control the control whose properties to set
+     * @throws IOException
+     * @see #preserveValues(Control)
+     */
+    public static void writeChanges( Control control ) throws IOException {
+      writeBounds( control );
+      writeZIndex( control );
+      writeTabIndex( control );
+      writeToolTip( control );
+      writeMenu( control );
+      writeVisible( control );
+      writeEnabled( control );
+      writeForeground( control );
+      writeBackground( control );
+      writeBackgroundImage( control );
+      writeFont( control );
+      writeCursor( control );
+  //    TODO [rst] missing: writeControlListener( control );
+      writeActivateListener( control );
+      writeFocusListener( control );
+      writeMouseListener( control );
+      writeKeyListener( control );
+      writeTraverseListener( control );
+      writeKeyEventResponse( control );
+      writeMenuDetectListener( control );
+      WidgetLCAUtil.writeHelpListener( control );
+    }
+
+  /**
+     * Determines for all of the following properties of the specified control
+     * whether the property has changed during the processing of the current
+     * request and if so, writes a protocol message to the response that updates the
+     * corresponding client-side property.
+     * <ul>
+     * <li>bounds</li>
+     * <li>z-index (except for Shells)</li>
+     * <li>tab index</li>
+     * <li>tool tip text</li>
+     * <li>menu</li>
+     * <li>visible</li>
+     * <li>enabled</li>
+     * <li>foreground</li>
+     * <li>background</li>
+     * <li>background image</li>
+     * <li>font</li>
+     * <li>cursor</li>
+     * <!--li>whether ControlListeners are registered</li-->
+     * <li>whether ActivateListeners are registered</li>
+     * <li>whether MouseListeners are registered</li>
+     * <li>whether FocusListeners are registered</li>
+     * <li>whether KeyListeners are registered</li>
+     * <li>whether TraverseListeners are registered</li>
+     * <li>whether HelpListeners are registered</li>
+     * </ul>
+     *
+     * @param control the control whose properties to set
+     * @throws IOException
+     * @see #preserveValues(Control)
+     */
+    public static void renderChanges( Control control ) throws IOException {
+      renderBounds( control );
+      renderZIndex( control );
+      renderTabIndex( control );
+      renderToolTip( control );
+      renderMenu( control );
+      renderVisible( control );
+      renderEnabled( control );
+      renderForeground( control );
+      renderBackground( control );
+      renderBackgroundImage( control );
+      renderFont( control );
+      renderCursor( control );
+  //    TODO [rst] missing: writeControlListener( control );
+      writeActivateListener( control );
+      writeFocusListener( control );
+      writeMouseListener( control );
+      writeKeyListener( control );
+      writeTraverseListener( control );
+      writeKeyEventResponse( control );
+      writeMenuDetectListener( control );
+      WidgetLCAUtil.writeHelpListener( control );
+    }
 
   /**
    * Determines whether the bounds of the given control have changed during the
@@ -223,6 +465,88 @@ public class ControlLCAUtil {
     }
   }
 
+  private static void writeTabIndex( Control control ) throws IOException {
+    if( control instanceof Shell ) {
+      resetTabIndices( ( Shell )control );
+      // tabIndex must be a positive value
+      computeTabIndices( ( Shell )control, 1 );
+    }
+    int tabIndex = getTabIndex( control );
+    Integer newValue = new Integer( tabIndex );
+    JSWriter writer = JSWriter.getWriterFor( control );
+    // there is no reliable default value for all controls
+    writer.set( PROP_TAB_INDEX, JSConst.QX_FIELD_TAB_INDEX, newValue );
+  }
+
+  public static void renderTabIndex( Control control ) {
+    if( control instanceof Shell ) {
+      resetTabIndices( ( Shell )control );
+      // tabIndex must be a positive value
+      computeTabIndices( ( Shell )control, 1 );
+    }
+    Integer newValue = new Integer( getTabIndex( control ) );
+    // there is no reliable default value for all controls
+    if( WidgetLCAUtil.hasChanged( control, PROP_TAB_INDEX, newValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+      clientObject.setProperty( "tabIndex", newValue );
+    }
+  }
+
+  /**
+   * Determines whether the tool tip of the given control has changed during the
+   * processing of the current request and if so, writes JavaScript code to the
+   * response that updates the client-side tool tip.
+   *
+   * @param control the control whose tool tip to write
+   * @throws IOException
+   */
+  public static void writeToolTip( Control control ) throws IOException {
+    WidgetLCAUtil.writeToolTip( control, control.getToolTipText() );
+  }
+
+  /**
+   * Determines whether the tool tip of the given control has changed during the
+   * processing of the current request and if so, writes JavaScript code to the
+   * response that updates the client-side tool tip.
+   *
+   * @param control the control whose tool tip to write
+   * @throws IOException
+   */
+  public static void renderToolTip( Control control ) throws IOException {
+    WidgetLCAUtil.renderToolTip( control, control.getToolTipText() );
+  }
+
+  /**
+   * Determines whether the property <code>menu</code> of the given control
+   * has changed during the processing of the current request and if so, writes
+   * JavaScript code to the response that updates the client-side menu
+   * property.
+   *
+   * @param control the control whose menu property to write
+   * @throws IOException
+   */
+  public static void writeMenu( Control control ) throws IOException {
+    // [if] Write the shell context menu in Shell#writePopupMenu(),
+    // otherwise the shell.setContextMenu is called before the actual creation
+    // of the client menu widget. See bug 223879.
+    if( !( control instanceof Shell ) ) {
+      WidgetLCAUtil.writeMenu( control, control.getMenu() );
+    }
+  }
+
+  /**
+   * Determines whether the property <code>menu</code> of the given control
+   * has changed during the processing of the current request and if so, writes
+   * a protocol message to the response that updates the client-side menu
+   * property.
+   *
+   * @param control the control whose menu property to write
+   * @throws IOException
+   */
+  public static void renderMenu( Control control ) throws IOException {
+    WidgetLCAUtil.renderMenu( control, control.getMenu() );
+  }
+
   /**
    * Determines whether the visibility of the given control has changed during
    * the processing of the current request and if so, writes JavaScript code to
@@ -262,13 +586,6 @@ public class ControlLCAUtil {
     }
   }
 
-  // [if] Fix for bug 263025, 297466, 223873 and more
-  // some qooxdoo widget with size (0,0) are not invisible
-  private static boolean getVisible( Control control ) {
-    Point size = control.getSize();
-    return control.getVisible() && size.x > 0 && size.y > 0;
-  }
-
   /**
    * Determines whether the property <code>enabled</code> of the given control
    * has changed during the processing of the current request and if so, writes
@@ -297,171 +614,6 @@ public class ControlLCAUtil {
     // Using isEnabled() would result in unnecessarily updating child widgets of
     // enabled/disabled controls.
     WidgetLCAUtil.renderEnabled( control, control.getEnabled() );
-  }
-
-  /**
-   * Determines for all of the following properties of the specified control
-   * whether the property has changed during the processing of the current
-   * request and if so, writes JavaScript code to the response that updates the
-   * corresponding client-side property.
-   * <ul>
-   * <li>bounds</li>
-   * <li>z-index (except for Shells)</li>
-   * <li>tab index</li>
-   * <li>tool tip text</li>
-   * <li>menu</li>
-   * <li>visible</li>
-   * <li>enabled</li>
-   * <li>foreground</li>
-   * <li>background</li>
-   * <li>background image</li>
-   * <li>font</li>
-   * <li>cursor</li>
-   * <!--li>whether ControlListeners are registered</li-->
-   * <li>whether ActivateListeners are registered</li>
-   * <li>whether MouseListeners are registered</li>
-   * <li>whether FocusListeners are registered</li>
-   * <li>whether KeyListeners are registered</li>
-   * <li>whether TraverseListeners are registered</li>
-   * <li>whether HelpListeners are registered</li>
-   * </ul>
-   *
-   * @param control the control whose properties to set
-   * @throws IOException
-   * @see #preserveValues(Control)
-   */
-  public static void writeChanges( Control control ) throws IOException {
-    writeBounds( control );
-    writeZIndex( control );
-    writeTabIndex( control );
-    writeToolTip( control );
-    writeMenu( control );
-    writeVisible( control );
-    writeEnabled( control );
-    writeForeground( control );
-    writeBackground( control );
-    writeBackgroundImage( control );
-    writeFont( control );
-    writeCursor( control );
-//    TODO [rst] missing: writeControlListener( control );
-    writeActivateListener( control );
-    writeFocusListener( control );
-    writeMouseListener( control );
-    writeKeyListener( control );
-    writeTraverseListener( control );
-    writeKeyEventResponse( control );
-    writeMenuDetectListener( control );
-    WidgetLCAUtil.writeHelpListener( control );
-  }
-
-  /**
-   * Determines for all of the following properties of the specified control
-   * whether the property has changed during the processing of the current
-   * request and if so, writes a protocol message to the response that updates the
-   * corresponding client-side property.
-   * <ul>
-   * <li>bounds</li>
-   * <li>z-index (except for Shells)</li>
-   * <li>tab index</li>
-   * <li>tool tip text</li>
-   * <li>menu</li>
-   * <li>visible</li>
-   * <li>enabled</li>
-   * <li>foreground</li>
-   * <li>background</li>
-   * <li>background image</li>
-   * <li>font</li>
-   * <li>cursor</li>
-   * <!--li>whether ControlListeners are registered</li-->
-   * <li>whether ActivateListeners are registered</li>
-   * <li>whether MouseListeners are registered</li>
-   * <li>whether FocusListeners are registered</li>
-   * <li>whether KeyListeners are registered</li>
-   * <li>whether TraverseListeners are registered</li>
-   * <li>whether HelpListeners are registered</li>
-   * </ul>
-   *
-   * @param control the control whose properties to set
-   * @throws IOException
-   * @see #preserveValues(Control)
-   */
-  public static void renderChanges( Control control ) throws IOException {
-    renderVisible( control );
-    renderBounds( control );
-    renderZIndex( control );
-    renderTabIndex( control );
-    renderToolTip( control );
-    renderMenu( control );
-    renderEnabled( control );
-    renderForeground( control );
-    renderBackground( control );
-    renderBackgroundImage( control );
-    renderFont( control );
-    renderCursor( control );
-//    TODO [rst] missing: writeControlListener( control );
-    writeActivateListener( control );
-    writeFocusListener( control );
-    writeMouseListener( control );
-    writeKeyListener( control );
-    writeTraverseListener( control );
-    writeKeyEventResponse( control );
-    writeMenuDetectListener( control );
-    WidgetLCAUtil.writeHelpListener( control );
-  }
-
-  /**
-   * Determines whether the property <code>menu</code> of the given control
-   * has changed during the processing of the current request and if so, writes
-   * JavaScript code to the response that updates the client-side menu
-   * property.
-   *
-   * @param control the control whose menu property to write
-   * @throws IOException
-   */
-  public static void writeMenu( Control control ) throws IOException {
-    // [if] Write the shell context menu in Shell#writePopupMenu(),
-    // otherwise the shell.setContextMenu is called before the actual creation
-    // of the client menu widget. See bug 223879.
-    if( !( control instanceof Shell ) ) {
-      WidgetLCAUtil.writeMenu( control, control.getMenu() );
-    }
-  }
-
-  /**
-   * Determines whether the property <code>menu</code> of the given control
-   * has changed during the processing of the current request and if so, writes
-   * a protocol message to the response that updates the client-side menu
-   * property.
-   *
-   * @param control the control whose menu property to write
-   * @throws IOException
-   */
-  public static void renderMenu( Control control ) throws IOException {
-    WidgetLCAUtil.renderMenu( control, control.getMenu() );
-  }
-
-  /**
-   * Determines whether the tool tip of the given control has changed during the
-   * processing of the current request and if so, writes JavaScript code to the
-   * response that updates the client-side tool tip.
-   *
-   * @param control the control whose tool tip to write
-   * @throws IOException
-   */
-  public static void writeToolTip( Control control ) throws IOException {
-    WidgetLCAUtil.writeToolTip( control, control.getToolTipText() );
-  }
-
-  /**
-   * Determines whether the tool tip of the given control has changed during the
-   * processing of the current request and if so, writes JavaScript code to the
-   * response that updates the client-side tool tip.
-   *
-   * @param control the control whose tool tip to write
-   * @throws IOException
-   */
-  public static void renderToolTip( Control control ) throws IOException {
-    WidgetLCAUtil.renderToolTip( control, control.getToolTipText() );
   }
 
   /**
@@ -522,19 +674,6 @@ public class ControlLCAUtil {
     WidgetLCAUtil.renderBackground( control,
                                     controlAdapter.getUserBackground(),
                                     controlAdapter.getBackgroundTransparency() );
-  }
-
-  /**
-   * Preserves the value of the specified widget's background image.
-   *
-   * @param control the control whose background image property to preserve
-   * @see #writeBackgroundImage(Control)
-   */
-  public static void preserveBackgroundImage( Control control ) {
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    Image image = controlAdapter.getUserBackgroundImage();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
-    adapter.preserve( PROP_BACKGROUND_IMAGE, image );
   }
 
   /**
@@ -599,18 +738,6 @@ public class ControlLCAUtil {
   }
   
   /**
-   * Checks the given control for common SWT style flags (e.g.
-   * <code>SWT.BORDER</code>) and if present, writes code to pass the according
-   * states to the client.
-   *
-   * @param control
-   * @throws IOException
-   */
-  public static void writeStyleFlags( Control control ) throws IOException {
-    WidgetLCAUtil.writeStyleFlag( control, SWT.BORDER, "BORDER" );
-  }
-
-  /**
    * Determines whether the property <code>font</code> of the given control
    * has changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the client-side font property.
@@ -659,6 +786,9 @@ public class ControlLCAUtil {
       clientObject.setProperty( "cursor", getQxCursor( newValue ) );
     }
   }
+
+  //////////////////
+  // render listener
 
   public static void writeActivateListener( Control control ) throws IOException {
     if( !control.isDisposed() ) {
@@ -747,22 +877,6 @@ public class ControlLCAUtil {
     }
   }
 
-  ///////////////////////
-  // Menu Detect Listener
-
-  /**
-   * Preserves whether the given <code>widget</code> has one or more
-   * <code>MenuDetect</code>s attached.
-   *
-   * @param control the widget to preserve
-   * @since 1.3
-   */
-  public static void preserveMenuDetectListener( Control control ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
-    boolean hasListener = MenuDetectEvent.hasListener( control );
-    adapter.preserve( PROP_MENU_DETECT_LISTENER, Boolean.valueOf( hasListener ) );
-  }
-
   /**
    * Adds or removes client-side menu detect listeners for the the given
    * <code>control</code> as necessary.
@@ -777,6 +891,72 @@ public class ControlLCAUtil {
       Object[] args = new Object[] { control, JS_EVENT_TYPE_MENU_DETECT, hasLsnr };
       writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
     }
+  }
+
+  ///////////////
+  // render other
+
+  private static void writeKeyEventResponse( Control control ) throws IOException {
+    IServiceStore serviceStore = ContextProvider.getStateInfo();
+    if( serviceStore.getAttribute( ATT_ALLOW_KEY_EVENT ) == control ) {
+      JSWriter writer = JSWriter.getWriterFor( control );
+      writer.callStatic( JSFUNC_ALLOW_EVENT, null );
+    } else if( serviceStore.getAttribute( ATT_CANCEL_KEY_EVENT ) == control ) {
+      JSWriter writer = JSWriter.getWriterFor( control );
+      writer.callStatic( JSFUNC_CANCEL_EVENT, null );
+    }
+  }
+
+  /**
+   * Checks the given control for common SWT style flags (e.g.
+   * <code>SWT.BORDER</code>) and if present, writes code to pass the according
+   * states to the client.
+   *
+   * @param control
+   * @throws IOException
+   */
+  public static void writeStyleFlags( Control control ) throws IOException {
+    WidgetLCAUtil.writeStyleFlag( control, SWT.BORDER, "BORDER" );
+  }
+
+  //////////////////////////
+  // event processing helper  
+
+  private static SelectionEvent createSelectionEvent( Widget widget,
+                                                      Item item,
+                                                      boolean readBounds,
+                                                      int type )
+  {
+    Rectangle bounds;
+    if( widget instanceof Control && readBounds ) {
+      Control control = ( Control )widget;
+      bounds = WidgetLCAUtil.readBounds( control, control.getBounds() );
+    } else {
+      bounds = new Rectangle( 0, 0, 0, 0 );
+    }
+    int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
+    return new SelectionEvent( widget, item, type, bounds, stateMask, null, true, SWT.NONE );
+  }
+  
+  private static void initializeKeyEvent( KeyEvent evt, int keyCode, int charCode, int stateMask ) {
+    if( charCode == 0 ) {
+      evt.keyCode = translateKeyCode( keyCode );
+      if( ( evt.keyCode & SWT.KEYCODE_BIT ) == 0 ) {
+        evt.character = translateCharacter( evt.keyCode );
+      }
+    } else {
+      evt.keyCode = charCode;
+      evt.character = translateCharacter( charCode );
+    }
+    evt.stateMask = stateMask;
+  }
+
+  private static void cancelKeyEvent( Widget widget) {
+    ContextProvider.getStateInfo().setAttribute( ATT_CANCEL_KEY_EVENT, widget );
+  }
+
+  private static void allowKeyEvent( Widget widget ) {
+    ContextProvider.getStateInfo().setAttribute( ATT_ALLOW_KEY_EVENT, widget );
   }
 
   /**
@@ -799,8 +979,43 @@ public class ControlLCAUtil {
     }
   }
 
-  //////////
-  // Z-Index
+  private static void checkAndProcessMouseEvent( MouseEvent event ) {
+    boolean pass = false;
+    Control control = ( Control )event.widget;
+    if( control instanceof Scrollable ) {
+      Scrollable scrollable = ( Scrollable )control;
+      Rectangle clientArea = scrollable.getClientArea();
+      pass = clientArea.contains( event.x, event.y );
+    } else {
+      pass = event.x >= 0 && event.y >= 0;
+    }
+    if( pass ) {
+      event.processEvent();
+    }
+  }
+  
+  //////////////
+  // read helper
+  
+  private static Point readXYParams( Control control, String paramNameX, String paramNameY ) {
+    int x = readIntParam( paramNameX );
+    int y = readIntParam( paramNameY );
+    return control.getDisplay().map( null, control, x, y );
+  }
+  
+  private static int readIntParam( String paramName ) {
+    String value = readStringParam( paramName );
+    return NumberFormatUtil.parseInt( value );
+  }
+
+  private static String readStringParam( String paramName ) {
+    HttpServletRequest request = ContextProvider.getRequest();
+    String value = request.getParameter( paramName );
+    return value;
+  }
+  
+  //////////////////////
+  // widget value getter
 
   /**
    * Determines the z-index to render for a given control.
@@ -819,34 +1034,39 @@ public class ControlLCAUtil {
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     return max - controlAdapter.getZIndex();
   }
-
-  ////////////
-  // Tab index
-
-  private static void writeTabIndex( Control control ) throws IOException {
-    if( control instanceof Shell ) {
-      resetTabIndices( ( Shell )control );
-      // tabIndex must be a positive value
-      computeTabIndices( ( Shell )control, 1 );
-    }
-    int tabIndex = getTabIndex( control );
-    Integer newValue = new Integer( tabIndex );
-    JSWriter writer = JSWriter.getWriterFor( control );
-    // there is no reliable default value for all controls
-    writer.set( PROP_TAB_INDEX, JSConst.QX_FIELD_TAB_INDEX, newValue );
+  
+  // [if] Fix for bug 263025, 297466, 223873 and more
+  // some qooxdoo widget with size (0,0) are not invisible
+  private static boolean getVisible( Control control ) {
+    Point size = control.getSize();
+    return control.getVisible() && size.x > 0 && size.y > 0;
   }
 
-  public static void renderTabIndex( Control control ) {
-    if( control instanceof Shell ) {
-      resetTabIndices( ( Shell )control );
-      // tabIndex must be a positive value
-      computeTabIndices( ( Shell )control, 1 );
+  // TODO [rh] Eliminate instance checks. Let the respective classes always return NO_FOCUS
+  private static boolean takesFocus( Control control ) {
+    boolean result = true;
+    result &= ( control.getStyle() & SWT.NO_FOCUS ) == 0;
+    result &= control.getClass() != Composite.class;
+    result &= control.getClass() != SashForm.class;
+    return result;
+  }
+
+  private static int getTabIndex( Control control ) {
+    int result = -1;
+    if( takesFocus( control ) ) {
+      result = ControlUtil.getControlAdapter( control ).getTabIndex();
     }
-    Integer newValue = new Integer( getTabIndex( control ) );
-    // there is no reliable default value for all controls
-    if( WidgetLCAUtil.hasChanged( control, PROP_TAB_INDEX, newValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-      clientObject.setProperty( "tabIndex", newValue );
+    return result;
+  }
+
+  private static void resetTabIndices( Composite composite ) {
+    Control[] children = composite.getChildren();
+    for( int i = 0; i < children.length; i++ ) {
+      Control control = children[ i ];
+      ControlUtil.getControlAdapter( control ).setTabIndex( -1 );
+      if( control instanceof Composite ) {
+        resetTabIndices( ( Composite )control );
+      }
     }
   }
 
@@ -874,106 +1094,8 @@ public class ControlLCAUtil {
     return result;
   }
 
-  private static void resetTabIndices( Composite composite ) {
-    Control[] children = composite.getChildren();
-    for( int i = 0; i < children.length; i++ ) {
-      Control control = children[ i ];
-      ControlUtil.getControlAdapter( control ).setTabIndex( -1 );
-      if( control instanceof Composite ) {
-        resetTabIndices( ( Composite )control );
-      }
-    }
-  }
-
-  private static int getTabIndex( Control control ) {
-    int result = -1;
-    if( takesFocus( control ) ) {
-      result = ControlUtil.getControlAdapter( control ).getTabIndex();
-    }
-    return result;
-  }
-
-  // TODO [rh] Eliminate instance checks. Let the respective classes always return NO_FOCUS
-  private static boolean takesFocus( Control control ) {
-    boolean result = true;
-    result &= ( control.getStyle() & SWT.NO_FOCUS ) == 0;
-    result &= control.getClass() != Composite.class;
-    result &= control.getClass() != SashForm.class;
-    return result;
-  }
-
-  /////////////////////
-  // Selection Listener
-
-  public static void processSelection( Widget widget, Item item, boolean readBounds ) {
-    String eventId = JSConst.EVENT_WIDGET_SELECTED;
-    if( WidgetLCAUtil.wasEventSent( widget, eventId ) ) {
-      SelectionEvent event;
-      event = createSelectionEvent( widget, item, readBounds, SelectionEvent.WIDGET_SELECTED );
-      event.processEvent();
-    }
-    eventId = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
-    if( WidgetLCAUtil.wasEventSent( widget, eventId ) ) {
-      SelectionEvent event;
-      int widgetDefaultSelected = SelectionEvent.WIDGET_DEFAULT_SELECTED;
-      event = createSelectionEvent( widget, item, readBounds, widgetDefaultSelected );
-      event.processEvent();
-    }
-  }
-
-  private static SelectionEvent createSelectionEvent( Widget widget,
-                                                      Item item,
-                                                      boolean readBounds,
-                                                      int type )
-  {
-    Rectangle bounds;
-    if( widget instanceof Control && readBounds ) {
-      Control control = ( Control )widget;
-      bounds = WidgetLCAUtil.readBounds( control, control.getBounds() );
-    } else {
-      bounds = new Rectangle( 0, 0, 0, 0 );
-    }
-    int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
-    return new SelectionEvent( widget, item, type, bounds, stateMask, null, true, SWT.NONE );
-  }
-
-  public static void processKeyEvents( final Control control ) {
-    if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_KEY_DOWN ) ) {
-      final int keyCode = readIntParam( JSConst.EVENT_KEY_DOWN_KEY_CODE );
-      final int charCode = readIntParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE );
-      final int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_KEY_DOWN_MODIFIER );
-      final int traverseKey = getTraverseKey( keyCode, stateMask );
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          boolean allow = true;
-          if( traverseKey != SWT.TRAVERSE_NONE ) {
-            TraverseEvent traverseEvent = new TraverseEvent( control );
-            initializeKeyEvent( traverseEvent, keyCode, charCode, stateMask );
-            traverseEvent.detail = traverseKey;
-            traverseEvent.processEvent();
-            if( !traverseEvent.doit ) {
-              allow = false;
-            }
-          }
-          KeyEvent pressedEvent = new KeyEvent( control, KeyEvent.KEY_PRESSED );
-          initializeKeyEvent( pressedEvent, keyCode, charCode, stateMask );
-          pressedEvent.processEvent();
-          if( pressedEvent.doit ) {
-            KeyEvent releasedEvent = new KeyEvent( control, KeyEvent.KEY_RELEASED );
-            initializeKeyEvent( releasedEvent, keyCode, charCode, stateMask );
-            releasedEvent.processEvent();
-          } else {
-            allow = false;
-          }
-          if( allow ) {
-            allowKeyEvent( control );
-          } else {
-            cancelKeyEvent( control );
-          }
-        }
-      } );
-    }
-  }
+  //////////////////
+  // value converter 
 
   static int getTraverseKey( int keyCode, int stateMask ) {
     int result = SWT.TRAVERSE_NONE;
@@ -993,19 +1115,6 @@ public class ControlLCAUtil {
       break;
     }
     return result;
-  }
-
-  private static void initializeKeyEvent( KeyEvent evt, int keyCode, int charCode, int stateMask ) {
-    if( charCode == 0 ) {
-      evt.keyCode = translateKeyCode( keyCode );
-      if( ( evt.keyCode & SWT.KEYCODE_BIT ) == 0 ) {
-        evt.character = translateCharacter( evt.keyCode );
-      }
-    } else {
-      evt.keyCode = charCode;
-      evt.character = translateCharacter( charCode );
-    }
-    evt.stateMask = stateMask;
   }
 
   static int translateKeyCode( int keyCode ) {
@@ -1097,104 +1206,13 @@ public class ControlLCAUtil {
     }
     return result;
   }
-
+  
   private static char translateCharacter( int keyCode ) {
     char result = ( char )0;
     if( Character.isDefined( ( char )keyCode ) ) {
       result = ( char )keyCode;
     }
     return result;
-  }
-
-  private static void cancelKeyEvent( Widget widget) {
-    ContextProvider.getStateInfo().setAttribute( ATT_CANCEL_KEY_EVENT, widget );
-  }
-
-  private static void allowKeyEvent( Widget widget ) {
-    ContextProvider.getStateInfo().setAttribute( ATT_ALLOW_KEY_EVENT, widget );
-  }
-
-  private static void writeKeyEventResponse( Control control ) throws IOException {
-    IServiceStore serviceStore = ContextProvider.getStateInfo();
-    if( serviceStore.getAttribute( ATT_ALLOW_KEY_EVENT ) == control ) {
-      JSWriter writer = JSWriter.getWriterFor( control );
-      writer.callStatic( JSFUNC_ALLOW_EVENT, null );
-    } else if( serviceStore.getAttribute( ATT_CANCEL_KEY_EVENT ) == control ) {
-      JSWriter writer = JSWriter.getWriterFor( control );
-      writer.callStatic( JSFUNC_CANCEL_EVENT, null );
-    }
-  }
-
-  public static void processMouseEvents( Control control ) {
-    if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_DOWN ) ) {
-      MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_DOWN );
-      event.button = readIntParam( JSConst.EVENT_MOUSE_DOWN_BUTTON );
-      Point point = readXYParams( control, JSConst.EVENT_MOUSE_DOWN_X, JSConst.EVENT_MOUSE_DOWN_Y );
-      event.x = point.x;
-      event.y = point.y;
-      event.time = readIntParam( JSConst.EVENT_MOUSE_DOWN_TIME );
-      event.stateMask =   EventLCAUtil.readStateMask( JSConst.EVENT_MOUSE_DOWN_MODIFIER )
-                        | EventLCAUtil.translateButton( event.button );
-      checkAndProcessMouseEvent( event );
-    }
-    String eventId = JSConst.EVENT_MOUSE_DOUBLE_CLICK;
-    if( WidgetLCAUtil.wasEventSent( control, eventId ) ) {
-      MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_DOUBLE_CLICK );
-      event.button = readIntParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_BUTTON );
-      Point point = readXYParams( control,
-                                  JSConst.EVENT_MOUSE_DOUBLE_CLICK_X,
-                                  JSConst.EVENT_MOUSE_DOUBLE_CLICK_Y );
-      event.x = point.x;
-      event.y = point.y;
-      event.time = readIntParam( JSConst.EVENT_MOUSE_DOUBLE_CLICK_TIME );
-      String stateMaskParam = JSConst.EVENT_MOUSE_DOUBLE_CLICK_MODIFIER;
-      event.stateMask =   EventLCAUtil.readStateMask( stateMaskParam )
-                        | EventLCAUtil.translateButton( event.button );
-      checkAndProcessMouseEvent( event );
-    }
-    if( WidgetLCAUtil.wasEventSent( control, JSConst.EVENT_MOUSE_UP ) ) {
-      MouseEvent event = new MouseEvent( control, MouseEvent.MOUSE_UP );
-      event.button = readIntParam( JSConst.EVENT_MOUSE_UP_BUTTON );
-      Point point = readXYParams( control, JSConst.EVENT_MOUSE_UP_X, JSConst.EVENT_MOUSE_UP_Y );
-      event.x = point.x;
-      event.y = point.y;
-      event.time = readIntParam( JSConst.EVENT_MOUSE_UP_TIME );
-      event.stateMask =   EventLCAUtil.readStateMask( JSConst.EVENT_MOUSE_UP_MODIFIER )
-                        | EventLCAUtil.translateButton( event.button );
-      checkAndProcessMouseEvent( event );
-    }
-  }
-
-  private static void checkAndProcessMouseEvent( MouseEvent event ) {
-    boolean pass = false;
-    Control control = ( Control )event.widget;
-    if( control instanceof Scrollable ) {
-      Scrollable scrollable = ( Scrollable )control;
-      Rectangle clientArea = scrollable.getClientArea();
-      pass = clientArea.contains( event.x, event.y );
-    } else {
-      pass = event.x >= 0 && event.y >= 0;
-    }
-    if( pass ) {
-      event.processEvent();
-    }
-  }
-
-  private static String readStringParam( String paramName ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String value = request.getParameter( paramName );
-    return value;
-  }
-
-  private static int readIntParam( String paramName ) {
-    String value = readStringParam( paramName );
-    return NumberFormatUtil.parseInt( value );
-  }
-
-  private static Point readXYParams( Control control, String paramNameX, String paramNameY ) {
-    int x = readIntParam( paramNameX );
-    int y = readIntParam( paramNameY );
-    return control.getDisplay().map( null, control, x, y );
   }
 
   private static String getQxCursor( Cursor newValue ) {
