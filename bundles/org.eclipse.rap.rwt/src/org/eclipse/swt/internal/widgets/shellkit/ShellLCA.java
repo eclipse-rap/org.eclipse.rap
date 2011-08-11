@@ -108,7 +108,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     renderDefaultButton( shell );
     renderActiveControl( shell );
     ControlLCAUtil.renderChanges( shell );
-    renderShellListener( shell );
+    renderListenShell( shell );
   }
 
   @Override
@@ -273,7 +273,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void renderShellListener( Shell shell ) {
+  private static void renderListenShell( Shell shell ) {
     // Note that a "shell" listener also implies an "activate" listener, but "shellActivated"
     // events are sent by the client in any case. "Shell_close" events are also always being sent,    
     // but with a listener the shell is not closed by the client itself but by the server.

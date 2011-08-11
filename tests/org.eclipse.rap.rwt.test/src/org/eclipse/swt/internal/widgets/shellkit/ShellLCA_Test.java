@@ -21,8 +21,6 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.*;
 import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
-import org.eclipse.rwt.internal.protocol.Message.ListenOperation;
-import org.eclipse.rwt.internal.protocol.Message.SetOperation;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -383,8 +381,7 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
     
     Message message = Fixture.getProtocolMessage();
-    SetOperation operation = ( SetOperation )message.getOperation( 0 );
-    assertEquals( new Integer( 23 ), operation.getProperty( "alpha" ) );
+    assertEquals( new Integer( 23 ), message.findSetProperty( shell, "alpha" ) );
   }
 
   public void testRenderMode() throws Exception {
@@ -395,8 +392,7 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    SetOperation operation = ( SetOperation )message.getOperation( 0 );
-    assertEquals( "maximized", operation.getProperty( "mode" ) );
+    assertEquals( "maximized", message.findSetProperty( shell, "mode" ) );
   }
 
   public void testRenderFullscreen() throws Exception {
@@ -407,8 +403,7 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
     
     Message message = Fixture.getProtocolMessage();
-    SetOperation operation = ( SetOperation )message.getOperation( 0 );
-    assertEquals( Boolean.TRUE, operation.getProperty( "fullscreen" ) );
+    assertEquals( Boolean.TRUE, message.findSetProperty( shell, "fullscreen" ) );
   }
 
   public void testRenderDefaultButtonIntiallyNull() throws IOException {
@@ -428,8 +423,7 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    SetOperation operation = ( SetOperation )message.getOperation( 0 );
-    assertEquals( WidgetUtil.getId( button ), operation.getProperty( "defaultButton" ) );
+    assertEquals( WidgetUtil.getId( button ), message.findSetProperty( shell, "defaultButton" ) );
   }
 
   public void testRenderDefaultButtonUnchanged() throws IOException {
@@ -463,8 +457,7 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
     
     Message message = Fixture.getProtocolMessage();
-    SetOperation operation = ( SetOperation )message.getOperation( 0 );
-    assertEquals( WidgetUtil.getId( button ), operation.getProperty( "activeControl" ) );
+    assertEquals( WidgetUtil.getId( button ), message.findSetProperty( shell, "activeControl" ) );
   }
   
   public void testRenderActiveControlUnchanged() throws IOException {
@@ -500,8 +493,7 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    SetOperation operation = ( SetOperation )message.getOperation( 0 );
-    assertEquals( "[100,200]", operation.getProperty( "minimumSize" ).toString() );
+    assertEquals( "[100,200]", message.findSetProperty( shell, "minimumSize" ).toString() );
   }
 
   public void testRenderStyleFlags() throws Exception {
@@ -513,7 +505,7 @@ public class ShellLCA_Test extends TestCase {
     lca.renderInitialization( shell );
 
     Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = ( CreateOperation )message.getOperation( 0 );
+    CreateOperation operation = message.findCreateOperation( shell );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "NO_TRIM" ) );
   }
@@ -529,8 +521,7 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    SetOperation operation = ( SetOperation )message.getOperation( 0 );
-    assertEquals( "foo", operation.getProperty( "text" ) );
+    assertEquals( "foo", message.findSetProperty( shell, "text" ) );
   }
 
   public void testRenderShellListener() throws Exception {
@@ -544,9 +535,7 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    // TODO [tb] : refactor to use "findListenProperty", rename to ListenShell
-    ListenOperation operation = ( ListenOperation )message.getOperation( 0 );
-    assertEquals( Boolean.TRUE, operation.getProperty( "shell" ) );
+    assertEquals( Boolean.TRUE, message.findListenProperty( shell, "shell" ) );
   }
 
   public void testRenderActive() throws Exception {
@@ -561,8 +550,7 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    SetOperation operation = ( SetOperation )message.getOperation( 0 );
-    assertEquals( Boolean.TRUE, operation.getProperty( "active" ) );
+    assertEquals( Boolean.TRUE, message.findSetProperty( shell, "active" ) );
   }
 
   public void testRenderParentShellForDialogShell() throws Exception {
@@ -591,9 +579,8 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    SetOperation operation = ( SetOperation )message.getOperation( 0 );
     String expected = ImageFactory.getImagePath( shell.getImage() );
-    assertEquals( expected, operation.getProperty( "image" ) );
+    assertEquals( expected, message.findSetProperty( shell, "image" ) );
   }
 
   public void testTitleImageWithoutCaptionBar() throws Exception {
@@ -621,9 +608,8 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    SetOperation operation = ( SetOperation )message.getOperation( 0 );
     String expected = ImageFactory.getImagePath( shell.getImage() );
-    assertEquals( expected, operation.getProperty( "image" ) );
+    assertEquals( expected, message.findSetProperty( shell, "image" ) );
   }
 
   public void testTitleImageWithMultipleImages() throws Exception {
@@ -637,9 +623,8 @@ public class ShellLCA_Test extends TestCase {
     lca.renderChanges( shell );
 
     Message message = Fixture.getProtocolMessage();
-    SetOperation operation = ( SetOperation )message.getOperation( 0 );
     String expected = ImageFactory.getImagePath( shell.getImages()[0] );
-    assertEquals( expected, operation.getProperty( "image" ) );
+    assertEquals( expected, message.findSetProperty( shell, "image" ) );
   }
 
   public void testRenderVisibilityIntiallyFalse() throws IOException {

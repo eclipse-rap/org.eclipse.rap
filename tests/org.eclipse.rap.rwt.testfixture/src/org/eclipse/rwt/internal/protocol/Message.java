@@ -117,7 +117,7 @@ public final class Message {
     return operation.getProperty( property );
   }
 
-  public CreateOperation findCreateOperation( Widget widget, String property ) {
+  public CreateOperation findCreateOperation( Widget widget ) {
     String target = WidgetUtil.getId( widget );
     return findCreateOperation( target );
   }
