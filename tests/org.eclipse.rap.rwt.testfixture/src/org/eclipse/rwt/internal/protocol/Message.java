@@ -95,34 +95,31 @@ public final class Message {
     return findSetOperation( target, property );
   }
 
-  public SetOperation findSetOperation( String target, String property ) {
-    SetOperation result = null;
-    for( int i = 0; i < getOperationCount(); i++ ) {
-      Operation operation = getOperation( i );
-      if(    operation.getTarget().equals( target )
-          && operation instanceof SetOperation
-          && operation.getPropertyNames().contains( property ) )
-      {
-        result = ( SetOperation )operation;
-      }
-    }
-    return result;
+  public ListenOperation findListenOperation( Widget widget, String property ) {
+    String target = WidgetUtil.getId( widget );
+    return findListenOperation( target, property );
+  }
+
+  public ListenOperation findListenOperation( String target, String property ) {
+    return ( ListenOperation )findOperation( ListenOperation.class, target, property );
+  }
+
+  public Object findListenProperty( Widget widget, String property ) {
+    String target = WidgetUtil.getId( widget );
+    return findListenProperty( target, property );
   }
   
+  public Object findListenProperty( String target, String property ) {
+    ListenOperation operation = findListenOperation( target, property );
+    if( operation == null ) {
+      throw new IllegalStateException( "operation not found" );
+    }
+    return operation.getProperty( property );
+  }
+
   public CreateOperation findCreateOperation( Widget widget, String property ) {
     String target = WidgetUtil.getId( widget );
     return findCreateOperation( target );
-  }
-  
-  public CreateOperation findCreateOperation( String target ) {
-    CreateOperation result = null;
-    for( int i = 0; i < getOperationCount(); i++ ) {
-      Operation operation = getOperation( i );
-      if( operation.getTarget().equals( target ) && operation instanceof CreateOperation ) {
-        result = ( CreateOperation )operation;
-      }
-    }
-    return result;
   }
 
   public Object findCreateProperty( Widget widget, String property ) {
@@ -136,6 +133,32 @@ public final class Message {
       throw new IllegalStateException( "operation not found" );
     }
     return operation.getProperty( property );
+  }
+
+  public CreateOperation findCreateOperation( String target ) {
+    return ( CreateOperation )findOperation( CreateOperation.class, target );
+  }
+
+  public SetOperation findSetOperation( String target, String property ) {
+    return ( SetOperation )findOperation( SetOperation.class , target, property );
+  }
+
+  private Operation findOperation( Class opClass, String target ) {
+    return findOperation( opClass, target, null );
+  }
+
+  private Operation findOperation( Class opClass, String target, String property ) {
+    Operation result = null;
+    for( int i = 0; i < getOperationCount(); i++ ) {
+      Operation operation = getOperation( i );
+      if(    operation.getTarget().equals( target )
+          && opClass.isInstance( operation )
+          && ( property == null || operation.getPropertyNames().contains( property ) ) )
+      {
+        result = operation;
+      }
+    }
+    return result;
   }
 
   private JSONObject getOperationAsJson( int position ) {
@@ -293,4 +316,5 @@ public final class Message {
       super( operation );
     }
   }
+
 }

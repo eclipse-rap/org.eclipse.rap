@@ -261,6 +261,51 @@ public class Message_Test extends TestCase {
     }
   }
 
+  public void testFindListenOperation() {
+    writer.appendListen( "w1", "key", true );
+    
+    Message message = getMessage(); 
+    
+    ListenOperation operation = message.findListenOperation( "w1", "key" );
+    assertEquals( Boolean.TRUE, operation.getProperty( "key" ) );
+  }
+
+  public void testFindListenOperationFailed() {
+    writer.appendListen( "w1", "key1", true );
+    
+    Message message = getMessage(); 
+    
+    assertNull( message.findListenOperation( "w1", "key2" ) );
+    assertNull( message.findListenOperation( "w2", "key1" ) );
+  }
+
+  public void testFindListenProperty() {
+    writer.appendListen( "w1", "key", true );
+    
+    Message message = getMessage(); 
+    
+    assertEquals( Boolean.TRUE, message.findListenProperty( "w1", "key" ) );
+  }
+  
+  public void testFindListenPropertyFailed() {
+    writer.appendListen( "w1", "key1", true );
+    
+    Message message = getMessage(); 
+    
+    try {
+      message.findListenProperty( "w1", "key2" );      
+      fail();
+    } catch( IllegalStateException exception ) {
+      //expected
+    }
+    try {
+      message.findListenProperty( "w2", "key1" );      
+      fail();
+    } catch( IllegalStateException exception ) {
+      //expected
+    }
+  }
+
   public void testFindCreateOperation() {
     writer.appendCreate( "w2", "w1", "myType" );
     writer.appendSet( "w2", "key", true );
