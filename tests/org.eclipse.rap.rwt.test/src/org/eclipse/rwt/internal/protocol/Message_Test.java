@@ -354,8 +354,26 @@ public class Message_Test extends TestCase {
       //expected
     }
   }
-  
 
+  public void testFindCallOperation() {
+    writer.appendCall( "w1", "method", null );
+    
+    Message message = getMessage(); 
+    
+    CallOperation operation = message.findCallOperation( "w1", "method" );
+    assertEquals( "w1", operation.getTarget() );
+    assertEquals( "method", operation.getMethodName() );
+  }
+
+  public void testFindCallOperationFailed() {
+    writer.appendCall( "w2", "method1", null );
+    writer.appendCall( "w1", "method2", null );
+    
+    Message message = getMessage(); 
+    
+    assertNull( message.findCallOperation( "w1", "method1" ) );
+  }
+  
   public void testOperationGetProperty() {
     writer.appendSet( "w1", "foo", 23 );
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
