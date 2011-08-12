@@ -1127,6 +1127,25 @@ public final class WidgetLCAUtil {
       writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
     }
   }
+  
+  /**
+   * Adds or removes client-side help listeners for the the given
+   * <code>widget</code> as necessary.
+   *
+   * @param widget
+   * @since 1.3
+   */
+  public static void renderListenHelp( Widget widget ) {
+    Boolean hasListener = Boolean.valueOf( HelpEvent.hasListener( widget ) );
+    if( WidgetLCAUtil.hasChanged( widget, PROP_HELP_LISTENER, hasListener, Boolean.FALSE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      if( hasListener.booleanValue() ) {
+        clientObject.addListener( "help" );
+      } else {
+        clientObject.removeListener( "help" );
+      }
+    }
+  }
 
   /**
    * Process a <code>HelpEvent</code> if the current request specifies that

@@ -390,9 +390,9 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( SWT.KeyDown, eventLog.get( 0 ).type );
     assertTrue( eventLog.get( 0 ).doit );
     assertEquals( SWT.KeyUp, eventLog.get( 1 ).type );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_CANCEL_EVENT ) == -1 );
-    assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_ALLOW_EVENT ) != -1 );
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findCallOperation( shell, "cancelEvent" ) );
+    assertNotNull( message.findCallOperation( shell, "allowEvent" ) );
     shell.removeListener( SWT.KeyDown, doitTrueListener );
 
     // Simulate KeyEvent request, listener sets doit = false
@@ -407,9 +407,9 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( 1, eventLog.size() );
     assertEquals( SWT.KeyDown, eventLog.get( 0 ).type );
     assertFalse( eventLog.get( 0 ).doit );
-    markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_CANCEL_EVENT ) != -1 );
-    assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_ALLOW_EVENT ) == -1 );
+    message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCallOperation( shell, "cancelEvent" ) );
+    assertNull( message.findCallOperation( shell, "allowEvent" ) );
     shell.removeListener( SWT.KeyDown, doitFalseListener );
   }
 
@@ -441,8 +441,8 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( 1, eventLog.size() );
     assertEquals( SWT.Traverse, eventLog.get( 0 ).type );
     assertTrue( eventLog.get( 0 ).doit );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_CANCEL_EVENT ) == -1 );
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findCallOperation( shell, "cancelEvent" ) );
     shell.removeListener( SWT.Traverse, doitTrueListener );
 
     // Simulate Tab key stroke, listener sets doit = false
@@ -457,8 +457,8 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( 1, eventLog.size() );
     assertEquals( SWT.Traverse, eventLog.get( 0 ).type );
     assertFalse( eventLog.get( 0 ).doit );
-    markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( ControlLCAUtil.JSFUNC_CANCEL_EVENT ) != -1 );
+    message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCallOperation( shell, "cancelEvent" ) );
     shell.removeListener( SWT.Traverse, doitFalseListener );
   }
 
@@ -1092,6 +1092,269 @@ public class ControlLCAUtil_Test extends TestCase {
     
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( control, "activate" ) );
+  }
+
+  public void testRenderInitialListenFocus() {
+    ControlLCAUtil.renderListenFocus( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( control, "focus" ) );
+  }
+
+  public void testRenderListenFocus() {
+    FocusAdapter listener = new FocusAdapter() {
+    };
+
+    control.addFocusListener( listener );
+    ControlLCAUtil.renderListenFocus( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, "focus" ) );
+  }
+
+  public void testRenderListenFocusUnchanged() {
+    FocusAdapter listener = new FocusAdapter() {
+    };
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.addFocusListener( listener );
+    
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderListenFocus( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( control, "focus" ) );
+  }
+  
+  public void testRenderListenFocusRemoved() {
+    FocusAdapter listener = new FocusAdapter() {
+    };
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.addFocusListener( listener );
+    Fixture.preserveWidgets();
+    
+    control.removeFocusListener( listener );
+    ControlLCAUtil.renderListenFocus( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, "focus" ) );
+  }
+  
+  public void testRenderInitialListenMouse() {
+    ControlLCAUtil.renderListenMouse( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( control, "mouse" ) );
+  }
+  
+  public void testRenderListenMouse() {
+    MouseAdapter listener = new MouseAdapter() {
+    };
+
+    control.addMouseListener( listener );
+    ControlLCAUtil.renderListenMouse( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, "mouse" ) );
+  }
+  
+  public void testRenderListenMouseUnchanged() {
+    MouseAdapter listener = new MouseAdapter() {
+    };
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.addMouseListener( listener );
+
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderListenMouse( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( control, "mouse" ) );
+  }
+
+  public void testRenderListenMouseRemoved() {
+    MouseAdapter listener = new MouseAdapter() {
+    };
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.addMouseListener( listener );
+    Fixture.preserveWidgets();
+
+    control.removeMouseListener( listener );
+    ControlLCAUtil.renderListenMouse( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, "mouse" ) );
+  }
+  
+  public void testRenderInitialListenKey() {
+    ControlLCAUtil.renderListenKey( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( control, "key" ) );
+  }
+  
+  public void testRenderListenKey() {
+    KeyAdapter listener = new KeyAdapter() {
+    };
+
+    control.addKeyListener( listener );
+    ControlLCAUtil.renderListenKey( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, "key" ) );
+  }
+  
+  public void testRenderListenKeyUnchanged() {
+    KeyAdapter listener = new KeyAdapter() {
+    };
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.addKeyListener( listener );
+
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderListenKey( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( control, "key" ) );
+  }
+  
+  public void testRenderListenKeyRemoved() {
+    KeyAdapter listener = new KeyAdapter() {
+    };
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.addKeyListener( listener );
+    Fixture.preserveWidgets();
+
+    control.removeKeyListener( listener );
+    ControlLCAUtil.renderListenKey( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, "key" ) );
+  }
+  
+  public void testRenderInitialListenTraverse() {
+    ControlLCAUtil.renderListenTraverse( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( control, "traverse" ) );
+  }
+  
+  public void testRenderListenTraverse() {
+    TraverseListener listener = new TraverseListener() {
+      public void keyTraversed( TraverseEvent e ) {
+      }
+    };
+    control.addTraverseListener( listener );
+    ControlLCAUtil.renderListenTraverse( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, "traverse" ) );
+  }
+  
+  public void testRenderListenTraverseUnchanged() {
+    TraverseListener listener = new TraverseListener() {
+      public void keyTraversed( TraverseEvent e ) {
+      }
+    };
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.addTraverseListener( listener );
+    
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderListenTraverse( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( control, "traverse" ) );
+  }
+  
+  public void testRenderListenTraverseRemoved() {
+    TraverseListener listener = new TraverseListener() {
+      public void keyTraversed( TraverseEvent e ) {
+      }
+    };
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.addTraverseListener( listener );
+    Fixture.preserveWidgets();
+
+    control.removeTraverseListener( listener );
+    ControlLCAUtil.renderListenTraverse( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, "traverse" ) );
+  }
+
+  public void testRenderInitialListenMenuDetect() {
+    ControlLCAUtil.renderListenMenuDetect( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( control, "menuDetect" ) );
+  }
+
+  public void testRenderListenMenuDetect() {
+    MenuDetectListener listener = new MenuDetectListener() {
+      public void menuDetected( MenuDetectEvent e ) {
+      }
+    };
+    control.addMenuDetectListener( listener );
+    ControlLCAUtil.renderListenMenuDetect( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( control, "menuDetect" ) );
+  }
+
+  public void testRenderListenMenuDetectUnchanged() {
+    MenuDetectListener listener = new MenuDetectListener() {
+      public void menuDetected( MenuDetectEvent e ) {
+      }
+    };
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.addMenuDetectListener( listener );
+
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderListenMenuDetect( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( control, "menuDetect" ) );
+  }
+
+  public void testRenderListenMenuDetectRemoved() {
+    MenuDetectListener listener = new MenuDetectListener() {
+      public void menuDetected( MenuDetectEvent e ) {
+      }
+    };
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    control.addMenuDetectListener( listener );
+    Fixture.preserveWidgets();
+
+    control.removeMenuDetectListener( listener );
+    ControlLCAUtil.renderListenMenuDetect( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( control, "menuDetect" ) );
+  }
+
+  public void testRenderAllowKeyEvent() {
+    ControlLCAUtil.allowKeyEvent( control );
+    ControlLCAUtil.renderKeyEventResponse( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCallOperation( control, "allowEvent" ) );
+    assertNull( message.findCallOperation( control, "cancelEvent" ) );
+  }
+  
+  public void testRenderCancelKeyEvent() {
+    ControlLCAUtil.cancelKeyEvent( control );
+    ControlLCAUtil.renderKeyEventResponse( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findCallOperation( control, "allowEvent" ) );
+    assertNotNull( message.findCallOperation( control, "cancelEvent" ) );
   }
 
 }

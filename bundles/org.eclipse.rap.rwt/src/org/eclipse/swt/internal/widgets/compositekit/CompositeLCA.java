@@ -50,4 +50,5 @@ public class CompositeLCA extends AbstractWidgetLCA {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
+
 }

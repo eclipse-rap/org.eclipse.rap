@@ -21,8 +21,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.Message;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.HelpEvent;
-import org.eclipse.swt.events.HelpListener;
+import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.graphics.ImageFactory;
@@ -739,5 +738,57 @@ public class WidgetLCAUtil_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( widget, "customVariant" ) );
   }
-  
+
+  public void testRenderInitialListenHelp() {
+    WidgetLCAUtil.renderListenHelp( widget );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( widget, "help" ) );
+  }
+
+  public void testRenderListenHelp() {
+    HelpListener listener = new HelpListener() {
+      public void helpRequested( HelpEvent e ) {
+      }
+    };
+    widget.addHelpListener( listener );
+    WidgetLCAUtil.renderListenHelp( widget );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( widget, "help" ) );
+  }
+
+  public void testRenderListenHelpUnchanged() {
+    HelpListener listener = new HelpListener() {
+      public void helpRequested( HelpEvent e ) {
+      }
+    };
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( widget );
+    widget.addHelpListener( listener );
+    
+    Fixture.preserveWidgets();
+    WidgetLCAUtil.renderListenHelp( widget );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( widget, "help" ) );
+  }
+
+  public void testRenderListenHelpRemoved() {
+    HelpListener listener = new HelpListener() {
+      public void helpRequested( HelpEvent e ) {
+      }
+    };
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( widget );
+    widget.addHelpListener( listener );
+    Fixture.preserveWidgets();
+
+    widget.removeHelpListener( listener );
+    WidgetLCAUtil.renderListenHelp( widget );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( widget, "help" ) );
+  }
+
 }

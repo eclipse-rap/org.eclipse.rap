@@ -225,12 +225,12 @@ org.eclipse.rwt.protocol.Processor = {
     "mouse" : [
       { 
         nativeType : "mousedown", 
-        context : org.eclipse.swt.EventUtil, 
+        context : undefined, 
         listener : org.eclipse.swt.EventUtil.mouseDown 
       },
       { 
         nativeType : "mouseup", 
-        context : org.eclipse.swt.EventUtil, 
+        context : undefined, 
         listener : org.eclipse.swt.EventUtil.mouseUp
       }
     ],

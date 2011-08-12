@@ -392,13 +392,13 @@ public class ControlLCAUtil {
       renderCursor( control );
   //    TODO [rst] missing: writeControlListener( control );
       renderListenActivate( control );
-      writeFocusListener( control );
-      writeMouseListener( control );
-      writeKeyListener( control );
-      writeTraverseListener( control );
-      writeKeyEventResponse( control );
-      writeMenuDetectListener( control );
-      WidgetLCAUtil.writeHelpListener( control );
+      renderListenFocus( control );
+      renderListenMouse( control );
+      renderListenKey( control );
+      renderListenTraverse( control );
+      renderKeyEventResponse( control );
+      renderListenMenuDetect( control );
+      WidgetLCAUtil.renderListenHelp( control );
     }
 
   /**
@@ -823,7 +823,7 @@ public class ControlLCAUtil {
   }
   
   static void resetActivateListener( Control control ) throws IOException {
-    // TODO [tb] : could be handled by client in adapter
+    // TODO [tb] : no longer neeed for widgets that are disposed via protocol
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     Shell shell = controlAdapter.getShell();
     if( !shell.isDisposed() && ActivateEvent.hasListener( control ) ) {
@@ -852,6 +852,29 @@ public class ControlLCAUtil {
       }
     }
   }
+  
+  /**
+   * Note that there is no corresponding readData method to fire the focus
+   * events that are send by the client.
+   * FocusEvents are thrown when the focus is changed programmatically and when
+   * it is change by the user.
+   * Therefore the methods in Display that maintain the current focusControl
+   * also fire FocusEvents. The current client-side focusControl is read in
+   * DisplayLCA#readData.
+   */
+  static void renderListenFocus( Control control ) {
+    if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
+      Boolean hasListener = Boolean.valueOf( FocusEvent.hasListener( control ) );
+      if( WidgetLCAUtil.hasChanged( control, PROP_FOCUS_LISTENER, hasListener, Boolean.FALSE ) ) {
+        IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+        if( hasListener.booleanValue() ) {
+          clientObject.addListener( "focus" );
+        } else {
+          clientObject.removeListener( "focus" );
+        }
+      }
+    }
+  }
 
   private static void writeMouseListener( Control control ) throws IOException {
     Boolean hasListener = Boolean.valueOf( MouseEvent.hasListener( control ) );
@@ -859,6 +882,18 @@ public class ControlLCAUtil {
       JSWriter writer = JSWriter.getWriterFor( control );
       Object[] args = new Object[] { control, JS_EVENT_TYPE_MOUSE, hasListener };
       writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
+    }
+  }
+  
+  static void renderListenMouse( Control control ) {
+    Boolean hasListener = Boolean.valueOf( MouseEvent.hasListener( control ) );
+    if( WidgetLCAUtil.hasChanged( control, PROP_MOUSE_LISTENER, hasListener, Boolean.FALSE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+      if( hasListener.booleanValue() ) {
+        clientObject.addListener( "mouse" );
+      } else {
+        clientObject.removeListener( "mouse" );
+      }
     }
   }
 
@@ -874,6 +909,18 @@ public class ControlLCAUtil {
       } else {
         Object[] args = new Object[] { USER_DATA_KEY_LISTENER, null };
         writer.call( "setUserData", args );
+      }
+    }
+  }
+
+  static void renderListenKey( Control control ) {
+    Boolean hasListener = Boolean.valueOf( KeyEvent.hasListener( control ) );
+    if( WidgetLCAUtil.hasChanged( control, PROP_KEY_LISTENER, hasListener, Boolean.FALSE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+      if( hasListener.booleanValue() ) {
+        clientObject.addListener( "key" );
+      } else {
+        clientObject.removeListener( "key" );
       }
     }
   }
@@ -894,6 +941,20 @@ public class ControlLCAUtil {
     }
   }
 
+  static void renderListenTraverse( Control control ) {
+    String prop = PROP_TRAVERSE_LISTENER;
+    Boolean hasListener = Boolean.valueOf( TraverseEvent.hasListener( control ) );
+    Boolean defValue = Boolean.FALSE;
+    if( WidgetLCAUtil.hasChanged( control, prop, hasListener, defValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+      if( hasListener.booleanValue() ) {
+        clientObject.addListener( "traverse" );
+      } else {
+        clientObject.removeListener( "traverse" );
+      }
+    }
+  }
+
   /**
    * Adds or removes client-side menu detect listeners for the the given
    * <code>control</code> as necessary.
@@ -909,11 +970,30 @@ public class ControlLCAUtil {
       writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
     }
   }
+  
+  /**
+   * Adds or removes client-side menu detect listeners for the the given
+   * <code>control</code> as necessary.
+   *
+   * @param control
+   * @since 1.3
+   */
+  public static void renderListenMenuDetect( Control control ) {
+    Boolean hasLsnr = Boolean.valueOf( MenuDetectEvent.hasListener( control ) );
+    if( WidgetLCAUtil.hasChanged( control, PROP_MENU_DETECT_LISTENER, hasLsnr, Boolean.FALSE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+      if( hasLsnr.booleanValue() ) {
+        clientObject.addListener( "menuDetect" );
+      } else {
+        clientObject.removeListener( "menuDetect" );
+      }
+    }
+  }
 
   ///////////////
   // render other
 
-  private static void writeKeyEventResponse( Control control ) throws IOException {
+  static void writeKeyEventResponse( Control control ) throws IOException {
     IServiceStore serviceStore = ContextProvider.getStateInfo();
     if( serviceStore.getAttribute( ATT_ALLOW_KEY_EVENT ) == control ) {
       JSWriter writer = JSWriter.getWriterFor( control );
@@ -921,6 +1001,18 @@ public class ControlLCAUtil {
     } else if( serviceStore.getAttribute( ATT_CANCEL_KEY_EVENT ) == control ) {
       JSWriter writer = JSWriter.getWriterFor( control );
       writer.callStatic( JSFUNC_CANCEL_EVENT, null );
+    }
+  }
+
+  static void renderKeyEventResponse( Control control ) {
+    IServiceStore serviceStore = ContextProvider.getStateInfo();
+    // TODO [tb] : Static method calls or rename methods. call method without parameter?
+    if( serviceStore.getAttribute( ATT_ALLOW_KEY_EVENT ) == control ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+      clientObject.call( "allowEvent", null );
+    } else if( serviceStore.getAttribute( ATT_CANCEL_KEY_EVENT ) == control ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+      clientObject.call( "cancelEvent", null );
     }
   }
 
@@ -968,11 +1060,11 @@ public class ControlLCAUtil {
     evt.stateMask = stateMask;
   }
 
-  private static void cancelKeyEvent( Widget widget) {
+  static void cancelKeyEvent( Widget widget) {
     ContextProvider.getStateInfo().setAttribute( ATT_CANCEL_KEY_EVENT, widget );
   }
 
-  private static void allowKeyEvent( Widget widget ) {
+  static void allowKeyEvent( Widget widget ) {
     ContextProvider.getStateInfo().setAttribute( ATT_ALLOW_KEY_EVENT, widget );
   }
 

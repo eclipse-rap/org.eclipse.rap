@@ -326,6 +326,7 @@ public class ShellLCA_Test extends TestCase {
     shellToActivate.addShellListener( shellListener );
     activeShell.addShellListener( shellListener );
 
+    Fixture.markInitialized( display );
     Fixture.markInitialized( activeShell );
     Fixture.markInitialized( shellToActivate );
 
