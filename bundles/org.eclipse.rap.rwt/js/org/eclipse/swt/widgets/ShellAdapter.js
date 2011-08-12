@@ -20,18 +20,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
     return result;
   },
 
-  destructor : function( widget ) {
-    var shell = org.eclipse.rwt.protocol.AdapterUtil.getShell( widget );
-    if( shell ) {
-      // remove from shells list of widgets listening for activate events (if present)
-      shell.removeActivateListenerWidget( widget );          
-    }
-    widget.setToolTip( null );
-    widget.setUserData( "toolTipText", null );
-    widget.destroy();
-  },
+  destructor : org.eclipse.rwt.protocol.AdapterUtil.getControlDestructor(),
 
-  properties : [
+  properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
     "showMinimize", 
     "allowMinimize", 
     "showMaximize", 
@@ -50,28 +41,15 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
     "minimumSize",
     "defaultButton",
     "menu",
-    "activeControl",
-    // ControlLCAUtil properties from there on
-    "zIndex",
-    "tabIndex",
-    "toolTip",
-    "visibility",
-    "enabled",
-    "foreground",
-    "background",
-    "backgroundImage",
-    "cursor",
-    "customVariant",
-    "bounds",
-    "font"
-  ],
+    "activeControl"
+  ] ),
 
   propertyMapping : {
     "image" : "icon",
     "text" : "caption"
   },
 
-  propertyHandler : {
+  propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
     "alpha" : function( shell, alpha ) {
       shell.setOpacity( alpha / 255 );
     },
@@ -108,75 +86,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
     "minimumSize" : function( shell, value ) {
       shell.setMinWidth( value[ 0 ] );
       shell.setMinHeight( value[ 1 ] );
-    },
-    // ControlLCAUtil actions from there on
-    "foreground" : function( widget, value ) {
-      if( value === null ) {
-        widget.resetTextColor();
-      } else {
-        widget.setTextColor( value );
-      }
-    },
-    "background" : function( widget, value ) {
-      if( value === null ) {
-        widget.resetBackgroundColor();
-        widget.resetBackgroundGradient();
-      } else {
-        widget.setBackgroundGradient( null );
-        widget.setBackgroundColor( value );
-      }
-    },
-    "backgroundImage" : function( widget, value ) {
-      if( value === null ) {
-        widget.resetBackgroundImage();
-        widget.setUserData( "backgroundImageSize", null );
-      } else {
-        widget.setBackgroundImage( value[ 0 ] );
-        widget.setUserData( "backgroundImageSize", value.slice( 1 ) );
-      }
-    },
-    "cursor" : function( widget, value ) {
-      if( value === null ) {
-        widget.resetCursor();
-      } else {
-        widget.setCursor( value );
-      }
-    },
-    "bounds" : function( widget, value ) {
-      widget.setLeft( value[ 0 ] );
-      widget.setTop( value[ 1 ] );
-      widget.setWidth( value[ 2 ] );
-      widget.setHeight( value[ 3 ] );
-    },
-    "toolTip" : function( widget, toolTipText ) {
-      if( toolTipText != null && toolTipText != "" ) {
-        widget.setUserData( "toolTipText", toolTipText );
-        var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance()
-        widget.setToolTip( toolTip );
-        // make sure "boundToWidget" is initialized:
-        if( toolTip.getParent() != null ) {  
-          if( toolTip.getBoundToWidget() == widget ) {
-            toolTip.updateText( widget );
-          }
-        }
-      } else {
-        this._removeToolTipPopup( widget );
-      }
-    },
-    "font" : function( widget, fontData ) {
-      if( widget.setFont ) { // test if font property is supported - why wouldn't it? [tb]
-        if( fontData === null ) {
-          widget.resetFont();
-        } else {
-          var wm = org.eclipse.swt.WidgetManager.getInstance();
-          // TODO [tb] : move helper
-          var font = wm._createFont.apply( wm, fontData );
-          widget.setFont( font );
-        }
-      }
     }
-    
-  },
+  } ),
 
   knownListeners : [
     "shell",
@@ -190,7 +101,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
     "activate"
   ],
 
-  listenerHandler : {
+  listenerHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlListenerHandler( {
     "activate" : function( widget, value ) {
       var shell = org.eclipse.rwt.protocol.AdapterUtil.getShell( widget );
       if( shell ) {
@@ -200,15 +111,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
           shell.removeActivateListenerWidget( widget );          
         }
       }
-    },
-    // ControlLCAUtil from here on
-    "key" : function( widget, value ) {
-      widget.setUserData( "keyListener", value ? true : null );
-    },
-    "traverse" : function( widget, value ) {
-      widget.setUserData( "traverseListener", value ? true : null );
     }
-  },
+  } ),
 
   knownMethods : [
     "allowEvent",

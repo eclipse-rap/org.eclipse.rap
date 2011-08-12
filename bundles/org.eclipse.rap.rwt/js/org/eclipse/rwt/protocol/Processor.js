@@ -163,17 +163,10 @@ org.eclipse.rwt.protocol.Processor = {
   _getTargetType : function ( target ) {
     return target.getUserData( "rwtType" );
   },
-  
+
   _addListener : function( adapter, targetObject, eventType ) {
     if( adapter.listenerHandler &&  adapter.listenerHandler[ eventType ] ) {
       adapter.listenerHandler[ eventType ]( targetObject, true );
-    } else if( this._listenerMap[ eventType ] ) {
-      var list = this._listenerMap[ eventType ];
-      for( var i = 0; i < list.length; i++ ) {
-        targetObject.addEventListener( list[ i ].nativeType, 
-                                       list[ i ].listener, 
-                                       list[ i ].context );
-      }
     } else {
       var setterName = this._getListenerSetterName( eventType );
       targetObject[ setterName ]( true );
@@ -183,13 +176,6 @@ org.eclipse.rwt.protocol.Processor = {
   _removeListener : function( adapter, targetObject, eventType ) {
     if( adapter.listenerHandler &&  adapter.listenerHandler[ eventType ] ) {
       adapter.listenerHandler[ eventType ]( targetObject, false );
-    } else if( this._listenerMap[ eventType ] ) {
-      var list = this._listenerMap[ eventType ];
-      for( var i = 0; i < list.length; i++ ) {
-        targetObject.removeEventListener( list[ i ].nativeType, 
-                                          list[ i ].listener, 
-                                          list[ i ].context );
-      }
     } else {
       var setterName = this._getListenerSetterName( eventType );
       targetObject[ setterName ]( false );
@@ -206,53 +192,6 @@ org.eclipse.rwt.protocol.Processor = {
 
   _getListenerSetterName : function( eventType ) {
     return "setHas" + qx.lang.String.toFirstUp( eventType ) + "Listener";
-  },
-  
-  // TODO [tb] : remove feature and use Adapter instead?
-  _listenerMap : {
-    "focus" : [ 
-      { 
-        nativeType : "focusin", 
-        context : org.eclipse.swt.EventUtil, 
-        listener : org.eclipse.swt.EventUtil.focusGained 
-      },
-      { 
-        nativeType : "focusout", 
-        context : org.eclipse.swt.EventUtil, 
-        listener : org.eclipse.swt.EventUtil.focusLost 
-      }
-    ],
-    "mouse" : [
-      { 
-        nativeType : "mousedown", 
-        context : undefined, 
-        listener : org.eclipse.swt.EventUtil.mouseDown 
-      },
-      { 
-        nativeType : "mouseup", 
-        context : undefined, 
-        listener : org.eclipse.swt.EventUtil.mouseUp
-      }
-    ],
-    "menuDetect" : [
-      { 
-        nativeType : "keydown", 
-        context : undefined, 
-        listener : org.eclipse.swt.EventUtil.menuDetectedByKey
-      },
-      { 
-        nativeType : "mouseup", 
-        context : undefined, 
-        listener : org.eclipse.swt.EventUtil.menuDetectedByMouse
-      }
-    ],
-    "help" : [
-      { 
-        nativeType : "keydown", 
-        context : undefined, 
-        listener : org.eclipse.swt.EventUtil.helpRequested
-      }
-    ]
   }
 
 };

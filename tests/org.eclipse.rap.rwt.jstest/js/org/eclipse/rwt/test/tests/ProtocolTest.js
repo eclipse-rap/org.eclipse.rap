@@ -471,74 +471,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       registry.remove( "dummyType" );
     },
 
-    testProcessFocusListener : function() {
-      var registry = org.eclipse.rwt.protocol.AdapterRegistry;
-      var processor = org.eclipse.rwt.protocol.Processor;
-      registry.add( "dummyType", {
-        knownListeners : [ "focus" ]
-      } );
-      var targetObject = this._getDummyWidget( "dummyId" );
-      var properties = {
-        "focus" : true
-      };
-      var operation = {
-        "target" : "dummyId",
-        "action" : "listen",
-        "properties" : properties
-      };
-      processor.processOperation( operation );
-      assertTrue( targetObject.hasEventListeners( "focusin" ) );
-      assertTrue( targetObject.hasEventListeners( "focusout" ) );
-      properties = {
-        "focus" : false
-      };
-      var operation = {
-        "target" : "dummyId",
-        "action" : "listen",
-        "properties" : properties
-      };
-      processor.processOperation( operation );
-      // TODO: How to check for a specific listener?
-      assertFalse( targetObject.hasEventListeners( "focusin" ) );
-      assertFalse( targetObject.hasEventListeners( "focusout" ) );
-      registry.remove( "dummyType" );
-      targetObject.destroy();
-    },
-
-    testProcessMouseListener : function() {
-      var registry = org.eclipse.rwt.protocol.AdapterRegistry;
-      var processor = org.eclipse.rwt.protocol.Processor;
-      registry.add( "dummyType", {
-        knownListeners : [ "mouse" ]
-      } );
-      var targetObject = this._getDummyWidget( "dummyId" );
-      var properties = {
-        "mouse" : true
-      };
-      var operation = {
-        "target" : "dummyId",
-        "action" : "listen",
-        "properties" : properties
-      };
-      processor.processOperation( operation ); 
-      assertTrue( targetObject.hasEventListeners( "mousedown" ) );
-      assertTrue( targetObject.hasEventListeners( "mouseup" ) );
-      properties = {
-        "mouse" : false
-      };
-      var operation = {
-        "target" : "dummyId",
-        "action" : "listen",
-        "properties" : properties
-      };
-      processor.processOperation( operation );
-      // TODO: How to check for a specific listener?
-      assertFalse( targetObject.hasEventListeners( "mousedown" ) );
-      assertFalse( targetObject.hasEventListeners( "mouseup" ) );
-      registry.remove( "dummyType" );
-      targetObject.destroy();
-    },
-
     testProcessUnkownListener : function() {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -547,7 +479,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       } );
       var targetObject = this._getDummyWidget( "dummyId" );
       var properties = {
-        add : [ "mouse" ]
+        add : [ "foo" ]
       };
       var operation = {
         "target" : "dummyId",
@@ -555,23 +487,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
         "properties" : properties
       };
       processor.processOperation( operation ); 
-      // NOTE: hasEventListeners may return "undefined" instead of "false"      
-      assertTrue( !targetObject.hasEventListeners( "mousedown" ) );
-      assertTrue( !targetObject.hasEventListeners( "mouseup" ) );
-      processor._addListener( {}, targetObject, "mouse" );
-      properties = {
-        remove : [ "mouse" ]
-      };
-      assertTrue( targetObject.hasEventListeners( "mousedown" ) );
-      assertTrue( targetObject.hasEventListeners( "mouseup" ) );
-      var operation = {
-        "target" : "dummyId",
-        "action" : "listen",
-        "properties" : properties
-      };
-      processor.processOperation( operation );
-      assertTrue( targetObject.hasEventListeners( "mousedown" ) );
-      assertTrue( targetObject.hasEventListeners( "mouseup" ) );
+      // succeeds by not crashing
       registry.remove( "dummyType" );
       targetObject.destroy();
     },
@@ -593,20 +509,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       // NOTE: hasEventListeners may return "undefined" instead of "false"      
       assertTrue( !targetObject.hasEventListeners( "mousedown" ) );
       assertTrue( !targetObject.hasEventListeners( "mouseup" ) );
-      processor._addListener( {}, targetObject, "mouse" );
-      properties = {
-        remove : [ "mouse" ]
-      };
-      assertTrue( targetObject.hasEventListeners( "mousedown" ) );
-      assertTrue( targetObject.hasEventListeners( "mouseup" ) );
-      var operation = {
-        "target" : "dummyId",
-        "action" : "listen",
-        "properties" : properties
-      };
-      processor.processOperation( operation );
-      assertTrue( targetObject.hasEventListeners( "mousedown" ) );
-      assertTrue( targetObject.hasEventListeners( "mouseup" ) );
       registry.remove( "dummyType" );
       targetObject.destroy();
     },
