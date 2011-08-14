@@ -15,8 +15,9 @@ import org.osgi.framework.*;
 
 
 public class Activator implements BundleActivator {
+
   private RWTServiceImpl rwtService;
-  private ServiceRegistration< RWTService > rwtServiceRegistration;
+  private ServiceRegistration<RWTService> rwtServiceRegistration;
   private HttpTracker httpTracker;
   private ConfiguratorTracker configuratorTracker;
 
@@ -35,13 +36,13 @@ public class Activator implements BundleActivator {
     httpTracker = null;
     rwtService = null;
   }
-  
+
   @SuppressWarnings( "unchecked" )
   private void registerRWTService( BundleContext context ) {
     rwtService = new RWTServiceImpl( context );
     String name = RWTService.class.getName();
-    ServiceRegistration< ? > registration = context.registerService( name, rwtService, null );
-    rwtServiceRegistration = ( ServiceRegistration< RWTService > )registration;
+    ServiceRegistration<?> registration = context.registerService( name, rwtService, null );
+    rwtServiceRegistration = ( ServiceRegistration<RWTService> )registration;
   }
 
   private void openConfiguratorTracker( BundleContext context ) {

@@ -15,19 +15,21 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
-class ConfiguratorTracker extends ServiceTracker< Configurator, Configurator > {
+
+class ConfiguratorTracker extends ServiceTracker<Configurator, Configurator> {
+
   private final RWTServiceImpl rwtService;
-  
+
   ConfiguratorTracker( BundleContext context, RWTServiceImpl rwtService ) {
     super( context, Configurator.class.getName(), null );
     this.rwtService = rwtService;
   }
-  
+
   @Override
   public Configurator addingService( ServiceReference<Configurator> reference ) {
     return rwtService.addConfigurator( reference );
   }
-  
+
   @Override
   public void removedService( ServiceReference<Configurator> reference, Configurator service ) {
     rwtService.removeConfigurator( service );

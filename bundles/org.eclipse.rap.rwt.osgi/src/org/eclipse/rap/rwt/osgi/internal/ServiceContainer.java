@@ -16,78 +16,40 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 
-class ServiceContainer< S > {
-  private final Set< ServiceHolder< S >> services;
+class ServiceContainer<S> {
+
+  private final Set<ServiceHolder<S>> services;
   private final BundleContext bundleContext;
 
-  static class ServiceHolder< S > {
-    private ServiceReference< S > serviceReference;
-    private S service;
-
-    private ServiceHolder( S service,  ServiceReference< S > serviceReference ) {
-      this.service = service;
-      this.serviceReference = serviceReference;
-    }
-    
-    S getService() {
-      return service;
-    }
-
-    ServiceReference< S > getReference() {
-      return serviceReference;
-    }
-    
-    private void setServiceReference( ServiceReference< S > serviceReference ) {
-      this.serviceReference = serviceReference;
-    }
-  }
-
-  private static class Finder< S > {
-    
-    private ServiceHolder< S > findServiceHolder( S service, Set< ServiceHolder< S >> collection ) {
-      Iterator< ServiceHolder< S >> iterator = collection.iterator();
-      ServiceHolder< S > result = null;
-      while( iterator.hasNext() ) {
-        ServiceHolder< S > serviceHolder = iterator.next();
-        S found = serviceHolder.getService();
-        if( service.equals( found ) ) {
-          result = serviceHolder;
-        }
-      }
-      return result;
-    }
-  }
-
-  
   ServiceContainer( BundleContext bundleContext ) {
     this.bundleContext = bundleContext;
-    this.services = new HashSet< ServiceHolder< S >>();
+    this.services = new HashSet<ServiceHolder<S>>();
   }
-  
-  ServiceHolder< S > add( S service ) {
+
+  ServiceHolder<S> add( S service ) {
     return add( service, null );
   }
-  
-  ServiceHolder< S > add( ServiceReference< S > reference ) {
+
+  ServiceHolder<S> add( ServiceReference<S> reference ) {
     return add( bundleContext.getService( reference ), reference );
   }
-  
+
   void remove( S service ) {
     services.remove( find( service ) );
   }
 
   @SuppressWarnings( "unchecked" )
-  ServiceHolder< S >[] getServices() {
-    Set< ServiceHolder< S >> result = new HashSet< ServiceHolder< S >>();
-    Iterator< ServiceHolder< S >> iterator = services.iterator();
+  ServiceHolder<S>[] getServices() {
+    Set<ServiceHolder<S>> result = new HashSet<ServiceHolder<S>>();
+    Iterator<ServiceHolder<S>> iterator = services.iterator();
     while( iterator.hasNext() ) {
       result.add( iterator.next() );
     }
     return result.toArray( new ServiceHolder[ result.size() ]);
   }
-  
-  ServiceHolder< S > find( S service ) {
-    Finder< S > finder = new Finder< S >();
+
+  ServiceHolder<S> find( S service ) {
+    Finder<S> finder = new Finder<S>();
     return finder.findServiceHolder( service, services );
   }
 
@@ -99,10 +61,10 @@ class ServiceContainer< S > {
     return services.size();
   }
 
-  private ServiceHolder< S > add( S service, ServiceReference< S > reference ) {
-    ServiceHolder< S > result = find( service );
+  private ServiceHolder<S> add( S service, ServiceReference<S> reference ) {
+    ServiceHolder<S> result = find( service );
     if( notFound( result ) ) {
-      result = new ServiceHolder< S >( service, reference );
+      result = new ServiceHolder<S>( service, reference );
       services.add( result );
     } else if( referenceIsMissing( reference, result ) ) {
       result.setServiceReference( reference );
@@ -110,11 +72,50 @@ class ServiceContainer< S > {
     return result;
   }
 
-  private boolean notFound( ServiceHolder< S > result ) {
+  private boolean notFound( ServiceHolder<S> result ) {
     return result == null;
   }
 
-  private boolean referenceIsMissing( ServiceReference< S > reference, ServiceHolder< S > result ) {
+  private boolean referenceIsMissing( ServiceReference<S> reference, ServiceHolder<S> result ) {
     return reference != null && result.serviceReference == null;
+  }
+
+  static class ServiceHolder<S> {
+  
+    private ServiceReference<S> serviceReference;
+    private final S service;
+  
+    private ServiceHolder( S service, ServiceReference<S> serviceReference ) {
+      this.service = service;
+      this.serviceReference = serviceReference;
+    }
+  
+    S getService() {
+      return service;
+    }
+  
+    ServiceReference<S> getReference() {
+      return serviceReference;
+    }
+  
+    private void setServiceReference( ServiceReference<S> serviceReference ) {
+      this.serviceReference = serviceReference;
+    }
+  }
+
+  private static class Finder<S> {
+  
+    private ServiceHolder<S> findServiceHolder( S service, Set<ServiceHolder<S>> collection ) {
+      Iterator<ServiceHolder<S>> iterator = collection.iterator();
+      ServiceHolder<S> result = null;
+      while( iterator.hasNext() ) {
+        ServiceHolder<S> serviceHolder = iterator.next();
+        S found = serviceHolder.getService();
+        if( service.equals( found ) ) {
+          result = serviceHolder;
+        }
+      }
+      return result;
+    }
   }
 }

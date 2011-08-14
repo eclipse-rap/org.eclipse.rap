@@ -65,7 +65,7 @@ public class HttpSessionWrapper implements HttpSession {
     return session.getValue( name );
   }
 
-  public Enumeration getAttributeNames() {
+  public Enumeration<String> getAttributeNames() {
     return session.getAttributeNames();
   }
 

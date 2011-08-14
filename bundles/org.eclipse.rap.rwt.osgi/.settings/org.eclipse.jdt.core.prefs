@@ -1,4 +1,4 @@
-#Mon Jul 11 21:35:42 CEST 2011
+#Sun Aug 14 11:45:34 CEST 2011
 eclipse.preferences.version=1
 org.eclipse.jdt.core.compiler.codegen.inlineJsrBytecode=enabled
 org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.5
@@ -213,9 +213,9 @@ org.eclipse.jdt.core.formatter.insert_space_after_comma_in_superinterfaces=inser
 org.eclipse.jdt.core.formatter.insert_space_after_comma_in_type_arguments=insert
 org.eclipse.jdt.core.formatter.insert_space_after_comma_in_type_parameters=insert
 org.eclipse.jdt.core.formatter.insert_space_after_ellipsis=insert
-org.eclipse.jdt.core.formatter.insert_space_after_opening_angle_bracket_in_parameterized_type_reference=insert
-org.eclipse.jdt.core.formatter.insert_space_after_opening_angle_bracket_in_type_arguments=insert
-org.eclipse.jdt.core.formatter.insert_space_after_opening_angle_bracket_in_type_parameters=insert
+org.eclipse.jdt.core.formatter.insert_space_after_opening_angle_bracket_in_parameterized_type_reference=do not insert
+org.eclipse.jdt.core.formatter.insert_space_after_opening_angle_bracket_in_type_arguments=do not insert
+org.eclipse.jdt.core.formatter.insert_space_after_opening_angle_bracket_in_type_parameters=do not insert
 org.eclipse.jdt.core.formatter.insert_space_after_opening_brace_in_array_initializer=insert
 org.eclipse.jdt.core.formatter.insert_space_after_opening_bracket_in_array_allocation_expression=insert
 org.eclipse.jdt.core.formatter.insert_space_after_opening_bracket_in_array_reference=insert
@@ -242,9 +242,9 @@ org.eclipse.jdt.core.formatter.insert_space_before_and_in_type_parameter=insert
 org.eclipse.jdt.core.formatter.insert_space_before_assignment_operator=insert
 org.eclipse.jdt.core.formatter.insert_space_before_at_in_annotation_type_declaration=do not insert
 org.eclipse.jdt.core.formatter.insert_space_before_binary_operator=insert
-org.eclipse.jdt.core.formatter.insert_space_before_closing_angle_bracket_in_parameterized_type_reference=insert
-org.eclipse.jdt.core.formatter.insert_space_before_closing_angle_bracket_in_type_arguments=insert
-org.eclipse.jdt.core.formatter.insert_space_before_closing_angle_bracket_in_type_parameters=insert
+org.eclipse.jdt.core.formatter.insert_space_before_closing_angle_bracket_in_parameterized_type_reference=do not insert
+org.eclipse.jdt.core.formatter.insert_space_before_closing_angle_bracket_in_type_arguments=do not insert
+org.eclipse.jdt.core.formatter.insert_space_before_closing_angle_bracket_in_type_parameters=do not insert
 org.eclipse.jdt.core.formatter.insert_space_before_closing_brace_in_array_initializer=insert
 org.eclipse.jdt.core.formatter.insert_space_before_closing_bracket_in_array_allocation_expression=insert
 org.eclipse.jdt.core.formatter.insert_space_before_closing_bracket_in_array_reference=insert

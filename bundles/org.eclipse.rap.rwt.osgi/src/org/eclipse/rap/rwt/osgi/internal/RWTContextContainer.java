@@ -14,16 +14,17 @@ import java.util.HashSet;
 
 
 class RWTContextContainer {
-  private final HashSet< RWTContextImpl > contexts;
+
+  private final HashSet<RWTContextImpl> contexts;
 
   RWTContextContainer() {
-    this.contexts = new HashSet< RWTContextImpl >();
+    contexts = new HashSet<RWTContextImpl>();
   }
 
   void add( RWTContextImpl context ) {
     contexts.add( context );
   }
-  
+
   void remove( RWTContextImpl context ) {
     contexts.remove( context );
   }

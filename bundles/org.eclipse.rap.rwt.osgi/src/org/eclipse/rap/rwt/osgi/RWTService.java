@@ -15,7 +15,14 @@ import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 
 
+/**
+ * <strong>Note:</strong> This API is <em>provisional</em>. It is likely to change before the final
+ * release.
+ *
+ * @since 1.5
+ */
 public interface RWTService {
+
   public static final String PROPERTY_CONTEXT_NAME = "contextName";
 
   RWTContext start( Configurator configurator,
@@ -23,6 +30,7 @@ public interface RWTService {
                     HttpContext httpContext,
                     String contextName,
                     String contextDirectory );
-  
+
   boolean isAlive();
+
 }

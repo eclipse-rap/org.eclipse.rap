@@ -11,6 +11,12 @@
 package org.eclipse.rap.rwt.osgi;
 
 
+/**
+ * <strong>Note:</strong> This API is <em>provisional</em>. It is likely to change before the final
+ * release.
+ *
+ * @since 1.5
+ */
 public interface RWTContext {
 
   void stop();

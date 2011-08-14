@@ -16,12 +16,14 @@ import java.util.Enumeration;
 import javax.servlet.*;
 import javax.servlet.http.*;
 
+
 class CutOffContextPathWrapper extends HttpServlet {
+
   private static final long serialVersionUID = 1L;
 
   private final HttpServlet servlet;
   private final String alias;
-  private ServletContext servletContext;
+  private final ServletContext servletContext;
 
   static class RequestWrapper extends HttpServletRequestWrapper {
     private final String alias;
@@ -29,21 +31,21 @@ class CutOffContextPathWrapper extends HttpServlet {
 
     RequestWrapper( HttpServletRequest request, ServletContext servletContext, String alias ) {
       super( request );
-      this.httpSession = new HttpSessionWrapper( request.getSession(), servletContext );
+      httpSession = new HttpSessionWrapper( request.getSession(), servletContext );
       this.alias = alias;
     }
-    
+
     @Override
     public String getServletPath() {
       return "/" + alias;
     }
-    
+
     @Override
     public HttpSession getSession() {
       return httpSession;
     }
   }
-  
+
   CutOffContextPathWrapper( HttpServlet servlet, ServletContext servletContext, String alias ) {
     this.servlet = servlet;
     this.servletContext = servletContext;
@@ -66,7 +68,7 @@ class CutOffContextPathWrapper extends HttpServlet {
   }
 
   @Override
-  public Enumeration getInitParameterNames() {
+  public Enumeration<String> getInitParameterNames() {
     return servlet.getInitParameterNames();
   }
 

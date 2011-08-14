@@ -22,7 +22,9 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 
+
 class RWTContextImpl implements RWTContext {
+
   static final String SERVLET_CONTEXT_FINDER_ALIAS = "servlet_context_finder";
   static final String DEFAULT_ALIAS = "rap";
 
@@ -34,13 +36,13 @@ class RWTContextImpl implements RWTContext {
   private ServletContext servletContextWrapper;
   private ContextControl contextControl;
   private RWTServiceImpl rwtServiceImpl;
-  private ServiceRegistration< ? > serviceRegistration;
+  private ServiceRegistration<?> serviceRegistration;
   private boolean alive;
 
   public RWTContextImpl( Configurator configurator,
                          HttpService httpService,
                          HttpContext httpContext,
-                         String contextName, 
+                         String contextName,
                          String contextLocation,
                          RWTServiceImpl rwtServiceImpl )
   {
@@ -51,7 +53,7 @@ class RWTContextImpl implements RWTContext {
     this.contextName = contextName;
     this.rwtServiceImpl = rwtServiceImpl;
   }
-  
+
   public boolean isAlive() {
     return alive;
   }
@@ -80,7 +82,7 @@ class RWTContextImpl implements RWTContext {
   }
 
   boolean belongsTo( Object service ) {
-    return this.configurator == service || this.httpService == service;
+    return configurator == service || httpService == service;
   }
 
   private void createContextControl( HttpServlet contextProvider ) {
@@ -114,7 +116,7 @@ class RWTContextImpl implements RWTContext {
     registerServlet( SERVLET_CONTEXT_FINDER_ALIAS, result );
     return result;
   }
-  
+
   private void startContext() {
     contextControl.startContext();
     String[] aliases = contextControl.getServletNames();
@@ -143,7 +145,7 @@ class RWTContextImpl implements RWTContext {
       throw new RuntimeException( shouldNotHappen );
     }
   }
-  
+
   private void registerResourceDirectory() {
     String alias = ContextControl.RESOURCES;
     String location = contextLocation + "/" + alias;
@@ -205,11 +207,11 @@ class RWTContextImpl implements RWTContext {
       throw new IllegalStateException( "RWTContext is not alive." );
     }
   }
-  
+
   private void markAlive() {
     alive = true;
   }
-  
+
   private void markNotAlive() {
     alive = false;
   }

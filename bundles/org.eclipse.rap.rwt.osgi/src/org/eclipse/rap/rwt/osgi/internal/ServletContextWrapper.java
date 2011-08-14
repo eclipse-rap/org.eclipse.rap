@@ -16,6 +16,9 @@ import java.net.URL;
 import java.util.*;
 
 import javax.servlet.*;
+import javax.servlet.ServletRegistration.Dynamic;
+import javax.servlet.descriptor.JspConfigDescriptor;
+
 
 class ServletContextWrapper implements ServletContext {
   private final ServletContext servletContext;
@@ -25,7 +28,7 @@ class ServletContextWrapper implements ServletContext {
   ServletContextWrapper( ServletContext servletContext, String contextDirectory ) {
     this.servletContext = servletContext;
     this.contextDirectory = contextDirectory;
-    this.attributes = new HashMap<String, Object>();
+    attributes = new HashMap<String, Object>();
   }
 
   public ServletContext getContext( String uripath ) {
@@ -48,7 +51,7 @@ class ServletContextWrapper implements ServletContext {
     return servletContext.getMimeType( file );
   }
 
-  public Set getResourcePaths( String path ) {
+  public Set<String> getResourcePaths( String path ) {
     return servletContext.getResourcePaths( path );
   }
 
@@ -74,12 +77,12 @@ class ServletContextWrapper implements ServletContext {
   }
 
   @Deprecated
-  public Enumeration getServlets() {
+  public Enumeration<Servlet> getServlets() {
     return servletContext.getServlets();
   }
 
   @Deprecated
-  public Enumeration getServletNames() {
+  public Enumeration<String> getServletNames() {
     return servletContext.getServletNames();
   }
 
@@ -109,7 +112,7 @@ class ServletContextWrapper implements ServletContext {
     return servletContext.getInitParameter( name );
   }
 
-  public Enumeration getInitParameterNames() {
+  public Enumeration<String> getInitParameterNames() {
     return servletContext.getInitParameterNames();
   }
 
@@ -125,8 +128,8 @@ class ServletContextWrapper implements ServletContext {
     return result;
   }
 
-  public Enumeration getAttributeNames() {
-    Enumeration result;
+  public Enumeration<String> getAttributeNames() {
+    Enumeration<String> result;
     synchronized( attributes ) {
       result = servletContext.getAttributeNames();
       if( needEnumerationFromLocalAttributeBuffer( result ) ) {
@@ -140,15 +143,15 @@ class ServletContextWrapper implements ServletContext {
     return ( result == null || !result.hasMoreElements() ) && !attributes.isEmpty();
   }
 
-  private Enumeration createAttributeNamesEnumeration() {
-    return new Enumeration< Object >() {
-      Iterator< String > names = attributes.keySet().iterator();
+  private Enumeration<String> createAttributeNamesEnumeration() {
+    return new Enumeration<String>() {
+      Iterator<String> names = attributes.keySet().iterator();
 
       public boolean hasMoreElements() {
         return names.hasNext();
       }
 
-      public Object nextElement() {
+      public String nextElement() {
         return names.next();
       }
     };
@@ -176,8 +179,109 @@ class ServletContextWrapper implements ServletContext {
   private boolean isAttributeInWrappedContext( String name ) {
     return null != servletContext.getAttribute( name );
   }
-  
+
   public String getServletContextName() {
     return servletContext.getServletContextName();
+  }
+
+  public int getEffectiveMajorVersion() {
+    return 0;
+  }
+
+  public int getEffectiveMinorVersion() {
+    return 0;
+  }
+
+  public boolean setInitParameter( String name, String value ) {
+    return false;
+  }
+
+  public Dynamic addServlet( String servletName, String className ) {
+    return null;
+  }
+
+  public Dynamic addServlet( String servletName, Servlet servlet ) {
+    return null;
+  }
+
+  public Dynamic addServlet( String servletName, Class<? extends Servlet> servletClass ) {
+    return null;
+  }
+
+  public <T extends Servlet> T createServlet( Class<T> clazz ) throws ServletException {
+    return null;
+  }
+
+  public ServletRegistration getServletRegistration( String servletName ) {
+    return null;
+  }
+
+  public Map<String, ? extends ServletRegistration> getServletRegistrations() {
+    return null;
+  }
+
+  public javax.servlet.FilterRegistration.Dynamic addFilter( String filterName, String className ) {
+    return null;
+  }
+
+  public javax.servlet.FilterRegistration.Dynamic addFilter( String filterName, Filter filter ) {
+    return null;
+  }
+
+  public javax.servlet.FilterRegistration.Dynamic addFilter( String filterName,
+                                                             Class<? extends Filter> filterClass )
+  {
+    return null;
+  }
+
+  public <T extends Filter> T createFilter( Class<T> clazz ) throws ServletException {
+    return null;
+  }
+
+  public FilterRegistration getFilterRegistration( String filterName ) {
+    return null;
+  }
+
+  public Map<String, ? extends FilterRegistration> getFilterRegistrations() {
+    return null;
+  }
+
+  public SessionCookieConfig getSessionCookieConfig() {
+    return null;
+  }
+
+  public void setSessionTrackingModes( Set<SessionTrackingMode> sessionTrackingModes ) {
+  }
+
+  public Set<SessionTrackingMode> getDefaultSessionTrackingModes() {
+    return null;
+  }
+
+  public Set<SessionTrackingMode> getEffectiveSessionTrackingModes() {
+    return null;
+  }
+
+  public void addListener( String className ) {
+  }
+
+  public <T extends EventListener> void addListener( T t ) {
+  }
+
+  public void addListener( Class<? extends EventListener> listenerClass ) {
+  }
+
+  public <T extends EventListener> T createListener( Class<T> clazz ) throws ServletException {
+    return null;
+  }
+
+  public JspConfigDescriptor getJspConfigDescriptor() {
+    return null;
+  }
+
+  public ClassLoader getClassLoader() {
+    return null;
+  }
+
+  public void declareRoles( String... roleNames ) {
   }
 }

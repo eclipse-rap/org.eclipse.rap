@@ -25,19 +25,19 @@ import org.osgi.service.log.LogService;
 
 public class RWTServiceImpl implements RWTService {
   private final Object lock;
-  private final ServiceContainer< Configurator > configurators;
-  private final ServiceContainer< HttpService > httpServices;
+  private final ServiceContainer<Configurator> configurators;
+  private final ServiceContainer<HttpService> httpServices;
   private final RWTContextContainer contexts;
   private BundleContext bundleContext;
-  
+
   public RWTServiceImpl( BundleContext bundleContext ) {
-    this.lock = new Object();
-    this.configurators = new ServiceContainer< Configurator >( bundleContext );
-    this.httpServices = new ServiceContainer< HttpService >( bundleContext );
-    this.contexts = new RWTContextContainer();
+    lock = new Object();
+    configurators = new ServiceContainer<Configurator>( bundleContext );
+    httpServices = new ServiceContainer<HttpService>( bundleContext );
+    contexts = new RWTContextContainer();
     this.bundleContext = bundleContext;
   }
-  
+
   public HttpService addHttpService( ServiceReference<HttpService> reference ) {
     checkAlive();
     ServiceHolder<HttpService> httpServiceHolder;
@@ -47,7 +47,7 @@ public class RWTServiceImpl implements RWTService {
     }
     return httpServiceHolder.getService();
   }
-  
+
   public void removeHttpService( HttpService httpService ) {
     checkAlive();
     synchronized( lock ) {
@@ -58,14 +58,14 @@ public class RWTServiceImpl implements RWTService {
 
   public Configurator addConfigurator( ServiceReference<Configurator> reference ) {
     checkAlive();
-    ServiceHolder< Configurator > configuratorHolder;
+    ServiceHolder<Configurator> configuratorHolder;
     synchronized( lock ) {
       configuratorHolder = configurators.add( reference );
       startOfConfigurator( configuratorHolder );
     }
     return configuratorHolder.getService();
   }
-  
+
   public void removeConfigurator( Configurator configurator ) {
     checkAlive();
     synchronized( lock ) {
@@ -73,7 +73,7 @@ public class RWTServiceImpl implements RWTService {
       stopRWTContexts( configurator );
     }
   }
-  
+
   public RWTContext start( Configurator configurator,
                            HttpService httpService,
                            HttpContext httpContext,
@@ -81,18 +81,18 @@ public class RWTServiceImpl implements RWTService {
                            String contextDirectory )
   {
     checkAlive();
-    RWTContextImpl result = new RWTContextImpl( configurator, 
-                                                httpService, 
-                                                httpContext, 
-                                                contextName, 
-                                                contextDirectory, 
+    RWTContextImpl result = new RWTContextImpl( configurator,
+                                                httpService,
+                                                httpContext,
+                                                contextName,
+                                                contextDirectory,
                                                 this );
     synchronized( lock ) {
       result.start();
       contexts.add( result );
       httpServices.add( httpService );
       configurators.add( configurator );
-      
+
     }
     return result;
   }
@@ -108,7 +108,7 @@ public class RWTServiceImpl implements RWTService {
       bundleContext = null;
     }
   }
-  
+
   public boolean isAlive() {
     return bundleContext != null;
   }
@@ -118,31 +118,31 @@ public class RWTServiceImpl implements RWTService {
       contexts.remove( context );
     }
   }
-  
+
   BundleContext getBundleContext() {
     return bundleContext;
   }
 
-  private void startAtHttpService( ServiceHolder< HttpService > httpServiceHolder ) {
+  private void startAtHttpService( ServiceHolder<HttpService> httpServiceHolder ) {
     ServiceHolder<Configurator>[] services = configurators.getServices();
-    for( ServiceHolder< Configurator > configuratorHolder : services ) {
+    for( ServiceHolder<Configurator> configuratorHolder : services ) {
       if( matches( httpServiceHolder, configuratorHolder ) ) {
         start( configuratorHolder, httpServiceHolder );
       }
     }
   }
 
-  private void startOfConfigurator( ServiceHolder< Configurator > configuratorHolder ) {
-    ServiceHolder< HttpService >[] services = httpServices.getServices();
-    for( ServiceHolder< HttpService > httpServiceHolder : services ) {
+  private void startOfConfigurator( ServiceHolder<Configurator> configuratorHolder ) {
+    ServiceHolder<HttpService>[] services = httpServices.getServices();
+    for( ServiceHolder<HttpService> httpServiceHolder : services ) {
       if( matches( httpServiceHolder, configuratorHolder ) ) {
         start( configuratorHolder, httpServiceHolder );
       }
     }
   }
 
-  private void start( ServiceHolder< Configurator > configuratorHolder,
-                      ServiceHolder< HttpService > httpServiceHolder )
+  private void start( ServiceHolder<Configurator> configuratorHolder,
+                      ServiceHolder<HttpService> httpServiceHolder )
   {
     Configurator configurator = configuratorHolder.getService();
     HttpService httpService = httpServiceHolder.getService();
@@ -155,8 +155,8 @@ public class RWTServiceImpl implements RWTService {
     }
   }
 
-  private String getContextName( ServiceHolder< Configurator > configuratorHolder ) {
-    ServiceReference< Configurator > reference = configuratorHolder.getReference();
+  private String getContextName( ServiceHolder<Configurator> configuratorHolder ) {
+    ServiceReference<Configurator> reference = configuratorHolder.getReference();
     return ( String )reference.getProperty( PROPERTY_CONTEXT_NAME );
   }
 
@@ -175,7 +175,7 @@ public class RWTServiceImpl implements RWTService {
       stopContext( context );
     }
   }
-  
+
   void stopContext( RWTContextImpl context ) {
     try {
       context.stop();
@@ -184,20 +184,20 @@ public class RWTServiceImpl implements RWTService {
     }
   }
 
-  private boolean matches( ServiceHolder< HttpService > httpServiceHolder,
-                           ServiceHolder< Configurator > configuratorHolder )
+  private boolean matches( ServiceHolder<HttpService> httpServiceHolder,
+                           ServiceHolder<Configurator> configuratorHolder )
   {
-    ServiceReference< HttpService > httpServiceRef = httpServiceHolder.getReference();
-    ServiceReference< Configurator > configuratorRef = configuratorHolder.getReference();
+    ServiceReference<HttpService> httpServiceRef = httpServiceHolder.getReference();
+    ServiceReference<Configurator> configuratorRef = configuratorHolder.getReference();
     return new Matcher( httpServiceRef, configuratorRef ).matches();
   }
-  
+
   private void checkAlive() {
     if( !isAlive() ) {
       throw new IllegalStateException( "RWTService is not alive." );
     }
   }
-  
+
   private void logProblem( String failureMessage, Throwable failure ) {
     ServiceReference logReference = bundleContext.getServiceReference( LogService.class.getName() );
     if( logReference != null ) {
@@ -219,10 +219,10 @@ public class RWTServiceImpl implements RWTService {
 
   static String getContextFileName( String name, Configurator configurator, HttpService service ) {
     StringBuilder result = new StringBuilder();
-    result.append( "/" ); 
+    result.append( "/" );
     result.append( name == null ? "rwtcontext" : name );
-    result.append( "_" ); 
-    result.append( configurator.hashCode() ); 
+    result.append( "_" );
+    result.append( configurator.hashCode() );
     result.append( "_" );
     result.append( service.hashCode() );
     return result.toString();

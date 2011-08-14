@@ -15,7 +15,9 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
 
-class HttpTracker extends ServiceTracker< HttpService, HttpService > {
+
+class HttpTracker extends ServiceTracker<HttpService, HttpService> {
+
   private final RWTServiceImpl rwtService;
 
   HttpTracker( BundleContext context, RWTServiceImpl rwtService ) {

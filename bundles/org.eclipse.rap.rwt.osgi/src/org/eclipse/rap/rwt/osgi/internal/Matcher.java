@@ -16,11 +16,12 @@ import org.osgi.service.http.HttpService;
 
 
 class Matcher {
-  private final ServiceReference< HttpService > httpServiceReference;
-  private final ServiceReference< Configurator > configuratorReference;
 
-  Matcher( ServiceReference< HttpService > httpServiceReference, 
-           ServiceReference< Configurator > configuratorReference )
+  private final ServiceReference<HttpService> httpServiceReference;
+  private final ServiceReference<Configurator> configuratorReference;
+
+  Matcher( ServiceReference<HttpService> httpServiceReference,
+           ServiceReference<Configurator> configuratorReference )
   {
     this.httpServiceReference = httpServiceReference;
     this.configuratorReference = configuratorReference;
@@ -29,19 +30,19 @@ class Matcher {
   public boolean matches() {
     return matchesHttpService() && matchesConfigurator();
   }
-  
+
   private boolean matchesHttpService() {
     return matchesTarget( configuratorReference, httpServiceReference, HttpService.class );
   }
 
   private boolean matchesConfigurator() {
-    Class< Configurator > targetType = Configurator.class;
+    Class<Configurator> targetType = Configurator.class;
     return matchesTarget( httpServiceReference, configuratorReference, targetType );
   }
 
-  private boolean matchesTarget( ServiceReference< ? > serviceReference,
-                                 ServiceReference< ? > targetReference,
-                                 Class< ? > targetType )
+  private boolean matchesTarget( ServiceReference<?> serviceReference,
+                                 ServiceReference<?> targetReference,
+                                 Class<?> targetType )
   {
     boolean result = targetReference != null;
     String filterExpression = getFilterExpression( serviceReference, targetType );
@@ -52,7 +53,7 @@ class Matcher {
     return result;
   }
 
-  private String getFilterExpression( ServiceReference< ? > serviceReference, Class targetType ) {
+  private String getFilterExpression( ServiceReference<?> serviceReference, Class targetType ) {
     String result = null;
     if( serviceReference != null ) {
       String targetKey = createTargetKey( targetType );
@@ -70,9 +71,9 @@ class Matcher {
     }
     return result;
   }
-  
+
   static String createTargetKey( Class targetType ) {
-    StringBuilder result = new StringBuilder(); 
+    StringBuilder result = new StringBuilder();
     result.append( targetType.getSimpleName().substring( 0, 1 ).toLowerCase() );
     result.append( targetType.getSimpleName().substring( 1 ) );
     result.append( ".target" );
