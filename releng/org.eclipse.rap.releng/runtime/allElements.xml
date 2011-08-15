@@ -9,11 +9,15 @@
 	<!-- Add on <ant> task for each top level element being built.             -->
 	<!-- ===================================================================== -->
 	<target name="allElementsDelegator">
-		<ant antfile="${genericTargets}" target="${target}">
-			<property name="type" value="feature" />
-			<property name="id" value="org.eclipse.rap.runtime.sdk" />
-		</ant>
-	</target>
+    <ant antfile="${genericTargets}" target="${target}">
+      <property name="type" value="feature" />
+      <property name="id" value="org.eclipse.rap.runtime" />
+    </ant>
+    <ant antfile="${genericTargets}" target="${target}">
+      <property name="type" value="feature" />
+      <property name="id" value="org.eclipse.rap.runtime.requirements" />
+    </ant>
+  </target>
 
 	<!-- ===================================================================== -->
 	<!-- Targets to assemble the built elements for particular configurations  -->
@@ -22,7 +26,11 @@
 	<!-- Add one target for each root element and each configuration           -->
 	<!-- Replace element.id with the id of the top level element being built   -->
 	<!-- ===================================================================== -->
-	<target name="assemble.org.eclipse.rap.runtime.sdk">
+	<target name="assemble.org.eclipse.rap.runtime">
 		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
 	</target>
+	<target name="assemble.org.eclipse.rap.runtime.requirements">
+		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
+	</target>
+
 </project>
