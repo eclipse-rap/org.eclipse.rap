@@ -235,14 +235,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
       }
     },
 
-    // Fix for bug 306042
-    setSpace : function( left, width, top, height ) {
-      if( !this._disableResize ) {
-        this.setLeft( left );
-        this.setWidth( width );
-        this.setTop( top );
-        this.setHeight( height );
-      }
+    isDisableResize : function() {
+      return this._disableResize ? true : false;
     },
 
     setHasShellListener : function( hasListener ) {

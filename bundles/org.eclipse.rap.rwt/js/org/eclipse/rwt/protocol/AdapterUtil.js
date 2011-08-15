@@ -170,11 +170,11 @@ org.eclipse.rwt.protocol.AdapterUtil = {
   },
   
   extendControlPropertyHandler : function( handler ) {
-    return qx.lang.Object.mergeWith( handler, this._controlPropertyHandler );
+    return qx.lang.Object.mergeWith( handler, this._controlPropertyHandler, false );
   },
   
   extendControlListenerHandler : function( handler ) {
-    return qx.lang.Object.mergeWith( handler, this._controlListenerHandler );    
+    return qx.lang.Object.mergeWith( handler, this._controlListenerHandler, false );    
   },
 
   addStatesForStyles : function( targetOject, styleArray ) {

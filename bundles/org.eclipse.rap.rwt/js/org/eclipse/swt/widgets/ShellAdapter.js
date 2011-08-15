@@ -50,6 +50,15 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
   },
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
+    // Overwrites original bounds handler, see bug 306042 and 354597
+    "bounds" : function( widget, value ) {
+      if( !widget.isDisableResize() ) {
+        widget.setLeft( value[ 0 ] );
+        widget.setTop( value[ 1 ] );
+        widget.setWidth( value[ 2 ] );
+        widget.setHeight( value[ 3 ] );
+      }
+    },
     "alpha" : function( shell, alpha ) {
       shell.setOpacity( alpha / 255 );
     },

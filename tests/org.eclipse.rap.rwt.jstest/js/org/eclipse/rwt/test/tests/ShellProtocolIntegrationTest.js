@@ -267,6 +267,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       this._disposeShell();
     },
 
+    testSetBoundsWhithMaximized : function() {
+      var shell = this._protocolCreateShell();
+      this._protocolSet( { 
+        "bounds" : [ 30, 31, 32, 33 ], 
+        "mode" : "maximized" 
+      } );
+      assertEquals( "maximized", shell.getMode() );
+      assertEquals( "100%", shell.getWidth() );
+      assertEquals( "100%", shell.getHeight() );
+      this._disposeShell();
+    },
+
     testSetZIndex : function() {
       var shell = this._protocolCreateShell();
       this._protocolSet( { "zIndex" : 527 } );
