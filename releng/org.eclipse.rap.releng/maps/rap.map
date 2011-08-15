@@ -11,6 +11,8 @@
 ###############################################################################
 
 # rap core
+feature@org.eclipse.rap.runtime=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.releng/runtime/runtime-feature
+feature@org.eclipse.rap.runtime.requirements=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.releng/runtime/runtime.requirements-feature
 feature@org.eclipse.rap.runtime.sdk=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/releng/org.eclipse.rap.releng/runtime/runtime.sdk-feature
 
 plugin@org.eclipse.rap.rwt=HEAD,:pserver:anonymous@dev.eclipse.org:/cvsroot/rt,,org.eclipse.rap/runtime.rwt/org.eclipse.rap.rwt
