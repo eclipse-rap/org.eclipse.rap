@@ -1,14 +1,18 @@
 <project name="allElements Delegator">
+  <property name="defaultAssemblyEnabled" value="true" />
 
-	<!-- ===================================================================== -->
-	<!-- Run a given ${target} on all elements being built                     -->
-	<!-- Replace element.id with the id of the top level element being built.    -->
-	<!-- If element.id does not exist in ${buildDirectory}/features/element.id   -->
-	<!-- or ${baseLocation}/features/element.id, then you must provide the       -->
-	<!-- location by setting the property "pluginPath"                           -->
-	<!-- Add on <ant> task for each top level element being built.             -->
-	<!-- ===================================================================== -->
-	<target name="allElementsDelegator">
+  <!-- ===================================================================== -->
+  <!-- Run a given ${target} on all elements being built                     -->
+  <!-- By default ${topLevelElementType} and ${topLevelElementId} should be --> 
+  <!-- defined in the builder's build.properties file.  You can customize by  --> 
+  <!-- setting the type/id values directly here.                -->
+  <!-- You can add additional calls to ${genericTargets} to build more top  -->
+  <!-- level elements.                              -->
+  <!--                                    -->
+  <!-- The top level must exist in the ${buildDirectory}, ${baseLocation} or  -->
+  <!-- ${pluginPath} locations.                       -->
+  <!-- ===================================================================== -->
+  <target name="allElementsDelegator">
     <ant antfile="${genericTargets}" target="${target}">
       <property name="type" value="feature" />
       <property name="id" value="org.eclipse.rap.runtime" />
@@ -19,18 +23,38 @@
     </ant>
   </target>
 
-	<!-- ===================================================================== -->
-	<!-- Targets to assemble the built elements for particular configurations  -->
-	<!-- These generally call the generated assemble scripts (named in         -->
-	<!-- ${assembleScriptName}) but may also add pre and post processing       -->
-	<!-- Add one target for each root element and each configuration           -->
-	<!-- Replace element.id with the id of the top level element being built   -->
-	<!-- ===================================================================== -->
-	<target name="assemble.org.eclipse.rap.runtime">
-		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
-	</target>
-	<target name="assemble.org.eclipse.rap.runtime.requirements">
-		<ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
-	</target>
+  <!-- ====================================================================== -->
+  <!--  The default assemble target, this will be called to assemble each   -->  
+  <!--  config if a custom assemble target is not defined.          -->
+  <!--  The following properties will be defined:                -->
+  <!--    config : The configuration being assembled eg "win32.win32.x86" -->
+  <!--    element: The element being assembled eg "org.eclipse.sdk"   -->
+  <!--    assembleScriptName: The assemble script to be called      -->
+  <!-- ====================================================================== -->
+  <target name="defaultAssemble">
+    <ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
+  </target> 
+
+  <!-- =====================================================================  -->
+  <!-- Custom targets to assemble the built elements for particular       -->
+  <!-- configurations.  These generally call the generated assemble scripts   -->
+  <!-- (named in  ${assembleScriptName}) but may also add pre and post    --> 
+  <!-- processing                                 -->
+  <!-- Add one target for each root element and each configuration for which  --> 
+  <!-- custom processing is desired. Replace element.id with the id of the  -->
+  <!-- top level element being built.  A property with a matching name must   -->
+  <!-- be defined for this custom target to be called instead of the      -->
+  <!-- defaultAssemble target above.                      -->
+  <!--  Example:  name="assemble.org.eclipse.sdk"             -->
+  <!--  Example:  name="assemble.org.eclipse.sdk.win32.win32.x86"     -->
+  <!-- ====================================================================== -->
+  <property name="assemble.org.eclipse.rap.runtime" value="true" />
+  <property name="assemble.org.eclipse.rap.runtime.requirements" value="true" />
+  <target name="assemble.org.eclipse.rap.runtime">
+    <ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
+  </target>
+  <target name="assemble.org.eclipse.rap.runtime.requirements">
+    <ant antfile="${assembleScriptName}" dir="${buildDirectory}" />
+  </target>
 
 </project>
