@@ -14,6 +14,8 @@ package org.eclipse.swt.internal.widgets.compositekit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.*;
 
@@ -34,21 +36,21 @@ public class CompositeLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( final Widget widget ) throws IOException {
     Composite composite = ( Composite )widget;
-    JSWriter writer = JSWriter.getWriterFor( composite );
-    writer.newWidget( "org.eclipse.swt.widgets.Composite" );
-    ControlLCAUtil.writeStyleFlags( composite );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( composite );
+    clientObject.create( "org.eclipse.swt.widgets.Composite" );
+    clientObject.setProperty( "parent", WidgetUtil.getId( composite.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( composite ) );
   }
 
   public void renderChanges( final Widget widget ) throws IOException {
-    ControlLCAUtil.writeChanges( ( Control )widget );
-    WidgetLCAUtil.writeBackgroundGradient( widget );
-    WidgetLCAUtil.writeRoundedBorder( widget );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    ControlLCAUtil.renderChanges( ( Control )widget );
+    WidgetLCAUtil.renderBackgroundGradient( widget );
+    WidgetLCAUtil.renderRoundedBorder( widget );
+    WidgetLCAUtil.renderCustomVariant( widget );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
 }

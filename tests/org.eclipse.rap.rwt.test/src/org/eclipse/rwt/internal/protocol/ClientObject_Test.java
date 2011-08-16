@@ -56,7 +56,7 @@ public class ClientObject_Test extends TestCase {
   }
 
   public void testCreate() {
-    clientObject.create();
+    clientObject.create( shell.getClass().getName() );
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
     assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
@@ -64,7 +64,7 @@ public class ClientObject_Test extends TestCase {
   }
 
   public void testCreateIncludesSetProperties() {
-    clientObject.create();
+    clientObject.create( shell.getClass().getName() );
     clientObject.setProperty( "foo", 23 );
 
     Message message = getMessage();
@@ -101,7 +101,7 @@ public class ClientObject_Test extends TestCase {
   }
 
   public void testCreatePropertyGetStyle() {
-    clientObject.create();
+    clientObject.create( shell.getClass().getName()  );
     clientObject.setProperty( "style", new String[] { "PUSH", "BORDER" } );
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
@@ -176,7 +176,7 @@ public class ClientObject_Test extends TestCase {
     ContextProvider.getStateInfo().setResponseWriter( writer );
     IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
 
-    clientObject.create();
+    clientObject.create( shell.getClass().getName() );
     writer.write( "var x =5;" );
     clientObject.setProperty( "key", "value" );
     writer.finish();

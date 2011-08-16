@@ -30,10 +30,9 @@ public interface IClientObject {
   /**
    * Advises the client to create a new instance of this client object's type.
    * This is normally done in the * <code>renderInitialization</code> method of the widgets life-cycle adapter (LCA).
-   * @param properties The properties which are mandatory to construct this object on the
-   * client-side.
+   * @param type a type known to the client
    */
-  void create();
+  void create( String type );
 
   /**
    * Sets the specified property of the client-side widget to a new value.

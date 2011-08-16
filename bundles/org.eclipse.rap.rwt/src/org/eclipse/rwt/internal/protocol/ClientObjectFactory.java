@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
@@ -59,7 +60,7 @@ public final class ClientObjectFactory {
     if( map.containsKey( widget ) ) {
       result = map.get( widget );
     } else {
-      result = new ClientObject( widget );
+      result = new ClientObject( WidgetUtil.getId( widget ) );
       map.put( widget, result );
     }
     return result;

@@ -29,10 +29,10 @@ public class ProtocolMessageCreator {
     Button button = new Button( shell, SWT.TOGGLE );
     // create client objects
     IClientObject clientShell = ClientObjectFactory.getForWidget( shell );
-    clientShell.create();
+    clientShell.create( "org.eclipse.swt.widgets.Shell" );
     clientShell.setProperty( "style", WidgetLCAUtil.getStyles( shell ) );
     IClientObject clientButton = ClientObjectFactory.getForWidget( button );
-    clientButton.create();
+    clientButton.create( "org.eclipse.swt.widgets.Button" );
     clientButton.setProperty( "style", WidgetLCAUtil.getStyles( button ) );
     // set some properties
     clientShell.setProperty( "foo", "bar" );

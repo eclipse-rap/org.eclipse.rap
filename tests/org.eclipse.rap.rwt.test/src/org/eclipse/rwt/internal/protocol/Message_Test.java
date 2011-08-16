@@ -93,7 +93,7 @@ public class Message_Test extends TestCase {
   }
 
   public void testGetCreateOperation() {
-    writer.appendCreate( "w1", "w0", "type" );
+    writer.appendCreate( "w1", "type" );
 
     assertTrue( getMessage().getOperation( 0 ) instanceof CreateOperation );
   }
@@ -140,11 +140,10 @@ public class Message_Test extends TestCase {
   }
 
   public void testCreateOperation() {
-    writer.appendCreate( "w1", "w0", "type" );
+    writer.appendCreate( "w1", "type" );
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
     assertEquals( "w1", operation.getTarget() );
-    assertEquals( "w0", operation.getParent() );
     assertEquals( "type", operation.getType() );
   }
 
@@ -307,7 +306,7 @@ public class Message_Test extends TestCase {
   }
 
   public void testFindCreateOperation() {
-    writer.appendCreate( "w2", "w1", "myType" );
+    writer.appendCreate( "w2", "myType" );
     writer.appendSet( "w2", "key", true );
     
     Message message = getMessage(); 
@@ -319,7 +318,7 @@ public class Message_Test extends TestCase {
   }
   
   public void testFindCreateFailed() {
-    writer.appendCreate( "w2", "w1", "myType" );
+    writer.appendCreate( "w2", "myType" );
     
     Message message = getMessage(); 
     
@@ -327,7 +326,7 @@ public class Message_Test extends TestCase {
   }
 
   public void testFindCreateProperty() {
-    writer.appendCreate( "w2", "w1", "myType" );
+    writer.appendCreate( "w2", "myType" );
     writer.appendSet( "w2", "key", true );
     
     Message message = getMessage(); 
@@ -336,7 +335,7 @@ public class Message_Test extends TestCase {
   }
   
   public void testFindCreatePropertyFailed() {
-    writer.appendCreate( "w2", "w1", "myType" );
+    writer.appendCreate( "w2", "myType" );
     writer.appendSet( "w2", "key1", true );
     
     Message message = getMessage(); 

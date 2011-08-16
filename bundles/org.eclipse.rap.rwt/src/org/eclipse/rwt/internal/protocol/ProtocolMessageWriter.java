@@ -17,7 +17,6 @@ import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_EXECUTE
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_LISTEN;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_SET;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CALL_METHOD_NAME;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_PARENT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_TYPE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_CONTENT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_TYPE;
@@ -45,10 +44,9 @@ public final class ProtocolMessageWriter {
     return pendingOperation != null;
   }
 
-  public void appendCreate( String target, String parentId, String type ) {
+  public void appendCreate( String target, String type ) {
     prepareOperation( target, ACTION_CREATE );
     pendingOperation.appendDetail( CREATE_TYPE, JsonValue.valueOf( type ) );
-    pendingOperation.appendProperty( CREATE_PARENT, JsonValue.valueOf( parentId ) );
   }
 
   public void appendSet( String target, String property, int value ) {

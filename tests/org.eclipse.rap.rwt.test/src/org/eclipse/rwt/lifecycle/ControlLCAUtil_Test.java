@@ -30,7 +30,6 @@ import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA;
-import org.eclipse.swt.internal.widgets.compositekit.CompositeLCA;
 import org.eclipse.swt.internal.widgets.labelkit.LabelLCA;
 import org.eclipse.swt.internal.widgets.shellkit.ShellLCA;
 import org.eclipse.swt.widgets.*;
@@ -572,13 +571,13 @@ public class ControlLCAUtil_Test extends TestCase {
 
   public void testWriteMouseListener() throws IOException {
     Composite control = new Composite( shell, SWT.NONE );
-    CompositeLCA lca = new CompositeLCA();
     Fixture.fakeResponseWriter();
-    lca.preserveValues( control );
+    ControlLCAUtil.preserveValues( control );
     Fixture.markInitialized( control );
+    Fixture.markInitialized( display );
 
     control.addMouseListener( new MouseAdapter() {} );
-    lca.renderChanges( control );
+    ControlLCAUtil.writeChanges( control );
 
     String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"mouse\", true );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -613,16 +612,16 @@ public class ControlLCAUtil_Test extends TestCase {
 
   public void testWriteMenuDetectListener() throws IOException {
     Composite control = new Composite( shell, SWT.NONE );
-    CompositeLCA lca = new CompositeLCA();
     Fixture.fakeResponseWriter();
-    lca.preserveValues( control );
+    ControlLCAUtil.preserveValues( control );
+    Fixture.markInitialized( display );
     Fixture.markInitialized( control );
 
     control.addMenuDetectListener( new MenuDetectListener() {
       public void menuDetected( MenuDetectEvent e ) {
       }
     } );
-    lca.renderChanges( control );
+    ControlLCAUtil.writeChanges( control );
 
     String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"menuDetect\", true );";
     assertEquals( expected, Fixture.getAllMarkup() );

@@ -81,6 +81,10 @@ public final class RWTStylesUtil {
         result = allowedStyles.getStyles();
       }
     }
+    // TODO [tb] : find universal solution for subclassed widgets
+    if( result == null && widget instanceof Composite ) {
+      result = AllowedStyles.COMPOSITE.getStyles();
+    }
     return result;
   }
   

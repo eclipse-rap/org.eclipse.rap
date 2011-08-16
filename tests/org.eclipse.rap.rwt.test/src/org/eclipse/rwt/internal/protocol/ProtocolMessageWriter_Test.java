@@ -127,7 +127,8 @@ public class ProtocolMessageWriter_Test extends TestCase {
     String shellId = WidgetUtil.getId( shell );
     String[] styles = new String[] { "TRIM", "FOO" };
 
-    writer.appendCreate( shellId, displayId, "org.Text" );
+    writer.appendCreate( shellId, "org.Text" );
+    writer.appendSet( shellId, "parent", displayId );
     writer.appendSet( shellId, "style", styles );
     writer.appendSet( shellId, "key1", "a" );
     writer.appendSet( shellId, "key2", "b" );
@@ -144,11 +145,10 @@ public class ProtocolMessageWriter_Test extends TestCase {
   public void testMessageWithMultipleOperations() {
     Button button = new Button( shell, SWT.PUSH );
     String shellId = WidgetUtil.getId( shell );
-    String displayId = DisplayUtil.getId( shell.getDisplay() );
     String buttonId = WidgetUtil.getId( button );
 
-    writer.appendCreate( shellId, displayId, "org.Text" );
-    writer.appendCreate( buttonId, shellId, "org.Shell" );
+    writer.appendCreate( shellId, "org.Text" );
+    writer.appendCreate( buttonId, "org.Shell" );
 
     Message message = getMessage();
     assertTrue( message.getOperation( 0 ) instanceof CreateOperation );
@@ -296,7 +296,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
 
     CreateOperation shellCreateOperation = ( CreateOperation )message.getOperation( 0 );
     assertEquals( shellId, shellCreateOperation.getTarget() );
-    assertEquals( 3, shellCreateOperation.getPropertyNames().size() );
+    assertEquals( 2, shellCreateOperation.getPropertyNames().size() );
 
     ListenOperation shellListenOperation = ( ListenOperation )message.getOperation( 1 );
     assertEquals( shellId, shellListenOperation.getTarget() );
@@ -313,8 +313,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
 
   private void addShellCreate( Shell shell ) {
     String shellId = WidgetUtil.getId( shell );
-    String displayId = DisplayUtil.getId( shell.getDisplay() );
-    writer.appendCreate( shellId, displayId, "org.eclipse.swt.widgets.Shell" );
+    writer.appendCreate( shellId, "org.eclipse.swt.widgets.Shell" );
     writer.appendSet( shellId, "styles", new String[]{ "SHELL_TRIM" } );
     writer.appendSet( shellId, "foo", 23 );
   }
@@ -326,8 +325,9 @@ public class ProtocolMessageWriter_Test extends TestCase {
 
   private void addButtonCreate( Button button ) {
     String buttonId = WidgetUtil.getId( button );
-    String parentId = WidgetUtil.getId( button.getParent() );
-    writer.appendCreate( buttonId, parentId, "org.eclipse.swt.widgets.Button" );
+    String shellId = WidgetUtil.getId( shell );
+    writer.appendCreate( buttonId, "org.eclipse.swt.widgets.Button" );
+    writer.appendSet( buttonId, "parent", shellId );
     writer.appendSet( buttonId, "styles", new String[] { "PUSH", "BORDER" } );
     writer.appendSet( buttonId, "text", "foo" );
   }
@@ -353,7 +353,7 @@ public class ProtocolMessageWriter_Test extends TestCase {
   public void testAppendsToExistingCreateOperation() {
     String shellId = WidgetUtil.getId( shell );
 
-    writer.appendCreate( shellId, "parentId", "foo.Class" );
+    writer.appendCreate( shellId, "foo.Class" );
     writer.appendSet( shellId, "key1", "value1" );
     writer.appendSet( shellId, "key2", "value2" );
 
@@ -382,8 +382,9 @@ public class ProtocolMessageWriter_Test extends TestCase {
     String shellId = WidgetUtil.getId( shell );
     String buttonId = WidgetUtil.getId( button );
 
-    writer.appendCreate( shellId, "parentId", "foo.Class" );
-    writer.appendCreate( buttonId, shellId, "org.eclipse.swt.widgets.Button" );
+    writer.appendCreate( shellId, "foo.Class" );
+    writer.appendCreate( buttonId, "org.eclipse.swt.widgets.Button" );
+    writer.appendSet( buttonId, "parent", shellId );
     writer.appendSet( buttonId, "key1", "value1" );
     writer.appendSet( buttonId, "key2", "value2" );
 

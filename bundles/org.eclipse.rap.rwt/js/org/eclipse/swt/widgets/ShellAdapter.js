@@ -98,17 +98,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
     }
   } ),
 
-  knownListeners : [
-    "shell",
-    // ControlLCAUtil from here on
-    "focus",
-    "mouse",
-    "key",
-    "traverse",
-    "menuDetect",
-    "help",
-    "activate"
-  ],
+  knownListeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [
+    "shell"
+  ] ),
 
   listenerHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlListenerHandler( {
     "activate" : function( widget, value ) {

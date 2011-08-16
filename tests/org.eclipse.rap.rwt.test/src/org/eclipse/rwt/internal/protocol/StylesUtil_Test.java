@@ -31,7 +31,7 @@ public class StylesUtil_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-  
+
   public void testHasOneStyle() {
     Button button = new Button( shell, SWT.PUSH );
     

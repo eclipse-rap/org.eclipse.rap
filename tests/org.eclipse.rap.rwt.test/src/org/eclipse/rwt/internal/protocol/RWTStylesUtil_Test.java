@@ -12,6 +12,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.widgets.*;
 
 public class RWTStylesUtil_Test extends TestCase {
@@ -49,6 +50,22 @@ public class RWTStylesUtil_Test extends TestCase {
     };
     String[] allowedStyles = RWTStylesUtil.getAllowedStylesForWidget( shell );
     assertArrayEquals( shellStyles, allowedStyles );
+  }
+  
+  public void testGetStylesForCustomWidgetComposite() {
+    SashForm form = new SashForm( shell, SWT.NONE );
+    
+    String[] allowedStyles = RWTStylesUtil.getAllowedStylesForWidget( form );
+
+    String[] compositeStyles = new String[] { 
+      "NO_FOCUS", 
+      "NO_RADIO_GROUP", 
+      "H_SCROLL", 
+      "V_SCROLL", 
+      "BORDER", 
+      "LEFT_TO_RIGHT" 
+    };
+    assertArrayEquals( compositeStyles, allowedStyles );
   }
 
   public void testGetStylesForButton() {

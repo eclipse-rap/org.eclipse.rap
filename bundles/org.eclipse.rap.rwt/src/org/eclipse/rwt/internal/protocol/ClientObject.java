@@ -13,35 +13,17 @@ package org.eclipse.rwt.internal.protocol;
 import java.util.Map;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.widgets.*;
-
 
 public final class ClientObject implements IClientObject {
 
-  private final Object target;
   private final String targetId;
 
-  public ClientObject( Widget widget ) {
-    target = widget;
-    targetId = WidgetUtil.getId( widget );
+  public ClientObject( String targetId ) {
+    this.targetId = targetId;
   }
 
-  public void create() {
-    String parentId = getParentId();
-    String type = target.getClass().getName();
-    getWriter().appendCreate( targetId, parentId, type );
-  }
-
-  private String getParentId() {
-    String parentId = null;
-    if( target instanceof Control ) {
-      Composite parent = ( ( Control )target ).getParent();
-      if( parent != null ) {
-        parentId = WidgetUtil.getId( parent );
-      }
-    }
-    return parentId;
+  public void create( String type ) {
+    getWriter().appendCreate( targetId, type );
   }
 
   public void destroy() {

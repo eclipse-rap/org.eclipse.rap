@@ -226,6 +226,7 @@ final class ClientResources {
     "org/eclipse/swt/CLabelUtil.js",
     "org/eclipse/swt/graphics/GC.js",
     "org/eclipse/rwt/VMLCanvas.js",
+    "org/eclipse/swt/widgets/CompositeAdapter.js",
     "org/eclipse/swt/widgets/Composite.js",
     "org/eclipse/swt/widgets/Sash.js",
     "org/eclipse/swt/widgets/Canvas.js",

@@ -107,6 +107,16 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     }    
   },
 
+  _controlListeners : [
+    "focus",
+    "mouse",
+    "key",
+    "traverse",
+    "menuDetect",
+    "help",
+    "activate"
+  ],
+
   _controlListenerHandler : {
     "key" : function( widget, value ) {
       widget.setUserData( "keyListener", value ? true : null );
@@ -160,6 +170,37 @@ org.eclipse.rwt.protocol.AdapterUtil = {
       }
     }
   },
+  
+  _specialHandler : { 
+    "backgroundGradient" : function( widget, value ) {
+      var gradient = null;
+      if( value ) {
+        var colors = value[ 0 ];
+        var percents = value[ 1 ];
+        var vertical = value[ 2 ];
+        gradient = [];
+        for( var i = 0; i < colors.length; i++ ) {
+          gradient[ i ] = [ percents[ i ] / 100, colors[ i ] ];
+        }
+        gradient.horizontal = !vertical;
+      }
+      widget.setBackgroundGradient( gradient );
+    },
+    "roundedBorder" : function( widget, value ) {
+      if( value ) {
+        var width = value[ 0 ];
+        var color = value[ 1 ];
+        var radii = value.splice( -4 );
+        var border = new org.eclipse.rwt.Border( width, "rounded", color, radii );
+        widget.setBorder( border );
+      } else {
+        widget.resetBorder();
+      }
+    }
+  },
+  
+  ////////////////////////////////
+  // lists and handler for adapter
 
   getControlDestructor : function() {
     return this._controlDestructor;
@@ -173,9 +214,24 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     return qx.lang.Object.mergeWith( handler, this._controlPropertyHandler, false );
   },
   
+  extendControlListeners : function( list ) {
+    return list.concat( this._controlListeners );
+  },
+  
   extendControlListenerHandler : function( handler ) {
     return qx.lang.Object.mergeWith( handler, this._controlListenerHandler, false );    
   },
+  
+  getBackgroundGradientHandler : function() {
+    return this._specialHandler.backgroundGradient;
+  },
+
+  getRoundedBorderHandler : function() {
+    return this._specialHandler.roundedBorder;
+  },
+
+  /////////////////////
+  // Helper for handler
 
   addStatesForStyles : function( targetOject, styleArray ) {
     for( var i = 0; i < styleArray.length; i++ ) {

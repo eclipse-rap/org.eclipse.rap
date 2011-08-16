@@ -84,7 +84,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   public void renderInitialization( Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
-    clientObject.create();
+    clientObject.create( "org.eclipse.swt.widgets.Shell" );
     clientObject.setProperty( "style", WidgetLCAUtil.getStyles( shell ) );
     Composite parent = shell.getParent();
     if( parent instanceof Shell ) {

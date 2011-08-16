@@ -21,14 +21,14 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.Message;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.HelpEvent;
+import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.internal.widgets.compositekit.CompositeLCA;
 import org.eclipse.swt.widgets.*;
-import org.json.JSONObject;
+import org.json.*;
 
 
 public class WidgetLCAUtil_Test extends TestCase {
@@ -503,8 +503,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Control control = new Composite( shell, SWT.NONE );
 
     Fixture.fakeResponseWriter();
-    CompositeLCA lca = new CompositeLCA();
-    lca.preserveValues( control );
+    WidgetLCAUtil.preserveBackgroundGradient( control );
     Fixture.markInitialized( control );
     Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
@@ -514,7 +513,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     };
     int[] percents = new int[] { 0, 100 };
     gfxAdapter.setBackgroundGradient( gradientColors, percents, true );
-    lca.renderChanges( control );
+    WidgetLCAUtil.writeBackgroundGradient( control );
     String expected
       = "wm.setBackgroundGradient"
       + "( wm.findWidgetById( \"w2\" ), [\"#00ff00\",\"#0000ff\" ], "
@@ -522,7 +521,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( expected, Fixture.getAllMarkup() );
 
     Fixture.fakeResponseWriter();
-    lca.preserveValues( control );
+    WidgetLCAUtil.preserveBackgroundGradient( control );
     gradientColors = new Color[] {
       Graphics.getColor( 255, 0, 0 ),
       Graphics.getColor( 0, 255, 0 ),
@@ -530,7 +529,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     };
     percents = new int[] { 0, 50, 100 };
     gfxAdapter.setBackgroundGradient( gradientColors, percents, true );
-    lca.renderChanges( control );
+    WidgetLCAUtil.writeBackgroundGradient( control );
     expected
       = "wm.setBackgroundGradient"
       + "( wm.findWidgetById( \"w2\" ), [\"#ff0000\",\"#00ff00\",\"#0000ff\" ],"
@@ -538,14 +537,14 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( expected, Fixture.getAllMarkup() );
 
     Fixture.fakeResponseWriter();
-    lca.preserveValues( control );
-    lca.renderChanges( control );
+    WidgetLCAUtil.preserveBackgroundGradient( control );
+    WidgetLCAUtil.writeBackgroundGradient( control );
     assertEquals( "", Fixture.getAllMarkup() );
 
     Fixture.fakeResponseWriter();
-    lca.preserveValues( control );
+    WidgetLCAUtil.preserveBackgroundGradient( control );
     gfxAdapter.setBackgroundGradient( null, null, true );
-    lca.renderChanges( control );
+    WidgetLCAUtil.writeBackgroundGradient( control );
     expected
       = "wm.setBackgroundGradient"
       + "( wm.findWidgetById( \"w2\" ), null, null, true );";
@@ -556,8 +555,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Control control = new Composite( shell, SWT.NONE );
 
     Fixture.fakeResponseWriter();
-    CompositeLCA lca = new CompositeLCA();
-    lca.preserveValues( control );
+    WidgetLCAUtil.preserveBackgroundGradient( control );
     Fixture.markInitialized( control );
     Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
@@ -567,7 +565,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     };
     int[] percents = new int[] { 0, 100 };
     gfxAdapter.setBackgroundGradient( gradientColors, percents, false );
-    lca.renderChanges( control );
+    WidgetLCAUtil.writeBackgroundGradient( control );
     String expected
       = "wm.setBackgroundGradient"
       + "( wm.findWidgetById( \"w2\" ), [\"#00ff00\",\"#0000ff\" ], "
@@ -578,38 +576,37 @@ public class WidgetLCAUtil_Test extends TestCase {
   public void testWriteRoundedBorder() throws IOException {
     Widget widget = new Composite( shell, SWT.NONE );
 
-    CompositeLCA lca = new CompositeLCA();
     Fixture.fakeResponseWriter();
-    lca.preserveValues( widget );
+    WidgetLCAUtil.preserveRoundedBorder( widget );
     Fixture.markInitialized( widget );
     Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
     Color color = Graphics.getColor( 0, 255, 0 );
     graphicsAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
-    lca.renderChanges( widget );
+    WidgetLCAUtil.writeRoundedBorder( widget );
     String expected
       = "wm.setRoundedBorder"
       + "( wm.findWidgetById( \"w2\" ), 2, \"#00ff00\", 5, 6, 7, 8 );";
     assertEquals( expected, Fixture.getAllMarkup() );
 
     Fixture.fakeResponseWriter();
-    lca.preserveValues( widget );
-    lca.renderChanges( widget );
+    WidgetLCAUtil.preserveRoundedBorder( widget );
+    WidgetLCAUtil.writeRoundedBorder( widget );
     assertEquals( "", Fixture.getAllMarkup() );
 
     Fixture.fakeResponseWriter();
-    lca.preserveValues( widget );
+    WidgetLCAUtil.preserveRoundedBorder( widget );
     graphicsAdapter.setRoundedBorder( 4, color, 5, 6, 7, 8 );
-    lca.renderChanges( widget );
+    WidgetLCAUtil.writeRoundedBorder( widget );
     expected
       = "wm.setRoundedBorder"
       + "( wm.findWidgetById( \"w2\" ), 4, \"#00ff00\", 5, 6, 7, 8 );";
     assertEquals( expected, Fixture.getAllMarkup() );
 
     Fixture.fakeResponseWriter();
-    lca.preserveValues( widget );
+    WidgetLCAUtil.preserveRoundedBorder( widget );
     graphicsAdapter.setRoundedBorder( 4, color, 5, 4, 7, 8 );
-    lca.renderChanges( widget );
+    WidgetLCAUtil.writeRoundedBorder( widget );
     expected
       = "wm.setRoundedBorder"
       + "( wm.findWidgetById( \"w2\" ), 4, \"#00ff00\", 5, 4, 7, 8 );";
@@ -618,16 +615,13 @@ public class WidgetLCAUtil_Test extends TestCase {
 
   public void testWriteHelpListener() throws IOException {
     Composite widget = new Composite( shell, SWT.NONE );
-    CompositeLCA lca = new CompositeLCA();
     Fixture.fakeResponseWriter();
-    lca.preserveValues( widget );
-    Fixture.markInitialized( widget );
 
     widget.addHelpListener( new HelpListener() {
       public void helpRequested( HelpEvent e ) {
       }
     } );
-    lca.renderChanges( widget );
+    WidgetLCAUtil.writeHelpListener( widget );
 
     String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"help\", true );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -791,4 +785,146 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( widget, "help" ) );
   }
 
+  public void testRenderBackgroundGradient() throws IOException, JSONException {
+    Control control = new Composite( shell, SWT.NONE );
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color[] gradientColors = new Color[] {
+      Graphics.getColor( 0, 255, 0 ),
+      Graphics.getColor( 0, 0, 255 )
+    };
+    int[] percents = new int[] { 0, 100 };
+
+    gfxAdapter.setBackgroundGradient( gradientColors, percents, true );
+    WidgetLCAUtil.renderBackgroundGradient( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    JSONArray gradient = ( JSONArray )message.findSetProperty( control, "backgroundGradient" );
+    JSONArray colors = ( JSONArray )gradient.get( 0 );
+    JSONArray stops = ( JSONArray )gradient.get( 1 );
+    assertEquals( "#00ff00", colors.get( 0 ) );
+    assertEquals( "#0000ff", colors.get( 1 ) );
+    assertEquals( new Integer( 0 ), stops.get( 0 ) );
+    assertEquals( new Integer( 100 ), stops.get( 1 ) );
+    assertEquals( Boolean.TRUE, gradient.get( 2 ) );
+  }
+
+  public void testRenderBackgroundGradientHorizontal() throws IOException, JSONException {
+    Control control = new Composite( shell, SWT.NONE );
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color[] gradientColors = new Color[] {
+      Graphics.getColor( 0, 255, 0 ),
+      Graphics.getColor( 0, 0, 255 )
+    };
+    int[] percents = new int[] { 0, 100 };
+    
+    gfxAdapter.setBackgroundGradient( gradientColors, percents, false );
+    WidgetLCAUtil.renderBackgroundGradient( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    JSONArray gradient = ( JSONArray )message.findSetProperty( control, "backgroundGradient" );
+    JSONArray colors = ( JSONArray )gradient.get( 0 );
+    JSONArray stops = ( JSONArray )gradient.get( 1 );
+    assertEquals( "#00ff00", colors.get( 0 ) );
+    assertEquals( "#0000ff", colors.get( 1 ) );
+    assertEquals( new Integer( 0 ), stops.get( 0 ) );
+    assertEquals( new Integer( 100 ), stops.get( 1 ) );
+    assertEquals( Boolean.FALSE, gradient.get( 2 ) );
+  }
+  
+  public void testRenderBackgroundGradientUnchanged() throws IOException {
+    Control control = new Composite( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color[] gradientColors = new Color[] {
+      Graphics.getColor( 0, 255, 0 ),
+      Graphics.getColor( 0, 0, 255 )
+    };
+    int[] percents = new int[] { 0, 100 };
+    
+    gfxAdapter.setBackgroundGradient( gradientColors, percents, true );
+    WidgetLCAUtil.preserveBackgroundGradient( control );
+    WidgetLCAUtil.renderBackgroundGradient( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "backgroundGradient" ) );
+  }
+  
+  public void testResetBackgroundGradient() throws IOException {
+    Control control = new Composite( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( control );
+    Object adapter = control.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter gfxAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color[] gradientColors = new Color[] {
+      Graphics.getColor( 0, 255, 0 ),
+      Graphics.getColor( 0, 0, 255 )
+    };
+    int[] percents = new int[] { 0, 100 };
+    gfxAdapter.setBackgroundGradient( gradientColors, percents, true );
+    WidgetLCAUtil.preserveBackgroundGradient( control );
+    
+    gfxAdapter.setBackgroundGradient( null, null, true );
+    WidgetLCAUtil.renderBackgroundGradient( control );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( control, "backgroundGradient" ) );
+  }
+  
+  public void testRenderRoundedBorder() throws IOException, JSONException {
+    Widget widget = new Composite( shell, SWT.NONE );
+    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color color = Graphics.getColor( 0, 255, 0 );
+    
+    graphicsAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
+    WidgetLCAUtil.renderRoundedBorder( widget );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray border = ( JSONArray )message.findSetProperty( widget, "roundedBorder" );
+    assertEquals( 6, border.length() );
+    assertEquals( 2, border.getInt( 0 ) );
+    assertEquals( "#00ff00", border.getString( 1 ) );
+    assertEquals( 5, border.getInt( 2 ) );
+    assertEquals( 6, border.getInt( 3 ) );
+    assertEquals( 7, border.getInt( 4 ) );
+    assertEquals( 8, border.getInt( 5 ) );
+  }
+
+  public void testRenderRoundedBorderUnchanged() throws IOException {
+    Widget widget = new Composite( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( widget );
+    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color color = Graphics.getColor( 0, 255, 0 );
+    graphicsAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
+    
+    WidgetLCAUtil.preserveRoundedBorder( widget );
+    WidgetLCAUtil.renderRoundedBorder( widget );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( widget, "roundedBorder" ) );
+  }
+  
+  public void testResetRoundedBorder() throws IOException {
+    Widget widget = new Composite( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( widget );
+    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
+    Color color = Graphics.getColor( 0, 255, 0 );
+    graphicsAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
+    WidgetLCAUtil.preserveRoundedBorder( widget );
+    
+    graphicsAdapter.setRoundedBorder( 0, null, 0, 0, 0, 0 );
+    WidgetLCAUtil.renderRoundedBorder( widget );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( widget, "roundedBorder" ) );
+  }
+  
 }

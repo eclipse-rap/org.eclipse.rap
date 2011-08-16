@@ -902,6 +902,45 @@ public final class WidgetLCAUtil {
       writer.call( JSWriter.WIDGET_MANAGER_REF, "setBackgroundGradient", args );
     }
   }
+  
+  /**
+   * Determines whether the background gradient properties of the
+   * given widget have changed during the processing of the current request and
+   * if so, writes a protocol message to the response that updates the client-side
+   * background gradient properties of the specified widget.
+   *
+   * @param widget the widget whose background gradient properties to set
+   * @throws IOException
+   * @see {@link #preserveBackgroundGradient(Widget)}
+   * @since 1.5
+   */
+  public static void renderBackgroundGradient( Widget widget ) throws IOException {
+    if( hasBackgroundGradientChanged( widget ) ) {
+      Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+      IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
+      Color[] bgGradientColors = graphicsAdapter.getBackgroundGradientColors();
+      Object[] args = null;
+      if( bgGradientColors!= null ) {
+        String[] colorStrings = new String[ bgGradientColors.length ];
+        int[] bgGradientPercents = graphicsAdapter.getBackgroundGradientPercents();
+        Integer[] percents = new Integer[ bgGradientPercents.length ];
+        for( int i = 0; i < colorStrings.length; i++ ) {
+          colorStrings[ i ] = getColorValue( bgGradientColors[ i ].getRGB() );
+        }
+        for( int i = 0; i < bgGradientPercents.length; i++ ) {
+          percents[ i ] =  new Integer( bgGradientPercents[ i ] );
+        }
+        boolean bgGradientVertical = graphicsAdapter.isBackgroundGradientVertical();
+        args = new Object[] {
+          colorStrings,
+          percents,
+          new Boolean( bgGradientVertical )
+        };
+      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( "backgroundGradient", args );
+    }
+  }
 
   private static boolean hasBackgroundGradientChanged( Widget widget ) {
     Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
@@ -958,6 +997,40 @@ public final class WidgetLCAUtil {
     }
   }
 
+  /**
+   * Determines whether the rounded border properties of the given widget has
+   * changed during the processing of the current request and if so, writes
+   * a protocol message to the response that updates the client-side rounded border
+   * of the specified widget.
+   *
+   * @param widget the widget whose rounded border properties to set
+   * @throws IOException
+   * @see {@link #preserveRoundedBorder(Widget)}
+   * @since 1.5
+   */
+  public static void renderRoundedBorder( Widget widget ) throws IOException {
+    if( hasRoundedBorderChanged( widget ) ) {
+      Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+      IWidgetGraphicsAdapter graphicAdapter = ( IWidgetGraphicsAdapter )adapter;
+      Object[] args = null;
+      int width = graphicAdapter.getRoundedBorderWidth();
+      Color color = graphicAdapter.getRoundedBorderColor();
+      if( width > 0 && color != null ) {
+        Rectangle radius = graphicAdapter.getRoundedBorderRadius();
+        args = new Object[] {
+          new Integer( width ),
+          getColorValue( color.getRGB() ),
+          new Integer( radius.x ),
+          new Integer( radius.y ),
+          new Integer( radius.width ),
+          new Integer( radius.height )
+        };
+      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( "roundedBorder", args );
+    }
+  }
+  
   private static boolean hasRoundedBorderChanged( Widget widget ) {
     Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
