@@ -29,6 +29,7 @@ import org.eclipse.swt.internal.events.*;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
+import org.json.JSONObject;
 
 
 public class ShellLCA_Test extends TestCase {
@@ -439,6 +440,21 @@ public class ShellLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( shell, "defaultButton" ) );
   }
+  
+  public void testResetDefaultButton() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    ShellLCA lca = new ShellLCA();
+    Button button = new Button( shell, SWT.PUSH );
+    shell.setDefaultButton( button );
+    Fixture.preserveWidgets();
+
+    button.dispose();
+    lca.renderChanges( shell );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( shell, "defaultButton" ) );
+  }
 
   public void testRenderActiveControlIntiallyNull() throws IOException {
     ShellLCA lca = new ShellLCA();
@@ -476,6 +492,22 @@ public class ShellLCA_Test extends TestCase {
     assertNull( message.findSetOperation( shell, "activeControl" ) );
   }
 
+  public void testResetActiveControl() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Button button = new Button( shell, SWT.PUSH );
+    IShellAdapter adapter = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+    adapter.setActiveControl( button );
+    ShellLCA lca = new ShellLCA();
+    Fixture.preserveWidgets();
+    
+    adapter.setActiveControl( null );
+    lca.renderChanges( shell );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( shell, "activeControl" ) );
+  }
+  
   public void testRenderInitialBounds() throws Exception {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();

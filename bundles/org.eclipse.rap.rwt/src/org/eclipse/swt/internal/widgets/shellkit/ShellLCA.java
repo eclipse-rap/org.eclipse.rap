@@ -149,7 +149,11 @@ public final class ShellLCA extends AbstractWidgetLCA {
     Button defaultButton = shell.getDefaultButton();
     if( WidgetLCAUtil.hasChanged( shell, PROP_DEFAULT_BUTTON, defaultButton, null ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
-      clientObject.setProperty( "defaultButton", WidgetUtil.getId( defaultButton ) );
+      String defaultButtonId = null;
+      if( defaultButton != null ) {
+        defaultButtonId = WidgetUtil.getId( defaultButton );
+      }
+      clientObject.setProperty( "defaultButton", defaultButtonId );
     }
   }
 
@@ -189,8 +193,12 @@ public final class ShellLCA extends AbstractWidgetLCA {
     final Control activeControl = getActiveControl( shell );
     String prop = PROP_ACTIVE_CONTROL;
     if( WidgetLCAUtil.hasChanged( shell, prop, activeControl, null ) ) {
+      String activeControlId = null;
+      if( activeControl != null ) {
+        activeControlId = WidgetUtil.getId( activeControl );
+      }
       IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
-      clientObject.setProperty( "activeControl", WidgetUtil.getId( activeControl ) );
+      clientObject.setProperty( "activeControl", activeControlId );
     }
   }
 
