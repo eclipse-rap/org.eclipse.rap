@@ -38,10 +38,8 @@ qx.Class.define( "org.eclipse.swt.LabelUtil", {
       widget.setLabel( "" );
       // end workaround
       widget.setHideFocus( true );
-      widget.addEventListener( "mouseover",
-                               org.eclipse.swt.LabelUtil._onMouseOver );
-      widget.addEventListener( "mouseout",
-                               org.eclipse.swt.LabelUtil._onMouseOut );
+      widget.addEventListener( "mouseover", org.eclipse.swt.LabelUtil._onMouseOver );
+      widget.addEventListener( "mouseout", org.eclipse.swt.LabelUtil._onMouseOut );
     },
     
     setWrap : function( widget, wrap ) {

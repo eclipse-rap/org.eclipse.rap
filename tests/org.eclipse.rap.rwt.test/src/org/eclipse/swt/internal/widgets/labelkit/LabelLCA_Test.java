@@ -12,11 +12,14 @@
 package org.eclipse.swt.internal.widgets.labelkit;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -28,9 +31,24 @@ import org.eclipse.swt.widgets.*;
 
 public class LabelLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
+  @Override
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
+    Fixture.fakeNewRequest( display );
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    display.dispose();
+    Fixture.tearDown();
+  }
+  
   public void testStandardPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     Fixture.markInitialized( display );
     testPreserveValues( display, label );
@@ -179,8 +197,6 @@ public class LabelLCA_Test extends TestCase {
   }
 
   public void testSeparatorPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     int style = SWT.SEPARATOR | SWT.HORIZONTAL;
     Label label = new Label( shell, style );
     Fixture.markInitialized( display );
@@ -188,14 +204,11 @@ public class LabelLCA_Test extends TestCase {
   }
 
   public void testRenderText() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     LabelLCA lca = new LabelLCA();
     ControlLCAUtil.preserveValues( label );
     Fixture.markInitialized( label );
     Fixture.preserveWidgets();
-    Fixture.fakeResponseWriter();
     label.setText( "test" );
     lca.renderChanges( label );
     String expected = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"test\" );";
@@ -228,12 +241,9 @@ public class LabelLCA_Test extends TestCase {
   }
 
   public void testEscape() throws Exception {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     label.setText( "&E<s>ca'pe\" && text" );
     label.setToolTipText( "&E<s>ca'pe\" && tooltip" );
-    Fixture.fakeResponseWriter();
     StandardLabelLCA lca = new StandardLabelLCA();
     lca.renderChanges( label );
     String expected1 = "\"E&lt;s&gt;ca'pe&quot; &amp; text\"";
@@ -244,21 +254,24 @@ public class LabelLCA_Test extends TestCase {
   }
   
   public void testRenderDispose() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     label.dispose();
-    Fixture.fakeResponseWriter();
     LabelLCA labelLCA = new LabelLCA();
     labelLCA.renderDispose( label );
     assertEquals( "wm.dispose( \"w2\" );", Fixture.getAllMarkup() );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
+  public void testRenderCreate() throws IOException {
+    Label label = new Label( shell, SWT.WRAP );
+    LabelLCA lca = new LabelLCA();
+    
+    lca.renderInitialization( label );
+    
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( label );
+    assertEquals( "org.eclipse.swt.widgets.Label", operation.getType() );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "WRAP" ) );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

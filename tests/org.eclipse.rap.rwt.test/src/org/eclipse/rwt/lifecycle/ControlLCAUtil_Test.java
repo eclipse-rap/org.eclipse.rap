@@ -148,19 +148,17 @@ public class ControlLCAUtil_Test extends TestCase {
 
     // A non-initialized widget with no listener attached must not render
     // JavaScript code for adding activateListeners
-    AbstractWidgetLCA labelLCA = WidgetUtil.getLCA( label );
     Fixture.fakeResponseWriter();
-    labelLCA.renderChanges( label );
+    ControlLCAUtil.writeActivateListener( label );
     String markup = Fixture.getAllMarkup();
     assertEquals( false, WidgetUtil.getAdapter( label ).isInitialized() );
-    assertTrue( markup.length() > 0 );
     assertTrue( markup.indexOf( "addActivateListenerWidget" ) == -1 );
 
     // A non-initialized widget with a listener attached must render JavaScript
     // code for adding activateListeners
     ActivateEvent.addListener( label, listener );
     Fixture.fakeResponseWriter();
-    labelLCA.renderChanges( label );
+    ControlLCAUtil.writeActivateListener( label );
     markup = Fixture.getAllMarkup();
     assertEquals( false, WidgetUtil.getAdapter( label ).isInitialized() );
     assertTrue( markup.indexOf( "addActivateListenerWidget" ) != -1 );
@@ -169,8 +167,8 @@ public class ControlLCAUtil_Test extends TestCase {
     // JavaScript code for adding activateListeners
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( label );
-    labelLCA.preserveValues( label );
-    labelLCA.renderChanges( label );
+    ControlLCAUtil.preserveValues( label );
+    ControlLCAUtil.writeActivateListener( label );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "addActivateListenerWidget" ) == -1 );
 
@@ -178,16 +176,16 @@ public class ControlLCAUtil_Test extends TestCase {
     // JavaScript code for removing activateListeners
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( label );
-    labelLCA.preserveValues( label );
+    ControlLCAUtil.preserveValues( label );
     ActivateEvent.removeListener( label, listener );
-    labelLCA.renderChanges( label );
+    ControlLCAUtil.writeActivateListener( label );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "addActivateListenerWidget" ) == -1 );
     assertTrue( markup.indexOf( "removeActivateListenerWidget" ) != -1 );
 
     // When the shell is disposed of, no removeActivateListener must be rendered
     // Important when disposing of a shell with ShellListener#shellClosed
-    labelLCA.preserveValues( label );
+    ControlLCAUtil.preserveValues( label );
     ActivateEvent.addListener( label, listener );
     shell.dispose();
     ControlLCAUtil.writeActivateListener( label );

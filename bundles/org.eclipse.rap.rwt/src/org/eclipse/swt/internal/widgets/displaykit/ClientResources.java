@@ -109,6 +109,7 @@ final class ClientResources {
     "qx/util/Validation.js",
     "qx/ui/layout/impl/HorizontalBoxLayoutImpl.js",
     "qx/ui/basic/Atom.js",
+    "org/eclipse/swt/widgets/LabelAdapter.js",
     "qx/ui/basic/Label.js",
     "qx/ui/basic/Image.js",
     "qx/io/image/PreloaderManager.js",

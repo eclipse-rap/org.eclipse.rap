@@ -9,6 +9,7 @@
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
+
   extend : qx.core.Object,
   
   members : {

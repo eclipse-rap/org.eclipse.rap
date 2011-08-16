@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@ package org.eclipse.swt.internal.widgets.labelkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -22,8 +24,6 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Label;
 
 final class StandardLabelLCA extends AbstractLabelLCADelegate {
-
-  private static final String QX_TYPE = "qx.ui.basic.Atom";
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_ALIGNMENT = "alignment";
@@ -54,22 +54,18 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
   }
 
   void renderInitialization( final Label label ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( label );
-    writer.newWidget( QX_TYPE );
-    ControlLCAUtil.writeStyleFlags( label );
-    Boolean wrap = Boolean.valueOf( ( label.getStyle() & SWT.WRAP ) != 0 );
-    Object[] args = { label };
-    writer.callStatic( "org.eclipse.swt.LabelUtil.initialize", args );
-    Object[] argsWrap = { label, wrap };
-    writer.callStatic( "org.eclipse.swt.LabelUtil.setWrap", argsWrap );    
+    IClientObject clientObject = ClientObjectFactory.getForWidget( label );
+    clientObject.create( "org.eclipse.swt.widgets.Label" );
+    clientObject.setProperty( "parent", WidgetUtil.getId( label.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( label ) );
   }
 
   void renderChanges( final Label label ) throws IOException {
-    ControlLCAUtil.writeChanges( label );
+    ControlLCAUtil.renderChanges( label );
     writeText( label );
     writeImage( label );
     writeAlignment( label );
-    WidgetLCAUtil.writeCustomVariant( label );
+    WidgetLCAUtil.renderCustomVariant( label );
   }
 
   //////////////////////////////////////
@@ -130,4 +126,5 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
     }
     return result;
   }
+
 }

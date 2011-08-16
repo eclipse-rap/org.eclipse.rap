@@ -21,10 +21,8 @@ import org.eclipse.swt.widgets.Widget;
 
 public class LabelLCA extends AbstractWidgetLCA {
 
-  private static final AbstractLabelLCADelegate SEPARATOR_LCA
-    = new SeparatorLabelLCA();
-  private static final AbstractLabelLCADelegate LABEL_LCA
-    = new StandardLabelLCA();
+  private static final AbstractLabelLCADelegate SEPARATOR_LCA = new SeparatorLabelLCA();
+  private static final AbstractLabelLCADelegate LABEL_LCA = new StandardLabelLCA();
 
   public void preserveValues( final Widget widget ) {
     getDelegate( widget ).preserveValues( ( Label )widget );

@@ -78,9 +78,10 @@ public class DNDSupport_Test extends TestCase {
     Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
     dragSource.setTransfer( types );
     String dndSupport = "org.eclipse.rwt.DNDSupport.getInstance()";
-    String register = dndSupport + ".registerDragSource( w, [null, \"move\",null ]";
+    String wRef = "wm.findWidgetById( \"w3\" )";
+    String register = dndSupport + ".registerDragSource( " + wRef + ", [null, \"move\",null ]";
     int dataType = TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
-    String transferType = dndSupport + ".setDragSourceTransferTypes( w, [ \"" + dataType;
+    String transferType = dndSupport + ".setDragSourceTransferTypes( " + wRef + ", [ \"" + dataType;
     Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( register ) != -1 );
@@ -94,9 +95,10 @@ public class DNDSupport_Test extends TestCase {
     Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
     dropTarget.setTransfer( types );
     String dndSupport = "org.eclipse.rwt.DNDSupport.getInstance()";
-    String register = dndSupport + ".registerDropTarget( w, [ \"copy\",null,null ]";
+    String wRef = "wm.findWidgetById( \"w3\" )";
+    String register = dndSupport + ".registerDropTarget( " + wRef + ", [ \"copy\",null,null ]";
     int dataType = TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
-    String transferType = dndSupport + ".setDropTargetTransferTypes( w, [ \"" + dataType;
+    String transferType = dndSupport + ".setDropTargetTransferTypes( " + wRef + ", [ \"" + dataType;
     Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( register ) != -1 );
