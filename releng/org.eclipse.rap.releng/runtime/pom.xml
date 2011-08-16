@@ -41,12 +41,12 @@
     <repository>
       <id>requirements-base</id>
       <layout>p2</layout>
-      <url>file://${requirementsBaseRepository}</url>
+      <url>file://${requirementsBaseRepo}</url>
     </repository>
     <repository>
       <id>runtime</id>
       <layout>p2</layout>
-      <url>file://${runtimeRepository}</url>
+      <url>file://${runtimeRepo}</url>
     </repository>
   </repositories>
 
