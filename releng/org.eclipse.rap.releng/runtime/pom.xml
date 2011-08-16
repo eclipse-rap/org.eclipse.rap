@@ -39,14 +39,14 @@
   <!-- repositories to get pre-built pieces from -->
   <repositories>
     <repository>
-      <id>runtime.requirements-base</id>
+      <id>requirements-base</id>
       <layout>p2</layout>
-      <url>file://${baseRepoRoot}/runtime.requirements-base</url>
+      <url>file://${requirementsBaseRepository}</url>
     </repository>
     <repository>
       <id>runtime</id>
       <layout>p2</layout>
-      <url>file://${baseRepoRoot}/runtime</url>
+      <url>file://${runtimeRepository}</url>
     </repository>
   </repositories>
 
