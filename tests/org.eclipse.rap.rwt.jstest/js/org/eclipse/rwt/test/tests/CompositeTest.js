@@ -1,14 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
+
   extend : qx.core.Object,
   
   members : {
@@ -41,7 +43,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
       assertTrue( composite.hasState( "rwt_BORDER" ) );
     },
 
-    testCompositeBackgroundInitial : qx.core.Variant.select("qx.client", {
+    testCompositeBackgroundInitial : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var composite = new org.eclipse.swt.widgets.Composite();
@@ -57,7 +59,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
       "default" : function(){}
     } ),
         
-    testCompositeBackgroundFromColor : qx.core.Variant.select("qx.client", {
+    testCompositeBackgroundFromColor : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var composite = new org.eclipse.swt.widgets.Composite();
@@ -76,7 +78,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
       "default" : function(){}
     } ),
         
-    testCompositeBackgroundFromImage : qx.core.Variant.select("qx.client", {
+    testCompositeBackgroundFromImage : qx.core.Variant.select( "qx.client", {
       "mshtml" : function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var composite = new org.eclipse.swt.widgets.Composite();

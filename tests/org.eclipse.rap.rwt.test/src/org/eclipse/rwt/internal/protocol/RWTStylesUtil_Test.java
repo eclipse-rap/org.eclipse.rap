@@ -1,9 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others. All rights reserved. This
- * program and the accompanying materials are made available under the terms of
- * the Eclipse Public License v1.0 which accompanies this distribution, and is
- * available at http://www.eclipse.org/legal/epl-v10.html Contributors:
- * EclipseSource - initial API and implementation
+ * Copyright (c) 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
@@ -14,6 +17,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.widgets.*;
+
 
 public class RWTStylesUtil_Test extends TestCase {
 
@@ -51,19 +55,19 @@ public class RWTStylesUtil_Test extends TestCase {
     String[] allowedStyles = RWTStylesUtil.getAllowedStylesForWidget( shell );
     assertArrayEquals( shellStyles, allowedStyles );
   }
-  
+
   public void testGetStylesForCustomWidgetComposite() {
     SashForm form = new SashForm( shell, SWT.NONE );
-    
+
     String[] allowedStyles = RWTStylesUtil.getAllowedStylesForWidget( form );
 
-    String[] compositeStyles = new String[] { 
-      "NO_FOCUS", 
-      "NO_RADIO_GROUP", 
-      "H_SCROLL", 
-      "V_SCROLL", 
-      "BORDER", 
-      "LEFT_TO_RIGHT" 
+    String[] compositeStyles = new String[] {
+      "NO_FOCUS",
+      "NO_RADIO_GROUP",
+      "H_SCROLL",
+      "V_SCROLL",
+      "BORDER",
+      "LEFT_TO_RIGHT"
     };
     assertArrayEquals( compositeStyles, allowedStyles );
   }
