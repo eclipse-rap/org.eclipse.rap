@@ -17,6 +17,7 @@
   <properties>
     <tycho-version>0.12.0</tycho-version>
     <rap-version>1.5.0</rap-version>
+    <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
   </properties>
 
   <prerequisites>
