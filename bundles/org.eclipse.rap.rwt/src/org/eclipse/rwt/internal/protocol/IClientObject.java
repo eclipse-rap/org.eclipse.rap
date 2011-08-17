@@ -12,14 +12,9 @@ package org.eclipse.rwt.internal.protocol;
 
 import java.util.Map;
 
-import org.eclipse.swt.widgets.Widget;
-
 
 /**
- * A {@link IClientObject} acts as the connection between server and client objects e.g. widgets.
- * It provides helper methods to transfer changes from the server to the client. A
- * {@link IClientObject} is unique per widget and should always be instantiated using the
- * {@link ClientObjectFactory#getForWidget(Widget)} method.
+ * Instances of this interface are used to transfer changes to the remote object.
  *
  * @see ClientObjectFactory
  *
@@ -28,87 +23,85 @@ import org.eclipse.swt.widgets.Widget;
 public interface IClientObject {
 
   /**
-   * Advises the client to create a new instance of this client object's type.
-   * This is normally done in the * <code>renderInitialization</code> method of the widgets life-cycle adapter (LCA).
-   * @param type a type known to the client
+   * Advises the client to create the remote object with the given type.
+   *
+   * @param type the type of the remote object to be created
    */
   void create( String type );
 
   /**
-   * Sets the specified property of the client-side widget to a new value.
+   * Advises the remote object to set the specified property to the given value.
    *
-   * @param name the attributes name on the client widget.
-   * @param value the new value of the property.
+   * @param name the name of the property to set
+   * @param value the value to set
    */
   void setProperty( String name, int value );
 
   /**
-   * Sets the specified property of the client-side widget to a new value.
+   * Advises the remote object to set the specified property to the given value.
    *
-   * @param name the attributes name on the client widget.
-   * @param value the new value of the property.
+   * @param name the name of the property to set
+   * @param value the value to set
    */
   void setProperty( String name, double value );
 
   /**
-   * Sets the specified property of the client-side widget to a new value.
+   * Advises the remote object to set the specified property to the given value.
    *
-   * @param name the attributes name on the client widget.
-   * @param value the new value of the property.
+   * @param name the name of the property to set
+   * @param value the value to set
    */
   void setProperty( String name, boolean value );
 
   /**
-   * Sets the specified property of the client-side widget to a new value.
+   * Advises the remote object to set the specified property to the given value.
    *
-   * @param name the attributes name on the client widget.
-   * @param value the new value of the property.
+   * @param name the name of the property to set
+   * @param value the value to set
    */
   void setProperty( String name, String value );
 
   /**
-   * Sets the specified property of the client-side widget to a new value.
+   * Advises the remote object to set the specified property to the given value.
    *
-   * @param name the attributes name on the client widget.
-   * @param value the new value of the property.
+   * @param name the name of the property to set
+   * @param value the value to set
    */
   void setProperty( String name, Object value );
 
   /**
-   * This will add a listener to the client-side widget. This will tell the widget on which events
-   * it should react.
+   * Advises the remote object to notify the server when an event of the given type occurs.
    *
-   * @param eventName the name of the event the client-widget should react to.
+   * @param eventType the name of event type to listen
    */
-  void addListener( String eventName );
+  void addListener( String eventType );
 
   /**
-   * This will remove a listener from the client side widget of this {@link IClientObject}.
+   * Advises the remote object to stop sending notifications to the server for events of the given
+   * type.
    *
-   * @param eventName the name of the event the client-widget should no longer react to.
+   * @param eventType the name of event type to stop listening to
    */
-  void removeListener( String eventName );
+  void removeListener( String eventType );
 
   /**
-   * Calls a specific method on the client-side widget.
+   * Advises the client to call a specific method on the remote object.
    *
-   * @param method the method name to call.
-   * @param properties named properties to pass in the method call.
+   * @param method the name of the method to call
+   * @param properties the named properties to pass as arguments to the method call
    */
   void call( String method, Map<String, Object> properties );
 
   /**
-   * Tells the client that it should execute a script when the given mimetype is supported.
+   * Advises the client to execute a script with the given MIME type.
    *
-   * @param type the mimetype of the script, value should be something like "text/javascript".
-   * @param script the content of the script which will be executed. The server does not validate
-   * the content.
+   * @param type the MIME type of the scripting language, e.g. "text/javascript"
+   * @param script the script code to execute on the client
    */
   void executeScript( String type, String script );
 
   /**
-   * This method should be called right before a server-side widget will be disposed.
-   * After calling this method the client should destroy the client-object too.
+   * Advises the client to destroy the remote object.
    */
   void destroy();
 
