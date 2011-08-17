@@ -12,11 +12,18 @@
 org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
 
   factory : function( properties ) {
-    var styles = org.eclipse.rwt.protocol.AdapterUtil.createStyleMap( properties.style );
+    var adapterUtil = org.eclipse.rwt.protocol.AdapterUtil;
+    var styles = adapterUtil.createStyleMap( properties.style );
     var result = new org.eclipse.swt.widgets.Shell( styles );
-    org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
-    result.initialize();
+    adapterUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );
+    adapterUtil.callWithTarget( properties.parentShell, function( parentShell ) {
+      if( parentShell ) {
+        result.setParentShell( parentShell );    
+      }
+      result.initialize();
+      result.show();
+    } );
     return result;
   },
 
@@ -30,7 +37,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
     "showClose", 
     "allowClose",
     "resizable",
-    "parentShell",
     "image",
     "text",
     "alpha",
@@ -71,10 +77,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
       org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( widget ) {
         shell.setActiveControl( widget );
       } );
-    },
-    "parentShell" : function( shell, value ) {
-      var parent = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( value );
-      shell.setParentShell( parent );
     },
     "menu" : function( shell, value ) {
       org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( menu ) {

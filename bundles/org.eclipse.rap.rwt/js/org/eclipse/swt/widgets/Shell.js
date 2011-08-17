@@ -56,7 +56,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     this.addEventListener( "create", this._onCreate, this );
     this.__onwindowmousedown = qx.lang.Function.bind( this._onwindowmousedown, this );
     this.addToDocument();
-    this.show();
   },
 
   statics : {

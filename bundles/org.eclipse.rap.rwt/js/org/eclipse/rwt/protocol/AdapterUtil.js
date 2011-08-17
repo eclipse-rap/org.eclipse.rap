@@ -190,7 +190,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
       if( value ) {
         var width = value[ 0 ];
         var color = value[ 1 ];
-        var radii = value.splice( -4 );
+        var radii = value.slice( -4 );
         var border = new org.eclipse.rwt.Border( width, "rounded", color, radii );
         widget.setBorder( border );
       } else {
@@ -217,11 +217,11 @@ org.eclipse.rwt.protocol.AdapterUtil = {
   extendControlListeners : function( list ) {
     return list.concat( this._controlListeners );
   },
-  
+
   extendControlListenerHandler : function( handler ) {
     return qx.lang.Object.mergeWith( handler, this._controlListenerHandler, false );    
   },
-  
+
   getBackgroundGradientHandler : function() {
     return this._specialHandler.backgroundGradient;
   },
@@ -249,7 +249,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
 
   callWithTarget : function( id, fun ) {
     var wm = org.eclipse.swt.WidgetManager.getInstance();
-    if( id === null ) {
+    if( id == null ) {
       fun( null );
     } else {
       var target = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( id );

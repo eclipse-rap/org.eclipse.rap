@@ -214,18 +214,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
     },
 
     testSetParentShell : function() {
-      var shell = this._protocolCreateShell();
-      var shell2 = new org.eclipse.swt.widgets.Shell( { "style" : [] } );
+      var parent = this._protocolCreateShell( "wParent" );
+      var shell = this._protocolCreateShell( "w3", "wParent" );
       org.eclipse.rwt.test.fixture.TestUtil.flush();      
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      widgetManager.add( shell2, "wParent", true );
-      // done in PushButtonLCA
-      this._protocolSet( {
-        "parentShell" : "wParent"
-      } );
-      assertIdentical( shell2, shell.getTopLevelShell() );
-      shell2.destroy();
+      assertIdentical( parent, shell.getTopLevelShell() );
+      this._disposeShell( "wParent" );
+      this._disposeShell();
+    },
+
+    // See Bug 354912 - New Shell opens in background, not visible 
+    testSetParentShellZIndex : function() {
+      var parent = this._protocolCreateShell( "wParent" );
+      parent.setActive( true ); // otherwise it would not be automatically in front
       org.eclipse.rwt.test.fixture.TestUtil.flush();      
+
+      var shell = this._protocolCreateShell( "w3", "wParent" );
+      
+      org.eclipse.rwt.test.fixture.TestUtil.flush();      
+      assertTrue( shell.getZIndex() > parent.getZIndex() );
+      this._disposeShell( "wParent" );
       this._disposeShell();
     },
 
@@ -534,26 +541,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
     /////////
     // Helper
     
-    _disposeShell : function() {
+    _disposeShell : function( id ) {
       org.eclipse.rwt.test.fixture.TestUtil.flush(); // appear to call _beforeDisappear later
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var shell = widgetManager.findWidgetById( "w3" );
+      var shell = widgetManager.findWidgetById( id ? id : "w3" );
       shell.getWindowManager().setActiveWindow( null ); // remove shell without setting another
-      widgetManager.dispose( "w3" );
+      widgetManager.dispose( id ? id : "w3" );
     },
     
-    _protocolCreateShell : function() {
+    _protocolCreateShell : function( id, parentId ) {
       var processor = org.eclipse.rwt.protocol.Processor;
+      var props = {
+        "style" : [ "BORDER", "APPLICATION_MODAL", "ON_TOP", "TITLE", "TOOL", "SHEET", "MIN" ]
+      };
+      if( parentId ) {
+        props.parentShell = parentId;
+      }
       processor.processOperation( {
-        "target" : "w3",
+        "target" : id ? id : "w3",
         "action" : "create",
         "type" : "org.eclipse.swt.widgets.Shell",
-        "properties" : {
-          "style" : [ "BORDER", "APPLICATION_MODAL", "ON_TOP", "TITLE", "TOOL", "SHEET", "MIN" ]
-        }
+        "properties" : props
       } );
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var result = widgetManager.findWidgetById( "w3" );
+      var result = widgetManager.findWidgetById( id ? id : "w3" );
       return result;
     },
 
