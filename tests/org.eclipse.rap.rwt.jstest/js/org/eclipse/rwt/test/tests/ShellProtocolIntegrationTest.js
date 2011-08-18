@@ -301,6 +301,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       this._disposeShell();
     },
 
+    testResetToolTipText : function() {
+      var shell = this._protocolCreateShell();
+      this._protocolSet( { "toolTip" : "hello blue world" } );
+      this._protocolSet( { "toolTip" : "" } );
+      assertNull( shell.getToolTip() );
+      assertNull( shell.getUserData( "toolTipText" ) );
+      this._disposeShell();
+    },
+
     testSetVisibility : function() {
       // ControlLCAUTil states that visibility is false per default on the shell, 
       // which does not seem to be true?

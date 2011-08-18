@@ -90,7 +90,8 @@ org.eclipse.rwt.protocol.AdapterUtil = {
           }
         }
       } else {
-        this._removeToolTipPopup( widget );
+        widget.setToolTip( null );
+        widget.setUserData( "toolTipText", null );
       }
     },
     "font" : function( widget, fontData ) {
