@@ -39,6 +39,7 @@ import org.json.JSONException;
 public class ClientObject_Test extends TestCase {
 
   private Shell shell;
+  private String shellId;
   private IClientObject clientObject;
 
   @Override
@@ -47,6 +48,7 @@ public class ClientObject_Test extends TestCase {
     Fixture.fakeResponseWriter();
     Display display = new Display();
     shell = new Shell( display );
+    shellId = WidgetUtil.getId( shell );
     clientObject = ClientObjectFactory.getForWidget( shell );
   }
 
@@ -56,15 +58,15 @@ public class ClientObject_Test extends TestCase {
   }
 
   public void testCreate() {
-    clientObject.create( shell.getClass().getName() );
+    clientObject.create( "rwt.widgets.Shell" );
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
-    assertEquals( shell.getClass().getName(), operation.getType() );
+    assertEquals( shellId, operation.getTarget() );
+    assertEquals( "rwt.widgets.Shell", operation.getType() );
   }
 
   public void testCreateIncludesSetProperties() {
-    clientObject.create( shell.getClass().getName() );
+    clientObject.create( "rwt.widgets.Shell" );
     clientObject.setProperty( "foo", 23 );
 
     Message message = getMessage();
@@ -81,14 +83,14 @@ public class ClientObject_Test extends TestCase {
     clientObject.setProperty( "key5", "aString" );
 
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
+    assertEquals( shellId, operation.getTarget() );
     assertEquals( "value", operation.getProperty( "key" ) );
     assertEquals( new Integer( 2 ), operation.getProperty( "key2" ) );
     assertEquals( new Double( 3.5 ), operation.getProperty( "key3" ) );
     assertEquals( Boolean.TRUE, operation.getProperty( "key4" ) );
     assertEquals( "aString", operation.getProperty( "key5" ) );
   }
-  
+
   public void testSetPropertyForIntArray() throws JSONException {
     clientObject.setProperty( "key", new int[]{ 1, 2, 3 } );
 
@@ -101,7 +103,7 @@ public class ClientObject_Test extends TestCase {
   }
 
   public void testCreatePropertyGetStyle() {
-    clientObject.create( shell.getClass().getName()  );
+    clientObject.create( "rwt.widgets.Shell"  );
     clientObject.setProperty( "style", new String[] { "PUSH", "BORDER" } );
 
     CreateOperation operation = ( CreateOperation )getMessage().getOperation( 0 );
@@ -112,7 +114,7 @@ public class ClientObject_Test extends TestCase {
     clientObject.destroy();
 
     DestroyOperation operation = ( DestroyOperation )getMessage().getOperation( 0 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
+    assertEquals( shellId, operation.getTarget() );
   }
 
   public void testAddListener() {
@@ -120,7 +122,7 @@ public class ClientObject_Test extends TestCase {
     clientObject.addListener( "fake" );
 
     ListenOperation operation = ( ListenOperation )getMessage().getOperation( 0 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
+    assertEquals( shellId, operation.getTarget() );
     assertTrue( operation.listensTo( "selection" ) );
     assertTrue( operation.listensTo( "fake" ) );
   }
@@ -131,7 +133,7 @@ public class ClientObject_Test extends TestCase {
     clientObject.addListener( "fake2" );
 
     ListenOperation operation = ( ListenOperation )getMessage().getOperation( 0 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
+    assertEquals( shellId, operation.getTarget() );
     assertFalse( operation.listensTo( "selection" ) );
     assertFalse( operation.listensTo( "fake" ) );
     assertTrue( operation.listensTo( "fake2" ) );
@@ -141,7 +143,7 @@ public class ClientObject_Test extends TestCase {
     clientObject.call( "method", null );
 
     CallOperation operation = ( CallOperation )getMessage().getOperation( 0 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
+    assertEquals( shellId, operation.getTarget() );
     assertEquals( "method", operation.getMethodName() );
   }
 
@@ -154,7 +156,7 @@ public class ClientObject_Test extends TestCase {
     clientObject.call( "method2", properties );
 
     CallOperation operation = ( CallOperation )getMessage().getOperation( 1 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
+    assertEquals( shellId, operation.getTarget() );
     assertEquals( "method2", operation.getMethodName() );
     assertEquals( "a", operation.getProperty( "key1" ) );
     assertEquals( new Integer( 3 ), operation.getProperty( "key2" ) );
@@ -164,7 +166,7 @@ public class ClientObject_Test extends TestCase {
     clientObject.executeScript( "text/javascript", "var x = 5;" );
 
     ExecuteScriptOperation operation = ( ExecuteScriptOperation )getMessage().getOperation( 0 );
-    assertEquals( WidgetUtil.getId( shell ), operation.getTarget() );
+    assertEquals( shellId, operation.getTarget() );
     assertEquals( "text/javascript", operation.getScriptType() );
     assertEquals( "var x = 5;", operation.getScript() );
   }
@@ -176,7 +178,7 @@ public class ClientObject_Test extends TestCase {
     ContextProvider.getStateInfo().setResponseWriter( writer );
     IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
 
-    clientObject.create( shell.getClass().getName() );
+    clientObject.create( "rwt.widgets.Shell" );
     writer.write( "var x =5;" );
     clientObject.setProperty( "key", "value" );
     writer.finish();
