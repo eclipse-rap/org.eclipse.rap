@@ -703,12 +703,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       assertTrue( error instanceof Error );
       var message = error.message.toLowerCase();
       var expected1 = "operation \"set\" on target \"dummyid\" of type \"myclass\"";
-      var expected2 = "details: { \"height\" : 33 }"; 
-      var expected3 = "item: \"height\""; 
+      var expected2 = "fail = 99"; 
+      var expected3 = "item: \"fail\""; 
       var expected4 = "myerror";
       assertTrue( message.indexOf( expected1 ) !== - 1 );
       // TODO [tb] : implement enhanced information gathering
-      //assertTrue( message.indexOf( expected2 ) !== - 1 );
+      assertTrue( message.indexOf( expected2 ) !== - 1 );
       //assertTrue( message.indexOf( expected3 ) !== - 1 );
       assertTrue( message.indexOf( expected4 ) !== - 1 );
       registry.remove( "dummyType" );      

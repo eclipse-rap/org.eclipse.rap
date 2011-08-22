@@ -135,8 +135,17 @@ org.eclipse.rwt.protocol.Processor = {
     var target = this._getTarget( operation.target );
     msg += " of type \"" +  ( target && target.classname ? target.classname : target ) + "\"";
     msg += " failed:";
-    msg += "\n" + error;
+    msg += "\n" + error +"\n";
+    msg += "Properties: \n" + this._getPropertiesString( operation );
     throw new Error( msg );
+  },
+  
+  _getPropertiesString : function( operation ) {
+    var result = "";
+    for( var key in operation.properties ) {
+      result += key + " = " + operation.properties[ key ] + "\n";
+    }
+    return result;
   },
 
   _addTarget : function( target, targetId, type ) {

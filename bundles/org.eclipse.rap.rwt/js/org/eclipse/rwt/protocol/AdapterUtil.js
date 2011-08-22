@@ -169,6 +169,16 @@ org.eclipse.rwt.protocol.AdapterUtil = {
       } else {
         widget.removeEventListener( "keydown", helpRequested, context );
       }
+    },
+    "activate" : function( widget, value ) {
+      var shell = org.eclipse.rwt.protocol.AdapterUtil.getShell( widget );
+      if( shell ) {
+        if( value ) {
+          shell.addActivateListenerWidget( widget );
+        } else {
+          shell.removeActivateListenerWidget( widget );          
+        }
+      }
     }
   },
   

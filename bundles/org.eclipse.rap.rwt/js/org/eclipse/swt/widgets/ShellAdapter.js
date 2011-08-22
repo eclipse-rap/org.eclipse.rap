@@ -104,18 +104,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
     "shell"
   ] ),
 
-  listenerHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlListenerHandler( {
-    "activate" : function( widget, value ) {
-      var shell = org.eclipse.rwt.protocol.AdapterUtil.getShell( widget );
-      if( shell ) {
-        if( value ) {
-          shell.addActivateListenerWidget( widget );
-        } else {
-          shell.removeActivateListenerWidget( widget );          
-        }
-      }
-    }
-  } ),
+  listenerHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
 
   knownMethods : [
     "allowEvent",
