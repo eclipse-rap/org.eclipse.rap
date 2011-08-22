@@ -106,7 +106,9 @@ qx.Class.define("qx.ui.basic.Label",
 
         this._measureNode = node;
       }
-
+      if( !qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+        node.style.font = "";
+      }
       return node;
     }
   },

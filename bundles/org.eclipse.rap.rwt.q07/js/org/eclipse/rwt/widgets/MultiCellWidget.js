@@ -803,7 +803,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
           style.width = wrapWidth + "px";
         }
         var result;
-        if( org.eclipse.rwt.Client.isGecko() && element.getBoundingClientRect ) {
+        if( element.getBoundingClientRect ) {
           // See Bug 340841
           var bounds = element.getBoundingClientRect();
           // In FF 3.0.x getBoundingClientRect has no width/height properties
