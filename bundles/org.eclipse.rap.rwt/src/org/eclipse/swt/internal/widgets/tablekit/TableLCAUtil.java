@@ -117,7 +117,7 @@ public final class TableLCAUtil {
     return WidgetLCAUtil.hasChanged( table, PROP_ITEM_METRICS, metrics );
   }
 
-  static ItemMetrics[] getItemMetrics( final Table table ) {
+  static ItemMetrics[] getItemMetrics( Table table ) {
     int columnCount = Math.max( 1, table.getColumnCount() );
     ItemMetrics[] result = new ItemMetrics[ columnCount ];
     for( int i = 0; i < columnCount; i++ ) {
@@ -149,11 +149,19 @@ public final class TableLCAUtil {
         result[ i ].textLeft = textBounds.x + leftOffset;
         result[ i ].textWidth = textBounds.width;
       }
+    } else if( table.getColumnCount() > 0 ) {
+      for( int i = 0; i < columnCount; i++ ) {
+        TableColumn column = table.getColumn( i );
+        int columnLeft = tableAdapter.getColumnLeft( column );
+        int columnWidth = column.getWidth();
+        result[ i ].left = columnLeft;
+        result[ i ].width = columnWidth;
+      }
     }
     return result;
   }
 
-  private static ITableAdapter getTableAdapter( final Table table ) {
+  private static ITableAdapter getTableAdapter( Table table ) {
     return ( ITableAdapter )table.getAdapter( ITableAdapter.class );
   }
 

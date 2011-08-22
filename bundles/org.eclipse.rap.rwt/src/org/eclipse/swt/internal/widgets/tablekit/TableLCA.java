@@ -371,11 +371,11 @@ public final class TableLCA extends AbstractWidgetLCA {
     boolean hasHChanged = WidgetLCAUtil.hasChanged( table,
                                                     PROP_HAS_H_SCROLL_BAR,
                                                     hasHScrollBar( table ),
-                                                    Boolean.TRUE );
+                                                    Boolean.FALSE );
     boolean hasVChanged = WidgetLCAUtil.hasChanged( table,
                                                     PROP_HAS_V_SCROLL_BAR,
                                                     hasVScrollBar( table ),
-                                                    Boolean.TRUE );
+                                                    Boolean.FALSE );
     if( hasHChanged || hasVChanged ) {
       JSWriter writer = JSWriter.getWriterFor( table );
       Object[] args = new Object[]{
