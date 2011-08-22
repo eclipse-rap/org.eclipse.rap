@@ -47,23 +47,37 @@ public abstract class JsonValue {
     if( value == null ) {
       result = NULL;
     } else {
-      result = new JsonPrimitive( quoteString( value ) );
+      result = new JsonPrimitive( quoteAndEscapeString( value ) );
     }
     return result;
   }
 
-  static String quoteString( String string ) {
-    StringBuffer resultBuffer = new StringBuffer();
+  static String quoteAndEscapeString( String string ) {
+    StringBuilder resultBuffer = new StringBuilder();
     resultBuffer.append( '"' );
+    resultBuffer.append( escapeString( string ) );
+    resultBuffer.append( '"' );
+    return resultBuffer.toString();
+  }
+
+  static String escapeString( String string ) {
+    StringBuilder resultBuffer = new StringBuilder();
     int length = string.length();
     for( int i = 0; i < length; i++ ) {
       char ch = string.charAt( i );
       if( ch == '"' || ch == '\\' ) {
         resultBuffer.append( '\\' );
+        resultBuffer.append( ch );
+      } else if( ch == '\n' ) {
+        resultBuffer.append( "\\n" );
+      } else if( ch == '\r' ) {
+        resultBuffer.append( "\\r" );
+      } else if( ch == '\t' ) {
+        resultBuffer.append( "\\t" );
+      } else {
+        resultBuffer.append( ch );
       }
-      resultBuffer.append( ch );
     }
-    resultBuffer.append( '"' );
     return resultBuffer.toString();
   }
 

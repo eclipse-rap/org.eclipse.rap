@@ -20,7 +20,8 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.protocol.Message;
 import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.graphics.*;
@@ -202,57 +203,65 @@ public class LabelLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     testPreserveValues( display, label );
   }
+  
+  public void testRenderInitialText() throws IOException {
+    Label label = new Label( shell, SWT.NONE );
+    LabelLCA lca = new LabelLCA();
+    
+    lca.renderChanges( label );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( label, "text" ) );
+  }
 
   public void testRenderText() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     LabelLCA lca = new LabelLCA();
-    ControlLCAUtil.preserveValues( label );
-    Fixture.markInitialized( label );
-    Fixture.preserveWidgets();
+    
     label.setText( "test" );
     lca.renderChanges( label );
-    String expected = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"test\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    label.setText( "\ntest" );
-    lca.renderChanges( label );
-    expected = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"<br/>test\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    label.setText( "te\nst" );
-    lca.renderChanges( label );
-    expected = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"te<br/>st\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    label.setText( "test\n" );
-    lca.renderChanges( label );
-    expected = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"test<br/>\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    label.setText( "te\n\nst" );
-    lca.renderChanges( label );
-    expected = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"te<br/><br/>st\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    label.setText( "te\ns\nt" );
-    lca.renderChanges( label );
-    expected = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"te<br/>s<br/>t\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    // truncate zeros
-    label.setText( "te\000st" );
-    lca.renderChanges( label );
-    expected = "LabelUtil.setText( wm.findWidgetById( \"w2\" ), \"te\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "test", message.findSetProperty( label, "text" ) );
   }
 
-  public void testEscape() throws Exception {
+  public void testRenderTextWithQuotationMarks() throws IOException {
     Label label = new Label( shell, SWT.NONE );
-    label.setText( "&E<s>ca'pe\" && text" );
-    label.setToolTipText( "&E<s>ca'pe\" && tooltip" );
-    StandardLabelLCA lca = new StandardLabelLCA();
+    LabelLCA lca = new LabelLCA();
+    
+    label.setText( "te\"s't" );
     lca.renderChanges( label );
-    String expected1 = "\"E&lt;s&gt;ca'pe&quot; &amp; text\"";
-    String expected2 = "\"&amp;E&lt;s&gt;ca'pe&quot; &amp;&amp; tooltip\"";
-    String actual = Fixture.getAllMarkup();
-    assertTrue( actual.indexOf( expected1 ) != -1 );
-    assertTrue( actual.indexOf( expected2 ) != -1 );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "te\"s't", message.findSetProperty( label, "text" ) );
   }
-  
+
+  public void testRenderTextWithNewlines() throws IOException {
+    Label label = new Label( shell, SWT.NONE );
+    LabelLCA lca = new LabelLCA();
+    
+    label.setText( "\ntes\r\nt\n" );
+    lca.renderChanges( label );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "\ntes\r\nt\n", message.findSetProperty( label, "text" ) );
+  }
+
+  public void testRenderTextUnchanged() throws IOException {
+    Label label = new Label( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( label );
+    LabelLCA lca = new LabelLCA();
+    
+    label.setText( "foo" );
+
+    Fixture.preserveWidgets();
+    lca.renderChanges( label );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( label, "text" ) );
+  }
+
   public void testRenderDispose() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     label.dispose();

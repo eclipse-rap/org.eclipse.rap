@@ -25,9 +25,20 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Label", {
 
   destructor : org.eclipse.rwt.protocol.AdapterUtil.getControlDestructor(),
 
-  properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [] ),
+  properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
+    "text"
+  ] ),
 
-  propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {} ),
+  propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
+    "text" : function( widget, value ) {
+      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      // Order is important here: escapeText, replace line breaks
+      var text = encodingUtil.escapeText( value, true );
+      text = encodingUtil.replaceNewLines( text, "<br/>" );
+      text = encodingUtil.replaceWhiteSpaces( text ); // fixes bug 192634
+      org.eclipse.swt.LabelUtil.setText( widget, text );
+    }
+  } ),
 
   knownListeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [] ),
 

@@ -56,18 +56,28 @@ public class JsonValue_Test extends TestCase {
 
   public void testQuoteString() {
     // empty string
-    assertEquals( "\"\"", JsonValue.quoteString( "" ) );
+    assertEquals( "\"\"", JsonValue.quoteAndEscapeString( "" ) );
     // one char
-    assertEquals( "\"a\"", JsonValue.quoteString( "a" ) );
+    assertEquals( "\"a\"", JsonValue.quoteAndEscapeString( "a" ) );
     // leading and trailing white spaces
-    assertEquals( "\" a b \"", JsonValue.quoteString( " a b " ) );
-    // new line
-    assertEquals( "\"a\n\"", JsonValue.quoteString( "a\n" ) );
+    assertEquals( "\" a b \"", JsonValue.quoteAndEscapeString( " a b " ) );
+  }
+  
+  public void testEscapeStringWithQuotes() {
     // escape a\b -> "a\\b"
-    assertEquals( "\"a\\\\b\"", JsonValue.quoteString( "a\\b" ) );
+    assertEquals( "a\\\\b", JsonValue.escapeString( "a\\b" ) );
     // escape a"b -> "a\"b"
-    assertEquals( "\"a\\\"b\"", JsonValue.quoteString( "a\"b" ) );
+    assertEquals( "a\\\"b", JsonValue.escapeString( "a\"b" ) );
     // escape a\"b\" -> "a\\\"b\\\""
-    assertEquals( "\"a\\\\\\\"b\\\\\\\"\"", JsonValue.quoteString( "a\\\"b\\\"" ) );
+    assertEquals( "a\\\\\\\"b\\\\\\\"", JsonValue.escapeString( "a\\\"b\\\"" ) );
+  }
+
+  public void testEscapeStringWithNewLines() {
+    assertEquals( "a\\n", JsonValue.escapeString( "a\n" ) );
+    assertEquals( "a\\r\\nb", JsonValue.escapeString( "a\r\nb" ) );
+  }
+
+  public void testEscapeStringWithTabs() {
+    assertEquals( "a\\tb", JsonValue.escapeString( "a\tb" ) );
   }
 }

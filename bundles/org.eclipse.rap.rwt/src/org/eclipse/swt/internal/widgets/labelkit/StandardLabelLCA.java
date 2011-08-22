@@ -33,8 +33,6 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
     = "org.eclipse.swt.LabelUtil.setAlignment";
   private static final String JS_FUNC_LABEL_UTIL_SET_IMAGE
     = "org.eclipse.swt.LabelUtil.setImage";
-  private static final String JS_FUNC_LABEL_UTIL_SET_TEXT
-    = "org.eclipse.swt.LabelUtil.setText";
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
 
   void preserveValues( final Label label ) {
@@ -71,15 +69,11 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
   //////////////////////////////////////
   // Helping methods to write JavaScript
 
-  private static void writeText( final Label label ) throws IOException {
-    if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, label.getText(), "" ) ) {
-      // Order is important here: escapeText, replace line breaks
-      String text = WidgetLCAUtil.escapeText( label.getText(), true );
-      text = WidgetLCAUtil.replaceNewLines( text, "<br/>" );
-      text = EncodingUtil.replaceWhiteSpaces( text ); // fixes bug 192634
-      JSWriter writer = JSWriter.getWriterFor( label );
-      Object[] args = new Object[]{ label, text };
-      writer.callStatic( JS_FUNC_LABEL_UTIL_SET_TEXT, args );
+  private static void writeText( final Label label ) {
+    String newValue = label.getText();
+    if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, newValue, "" ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( label );
+      clientObject.setProperty( "text", newValue );
     }
   }
 

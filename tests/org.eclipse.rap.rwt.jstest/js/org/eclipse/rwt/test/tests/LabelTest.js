@@ -79,6 +79,33 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LabelTest", {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
       var labelObject = widgetManager.findWidgetById( "w3" ).getLabelObject();
       assertTrue( labelObject.getWrap() );
+    },
+
+    testSetText : function() {
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w2",
+        "action" : "create",
+        "type" : "org.eclipse.swt.widgets.Shell",
+        "properties" : {
+          "style" : [ "BORDER" ]
+        }
+      } );
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "org.eclipse.swt.widgets.Label",
+        "properties" : {
+          "style" : [ "WRAP" ],
+          "parent" : "w2",
+          "text" : "bla  \n<"
+        }
+      } );
+      org.eclipse.rwt.test.fixture.TestUtil.flush(); // LabelUtil delays setter for some reason
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var labelObject = widgetManager.findWidgetById( "w3" ).getLabelObject();
+      var expected = "bla&nbsp; <br/>&lt;"
+      assertEquals( expected, labelObject.getText() );
     }
 
   }

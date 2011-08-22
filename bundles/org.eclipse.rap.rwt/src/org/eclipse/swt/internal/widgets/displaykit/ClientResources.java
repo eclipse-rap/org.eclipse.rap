@@ -61,6 +61,7 @@ final class ClientResources {
     "org/eclipse/rwt/HtmlUtil.js",
     "org/eclipse/rwt/protocol/AdapterRegistry.js",
     "org/eclipse/rwt/protocol/AdapterUtil.js",
+    "org/eclipse/rwt/protocol/EncodingUtil.js",
     "qx/ui/core/Widget.js",
     "org/eclipse/rwt/WidgetRenderAdapter.js",
     "qx/html/Dimension.js",

@@ -56,7 +56,7 @@ public final class JsonObject extends JsonValue {
 
   private void doAppend( String key, String valueStr ) {
     buffer.append( count == 0 ? "\n" : ",\n" );
-    buffer.append( quoteString( key ) );
+    buffer.append( quoteAndEscapeString( key ) );
     buffer.append( ": " );
     buffer.append( valueStr );
     count++;
