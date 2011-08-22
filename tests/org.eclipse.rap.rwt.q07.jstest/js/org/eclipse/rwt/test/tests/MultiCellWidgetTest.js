@@ -286,7 +286,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       assertEquals( 0 , widget.getTotalSpacing() );
       this.disposeWidget( widget );      
     },
-    
+
+    testSettingCellWidthTwice : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget, true );
+      widget.setCellWidth( 0, 10 );
+      assertTrue( widget._isInGlobalJobQueue );
+      this.testUtil.flush();
+      widget.setCellWidth( 0, 10 );
+      assertIdentical( undefined, widget._isInGlobalJobQueue );  
+      this.disposeWidget( widget );      
+    },
+
     testInvalidateFrameDimension : function() {
       var widget = this.createDefaultWidget();
       widget.setPadding( 0, 0, 0, 0 );
