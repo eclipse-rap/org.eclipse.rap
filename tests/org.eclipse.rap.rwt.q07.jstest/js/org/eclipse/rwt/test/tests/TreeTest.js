@@ -3192,10 +3192,47 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertEquals( child0, tree._hoverItem )
       assertEquals( [ child0 ], tree._selection );
       child0.dispose();
-      assertNull( tree._topItem )
-      assertNull( tree._focusItem )
-      assertNull( tree._leadItem )
-      assertNull( tree._hoverItem )
+      testUtil.flush();
+      assertNull( tree._focusItem );
+      assertNull( tree._leadItem );
+      assertNull( tree._hoverItem );
+      assertEquals( [], tree._selection );
+      tree.destroy();
+    },
+    
+    testRemoveInderectlyDisposedItemFromState : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var wm = org.eclipse.swt.WidgetManager.getInstance();
+      var tree = this._createDefaultTree();
+      tree.setHasMultiSelection( true );
+      tree.setHeight( 15 );
+      tree.setItemHeight( 20 );
+      tree.setItemCount( 1 );
+      var child0 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
+      child0.setItemCount( 1 );
+      var child1 = new org.eclipse.rwt.widgets.TreeItem( child0, 0 );
+      child1.setTexts( [ "C1" ] );
+      child0.setExpanded( true );
+      tree.setTopItemIndex( 1 );
+      tree.setFocusItem( child1 );
+      testUtil.flush();      
+      assertEquals( child1, tree._topItem )
+      testUtil.mouseOver( tree._clientArea._children[ 0 ] );
+      testUtil.shiftClick( tree._clientArea._children[ 0 ] );
+      assertEquals( child1, tree._focusItem );
+      assertEquals( [ child1 ], tree._selection );
+      assertEquals( child1, tree._leadItem );
+      child0.dispose(); // Order is important for this test
+      child1.dispose();
+      var child0new = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
+      child0new.setItemCount( 1 );
+      var child1new = new org.eclipse.rwt.widgets.TreeItem( child0new, 0 );
+      child1new.setTexts( [ "C1new" ] );
+      child0new.setExpanded( true );
+      testUtil.flush();
+      assertEquals( child1new, tree._topItem );
+      assertNull( tree._leadItem );
+      assertNull( tree._focusItem );
       assertEquals( [], tree._selection );
       tree.destroy();
     },

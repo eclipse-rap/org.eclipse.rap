@@ -557,20 +557,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         }
       }
       if( event.getData() === "remove" ) {
-        var oldItem = event.getRelatedTarget();
-        this._deselectItem( oldItem, false );
-        if( this._topItem === oldItem ) {
-          this._topItem = null;
-        }
-        if( this._leadItem === oldItem ) {
-          this._leadItem = null;
-        }
-        if( this._focusItem === oldItem ) {
-          this._focusItem = null;
-        }
-        if( this._hoverItem === oldItem ) {
-          this._hoverItem = null;
-        }
+        this._topItem = null;
+        this.addToQueue( "checkDisposedItems" );
       }
       this._sendItemChange( item, event );
       this._renderItemChange( item, event );
@@ -901,6 +889,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
 
     _layoutPost : function( changes ) {
       this.base( arguments, changes );
+      if( changes[ "checkDisposedItems" ] ) {
+        this._checkDisposedItems();
+      }
       if( changes[ "scrollHeight" ] ) {
         this._updateScrollHeight();
       }
@@ -1317,7 +1308,26 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._scheduleUpdate();
     },
 
-    
+    _checkDisposedItems : function() {
+      if( this._focusItem && this._focusItem.isDisposed() ) {
+        this._focusItem = null;
+      }
+      if( this._hoverItem && this._hoverItem.isDisposed() ) {
+        this._hoverItem = null;
+      }
+      if( this._leadItem && this._leadItem.isDisposed() ) {
+        this._leadItem = null;
+      }
+      var i = 0;
+      while( i < this._selection.length ) {
+        if( this._selection[ i ].isDisposed() ) {
+          this._deselectItem( this._selection[ i ], false );
+        } else {
+          i++;
+        }
+      }
+    },
+
     ////////////////////////////
     // internal layout & theming
     
