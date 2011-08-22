@@ -835,6 +835,19 @@ public class TableLCA_Test extends TestCase {
     assertTrue( TableLCAUtil.hasItemMetricsChanged( table ) );
   }
 
+  public void testGetItemMetricsWithEmptyTable() {
+    Table table = new Table( shell, SWT.NONE );
+    table.setHeaderVisible( true );
+    for( int i = 0; i < 3; i++ ) {
+      TableColumn column = new TableColumn( table, SWT.NONE );
+      column.setText( "column" + i );
+      column.setWidth( 100 );
+    }
+    ItemMetrics[] metrics = TableLCAUtil.getItemMetrics( table );
+    assertEquals( 100, metrics[ 1 ].left );
+    assertEquals( 100, metrics[ 1 ].width );
+  }
+
   public void testAlwaysHideSelection() throws IOException {
     Table table = new Table( shell, SWT.NONE );
     assertEquals( Boolean.FALSE, TableLCA.alwaysHideSelection( table ) );
@@ -857,7 +870,7 @@ public class TableLCA_Test extends TestCase {
     lca.renderChanges( table );
     String markup = Fixture.getAllMarkup();
     String expected = "w.setScrollBarsVisible( false, false );";
-    assertTrue( markup.indexOf( expected ) != -1 );
+    assertTrue( markup.indexOf( expected ) == -1 );
   }
 
   public void testWriteScrollbarsSelectionListener() throws IOException {

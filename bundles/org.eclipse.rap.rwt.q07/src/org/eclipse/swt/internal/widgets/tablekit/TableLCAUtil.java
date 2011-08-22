@@ -149,6 +149,14 @@ public final class TableLCAUtil {
         result[ i ].textLeft = textBounds.x + leftOffset;
         result[ i ].textWidth = textBounds.width;
       }
+    } else if( table.getColumnCount() > 0 ) {
+      for( int i = 0; i < columnCount; i++ ) {
+        TableColumn column = table.getColumn( i );
+        int columnLeft = tableAdapter.getColumnLeft( column );
+        int columnWidth = column.getWidth();
+        result[ i ].left = columnLeft;
+        result[ i ].width = columnWidth;
+      }
     }
     return result;
   }
