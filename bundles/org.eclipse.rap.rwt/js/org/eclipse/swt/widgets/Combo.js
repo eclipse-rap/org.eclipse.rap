@@ -578,6 +578,10 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     _onKeyPress : function( evt ) {
       switch( evt.getKeyIdentifier() ) {
         case "Escape":
+        case "Down":
+        case "Up":
+        case "PageUp":
+        case "PageDown":
           evt.stopPropagation();
           break;
         case "Tab":
