@@ -312,7 +312,7 @@ public class Table extends Composite {
    *     imageMap( "foo", new Image( table.getDisplay(), inputStream );
    *     table.setData( Table.IMAGE_MAP, imageMap );
    *     Tableitem item = new TableItem( table, SWT.NONE );
-   *     item.setText( "&lt;html&gt;&lt;img src="foo" /&gt;&lt;/html&gt;" );
+   *     item.setText( {@literal "<html><img src="foo" /></html>"} );
    *     </pre></code>
    *   </dd>
    * </dl>
