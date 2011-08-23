@@ -330,7 +330,7 @@ public class BrowserLCA_Test extends TestCase {
       }
     } );
     String browserId = WidgetUtil.getId( browser );
-    Fixture.fakeRequestParam( browserId + "." + BrowserLCA.EVENT_PROGRESS_COMPLETED, "true" );
+    Fixture.fakeRequestParam( BrowserLCA.EVENT_PROGRESS_COMPLETED, browserId );
     Fixture.readDataAndProcessAction( browser );
     assertEquals( 2, log.size() );
     assertEquals( "changed", log.get( 0 ) );

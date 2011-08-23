@@ -554,7 +554,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         assertEquals( 1, testUtil.getRequestsSend() );
         var msg = testUtil.getMessage();
-        assertTrue( msg.indexOf( "w6.org.eclipse.swt.events.progressCompleted=true" ) != -1 );
+        assertTrue( msg.indexOf( "org.eclipse.swt.events.progressCompleted=w6" ) != -1 );
         browser.destroy();
       }
     ],
