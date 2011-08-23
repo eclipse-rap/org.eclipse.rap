@@ -29,6 +29,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._renderQueue = {};
     this._resizeLine = null;
     this._selectionTimestamp = null;
+    this._selectionOffsetX = null;
     this._delayedSelection = false;
     // Layout:
     this._headerHeight = 0;
@@ -856,13 +857,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       var leftClick = event.getButton() === "left";
       if( leftClick && mousedown && this.isFocusItem( item ) && this._selectionTimestamp != null ) {
         var stamp = new Date();
-        var diff = org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME;
-        if( stamp.getTime() - this._selectionTimestamp.getTime() < diff ) {
+        var offset = event.getPageX();
+        var timeDiff = org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME;
+        var offsetDiff = 8;
+        if (    stamp.getTime() - this._selectionTimestamp.getTime() < timeDiff 
+             && Math.abs( this._selectionOffsetX - offset ) < offsetDiff ) 
+        {
           result = true;
         }
       }
       if( mousedown && leftClick && !result ) {
         this._selectionTimestamp = new Date();
+        this._selectionOffsetX = event.getPageX();
       } else if( mousedown ) {
         this._selectionTimestamp = null;
       }

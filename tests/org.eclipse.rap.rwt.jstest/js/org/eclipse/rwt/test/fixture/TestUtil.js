@@ -153,11 +153,11 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       return result;       
     },
     
-    clickDOM : function( node ) {
-      var left = qx.event.type.MouseEvent.buttons.left;
-      this.fakeMouseEventDOM( node, "mousedown", left );
-      this.fakeMouseEventDOM( node, "mouseup", left );
-      this.fakeMouseEventDOM( node, "click", left );
+    clickDOM : function( node, left, top ) {
+      var button = qx.event.type.MouseEvent.buttons.left;
+      this.fakeMouseEventDOM( node, "mousedown", button, left, top );
+      this.fakeMouseEventDOM( node, "mouseup", button, left, top );
+      this.fakeMouseEventDOM( node, "click", button, left, top );
     },
       
     shiftClickDOM : function( node ) {
@@ -479,8 +479,8 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     /////////////////////////////
     // Event handling - Qooxdoo
 
-    click : function( widget ) {
-      this.clickDOM( widget._getTargetNode() );      
+    click : function( widget, left, top ) {
+      this.clickDOM( widget._getTargetNode(), left, top );      
     },
     
     doubleClick : function( widget ) {
