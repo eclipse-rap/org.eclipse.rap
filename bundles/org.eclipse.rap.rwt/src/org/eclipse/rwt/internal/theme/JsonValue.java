@@ -74,6 +74,10 @@ public abstract class JsonValue {
         resultBuffer.append( "\\r" );
       } else if( ch == '\t' ) {
         resultBuffer.append( "\\t" );
+      } else if( ch == '\u2028' ) {
+        resultBuffer.append( "\\u2028" );
+      } else if( ch == '\u2029' ) {
+        resultBuffer.append( "\\u2029" );
       } else {
         resultBuffer.append( ch );
       }

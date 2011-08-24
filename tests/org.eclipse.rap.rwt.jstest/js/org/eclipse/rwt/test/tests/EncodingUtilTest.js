@@ -73,14 +73,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EncodingUtilTest", {
       assertEquals( "Test\\", encodingUtil.escapeText( "Test\\", false ) );
     },
 
-    testEscapeNonPrintable: function() {
-      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
-      // Escape unicode characters \u2028 and \u2029 - see bug 304364
-      expected = "abc&#8232;abc&#8233;abc";
-      assertEquals( expected, encodingUtil.escapeText( "abc\u2028abc\u2029abc", false ) ); 
-      assertEquals( expected, encodingUtil.escapeText( "abc\u2028abc\u2029abc", true ) ); 
-    },
-
     testTruncateAtZero : function() {
       var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       assertEquals( String.fromCharCode( 0 ), "\000" );

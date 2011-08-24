@@ -80,4 +80,11 @@ public class JsonValue_Test extends TestCase {
   public void testEscapeStringWithTabs() {
     assertEquals( "a\\tb", JsonValue.escapeString( "a\tb" ) );
   }
+  
+  public void testEscapeStringWithSpecialCharacters() {
+    String expected = "\\u2028foo\\u2029";
+    assertEquals( expected, JsonValue.escapeString( "\u2028foo\u2029" ) );
+  }
+
+
 }

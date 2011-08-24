@@ -23,19 +23,13 @@ org.eclipse.rwt.protocol.EncodingUtil = {
   _escapeResolverMnemonics : null,
   _mnemonicFound : false,
 
-  _escapeMap : ( function() {
-    var result = {
-      "<" : "&lt;",
-      ">" : "&gt;",
-      "\"" : "&quot;",
-      "&&" : "&amp;",
-      "&" : "&amp;"
-    };
-    // These characters must not appear directly within the javascript code - see Bug 355500
-    result[ String.fromCharCode( 8232 ) ] = "&#8232;";
-    result[ String.fromCharCode( 8233 ) ] = "&#8233;";
-    return result;
-  } )(),
+  _escapeMap : {
+    "<" : "&lt;",
+    ">" : "&gt;",
+    "\"" : "&quot;",
+    "&&" : "&amp;",
+    "&" : "&amp;"
+  },
 
   /**
    * Replaces all occurrences of the characters <,>,&," with their corresponding HTML entities. 
@@ -67,7 +61,7 @@ org.eclipse.rwt.protocol.EncodingUtil = {
 
   truncateAtZero : function( text ) {
     var result = text;
-    var index = result.indexOf( String.fromCharCode( 0 ) );
+    var index = result.indexOf( "\000" );
     if( index !== -1 ) {
       result = result.substring( 0, index );
     }
