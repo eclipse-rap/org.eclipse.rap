@@ -7,7 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
- *    EclipseSource - bug 348056: Eliminate compiler warnings
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
@@ -23,9 +23,10 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
 class MeasurementOperator implements SerializableCompatibility {
-  
+
   private final Set<Probe> probes;
   private final Set<MeasurementItem> items;
+  private boolean isStartupProbeMeasurementPerformed;
 
   static MeasurementOperator getInstance() {
     return ( MeasurementOperator )SessionSingletonBase.getInstance( MeasurementOperator.class );
@@ -50,15 +51,18 @@ class MeasurementOperator implements SerializableCompatibility {
     readMeasuredFontProbeSizes();
     return readMeasuredTextSizes();
   }
-  
+
   void handleStartupProbeMeasurementResults() {
-    readMeasuredFontProbeSizes();
+    if( !isStartupProbeMeasurementPerformed ) {
+      readMeasuredFontProbeSizes();
+      isStartupProbeMeasurementPerformed = true;
+    }
   }
-  
+
   int getProbeCount() {
     return probes.size();
   }
-  
+
   void addProbeToMeasure( FontData fontData ) {
     Probe probe = RWTFactory.getProbeStore().getProbe( fontData );
     if( probe == null ) {
@@ -66,36 +70,36 @@ class MeasurementOperator implements SerializableCompatibility {
     }
     probes.add( probe );
   }
-  
+
   Probe[] getProbes() {
     return probes.toArray( new Probe[ probes.size() ] );
   }
-  
+
   void addItemToMeasure( MeasurementItem newItem ) {
     if( !requestContainsMeasurementResult( newItem ) ) {
       items.add( newItem );
     }
   }
-  
+
   int getItemCount() {
     return items.size();
   }
-  
+
   MeasurementItem[] getItems() {
     return items.toArray( new MeasurementItem[ items.size() ] );
   }
-  
+
   //////////////////
   // helping methods
-  
+
   private boolean hasProbesToMeasure() {
     return !probes.isEmpty();
   }
-  
+
   private void writeFontProbingStatement() {
     TextSizeUtilFacade.writeFontProbing();
   }
-  
+
   private void readMeasuredFontProbeSizes() {
     HttpServletRequest request = ContextProvider.getRequest();
     Iterator probeList = probes.iterator();
@@ -109,12 +113,12 @@ class MeasurementOperator implements SerializableCompatibility {
       }
     }
   }
-  
+
   private void createProbeResult( Probe probe, String value ) {
     Point size = getSize( value );
     ProbeResultStore.getInstance().createProbeResult( probe, size );
   }
-  
+
   private void addStartupProbesToBuffer() {
     Probe[] probeList = RWTFactory.getProbeStore().getProbes();
     probes.addAll( Arrays.asList( probeList ) );
