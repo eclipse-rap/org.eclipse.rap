@@ -338,8 +338,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var client = composite._clientArea;
       var hbar = composite._horzScrollBar;
       var vbar = composite._vertScrollBar;
-      var barWidth 
-        = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
+      var barWidth = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
       assertEquals( "scroll", client._getTargetNode().style.overflow );
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = testUtil.getElementBounds( client.getElement() );
@@ -355,6 +354,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       assertEquals( elementBounds.width, targetBounds.width );
       assertEquals( elementBounds.height, targetBounds.height );
       composite.destroy();
+    },
+
+    testSetContentLocationByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var processor = org.eclipse.rwt.protocol.Processor;
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var composite = this._createComposite();
+      widgetManager.add( composite, "w3", true );
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "org.eclipse.swt.widgets.Composite",
+        "properties" : {
+          "style" : [ "BORDER" ],
+          "parent" : "w3",
+          "bounds" : [ -40, -50, 399, 309 ]
+        }
+      } );
+      var child = widgetManager.findWidgetById( "w4" );
+      composite.setContent( child );
+      assertNull( child.getLeft() );
+      assertNull( child.getTop() );
     },
 
     /////////

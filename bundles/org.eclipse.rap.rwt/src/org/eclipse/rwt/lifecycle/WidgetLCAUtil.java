@@ -459,7 +459,6 @@ public final class WidgetLCAUtil {
         AbstractWidgetLCA parentLCA = WidgetUtil.getLCA( parent );
         newBounds = parentLCA.adjustCoordinates( widget, newBounds );
       }
-      // TODO [tb] : switch for ScrolledComposite
       int[] args = new int[] {
         newBounds.x,
         newBounds.y,

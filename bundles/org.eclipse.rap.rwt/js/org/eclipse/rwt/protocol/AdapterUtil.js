@@ -73,8 +73,10 @@ org.eclipse.rwt.protocol.AdapterUtil = {
       }
     },
     "bounds" : function( widget, value ) {
-      widget.setLeft( value[ 0 ] );
-      widget.setTop( value[ 1 ] );
+      if( widget.getUserData( "scrolledComposite" ) === null ) {
+        widget.setLeft( value[ 0 ] );
+        widget.setTop( value[ 1 ] );
+      }
       widget.setWidth( value[ 2 ] );
       widget.setHeight( value[ 3 ] );
     },
@@ -256,6 +258,28 @@ org.eclipse.rwt.protocol.AdapterUtil = {
       result[ styleArray[ i ] ] = true;
     }
     return result;
+  },
+  
+  setParent : function( widget, parentId ) {
+    var impl = this._setParentImplementation;
+    this.callWithTarget( parentId, function( parent ) {
+      impl( widget, parent );
+    } );
+  },
+
+  _setParentImplementation : function( widget, parent ) {
+    // TODO [rh] there seems to be a difference between add and setParent
+    //      when using add sizes and clipping are treated differently
+    // parent.add( widget );
+    if( parent instanceof org.eclipse.swt.custom.ScrolledComposite ) {
+      // [if] do nothing, parent is set in ScrolledComposite#setContent which is called from the 
+      // server-side - see bug 349161
+      widget.setUserData( "scrolledComposite", parent ); // Needed by "bounds" handler
+    } else if( parent instanceof org.eclipse.swt.widgets.ExpandBar ) {
+      parent.addWidget( widget );
+    } else {
+      widget.setParent( parent );
+    }
   },
 
   callWithTarget : function( id, fun ) {

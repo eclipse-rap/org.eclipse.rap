@@ -15,9 +15,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Composite
     var result = new org.eclipse.swt.widgets.Composite();
     org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );
-    org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( properties.parent, function( parent ) {
-      result.setParent( parent );
-    } );
+    org.eclipse.rwt.protocol.AdapterUtil.setParent( result, properties.parent );
     return result;
   },
   

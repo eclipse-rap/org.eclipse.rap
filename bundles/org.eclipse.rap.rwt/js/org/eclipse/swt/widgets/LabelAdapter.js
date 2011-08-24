@@ -15,9 +15,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Label", {
     var result = new qx.ui.basic.Atom();
     org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );
-    org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( properties.parent, function( parent ) {
-      result.setParent( parent );
-    } );
+    org.eclipse.rwt.protocol.AdapterUtil.setParent( result, properties.parent );
     org.eclipse.swt.LabelUtil.initialize( result );
     org.eclipse.swt.LabelUtil.setWrap( result, properties.style.indexOf( "WRAP" ) != -1 );    
     return result;
