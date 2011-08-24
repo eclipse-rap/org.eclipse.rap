@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
@@ -33,9 +34,9 @@ public class MeasurementOperator_Test extends TestCase {
   public void testHandleMeasurementRequest() {
     requestProbingOfFont1();
     requestMeasurementOfItem1();
-    
+
     operator.handleMeasurementRequests();
-    
+
     assertEquals( 1, operator.getProbeCount() );
     assertEquals( 1, operator.getItemCount() );
   }
@@ -46,26 +47,26 @@ public class MeasurementOperator_Test extends TestCase {
     operator.handleMeasurementRequests();
     requestProbingOfFont2();
     requestMeasurementOfItem2();
-    
+
     operator.handleMeasurementRequests();
 
     assertEquals( 2, operator.getProbeCount() );
     assertEquals( 2, operator.getItemCount() );
   }
-  
+
   public void testSubsequentCallsToHandleMeasurementRequestAreIdempotent() {
     requestProbingOfFont1();
     requestMeasurementOfItem1();
     operator.handleMeasurementRequests();
     requestProbingOfFont1();
     requestMeasurementOfItem1();
-    
+
     operator.handleMeasurementRequests();
-    
+
     assertEquals( 1, operator.getProbeCount() );
     assertEquals( 1, operator.getItemCount() );
   }
-  
+
   public void testHandleMeasurementResults() {
     requestProbingOfFont1();
     requestMeasurementOfItem1();
@@ -83,34 +84,46 @@ public class MeasurementOperator_Test extends TestCase {
     requestProbingOfFont1();
     fakeRequestParamWithMeasurementResultOfItem( MEASUREMENT_ITEM_1 );
     requestMeasurementOfItem1();
-    
+
     operator.handleMeasurementRequests();
 
     assertEquals( 0, operator.getItemCount() );
   }
-  
+
   public void testInitStartupProbes() {
     createProbeOfFont1();
-    
+
     MeasurementOperator measurementOperator = new MeasurementOperator();
-    
+
     assertEquals( 1, measurementOperator.getProbeCount() );
   }
-  
+
   public void testHandleStartupProbeMeasurementResults() {
     createProbeOfFont1();
     fakeRequestParamWithMeasurementResultOfProbe( FONT_DATA_1 );
     MeasurementOperator measurementOperator = new MeasurementOperator();
-    
+
     measurementOperator.handleStartupProbeMeasurementResults();
-    
+
     assertEquals( 0, measurementOperator.getProbeCount() );
+  }
+
+  public void testHandleStartupProbeMeasurementResultsExecutedOnce() {
+    requestProbing( FONT_DATA_1 );
+    fakeRequestParamWithMeasurementResultOfProbe( FONT_DATA_1 );
+    operator.handleStartupProbeMeasurementResults();
+    requestProbing( FONT_DATA_2 );
+    fakeRequestParamWithMeasurementResultOfProbe( FONT_DATA_2 );
+
+    operator.handleStartupProbeMeasurementResults();
+
+    assertEquals( 1, operator.getProbeCount() );
   }
 
   public void testAddItemToMeasure() {
     initializeSessionWithDisplay();
     MeasurementItem item = createItem();
-    
+
     operator.addItemToMeasure( item );
 
     checkMeasurementItemBuffering( item );
@@ -118,24 +131,24 @@ public class MeasurementOperator_Test extends TestCase {
 
   public void testAddItemToMeasureIsIdempotent() {
     MeasurementItem item = createItem();
-    
+
     operator.addItemToMeasure( item );
     operator.addItemToMeasure( item );
 
     checkMeasurementItemBuffering( item );
   }
-    
+
   public void testGetItemsToMeasureWithEmptyResult() {
     MeasurementItem[] items = MeasurementOperator.getInstance().getItems();
-    
+
     assertEquals( 0, items.length );
   }
-  
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     operator = MeasurementOperator.getInstance();
   }
-  
+
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
@@ -160,7 +173,7 @@ public class MeasurementOperator_Test extends TestCase {
   private void requestMeasurementOfItem1() {
     MeasurementOperator.getInstance().addItemToMeasure( MEASUREMENT_ITEM_1 );
   }
-  
+
   private void requestMeasurementOfItem2() {
     MeasurementOperator.getInstance().addItemToMeasure( MEASUREMENT_ITEM_2 );
   }
@@ -172,12 +185,12 @@ public class MeasurementOperator_Test extends TestCase {
   private void requestProbingOfFont2() {
     requestProbing( FONT_DATA_2 );
   }
-  
+
   private void requestProbing( FontData fontData1 ) {
     Fixture.fakeNewRequest();
     operator.addProbeToMeasure( fontData1 );
   }
-  
+
   private MeasurementItem createItem() {
     FontData fontData = new FontData( "arial", 13, SWT.BOLD );
     String textToMeasure = "textToMeasure";
@@ -188,11 +201,11 @@ public class MeasurementOperator_Test extends TestCase {
   private MeasurementItem createItem( FontData fontData, String textToMeasure, int wrapWidth ) {
     return new MeasurementItem( textToMeasure, fontData, wrapWidth );
   }
-  
+
   private Display initializeSessionWithDisplay() {
     return new Display();
   }
-  
+
   private void checkMeasurementItemBuffering( MeasurementItem item ) {
     assertEquals( 1, MeasurementOperator.getInstance().getItems().length );
     assertSame( item, MeasurementOperator.getInstance().getItems() [ 0 ] );

@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
@@ -23,6 +24,7 @@ import org.eclipse.swt.graphics.Point;
 class MeasurementOperator {
   private final Set probes;
   private final Set items;
+  private boolean isStartupProbeMeasurementPerformed;
 
   static MeasurementOperator getInstance() {
     return ( MeasurementOperator )SessionSingletonBase.getInstance( MeasurementOperator.class );
@@ -47,15 +49,18 @@ class MeasurementOperator {
     readMeasuredFontProbeSizes();
     return readMeasuredTextSizes();
   }
-  
+
   void handleStartupProbeMeasurementResults() {
-    readMeasuredFontProbeSizes();
+    if( !isStartupProbeMeasurementPerformed ) {
+      readMeasuredFontProbeSizes();
+      isStartupProbeMeasurementPerformed = true;
+    }
   }
-  
+
   int getProbeCount() {
     return probes.size();
   }
-  
+
   void addProbeToMeasure( FontData fontData ) {
     Probe probe = RWTFactory.getProbeStore().getProbe( fontData );
     if( probe == null ) {
@@ -110,12 +115,12 @@ class MeasurementOperator {
       }
     }
   }
-  
+
   private void createProbeResult( Probe probe, String value ) {
     Point size = getSize( value );
     ProbeResultStore.getInstance().createProbeResult( probe, size );
   }
-  
+
   private void addStartupProbesToBuffer() {
     Probe[] probeList = RWTFactory.getProbeStore().getProbes();
     probes.addAll( Arrays.asList( probeList ) );
