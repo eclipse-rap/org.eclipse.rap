@@ -42,30 +42,18 @@ qx.Class.define( "org.eclipse.swt.custom.ScrolledComposite", {
 
     setContent : function( widget ) {
       if( this._content != null ) {
-        this._content.removeEventListener( "changeParent", 
-                                          this._onContentRemove, 
-                                          this );
-        this._content.removeEventListener( "changeWidth", 
-                                          this._onContentResize, 
-                                          this );
-        this._content.removeEventListener( "changeHeight", 
-                                          this._onContentResize, 
-                                          this );
+        this._content.removeEventListener( "changeParent", this._onContentRemove, this );
+        this._content.removeEventListener( "changeWidth", this._onContentResize, this );
+        this._content.removeEventListener( "changeHeight", this._onContentResize, this );
         this._clientArea.remove( this._content );
       }
       this._content = widget;
       this._onContentResize();
       if( this._content != null ) {
         this._clientArea.add( this._content );
-        this._content.addEventListener( "changeParent", 
-                                        this._onContentRemove, 
-                                        this );
-        this._content.addEventListener( "changeWidth", 
-                                        this._onContentResize, 
-                                        this );
-        this._content.addEventListener( "changeHeight", 
-                                        this._onContentResize, 
-                                        this );
+        this._content.addEventListener( "changeParent", this._onContentRemove, this );
+        this._content.addEventListener( "changeWidth", this._onContentResize, this );
+        this._content.addEventListener( "changeHeight", this._onContentResize, this );
       }
     },
     
