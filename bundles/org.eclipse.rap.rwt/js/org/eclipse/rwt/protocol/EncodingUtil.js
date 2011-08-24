@@ -12,7 +12,7 @@
 namespace( "org.eclipse.rwt.protocol" );
 
 org.eclipse.rwt.protocol.EncodingUtil = {
-  
+
   _escapeRegExp : /(&|<|>|\"|\u2028|\u2029)/g,
   _escapeRegExpMnemonics : /(&&|&|<|>|"|\u2028|\u2029)/g,
   _newlineRegExp : /(\r\n|\n|\r)/g,
@@ -23,15 +23,19 @@ org.eclipse.rwt.protocol.EncodingUtil = {
   _escapeResolverMnemonics : null,
   _mnemonicFound : false,
 
-  _escapeMap : {
-    "<" : "&lt;",
-    ">" : "&gt;",
-    "\"" : "&quot;",
-    "&&" : "&amp;",
-    "&" : "&amp;",
-    "\u2028" : "&#8232;", 
-    "\u2029" : "&#8233;"
-  },
+  _escapeMap : ( function() {
+    var result = {
+      "<" : "&lt;",
+      ">" : "&gt;",
+      "\"" : "&quot;",
+      "&&" : "&amp;",
+      "&" : "&amp;"
+    };
+    // These characters must not appear directly within the javascript code - see Bug 355500
+    result[ String.fromCharCode( 8232 ) ] = "&#8232;";
+    result[ String.fromCharCode( 8233 ) ] = "&#8233;";
+    return result;
+  } )(),
 
   /**
    * Replaces all occurrences of the characters <,>,&," with their corresponding HTML entities. 
@@ -63,7 +67,7 @@ org.eclipse.rwt.protocol.EncodingUtil = {
 
   truncateAtZero : function( text ) {
     var result = text;
-    var index = result.indexOf( "\000" );
+    var index = result.indexOf( String.fromCharCode( 0 ) );
     if( index !== -1 ) {
       result = result.substring( 0, index );
     }
