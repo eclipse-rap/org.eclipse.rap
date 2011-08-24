@@ -36,7 +36,7 @@ public class ControlsDemo implements IEntryPoint, Serializable {
     Shell shell = new Shell( display, SWT.TITLE | SWT.MAX | SWT.RESIZE );
     shell.setBounds( 10, 10, 850, 600 );
     createContent( shell );
-    shell.setText( "SWT Controls Demo" );
+    shell.setText( "RWT\u2028 Controls\u2029 Demo" );
     Image image = loadImage( display, "resources/shell.gif" );
     shell.setImage( image );
     shell.layout();
