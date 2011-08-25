@@ -33,6 +33,7 @@ class TextSizeRecalculation {
     Rectangle boundsBuffer = shell.getBounds();
     bufferScrolledCompositeOrigins( shell );
     clearLayoutBuffers( shell );
+    markLayoutNeeded( shell );
     enlargeShell( shell );
     rePackControls( shell );
     enlargeScrolledCompositeContent( shell );
@@ -49,6 +50,10 @@ class TextSizeRecalculation {
     WidgetTreeVisitor.accept( shell, new ClearLayoutBuffersVisitor() );
   }
 
+  private void markLayoutNeeded( Shell shell ) {
+    WidgetTreeVisitor.accept( shell, new MarkLayoutNeededVisitor() );
+  }
+
   private void bufferScrolledCompositeOrigins( Shell shell ) {
     WidgetTreeVisitor.accept( shell, new BufferScrolledCompositeOriginsVisitor() );
   }
@@ -60,7 +65,7 @@ class TextSizeRecalculation {
   private void restoreScrolledCompositeOrigins( Shell shell ) {
     WidgetTreeVisitor.accept( shell, new RestoreScrolledCompositeOriginsVisitor() );
   }
-  
+
   private void restoreShellSize( Shell shell, Rectangle bufferedBounds ) {
     setShellSize( shell, bufferedBounds );
   }
@@ -87,7 +92,7 @@ class TextSizeRecalculation {
     IDisplayAdapter displayAdapter = ( IDisplayAdapter )adapter;
     return displayAdapter.getShells();
   }
-  
+
   private void setShellSize( Shell shell, Rectangle bounds ) {
     getShellAdapter( shell ).setBounds( bounds );
   }
