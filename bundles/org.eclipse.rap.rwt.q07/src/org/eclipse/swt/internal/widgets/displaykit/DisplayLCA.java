@@ -23,6 +23,7 @@ import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.dnd.DragSource;
@@ -239,9 +240,10 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
                        ? oldExitConfirmation != null
                        : !exitConfirmation.equals( oldExitConfirmation );
     if( hasChanged ) {
-      String exitConfirmationStr = exitConfirmation == null
-                                   ? "null"
-                                   : "\"" + exitConfirmation + "\"";
+      String exitConfirmationStr = "null";
+      if( exitConfirmation != null ) {
+        exitConfirmationStr = "\"" + EncodingUtil.escapeDoubleQuoted( exitConfirmation ) + "\"";
+      }
       String code = "qx.core.Init.getInstance().getApplication()"
                     + ".setExitConfirmation( "
                     + exitConfirmationStr
