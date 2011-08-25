@@ -75,7 +75,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       } );
       testUtil.pressOnce( bar._thumb._getTargetNode(), "Enter" );
       testUtil.pressOnce( bar._thumb._getTargetNode(), "Down" );
-      console.log( log );
       assertEquals( 6, log.length );
       bar.destroy();
     },
