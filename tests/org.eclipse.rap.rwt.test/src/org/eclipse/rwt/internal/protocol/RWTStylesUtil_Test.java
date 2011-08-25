@@ -72,6 +72,36 @@ public class RWTStylesUtil_Test extends TestCase {
     assertArrayEquals( compositeStyles, allowedStyles );
   }
 
+  public void testGetStylesForSubclassedControl() {
+    SubclassedControl control = new SubclassedControl( shell, SWT.NONE );
+
+    String[] allowedStyles = RWTStylesUtil.getAllowedStylesForWidget( control );
+
+    String[] labelStyles = new String[] {
+      "SEPARATOR",
+      "HORIZONTAL",
+      "VERTICAL",
+      "SHADOW_IN",
+      "SHADOW_OUT",
+      "SHADOW_NONE",
+      "CENTER",
+      "LEFT",
+      "RIGHT",
+      "WRAP",
+      "BORDER",
+      "LEFT_TO_RIGHT"
+    };
+    assertArrayEquals( labelStyles, allowedStyles );
+  }
+
+  public void testGetStylesForSubclassedWidget() {
+    SubclassedWidget widget = new SubclassedWidget( shell, SWT.NONE );
+
+    String[] allowedStyles = RWTStylesUtil.getAllowedStylesForWidget( widget );
+
+    assertArrayEquals( new String[ 0 ], allowedStyles );
+  }
+
   public void testGetStylesForButton() {
     String[] buttonStyles = new String[]{
       "CHECK",
@@ -89,5 +119,17 @@ public class RWTStylesUtil_Test extends TestCase {
     Button button = new Button( shell, SWT.PUSH );
     String[] allowedStyles = RWTStylesUtil.getAllowedStylesForWidget( button );
     assertArrayEquals( buttonStyles, allowedStyles );
+  }
+
+  public final class SubclassedControl extends Label {
+    public SubclassedControl( Composite parent, int style ) {
+      super( parent, style );
+    }
+  }
+
+  public final class SubclassedWidget extends Widget {
+    public SubclassedWidget( Widget parent, int style ) {
+      super( parent, style );
+    }
   }
 }

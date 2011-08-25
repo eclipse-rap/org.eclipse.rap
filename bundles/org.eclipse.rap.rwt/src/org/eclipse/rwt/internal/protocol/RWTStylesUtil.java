@@ -14,9 +14,9 @@ import org.eclipse.swt.widgets.*;
 
 
 public final class RWTStylesUtil {
-  
+
   private enum AllowedStyles {
-  
+
     // TODO[hs]: We need to apply our code format to this list after it's completed.
     BUTTON( Button.class.getName(), new String[] { "CHECK", "PUSH", "RADIO", "TOGGLE", "FLAT", "WRAP", "LEFT", "RIGHT", "CENTER", "BORDER", "LEFT_TO_RIGHT" } ),
     COLOR_DIALOG( ColorDialog.class.getName(), new String[] { "APPLICATION_MODAL", "PRIMARY_MODAL", "SYSTEM_MODAL" } ),
@@ -54,40 +54,47 @@ public final class RWTStylesUtil {
     TOOL_TIP( ToolTip.class.getName(), new String[] { "BALLOON", "ICON_ERROR", "ICON_INFORMATION", "ICON_WARNING" } ),
     TREE( Tree.class.getName(), new String[] { "SINGLE", "MULTI", "CHECK", "FULL_SELECTION", "VIRTUAL", "NO_SCROLL", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     TREE_COLUMN( TreeColumn.class.getName(), new String[] { "LEFT", "RIGHT", "CENTER" } ),
-    CANVAS( Canvas.class.getName(), new String[] { "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } );
-    
+    CANVAS( Canvas.class.getName(), new String[] { "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
+    WIDGET( Widget.class.getName(), new String[] {} );
+
     private String[] styles;
     private String widgetType;
-    
+
     AllowedStyles( String widgetType, String[] styles ) {
       this.widgetType = widgetType;
       this.styles = styles;
     }
-    
+
     public String getWidgetType() {
       return widgetType;
     }
-    
+
     public String[] getStyles() {
       return styles;
     }
   }
-  
+
   public static String[] getAllowedStylesForWidget( Widget widget ) {
+    Class widgetClass = widget.getClass();
+    String[] result = getAllowedStylesByClass( widgetClass );
+    while( result == null ) {
+      widgetClass = widgetClass.getSuperclass();
+      result = getAllowedStylesByClass( widgetClass );
+    }
+    return result;
+  }
+
+  private static String[] getAllowedStylesByClass( Class clazz ) {
     String[] result = null;
-    String widgetType = widget.getClass().getName();
+    String widgetType = clazz.getName();
     for( AllowedStyles allowedStyles : AllowedStyles.values() ) {
       if( allowedStyles.getWidgetType().equals( widgetType ) ) {
         result = allowedStyles.getStyles();
       }
     }
-    // TODO [tb] : find universal solution for subclassed widgets
-    if( result == null && widget instanceof Composite ) {
-      result = AllowedStyles.COMPOSITE.getStyles();
-    }
     return result;
   }
-  
+
   private RWTStylesUtil() {
     // prevent instantiation
   }
