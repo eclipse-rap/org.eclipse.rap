@@ -33,6 +33,7 @@
   <modules>
     <module>runtime-feature</module>
     <module>runtime.requirements-feature</module>
+    <module>runtime.sdk-feature</module>
     <module>runtime-repository</module>
   </modules>
 
