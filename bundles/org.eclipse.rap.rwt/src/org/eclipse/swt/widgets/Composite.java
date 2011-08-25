@@ -40,7 +40,7 @@ public class Composite extends Scrollable {
   private Control[] tabList;
   int backgroundMode;
 
-  Composite( final Composite parent ) {
+  Composite( Composite parent ) {
     // prevent instantiation from outside this package
     super( parent );
     controlHolder = new ControlHolder();
@@ -73,7 +73,7 @@ public class Composite extends Scrollable {
    * @see SWT#NO_RADIO_GROUP
    * @see Widget#getStyle
    */
-  public Composite( final Composite parent, final int style ) {
+  public Composite( Composite parent, int style ) {
     super( parent, style );
     controlHolder = new ControlHolder();
   }
@@ -110,7 +110,7 @@ public class Composite extends Scrollable {
     return controlHolder.getControls();
   }
 
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result;
     if( adapter == IControlHolderAdapter.class ) {
       result = controlHolder;
@@ -134,7 +134,7 @@ public class Composite extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setLayout( final Layout layout ) {
+  public void setLayout( Layout layout ) {
     checkWidget();
     this.layout = layout;
   }
@@ -177,7 +177,7 @@ public class Composite extends Scrollable {
    *
    * @since 1.3
    */
-  public void setLayoutDeferred( final boolean defer ) {
+  public void setLayoutDeferred( boolean defer ) {
     checkWidget();
     if( !defer ) {
       if( --layoutCount == 0 ) {
@@ -285,7 +285,7 @@ public class Composite extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void layout( final boolean changed ) {
+  public void layout( boolean changed ) {
     checkWidget();
     if( layout != null ) {
       layout( changed, false );
@@ -325,7 +325,7 @@ public class Composite extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void layout( final boolean changed, final boolean all ) {
+  public void layout( boolean changed, boolean all ) {
     checkWidget();
     if( layout != null || all ) {
       markLayout( changed, all );
@@ -359,7 +359,7 @@ public class Composite extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void layout( final Control[] changed ) {
+  public void layout( Control[] changed ) {
     checkWidget();
     if( changed == null ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -481,7 +481,7 @@ public class Composite extends Scrollable {
     }
   }
 
-  void markLayout( final boolean changed, final boolean all ) {
+  void markLayout( boolean changed, boolean all ) {
     if( layout != null ) {
       state |= LAYOUT_NEEDED;
       if( changed ) {
@@ -496,11 +496,11 @@ public class Composite extends Scrollable {
     }
   }
 
-  void updateLayout( final boolean all ) {
+  void updateLayout( boolean all ) {
     updateLayout( true, all );
   }
 
-  void updateLayout( final boolean resize, final boolean all ) {
+  void updateLayout( boolean resize, boolean all ) {
     Composite parent = findDeferredControl();
     if( parent != null ) {
       parent.state |= LAYOUT_CHILD;
@@ -526,10 +526,7 @@ public class Composite extends Scrollable {
     return layoutCount > 0 ? this : parent.findDeferredControl();
   }
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     Point size;
     boolean hasChanged = changed;
@@ -653,7 +650,7 @@ public class Composite extends Scrollable {
    * @see SWT
    * @since 1.1
    */
-  public void setBackgroundMode( final int mode ) {
+  public void setBackgroundMode( int mode ) {
     checkWidget();
     backgroundMode = mode;
     Control[] children = controlHolder.getControls();
@@ -713,7 +710,7 @@ public class Composite extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setTabList( final Control[] tabList ) {
+  public void setTabList( Control[] tabList ) {
     checkWidget();
     Control[] newList = tabList;
     if( tabList != null ) {
@@ -801,7 +798,7 @@ public class Composite extends Scrollable {
   /////////////////////////////////////
   // Helping method used by computeSize
 
-  Point minimumSize( final int wHint, final int hHint, final boolean changed ) {
+  Point minimumSize( int wHint, int hHint, boolean changed ) {
     Control[] children = getChildren();
     Rectangle clientArea = getClientArea();
     int width = 0, height = 0;
@@ -823,7 +820,7 @@ public class Composite extends Scrollable {
     }
   }
 
-  void removeControl( final Control control ) {
+  void removeControl( Control control ) {
     if( controlHolder.contains( control ) ) {
       controlHolder.remove( control );
     }
@@ -832,7 +829,7 @@ public class Composite extends Scrollable {
   ////////////////
   // Resize helper
 
-  void notifyResize( final Point oldSize ) {
+  void notifyResize( Point oldSize ) {
     // TODO [rh] revise this: the SWT code (method sendResize) first calls
     //      'super' (fires resize events) and *then* does the layouting
     if( !oldSize.equals( getSize() ) ) {
@@ -851,7 +848,7 @@ public class Composite extends Scrollable {
   ///////////////////
   // Skinning support
 
-  void reskinChildren( final int flags ) {
+  void reskinChildren( int flags ) {
     super.reskinChildren( flags );
     Control[] children = controlHolder.getControls();
     for( int i = 0; i < children.length; i++ ) {
