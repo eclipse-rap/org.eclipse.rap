@@ -15,6 +15,7 @@ import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.widgets.ICompositeAdapter;
 import org.eclipse.swt.widgets.ControlHolder.IControlHolderAdapter;
 
 /**
@@ -34,6 +35,7 @@ import org.eclipse.swt.widgets.ControlHolder.IControlHolderAdapter;
  */
 public class Composite extends Scrollable {
 
+  private final ICompositeAdapter compositeAdapter;
   private Layout layout;
   int layoutCount;
   private final ControlHolder controlHolder = new ControlHolder();
@@ -43,6 +45,7 @@ public class Composite extends Scrollable {
   Composite( final Composite parent ) {
     // prevent instantiation from outside this package
     super( parent );
+    compositeAdapter = new CompositeAdapter();
   }
 
   /**
@@ -74,6 +77,7 @@ public class Composite extends Scrollable {
    */
   public Composite( final Composite parent, final int style ) {
     super( parent, style );
+    compositeAdapter = new CompositeAdapter();
   }
 
   void initState() {
@@ -112,6 +116,8 @@ public class Composite extends Scrollable {
     Object result;
     if( adapter == IControlHolderAdapter.class ) {
       result = controlHolder;
+    } else if( adapter == ICompositeAdapter.class ) {
+      result = compositeAdapter;
     } else {
       result = super.getAdapter( adapter );
     }
@@ -833,7 +839,7 @@ public class Composite extends Scrollable {
   void notifyResize( final Point oldSize ) {
     // TODO [rh] revise this: the SWT code (method sendResize) first calls
     //      'super' (fires resize events) and *then* does the layouting
-    if( !oldSize.equals( getSize() ) ) {
+    if( !oldSize.equals( getSize() ) || isLayoutNeeded() ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           if( !isDisposed() && layout != null ) {
@@ -844,6 +850,10 @@ public class Composite extends Scrollable {
       } );
     }
     super.notifyResize( oldSize );
+  }
+
+  private boolean isLayoutNeeded() {
+    return ( state & LAYOUT_NEEDED ) != 0;
   }
 
   ///////////////////
@@ -858,5 +868,16 @@ public class Composite extends Scrollable {
         child.reskin( flags );
       }
     }
+  }
+
+  ////////////////
+  // Inner classes
+
+  private final class CompositeAdapter implements ICompositeAdapter {
+
+    public void markLayoutNeeded() {
+      Composite.this.markLayout( false, false );
+    }
+
   }
 }

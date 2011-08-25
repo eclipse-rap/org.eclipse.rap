@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
@@ -21,7 +22,7 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ControlUtil;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
 
@@ -29,60 +30,63 @@ public class TextSizeRecalculation_Test extends TestCase {
   private static final FontData FONT_DATA = new FontData( "arial", 23, SWT.BOLD );
   private static final String TEXT_TO_MEASURE = "textToMeasure";
 
+  private Display display;
   private Shell shell;
   private Composite scrolledCompositeContent;
   private ResizeListener shellResizeListener;
   private ResizeListener scrolledCompositeContentResizeListener;
   private Label packedControl;
-  
-  
-  private final class ResizeListener implements ControlListener {
-    private int resizeCount;
-    
-    public void controlResized( ControlEvent e ) {
-      resizeCount++;
-    }
 
-    public void controlMoved( ControlEvent e ) {
-    }
-
-    public int resizeCount() {
-      return resizeCount;
-    }
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
   }
-  
- 
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testExecute() {
     createWidgetTree();
     registerResizeListeners();
     turnOnImmediateResizeEventHandling();
     fakeMeasurementResults();
     TextSizeRecalculation recalculation = new TextSizeRecalculation();
-    
+
     recalculation.execute();
-  
+
     checkResizeTookPlace();
     checkRePackTookPlace();
   }
-  
+
   public void testIControlAdapterIsPacked() {
-    Display display = new Display();
     Shell control = new Shell( display );
     assertFalse( ControlUtil.getControlAdapter( control ).isPacked() );
-    
+
     control.pack();
     assertTrue( ControlUtil.getControlAdapter( control ).isPacked() );
-    
+
     control.setBounds( new Rectangle( 1, 1, 2, 2 ) );
     assertFalse( ControlUtil.getControlAdapter( control ).isPacked() );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-  
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testLayoutOfCompositeWithFixedSize() {
+    turnOnImmediateResizeEventHandling();
+    createShellWithLayout();
+    Composite fixedSizeComposite = createFixedSizeComposite();
+    Label label = new Label( fixedSizeComposite, SWT.NONE );
+    label.setText( "text" );
+    shell.pack();
+    // simulate smaller size because of text estimation
+    label.setSize( 5, 5 );
+    ResizeListener resizeListener = new ResizeListener();
+    label.addControlListener( resizeListener );
+
+    TextSizeRecalculation recalculation = new TextSizeRecalculation();
+    recalculation.execute();
+
+    assertEquals( 1, resizeListener.resizeCount() );
   }
 
   private void checkResizeTookPlace() {
@@ -91,7 +95,7 @@ public class TextSizeRecalculation_Test extends TestCase {
     assertEquals( 2, shellResizeListener.resizeCount() );
     assertEquals( 2, scrolledCompositeContentResizeListener.resizeCount() );
   }
-  
+
   private void checkRePackTookPlace() {
     assertEquals( new Point( 100, 22 ), packedControl.getSize() );
   }
@@ -105,8 +109,7 @@ public class TextSizeRecalculation_Test extends TestCase {
   }
 
   private void createWidgetTree() {
-    Display display = new Display();
-    createShellWithLayout( display );
+    createShellWithLayout();
     createScrolledCompositeWithContent();
     createPackedControl();
   }
@@ -124,9 +127,15 @@ public class TextSizeRecalculation_Test extends TestCase {
     scrolledComposite.setContent( scrolledCompositeContent );
   }
 
-  private void createShellWithLayout( Display display ) {
-    shell = new Shell( display );
-    shell.setLayout( new FillLayout() );
+  private void createShellWithLayout() {
+    shell.setLayout( new GridLayout() );
+  }
+
+  private Composite createFixedSizeComposite() {
+    Composite result = new Composite( shell, SWT.NONE );
+    result.setLayout( new GridLayout() );
+    result.setLayoutData( new GridData( 200, SWT.DEFAULT ) );
+    return result;
   }
 
   private void registerResizeListeners() {
@@ -135,7 +144,7 @@ public class TextSizeRecalculation_Test extends TestCase {
     shell.addControlListener( shellResizeListener );
     scrolledCompositeContent.addControlListener( scrolledCompositeContentResizeListener );
   }
-  
+
   private void turnOnImmediateResizeEventHandling() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
   }
@@ -145,4 +154,20 @@ public class TextSizeRecalculation_Test extends TestCase {
     RWTFactory.getTextSizeStorage().storeFont( FONT_DATA );
     TextSizeStorageUtil.store( FONT_DATA, TEXT_TO_MEASURE, 0, new Point( 100, 20 ) );
   }
+
+  private final class ResizeListener implements ControlListener {
+    private int resizeCount;
+
+    public void controlResized( ControlEvent e ) {
+      resizeCount++;
+    }
+
+    public void controlMoved( ControlEvent e ) {
+    }
+
+    public int resizeCount() {
+      return resizeCount;
+    }
+  }
+
 }
