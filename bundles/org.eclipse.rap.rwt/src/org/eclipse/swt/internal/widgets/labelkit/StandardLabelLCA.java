@@ -59,7 +59,7 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   void renderChanges( final Label label ) throws IOException {
     ControlLCAUtil.renderChanges( label );
-    writeText( label );
+    renderText( label );
     writeImage( label );
     writeAlignment( label );
     WidgetLCAUtil.renderCustomVariant( label );
@@ -68,7 +68,7 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
   //////////////////////////////////////
   // Helping methods to write JavaScript
 
-  private static void writeText( final Label label ) {
+  private static void renderText( final Label label ) {
     String newValue = label.getText();
     if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, newValue, "" ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( label );
