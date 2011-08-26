@@ -76,14 +76,14 @@ public class TextSizeRecalculation_Test extends TestCase {
     createShellWithLayout();
     Composite fixedSizeComposite = createFixedSizeComposite();
     Label label = new Label( fixedSizeComposite, SWT.NONE );
-    label.setText( "text" );
+    label.setFont( new Font( display, FONT_DATA ) );
+    label.setText( TEXT_TO_MEASURE );
     shell.pack();
-    // simulate smaller size because of text estimation
-    label.setSize( 5, 5 );
     ResizeListener resizeListener = new ResizeListener();
     label.addControlListener( resizeListener );
-
+    fakeMeasurementResults();
     TextSizeRecalculation recalculation = new TextSizeRecalculation();
+
     recalculation.execute();
 
     assertEquals( 1, resizeListener.resizeCount() );
@@ -134,7 +134,7 @@ public class TextSizeRecalculation_Test extends TestCase {
   private Composite createFixedSizeComposite() {
     Composite result = new Composite( shell, SWT.NONE );
     result.setLayout( new GridLayout() );
-    result.setLayoutData( new GridData( 200, SWT.DEFAULT ) );
+    result.setLayoutData( new GridData( 300, 50 ) );
     return result;
   }
 
