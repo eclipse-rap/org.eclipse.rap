@@ -1,19 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.tabitemkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
@@ -24,12 +25,14 @@ import org.eclipse.swt.widgets.*;
 public class TabItemLCA extends AbstractWidgetLCA {
 
   private static final String PROP_SELECTED = "selected";
+  private static final String PROP_CONTROL = "control";
 
   public void preserveValues( Widget widget ) {
     TabItem item = ( TabItem )widget;
     ItemLCAUtil.preserve( item );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( PROP_SELECTED, Boolean.valueOf( isSelected( item ) ) );
+    adapter.preserve( PROP_CONTROL, item.getControl() );
     WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
     WidgetLCAUtil.preserveCustomVariant( item );
   }
@@ -63,7 +66,7 @@ public class TabItemLCA extends AbstractWidgetLCA {
 
   public void renderChanges( Widget widget ) throws IOException {
     TabItem tabItem = ( TabItem )widget;
-    setJSParent( tabItem );
+    writeControlJsParent( tabItem );
     ItemLCAUtil.writeChanges( tabItem );
     writeSelection( tabItem );
     WidgetLCAUtil.writeToolTip( tabItem, tabItem.getToolTipText() );
@@ -92,14 +95,19 @@ public class TabItemLCA extends AbstractWidgetLCA {
     return selectionIndex != -1 && parent.getItem( selectionIndex ) == tabItem;
   }
 
-  private static void setJSParent( TabItem tabItem ) {
+  private static void writeControlJsParent( TabItem tabItem ) {
     Control control = tabItem.getControl();
-    if( control != null ) {
-      StringBuffer replacementId = new StringBuffer();
-      replacementId.append( WidgetUtil.getId( tabItem ) );
-      replacementId.append( "pg" );
-      WidgetAdapter controlAdapter = ( WidgetAdapter )WidgetUtil.getAdapter( control );
-      controlAdapter.setJSParent( replacementId.toString() );
+    if( WidgetLCAUtil.hasChanged( tabItem, PROP_CONTROL, control, null ) ) {
+      if( control != null ) {
+        final JSWriter writer = JSWriter.getWriterFor( control );
+        final String jsParentId = WidgetUtil.getId( tabItem ) + "pg";
+        WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( control );
+        adapter.setRenderRunnable( new IRenderRunnable() {
+          public void afterRender() throws IOException {
+            writer.setParent( jsParentId );
+          }
+        } );
+      }
     }
   }
 }
