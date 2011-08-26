@@ -121,11 +121,10 @@ public final class ShellLCA extends AbstractWidgetLCA {
   // Helping methods
 
   private static void renderText( Shell shell ) {
-    String text = shell.getText();
-    if( WidgetLCAUtil.hasChanged( shell, PROP_TEXT, text, "" ) ) {
-      text = WidgetLCAUtil.escapeText( text, false );
+    String newValue = shell.getText();
+    if( WidgetLCAUtil.hasChanged( shell, PROP_TEXT, newValue, "" ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
-      clientObject.setProperty( "text", text );
+      clientObject.setProperty( "text", newValue );
     }
   }
 

@@ -51,8 +51,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
   ] ),
 
   propertyMapping : {
-    "image" : "icon",
-    "text" : "caption"
+    "image" : "icon"
   },
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
@@ -97,6 +96,10 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
     "minimumSize" : function( shell, value ) {
       shell.setMinWidth( value[ 0 ] );
       shell.setMinHeight( value[ 1 ] );
+    },
+    "text" : function( shell, value ) {
+      var text = org.eclipse.rwt.protocol.EncodingUtil.escapeText( value, false )
+      shell.setCaption( text );
     }
   } ),
 
