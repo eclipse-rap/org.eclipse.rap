@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
@@ -35,15 +36,15 @@ class TextSizeRecalculation {
     clearLayoutBuffers( shell );
     markLayoutNeeded( shell );
     enlargeShell( shell );
-    rePackControls( shell );
+    rePack( shell );
     enlargeScrolledCompositeContent( shell );
     clearLayoutBuffers( shell );
     restoreShellSize( shell, boundsBuffer );
     restoreScrolledCompositeOrigins( shell );
   }
 
-  private void rePackControls( Shell shell ) {
-    WidgetTreeVisitor.accept( shell, new RePackControlsVisitor() );
+  private void rePack( Shell shell ) {
+    WidgetTreeVisitor.accept( shell, new RePackVisitor() );
   }
 
   private void clearLayoutBuffers( Shell shell ) {

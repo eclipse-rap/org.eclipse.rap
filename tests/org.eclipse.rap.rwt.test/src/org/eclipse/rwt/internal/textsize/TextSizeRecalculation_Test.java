@@ -36,6 +36,8 @@ public class TextSizeRecalculation_Test extends TestCase {
   private ResizeListener shellResizeListener;
   private ResizeListener scrolledCompositeContentResizeListener;
   private Label packedControl;
+  private TableColumn packedTableColumn;
+  private TreeColumn packedTreeColumn;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
@@ -98,6 +100,8 @@ public class TextSizeRecalculation_Test extends TestCase {
 
   private void checkRePackTookPlace() {
     assertEquals( new Point( 100, 22 ), packedControl.getSize() );
+    assertEquals( 104, packedTableColumn.getWidth() );
+    assertEquals( 104, packedTreeColumn.getWidth() );
   }
 
   private Rectangle getInitialCompositeBounds() {
@@ -112,13 +116,30 @@ public class TextSizeRecalculation_Test extends TestCase {
     createShellWithLayout();
     createScrolledCompositeWithContent();
     createPackedControl();
+    createPackedColumns();
   }
 
   private void createPackedControl() {
     packedControl = new Label( scrolledCompositeContent, SWT.NONE );
-    packedControl.setFont( new Font( scrolledCompositeContent.getDisplay(), FONT_DATA ) );
+    packedControl.setFont( new Font( display, FONT_DATA ) );
     packedControl.setText( TEXT_TO_MEASURE );
     packedControl.pack();
+  }
+
+  private void createPackedColumns() {
+    Table table = new Table( scrolledCompositeContent, SWT.NONE );
+    table.setHeaderVisible( true );
+    table.setFont( new Font( display, FONT_DATA ) );
+    packedTableColumn = new TableColumn( table, SWT.NONE );
+    packedTableColumn.setText( TEXT_TO_MEASURE );
+    packedTableColumn.pack();
+
+    Tree tree = new Tree( scrolledCompositeContent, SWT.NONE );
+    tree.setHeaderVisible( true );
+    tree.setFont( new Font( display, FONT_DATA ) );
+    packedTreeColumn = new TreeColumn( tree, SWT.NONE );
+    packedTreeColumn.setText( TEXT_TO_MEASURE );
+    packedTreeColumn.pack();
   }
 
   private void createScrolledCompositeWithContent() {
@@ -153,6 +174,7 @@ public class TextSizeRecalculation_Test extends TestCase {
     ProbeResultStore.getInstance().createProbeResult( new Probe( FONT_DATA ), new Point( 4, 20 ) );
     RWTFactory.getTextSizeStorage().storeFont( FONT_DATA );
     TextSizeStorageUtil.store( FONT_DATA, TEXT_TO_MEASURE, 0, new Point( 100, 20 ) );
+    TextSizeStorageUtil.store( FONT_DATA, TEXT_TO_MEASURE, SWT.DEFAULT, new Point( 100, 20 ) );
   }
 
   private final class ResizeListener implements ControlListener {

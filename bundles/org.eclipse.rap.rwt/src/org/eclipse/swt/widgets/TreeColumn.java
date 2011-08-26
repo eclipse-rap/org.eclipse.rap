@@ -18,6 +18,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.SerializableCompatibility;
+import org.eclipse.swt.internal.widgets.IColumnAdapter;
 import org.eclipse.swt.internal.widgets.treekit.TreeThemeAdapter;
 
 
@@ -42,15 +44,18 @@ import org.eclipse.swt.internal.widgets.treekit.TreeThemeAdapter;
  */
 public class TreeColumn extends Item {
 
-  Tree parent;
-  String displayText = "";
-  int width, itemImageWidth;
-  boolean moveable, resizable = true;
-  int sort = SWT.NONE;
-  String toolTipText;
-  int itemImageCount = 0;
-  static final int SORT_INDICATOR_WIDTH = 10;
-  static final int MARGIN_IMAGE = 3;
+  private static final int SORT_INDICATOR_WIDTH = 10;
+  private static final int MARGIN_IMAGE = 3;
+
+  private Tree parent;
+  private final IColumnAdapter columnAdapter;
+  private int width;
+  private String toolTipText;
+  private boolean resizable;
+  private boolean moveable;
+  private int sort;
+  int itemImageCount;
+  private boolean packed;
 
   /**
    * Constructs a new instance of this class given its parent (which must be a
@@ -128,6 +133,9 @@ public class TreeColumn extends Item {
       error( SWT.ERROR_INVALID_RANGE );
     }
     this.parent = parent;
+    sort = SWT.NONE;
+    resizable = true;
+    columnAdapter = new ColumnAdapter();
     parent.createColumn( this, index );
   }
 
@@ -360,6 +368,7 @@ public class TreeColumn extends Item {
       newWidth = 12;
     }
     setWidth( newWidth );
+    packed = true;
   }
 
   /**
@@ -527,7 +536,18 @@ public class TreeColumn extends Item {
       parent.updateScrollBars();
       ControlEvent event = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
       event.processEvent();
+      packed = false;
     }
+  }
+
+  public Object getAdapter( Class adapter ) {
+    Object result = null;
+    if( adapter == IColumnAdapter.class ) {
+      result = columnAdapter;
+    } else {
+      result = super.getAdapter( adapter );
+    }
+    return result;
   }
 
   public void setImage( Image image ) {
@@ -564,5 +584,16 @@ public class TreeColumn extends Item {
       result += columns[ columnOrder[ i ] ].getWidth();
     }
     return result;
+  }
+
+  ////////////////
+  // Inner classes
+
+  private final class ColumnAdapter implements IColumnAdapter, SerializableCompatibility {
+
+    public boolean isPacked() {
+      return TreeColumn.this.packed;
+    }
+
   }
 }

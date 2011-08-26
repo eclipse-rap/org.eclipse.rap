@@ -18,6 +18,8 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.SerializableCompatibility;
+import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.tablekit.TableThemeAdapter;
 
 
@@ -45,10 +47,12 @@ public class TableColumn extends Item {
   private static final int SPACING = 2;
 
   private final Table parent;
+  private final IColumnAdapter columnAdapter;
   private int width;
   private String toolTipText;
   private boolean resizable;
   private boolean moveable;
+  private boolean packed;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -122,8 +126,9 @@ public class TableColumn extends Item {
    */
   public TableColumn( final Table parent, final int style, final int index ) {
     super( parent, checkStyle( style ) );
-    resizable = true;
     this.parent = parent;
+    resizable = true;
+    columnAdapter = new ColumnAdapter();
     this.parent.createColumn( this, index );
   }
 
@@ -251,6 +256,7 @@ public class TableColumn extends Item {
       ControlEvent event = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
       event.processEvent();
       processNextColumnsMoveEvent();
+      packed = false;
     }
   }
 
@@ -270,6 +276,7 @@ public class TableColumn extends Item {
     if( width != getWidth() ) {
       setWidth( width );
     }
+    packed = true;
   }
 
   /**
@@ -455,6 +462,16 @@ public class TableColumn extends Item {
     SelectionEvent.removeListener( this, listener );
   }
 
+  public Object getAdapter( Class adapter ) {
+    Object result = null;
+    if( adapter == IColumnAdapter.class ) {
+      result = columnAdapter;
+    } else {
+      result = super.getAdapter( adapter );
+    }
+    return result;
+  }
+
   ////////////////////
   // Widget dimensions
 
@@ -546,5 +563,16 @@ public class TableColumn extends Item {
         event.processEvent();
       }
     }
+  }
+
+  ////////////////
+  // Inner classes
+
+  private final class ColumnAdapter implements IColumnAdapter, SerializableCompatibility {
+
+    public boolean isPacked() {
+      return TableColumn.this.packed;
+    }
+
   }
 }
