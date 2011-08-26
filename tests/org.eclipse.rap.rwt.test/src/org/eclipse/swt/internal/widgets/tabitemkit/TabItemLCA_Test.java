@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.tabitemkit;
@@ -25,10 +26,20 @@ import org.eclipse.swt.widgets.*;
 public class TabItemLCA_Test extends TestCase {
 
   private static final String PROP_SELECTED = "selected";
-  
+  private Display display;
+  private Shell shell;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     TabFolder tabFolder = new TabFolder( shell, SWT.TOP );
     new TabItem( tabFolder, SWT.NONE );
     TabItem item = new TabItem( tabFolder, SWT.NONE );
@@ -54,8 +65,6 @@ public class TabItemLCA_Test extends TestCase {
   }
 
   public void testReadData() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     TabFolder tabFolder = new TabFolder( shell, SWT.TOP );
     new TabItem( tabFolder, SWT.NONE );
     TabItem item = new TabItem( tabFolder, SWT.NONE );
@@ -67,10 +76,8 @@ public class TabItemLCA_Test extends TestCase {
     Fixture.readDataAndProcessAction( item );
     assertSame( item, tabFolder.getSelection()[ 0 ] );
   }
-  
+
   public void testRenderChanges() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     TabFolder tabFolder = new TabFolder( shell, SWT.TOP );
     new TabItem( tabFolder, SWT.NONE );
     TabItem item = new TabItem( tabFolder, SWT.NONE );
@@ -83,12 +90,24 @@ public class TabItemLCA_Test extends TestCase {
     String expected = "setToolTip( ";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
-  
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testWriteControlJsParent() {
+    TabFolder tabFolder = new TabFolder( shell, SWT.TOP );
+    TabItem item = new TabItem( tabFolder, SWT.NONE );
+    String itemId = WidgetUtil.getId( item );
+    Control control = new Label( tabFolder, SWT.NONE );
+    String controlId = WidgetUtil.getId( control );
+    item.setControl( control );
+    Fixture.fakeNewRequest( display );
+
+    Fixture.executeLifeCycleFromServerThread();
+
+    StringBuffer expected = new StringBuffer();
+    expected.append( "wm.setParent( wm.findWidgetById( \"" );
+    expected.append( controlId );
+    expected.append( "\" ), \"" );
+    expected.append( itemId );
+    expected.append( "pg\" );" );
+    assertTrue( Fixture.getAllMarkup().endsWith( expected.toString() ) );
   }
 }
