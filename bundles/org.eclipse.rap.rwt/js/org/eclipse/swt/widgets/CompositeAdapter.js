@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Composite", {
+org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Composite", {
 
   factory : function( properties ) {
     var result = new org.eclipse.swt.widgets.Composite();

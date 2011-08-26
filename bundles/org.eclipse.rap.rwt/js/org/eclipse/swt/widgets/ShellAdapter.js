@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Shell", {
+org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
 
   factory : function( properties ) {
     var adapterUtil = org.eclipse.rwt.protocol.AdapterUtil;

@@ -15,7 +15,6 @@ import java.io.IOException;
 
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -53,7 +52,7 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   void renderInitialization( final Label label ) throws IOException {
     IClientObject clientObject = ClientObjectFactory.getForWidget( label );
-    clientObject.create( "org.eclipse.swt.widgets.Label" );
+    clientObject.create( "rwt.widgets.Label" );
     clientObject.setProperty( "parent", WidgetUtil.getId( label.getParent() ) );
     clientObject.setProperty( "style", WidgetLCAUtil.getStyles( label ) );
   }

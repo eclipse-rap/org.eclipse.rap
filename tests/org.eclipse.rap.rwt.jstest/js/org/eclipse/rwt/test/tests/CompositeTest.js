@@ -20,7 +20,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
       processor.processOperation( {
         "target" : "w2",
         "action" : "create",
-        "type" : "org.eclipse.swt.widgets.Shell",
+        "type" : "rwt.widgets.Shell",
         "properties" : {
           "style" : [ "BORDER" ]
         }
@@ -28,7 +28,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CompositeTest", {
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",
-        "type" : "org.eclipse.swt.widgets.Composite",
+        "type" : "rwt.widgets.Composite",
         "properties" : {
           "style" : [ "BORDER" ],
           "parent" : "w2"

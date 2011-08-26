@@ -37,7 +37,7 @@ public class CompositeLCA extends AbstractWidgetLCA {
   public void renderInitialization( final Widget widget ) throws IOException {
     Composite composite = ( Composite )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( composite );
-    clientObject.create( "org.eclipse.swt.widgets.Composite" );
+    clientObject.create( "rwt.widgets.Composite" );
     clientObject.setProperty( "parent", WidgetUtil.getId( composite.getParent() ) );
     clientObject.setProperty( "style", WidgetLCAUtil.getStyles( composite ) );
   }

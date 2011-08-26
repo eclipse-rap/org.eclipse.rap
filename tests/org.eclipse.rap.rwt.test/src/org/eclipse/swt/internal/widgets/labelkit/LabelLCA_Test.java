@@ -278,7 +278,7 @@ public class LabelLCA_Test extends TestCase {
     
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( label );
-    assertEquals( "org.eclipse.swt.widgets.Label", operation.getType() );
+    assertEquals( "rwt.widgets.Label", operation.getType() );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "WRAP" ) );
   }

@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-org.eclipse.rwt.protocol.AdapterRegistry.add( "org.eclipse.swt.widgets.Label", {
+org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Label", {
 
   factory : function( properties ) {
     var result = new qx.ui.basic.Atom();

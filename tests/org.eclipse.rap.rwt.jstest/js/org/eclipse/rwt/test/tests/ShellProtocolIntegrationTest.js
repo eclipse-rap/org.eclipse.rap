@@ -569,7 +569,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       processor.processOperation( {
         "target" : id ? id : "w3",
         "action" : "create",
-        "type" : "org.eclipse.swt.widgets.Shell",
+        "type" : "rwt.widgets.Shell",
         "properties" : props
       } );
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
