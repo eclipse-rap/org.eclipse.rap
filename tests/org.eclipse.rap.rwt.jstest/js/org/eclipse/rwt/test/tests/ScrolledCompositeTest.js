@@ -365,7 +365,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       processor.processOperation( {
         "target" : "w4",
         "action" : "create",
-        "type" : "org.eclipse.swt.widgets.Composite",
+        "type" : "rwt.widgets.Composite",
         "properties" : {
           "style" : [ "BORDER" ],
           "parent" : "w3",
