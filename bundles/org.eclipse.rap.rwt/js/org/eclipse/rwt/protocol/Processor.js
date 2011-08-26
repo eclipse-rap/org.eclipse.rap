@@ -80,7 +80,7 @@ org.eclipse.rwt.protocol.Processor = {
           if( adapter.propertyHandler && adapter.propertyHandler[ property ] ) {
             adapter.propertyHandler[ property ].call( window, targetObject, value );
           } else {
-            var setterName = this._getSetterName( adapter, property );
+            var setterName = this._getSetterName( property );
             targetObject[ setterName ]( value );
           }
         }
@@ -191,12 +191,8 @@ org.eclipse.rwt.protocol.Processor = {
     }
   },
 
-  _getSetterName : function( adapter, property ) {
-    var clientProperty = property;
-    if( adapter.propertyMapping && adapter.propertyMapping[ property ] ) {
-      clientProperty = adapter.propertyMapping[ property ];
-    } 
-    return "set" + qx.lang.String.toFirstUp( clientProperty );
+  _getSetterName : function( property ) {
+    return "set" + qx.lang.String.toFirstUp( property );
   },
 
   _getListenerSetterName : function( eventType ) {

@@ -111,29 +111,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       registry.remove( "dummyType" );
     },
 
-    testProcessSetPropertyMapping : function() {
-      var registry = org.eclipse.rwt.protocol.AdapterRegistry;
-      var processor = org.eclipse.rwt.protocol.Processor;
-      registry.add( "dummyType", {
-        properties : [ "powerLevel" ],
-        propertyMapping : {
-          "powerLevel" : "coolness"
-        }
-      } );
-      var targetObject = this._getDummyTarget( "dummyId" );
-      var properties = {
-        "powerLevel" : 9000
-      };
-      var operation = {
-        "target" : "dummyId",
-        "action" : "set",
-        "properties" : properties
-      };
-      processor.processOperation( operation );
-      assertEquals( [ "coolness", 9000 ], targetObject.getLog() );
-      registry.remove( "dummyType" );
-    },
-
     testProcessSetPropertyHandler : function() {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;

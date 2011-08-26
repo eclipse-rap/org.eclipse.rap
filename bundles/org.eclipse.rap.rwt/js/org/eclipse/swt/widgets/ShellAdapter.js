@@ -50,10 +50,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
     "activeControl"
   ] ),
 
-  propertyMapping : {
-    "image" : "icon"
-  },
-
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
     // Overwrites original bounds handler, see bug 306042 and 354597
     "bounds" : function( widget, value ) {
@@ -100,6 +96,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
     "text" : function( shell, value ) {
       var text = org.eclipse.rwt.protocol.EncodingUtil.escapeText( value, false )
       shell.setCaption( text );
+    },
+    "image" : function( shell, value ) {
+      shell.setIcon( value );
     }
   } ),
 
