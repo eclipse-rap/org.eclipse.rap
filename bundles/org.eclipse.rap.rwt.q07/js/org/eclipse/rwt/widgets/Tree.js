@@ -848,7 +848,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
         var stamp = new Date();
         var offset = event.getPageX();
         var timeDiff = org.eclipse.swt.EventUtil.DOUBLE_CLICK_TIME;
-        var offsetDiff = 8;
+        var offsetDiff = 3;
         if (    stamp.getTime() - this._selectionTimestamp.getTime() < timeDiff 
              && Math.abs( this._selectionOffsetX - offset ) < offsetDiff ) 
         {
