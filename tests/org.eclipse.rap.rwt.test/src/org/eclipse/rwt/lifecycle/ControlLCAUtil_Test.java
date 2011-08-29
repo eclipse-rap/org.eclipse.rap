@@ -21,6 +21,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -662,11 +663,7 @@ public class ControlLCAUtil_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     JSONArray bounds = ( JSONArray )message.findSetProperty( control, "bounds" );
-    assertEquals( 4, bounds.length() );
-    assertEquals( 0, bounds.getInt( 0 ) );
-    assertEquals( 0, bounds.getInt( 1 ) );
-    assertEquals( 0, bounds.getInt( 2 ) );
-    assertEquals( 0, bounds.getInt( 3 ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ 0, 0, 0, 0 ]", bounds ) );
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
@@ -676,11 +673,7 @@ public class ControlLCAUtil_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     JSONArray bounds = ( JSONArray )message.findSetProperty( control, "bounds" );
-    assertEquals( 4, bounds.length() );
-    assertEquals( 10, bounds.getInt( 0 ) );
-    assertEquals( 20, bounds.getInt( 1 ) );
-    assertEquals( 100, bounds.getInt( 2 ) );
-    assertEquals( 200, bounds.getInt( 3 ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ 10, 20, 100, 200 ]", bounds ) );
   }
 
   // TODO [tb] : Move to WidgetLCAUtil_Test?
@@ -896,12 +889,10 @@ public class ControlLCAUtil_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     String imageLocation = ImageFactory.getImagePath( image );
     JSONArray args = ( JSONArray )message.findSetProperty( control, "backgroundImage" );
-    assertEquals( 3, args.length() );
-    assertEquals( imageLocation, args.getString( 0 ) );
-    assertEquals( 58, args.getInt( 1 ) );
-    assertEquals( 12, args.getInt( 2 ) );
+    String expected = "[ \"" + imageLocation + "\", 58, 12 ]";
+    assertTrue( ProtocolTestUtil.jsonEquals( expected, args ) );
   }
-
+  
   public void testRenderBackgroundImageUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
