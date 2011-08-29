@@ -13,8 +13,8 @@ namespace( "org.eclipse.rwt.protocol" );
 
 org.eclipse.rwt.protocol.EncodingUtil = {
 
-  _escapeRegExp : /(&|<|>|\"|\u2028|\u2029)/g,
-  _escapeRegExpMnemonics : /(&&|&|<|>|"|\u2028|\u2029)/g,
+  _escapeRegExp : /(&|<|>|\")/g,
+  _escapeRegExpMnemonics : /(&&|&|<|>|")/g,
   _newlineRegExp : /(\r\n|\n|\r)/g,
   _outerWhitespaceRegExp : /(^ {1,1}| +$)/g,
   _whitespaceRegExp : / {2,}/g,
