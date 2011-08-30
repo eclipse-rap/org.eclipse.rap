@@ -21,7 +21,7 @@ org.eclipse.rwt.protocol.Processor = {
       this.processOperation( operations[ i ] );
     }
   },
-  
+
   processMeta : function( meta ) {
     if( meta.requestCounter >= 0 ) {
       var req = org.eclipse.swt.Request.getInstance();
@@ -65,16 +65,12 @@ org.eclipse.rwt.protocol.Processor = {
   },
 
   _processDestroy : function( targetId ) {
-    var target = this._getTarget( targetId );
-    var type = this._getTargetType( target );
+    var type = this._getTargetType( targetId );
     var adapter = org.eclipse.rwt.protocol.AdapterRegistry.getAdapter( type );
-    var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
     if( adapter.destructor ) {
-      adapter.destructor( target );
-      widgetManager.remove( target );
-    } else {
-      widgetManager.dispose( targetId ); // TODO [tb] : remove or call dispose directly
+      adapter.destructor( this._getTarget( targetId ) );
     }
+    org.eclipse.rwt.protocol.ObjectManager.remove( targetId );
   },
 
   _processSet : function( targetId, properties ) {
@@ -157,28 +153,27 @@ org.eclipse.rwt.protocol.Processor = {
   },
 
   _addTarget : function( target, targetId, type ) {
-    var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-    widgetManager.add( target, targetId, false, type );
+    if( target instanceof qx.ui.core.Widget ) {
+      // TODO [tb] : remove WidgetManager and then this if 
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      widgetManager.add( target, targetId, false, type ); // uses ObjectManager internally
+    } else {
+      org.eclipse.rwt.protocol.ObjectManager.add( targetId, target, type );
+    }
   },
 
   _getTarget : function( targetId ) {
-    // TODO [tb] : support any kind of target-object, not just widgets
-    var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-    var widget = widgetManager.findWidgetById( targetId );
-    return widget;
+    return org.eclipse.rwt.protocol.ObjectManager.getObject( targetId );
   },
 
   _getAdapter : function( targetId ) {
-    // TODO [tb] : support objects not implementing setUserData 
-    var target = this._getTarget( targetId );
-    var type = this._getTargetType( target );
+    var type = this._getTargetType( targetId );
     var adapter = org.eclipse.rwt.protocol.AdapterRegistry.getAdapter( type );
     return adapter;
   },
   
-  // TODO [tb] : use targetId instead
-  _getTargetType : function ( target ) {
-    return target.getUserData( "rwtType" );
+  _getTargetType : function ( targetId ) {
+    return org.eclipse.rwt.protocol.ObjectManager.getType( targetId );
   },
 
   _addListener : function( adapter, targetObject, eventType ) {

@@ -25,6 +25,8 @@ import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
+import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
@@ -161,11 +163,16 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     HttpServletRequest request = ContextProvider.getRequest();
     String url = request.getServletPath().substring( 1 );
     String encodedURL = ContextProvider.getResponse().encodeURL( url );
-    return "var req = org.eclipse.swt.Request.getInstance();"
-       + "req.setUrl( \"" + encodedURL + "\" );"
-       + "req.setUIRootId( \"" + id + "\" );"
-       + "var app = new org.eclipse.swt.Application();"
-       + "qx.core.Init.getInstance().setApplication( app );";
+    ProtocolMessageWriter writer = new ProtocolMessageWriter();
+    writer.appendCreate( id, "rwt.Display" );
+    writer.appendSet( id, "url", encodedURL );
+    writer.appendSet( id, "rootId", id ); // TODO [tb] : refactor client to remove this line
+    StringBuffer buffer = new StringBuffer();
+    buffer.append( JavaScriptResponseWriter.PROCESS_MESSAGE );
+    buffer.append( "( " );
+    buffer.append( writer.createMessage() );
+    buffer.append( " );/*EOM*/" );
+    return buffer.toString();
   }
 
   //////////////////////////

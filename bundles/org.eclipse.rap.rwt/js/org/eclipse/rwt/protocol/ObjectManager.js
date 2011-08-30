@@ -11,24 +11,27 @@
 
 namespace( "org.eclipse.rwt.protocol" );
 
-org.eclipse.rwt.protocol.AdapterRegistry = {
+org.eclipse.rwt.protocol.ObjectManager = {
+  
+  _map : {},
 
-  _registry : {},
-
-  add : function( key, adapter ) {
-    this._registry[ key ] = adapter;
+  add : function( id, object, type ) {
+    this._map[ id ] = {
+      "object" : object,
+      "type" : type
+    };
+  },
+  
+  remove : function( id ) {
+    delete this._map[ id ];
+  },
+  
+  getObject : function( id ) {
+    return this._map[ id ] ? this._map[ id ].object : undefined;
   },
 
-  remove : function( key ) {
-    delete this._registry[ key ];
-  },
-
-  getAdapter : function( key ) {
-    var result = this._registry[ key ];
-    if( result === undefined ) {
-      throw new Error( "No Adapter for type " + key );
-    }
-    return result;
+  getType : function( id ) {
+    return this._map[ id ] ? this._map[ id ].type : undefined;
   }
 
 };

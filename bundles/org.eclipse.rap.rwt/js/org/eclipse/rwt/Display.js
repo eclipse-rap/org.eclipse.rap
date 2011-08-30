@@ -9,26 +9,14 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-namespace( "org.eclipse.rwt.protocol" );
+namespace( "org.eclipse.rwt" );
 
-org.eclipse.rwt.protocol.AdapterRegistry = {
+org.eclipse.rwt.Display = function( url, rootId ) {
+  var req = org.eclipse.swt.Request.getInstance();
+  req.setUrl( url );
+  req.setUIRootId( rootId );
+  qx.core.Init.getInstance().setApplication( new org.eclipse.swt.Application() );
+};
 
-  _registry : {},
-
-  add : function( key, adapter ) {
-    this._registry[ key ] = adapter;
-  },
-
-  remove : function( key ) {
-    delete this._registry[ key ];
-  },
-
-  getAdapter : function( key ) {
-    var result = this._registry[ key ];
-    if( result === undefined ) {
-      throw new Error( "No Adapter for type " + key );
-    }
-    return result;
-  }
-
+org.eclipse.rwt.Display.prototype = {
 };

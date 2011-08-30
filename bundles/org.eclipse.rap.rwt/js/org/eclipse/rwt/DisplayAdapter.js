@@ -9,26 +9,18 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-namespace( "org.eclipse.rwt.protocol" );
+org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.Display", {
 
-org.eclipse.rwt.protocol.AdapterRegistry = {
-
-  _registry : {},
-
-  add : function( key, adapter ) {
-    this._registry[ key ] = adapter;
+  factory : function( properties ) {
+    return new org.eclipse.rwt.Display( properties.url, properties.rootId );
   },
 
-  remove : function( key ) {
-    delete this._registry[ key ];
-  },
+  destructor : null, // destroy is currently not called for display
+  
+  properties : [],
 
-  getAdapter : function( key ) {
-    var result = this._registry[ key ];
-    if( result === undefined ) {
-      throw new Error( "No Adapter for type " + key );
-    }
-    return result;
-  }
+  knownListeners : [],
 
-};
+  knownMethods : []
+
+} );

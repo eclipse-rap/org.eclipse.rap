@@ -13,6 +13,7 @@ package org.eclipse.rwt.internal.protocol;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -44,30 +45,57 @@ public final class ClientObjectFactory {
    * @return a request specific {@link IClientObject} instance for the passed
    * {@link Widget}.
    */
-  @SuppressWarnings( "unchecked" )
   public static IClientObject getForWidget( Widget widget ) {
-    IClientObject result;
     if( !isValidThread( widget ) ) {
       throw new IllegalStateException( "Illegal thread access" );
     }
+    return getForId( WidgetUtil.getId( widget ) );
+  }
+
+  /**
+   * Creates a {@link IClientObject} for a specific Display. The returned instance
+   * is unique for the time a Request exists. The relationship between these two is a 1:1
+   * relationship.
+   *
+   * @param display The server side {@link Display} instance.
+   *
+   * @return a request specific {@link IClientObject} instance for the passed
+   * {@link Display}.
+   */
+  public static IClientObject getForDisplay( Display display ) {
+    if( display == null ) {
+      throw new IllegalArgumentException( "Null display" );
+    }
+    if( !isValidThread( display ) ) {
+      throw new IllegalStateException( "Illegal thread access" );
+    }
+    return getForId( DisplayUtil.getId( display ) );
+  }
+
+  @SuppressWarnings("unchecked")
+  private static IClientObject getForId( String id ) {
+    IClientObject result;
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Map<Widget, IClientObject> map
-      = ( Map<Widget, IClientObject> )stateInfo.getAttribute( SYNCHRONIZER_MAP_KEY );
+    Map<String, IClientObject> map
+      = ( Map<String, IClientObject> )stateInfo.getAttribute( SYNCHRONIZER_MAP_KEY );
     if( map == null ) {
-      map = new HashMap<Widget, IClientObject>();
+      map = new HashMap<String, IClientObject>();
       stateInfo.setAttribute( SYNCHRONIZER_MAP_KEY, map );
     }
-    if( map.containsKey( widget ) ) {
-      result = map.get( widget );
+    if( map.containsKey( id ) ) {
+      result = map.get( id );
     } else {
-      result = new ClientObject( WidgetUtil.getId( widget ) );
-      map.put( widget, result );
+      result = new ClientObject( id );
+      map.put( id, result );
     }
     return result;
   }
-
+  
   private static boolean isValidThread( Widget widget ) {
-    Display display = widget.getDisplay();
+    return isValidThread( widget.getDisplay() );
+  }
+  
+  private static boolean isValidThread( Display display ) {
     IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
     return adapter.isValidThread();
   }

@@ -21,9 +21,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
 
   construct : function() {
     this.base( arguments );
-    // Holds the association between widget-id's and widget-instances.
-    // Key: id (string), value: widget instanace (qx.ui.core.Widget)
-    this._map = {};
     this._callbacks = {};
     
     // this field is needed as Opera has some problems with
@@ -68,7 +65,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      * Registers the given widget under the given id at the WidgetManager.
      */
     add : function( widget, id, isControl, type ) {
-      this._map[ id ] = widget;
+      org.eclipse.rwt.protocol.ObjectManager.add( id, widget, type );
       if( isControl != "undefined" && isControl == true ) {
         widget.setUserData( "isControl", true );
       }
@@ -88,7 +85,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      */
     remove : function( widget ) {
       var id = this.findIdByWidget( widget );
-      delete this._map[ id ];
+      org.eclipse.rwt.protocol.ObjectManager.remove( id );
     },
     
     addRegistrationCallback : function( id, fun ) {
@@ -103,7 +100,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      * registered for the given id exists.
      */
     findWidgetById : function( id ) {
-      return this._map[ id ];
+      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
     },
 
     /**

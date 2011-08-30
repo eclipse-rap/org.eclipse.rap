@@ -23,9 +23,14 @@ import org.eclipse.swt.widgets.Shell;
 
 public class ClientObjectFactory_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
     Fixture.fakeResponseWriter();
   }
 
@@ -35,26 +40,18 @@ public class ClientObjectFactory_Test extends TestCase {
   }
 
   public void testCreate() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-
     IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
 
     assertNotNull( clientObject );
   }
 
   public void testSameInstance() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
-
     IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
 
     assertSame( clientObject, ClientObjectFactory.getForWidget( shell ) );
   }
 
   public void testCreateDisposed() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     shell.dispose();
 
     IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
@@ -63,18 +60,34 @@ public class ClientObjectFactory_Test extends TestCase {
   }
 
   public void testCreateDisplayDisposed() {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     display.dispose();
 
     IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
 
     assertNotNull( clientObject );
   }
+  
+  public void testGetClientObjectForDisplay() {
+    IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+    
+    assertNotNull( clientObject );
+  }  
 
+  public void testDisplaySameInstance() {
+    IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+
+    assertSame( clientObject, ClientObjectFactory.getForDisplay( display ) );
+  }
+
+  public void testDiaplayCreateDisposed() {
+    display.dispose();
+
+    IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+
+    assertNotNull( clientObject );
+  }
+  
   public void testCreateFromNonUIThreadFails() throws InterruptedException {
-    final Display display = new Display();
-    final Shell shell = new Shell( display );
     final List<Exception> log = new ArrayList<Exception>();
     Thread backgroundThread = new Thread() {
 

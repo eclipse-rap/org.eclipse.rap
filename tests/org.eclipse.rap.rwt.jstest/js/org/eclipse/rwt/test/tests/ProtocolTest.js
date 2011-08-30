@@ -29,6 +29,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       }
     },
 
+    testObjectManager : function() {
+      var manager = org.eclipse.rwt.protocol.ObjectManager;
+      var obj = {};
+      manager.add( "myId", obj, "myType" );
+      assertIdentical( obj, manager.getObject( "myId" ) );
+      assertEquals( "myType", manager.getType( "myId" ) );
+      manager.remove( "myId" );
+      assertTrue( manager.getObject( "myId" ) == null );
+      assertTrue( manager.getType( "myId" ) == null );
+    },
+
     testProcessSet : function() {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -298,7 +309,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
     testProcessDestroy : function() {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
-      registry.add( "dummyType", {} );
+      registry.add( "dummyType", {
+        "destructor" : function( obj ) {
+          obj.destroy();
+        }
+      } );
       var target = this._getDummyTarget( "dummyId" );
       target.setParent( {
         getChildren : function() {
@@ -312,7 +327,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       processor.processOperation( operation );
       assertEquals( [ "destroy" ], target.getLog() );  
       assertNull( target.getParent() );  
-      assertTrue( this._getTargetById( "dummyId" ) === undefined );
+      assertTrue( this._getTargetById( "dummyId" ) == null );
       registry.remove( "dummyType" );
     },
 
@@ -337,7 +352,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       };
       processor.processOperation( operation );
       assertEquals( [ "foo", "destroy" ], target.getLog() );
-      assertTrue( this._getTargetById( "dummyId" ) === undefined );
+      assertTrue( this._getTargetById( "dummyId" ) == null );
       registry.remove( "dummyType" );
     },
 
@@ -526,7 +541,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
         knownListeners : [ "foo", "bar" ],
         listenerHandler : {
           "bar" : function( targetObject, value ) {
-            targetObject.setUserData( "barListener", value ? true : null );
+            targetObject.setMyData( "barListener", value ? true : null );
           }
         }
       } );
@@ -540,7 +555,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
         "properties" : properties
       };
       processor.processOperation( operation );
-      assertTrue( targetObject.getUserData( "barListener" ) );
+      assertTrue( targetObject.getMyData( "barListener" ) );
       properties = {
         "bar" : false
       };
@@ -550,7 +565,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
         "properties" : properties
       };
       processor.processOperation( operation );
-      assertNull( targetObject.getUserData( "barListener" ) );
+      assertNull( targetObject.getMyData( "barListener" ) );
       targetObject.destroy();
     },
 
@@ -752,10 +767,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
         setFail : function( value ) {
           throw "myerror";
         },
-        setUserData : function( key, value ) {
+        setMyData : function( key, value ) {
           this._userData[ key ] = value;
         },
-        getUserData : function( key ) {
+        getMyData : function( key ) {
           return this._userData[ key ];
         },
         getProperties : function() {
@@ -787,8 +802,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
         return log;
       };
       if( typeof targetId === "string" ) {
-        var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-        widgetManager.add( targetObject, targetId, true, "dummyType" );
+        org.eclipse.rwt.protocol.ObjectManager.add( targetId, targetObject, "dummyType" );
       }
       return targetObject;
     },
