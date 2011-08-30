@@ -20,23 +20,23 @@ import org.json.*;
 
 public final class Message {
 
+  private JSONObject message;
   private JSONArray operations;
 
   public Message( String javaScript ) {
     String prefix = JavaScriptResponseWriter.PROCESS_MESSAGE + "(";
     int index = javaScript.indexOf( prefix );
-    String json = "{ operations: [] }";
+    String json = "{ meta: { \"requestCounter\": 0 }, operations: [] }";
     if( index != -1 ) {
       json = javaScript.substring( index + prefix.length() );
     }
-    JSONObject jsonObject;
     try {
-      jsonObject = new JSONObject( json );
+      message = new JSONObject( json );
     } catch( JSONException e ) {
       throw new IllegalArgumentException( "Could not parse json: " + json );
     }
     try {
-      operations = jsonObject.getJSONArray( "operations" );
+      operations = message.getJSONArray( "operations" );
     } catch( JSONException e ) {
       throw new IllegalArgumentException( "Missing operations array: " + json );
     }
@@ -45,9 +45,17 @@ public final class Message {
   @Override
   public String toString() {
     try {
-      return operations.toString( 2 );
+      return message.toString( 2 );
     } catch( JSONException e ) {
       throw new RuntimeException( "Formatting failed" );
+    }
+  }
+
+  public int getRequestCounter() {
+    try {
+      return message.getJSONObject( "meta" ).getInt( "requestCounter" );
+    } catch( JSONException e ) {
+      throw new RuntimeException( "Getting requestCounter failed" );
     }
   }
 
@@ -78,7 +86,7 @@ public final class Message {
   }
 
   public Object findSetProperty( Widget widget, String property ) {
-    String target = WidgetUtil.getId( widget );    
+    String target = WidgetUtil.getId( widget );
     return findSetProperty( target, property );
   }
 
@@ -89,7 +97,7 @@ public final class Message {
     }
     return operation.getProperty( property );
   }
-  
+
   public SetOperation findSetOperation( Widget widget, String property ) {
     String target = WidgetUtil.getId( widget );
     return findSetOperation( target, property );
@@ -108,7 +116,7 @@ public final class Message {
     String target = WidgetUtil.getId( widget );
     return findListenProperty( target, property );
   }
-  
+
   public Object findListenProperty( String target, String property ) {
     ListenOperation operation = findListenOperation( target, property );
     if( operation == null ) {
@@ -126,7 +134,7 @@ public final class Message {
     String target = WidgetUtil.getId( widget );
     return findCreateProperty( target, property );
   }
-  
+
   public Object findCreateProperty( String target, String property ) {
     CreateOperation operation = findCreateOperation( target );
     if( operation == null || operation.getPropertyNames().indexOf( property ) == -1 ) {
@@ -146,7 +154,7 @@ public final class Message {
   private Operation findOperation( Class opClass, String target ) {
     return findOperation( opClass, target, null );
   }
-  
+
   private Operation findOperation( Class opClass, String target, String property ) {
     Operation result = null;
     for( int i = 0; i < getOperationCount(); i++ ) {
@@ -165,7 +173,7 @@ public final class Message {
     String target = WidgetUtil.getId( widget );
     return findCallOperation( target, method );
   }
-  
+
   public CallOperation findCallOperation( String target, String method ) {
     CallOperation result = null;
     for( int i = 0; i < getOperationCount(); i++ ) {
@@ -178,7 +186,7 @@ public final class Message {
     }
     return result;
   }
-  
+
   private JSONObject getOperationAsJson( int position ) {
     JSONObject result;
     try {

@@ -53,7 +53,7 @@ public class JavaScriptResponseWriter {
   }
 
   private void writePendingProtocolMessage() {
-    if( protocolWriter != null && protocolWriter.hasOperations() ) {
+    if( protocolWriter != null ) {
       writer.write( PROCESS_MESSAGE + "( " );
       writer.write( protocolWriter.createMessage() );
       writer.write( " );/*EOM*/" );

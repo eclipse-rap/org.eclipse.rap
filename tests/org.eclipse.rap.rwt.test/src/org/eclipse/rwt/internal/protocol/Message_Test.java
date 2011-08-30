@@ -21,6 +21,7 @@ import org.eclipse.rwt.internal.protocol.Message.DestroyOperation;
 import org.eclipse.rwt.internal.protocol.Message.ExecuteScriptOperation;
 import org.eclipse.rwt.internal.protocol.Message.ListenOperation;
 import org.eclipse.rwt.internal.protocol.Message.SetOperation;
+import org.eclipse.swt.widgets.Display;
 
 
 public class Message_Test extends TestCase {
@@ -84,6 +85,15 @@ public class Message_Test extends TestCase {
     writer.appendCall( "w2", "method2", null );
 
     assertEquals( 2, getMessage().getOperationCount() );
+  }
+
+  public void testGetRequestCounter() {
+    Display display = new Display();
+    Fixture.fakeNewRequest( display );
+    Fixture.executeLifeCycleFromServerThread();
+    Fixture.fakeNewRequest( display );
+    Fixture.executeLifeCycleFromServerThread();
+    assertEquals( 1, getMessage().getRequestCounter() );
   }
 
   public void testGetOperation() {
@@ -214,46 +224,46 @@ public class Message_Test extends TestCase {
     } catch( IllegalStateException expected ) {
     }
   }
-  
+
   public void testFindSetOperation() {
     writer.appendSet( "w1", "key", true );
-    
-    Message message = getMessage(); 
-    
+
+    Message message = getMessage();
+
     SetOperation operation = message.findSetOperation( "w1", "key" );
     assertEquals( Boolean.TRUE, operation.getProperty( "key" ) );
   }
-  
+
   public void testFindSetOperationFailed() {
     writer.appendSet( "w1", "key1", true );
-    
-    Message message = getMessage(); 
+
+    Message message = getMessage();
 
     assertNull( message.findSetOperation( "w1", "key2" ) );
     assertNull( message.findSetOperation( "w2", "key1" ) );
   }
-  
+
   public void testFindSetProperty() {
     writer.appendSet( "w1", "key", true );
-    
-    Message message = getMessage(); 
-    
+
+    Message message = getMessage();
+
     assertEquals( Boolean.TRUE, message.findSetProperty( "w1", "key" ) );
   }
-  
+
   public void testFindSetPropertyFailed() {
     writer.appendSet( "w1", "key1", true );
-    
-    Message message = getMessage(); 
-    
+
+    Message message = getMessage();
+
     try {
-      message.findSetProperty( "w1", "key2" );      
+      message.findSetProperty( "w1", "key2" );
       fail();
     } catch( IllegalStateException exception ) {
       //expected
     }
     try {
-      message.findSetProperty( "w2", "key1" );      
+      message.findSetProperty( "w2", "key1" );
       fail();
     } catch( IllegalStateException exception ) {
       //expected
@@ -262,43 +272,43 @@ public class Message_Test extends TestCase {
 
   public void testFindListenOperation() {
     writer.appendListen( "w1", "key", true );
-    
-    Message message = getMessage(); 
-    
+
+    Message message = getMessage();
+
     ListenOperation operation = message.findListenOperation( "w1", "key" );
     assertEquals( Boolean.TRUE, operation.getProperty( "key" ) );
   }
 
   public void testFindListenOperationFailed() {
     writer.appendListen( "w1", "key1", true );
-    
-    Message message = getMessage(); 
-    
+
+    Message message = getMessage();
+
     assertNull( message.findListenOperation( "w1", "key2" ) );
     assertNull( message.findListenOperation( "w2", "key1" ) );
   }
 
   public void testFindListenProperty() {
     writer.appendListen( "w1", "key", true );
-    
-    Message message = getMessage(); 
-    
+
+    Message message = getMessage();
+
     assertEquals( Boolean.TRUE, message.findListenProperty( "w1", "key" ) );
   }
-  
+
   public void testFindListenPropertyFailed() {
     writer.appendListen( "w1", "key1", true );
-    
-    Message message = getMessage(); 
-    
+
+    Message message = getMessage();
+
     try {
-      message.findListenProperty( "w1", "key2" );      
+      message.findListenProperty( "w1", "key2" );
       fail();
     } catch( IllegalStateException exception ) {
       //expected
     }
     try {
-      message.findListenProperty( "w2", "key1" );      
+      message.findListenProperty( "w2", "key1" );
       fail();
     } catch( IllegalStateException exception ) {
       //expected
@@ -308,46 +318,46 @@ public class Message_Test extends TestCase {
   public void testFindCreateOperation() {
     writer.appendCreate( "w2", "myType" );
     writer.appendSet( "w2", "key", true );
-    
-    Message message = getMessage(); 
-    
+
+    Message message = getMessage();
+
     CreateOperation operation = message.findCreateOperation( "w2" );
     assertEquals( "w2", operation.getTarget() );
     assertEquals( "myType", operation.getType() );
     assertEquals( Boolean.TRUE, operation.getProperty( "key" ) );
   }
-  
+
   public void testFindCreateFailed() {
     writer.appendCreate( "w2", "myType" );
-    
-    Message message = getMessage(); 
-    
+
+    Message message = getMessage();
+
     assertNull( message.findCreateOperation( "w1" ) );
   }
 
   public void testFindCreateProperty() {
     writer.appendCreate( "w2", "myType" );
     writer.appendSet( "w2", "key", true );
-    
-    Message message = getMessage(); 
-    
+
+    Message message = getMessage();
+
     assertEquals( Boolean.TRUE, message.findCreateProperty( "w2", "key" ) );
   }
-  
+
   public void testFindCreatePropertyFailed() {
     writer.appendCreate( "w2", "myType" );
     writer.appendSet( "w2", "key1", true );
-    
-    Message message = getMessage(); 
-    
+
+    Message message = getMessage();
+
     try {
-      message.findCreateProperty( "w1", "key1" );      
+      message.findCreateProperty( "w1", "key1" );
       fail();
     } catch( IllegalStateException exception ) {
       //expected
     }
     try {
-      message.findCreateProperty( "w2", "key2" );      
+      message.findCreateProperty( "w2", "key2" );
       fail();
     } catch( IllegalStateException exception ) {
       //expected
@@ -356,9 +366,9 @@ public class Message_Test extends TestCase {
 
   public void testFindCallOperation() {
     writer.appendCall( "w1", "method", null );
-    
-    Message message = getMessage(); 
-    
+
+    Message message = getMessage();
+
     CallOperation operation = message.findCallOperation( "w1", "method" );
     assertEquals( "w1", operation.getTarget() );
     assertEquals( "method", operation.getMethodName() );
@@ -367,12 +377,12 @@ public class Message_Test extends TestCase {
   public void testFindCallOperationFailed() {
     writer.appendCall( "w2", "method1", null );
     writer.appendCall( "w1", "method2", null );
-    
-    Message message = getMessage(); 
-    
+
+    Message message = getMessage();
+
     assertNull( message.findCallOperation( "w1", "method1" ) );
   }
-  
+
   public void testOperationGetProperty() {
     writer.appendSet( "w1", "foo", 23 );
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
@@ -391,7 +401,7 @@ public class Message_Test extends TestCase {
     }
   }
 
-  
+
   public void testNonExistingOperation() {
     writer.appendSet( "w1", "key", true );
 

@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.protocol.Message;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -54,11 +55,9 @@ public class RenderDispose_Test extends TestCase {
       }
     } );
     Fixture.executeLifeCycleFromServerThread( );
-    String expectedStart
-      =   "var req = org.eclipse.swt.Request.getInstance();"
-        + "req.setRequestCounter(";
-    String allMarkup = Fixture.getAllMarkup();
-    assertTrue( allMarkup.startsWith( expectedStart ) );
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 1, message.getRequestCounter() );
+    assertEquals( 0, message.getOperationCount() );
   }
 
   protected void setUp() throws Exception {

@@ -39,15 +39,11 @@ import org.eclipse.swt.widgets.*;
 
 public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
-  private final static String PATTERN_REQUEST_COUNTER
-    =   "var req = org.eclipse.swt.Request.getInstance();"
-      + "req.setRequestCounter( \"{0,number,#}\" );";
-
   static final String PROP_FOCUS_CONTROL = "focusControl";
   static final String PROP_CURR_THEME = "currTheme";
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
   static final String PROP_TIMEOUT_PAGE = "timeoutPage";
-  
+
   private static final class RenderVisitor extends AllWidgetTreeVisitor {
 
     private IOException ioProblem;
@@ -143,7 +139,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     // TODO [rh] should be replaced by requestCounter != 0
     if( request.getParameter( RequestParams.UIROOT ) != null ) {
       disposeWidgets();
-      writeRequestCounter();
+      renderRequestCounter();
       writeTheme( display );
       writeErrorPages( display );
       writeExitConfirmation( display );
@@ -179,11 +175,12 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  private static void writeRequestCounter() {
+  private static void renderRequestCounter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
-    Object[] args = new Object[] { RWTRequestVersionControl.getInstance().nextRequestId() };
-    responseWriter.write( MessageFormat.format( PATTERN_REQUEST_COUNTER, args ) );
+    RWTRequestVersionControl.getInstance().nextRequestId();
+    // Ensure that even empty message will be rendered
+    responseWriter.getProtocolWriter();
   }
 
   private static void writeTheme( Display display ) {

@@ -15,9 +15,17 @@ org.eclipse.rwt.protocol.Processor = {
 
   processMessage : function( messageObject ) {
     // NOTE : Temporary implementation, as this function should parse json-text directly later
+    this.processMeta( messageObject.meta );
     var operations = messageObject.operations;
     for( var i = 0; i < operations.length; i++ ) {
       this.processOperation( operations[ i ] );
+    }
+  },
+  
+  processMeta : function( meta ) {
+    if( meta.requestCounter >= 0 ) {
+      var req = org.eclipse.swt.Request.getInstance();
+      req.setRequestCounter( meta.requestCounter );
     }
   },
 
@@ -38,7 +46,7 @@ org.eclipse.rwt.protocol.Processor = {
         case "listen":
           this._processListen( operation.target, operation.properties );
         break; 
-        case "execute":
+        case "executeScript":
           this._processExecute( operation.target, operation.scriptType, operation.content );
         break; 
       }

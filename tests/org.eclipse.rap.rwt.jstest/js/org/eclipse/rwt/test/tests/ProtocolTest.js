@@ -564,7 +564,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
         "scriptType" : "text/javascript",
         "content" : "globalTemp++;",
         "target" : "dummyId",
-        "action" : "execute"
+        "action" : "executeScript"
       };
       processor.processOperation( operation );
       assertEquals( 2, globalTemp );
@@ -581,7 +581,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       };
       var operation = {
         "target" : "dummyId",
-        "action" : "execute",
+        "action" : "executeScript",
         "properties" : properties
       };
       processor.processOperation( operation );
@@ -598,7 +598,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       };
       var operation = {
         "target" : "dummyId",
-        "action" : "execute",
+        "action" : "executeScript",
         "properties" : properties
       };
       processor.processOperation( operation );
@@ -616,7 +616,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       };
       var operation = {
         "target" : "dummyId",
-        "action" : "execute",
+        "action" : "executeScript",
         "properties" : properties
       };
       processor.processOperation( operation );
@@ -691,6 +691,32 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       registry.remove( "dummyType" );      
     },
 
+    testProcessMetaSetRequestCounter : function() {
+      var processor = org.eclipse.rwt.protocol.Processor;
+      var message = {
+        "meta": {
+          "requestCounter": 3
+        },
+        "operations" : []
+      };
+      processor.processMessage( message );
+      var req = org.eclipse.swt.Request.getInstance();
+      assertEquals( 3, req.getRequestCounter() );
+    },
+
+    testProcessMetaIgnoreNegativeRequestCounter : function() {
+      var req = org.eclipse.swt.Request.getInstance();
+      req.setRequestCounter( null );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      var message = {
+        "meta": {
+          "requestCounter": -1
+        },
+        "operations" : []
+      };
+      processor.processMessage( message );
+      assertNull( req.getRequestCounter() );
+    },
 
   // TODO : how to test adapters? 
   // construct + (all setter once => no crash) + specific cases?
