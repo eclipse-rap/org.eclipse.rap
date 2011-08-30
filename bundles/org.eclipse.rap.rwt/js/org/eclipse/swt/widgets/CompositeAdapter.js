@@ -31,11 +31,11 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Composite", {
     "roundedBorder" : org.eclipse.rwt.protocol.AdapterUtil.getRoundedBorderHandler()
   } ),     
 
-  knownListeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [] ),
+  listeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [] ),
 
   listenerHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
 
-  knownMethods : []
+  methods : []
 
 
 } );

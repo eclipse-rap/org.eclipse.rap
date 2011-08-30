@@ -19,9 +19,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.Display", {
   
   properties : [],
 
-  knownListeners : [],
+  listeners : [],
 
-  knownMethods : [
+  methods : [
     "allowEvent",
     "cancelEvent"
   ]

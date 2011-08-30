@@ -102,12 +102,12 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
     }
   } ),
 
-  knownListeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [
+  listeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [
     "shell"
   ] ),
 
   listenerHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
 
-  knownMethods : []
+  methods : []
 
 } );

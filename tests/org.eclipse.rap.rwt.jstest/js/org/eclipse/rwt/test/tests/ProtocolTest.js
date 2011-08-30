@@ -360,7 +360,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        knownMethods : [ "doFoo" ]
+        methods : [ "doFoo" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
       var properties = {
@@ -381,7 +381,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        knownMethods : [ "doBar" ],
+        methods : [ "doBar" ],
         methodHandler : {
           "doBar" : function( widget, properties ) {
             widget.doFoo( properties );
@@ -406,7 +406,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        knownMethods : [ "doFoo" ]
+        methods : [ "doFoo" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
       var properties = {
@@ -429,7 +429,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        knownMethods : [ "doBar" ]
+        methods : [ "doBar" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
       var properties = {
@@ -467,7 +467,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        knownListeners : [ "focus" ]
+        listeners : [ "focus" ]
       } );
       var targetObject = this._getDummyWidget( "dummyId" );
       var properties = {
@@ -484,7 +484,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       targetObject.destroy();
     },
 
-    testProcessNoknownListeners : function() {
+    testProcessNolisteners : function() {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {} );
@@ -509,7 +509,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        knownListeners : [ "foo", "bar" ]
+        listeners : [ "foo", "bar" ]
       } );
       var targetObject = this._getDummyTarget( "dummyId" );
       var properties = {
@@ -538,7 +538,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
       registry.add( "dummyType", {
-        knownListeners : [ "foo", "bar" ],
+        listeners : [ "foo", "bar" ],
         listenerHandler : {
           "bar" : function( targetObject, value ) {
             targetObject.setMyData( "barListener", value ? true : null );
