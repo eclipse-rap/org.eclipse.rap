@@ -328,15 +328,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     testSetForeground : function() {
       var shell = this._protocolCreateShell();
-      this._protocolSet( { "foreground" : "#0000FF" } );
-      assertEquals( "#0000FF", shell.getTextColor() );
-      this._disposeShell();
-    },
-
-    testSetForegroundTransparent : function() {
-      var shell = this._protocolCreateShell();
-      this._protocolSet( { "foreground" : "transparent" } );
-      assertEquals( "transparent", shell.getTextColor() );
+      this._protocolSet( { "foreground" : [ 0, 0, 255, 255 ] } );
+      assertEquals( "rgb(0,0,255)", shell.getTextColor() );
       this._disposeShell();
     },
 
@@ -351,8 +344,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
 
     testSetBackground : function() {
       var shell = this._protocolCreateShell();
-      this._protocolSet( { "background" : "#0000FF" } );
-      assertEquals( "#0000FF", shell.getBackgroundColor() );
+      this._protocolSet( { "background" : [ 0, 0, 255, 255 ] } );
+      assertEquals( "rgb(0,0,255)", shell.getBackgroundColor() );
       this._disposeShell();
     },
 
@@ -371,8 +364,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
     testSetBackgroundGradientToNull : function() {
       var shell = this._protocolCreateShell();
       shell.setBackgroundGradient( [ [ 0, "red" ], [ 1, "yellow" ] ] );
-      this._protocolSet( { "background" : "#0000FF" } );
-      assertNull(shell.getBackgroundGradient() );
+      this._protocolSet( { "background" : [ 0, 0, 255, 255 ] } );
+      assertNull( shell.getBackgroundGradient() );
       this._disposeShell();
     },
 

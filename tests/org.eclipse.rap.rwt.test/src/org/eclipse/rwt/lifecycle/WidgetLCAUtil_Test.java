@@ -20,6 +20,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
@@ -638,11 +639,13 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( widget, "background" ) );
   }
 
-  public void testRenderBackground() throws IOException {
+  public void testRenderBackground() throws IOException, JSONException {
     WidgetLCAUtil.renderBackground( widget, new Color( display, 0, 16, 255 ) );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "#0010ff", message.findSetProperty( widget, "background" ) );
+
+    JSONArray actual = ( JSONArray )message.findSetProperty( widget, "background" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,16,255,255]", actual ) );
   }
 
   public void testRenderBackgroundUnchanged() throws IOException {
@@ -657,11 +660,13 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( widget, "background" ) );
   }
 
-  public void testRenderIntialBackgroundTransparent() throws IOException {
+  public void testRenderIntialBackgroundTransparent() throws IOException, JSONException {
     WidgetLCAUtil.renderBackground( widget, null, true );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "transparent", message.findSetProperty( widget, "background" ) );
+
+    JSONArray actual = ( JSONArray )message.findSetProperty( widget, "background" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,0,0]", actual ) );
   }
 
   public void testRenderBackgroundTransparencyUnchanged() throws IOException {
@@ -679,7 +684,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( widget, "background" ) );
   }
 
-  public void testRenderBackgroundNoMoreTransparent() throws IOException {
+  public void testRenderBackgroundNoMoreTransparent() throws IOException, JSONException {
     widget = new Button( shell, SWT.CHECK );
     shell.setBackgroundMode( SWT.INHERIT_DEFAULT );
     Fixture.markInitialized( display );
@@ -691,7 +696,9 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.renderBackground( widget, new Color( display, 0, 16, 255 ), false );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "#0010ff", message.findSetProperty( widget, "background" ) );
+
+    JSONArray actual = ( JSONArray )message.findSetProperty( widget, "background" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,16,255,255]", actual ) );
   }
 
   public void testRenderBackgroundReset() throws IOException {
@@ -706,6 +713,37 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( widget, "background" ) );
   }
 
+  public void testRenderIntialForeground() throws IOException {
+    ControlLCAUtil.renderForeground( widget );
+
+    Message message = Fixture.getProtocolMessage();
+
+    assertNull( message.findSetOperation( widget, "foreground" ) );
+  }
+
+  public void testRenderForeground() throws IOException, JSONException {
+    widget.setForeground( new Color( display, 0, 16, 255 ) );
+    ControlLCAUtil.renderForeground( widget );
+
+    Message message = Fixture.getProtocolMessage();
+
+
+    JSONArray actual = ( JSONArray )message.findSetProperty( widget, "foreground" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,16,255,255]", actual ) );
+  }
+
+  public void testRenderForegroundUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( widget );
+    widget.setForeground( new Color( display, 0, 16, 255 ) );
+
+    Fixture.preserveWidgets();
+    ControlLCAUtil.renderForeground( widget );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( widget, "foreground" ) );
+  }
+
   public void testRenderInitialCustomVariant() throws IOException {
     WidgetLCAUtil.renderCustomVariant( widget );
 
@@ -716,7 +754,7 @@ public class WidgetLCAUtil_Test extends TestCase {
   public void testRenderCustomVariant() throws IOException {
     widget.setData( WidgetUtil.CUSTOM_VARIANT, "my_variant" );
     WidgetLCAUtil.renderCustomVariant( widget );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( "variant_my_variant", message.findSetProperty( widget, "customVariant" ) );
   }
@@ -747,7 +785,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     };
     widget.addHelpListener( listener );
     WidgetLCAUtil.renderListenHelp( widget );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findListenProperty( widget, "help" ) );
   }
@@ -760,10 +798,10 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );
     widget.addHelpListener( listener );
-    
+
     Fixture.preserveWidgets();
     WidgetLCAUtil.renderListenHelp( widget );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( widget, "help" ) );
   }
@@ -797,7 +835,7 @@ public class WidgetLCAUtil_Test extends TestCase {
 
     gfxAdapter.setBackgroundGradient( gradientColors, percents, true );
     WidgetLCAUtil.renderBackgroundGradient( control );
-    
+
     Message message = Fixture.getProtocolMessage();
     JSONArray gradient = ( JSONArray )message.findSetProperty( control, "backgroundGradient" );
     JSONArray colors = ( JSONArray )gradient.get( 0 );
@@ -818,10 +856,10 @@ public class WidgetLCAUtil_Test extends TestCase {
       Graphics.getColor( 0, 0, 255 )
     };
     int[] percents = new int[] { 0, 100 };
-    
+
     gfxAdapter.setBackgroundGradient( gradientColors, percents, false );
     WidgetLCAUtil.renderBackgroundGradient( control );
-    
+
     Message message = Fixture.getProtocolMessage();
     JSONArray gradient = ( JSONArray )message.findSetProperty( control, "backgroundGradient" );
     JSONArray colors = ( JSONArray )gradient.get( 0 );
@@ -832,7 +870,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( new Integer( 100 ), stops.get( 1 ) );
     assertEquals( Boolean.FALSE, gradient.get( 2 ) );
   }
-  
+
   public void testRenderBackgroundGradientUnchanged() throws IOException {
     Control control = new Composite( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -844,15 +882,15 @@ public class WidgetLCAUtil_Test extends TestCase {
       Graphics.getColor( 0, 0, 255 )
     };
     int[] percents = new int[] { 0, 100 };
-    
+
     gfxAdapter.setBackgroundGradient( gradientColors, percents, true );
     WidgetLCAUtil.preserveBackgroundGradient( control );
     WidgetLCAUtil.renderBackgroundGradient( control );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "backgroundGradient" ) );
   }
-  
+
   public void testResetBackgroundGradient() throws IOException {
     Control control = new Composite( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -866,20 +904,20 @@ public class WidgetLCAUtil_Test extends TestCase {
     int[] percents = new int[] { 0, 100 };
     gfxAdapter.setBackgroundGradient( gradientColors, percents, true );
     WidgetLCAUtil.preserveBackgroundGradient( control );
-    
+
     gfxAdapter.setBackgroundGradient( null, null, true );
     WidgetLCAUtil.renderBackgroundGradient( control );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( JSONObject.NULL, message.findSetProperty( control, "backgroundGradient" ) );
   }
-  
+
   public void testRenderRoundedBorder() throws IOException, JSONException {
     Widget widget = new Composite( shell, SWT.NONE );
     Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
     Color color = Graphics.getColor( 0, 255, 0 );
-    
+
     graphicsAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
     WidgetLCAUtil.renderRoundedBorder( widget );
 
@@ -902,14 +940,14 @@ public class WidgetLCAUtil_Test extends TestCase {
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
     Color color = Graphics.getColor( 0, 255, 0 );
     graphicsAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
-    
+
     WidgetLCAUtil.preserveRoundedBorder( widget );
     WidgetLCAUtil.renderRoundedBorder( widget );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( widget, "roundedBorder" ) );
   }
-  
+
   public void testResetRoundedBorder() throws IOException {
     Widget widget = new Composite( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -919,12 +957,12 @@ public class WidgetLCAUtil_Test extends TestCase {
     Color color = Graphics.getColor( 0, 255, 0 );
     graphicsAdapter.setRoundedBorder( 2, color, 5, 6, 7, 8 );
     WidgetLCAUtil.preserveRoundedBorder( widget );
-    
+
     graphicsAdapter.setRoundedBorder( 0, null, 0, 0, 0, 0 );
     WidgetLCAUtil.renderRoundedBorder( widget );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( JSONObject.NULL, message.findSetProperty( widget, "roundedBorder" ) );
   }
-  
+
 }

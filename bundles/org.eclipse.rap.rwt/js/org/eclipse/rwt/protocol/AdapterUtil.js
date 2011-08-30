@@ -44,7 +44,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
       if( value === null ) {
         widget.resetTextColor();
       } else {
-        widget.setTextColor( value );
+        widget.setTextColor( qx.util.ColorUtil.rgbToRgbString( value ) );
       }
     },
     "background" : function( widget, value ) {
@@ -53,7 +53,8 @@ org.eclipse.rwt.protocol.AdapterUtil = {
         widget.resetBackgroundGradient();
       } else {
         widget.setBackgroundGradient( null );
-        widget.setBackgroundColor( value );
+        var color = value[ 3 ] === 0 ? "transparent" : qx.util.ColorUtil.rgbToRgbString( value );
+        widget.setBackgroundColor( color );
       }
     },
     "backgroundImage" : function( widget, value ) {
@@ -241,6 +242,10 @@ org.eclipse.rwt.protocol.AdapterUtil = {
 
   getRoundedBorderHandler : function() {
     return this._specialHandler.roundedBorder;
+  },
+  
+  getControlPropertyHandler : function( property ) {
+    return this._controlPropertyHandler[ property ];
   },
 
   /////////////////////

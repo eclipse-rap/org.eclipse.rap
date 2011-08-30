@@ -51,6 +51,45 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AdapterUtilTest", {
       handler( widget, [ 1, "blue", 2, 3, 4, 5 ] );
       handler( widget, null );
       assertIdentical( orgBorder, widget.getBorder() );
+    },
+
+    testBackgroundHandler : function() {
+      var handler = org.eclipse.rwt.protocol.AdapterUtil.getControlPropertyHandler( "background" );
+      var widget = new org.eclipse.swt.widgets.Composite();
+      handler( widget, [ 1, 2, 3, 255 ] );
+      assertEquals( "rgb(1,2,3)", widget.getBackgroundColor() );
+    },
+    
+    testBackgroundHandlerTransparent : function() {
+      var handler = org.eclipse.rwt.protocol.AdapterUtil.getControlPropertyHandler( "background" );
+      var widget = new org.eclipse.swt.widgets.Composite();
+      handler( widget, [ 1, 2, 3, 0 ] );
+      assertEquals( "transparent", widget.getBackgroundColor() );
+    },
+    
+    testBackgroundHandlerReset : function() {
+      var handler = org.eclipse.rwt.protocol.AdapterUtil.getControlPropertyHandler( "background" );
+      var widget = new org.eclipse.swt.widgets.Composite();
+      var orgBackground = widget.getBackgroundColor();
+      handler( widget, [ 1, 2, 3, 255 ] );
+      handler( widget, null );
+      assertEquals( orgBackground, widget.getBackgroundColor() );
+    },
+    
+    testForegroundHandler : function() {
+      var handler = org.eclipse.rwt.protocol.AdapterUtil.getControlPropertyHandler( "foreground" );
+      var widget = new org.eclipse.rwt.widgets.Button( "push" );
+      handler( widget, [ 1, 2, 3, 255 ] );
+      assertEquals( "rgb(1,2,3)", widget.getTextColor() );
+    },
+    
+    testForegroundHandlerReset : function() {
+      var handler = org.eclipse.rwt.protocol.AdapterUtil.getControlPropertyHandler( "foreground" );
+      var widget = new org.eclipse.rwt.widgets.Button( "push" );
+      var orgForeground = widget.getTextColor();
+      handler( widget, [ 1, 2, 3, 255 ] );
+      handler( widget, null );
+      assertEquals( orgForeground, widget.getTextColor() );
     }
 
   }

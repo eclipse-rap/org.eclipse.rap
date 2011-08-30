@@ -661,7 +661,7 @@ public final class WidgetLCAUtil {
       }
     }
   }
-  
+
   /**
    * Determines whether the property <code>font</code> of the given widget has
    * changed during the processing of the current request and if so, writes
@@ -732,7 +732,7 @@ public final class WidgetLCAUtil {
   public static void renderForeground( Widget widget, Color newColor ) throws IOException {
     if( WidgetLCAUtil.hasChanged( widget, PROP_FOREGROUND, newColor, null ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      clientObject.setProperty( "foreground", getColorValue( newColor.getRGB() ) );
+      clientObject.setProperty( "foreground", getColorValueAsArray( newColor, false ) );
     }
   }
 
@@ -755,6 +755,16 @@ public final class WidgetLCAUtil {
     }
     buffer.append( blue );
     return buffer.toString();
+  }
+
+  private static Integer[] getColorValueAsArray( Color color, boolean transparent ) {
+    Integer[] result = new Integer[ 4 ];
+    RGB rgb = color == null ? new RGB( 0, 0, 0 ) : color.getRGB();
+    result[ 0 ] = new Integer( rgb.red );
+    result[ 1 ] = new Integer( rgb.green );
+    result[ 2 ] = new Integer( rgb.blue );
+    result[ 3 ] = new Integer( transparent ? 0 : 255 );
+    return result;
   }
 
   /**
@@ -856,11 +866,9 @@ public final class WidgetLCAUtil {
     boolean colorChanged = WidgetLCAUtil.hasChanged( widget, PROP_BACKGROUND, background, null );
     if( transparencyChanged || colorChanged ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      String color = null;
-      if( transparency ) {
-        color = "transparent";
-      } else if( background != null ) {
-        color = getColorValue( background.getRGB() );
+      Integer[] color = null;
+      if( transparency || background != null ) {
+        color = getColorValueAsArray( background, transparency );
       }
       clientObject.setProperty( "background", color );
     }
@@ -901,7 +909,7 @@ public final class WidgetLCAUtil {
       writer.call( JSWriter.WIDGET_MANAGER_REF, "setBackgroundGradient", args );
     }
   }
-  
+
   /**
    * Determines whether the background gradient properties of the
    * given widget have changed during the processing of the current request and
@@ -1029,7 +1037,7 @@ public final class WidgetLCAUtil {
       clientObject.setProperty( "roundedBorder", args );
     }
   }
-  
+
   private static boolean hasRoundedBorderChanged( Widget widget ) {
     Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
     IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
@@ -1199,7 +1207,7 @@ public final class WidgetLCAUtil {
       writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
     }
   }
-  
+
   /**
    * Adds or removes client-side help listeners for the the given
    * <code>widget</code> as necessary.
