@@ -98,7 +98,9 @@ public class Section extends ExpandableComposite {
 					}
 					Section.super.setBackgroundImage(null);
 // RAP [if] Title bar background gradient rendering
-					applyBackgroundGradient();
+					if( e.type != SWT.Dispose ) {
+					  applyBackgroundGradient();
+					}
 // ENDRAP [if]
 				}
 			};
