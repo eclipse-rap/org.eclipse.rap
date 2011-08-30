@@ -77,7 +77,7 @@ org.eclipse.rwt.protocol.Processor = {
     var adapter = this._getAdapter( targetId );
     if( adapter.properties  instanceof Array ) {
       var targetObject = this._getTarget( targetId );
-      for( var i = 0; i < adapter.properties .length; i++ ) {
+      for( var i = 0; i < adapter.properties.length; i++ ) {
         var property = adapter.properties [ i ];
         var value = properties[ property ];
         if( value !== undefined ) {
@@ -94,7 +94,7 @@ org.eclipse.rwt.protocol.Processor = {
 
   _processCall : function( targetId, method, properties ) {
     var adapter = this._getAdapter( targetId );
-    if( adapter.methods instanceof Array  && adapter.methods.indexOf( method ) !== -1 ) {
+    if( adapter.methods instanceof Array && adapter.methods.indexOf( method ) !== -1 ) {
       var targetObject = this._getTarget( targetId );
       if( adapter.methodHandler && adapter.methodHandler[ method ] ) {
         adapter.methodHandler[ method ]( targetObject, properties );
