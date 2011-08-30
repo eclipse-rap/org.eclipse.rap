@@ -14,10 +14,11 @@
 qx.Class.define("org.eclipse.rwt.test.fixture.AppSimulator", {
   type : "static",
 
-  statics : {    
+  statics : {
+
     start : function() {
-      qx.Class.patch( org.eclipse.swt.Request,
-                        org.eclipse.rwt.test.fixture.RAPRequestPatch);
+      this._fakeDisplayInit();
+      qx.Class.patch( org.eclipse.swt.Request, org.eclipse.rwt.test.fixture.RAPRequestPatch );
       if( !org.eclipse.rwt.Client.supportsCss3() ) {
         qx.Class.patch( qx.ui.core.Parent, org.eclipse.rwt.GraphicsMixin );
         qx.Class.patch( qx.ui.form.TextField, org.eclipse.rwt.GraphicsMixin );
@@ -52,6 +53,27 @@ qx.Class.define("org.eclipse.rwt.test.fixture.AppSimulator", {
       }
       
     },
+    
+    _fakeDisplayInit : function() {
+      var orgProto = org.eclipse.rwt.Display.prototype;
+      org.eclipse.rwt.Display = function( url, rootId ) {
+      };
+      org.eclipse.rwt.Display.prototype = orgProto;
+      org.eclipse.rwt.protocol.Processor.processMessage( {
+        "meta": {
+          "requestCounter": -1
+        },
+        "operations": [ {
+          "target": "w1",
+          "action": "create",
+          "type": "rwt.Display",
+          "properties": {
+            "url": "rap",
+            "rootId": "w1"
+          }
+        } ]
+      } );
+    },
         
     _onResize : function( evt ) {
       org.eclipse.rwt.test.fixture.AppSimulator._appendWindowSize();
@@ -76,4 +98,4 @@ qx.Class.define("org.eclipse.rwt.test.fixture.AppSimulator", {
     }
     
   }
-});
+} );

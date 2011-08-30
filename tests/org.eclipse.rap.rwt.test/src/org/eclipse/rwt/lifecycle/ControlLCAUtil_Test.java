@@ -389,8 +389,9 @@ public class ControlLCAUtil_Test extends TestCase {
     assertTrue( eventLog.get( 0 ).doit );
     assertEquals( SWT.KeyUp, eventLog.get( 1 ).type );
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findCallOperation( shell, "cancelEvent" ) );
-    assertNotNull( message.findCallOperation( shell, "allowEvent" ) );
+    String displayId = DisplayUtil.getId( display );
+    assertNull( message.findCallOperation( displayId, "cancelEvent" ) );
+    assertNotNull( message.findCallOperation( displayId, "allowEvent" ) );
     shell.removeListener( SWT.KeyDown, doitTrueListener );
 
     // Simulate KeyEvent request, listener sets doit = false
@@ -406,8 +407,8 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( SWT.KeyDown, eventLog.get( 0 ).type );
     assertFalse( eventLog.get( 0 ).doit );
     message = Fixture.getProtocolMessage();
-    assertNotNull( message.findCallOperation( shell, "cancelEvent" ) );
-    assertNull( message.findCallOperation( shell, "allowEvent" ) );
+    assertNotNull( message.findCallOperation( displayId, "cancelEvent" ) );
+    assertNull( message.findCallOperation( displayId, "allowEvent" ) );
     shell.removeListener( SWT.KeyDown, doitFalseListener );
   }
 
@@ -456,7 +457,8 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( SWT.Traverse, eventLog.get( 0 ).type );
     assertFalse( eventLog.get( 0 ).doit );
     message = Fixture.getProtocolMessage();
-    assertNotNull( message.findCallOperation( shell, "cancelEvent" ) );
+    String displayId = DisplayUtil.getId( display );
+    assertNotNull( message.findCallOperation( displayId, "cancelEvent" ) );
     shell.removeListener( SWT.Traverse, doitFalseListener );
   }
 
@@ -1332,8 +1334,9 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderKeyEventResponse( control );
     
     Message message = Fixture.getProtocolMessage();
-    assertNotNull( message.findCallOperation( control, "allowEvent" ) );
-    assertNull( message.findCallOperation( control, "cancelEvent" ) );
+    String displayId = DisplayUtil.getId( display );
+    assertNotNull( message.findCallOperation( displayId, "allowEvent" ) );
+    assertNull( message.findCallOperation( displayId, "cancelEvent" ) );
   }
   
   public void testRenderCancelKeyEvent() {
@@ -1341,8 +1344,9 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.renderKeyEventResponse( control );
     
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findCallOperation( control, "allowEvent" ) );
-    assertNotNull( message.findCallOperation( control, "cancelEvent" ) );
+    String displayId = DisplayUtil.getId( display );
+    assertNull( message.findCallOperation( displayId, "allowEvent" ) );
+    assertNotNull( message.findCallOperation( displayId, "cancelEvent" ) );
   }
 
 }

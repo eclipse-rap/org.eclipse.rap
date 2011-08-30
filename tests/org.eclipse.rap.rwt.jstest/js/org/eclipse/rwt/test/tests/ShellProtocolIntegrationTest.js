@@ -482,7 +482,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
         allow = true;
       };
       var shell = this._protocolCreateShell();
-      this._protocolCall( "allowEvent", {} );
+      this._protocolCall( "w1", "allowEvent" );
       delete util.allowEvent;
       assertTrue( allow );
       this._disposeShell();
@@ -495,7 +495,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
         cancel = true;
       };
       var shell = this._protocolCreateShell();
-      this._protocolCall( "cancelEvent", {} );
+      this._protocolCall( "w1", "cancelEvent" );
       delete util.cancelEvent;
       assertTrue( cancel );
       this._disposeShell();
@@ -586,13 +586,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       } );
     },
 
-    _protocolCall : function( method, properties ) {
+    _protocolCall : function( targetId, method ) {
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
-        "target" : "w3",
+        "target" : targetId,
         "action" : "call",
         "method" : method,
-        "properties" : properties
+        "properties" : {}
       } );
     },
 

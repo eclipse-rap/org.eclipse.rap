@@ -35,19 +35,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Composite", {
 
   listenerHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
 
-  knownMethods : [
-    "allowEvent",
-    "cancelEvent"
-  ],
-
-  methodHandler : {
-    "allowEvent" : function( widget, properties ) {
-      org.eclipse.rwt.KeyEventUtil.getInstance().allowEvent();
-    },
-    "cancelEvent" : function( widget, properties ) {
-      org.eclipse.rwt.KeyEventUtil.getInstance().cancelEvent();
-    }
-  }
+  knownMethods : []
 
 
 } );

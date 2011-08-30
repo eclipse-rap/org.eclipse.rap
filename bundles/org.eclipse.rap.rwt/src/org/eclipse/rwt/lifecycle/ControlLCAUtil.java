@@ -1008,10 +1008,10 @@ public class ControlLCAUtil {
     IServiceStore serviceStore = ContextProvider.getStateInfo();
     // TODO [tb] : Static method calls or rename methods. call method without parameter?
     if( serviceStore.getAttribute( ATT_ALLOW_KEY_EVENT ) == control ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+      IClientObject clientObject = ClientObjectFactory.getForDisplay( control.getDisplay() );
       clientObject.call( "allowEvent", null );
     } else if( serviceStore.getAttribute( ATT_CANCEL_KEY_EVENT ) == control ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+      IClientObject clientObject = ClientObjectFactory.getForDisplay( control.getDisplay() );
       clientObject.call( "cancelEvent", null );
     }
   }

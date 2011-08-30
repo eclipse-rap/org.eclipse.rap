@@ -19,4 +19,14 @@ org.eclipse.rwt.Display = function( url, rootId ) {
 };
 
 org.eclipse.rwt.Display.prototype = {
+
+  allowEvent : function() {
+    // NOTE : in the future might need a parameter if there are multiple types of cancelable events 
+    org.eclipse.rwt.KeyEventUtil.getInstance().allowEvent();
+  },
+
+  cancelEvent : function() {
+    org.eclipse.rwt.KeyEventUtil.getInstance().cancelEvent();
+  }
+
 };
