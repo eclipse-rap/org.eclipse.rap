@@ -622,22 +622,11 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       var tmpMonth = this._monthInt - 1;
       var tmpYear = parseInt( this._yearTextField.getText(), 10 );
       var tmpDate = new Date( tmpYear, tmpMonth, 1 );
-      // Test 31
-      tmpDate.setDate( 31 );
-      if( tmpDate.getMonth() != tmpMonth ) {
-        result = 30;
+      tmpDate.setDate( result );
+      while( tmpDate.getMonth() !== tmpMonth ) {
+        result--;
         tmpDate = new Date( tmpYear, tmpMonth, 1 );
-        // Test 30
-        tmpDate.setDate( 30 );
-        if( tmpDate.getMonth() != tmpMonth ) {
-          result = 29;
-          tmpDate = new Date( tmpYear, tmpMonth, 1 );
-          // Test 29
-          tmpDate.setDate( 29 );
-          if( tmpDate.getMonth() != tmpMonth ) {
-            result = 28;
-          }
-        }
+        tmpDate.setDate( result );
       }
       return result;
     },
