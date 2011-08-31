@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.buttonkit;
 
@@ -313,44 +313,6 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( "widgetSelected", log.toString() );
   }
 
-  public void testEscape() throws Exception {
-    Button pushButton = new Button( shell, SWT.PUSH );
-    pushButton.setText( "PUSH &E<s>ca'pe\" && me" );
-    Button checkButton = new Button( shell, SWT.CHECK );
-    checkButton.setText( "CHECK &E<s>ca'pe\" && me" );
-    Button radioButton = new Button( shell, SWT.RADIO );
-    radioButton.setText( "RADIO &E<s>ca'pe\" && me" );
-    Fixture.fakeResponseWriter();
-    ButtonDelegateLCA pushLCA = new PushButtonDelegateLCA();
-    pushLCA.renderChanges( pushButton );
-    String expected = "\"PUSH E&lt;s&gt;ca'pe&quot; &amp; me\"";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    ButtonDelegateLCA checkLCA = new CheckButtonDelegateLCA();
-    checkLCA.renderChanges( checkButton );
-    expected = "\"CHECK E&lt;s&gt;ca'pe&quot; &amp; me\"";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    ButtonDelegateLCA radioLCA = new RadioButtonDelegateLCA();
-    radioLCA.renderChanges( radioButton );
-    expected = "\"RADIO E&lt;s&gt;ca'pe&quot; &amp; me\"";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-  }
-
-  public void testReplaceLinkeBreaks() throws Exception {
-    Button normalButton = new Button( shell, SWT.PUSH );
-    normalButton.setText( "Some\nText" );
-    Button wrapButton = new Button( shell, SWT.WRAP );
-    wrapButton.setText( "Some\nText" );
-    Fixture.fakeResponseWriter();
-    ButtonDelegateLCA pushLCA = new PushButtonDelegateLCA();
-    pushLCA.renderChanges( normalButton );
-    String expected = "\"Some\\nText\"";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    Fixture.fakeResponseWriter();
-    pushLCA.renderChanges( wrapButton );
-    expected = "\"Some<br/>Text\"";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-  }
-
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=224872
   public void testRadioSelectionEvent() {
     final StringBuffer log = new StringBuffer();
@@ -444,9 +406,8 @@ public class ButtonLCA_Test extends TestCase {
     assertSame( button1, event.widget );
   }
 
-  public void testRenderTextAndImageForPushButton() throws Exception {
+  public void testRenderImageForPushButton() throws Exception {
     Button button = new Button( shell, SWT.PUSH );
-    button.setText( "Test" );
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     button.setImage( image );
     Fixture.markInitialized( button );
@@ -455,7 +416,6 @@ public class ButtonLCA_Test extends TestCase {
     PushButtonDelegateLCA lca = new PushButtonDelegateLCA();
     lca.renderChanges( button );
     String allMarkup = Fixture.getAllMarkup();
-    assertTrue( allMarkup.indexOf( "w.setText( \"Test\" );" ) != -1 );
     String imageLocation = ImageFactory.getImagePath( image );
     String expected = "w.setImage( \"" + imageLocation + "\", 58, 12 );";
     assertTrue( allMarkup.indexOf( expected ) != -1 );
@@ -481,12 +441,10 @@ public class ButtonLCA_Test extends TestCase {
     assertTrue( Arrays.asList( styles ).contains( "WRAP" ) );
   }
 
-  public void testRenderTextAndImageForCheckAndRadioButton() throws Exception {
+  public void testRenderImageForCheckAndRadioButton() throws Exception {
     Button checkButton = new Button( shell, SWT.CHECK );
     Button radioButton = new Button( shell, SWT.RADIO );
-    checkButton.setText( "Test" );
     checkButton.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
-    radioButton.setText( "Test" );
     radioButton.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     Fixture.markInitialized( radioButton );
     Fixture.preserveWidgets();
@@ -495,12 +453,10 @@ public class ButtonLCA_Test extends TestCase {
     RadioButtonDelegateLCA radioLCA = new RadioButtonDelegateLCA();
     checkLCA.renderChanges( checkButton );
     String allMarkup = Fixture.getAllMarkup();
-    assertTrue( allMarkup.indexOf( "w.setText( \"Test\" );" ) != -1 );
     assertTrue( allMarkup.indexOf( "w.setImage(" ) != -1 );
     Fixture.fakeResponseWriter();
     radioLCA.renderChanges( radioButton );
     allMarkup = Fixture.getAllMarkup();
-    assertTrue( allMarkup.indexOf( "w.setText( \"Test\" );" ) != -1 );
     assertTrue( allMarkup.indexOf( "w.setImage(" ) != -1 );
   }
 
@@ -538,5 +494,63 @@ public class ButtonLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( radio );
     assertEquals( Boolean.TRUE, operation.getProperty( "noRadioGroup" ) );
+  }
+
+  public void testRenderInitialText() throws IOException {
+    Button button = new Button( shell, SWT.PUSH );
+    ButtonLCA lca = new ButtonLCA();
+
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( button, "text" ) );
+  }
+
+  public void testRenderText() throws IOException {
+    Button button = new Button( shell, SWT.PUSH );
+    ButtonLCA lca = new ButtonLCA();
+
+    button.setText( "test" );
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "test", message.findSetProperty( button, "text" ) );
+  }
+
+  public void testRenderTextWithQuotationMarks() throws IOException {
+    Button button = new Button( shell, SWT.PUSH );
+    ButtonLCA lca = new ButtonLCA();
+
+    button.setText( "te\"s't" );
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "te\"s't", message.findSetProperty( button, "text" ) );
+  }
+
+  public void testRenderTextWithNewlines() throws IOException {
+    Button button = new Button( shell, SWT.PUSH );
+    ButtonLCA lca = new ButtonLCA();
+
+    button.setText( "\ntes\r\nt\n" );
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "\ntes\r\nt\n", message.findSetProperty( button, "text" ) );
+  }
+
+  public void testRenderTextUnchanged() throws IOException {
+    Button button = new Button( shell, SWT.PUSH );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( button );
+    ButtonLCA lca = new ButtonLCA();
+
+    button.setText( "foo" );
+
+    Fixture.preserveWidgets();
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( button, "text" ) );
   }
 }

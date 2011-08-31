@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,15 +74,11 @@ final class ButtonLCAUtil {
     WidgetLCAUtil.preserveCustomVariant( button );
   }
 
-  static void writeText( Button button ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( button );
-    String text = button.getText();
-    if( WidgetLCAUtil.hasChanged( button, Props.TEXT, text, null ) ) {
-      text = WidgetLCAUtil.escapeText( text, true );
-      if( ( button.getStyle() & SWT.WRAP ) != 0 ) {
-        text = WidgetLCAUtil.replaceNewLines( text, "<br/>" );
-      }
-      writer.set( "text", text.equals( "" ) ? null : text );
+  static void renderText( Button button ) {
+    String newValue = button.getText();
+    if( WidgetLCAUtil.hasChanged( button, Props.TEXT, newValue, "" ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( button );
+      clientObject.setProperty( "text", newValue );
     }
   }
 
@@ -145,7 +141,7 @@ final class ButtonLCAUtil {
   }
 
   static void renderChanges( Button button ) throws IOException {
-    writeText( button );
+    renderText( button );
     writeImage( button );
     writeAlignment( button );
     writeSelection( button );

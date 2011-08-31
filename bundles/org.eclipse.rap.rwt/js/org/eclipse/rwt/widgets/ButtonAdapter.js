@@ -32,10 +32,20 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Button", {
   destructor : org.eclipse.rwt.protocol.AdapterUtil.getControlDestructor(),
 
   properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
-    "noRadioGroup"
+    "noRadioGroup",
+    "text"
   ] ),
 
-  propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {} ),     
+  propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
+    "text" : function( widget, value ) {
+      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var text = encodingUtil.escapeText( value, true );
+      if( widget.hasState( "rwt_WRAP" ) ) {
+        text = encodingUtil.replaceNewLines( text, "<br/>" );
+      }
+      widget.setText( text === "" ? null : text );
+    }
+  } ),     
 
   listeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [] ),
 

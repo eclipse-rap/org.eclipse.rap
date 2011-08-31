@@ -127,6 +127,48 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       shell.destroy();
       widget.destroy();
     },
+    
+    testSetTextByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w2",
+          "text" : "text\n && \"text"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( "text\n &amp; &quot;text", widget.getCellContent( 2 ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetTextByProtocolWithWrap : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH", "WRAP" ],
+          "parent" : "w2",
+          "text" : "text\n && \"text"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( "text<br/> &amp; &quot;text", widget.getCellContent( 2 ) );
+      shell.destroy();
+      widget.destroy();
+    },
 
     testFocusIndicatorPush : function() {
       var hasFocusIndicator = function( widget ) {
