@@ -77,18 +77,21 @@ final class ButtonLCAUtil {
     }
   }
 
-  static void writeImage( Button button ) throws IOException {
+  static void renderImage( Button button ) {
     Image image = button.getImage();
     if( WidgetLCAUtil.hasChanged( button, Props.IMAGE, image, null ) ) {
-      String imagePath = ImageFactory.getImagePath( image );
-      JSWriter writer = JSWriter.getWriterFor( button );
-      Rectangle bounds = image != null ? image.getBounds() : null;
-      Object[] args = new Object[]{
-        imagePath,
-        new Integer( bounds != null ? bounds.width : 0 ),
-        new Integer( bounds != null ? bounds.height : 0 )
-      };
-      writer.set( "image", args );
+      Object[] args = null;
+      if( image != null ) {
+        String imagePath = ImageFactory.getImagePath( image );
+        Rectangle bounds = image.getBounds();
+        args = new Object[] {
+          imagePath,
+          new Integer( bounds.width ),
+          new Integer( bounds.height )
+        };
+      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( button );
+      clientObject.setProperty( "image", args );
     }
   }
 
@@ -123,23 +126,26 @@ final class ButtonLCAUtil {
     writer.set( PROP_SELECTION, JS_PROP_SELECTION, newValue, Boolean.FALSE );
   }
 
-  static void writeSelectionListener( Button button ) throws IOException {
+  static void renderListenSelection( Button button ) {
     boolean hasListener = SelectionEvent.hasListener( button );
     Boolean newValue = Boolean.valueOf( hasListener );
-    String prop = PROP_SELECTION_LISTENERS;
-    if( WidgetLCAUtil.hasChanged( button, prop, newValue, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( button );
-      writer.set( "hasSelectionListener", newValue );
+    if( WidgetLCAUtil.hasChanged( button, PROP_SELECTION_LISTENERS, newValue, Boolean.FALSE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( button );
+      if( newValue.booleanValue() ) {
+        clientObject.addListener( "selection" );
+      } else {
+        clientObject.removeListener( "selection" );
+      }
     }
   }
 
   static void renderChanges( Button button ) throws IOException {
     renderText( button );
-    writeImage( button );
+    renderImage( button );
     renderAlignment( button );
     writeSelection( button );
     WidgetLCAUtil.renderCustomVariant( button );
     ControlLCAUtil.renderChanges( button );
-    writeSelectionListener( button );
+    renderListenSelection( button );
   }
 }

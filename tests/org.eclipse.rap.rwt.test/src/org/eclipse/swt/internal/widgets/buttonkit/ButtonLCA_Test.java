@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.*;
 import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -32,6 +32,7 @@ import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+import org.json.*;
 
 
 // TODO [rst] Split into different test classes for button types
@@ -406,28 +407,6 @@ public class ButtonLCA_Test extends TestCase {
     assertSame( button1, event.widget );
   }
 
-  public void testRenderImageForPushButton() throws Exception {
-    Button button = new Button( shell, SWT.PUSH );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
-    button.setImage( image );
-    Fixture.markInitialized( button );
-    Fixture.preserveWidgets();
-    Fixture.fakeResponseWriter();
-    PushButtonDelegateLCA lca = new PushButtonDelegateLCA();
-    lca.renderChanges( button );
-    String allMarkup = Fixture.getAllMarkup();
-    String imageLocation = ImageFactory.getImagePath( image );
-    String expected = "w.setImage( \"" + imageLocation + "\", 58, 12 );";
-    assertTrue( allMarkup.indexOf( expected ) != -1 );
-    Fixture.fakeResponseWriter();
-    lca.preserveValues( button );
-    button.setImage( null );
-    lca.renderChanges( button );
-    allMarkup = Fixture.getAllMarkup();
-    expected = "w.setImage( null, 0, 0 );";
-    assertTrue( allMarkup.indexOf( expected ) != -1 );
-  }
-
   public void testRenderWrap() throws Exception {
     Button button = new Button( shell, SWT.PUSH | SWT.WRAP );
     Fixture.fakeResponseWriter();
@@ -439,25 +418,6 @@ public class ButtonLCA_Test extends TestCase {
     CreateOperation operation = message.findCreateOperation( button );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "WRAP" ) );
-  }
-
-  public void testRenderImageForCheckAndRadioButton() throws Exception {
-    Button checkButton = new Button( shell, SWT.CHECK );
-    Button radioButton = new Button( shell, SWT.RADIO );
-    checkButton.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
-    radioButton.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
-    Fixture.markInitialized( radioButton );
-    Fixture.preserveWidgets();
-    Fixture.fakeResponseWriter();
-    CheckButtonDelegateLCA checkLCA = new CheckButtonDelegateLCA();
-    RadioButtonDelegateLCA radioLCA = new RadioButtonDelegateLCA();
-    checkLCA.renderChanges( checkButton );
-    String allMarkup = Fixture.getAllMarkup();
-    assertTrue( allMarkup.indexOf( "w.setImage(" ) != -1 );
-    Fixture.fakeResponseWriter();
-    radioLCA.renderChanges( radioButton );
-    allMarkup = Fixture.getAllMarkup();
-    assertTrue( allMarkup.indexOf( "w.setImage(" ) != -1 );
   }
 
   public void testRenderCreate() throws IOException {
@@ -586,5 +546,91 @@ public class ButtonLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( button, "alignment" ) );
+  }
+
+  public void testRenderAddSelectionListener() throws Exception {
+    Button button = new Button( shell, SWT.PUSH );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( button );
+    Fixture.preserveWidgets();
+    ButtonLCA lca = new ButtonLCA();
+
+    button.addSelectionListener( new SelectionAdapter() { } );
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( button, "selection" ) );
+  }
+
+  public void testRenderRemoveSelectionListener() throws Exception {
+    Button button = new Button( shell, SWT.PUSH );
+    SelectionListener listener = new SelectionAdapter() { };
+    button.addSelectionListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( button );
+    Fixture.preserveWidgets();
+    ButtonLCA lca = new ButtonLCA();
+
+    button.removeSelectionListener( listener );
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( button, "selection" ) );
+  }
+
+  public void testRenderInitialImage() throws IOException {
+    Button button = new Button( shell, SWT.PUSH );
+    ButtonLCA lca = new ButtonLCA();
+
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( button, "image" ) );
+  }
+
+  public void testRenderImage() throws IOException, JSONException {
+    Button button = new Button( shell, SWT.PUSH );
+    ButtonLCA lca = new ButtonLCA();
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+
+    button.setImage( image );
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    String imageLocation = ImageFactory.getImagePath( image );
+    String expected = "[\"" + imageLocation + "\", 100, 50 ]";
+    JSONArray actual = ( JSONArray )message.findSetProperty( button, "image" );
+    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+  }
+
+  public void testRenderImageUnchanged() throws IOException {
+    Button button = new Button( shell, SWT.PUSH );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( button );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    ButtonLCA lca = new ButtonLCA();
+
+    button.setImage( image );
+    Fixture.preserveWidgets();
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( button, "image" ) );
+  }
+
+  public void testRenderImageReset() throws IOException {
+    Button button = new Button( shell, SWT.PUSH );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( button );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    ButtonLCA lca = new ButtonLCA();
+    button.setImage( image );
+
+    Fixture.preserveWidgets();
+    button.setImage( null );
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( button, "image" ) );
   }
 }

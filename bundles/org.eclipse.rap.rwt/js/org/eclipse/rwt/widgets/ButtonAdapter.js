@@ -34,7 +34,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Button", {
   properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
     "noRadioGroup",
     "text",
-    "alignment"
+    "alignment",
+    "image"   
   ] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
@@ -48,10 +49,19 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Button", {
     },
     "alignment" : function( widget, value ) {
       widget.setHorizontalChildrenAlign( value );
+    },
+    "image" : function( widget, value ) {
+      if( value === null ) {
+        widget.setImage( value );
+      } else {
+        widget.setImage.apply( widget, value );
+      }
     }
   } ),     
 
-  listeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [] ),
+  listeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [
+    "selection"   
+  ] ),
 
   listenerHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
 
