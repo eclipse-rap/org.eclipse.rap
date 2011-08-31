@@ -53,7 +53,7 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
   }
 
   void renderChanges( Button button ) throws IOException {
-    ButtonLCAUtil.writeChanges( button );
+    ButtonLCAUtil.renderChanges( button );
   }
 
   private static void processSelectionEvent( Button button ) {

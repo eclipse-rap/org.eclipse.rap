@@ -44,7 +44,7 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
     // bounds of the widget that was clicked -> In the SelectionEvent
     // for Button the bounds are undefined
-    ButtonLCAUtil.writeChanges( button );
+    ButtonLCAUtil.renderChanges( button );
     writeGrayed( button );
   }
 

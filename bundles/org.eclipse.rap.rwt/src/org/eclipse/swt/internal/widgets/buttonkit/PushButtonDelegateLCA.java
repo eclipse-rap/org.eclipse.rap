@@ -38,7 +38,7 @@ final class PushButtonDelegateLCA extends ButtonDelegateLCA {
 
   // TODO [rh] highlight default button (e.g. with thick border as in Windows)
   void renderChanges( Button button ) throws IOException {
-    ButtonLCAUtil.writeChanges( button );
+    ButtonLCAUtil.renderChanges( button );
   }
 
 }

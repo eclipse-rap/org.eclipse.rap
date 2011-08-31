@@ -144,13 +144,13 @@ final class ButtonLCAUtil {
     }
   }
 
-  static void writeChanges( Button button ) throws IOException {
-    ControlLCAUtil.writeChanges( button );
+  static void renderChanges( Button button ) throws IOException {
     writeText( button );
     writeImage( button );
     writeAlignment( button );
     writeSelection( button );
+    WidgetLCAUtil.renderCustomVariant( button );
+    ControlLCAUtil.renderChanges( button );
     writeSelectionListener( button );
-    WidgetLCAUtil.writeCustomVariant( button );
   }
 }
