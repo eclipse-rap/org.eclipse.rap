@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
@@ -621,19 +621,17 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
       var result = 31;
       var tmpMonth = this._monthInt - 1;
       var tmpYear = parseInt( this._yearTextField.getText(), 10 );
-      var tmpDate = new Date();
-      tmpDate.setYear( tmpYear );
-      tmpDate.setMonth( tmpMonth );
+      var tmpDate = new Date( tmpYear, tmpMonth, 1 );
       // Test 31
       tmpDate.setDate( 31 );
       if( tmpDate.getMonth() != tmpMonth ) {
         result = 30;
-        tmpDate.setMonth( tmpMonth );
+        tmpDate = new Date( tmpYear, tmpMonth, 1 );
         // Test 30
         tmpDate.setDate( 30 );
         if( tmpDate.getMonth() != tmpMonth ) {
           result = 29;
-          tmpDate.setMonth( tmpMonth );
+          tmpDate = new Date( tmpYear, tmpMonth, 1 );
           // Test 29
           tmpDate.setDate( 29 );
           if( tmpDate.getMonth() != tmpMonth ) {
