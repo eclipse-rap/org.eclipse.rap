@@ -502,7 +502,8 @@ public final class WidgetLCAUtil {
   public static void renderMenu( Widget widget, Menu menu ) throws IOException {
     if( WidgetLCAUtil.hasChanged( widget, Props.MENU, menu, null ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      clientObject.setProperty( "menu", WidgetUtil.getId( menu ) );
+      String menuId = menu == null ? null : WidgetUtil.getId( menu );
+      clientObject.setProperty( "menu", menuId );
     }
   }
 

@@ -965,4 +965,39 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( JSONObject.NULL, message.findSetProperty( widget, "roundedBorder" ) );
   }
 
+  public void testRenderInitialMenu() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( widget );
+
+    WidgetLCAUtil.renderMenu( widget, widget.getMenu() );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
+  }
+
+  public void testRenderMenu() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( widget );
+    Menu menu = new Menu( widget );
+    widget.setMenu( menu );
+
+    WidgetLCAUtil.renderMenu( widget, widget.getMenu() );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( WidgetUtil.getId( menu ), message.findSetProperty( widget, "menu" ) );
+  }
+
+  public void testRenderMenuReset() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( widget );
+    Menu menu = new Menu( widget );
+    widget.setMenu( menu );
+
+    Fixture.preserveWidgets();
+    WidgetLCAUtil.renderMenu( widget, null );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( widget, "menu" ) );
+  }
+
 }

@@ -36,7 +36,8 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     "cursor",
     "customVariant",
     "bounds",
-    "font"
+    "font",
+    "menu"
   ],
   
   _controlPropertyHandler : {
@@ -108,7 +109,17 @@ org.eclipse.rwt.protocol.AdapterUtil = {
           widget.setFont( font );
         }
       }
-    }    
+    },
+    "menu" : function( widget, menuId ) {
+      var menu = menuId == null ? null : org.eclipse.rwt.protocol.ObjectManager.getObject( menuId );
+      widget.setContextMenu( menu );
+      var contextMenuHandler = org.eclipse.rwt.widgets.Menu.contextMenuHandler;
+      if( menu == null ) {
+        widget.removeEventListener( "contextmenu", contextMenuHandler );
+      } else {
+        widget.addEventListener( "contextmenu", contextMenuHandler );
+      }
+    }
   },
 
   _controlListeners : [

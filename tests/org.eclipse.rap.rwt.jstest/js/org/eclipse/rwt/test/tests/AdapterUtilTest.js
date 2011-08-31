@@ -59,14 +59,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AdapterUtilTest", {
       handler( widget, [ 1, 2, 3, 255 ] );
       assertEquals( "rgb(1,2,3)", widget.getBackgroundColor() );
     },
-    
+
     testBackgroundHandlerTransparent : function() {
       var handler = org.eclipse.rwt.protocol.AdapterUtil.getControlPropertyHandler( "background" );
       var widget = new org.eclipse.swt.widgets.Composite();
       handler( widget, [ 1, 2, 3, 0 ] );
       assertEquals( "transparent", widget.getBackgroundColor() );
     },
-    
+
     testBackgroundHandlerReset : function() {
       var handler = org.eclipse.rwt.protocol.AdapterUtil.getControlPropertyHandler( "background" );
       var widget = new org.eclipse.swt.widgets.Composite();
@@ -75,14 +75,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AdapterUtilTest", {
       handler( widget, null );
       assertEquals( orgBackground, widget.getBackgroundColor() );
     },
-    
+
     testForegroundHandler : function() {
       var handler = org.eclipse.rwt.protocol.AdapterUtil.getControlPropertyHandler( "foreground" );
       var widget = new org.eclipse.rwt.widgets.Button( "push" );
       handler( widget, [ 1, 2, 3, 255 ] );
       assertEquals( "rgb(1,2,3)", widget.getTextColor() );
     },
-    
+
     testForegroundHandlerReset : function() {
       var handler = org.eclipse.rwt.protocol.AdapterUtil.getControlPropertyHandler( "foreground" );
       var widget = new org.eclipse.rwt.widgets.Button( "push" );
@@ -90,6 +90,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AdapterUtilTest", {
       handler( widget, [ 1, 2, 3, 255 ] );
       handler( widget, null );
       assertEquals( orgForeground, widget.getTextColor() );
+    },
+
+    testMenuHandler : function() {
+      var handler = org.eclipse.rwt.protocol.AdapterUtil.getControlPropertyHandler( "menu" );
+      var widget = new org.eclipse.swt.widgets.Composite();
+      var menu = new org.eclipse.rwt.widgets.Menu();
+      org.eclipse.rwt.protocol.ObjectManager.add( "w3", menu, "rwt.widgets.Menu" );
+      handler( widget, "w3" );
+      assertIdentical( menu, widget.getContextMenu() );
+    },
+
+    testMenuHandlerReset : function() {
+      var handler = org.eclipse.rwt.protocol.AdapterUtil.getControlPropertyHandler( "menu" );
+      var widget = new org.eclipse.swt.widgets.Composite();
+      var menu = new org.eclipse.rwt.widgets.Menu();
+      org.eclipse.rwt.protocol.ObjectManager.add( "w3", menu, "rwt.widgets.Menu" );
+      handler( widget, "w3" );
+      handler( widget, null );
+      assertNull( widget.getContextMenu() );
     }
 
   }
