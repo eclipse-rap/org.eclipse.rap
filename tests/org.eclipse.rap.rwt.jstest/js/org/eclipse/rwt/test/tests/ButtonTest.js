@@ -170,6 +170,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       widget.destroy();
     },
 
+    testSetAlignmentByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w2",
+          "alignment" : "right"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( "right", widget.getHorizontalChildrenAlign() );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testFocusIndicatorPush : function() {
       var hasFocusIndicator = function( widget ) {
         var node = widget._getTargetNode();

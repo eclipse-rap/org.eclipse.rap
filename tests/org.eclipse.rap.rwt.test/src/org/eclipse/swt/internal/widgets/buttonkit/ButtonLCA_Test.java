@@ -546,11 +546,45 @@ public class ButtonLCA_Test extends TestCase {
     ButtonLCA lca = new ButtonLCA();
 
     button.setText( "foo" );
-
     Fixture.preserveWidgets();
     lca.renderChanges( button );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( button, "text" ) );
+  }
+
+  public void testRenderInitialAlignment() throws IOException {
+    Button button = new Button( shell, SWT.PUSH );
+    ButtonLCA lca = new ButtonLCA();
+
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( button, "alignment" ) );
+  }
+
+  public void testRenderAlignment() throws IOException {
+    Button button = new Button( shell, SWT.PUSH );
+    ButtonLCA lca = new ButtonLCA();
+
+    button.setAlignment( SWT.RIGHT );
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "right", message.findSetProperty( button, "alignment" ) );
+  }
+
+  public void testRenderAlignmentUnchanged() throws IOException {
+    Button button = new Button( shell, SWT.PUSH );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( button );
+    ButtonLCA lca = new ButtonLCA();
+
+    button.setAlignment( SWT.RIGHT );
+    Fixture.preserveWidgets();
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( button, "alignment" ) );
   }
 }

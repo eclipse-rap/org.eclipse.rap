@@ -33,7 +33,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Button", {
 
   properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
     "noRadioGroup",
-    "text"
+    "text",
+    "alignment"
   ] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
@@ -44,6 +45,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Button", {
         text = encodingUtil.replaceNewLines( text, "<br/>" );
       }
       widget.setText( text === "" ? null : text );
+    },
+    "alignment" : function( widget, value ) {
+      widget.setHorizontalChildrenAlign( value );
     }
   } ),     
 

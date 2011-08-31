@@ -29,9 +29,6 @@ final class ButtonLCAUtil {
 
   private static final String TYPE = "rwt.widgets.Button";
   private static final String JS_PROP_SELECTION = "selection";
-  private static final String JS_PROP_HORIZONTAL_CHILDREN_ALIGN
-    = "horizontalChildrenAlign";
-
   static final String PROP_SELECTION = "selection";
   static final String PROP_ALIGNMENT = "alignment";
   static final String PROP_SELECTION_LISTENERS = "selectionListeners";
@@ -63,14 +60,12 @@ final class ButtonLCAUtil {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
     adapter.preserve( Props.TEXT, button.getText() );
     adapter.preserve( Props.IMAGE, button.getImage() );
-    adapter.preserve( PROP_SELECTION,
-                      Boolean.valueOf( button.getSelection() ) );
+    adapter.preserve( PROP_SELECTION, Boolean.valueOf( button.getSelection() ) );
     adapter.preserve( PROP_SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( button ) ) );
     adapter.preserve( PROP_ALIGNMENT, new Integer( button.getAlignment() ) );
     boolean hasListeners = SelectionEvent.hasListener( button );
-    adapter.preserve( Props.SELECTION_LISTENERS,
-                      Boolean.valueOf( hasListeners ) );
+    adapter.preserve( Props.SELECTION_LISTENERS, Boolean.valueOf( hasListeners ) );
     WidgetLCAUtil.preserveCustomVariant( button );
   }
 
@@ -97,13 +92,10 @@ final class ButtonLCAUtil {
     }
   }
 
-  static void writeAlignment( Button button ) throws IOException {
+  static void renderAlignment( Button button ) {
     if( ( button.getStyle() & SWT.ARROW ) == 0 ) {
       Integer newValue = new Integer( button.getAlignment() );
-      Integer defValue = DEFAULT_ALIGNMENT;
-      if( WidgetLCAUtil.hasChanged( button, PROP_ALIGNMENT, newValue, defValue ) )
-      {
-        JSWriter writer = JSWriter.getWriterFor( button );
+      if( WidgetLCAUtil.hasChanged( button, PROP_ALIGNMENT, newValue, DEFAULT_ALIGNMENT ) ) {
         String value;
         switch( newValue.intValue() ) {
           case SWT.LEFT:
@@ -119,7 +111,8 @@ final class ButtonLCAUtil {
             value = "left";
           break;
         }
-        writer.set( JS_PROP_HORIZONTAL_CHILDREN_ALIGN, value );
+        IClientObject clientObject = ClientObjectFactory.getForWidget( button );
+        clientObject.setProperty( "alignment", value );
       }
     }
   }
@@ -130,7 +123,7 @@ final class ButtonLCAUtil {
     writer.set( PROP_SELECTION, JS_PROP_SELECTION, newValue, Boolean.FALSE );
   }
 
-  static void writeSelectionListener( final Button button ) throws IOException {
+  static void writeSelectionListener( Button button ) throws IOException {
     boolean hasListener = SelectionEvent.hasListener( button );
     Boolean newValue = Boolean.valueOf( hasListener );
     String prop = PROP_SELECTION_LISTENERS;
@@ -143,7 +136,7 @@ final class ButtonLCAUtil {
   static void renderChanges( Button button ) throws IOException {
     renderText( button );
     writeImage( button );
-    writeAlignment( button );
+    renderAlignment( button );
     writeSelection( button );
     WidgetLCAUtil.renderCustomVariant( button );
     ControlLCAUtil.renderChanges( button );
