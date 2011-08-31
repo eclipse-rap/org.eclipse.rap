@@ -30,8 +30,6 @@ import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA;
-import org.eclipse.swt.internal.widgets.labelkit.LabelLCA;
 import org.eclipse.swt.internal.widgets.shellkit.ShellLCA;
 import org.eclipse.swt.widgets.*;
 import org.json.*;
@@ -586,13 +584,13 @@ public class ControlLCAUtil_Test extends TestCase {
 
   public void testWriteFocusListener_FocusableControl() throws IOException {
     Button control = new Button( shell, SWT.PUSH );
-    ButtonLCA lca = new ButtonLCA();
     Fixture.fakeResponseWriter();
-    lca.preserveValues( control );
+    ControlLCAUtil.preserveValues( control );
     Fixture.markInitialized( control );
+    Fixture.markInitialized( display );
 
     control.addFocusListener( new FocusAdapter() {} );
-    lca.renderChanges( control );
+    ControlLCAUtil.writeChanges( control );
 
     String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"focus\", true );";
     assertEquals( expected, Fixture.getAllMarkup() );
@@ -600,13 +598,13 @@ public class ControlLCAUtil_Test extends TestCase {
 
   public void testWriteFocusListener_NotFocusableControl() throws IOException {
     Label control = new Label( shell, SWT.NONE );
-    LabelLCA lca = new LabelLCA();
     Fixture.fakeResponseWriter();
-    lca.preserveValues( control );
+    ControlLCAUtil.preserveValues( control );
     Fixture.markInitialized( control );
+    Fixture.markInitialized( display );
 
     control.addFocusListener( new FocusAdapter() {} );
-    lca.renderChanges( control );
+    ControlLCAUtil.writeChanges( control );
 
     assertEquals( "", Fixture.getAllMarkup() );
   }

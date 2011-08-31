@@ -143,12 +143,13 @@ public class ControlLCA_Test extends TestCase {
     Button button = new Button( shell, SWT.PUSH );
     button.setSize( 10, 10 );
     shell.open();
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( button );
+    Fixture.fakeResponseWriter();
+    ControlLCAUtil.preserveValues( button );
+    Fixture.markInitialized( button );
+    Fixture.markInitialized( display );
 
     // Initial JavaScript code must not contain setVisibility()
-    Fixture.fakeResponseWriter();
-    lca.renderInitialization( button );
-    lca.renderChanges( button );
+    ControlLCAUtil.writeChanges( button );
     assertTrue( Fixture.getAllMarkup().indexOf( "setVisibility" ) == -1 );
 
     // Unchanged visible attribute must not be rendered
@@ -156,16 +157,14 @@ public class ControlLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
     Fixture.preserveWidgets();
-    lca.renderInitialization( button );
-    lca.renderChanges( button );
+    ControlLCAUtil.writeChanges( button );
     assertTrue( Fixture.getAllMarkup().indexOf( "setVisibility" ) == -1 );
 
     // Changed visible attribute must not be rendered
     Fixture.fakeResponseWriter();
     Fixture.preserveWidgets();
     button.setVisible( false );
-    lca.renderInitialization( button );
-    lca.renderChanges( button );
+    ControlLCAUtil.writeChanges( button );
     assertTrue( Fixture.getAllMarkup().indexOf( "setVisibility" ) != -1 );
   }
 
