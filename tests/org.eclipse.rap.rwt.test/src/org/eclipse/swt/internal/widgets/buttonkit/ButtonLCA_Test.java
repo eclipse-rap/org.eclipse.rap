@@ -504,16 +504,6 @@ public class ButtonLCA_Test extends TestCase {
     assertTrue( allMarkup.indexOf( "w.setImage(" ) != -1 );
   }
 
-  public void testRenderNoRadioGroupForRadioButton() throws Exception {
-    Composite composite = new Composite( shell, SWT.NO_RADIO_GROUP );
-    Button radioButton = new Button( composite, SWT.RADIO );
-    Fixture.fakeResponseWriter();
-    RadioButtonDelegateLCA radioLCA = new RadioButtonDelegateLCA();
-    radioLCA.renderInitialization( radioButton );
-    String allMarkup = Fixture.getAllMarkup();
-    assertTrue( allMarkup.indexOf( "w.setNoRadioGroup( true );" ) != -1 );
-  }
-
   public void testRenderCreate() throws IOException {
     Button pushButton = new Button( shell, SWT.PUSH );
     ButtonLCA lca = new ButtonLCA();
