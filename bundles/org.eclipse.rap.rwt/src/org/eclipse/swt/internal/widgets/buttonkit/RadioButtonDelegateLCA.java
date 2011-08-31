@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ package org.eclipse.swt.internal.widgets.buttonkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -23,9 +25,6 @@ import org.eclipse.swt.widgets.Button;
 
 
 final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
-
-  private static final String QX_TYPE = "org.eclipse.rwt.widgets.Button";
-  private static final Object[] PARAM_RADIO = new Object[] { "radio" };
 
   void preserveValues( Button button ) {
     ButtonLCAUtil.preserveValues( button );
@@ -46,14 +45,11 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
   }
 
   void renderInitialization( Button button ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( button );
-    writer.newWidget( QX_TYPE, PARAM_RADIO );
-    ControlLCAUtil.writeStyleFlags( button );
-    WidgetLCAUtil.writeStyleFlag( button, SWT.RADIO, "RADIO" );
+    ButtonLCAUtil.renderInitialization( button );
     if( ( button.getParent().getStyle() & SWT.NO_RADIO_GROUP ) != 0 ) {
-      writer.set( "noRadioGroup", true );
+      IClientObject clientOblect = ClientObjectFactory.getForWidget( button );
+      clientOblect.setProperty( "noRadioGroup", true );
     }
-    ButtonLCAUtil.writeWrap( button );
   }
 
   void renderChanges( Button button ) throws IOException {

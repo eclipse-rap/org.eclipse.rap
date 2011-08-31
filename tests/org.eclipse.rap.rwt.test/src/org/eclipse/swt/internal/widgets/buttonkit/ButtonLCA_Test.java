@@ -11,13 +11,17 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.buttonkit;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -40,6 +44,7 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
+    Fixture.fakeNewRequest( display );
   }
 
   protected void tearDown() throws Exception {
@@ -462,14 +467,18 @@ public class ButtonLCA_Test extends TestCase {
     expected = "w.setImage( null, 0, 0 );";
     assertTrue( allMarkup.indexOf( expected ) != -1 );
   }
-  
+
   public void testRenderWrap() throws Exception {
     Button button = new Button( shell, SWT.PUSH | SWT.WRAP );
     Fixture.fakeResponseWriter();
     PushButtonDelegateLCA lca = new PushButtonDelegateLCA();
+
     lca.renderInitialization( button );
-    String allMarkup = Fixture.getAllMarkup();
-    assertTrue( allMarkup.indexOf( "w.setWrap( true );" ) != -1 );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( button );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "WRAP" ) );
   }
 
   public void testRenderTextAndImageForCheckAndRadioButton() throws Exception {
@@ -494,7 +503,7 @@ public class ButtonLCA_Test extends TestCase {
     assertTrue( allMarkup.indexOf( "w.setText( \"Test\" );" ) != -1 );
     assertTrue( allMarkup.indexOf( "w.setImage(" ) != -1 );
   }
-  
+
   public void testRenderNoRadioGroupForRadioButton() throws Exception {
     Composite composite = new Composite( shell, SWT.NO_RADIO_GROUP );
     Button radioButton = new Button( composite, SWT.RADIO );
@@ -503,5 +512,41 @@ public class ButtonLCA_Test extends TestCase {
     radioLCA.renderInitialization( radioButton );
     String allMarkup = Fixture.getAllMarkup();
     assertTrue( allMarkup.indexOf( "w.setNoRadioGroup( true );" ) != -1 );
+  }
+
+  public void testRenderCreate() throws IOException {
+    Button pushButton = new Button( shell, SWT.PUSH );
+    ButtonLCA lca = new ButtonLCA();
+
+    lca.renderInitialization( pushButton );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( pushButton );
+    assertEquals( "rwt.widgets.Button", operation.getType() );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "PUSH" ) );
+  }
+
+  public void testRenderParent() throws IOException {
+    Button pushButton = new Button( shell, SWT.PUSH );
+    ButtonLCA lca = new ButtonLCA();
+
+    lca.renderInitialization( pushButton );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( pushButton );
+    assertEquals( WidgetUtil.getId( pushButton.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderNoRadioGroup() throws IOException {
+    Composite composite = new Composite( shell, SWT.NO_RADIO_GROUP );
+    Button radio = new Button( composite, SWT.RADIO );
+    ButtonLCA lca = new ButtonLCA();
+
+    lca.renderInitialization( radio );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( radio );
+    assertEquals( Boolean.TRUE, operation.getProperty( "noRadioGroup" ) );
   }
 }

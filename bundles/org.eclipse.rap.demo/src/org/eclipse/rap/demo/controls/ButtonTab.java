@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -26,8 +26,7 @@ import org.eclipse.swt.widgets.*;
 
 public class ButtonTab extends ExampleTab {
 
-  private static final String BUTTON_IMAGE_PATH
-    = "resources/button-image.gif";
+  private static final String BUTTON_IMAGE_PATH = "resources/button-image.gif";
 
   private Image buttonImage;
 
@@ -43,16 +42,17 @@ public class ButtonTab extends ExampleTab {
   private Button radioButton3;
   private Button defaultButton;
 
-  public ButtonTab( final CTabFolder folder ) {
+  public ButtonTab( CTabFolder folder ) {
     super( folder, "Button" );
   }
 
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "FLAT", SWT.FLAT );
     createStyleButton( "LEFT", SWT.LEFT );
     createStyleButton( "CENTER", SWT.CENTER );
     createStyleButton( "RIGHT", SWT.RIGHT );
+    createStyleButton( "WRAP", SWT.WRAP );
     createVisibilityButton();
     createEnablementButton();
     createImageButton( parent );
@@ -71,11 +71,11 @@ public class ButtonTab extends ExampleTab {
     } );
   }
 
-  protected void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( Composite parent ) {
     parent.setLayout( new GridLayout( 1, false ) );
     int style = getStyle();
     pushButton = new Button( parent, style | SWT.PUSH );
-    pushButton.setText( "Push" );
+    pushButton.setText( "Push\n Button" );
     updateButtonImage( pushButton );
     toggleButton = new Button( parent, style | SWT.TOGGLE );
     toggleButton.setText( "Toggle" );
@@ -128,7 +128,7 @@ public class ButtonTab extends ExampleTab {
     parent.setMenu( menu );
   }
 
-  private void createButtonImage( final Display display ) {
+  private void createButtonImage( Display display ) {
     if( buttonImage == null ) {
       ClassLoader classLoader = getClass().getClassLoader();
       InputStream stream = classLoader.getResourceAsStream( BUTTON_IMAGE_PATH );
@@ -138,7 +138,7 @@ public class ButtonTab extends ExampleTab {
     }
   }
 
-  private void createImageButton( final Composite parent ) {
+  private void createImageButton( Composite parent ) {
     final Button imageButton = new Button( parent, SWT.CHECK );
     imageButton.setText( "Push Button with Image" );
     imageButton.addSelectionListener( new SelectionAdapter() {
@@ -150,7 +150,7 @@ public class ButtonTab extends ExampleTab {
     } );
   }
 
-  private void updateButtonImage( final Button button ) {
+  private void updateButtonImage( Button button ) {
     if( showImage ) {
       createButtonImage( button.getDisplay() );
       button.setImage( buttonImage );
@@ -159,7 +159,7 @@ public class ButtonTab extends ExampleTab {
     }
   }
 
-  private void createGrayedButton( final Composite parent ) {
+  private void createGrayedButton( Composite parent ) {
     final Button grayedButton = new Button( parent, SWT.CHECK );
     grayedButton.setText( "Grayed Check Buttons" );
     grayedButton.addSelectionListener( new SelectionAdapter() {

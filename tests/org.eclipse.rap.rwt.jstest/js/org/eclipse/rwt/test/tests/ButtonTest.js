@@ -19,13 +19,121 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
   },
   
   members : {
-        
+
+    testCreatePushButtonByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;     
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w2"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget instanceof org.eclipse.rwt.widgets.Button );
+      assertIdentical( shell, widget.getParent() );
+      assertTrue( widget.getUserData( "isControl") );
+      assertTrue( widget.hasState( "rwt_PUSH" ) );
+      assertEquals( "push-button", widget.getAppearance() );
+      assertEquals( -1, widget._flexibleCell );
+      shell.destroy();
+      widget.destroy();
+    },
+    
+    testCreateToggleButtonByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "TOGGLE" ],
+          "parent" : "w2"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget.hasState( "rwt_TOGGLE" ) );
+      assertEquals( "push-button", widget.getAppearance() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testCreateCheckButtonByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "CHECK" ],
+          "parent" : "w2"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget.hasState( "rwt_CHECK" ) );
+      assertEquals( "check-box", widget.getAppearance() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testCreateRadioButtonByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "RADIO" ],
+          "parent" : "w2"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget.hasState( "rwt_RADIO" ) );
+      assertEquals( "radio-button", widget.getAppearance() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetWrapByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH", "WRAP" ],
+          "parent" : "w2"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( 2, widget._flexibleCell );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testFocusIndicatorPush : function() {
       var hasFocusIndicator = function( widget ) {
         var node = widget._getTargetNode();
         var result = false;
         for( var i = 0; i < node.childNodes.length; i++ ) {
-          if( node.childNodes[ i ].getAttribute( "id") == "focusIndicator" ) {
+          if( node.childNodes[ i ].getAttribute( "id" ) == "focusIndicator" ) {
             result = true;
           }
         }

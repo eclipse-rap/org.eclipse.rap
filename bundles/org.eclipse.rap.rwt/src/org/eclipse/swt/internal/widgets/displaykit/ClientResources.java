@@ -28,7 +28,7 @@ final class ClientResources {
 
   private static final String CLIENT_JS = "client.js";
 
-  private static final String[] JAVASCRIPT_FILES = new String[]{
+  private static final String[] JAVASCRIPT_FILES = new String[] {
     "debug-settings.js",
     "qx/core/Bootstrap.js",
     "qx/lang/Core.js",
@@ -241,6 +241,7 @@ final class ClientResources {
     "org/eclipse/swt/widgets/Calendar.js",
     "org/eclipse/swt/widgets/CoolItem.js",
     "org/eclipse/rwt/widgets/Button.js",
+    "org/eclipse/rwt/widgets/ButtonAdapter.js",
     "org/eclipse/rwt/widgets/FileUpload.js",
     "org/eclipse/swt/widgets/DateTimeTime.js",
     "org/eclipse/swt/widgets/Slider.js",

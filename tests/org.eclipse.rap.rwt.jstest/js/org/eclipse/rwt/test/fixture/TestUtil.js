@@ -829,6 +829,21 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     store : function() {
       var runner = org.eclipse.rwt.test.TestRunner.getInstance();
       runner.setArguments( arguments );
+    },
+
+    ///////////////////
+    // Protocol ralated
+    
+    createShellByProtocol : function( id ) {
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : id,
+        "action" : "create",
+        "type" : "rwt.widgets.Shell",
+        "properties" : {
+          "style" : [ "BORDER" ]
+        }
+      } );
+      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
     }
      
   }

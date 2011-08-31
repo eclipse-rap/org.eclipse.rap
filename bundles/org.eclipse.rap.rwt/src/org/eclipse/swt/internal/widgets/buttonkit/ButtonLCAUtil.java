@@ -13,6 +13,8 @@ package org.eclipse.swt.internal.widgets.buttonkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -25,6 +27,7 @@ import org.eclipse.swt.widgets.Button;
 
 final class ButtonLCAUtil {
 
+  private static final String TYPE = "rwt.widgets.Button";
   private static final String JS_PROP_SELECTION = "selection";
   private static final String JS_PROP_HORIZONTAL_CHILDREN_ALIGN
     = "horizontalChildrenAlign";
@@ -40,7 +43,14 @@ final class ButtonLCAUtil {
     // prevent instantiation
   }
 
-  static boolean readSelection( final Button button ) {
+  static void renderInitialization( Button button ) {
+    IClientObject clientObject = ClientObjectFactory.getForWidget( button );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( button.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( button ) );
+  }
+
+  static boolean readSelection( Button button ) {
     String value = WidgetLCAUtil.readPropertyValue( button, PARAM_SELECTION );
     if( value != null ) {
       button.setSelection( Boolean.valueOf( value ).booleanValue() );
@@ -48,7 +58,7 @@ final class ButtonLCAUtil {
     return value != null;
   }
 
-  static void preserveValues( final Button button ) {
+  static void preserveValues( Button button ) {
     ControlLCAUtil.preserveValues( button );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
     adapter.preserve( Props.TEXT, button.getText() );
@@ -64,9 +74,9 @@ final class ButtonLCAUtil {
     WidgetLCAUtil.preserveCustomVariant( button );
   }
 
-  static void writeText( final Button button ) throws IOException {
+  static void writeText( Button button ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( button );
-    String text = button.getText();     
+    String text = button.getText();
     if( WidgetLCAUtil.hasChanged( button, Props.TEXT, text, null ) ) {
       text = WidgetLCAUtil.escapeText( text, true );
       if( ( button.getStyle() & SWT.WRAP ) != 0 ) {
@@ -76,7 +86,7 @@ final class ButtonLCAUtil {
     }
   }
 
-  static void writeImage( final Button button ) throws IOException {
+  static void writeImage( Button button ) throws IOException {
     Image image = button.getImage();
     if( WidgetLCAUtil.hasChanged( button, Props.IMAGE, image, null ) ) {
       String imagePath = ImageFactory.getImagePath( image );
@@ -91,7 +101,7 @@ final class ButtonLCAUtil {
     }
   }
 
-  static void writeAlignment( final Button button ) throws IOException {
+  static void writeAlignment( Button button ) throws IOException {
     if( ( button.getStyle() & SWT.ARROW ) == 0 ) {
       Integer newValue = new Integer( button.getAlignment() );
       Integer defValue = DEFAULT_ALIGNMENT;
@@ -118,7 +128,7 @@ final class ButtonLCAUtil {
     }
   }
 
-  static void writeSelection( final Button button ) throws IOException {
+  static void writeSelection( Button button ) throws IOException {
     Boolean newValue = Boolean.valueOf( button.getSelection() );
     JSWriter writer = JSWriter.getWriterFor( button );
     writer.set( PROP_SELECTION, JS_PROP_SELECTION, newValue, Boolean.FALSE );
@@ -134,7 +144,7 @@ final class ButtonLCAUtil {
     }
   }
 
-  static void writeChanges( final Button button ) throws IOException {
+  static void writeChanges( Button button ) throws IOException {
     ControlLCAUtil.writeChanges( button );
     writeText( button );
     writeImage( button );
@@ -142,13 +152,5 @@ final class ButtonLCAUtil {
     writeSelection( button );
     writeSelectionListener( button );
     WidgetLCAUtil.writeCustomVariant( button );
-  }
-
-  public static void writeWrap( Button button ) throws IOException {
-    boolean wrap = ( button.getStyle() & SWT.WRAP ) != 0;
-    if( wrap ) {
-      JSWriter writer = JSWriter.getWriterFor( button );
-      writer.set( "wrap", new Boolean( true ) );
-    }
   }
 }
