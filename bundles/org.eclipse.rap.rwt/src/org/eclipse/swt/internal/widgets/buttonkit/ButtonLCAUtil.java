@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Button;
 final class ButtonLCAUtil {
 
   private static final String TYPE = "rwt.widgets.Button";
-  private static final String JS_PROP_SELECTION = "selection";
   static final String PROP_SELECTION = "selection";
   static final String PROP_ALIGNMENT = "alignment";
   static final String PROP_SELECTION_LISTENERS = "selectionListeners";
@@ -120,10 +119,12 @@ final class ButtonLCAUtil {
     }
   }
 
-  static void writeSelection( Button button ) throws IOException {
+  static void renderSelection( Button button ) {
     Boolean newValue = Boolean.valueOf( button.getSelection() );
-    JSWriter writer = JSWriter.getWriterFor( button );
-    writer.set( PROP_SELECTION, JS_PROP_SELECTION, newValue, Boolean.FALSE );
+    if( WidgetLCAUtil.hasChanged( button, PROP_SELECTION, newValue, Boolean.FALSE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( button );
+      clientObject.setProperty( "selection", newValue );
+    }
   }
 
   static void renderListenSelection( Button button ) {
@@ -143,7 +144,7 @@ final class ButtonLCAUtil {
     renderText( button );
     renderImage( button );
     renderAlignment( button );
-    writeSelection( button );
+    renderSelection( button );
     WidgetLCAUtil.renderCustomVariant( button );
     ControlLCAUtil.renderChanges( button );
     renderListenSelection( button );

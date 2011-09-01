@@ -35,7 +35,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Button", {
     "noRadioGroup",
     "text",
     "alignment",
-    "image"   
+    "image",
+    "selection",
+    "grayed"
   ] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {

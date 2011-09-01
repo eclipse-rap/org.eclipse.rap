@@ -633,4 +633,74 @@ public class ButtonLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertEquals( JSONObject.NULL, message.findSetProperty( button, "image" ) );
   }
+
+  public void testRenderInitialSelection() throws IOException {
+    Button button = new Button( shell, SWT.CHECK );
+    ButtonLCA lca = new ButtonLCA();
+
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( button, "selection" ) );
+  }
+
+  public void testRenderSelection() throws IOException {
+    Button button = new Button( shell, SWT.CHECK );
+    ButtonLCA lca = new ButtonLCA();
+
+    button.setSelection( true );
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( button, "selection" ) );
+  }
+
+  public void testRenderSelectionUnchanged() throws IOException {
+    Button button = new Button( shell, SWT.CHECK );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( button );
+    ButtonLCA lca = new ButtonLCA();
+
+    button.setSelection( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( button, "selection" ) );
+  }
+
+  public void testRenderInitialGrayed() throws IOException {
+    Button button = new Button( shell, SWT.CHECK );
+    ButtonLCA lca = new ButtonLCA();
+
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( button, "grayed" ) );
+  }
+
+  public void testRenderGrayed() throws IOException {
+    Button button = new Button( shell, SWT.CHECK );
+    ButtonLCA lca = new ButtonLCA();
+
+    button.setGrayed( true );
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( button, "grayed" ) );
+  }
+
+  public void testRenderGrayedUnchanged() throws IOException {
+    Button button = new Button( shell, SWT.CHECK );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( button );
+    ButtonLCA lca = new ButtonLCA();
+
+    button.setGrayed( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( button, "grayed" ) );
+  }
 }

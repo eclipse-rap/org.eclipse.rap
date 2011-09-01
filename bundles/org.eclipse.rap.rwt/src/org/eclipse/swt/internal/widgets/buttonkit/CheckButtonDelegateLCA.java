@@ -13,6 +13,8 @@ package org.eclipse.swt.internal.widgets.buttonkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Button;
 
@@ -45,15 +47,14 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
     // bounds of the widget that was clicked -> In the SelectionEvent
     // for Button the bounds are undefined
     ButtonLCAUtil.renderChanges( button );
-    writeGrayed( button );
+    renderGrayed( button );
   }
 
-  private static void writeGrayed( Button button ) throws IOException {
+  private static void renderGrayed( Button button ) {
     Boolean newValue = Boolean.valueOf( button.getGrayed() );
-    String prop = PROP_GRAYED;
-    if( WidgetLCAUtil.hasChanged( button, prop, newValue, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( button );
-      writer.set( prop, newValue );
+    if( WidgetLCAUtil.hasChanged( button, PROP_GRAYED, newValue, Boolean.FALSE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( button );
+      clientObject.setProperty( PROP_GRAYED, newValue );
     }
   }
 }

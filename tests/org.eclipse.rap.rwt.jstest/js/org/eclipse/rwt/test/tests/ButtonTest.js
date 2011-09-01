@@ -213,6 +213,48 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       widget.destroy();
     },
 
+    testSetSelectionByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "TOGGLE" ],
+          "parent" : "w2",
+          "selection" : true
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget._selected );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetGrayedByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "CHECK" ],
+          "parent" : "w2",
+          "grayed" : true
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget.hasState( "grayed" ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testFocusIndicatorPush : function() {
       var hasFocusIndicator = function( widget ) {
         var node = widget._getTargetNode();
