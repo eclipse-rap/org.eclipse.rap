@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.dragsourcekit;
 
@@ -28,7 +29,7 @@ public class DragSourceLCA_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-  
+
   public void testDisposeDragControl() {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -41,10 +42,11 @@ public class DragSourceLCA_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     dragSourceControl.dispose();
     Fixture.executeLifeCycleFromServerThread();
-    // expected: ... wm.dispose( "w3" ); ... deregisterDragSource( "w3" )
+    // expected: ... deregisterDragSource( "w3" ) ... "action": "destroy"
+    Fixture.getProtocolMessage();
     String markup = Fixture.getAllMarkup();
     int unregisterPos = markup.indexOf( "deregisterDragSource" );
-    int disposePos = markup.indexOf( "wm.dispose" );
+    int disposePos = markup.indexOf( "\"action\": \"destroy\"" );
     assertTrue( disposePos > -1 );
     assertTrue( unregisterPos > -1 );
     assertTrue( unregisterPos < disposePos );
@@ -64,10 +66,11 @@ public class DragSourceLCA_Test extends TestCase {
     dragSource.dispose();
     dragSourceControl.dispose();
     Fixture.executeLifeCycleFromServerThread();
-    // expected: ... wm.dispose( "w3" ); ... deregisterDragSource( "w3" )
+    // expected: ... deregisterDragSource( "w3" ) ... "action": "destroy"
+    Fixture.getProtocolMessage();
     String markup = Fixture.getAllMarkup();
     int unregisterPos = markup.indexOf( "deregisterDragSource" );
-    int disposePos = markup.indexOf( "wm.dispose" );
+    int disposePos = markup.indexOf( "\"action\": \"destroy\"" );
     assertTrue( disposePos > -1 );
     assertTrue( unregisterPos > -1 );
     assertTrue( unregisterPos < disposePos );

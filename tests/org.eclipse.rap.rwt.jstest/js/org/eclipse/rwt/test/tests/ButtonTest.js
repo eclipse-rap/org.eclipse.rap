@@ -23,7 +23,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     testCreatePushButtonByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = testUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;     
+      var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
         "target" : "w3",
         "action" : "create",

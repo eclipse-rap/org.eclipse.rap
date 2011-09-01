@@ -1,66 +1,49 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.labelkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 
 
 final class SeparatorLabelLCA extends AbstractLabelLCADelegate {
 
-  void preserveValues( final Label label ) {
+  private static final String TYPE = "rwt.widgets.Separator";
+
+  void preserveValues( Label label ) {
     ControlLCAUtil.preserveValues( label );
     WidgetLCAUtil.preserveCustomVariant( label );
   }
 
-  void readData( final Label label ) {
+  void readData( Label label ) {
     ControlLCAUtil.processMouseEvents( label );
     ControlLCAUtil.processKeyEvents( label );
     ControlLCAUtil.processMenuDetect( label );
     WidgetLCAUtil.processHelp( label );
   }
 
-  void renderInitialization( final Label label ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( label );
-    writer.newWidget( "org.eclipse.swt.widgets.Separator" );
-    ControlLCAUtil.writeStyleFlags( label );
-    WidgetLCAUtil.writeStyleFlag( label, SWT.SEPARATOR, "SEPARATOR" );
-    writeOrientation( label );
-    writeLineStyle( label );
+  void renderInitialization( Label label ) throws IOException {
+    IClientObject clientObject = ClientObjectFactory.getForWidget( label );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( label.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( label ) );
   }
 
-  void renderChanges( final Label label ) throws IOException {
-    ControlLCAUtil.writeChanges( label );
-    WidgetLCAUtil.writeCustomVariant( label );
-  }
-
-  private static void writeOrientation( final Label label ) throws IOException {
-    int style = label.getStyle();
-    String orient = ( style & SWT.VERTICAL ) != 0 ? "vertical" : "horizontal";
-    JSWriter writer = JSWriter.getWriterFor( label );
-    writer.set( "lineOrientation", orient );
-  }
-
-  private static void writeLineStyle( final Label label ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( label );
-    if( ( label.getStyle() & SWT.SHADOW_IN ) != 0 ) {
-      writer.call( "setLineStyle", new Object[] { "rwt_SHADOW_IN" } );
-    } else if( ( label.getStyle() & SWT.SHADOW_OUT ) != 0 ) {
-      writer.call( "setLineStyle", new Object[] { "rwt_SHADOW_OUT" } );
-    } else {
-      writer.call( "setLineStyle", new Object[] { "rwt_SHADOW_NONE" } );
-    }
+  void renderChanges( Label label ) throws IOException {
+    ControlLCAUtil.renderChanges( label );
+    WidgetLCAUtil.renderCustomVariant( label );
   }
 }

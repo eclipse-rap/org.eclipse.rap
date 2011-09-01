@@ -254,6 +254,7 @@ final class ClientResources {
     "org/eclipse/rwt/widgets/Text.js",
     "org/eclipse/rwt/KeyEventUtil.js",
     "org/eclipse/swt/widgets/Separator.js",
+    "org/eclipse/swt/widgets/SeparatorAdapter.js",
     "org/eclipse/swt/theme/AppearancesBase.js",
     "org/eclipse/rwt/widgets/ControlDecorator.js",
     "org/eclipse/rwt/MobileWebkitSupport.js",

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,9 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
+import org.eclipse.rwt.internal.protocol.Message.DestroyOperation;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -27,8 +29,10 @@ import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+import org.json.*;
 
 public class LabelLCA_Test extends TestCase {
 
@@ -48,7 +52,7 @@ public class LabelLCA_Test extends TestCase {
     display.dispose();
     Fixture.tearDown();
   }
-  
+
   public void testStandardPreserveValues() {
     Label label = new Label( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -203,13 +207,13 @@ public class LabelLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     testPreserveValues( display, label );
   }
-  
+
   public void testRenderInitialText() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     LabelLCA lca = new LabelLCA();
-    
+
     lca.renderChanges( label );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( label, "text" ) );
   }
@@ -217,10 +221,10 @@ public class LabelLCA_Test extends TestCase {
   public void testRenderText() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     LabelLCA lca = new LabelLCA();
-    
+
     label.setText( "test" );
     lca.renderChanges( label );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( "test", message.findSetProperty( label, "text" ) );
   }
@@ -228,10 +232,10 @@ public class LabelLCA_Test extends TestCase {
   public void testRenderTextWithQuotationMarks() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     LabelLCA lca = new LabelLCA();
-    
+
     label.setText( "te\"s't" );
     lca.renderChanges( label );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( "te\"s't", message.findSetProperty( label, "text" ) );
   }
@@ -239,7 +243,7 @@ public class LabelLCA_Test extends TestCase {
   public void testRenderTextWithNewlines() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     LabelLCA lca = new LabelLCA();
-    
+
     label.setText( "\ntes\r\nt\n" );
     lca.renderChanges( label );
 
@@ -252,12 +256,12 @@ public class LabelLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( label );
     LabelLCA lca = new LabelLCA();
-    
+
     label.setText( "foo" );
 
     Fixture.preserveWidgets();
     lca.renderChanges( label );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( label, "text" ) );
   }
@@ -266,21 +270,130 @@ public class LabelLCA_Test extends TestCase {
     Label label = new Label( shell, SWT.NONE );
     label.dispose();
     LabelLCA labelLCA = new LabelLCA();
+
     labelLCA.renderDispose( label );
-    assertEquals( "wm.dispose( \"w2\" );", Fixture.getAllMarkup() );
+
+    Message message = Fixture.getProtocolMessage();
+    DestroyOperation operation = ( DestroyOperation )message.getOperation( 0 );
+    assertEquals( WidgetUtil.getId( label ), operation.getTarget() );
   }
 
   public void testRenderCreate() throws IOException {
     Label label = new Label( shell, SWT.WRAP );
     LabelLCA lca = new LabelLCA();
-    
+
     lca.renderInitialization( label );
-    
+
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( label );
     assertEquals( "rwt.widgets.Label", operation.getType() );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "WRAP" ) );
+  }
+
+  public void testRenderInitialImage() throws IOException {
+    Label label = new Label( shell, SWT.NONE );
+    LabelLCA lca = new LabelLCA();
+
+    lca.renderChanges( label );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( label, "image" ) );
+  }
+
+  public void testRenderImage() throws IOException, JSONException {
+    Label label = new Label( shell, SWT.NONE );
+    LabelLCA lca = new LabelLCA();
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+
+    label.setImage( image );
+    lca.renderChanges( label );
+
+    Message message = Fixture.getProtocolMessage();
+    String imageLocation = ImageFactory.getImagePath( image );
+    String expected = "[\"" + imageLocation + "\", 100, 50 ]";
+    JSONArray actual = ( JSONArray )message.findSetProperty( label, "image" );
+    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+  }
+
+  public void testRenderImageUnchanged() throws IOException {
+    Label label = new Label( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( label );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    LabelLCA lca = new LabelLCA();
+
+    label.setImage( image );
+    Fixture.preserveWidgets();
+    lca.renderChanges( label );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( label, "image" ) );
+  }
+
+  public void testRenderImageReset() throws IOException {
+    Label label = new Label( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( label );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    LabelLCA lca = new LabelLCA();
+    label.setImage( image );
+
+    Fixture.preserveWidgets();
+    label.setImage( null );
+    lca.renderChanges( label );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( label, "image" ) );
+  }
+
+  public void testRenderInitialAlignment() throws IOException {
+    Label label = new Label( shell, SWT.NONE );
+    LabelLCA lca = new LabelLCA();
+
+    lca.renderChanges( label );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( label, "alignment" ) );
+  }
+
+  public void testRenderAlignment() throws IOException {
+    Label label = new Label( shell, SWT.NONE );
+    LabelLCA lca = new LabelLCA();
+
+    label.setAlignment( SWT.RIGHT );
+    lca.renderChanges( label );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "right", message.findSetProperty( label, "alignment" ) );
+  }
+
+  public void testRenderAlignmentUnchanged() throws IOException {
+    Label label = new Label( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( label );
+    LabelLCA lca = new LabelLCA();
+
+    label.setAlignment( SWT.RIGHT );
+    Fixture.preserveWidgets();
+    lca.renderChanges( label );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( label, "alignment" ) );
+  }
+
+  public void testRenderCreateSeparator() throws IOException {
+    Label label = new Label( shell, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.VERTICAL );
+    LabelLCA lca = new LabelLCA();
+
+    lca.renderInitialization( label );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( label );
+    assertEquals( "rwt.widgets.Separator", operation.getType() );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "SHADOW_IN" ) );
+    assertTrue( Arrays.asList( styles ).contains( "VERTICAL" ) );
   }
 
 }

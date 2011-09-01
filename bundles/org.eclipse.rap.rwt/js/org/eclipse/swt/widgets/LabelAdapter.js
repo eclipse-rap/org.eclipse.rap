@@ -24,7 +24,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Label", {
   destructor : org.eclipse.rwt.protocol.AdapterUtil.getControlDestructor(),
 
   properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
-    "text"
+    "text",
+    "image",
+    "alignment"
   ] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
@@ -35,6 +37,16 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Label", {
       text = encodingUtil.replaceNewLines( text, "<br/>" );
       text = encodingUtil.replaceWhiteSpaces( text ); // fixes bug 192634
       org.eclipse.swt.LabelUtil.setText( widget, text );
+    },
+    "image" : function( widget, value ) {
+      if( value === null ) {
+        org.eclipse.swt.LabelUtil.setImage( widget, null );
+      } else {
+        org.eclipse.swt.LabelUtil.setImage( widget, value[ 0 ] );
+      }
+    },
+    "alignment" : function( widget, value ) {
+      org.eclipse.swt.LabelUtil.setAlignment( widget, value );
     }
   } ),
 
