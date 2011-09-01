@@ -50,10 +50,10 @@ org.eclipse.rwt.protocol.EncodingUtil = {
       throw new Error( "escapeText with parameter null not allowed" );
     }
     var result;
+    this._mnemonicFound = false; // first found mnemonic may be resolved
     if( mnemonics ) {
       result = text.replace( this._escapeRegExpMnemonics, this._getEscapeResolverMnemonics() );
     } else {
-      this._mnemonicFound = false; // first found mnemonic may be resolved
       result = text.replace( this._escapeRegExp, this._getEscapeResolver() );
     }
     return this.truncateAtZero( result );

@@ -50,14 +50,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EncodingUtilTest", {
     testEscapeAmps : function() {
       var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       assertEquals( "&amp;&amp;&amp;File", encodingUtil.escapeText( "&&&File", false ) );
-
     },
 
     testEscapeMnemonics : function() {
       var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       assertEquals( "Open &amp; Close", encodingUtil.escapeText( "Open && Close", true ) );
-      assertEquals( "E&lt;s&gt;ca'pe &amp; me",
-                    encodingUtil.escapeText( "&E<s>ca'pe && me", true ) );
+      assertEquals( "E&lt;s&gt;ca'pe&quot; &amp; me",
+                    encodingUtil.escapeText( "&E<s>ca'pe\" && me", true ) );
+      // Explicitly call it twice to check that _mnemonicFound is reset
+      assertEquals( "E&lt;s&gt;ca'pe&quot; &amp; me",
+                    encodingUtil.escapeText( "&E<s>ca'pe\" && me", true ) );
     },
 
     testEscapeQuotes : function() {
