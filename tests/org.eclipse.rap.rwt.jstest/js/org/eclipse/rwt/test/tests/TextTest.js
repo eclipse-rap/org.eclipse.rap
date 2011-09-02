@@ -38,6 +38,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertNotNull( widget.getUserData( "selectionStart" ) );
       assertEquals( "right", widget.getTextAlign() );
       assertFalse( widget.getReadOnly() );
+      assertNull( widget.getMaxLength() );
       shell.destroy();
       widget.destroy();
     },
@@ -198,6 +199,91 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       var objectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = objectManager.getObject( "w3" );
       assertTrue( widget.getReadOnly() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetSelectionByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SINGLE" ],
+          "parent" : "w2",
+          "selection" : [ 1, 3 ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( 1, widget.getUserData( "selectionStart" ) );
+      assertEquals( 3, widget.getUserData( "selectionLength" ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetTextLimitByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SINGLE" ],
+          "parent" : "w2",
+          "textLimit" : 30
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( 30, widget.getMaxLength() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetTextLimitOnMultiByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "MULTI" ],
+          "parent" : "w2",
+          "textLimit" : 30
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( 30, widget.getMaxLength() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetNegativeTextLimitByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SINGLE" ],
+          "parent" : "w2",
+          "textLimit" : -10
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertNull( widget.getMaxLength() );
       shell.destroy();
       widget.destroy();
     },

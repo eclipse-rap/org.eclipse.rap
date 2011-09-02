@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.*;
 import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -29,6 +29,8 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class TextLCA_Test extends TestCase {
 
@@ -285,34 +287,6 @@ public class TextLCA_Test extends TestCase {
     assertEquals( 2, log.size() );
     assertTrue( log.get( 0 ) instanceof VerifyEvent );
     assertTrue( log.get( 1 ) instanceof ModifyEvent );
-  }
-
-  public void testTextLimit() throws IOException {
-    Text text = new Text( shell, SWT.NONE );
-    // run LCA one to dump the here uninteresting prolog
-    textLCA.renderChanges( text );
-    // Initially no textLimit must be rendered if the initial value is untouched
-    Fixture.fakeResponseWriter();
-    textLCA.renderChanges( text );
-    assertEquals( -1, Fixture.getAllMarkup().indexOf( "setMaxLength" ) );
-    // Positive textLimit is written as setMaxLength( ... )
-    Fixture.fakeResponseWriter();
-    Fixture.markInitialized( text );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    text.setTextLimit( 12 );
-    textLCA.renderChanges( text );
-    String expected = "setMaxLength( 12 );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    // Negative textLimit is tread as 'no limit'
-    Fixture.fakeResponseWriter();
-    Fixture.markInitialized( text );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    text.setTextLimit( -50 );
-    textLCA.renderChanges( text );
-    expected = "setMaxLength( null );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
   private static void testPreserveValues( Text text ) {
@@ -645,6 +619,74 @@ public class TextLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "editable" ) );
+  }
+
+  public void testRenderInitialSelection() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+    text.setText( "foo bar" );
+
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( text, "selection" ) );
+  }
+
+  public void testRenderSelection() throws IOException, JSONException {
+    Text text = new Text( shell, SWT.SINGLE );
+    text.setText( "foo bar" );
+
+    text.setSelection( 1, 3 );
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( text, "selection" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 2 ]", actual ) );
+  }
+
+  public void testRenderSelectionUnchanged() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+    text.setText( "foo bar" );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+
+    text.setSelection( 1, 3 );
+    Fixture.preserveWidgets();
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( text, "selection" ) );
+  }
+
+  public void testRenderInitialTextLimit() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( text, "textLimit" ) );
+  }
+
+  public void testRenderTextLimit() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+
+    text.setTextLimit( 10 );
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 10 ), message.findSetProperty( text, "textLimit" ) );
+  }
+
+  public void testRenderTextLimitUnchanged() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+
+    text.setTextLimit( 10 );
+    Fixture.preserveWidgets();
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( text, "textLimit" ) );
   }
 
   private static Object getPreserved( Text text, String property ) {

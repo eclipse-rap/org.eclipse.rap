@@ -39,8 +39,8 @@ final class TextLCAUtil {
   private static final Integer DEFAULT_TEXT_LIMIT = new Integer( Text.LIMIT );
   private static final Point DEFAULT_SELECTION = new Point( 0, 0 );
 
-  private static final String JS_PROP_MAX_LENGTH = "maxLength";
   private static final String JS_PROP_VALUE = "value";
+
   private TextLCAUtil() {
     // prevent instantiation
   }
@@ -65,8 +65,8 @@ final class TextLCAUtil {
 
   static void renderChanges( Text text ) throws IOException {
     renderEditable( text );
-    writeSelection( text );
-    writeTextLimit( text );
+    renderSelection( text );
+    renderTextLimit( text );
     WidgetLCAUtil.renderCustomVariant( text );
     ControlLCAUtil.renderChanges( text );
     writeVerifyAndModifyListener( text );
@@ -123,12 +123,6 @@ final class TextLCAUtil {
     return result;
   }
 
-  static void writeInitialize( Text text ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( text );
-    writer.callStatic( "org.eclipse.swt.TextUtil.initialize",
-                       new Object[] { text } );
-  }
-
   static void writeText( Text text, boolean replaceNewLines ) throws IOException {
     String newValue = text.getText();
     JSWriter writer = JSWriter.getWriterFor( text );
@@ -150,36 +144,24 @@ final class TextLCAUtil {
     }
   }
 
-  private static void writeTextLimit( final Text text ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( text );
+  private static void renderTextLimit( Text text ) {
     Integer newValue = new Integer( text.getTextLimit() );
-    Integer defValue = DEFAULT_TEXT_LIMIT;
-    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT_LIMIT, newValue, defValue ) ) {
-      // Negative values are treated as 'no limit' which is achieved by passing
-      // null to the client-side maxLength property
-      if( newValue.intValue() < 0 ) {
-        newValue = null;
-      }
-      writer.set( JS_PROP_MAX_LENGTH, newValue );
+    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT_LIMIT, newValue, DEFAULT_TEXT_LIMIT ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
+      clientObject.setProperty( PROP_TEXT_LIMIT, newValue );
     }
   }
 
-  private static void writeSelection( Text text ) throws IOException {
+  private static void renderSelection( Text text ) {
     Point newValue = text.getSelection();
-    Point defValue = DEFAULT_SELECTION;
     // TODO [rh] could be optimized: when text was changed and selection is 0,0
     //      there is no need to write JavaScript since the client resets the
     //      selection as well when the new text is set.
-    if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION, newValue, defValue ) ) {
-      // [rh] Workaround for bug 252462: Changing selection on a hidden text
-      // widget causes exception in FF
-      if( text.isVisible() ) {
-        JSWriter writer = JSWriter.getWriterFor( text );
-        Integer start = new Integer( newValue.x );
-        Integer count = new Integer( text.getSelectionCount() );
-        writer.callStatic( "org.eclipse.swt.TextUtil.setSelection",
-                           new Object[] { text, start, count } );
-      }
+    if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION, newValue, DEFAULT_SELECTION ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
+      Integer start = new Integer( newValue.x );
+      Integer lenght = new Integer( text.getSelectionCount() );
+      clientObject.setProperty( "selection", new Object[] { start, lenght } );
     }
   }
 

@@ -35,7 +35,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Text", {
   properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
     "message",
     "echoChar",
-    "editable"
+    "editable",
+    "selection",
+    "textLimit"
   ] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
@@ -47,6 +49,12 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Text", {
     },
     "editable" : function( widget, value ) {
       widget.setReadOnly( !value );
+    },
+    "selection" : function( widget, value ) {
+      org.eclipse.swt.TextUtil.setSelection( widget, value[ 0 ], value[ 1 ] );
+    },
+    "textLimit" : function( widget, value ) {
+      widget.setMaxLength( value < 0 ? null : value );
     }
   } ),
 
