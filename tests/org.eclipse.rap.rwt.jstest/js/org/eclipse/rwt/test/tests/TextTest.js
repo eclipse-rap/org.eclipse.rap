@@ -15,6 +15,148 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
 
   members : {
 
+    testCreateSingleTextByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SINGLE", "RIGHT" ],
+          "parent" : "w2"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget instanceof org.eclipse.rwt.widgets.Text );
+      assertIdentical( shell, widget.getParent() );
+      assertTrue( widget.getUserData( "isControl") );
+      assertTrue( widget.hasState( "rwt_SINGLE" ) );
+      assertEquals( "text-field", widget.getAppearance() );
+      assertNotNull( widget.getUserData( "selectionStart" ) );
+      assertEquals( "right", widget.getTextAlign() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testCreateMultiTextByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "MULTI" ],
+          "parent" : "w2"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget.hasState( "rwt_MULTI" ) );
+      assertEquals( "text-area", widget.getAppearance() );
+      assertFalse( widget.getWrap() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testCreateMultiTextWithWarpByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "MULTI", "WRAP" ],
+          "parent" : "w2"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget.hasState( "rwt_MULTI" ) );
+      assertEquals( "text-area", widget.getAppearance() );
+      assertTrue( widget.getWrap() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testCreatePasswordTextByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "PASSWORD" ],
+          "parent" : "w2"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget.hasState( "rwt_PASSWORD" ) );
+      assertEquals( "text-field", widget.getAppearance() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetMessageByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SINGLE" ],
+          "parent" : "w2",
+          "message" : "some text"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      var messageLabel = widget.getUserData( "messageLabel" );
+      assertTrue( messageLabel instanceof qx.ui.basic.Atom );
+      assertEquals( "text-field-message", messageLabel.getAppearance() );
+      assertIdentical( widget.getParent(), messageLabel.getParent() );
+      shell.destroy();
+      widget.destroy();
+      messageLabel.destroy();
+    },
+
+    testDestroySingleTextByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SINGLE" ],
+          "parent" : "w2",
+          "message" : "some text"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      var messageLabel = widget.getUserData( "messageLabel" );
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "destroy"
+      } );
+      assertNull( messageLabel.getParent() );
+      assertNull( widget.getParent() );
+      shell.destroy();
+    },
+
     testRenderPaddingWithRoundedBorder : function() {
       if( !org.eclipse.rwt.Client.supportsCss3() ) {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;

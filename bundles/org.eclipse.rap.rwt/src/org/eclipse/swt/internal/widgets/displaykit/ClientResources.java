@@ -252,6 +252,7 @@ final class ClientResources {
     "org/eclipse/swt/widgets/ExpandItem.js",
     "org/eclipse/swt/widgets/ExpandBar.js",
     "org/eclipse/rwt/widgets/Text.js",
+    "org/eclipse/rwt/widgets/TextAdapter.js",
     "org/eclipse/rwt/KeyEventUtil.js",
     "org/eclipse/swt/widgets/Separator.js",
     "org/eclipse/swt/widgets/SeparatorAdapter.js",

@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.textkit;
 
@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Text;
 
 final class PasswordTextLCA extends AbstractTextDelegateLCA {
 
-  void preserveValues( final Text text ) {
+  void preserveValues( Text text ) {
     ControlLCAUtil.preserveValues( text );
     TextLCAUtil.preserveValues( text );
     TextLCAUtil.preservePasswordMode( text );
@@ -31,7 +31,7 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
    * readData does not explicitly handle modifyEvents. They are fired implicitly
    * by updating the text property in TextLCAUtil.readText( Text ).
    */
-  void readData( final Text text ) {
+  void readData( Text text ) {
     TextLCAUtil.readTextAndSelection( text );
     ControlLCAUtil.processSelection( text, null, false );
     ControlLCAUtil.processMouseEvents( text );
@@ -40,30 +40,15 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
     WidgetLCAUtil.processHelp( text );
   }
 
-  void renderInitialization( final Text text ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( text );
-    writer.newWidget( "org.eclipse.rwt.widgets.Text",
-                      new Object[]{ Boolean.FALSE } );
-    TextLCAUtil.writeInitialize( text );
-    ControlLCAUtil.writeStyleFlags( text );
-    TextLCAUtil.writeAlignment( text );
+  void renderInitialization( Text text ) throws IOException {
+    TextLCAUtil.renderInitialization( text );
   }
 
-  void renderChanges( final Text text ) throws IOException {
-    ControlLCAUtil.writeChanges( text );
+  void renderChanges( Text text ) throws IOException {
     TextLCAUtil.writePasswordMode( text );
     TextLCAUtil.writeText( text, true );
-    TextLCAUtil.writeReadOnly( text );
-    TextLCAUtil.writeSelection( text );
-    TextLCAUtil.writeTextLimit( text );
-    TextLCAUtil.writeVerifyAndModifyListener( text );
+    TextLCAUtil.renderChanges( text );
     TextLCAUtil.writeSelectionListener( text );
-    WidgetLCAUtil.writeCustomVariant( text );
-  }
-
-  void renderDispose( final Text text ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( text );
-    writer.dispose();
   }
 
 }

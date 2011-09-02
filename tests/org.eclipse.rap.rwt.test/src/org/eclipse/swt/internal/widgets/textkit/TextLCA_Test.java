@@ -14,11 +14,14 @@ package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -28,7 +31,7 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
 public class TextLCA_Test extends TestCase {
-  
+
   private Display display;
   private Shell shell;
   private TextLCA textLCA;
@@ -106,7 +109,7 @@ public class TextLCA_Test extends TestCase {
     textLCA.renderChanges( text );
     assertEquals( "", Fixture.getAllMarkup() );
   }
-  
+
   public void testRenderText_ZeroChar() throws IOException {
     Text text = new Text( shell, SWT.NONE );
     shell.open();
@@ -158,14 +161,14 @@ public class TextLCA_Test extends TestCase {
     Fixture.readDataAndProcessAction( display );
     assertEquals( "verifyText", log.toString() );
   }
-  
+
   public void testSelectionWithVerifyEvent() {
     final java.util.List<VerifyEvent> log = new ArrayList<VerifyEvent>();
     // register preserve-values phase-listener
     final Text text = new Text( shell, SWT.NONE );
     shell.open();
     String textId = WidgetUtil.getId( text );
-    // ensure that selection is unchanged in case a verify-listener is 
+    // ensure that selection is unchanged in case a verify-listener is
     // registered that does not change the text
     VerifyListener emptyVerifyListener = new VerifyListener() {
       public void verifyText( final VerifyEvent event ) {
@@ -192,7 +195,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( new Point( 1, 1 ), text.getSelection() );
     assertEquals( "verify me", text.getText() );
     text.removeVerifyListener( emptyVerifyListener );
-    // ensure that selection is unchanged in case a verify-listener changes 
+    // ensure that selection is unchanged in case a verify-listener changes
     // the incoming text within the limits of the selection
     text.setText( "" );
     VerifyListener alteringVerifyListener = new VerifyListener() {
@@ -213,7 +216,7 @@ public class TextLCA_Test extends TestCase {
     assertEquals( new Point( 1, 1 ), text.getSelection() );
     assertEquals( "verified", text.getText() );
     text.removeVerifyListener( alteringVerifyListener );
-    // ensure that selection is adjusted in case a verify-listener changes 
+    // ensure that selection is adjusted in case a verify-listener changes
     // the incoming text in a way that would result in an invalid selection
     text.setText( "" );
     alteringVerifyListener = new VerifyListener() {
@@ -311,14 +314,14 @@ public class TextLCA_Test extends TestCase {
     expected = "setMaxLength( null );";
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
-  
+
   public void testEchoCharMultiLine() throws IOException {
     Fixture.fakeNewRequest( display );
     Text text = new Text( shell, SWT.MULTI );
     textLCA.render( text );
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode" ) == -1 );
-    
+
     Fixture.preserveWidgets();
     text.setEchoChar( ( char )27 );
     textLCA.render( text );
@@ -336,14 +339,14 @@ public class TextLCA_Test extends TestCase {
     textLCA.render( text );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode( true )" ) != -1 );
-    
+
     Fixture.preserveWidgets();
     text.setEchoChar( ( char )0 );
     textLCA.render( text );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode( false )" ) != -1 );
   }
-  
+
   public void testEchoCharPassword() throws IOException {
     Text text = new Text( shell, SWT.PASSWORD );
     textLCA.render( text );
@@ -362,7 +365,7 @@ public class TextLCA_Test extends TestCase {
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "setPasswordMode( true )" ) != -1 );
   }
-  
+
   private static void testPreserveValues( final Text text ) {
     //text
     text.setText( "some text" );
@@ -421,7 +424,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.clearPreserved();
     //control_listeners
     Fixture.preserveWidgets();
-    assertEquals( Boolean.FALSE, 
+    assertEquals( Boolean.FALSE,
                   getPreserved( text, Props.CONTROL_LISTENERS ) );
     Fixture.clearPreserved();
     text.addControlListener( new ControlAdapter() { } );
@@ -460,13 +463,13 @@ public class TextLCA_Test extends TestCase {
     assertTrue( getPreserved( text, Props.Z_INDEX ) != null );
     Fixture.clearPreserved();
   }
-  
+
   public void testPreserveModifyListener() {
     Fixture.markInitialized( display );
     Text text = new Text( shell, SWT.SINGLE );
     text.addModifyListener( createModifyListener() );
     Fixture.preserveWidgets();
-    Object preserved 
+    Object preserved
       = getPreserved( text, TextLCAUtil.PROP_VERIFY_MODIFY_LISTENER );
     assertEquals( Boolean.TRUE, preserved );
   }
@@ -476,11 +479,11 @@ public class TextLCA_Test extends TestCase {
     Text text = new Text( shell, SWT.READ_ONLY );
     text.addModifyListener( createModifyListener() );
     Fixture.preserveWidgets();
-    Object preserved 
+    Object preserved
       = getPreserved( text, TextLCAUtil.PROP_VERIFY_MODIFY_LISTENER );
     assertEquals( Boolean.TRUE, preserved );
   }
-  
+
   public void testWriteModifyListenerWhenReadOnly() throws IOException {
     String setHasModifyListener
       = "org.eclipse.swt.TextUtil.setHasVerifyOrModifyListener( w, true )";
@@ -489,7 +492,7 @@ public class TextLCA_Test extends TestCase {
     textLCA.renderChanges( text );
     assertTrue( Fixture.getAllMarkup().indexOf( setHasModifyListener ) != -1 );
   }
-  
+
   // bug 337130
   public void testWriteModifyListenerAfterBecomingEditable() throws IOException {
     String setHasModifyListener
@@ -533,14 +536,93 @@ public class TextLCA_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
-  private static Object getPreserved( final Text text, final String property ) {
+  public void testRenderCreate() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+
+    textLCA.renderInitialization( text );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( text );
+    assertEquals( "rwt.widgets.Text", operation.getType() );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "SINGLE" ) );
+  }
+
+  public void testRenderCreateMultiWithWrap() throws IOException {
+    Text text = new Text( shell, SWT.MULTI | SWT.WRAP );
+
+    textLCA.renderInitialization( text );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( text );
+    assertEquals( "rwt.widgets.Text", operation.getType() );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "MULTI" ) );
+    assertTrue( Arrays.asList( styles ).contains( "WRAP" ) );
+  }
+
+  public void testRenderAlingment() throws Exception {
+    Text text = new Text( shell, SWT.SINGLE | SWT.CENTER );
+    Fixture.fakeResponseWriter();
+
+    textLCA.renderInitialization( text );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( text );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "CENTER" ) );
+  }
+
+  public void testRenderParent() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+
+    textLCA.renderInitialization( text );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( text );
+    assertEquals( WidgetUtil.getId( text.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderInitialMessage() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( text, "message" ) );
+  }
+
+  public void testRenderMessage() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+
+    text.setMessage( "test" );
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "test", message.findSetProperty( text, "message" ) );
+  }
+
+  public void testRenderMessageUnchanged() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+
+    text.setMessage( "test" );
+    Fixture.preserveWidgets();
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( text, "message" ) );
+  }
+
+  private static Object getPreserved( Text text, String property ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     return adapter.getPreserved( property );
   }
 
   private static ModifyListener createModifyListener() {
     return new ModifyListener() {
-      public void modifyText( final ModifyEvent event ) {
+      public void modifyText( ModifyEvent event ) {
       }
     };
   }

@@ -1,22 +1,23 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
@@ -26,6 +27,7 @@ import org.eclipse.swt.widgets.Text;
 
 final class TextLCAUtil {
 
+  private static final String TYPE = "rwt.widgets.Text";
   static final String PROP_TEXT = "text";
   static final String PROP_TEXT_LIMIT = "textLimit";
   static final String PROP_SELECTION = "selection";
@@ -40,19 +42,34 @@ final class TextLCAUtil {
   private static final String JS_PROP_MAX_LENGTH = "maxLength";
   private static final String JS_PROP_READ_ONLY = "readOnly";
   private static final String JS_PROP_VALUE = "value";
-  private static final String JS_PROP_TEXT_ALIGN = "textAlign";
   private static final String JS_PROP_PASSWORD_MODE = "passwordMode";
 
   private TextLCAUtil() {
     // prevent instantiation
   }
 
-  static void preserveValues( final Text text ) {
+  static void preserveValues( Text text ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     adapter.preserve( PROP_TEXT, text.getText() );
     adapter.preserve( PROP_SELECTION, text.getSelection() );
     adapter.preserve( PROP_TEXT_LIMIT, new Integer( text.getTextLimit() ) );
     adapter.preserve( PROP_READ_ONLY, Boolean.valueOf( ! text.getEditable() ) );
+  }
+
+  static void renderInitialization( Text text ) {
+    IClientObject clientObject = ClientObjectFactory.getForWidget( text );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( text.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( text ) );
+  }
+
+  static void renderChanges( Text text ) throws IOException {
+    writeReadOnly( text );
+    writeSelection( text );
+    writeTextLimit( text );
+    WidgetLCAUtil.renderCustomVariant( text );
+    ControlLCAUtil.renderChanges( text );
+    writeVerifyAndModifyListener( text );
   }
 
   static void readTextAndSelection( final Text text ) {
@@ -90,7 +107,7 @@ final class TextLCAUtil {
     }
   }
 
-  private static Point readSelection( final Text text ) {
+  private static Point readSelection( Text text ) {
     Point result = null;
     String selStart = WidgetLCAUtil.readPropertyValue( text, "selectionStart" );
     String selLength = WidgetLCAUtil.readPropertyValue( text, "selectionLength" );
@@ -106,13 +123,13 @@ final class TextLCAUtil {
     return result;
   }
 
-  static void writeInitialize( final Text text ) throws IOException {
+  static void writeInitialize( Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     writer.callStatic( "org.eclipse.swt.TextUtil.initialize",
                        new Object[] { text } );
   }
 
-  static void writeText( final Text text, final boolean replaceNewLines ) throws IOException {
+  static void writeText( Text text, boolean replaceNewLines ) throws IOException {
     String newValue = text.getText();
     JSWriter writer = JSWriter.getWriterFor( text );
     if( WidgetLCAUtil.hasChanged( text, PROP_TEXT, newValue, "" ) ) {
@@ -125,18 +142,17 @@ final class TextLCAUtil {
     }
   }
 
-  static void writeReadOnly( final Text text ) throws IOException {
+  private static void writeReadOnly( Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     Boolean newValue = Boolean.valueOf( !text.getEditable() );
     writer.set( PROP_READ_ONLY, JS_PROP_READ_ONLY, newValue, Boolean.FALSE );
   }
 
-  static void writeTextLimit( final Text text ) throws IOException {
+  private static void writeTextLimit( final Text text ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( text );
     Integer newValue = new Integer( text.getTextLimit() );
     Integer defValue = DEFAULT_TEXT_LIMIT;
-    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT_LIMIT, newValue, defValue ) )
-    {
+    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT_LIMIT, newValue, defValue ) ) {
       // Negative values are treated as 'no limit' which is achieved by passing
       // null to the client-side maxLength property
       if( newValue.intValue() < 0 ) {
@@ -146,13 +162,7 @@ final class TextLCAUtil {
     }
   }
 
-  static void writeWrap( final Text text ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( text );
-    Boolean value = Boolean.valueOf( ( text.getStyle() & SWT.WRAP ) != 0 );
-    writer.set( "wrap", value );
-  }
-
-  static void writeSelection( final Text text ) throws IOException {
+  private static void writeSelection( Text text ) throws IOException {
     Point newValue = text.getSelection();
     Point defValue = DEFAULT_SELECTION;
     // TODO [rh] could be optimized: when text was changed and selection is 0,0
@@ -171,24 +181,12 @@ final class TextLCAUtil {
     }
   }
 
-  static void writeAlignment( final Text text ) throws IOException {
-    int style = text.getStyle();
-    if( ( style & SWT.RIGHT ) != 0 ) {
-      JSWriter writer = JSWriter.getWriterFor( text );
-      writer.set( JS_PROP_TEXT_ALIGN, "right" );
-    } else if( ( style & SWT.CENTER ) != 0 ) {
-      JSWriter writer = JSWriter.getWriterFor( text );
-      writer.set( JS_PROP_TEXT_ALIGN, "center" );
-    }
-  }
-
-  static void preserveSelectionListener( final Text text ) {
+  static void preserveSelectionListener( Text text ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
-    adapter.preserve( PROP_SELECTION_LISTENER,
-                      Boolean.valueOf( hasSelectionListener( text ) ) );
+    adapter.preserve( PROP_SELECTION_LISTENER, Boolean.valueOf( hasSelectionListener( text ) ) );
   }
 
-  static void writeSelectionListener( final Text text ) throws IOException {
+  static void writeSelectionListener( Text text ) throws IOException {
     Boolean newValue = Boolean.valueOf( hasSelectionListener( text ) );
     if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION_LISTENER, newValue ) ) {
       JSWriter writer = JSWriter.getWriterFor( text );
@@ -197,15 +195,13 @@ final class TextLCAUtil {
     }
   }
 
-  static void preserveVerifyAndModifyListener( final Text text ) {
+  static void preserveVerifyAndModifyListener( Text text ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     adapter.preserve( PROP_VERIFY_MODIFY_LISTENER,
                       Boolean.valueOf( hasVerifyOrModifyListener( text ) ) );
   }
 
-  static void writeVerifyAndModifyListener( final Text text )
-    throws IOException
-  {
+  private static void writeVerifyAndModifyListener( Text text ) throws IOException {
     Boolean newValue = Boolean.valueOf( hasVerifyOrModifyListener( text ) );
     String prop = PROP_VERIFY_MODIFY_LISTENER;
     if( WidgetLCAUtil.hasChanged( text, prop, newValue, Boolean.FALSE ) ) {
@@ -215,13 +211,13 @@ final class TextLCAUtil {
     }
   }
 
-  static void preservePasswordMode( final Text text ) {
+  static void preservePasswordMode( Text text ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     Boolean value = new Boolean( text.getEchoChar() != 0 );
     adapter.preserve( PROP_PASSWORD_MODE, value );
   }
 
-  static void writePasswordMode( final Text text ) throws IOException {
+  static void writePasswordMode( Text text ) throws IOException {
     Boolean newValue = new Boolean( text.getEchoChar() != 0 );
     String prop = PROP_PASSWORD_MODE;
     if( WidgetLCAUtil.hasChanged( text, prop, newValue, Boolean.FALSE ) ) {
@@ -230,7 +226,7 @@ final class TextLCAUtil {
     }
   }
 
-  private static boolean hasSelectionListener( final Text text ) {
+  private static boolean hasSelectionListener( Text text ) {
     // Emulate SWT (on Windows) where a default button takes precedence over
     // a SelectionListener on a text field when both are on the same shell.
     Button defButton = text.getShell().getDefaultButton();
@@ -240,13 +236,13 @@ final class TextLCAUtil {
     return !hasDefaultButton && SelectionEvent.hasListener( text );
   }
 
-  private static boolean hasVerifyOrModifyListener( final Text text ) {
+  private static boolean hasVerifyOrModifyListener( Text text ) {
     boolean hasVerifyListener = VerifyEvent.hasListener( text );
     boolean hasModifyListener = ModifyEvent.hasListener( text );
     return hasModifyListener || hasVerifyListener;
   }
 
-  private static ITextAdapter getTextAdapter( final Text text ) {
+  private static ITextAdapter getTextAdapter( Text text ) {
     return ( ITextAdapter )text.getAdapter( ITextAdapter.class );
   }
 }
