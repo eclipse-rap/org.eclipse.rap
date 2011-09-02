@@ -20,10 +20,7 @@ import org.eclipse.swt.widgets.Text;
 final class MultiTextLCA extends AbstractTextDelegateLCA {
 
   void preserveValues( Text text ) {
-    ControlLCAUtil.preserveValues( text );
     TextLCAUtil.preserveValues( text );
-    TextLCAUtil.preserveVerifyAndModifyListener( text );
-    WidgetLCAUtil.preserveCustomVariant( text );
   }
 
   /* (intentionally non-JavaDoc'ed)

@@ -19,12 +19,9 @@ import org.eclipse.swt.widgets.Text;
 final class PasswordTextLCA extends AbstractTextDelegateLCA {
 
   void preserveValues( Text text ) {
-    ControlLCAUtil.preserveValues( text );
     TextLCAUtil.preserveValues( text );
-    TextLCAUtil.preservePasswordMode( text );
-    TextLCAUtil.preserveVerifyAndModifyListener( text );
+    TextLCAUtil.preserveEchoChar( text );
     TextLCAUtil.preserveSelectionListener( text );
-    WidgetLCAUtil.preserveCustomVariant( text );
   }
 
   /* (intentionally non-JavaDoc'ed)
@@ -45,7 +42,7 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
   }
 
   void renderChanges( Text text ) throws IOException {
-    TextLCAUtil.writePasswordMode( text );
+    TextLCAUtil.renderEchoChar( text );
     TextLCAUtil.writeText( text, true );
     TextLCAUtil.renderChanges( text );
     TextLCAUtil.writeSelectionListener( text );

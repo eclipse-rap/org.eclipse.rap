@@ -22,14 +22,11 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
 
   static final String PROP_MESSAGE = "message";
 
-  void preserveValues( final Text text ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
-    ControlLCAUtil.preserveValues( text );
+  void preserveValues( Text text ) {
     TextLCAUtil.preserveValues( text );
-    TextLCAUtil.preservePasswordMode( text );
-    TextLCAUtil.preserveVerifyAndModifyListener( text );
+    TextLCAUtil.preserveEchoChar( text );
     TextLCAUtil.preserveSelectionListener( text );
-    WidgetLCAUtil.preserveCustomVariant( text );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     adapter.preserve( PROP_MESSAGE, text.getMessage() );
   }
 
@@ -51,7 +48,7 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
   }
 
   void renderChanges( Text text ) throws IOException {
-    TextLCAUtil.writePasswordMode( text );
+    TextLCAUtil.renderEchoChar( text );
     TextLCAUtil.writeText( text, true );
     renderMessage( text );
     TextLCAUtil.renderChanges( text );

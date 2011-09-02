@@ -31,29 +31,29 @@ final class TextLCAUtil {
   static final String PROP_TEXT = "text";
   static final String PROP_TEXT_LIMIT = "textLimit";
   static final String PROP_SELECTION = "selection";
-  static final String PROP_READ_ONLY = "readonly";
+  static final String PROP_EDITABLE = "editable";
   static final String PROP_VERIFY_MODIFY_LISTENER = "verifyModifyListener";
   static final String PROP_SELECTION_LISTENER = "selectionListener";
-  static final String PROP_PASSWORD_MODE = "passwordMode";
+  static final String PROP_ECHO_CHAR = "echoChar";
 
   private static final Integer DEFAULT_TEXT_LIMIT = new Integer( Text.LIMIT );
   private static final Point DEFAULT_SELECTION = new Point( 0, 0 );
 
   private static final String JS_PROP_MAX_LENGTH = "maxLength";
-  private static final String JS_PROP_READ_ONLY = "readOnly";
   private static final String JS_PROP_VALUE = "value";
-  private static final String JS_PROP_PASSWORD_MODE = "passwordMode";
-
   private TextLCAUtil() {
     // prevent instantiation
   }
 
   static void preserveValues( Text text ) {
+    ControlLCAUtil.preserveValues( text );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     adapter.preserve( PROP_TEXT, text.getText() );
     adapter.preserve( PROP_SELECTION, text.getSelection() );
     adapter.preserve( PROP_TEXT_LIMIT, new Integer( text.getTextLimit() ) );
-    adapter.preserve( PROP_READ_ONLY, Boolean.valueOf( ! text.getEditable() ) );
+    adapter.preserve( PROP_EDITABLE, Boolean.valueOf( text.getEditable() ) );
+    preserveVerifyAndModifyListener( text );
+    WidgetLCAUtil.preserveCustomVariant( text );
   }
 
   static void renderInitialization( Text text ) {
@@ -64,7 +64,7 @@ final class TextLCAUtil {
   }
 
   static void renderChanges( Text text ) throws IOException {
-    writeReadOnly( text );
+    renderEditable( text );
     writeSelection( text );
     writeTextLimit( text );
     WidgetLCAUtil.renderCustomVariant( text );
@@ -142,10 +142,12 @@ final class TextLCAUtil {
     }
   }
 
-  private static void writeReadOnly( Text text ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( text );
-    Boolean newValue = Boolean.valueOf( !text.getEditable() );
-    writer.set( PROP_READ_ONLY, JS_PROP_READ_ONLY, newValue, Boolean.FALSE );
+  private static void renderEditable( Text text ) {
+    Boolean newValue = Boolean.valueOf( text.getEditable() );
+    if( WidgetLCAUtil.hasChanged( text, PROP_EDITABLE, newValue, Boolean.TRUE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
+      clientObject.setProperty( PROP_EDITABLE, newValue );
+    }
   }
 
   private static void writeTextLimit( final Text text ) throws IOException {
@@ -195,7 +197,7 @@ final class TextLCAUtil {
     }
   }
 
-  static void preserveVerifyAndModifyListener( Text text ) {
+  private static void preserveVerifyAndModifyListener( Text text ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     adapter.preserve( PROP_VERIFY_MODIFY_LISTENER,
                       Boolean.valueOf( hasVerifyOrModifyListener( text ) ) );
@@ -211,19 +213,21 @@ final class TextLCAUtil {
     }
   }
 
-  static void preservePasswordMode( Text text ) {
+  static void preserveEchoChar( Text text ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
-    Boolean value = new Boolean( text.getEchoChar() != 0 );
-    adapter.preserve( PROP_PASSWORD_MODE, value );
+    adapter.preserve( PROP_ECHO_CHAR, getEchoChar( text ) );
   }
 
-  static void writePasswordMode( Text text ) throws IOException {
-    Boolean newValue = new Boolean( text.getEchoChar() != 0 );
-    String prop = PROP_PASSWORD_MODE;
-    if( WidgetLCAUtil.hasChanged( text, prop, newValue, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( text );
-      writer.set( JS_PROP_PASSWORD_MODE, newValue );
+  static void renderEchoChar( Text text ) {
+    String newValue = getEchoChar( text );
+    if( WidgetLCAUtil.hasChanged( text, PROP_ECHO_CHAR, newValue, null ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
+      clientObject.setProperty( "echoChar", newValue );
     }
+  }
+
+  private static String getEchoChar( Text text ) {
+    return text.getEchoChar() == 0 ? null : String.valueOf( text.getEchoChar() );
   }
 
   private static boolean hasSelectionListener( Text text ) {

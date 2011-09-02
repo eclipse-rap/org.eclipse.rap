@@ -37,6 +37,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( "text-field", widget.getAppearance() );
       assertNotNull( widget.getUserData( "selectionStart" ) );
       assertEquals( "right", widget.getTextAlign() );
+      assertFalse( widget.getReadOnly() );
       shell.destroy();
       widget.destroy();
     },
@@ -95,13 +96,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         "type" : "rwt.widgets.Text",
         "properties" : {
           "style" : [ "PASSWORD" ],
-          "parent" : "w2"
+          "parent" : "w2",
+          "echoChar" : "?"
         }
       } );
       var objectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = objectManager.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_PASSWORD" ) );
       assertEquals( "text-field", widget.getAppearance() );
+      assertEquals( "password", widget._inputType );
       shell.destroy();
       widget.destroy();
     },
@@ -155,6 +158,48 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertNull( messageLabel.getParent() );
       assertNull( widget.getParent() );
       shell.destroy();
+    },
+
+    testSetEchoCharByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SINGLE" ],
+          "parent" : "w2",
+          "echoChar" : "?"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( "password", widget._inputType );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetEditableByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SINGLE" ],
+          "parent" : "w2",
+          "editable" : false
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget.getReadOnly() );
+      shell.destroy();
+      widget.destroy();
     },
 
     testRenderPaddingWithRoundedBorder : function() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -128,7 +128,7 @@ public class TextLCA_Test extends TestCase {
     final Text text = new Text( shell, SWT.NONE );
     text.addModifyListener( new ModifyListener() {
 
-      public void modifyText( final ModifyEvent event ) {
+      public void modifyText( ModifyEvent event ) {
         assertEquals( text, event.getSource() );
         log.append( "modifyText" );
       }
@@ -146,7 +146,7 @@ public class TextLCA_Test extends TestCase {
     final StringBuffer log = new StringBuffer();
     final Text text = new Text( shell, SWT.NONE );
     text.addVerifyListener( new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         assertEquals( text, event.getSource() );
         assertEquals( text, event.widget );
         assertTrue( event.doit );
@@ -171,7 +171,7 @@ public class TextLCA_Test extends TestCase {
     // ensure that selection is unchanged in case a verify-listener is
     // registered that does not change the text
     VerifyListener emptyVerifyListener = new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         log.add( event );
       }
     };
@@ -199,7 +199,7 @@ public class TextLCA_Test extends TestCase {
     // the incoming text within the limits of the selection
     text.setText( "" );
     VerifyListener alteringVerifyListener = new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         log.add( event );
         event.text = "verified";
       }
@@ -220,7 +220,7 @@ public class TextLCA_Test extends TestCase {
     // the incoming text in a way that would result in an invalid selection
     text.setText( "" );
     alteringVerifyListener = new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         log.add( event );
         event.text = "";
       }
@@ -267,12 +267,12 @@ public class TextLCA_Test extends TestCase {
     // ensure that modify *and* verify event is fired
     text.setText( "" );
     text.addVerifyListener( new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         log.add( event );
       }
     } );
     text.addModifyListener( new ModifyListener() {
-      public void modifyText( final ModifyEvent event ) {
+      public void modifyText( ModifyEvent event ) {
         log.add( event );
       }
     } );
@@ -315,58 +315,7 @@ public class TextLCA_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
-  public void testEchoCharMultiLine() throws IOException {
-    Fixture.fakeNewRequest( display );
-    Text text = new Text( shell, SWT.MULTI );
-    textLCA.render( text );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setPasswordMode" ) == -1 );
-
-    Fixture.preserveWidgets();
-    text.setEchoChar( ( char )27 );
-    textLCA.render( text );
-    assertTrue( markup.indexOf( "setPasswordMode" ) == -1 );
-  }
-
-  public void testEchoCharSingleLine() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
-    textLCA.render( text );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setPasswordMode" ) == -1 );
-
-    Fixture.preserveWidgets();
-    text.setEchoChar( ( char )27 );
-    textLCA.render( text );
-    markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setPasswordMode( true )" ) != -1 );
-
-    Fixture.preserveWidgets();
-    text.setEchoChar( ( char )0 );
-    textLCA.render( text );
-    markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setPasswordMode( false )" ) != -1 );
-  }
-
-  public void testEchoCharPassword() throws IOException {
-    Text text = new Text( shell, SWT.PASSWORD );
-    textLCA.render( text );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setPasswordMode( true )" ) != -1 );
-
-    Fixture.preserveWidgets();
-    text.setEchoChar( ( char )0 );
-    textLCA.render( text );
-    markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setPasswordMode( false )" ) != -1 );
-
-    Fixture.preserveWidgets();
-    text.setEchoChar( ( char )27 );
-    textLCA.render( text );
-    markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setPasswordMode( true )" ) != -1 );
-  }
-
-  private static void testPreserveValues( final Text text ) {
+  private static void testPreserveValues( Text text ) {
     //text
     text.setText( "some text" );
     Fixture.markInitialized( text.getDisplay() );
@@ -375,13 +324,11 @@ public class TextLCA_Test extends TestCase {
     Fixture.clearPreserved();
     //text-limit
     Fixture.preserveWidgets();
-    Integer textLimit
-     = ( Integer )( getPreserved( text, TextLCAUtil.PROP_TEXT_LIMIT ) );
+    Integer textLimit = ( Integer )( getPreserved( text, TextLCAUtil.PROP_TEXT_LIMIT ) );
     assertEquals( Integer.MAX_VALUE, textLimit.intValue() );
     text.setTextLimit( 30 );
     Fixture.preserveWidgets();
-    textLimit
-     = ( Integer )( getPreserved( text, TextLCAUtil.PROP_TEXT_LIMIT ) );
+    textLimit = ( Integer )( getPreserved( text, TextLCAUtil.PROP_TEXT_LIMIT ) );
     assertEquals( 30, textLimit.intValue() );
     Fixture.clearPreserved();
     //selection
@@ -397,14 +344,13 @@ public class TextLCA_Test extends TestCase {
     Fixture.clearPreserved();
     //readonly
     Fixture.preserveWidgets();
-    Boolean readonly
-     = ( Boolean )getPreserved( text, TextLCAUtil.PROP_READ_ONLY );
-    assertEquals( Boolean.FALSE, readonly );
+    Boolean readonly = ( Boolean )getPreserved( text, TextLCAUtil.PROP_EDITABLE );
+    assertEquals( Boolean.TRUE, readonly );
     Fixture.clearPreserved();
     text.setEditable( false );
     Fixture.preserveWidgets();
-    readonly = ( Boolean )getPreserved( text, TextLCAUtil.PROP_READ_ONLY );
-    assertEquals( Boolean.TRUE, readonly );
+    readonly = ( Boolean )getPreserved( text, TextLCAUtil.PROP_EDITABLE );
+    assertEquals( Boolean.FALSE, readonly );
     Fixture.clearPreserved();
     //verifymodify-Listeners
     Fixture.preserveWidgets();
@@ -412,7 +358,7 @@ public class TextLCA_Test extends TestCase {
      = ( Boolean )getPreserved( text, TextLCAUtil.PROP_VERIFY_MODIFY_LISTENER );
     assertEquals( Boolean.FALSE, hasVerifyModifyListener );
     text.addVerifyListener( new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
       }
     } );
     Fixture.clearPreserved();
@@ -485,12 +431,16 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testWriteModifyListenerWhenReadOnly() throws IOException {
-    String setHasModifyListener
-      = "org.eclipse.swt.TextUtil.setHasVerifyOrModifyListener( w, true )";
     Text text = new Text( shell, SWT.READ_ONLY );
     text.addModifyListener( createModifyListener() );
+
     textLCA.renderChanges( text );
-    assertTrue( Fixture.getAllMarkup().indexOf( setHasModifyListener ) != -1 );
+
+    StringBuffer expected = new StringBuffer();
+    expected.append( "setHasVerifyOrModifyListener( wm.findWidgetById( \"" );
+    expected.append( WidgetUtil.getId( text ) );
+    expected.append( "\" ), true );" );
+    assertTrue( Fixture.getAllMarkup().indexOf( expected.toString() ) != -1 );
   }
 
   // bug 337130
@@ -613,6 +563,88 @@ public class TextLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "message" ) );
+  }
+
+  public void testRenderPasswordEchoChar() throws IOException {
+    Text text = new Text( shell, SWT.PASSWORD );
+
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "?", message.findSetProperty( text, "echoChar" ) );
+  }
+
+  public void testRenderMultiEchoChar() throws IOException {
+    Text text = new Text( shell, SWT.MULTI );
+
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( text, "echoChar" ) );
+  }
+
+  public void testRenderInitialEchoChar() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( text, "echoChar" ) );
+  }
+
+  public void testRenderEchoChar() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+
+    text.setEchoChar( '*' );
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "*", message.findSetProperty( text, "echoChar" ) );
+  }
+
+  public void testRenderEchoCharUnchanged() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+
+    text.setEchoChar( '*' );
+    Fixture.preserveWidgets();
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( text, "echoChar" ) );
+  }
+
+  public void testRenderInitialEditable() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( text, "editable" ) );
+  }
+
+  public void testRenderEditable() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+
+    text.setEditable( false );
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findSetProperty( text, "editable" ) );
+  }
+
+  public void testRenderEditableUnchanged() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+
+    text.setEditable( false );
+    Fixture.preserveWidgets();
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( text, "editable" ) );
   }
 
   private static Object getPreserved( Text text, String property ) {

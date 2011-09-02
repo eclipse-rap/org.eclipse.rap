@@ -33,12 +33,20 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Text", {
   },
 
   properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
-    "message"
+    "message",
+    "echoChar",
+    "editable"
   ] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
-    "message" :  function( widget, value ) {
+    "message" : function( widget, value ) {
       org.eclipse.swt.TextUtil.setMessage( widget, value );
+    },
+    "echoChar" : function( widget, value ) {
+      widget.setPasswordMode( value !== null );
+    },
+    "editable" : function( widget, value ) {
+      widget.setReadOnly( !value );
     }
   } ),
 
