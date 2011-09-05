@@ -32,7 +32,8 @@ final class TextLCAUtil {
   static final String PROP_TEXT_LIMIT = "textLimit";
   static final String PROP_SELECTION = "selection";
   static final String PROP_EDITABLE = "editable";
-  static final String PROP_VERIFY_MODIFY_LISTENER = "verifyModifyListener";
+  static final String PROP_MODIFY_LISTENER = "modifyListener";
+  static final String PROP_VERIFY_LISTENER = "verifyListener";
   static final String PROP_SELECTION_LISTENER = "selectionListener";
   static final String PROP_ECHO_CHAR = "echoChar";
 
@@ -52,7 +53,10 @@ final class TextLCAUtil {
     adapter.preserve( PROP_SELECTION, text.getSelection() );
     adapter.preserve( PROP_TEXT_LIMIT, new Integer( text.getTextLimit() ) );
     adapter.preserve( PROP_EDITABLE, Boolean.valueOf( text.getEditable() ) );
-    preserveVerifyAndModifyListener( text );
+    adapter.preserve( PROP_MODIFY_LISTENER,
+                      Boolean.valueOf( ModifyEvent.hasListener( text ) ) );
+    adapter.preserve( PROP_VERIFY_LISTENER,
+                      Boolean.valueOf( VerifyEvent.hasListener( text ) ) );
     WidgetLCAUtil.preserveCustomVariant( text );
   }
 
@@ -69,7 +73,8 @@ final class TextLCAUtil {
     renderTextLimit( text );
     WidgetLCAUtil.renderCustomVariant( text );
     ControlLCAUtil.renderChanges( text );
-    writeVerifyAndModifyListener( text );
+    renderListenModify( text );
+    renderListenVerify( text );
   }
 
   static void readTextAndSelection( final Text text ) {
@@ -170,28 +175,39 @@ final class TextLCAUtil {
     adapter.preserve( PROP_SELECTION_LISTENER, Boolean.valueOf( hasSelectionListener( text ) ) );
   }
 
-  static void writeSelectionListener( Text text ) throws IOException {
+  static void renderListenSelection( Text text ) {
     Boolean newValue = Boolean.valueOf( hasSelectionListener( text ) );
-    if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION_LISTENER, newValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( text );
-      writer.callStatic( "org.eclipse.swt.TextUtil.setHasSelectionListener",
-                         new Object[] { text, newValue } );
+    if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION_LISTENER, newValue, Boolean.FALSE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
+      if( newValue.booleanValue() ) {
+        clientObject.addListener( "selection" );
+      } else {
+        clientObject.removeListener( "selection" );
+      }
     }
   }
 
-  private static void preserveVerifyAndModifyListener( Text text ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
-    adapter.preserve( PROP_VERIFY_MODIFY_LISTENER,
-                      Boolean.valueOf( hasVerifyOrModifyListener( text ) ) );
+  private static void renderListenModify( Text text ) {
+    Boolean newValue = Boolean.valueOf( ModifyEvent.hasListener( text ) );
+    if( WidgetLCAUtil.hasChanged( text, PROP_MODIFY_LISTENER, newValue, Boolean.FALSE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
+      if( newValue.booleanValue() ) {
+        clientObject.addListener( "modify" );
+      } else {
+        clientObject.removeListener( "modify" );
+      }
+    }
   }
 
-  private static void writeVerifyAndModifyListener( Text text ) throws IOException {
-    Boolean newValue = Boolean.valueOf( hasVerifyOrModifyListener( text ) );
-    String prop = PROP_VERIFY_MODIFY_LISTENER;
-    if( WidgetLCAUtil.hasChanged( text, prop, newValue, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( text );
-      String function = "org.eclipse.swt.TextUtil.setHasVerifyOrModifyListener";
-      writer.callStatic( function, new Object[] { text, newValue } );
+  private static void renderListenVerify( Text text ) {
+    Boolean newValue = Boolean.valueOf( VerifyEvent.hasListener( text ) );
+    if( WidgetLCAUtil.hasChanged( text, PROP_VERIFY_LISTENER, newValue, Boolean.FALSE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
+      if( newValue.booleanValue() ) {
+        clientObject.addListener( "verify" );
+      } else {
+        clientObject.removeListener( "verify" );
+      }
     }
   }
 
@@ -220,12 +236,6 @@ final class TextLCAUtil {
     //      button is invisible or disabled. Check with Windows and repair.
     boolean hasDefaultButton = defButton != null && defButton.isVisible();
     return !hasDefaultButton && SelectionEvent.hasListener( text );
-  }
-
-  private static boolean hasVerifyOrModifyListener( Text text ) {
-    boolean hasVerifyListener = VerifyEvent.hasListener( text );
-    boolean hasModifyListener = ModifyEvent.hasListener( text );
-    return hasModifyListener || hasVerifyListener;
   }
 
   private static ITextAdapter getTextAdapter( Text text ) {

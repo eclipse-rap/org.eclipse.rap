@@ -288,6 +288,71 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       widget.destroy();
     },
 
+    testSetHasSelectionListenerByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SINGLE" ],
+          "parent" : "w2"
+        }
+      } );
+      this._protocolListen( "w3", { "selection" : true } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget.hasSelectionListener() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHasModifyListenerByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SINGLE" ],
+          "parent" : "w2"
+        }
+      } );
+      this._protocolListen( "w3", { "modify" : true } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget.hasModifyListener() );
+      assertTrue( org.eclipse.swt.TextUtil.hasVerifyOrModifyListener( widget ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHasVerifyListenerByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SINGLE" ],
+          "parent" : "w2"
+        }
+      } );
+      this._protocolListen( "w3", { "verify" : true } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget.hasVerifyListener() );
+      assertTrue( org.eclipse.swt.TextUtil.hasVerifyOrModifyListener( widget ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testRenderPaddingWithRoundedBorder : function() {
       if( !org.eclipse.rwt.Client.supportsCss3() ) {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -533,6 +598,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       assertEquals( 0, counter );
       text.destroy();
       composite.destroy();      
+    },
+
+    _protocolListen : function( target, properties ) {
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : target,
+        "action" : "listen",
+        "properties" : properties
+      } );
     }
 
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,8 +31,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       if( text.isCreated() ) {
         org.eclipse.swt.TextUtil._doInitialize( text );
       } else {
-        text.addEventListener( "appear",
-                               org.eclipse.swt.TextUtil._onAppearInitialize );
+        text.addEventListener( "appear", org.eclipse.swt.TextUtil._onAppearInitialize );
       }
       text.setLiveUpdate( true );
       // [if] Prevent selection of all text on tab focus
@@ -44,38 +43,8 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       text.setUserData( "selectionLength", 0 );
     },
 
-    /*
-     * Sets the hasSelectionListerner property on the given text widget.
-     * This property tracks whether the text widget has a selection listener
-     * attached.
-     */
-    setHasSelectionListener : function( text, newValue ) {
-      var oldValue = text.getUserData( "hasSelectionListener" );
-      if( newValue != oldValue ) {
-        text.setUserData( "hasSelectionListener", newValue );
-        org.eclipse.swt.TextUtil._updateSelectionListener( text, newValue );
-      }
-    },
-
-    hasSelectionListener : function( text ) {
-      return text.getUserData( "hasSelectionListener" ) == true;
-    },
-
-    /*
-     * Sets the hasVerifyOrModifyListener property on the given widget.
-     * This property tracks whether the text widget has a verify listener or a
-     * modify listener attached.
-     */
-    setHasVerifyOrModifyListener : function( text, newValue ) {
-      var oldValue = text.getUserData( "hasVerifyOrModifyListener" );
-      if( newValue != oldValue ) {
-        text.setUserData( "hasVerifyOrModifyListener", newValue );
-        org.eclipse.swt.TextUtil._updateVerifyOrModifyListener( text, newValue );
-      }
-    },
-
     hasVerifyOrModifyListener : function( text ) {
-      return text.getUserData( "hasVerifyOrModifyListener" ) == true;
+      return text.hasModifyListener() || text.hasVerifyListener();
     },
 
     /*
@@ -148,7 +117,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
           if( text.hasState( "rwt_MULTI" ) ) {
             event.stopPropagation();
           }
-          if( org.eclipse.swt.TextUtil.hasSelectionListener( text ) ) {
+          if( text.hasSelectionListener() ) {
             org.eclipse.swt.TextUtil._sendWidgetDefaultSelected( text );
           }
         }
@@ -226,14 +195,6 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
           qx.client.Timer.once( org.eclipse.swt.TextUtil._delayedSend, text, 500 );
         }
       }
-    },
-
-    _updateSelectionListener : function( text, newValue ) {
-//      text.debug( "_____ update selection listener", text, newValue );
-    },
-
-    _updateVerifyOrModifyListener : function( text, newValue ) {
-//      text.debug( "_____ update ver/mod listener", text, newValue );
     },
 
     _onSend : function( event ) {

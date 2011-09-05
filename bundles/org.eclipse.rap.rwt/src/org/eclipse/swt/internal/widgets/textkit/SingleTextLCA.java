@@ -52,7 +52,7 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.writeText( text, true );
     renderMessage( text );
     TextLCAUtil.renderChanges( text );
-    TextLCAUtil.writeSelectionListener( text );
+    TextLCAUtil.renderListenSelection( text );
   }
 
   ///////////////////////////////////////////

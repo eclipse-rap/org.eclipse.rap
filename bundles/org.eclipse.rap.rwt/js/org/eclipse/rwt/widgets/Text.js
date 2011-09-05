@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.widgets.Text", {
@@ -23,6 +24,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       this.setAllowStretchY( true );
       this.__oninput = qx.lang.Function.bindEvent( this._oninputDomTextarea, this );
     }
+    this._hasSelectionListener = false;
+    this._hasModifyListener = false;
+    this._hasVerifyListener = false;
   },
 
   properties : {
@@ -146,8 +150,35 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       this._applyFocused( this.getFocused() );
       this.setSelectionStart( selectionStart );
       this.setSelectionLength( selectionLength );
+    },
+
+    ///////////////////
+    // events listeners
+
+    setHasSelectionListener : function( value ) {
+      this._hasSelectionListener = value;
+    },
+
+    hasSelectionListener : function() {
+      return this._hasSelectionListener;
+    },
+
+    setHasModifyListener : function( value ) {
+      this._hasModifyListener = value;
+    },
+
+    hasModifyListener : function() {
+      return this._hasModifyListener;
+    },
+
+    setHasVerifyListener : function( value ) {
+      this._hasVerifyListener = value;
+    },
+
+    hasVerifyListener : function() {
+      return this._hasVerifyListener;
     }
-    
+
   }
 
 } );

@@ -326,15 +326,28 @@ public class TextLCA_Test extends TestCase {
     readonly = ( Boolean )getPreserved( text, TextLCAUtil.PROP_EDITABLE );
     assertEquals( Boolean.FALSE, readonly );
     Fixture.clearPreserved();
-    //verifymodify-Listeners
+    //verify modify-Listeners
     Fixture.preserveWidgets();
-    Boolean hasVerifyModifyListener
-     = ( Boolean )getPreserved( text, TextLCAUtil.PROP_VERIFY_MODIFY_LISTENER );
-    assertEquals( Boolean.FALSE, hasVerifyModifyListener );
+    Boolean hasModifyListener = ( Boolean )getPreserved( text, TextLCAUtil.PROP_MODIFY_LISTENER );
+    assertEquals( Boolean.FALSE, hasModifyListener );
+    text.addModifyListener( new ModifyListener() {
+      public void modifyText( ModifyEvent event ) {
+      }
+    } );
+    Fixture.preserveWidgets();
+    hasModifyListener = ( Boolean )getPreserved( text, TextLCAUtil.PROP_MODIFY_LISTENER );
+    assertEquals( Boolean.TRUE, hasModifyListener );
+    Fixture.clearPreserved();
+    Fixture.preserveWidgets();
+    Boolean hasVerifyListener = ( Boolean )getPreserved( text, TextLCAUtil.PROP_VERIFY_LISTENER );
+    assertEquals( Boolean.FALSE, hasVerifyListener );
     text.addVerifyListener( new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
       }
     } );
+    Fixture.preserveWidgets();
+    hasVerifyListener = ( Boolean )getPreserved( text, TextLCAUtil.PROP_VERIFY_LISTENER );
+    assertEquals( Boolean.TRUE, hasVerifyListener );
     Fixture.clearPreserved();
     //Bounds
     Rectangle rectangle = new Rectangle( 10, 10, 200, 100 );
@@ -389,8 +402,7 @@ public class TextLCA_Test extends TestCase {
     Text text = new Text( shell, SWT.SINGLE );
     text.addModifyListener( createModifyListener() );
     Fixture.preserveWidgets();
-    Object preserved
-      = getPreserved( text, TextLCAUtil.PROP_VERIFY_MODIFY_LISTENER );
+    Object preserved = getPreserved( text, TextLCAUtil.PROP_MODIFY_LISTENER );
     assertEquals( Boolean.TRUE, preserved );
   }
 
@@ -399,8 +411,7 @@ public class TextLCA_Test extends TestCase {
     Text text = new Text( shell, SWT.READ_ONLY );
     text.addModifyListener( createModifyListener() );
     Fixture.preserveWidgets();
-    Object preserved
-      = getPreserved( text, TextLCAUtil.PROP_VERIFY_MODIFY_LISTENER );
+    Object preserved = getPreserved( text, TextLCAUtil.PROP_MODIFY_LISTENER );
     assertEquals( Boolean.TRUE, preserved );
   }
 
@@ -410,24 +421,8 @@ public class TextLCA_Test extends TestCase {
 
     textLCA.renderChanges( text );
 
-    StringBuffer expected = new StringBuffer();
-    expected.append( "setHasVerifyOrModifyListener( wm.findWidgetById( \"" );
-    expected.append( WidgetUtil.getId( text ) );
-    expected.append( "\" ), true );" );
-    assertTrue( Fixture.getAllMarkup().indexOf( expected.toString() ) != -1 );
-  }
-
-  // bug 337130
-  public void testWriteModifyListenerAfterBecomingEditable() throws IOException {
-    String setHasModifyListener
-      = "org.eclipse.swt.TextUtil.setHasVerifyOrModifyListener( w, true )";
-    Text text = new Text( shell, SWT.READ_ONLY );
-    text.addModifyListener( createModifyListener() );
-    Fixture.markInitialized( text );
-    Fixture.preserveWidgets();
-    text.setEditable( true );
-    textLCA.renderChanges( text );
-    assertTrue( Fixture.getAllMarkup().indexOf( setHasModifyListener ) != -1 );
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( text, "modify" ) );
   }
 
   public void testWriteSingleText_RemoveNonDisplayableChars() throws IOException {
@@ -687,6 +682,102 @@ public class TextLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "textLimit" ) );
+  }
+
+  public void testRenderAddSelectionListener() throws Exception {
+    Text text = new Text( shell, SWT.SINGLE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+    Fixture.preserveWidgets();
+
+    text.addSelectionListener( new SelectionAdapter() { } );
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( text, "selection" ) );
+  }
+
+  public void testRenderRemoveSelectionListener() throws Exception {
+    Text text = new Text( shell, SWT.SINGLE );
+    SelectionListener listener = new SelectionAdapter() { };
+    text.addSelectionListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+    Fixture.preserveWidgets();
+
+    text.removeSelectionListener( listener );
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( text, "selection" ) );
+  }
+
+  public void testRenderAddModifyListener() throws Exception {
+    Text text = new Text( shell, SWT.SINGLE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+    Fixture.preserveWidgets();
+
+    text.addModifyListener( new ModifyListener() {
+      public void modifyText( ModifyEvent event ) {
+      }
+    } );
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( text, "modify" ) );
+  }
+
+  public void testRenderRemoveModifyListener() throws Exception {
+    Text text = new Text( shell, SWT.SINGLE );
+    ModifyListener listener = new ModifyListener() {
+      public void modifyText( ModifyEvent event ) {
+      }
+    };
+    text.addModifyListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+    Fixture.preserveWidgets();
+
+    text.removeModifyListener( listener );
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( text, "modify" ) );
+  }
+
+  public void testRenderAddVerifyListener() throws Exception {
+    Text text = new Text( shell, SWT.SINGLE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+    Fixture.preserveWidgets();
+
+    text.addVerifyListener( new VerifyListener() {
+      public void verifyText( VerifyEvent event ) {
+      }
+    } );
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( text, "verify" ) );
+  }
+
+  public void testRenderRemoveVerifyListener() throws Exception {
+    Text text = new Text( shell, SWT.SINGLE );
+    VerifyListener listener = new VerifyListener() {
+      public void verifyText( VerifyEvent event ) {
+      }
+    };
+    text.addVerifyListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+    Fixture.preserveWidgets();
+
+    text.removeVerifyListener( listener );
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( text, "verify" ) );
   }
 
   private static Object getPreserved( Text text, String property ) {

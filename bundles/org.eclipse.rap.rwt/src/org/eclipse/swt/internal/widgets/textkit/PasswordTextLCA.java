@@ -45,7 +45,7 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.renderEchoChar( text );
     TextLCAUtil.writeText( text, true );
     TextLCAUtil.renderChanges( text );
-    TextLCAUtil.writeSelectionListener( text );
+    TextLCAUtil.renderListenSelection( text );
   }
 
 }
