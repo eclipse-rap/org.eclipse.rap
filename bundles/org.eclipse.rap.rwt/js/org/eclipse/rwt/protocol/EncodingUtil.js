@@ -61,7 +61,7 @@ org.eclipse.rwt.protocol.EncodingUtil = {
 
   truncateAtZero : function( text ) {
     var result = text;
-    var index = result.indexOf( "\000" );
+    var index = result.indexOf( String.fromCharCode( 0 ) );
     if( index !== -1 ) {
       result = result.substring( 0, index );
     }
