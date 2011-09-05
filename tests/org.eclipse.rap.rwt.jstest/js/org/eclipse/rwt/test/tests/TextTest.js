@@ -353,6 +353,48 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       widget.destroy();
     },
 
+    testSetTextByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SINGLE" ],
+          "parent" : "w2",
+          "text" : "foo\nbar"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( "foo bar", widget.getValue() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetMultiTextByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "MULTI" ],
+          "parent" : "w2",
+          "text" : "foo\nbar"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( "foo\nbar", widget.getValue() );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testRenderPaddingWithRoundedBorder : function() {
       if( !org.eclipse.rwt.Client.supportsCss3() ) {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;

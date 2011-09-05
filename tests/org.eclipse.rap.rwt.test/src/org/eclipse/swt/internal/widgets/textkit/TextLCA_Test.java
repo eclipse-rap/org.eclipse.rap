@@ -95,36 +95,6 @@ public class TextLCA_Test extends TestCase {
     assertEquals( new Point( 1, 2 ), text.getSelection() );
   }
 
-  public void testRenderChanges() throws IOException {
-    Text text = new Text( shell, SWT.NONE );
-    shell.open();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( text );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    text.setText( "hello" );
-    textLCA.renderChanges( text );
-    assertTrue( Fixture.getAllMarkup().endsWith( "setValue( \"hello\" );" ) );
-    Fixture.fakeResponseWriter();
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    textLCA.renderChanges( text );
-    assertEquals( "", Fixture.getAllMarkup() );
-  }
-
-  public void testRenderText_ZeroChar() throws IOException {
-    Text text = new Text( shell, SWT.NONE );
-    shell.open();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( text );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    char[] value = new char[] { 'h', 'e', 'l', 0, 'l', 'o' };
-    text.setText( String.valueOf( value ) );
-    textLCA.renderChanges( text );
-    assertTrue( Fixture.getAllMarkup().endsWith( "setValue( \"hel\" );" ) );
-  }
-
   public void testModifyEvent() {
     final StringBuffer log = new StringBuffer();
     final Text text = new Text( shell, SWT.NONE );
@@ -423,36 +393,6 @@ public class TextLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findListenProperty( text, "modify" ) );
-  }
-
-  public void testWriteSingleText_RemoveNonDisplayableChars() throws IOException {
-    Text text = new Text( shell, SWT.SINGLE );
-    Fixture.markInitialized( text );
-    Fixture.preserveWidgets();
-    text.setText( "abc\u2028abc\u2029abc" );
-    textLCA.renderChanges( text );
-    String expected = "w.setValue( \"abcabcabc\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-  }
-
-  public void testWriteMultiText_RemoveNonDisplayableChars() throws IOException {
-    Text text = new Text( shell, SWT.MULTI );
-    Fixture.markInitialized( text );
-    Fixture.preserveWidgets();
-    text.setText( "abc\u2028abc\u2029abc" );
-    textLCA.renderChanges( text );
-    String expected = "w.setValue( \"abcabcabc\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-  }
-
-  public void testWritePasswordText_RemoveNonDisplayableChars() throws IOException {
-    Text text = new Text( shell, SWT.PASSWORD );
-    Fixture.markInitialized( text );
-    Fixture.preserveWidgets();
-    text.setText( "abc\u2028abc\u2029abc" );
-    textLCA.renderChanges( text );
-    String expected = "w.setValue( \"abcabcabc\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
   public void testRenderCreate() throws IOException {
@@ -778,6 +718,38 @@ public class TextLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( text, "verify" ) );
+  }
+
+  public void testRenderInitialText() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( text, "text" ) );
+  }
+
+  public void testRenderText() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+
+    text.setText( "test" );
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "test", message.findSetProperty( text, "text" ) );
+  }
+
+  public void testRenderTextUnchanged() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+
+    text.setText( "foo" );
+    Fixture.preserveWidgets();
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( text, "text" ) );
   }
 
   private static Object getPreserved( Text text, String property ) {

@@ -33,6 +33,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Text", {
   },
 
   properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
+    "text",
     "message",
     "echoChar",
     "editable",
@@ -41,6 +42,14 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Text", {
   ] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
+    "text" : function( widget, value ) {
+      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var text = encodingUtil.truncateAtZero( value );
+      if( !widget.hasState( "rwt_MULTI" ) ) {
+        text = encodingUtil.replaceNewLines( text, " " );
+      }
+      widget.setValue( text );
+    },
     "message" : function( widget, value ) {
       org.eclipse.swt.TextUtil.setMessage( widget, value );
     },

@@ -15,7 +15,6 @@ import java.io.IOException;
 
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.*;
@@ -39,8 +38,6 @@ final class TextLCAUtil {
 
   private static final Integer DEFAULT_TEXT_LIMIT = new Integer( Text.LIMIT );
   private static final Point DEFAULT_SELECTION = new Point( 0, 0 );
-
-  private static final String JS_PROP_VALUE = "value";
 
   private TextLCAUtil() {
     // prevent instantiation
@@ -68,6 +65,7 @@ final class TextLCAUtil {
   }
 
   static void renderChanges( Text text ) throws IOException {
+    renderText( text );
     renderEditable( text );
     renderSelection( text );
     renderTextLimit( text );
@@ -128,16 +126,11 @@ final class TextLCAUtil {
     return result;
   }
 
-  static void writeText( Text text, boolean replaceNewLines ) throws IOException {
+  private static void renderText( Text text ) {
     String newValue = text.getText();
-    JSWriter writer = JSWriter.getWriterFor( text );
     if( WidgetLCAUtil.hasChanged( text, PROP_TEXT, newValue, "" ) ) {
-      if( replaceNewLines ) {
-        newValue = WidgetLCAUtil.replaceNewLines( newValue, " " );
-      }
-      newValue = EncodingUtil.removeNonDisplayableChars( newValue );
-      newValue = EncodingUtil.truncateAtZero( newValue );
-      writer.set( JS_PROP_VALUE, newValue );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
+      clientObject.setProperty( "text", newValue );
     }
   }
 

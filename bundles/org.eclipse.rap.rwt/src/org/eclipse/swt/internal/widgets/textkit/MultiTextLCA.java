@@ -40,7 +40,6 @@ final class MultiTextLCA extends AbstractTextDelegateLCA {
   }
 
   void renderChanges( Text text ) throws IOException {
-    TextLCAUtil.writeText( text, false );
     TextLCAUtil.renderChanges( text );
   }
 

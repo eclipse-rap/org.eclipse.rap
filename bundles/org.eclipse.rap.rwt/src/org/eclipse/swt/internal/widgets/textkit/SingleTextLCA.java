@@ -49,7 +49,6 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
 
   void renderChanges( Text text ) throws IOException {
     TextLCAUtil.renderEchoChar( text );
-    TextLCAUtil.writeText( text, true );
     renderMessage( text );
     TextLCAUtil.renderChanges( text );
     TextLCAUtil.renderListenSelection( text );

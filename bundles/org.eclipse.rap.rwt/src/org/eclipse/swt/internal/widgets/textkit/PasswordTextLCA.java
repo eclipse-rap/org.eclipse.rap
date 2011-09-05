@@ -43,7 +43,6 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
 
   void renderChanges( Text text ) throws IOException {
     TextLCAUtil.renderEchoChar( text );
-    TextLCAUtil.writeText( text, true );
     TextLCAUtil.renderChanges( text );
     TextLCAUtil.renderListenSelection( text );
   }
