@@ -33,7 +33,7 @@ public abstract class JsonValue {
   public static JsonValue valueOf( float value ) {
     return new JsonPrimitive( String.valueOf( value ) );
   }
-  
+
   public static JsonValue valueOf( double value ) {
     return new JsonPrimitive( String.valueOf( value ) );
   }
@@ -78,6 +78,8 @@ public abstract class JsonValue {
         resultBuffer.append( "\\u2028" );
       } else if( ch == '\u2029' ) {
         resultBuffer.append( "\\u2029" );
+      } else if( ch == '\u0000' ) {
+        resultBuffer.append( "\\u0000" );
       } else {
         resultBuffer.append( ch );
       }

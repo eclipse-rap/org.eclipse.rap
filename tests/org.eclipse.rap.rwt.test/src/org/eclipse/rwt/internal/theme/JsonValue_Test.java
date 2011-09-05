@@ -62,7 +62,7 @@ public class JsonValue_Test extends TestCase {
     // leading and trailing white spaces
     assertEquals( "\" a b \"", JsonValue.quoteAndEscapeString( " a b " ) );
   }
-  
+
   public void testEscapeStringWithQuotes() {
     // escape a\b -> "a\\b"
     assertEquals( "a\\\\b", JsonValue.escapeString( "a\\b" ) );
@@ -80,11 +80,15 @@ public class JsonValue_Test extends TestCase {
   public void testEscapeStringWithTabs() {
     assertEquals( "a\\tb", JsonValue.escapeString( "a\tb" ) );
   }
-  
+
   public void testEscapeStringWithSpecialCharacters() {
     String expected = "\\u2028foo\\u2029";
     assertEquals( expected, JsonValue.escapeString( "\u2028foo\u2029" ) );
   }
 
+  public void testEscapeStringWithZeroChar() {
+    char[] data = new char[] { 'h', 'e', 'l', 0, 'l', 'o' };
+    assertEquals( "\"hel\\u0000lo\"", JsonValue.valueOf( String.valueOf( data ) ).toString() );
+  }
 
 }
