@@ -14,6 +14,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.Message.CallOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -22,37 +24,38 @@ import org.eclipse.swt.widgets.Display;
 
 public class TextSizeUtilFacadeImpl_Test extends TestCase {
   private static final String TEXT_TO_MEASURE = " text \"to\" measure ";
+  private static final String DISPLAY_ID = "w1";
 
   private Font[] fonts;
   private TextSizeUtilFacadeImpl facade;
 
-  public void testCreateProbeParamFragment() {
+  public void testCreateProbeParamObject() {
     Probe probe = createProbe();
 
-    String probeFragment = TextSizeUtilFacadeImpl.createProbeParamFragment( probe );
-    
-    checkProbeFragment( probeFragment, probe );
-  }
-  
-  public void testCreateItemParamFragment() {
-    MeasurementItem item = createMeasurementItem();
-    
-    String itemFragment = TextSizeUtilFacadeImpl.createItemParamFragment( item );
+    Object probeObject = TextSizeUtilFacadeImpl.createProbeParamObject( probe );
 
-    checkItemFragment( itemFragment, item );
+    checkProbeObject( probeObject, probe );
+  }
+
+  public void testCreateItemParamObject() {
+    MeasurementItem item = createMeasurementItem();
+
+    Object itemObject = TextSizeUtilFacadeImpl.createItemParamObject( item );
+
+    checkItemObject( itemObject, item );
   }
 
   public void testWriteFontProbingInternal() {
     prepareFontAndTextProbing();
-    
+
     facade.writeFontProbingInternal();
-    
+
     checkResponseContainsProbeCall();
   }
-  
+
   public void testWriteStringMeasurementsInternal() {
     prepareFontAndTextProbing();
-    
+
     facade.writeStringMeasurementsInternal();
 
     checkResponseContainsMeasurementCall();
@@ -63,26 +66,33 @@ public class TextSizeUtilFacadeImpl_Test extends TestCase {
     new Display();
     facade = new TextSizeUtilFacadeImpl();
   }
-  
+
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
 
   private void checkResponseContainsMeasurementCall() {
+    Message message = Fixture.getProtocolMessage();
+    CallOperation operation
+      = message.findCallOperation( DISPLAY_ID, TextSizeUtilFacadeImpl.METHOD_MEASURE_STRINGS );
+    Object stringsProperty = operation.getProperty( TextSizeUtilFacadeImpl.PROPERTY_STRINGS );
     String[] expected = getMeasurementCall();
-    checkResponseContainsContent( expected );
+    checkResponseContainsContent( expected, stringsProperty.toString() );
   }
 
   private void checkResponseContainsProbeCall() {
+    Message message = Fixture.getProtocolMessage();
+    CallOperation operation
+      = message.findCallOperation( DISPLAY_ID, TextSizeUtilFacadeImpl.METHOD_PROBE );
+    Object fontsProperty = operation.getProperty( TextSizeUtilFacadeImpl.PROPERTY_FONTS );
     String[] expected = getProbeCall();
-    checkResponseContainsContent( expected );
+    checkResponseContainsContent( expected, fontsProperty.toString() );
   }
-  
-  private void checkResponseContainsContent( String[] expected ) {
-    String allMarkup = Fixture.getAllMarkup();
+
+  private void checkResponseContainsContent( String[] expected, String markup ) {
     for( int i = 0; i < expected.length; i++ ) {
-      assertTrue( "Expected to contain '" + expected[ i ] + "', but was '" + allMarkup + "'",
-                  contains( allMarkup, expected[ i ] ) );
+      assertTrue( "Expected to contain '" + expected[ i ] + "', but was '" + markup + "'",
+                  contains( markup, expected[ i ] ) );
     }
   }
 
@@ -96,18 +106,36 @@ public class TextSizeUtilFacadeImpl_Test extends TestCase {
     return allMarkup.indexOf( snippet ) != -1;
   }
 
-  private void checkItemFragment( String itemFragment, MeasurementItem item ) {
-    int key = item.hashCode();
+  private void checkItemObject( Object itemObject, MeasurementItem item ) {
+    assertTrue( itemObject instanceof Object[] );
+    Object[] itemObjectArray = ( Object[] )itemObject;
+    assertEquals( 7, itemObjectArray.length );
+    assertEquals( new Integer( item.hashCode() ),  itemObjectArray[ 0 ] );
     String escaped = "&nbsp;text \\\"to\\\" measure&nbsp;";
-    String expected = "[ " + key + ", \"" + escaped + "\", [ \"fontName\" ], 1, false, false, 17 ]";
-    assertEquals( expected, itemFragment );
+    assertEquals( escaped, itemObjectArray[ 1 ] );
+    assertTrue( itemObjectArray[ 2 ] instanceof String[] );
+    String[] fontNameArray = ( String[] )itemObjectArray[ 2 ];
+    assertEquals( 1, fontNameArray.length );
+    assertEquals( "fontName", fontNameArray[ 0 ] );
+    assertEquals( new Integer( 1 ), itemObjectArray[ 3 ] );
+    assertEquals( Boolean.FALSE, itemObjectArray[ 4 ] );
+    assertEquals( Boolean.FALSE, itemObjectArray[ 5 ] );
+    assertEquals( new Integer( 17 ), itemObjectArray[ 6 ] );
   }
 
-  private void checkProbeFragment( String probeFragment, Probe probe ) {
-    int key = probe.getFontData().hashCode();
-    String text = TEXT_TO_MEASURE;
-    String expected = "[ " + key + ", \"" + text + "\", [ \"fontName\" ], 1, false, false ]";
-    assertEquals( expected, probeFragment );
+  private void checkProbeObject( Object probeObject, Probe probe ) {
+    assertTrue( probeObject instanceof Object[] );
+    Object[] probeObjectArray = ( Object[] )probeObject;
+    assertEquals( 6, probeObjectArray.length );
+    assertEquals( new Integer( probe.getFontData().hashCode() ),  probeObjectArray[ 0 ] );
+    assertEquals( TEXT_TO_MEASURE, probeObjectArray[ 1 ] );
+    assertTrue( probeObjectArray[ 2 ] instanceof String[] );
+    String[] fontNameArray = ( String[] )probeObjectArray[ 2 ];
+    assertEquals( 1, fontNameArray.length );
+    assertEquals( "fontName", fontNameArray[ 0 ] );
+    assertEquals( new Integer( 1 ), probeObjectArray[ 3 ] );
+    assertEquals( Boolean.FALSE, probeObjectArray[ 4 ] );
+    assertEquals( Boolean.FALSE, probeObjectArray[ 5 ] );
   }
 
   private Probe createProbe() {
@@ -120,38 +148,23 @@ public class TextSizeUtilFacadeImpl_Test extends TestCase {
     int wrapWidth = 17;
     return new MeasurementItem( TEXT_TO_MEASURE, fontData, wrapWidth );
   }
-  
-  //////////////////////////////////////////////////////////////////////////////////////////////////
-  // Note [fappel]: The literals used in createFonts() askForTextSizes(),
-  //                getProbeCall() and getMeasurementCasll()
-  //                belong together. I do this without constant extraction since I think this
-  //                would make the statement array even more unreadable. If you find a more
-  //                readable option feel free to change :-)
+
   private String[] getProbeCall() {
-    String probe = Probe.DEFAULT_PROBE_STRING;
     return new String[] {
-      "org.eclipse.swt.FontSizeCalculation.probe( [ [",
-      ", \"" + probe + "\", [ \"arial\" ], 10, true, false ]",
-      ", [ ",
-      ", \"" + probe + "\", [ \"helvetia\", \"ms sans serif\" ], 12, true, false ]",
-      ", [ ",
-      ", \"" + probe + "\", [ \"Bogus  Font  Name\" ], 12, true, false ]",
-      " ] );"
+      ",[\"arial\"],10,true,false]",
+      ",[\"helvetia\",\"ms sans serif\"],12,true,false]",
+      ",[\"Bogus  Font  Name\"],12,true,false]"
     };
   }
-  
+
   private String[] getMeasurementCall() {
     return new String[] {
-      "org.eclipse.swt.FontSizeCalculation.measureStrings( [ [ ",
-      ", \"FirstString\", [ \"arial\" ], 10, true, false, -1 ]",
-      ", [ ",
-      ", \"SecondString\", [ \"helvetia\", \"ms sans serif\" ], 12, true, false, -1 ]", 
-      ", [",
-      ", \"Weird &quot; String \\\\\", [ \"Bogus  Font  Name\" ], 12, true, false, -1 ]",
-      " ] );"
+      ",\"FirstString\",[\"arial\"],10,true,false,-1]",
+      ",\"SecondString\",[\"helvetia\",\"ms sans serif\"],12,true,false,-1]",
+      ",\"Weird &quot; String \\\\\\\\\",[\"Bogus  Font  Name\"],12,true,false,-1]"
     };
   }
-  
+
   private void createFonts() {
     fonts = new Font[] {
       Graphics.getFont( "arial", 10, SWT.BOLD ),
@@ -159,7 +172,7 @@ public class TextSizeUtilFacadeImpl_Test extends TestCase {
       Graphics.getFont( "\"Bogus\" \\ Font \" Name", 12, SWT.BOLD )
     };
   }
-  
+
   private void askForTextSizes() {
     Graphics.stringExtent( fonts[ 0 ], "FirstString" );
     Graphics.stringExtent( fonts[ 1 ], "SecondString" );

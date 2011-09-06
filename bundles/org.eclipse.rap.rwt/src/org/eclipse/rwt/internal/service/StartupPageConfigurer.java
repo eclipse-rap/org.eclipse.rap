@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,7 @@ package org.eclipse.rwt.internal.service;
 
 import java.io.*;
 import java.text.MessageFormat;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,27 +38,34 @@ import org.eclipse.rwt.resources.IResourceManager;
 
 
 final class StartupPageConfigurer implements IStartupPageConfigurer {
-  private static final String PACKAGE_NAME 
+  private static final String PACKAGE_NAME
     = StartupPageConfigurer.class.getPackage().getName();
   private final static String FOLDER = PACKAGE_NAME.replace( '.', '/' );
   private final static String INDEX_TEMPLATE = FOLDER + "/rwt-index.html";
-  
+
+  private static final String DISPLAY_TYPE = "rwt.Display";
+  private static final String PROPERTY_FONTS = "fonts";
+  private static final String METHOD_PROBE = "probe";
+  private static final String PROPERTY_URL = "url";
+  private static final String PROPERTY_ROOT_ID = "rootId";
+  private static final String METHOD_INIT = "init";
+
   private final List<AbstractBranding> registeredBrandings;
   private final ResourceRegistry resourceRegistry;
   // TODO [fappel]: think about clusters cache control variables
   private int probeCount;
   private long lastModified;
   private StartupPageTemplateHolder template;
-  
+
   StartupPageConfigurer( ResourceRegistry resourceRegistry ) {
     this.resourceRegistry = resourceRegistry;
     this.lastModified = System.currentTimeMillis();
     this.registeredBrandings = new LinkedList<AbstractBranding>();
   }
-  
+
   ////////////////////////////////////////////////////
-  // ILifeCycleServiceHandlerConfigurer implementation 
-  
+  // ILifeCycleServiceHandlerConfigurer implementation
+
   public StartupPageTemplateHolder getTemplate() throws IOException {
     readContent();
     template.reset();
@@ -77,11 +83,11 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
       lastModified = System.currentTimeMillis();
       probeCount = currentProbeCount;
     }
-    
+
     HttpServletRequest request = ContextProvider.getRequest();
     HttpServletResponse response = ContextProvider.getResponse();
-    // TODO [rh] this is a preliminary fix for a behavior that was easily 
-    //      reproducible in IE but also happened in FF: when restarting a 
+    // TODO [rh] this is a preliminary fix for a behavior that was easily
+    //      reproducible in IE but also happened in FF: when restarting a
     //      web app (hit return in location bar), the browser used a cached
     //      version of the index.html *without* sending a request to ask
     //      whether the cached page can be used.
@@ -94,7 +100,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
       result = true;
       response.addDateHeader( "Last-Modified", lastModified );
       // TODO [fappel]: Think about "expires"-header for proxy usage.
-      // TODO [fappel]: Seems as if Safari doesn't react to last-modified. 
+      // TODO [fappel]: Seems as if Safari doesn't react to last-modified.
     } else {
       result = false;
       response.setStatus( HttpServletResponse.SC_NOT_MODIFIED );
@@ -104,8 +110,8 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
 
 
   ///////////////////////////////////////
-  // Helping methods to load startup page 
-  
+  // Helping methods to load startup page
+
   private void readContent() throws IOException {
     if( template == null ) {
       InputStream stream = loadTemplateFile();
@@ -125,13 +131,13 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
       }
     }
   }
-  
+
   private static InputStream loadTemplateFile() throws IOException {
     InputStream result = null;
     IResourceManager resourceManager = RWT.getResourceManager();
     ClassLoader buffer = resourceManager.getContextLoader();
     resourceManager.setContextLoader( StartupPageConfigurer.class.getClassLoader() );
-    try {        
+    try {
       result = resourceManager.getResourceAsStream( INDEX_TEMPLATE );
       if ( result == null ) {
         String text = "Failed to load Browser Survey HTML Page. Resource {0} could not be found.";
@@ -140,7 +146,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
         throw new IOException( msg );
       }
     } finally {
-      resourceManager.setContextLoader( buffer );          
+      resourceManager.setContextLoader( buffer );
     }
     return result;
   }
@@ -150,29 +156,49 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
 
   private static String getAppScript() {
     StringBuffer code = new StringBuffer();
-    code.append( getTextSizeProbeCode() );
-    code.append( getApplicationJsCode( "w1" ) );
+    code.append( JavaScriptResponseWriter.PROCESS_MESSAGE );
+    code.append( "( " );
+    code.append( getStartupProtocolMessage( "w1" ) );
+    code.append( " );/*EOM*/" );
     return code.toString();
   }
 
-  private static String getTextSizeProbeCode() {
-    return MeasurementUtil.getStartupProbeCode();
+  private static String getStartupProtocolMessage( String id ) {
+    ProtocolMessageWriter writer = new ProtocolMessageWriter();
+    appendCreateDisplay( id, writer );
+    appendStartupTextSizeProbe( id, writer );
+    appendInitDisplay( id, writer );
+    return writer.createMessage();
   }
 
-  private static String getApplicationJsCode( String id ) {
+  private static void appendCreateDisplay( String id, ProtocolMessageWriter writer ) {
+    writer.appendCreate( id, DISPLAY_TYPE );
+  }
+
+  private static void appendStartupTextSizeProbe( String id, ProtocolMessageWriter writer ) {
+    Object startupTextSizeProbeObject = getStartupTextSizeProbeObject();
+    if( startupTextSizeProbeObject != null ) {
+      Map<String, Object> args = new HashMap<String, Object>();
+      args.put( PROPERTY_FONTS, startupTextSizeProbeObject );
+      writer.appendCall( id, METHOD_PROBE, args );
+    }
+  }
+
+  private static void appendInitDisplay( String id, ProtocolMessageWriter writer ) {
+    Map<String, Object> args = new HashMap<String, Object>();
+    args.put( PROPERTY_URL, getUrl() );
+    args.put( PROPERTY_ROOT_ID, id );  // TODO [tb] : refactor client to remove this line
+    writer.appendCall( id, METHOD_INIT, args );
+  }
+
+  private static Object getStartupTextSizeProbeObject() {
+    return MeasurementUtil.getStartupProbeObject();
+  }
+
+  private static String getUrl() {
     HttpServletRequest request = ContextProvider.getRequest();
     String url = request.getServletPath().substring( 1 );
-    String encodedURL = ContextProvider.getResponse().encodeURL( url );
-    ProtocolMessageWriter writer = new ProtocolMessageWriter();
-    writer.appendCreate( id, "rwt.Display" );
-    writer.appendSet( id, "url", encodedURL );
-    writer.appendSet( id, "rootId", id ); // TODO [tb] : refactor client to remove this line
-    StringBuffer buffer = new StringBuffer();
-    buffer.append( JavaScriptResponseWriter.PROCESS_MESSAGE );
-    buffer.append( "( " );
-    buffer.append( writer.createMessage() );
-    buffer.append( " );/*EOM*/" );
-    return buffer.toString();
+    return ContextProvider.getResponse().encodeURL( url );
   }
 
   //////////////////////////
@@ -208,8 +234,8 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
                                      StartupPageTemplateHolder.VAR_STARTUP,
                                      encodedEntryPoint );
     String noScriptWarning = RWTMessages.getMessage( "RWT_NoScriptWarning" );
-    BrandingUtil.replacePlaceholder( template, 
-                                     StartupPageTemplateHolder.VAR_NO_SCRIPT_MESSAGE, 
+    BrandingUtil.replacePlaceholder( template,
+                                     StartupPageTemplateHolder.VAR_NO_SCRIPT_MESSAGE,
                                      noScriptWarning );
   }
 

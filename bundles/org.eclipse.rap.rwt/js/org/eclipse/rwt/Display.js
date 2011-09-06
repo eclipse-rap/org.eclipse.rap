@@ -11,14 +11,25 @@
 
 namespace( "org.eclipse.rwt" );
 
-org.eclipse.rwt.Display = function( url, rootId ) {
-  var req = org.eclipse.swt.Request.getInstance();
-  req.setUrl( url );
-  req.setUIRootId( rootId );
-  qx.core.Init.getInstance().setApplication( new org.eclipse.swt.Application() );
+org.eclipse.rwt.Display = function() {
 };
 
 org.eclipse.rwt.Display.prototype = {
+
+  init : function( args ) {
+    var req = org.eclipse.swt.Request.getInstance();
+    req.setUrl( args.url );
+    req.setUIRootId( args.rootId );
+    qx.core.Init.getInstance().setApplication( new org.eclipse.swt.Application() );
+  },
+
+  probe : function( args ) {
+    org.eclipse.swt.FontSizeCalculation.probe( args.fonts );
+  },
+
+  measureStrings : function( args ) {
+    org.eclipse.swt.FontSizeCalculation.measureStrings( args.strings );
+  },
 
   allowEvent : function() {
     // NOTE : in the future might need a parameter if there are multiple types of cancelable events 

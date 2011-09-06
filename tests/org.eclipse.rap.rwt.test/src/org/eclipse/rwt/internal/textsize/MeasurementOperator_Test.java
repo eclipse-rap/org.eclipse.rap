@@ -121,7 +121,6 @@ public class MeasurementOperator_Test extends TestCase {
   }
 
   public void testAddItemToMeasure() {
-    initializeSessionWithDisplay();
     MeasurementItem item = createItem();
 
     operator.addItemToMeasure( item );
@@ -146,6 +145,7 @@ public class MeasurementOperator_Test extends TestCase {
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    initializeSessionWithDisplay();
     operator = MeasurementOperator.getInstance();
   }
 

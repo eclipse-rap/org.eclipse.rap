@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
@@ -16,6 +17,7 @@ import org.eclipse.rwt.*;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
+import org.eclipse.rwt.internal.protocol.Message;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -28,94 +30,100 @@ import org.eclipse.swt.widgets.Shell;
 public class MeasurementListener_Test extends TestCase {
   private static final int EXPAND_AND_RESTORE = 2;
   private static final FontData FONT_DATA = new FontData( "arial", 12, SWT.BOLD );
-  private static final String RESPONSE_CALL = "org.eclipse.swt.FontSizeCalculation.measureStrings";
-  private static final String PROBE_CALL = "org.eclipse.swt.FontSizeCalculation.probe";
-  
+  private static final String DISPLAY_ID = "w1";
+  private static final String METHOD_MEASURE_STRINGS = "measureStrings";
+  private static final String METHOD_PROBE = "probe";
+
   private MeasurementListener listener;
   private int resizeCount;
 
   public void testGetPhaseId() {
     PhaseId phaseId = listener.getPhaseId();
-    
+
     assertSame( PhaseId.ANY, phaseId );
   }
-  
+
   public void testAfterPhaseWithoutMeasurementItemsOrProbes() {
     listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
-    
-    assertFalse( responseContains( PROBE_CALL ) );
-    assertFalse( responseContains( RESPONSE_CALL ) );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findCallOperation( DISPLAY_ID, METHOD_PROBE ) );
+    assertNull( message.findCallOperation( DISPLAY_ID, METHOD_MEASURE_STRINGS ) );
   }
 
   public void testAfterPhaseWithMeasurementItems() {
     MeasurementOperator.getInstance().addItemToMeasure( new MeasurementItem( "text", FONT_DATA, 0 ) );
-   
+
     listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
-    
-    assertFalse( responseContains( PROBE_CALL ) );
-    assertTrue( responseContains( RESPONSE_CALL ) );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findCallOperation( DISPLAY_ID, METHOD_PROBE ) );
+    assertNotNull( message.findCallOperation( DISPLAY_ID, METHOD_MEASURE_STRINGS ) );
   }
 
   public void testAfterPhaseWithProbes() {
     MeasurementOperator.getInstance().addProbeToMeasure( FONT_DATA );
-    
+
     listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
-    
-    assertTrue( responseContains( PROBE_CALL ) );
-    assertFalse( responseContains( RESPONSE_CALL ) );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCallOperation( DISPLAY_ID, METHOD_PROBE ) );
+    assertNull( message.findCallOperation( DISPLAY_ID, METHOD_MEASURE_STRINGS ) );
   }
 
   public void testAfterPhaseWithMeasurementItemsButWrongPhaseId() {
     MeasurementOperator.getInstance().addItemToMeasure( new MeasurementItem( "text", FONT_DATA, 0 ) );
-    
+
     executeNonRenderPhases();
-    
-    assertFalse( responseContains( PROBE_CALL ) );
-    assertFalse( responseContains( RESPONSE_CALL ) );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findCallOperation( DISPLAY_ID, METHOD_PROBE ) );
+    assertNull( message.findCallOperation( DISPLAY_ID, METHOD_MEASURE_STRINGS ) );
   }
 
 
   public void testAfterPhaseWithProbesButWrongPhaseId() {
     MeasurementOperator.getInstance().addProbeToMeasure( FONT_DATA );
-    
+
     executeNonRenderPhases();
-    
-    assertFalse( responseContains( PROBE_CALL ) );
-    assertFalse( responseContains( RESPONSE_CALL ) );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findCallOperation( DISPLAY_ID, METHOD_PROBE ) );
+    assertNull( message.findCallOperation( DISPLAY_ID, METHOD_MEASURE_STRINGS ) );
   }
-  
+
   public void testAfterPhaseWithMeasuredProbes() {
     fakeRequestWithProbeMeasurementResults();
 
     listener.afterPhase( PhaseListenerHelper.createProcessActionEvent() );
-    
+
     checkProbeResultHasBeenStored();
   }
-  
+
   public void testAfterPhaseWithMeasuredItems() {
     createShellWithResizeListener();
     fakeRequestWithItemMeasurementResults();
-    
+
     listener.afterPhase( PhaseListenerHelper.createProcessActionEvent() );
-    
+
     checkTextMeasurementResultHasBeenStored();
     checkShellHasBeenResized();
   }
 
   public void testAfterPhaseWithoutMeasuredItemsMustNotResizeShell() {
     createShellWithResizeListener();
-    
+
     listener.afterPhase( PhaseListenerHelper.createProcessActionEvent() );
-    
+
     checkShellHasNotBeenResized();
   }
-  
+
   public void testBeforePhaseProbeMeasurementOfStartupProbes() {
     createProbe();
     fakeRequestWithProbeMeasurementResults();
-    
+
     listener.beforePhase( PhaseListenerHelper.createPrepareUIRootEvent() );
-    
+
     checkProbeResultWasStored();
   }
 
@@ -138,7 +146,7 @@ public class MeasurementListener_Test extends TestCase {
   private void initResizeCount() {
     resizeCount = 0;
   }
-  
+
   private void createProbe() {
     ProbeStore textSizeProbeStore = RWTFactory.getProbeStore();
     textSizeProbeStore.createProbe( FONT_DATA );
@@ -147,11 +155,11 @@ public class MeasurementListener_Test extends TestCase {
   private void checkShellHasBeenResized() {
     assertEquals( EXPAND_AND_RESTORE, resizeCount );
   }
-  
+
   private void checkShellHasNotBeenResized() {
     assertEquals( 0, resizeCount );
   }
-  
+
   private void checkProbeResultHasBeenStored() {
     ProbeResult probeResult = ProbeResultStore.getInstance().getProbeResult( FONT_DATA );
     assertEquals( new Point( 5, 10 ), probeResult.getSize() );
@@ -161,14 +169,14 @@ public class MeasurementListener_Test extends TestCase {
     Font font = Graphics.getFont( FONT_DATA );
     assertEquals( new Point( 100, 10 ), Graphics.stringExtent( font, "text" ) );
   }
-  
+
   private void fakeRequestWithProbeMeasurementResults() {
     MeasurementOperator.getInstance().addProbeToMeasure( FONT_DATA );
     listener.afterPhase( PhaseListenerHelper.createRenderEvent() );
     TestRequest request = ( TestRequest )RWT.getRequest();
     request.addParameter( String.valueOf( FONT_DATA.hashCode() ), "5,10" );
   }
-  
+
   private void fakeRequestWithItemMeasurementResults() {
     MeasurementItem itemToMeasure = new MeasurementItem( "text", FONT_DATA, -1 );
     MeasurementOperator.getInstance().addItemToMeasure( itemToMeasure );
@@ -176,17 +184,13 @@ public class MeasurementListener_Test extends TestCase {
     TestRequest request = ( TestRequest )RWT.getRequest();
     request.addParameter( String.valueOf( itemToMeasure.hashCode() ), "100,10" );
   }
-  
-  private boolean responseContains( String probeCall ) {
-    return Fixture.getAllMarkup().indexOf( probeCall ) != -1;
-  }
 
   private void executeNonRenderPhases() {
     listener.afterPhase( PhaseListenerHelper.createPrepareUIRootEvent() );
     listener.afterPhase( PhaseListenerHelper.createReadDataEvent() );
     listener.afterPhase( PhaseListenerHelper.createProcessActionEvent() );
   }
-  
+
   private void createShellWithResizeListener() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Shell shell = new Shell( LifeCycleUtil.getSessionDisplay() );

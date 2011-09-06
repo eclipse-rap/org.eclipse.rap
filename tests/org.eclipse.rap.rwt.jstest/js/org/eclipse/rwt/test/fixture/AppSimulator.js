@@ -55,10 +55,6 @@ qx.Class.define("org.eclipse.rwt.test.fixture.AppSimulator", {
     },
     
     _fakeDisplayInit : function() {
-      var orgProto = org.eclipse.rwt.Display.prototype;
-      org.eclipse.rwt.Display = function( url, rootId ) {
-      };
-      org.eclipse.rwt.Display.prototype = orgProto;
       org.eclipse.rwt.protocol.Processor.processMessage( {
         "meta": {
           "requestCounter": -1
@@ -66,11 +62,7 @@ qx.Class.define("org.eclipse.rwt.test.fixture.AppSimulator", {
         "operations": [ {
           "target": "w1",
           "action": "create",
-          "type": "rwt.Display",
-          "properties": {
-            "url": "rap",
-            "rootId": "w1"
-          }
+          "type": "rwt.Display"
         } ]
       } );
     },

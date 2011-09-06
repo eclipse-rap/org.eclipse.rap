@@ -12,7 +12,7 @@
 org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.Display", {
 
   factory : function( properties ) {
-    return new org.eclipse.rwt.Display( properties.url, properties.rootId );
+    return new org.eclipse.rwt.Display();
   },
 
   destructor : null, // destroy is currently not called for display
@@ -22,6 +22,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.Display", {
   listeners : [],
 
   methods : [
+    "init",
+    "probe",
+    "measureStrings",
     "allowEvent",
     "cancelEvent"
   ]

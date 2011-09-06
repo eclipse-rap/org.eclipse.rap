@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
@@ -17,21 +18,21 @@ import org.eclipse.swt.internal.graphics.FontUtil;
 
 
 public class MeasurementUtil {
-  
+
   public static int getProbeCount() {
     return RWTFactory.getProbeStore().getSize();
   }
-  
-  public static String getStartupProbeCode() {
-    return TextSizeUtilFacade.getStartupProbeCode();
+
+  public static Object getStartupProbeObject() {
+    return TextSizeUtilFacade.getStartupProbeObject();
   }
-  
+
   static void addItemToMeasure( String toMeasure, Font font, int wrapWidth ) {
     FontData fontData = FontUtil.getData( font );
     MeasurementItem newItem = new MeasurementItem( toMeasure, fontData, wrapWidth );
     MeasurementOperator.getInstance().addItemToMeasure( newItem );
   }
-  
+
   private MeasurementUtil() {
     // prevent instance creation
   }
