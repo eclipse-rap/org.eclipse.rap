@@ -17,6 +17,7 @@ org.eclipse.rwt.protocol.EncodingUtil = {
   _escapeRegExpMnemonics : /(&&|&|<|>|")/g,
   _newlineRegExp : /(\r\n|\n|\r)/g,
   _outerWhitespaceRegExp : /(^ {1,1}| +$)/g,
+  _outerWhitespaceRegExp2 : /(^ {1,}| +$)/g,
   _whitespaceRegExp : / {2,}/g,
 
   _escapeResolver : null,
@@ -96,6 +97,17 @@ org.eclipse.rwt.protocol.EncodingUtil = {
     var result = text.replace( this._outerWhitespaceRegExp, this._outerWhitespaceResolver );
     result = result.replace( this._whitespaceRegExp, this._whitespaceResolver );
     return result;
+  },
+
+  /**
+   * Escapes all leading and trailing spaces in the given input string.
+   *
+   * @param text input the string to process
+   * @return a copy of the input string with all leading and trailing spaces
+   * replaced
+   */
+  escapeLeadingTrailingSpaces : function( text ) {
+    return text.replace( this._outerWhitespaceRegExp2, this._outerWhitespaceResolver );;
   },
 
   /////////

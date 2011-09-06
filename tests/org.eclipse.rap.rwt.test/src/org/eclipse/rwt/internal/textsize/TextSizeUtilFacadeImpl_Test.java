@@ -111,7 +111,7 @@ public class TextSizeUtilFacadeImpl_Test extends TestCase {
     Object[] itemObjectArray = ( Object[] )itemObject;
     assertEquals( 7, itemObjectArray.length );
     assertEquals( new Integer( item.hashCode() ),  itemObjectArray[ 0 ] );
-    String escaped = "&nbsp;text \\\"to\\\" measure&nbsp;";
+    String escaped = " text \"to\" measure ";
     assertEquals( escaped, itemObjectArray[ 1 ] );
     assertTrue( itemObjectArray[ 2 ] instanceof String[] );
     String[] fontNameArray = ( String[] )itemObjectArray[ 2 ];
@@ -161,7 +161,7 @@ public class TextSizeUtilFacadeImpl_Test extends TestCase {
     return new String[] {
       ",\"FirstString\",[\"arial\"],10,true,false,-1]",
       ",\"SecondString\",[\"helvetia\",\"ms sans serif\"],12,true,false,-1]",
-      ",\"Weird &quot; String \\\\\\\\\",[\"Bogus  Font  Name\"],12,true,false,-1]"
+      ",\"Weird \\\" String \\\\\",[\"Bogus  Font  Name\"],12,true,false,-1]"
     };
   }
 

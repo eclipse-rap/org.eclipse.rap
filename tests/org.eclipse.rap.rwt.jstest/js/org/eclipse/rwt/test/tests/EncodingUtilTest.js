@@ -152,6 +152,58 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EncodingUtilTest", {
       var stringToEscape = "  test  ";
       var expected = "&nbsp; test&nbsp;&nbsp;";
       assertEquals( expected, encodingUtil.replaceWhiteSpaces( stringToEscape ) );
+    },
+    
+    /////////////////////////////////////////////////////////////////////
+    // Tests ported from EncodingUtilTest#testEscapeLeadingTrailingSpaces
+    
+    testEscapeBothLeadingTrailingSpaces : function() {
+      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var stringToEscape = "    All rights reserved.   ";
+      var expected = "&nbsp;&nbsp;&nbsp;&nbsp;All rights reserved.&nbsp;&nbsp;&nbsp;";
+      assertEquals( expected, encodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
+    },
+
+    testEscapeOnlyTrailingSpaces : function() {
+      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var stringToEscape = "All rights reserved. ";
+      var expected = "All rights reserved.&nbsp;";
+      assertEquals( expected, encodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
+    },
+
+    testEscapeOnlyLeadingSpaces : function() {
+      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var stringToEscape = "  All rights reserved.";
+      var expected = "&nbsp;&nbsp;All rights reserved.";
+      assertEquals( expected, encodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
+    },
+
+    testEscapeNoLeadingTrailingSpaces : function() {
+      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var stringToEscape = "All rights reserved.";
+      var expected = "All rights reserved.";
+      assertEquals( expected, encodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
+    },
+
+    testEscapeLeadingTrailingSpacesWithNewLines : function() {
+      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var stringToEscape = " \n  All rights reserved. \n ";
+      var expected = "&nbsp;\n  All rights reserved. \n&nbsp;";
+      assertEquals( expected, encodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
+    },
+
+    testEscapeLeadingTrailingSpacesWithWhitespaceString : function() {
+      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var stringToEscape = "  ";
+      var expected = "&nbsp;&nbsp;";
+      assertEquals( expected, encodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
+    },
+
+    testEscapeLeadingTrailingSpacesWithEmptyString : function() {
+      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var stringToEscape = "";
+      var expected = "";
+      assertEquals( expected, encodingUtil.escapeLeadingTrailingSpaces( stringToEscape ) );
     }
 
   }

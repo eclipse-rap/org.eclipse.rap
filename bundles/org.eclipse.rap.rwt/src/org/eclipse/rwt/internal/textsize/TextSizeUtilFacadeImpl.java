@@ -17,7 +17,6 @@ import java.util.Map;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
@@ -45,9 +44,7 @@ public final class TextSizeUtilFacadeImpl extends TextSizeUtilFacade {
   // TODO [rst] Perform also TAB expansion to match the default of GC#textExtent( String )
   public String createMeasurementStringInternal( String string, boolean expandNewLines ) {
     // TODO [fappel]: revise this - text escape may cause inaccurate calculations
-    String result = WidgetLCAUtil.escapeText( string, true );
-    String newLineReplacement = expandNewLines ? "<br/>" : " ";
-    return WidgetLCAUtil.replaceNewLines( result, newLineReplacement );
+    return expandNewLines ? string : WidgetLCAUtil.replaceNewLines( string, " " );
   }
 
   public void writeStringMeasurementsInternal() {
@@ -82,10 +79,7 @@ public final class TextSizeUtilFacadeImpl extends TextSizeUtilFacade {
   static Object createItemParamObject( MeasurementItem item ) {
     Object[] result = new Object[ 7 ];
     result[ 0 ] = new Integer( item.hashCode() );
-    String textToMeasure = item.getTextToMeasure();
-    textToMeasure = EncodingUtil.escapeDoubleQuoted( textToMeasure );
-    textToMeasure = EncodingUtil.escapeLeadingTrailingSpaces( textToMeasure );
-    result[ 1 ] = textToMeasure;
+    result[ 1 ] = item.getTextToMeasure();
     FontData fontData = item.getFontData();
     result[ 2 ] = WidgetLCAUtil.parseFontName( fontData.getName() );
     result[ 3 ] = new Integer( fontData.getHeight() );

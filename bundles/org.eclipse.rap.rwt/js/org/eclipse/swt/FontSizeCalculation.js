@@ -18,26 +18,26 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
     probe : function( probeList ) {
       for( var i = 0; i < probeList.length; i++ ) {
         var item = probeList[ i ];
-        var size = org.eclipse.swt.FontSizeCalculation._doMeasurement( item );
+        var size = this._doMeasurement( item, false );
         var param = size[ 0 ] + "," + size[ 1 ];
         var id = item[ 0 ];
-        org.eclipse.swt.FontSizeCalculation._addRequestParam( id, param );
+        this._addRequestParam( id, param );
       }
     },
     
     measureStrings : function( stringList ) {      
       for( var i = 0; i < stringList.length; i++ ) {
         var item = stringList[ i ];
-        var size = org.eclipse.swt.FontSizeCalculation._doMeasurement( item );
+        var size = this._doMeasurement( item, true );
         var param = size[ 0 ] + "," + size[ 1 ];
         var id = item[ 0 ];
-        org.eclipse.swt.FontSizeCalculation._addRequestParam( id, param );
+        this._addRequestParam( id, param );
         org.eclipse.swt.Request.getInstance().send();
       }
     },
   
-    _doMeasurement : function( item ) {
-      var lbl = org.eclipse.swt.FontSizeCalculation.MEASUREMENT_LABEL;
+    _doMeasurement : function( item, escapeText ) {
+      var lbl = this.MEASUREMENT_LABEL;
       var measureNode = qx.ui.basic.Label._getMeasureNode();
       // [if] Move the measure node to the left to prevent text split on
       // small browser window - see bug 298798
@@ -47,7 +47,8 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
       } else {
         measureNode.style.width = "auto";
       }
-      lbl.setText( item[ 1 ] );
+      var text = escapeText ? this._escapeText( item[ 1 ] ) : item[ 1 ];
+      lbl.setText( text );
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       wm.setFont( lbl, item[ 2 ], item[ 3 ], item[ 4 ], item[ 5 ] );
       var result =  [ lbl._computePreferredInnerWidth(), 
@@ -59,6 +60,14 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
     _addRequestParam : function ( name, value ) {
       var request = org.eclipse.swt.Request.getInstance();
       request.addParameter( name, value );
+    },
+
+    _escapeText : function( text ) {
+      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      var result = encodingUtil.escapeText( text, true );
+      result = encodingUtil.replaceNewLines( result, "<br/>" );
+      result = encodingUtil.escapeLeadingTrailingSpaces( result );
+      return result;
     }
   }
 } );
