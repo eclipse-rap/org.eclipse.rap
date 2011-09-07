@@ -108,10 +108,10 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   public void renderChanges( Widget widget ) throws IOException {
     Combo combo = ( Combo )widget;
-    ControlLCAUtil.writeChanges( combo );
+    ControlLCAUtil.renderChanges( combo );
+    WidgetLCAUtil.renderCustomVariant( combo );
     writeListItemHeight( combo );
     writeItems( combo );
-    writeSelectionListener( combo );
     writeSelection( combo );
     writeMaxListHeight( combo );
     writeEditable( combo );
@@ -120,7 +120,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     writeListVisible( combo );
     writeTextLimit( combo );
     writeVerifyAndModifyListener( combo );
-    WidgetLCAUtil.writeCustomVariant( combo );
+    writeSelectionListener( combo );
   }
 
   public void renderDispose( Widget widget ) throws IOException {

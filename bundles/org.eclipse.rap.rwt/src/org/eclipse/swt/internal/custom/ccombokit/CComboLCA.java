@@ -101,7 +101,8 @@ public final class CComboLCA extends AbstractWidgetLCA {
 
   public void renderChanges( Widget widget ) throws IOException {
     CCombo ccombo = ( CCombo )widget;
-    ControlLCAUtil.writeChanges( ccombo );
+    ControlLCAUtil.renderChanges( ccombo );
+    WidgetLCAUtil.renderCustomVariant( ccombo );
     writeListItemHeight( ccombo );
     writeItems( ccombo );
     writeSelection( ccombo );
@@ -111,9 +112,8 @@ public final class CComboLCA extends AbstractWidgetLCA {
     writeTextSelection( ccombo );
     writeListVisible( ccombo );
     writeTextLimit( ccombo );
-    writeSelectionListener( ccombo );
     writeVerifyAndModifyListener( ccombo );
-    WidgetLCAUtil.writeCustomVariant( ccombo );
+    writeSelectionListener( ccombo );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
