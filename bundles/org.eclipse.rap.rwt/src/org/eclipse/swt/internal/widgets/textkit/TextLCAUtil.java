@@ -65,12 +65,12 @@ final class TextLCAUtil {
   }
 
   static void renderChanges( Text text ) throws IOException {
+    ControlLCAUtil.renderChanges( text );
+    WidgetLCAUtil.renderCustomVariant( text );
     renderText( text );
     renderEditable( text );
     renderSelection( text );
     renderTextLimit( text );
-    WidgetLCAUtil.renderCustomVariant( text );
-    ControlLCAUtil.renderChanges( text );
     renderListenModify( text );
     renderListenVerify( text );
   }
