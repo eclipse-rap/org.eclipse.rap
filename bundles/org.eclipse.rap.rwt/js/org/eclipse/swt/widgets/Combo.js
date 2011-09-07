@@ -16,13 +16,9 @@
 qx.Class.define( "org.eclipse.swt.widgets.Combo", {
   extend : qx.ui.layout.CanvasLayout,
 
-  construct : function( style ) {
+  construct : function( isCCombo ) {
     this.base( arguments );
-    // Get style
-    this._ccombo = false;
-    if( style ) {
-      this._ccombo = qx.lang.String.contains( style, "ccombo" );
-    }
+    this._ccombo = isCCombo === true;
     //
     this._hasSelectionListener = false;
     this._hasVerifyModifyListener = false;

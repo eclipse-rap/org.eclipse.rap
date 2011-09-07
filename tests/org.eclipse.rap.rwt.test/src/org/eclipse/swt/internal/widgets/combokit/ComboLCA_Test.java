@@ -1,25 +1,26 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.combokit;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -34,9 +35,23 @@ public class ComboLCA_Test extends TestCase {
   private static final String PROP_ITEMS = "items";
   private static final String PROP_SELECTION = "selection";
 
+  private Display display;
+  private Shell shell;
+  private ComboLCA lca;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
+    lca = new ComboLCA();
+    Fixture.fakeNewRequest( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.DEFAULT );
     Fixture.markInitialized( display );
     // Test preserving a combo with no items and (naturally) no selection
@@ -64,10 +79,10 @@ public class ComboLCA_Test extends TestCase {
     SelectionListener selectionListener = new SelectionAdapter() {
     };
     combo.addSelectionListener( selectionListener );
-    combo.addModifyListener( new ModifyListener(){
-
-      public void modifyText( final ModifyEvent event ) {
-      }} );
+    combo.addModifyListener( new ModifyListener() {
+      public void modifyText( ModifyEvent event ) {
+      }
+    } );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
     items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
@@ -90,13 +105,7 @@ public class ComboLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
-    combo.addControlListener( new ControlListener (){
-
-      public void controlMoved( final ControlEvent e ) {
-      }
-
-      public void controlResized( final ControlEvent e ) {
-      }});
+    combo.addControlListener( new ControlAdapter() {} );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
     hasListeners = ( Boolean ) adapter.getPreserved( Props.CONTROL_LISTENERS );
@@ -144,9 +153,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, hasListeners );
   }
 
-  public void testEditablePreserveValues(){
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
+  public void testEditablePreserveValues() {
     Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
@@ -155,35 +162,24 @@ public class ComboLCA_Test extends TestCase {
     //activate_listeners   Focus_listeners
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
-    Boolean focusListener
-     = (Boolean)adapter.getPreserved( Props.FOCUS_LISTENER );
+    Boolean focusListener = (Boolean)adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, focusListener );
     Fixture.clearPreserved();
-    combo.addFocusListener( new FocusListener (){
-
-      public void focusGained( final FocusEvent event ) {
-      }
-
-      public void focusLost( final FocusEvent event ) {
-      }} );
+    combo.addFocusListener( new FocusAdapter() {} );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
-    Boolean hasListeners
-     = ( Boolean ) adapter.getPreserved( Props.FOCUS_LISTENER );
+    Boolean hasListeners = ( Boolean ) adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
     // textLimit
     combo.setTextLimit( 10 );
     Fixture.preserveWidgets();
-    Integer textLimit
-      = ( Integer )adapter.getPreserved( ComboLCA.PROP_TEXT_LIMIT );
+    Integer textLimit = ( Integer )adapter.getPreserved( ComboLCA.PROP_TEXT_LIMIT );
     assertEquals( new Integer( 10 ), textLimit );
   }
 
   public void testRenderChanges() throws IOException {
     Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.READ_ONLY );
     shell.open();
     Fixture.markInitialized( display );
@@ -212,8 +208,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testReadData() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     final Combo combo = new Combo( shell, SWT.NONE );
     String comboId = WidgetUtil.getId( combo );
     // init combo items
@@ -253,8 +247,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testReadText() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Combo combo = new Combo( shell, SWT.BORDER );
     shell.open();
     Fixture.markInitialized( display );
@@ -293,15 +285,13 @@ public class ComboLCA_Test extends TestCase {
 
   public void testTextSelectionWithVerifyEvent() {
     final java.util.List<VerifyEvent> log = new ArrayList<VerifyEvent>();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Combo combo = new Combo( shell, SWT.NONE );
     shell.open();
     String comboId = WidgetUtil.getId( combo );
     // ensure that selection is unchanged in case a verify-listener is
     // registered that does not change the text
     VerifyListener emptyVerifyListener = new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         log.add( event );
       }
     };
@@ -329,7 +319,7 @@ public class ComboLCA_Test extends TestCase {
     // the incoming text within the limits of the selection
     combo.setText( "" );
     VerifyListener alteringVerifyListener = new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         log.add( event );
         event.text = "verified";
       }
@@ -350,7 +340,7 @@ public class ComboLCA_Test extends TestCase {
     // the incoming text in a way that would result in an invalid selection
     combo.setText( "" );
     alteringVerifyListener = new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         log.add( event );
         event.text = "";
       }
@@ -370,8 +360,6 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testSelectionAfterRemoveAll() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     final Combo combo = new Combo( shell, SWT.READ_ONLY );
     combo.add( "item 1" );
     combo.select( 0 );
@@ -399,9 +387,7 @@ public class ComboLCA_Test extends TestCase {
   }
 
   public void testTextLimit() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    final Combo combo = new Combo( shell, SWT.BORDER );
+    Combo combo = new Combo( shell, SWT.BORDER );
     ComboLCA lca = new ComboLCA();
     // run LCA one to dump the here uninteresting prolog
     Fixture.fakeResponseWriter();
@@ -430,11 +416,23 @@ public class ComboLCA_Test extends TestCase {
     assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
+  public void testRenderCreate() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    lca.renderInitialization( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( combo );
+    assertEquals( "rwt.widgets.Combo", operation.getType() );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testRenderParent() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    lca.renderInitialization( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( combo );
+    assertEquals( WidgetUtil.getId( combo.getParent() ), operation.getParent() );
   }
 }

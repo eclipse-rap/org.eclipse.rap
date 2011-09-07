@@ -227,6 +227,7 @@ final class ClientResources {
     "org/eclipse/swt/theme/BorderDefinitions.js",
     "org/eclipse/rwt/widgets/BasicList.js",
     "org/eclipse/swt/widgets/Combo.js",
+    "org/eclipse/swt/widgets/ComboAdapter.js",
     "org/eclipse/rwt/FocusIndicator.js",
     "org/eclipse/swt/CLabelUtil.js",
     "org/eclipse/swt/graphics/GC.js",

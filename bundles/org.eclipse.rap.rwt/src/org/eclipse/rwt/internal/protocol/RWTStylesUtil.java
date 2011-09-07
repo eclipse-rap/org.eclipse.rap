@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.widgets.*;
 
 
@@ -21,6 +22,7 @@ public final class RWTStylesUtil {
     BUTTON( Button.class.getName(), new String[] { "CHECK", "PUSH", "RADIO", "TOGGLE", "FLAT", "WRAP", "LEFT", "RIGHT", "CENTER", "BORDER", "LEFT_TO_RIGHT" } ),
     COLOR_DIALOG( ColorDialog.class.getName(), new String[] { "APPLICATION_MODAL", "PRIMARY_MODAL", "SYSTEM_MODAL" } ),
     COMBO( Combo.class.getName(), new String[] { "DROP_DOWN", "READ_ONLY", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
+    CCOMBO( CCombo.class.getName(), new String[] { "FLAT", "READ_ONLY", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     COMPOSITE( Composite.class.getName(), new String[] { "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     CONTROL( Control.class.getName(), new String[] { "BORDER", "LEFT_TO_RIGHT" } ),
     COOL_BAR( CoolBar.class.getName(), new String[] { "FLAT", "HORIZONTAL", "VERTICAL", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
