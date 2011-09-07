@@ -17,7 +17,6 @@ import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
@@ -65,7 +64,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( ccombo ) ) );
     adapter.preserve( PROP_LIST_VISIBLE, new Boolean( ccombo.getListVisible() ) );
-    adapter.preserve( PROP_EDITABLE, Boolean.valueOf( isEditable( ccombo ) ) );
+    adapter.preserve( PROP_EDITABLE, Boolean.valueOf( ccombo.getEditable() ) );
     boolean hasVerifyListener = VerifyEvent.hasListener( ccombo );
     boolean hasModifyListener = ModifyEvent.hasListener( ccombo );
     boolean hasListener = hasVerifyListener || hasModifyListener;
@@ -74,7 +73,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
   }
 
   public void readData( Widget widget ) {
-    final CCombo ccombo = ( CCombo )widget;
+    CCombo ccombo = ( CCombo )widget;
     String value = WidgetLCAUtil.readPropertyValue( ccombo, "selectedItem" );
     if( value != null ) {
       ccombo.select( NumberFormatUtil.parseInt( value ) );
@@ -106,10 +105,10 @@ public final class CComboLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderCustomVariant( ccombo );
     renderItemHeight( ccombo );
     renderVisibleItemCount( ccombo );
-    writeListVisible( ccombo );
-    writeItems( ccombo );
+    renderItems( ccombo );
+    renderListVisible( ccombo );
     writeSelection( ccombo );
-    writeEditable( ccombo );
+    renderEditable( ccombo );
     writeText( ccombo );
     writeTextSelection( ccombo );
     writeTextLimit( ccombo );
@@ -192,17 +191,19 @@ public final class CComboLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeItems( CCombo ccombo ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( ccombo );
+  private static void renderItems( CCombo ccombo ) {
     String[] items = ccombo.getItems();
     if( WidgetLCAUtil.hasChanged( ccombo, PROP_ITEMS, items, DEFAUT_ITEMS ) ) {
-      // Convert newlines into whitespaces
-      for( int i = 0; i < items.length; i++ ) {
-        items[ i ] = WidgetLCAUtil.replaceNewLines( items[ i ], " " );
-        items[ i ] = WidgetLCAUtil.escapeText( items[ i ], false );
-        items[ i ] = EncodingUtil.replaceWhiteSpaces( items[ i ] );
-      }
-      writer.set( PROP_ITEMS, new Object[] { items } );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
+      clientObject.setProperty( PROP_ITEMS, items );
+    }
+  }
+
+  private static void renderListVisible( CCombo ccombo ) {
+    Boolean newValue = Boolean.valueOf( ccombo.getListVisible() );
+    if( WidgetLCAUtil.hasChanged( ccombo, PROP_LIST_VISIBLE, newValue, Boolean.FALSE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
+      clientObject.setProperty( PROP_LIST_VISIBLE, newValue );
     }
   }
 
@@ -216,11 +217,19 @@ public final class CComboLCA extends AbstractWidgetLCA {
     // -- in a subsequent request --
     // ccombo.removeAll();  ccombo.add( "b" );  ccombo.select( 0 );
     // When only examining selectionIndex, a change cannot be determined
-    boolean textChanged = !isEditable( ccombo )
+    boolean textChanged = !ccombo.getEditable()
                           && WidgetLCAUtil.hasChanged( ccombo, PROP_TEXT, ccombo.getText(), "" );
     if( selectionChanged || textChanged ) {
       JSWriter writer = JSWriter.getWriterFor( ccombo );
       writer.call( JS_FUNC_SELECT, new Object[] { newValue } );
+    }
+  }
+
+  private static void renderEditable( CCombo ccombo ) {
+    Boolean newValue = Boolean.valueOf( ccombo.getEditable() );
+    if( WidgetLCAUtil.hasChanged( ccombo, PROP_EDITABLE, newValue, Boolean.TRUE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
+      clientObject.setProperty( PROP_EDITABLE, newValue );
     }
   }
 
@@ -255,26 +264,8 @@ public final class CComboLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeListVisible( CCombo ccombo ) throws IOException {
-    boolean listVisible = ccombo.getListVisible();
-    Boolean newValue = Boolean.valueOf( listVisible );
-    if( WidgetLCAUtil.hasChanged( ccombo, PROP_LIST_VISIBLE, newValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( ccombo );
-      writer.set( PROP_LIST_VISIBLE, "listVisible", newValue, null );
-    }
-  }
-
-  private static void writeEditable( CCombo ccombo ) throws IOException {
-    boolean editable = isEditable( ccombo );
-    Boolean newValue = Boolean.valueOf( editable );
-    if( WidgetLCAUtil.hasChanged( ccombo, PROP_EDITABLE, newValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( ccombo );
-      writer.set( PROP_EDITABLE, "editable", newValue, null );
-    }
-  }
-
   private static void writeText( CCombo ccombo ) throws IOException {
-    if( isEditable( ccombo ) || ccombo.getSelectionIndex() == -1 ) {
+    if( ccombo.getEditable() || ccombo.getSelectionIndex() == -1 ) {
       String newValue = ccombo.getText();
       JSWriter writer = JSWriter.getWriterFor( ccombo );
       if( WidgetLCAUtil.hasChanged( ccombo, PROP_TEXT, newValue, "" ) ) {
@@ -304,12 +295,5 @@ public final class CComboLCA extends AbstractWidgetLCA {
       JSWriter writer = JSWriter.getWriterFor( ccombo );
       writer.set( "hasVerifyModifyListener", newValue );
     }
-  }
-
-  //////////////////
-  // Helping methods
-
-  private static boolean isEditable( CCombo ccombo ) {
-    return ( ( ccombo.getStyle() & SWT.READ_ONLY ) == 0 );
   }
 }

@@ -21,6 +21,7 @@ import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -31,6 +32,8 @@ import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class CComboLCA_Test extends TestCase {
 
@@ -188,15 +191,12 @@ public class CComboLCA_Test extends TestCase {
     ccombo.add( "item 1" );
     ccombo.add( "item 2" );
     ccomboLCA.renderChanges( ccombo );
-    String expected;
-    expected = "w.setItems( [ \"item 1\", \"item 2\" ] );";
-    assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
     Fixture.fakeResponseWriter();
     Fixture.clearPreserved();
     Fixture.preserveWidgets();
     ccombo.select( 1 );
     ccomboLCA.renderChanges( ccombo );
-    expected = "w.select( 1 );";
+    String expected = "w.select( 1 );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
     Fixture.fakeResponseWriter();
     Fixture.clearPreserved();
@@ -512,5 +512,106 @@ public class CComboLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( ccombo, "visibleItemCount" ) );
+  }
+
+  public void testRenderInitialItems() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+
+    lca.render( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( ccombo );
+    assertTrue( operation.getPropertyNames().indexOf( "items" ) == -1 );
+  }
+
+  public void testRenderItems() throws IOException, JSONException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+
+    ccombo.setItems( new String[] { "a", "b", "c" } );
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    String expected = "[ \"a\", \"b\", \"c\" ]";
+    JSONArray actual = ( JSONArray )message.findSetProperty( ccombo, "items" );
+    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+  }
+
+  public void testRenderItemsUnchanged() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+
+    ccombo.setItems( new String[] { "a", "b", "c" } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( ccombo, "items" ) );
+  }
+
+  public void testRenderInitialListVisible() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+
+    lca.render( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( ccombo );
+    assertTrue( operation.getPropertyNames().indexOf( "listVisible" ) == -1 );
+  }
+
+  public void testRenderListVisible() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+
+    ccombo.setListVisible( true );
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( ccombo, "listVisible" ) );
+  }
+
+  public void testRenderListVisibleUnchanged() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+
+    ccombo.setListVisible( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( ccombo, "listVisible" ) );
+  }
+
+  public void testRenderInitialEditable() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+
+    lca.render( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( ccombo );
+    assertTrue( operation.getPropertyNames().indexOf( "editable" ) == -1 );
+  }
+
+  public void testRenderEditable() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+
+    ccombo.setEditable( false );
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findSetProperty( ccombo, "editable" ) );
+  }
+
+  public void testRenderEditableUnchanged() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+
+    ccombo.setEditable( false );
+    Fixture.preserveWidgets();
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( ccombo, "editable" ) );
   }
 }

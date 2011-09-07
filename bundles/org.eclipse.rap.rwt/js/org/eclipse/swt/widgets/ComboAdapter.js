@@ -23,10 +23,24 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Combo", {
 
   properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
     "itemHeight",
-    "visibleItemCount"
+    "visibleItemCount",
+    "items",
+    "listVisible",
+    "editable"
   ] ),
 
-  propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {} ),
+  propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
+    "items" : function( widget, value ) {
+      var items = value;
+      var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+      for( var i = 0; i < items.length; i++ ) {
+        items[ i ] = encodingUtil.replaceNewLines( items[ i ], " " );
+        items[ i ] = encodingUtil.escapeText( items[ i ], false );
+        items[ i ] = encodingUtil.replaceWhiteSpaces( items[ i ] );
+      }
+      widget.setItems( items );
+    }
+  } ),
 
   listeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [] ),
 

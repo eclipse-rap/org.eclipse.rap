@@ -82,7 +82,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   public void readData( Widget widget ) {
-    final Combo combo = ( Combo )widget;
+    Combo combo = ( Combo )widget;
     String value = WidgetLCAUtil.readPropertyValue( widget, "selectedItem" );
     if( value != null ) {
       combo.select( NumberFormatUtil.parseInt( value ) );
@@ -113,10 +113,10 @@ public class ComboLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderCustomVariant( combo );
     renderItemHeight( combo );
     renderVisibleItemCount( combo );
-    writeListVisible( combo );
-    writeItems( combo );
+    renderItems( combo );
+    renderListVisible( combo );
     writeSelection( combo );
-    writeEditable( combo );
+    renderEditable( combo );
     writeText( combo );
     writeTextSelection( combo );
     writeTextLimit( combo );
@@ -199,17 +199,19 @@ public class ComboLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeItems( Combo combo ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( combo );
+  private static void renderItems( Combo combo ) {
     String[] items = combo.getItems();
     if( WidgetLCAUtil.hasChanged( combo, PROP_ITEMS, items, DEFAUT_ITEMS ) ) {
-      // Convert newlines into whitespaces
-      for( int i = 0; i < items.length; i++ ) {
-        items[ i ] = WidgetLCAUtil.replaceNewLines( items[ i ], " " );
-        items[ i ] = WidgetLCAUtil.escapeText( items[ i ], false );
-        items[ i ] = EncodingUtil.replaceWhiteSpaces( items[ i ] );
-      }
-      writer.set( PROP_ITEMS, new Object[] { items } );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
+      clientObject.setProperty( PROP_ITEMS, items );
+    }
+  }
+
+  private static void renderListVisible( Combo combo ) {
+    Boolean newValue = Boolean.valueOf( combo.getListVisible() );
+    if( WidgetLCAUtil.hasChanged( combo, PROP_LIST_VISIBLE, newValue, Boolean.FALSE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
+      clientObject.setProperty( PROP_LIST_VISIBLE, newValue );
     }
   }
 
@@ -228,6 +230,14 @@ public class ComboLCA extends AbstractWidgetLCA {
     if( selectionChanged || textChanged ) {
       JSWriter writer = JSWriter.getWriterFor( combo );
       writer.call( JS_FUNC_SELECT, new Object[] { newValue } );
+    }
+  }
+
+  private static void renderEditable( Combo combo ) {
+    Boolean newValue = Boolean.valueOf( isEditable( combo ) );
+    if( WidgetLCAUtil.hasChanged( combo, PROP_EDITABLE, newValue, Boolean.TRUE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
+      clientObject.setProperty( PROP_EDITABLE, newValue );
     }
   }
 
@@ -260,19 +270,6 @@ public class ComboLCA extends AbstractWidgetLCA {
       }
       writer.set( "textLimit", newValue );
     }
-  }
-
-  private static void writeListVisible( Combo combo ) throws IOException {
-    Boolean newValue = Boolean.valueOf( combo.getListVisible() );
-    JSWriter writer = JSWriter.getWriterFor( combo );
-    writer.set( PROP_LIST_VISIBLE, "listVisible", newValue, Boolean.FALSE );
-  }
-
-  private static void writeEditable( Combo combo ) throws IOException {
-    boolean editable = isEditable( combo );
-    Boolean newValue = Boolean.valueOf( editable );
-    JSWriter writer = JSWriter.getWriterFor( combo );
-    writer.set( PROP_EDITABLE, "editable", newValue, Boolean.TRUE );
   }
 
   private static void writeText( Combo combo ) throws IOException {

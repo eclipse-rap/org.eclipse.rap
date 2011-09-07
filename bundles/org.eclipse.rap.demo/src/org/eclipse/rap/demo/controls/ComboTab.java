@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -101,7 +101,7 @@ public class ComboTab extends ExampleTab {
     grpManioulateCCombo.setLayout( new GridLayout() );
     createSetTextLimitButton( grpManioulateCCombo, false );
     createChangeSizeButton( grpManioulateCCombo );
-    createShowListButton( grpManioulateCCombo );
+    createToggleListVisibilityButton( grpManioulateCCombo );
   }
 
   protected void createExampleControls( final Composite parent ) {
@@ -408,9 +408,9 @@ public class ComboTab extends ExampleTab {
     } );
   }
 
-  private void createShowListButton( final Composite parent ) {
+  private void createToggleListVisibilityButton( final Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
-    button.setText( "Show List" );
+    button.setText( "Toggle List Visibility" );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         boolean listVisible = cCombo.getListVisible();

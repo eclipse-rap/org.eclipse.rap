@@ -319,9 +319,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           this._setListSelection( this._selected );
         }
         this._updateListScrollBar();
-        if( this.hasState( "rwt_CCOMBO" ) ) {
-          this._updateListVisibleRequestParam();
-        }
+        this._updateListVisibleRequestParam();
       }
     },
     

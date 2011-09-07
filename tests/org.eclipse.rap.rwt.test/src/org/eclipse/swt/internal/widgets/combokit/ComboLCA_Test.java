@@ -19,7 +19,7 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.*;
 import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -29,6 +29,8 @@ import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class ComboLCA_Test extends TestCase {
 
@@ -190,15 +192,12 @@ public class ComboLCA_Test extends TestCase {
     combo.add( "item 1" );
     combo.add( "item 2" );
     comboLCA.renderChanges( combo );
-    String expected;
-    expected = "w.setItems( [ \"item 1\", \"item 2\" ] );";
-    assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
     Fixture.fakeResponseWriter();
     Fixture.clearPreserved();
     Fixture.preserveWidgets();
     combo.select( 1 );
     comboLCA.renderChanges( combo );
-    expected = "w.select( 1 );";
+    String expected = "w.select( 1 );";
     assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
     Fixture.fakeResponseWriter();
     Fixture.clearPreserved();
@@ -500,5 +499,93 @@ public class ComboLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( combo, "visibleItemCount" ) );
+  }
+
+  public void testRenderInitialItems() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    lca.render( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( combo );
+    assertTrue( operation.getPropertyNames().indexOf( "items" ) == -1 );
+  }
+
+  public void testRenderItems() throws IOException, JSONException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    combo.setItems( new String[] { "a", "b", "c" } );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    String expected = "[ \"a\", \"b\", \"c\" ]";
+    JSONArray actual = ( JSONArray )message.findSetProperty( combo, "items" );
+    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+  }
+
+  public void testRenderItemsUnchanged() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+
+    combo.setItems( new String[] { "a", "b", "c" } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( combo, "items" ) );
+  }
+
+  public void testRenderInitialListVisible() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    lca.render( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( combo );
+    assertTrue( operation.getPropertyNames().indexOf( "listVisible" ) == -1 );
+  }
+
+  public void testRenderListVisible() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    combo.setListVisible( true );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( combo, "listVisible" ) );
+  }
+
+  public void testRenderListVisibleUnchanged() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+
+    combo.setListVisible( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( combo, "listVisible" ) );
+  }
+
+  public void testRenderEditable() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    lca.render( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( combo );
+    assertTrue( operation.getPropertyNames().indexOf( "editable" ) == -1 );
+  }
+
+  public void testRenderEditable_ReadOnly() throws IOException {
+    Combo combo = new Combo( shell, SWT.READ_ONLY );
+
+    lca.render( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( combo );
+    assertEquals( Boolean.FALSE, operation.getProperty( "editable" ) );
   }
 }
