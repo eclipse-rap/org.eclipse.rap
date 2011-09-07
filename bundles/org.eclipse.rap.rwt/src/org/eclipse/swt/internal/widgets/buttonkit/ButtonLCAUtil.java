@@ -39,21 +39,6 @@ final class ButtonLCAUtil {
     // prevent instantiation
   }
 
-  static void renderInitialization( Button button ) {
-    IClientObject clientObject = ClientObjectFactory.getForWidget( button );
-    clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( button.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( button ) );
-  }
-
-  static boolean readSelection( Button button ) {
-    String value = WidgetLCAUtil.readPropertyValue( button, PARAM_SELECTION );
-    if( value != null ) {
-      button.setSelection( Boolean.valueOf( value ).booleanValue() );
-    }
-    return value != null;
-  }
-
   static void preserveValues( Button button ) {
     ControlLCAUtil.preserveValues( button );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
@@ -66,6 +51,31 @@ final class ButtonLCAUtil {
     boolean hasListeners = SelectionEvent.hasListener( button );
     adapter.preserve( Props.SELECTION_LISTENERS, Boolean.valueOf( hasListeners ) );
     WidgetLCAUtil.preserveCustomVariant( button );
+  }
+
+  static void renderInitialization( Button button ) {
+    IClientObject clientObject = ClientObjectFactory.getForWidget( button );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( button.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( button ) );
+  }
+
+  static void renderChanges( Button button ) throws IOException {
+    ControlLCAUtil.renderChanges( button );
+    WidgetLCAUtil.renderCustomVariant( button );
+    renderText( button );
+    renderImage( button );
+    renderAlignment( button );
+    renderSelection( button );
+    renderListenSelection( button );
+  }
+
+  static boolean readSelection( Button button ) {
+    String value = WidgetLCAUtil.readPropertyValue( button, PARAM_SELECTION );
+    if( value != null ) {
+      button.setSelection( Boolean.valueOf( value ).booleanValue() );
+    }
+    return value != null;
   }
 
   static void renderText( Button button ) {
@@ -138,15 +148,5 @@ final class ButtonLCAUtil {
         clientObject.removeListener( "selection" );
       }
     }
-  }
-
-  static void renderChanges( Button button ) throws IOException {
-    renderText( button );
-    renderImage( button );
-    renderAlignment( button );
-    renderSelection( button );
-    WidgetLCAUtil.renderCustomVariant( button );
-    ControlLCAUtil.renderChanges( button );
-    renderListenSelection( button );
   }
 }
