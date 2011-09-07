@@ -62,8 +62,8 @@ public class CComboLCA_Test extends TestCase {
     String[] items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
     assertEquals( 0, items.length );
     assertEquals( new Integer( -1 ), adapter.getPreserved( PROP_SELECTION ) );
-    Object height = adapter.getPreserved( CComboLCA.PROP_MAX_LIST_HEIGHT );
-    assertEquals( new Integer( CComboLCA.getMaxListHeight( ccombo ) ), height );
+    Object visibleItemCount = adapter.getPreserved( CComboLCA.PROP_VISIBLE_ITEM_COUNT );
+    assertEquals( new Integer( ccombo.getVisibleItemCount() ), visibleItemCount );
     assertEquals( new Integer( Text.LIMIT ), adapter.getPreserved( CComboLCA.PROP_TEXT_LIMIT ) );
     assertEquals( new Point( 0, 0 ), adapter.getPreserved( CComboLCA.PROP_TEXT_SELECTION ) );
     assertEquals( Boolean.FALSE, adapter.getPreserved( CComboLCA.PROP_LIST_VISIBLE ) );
@@ -92,8 +92,8 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( "item 1", items[ 0 ] );
     assertEquals( "item 2", items[ 1 ] );
     assertEquals( new Integer( 1 ), adapter.getPreserved( PROP_SELECTION ) );
-    height = adapter.getPreserved( CComboLCA.PROP_MAX_LIST_HEIGHT );
-    assertEquals( new Integer( CComboLCA.getMaxListHeight( ccombo ) ), height );
+    visibleItemCount = adapter.getPreserved( CComboLCA.PROP_VISIBLE_ITEM_COUNT );
+    assertEquals( new Integer( ccombo.getVisibleItemCount() ), visibleItemCount );
     assertEquals( "item 2", adapter.getPreserved( Props.TEXT ) );
     assertEquals( new Integer( 10 ), adapter.getPreserved( CComboLCA.PROP_TEXT_LIMIT ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( CComboLCA.PROP_LIST_VISIBLE ) );
@@ -447,5 +447,70 @@ public class CComboLCA_Test extends TestCase {
     CreateOperation operation = message.findCreateOperation( ccombo );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "FLAT" ) );
+  }
+  public void testRenderInitialItemHeight() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+
+    lca.render( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( ccombo );
+    assertTrue( operation.getPropertyNames().indexOf( "itemHeight" ) != -1 );
+  }
+
+  public void testRenderItemHeight() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+
+    ccombo.setFont( Graphics.getFont( "Arial", 16, SWT.NONE ) );
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 22 ), message.findSetProperty( ccombo, "itemHeight" ) );
+  }
+
+  public void testRenderItemHeightUnchanged() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+
+    ccombo.setFont( Graphics.getFont( "Arial", 16, SWT.NONE ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( ccombo, "itemHeight" ) );
+  }
+
+  public void testRenderInitialVisibleItemCount() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+
+    lca.render( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( ccombo );
+    assertTrue( operation.getPropertyNames().indexOf( "visibleItemCount" ) == -1 );
+  }
+
+  public void testRenderVisibleItemCount() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+
+    ccombo.setVisibleItemCount( 10 );
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 10 ), message.findSetProperty( ccombo, "visibleItemCount" ) );
+  }
+
+  public void testRenderVisibleItemCountUnchanged() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+
+    ccombo.setVisibleItemCount( 10 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( ccombo, "visibleItemCount" ) );
   }
 }

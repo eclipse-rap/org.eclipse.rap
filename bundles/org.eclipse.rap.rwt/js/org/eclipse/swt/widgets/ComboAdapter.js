@@ -21,7 +21,10 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Combo", {
 
   destructor : org.eclipse.rwt.protocol.AdapterUtil.getControlDestructor(),
 
-  properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [] ),
+  properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
+    "itemHeight",
+    "visibleItemCount"
+  ] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {} ),
 

@@ -73,11 +73,11 @@ public class Combo extends Composite {
   private static final double LINE_HEIGHT_FACTOR = 1.2;
 
   private final ListModel model;
-  private String text = "";
+  private String text;
   private int textLimit;
-  private int visibleCount = 5;
+  private int visibleCount;
   private final Point selection;
-  private boolean dropped = false;
+  private boolean dropped;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -111,6 +111,9 @@ public class Combo extends Composite {
    */
   public Combo( final Composite parent, final int style ) {
     super( parent, checkStyle( style ) );
+    text = "";
+    visibleCount = 5;
+    dropped = false;
     textLimit = LIMIT;
     selection = new Point( 0, 0 );
     model = new ListModel( true );

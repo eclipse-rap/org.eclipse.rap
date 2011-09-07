@@ -30,8 +30,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this._borderWidth = 0;
     this._selectionStart = 0;
     this._selectionLength = 0;
-    this._listItemHeight = "auto";
-    this._listMaxHeight = 0;
+    this._itemHeight = 20;
+    this._visibleItemCount = 5;
     // Text field
     this._field = new qx.ui.form.TextField();
     this._field.setTabIndex( null );
@@ -284,8 +284,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         var itemsWidth = this._list.getPreferredWidth();
         var listWidth = Math.min( browserWidth - listLeft, itemsWidth );
         listWidth = Math.max( this.getWidth(), listWidth )
-        var itemsHeight = this._list.getItemsCount() * this._listItemHeight;
-        var listHeight = Math.min( this._listMaxHeight, itemsHeight );
+        var itemsHeight = this._list.getItemsCount() * this._itemHeight;
+        var listHeight = Math.min( this._getListMaxHeight(), itemsHeight );
         listHeight += this._list.getFrameHeight();
         if(    browserHeight < listTop + listHeight
             && comboTop > browserHeight - listTop )
@@ -295,7 +295,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._list.setLocation( listLeft, listTop );
         this._list.setWidth( listWidth );
         this._list.setHeight( listHeight );
-        this._list.setItemDimensions( listWidth, this._listItemHeight );
+        this._list.setItemDimensions( listWidth, this._itemHeight );
       }
     },
     
@@ -327,8 +327,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     
     _updateListScrollBar : function() {
       if( this._dropped ) {        
-        var itemsHeight = this._list.getItemsCount() * this._listItemHeight;
-        var visible = this._listMaxHeight < itemsHeight;
+        var itemsHeight = this._list.getItemsCount() * this._itemHeight;
+        var visible = this._getListMaxHeight() < itemsHeight;
         this._list.setScrollBarsVisible( false, visible );
       }
     },
@@ -735,19 +735,23 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       }
     },
 
+    _getListMaxHeight : function() {
+      return this._itemHeight * this._visibleItemCount;
+    },
+
     //////////////
     // Set methods
-    
+
     setItems : function( items ) {
       this._list.setItems( items );
     },
 
-    setMaxListHeight : function( value ) {
-      this._listMaxHeight = value;
+    setVisibleItemCount : function( value ) {
+      this._visibleItemCount = value;
     },
-    
-    setListItemHeight : function( value ) {
-      this._listItemHeight = value;
+
+    setItemHeight : function( value ) {
+      this._itemHeight = value;
     },
 
     select : function( index ) {

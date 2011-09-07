@@ -62,6 +62,50 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       widget.destroy();
     },
 
+    testSetItemHeightByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Combo",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "itemHeight" : 18
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( 18, widget._itemHeight );
+      assertEquals( 90, widget._getListMaxHeight() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetVisibleItemCountByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Combo",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "visibleItemCount" : 3
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( 3, widget._visibleItemCount );
+      assertEquals( 60, widget._getListMaxHeight() );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testCreateDispose : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
@@ -299,10 +343,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = new org.eclipse.swt.widgets.Combo();
       combo.setSpace( 239, 81, 6, 23 );
-      combo.setListItemHeight( 19 );
+      combo.setItemHeight( 19 );
       combo.setEditable( false );
       combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
-      combo.setMaxListHeight( 95 ); 
+      combo.setVisibleItemCount( 5 ); 
       combo.addToDocument();
       testUtil.flush();
       return combo;

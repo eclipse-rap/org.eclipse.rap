@@ -31,6 +31,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
   private static final Integer DEFAULT_SELECTION = new Integer( -1 );
   private static final Integer DEFAULT_TEXT_LIMIT = new Integer( CCombo.LIMIT );
   private static final Point DEFAULT_TEXT_SELECTION = new Point( 0, 0 );
+  private static final Integer DEFAULT_VISIBLE_ITEM_COUNT = new Integer( 5 );
 
   // Constants for JS functions names
   private static final String JS_FUNC_SELECT = "select";
@@ -45,8 +46,8 @@ public final class CComboLCA extends AbstractWidgetLCA {
   static final String PROP_LIST_VISIBLE = "listVisible";
   static final String PROP_EDITABLE = "editable";
   static final String PROP_VERIFY_MODIFY_LISTENER = "verifyModifyListener";
-  static final String PROP_MAX_LIST_HEIGHT = "maxListHeight";
-  static final String PROP_LIST_ITEM_HEIGHT = "listItemHeight";
+  static final String PROP_VISIBLE_ITEM_COUNT = "visibleItemCount";
+  static final String PROP_ITEM_HEIGHT = "itemHeight";
 
   public void preserveValues( Widget widget ) {
     CCombo ccombo = ( CCombo )widget;
@@ -58,8 +59,8 @@ public final class CComboLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_SELECTION, selection );
     adapter.preserve( PROP_TEXT_SELECTION, ccombo.getSelection() );
     adapter.preserve( PROP_TEXT_LIMIT, new Integer( ccombo.getTextLimit() ) );
-    adapter.preserve( PROP_MAX_LIST_HEIGHT, new Integer( getMaxListHeight( ccombo ) ) );
-    adapter.preserve( PROP_LIST_ITEM_HEIGHT, new Integer( ccombo.getItemHeight() ) );
+    adapter.preserve( PROP_VISIBLE_ITEM_COUNT, new Integer( ccombo.getVisibleItemCount() ) );
+    adapter.preserve( PROP_ITEM_HEIGHT, new Integer( ccombo.getItemHeight() ) );
     adapter.preserve( PROP_TEXT, ccombo.getText() );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( ccombo ) ) );
@@ -103,14 +104,14 @@ public final class CComboLCA extends AbstractWidgetLCA {
     CCombo ccombo = ( CCombo )widget;
     ControlLCAUtil.renderChanges( ccombo );
     WidgetLCAUtil.renderCustomVariant( ccombo );
-    writeListItemHeight( ccombo );
+    renderItemHeight( ccombo );
+    renderVisibleItemCount( ccombo );
+    writeListVisible( ccombo );
     writeItems( ccombo );
     writeSelection( ccombo );
-    writeMaxListHeight( ccombo );
     writeEditable( ccombo );
     writeText( ccombo );
     writeTextSelection( ccombo );
-    writeListVisible( ccombo );
     writeTextLimit( ccombo );
     writeVerifyAndModifyListener( ccombo );
     writeSelectionListener( ccombo );
@@ -173,6 +174,23 @@ public final class CComboLCA extends AbstractWidgetLCA {
 
   //////////////////////////////////////////////
   // Helping methods to write changed properties
+
+  private static void renderItemHeight( CCombo ccombo ) {
+    Integer newValue = new Integer( ccombo.getItemHeight() );
+    if( WidgetLCAUtil.hasChanged( ccombo, PROP_ITEM_HEIGHT, newValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
+      clientObject.setProperty( PROP_ITEM_HEIGHT, newValue );
+    }
+  }
+
+  private static void renderVisibleItemCount( CCombo ccombo ) {
+    Integer newValue = new Integer( ccombo.getVisibleItemCount() );
+    Integer defValue = DEFAULT_VISIBLE_ITEM_COUNT;
+    if( WidgetLCAUtil.hasChanged( ccombo, PROP_VISIBLE_ITEM_COUNT, newValue, defValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
+      clientObject.setProperty( PROP_VISIBLE_ITEM_COUNT, newValue );
+    }
+  }
 
   private static void writeItems( CCombo ccombo ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( ccombo );
@@ -237,22 +255,6 @@ public final class CComboLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeListItemHeight( CCombo ccombo ) throws IOException {
-    Integer newValue = new Integer( ccombo.getItemHeight() );
-    if( WidgetLCAUtil.hasChanged( ccombo, PROP_LIST_ITEM_HEIGHT, newValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( ccombo );
-      writer.set( PROP_LIST_ITEM_HEIGHT, "listItemHeight", newValue );
-    }
-  }
-
-  private static void writeMaxListHeight( CCombo ccombo ) throws IOException {
-    Integer newValue = new Integer( getMaxListHeight( ccombo ) );
-    if( WidgetLCAUtil.hasChanged( ccombo, PROP_MAX_LIST_HEIGHT, newValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( ccombo );
-      writer.set( PROP_MAX_LIST_HEIGHT, "maxListHeight", newValue );
-    }
-  }
-
   private static void writeListVisible( CCombo ccombo ) throws IOException {
     boolean listVisible = ccombo.getListVisible();
     Boolean newValue = Boolean.valueOf( listVisible );
@@ -309,11 +311,5 @@ public final class CComboLCA extends AbstractWidgetLCA {
 
   private static boolean isEditable( CCombo ccombo ) {
     return ( ( ccombo.getStyle() & SWT.READ_ONLY ) == 0 );
-  }
-
-  static int getMaxListHeight( CCombo ccombo ) {
-    int visibleItemCount = ccombo.getVisibleItemCount();
-    int itemHeight = ccombo.getItemHeight();
-    return visibleItemCount * itemHeight;
   }
 }

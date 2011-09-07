@@ -62,8 +62,8 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( new Integer( -1 ), adapter.getPreserved( PROP_SELECTION ) );
     assertEquals( new Integer( Combo.LIMIT ),
                   adapter.getPreserved( ComboLCA.PROP_TEXT_LIMIT ) );
-    Object height = adapter.getPreserved( ComboLCA.PROP_MAX_LIST_HEIGHT );
-    assertEquals( new Integer( ComboLCA.getMaxListHeight( combo ) ), height );
+    Object visibleItemCount = adapter.getPreserved( ComboLCA.PROP_VISIBLE_ITEM_COUNT );
+    assertEquals( new Integer( combo.getVisibleItemCount() ), visibleItemCount );
     Boolean hasListeners;
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
@@ -90,8 +90,8 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( "item 1", items[ 0 ] );
     assertEquals( "item 2", items[ 1 ] );
     assertEquals( new Integer( 1 ), adapter.getPreserved( PROP_SELECTION ) );
-    height = adapter.getPreserved( ComboLCA.PROP_MAX_LIST_HEIGHT );
-    assertEquals( new Integer( ComboLCA.getMaxListHeight( combo ) ), height );
+    visibleItemCount = adapter.getPreserved( ComboLCA.PROP_VISIBLE_ITEM_COUNT );
+    assertEquals( new Integer( combo.getVisibleItemCount() ), visibleItemCount );
     assertEquals( "item 2", adapter.getPreserved( Props.TEXT ) );
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
@@ -434,5 +434,71 @@ public class ComboLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( combo );
     assertEquals( WidgetUtil.getId( combo.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderInitialItemHeight() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    lca.render( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( combo );
+    assertTrue( operation.getPropertyNames().indexOf( "itemHeight" ) != -1 );
+  }
+
+  public void testRenderItemHeight() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    combo.setFont( Graphics.getFont( "Arial", 16, SWT.NONE ) );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 22 ), message.findSetProperty( combo, "itemHeight" ) );
+  }
+
+  public void testRenderItemHeightUnchanged() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+
+    combo.setFont( Graphics.getFont( "Arial", 16, SWT.NONE ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( combo, "itemHeight" ) );
+  }
+
+  public void testRenderInitialVisibleItemCount() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    lca.render( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( combo );
+    assertTrue( operation.getPropertyNames().indexOf( "visibleItemCount" ) == -1 );
+  }
+
+  public void testRenderVisibleItemCount() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    combo.setVisibleItemCount( 10 );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 10 ), message.findSetProperty( combo, "visibleItemCount" ) );
+  }
+
+  public void testRenderVisibleItemCountUnchanged() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+
+    combo.setVisibleItemCount( 10 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( combo, "visibleItemCount" ) );
   }
 }

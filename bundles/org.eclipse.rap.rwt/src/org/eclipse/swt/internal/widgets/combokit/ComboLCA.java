@@ -36,6 +36,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   private static final Integer DEFAULT_SELECTION = new Integer( -1 );
   private static final Point DEFAULT_TEXT_SELECTION = new Point( 0, 0 );
   private static final Integer DEFAULT_TEXT_LIMIT = new Integer( Combo.LIMIT );
+  private static final Integer DEFAULT_VISIBLE_ITEM_COUNT = new Integer( 5 );
 
   // Must be in sync with appearance "list-item"
   private static final int LIST_ITEM_PADDING = 3;
@@ -53,8 +54,8 @@ public class ComboLCA extends AbstractWidgetLCA {
   static final String PROP_LIST_VISIBLE = "listVisible";
   static final String PROP_EDITABLE = "editable";
   static final String PROP_VERIFY_MODIFY_LISTENER = "verifyModifyListener";
-  static final String PROP_MAX_LIST_HEIGHT = "maxListHeight";
-  static final String PROP_LIST_ITEM_HEIGHT = "listItemHeight";
+  static final String PROP_VISIBLE_ITEM_COUNT = "visibleItemCount";
+  static final String PROP_ITEM_HEIGHT = "itemHeight";
 
   public void preserveValues( Widget widget ) {
     Combo combo = ( Combo )widget;
@@ -66,8 +67,8 @@ public class ComboLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_SELECTION, selection );
     adapter.preserve( PROP_TEXT_SELECTION, combo.getSelection() );
     adapter.preserve( PROP_TEXT_LIMIT, new Integer( combo.getTextLimit() ) );
-    adapter.preserve( PROP_MAX_LIST_HEIGHT, new Integer( getMaxListHeight( combo ) ) );
-    adapter.preserve( PROP_LIST_ITEM_HEIGHT, new Integer( getListItemHeight( combo ) ) );
+    adapter.preserve( PROP_VISIBLE_ITEM_COUNT, new Integer( combo.getVisibleItemCount() ) );
+    adapter.preserve( PROP_ITEM_HEIGHT, new Integer( getItemHeight( combo ) ) );
     adapter.preserve( PROP_TEXT, combo.getText() );
     adapter.preserve( Props.SELECTION_LISTENERS,
                       Boolean.valueOf( SelectionEvent.hasListener( combo ) ) );
@@ -110,14 +111,14 @@ public class ComboLCA extends AbstractWidgetLCA {
     Combo combo = ( Combo )widget;
     ControlLCAUtil.renderChanges( combo );
     WidgetLCAUtil.renderCustomVariant( combo );
-    writeListItemHeight( combo );
+    renderItemHeight( combo );
+    renderVisibleItemCount( combo );
+    writeListVisible( combo );
     writeItems( combo );
     writeSelection( combo );
-    writeMaxListHeight( combo );
     writeEditable( combo );
     writeText( combo );
     writeTextSelection( combo );
-    writeListVisible( combo );
     writeTextLimit( combo );
     writeVerifyAndModifyListener( combo );
     writeSelectionListener( combo );
@@ -180,6 +181,23 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   //////////////////////////////////////////////
   // Helping methods to write changed properties
+
+  private static void renderItemHeight( Combo combo ) {
+    Integer newValue = new Integer( getItemHeight( combo ) );
+    if( WidgetLCAUtil.hasChanged( combo, PROP_ITEM_HEIGHT, newValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
+      clientObject.setProperty( PROP_ITEM_HEIGHT, newValue );
+    }
+  }
+
+  private static void renderVisibleItemCount( Combo combo ) {
+    Integer newValue = new Integer( combo.getVisibleItemCount() );
+    Integer defValue = DEFAULT_VISIBLE_ITEM_COUNT;
+    if( WidgetLCAUtil.hasChanged( combo, PROP_VISIBLE_ITEM_COUNT, newValue, defValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
+      clientObject.setProperty( PROP_VISIBLE_ITEM_COUNT, newValue );
+    }
+  }
 
   private static void writeItems( Combo combo ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( combo );
@@ -244,22 +262,6 @@ public class ComboLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeListItemHeight( Combo combo ) throws IOException {
-      Integer newValue = new Integer( getListItemHeight( combo ) );
-      if( WidgetLCAUtil.hasChanged( combo, PROP_LIST_ITEM_HEIGHT, newValue ) ) {
-        JSWriter writer = JSWriter.getWriterFor( combo );
-        writer.set( PROP_LIST_ITEM_HEIGHT, "listItemHeight", newValue );
-      }
-  }
-
-  private static void writeMaxListHeight( Combo combo ) throws IOException {
-    Integer newValue = new Integer( getMaxListHeight( combo ) );
-    if( WidgetLCAUtil.hasChanged( combo, PROP_MAX_LIST_HEIGHT, newValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( combo );
-      writer.set( PROP_MAX_LIST_HEIGHT, "maxListHeight", newValue );
-    }
-  }
-
   private static void writeListVisible( Combo combo ) throws IOException {
     Boolean newValue = Boolean.valueOf( combo.getListVisible() );
     JSWriter writer = JSWriter.getWriterFor( combo );
@@ -313,13 +315,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     return ( ( combo.getStyle() & SWT.READ_ONLY ) == 0 );
   }
 
-  static int getMaxListHeight( Combo combo ) {
-    int visibleItemCount = combo.getVisibleItemCount();
-    int itemHeight = getListItemHeight( combo );
-    return visibleItemCount * itemHeight;
-  }
-
-  static int getListItemHeight( Combo combo ) {
+  static int getItemHeight( Combo combo ) {
     int charHeight = Graphics.getCharHeight( combo.getFont() );
     int padding = 2 * LIST_ITEM_PADDING;
     return charHeight + padding;
