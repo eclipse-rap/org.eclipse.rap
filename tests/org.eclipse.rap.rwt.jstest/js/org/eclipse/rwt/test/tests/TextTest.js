@@ -220,7 +220,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       var objectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = objectManager.getObject( "w3" );
       assertEquals( 1, widget.getUserData( "selectionStart" ) );
-      assertEquals( 3, widget.getUserData( "selectionLength" ) );
+      assertEquals( 2, widget.getUserData( "selectionLength" ) );
       shell.destroy();
       widget.destroy();
     },

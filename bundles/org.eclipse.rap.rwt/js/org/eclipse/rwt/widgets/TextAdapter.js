@@ -60,7 +60,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Text", {
       widget.setReadOnly( !value );
     },
     "selection" : function( widget, value ) {
-      org.eclipse.swt.TextUtil.setSelection( widget, value[ 0 ], value[ 1 ] );
+      var start = value[ 0 ];
+      var length = value[ 1 ] - value[ 0 ];
+      org.eclipse.swt.TextUtil.setSelection( widget, start, length );
     },
     "textLimit" : function( widget, value ) {
       widget.setMaxLength( value < 0 ? null : value );

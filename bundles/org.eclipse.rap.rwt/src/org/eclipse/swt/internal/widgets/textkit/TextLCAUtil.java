@@ -152,14 +152,11 @@ final class TextLCAUtil {
 
   private static void renderSelection( Text text ) {
     Point newValue = text.getSelection();
-    // TODO [rh] could be optimized: when text was changed and selection is 0,0
-    //      there is no need to write JavaScript since the client resets the
-    //      selection as well when the new text is set.
     if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION, newValue, DEFAULT_SELECTION ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( text );
       Integer start = new Integer( newValue.x );
-      Integer lenght = new Integer( text.getSelectionCount() );
-      clientObject.setProperty( "selection", new Object[] { start, lenght } );
+      Integer end = new Integer( newValue.y );
+      clientObject.setProperty( "selection", new Object[] { start, end } );
     }
   }
 

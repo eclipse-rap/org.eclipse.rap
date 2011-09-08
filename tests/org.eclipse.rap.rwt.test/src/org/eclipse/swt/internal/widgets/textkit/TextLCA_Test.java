@@ -575,7 +575,7 @@ public class TextLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     JSONArray actual = ( JSONArray )message.findSetProperty( text, "selection" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 2 ]", actual ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 3 ]", actual ) );
   }
 
   public void testRenderSelectionUnchanged() throws IOException {
