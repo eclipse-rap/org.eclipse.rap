@@ -105,7 +105,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     renderEditable( ccombo );
     renderText( ccombo );
     renderSelection( ccombo );
-    writeTextLimit( ccombo );
+    renderTextLimit( ccombo );
     writeVerifyAndModifyListener( ccombo );
     writeSelectionListener( ccombo );
   }
@@ -244,15 +244,14 @@ public final class CComboLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeTextLimit( CCombo ccombo ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( ccombo );
+  private static void renderTextLimit( CCombo ccombo ) {
     Integer newValue = new Integer( ccombo.getTextLimit() );
-    Integer defValue = DEFAULT_TEXT_LIMIT;
-    if( WidgetLCAUtil.hasChanged( ccombo, PROP_TEXT_LIMIT, newValue, defValue ) ) {
+    if( WidgetLCAUtil.hasChanged( ccombo, PROP_TEXT_LIMIT, newValue, DEFAULT_TEXT_LIMIT ) ) {
       if( newValue.intValue() == CCombo.LIMIT ) {
         newValue = null;
       }
-      writer.set( "textLimit", newValue );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
+      clientObject.setProperty( PROP_TEXT_LIMIT, newValue );
     }
   }
 

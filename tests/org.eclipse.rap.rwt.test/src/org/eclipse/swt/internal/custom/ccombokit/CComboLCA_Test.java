@@ -32,8 +32,7 @@ import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
-import org.json.JSONArray;
-import org.json.JSONException;
+import org.json.*;
 
 public class CComboLCA_Test extends TestCase {
 
@@ -332,35 +331,6 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( new Point( 0, 0 ), ccombo.getSelection() );
     assertEquals( "", ccombo.getText() );
     ccombo.removeVerifyListener( alteringVerifyListener );
-  }
-
-  public void testTextLimit() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.BORDER );
-    // run LCA one to dump the here uninteresting prolog
-    Fixture.fakeResponseWriter();
-    lca.renderChanges( ccombo );
-    // Initially no textLimit must be rendered if the initial value is untouched
-    Fixture.fakeResponseWriter();
-    lca.renderChanges( ccombo );
-    assertEquals( -1, Fixture.getAllMarkup().indexOf( "setTextLimit" ) );
-    // Positive textLimit is written as setMaxLength( ... )
-    Fixture.fakeResponseWriter();
-    Fixture.markInitialized( ccombo );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    ccombo.setTextLimit( 12 );
-    lca.renderChanges( ccombo );
-    String expected = "setTextLimit( 12 );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    // textLimit = CCombo.LIMIT is tread as 'no limit'
-    Fixture.fakeResponseWriter();
-    Fixture.markInitialized( ccombo );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    ccombo.setTextLimit( CCombo.LIMIT );
-    lca.renderChanges( ccombo );
-    expected = "setTextLimit( null );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
   public void testSelectionAfterRemoveAll() {
@@ -712,5 +682,52 @@ public class CComboLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( ccombo, "selection" ) );
+  }
+
+  public void testRenderInitialTextLimit() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+
+    lca.render( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( ccombo );
+    assertTrue( operation.getPropertyNames().indexOf( "textLimit" ) == -1 );
+  }
+
+  public void testRenderTextLimit() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+
+    ccombo.setTextLimit( 10 );
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 10 ), message.findSetProperty( ccombo, "textLimit" ) );
+  }
+
+  public void testRenderTextLimitNoLimit() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+    ccombo.setTextLimit( 10 );
+    Fixture.preserveWidgets();
+
+    ccombo.setTextLimit( Combo.LIMIT );
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( ccombo, "textLimit" ) );
+  }
+
+  public void testRenderTextLimitUnchanged() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+
+    ccombo.setTextLimit( 10 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( ccombo, "textLimit" ) );
   }
 }

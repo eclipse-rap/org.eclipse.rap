@@ -113,7 +113,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     renderEditable( combo );
     renderText( combo );
     renderSelection( combo );
-    writeTextLimit( combo );
+    renderTextLimit( combo );
     writeVerifyAndModifyListener( combo );
     writeSelectionListener( combo );
   }
@@ -254,15 +254,14 @@ public class ComboLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeTextLimit( Combo combo ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( combo );
+  private static void renderTextLimit( Combo combo ) {
     Integer newValue = new Integer( combo.getTextLimit() );
-    Integer defValue = DEFAULT_TEXT_LIMIT;
-    if( WidgetLCAUtil.hasChanged( combo, PROP_TEXT_LIMIT, newValue, defValue ) ) {
+    if( WidgetLCAUtil.hasChanged( combo, PROP_TEXT_LIMIT, newValue, DEFAULT_TEXT_LIMIT ) ) {
       if( newValue.intValue() == Combo.LIMIT ) {
         newValue = null;
       }
-      writer.set( "textLimit", newValue );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
+      clientObject.setProperty( PROP_TEXT_LIMIT, newValue );
     }
   }
 

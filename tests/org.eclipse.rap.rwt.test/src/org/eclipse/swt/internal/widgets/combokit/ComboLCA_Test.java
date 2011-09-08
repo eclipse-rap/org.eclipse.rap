@@ -29,8 +29,7 @@ import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
-import org.json.JSONArray;
-import org.json.JSONException;
+import org.json.*;
 
 public class ComboLCA_Test extends TestCase {
 
@@ -359,36 +358,6 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( new Integer( 0 ), message.findSetProperty( combo, PROP_SELECTION_INDEX ) );
   }
 
-  public void testTextLimit() throws IOException {
-    Combo combo = new Combo( shell, SWT.BORDER );
-    ComboLCA lca = new ComboLCA();
-    // run LCA one to dump the here uninteresting prolog
-    Fixture.fakeResponseWriter();
-    lca.renderChanges( combo );
-    // Initially no textLimit must be rendered if the initial value is untouched
-    Fixture.fakeResponseWriter();
-    lca.renderChanges( combo );
-    assertEquals( -1, Fixture.getAllMarkup().indexOf( "setTextLimit" ) );
-    // Positive textLimit is written as setMaxLength( ... )
-    Fixture.fakeResponseWriter();
-    Fixture.markInitialized( combo );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    combo.setTextLimit( 12 );
-    lca.renderChanges( combo );
-    String expected = "setTextLimit( 12 );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    // textLimit = Combo.LIMIT is tread as 'no limit'
-    Fixture.fakeResponseWriter();
-    Fixture.markInitialized( combo );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    combo.setTextLimit( Combo.LIMIT );
-    lca.renderChanges( combo );
-    expected = "setTextLimit( null );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-  }
-
   public void testRenderCreate() throws IOException {
     Combo combo = new Combo( shell, SWT.NONE );
 
@@ -675,5 +644,52 @@ public class ComboLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( combo, "selection" ) );
+  }
+
+  public void testRenderInitialTextLimit() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    lca.render( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( combo );
+    assertTrue( operation.getPropertyNames().indexOf( "textLimit" ) == -1 );
+  }
+
+  public void testRenderTextLimit() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    combo.setTextLimit( 10 );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 10 ), message.findSetProperty( combo, "textLimit" ) );
+  }
+
+  public void testRenderTextLimitNoLimit() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+    combo.setTextLimit( 10 );
+    Fixture.preserveWidgets();
+
+    combo.setTextLimit( Combo.LIMIT );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( combo, "textLimit" ) );
+  }
+
+  public void testRenderTextLimitUnchanged() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+
+    combo.setTextLimit( 10 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( combo, "textLimit" ) );
   }
 }

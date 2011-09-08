@@ -29,7 +29,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Combo", {
     "selectionIndex",
     "editable",
     "text",
-    "selection"
+    "selection",
+    "textLimit"
   ] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
