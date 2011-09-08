@@ -130,7 +130,7 @@ final class TextLCAUtil {
     String newValue = text.getText();
     if( WidgetLCAUtil.hasChanged( text, PROP_TEXT, newValue, "" ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( text );
-      clientObject.setProperty( "text", newValue );
+      clientObject.setProperty( PROP_TEXT, newValue );
     }
   }
 
@@ -156,7 +156,7 @@ final class TextLCAUtil {
       IClientObject clientObject = ClientObjectFactory.getForWidget( text );
       Integer start = new Integer( newValue.x );
       Integer end = new Integer( newValue.y );
-      clientObject.setProperty( "selection", new Object[] { start, end } );
+      clientObject.setProperty( PROP_SELECTION, new Object[] { start, end } );
     }
   }
 
@@ -210,7 +210,7 @@ final class TextLCAUtil {
     String newValue = getEchoChar( text );
     if( WidgetLCAUtil.hasChanged( text, PROP_ECHO_CHAR, newValue, null ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( text );
-      clientObject.setProperty( "echoChar", newValue );
+      clientObject.setProperty( PROP_ECHO_CHAR, newValue );
     }
   }
 
