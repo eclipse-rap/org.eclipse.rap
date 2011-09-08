@@ -597,4 +597,47 @@ public class ComboLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( combo, "selectionIndex" ) );
   }
+
+  public void testRenderInitialText() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    lca.render( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( combo );
+    assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
+  }
+
+  public void testRenderText() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    combo.setText( "foo" );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "foo", message.findSetProperty( combo, "text" ) );
+  }
+
+  public void testRenderTextNotEditable() throws IOException {
+    Combo combo = new Combo( shell, SWT.READ_ONLY );
+
+    combo.setText( "foo" );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( combo, "text" ) );
+  }
+
+  public void testRenderTextUnchanged() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+
+    combo.setText( "foo" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( combo, "text" ) );
+  }
 }

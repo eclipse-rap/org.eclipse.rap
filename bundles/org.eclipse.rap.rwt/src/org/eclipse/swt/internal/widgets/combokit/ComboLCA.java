@@ -16,7 +16,6 @@ import java.io.IOException;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -114,7 +113,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     renderListVisible( combo );
     renderSelectionIndex( combo );
     renderEditable( combo );
-    writeText( combo );
+    renderText( combo );
     writeSelection( combo );
     writeTextLimit( combo );
     writeVerifyAndModifyListener( combo );
@@ -237,6 +236,16 @@ public class ComboLCA extends AbstractWidgetLCA {
     }
   }
 
+  private static void renderText( Combo combo ) {
+    if( isEditable( combo ) ) {
+      String newValue = combo.getText();
+      if( WidgetLCAUtil.hasChanged( combo, PROP_TEXT, newValue, "" ) ) {
+        IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
+        clientObject.setProperty( PROP_TEXT, newValue );
+      }
+    }
+  }
+
   private static void writeSelection( Combo combo ) throws IOException {
     Point newValue = combo.getSelection();
     Integer start = new Integer( newValue.x );
@@ -264,17 +273,6 @@ public class ComboLCA extends AbstractWidgetLCA {
         newValue = null;
       }
       writer.set( "textLimit", newValue );
-    }
-  }
-
-  private static void writeText( Combo combo ) throws IOException {
-    if( isEditable( combo ) ) {
-      String newValue = combo.getText();
-      JSWriter writer = JSWriter.getWriterFor( combo );
-      if( WidgetLCAUtil.hasChanged( combo, PROP_TEXT, newValue, "" ) ) {
-        String value = EncodingUtil.removeNonDisplayableChars( newValue );
-        writer.set( "value", value );
-      }
     }
   }
 

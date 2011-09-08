@@ -14,7 +14,6 @@ import java.io.IOException;
 
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.custom.CCombo;
@@ -106,7 +105,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     renderListVisible( ccombo );
     renderSelectionIndex( ccombo );
     renderEditable( ccombo );
-    writeText( ccombo );
+    renderText( ccombo );
     writeSelection( ccombo );
     writeTextLimit( ccombo );
     writeVerifyAndModifyListener( ccombo );
@@ -229,6 +228,16 @@ public final class CComboLCA extends AbstractWidgetLCA {
     }
   }
 
+  private static void renderText( CCombo ccombo ) {
+    if( ccombo.getEditable() ) {
+      String newValue = ccombo.getText();
+      if( WidgetLCAUtil.hasChanged( ccombo, PROP_TEXT, newValue, "" ) ) {
+        IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
+        clientObject.setProperty( PROP_TEXT, newValue );
+      }
+    }
+  }
+
   private static void writeSelection( CCombo ccombo ) throws IOException {
     Point newValue = ccombo.getSelection();
     Integer start = new Integer( newValue.x );
@@ -256,17 +265,6 @@ public final class CComboLCA extends AbstractWidgetLCA {
         newValue = null;
       }
       writer.set( "textLimit", newValue );
-    }
-  }
-
-  private static void writeText( CCombo ccombo ) throws IOException {
-    if( ccombo.getEditable() || ccombo.getSelectionIndex() == -1 ) {
-      String newValue = ccombo.getText();
-      JSWriter writer = JSWriter.getWriterFor( ccombo );
-      if( WidgetLCAUtil.hasChanged( ccombo, PROP_TEXT, newValue, "" ) ) {
-        String value = EncodingUtil.removeNonDisplayableChars( newValue );
-        writer.set( "value", value );
-      }
     }
   }
 

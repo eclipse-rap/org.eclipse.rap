@@ -623,4 +623,58 @@ public class CComboLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( ccombo, "editable" ) );
   }
+
+  public void testRenderInitialText() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+
+    lca.render( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( ccombo );
+    assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
+  }
+
+  public void testRenderText() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+
+    ccombo.setText( "foo" );
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "foo", message.findSetProperty( ccombo, "text" ) );
+  }
+
+  public void testRenderTextNotEditable() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.READ_ONLY );
+
+    ccombo.setText( "foo" );
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( ccombo, "text" ) );
+  }
+
+  public void testRenderTextAfterMakeItEditable() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.READ_ONLY );
+
+    ccombo.setEditable( true );
+    ccombo.setText( "foo" );
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "foo", message.findSetProperty( ccombo, "text" ) );
+  }
+
+  public void testRenderTextUnchanged() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+
+    ccombo.setText( "foo" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( ccombo, "text" ) );
+  }
 }

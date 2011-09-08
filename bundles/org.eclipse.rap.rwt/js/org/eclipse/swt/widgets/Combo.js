@@ -371,7 +371,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       this._selected = value;
       if( value ) {
         var fieldValue = value.getLabel().toString();
-        this._field.setValue( this._formatText( fieldValue ) );
+        this.setText( this._formatText( fieldValue ) );
         if( this._field.isCreated() ) {
           if( !org.eclipse.swt.EventUtil.getSuspended() ) {
             this._field.selectAll();
@@ -382,7 +382,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._manager.scrollItemIntoView( value );
       } else {
         if( !this._editable ) {
-          this._field.setValue( "" );
+          this.setText( "" );
         }
         this._resetListSelection();
       }
@@ -655,7 +655,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       req.addParameter( id + ".text", this._field.getComputedValue() );
       req.removeEventListener( "send", this._onSend, this );
       this._isModified = false;
-      this.setValue( this._field.getComputedValue() );
+      this.setText( this._field.getComputedValue() );
     },
 
     _sendModifyText : function() {
@@ -774,7 +774,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       }
     },
 
-    setValue : function( value ) {
+    setText : function( value ) {
       this._field.setValue( value );
     },
     

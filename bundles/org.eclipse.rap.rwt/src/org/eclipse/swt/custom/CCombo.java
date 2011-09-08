@@ -760,7 +760,7 @@ public final class CCombo extends Composite {
     if( string == null ) {
       SWT.error ( SWT.ERROR_NULL_ARGUMENT );
     }
-    int style = super.getStyle();
+    int style = getStyle();
     if( ( style & SWT.READ_ONLY ) != 0 ) {
       int index = indexOf( string );
       if( index == -1 ) {
@@ -801,7 +801,7 @@ public final class CCombo extends Composite {
   public String getText() {
     checkWidget();
     String result = "";
-    int style = super.getStyle();
+    int style = getStyle();
     if( ( style & SWT.READ_ONLY ) != 0 ) {
       int idx = model.getSelectionIndex();
       if( idx != -1 ) {
@@ -1085,7 +1085,7 @@ public final class CCombo extends Composite {
   }
 
   private void updateText() {
-    int style = super.getStyle();
+    int style = getStyle();
     if( ( style & SWT.READ_ONLY ) == 0 ) {
       int selectionIndex = getSelectionIndex();
       if( selectionIndex != -1 ) {
