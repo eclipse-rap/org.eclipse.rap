@@ -28,7 +28,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Combo", {
     "listVisible",
     "selectionIndex",
     "editable",
-    "text"
+    "text",
+    "selection"
   ] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
@@ -44,6 +45,11 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Combo", {
     },
     "selectionIndex" : function( widget, value ) {
       widget.select( value );
+    },
+    "selection" : function( widget, value ) {
+      var start = value[ 0 ];
+      var length = value[ 1 ] - value[ 0 ];
+      widget.setTextSelection( start, length );
     }
   } ),
 

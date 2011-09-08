@@ -677,4 +677,40 @@ public class CComboLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( ccombo, "text" ) );
   }
+
+  public void testRenderInitialSelection() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+
+    lca.render( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( ccombo );
+    assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
+  }
+
+  public void testRenderSelection() throws IOException, JSONException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    ccombo.setText( "foo bar" );
+
+    ccombo.setSelection( new Point( 1, 3 ) );
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( ccombo, "selection" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 3 ]", actual ) );
+  }
+
+  public void testRenderSelectionUnchanged() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    ccombo.setText( "foo bar" );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+
+    ccombo.setSelection( new Point( 1, 3 ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( ccombo, "selection" ) );
+  }
 }

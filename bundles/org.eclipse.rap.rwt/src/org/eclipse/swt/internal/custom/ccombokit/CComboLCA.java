@@ -31,8 +31,6 @@ public final class CComboLCA extends AbstractWidgetLCA {
   private static final Point DEFAULT_SELECTION = new Point( 0, 0 );
   private static final Integer DEFAULT_VISIBLE_ITEM_COUNT = new Integer( 5 );
 
-  private static final String JS_FUNC_SET_SELECTION_TEXT = "setTextSelection";
-
   // Property names for preserve-value facility
   static final String PROP_ITEMS = "items";
   static final String PROP_TEXT = "text";
@@ -106,7 +104,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     renderSelectionIndex( ccombo );
     renderEditable( ccombo );
     renderText( ccombo );
-    writeSelection( ccombo );
+    renderSelection( ccombo );
     writeTextLimit( ccombo );
     writeVerifyAndModifyListener( ccombo );
     writeSelectionListener( ccombo );
@@ -236,21 +234,13 @@ public final class CComboLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeSelection( CCombo ccombo ) throws IOException {
+  private static void renderSelection( CCombo ccombo ) {
     Point newValue = ccombo.getSelection();
-    Integer start = new Integer( newValue.x );
-    Integer end = new Integer( newValue.y );
-    Integer count = new Integer( end.intValue() - start.intValue() );
-    // TODO [rh] could be optimized: when text was changed and selection is 0,0
-    //      there is no need to write JavaScript since the client resets the
-    //      selection as well when the new text is set.
     if( WidgetLCAUtil.hasChanged( ccombo, PROP_SELECTION, newValue, DEFAULT_SELECTION ) ) {
-      // [rh] Workaround for bug 252462: Changing selection on a hidden text
-      // widget causes exception in FF
-      if( ccombo.isVisible() ) {
-        JSWriter writer = JSWriter.getWriterFor( ccombo );
-        writer.call( JS_FUNC_SET_SELECTION_TEXT, new Object[] { start, count } );
-      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
+      Integer start = new Integer( newValue.x );
+      Integer end = new Integer( newValue.y );
+      clientObject.setProperty( PROP_SELECTION, new Object[] { start, end } );
     }
   }
 

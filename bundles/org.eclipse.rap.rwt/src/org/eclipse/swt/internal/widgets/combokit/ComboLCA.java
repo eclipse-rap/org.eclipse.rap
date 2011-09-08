@@ -40,8 +40,6 @@ public class ComboLCA extends AbstractWidgetLCA {
   // Must be in sync with appearance "list-item"
   private static final int LIST_ITEM_PADDING = 3;
 
-  private static final String JS_FUNC_SET_SELECTION_TEXT = "setTextSelection";
-
   // Property names for preserve-value facility
   static final String PROP_ITEMS = "items";
   static final String PROP_TEXT = "text";
@@ -114,7 +112,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     renderSelectionIndex( combo );
     renderEditable( combo );
     renderText( combo );
-    writeSelection( combo );
+    renderSelection( combo );
     writeTextLimit( combo );
     writeVerifyAndModifyListener( combo );
     writeSelectionListener( combo );
@@ -246,21 +244,13 @@ public class ComboLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeSelection( Combo combo ) throws IOException {
+  private static void renderSelection( Combo combo ) {
     Point newValue = combo.getSelection();
-    Integer start = new Integer( newValue.x );
-    Integer end = new Integer( newValue.y );
-    Integer count = new Integer( end.intValue() - start.intValue() );
-    // TODO [rh] could be optimized: when text was changed and selection is 0,0
-    //      there is no need to write JavaScript since the client resets the
-    //      selection as well when the new text is set.
     if( WidgetLCAUtil.hasChanged( combo, PROP_SELECTION, newValue, DEFAULT_SELECTION ) ) {
-      // [rh] Workaround for bug 252462: Changing selection on a hidden text
-      // widget causes exception in FF
-      if( combo.isVisible() ) {
-        JSWriter writer = JSWriter.getWriterFor( combo );
-        writer.call( JS_FUNC_SET_SELECTION_TEXT, new Object[] { start, count } );
-      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
+      Integer start = new Integer( newValue.x );
+      Integer end = new Integer( newValue.y );
+      clientObject.setProperty( PROP_SELECTION, new Object[] { start, end } );
     }
   }
 

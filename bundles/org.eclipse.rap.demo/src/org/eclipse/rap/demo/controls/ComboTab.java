@@ -326,6 +326,7 @@ public class ComboTab extends ExampleTab {
         int to = parseInt( txtSelectionTo.getText() );
         if( from >= 0 && to >= 0 ) {
           firstCombo.setSelection( new Point( from, to ) );
+          firstCombo.setFocus();
         } else {
           String msg
             = "Invalid Selection";

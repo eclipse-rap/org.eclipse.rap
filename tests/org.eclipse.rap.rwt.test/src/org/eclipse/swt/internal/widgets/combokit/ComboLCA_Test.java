@@ -640,4 +640,40 @@ public class ComboLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( combo, "text" ) );
   }
+
+  public void testRenderInitialSelection() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    lca.render( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( combo );
+    assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
+  }
+
+  public void testRenderSelection() throws IOException, JSONException {
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.setText( "foo bar" );
+
+    combo.setSelection( new Point( 1, 3 ) );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( combo, "selection" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ 1, 3 ]", actual ) );
+  }
+
+  public void testRenderSelectionUnchanged() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.setText( "foo bar" );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+
+    combo.setSelection( new Point( 1, 3 ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( combo, "selection" ) );
+  }
 }

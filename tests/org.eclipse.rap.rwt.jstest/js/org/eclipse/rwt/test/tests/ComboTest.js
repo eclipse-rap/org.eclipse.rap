@@ -242,6 +242,36 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       widget.destroy();
     },
 
+    testSetSelectionByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Combo",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      testUtil.flush();
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "set",
+        "properties" : {
+          "text" : "foo bar",
+          "selection" : [ 2, 5 ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( 2, widget._field.getSelectionStart() );
+      assertEquals( 3, widget._field.getSelectionLength() );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testCreateDispose : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var combo = this._createDefaultCombo();
