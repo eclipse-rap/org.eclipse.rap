@@ -644,20 +644,20 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( "foo", message.findSetProperty( ccombo, "text" ) );
   }
 
-  public void testRenderTextNotEditable() throws IOException {
+  public void testRenderTextReadOnly() throws IOException {
     CCombo ccombo = new CCombo( shell, SWT.READ_ONLY );
 
     ccombo.setText( "foo" );
     lca.renderChanges( ccombo );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( ccombo, "text" ) );
+    assertEquals( "foo", message.findSetProperty( ccombo, "text" ) );
   }
 
-  public void testRenderTextAfterMakeItEditable() throws IOException {
-    CCombo ccombo = new CCombo( shell, SWT.READ_ONLY );
+  public void testRenderTextNotEditable() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    ccombo.setEditable( false );
 
-    ccombo.setEditable( true );
     ccombo.setText( "foo" );
     lca.renderChanges( ccombo );
 

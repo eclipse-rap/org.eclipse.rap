@@ -617,7 +617,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       if( this._dropped && !evt.isAltPressed() && !evt.isCtrlPressed() ) {
         this._list._onkeyinput( evt );
         var selected = this._manager.getSelectedItem();
-        this._setSelected( selected );
+        if( selected != null ) {
+          this._setSelected( selected );
+        } else {
+          this._setListSelection( this._selected );
+        }
       }
     },
 

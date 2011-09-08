@@ -229,12 +229,10 @@ public final class CComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderText( CCombo ccombo ) {
-    if( ccombo.getEditable() ) {
-      String newValue = ccombo.getText();
-      if( WidgetLCAUtil.hasChanged( ccombo, PROP_TEXT, newValue, "" ) ) {
-        IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
-        clientObject.setProperty( PROP_TEXT, newValue );
-      }
+    String newValue = ccombo.getText();
+    if( WidgetLCAUtil.hasChanged( ccombo, PROP_TEXT, newValue, "" ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
+      clientObject.setProperty( PROP_TEXT, newValue );
     }
   }
 

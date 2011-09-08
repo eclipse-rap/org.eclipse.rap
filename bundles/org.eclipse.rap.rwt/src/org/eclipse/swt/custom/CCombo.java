@@ -105,7 +105,7 @@ public final class CCombo extends Composite {
    * @see SWT#FLAT
    * @see Widget#getStyle()
    */
-  public CCombo( final Composite parent, final int style ) {
+  public CCombo( Composite parent, int style ) {
   	super( parent, checkStyle( style ) );
   	text = "";
   	textLimit = LIMIT;
@@ -153,7 +153,7 @@ public final class CCombo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void select( final int index ) {
+  public void select( int index ) {
     checkWidget();
     if( -1 <= index && index < getItemCount() ) {
       model.setSelection( index );
@@ -173,7 +173,7 @@ public final class CCombo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void deselect( final int index ) {
+  public void deselect( int index ) {
     checkWidget();
     if( index == model.getSelectionIndex() ) {
       model.setSelection( -1 );
@@ -197,7 +197,6 @@ public final class CCombo extends Composite {
    */
   public void deselectAll() {
     checkWidget();
-    text = "";
     model.deselectAll();
     updateText();
   }
@@ -218,7 +217,7 @@ public final class CCombo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelection( final Point selection ) {
+  public void setSelection( Point selection ) {
     checkWidget();
     if( selection == null ) SWT.error ( SWT.ERROR_NULL_ARGUMENT );
     int validatedStart = this.selection.x;
@@ -269,7 +268,7 @@ public final class CCombo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setTextLimit( final int limit ) {
+  public void setTextLimit( int limit ) {
     checkWidget();
     if( limit == 0 ) {
       SWT.error ( SWT.ERROR_CANNOT_BE_ZERO );
@@ -356,7 +355,7 @@ public final class CCombo extends Composite {
    *
    * @see #add(String,int)
    */
-  public void add( final String string ) {
+  public void add( String string ) {
   	checkWidget();
   	model.add( string );
   }
@@ -384,7 +383,7 @@ public final class CCombo extends Composite {
    *
    * @see #add(String)
    */
-  public void add( final String string, final int index) {
+  public void add( String string, int index) {
   	checkWidget();
   	model.add( string, index );
   }
@@ -403,7 +402,7 @@ public final class CCombo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void remove( final int index ) {
+  public void remove( int index ) {
     checkWidget();
     int selectionIndex = getSelectionIndex();
     if( selectionIndex == index ) {
@@ -428,7 +427,7 @@ public final class CCombo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void remove( final int start, final int end ) {
+  public void remove( int start, int end ) {
     checkWidget();
     int selectionIndex = getSelectionIndex();
     String[] items = model.getItems();
@@ -457,7 +456,7 @@ public final class CCombo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void remove( final String string ) {
+  public void remove( String string ) {
     checkWidget();
     int indexOfThisString = indexOf( string );
     int selectionIndex = getSelectionIndex();
@@ -500,7 +499,7 @@ public final class CCombo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setItem( final int index, final String string ) {
+  public void setItem( int index, String string ) {
     checkWidget();
     model.setItem( index, string );
   }
@@ -519,7 +518,7 @@ public final class CCombo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setItems( final String [] items ) {
+  public void setItems( String [] items ) {
     checkWidget();
     model.setItems( items );
   }
@@ -540,7 +539,7 @@ public final class CCombo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public String getItem( final int index ) {
+  public String getItem( int index ) {
     checkWidget();
     return model.getItem( index );
   }
@@ -611,7 +610,7 @@ public final class CCombo extends Composite {
    * </ul>
    *
    */
-  public void setVisibleItemCount( final int count ) {
+  public void setVisibleItemCount( int count ) {
     checkWidget();
     if( count >= 0 ) {
       visibleCount = count;
@@ -652,7 +651,7 @@ public final class CCombo extends Composite {
    * </ul>
    *
    */
-  public void setListVisible( final boolean visible ) {
+  public void setListVisible( boolean visible ) {
     checkWidget();
     dropped = visible;
   }
@@ -697,7 +696,7 @@ public final class CCombo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int indexOf( final String string ) {
+  public int indexOf( String string ) {
     checkWidget();
     if( string == null ) SWT.error ( SWT.ERROR_NULL_ARGUMENT );
     return indexOf( string, 0 );
@@ -722,7 +721,7 @@ public final class CCombo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int indexOf ( final String string, final int start ) {
+  public int indexOf ( String string, int start ) {
     checkWidget();
     if( string == null ) SWT.error ( SWT.ERROR_NULL_ARGUMENT );
     if( !( 0 <= start && start < model.getItemCount() ) )
@@ -755,18 +754,10 @@ public final class CCombo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setText( final String string ) {
+  public void setText( String string ) {
     checkWidget();
     if( string == null ) {
       SWT.error ( SWT.ERROR_NULL_ARGUMENT );
-    }
-    int style = getStyle();
-    if( ( style & SWT.READ_ONLY ) != 0 ) {
-      int index = indexOf( string );
-      if( index == -1 ) {
-        return;
-      }
-      select( index );
     }
     String verifiedText = verifyText( string, 0, text.length() );
     if( verifiedText != null ) {
@@ -800,17 +791,7 @@ public final class CCombo extends Composite {
    */
   public String getText() {
     checkWidget();
-    String result = "";
-    int style = getStyle();
-    if( ( style & SWT.READ_ONLY ) != 0 ) {
-      int idx = model.getSelectionIndex();
-      if( idx != -1 ) {
-        result = model.getItem( idx );
-      }
-    } else {
-      result = text;
-    }
-    return result;
+    return text;
   }
 
   /**
@@ -824,7 +805,7 @@ public final class CCombo extends Composite {
    * </ul>
    *
    */
-  public void setEditable( final boolean editable ) {
+  public void setEditable( boolean editable ) {
     checkWidget();
     this.editable = editable;
   }
@@ -845,10 +826,7 @@ public final class CCombo extends Composite {
     return editable;
   }
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
     int height = Graphics.getCharHeight( getFont() );
@@ -913,7 +891,7 @@ public final class CCombo extends Composite {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -935,7 +913,7 @@ public final class CCombo extends Composite {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
@@ -959,7 +937,7 @@ public final class CCombo extends Composite {
    * @see ModifyListener
    * @see #removeModifyListener
    */
-  public void addModifyListener( final ModifyListener listener ) {
+  public void addModifyListener( ModifyListener listener ) {
     checkWidget();
     ModifyEvent.addListener( this, listener );
   }
@@ -981,7 +959,7 @@ public final class CCombo extends Composite {
    * @see ModifyListener
    * @see #addModifyListener
    */
-  public void removeModifyListener( final ModifyListener listener ) {
+  public void removeModifyListener( ModifyListener listener ) {
     checkWidget();
     ModifyEvent.removeListener( this, listener );
   }
@@ -1006,7 +984,7 @@ public final class CCombo extends Composite {
    * @see #removeVerifyListener
    *
    */
-  public void addVerifyListener( final VerifyListener verifyListener ) {
+  public void addVerifyListener( VerifyListener verifyListener ) {
     checkWidget();
     VerifyEvent.addListener( this, verifyListener );
   }
@@ -1029,7 +1007,7 @@ public final class CCombo extends Composite {
    * @see #addVerifyListener
    *
    */
-  public void removeVerifyListener( final VerifyListener verifyListener ) {
+  public void removeVerifyListener( VerifyListener verifyListener ) {
     checkWidget();
     VerifyEvent.removeListener( this, verifyListener );
   }
@@ -1054,7 +1032,7 @@ public final class CCombo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setLayout( final Layout layout ) {
+  public void setLayout( Layout layout ) {
   	checkWidget();
   	return;
   }
@@ -1063,8 +1041,7 @@ public final class CCombo extends Composite {
   // Helping methods
 
   // Direct copy from Combo.java
-  private String verifyText( final String text, final int start, final int end )
-  {
+  private String verifyText( String text, int start, int end ) {
     VerifyEvent event = new VerifyEvent( this );
     event.text = text;
     event.start = start;
@@ -1085,17 +1062,11 @@ public final class CCombo extends Composite {
   }
 
   private void updateText() {
-    int style = getStyle();
-    if( ( style & SWT.READ_ONLY ) == 0 ) {
-      int selectionIndex = getSelectionIndex();
-      if( selectionIndex != -1 ) {
-        setText( getItem( selectionIndex ) );
-      } else {
-        setText( "" );
-      }
+    int selectionIndex = getSelectionIndex();
+    if( selectionIndex != -1 ) {
+      setText( getItem( selectionIndex ) );
     } else {
-      // Covers "SWT.READ_ONLY selection" use case
-      fireModifyEvent();
+      setText( "" );
     }
   }
 
@@ -1114,7 +1085,7 @@ public final class CCombo extends Composite {
     return themeAdapter.getButtonWidth( this );
   }
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     int mask = SWT.BORDER | SWT.READ_ONLY | SWT.FLAT | SWT.LEFT_TO_RIGHT;
     return style & mask;
   }

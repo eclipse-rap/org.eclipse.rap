@@ -121,7 +121,6 @@ public class CCombo_Test extends TestCase {
     combo.clearSelection();
     combo.setSelection( new Point( 5, 2 ) );
     assertEquals( new Point( 2, 5 ), combo.getSelection() );
-
   }
 
   public void testIndexOf() {
@@ -234,6 +233,44 @@ public class CCombo_Test extends TestCase {
       combo.setText( cases[ i ] );
       assertTrue( ":c:" + i, combo.getText().equals( cases[ i ] ) );
     }
+  }
+
+  public void testSetTextReadOnly() {
+    CCombo combo = new CCombo( shell, SWT.READ_ONLY );
+
+    combo.setText( "foo" );
+
+    assertEquals( "foo", combo.getText() );
+  }
+
+  public void testSetTextNotEditable() {
+    CCombo combo = new CCombo( shell, SWT.NONE );
+    combo.setEditable( false );
+
+    combo.setText( "foo" );
+
+    assertEquals( "foo", combo.getText() );
+  }
+
+  public void testSetTextNotInItems() {
+    CCombo combo = new CCombo( shell, SWT.NONE );
+    combo.setItems( new String[] { "a", "b", "c" } );
+    combo.select( 1 );
+
+    combo.setText( "foo" );
+
+    assertEquals( "foo", combo.getText() );
+    assertEquals( -1, combo.getSelectionIndex() );
+  }
+
+  public void testSetTextInItems() {
+    CCombo combo = new CCombo( shell, SWT.NONE );
+    combo.setItems( new String[] { "a", "b", "c" } );
+
+    combo.setText( "b" );
+
+    assertEquals( "b", combo.getText() );
+    assertEquals( 1, combo.getSelectionIndex() );
   }
 
   public void testSelect() {
@@ -630,15 +667,15 @@ public class CCombo_Test extends TestCase {
     combo.setFont( null );
     assertEquals( 13, combo.getTextHeight() );
   }
-  
+
   public void testSelectionIsSerializable() throws Exception {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.add( "0" );
     combo.add( "1" );
     combo.select( 1 );
-    
+
     CCombo deserializedCombo = Fixture.serializeAndDeserialize( combo );
-    
+
     assertEquals( "1", deserializedCombo.getText() );
     assertEquals( 1, deserializedCombo.getSelectionIndex() );
     assertEquals( "0", deserializedCombo.getItem( 0 ) );
