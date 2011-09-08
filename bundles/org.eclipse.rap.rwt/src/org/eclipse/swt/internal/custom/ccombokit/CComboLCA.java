@@ -39,9 +39,11 @@ public final class CComboLCA extends AbstractWidgetLCA {
   static final String PROP_TEXT_LIMIT = "textLimit";
   static final String PROP_LIST_VISIBLE = "listVisible";
   static final String PROP_EDITABLE = "editable";
-  static final String PROP_VERIFY_MODIFY_LISTENER = "verifyModifyListener";
   static final String PROP_VISIBLE_ITEM_COUNT = "visibleItemCount";
   static final String PROP_ITEM_HEIGHT = "itemHeight";
+  static final String PROP_SELECTION_LISTENER = "selectionListener";
+  static final String PROP_MODIFY_LISTENER = "modifyListener";
+  static final String PROP_VERIFY_LISTENER = "verifyListener";
 
   public void preserveValues( Widget widget ) {
     CCombo ccombo = ( CCombo )widget;
@@ -59,10 +61,12 @@ public final class CComboLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( SelectionEvent.hasListener( ccombo ) ) );
     adapter.preserve( PROP_LIST_VISIBLE, new Boolean( ccombo.getListVisible() ) );
     adapter.preserve( PROP_EDITABLE, Boolean.valueOf( ccombo.getEditable() ) );
-    boolean hasVerifyListener = VerifyEvent.hasListener( ccombo );
-    boolean hasModifyListener = ModifyEvent.hasListener( ccombo );
-    boolean hasListener = hasVerifyListener || hasModifyListener;
-    adapter.preserve( PROP_VERIFY_MODIFY_LISTENER, Boolean.valueOf( hasListener ) );
+    adapter.preserve( PROP_SELECTION_LISTENER,
+                      Boolean.valueOf( SelectionEvent.hasListener( ccombo ) ) );
+    adapter.preserve( PROP_MODIFY_LISTENER,
+                      Boolean.valueOf( ModifyEvent.hasListener( ccombo ) ) );
+    adapter.preserve( PROP_VERIFY_LISTENER,
+                      Boolean.valueOf( VerifyEvent.hasListener( ccombo ) ) );
     WidgetLCAUtil.preserveCustomVariant( ccombo );
   }
 
@@ -106,8 +110,9 @@ public final class CComboLCA extends AbstractWidgetLCA {
     renderText( ccombo );
     renderSelection( ccombo );
     renderTextLimit( ccombo );
-    writeVerifyAndModifyListener( ccombo );
-    writeSelectionListener( ccombo );
+    renderListenSelection( ccombo );
+    renderListenModify( ccombo );
+    renderListenVerify( ccombo );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
@@ -255,25 +260,37 @@ public final class CComboLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeSelectionListener( CCombo ccombo ) throws IOException {
-    boolean hasListener = SelectionEvent.hasListener( ccombo );
-    Boolean newValue = Boolean.valueOf( hasListener );
-    String prop = Props.SELECTION_LISTENERS;
-    if( WidgetLCAUtil.hasChanged( ccombo, prop, newValue, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( ccombo );
-      writer.set( "hasSelectionListener", newValue );
+
+  private static void renderListenSelection( CCombo ccombo ) {
+    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( ccombo ) );
+    if( WidgetLCAUtil.hasChanged( ccombo, PROP_SELECTION_LISTENER, newValue, Boolean.FALSE ) ) {
+      renderListen( ccombo, "selection", newValue.booleanValue() );
     }
   }
 
-  private static void writeVerifyAndModifyListener( CCombo ccombo ) throws IOException {
-    boolean hasVerifyListener = VerifyEvent.hasListener( ccombo );
-    boolean hasModifyListener = ModifyEvent.hasListener( ccombo );
-    boolean hasListener = hasVerifyListener || hasModifyListener;
-    Boolean newValue = Boolean.valueOf( hasListener );
-    String prop = PROP_VERIFY_MODIFY_LISTENER;
-    if( WidgetLCAUtil.hasChanged( ccombo, prop, newValue, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( ccombo );
-      writer.set( "hasVerifyModifyListener", newValue );
+  private static void renderListenModify( CCombo ccombo ) {
+    Boolean newValue = Boolean.valueOf( ModifyEvent.hasListener( ccombo ) );
+    if( WidgetLCAUtil.hasChanged( ccombo, PROP_MODIFY_LISTENER, newValue, Boolean.FALSE ) ) {
+      renderListen( ccombo, "modify", newValue.booleanValue() );
+    }
+  }
+
+  private static void renderListenVerify( CCombo ccombo ) {
+    Boolean newValue = Boolean.valueOf( VerifyEvent.hasListener( ccombo ) );
+    if( WidgetLCAUtil.hasChanged( ccombo, PROP_VERIFY_LISTENER, newValue, Boolean.FALSE ) ) {
+      renderListen( ccombo, "verify", newValue.booleanValue() );
+    }
+  }
+
+  //////////////////
+  // Helping methods
+
+  private static void renderListen( CCombo ccombo, String eventType, boolean hasListener ) {
+    IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
+    if( hasListener ) {
+      clientObject.addListener( eventType );
+    } else {
+      clientObject.removeListener( eventType );
     }
   }
 }

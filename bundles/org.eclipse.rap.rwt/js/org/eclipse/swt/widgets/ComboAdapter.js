@@ -54,7 +54,11 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Combo", {
     }
   } ),
 
-  listeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [] ),
+  listeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [
+    "selection",
+    "modify",
+    "verify"
+  ] ),
 
   listenerHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
 

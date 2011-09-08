@@ -20,8 +20,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.*;
 
 
 final class TextLCAUtil {
@@ -168,36 +167,21 @@ final class TextLCAUtil {
   static void renderListenSelection( Text text ) {
     Boolean newValue = Boolean.valueOf( hasSelectionListener( text ) );
     if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION_LISTENER, newValue, Boolean.FALSE ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
-      if( newValue.booleanValue() ) {
-        clientObject.addListener( "selection" );
-      } else {
-        clientObject.removeListener( "selection" );
-      }
+      renderListen( text, "selection", newValue.booleanValue() );
     }
   }
 
   private static void renderListenModify( Text text ) {
     Boolean newValue = Boolean.valueOf( ModifyEvent.hasListener( text ) );
     if( WidgetLCAUtil.hasChanged( text, PROP_MODIFY_LISTENER, newValue, Boolean.FALSE ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
-      if( newValue.booleanValue() ) {
-        clientObject.addListener( "modify" );
-      } else {
-        clientObject.removeListener( "modify" );
-      }
+      renderListen( text, "modify", newValue.booleanValue() );
     }
   }
 
   private static void renderListenVerify( Text text ) {
     Boolean newValue = Boolean.valueOf( VerifyEvent.hasListener( text ) );
     if( WidgetLCAUtil.hasChanged( text, PROP_VERIFY_LISTENER, newValue, Boolean.FALSE ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
-      if( newValue.booleanValue() ) {
-        clientObject.addListener( "verify" );
-      } else {
-        clientObject.removeListener( "verify" );
-      }
+      renderListen( text, "verify", newValue.booleanValue() );
     }
   }
 
@@ -211,6 +195,18 @@ final class TextLCAUtil {
     if( WidgetLCAUtil.hasChanged( text, PROP_ECHO_CHAR, newValue, null ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( text );
       clientObject.setProperty( PROP_ECHO_CHAR, newValue );
+    }
+  }
+
+  //////////////////
+  // Helping methods
+
+  private static void renderListen( Text text, String eventType, boolean hasListener ) {
+    IClientObject clientObject = ClientObjectFactory.getForWidget( text );
+    if( hasListener ) {
+      clientObject.addListener( eventType );
+    } else {
+      clientObject.removeListener( eventType );
     }
   }
 

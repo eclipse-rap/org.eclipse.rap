@@ -21,7 +21,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     this._ccombo = isCCombo === true;
     //
     this._hasSelectionListener = false;
-    this._hasVerifyModifyListener = false;
+    this._hasModifyListener = false;
+    this._hasVerifyListener = false;
     this._isModified = false;
     // Default values
     this._selected = null;
@@ -633,7 +634,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         if( !org.eclipse.swt.EventUtil.getSuspended() ) {
           var req = org.eclipse.swt.Request.getInstance();
           req.addEventListener( "send", this._onSend, this );
-          if( this._hasVerifyModifyListener ) {
+          if( this._hasVerifyModifyListener() ) {
             qx.client.Timer.once( this._sendModifyText, this, 500 );
           }
         }
@@ -678,7 +679,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         var list = this._list;
         var listItem = this._list.getSelectedItem();
         req.addParameter( id + ".selectedItem", list.getItemIndex( listItem ) );
-        if( this._hasSelectionListener || this._hasVerifyModifyListener ) {
+        if( this._hasSelectionListener || this._hasVerifyModifyListener() ) {
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
           org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();
@@ -799,8 +800,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
       this._hasSelectionListener = value;
     },
 
-    setHasVerifyModifyListener : function( value ) {
-      this._hasVerifyModifyListener = value;
+    setHasModifyListener : function( value ) {
+      this._hasModifyListener = value;
+    },
+
+    setHasVerifyListener : function( value ) {
+      this._hasVerifyListener = value;
+    },
+
+    _hasVerifyModifyListener : function() {
+      return this._hasModifyListener || this._hasVerifyListener;
     }
   }
 } );

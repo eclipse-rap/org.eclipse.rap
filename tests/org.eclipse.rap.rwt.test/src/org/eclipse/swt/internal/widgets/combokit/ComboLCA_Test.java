@@ -65,8 +65,7 @@ public class ComboLCA_Test extends TestCase {
                   adapter.getPreserved( ComboLCA.PROP_TEXT_LIMIT ) );
     Object visibleItemCount = adapter.getPreserved( ComboLCA.PROP_VISIBLE_ITEM_COUNT );
     assertEquals( new Integer( combo.getVisibleItemCount() ), visibleItemCount );
-    Boolean hasListeners;
-    hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    Boolean hasListeners = ( Boolean )adapter.getPreserved( ComboLCA.PROP_SELECTION_LISTENER );
     assertEquals( Boolean.FALSE, adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
     assertEquals( Boolean.FALSE, hasListeners );
     assertEquals( new Point( 0, 0 ),
@@ -94,11 +93,10 @@ public class ComboLCA_Test extends TestCase {
     visibleItemCount = adapter.getPreserved( ComboLCA.PROP_VISIBLE_ITEM_COUNT );
     assertEquals( new Integer( combo.getVisibleItemCount() ), visibleItemCount );
     assertEquals( "item 2", adapter.getPreserved( Props.TEXT ) );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    hasListeners = ( Boolean )adapter.getPreserved( ComboLCA.PROP_SELECTION_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
     assertEquals( Boolean.FALSE, adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
-    hasListeners
-     = ( Boolean )adapter.getPreserved( ComboLCA.PROP_VERIFY_MODIFY_LISTENER );
+    hasListeners = ( Boolean )adapter.getPreserved( ComboLCA.PROP_MODIFY_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
     //control_listeners
     Fixture.preserveWidgets();
@@ -691,5 +689,101 @@ public class ComboLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( combo, "textLimit" ) );
+  }
+
+  public void testRenderAddSelectionListener() throws Exception {
+    Combo combo = new Combo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+    Fixture.preserveWidgets();
+
+    combo.addSelectionListener( new SelectionAdapter() { } );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( combo, "selection" ) );
+  }
+
+  public void testRenderRemoveSelectionListener() throws Exception {
+    Combo combo = new Combo( shell, SWT.NONE );
+    SelectionListener listener = new SelectionAdapter() { };
+    combo.addSelectionListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+    Fixture.preserveWidgets();
+
+    combo.removeSelectionListener( listener );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( combo, "selection" ) );
+  }
+
+  public void testRenderAddModifyListener() throws Exception {
+    Combo combo = new Combo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+    Fixture.preserveWidgets();
+
+    combo.addModifyListener( new ModifyListener() {
+      public void modifyText( ModifyEvent event ) {
+      }
+    } );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( combo, "modify" ) );
+  }
+
+  public void testRenderRemoveModifyListener() throws Exception {
+    Combo combo = new Combo( shell, SWT.NONE );
+    ModifyListener listener = new ModifyListener() {
+      public void modifyText( ModifyEvent event ) {
+      }
+    };
+    combo.addModifyListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+    Fixture.preserveWidgets();
+
+    combo.removeModifyListener( listener );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( combo, "modify" ) );
+  }
+
+  public void testRenderAddVerifyListener() throws Exception {
+    Combo combo = new Combo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+    Fixture.preserveWidgets();
+
+    combo.addVerifyListener( new VerifyListener() {
+      public void verifyText( VerifyEvent event ) {
+      }
+    } );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( combo, "verify" ) );
+  }
+
+  public void testRenderRemoveVerifyListener() throws Exception {
+    Combo combo = new Combo( shell, SWT.NONE );
+    VerifyListener listener = new VerifyListener() {
+      public void verifyText( VerifyEvent event ) {
+      }
+    };
+    combo.addVerifyListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+    Fixture.preserveWidgets();
+
+    combo.removeVerifyListener( listener );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( combo, "verify" ) );
   }
 }
