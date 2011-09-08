@@ -176,6 +176,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       widget.destroy();
     },
 
+    testSetSelectionIndexByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Combo",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "items" : [ "a", "b", "c" ],
+          "selectionIndex" : 1
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      var items = widget._list.getItems();
+      assertIdentical( items[ 1 ], widget._selected );
+      shell.destroy();
+      widget.destroy();
+    },    
+
     testSetEditableByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = testUtil.createShellByProtocol( "w2" );

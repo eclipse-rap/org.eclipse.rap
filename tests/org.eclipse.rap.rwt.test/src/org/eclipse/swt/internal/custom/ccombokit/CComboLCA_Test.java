@@ -38,7 +38,7 @@ import org.json.JSONException;
 public class CComboLCA_Test extends TestCase {
 
   private static final String PROP_ITEMS = "items";
-  private static final String PROP_SELECTION = "selection";
+  private static final String PROP_SELECTION_INDEX = "selectionIndex";
 
   private Display display;
   private Shell shell;
@@ -64,11 +64,11 @@ public class CComboLCA_Test extends TestCase {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( ccombo );
     String[] items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
     assertEquals( 0, items.length );
-    assertEquals( new Integer( -1 ), adapter.getPreserved( PROP_SELECTION ) );
+    assertEquals( new Integer( -1 ), adapter.getPreserved( PROP_SELECTION_INDEX ) );
     Object visibleItemCount = adapter.getPreserved( CComboLCA.PROP_VISIBLE_ITEM_COUNT );
     assertEquals( new Integer( ccombo.getVisibleItemCount() ), visibleItemCount );
     assertEquals( new Integer( Text.LIMIT ), adapter.getPreserved( CComboLCA.PROP_TEXT_LIMIT ) );
-    assertEquals( new Point( 0, 0 ), adapter.getPreserved( CComboLCA.PROP_TEXT_SELECTION ) );
+    assertEquals( new Point( 0, 0 ), adapter.getPreserved( CComboLCA.PROP_SELECTION ) );
     assertEquals( Boolean.FALSE, adapter.getPreserved( CComboLCA.PROP_LIST_VISIBLE ) );
     Boolean hasListeners;
     hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
@@ -94,7 +94,7 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( 2, items.length );
     assertEquals( "item 1", items[ 0 ] );
     assertEquals( "item 2", items[ 1 ] );
-    assertEquals( new Integer( 1 ), adapter.getPreserved( PROP_SELECTION ) );
+    assertEquals( new Integer( 1 ), adapter.getPreserved( PROP_SELECTION_INDEX ) );
     visibleItemCount = adapter.getPreserved( CComboLCA.PROP_VISIBLE_ITEM_COUNT );
     assertEquals( new Integer( ccombo.getVisibleItemCount() ), visibleItemCount );
     assertEquals( "item 2", adapter.getPreserved( Props.TEXT ) );
@@ -177,32 +177,6 @@ public class CComboLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( ccombo );
     Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-  }
-
-  public void testRenderChanges() throws IOException {
-    Fixture.fakeResponseWriter();
-    CCombo ccombo = new CCombo( shell, SWT.READ_ONLY );
-    shell.open();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( ccombo );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    CComboLCA ccomboLCA = new CComboLCA();
-    ccombo.add( "item 1" );
-    ccombo.add( "item 2" );
-    ccomboLCA.renderChanges( ccombo );
-    Fixture.fakeResponseWriter();
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    ccombo.select( 1 );
-    ccomboLCA.renderChanges( ccombo );
-    String expected = "w.select( 1 );";
-    assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
-    Fixture.fakeResponseWriter();
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    ccomboLCA.renderChanges( ccombo );
-    assertEquals( "", Fixture.getAllMarkup() );
   }
 
   public void testReadData() {
@@ -395,7 +369,7 @@ public class CComboLCA_Test extends TestCase {
     ccombo.select( 0 );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         ccombo.removeAll();
         ccombo.add( "replacement for item 1" );
         ccombo.select( 0 );
@@ -412,8 +386,8 @@ public class CComboLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.executeLifeCycleFromServerThread();
-    String expected = "w.select( 0 )";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 0 ), message.findSetProperty( ccombo, PROP_SELECTION_INDEX ) );
   }
 
   public void testRenderCreate() throws IOException {
@@ -580,6 +554,41 @@ public class CComboLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( ccombo, "listVisible" ) );
+  }
+
+  public void testRenderInitialSelectionIndex() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+
+    lca.render( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( ccombo );
+    assertTrue( operation.getPropertyNames().indexOf( "selectionIndex" ) == -1 );
+  }
+
+  public void testRenderSelectionIndex() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    ccombo.setItems( new String[] { "a", "b", "c" } );
+
+    ccombo.select( 1 );
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 1 ), message.findSetProperty( ccombo, "selectionIndex" ) );
+  }
+
+  public void testRenderSelectionIndexUnchanged() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    ccombo.setItems( new String[] { "a", "b", "c" } );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+
+    ccombo.select( 1 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( ccombo, "selectionIndex" ) );
   }
 
   public void testRenderInitialEditable() throws IOException {

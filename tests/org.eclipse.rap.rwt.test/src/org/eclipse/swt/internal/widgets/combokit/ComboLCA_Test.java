@@ -35,7 +35,7 @@ import org.json.JSONException;
 public class ComboLCA_Test extends TestCase {
 
   private static final String PROP_ITEMS = "items";
-  private static final String PROP_SELECTION = "selection";
+  private static final String PROP_SELECTION_INDEX = "selectionIndex";
 
   private Display display;
   private Shell shell;
@@ -61,7 +61,7 @@ public class ComboLCA_Test extends TestCase {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
     String[] items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
     assertEquals( 0, items.length );
-    assertEquals( new Integer( -1 ), adapter.getPreserved( PROP_SELECTION ) );
+    assertEquals( new Integer( -1 ), adapter.getPreserved( PROP_SELECTION_INDEX ) );
     assertEquals( new Integer( Combo.LIMIT ),
                   adapter.getPreserved( ComboLCA.PROP_TEXT_LIMIT ) );
     Object visibleItemCount = adapter.getPreserved( ComboLCA.PROP_VISIBLE_ITEM_COUNT );
@@ -71,7 +71,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
     assertEquals( Boolean.FALSE, hasListeners );
     assertEquals( new Point( 0, 0 ),
-                  adapter.getPreserved( ComboLCA.PROP_TEXT_SELECTION ) );
+                  adapter.getPreserved( ComboLCA.PROP_SELECTION ) );
     // Test preserving combo with items were one is selected
     Fixture.clearPreserved();
     combo.add( "item 1" );
@@ -91,7 +91,7 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( 2, items.length );
     assertEquals( "item 1", items[ 0 ] );
     assertEquals( "item 2", items[ 1 ] );
-    assertEquals( new Integer( 1 ), adapter.getPreserved( PROP_SELECTION ) );
+    assertEquals( new Integer( 1 ), adapter.getPreserved( PROP_SELECTION_INDEX ) );
     visibleItemCount = adapter.getPreserved( ComboLCA.PROP_VISIBLE_ITEM_COUNT );
     assertEquals( new Integer( combo.getVisibleItemCount() ), visibleItemCount );
     assertEquals( "item 2", adapter.getPreserved( Props.TEXT ) );
@@ -178,32 +178,6 @@ public class ComboLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     Integer textLimit = ( Integer )adapter.getPreserved( ComboLCA.PROP_TEXT_LIMIT );
     assertEquals( new Integer( 10 ), textLimit );
-  }
-
-  public void testRenderChanges() throws IOException {
-    Fixture.fakeResponseWriter();
-    Combo combo = new Combo( shell, SWT.READ_ONLY );
-    shell.open();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( combo );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    ComboLCA comboLCA = new ComboLCA();
-    combo.add( "item 1" );
-    combo.add( "item 2" );
-    comboLCA.renderChanges( combo );
-    Fixture.fakeResponseWriter();
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    combo.select( 1 );
-    comboLCA.renderChanges( combo );
-    String expected = "w.select( 1 );";
-    assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
-    Fixture.fakeResponseWriter();
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    comboLCA.renderChanges( combo );
-    assertEquals( "", Fixture.getAllMarkup() );
   }
 
   public void testReadData() {
@@ -364,7 +338,7 @@ public class ComboLCA_Test extends TestCase {
     combo.select( 0 );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         combo.removeAll();
         combo.add( "replacement for item 1" );
         combo.select( 0 );
@@ -381,8 +355,8 @@ public class ComboLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.executeLifeCycleFromServerThread();
-    String expected = "w.select( 0 )";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 0 ), message.findSetProperty( combo, PROP_SELECTION_INDEX ) );
   }
 
   public void testTextLimit() throws IOException {
@@ -587,5 +561,40 @@ public class ComboLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( combo );
     assertEquals( Boolean.FALSE, operation.getProperty( "editable" ) );
+  }
+
+  public void testRenderInitialSelectionIndex() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+
+    lca.render( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( combo );
+    assertTrue( operation.getPropertyNames().indexOf( "selectionIndex" ) == -1 );
+  }
+
+  public void testRenderSelectionIndex() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.setItems( new String[] { "a", "b", "c" } );
+
+    combo.select( 1 );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 1 ), message.findSetProperty( combo, "selectionIndex" ) );
+  }
+
+  public void testRenderSelectionIndexUnchanged() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+    combo.setItems( new String[] { "a", "b", "c" } );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+
+    combo.select( 1 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( combo, "selectionIndex" ) );
   }
 }

@@ -26,6 +26,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Combo", {
     "visibleItemCount",
     "items",
     "listVisible",
+    "selectionIndex",
     "editable"
   ] ),
 
@@ -39,6 +40,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Combo", {
         items[ i ] = encodingUtil.replaceWhiteSpaces( items[ i ] );
       }
       widget.setItems( items );
+    },
+    "selectionIndex" : function( widget, value ) {
+      widget.select( value );
     }
   } ),
 
