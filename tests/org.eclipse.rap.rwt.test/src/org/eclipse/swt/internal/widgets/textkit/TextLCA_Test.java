@@ -29,8 +29,7 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
-import org.json.JSONArray;
-import org.json.JSONException;
+import org.json.*;
 
 public class TextLCA_Test extends TestCase {
 
@@ -269,7 +268,7 @@ public class TextLCA_Test extends TestCase {
     //text-limit
     Fixture.preserveWidgets();
     Integer textLimit = ( Integer )( getPreserved( text, TextLCAUtil.PROP_TEXT_LIMIT ) );
-    assertEquals( Integer.MAX_VALUE, textLimit.intValue() );
+    assertNull( textLimit );
     text.setTextLimit( 30 );
     Fixture.preserveWidgets();
     textLimit = ( Integer )( getPreserved( text, TextLCAUtil.PROP_TEXT_LIMIT ) );
@@ -622,6 +621,34 @@ public class TextLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "textLimit" ) );
+  }
+
+  public void testRenderTextLimitReset() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+
+    text.setTextLimit( 10 );
+    Fixture.preserveWidgets();
+    text.setTextLimit( Text.LIMIT );
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( text, "textLimit" ) );
+  }
+
+  public void testRenderTextLimitResetWithNegative() throws IOException {
+    Text text = new Text( shell, SWT.SINGLE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+
+    text.setTextLimit( 10 );
+    Fixture.preserveWidgets();
+    text.setTextLimit( -5 );
+    textLCA.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( text, "textLimit" ) );
   }
 
   public void testRenderAddSelectionListener() throws Exception {

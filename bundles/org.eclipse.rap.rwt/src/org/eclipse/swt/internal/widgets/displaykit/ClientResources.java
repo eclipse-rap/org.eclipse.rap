@@ -247,6 +247,7 @@ final class ClientResources {
     "org/eclipse/swt/widgets/DateTimeTime.js",
     "org/eclipse/swt/widgets/Slider.js",
     "org/eclipse/swt/widgets/Spinner.js",
+    "org/eclipse/swt/widgets/SpinnerAdapter.js",
     "org/eclipse/swt/widgets/DateTimeDate.js",
     "org/eclipse/swt/custom/CTabItem.js",
     "org/eclipse/swt/custom/CTabFolder.js",

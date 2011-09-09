@@ -731,6 +731,34 @@ public class CComboLCA_Test extends TestCase {
     assertNull( message.findSetOperation( ccombo, "textLimit" ) );
   }
 
+  public void testRenderTextLimitReset() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+
+    ccombo.setTextLimit( 10 );
+    Fixture.preserveWidgets();
+    ccombo.setTextLimit( CCombo.LIMIT );
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( ccombo, "textLimit" ) );
+  }
+
+  public void testRenderTextLimitResetWithNegative() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+
+    ccombo.setTextLimit( 10 );
+    Fixture.preserveWidgets();
+    ccombo.setTextLimit( -5 );
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( ccombo, "textLimit" ) );
+  }
+
   public void testRenderAddSelectionListener() throws Exception {
     CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );

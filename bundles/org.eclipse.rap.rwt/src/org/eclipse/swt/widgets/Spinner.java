@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -88,7 +88,7 @@ public class Spinner extends Composite {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public Spinner( final Composite parent, final int style ) {
+  public Spinner( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
     minimum = 0;
     maximum = 100;
@@ -140,7 +140,7 @@ public class Spinner extends Composite {
    *
    * @since 1.3
    */
-  public void setDigits( final int value ) {
+  public void setDigits( int value ) {
     checkWidget();
     if( value < 0 ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -179,7 +179,7 @@ public class Spinner extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setIncrement( final int value ) {
+  public void setIncrement( int value ) {
     checkWidget();
     if( value >= 1 ) {
       increment = value;
@@ -214,7 +214,7 @@ public class Spinner extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setMinimum( final int value ) {
+  public void setMinimum( int value ) {
     checkWidget();
     if( value <= maximum ) {
       minimum = value;
@@ -252,7 +252,7 @@ public class Spinner extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setMaximum( final int value ) {
+  public void setMaximum( int value ) {
     checkWidget();
     if( value >= minimum ) {
       maximum = value;
@@ -290,7 +290,7 @@ public class Spinner extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setPageIncrement( final int value ) {
+  public void setPageIncrement( int value ) {
     checkWidget();
     if( value >= 1 ) {
       pageIncrement = value;
@@ -325,7 +325,7 @@ public class Spinner extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelection( final int value ) {
+  public void setSelection( int value ) {
     checkWidget();
     selection = Math.min( Math.max( minimum, value ), maximum );
     ModifyEvent modifyEvent = new ModifyEvent( this );
@@ -353,19 +353,15 @@ public class Spinner extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setValues( final int selection,
-                         final int minimum,
-                         final int maximum,
-                         final int digits,
-                         final int increment,
-                         final int pageIncrement )
+  public void setValues( int selection,
+                         int minimum,
+                         int maximum,
+                         int digits,
+                         int increment,
+                         int pageIncrement )
   {
     checkWidget();
-    if(    maximum >= minimum
-        && digits >= 0
-        && increment >= 1
-        && pageIncrement >= 1 )
-    {
+    if( maximum >= minimum && digits >= 0 && increment >= 1 && pageIncrement >= 1 ) {
       this.minimum = minimum;
       this.maximum = maximum;
       this.digits = digits;
@@ -426,7 +422,7 @@ public class Spinner extends Composite {
    * @see #LIMIT
    * @since 1.3
    */
-  public void setTextLimit( final int textLimit ) {
+  public void setTextLimit( int textLimit ) {
     checkWidget();
     if( textLimit == 0 ) {
       error( SWT.ERROR_CANNOT_BE_ZERO );
@@ -462,10 +458,7 @@ public class Spinner extends Composite {
   ///////////////////
   // Size calculation
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
     int height = 0;
@@ -512,11 +505,7 @@ public class Spinner extends Composite {
     return new Point( trim.width, trim.height );
   }
 
-  public Rectangle computeTrim( final int x,
-                                final int y,
-                                final int width,
-                                final int height )
-  {
+  public Rectangle computeTrim( int x, int y, int width, int height ) {
     checkWidget();
     Rectangle result = new Rectangle( x, y, width, height );
     if( ( style & SWT.BORDER ) != 0 ) {
@@ -553,7 +542,7 @@ public class Spinner extends Composite {
    * @see ModifyListener
    * @see #removeModifyListener
    */
-  public void addModifyListener( final ModifyListener listener ) {
+  public void addModifyListener( ModifyListener listener ) {
     checkWidget();
     ModifyEvent.addListener( this, listener );
   }
@@ -575,7 +564,7 @@ public class Spinner extends Composite {
    * @see ModifyListener
    * @see #addModifyListener
    */
-  public void removeModifyListener( final ModifyListener listener ) {
+  public void removeModifyListener( ModifyListener listener ) {
     checkWidget();
     ModifyEvent.removeListener( this, listener );
   }
@@ -606,7 +595,7 @@ public class Spinner extends Composite {
    *
    * @since 1.2
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -630,27 +619,25 @@ public class Spinner extends Composite {
    *
    * @since 1.2
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
-    SelectionEvent.addListener( this, listener );
+    SelectionEvent.removeListener( this, listener );
   }
 
   //////////////////
   // Helping methods
 
   private Rectangle getFieldPadding() {
-    SpinnerThemeAdapter themeAdapter
-      = ( SpinnerThemeAdapter )getAdapter( IThemeAdapter.class );
+    SpinnerThemeAdapter themeAdapter = ( SpinnerThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getFieldPadding( this );
   }
 
   private int getButtonWidth() {
-    SpinnerThemeAdapter themeAdapter
-      = ( SpinnerThemeAdapter )getAdapter( IThemeAdapter.class );
+    SpinnerThemeAdapter themeAdapter = ( SpinnerThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getButtonWidth( this );
   }
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     /*
     * Even though it is legal to create this widget
     * with scroll bars, they serve no useful purpose

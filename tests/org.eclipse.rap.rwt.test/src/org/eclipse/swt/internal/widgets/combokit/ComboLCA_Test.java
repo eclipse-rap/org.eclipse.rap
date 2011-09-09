@@ -691,6 +691,34 @@ public class ComboLCA_Test extends TestCase {
     assertNull( message.findSetOperation( combo, "textLimit" ) );
   }
 
+  public void testRenderTextLimitReset() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+
+    combo.setTextLimit( 10 );
+    Fixture.preserveWidgets();
+    combo.setTextLimit( Combo.LIMIT );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( combo, "textLimit" ) );
+  }
+
+  public void testRenderTextLimitResetWithNegative() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+
+    combo.setTextLimit( 10 );
+    Fixture.preserveWidgets();
+    combo.setTextLimit( -5 );
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( combo, "textLimit" ) );
+  }
+
   public void testRenderAddSelectionListener() throws Exception {
     Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );

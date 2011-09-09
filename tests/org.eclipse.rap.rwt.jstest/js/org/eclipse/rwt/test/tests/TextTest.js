@@ -267,27 +267,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       widget.destroy();
     },
 
-    testSetNegativeTextLimitByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
-      processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.Text",
-        "properties" : {
-          "style" : [ "SINGLE" ],
-          "parent" : "w2",
-          "textLimit" : -10
-        }
-      } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
-      assertNull( widget.getMaxLength() );
-      shell.destroy();
-      widget.destroy();
-    },
-
     testSetHasSelectionListenerByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = testUtil.createShellByProtocol( "w2" );

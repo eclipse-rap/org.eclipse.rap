@@ -35,7 +35,6 @@ final class TextLCAUtil {
   static final String PROP_SELECTION_LISTENER = "selectionListener";
   static final String PROP_ECHO_CHAR = "echoChar";
 
-  private static final Integer DEFAULT_TEXT_LIMIT = new Integer( Text.LIMIT );
   private static final Point DEFAULT_SELECTION = new Point( 0, 0 );
 
   private TextLCAUtil() {
@@ -47,7 +46,7 @@ final class TextLCAUtil {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
     adapter.preserve( PROP_TEXT, text.getText() );
     adapter.preserve( PROP_SELECTION, text.getSelection() );
-    adapter.preserve( PROP_TEXT_LIMIT, new Integer( text.getTextLimit() ) );
+    adapter.preserve( PROP_TEXT_LIMIT, getTextLimit( text ) );
     adapter.preserve( PROP_EDITABLE, Boolean.valueOf( text.getEditable() ) );
     adapter.preserve( PROP_MODIFY_LISTENER,
                       Boolean.valueOf( ModifyEvent.hasListener( text ) ) );
@@ -142,8 +141,8 @@ final class TextLCAUtil {
   }
 
   private static void renderTextLimit( Text text ) {
-    Integer newValue = new Integer( text.getTextLimit() );
-    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT_LIMIT, newValue, DEFAULT_TEXT_LIMIT ) ) {
+    Integer newValue = getTextLimit( text );
+    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT_LIMIT, newValue, null ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( text );
       clientObject.setProperty( PROP_TEXT_LIMIT, newValue );
     }
@@ -208,6 +207,15 @@ final class TextLCAUtil {
     } else {
       clientObject.removeListener( eventType );
     }
+  }
+
+  private static Integer getTextLimit( Text text ) {
+    Integer result = null;
+    int textLimit = text.getTextLimit();
+    if( textLimit > 0 && textLimit != Text.LIMIT ) {
+      result = new Integer( textLimit );
+    }
+    return result;
   }
 
   private static String getEchoChar( Text text ) {
