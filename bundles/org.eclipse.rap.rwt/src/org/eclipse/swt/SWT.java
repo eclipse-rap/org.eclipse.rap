@@ -604,75 +604,75 @@ public class SWT {
   /**
    * Gesture event detail field value indicating that a continuous
    * gesture is about to begin.
-   * 
+   *
    * @since 1.4
    */
   public static final int GESTURE_BEGIN = 1 << 1;
 
   /**
-   * Gesture event detail field value indicating that a continuous 
+   * Gesture event detail field value indicating that a continuous
    * gesture has ended.
-   * 
+   *
    * @since 1.4
    */
   public static final int GESTURE_END = 1 << 2;
 
   /**
-   * Gesture event detail field value indicating that a 
+   * Gesture event detail field value indicating that a
    * rotation gesture has happened. Only the rotation field
    * of the event is valid.
-   * 
+   *
    * @since 1.4
    */
   public static final int GESTURE_ROTATE = 1 << 3;
-  
+
   /**
-   * Gesture event detail field value indicating that a 
+   * Gesture event detail field value indicating that a
    * swipe gesture has happened.
-   * 
+   *
    * @since 1.4
    */
   public static final int GESTURE_SWIPE = 1 << 4;
-  
+
   /**
-   * Gesture event detail field value indicating that a 
+   * Gesture event detail field value indicating that a
    * magnification gesture has happened.
-   * 
+   *
    * @since 1.4
    */
   public static final int GESTURE_MAGNIFY = 1 << 5;
-  
+
   /**
-   * Gesture event detail field value indicating that a 
+   * Gesture event detail field value indicating that a
    * panning (two-finger scroll) gesture has happened.
-   * 
+   *
    * @since 1.4
    */
   public static final int GESTURE_PAN = 1 << 6;
-  
+
   /**
-   * A constant indicating that a finger touched the device.  
-   * 
+   * A constant indicating that a finger touched the device.
+   *
    * @see org.eclipse.swt.widgets.Touch#state
-   * 
+   *
    * @since 1.4
    */
   public static final int TOUCHSTATE_DOWN = 1 << 0;
 
   /**
    * A constant indicating that a finger moved on the device.
-   * 
+   *
    * @see org.eclipse.swt.widgets.Touch#state
-   * 
+   *
    * @since 1.4
    */
   public static final int TOUCHSTATE_MOVE = 1 << 1;
 
   /**
-   * A constant indicating that a finger was lifted from the device. 
-   * 
+   * A constant indicating that a finger was lifted from the device.
+   *
    * @see org.eclipse.swt.widgets.Touch#state
-   * 
+   *
    * @since 1.4
    */
   public static final int TOUCHSTATE_UP = 1 << 2;
@@ -879,9 +879,9 @@ public class SWT {
    * </ul></p>
    *
    * @since 1.4
-   */ 
+   */
   public static final int BALLOON = 1 << 12;
-  
+
   /**
    * Style constant for vertical alignment or orientation behavior (value is 1).
    * <p><b>Used By:</b><ul>
@@ -1641,10 +1641,10 @@ public class SWT {
    * <p><b>Used By:</b><ul>
    * <li><code>Control</code> and subclasses</li>
    * </ul></p>
-   * 
+   *
    * @sicne 1.4
    */
-  public static final int CLIP_CHILDREN = 1 << 12; 
+  public static final int CLIP_CHILDREN = 1 << 12;
 
   /**
    * Style constant indicating that the window manager should clip
@@ -1653,7 +1653,7 @@ public class SWT {
    * <p><b>Used By:</b><ul>
    * <li><code>Control</code> and subclasses</li>
    * </ul></p>
-   * 
+   *
    * @sicne 1.4
    */
   public static final int CLIP_SIBLINGS = 1 << 13;
@@ -1695,7 +1695,7 @@ public class SWT {
    * @since 1.4
    */
   public static final int NO_BACKGROUND = 1 << 18;
-  
+
   /**
    * Style constant for no focus from the mouse behavior (value is 1&lt;&lt;19).
    * <br>Note that this is a <em>HINT</em>.
@@ -1713,19 +1713,19 @@ public class SWT {
    * the SWT.Paint event is not sent. When it gets bigger, an SWT.Paint event is
    * sent with a GC clipped to only the new areas to be painted. Without this
    * style, the entire client area will be repainted.
-   * 
+   *
    * <br>Note that this is a <em>HINT</em>.
    * </p><p><b>Used By:</b><ul>
    * <li><code>Composite</code></li>
    * </ul></p>
-   * 
+   *
    * @since 1.4
    */
   public static final int NO_REDRAW_RESIZE = 1 << 20;
 
   /**
    * Style constant for no paint event merging behavior (value is 1&lt;&lt;21).
-   * 
+   *
    * <br>Note that this is a <em>HINT</em>.
    * <p><b>Used By:</b><ul>
    * <li><code>Composite</code></li>
@@ -1739,7 +1739,7 @@ public class SWT {
    * <li><code>Composite</code></li>
    * <li><code>Menu</code></li>
    * </ul></p>
-   * 
+   *
    * @since 1.4
    */
   public static final int NO_RADIO_GROUP = 1 << 22;
@@ -2085,6 +2085,28 @@ public class SWT {
    * </ul></p>
    */
   public static final int SHADOW_OUT = 1 << 3;
+
+  /**
+   * Style constant for shadow etched in behavior (value is 1&lt;&lt;4).
+   * <br>Note that this is a <em>HINT</em>. It is ignored on all platforms except Motif.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Group</code></li>
+   * </ul></p>
+   *
+   * @since 1.5
+   */
+  public static final int SHADOW_ETCHED_IN = 1 << 4;
+
+  /**
+   * Style constant for shadow etched out behavior (value is 1&lt;&lt;6).
+   * <br>Note that this is a <em>HINT</em>. It is ignored on all platforms except Motif.
+   * <p><b>Used By:</b><ul>
+   * <li><code>Group</code></li>
+   * </ul></p>
+   *
+   * @since 1.5
+   */
+  public static final int SHADOW_ETCHED_OUT = 1 << 6;
 
   /**
    * Style constant for no shadow behavior (value is 1&lt;&lt;5).
@@ -3181,7 +3203,7 @@ public class SWT {
 
   /**
    * GIF image disposal method constants indicating that the
-   * disposal method is to do nothing; that is, to leave the 
+   * disposal method is to do nothing; that is, to leave the
    * previous image in place (value is 1).
    */
   public static final int DM_FILL_NONE = 0x1;
@@ -3199,7 +3221,7 @@ public class SWT {
    * (value is 3).
    */
   public static final int DM_FILL_PREVIOUS = 0x3;
-  
+
   /**
    * Image transparency constant indicating that the image
    * contains no transparency information (value is 0).
@@ -3299,7 +3321,7 @@ public class SWT {
    * @since 1.1.1
    */
   public static final int LONG = 1 << 28;
-  
+
   /**
    * Style constant specifying that a Browser should use a Mozilla GRE
    * for rendering its content (value is 1&lt;&lt;15).
@@ -3307,7 +3329,7 @@ public class SWT {
    * <p><b>Used By:</b><ul>
    * <li><code>Browser</code></li>
    * </ul></p>
-   * 
+   *
    * @since 1.4
    */
   public static final int MOZILLA = 1 << 15;
@@ -3319,7 +3341,7 @@ public class SWT {
    * <p><b>Used By:</b><ul>
    * <li><code>Browser</code></li>
    * </ul></p>
-   * 
+   *
    * @since 1.4
    */
   public static final int WEBKIT = 1 << 16;
@@ -3346,60 +3368,60 @@ public class SWT {
 
   /**
    * ID for the About menu item (value is -1).
-   * 
+   *
    * @see org.eclipse.swt.widgets.MenuItem#setID(int)
    * @see org.eclipse.swt.widgets.MenuItem#getID()
-   * 
+   *
    * @since 1.4
    */
   public static final int ID_ABOUT = -1;
 
   /**
    * ID for the Preferences menu item (value is -2).
-   * 
+   *
    * @see org.eclipse.swt.widgets.MenuItem#setID(int)
    * @see org.eclipse.swt.widgets.MenuItem#getID()
-   * 
+   *
    * @since 1.4
    */
   public static final int ID_PREFERENCES = -2;
 
   /**
    * ID for the Hide menu item (value is -3).
-   * 
+   *
    * @see org.eclipse.swt.widgets.MenuItem#setID(int)
    * @see org.eclipse.swt.widgets.MenuItem#getID()
-   * 
+   *
    * @since 1.4
    */
   public static final int ID_HIDE = -3;
 
   /**
    * ID for the Hide Others menu item (value is -4).
-   * 
+   *
    * @see org.eclipse.swt.widgets.MenuItem#setID(int)
    * @see org.eclipse.swt.widgets.MenuItem#getID()
-   * 
+   *
    * @since 1.4
    */
   public static final int ID_HIDE_OTHERS = -4;
-  
+
   /**
    * ID for the Show All menu item (value is -5).
-   * 
+   *
    * @see org.eclipse.swt.widgets.MenuItem#setID(int)
    * @see org.eclipse.swt.widgets.MenuItem#getID()
-   * 
+   *
    * @since 1.4
    */
   public static final int ID_SHOW_ALL = -5;
-  
+
   /**
    * ID for the Quit menu item (value is -6).
-   * 
+   *
    * @see org.eclipse.swt.widgets.MenuItem#setID(int)
    * @see org.eclipse.swt.widgets.MenuItem#getID()
-   * 
+   *
    * @since 1.4
    */
   public static final int ID_QUIT = -6;

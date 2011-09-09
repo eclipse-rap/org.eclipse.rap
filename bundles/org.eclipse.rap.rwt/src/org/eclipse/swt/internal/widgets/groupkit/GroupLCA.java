@@ -1,25 +1,28 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.groupkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Widget;
 
 public class GroupLCA extends AbstractWidgetLCA {
 
-  private static final String QX_TYPE = "org.eclipse.swt.widgets.Group";
+  private static final String TYPE = "rwt.widgets.Group";
   private static final String PROP_TEXT = "text";
 
   public void preserveValues( final Widget widget ) {
@@ -30,34 +33,37 @@ public class GroupLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveCustomVariant( group );
   }
 
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
     ControlLCAUtil.processMouseEvents( ( Group )widget );
     ControlLCAUtil.processKeyEvents( ( Group )widget );
     ControlLCAUtil.processMenuDetect( ( Group )widget );
     WidgetLCAUtil.processHelp( widget );
   }
 
-  public void renderInitialization( final Widget widget ) throws IOException {
+  public void renderInitialization( Widget widget ) throws IOException {
     Group group = ( Group )widget;
-    JSWriter writer = JSWriter.getWriterFor( group );
-    writer.newWidget( QX_TYPE );    
-    ControlLCAUtil.writeStyleFlags( group );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( group );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( group.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( group ) );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     Group group = ( Group )widget;
-    ControlLCAUtil.writeChanges( group );
-    JSWriter writer = JSWriter.getWriterFor( group );
+    ControlLCAUtil.renderChanges( group );
+    WidgetLCAUtil.renderCustomVariant( group );
+    renderText( group );
+  }
+
+  private static void renderText( Group group ) {
     String text = group.getText();
-    if( WidgetLCAUtil.hasChanged( widget, PROP_TEXT, text, "" ) ) {
-      text = WidgetLCAUtil.escapeText( text, true );
-      writer.set( "legend", text );
+    if( WidgetLCAUtil.hasChanged( group, PROP_TEXT, text, "" ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( group );
+      clientObject.setProperty( PROP_TEXT, text );
     }
-    WidgetLCAUtil.writeCustomVariant( group );
   }
 
-  public void renderDispose( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
+  public void renderDispose( Widget widget ) throws IOException {
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
 }

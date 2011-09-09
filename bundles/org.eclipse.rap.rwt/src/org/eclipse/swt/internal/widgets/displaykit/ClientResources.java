@@ -214,6 +214,7 @@ final class ClientResources {
     "org/eclipse/rwt/widgets/BasicButton.js",
     "org/eclipse/rwt/widgets/ToolItem.js",
     "org/eclipse/swt/widgets/Group.js",
+    "org/eclipse/swt/widgets/GroupAdapter.js",
     "org/eclipse/swt/widgets/Shell.js",
     "org/eclipse/swt/widgets/ShellAdapter.js",
     "org/eclipse/swt/widgets/ProgressBar.js",

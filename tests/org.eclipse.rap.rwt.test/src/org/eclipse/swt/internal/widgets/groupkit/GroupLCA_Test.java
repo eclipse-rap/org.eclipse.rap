@@ -1,0 +1,95 @@
+/*******************************************************************************
+ * Copyright (c) 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    EclipseSource - initial API and implementation
+ ******************************************************************************/
+package org.eclipse.swt.internal.widgets.groupkit;
+
+import java.io.IOException;
+
+import org.eclipse.rwt.Fixture;
+import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.*;
+
+import junit.framework.TestCase;
+
+
+public class GroupLCA_Test extends TestCase {
+
+  private Display display;
+  private Shell shell;
+  private GroupLCA lca;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
+    lca = new GroupLCA();
+    Fixture.fakeNewRequest( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
+  public void testRenderCreate() throws IOException {
+    Group group = new Group( shell, SWT.NONE );
+
+    lca.renderInitialization( group );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( group );
+    assertEquals( "rwt.widgets.Group", operation.getType() );
+  }
+
+  public void testRenderParent() throws IOException {
+    Group group = new Group( shell, SWT.NONE );
+
+    lca.renderInitialization( group );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( group );
+    assertEquals( WidgetUtil.getId( group.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderInitialText() throws IOException {
+    Group group = new Group( shell, SWT.NONE );
+
+    lca.render( group );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( group );
+    assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
+  }
+
+  public void testRenderText() throws IOException {
+    Group group = new Group( shell, SWT.NONE );
+
+    group.setText( "foo" );
+    lca.renderChanges( group );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "foo", message.findSetProperty( group, "text" ) );
+  }
+
+  public void testRenderTextUnchanged() throws IOException {
+    Group group = new Group( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( group );
+
+    group.setText( "foo" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( group );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( group, "text" ) );
+  }
+}
