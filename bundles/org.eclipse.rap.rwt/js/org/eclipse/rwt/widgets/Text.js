@@ -156,7 +156,9 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
     // events listeners
 
     setHasSelectionListener : function( value ) {
-      this._hasSelectionListener = value;
+      if( !this.hasState( "rwt_MULTI" ) ) {
+        this._hasSelectionListener = value;
+      }
     },
 
     hasSelectionListener : function() {

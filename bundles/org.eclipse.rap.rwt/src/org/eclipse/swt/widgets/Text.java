@@ -111,7 +111,7 @@ public class Text extends Scrollable {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public Text( final Composite parent, final int style ) {
+  public Text( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
     textLimit = LIMIT;
     selection = new Point( 0, 0 );
@@ -131,7 +131,7 @@ public class Text extends Scrollable {
     }
   }
 
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result;
     if( ITextAdapter.class.equals( adapter ) ) {
       if( textAdapter == null ) {
@@ -163,7 +163,7 @@ public class Text extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setText( final String text ) {
+  public void setText( String text ) {
     checkWidget();
     if( text == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -218,7 +218,7 @@ public class Text extends Scrollable {
    * @see #getTextChars()
    * @since 1.4
    */
-  public void setTextChars( final char[] text ) {
+  public void setTextChars( char[] text ) {
     checkWidget();
     if( text == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -270,7 +270,7 @@ public class Text extends Scrollable {
    *              </ul>
    * @since 1.3
    */
-  public String getText( final int start, final int end ) {
+  public String getText( int start, int end ) {
     checkWidget();
     String result;
     if( !( start <= end && 0 <= end ) ) {
@@ -309,7 +309,7 @@ public class Text extends Scrollable {
    * </ul>
    */
   // TODO [rh] fire VerifyEvent missing
-  public void append( final String string ) {
+  public void append( String string ) {
     checkWidget();
     if( string == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -369,7 +369,7 @@ public class Text extends Scrollable {
    *
    * @since 1.3
    */
-  public void setMessage( final String message ) {
+  public void setMessage( String message ) {
     checkWidget();
     if( message == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -420,7 +420,7 @@ public class Text extends Scrollable {
    * </ul>
    * @since 1.3
    */
-  public void setEchoChar( final char echo ) {
+  public void setEchoChar( char echo ) {
     checkWidget();
     if( ( style & SWT.MULTI ) == 0 ) {
       echoChar = echo;
@@ -477,7 +477,7 @@ public class Text extends Scrollable {
    *
    * @see #LIMIT
    */
-  public void setTextLimit( final int textLimit ) {
+  public void setTextLimit( int textLimit ) {
     checkWidget();
     if( textLimit == 0 ) {
       error( SWT.ERROR_CANNOT_BE_ZERO );
@@ -552,7 +552,7 @@ public class Text extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelection( final int start ) {
+  public void setSelection( int start ) {
     checkWidget();
     setSelection( start, start );
  }
@@ -582,7 +582,7 @@ public class Text extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelection( final int start, final int end ) {
+  public void setSelection( int start, int end ) {
     checkWidget();
     int validatedStart = this.selection.x;
     int validatedEnd = this.selection.y;
@@ -626,7 +626,7 @@ public class Text extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelection( final Point selection ) {
+  public void setSelection( Point selection ) {
     checkWidget();
     if( selection == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -746,7 +746,7 @@ public class Text extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setEditable( final boolean editable ) {
+  public void setEditable( boolean editable ) {
     checkWidget();
     style &= ~SWT.READ_ONLY;
     if( !editable ) {
@@ -785,7 +785,7 @@ public class Text extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void insert( final String string ) {
+  public void insert( String string ) {
     checkWidget();
     if( string == null ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -801,10 +801,7 @@ public class Text extends Scrollable {
   ////////////////////
   // Widget dimensions
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int height = 0, width = 0;
     if( wHint == SWT.DEFAULT || hHint == SWT.DEFAULT ) {
@@ -853,11 +850,7 @@ public class Text extends Scrollable {
     return new Point( trim.width, trim.height );
   }
 
-  public Rectangle computeTrim( final int x,
-                                final int y,
-                                final int width,
-                                final int height )
-  {
+  public Rectangle computeTrim( int x, int y, int width, int height ) {
     Rectangle result = super.computeTrim( x, y, width, height );
     if( ( style & SWT.H_SCROLL ) != 0 ) {
       result.width++;
@@ -894,7 +887,7 @@ public class Text extends Scrollable {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -916,7 +909,7 @@ public class Text extends Scrollable {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
@@ -940,7 +933,7 @@ public class Text extends Scrollable {
    * @see ModifyListener
    * @see #removeModifyListener
    */
-  public void addModifyListener( final ModifyListener listener ) {
+  public void addModifyListener( ModifyListener listener ) {
     checkWidget();
     ModifyEvent.addListener( this, listener );
   }
@@ -962,7 +955,7 @@ public class Text extends Scrollable {
    * @see ModifyListener
    * @see #addModifyListener
    */
-  public void removeModifyListener( final ModifyListener listener ) {
+  public void removeModifyListener( ModifyListener listener ) {
     checkWidget();
     ModifyEvent.removeListener( this, listener );
   }
@@ -986,7 +979,7 @@ public class Text extends Scrollable {
    * @see VerifyListener
    * @see #removeVerifyListener
    */
-  public void addVerifyListener( final VerifyListener verifyListener ) {
+  public void addVerifyListener( VerifyListener verifyListener ) {
     checkWidget();
     VerifyEvent.addListener( this, verifyListener );
   }
@@ -1008,7 +1001,7 @@ public class Text extends Scrollable {
    * @see VerifyListener
    * @see #addVerifyListener
    */
-  public void removeVerifyListener( final VerifyListener verifyListener ) {
+  public void removeVerifyListener( VerifyListener verifyListener ) {
     checkWidget();
     VerifyEvent.removeListener( this, verifyListener );
   }
@@ -1020,8 +1013,7 @@ public class Text extends Scrollable {
   ////////////////////////////////////////////
   // Text modification and verify event helper
 
-  private String verifyText( final String text, final int start, final int end )
-  {
+  private String verifyText( String text, int start, int end ) {
     VerifyEvent event = new VerifyEvent( this );
     event.text = text;
     event.start = start;
@@ -1041,7 +1033,7 @@ public class Text extends Scrollable {
     return result;
   }
 
-  private void setText( final String text, final Point selection ) {
+  private void setText( String text, Point selection ) {
     String verifiedText = verifyText( text, 0, this.text.length() );
     if( verifiedText != null ) {
       this.text = verifiedText;
@@ -1056,7 +1048,7 @@ public class Text extends Scrollable {
   ///////////////////////////////////////
   // Helping method to adjust style flags
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     int result = style;
     if( ( result & SWT.SEARCH ) != 0 ) {
       result |= SWT.SINGLE | SWT.BORDER;

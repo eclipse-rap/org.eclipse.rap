@@ -13,21 +13,14 @@ package org.eclipse.swt.internal.widgets.textkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Text;
 
-final class SingleTextLCA extends AbstractTextDelegateLCA {
 
-  static final String PROP_MESSAGE = "message";
+final class SingleTextLCA extends AbstractTextDelegateLCA {
 
   void preserveValues( Text text ) {
     TextLCAUtil.preserveValues( text );
-    TextLCAUtil.preserveEchoChar( text );
-    TextLCAUtil.preserveSelectionListener( text );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
-    adapter.preserve( PROP_MESSAGE, text.getMessage() );
   }
 
   /* (intentionally non-JavaDoc'ed)
@@ -48,21 +41,12 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
   }
 
   void renderChanges( Text text ) throws IOException {
-    TextLCAUtil.renderEchoChar( text );
-    renderMessage( text );
     TextLCAUtil.renderChanges( text );
-    TextLCAUtil.renderListenSelection( text );
   }
 
   ///////////////////////////////////////////
   // Helping methods to write JavaScript code
 
-  private static void renderMessage( Text text ) {
-    String newValue = text.getMessage();
-    if( WidgetLCAUtil.hasChanged( text, PROP_MESSAGE, newValue, "" ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
-      clientObject.setProperty( PROP_MESSAGE, newValue );
-    }
-  }
+
 
 }

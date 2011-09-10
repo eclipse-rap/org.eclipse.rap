@@ -30,10 +30,11 @@ final class TextLCAUtil {
   static final String PROP_TEXT_LIMIT = "textLimit";
   static final String PROP_SELECTION = "selection";
   static final String PROP_EDITABLE = "editable";
+  static final String PROP_ECHO_CHAR = "echoChar";
+  static final String PROP_MESSAGE = "message";
   static final String PROP_MODIFY_LISTENER = "modifyListener";
   static final String PROP_VERIFY_LISTENER = "verifyListener";
   static final String PROP_SELECTION_LISTENER = "selectionListener";
-  static final String PROP_ECHO_CHAR = "echoChar";
 
   private static final Point DEFAULT_SELECTION = new Point( 0, 0 );
 
@@ -48,10 +49,14 @@ final class TextLCAUtil {
     adapter.preserve( PROP_SELECTION, text.getSelection() );
     adapter.preserve( PROP_TEXT_LIMIT, getTextLimit( text ) );
     adapter.preserve( PROP_EDITABLE, Boolean.valueOf( text.getEditable() ) );
+    adapter.preserve( PROP_ECHO_CHAR, getEchoChar( text ) );
+    adapter.preserve( PROP_MESSAGE, text.getMessage() );
     adapter.preserve( PROP_MODIFY_LISTENER,
                       Boolean.valueOf( ModifyEvent.hasListener( text ) ) );
     adapter.preserve( PROP_VERIFY_LISTENER,
                       Boolean.valueOf( VerifyEvent.hasListener( text ) ) );
+    adapter.preserve( PROP_SELECTION_LISTENER,
+                      Boolean.valueOf( hasSelectionListener( text ) ) );
     WidgetLCAUtil.preserveCustomVariant( text );
   }
 
@@ -69,8 +74,11 @@ final class TextLCAUtil {
     renderEditable( text );
     renderSelection( text );
     renderTextLimit( text );
+    renderEchoChar( text );
+    renderMessage( text );
     renderListenModify( text );
     renderListenVerify( text );
+    renderListenSelection( text );
   }
 
   static void readTextAndSelection( final Text text ) {
@@ -158,9 +166,20 @@ final class TextLCAUtil {
     }
   }
 
-  static void preserveSelectionListener( Text text ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
-    adapter.preserve( PROP_SELECTION_LISTENER, Boolean.valueOf( hasSelectionListener( text ) ) );
+  private static void renderEchoChar( Text text ) {
+    String newValue = getEchoChar( text );
+    if( WidgetLCAUtil.hasChanged( text, PROP_ECHO_CHAR, newValue, null ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
+      clientObject.setProperty( PROP_ECHO_CHAR, newValue );
+    }
+  }
+
+  private static void renderMessage( Text text ) {
+    String newValue = text.getMessage();
+    if( WidgetLCAUtil.hasChanged( text, PROP_MESSAGE, newValue, "" ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
+      clientObject.setProperty( PROP_MESSAGE, newValue );
+    }
   }
 
   static void renderListenSelection( Text text ) {
@@ -181,19 +200,6 @@ final class TextLCAUtil {
     Boolean newValue = Boolean.valueOf( VerifyEvent.hasListener( text ) );
     if( WidgetLCAUtil.hasChanged( text, PROP_VERIFY_LISTENER, newValue, Boolean.FALSE ) ) {
       renderListen( text, "verify", newValue.booleanValue() );
-    }
-  }
-
-  static void preserveEchoChar( Text text ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
-    adapter.preserve( PROP_ECHO_CHAR, getEchoChar( text ) );
-  }
-
-  static void renderEchoChar( Text text ) {
-    String newValue = getEchoChar( text );
-    if( WidgetLCAUtil.hasChanged( text, PROP_ECHO_CHAR, newValue, null ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
-      clientObject.setProperty( PROP_ECHO_CHAR, newValue );
     }
   }
 

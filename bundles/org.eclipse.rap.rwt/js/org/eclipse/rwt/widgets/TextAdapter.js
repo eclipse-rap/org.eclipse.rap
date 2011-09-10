@@ -51,10 +51,14 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Text", {
       widget.setValue( text );
     },
     "message" : function( widget, value ) {
-      org.eclipse.swt.TextUtil.setMessage( widget, value );
+      if( !widget.hasState( "rwt_MULTI" ) ) {
+        org.eclipse.swt.TextUtil.setMessage( widget, value );
+      }
     },
     "echoChar" : function( widget, value ) {
-      widget.setPasswordMode( value !== null );
+      if( !widget.hasState( "rwt_MULTI" ) ) {
+        widget.setPasswordMode( value !== null );
+      }
     },
     "editable" : function( widget, value ) {
       widget.setReadOnly( !value );

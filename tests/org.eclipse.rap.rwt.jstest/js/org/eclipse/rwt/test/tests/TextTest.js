@@ -135,6 +135,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       messageLabel.destroy();
     },
 
+    testSetMessageOnMultiByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "MULTI" ],
+          "parent" : "w2",
+          "message" : "some text"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertNull( widget.getUserData( "messageLabel" ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testDestroySingleTextByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = testUtil.createShellByProtocol( "w2" );
@@ -178,6 +199,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       var objectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = objectManager.getObject( "w3" );
       assertEquals( "password", widget._inputType );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetEchoCharOnMultiByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "MULTI" ],
+          "parent" : "w2",
+          "echoChar" : "?"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget._inputType !== "password" );
       shell.destroy();
       widget.destroy();
     },
@@ -284,6 +326,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       var objectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = objectManager.getObject( "w3" );
       assertTrue( widget.hasSelectionListener() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHasSelectionListenerOnMultiByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "MULTI" ],
+          "parent" : "w2"
+        }
+      } );
+      this._protocolListen( "w3", { "selection" : true } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertFalse( widget.hasSelectionListener() );
       shell.destroy();
       widget.destroy();
     },

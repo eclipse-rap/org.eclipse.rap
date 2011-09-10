@@ -16,12 +16,11 @@ import java.io.IOException;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Text;
 
+
 final class PasswordTextLCA extends AbstractTextDelegateLCA {
 
   void preserveValues( Text text ) {
     TextLCAUtil.preserveValues( text );
-    TextLCAUtil.preserveEchoChar( text );
-    TextLCAUtil.preserveSelectionListener( text );
   }
 
   /* (intentionally non-JavaDoc'ed)
@@ -42,9 +41,7 @@ final class PasswordTextLCA extends AbstractTextDelegateLCA {
   }
 
   void renderChanges( Text text ) throws IOException {
-    TextLCAUtil.renderEchoChar( text );
     TextLCAUtil.renderChanges( text );
-    TextLCAUtil.renderListenSelection( text );
   }
 
 }
