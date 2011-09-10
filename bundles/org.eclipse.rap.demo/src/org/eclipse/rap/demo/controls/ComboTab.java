@@ -328,9 +328,7 @@ public class ComboTab extends ExampleTab {
           firstCombo.setSelection( new Point( from, to ) );
           firstCombo.setFocus();
         } else {
-          String msg
-            = "Invalid Selection";
-          MessageDialog.openError( getShell(), "Error", msg );
+          MessageDialog.openError( getShell(), "Error", "Invalid Selection" );
         }
       }
     } );

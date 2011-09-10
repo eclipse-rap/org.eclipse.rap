@@ -266,8 +266,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       } );
       var objectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = objectManager.getObject( "w3" );
-      assertEquals( 2, widget._field.getSelectionStart() );
-      assertEquals( 3, widget._field.getSelectionLength() );
+      assertEquals( 2, widget._selectionStart );
+      assertEquals( 3, widget._selectionLength );
       shell.destroy();
       widget.destroy();
     },
