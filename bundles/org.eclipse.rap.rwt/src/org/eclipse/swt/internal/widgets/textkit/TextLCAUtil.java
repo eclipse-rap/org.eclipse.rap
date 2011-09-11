@@ -133,27 +133,15 @@ final class TextLCAUtil {
   }
 
   private static void renderText( Text text ) {
-    String newValue = text.getText();
-    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT, newValue, "" ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
-      clientObject.setProperty( PROP_TEXT, newValue );
-    }
+    renderProperty( text, PROP_TEXT, text.getText(), "" );
   }
 
   private static void renderEditable( Text text ) {
-    Boolean newValue = Boolean.valueOf( text.getEditable() );
-    if( WidgetLCAUtil.hasChanged( text, PROP_EDITABLE, newValue, Boolean.TRUE ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
-      clientObject.setProperty( PROP_EDITABLE, newValue );
-    }
+    renderProperty( text, PROP_EDITABLE, Boolean.valueOf( text.getEditable() ), Boolean.TRUE );
   }
 
   private static void renderTextLimit( Text text ) {
-    Integer newValue = getTextLimit( text );
-    if( WidgetLCAUtil.hasChanged( text, PROP_TEXT_LIMIT, newValue, null ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
-      clientObject.setProperty( PROP_TEXT_LIMIT, newValue );
-    }
+    renderProperty( text, PROP_TEXT_LIMIT, getTextLimit( text ), null );
   }
 
   private static void renderSelection( Text text ) {
@@ -167,19 +155,11 @@ final class TextLCAUtil {
   }
 
   private static void renderEchoChar( Text text ) {
-    String newValue = getEchoChar( text );
-    if( WidgetLCAUtil.hasChanged( text, PROP_ECHO_CHAR, newValue, null ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
-      clientObject.setProperty( PROP_ECHO_CHAR, newValue );
-    }
+    renderProperty( text, PROP_ECHO_CHAR, getEchoChar( text ), null );
   }
 
   private static void renderMessage( Text text ) {
-    String newValue = text.getMessage();
-    if( WidgetLCAUtil.hasChanged( text, PROP_MESSAGE, newValue, "" ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
-      clientObject.setProperty( PROP_MESSAGE, newValue );
-    }
+    renderProperty( text, PROP_MESSAGE, text.getMessage(), "" );
   }
 
   static void renderListenSelection( Text text ) {
@@ -205,6 +185,14 @@ final class TextLCAUtil {
 
   //////////////////
   // Helping methods
+
+  private static void renderProperty( Text text, String property, Object newValue, Object defValue )
+  {
+    if( WidgetLCAUtil.hasChanged( text, property, newValue, defValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
+      clientObject.setProperty( property, newValue );
+    }
+  }
 
   private static void renderListen( Text text, String eventType, boolean hasListener ) {
     IClientObject clientObject = ClientObjectFactory.getForWidget( text );
