@@ -56,8 +56,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     Combo combo = ( Combo )widget;
     ControlLCAUtil.preserveValues( combo );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    String[] items = combo.getItems();
-    adapter.preserve( PROP_ITEMS, items );
+    adapter.preserve( PROP_ITEMS, combo.getItems() );
     adapter.preserve( PROP_SELECTION_INDEX, new Integer( combo.getSelectionIndex() ) );
     adapter.preserve( PROP_SELECTION, combo.getSelection() );
     adapter.preserve( PROP_TEXT_LIMIT, new Integer( combo.getTextLimit() ) );
@@ -188,26 +187,16 @@ public class ComboLCA extends AbstractWidgetLCA {
   private static void renderVisibleItemCount( Combo combo ) {
     Integer newValue = new Integer( combo.getVisibleItemCount() );
     Integer defValue = DEFAULT_VISIBLE_ITEM_COUNT;
-    if( WidgetLCAUtil.hasChanged( combo, PROP_VISIBLE_ITEM_COUNT, newValue, defValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
-      clientObject.setProperty( PROP_VISIBLE_ITEM_COUNT, newValue );
-    }
+    renderProperty( combo, PROP_VISIBLE_ITEM_COUNT, newValue, defValue );
   }
 
   private static void renderItems( Combo combo ) {
-    String[] items = combo.getItems();
-    if( WidgetLCAUtil.hasChanged( combo, PROP_ITEMS, items, DEFAUT_ITEMS ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
-      clientObject.setProperty( PROP_ITEMS, items );
-    }
+    renderProperty( combo, PROP_ITEMS, combo.getItems(), DEFAUT_ITEMS );
   }
 
   private static void renderListVisible( Combo combo ) {
-    Boolean newValue = Boolean.valueOf( combo.getListVisible() );
-    if( WidgetLCAUtil.hasChanged( combo, PROP_LIST_VISIBLE, newValue, Boolean.FALSE ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
-      clientObject.setProperty( PROP_LIST_VISIBLE, newValue );
-    }
+    Boolean defValue = Boolean.FALSE;
+    renderProperty( combo, PROP_LIST_VISIBLE, Boolean.valueOf( combo.getListVisible() ), defValue );
   }
 
   private static void renderSelectionIndex( Combo combo ) {
@@ -228,20 +217,12 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderEditable( Combo combo ) {
-    Boolean newValue = Boolean.valueOf( isEditable( combo ) );
-    if( WidgetLCAUtil.hasChanged( combo, PROP_EDITABLE, newValue, Boolean.TRUE ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
-      clientObject.setProperty( PROP_EDITABLE, newValue );
-    }
+    renderProperty( combo, PROP_EDITABLE, Boolean.valueOf( isEditable( combo ) ), Boolean.TRUE );
   }
 
   private static void renderText( Combo combo ) {
     if( isEditable( combo ) ) {
-      String newValue = combo.getText();
-      if( WidgetLCAUtil.hasChanged( combo, PROP_TEXT, newValue, "" ) ) {
-        IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
-        clientObject.setProperty( PROP_TEXT, newValue );
-      }
+      renderProperty( combo, PROP_TEXT, combo.getText(), "" );
     }
   }
 
@@ -289,6 +270,17 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   //////////////////
   // Helping methods
+
+  private static void renderProperty( Combo combo,
+                                      String property,
+                                      Object newValue,
+                                      Object defValue )
+  {
+    if( WidgetLCAUtil.hasChanged( combo, property, newValue, defValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
+      clientObject.setProperty( property, newValue );
+    }
+  }
 
   private static void renderListen( Combo combo, String eventType, boolean hasListener ) {
     IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
