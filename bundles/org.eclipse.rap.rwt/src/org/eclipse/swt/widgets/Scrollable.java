@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -87,15 +87,9 @@ public abstract class Scrollable extends Control {
     Rectangle bounds = getBounds();
     int borderWidth = getBorderWidth();
     Rectangle padding = getPadding();
-    int width
-      = bounds.width - borderWidth * 2 - padding.width - getVScrollBarWidth();
-    int height
-      = bounds.height - borderWidth * 2 - padding.height - getHScrollBarHeight();
-    Rectangle result = new Rectangle( padding.x, 
-                                      padding.y, 
-                                      Math.max( 0, width ),
-                                      Math.max( 0, height ) );
-    return result;
+    int width = bounds.width - borderWidth * 2 - padding.width - getVScrollBarWidth();
+    int height = bounds.height - borderWidth * 2 - padding.height - getHScrollBarHeight();
+    return new Rectangle( padding.x, padding.y, Math.max( 0, width ), Math.max( 0, height ) );
   }
 
   /**
@@ -125,22 +119,15 @@ public abstract class Scrollable extends Control {
    *
    * @see #getClientArea
    */
-  public Rectangle computeTrim( final int x,
-                                final int y,
-                                final int width,
-                                final int height )
-  {
+  public Rectangle computeTrim( int x, int y, int width, int height ) {
     checkWidget();
     int borderWidth = getBorderWidth();
     Rectangle padding = getPadding();
-    int newWidth
-      = width + borderWidth * 2 + padding.width + getVScrollBarWidth();
-    int newHeight
-      = height + borderWidth * 2 + padding.height + getHScrollBarHeight();
-    return new Rectangle( x - borderWidth - padding.x,
-                          y - borderWidth - padding.y,
-                          newWidth,
-                          newHeight );
+    int newWidth = width + borderWidth * 2 + padding.width + getVScrollBarWidth();
+    int newHeight = height + borderWidth * 2 + padding.height + getHScrollBarHeight();
+    int newX = x - borderWidth - padding.x;
+    int newY = y - borderWidth - padding.y;
+    return new Rectangle( newX, newY, newWidth, newHeight );
   }
   
   /**
@@ -158,8 +145,7 @@ public abstract class Scrollable extends Control {
    */
   public ScrollBar getHorizontalBar() {
     checkWidget();
-    /* [austin] - Subclasses should override.  Default implementation returns null, 
-        but this should eventually provide the scrollbars for subtypes as in SWT. */
+    // subclasses may override
     return null;
   }
 
@@ -178,18 +164,17 @@ public abstract class Scrollable extends Control {
    */
   public ScrollBar getVerticalBar() {
     checkWidget();
-    /* [austin] - Subclasses should override.  Default implementation returns null, 
-        but this should eventually provide the scrollbars for subtypes as in SWT. */
+    // subclasses may override
     return null;
   }
 
   int getVScrollBarWidth() {
-    //subclasses may override
+    // subclasses may override
     return 0;
   }
 
   int getHScrollBarHeight() {
-    //subclasses may override
+    // subclasses may override
     return 0;
   }
 }
