@@ -156,7 +156,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SpinnerTest", {
       widget.destroy();
     },
 
-    testSetSelectionByProtocol : function() {
+    testSetDigitsByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = testUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
