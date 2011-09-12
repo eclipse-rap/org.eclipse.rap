@@ -1,21 +1,27 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.sliderkit;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -27,48 +33,54 @@ import org.eclipse.swt.widgets.*;
 
 public class SliderLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+  private SliderLCA lca;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
+    lca = new SliderLCA();
+    Fixture.fakeNewRequest( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testSliderPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Slider slider = new Slider( shell, SWT.HORIZONTAL );
     Fixture.markInitialized( display );
-    // Test preserved minimum, maximum, 
+    // Test preserved minimum, maximum,
     // selection, increment, pageIncrement and thumb
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( slider );
-    Integer minimum
-      = ( Integer )adapter.getPreserved( SliderLCA.PROP_MINIMUM );
+    Integer minimum = ( Integer )adapter.getPreserved( SliderLCA.PROP_MINIMUM );
     assertEquals( 0, minimum.intValue() );
-    Integer maximum
-      = ( Integer )adapter.getPreserved( SliderLCA.PROP_MAXIMUM );
+    Integer maximum = ( Integer )adapter.getPreserved( SliderLCA.PROP_MAXIMUM );
     assertEquals( 100, maximum.intValue() );
-    Integer selection
-      = ( Integer )adapter.getPreserved( SliderLCA.PROP_SELECTION );
+    Integer selection = ( Integer )adapter.getPreserved( SliderLCA.PROP_SELECTION );
     assertEquals( 0, selection.intValue() );
-    Integer increment
-      = ( Integer )adapter.getPreserved( SliderLCA.PROP_INCREMENT );
+    Integer increment = ( Integer )adapter.getPreserved( SliderLCA.PROP_INCREMENT );
     assertEquals( 1, increment.intValue() );
-    Integer pageIncrement
-      = ( Integer )adapter.getPreserved( SliderLCA.PROP_PAGE_INCREMENT );
-    assertEquals( 10, pageIncrement.intValue() );    
-    Integer thumb
-    = ( Integer )adapter.getPreserved( SliderLCA.PROP_THUMB );
+    Integer pageIncrement = ( Integer )adapter.getPreserved( SliderLCA.PROP_PAGE_INCREMENT );
+    assertEquals( 10, pageIncrement.intValue() );
+    Integer thumb = ( Integer )adapter.getPreserved( SliderLCA.PROP_THUMB );
     assertEquals( 10, thumb.intValue() );
     Fixture.clearPreserved();
     // Test preserved control properties
     testPreserveControlProperties( slider );
     // Test preserved selection listeners
     testPreserveSelectionListener( slider );
-  } 
-
-  public void testSelectionEvent() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    Slider slider = new Slider( shell, SWT.HORIZONTAL );
-    testSelectionEvent( slider );    
   }
 
-  private void testPreserveControlProperties( final Slider slider ) {
+  public void testSelectionEvent() {
+    Slider slider = new Slider( shell, SWT.HORIZONTAL );
+    testSelectionEvent( slider );
+  }
+
+  private void testPreserveControlProperties( Slider slider ) {
     // bound
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     slider.setBounds( rectangle );
@@ -118,19 +130,18 @@ public class SliderLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
-  private void testPreserveSelectionListener( final Slider slider ) {
+  private void testPreserveSelectionListener( Slider slider ) {
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( slider );
-    Boolean hasListeners
-      = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    Boolean hasListeners = ( Boolean )adapter.getPreserved( SliderLCA.PROP_SELECTION_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
-    SelectionListener selectionListener = new SelectionAdapter() { };
+    SelectionListener selectionListener = new SelectionAdapter() {
+    };
     slider.addSelectionListener( selectionListener );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( slider );
-    hasListeners
-      = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    hasListeners = ( Boolean )adapter.getPreserved( SliderLCA.PROP_SELECTION_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
   }
@@ -157,11 +168,260 @@ public class SliderLCA_Test extends TestCase {
     assertEquals( "widgetSelected", log.toString() );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
+  public void testRenderCreate() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+
+    lca.renderInitialization( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( slider );
+    assertEquals( "rwt.widgets.Slider", operation.getType() );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testRenderParent() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+
+    lca.renderInitialization( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( slider );
+    assertEquals( WidgetUtil.getId( slider.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderCreateWithHorizontal() throws IOException {
+    Slider slider = new Slider( shell, SWT.HORIZONTAL );
+
+    lca.renderInitialization( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( slider );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "HORIZONTAL" ) );
+  }
+
+  public void testRenderInitialMinimum() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+
+    lca.render( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( slider );
+    assertTrue( operation.getPropertyNames().indexOf( "minimum" ) == -1 );
+  }
+
+  public void testRenderMinimum() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+
+    slider.setMinimum( 10 );
+    lca.renderChanges( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 10 ), message.findSetProperty( slider, "minimum" ) );
+  }
+
+  public void testRenderMinimumUnchanged() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( slider );
+
+    slider.setMinimum( 10 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( slider, "minimum" ) );
+  }
+
+  public void testRenderInitialMaxmum() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+
+    lca.render( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( slider );
+    assertTrue( operation.getPropertyNames().indexOf( "maximum" ) == -1 );
+  }
+
+  public void testRenderMaxmum() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+
+    slider.setMaximum( 10 );
+    lca.renderChanges( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 10 ), message.findSetProperty( slider, "maximum" ) );
+  }
+
+  public void testRenderMaxmumUnchanged() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( slider );
+
+    slider.setMaximum( 10 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( slider, "maximum" ) );
+  }
+
+  public void testRenderInitialSelection() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+
+    lca.render( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( slider );
+    assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
+  }
+
+  public void testRenderSelection() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+
+    slider.setSelection( 10 );
+    lca.renderChanges( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 10 ), message.findSetProperty( slider, "selection" ) );
+  }
+
+  public void testRenderSelectionUnchanged() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( slider );
+
+    slider.setSelection( 10 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( slider, "selection" ) );
+  }
+
+  public void testRenderInitialIncrement() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+
+    lca.render( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( slider );
+    assertTrue( operation.getPropertyNames().indexOf( "increment" ) == -1 );
+  }
+
+  public void testRenderIncrement() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+
+    slider.setIncrement( 2 );
+    lca.renderChanges( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 2 ), message.findSetProperty( slider, "increment" ) );
+  }
+
+  public void testRenderIncrementUnchanged() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( slider );
+
+    slider.setIncrement( 2 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( slider, "increment" ) );
+  }
+
+  public void testRenderInitialPageIncrement() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+
+    lca.render( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( slider );
+    assertTrue( operation.getPropertyNames().indexOf( "pageIncrement" ) == -1 );
+  }
+
+  public void testRenderPageIncrement() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+
+    slider.setPageIncrement( 20 );
+    lca.renderChanges( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 20 ), message.findSetProperty( slider, "pageIncrement" ) );
+  }
+
+  public void testRenderPageIncrementUnchanged() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( slider );
+
+    slider.setPageIncrement( 20 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( slider, "pageIncrement" ) );
+  }
+
+  public void testRenderInitialThumb() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+
+    lca.render( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( slider );
+    assertTrue( operation.getPropertyNames().indexOf( "thumb" ) == -1 );
+  }
+
+  public void testRenderThumb() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+
+    slider.setThumb( 20 );
+    lca.renderChanges( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 20 ), message.findSetProperty( slider, "thumb" ) );
+  }
+
+  public void testRenderThumbUnchanged() throws IOException {
+    Slider slider = new Slider( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( slider );
+
+    slider.setThumb( 20 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( slider, "thumb" ) );
+  }
+
+  public void testRenderAddSelectionListener() throws Exception {
+    Slider slider = new Slider( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( slider );
+    Fixture.preserveWidgets();
+
+    slider.addSelectionListener( new SelectionAdapter() { } );
+    lca.renderChanges( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( slider, "selection" ) );
+  }
+
+  public void testRenderRemoveSelectionListener() throws Exception {
+    Slider slider = new Slider( shell, SWT.NONE );
+    SelectionListener listener = new SelectionAdapter() { };
+    slider.addSelectionListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( slider );
+    Fixture.preserveWidgets();
+
+    slider.removeSelectionListener( listener );
+    lca.renderChanges( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( slider, "selection" ) );
   }
 }

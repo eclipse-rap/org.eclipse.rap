@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -104,7 +104,7 @@ public class Slider extends Control {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public Slider( final Composite parent, final int style ) {
+  public Slider( Composite parent, int style ) {
   	super( parent, checkStyle (style) );
   	increment = 1;
     maximum = 100;
@@ -146,7 +146,7 @@ public class Slider extends Control {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -168,19 +168,16 @@ public class Slider extends Control {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
 
-  static int checkStyle( final int style ) {
+  static int checkStyle( int style ) {
   	return checkBits( style, SWT.HORIZONTAL, SWT.VERTICAL, 0, 0, 0, 0 );
   }
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
   	checkWidget();
     int width, height;
     if( ( style & SWT.HORIZONTAL ) != 0 ) {
@@ -196,7 +193,7 @@ public class Slider extends Control {
     if( hHint != SWT.DEFAULT ) {
       height = hHint;
     }
-    int border = getBorderWidth();    
+    int border = getBorderWidth();
     width += border * 2;
     height += border * 2;
   	return new Point( width, height );
@@ -322,7 +319,7 @@ public class Slider extends Control {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setIncrement( final int value ) {
+  public void setIncrement( int value ) {
     checkWidget();
     if( value >= 1 && value <= maximum - minimum ) {
       increment = value;
@@ -342,7 +339,7 @@ public class Slider extends Control {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setMaximum( final int value ) {
+  public void setMaximum( int value ) {
     checkWidget();
     if( 0 <= minimum && minimum < value ) {
       maximum = value;
@@ -369,7 +366,7 @@ public class Slider extends Control {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setMinimum( final int value ) {
+  public void setMinimum( int value ) {
     checkWidget();
     if( 0 <= value && value < maximum ) {
       minimum = value;
@@ -396,7 +393,7 @@ public class Slider extends Control {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setPageIncrement( final int value ) {
+  public void setPageIncrement( int value ) {
     checkWidget();
     if( value >= 1 && value <= maximum - minimum ) {
       pageIncrement = value;
@@ -415,7 +412,7 @@ public class Slider extends Control {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelection( final int value ) {
+  public void setSelection( int value ) {
     checkWidget();
     if( value < minimum ) {
       selection = minimum;
@@ -440,7 +437,7 @@ public class Slider extends Control {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setThumb( final int value ) {
+  public void setThumb( int value ) {
   	checkWidget();
   	if( value >= 1 ) {
       thumb = value;
@@ -472,12 +469,12 @@ public class Slider extends Control {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setValues( final int selection,
-                         final int minimum,
-                         final int maximum,
-                         final int thumb,
-                         final int increment,
-                         final int pageIncrement )
+  public void setValues( int selection,
+                         int minimum,
+                         int maximum,
+                         int thumb,
+                         int increment,
+                         int pageIncrement )
   {
   	checkWidget();
   	if( selection >= minimum && selection <= maximum ) {

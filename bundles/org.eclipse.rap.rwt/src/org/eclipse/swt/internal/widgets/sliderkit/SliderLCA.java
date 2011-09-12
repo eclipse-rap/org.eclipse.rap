@@ -1,68 +1,64 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.sliderkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.Slider;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 
 public class SliderLCA extends AbstractWidgetLCA {
-  
+
+  private static final String TYPE = "rwt.widgets.Slider";
+
   // Property names for preserveValues
-  static final String PROP_SELECTION = "selection";
-  static final String PROP_MAXIMUM = "maximum";
   static final String PROP_MINIMUM = "minimum";
-  static final String PROP_PAGE_INCREMENT = "pageIncrement";
+  static final String PROP_MAXIMUM = "maximum";
+  static final String PROP_SELECTION = "selection";
   static final String PROP_INCREMENT = "increment";
+  static final String PROP_PAGE_INCREMENT = "pageIncrement";
   static final String PROP_THUMB = "thumb";
-  
+  static final String PROP_SELECTION_LISTENER = "selectionListener";
+
   // Default values
-  static final Integer DEFAULT_SELECTION = new Integer( 0 );
-  static final Integer DEFAULT_MAXIMUM = new Integer( 100 );
   static final Integer DEFAULT_MINIMUM = new Integer( 0 );
-  static final Integer DEFAULT_PAGE_INCREMENT = new Integer( 10 );
+  static final Integer DEFAULT_MAXIMUM = new Integer( 100 );
+  static final Integer DEFAULT_SELECTION = new Integer( 0 );
   static final Integer DEFAULT_INCREMENT = new Integer( 1 );
+  static final Integer DEFAULT_PAGE_INCREMENT = new Integer( 10 );
   static final Integer DEFAULT_THUMB = new Integer( 10 );
 
-  public void preserveValues( final Widget widget ) {
+  public void preserveValues( Widget widget ) {
     Slider slider = ( Slider )widget;
     ControlLCAUtil.preserveValues( slider );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( slider );
+    adapter.preserve( PROP_MINIMUM, new Integer( slider.getMinimum() ) );
+    adapter.preserve( PROP_MAXIMUM, new Integer( slider.getMaximum() ) );
+    adapter.preserve( PROP_SELECTION, new Integer( slider.getSelection() ) );
+    adapter.preserve( PROP_INCREMENT, new Integer( slider.getIncrement() ) );
+    adapter.preserve( PROP_PAGE_INCREMENT, new Integer( slider.getPageIncrement() ) );
+    adapter.preserve( PROP_THUMB, new Integer( slider.getThumb() ) );
     boolean hasListeners = SelectionEvent.hasListener( slider );
-    adapter.preserve( Props.SELECTION_LISTENERS,
-                      Boolean.valueOf( hasListeners ) );
-    adapter.preserve( PROP_SELECTION, 
-                      new Integer( slider.getSelection() ) );
-    adapter.preserve( PROP_MAXIMUM, 
-                      new Integer( slider.getMaximum() ) );
-    adapter.preserve( PROP_MINIMUM, 
-                      new Integer( slider.getMinimum() ) );
-    adapter.preserve( PROP_PAGE_INCREMENT, 
-                      new Integer( slider.getPageIncrement() ) );
-    adapter.preserve( PROP_INCREMENT, 
-                      new Integer( slider.getIncrement() ) );
-    adapter.preserve( PROP_THUMB, 
-                      new Integer( slider.getThumb() ) );
+    adapter.preserve( PROP_SELECTION_LISTENER, Boolean.valueOf( hasListeners ) );
+    WidgetLCAUtil.preserveCustomVariant( slider );
   }
 
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
     Slider slider = ( Slider )widget;
     String value = WidgetLCAUtil.readPropertyValue( slider, PROP_SELECTION );
     if( value != null ) {
@@ -73,113 +69,91 @@ public class SliderLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( slider );
   }
 
-  public void renderInitialization( final Widget widget ) throws IOException {
+  public void renderInitialization( Widget widget ) throws IOException {
     Slider slider = ( Slider )widget;
-    JSWriter writer = JSWriter.getWriterFor( slider );
-    String style = "";
-    if( ( slider.getStyle() & SWT.HORIZONTAL ) != 0 ) {
-      style = "horizontal";
-    } else {
-      style = "vertical";
-    }
-    Object[] args = new Object[]{
-      style
-    };
-    writer.newWidget( "org.eclipse.swt.widgets.Slider", args );
-    WidgetLCAUtil.writeCustomVariant( widget );
-    ControlLCAUtil.writeStyleFlags( slider );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( slider );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( slider.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( slider ) );
   }
 
-  
-  public void renderChanges( final Widget widget ) throws IOException {
+
+  public void renderChanges( Widget widget ) throws IOException {
     Slider slider = ( Slider )widget;
-    ControlLCAUtil.writeChanges( slider );
-    writeMaximum( slider );
-    writeMinimum( slider );
-    writePageIncrement( slider );
-    writeSelection( slider );
-    writeIncrement( slider );
-    writeThumb( slider );
-    writeListener( slider );
+    ControlLCAUtil.renderChanges( slider );
+    WidgetLCAUtil.renderCustomVariant( widget );
+    renderMinimum( slider );
+    renderMaximum( slider );
+    renderSelection( slider );
+    renderIncrement( slider );
+    renderPageIncrement( slider );
+    renderThumb( slider );
+    renderListenSelection( slider );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
+    ClientObjectFactory.getForWidget( widget ).destroy();
+  }
+
+  ////////////////////////////////////////
+  // Helping methods to render the changes
+
+  private static void renderMinimum( Slider slider ) {
+    renderProperty( slider, PROP_MINIMUM, new Integer( slider.getMinimum() ), DEFAULT_MINIMUM );
+  }
+
+  private static void renderMaximum( Slider slider ) {
+    renderProperty( slider, PROP_MAXIMUM, new Integer( slider.getMaximum() ), DEFAULT_MAXIMUM );
+  }
+
+  private static void renderSelection( Slider slider ) {
+    Integer defValue = DEFAULT_SELECTION;
+    renderProperty( slider, PROP_SELECTION, new Integer( slider.getSelection() ), defValue );
+  }
+
+  private static void renderIncrement( Slider slider ) {
+    Integer defValue = DEFAULT_INCREMENT;
+    renderProperty( slider, PROP_INCREMENT, new Integer( slider.getIncrement() ), defValue );
+  }
+
+  private static void renderPageIncrement( Slider slider ) {
+    String prop = PROP_PAGE_INCREMENT;
+    Integer defValue = DEFAULT_PAGE_INCREMENT;
+    renderProperty( slider, prop, new Integer( slider.getPageIncrement() ), defValue );
+  }
+
+  private static void renderThumb( Slider slider ) {
+    renderProperty( slider, PROP_THUMB, new Integer( slider.getThumb() ), DEFAULT_THUMB );
+  }
+
+  private static void renderListenSelection( Slider slider ) {
+    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( slider ) );
+    if( WidgetLCAUtil.hasChanged( slider, PROP_SELECTION_LISTENER, newValue, Boolean.FALSE ) ) {
+      renderListen( slider, "selection", newValue.booleanValue() );
+    }
   }
 
   //////////////////
   // Helping methods
-  private void writeMaximum( final Slider slider ) throws IOException {
-    Integer newValue = new Integer( slider.getMaximum() );
-    if( WidgetLCAUtil.hasChanged( slider, 
-                                  PROP_MAXIMUM,
-                                  newValue, 
-                                  DEFAULT_MAXIMUM  ) ) 
-    {
-      JSWriter writer = JSWriter.getWriterFor( slider );
-      writer.set( PROP_MAXIMUM, newValue );
+
+  private static void renderProperty( Slider slider,
+                                      String property,
+                                      Object newValue,
+                                      Object defValue )
+  {
+    if( WidgetLCAUtil.hasChanged( slider, property, newValue, defValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( slider );
+      clientObject.setProperty( property, newValue );
     }
   }
-  
-  private void writeMinimum( final Slider slider ) throws IOException {
-    Integer newValue = new Integer( slider.getMinimum() );
-    String prop = PROP_MINIMUM;
-    Integer defValue = DEFAULT_MINIMUM;
-    if( WidgetLCAUtil.hasChanged( slider, prop, newValue, defValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( slider );
-      writer.set( PROP_MINIMUM, newValue );
+
+  private static void renderListen( Slider slider, String eventType, boolean hasListener ) {
+    IClientObject clientObject = ClientObjectFactory.getForWidget( slider );
+    if( hasListener ) {
+      clientObject.addListener( eventType );
+    } else {
+      clientObject.removeListener( eventType );
     }
   }
-  
-  private void writeSelection( final Slider slider ) throws IOException {
-    Integer newValue = new Integer( slider.getSelection() );
-    String prop = PROP_SELECTION;
-    Integer defValue = DEFAULT_SELECTION;
-    if( WidgetLCAUtil.hasChanged( slider, prop, newValue, defValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( slider );
-      writer.set( PROP_SELECTION, newValue );
-    }
-  }
-  
-  private void writeIncrement( final Slider slider ) throws IOException {
-    Integer newValue = new Integer( slider.getIncrement() );
-    String prop = PROP_INCREMENT;
-    Integer defValue = DEFAULT_INCREMENT;
-    if( WidgetLCAUtil.hasChanged( slider, prop, newValue, defValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( slider );
-      writer.set( PROP_INCREMENT, newValue );
-    }
-  }
-  
-  private void writePageIncrement( final Slider slider ) throws IOException {
-    Integer newValue = new Integer( slider.getPageIncrement() );
-    String prop = PROP_PAGE_INCREMENT;
-    Integer defValue = DEFAULT_PAGE_INCREMENT;
-    if( WidgetLCAUtil.hasChanged( slider, prop, newValue, defValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( slider );
-      writer.set( PROP_PAGE_INCREMENT, newValue );
-    }
-  }
-  
-  private void writeThumb( final Slider slider ) throws IOException {
-    Integer newValue = new Integer( slider.getThumb() );
-    String prop = PROP_THUMB;
-    Integer defValue = DEFAULT_THUMB;
-    if( WidgetLCAUtil.hasChanged( slider, prop, newValue, defValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( slider );
-      writer.set( PROP_THUMB, newValue );
-    }
-  }
-  
-  private void writeListener( final Slider slider ) throws IOException {  
-    boolean hasListener = SelectionEvent.hasListener( slider );
-    Boolean newValue = Boolean.valueOf( hasListener );
-    String prop = Props.SELECTION_LISTENERS;
-    if( WidgetLCAUtil.hasChanged( slider, prop, newValue, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( slider );
-      writer.set( "hasSelectionListener", newValue );
-    }
-  }
- 
+
 }
