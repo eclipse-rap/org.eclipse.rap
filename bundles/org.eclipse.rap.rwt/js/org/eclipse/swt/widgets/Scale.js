@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 /**
@@ -17,12 +17,10 @@
 qx.Class.define( "org.eclipse.swt.widgets.Scale", {
   extend : qx.ui.layout.CanvasLayout,
 
-  construct : function( style ) {
+  construct : function( isHorizontal ) {
     this.base( arguments );
     this.setAppearance( "scale" );
-    
-    // Get styles
-    this._horizontal = qx.lang.String.contains( style, "horizontal" );
+    this._horizontal = isHorizontal;
     
     // Has selection listener
     this._hasSelectionListener = false;

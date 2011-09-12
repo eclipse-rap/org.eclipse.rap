@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -39,11 +39,11 @@ public class Scale extends Control {
 
   private final Point PREFERRED_SIZE = new Point( 160, 41 );
 
-  private int increment = 1;
-  private int maximum = 100;
-  private int minimum = 0;
-  private int pageIncrement = 10;
-  private int selection = 0;
+  private int increment;
+  private int maximum;
+  private int minimum;
+  private int pageIncrement;
+  private int selection;
 
   /**
    * Constructs a new instance of this class given its parent and a style value
@@ -74,8 +74,11 @@ public class Scale extends Control {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public Scale( final Composite parent, final int style ) {
+  public Scale( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
+    maximum = 100;
+    increment = 1;
+    pageIncrement = 10;
   }
 
   /**
@@ -99,7 +102,7 @@ public class Scale extends Control {
    * @see SelectionListener
    * @see #removeSelectionListener
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -120,14 +123,12 @@ public class Scale extends Control {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed ) {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int border = getBorderWidth();
     int width = border * 2, height = border * 2;
@@ -236,7 +237,7 @@ public class Scale extends Control {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setIncrement( final int increment ) {
+  public void setIncrement( int increment ) {
     checkWidget();
     if( increment >= 1 && increment <= maximum - minimum ) {
       this.increment = increment;
@@ -257,7 +258,7 @@ public class Scale extends Control {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setMaximum( final int maximum ) {
+  public void setMaximum( int maximum ) {
     checkWidget();
     if( 0 <= minimum && minimum < maximum ) {
       this.maximum = maximum;
@@ -281,7 +282,7 @@ public class Scale extends Control {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setMinimum( final int minimum ) {
+  public void setMinimum( int minimum ) {
     checkWidget();
     if( 0 <= minimum && minimum < this.maximum ) {
       this.minimum = minimum;
@@ -303,7 +304,7 @@ public class Scale extends Control {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setPageIncrement( final int pageIncrement ) {
+  public void setPageIncrement( int pageIncrement ) {
     checkWidget();
     if( pageIncrement >= 1 && pageIncrement <= maximum - minimum ) {
       this.pageIncrement = pageIncrement;
@@ -321,14 +322,14 @@ public class Scale extends Control {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setSelection( final int selection ) {
+  public void setSelection( int selection ) {
     checkWidget();
     if( selection >= minimum && selection <= maximum ) {
       this.selection = selection;
     }
   }
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     return checkBits( style, SWT.HORIZONTAL, SWT.VERTICAL, 0, 0, 0, 0 );
   }
 

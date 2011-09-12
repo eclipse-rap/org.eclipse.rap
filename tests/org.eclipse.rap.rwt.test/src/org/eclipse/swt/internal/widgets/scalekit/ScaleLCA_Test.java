@@ -1,21 +1,27 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.scalekit;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -26,29 +32,38 @@ import org.eclipse.swt.widgets.*;
 
 public class ScaleLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+  private ScaleLCA lca;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
+    lca = new ScaleLCA();
+    Fixture.fakeNewRequest( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testScalePreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Scale scale = new Scale( shell, SWT.HORIZONTAL );
     Fixture.markInitialized( display );
     // Test preserved minimum, maximum,
     // selection, increment and ageIncrement
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( scale );
-    Integer minimum
-      = ( Integer )adapter.getPreserved( ScaleLCA.PROP_MINIMUM );
+    Integer minimum = ( Integer )adapter.getPreserved( ScaleLCA.PROP_MINIMUM );
     assertEquals( 0, minimum.intValue() );
-    Integer maximum
-      = ( Integer )adapter.getPreserved( ScaleLCA.PROP_MAXIMUM );
+    Integer maximum = ( Integer )adapter.getPreserved( ScaleLCA.PROP_MAXIMUM );
     assertEquals( 100, maximum.intValue() );
-    Integer selection
-      = ( Integer )adapter.getPreserved( ScaleLCA.PROP_SELECTION );
+    Integer selection = ( Integer )adapter.getPreserved( ScaleLCA.PROP_SELECTION );
     assertEquals( 0, selection.intValue() );
-    Integer increment
-      = ( Integer )adapter.getPreserved( ScaleLCA.PROP_INCREMENT );
+    Integer increment = ( Integer )adapter.getPreserved( ScaleLCA.PROP_INCREMENT );
     assertEquals( 1, increment.intValue() );
-    Integer pageIncrement
-      = ( Integer )adapter.getPreserved( ScaleLCA.PROP_PAGE_INCREMENT );
+    Integer pageIncrement = ( Integer )adapter.getPreserved( ScaleLCA.PROP_PAGE_INCREMENT );
     assertEquals( 10, pageIncrement.intValue() );
     Fixture.clearPreserved();
     // Test preserved control properties
@@ -58,13 +73,11 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   public void testSelectionEvent() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Scale scale = new Scale( shell, SWT.HORIZONTAL );
     testSelectionEvent( scale );
   }
 
-  private void testPreserveControlProperties( final Scale scale ) {
+  private void testPreserveControlProperties( Scale scale ) {
     // bound
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     scale.setBounds( rectangle );
@@ -121,19 +134,18 @@ public class ScaleLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
-  private void testPreserveSelectionListener( final Scale scale ) {
+  private void testPreserveSelectionListener( Scale scale ) {
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( scale );
-    Boolean hasListeners
-      = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    Boolean hasListeners = ( Boolean )adapter.getPreserved( ScaleLCA.PROP_SELECTION_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
-    SelectionListener selectionListener = new SelectionAdapter() { };
+    SelectionListener selectionListener = new SelectionAdapter() {
+    };
     scale.addSelectionListener( selectionListener );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( scale );
-    hasListeners
-      = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    hasListeners = ( Boolean )adapter.getPreserved( ScaleLCA.PROP_SELECTION_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
   }
@@ -160,11 +172,227 @@ public class ScaleLCA_Test extends TestCase {
     assertEquals( "widgetSelected", log.toString() );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
+  public void testRenderCreate() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+
+    lca.renderInitialization( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( scale );
+    assertEquals( "rwt.widgets.Scale", operation.getType() );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testRenderParent() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+
+    lca.renderInitialization( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( scale );
+    assertEquals( WidgetUtil.getId( scale.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderCreateWithHorizontal() throws IOException {
+    Scale scale = new Scale( shell, SWT.HORIZONTAL );
+
+    lca.renderInitialization( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( scale );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "HORIZONTAL" ) );
+  }
+
+  public void testRenderInitialMinimum() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+
+    lca.render( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( scale );
+    assertTrue( operation.getPropertyNames().indexOf( "minimum" ) == -1 );
+  }
+
+  public void testRenderMinimum() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+
+    scale.setMinimum( 10 );
+    lca.renderChanges( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 10 ), message.findSetProperty( scale, "minimum" ) );
+  }
+
+  public void testRenderMinimumUnchanged() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( scale );
+
+    scale.setMinimum( 10 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( scale, "minimum" ) );
+  }
+
+  public void testRenderInitialMaxmum() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+
+    lca.render( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( scale );
+    assertTrue( operation.getPropertyNames().indexOf( "maximum" ) == -1 );
+  }
+
+  public void testRenderMaxmum() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+
+    scale.setMaximum( 10 );
+    lca.renderChanges( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 10 ), message.findSetProperty( scale, "maximum" ) );
+  }
+
+  public void testRenderMaxmumUnchanged() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( scale );
+
+    scale.setMaximum( 10 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( scale, "maximum" ) );
+  }
+
+  public void testRenderInitialSelection() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+
+    lca.render( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( scale );
+    assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
+  }
+
+  public void testRenderSelection() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+
+    scale.setSelection( 10 );
+    lca.renderChanges( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 10 ), message.findSetProperty( scale, "selection" ) );
+  }
+
+  public void testRenderSelectionUnchanged() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( scale );
+
+    scale.setSelection( 10 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( scale, "selection" ) );
+  }
+
+  public void testRenderInitialIncrement() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+
+    lca.render( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( scale );
+    assertTrue( operation.getPropertyNames().indexOf( "increment" ) == -1 );
+  }
+
+  public void testRenderIncrement() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+
+    scale.setIncrement( 2 );
+    lca.renderChanges( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 2 ), message.findSetProperty( scale, "increment" ) );
+  }
+
+  public void testRenderIncrementUnchanged() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( scale );
+
+    scale.setIncrement( 2 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( scale, "increment" ) );
+  }
+
+  public void testRenderInitialPageIncrement() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+
+    lca.render( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( scale );
+    assertTrue( operation.getPropertyNames().indexOf( "pageIncrement" ) == -1 );
+  }
+
+  public void testRenderPageIncrement() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+
+    scale.setPageIncrement( 20 );
+    lca.renderChanges( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 20 ), message.findSetProperty( scale, "pageIncrement" ) );
+  }
+
+  public void testRenderPageIncrementUnchanged() throws IOException {
+    Scale scale = new Scale( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( scale );
+
+    scale.setPageIncrement( 20 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( scale, "pageIncrement" ) );
+  }
+
+  public void testRenderAddSelectionListener() throws Exception {
+    Scale scale = new Scale( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( scale );
+    Fixture.preserveWidgets();
+
+    scale.addSelectionListener( new SelectionAdapter() { } );
+    lca.renderChanges( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( scale, "selection" ) );
+  }
+
+  public void testRenderRemoveSelectionListener() throws Exception {
+    Scale scale = new Scale( shell, SWT.NONE );
+    SelectionListener listener = new SelectionAdapter() { };
+    scale.addSelectionListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( scale );
+    Fixture.preserveWidgets();
+
+    scale.removeSelectionListener( listener );
+    lca.renderChanges( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( scale, "selection" ) );
   }
 }
