@@ -21,7 +21,7 @@ import java.net.URLConnection;
 public class Response {
   private static final String HTML_PROLOGUE = "<!DOCTYPE HTML";
   private static final String JAVASCRIPT_PROLOGUE
-    = "var req = org.eclipse.swt.Request.getInstance();";
+    = "org.eclipse.rwt.protocol.Processor.processMessage";
   
   private final int responseCode;
   private final byte[] content;

@@ -22,7 +22,7 @@ public class Response_Test extends TestCase {
   private static final String VALID_HTML
     = "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">";
   private static final String VALID_JAVASCRIPT
-    = "var req = org.eclipse.swt.Request.getInstance();foo();bar();";
+    = "org.eclipse.rwt.protocol.Processor.processMessage();foo();bar();";
   
   public void testConstructor() throws IOException {
     int responseCode = 1;
@@ -51,7 +51,7 @@ public class Response_Test extends TestCase {
     assertFalse( response.isValidJavascript() );
   }
   
-  public void testIsValidJavascripWithValidContent() throws IOException {
+  public void testIsValidJavascriptWithValidContent() throws IOException {
     String content = VALID_JAVASCRIPT;
     TestHttpUrlConnection connection = new TestHttpUrlConnection( 200, content );
 
