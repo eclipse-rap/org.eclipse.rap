@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.browser;
 
@@ -66,7 +66,7 @@ public class Browser extends Composite {
       } );
     }
 
-    public void setExecutePending( final boolean executePending ) {
+    public void setExecutePending( boolean executePending ) {
       Browser.this.executePending = executePending;
     }
 
@@ -133,7 +133,7 @@ public class Browser extends Composite {
    *
    * @see org.eclipse.swt.Widget#getStyle
    */
-  public Browser( final Composite parent, final int style ) {
+  public Browser( Composite parent, int style ) {
     super( parent, style );
     if( ( style & ( SWT.MOZILLA | SWT.WEBKIT ) ) != 0 ) {
       throw new SWTError( SWT.ERROR_NO_HANDLES, "Unsupported Browser type" );
@@ -161,13 +161,12 @@ public class Browser extends Composite {
    *
    * @see #getUrl
    */
-  public boolean setUrl( final String url ) {
+  public boolean setUrl( String url ) {
     checkWidget();
     if( url == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    LocationEvent event;
-    event = new LocationEvent( this, LocationEvent.CHANGING, url );
+    LocationEvent event = new LocationEvent( this, LocationEvent.CHANGING, url );
     event.processEvent();
     boolean result = event.doit;
     if( result ) {
@@ -223,13 +222,12 @@ public class Browser extends Composite {
    *
    * @see #setUrl
    */
-  public boolean setText( final String html ) {
+  public boolean setText( String html ) {
     checkWidget();
     if( html == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    LocationEvent event;
-    event = new LocationEvent( this, LocationEvent.CHANGING, ABOUT_BLANK );
+    LocationEvent event = new LocationEvent( this, LocationEvent.CHANGING, ABOUT_BLANK );
     event.processEvent();
     boolean result = event.doit;
     if( result ) {
@@ -239,9 +237,7 @@ public class Browser extends Composite {
       event = new LocationEvent( this, LocationEvent.CHANGED, ABOUT_BLANK );
       event.top = true;
       event.processEvent();
-
-      ProgressEvent progressEvent
-        = new ProgressEvent( this, ProgressEvent.CHANGED );
+      ProgressEvent progressEvent = new ProgressEvent( this, ProgressEvent.CHANGED );
       progressEvent.processEvent();
     }
     return result;
@@ -278,7 +274,7 @@ public class Browser extends Composite {
    *
    * @since 1.1
    */
-  public boolean execute( final String script ) {
+  public boolean execute( String script ) {
     checkWidget();
     if( script == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -343,7 +339,7 @@ public class Browser extends Composite {
    *
    * @since 1.4
    */
-  public Object evaluate( final String script ) throws SWTException {
+  public Object evaluate( String script ) throws SWTException {
     if( script == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -378,7 +374,7 @@ public class Browser extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
    * </ul>
    */
-  public void addLocationListener( final LocationListener listener ) {
+  public void addLocationListener( LocationListener listener ) {
     checkWidget();
     LocationEvent.addListener( this, listener );
   }
@@ -398,7 +394,7 @@ public class Browser extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
    * </ul>
    */
-  public void removeLocationListener( final LocationListener listener ) {
+  public void removeLocationListener( LocationListener listener ) {
     checkWidget();
     LocationEvent.removeListener( this, listener );
   }
@@ -421,7 +417,7 @@ public class Browser extends Composite {
    *
    * @since 1.4
    */
-  public void addProgressListener( final ProgressListener listener ) {
+  public void addProgressListener( ProgressListener listener ) {
     checkWidget();
     ProgressEvent.addListener( this, listener );
   }
@@ -444,12 +440,12 @@ public class Browser extends Composite {
    *
    * @since 1.4
    */
-  public void removeProgressListener( final ProgressListener listener ) {
+  public void removeProgressListener( ProgressListener listener ) {
     checkWidget();
     ProgressEvent.removeListener( this, listener );
   }
 
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result;
     if( IBrowserAdapter.class.equals( adapter ) ) {
       if( browserAdapter == null ) {
@@ -487,7 +483,7 @@ public class Browser extends Composite {
     return functions.toArray( new BrowserFunction[ functions.size() ] );
   }
 
-  void createFunction( final BrowserFunction function ) {
+  void createFunction( BrowserFunction function ) {
     boolean removed = false;
     for( int i = 0; !removed && i < functions.size(); i++ ) {
       BrowserFunction current = functions.get( i );
@@ -502,12 +498,12 @@ public class Browser extends Composite {
     }
   }
 
-  void destroyFunction( final BrowserFunction function ) {
+  void destroyFunction( BrowserFunction function ) {
     functions.remove( function );
     updateBrowserFunctions( function.getName(), false );
   }
 
-  private void updateBrowserFunctions( final String function, final boolean create ) {
+  private void updateBrowserFunctions( String function, boolean create ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     String id = WidgetUtil.getId( this );
     String key = create ? FUNCTIONS_TO_CREATE + id : FUNCTIONS_TO_DESTROY + id;
