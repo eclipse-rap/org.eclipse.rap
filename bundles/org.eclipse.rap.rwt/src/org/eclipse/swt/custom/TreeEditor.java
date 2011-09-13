@@ -96,7 +96,7 @@ public class TreeEditor extends ControlEditor {
         layout();
       }
     };
-    timer = new Runnable() {
+    timer = new SerializableRunnable() {
 
       public void run() {
         layout();
@@ -104,7 +104,7 @@ public class TreeEditor extends ControlEditor {
     };
     treeListener = new TreeListener() {
 
-      final Runnable runnable = new Runnable() {
+      final Runnable runnable = new SerializableRunnable() {
 
         public void run() {
           if( editor == null || editor.isDisposed() )
