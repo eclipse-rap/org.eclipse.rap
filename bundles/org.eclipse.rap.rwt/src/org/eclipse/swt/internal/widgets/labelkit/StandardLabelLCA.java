@@ -20,7 +20,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Label;
 
 final class StandardLabelLCA extends AbstractLabelLCADelegate {
@@ -76,7 +75,7 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   private static void renderImage( Label label ) {
     Image newValue = label.getImage();
-    if( WidgetLCAUtil.hasChanged( label, Props.IMAGE, newValue, null ) ) {
+    if( WidgetLCAUtil.hasChanged( label, PROP_IMAGE, newValue, null ) ) {
       Object[] args = null;
       if( newValue != null ) {
         String imagePath = ImageFactory.getImagePath( newValue );
