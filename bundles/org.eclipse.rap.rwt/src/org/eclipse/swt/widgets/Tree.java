@@ -117,7 +117,7 @@ public class Tree extends Composite {
   private ScrollBar verticalBar;
   private ScrollBar horizontalBar;
   private Point itemImageSize;
-  transient LayoutCache layoutCache;
+  LayoutCache layoutCache;
   boolean isFlatIndexValid;
   private int visibleItemsCount;
 
@@ -2396,7 +2396,7 @@ public class Tree extends Composite {
     }
   }
 
-  static final class LayoutCache {
+  static final class LayoutCache implements SerializableCompatibility {
     private static final int UNKNOWN = -1;
 
     int headerHeight = UNKNOWN;

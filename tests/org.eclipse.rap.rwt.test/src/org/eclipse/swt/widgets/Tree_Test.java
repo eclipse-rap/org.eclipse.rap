@@ -1503,6 +1503,17 @@ public class Tree_Test extends TestCase {
     assertEquals( 1, deserializedTree.getItemCount() );
     assertEquals( 1, deserializedTree.getColumnCount() );
   }
+  
+  public void testLayoutCacheIsSerializable() throws Exception {
+    Tree tree = new Tree( composite, SWT.NONE );
+    tree.setHeaderVisible( true );
+    new TreeColumn( tree, SWT.NONE );
+    int headerHeight = tree.getHeaderHeight();
+    
+    Tree deserializedTree = Fixture.serializeAndDeserialize( tree );
+    
+    assertEquals( headerHeight, deserializedTree.getHeaderHeight() );
+  }
 
   public void testGetPreferredCellWidthForColumn() {
     Tree tree = new Tree( composite, SWT.NONE );
