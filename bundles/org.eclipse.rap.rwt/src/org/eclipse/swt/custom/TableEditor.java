@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.swt.custom;
 
+import java.io.Serializable;
+
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -72,6 +74,11 @@ import org.eclipse.swt.widgets.*;
 * @since 1.2
 */
 public class TableEditor extends ControlEditor {
+  private class LayoutRunnable implements Runnable, Serializable {
+    public void run() {
+      layout();
+    }
+  }
 	Table table;
 	TableItem item;
 	int column = -1;
@@ -96,11 +103,13 @@ public TableEditor (Table table) {
 			layout ();
 		}
 	};
-	timer = new Runnable () {
-		public void run() {
-			layout ();
-		}
-	};
+	// [rh] Make runnable that triggers re-layouting serializable (see bug 342407)
+	timer = new LayoutRunnable();
+//	timer = new Runnable () {
+//		public void run() {
+//			layout ();
+//		}
+//	};
 
 	// To be consistent with older versions of SWT, grabVertical defaults to true
 	grabVertical = true;
