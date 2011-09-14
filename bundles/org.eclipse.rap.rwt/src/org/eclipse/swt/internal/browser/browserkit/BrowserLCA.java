@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.browser.browserkit;
 
@@ -56,35 +56,39 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     = Browser.class.getName() + "#functionsToDestroy.";
 
 
-  public void preserveValues( final Widget widget ) {
+  public void preserveValues( Widget widget ) {
     Browser browser = ( Browser )widget;
     ControlLCAUtil.preserveValues( browser );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( browser );
     boolean hasListeners = ProgressEvent.hasListener( browser );
-    adapter.preserve( PARAM_PROGRESS_LISTENERS,
-                      Boolean.valueOf( hasListeners ) );
+    adapter.preserve( PARAM_PROGRESS_LISTENERS, Boolean.valueOf( hasListeners ) );
     WidgetLCAUtil.preserveCustomVariant( browser );
   }
 
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
     Browser browser = ( Browser )widget;
     readExecuteResult( browser );
     executeFunction( browser );
     fireProgressEvent( browser );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderInitialization( final Widget widget ) throws IOException {
     Browser browser = ( Browser )widget;
-    // TODO [rh] though implemented in DefaultAppearanceTheme, setting border
-    //      does not work
+    JSWriter writer = JSWriter.getWriterFor( browser );
+    writer.newWidget( QX_TYPE );
+    ControlLCAUtil.writeStyleFlags( browser );
+  }
+
+  public void renderChanges( Widget widget ) throws IOException {
+    Browser browser = ( Browser )widget;
     ControlLCAUtil.writeChanges( browser );
+    WidgetLCAUtil.writeCustomVariant( browser );
     destroyBrowserFunctions( browser );
     writeUrl( browser );
     createBrowserFunctions( browser );
     writeExecute( browser );
     writeFunctionResult( browser );
     writeListener( browser );
-    WidgetLCAUtil.writeCustomVariant( browser );
   }
 
   public void renderDispose( final Widget widget ) throws IOException {
@@ -92,18 +96,16 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  public void fireProgressEvent( Browser browser ) {
+  private static void fireProgressEvent( Browser browser ) {
     if( WidgetLCAUtil.wasEventSent( browser, EVENT_PROGRESS_COMPLETED ) ) {
-      ProgressEvent changedEvent
-        = new ProgressEvent( browser, ProgressEvent.CHANGED );
+      ProgressEvent changedEvent = new ProgressEvent( browser, ProgressEvent.CHANGED );
       changedEvent.processEvent();
-      ProgressEvent completedEvent
-        = new ProgressEvent( browser, ProgressEvent.COMPLETED );
+      ProgressEvent completedEvent = new ProgressEvent( browser, ProgressEvent.COMPLETED );
       completedEvent.processEvent();
     }
   }
 
-  public void readExecuteResult( Browser browser ) {
+  private static void readExecuteResult( Browser browser ) {
     String executeValue = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_RESULT );
     if( executeValue != null ) {
       String evalValue = WidgetLCAUtil.readPropertyValue( browser, PARAM_EVALUATE_RESULT );
@@ -117,13 +119,6 @@ public final class BrowserLCA extends AbstractWidgetLCA {
       }
       getAdapter( browser ).setExecuteResult( executeResult, evalResult );
     }
-  }
-
-  public void renderInitialization( final Widget widget ) throws IOException {
-    Browser browser = ( Browser )widget;
-    JSWriter writer = JSWriter.getWriterFor( browser );
-    writer.newWidget( QX_TYPE );
-    ControlLCAUtil.writeStyleFlags( browser );
   }
 
   private static void writeUrl( Browser browser ) throws IOException {
@@ -140,7 +135,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     return !initialized || getAdapter( browser ).hasUrlChanged();
   }
 
-  static String getUrl( final Browser browser ) throws IOException {
+  static String getUrl( Browser browser ) throws IOException {
     String text = getText( browser );
     String url = browser.getUrl();
     String result;
@@ -185,7 +180,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static String registerHtml( final String html ) throws IOException {
+  private static String registerHtml( String html ) throws IOException {
     String name = createUrlFromHtml( html );
     byte[] bytes = html.getBytes( "UTF-8" );
     InputStream inputStream = new ByteArrayInputStream( bytes );
@@ -194,7 +189,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     return resourceManager.getLocation( name );
   }
 
-  private static String createUrlFromHtml( final String html ) {
+  private static String createUrlFromHtml( String html ) {
     StringBuffer result = new StringBuffer();
     result.append( "org.eclipse.swt.browser/text" );
     result.append( String.valueOf( html.hashCode() ) );
@@ -202,17 +197,17 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     return result.toString();
   }
 
-  private static String getText( final Browser browser ) {
+  private static String getText( Browser browser ) {
     Object adapter = browser.getAdapter( IBrowserAdapter.class );
     IBrowserAdapter browserAdapter = ( IBrowserAdapter )adapter;
     return browserAdapter.getText();
   }
 
-  private static IBrowserAdapter getAdapter( final Browser browser ) {
+  private static IBrowserAdapter getAdapter( Browser browser ) {
     return ( IBrowserAdapter )browser.getAdapter( IBrowserAdapter.class );
   }
 
-  private void writeListener( final Browser browser ) throws IOException {
+  private void writeListener( Browser browser ) throws IOException {
     boolean hasListener = ProgressEvent.hasListener( browser );
     Boolean newValue = Boolean.valueOf( hasListener );
     String prop = PARAM_PROGRESS_LISTENERS;
@@ -225,41 +220,37 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   //////////////////////////////////////
   // Helping methods for BrowserFunction
 
-  private static void createBrowserFunctions( final Browser browser )
-    throws IOException
-  {
+  private static void createBrowserFunctions( Browser browser ) throws IOException {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     String id = WidgetUtil.getId( browser );
-    String[] functions
-      = ( String[] )stateInfo.getAttribute( FUNCTIONS_TO_CREATE + id );
+    String[] functions = ( String[] )stateInfo.getAttribute( FUNCTIONS_TO_CREATE + id );
     if( functions != null ) {
       for( int i = 0; i < functions.length; i++ ) {
         JSWriter writer = JSWriter.getWriterFor( browser );
-        writer.call( "createFunction", new Object[]{ functions[ i ] } );
+        writer.call( "createFunction", new Object[]{
+          functions[ i ]
+        } );
       }
     }
   }
 
-  private static void destroyBrowserFunctions( final Browser browser )
-    throws IOException
-  {
+  private static void destroyBrowserFunctions( Browser browser ) throws IOException {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     String id = WidgetUtil.getId( browser );
-    String[] functions
-      = ( String[] )stateInfo.getAttribute( FUNCTIONS_TO_DESTROY + id );
+    String[] functions = ( String[] )stateInfo.getAttribute( FUNCTIONS_TO_DESTROY + id );
     if( functions != null ) {
       for( int i = 0; i < functions.length; i++ ) {
         JSWriter writer = JSWriter.getWriterFor( browser );
-        writer.call( "destroyFunction", new Object[]{ functions[ i ] } );
+        writer.call( "destroyFunction", new Object[]{
+          functions[ i ]
+        } );
       }
     }
   }
 
-  private void executeFunction( final Browser browser ) {
-    String function
-      = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_FUNCTION );
-    String arguments
-      = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_ARGUMENTS );
+  private static void executeFunction( final Browser browser ) {
+    String function = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_FUNCTION );
+    String arguments = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_ARGUMENTS );
     if( function != null ) {
       IBrowserAdapter adapter = getAdapter( browser );
       BrowserFunction[] functions = adapter.getBrowserFunctions();
