@@ -7,7 +7,7 @@
  *
  * Contributors:
  *    Innoopract Informationssysteme GmbH - initial API and implementation
- *    EclipseSource - ongoing implementation
+ *    EclipseSource - ongoing development
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
@@ -21,12 +21,12 @@ import org.eclipse.rwt.lifecycle.ILifeCycle;
 public class LifeCycleFactory {
   private final RWTConfiguration configuration;
   private LifeCycle lifeCycle;
-
   
   public LifeCycleFactory( RWTConfiguration configuration ) {
     ParamCheck.notNull( configuration, "configuration" );
     this.configuration = configuration;
   }
+  
   public ILifeCycle getLifeCycle() {
     return lifeCycle;
   }
