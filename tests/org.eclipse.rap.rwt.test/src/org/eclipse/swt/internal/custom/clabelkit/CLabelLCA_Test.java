@@ -423,7 +423,7 @@ public class CLabelLCA_Test extends TestCase {
       display.getSystemColor( SWT.COLOR_RED ),
       display.getSystemColor( SWT.COLOR_GREEN )
     };
-    int[] percents = new int[] { 0, 100 };
+    int[] percents = new int[] { 50 };
     clabel.setBackground( colors , percents );
     Fixture.preserveWidgets();
     lca.renderChanges( clabel );
