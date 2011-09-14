@@ -8,7 +8,7 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.branding;
+package org.eclipse.rwt.engine;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServlet;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.engine.*;
+import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.RWTDelegate;
 
