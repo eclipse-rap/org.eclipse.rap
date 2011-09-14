@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -41,8 +41,8 @@ public class Link extends Control {
   // Must be kept in sync with appearance value in AppearancesBase.js
   private final static int PADDING = 2;
 
-  private String text = "";
-  private String displayText = "";
+  private String text;
+  private String displayText;
   private Point[] offsets;
   private String[] ids;
   private int[] mnemonics;
@@ -77,6 +77,8 @@ public class Link extends Control {
    */
   public Link( Composite parent, int style ) {
     super( parent, style );
+    text = "";
+    displayText = "";
   }
 
   void initState() {
@@ -194,7 +196,7 @@ public class Link extends Control {
     int border = getBorderWidth();
     if( ( displayText.length() > 0 ) ) {
       // Replace '&' with '&&' to ensure proper size calculation with one '&',
-      // because the other will be escaped in 
+      // because the other will be escaped in
       // TextSizeUtil#createMeasureString()
       String string = escapeAmpersand( displayText );
       Point extent = Graphics.textExtent( getFont(), string, wHint );
@@ -211,7 +213,7 @@ public class Link extends Control {
     height += border * 2 + PADDING * 2;
     return new Point( width, height );
   }
-  
+
   private static String escapeAmpersand( String string ) {
     StringBuffer result = new StringBuffer();
     for( int i = 0; i < string.length(); i++ ) {
@@ -246,7 +248,7 @@ public class Link extends Control {
     }
     return result;
   }
-  
+
   boolean isTabGroup() {
     return true;
   }
@@ -270,7 +272,7 @@ public class Link extends Control {
     while (index < length) {
       char c = Character.toLowerCase (buffer [index]);
       switch (state) {
-        case 0: 
+        case 0:
           if (c == '<') {
             tagStart = index;
             state++;
@@ -383,7 +385,7 @@ public class Link extends Control {
       ids = newIDs;
       int [] newMnemonics = new int [linkIndex + 1];
       System.arraycopy (mnemonics, 0, newMnemonics, 0, linkIndex + 1);
-      mnemonics = newMnemonics;   
+      mnemonics = newMnemonics;
     }
     return result.toString ();
   }

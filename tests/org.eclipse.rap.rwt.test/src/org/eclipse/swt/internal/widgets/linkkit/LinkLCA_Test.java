@@ -1,22 +1,26 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.linkkit;
+
+import java.io.IOException;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -26,38 +30,44 @@ import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+import org.json.*;
 
 public class LinkLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+  private LinkLCA lca;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
+    lca = new LinkLCA();
+    Fixture.fakeNewRequest( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Link link = new Link( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( link );
-    assertEquals( "", adapter.getPreserved( Props.TEXT ) );
-    Boolean hasListeners
-      = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    assertEquals( "", adapter.getPreserved( LinkLCA.PROP_TEXT ) );
+    Boolean hasListeners = ( Boolean )adapter.getPreserved( LinkLCA.PROP_SELECTION_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
     link.setText( "some text" );
-    link.addSelectionListener( new SelectionListener() {
-
-      public void widgetDefaultSelected( final SelectionEvent e ) {
-      }
-
-      public void widgetSelected( final SelectionEvent e ) {
-      }
-    } );
+    link.addSelectionListener( new SelectionAdapter() {} );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
-    assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
-    hasListeners
-      = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    assertEquals( "some text", adapter.getPreserved( LinkLCA.PROP_TEXT ) );
+    hasListeners = ( Boolean )adapter.getPreserved( LinkLCA.PROP_SELECTION_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
-    //control: enabled
+    // control: enabled
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
@@ -68,7 +78,7 @@ public class LinkLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     link.setEnabled( true );
-    //visible
+    // visible
     link.setSize( 10, 10 );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
@@ -79,7 +89,7 @@ public class LinkLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( link );
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.VISIBLE ) );
     Fixture.clearPreserved();
-    //menu
+    // menu
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
     assertEquals( null, adapter.getPreserved( Props.MENU ) );
@@ -92,38 +102,31 @@ public class LinkLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( link );
     assertEquals( menu, adapter.getPreserved( Props.MENU ) );
     Fixture.clearPreserved();
-    //bound
+    // bound
     Rectangle rectangle = new Rectangle( 10, 10, 30, 50 );
     link.setBounds( rectangle );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
-    //control_listeners
+    // control_listeners
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
-    link.addControlListener( new ControlListener() {
-
-      public void controlMoved( final ControlEvent e ) {
-      }
-
-      public void controlResized( final ControlEvent e ) {
-      }
-    } );
+    link.addControlListener( new ControlAdapter() {} );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
-    //z-index
+    // z-index
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
     Fixture.clearPreserved();
-    //foreground background font
+    // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     link.setBackground( background );
     Color foreground = Graphics.getColor( 211, 178, 211 );
@@ -136,12 +139,12 @@ public class LinkLCA_Test extends TestCase {
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
     Fixture.clearPreserved();
-    //tab_index
+    // tab_index
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
     Fixture.clearPreserved();
-    //tooltiptext
+    // tooltiptext
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
     assertEquals( null, link.getToolTipText() );
@@ -151,20 +154,13 @@ public class LinkLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( link );
     assertEquals( "some text", link.getToolTipText() );
     Fixture.clearPreserved();
-    //activate_listeners   Focus_listeners
+    // activate_listeners Focus_listeners
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
-    link.addFocusListener( new FocusListener() {
-
-      public void focusGained( final FocusEvent event ) {
-      }
-
-      public void focusLost( final FocusEvent event ) {
-      }
-    } );
+    link.addFocusListener( new FocusAdapter() {} );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
@@ -175,8 +171,7 @@ public class LinkLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
-    ActivateEvent.addListener( link, new ActivateAdapter() {
-    } );
+    ActivateEvent.addListener( link, new ActivateAdapter() {} );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
@@ -185,13 +180,10 @@ public class LinkLCA_Test extends TestCase {
 
   public void testSelectionEvent() {
     final StringBuffer log = new StringBuffer();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Link link = new Link( shell, SWT.NONE );
     link.setText( "Big <a>Bang</a>" );
     link.addSelectionListener( new SelectionAdapter() {
-
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         log.append( "selectionEvent" );
         assertSame( link, event.getSource() );
         assertEquals( 0, event.detail );
@@ -212,8 +204,6 @@ public class LinkLCA_Test extends TestCase {
 
   public void testIllegalSelectionEvent() {
     // Selection event should not fire if index out of bounds (see bug 252354)
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     Link link = new Link( shell, SWT.NONE );
     link.setText( "No Link" );
     link.addSelectionListener( new SelectionAdapter() {
@@ -227,49 +217,109 @@ public class LinkLCA_Test extends TestCase {
     Fixture.readDataAndProcessAction( link );
   }
 
-  public void testRender() throws Exception {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    final Link link = new Link( shell, SWT.NONE );
-    link.setText( "Big <a><b>Bang</b></a>" );
-    Fixture.fakeResponseWriter();
-    LinkLCA lca = new LinkLCA();
+  public void testRenderCreate() throws IOException {
+    Link link = new Link( shell, SWT.NONE );
+
+    lca.renderInitialization( link );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( link );
+    assertEquals( "rwt.widgets.Link", operation.getType() );
+  }
+
+  public void testRenderParent() throws IOException {
+    Link link = new Link( shell, SWT.NONE );
+
+    lca.renderInitialization( link );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( link );
+    assertEquals( WidgetUtil.getId( link.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderInitialText() throws IOException {
+    Link link = new Link( shell, SWT.NONE );
+
+    lca.render( link );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( link );
+    assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
+  }
+
+  public void testRenderText() throws IOException, JSONException {
+    Link link = new Link( shell, SWT.NONE );
+
+    link.setText( "foo <a>123</a> bar" );
     lca.renderChanges( link );
-    String markup = Fixture.getAllMarkup();
-    assertContains( "clear()", markup );
-    assertContains( "addText( \"Big \" )", markup );
-    assertContains( "addLink( \"&lt;b&gt;Bang&lt;/b&gt;\", 0 )", markup );
-    assertContains( "applyText()", markup );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray text = ( JSONArray )message.findSetProperty( link, "text" );
+    assertEquals( 3, text.length() );
+    JSONArray segment1 = ( JSONArray )text.get( 0 );
+    JSONArray segment2 = ( JSONArray )text.get( 1 );
+    JSONArray segment3 = ( JSONArray )text.get( 2 );
+    assertEquals( "foo ", segment1.get( 0 ) );
+    assertEquals( JSONObject.NULL, segment1.get( 1 ) );
+    assertEquals( "123", segment2.get( 0 ) );
+    assertEquals( new Integer( 0 ), segment2.get( 1 ) );
+    assertEquals( " bar", segment3.get( 0 ) );
+    assertEquals( JSONObject.NULL, segment3.get( 1 ) );
   }
 
-  public void testEscape() throws Exception {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Link link1 = new Link( shell, SWT.NONE );
-    Link link2 = new Link( shell, SWT.NONE );
-    link1.setText( "test.<" );
-    link2.setText( "&E<s>ca'pe\" && me" );
-    Fixture.fakeResponseWriter();
-    LinkLCA lca = new LinkLCA();
-    lca.renderChanges( link1 );
-    lca.renderChanges( link2 );
-    String actual = Fixture.getAllMarkup();
-    String expected1 = "\"test.&lt;\"";
-    assertTrue( actual.indexOf( expected1 ) != -1 );
-    String expected2 = "\"E&lt;s&gt;ca'pe&quot; &amp; me\"";
-    assertTrue( actual.indexOf( expected2 ) != -1 );
+  public void testRenderTextEmpty() throws IOException {
+    Link link = new Link( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( link );
+    link.setText( "foo bar" );
+
+    Fixture.preserveWidgets();
+    link.setText( "" );
+    lca.renderChanges( link );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray text = ( JSONArray )message.findSetProperty( link, "text" );
+    assertEquals( 0, text.length() );
   }
 
-  private void assertContains( final String expected, final String string ) {
-    String message = "'" + expected + "' not contained in '" + string + "'";
-    assertTrue( message, string.indexOf( expected ) != -1 );
+  public void testRenderTextUnchanged() throws IOException {
+    Link link = new Link( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( link );
+
+    link.setText( "foo <a>123</a> bar" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( link );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( link, "text" ) );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
+  public void testRenderAddSelectionListener() throws Exception {
+    Link link = new Link( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( link );
+    Fixture.preserveWidgets();
+
+    link.addSelectionListener( new SelectionAdapter() { } );
+    lca.renderChanges( link );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( link, "selection" ) );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testRenderRemoveSelectionListener() throws Exception {
+    Link link = new Link( shell, SWT.NONE );
+    SelectionListener listener = new SelectionAdapter() { };
+    link.addSelectionListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( link );
+    Fixture.preserveWidgets();
+
+    link.removeSelectionListener( listener );
+    lca.renderChanges( link );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( link, "selection" ) );
   }
 }
