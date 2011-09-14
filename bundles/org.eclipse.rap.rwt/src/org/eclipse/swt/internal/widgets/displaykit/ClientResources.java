@@ -232,6 +232,7 @@ final class ClientResources {
     "org/eclipse/swt/widgets/ComboAdapter.js",
     "org/eclipse/rwt/FocusIndicator.js",
     "org/eclipse/swt/CLabelUtil.js",
+    "org/eclipse/swt/custom/CLabelAdapter.js",
     "org/eclipse/swt/graphics/GC.js",
     "org/eclipse/rwt/VMLCanvas.js",
     "org/eclipse/swt/widgets/CompositeAdapter.js",

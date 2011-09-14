@@ -11,6 +11,7 @@
 package org.eclipse.rwt.internal.protocol;
 
 import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.widgets.*;
 
 
@@ -34,6 +35,7 @@ public final class RWTStylesUtil {
     FONT_DIALOG( FontDialog.class.getName(), new String[] { "APPLICATION_MODAL", "PRIMARY_MODAL", "SYSTEM_MODAL" } ),
     GROUP( Group.class.getName(), new String[] { "SHADOW_ETCHED_IN", "SHADOW_ETCHED_OUT", "SHADOW_IN", "SHADOW_OUT", "SHADOW_NONE", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     LABEL( Label.class.getName(), new String[] { "SEPARATOR", "HORIZONTAL", "VERTICAL", "SHADOW_IN", "SHADOW_OUT", "SHADOW_NONE", "CENTER", "LEFT", "RIGHT", "WRAP", "BORDER", "LEFT_TO_RIGHT" } ),
+    CLABEL( CLabel.class.getName(), new String[] { "SHADOW_IN", "SHADOW_OUT", "SHADOW_NONE", "CENTER", "LEFT", "RIGHT", "BORDER", "LEFT_TO_RIGHT" } ),
     LINK( Link.class.getName(), new String[] { "BORDER", "LEFT_TO_RIGHT" } ),
     LIST( List.class.getName(), new String[] { "SINGLE", "MULTI", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     MENU( Menu.class.getName(), new String[] { "BAR", "DROP_DOWN", "POP_UP", "NO_RADIO_GROUP", "LEFT_TO_RIGHT" } ),
