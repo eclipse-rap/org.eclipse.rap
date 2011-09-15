@@ -20,6 +20,7 @@ import org.apache.catalina.session.ManagerBase;
 import org.apache.catalina.session.StandardManager;
 import org.apache.catalina.startup.Tomcat;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.server.DelegatingServletEngine;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.server.SimpleLifeCycleConfigurator;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.FileUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
@@ -108,7 +109,9 @@ public class TomcatEngine implements IServletEngine {
     }
     context.setSessionTimeout( -1 );
     context.setBackgroundProcessorDelay( 1 );
-    context.addParameter( "org.eclipse.rwt.entryPoints", entryPointClass.getName() );
+    SimpleLifeCycleConfigurator.setEntryPointClass( entryPointClass );
+    context.addParameter( "org.eclipse.rwt.Configurator",
+                          SimpleLifeCycleConfigurator.class.getName() );
     context.addApplicationListener( RWTServletContextListener.class.getName() );
     Wrapper rwtServlet = addServlet( "rwtServlet", new RWTDelegate() );
     context.addServletMapping( IServletEngine.SERVLET_PATH, rwtServlet.getName() );

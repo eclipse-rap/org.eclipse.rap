@@ -14,8 +14,6 @@ package org.eclipse.rwt.internal.lifecycle;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.engine.RWTConfigurationImpl;
-import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 
@@ -37,8 +35,7 @@ public class LifeCycleFactory_Test extends TestCase {
   }
   
   public void testActivateDeactivateCycle() {
-    System.setProperty( RWTConfiguration.PARAM_LIFE_CYCLE,  TestLifeCycle.class.getName() );
-
+    lifeCycleFactory.configure( TestLifeCycle.class );
     ILifeCycle beforeActivate = lifeCycleFactory.getLifeCycle();
     lifeCycleFactory.activate();
     ILifeCycle afterActivate = lifeCycleFactory.getLifeCycle();
@@ -52,15 +49,40 @@ public class LifeCycleFactory_Test extends TestCase {
     assertNull( afterDeactivate );
   }
   
+  public void testActivateAfterDeactivate() {
+    lifeCycleFactory.configure( TestLifeCycle.class );
+    lifeCycleFactory.activate();
+    
+    lifeCycleFactory.deactivate();
+    lifeCycleFactory.activate();
+
+    Class<?> lifeCycleClass = lifeCycleFactory.getLifeCycle().getClass();
+    assertSame( RWTLifeCycle.class, lifeCycleClass );
+  }
+  
+  public void testConfigure() {
+    lifeCycleFactory.configure( TestLifeCycle.class );
+    lifeCycleFactory.activate();
+    
+    Class<?> lifeCycleClass = lifeCycleFactory.getLifeCycle().getClass();
+    
+    assertSame( TestLifeCycle.class, lifeCycleClass );
+  }
+  
+  public void testDefaultLifeCycle() {
+    lifeCycleFactory.activate();
+
+    Class<?> lifeCycleClass = lifeCycleFactory.getLifeCycle().getClass();
+    
+    assertSame( RWTLifeCycle.class, lifeCycleClass );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
-    RWTConfigurationImpl configuration = new RWTConfigurationImpl();
-    configuration.configure( "" );
-    lifeCycleFactory = new LifeCycleFactory( configuration );
+    lifeCycleFactory = new LifeCycleFactory();
   }
   
   protected void tearDown() throws Exception {
-    System.getProperties().remove( RWTConfiguration.PARAM_LIFE_CYCLE );
     Fixture.tearDown();
   }
 }

@@ -21,14 +21,14 @@ public class RWTServletContextListener implements ServletContextListener {
   
   private final ConfigurablesProvider configurablesProvider;
 
-  public RWTServletContextListener() {
-    this( new ConfigurablesProvider() );
-  }
-  
   RWTServletContextListener( ConfigurablesProvider configurablesProvider ) {
     this.configurablesProvider = configurablesProvider;
   }
 
+  public RWTServletContextListener() {
+    this( new ConfigurablesProvider() );
+  }
+  
   public void contextInitialized( ServletContextEvent evt ) {
     createApplicationContext( evt.getServletContext() );
     configureApplicationContext( evt.getServletContext() );

@@ -29,9 +29,9 @@ class ConfigurablesProvider {
   }
 
   private Configurable[] getContextConfigurable( ServletContext servletContext ) {
-    String clazzName = servletContext.getInitParameter( ContextConfigurable.CONFIGURATOR_PARAM );
+    String className = servletContext.getInitParameter( ContextConfigurable.CONFIGURATOR_PARAM );
     ClassLoader loader = getClass().getClassLoader();
-    Configurator configurator = ( Configurator )ClassUtil.newInstance( loader, clazzName );
+    Configurator configurator = ( Configurator )ClassUtil.newInstance( loader, className );
     return new Configurable[] {
       new ContextConfigurable( configurator, servletContext )
     };

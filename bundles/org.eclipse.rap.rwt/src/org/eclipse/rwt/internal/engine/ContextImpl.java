@@ -17,11 +17,14 @@ import java.text.MessageFormat;
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.engine.*;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
@@ -49,6 +52,15 @@ class ContextImpl implements Context {
     this.applicationContext = applicationContext;
     this.configurator = configurator;
   }
+  
+  public void setLifeCycleMode( LifeCycleMode lifeCycleMode ) {
+    ParamCheck.notNull( lifeCycleMode, "lifeCycleMode" );
+    if( LifeCycleMode.THREADED.equals( lifeCycleMode ) ) {
+      applicationContext.getLifeCycleFactory().configure( RWTLifeCycle.class );
+    } else {
+      applicationContext.getLifeCycleFactory().configure( SimpleLifeCycle.class );
+    }
+  }
 
   public void addPhaseListener( PhaseListener phaseListener ) {
     applicationContext.getPhaseListenerRegistry().add( phaseListener );
@@ -62,7 +74,7 @@ class ContextImpl implements Context {
     applicationContext.getEntryPointManager().register( entryPointName, type );
   }
 
-  public void addAddapterFactory( Class<?> adaptable, AdapterFactory adapterFactory ) {
+  public void addAdapterFactory( Class<?> adaptable, AdapterFactory adapterFactory ) {
     applicationContext.getAdapterManager().registerAdapters( adaptable, adapterFactory );
   }
 

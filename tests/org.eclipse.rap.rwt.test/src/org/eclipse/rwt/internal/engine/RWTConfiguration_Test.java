@@ -52,34 +52,12 @@ public class RWTConfiguration_Test extends TestCase {
     } catch( IllegalStateException expected ) {
     }
     try {
-      configuration.getLifeCycle();
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
-    try {
       configuration.getResourcesDeliveryMode();
       fail();
     } catch( IllegalStateException expected ) {
     }
   }
 
-  public void testConfigurationDefaultForGetLifeCycle() {
-    configure();
-    String lifeCycle = configuration.getLifeCycle();
-    
-    assertEquals( RWTConfiguration.LIFE_CYCLE_DEFAULT, lifeCycle );
-  }
-  
-  public void testGetLifeCycle() {
-    configure();
-    String expected = "lifeCycleName";
-    System.setProperty( RWTConfiguration.PARAM_LIFE_CYCLE, expected );
-    
-    String lifeCycle = configuration.getLifeCycle();
-    
-    assertEquals( expected, lifeCycle );
-  }
-  
   public void testConfigurationDefaultForGetResources() {
     configure();
     String resources = configuration.getResourcesDeliveryMode();
@@ -104,7 +82,6 @@ public class RWTConfiguration_Test extends TestCase {
   
   protected void tearDown() {
     Fixture.deleteWebContextDirectories();
-    System.getProperties().remove( RWTConfiguration.PARAM_LIFE_CYCLE );
     System.getProperties().remove( RWTConfiguration.PARAM_RESOURCES );
   }
   

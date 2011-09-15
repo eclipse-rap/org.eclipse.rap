@@ -23,7 +23,6 @@ public class RWTConfigurationImpl implements RWTConfiguration {
 
   private File contextDirectory;
   private String resourcesDeliveryMode;
-  private String lifeCycle;
 
   public void configure( String realPath ) {
     ParamCheck.notNull( realPath, "realPath" );
@@ -47,14 +46,6 @@ public class RWTConfigurationImpl implements RWTConfiguration {
   public File getClassDirectory() {
     checkConfigured();
     return new File( contextDirectory, CLASSES_PATH );
-  }
-
-  public String getLifeCycle() {
-    checkConfigured();
-    if( lifeCycle == null ) {
-      lifeCycle = getConfigValue( PARAM_LIFE_CYCLE, LIFE_CYCLE_DEFAULT );
-    }
-    return lifeCycle;
   }
 
   public String getResourcesDeliveryMode() {

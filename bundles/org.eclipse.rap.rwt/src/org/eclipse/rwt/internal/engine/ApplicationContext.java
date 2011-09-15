@@ -73,7 +73,7 @@ public class ApplicationContext {
     applicationStoreImpl = new ApplicationStoreImpl();
     configuration = new RWTConfigurationImpl();
     resourceManager = new ResourceManagerImpl( configuration );
-    lifeCycleFactory = new LifeCycleFactory( configuration );
+    lifeCycleFactory = new LifeCycleFactory();
     themeManager = new ThemeManager();
     brandingManager = new BrandingManager();
     phaseListenerRegistry = new PhaseListenerRegistry();

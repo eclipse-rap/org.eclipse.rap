@@ -12,43 +12,34 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.util.ClassUtil;
-import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 
 
 public class LifeCycleFactory {
-  private final RWTConfiguration configuration;
+  private static final Class<RWTLifeCycle> DEFAULT_LIFE_CYCLE_CLASS = RWTLifeCycle.class;
+  
+  private Class<? extends LifeCycle> lifeCycleClass;
   private LifeCycle lifeCycle;
   
-  public LifeCycleFactory( RWTConfiguration configuration ) {
-    ParamCheck.notNull( configuration, "configuration" );
-    this.configuration = configuration;
+  public LifeCycleFactory() {
+    lifeCycleClass = DEFAULT_LIFE_CYCLE_CLASS;
   }
   
   public ILifeCycle getLifeCycle() {
     return lifeCycle;
   }
+  
+  public void configure( Class<? extends LifeCycle> lifeCycleClass ) {
+    this.lifeCycleClass = lifeCycleClass;
+  }
 
   public void activate() {
-    lifeCycle = instantiateLifeCycle();
+    lifeCycle = ( LifeCycle )ClassUtil.newInstance( lifeCycleClass );
   }
 
   public void deactivate() {
+    lifeCycleClass = DEFAULT_LIFE_CYCLE_CLASS;
     lifeCycle = null;
-  }
-
-  //////////////////
-  // helping methods
-  
-  private LifeCycle instantiateLifeCycle() {
-    String className = getLifeCycleClassName();
-    ClassLoader classLoader = getClass().getClassLoader();
-    return ( LifeCycle )ClassUtil.newInstance( classLoader, className );
-  }
-  
-  private String getLifeCycleClassName() {
-    return configuration.getLifeCycle();
   }
 }

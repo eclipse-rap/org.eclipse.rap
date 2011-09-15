@@ -226,7 +226,7 @@ public class ContextConfigurable_Test extends TestCase {
         context.addEntryPoint( entryPointName, TestEntryPoint.class );
         context.addResource( testResource );
         context.addPhaseListener( testPhaseListener );
-        context.addAddapterFactory( TestAdaptable.class, testAdapterFactory );
+        context.addAdapterFactory( TestAdaptable.class, testAdapterFactory );
         context.setSettingStoreFactory( testSettingStoreFactory );
         context.addServiceHandler( testServiceHandlerId, testServiceHandler );
         context.addBranding( testBranding );

@@ -17,7 +17,6 @@ import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 
 
 public interface RWTConfiguration {
-  public static final String PARAM_LIFE_CYCLE = "lifecycle";
   public static final String PARAM_RESOURCES = "resources";
   public static final String LIFE_CYCLE_DEFAULT = RWTLifeCycle.class.getName();
   public static final String RESOURCES_DELIVER_FROM_DISK = "deliverFromDisk";
@@ -37,11 +36,6 @@ public interface RWTConfiguration {
    * returns the path to the class directory of the web application context 
    */
   File getClassDirectory();
-
-  /**
-   * returns the fully qualified class name that manages the lifecycle of each request.
-   */
-  String getLifeCycle();
 
   /**
    * <p>Returns whether static resources like JavaScript-libraries, images,

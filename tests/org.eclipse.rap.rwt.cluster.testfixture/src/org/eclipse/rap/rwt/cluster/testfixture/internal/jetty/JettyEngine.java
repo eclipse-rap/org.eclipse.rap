@@ -32,6 +32,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.resource.FileResource;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.server.DelegatingServletEngine;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.server.SimpleLifeCycleConfigurator;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.FileUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
@@ -43,7 +44,8 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 @SuppressWarnings("restriction")
 public class JettyEngine implements IServletEngine {
-  
+  private static final String RWT_CLUSTER_SUPPORT = RWTClusterSupport.class.getName();
+
   static {
     Log.setLog( new ServletEngineLogger() );
   }
@@ -107,13 +109,15 @@ public class JettyEngine implements IServletEngine {
   private void createSessionManager() {
     sessionManager = createSessionManager( sessionManagerProvider );
   }
-
+  
   private void addEntryPoint( Class<? extends IEntryPoint> entryPointClass ) {
     ServletContextHandler context = createServletContext( "/" );
     context.addServlet( RWTDelegate.class.getName(), IServletEngine.SERVLET_PATH );
-    context.addFilter( RWTClusterSupport.class.getName(), IServletEngine.SERVLET_PATH, FilterMapping.DEFAULT );
+    context.addFilter( RWT_CLUSTER_SUPPORT, IServletEngine.SERVLET_PATH, FilterMapping.DEFAULT );
     context.addEventListener( new RWTServletContextListener() );
-    context.setInitParameter( "org.eclipse.rwt.entryPoints", entryPointClass.getName() );
+    SimpleLifeCycleConfigurator.setEntryPointClass( entryPointClass );
+    context.setInitParameter( "org.eclipse.rwt.Configurator",
+                              SimpleLifeCycleConfigurator.class.getName() );
   }
 
   private SessionManager createSessionManager( ISessionManagerProvider sessionManagerProvider ) {

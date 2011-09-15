@@ -157,7 +157,7 @@ public final class RWTConfigurator implements Configurator {
         Class factoryClass = bundle.loadClass( factoryName );
         Class adaptableClass = bundle.loadClass( adaptableName );
         AdapterFactory adapterFactory = ( AdapterFactory )ClassUtil.newInstance( factoryClass ) ;
-        context.addAddapterFactory( adaptableClass, adapterFactory );
+        context.addAdapterFactory( adaptableClass, adapterFactory );
       } catch( Throwable thr ) {
         String text = "Could not register adapter factory ''{0}''  for the adapter type ''{1}''.";
         Object[] param = new Object[] { factoryName, adaptableName};

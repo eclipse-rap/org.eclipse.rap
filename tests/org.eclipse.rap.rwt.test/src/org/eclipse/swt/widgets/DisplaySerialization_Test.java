@@ -226,12 +226,12 @@ public class DisplaySerialization_Test extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    System.setProperty( "lifecycle", SimpleLifeCycle.class.getName() );
     SerializableRunnable.wasInvoked = false;
     Fixture.createApplicationContext();
     Fixture.createServiceContext();
     Fixture.useDefaultResourceManager();
     applicationContext = ApplicationContextUtil.getInstance();
+    applicationContext.getLifeCycleFactory().configure( SimpleLifeCycle.class );
     ApplicationContextUtil.set( ContextProvider.getSession(), applicationContext );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
@@ -241,7 +241,6 @@ public class DisplaySerialization_Test extends TestCase {
     display.dispose();
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfApplicationContext();
-    System.getProperties().remove( "lifecycle" );
   }
 
   private static Display serializeAndDeserialize( Display display ) throws Exception {

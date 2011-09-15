@@ -13,7 +13,6 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rwt.lifecycle.*;
@@ -52,15 +51,12 @@ public class RWT_Test extends TestCase {
   }
 
   public void testGetApplicationStore() {
-    Fixture.setUp();
-    
     IApplicationStore applicationStore = RWT.getApplicationStore();
   
     assertSame( applicationStore, RWTFactory.getApplicationStore() );
   }
 
   public void testRequestThreadExecFromBackgroundThread() throws Throwable {
-    Fixture.setUp();
     Runnable runnable = new Runnable() {
       public void run() {
         RWT.requestThreadExec( new NoOpRunnable() );
@@ -77,7 +73,6 @@ public class RWT_Test extends TestCase {
   }
   
   public void testRequestThreadExec() {
-    Fixture.setUp();
     final Thread[] requestThread = { null };
     Display display = new Display();
     // use asyncExec to run code during executeLifeCycleFromServerThread
@@ -96,7 +91,6 @@ public class RWT_Test extends TestCase {
   }
 
   public void testRequestThreadExecWithoutDisplay() {
-    Fixture.setUp();
     Runnable runnable = new NoOpRunnable();
     try {
       RWT.requestThreadExec( runnable );
@@ -107,7 +101,6 @@ public class RWT_Test extends TestCase {
   }
   
   public void testRequestThreadExecWithDisposedDisplay() {
-    Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Display display = new Display();
     display.dispose();
@@ -121,7 +114,6 @@ public class RWT_Test extends TestCase {
   }
   
   public void testRequestThreadExecWithNullRunnable() {
-    Fixture.setUp();
     new Display();
     try {
       RWT.requestThreadExec( null );
@@ -131,9 +123,9 @@ public class RWT_Test extends TestCase {
   }
   
   public void testRequestThreadExecDelegatesToLifeCycle() {
-    System.setProperty( RWTConfiguration.PARAM_LIFE_CYCLE, TestLifeCycle.class.getName() );
-    Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    RWTFactory.getLifeCycleFactory().configure( TestLifeCycle.class );
+    RWTFactory.getLifeCycleFactory().activate();
     new Display();
     
     RWT.requestThreadExec( new NoOpRunnable() );
@@ -143,7 +135,6 @@ public class RWT_Test extends TestCase {
   }
   
   public void testGetRequestFromBackgroundThread() throws Throwable {
-    Fixture.setUp();
     Runnable runnable = new Runnable() {
       public void run() {
         RWT.getRequest();
@@ -158,7 +149,6 @@ public class RWT_Test extends TestCase {
   }
   
   public void testGetResponseFromBackgroundThread() throws Throwable {
-    Fixture.setUp();
     Runnable runnable = new Runnable() {
       public void run() {
         RWT.getResponse();
@@ -173,7 +163,6 @@ public class RWT_Test extends TestCase {
   }
   
   public void testGetServiceStoreFromBackgroundThread() throws Throwable {
-    Fixture.setUp();
     Runnable runnable = new Runnable() {
       public void run() {
         RWT.getServiceStore();
@@ -188,7 +177,6 @@ public class RWT_Test extends TestCase {
   }
   
   public void testGetServiceStoreFromSessionThread() throws Throwable {
-    Fixture.setUp();
     final Display display = new Display();
     final Runnable runnable = new Runnable() {
       public void run() {
@@ -207,8 +195,11 @@ public class RWT_Test extends TestCase {
     }
   }
   
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+  }
+  
   protected void tearDown() throws Exception {
     Fixture.tearDown();
-    System.getProperties().remove( RWTConfiguration.PARAM_LIFE_CYCLE );
   }
 }

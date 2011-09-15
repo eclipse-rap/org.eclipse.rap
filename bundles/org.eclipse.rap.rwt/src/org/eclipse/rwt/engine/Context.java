@@ -22,13 +22,20 @@ import org.eclipse.swt.widgets.Widget;
 
 public interface Context {
 
+  enum LifeCycleMode {
+    THREADED,
+    THREADLESS
+  }
+
   void addEntryPoint( String entryPointName, Class<? extends IEntryPoint> entryPointType );
+
+  void setLifeCycleMode( LifeCycleMode lifeCycleMode );
 
   void addPhaseListener( PhaseListener phaseListener );
 
   void setSettingStoreFactory( ISettingStoreFactory settingStoreFactory );
 
-  void addAddapterFactory( Class<?> adaptable, AdapterFactory adapterFactory );
+  void addAdapterFactory( Class<?> adaptable, AdapterFactory adapterFactory );
 
   void addResource( IResource resource );
 
