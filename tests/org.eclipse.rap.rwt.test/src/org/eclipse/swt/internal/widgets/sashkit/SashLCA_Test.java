@@ -1,24 +1,27 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.sashkit;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.Message;
+import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -31,29 +34,29 @@ import org.eclipse.swt.widgets.*;
 
 public class SashLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+  private SashLCA lca;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
+    lca = new SashLCA();
+    Fixture.fakeNewRequest( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Sash sash = new Sash( shell, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( sash );
-    Object[] Listeners;
-    Listeners = ( Object[] )adapter.getPreserved( Props.SELECTION_LISTENERS );
-    assertEquals( 0, Listeners.length );
-    SelectionListener listener = new SelectionAdapter() {
-
-      public void widgetSelected( SelectionEvent event ) {
-      }
-    };
-    sash.addSelectionListener( listener );
-    Fixture.preserveWidgets();
-    Listeners = ( Object[] )adapter.getPreserved( Props.SELECTION_LISTENERS );
-    assertEquals( 1, Listeners.length );
-    assertEquals( listener, Listeners[ 0 ] );
     //control: enabled
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sash );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( sash );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     sash.setEnabled( false );
@@ -100,14 +103,7 @@ public class SashLCA_Test extends TestCase {
      = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
-    sash.addControlListener( new ControlListener() {
-
-      public void controlMoved( final ControlEvent e ) {
-      }
-
-      public void controlResized( final ControlEvent e ) {
-      }
-    } );
+    sash.addControlListener( new ControlAdapter() {} );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
@@ -152,14 +148,7 @@ public class SashLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
-    sash.addFocusListener( new FocusListener() {
-
-      public void focusGained( final FocusEvent event ) {
-      }
-
-      public void focusLost( final FocusEvent event ) {
-      }
-    } );
+    sash.addFocusListener( new FocusAdapter() {} );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
@@ -170,38 +159,14 @@ public class SashLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
-    ActivateEvent.addListener( sash, new ActivateAdapter() {
-    } );
+    ActivateEvent.addListener( sash, new ActivateAdapter() {} );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sash );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
   }
 
-  public void testRenderChanges() throws IOException {
-    Fixture.fakeResponseWriter();
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    Sash sash = new Sash( shell, SWT.NONE );
-    shell.open();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( sash );
-    Fixture.preserveWidgets();
-    sash.setBounds( new Rectangle( 20, 100, 50, 60 ) );
-    SashLCA sashLCA = new SashLCA();
-    sashLCA.renderChanges( sash );
-    assertTrue( Fixture.getAllMarkup()
-      .indexOf( "setSpace( 20, 50, 100, 60 );" ) != -1 );
-    Fixture.clearPreserved();
-    Fixture.fakeResponseWriter();
-    Fixture.preserveWidgets();
-    sashLCA.renderChanges( sash );
-    assertEquals( "", Fixture.getAllMarkup() );
-  }
-
   public void testSelectionEvent() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final Sash sash = new Sash( shell, SWT.NONE );
     final StringBuffer log = new StringBuffer();
     SelectionListener selectionListener = new SelectionAdapter() {
@@ -221,17 +186,39 @@ public class SashLCA_Test extends TestCase {
     sash.addSelectionListener( selectionListener );
     String sashId = WidgetUtil.getId( sash );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, sashId );
-    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".detail",
-                              "drag" );
+    Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".detail", "drag" );
     Fixture.readDataAndProcessAction( sash );
     assertEquals( "widgetSelected", log.toString() );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
+  public void testRenderCreate() throws IOException {
+    Sash sash = new Sash( shell, SWT.NONE );
+
+    lca.renderInitialization( sash );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( sash );
+    assertEquals( "rwt.widgets.Sash", operation.getType() );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testRenderParent() throws IOException {
+    Sash sash = new Sash( shell, SWT.NONE );
+
+    lca.renderInitialization( sash );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( sash );
+    assertEquals( WidgetUtil.getId( sash.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderCreateWithHorizontal() throws IOException {
+    Sash sash = new Sash( shell, SWT.HORIZONTAL );
+
+    lca.renderInitialization( sash );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( sash );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "HORIZONTAL" ) );
   }
 }

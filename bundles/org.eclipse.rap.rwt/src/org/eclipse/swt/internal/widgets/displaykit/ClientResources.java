@@ -239,6 +239,7 @@ final class ClientResources {
     "org/eclipse/swt/widgets/CompositeAdapter.js",
     "org/eclipse/swt/widgets/Composite.js",
     "org/eclipse/swt/widgets/Sash.js",
+    "org/eclipse/swt/widgets/SashAdapter.js",
     "org/eclipse/swt/widgets/Canvas.js",
     "org/eclipse/swt/widgets/List.js",
     "org/eclipse/swt/TabUtil.js",
