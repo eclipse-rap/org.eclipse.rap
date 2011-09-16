@@ -22,7 +22,6 @@ public class MeasurementListener implements PhaseListener {
     textSizeRecalculation = new TextSizeRecalculation();
   }
   
-  
   //////////////////////////
   // interface PhaseListener
   

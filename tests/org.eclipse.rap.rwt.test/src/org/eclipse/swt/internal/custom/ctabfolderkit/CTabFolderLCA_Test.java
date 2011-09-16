@@ -19,8 +19,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
@@ -358,9 +357,7 @@ public class CTabFolderLCA_Test extends TestCase {
 
     // Let pass one startup request to init the 'system'
     Fixture.fakeNewRequest( display );
-    RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     Fixture.executeLifeCycleFromServerThread( );
-
 
     // The actual test request: item1 is selected, the request selects item2
     folder.setSelection( item1 );

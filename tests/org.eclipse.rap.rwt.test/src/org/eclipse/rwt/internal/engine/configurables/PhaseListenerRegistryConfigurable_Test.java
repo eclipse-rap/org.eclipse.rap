@@ -53,8 +53,8 @@ public class PhaseListenerRegistryConfigurable_Test extends TestCase {
     
     configurable.configure( applicationContext );
     
-    assertEquals( 1, getRegistry().get().length );
-    assertTrue( getRegistry().get()[ 0 ] instanceof TestPhaseListener );
+    assertEquals( 1, getRegistry().getAll().length );
+    assertTrue( getRegistry().getAll()[ 0 ] instanceof TestPhaseListener );
   }
 
   public void testConfigureWithUnknownPhaseListener() {
@@ -74,7 +74,7 @@ public class PhaseListenerRegistryConfigurable_Test extends TestCase {
     
     configurable.reset( applicationContext );
     
-    assertEquals( 0, registry.get().length );
+    assertEquals( 0, registry.getAll().length );
   }
   
   protected void setUp() {

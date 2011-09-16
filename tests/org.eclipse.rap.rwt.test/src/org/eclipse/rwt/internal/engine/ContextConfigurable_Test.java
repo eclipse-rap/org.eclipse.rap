@@ -24,10 +24,12 @@ import org.eclipse.rwt.engine.Context;
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.engine.ThemeManagerHelper.TestThemeManager;
 import org.eclipse.rwt.internal.engine.configurables.RWTConfigurationConfigurable;
+import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.MemorySettingStore;
 import org.eclipse.rwt.internal.service.ServiceManager;
+import org.eclipse.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler;
 import org.eclipse.rwt.lifecycle.*;
@@ -59,8 +61,6 @@ public class ContextConfigurable_Test extends TestCase {
 
 
   private static class TestPhaseListener implements PhaseListener {
-    private static final long serialVersionUID = 1L;
-
     public void beforePhase( PhaseEvent event ) {
     }
 
@@ -290,7 +290,10 @@ public class ContextConfigurable_Test extends TestCase {
   }
 
   private void checkPhaseListenersHaveBeenAdded() {
-    assertEquals( 3, applicationContext.getPhaseListenerRegistry().get().length );
+    assertEquals( 3, applicationContext.getPhaseListenerRegistry().getAll().length );
+    assertEquals( true, findPhaseListener( CurrentPhase.Listener.class ) );
+    assertEquals( true, findPhaseListener( MeasurementListener.class ) );
+    assertEquals( true, findPhaseListener( TestPhaseListener.class ) );
   }
 
   private void checkContextDirectoryHasBeenSet() {
@@ -313,7 +316,7 @@ public class ContextConfigurable_Test extends TestCase {
   }
 
   private void checkPhaseListenerHasBeenRemoved() {
-    assertEquals( 0, applicationContext.getPhaseListenerRegistry().get().length );
+    assertEquals( 0, applicationContext.getPhaseListenerRegistry().getAll().length );
   }
 
   private void checkResourceHasBeenRemoved() {
@@ -341,5 +344,16 @@ public class ContextConfigurable_Test extends TestCase {
   private void checkApplicationStoreHasBeenResetted() {
     Object attribute = applicationContext.getApplicationStore().getAttribute( ATTRIBUTE_NAME );
     assertNull( attribute );
+  }
+
+  private boolean findPhaseListener( Class phaseListenerClass ) {
+    boolean result = false;
+    PhaseListener[] phaseListeners = applicationContext.getPhaseListenerRegistry().getAll();
+    for( int i = 0; !result && i < phaseListeners.length; i++ ) {
+      if( phaseListeners[ i ].getClass().equals( phaseListenerClass  ) ) {
+        result = true;
+      }
+    }
+    return result;
   }
 }

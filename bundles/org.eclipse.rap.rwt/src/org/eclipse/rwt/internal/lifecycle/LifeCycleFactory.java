@@ -14,16 +14,19 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
+import org.eclipse.rwt.lifecycle.PhaseListener;
 
 
 public class LifeCycleFactory {
   private static final Class<RWTLifeCycle> DEFAULT_LIFE_CYCLE_CLASS = RWTLifeCycle.class;
   
+  private final PhaseListenerRegistry phaseListenerRegistry;
   private Class<? extends LifeCycle> lifeCycleClass;
   private LifeCycle lifeCycle;
   
-  public LifeCycleFactory() {
-    lifeCycleClass = DEFAULT_LIFE_CYCLE_CLASS;
+  public LifeCycleFactory( PhaseListenerRegistry phaseListenerRegistry ) {
+    this.phaseListenerRegistry = phaseListenerRegistry;
+    this.lifeCycleClass = DEFAULT_LIFE_CYCLE_CLASS;
   }
   
   public ILifeCycle getLifeCycle() {
@@ -36,6 +39,9 @@ public class LifeCycleFactory {
 
   public void activate() {
     lifeCycle = ( LifeCycle )ClassUtil.newInstance( lifeCycleClass );
+    for( PhaseListener phaseListener : phaseListenerRegistry.getAll() ) {
+      lifeCycle.addPhaseListener( phaseListener );
+    }
   }
 
   public void deactivate() {

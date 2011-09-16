@@ -39,7 +39,7 @@ public class PhaseListenerRegistry {
     phaseListeners.clear();
   }
 
-  public PhaseListener[] get() {
+  public PhaseListener[] getAll() {
     PhaseListener[] result = new PhaseListener[ phaseListeners.size() ];
     phaseListeners.toArray( result );
     return result;

@@ -15,7 +15,6 @@ package org.eclipse.rwt.internal.engine;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rwt.internal.lifecycle.PhaseListenerRegistry;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
@@ -24,7 +23,6 @@ import org.eclipse.rwt.lifecycle.*;
 public class PhaseListenerRegistry_Test extends TestCase {
 
   private static class TestPhaseListener implements PhaseListener {
-    private static final long serialVersionUID = 1L;
     public void afterPhase( final PhaseEvent event ) {
     }
     public void beforePhase( final PhaseEvent event ) {
@@ -36,17 +34,10 @@ public class PhaseListenerRegistry_Test extends TestCase {
 
   private PhaseListenerRegistry phaseListenerRegistry;
   
-  public void testDefaultInitialization() {
-    Fixture.triggerServletContextInitialized();
-    Fixture.createServiceContext();
-    
-    assertEquals( true, findPhaseListener( CurrentPhase.Listener.class ) );
-  }
-  
   public void testAdd() {
     PhaseListener phaseListener = new TestPhaseListener();
     phaseListenerRegistry.add( phaseListener );
-    assertEquals( phaseListener, phaseListenerRegistry.get()[ 0 ] );
+    assertEquals( phaseListener, phaseListenerRegistry.getAll()[ 0 ] );
   }
 
   public void testAddWithNullArgument() {
@@ -60,14 +51,14 @@ public class PhaseListenerRegistry_Test extends TestCase {
     PhaseListener phaseListener = new TestPhaseListener();
     phaseListenerRegistry.add( phaseListener );
     phaseListenerRegistry.remove( phaseListener );
-    assertEquals( 0, phaseListenerRegistry.get().length );
+    assertEquals( 0, phaseListenerRegistry.getAll().length );
   }
   
   public void testRemoveAll() {
     PhaseListener phaseListener = new TestPhaseListener();
     phaseListenerRegistry.add( phaseListener );
     phaseListenerRegistry.removeAll();
-    assertEquals( 0, phaseListenerRegistry.get().length );
+    assertEquals( 0, phaseListenerRegistry.getAll().length );
   }
   
   public void testRemoveWithNullArgument() {
@@ -78,7 +69,6 @@ public class PhaseListenerRegistry_Test extends TestCase {
   }
   
   protected void setUp() {
-    ensureServiceContextHasBeenDisposed();
     phaseListenerRegistry = new PhaseListenerRegistry();
   }
   
@@ -90,16 +80,5 @@ public class PhaseListenerRegistry_Test extends TestCase {
     if( ContextProvider.hasContext() ) {
       Fixture.disposeOfServiceContext();
     }
-  }
-  
-  private static boolean findPhaseListener( Class phaseListenerClass ) {
-    boolean result = false;
-    PhaseListener[] phaseListeners = RWTFactory.getPhaseListenerRegistry().get();
-    for( int i = 0; !result && i < phaseListeners.length; i++ ) {
-      if( phaseListeners[ i ].getClass().equals( phaseListenerClass  ) ) {
-        result = true;
-      }
-    }
-    return result;
   }
 }

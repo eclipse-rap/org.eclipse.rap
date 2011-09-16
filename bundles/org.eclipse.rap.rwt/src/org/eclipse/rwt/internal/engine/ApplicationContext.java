@@ -73,10 +73,10 @@ public class ApplicationContext {
     applicationStoreImpl = new ApplicationStoreImpl();
     configuration = new RWTConfigurationImpl();
     resourceManager = new ResourceManagerImpl( configuration );
-    lifeCycleFactory = new LifeCycleFactory();
+    phaseListenerRegistry = new PhaseListenerRegistry();
+    lifeCycleFactory = new LifeCycleFactory( phaseListenerRegistry );
     themeManager = new ThemeManager();
     brandingManager = new BrandingManager();
-    phaseListenerRegistry = new PhaseListenerRegistry();
     entryPointManager = new EntryPointManager();
     resourceFactory = new ResourceFactory();
     imageFactory = new ImageFactory();
@@ -314,6 +314,6 @@ public class ApplicationContext {
   
 
   private ServiceManager createServiceManager() {
-    return new ServiceManager( new LifeCycleServiceHandler( lifeCycleFactory, startupPage ));
+    return new ServiceManager( new LifeCycleServiceHandler( lifeCycleFactory, startupPage ) );
   }
 }

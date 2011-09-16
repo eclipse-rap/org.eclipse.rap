@@ -109,7 +109,6 @@ public class RWTLifeCycle extends LifeCycle {
 
   public RWTLifeCycle() {
     phaseListenerManager = new PhaseListenerManager( this );
-    phaseListenerManager.addPhaseListeners( RWTFactory.getPhaseListenerRegistry().get() );
     uiRunnable = new UIThreadController();
   }
 

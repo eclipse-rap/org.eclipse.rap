@@ -16,13 +16,17 @@ import junit.framework.TestCase;
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.lifecycle.PhaseListener;
+import static org.mockito.Mockito.mock;
 
 
 public class LifeCycleFactory_Test extends TestCase {
   private LifeCycleFactory lifeCycleFactory;
+  private PhaseListenerRegistry phaseListenerRegistry;
 
   private static class TestLifeCycle extends LifeCycle {
+    PhaseListener addedPhaseListener;
     public void addPhaseListener( PhaseListener listener ) {
+      addedPhaseListener = listener;
     }
     public void removePhaseListener( PhaseListener listener ) {
     }
@@ -77,9 +81,21 @@ public class LifeCycleFactory_Test extends TestCase {
     assertSame( RWTLifeCycle.class, lifeCycleClass );
   }
   
+  public void testGetLifeCycleWithRegisteredPhaseListeners() {
+    PhaseListener phaseListener = mock( PhaseListener.class );
+    phaseListenerRegistry.add( phaseListener );
+    lifeCycleFactory.configure( TestLifeCycle.class );
+    lifeCycleFactory.activate();
+    
+    TestLifeCycle lifeCycle = ( TestLifeCycle )lifeCycleFactory.getLifeCycle();
+    
+    assertSame( phaseListener, lifeCycle.addedPhaseListener );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
-    lifeCycleFactory = new LifeCycleFactory();
+    phaseListenerRegistry = new PhaseListenerRegistry();
+    lifeCycleFactory = new LifeCycleFactory( phaseListenerRegistry );
   }
   
   protected void tearDown() throws Exception {

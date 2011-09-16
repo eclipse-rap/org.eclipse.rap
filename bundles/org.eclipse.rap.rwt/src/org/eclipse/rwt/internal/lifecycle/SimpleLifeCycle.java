@@ -117,7 +117,6 @@ public class SimpleLifeCycle extends LifeCycle {
 
   public SimpleLifeCycle() {
     phaseListenerManager = new PhaseListenerManager( this );
-    phaseListenerManager.addPhaseListeners( RWTFactory.getPhaseListenerRegistry().get() );
   }
 
   public void execute() throws IOException {

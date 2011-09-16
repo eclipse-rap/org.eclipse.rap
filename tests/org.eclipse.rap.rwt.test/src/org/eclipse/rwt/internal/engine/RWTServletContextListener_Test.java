@@ -127,13 +127,6 @@ public class RWTServletContextListener_Test extends TestCase {
     checkPhaseListenerHasBeenRegistered();
   }
 
-  private void triggerServletContextInitialized() {
-    ServletContext servletContext = Fixture.getServletContext();
-    ServletContextEvent event = new ServletContextEvent( servletContext );
-    new RWTServletContextListener().contextInitialized( event );
-
-  }
-
   public void testResourceInitialization() {
     setResourceInitParameter();
     triggerServletContextInitialized();
@@ -187,13 +180,20 @@ public class RWTServletContextListener_Test extends TestCase {
     }
   }
 
+  private void triggerServletContextInitialized() {
+    ServletContext servletContext = Fixture.getServletContext();
+    ServletContextEvent event = new ServletContextEvent( servletContext );
+    new RWTServletContextListener().contextInitialized( event );
+  }
+
   private void checkEntryPointHasBeenRegistered() {
     assertEquals( 1, RWTFactory.getEntryPointManager().getEntryPoints().length );
   }
 
   private void checkPhaseListenerHasBeenRegistered() {
-    assertEquals( 1, RWTFactory.getPhaseListenerRegistry().get().length );
-    assertTrue( RWTFactory.getPhaseListenerRegistry().get()[ 0 ] instanceof TestPhaseListener );
+    PhaseListener[] phaseListeners = RWTFactory.getPhaseListenerRegistry().getAll();
+    assertEquals( 1, phaseListeners.length );
+    assertTrue( phaseListeners[ 0 ] instanceof TestPhaseListener );
   }
   
   private void checkResourceHasBeenRegistered() {
@@ -208,7 +208,7 @@ public class RWTServletContextListener_Test extends TestCase {
   }
 
   private void checkPhaseListenersHaveBeenRegistered() {
-    assertEquals( 3, RWTFactory.getPhaseListenerRegistry().get().length );
+    assertEquals( 3, RWTFactory.getPhaseListenerRegistry().getAll().length );
   }
   
   private void destroyServletContext() {

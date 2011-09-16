@@ -423,15 +423,16 @@ public class RWTLifeCycle_Test extends TestCase {
       }
     };
     RWTFactory.getPhaseListenerRegistry().add( listener );
+    RWTFactory.getLifeCycleFactory().activate();
     // Run lifecycle in session one
-    RWTLifeCycle lifeCycle1 = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle1 = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle1.execute();
     assertSame( listener, callbackHandler[ 0 ] );
     // Simulate new session and run lifecycle
     newSession();
     Fixture.fakeResponseWriter();
     callbackHandler[ 0 ] = null;
-    RWTLifeCycle lifeCycle2 = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle2 = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle2.execute();
     assertSame( listener, callbackHandler[ 0 ] );
   }

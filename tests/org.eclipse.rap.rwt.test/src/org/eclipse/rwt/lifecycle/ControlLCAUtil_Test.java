@@ -18,8 +18,8 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.Message;
 import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.internal.service.RequestParams;
@@ -352,7 +352,6 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessKeyEventsWithDoItFlag() {
-    RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     final java.util.List<Event> eventLog = new ArrayList<Event>();
     Listener doitTrueListener = new Listener() {
       public void handleEvent( final Event event ) {
@@ -411,7 +410,6 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessTraverseEventsWithDoItFlag() {
-    RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     final java.util.List<Event> eventLog = new ArrayList<Event>();
     Listener doitTrueListener = new Listener() {
       public void handleEvent( final Event event ) {
@@ -461,7 +459,6 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testKeyAndTraverseEvents() {
-    RWTFactory.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     final java.util.List<Event> eventLog = new ArrayList<Event>();
     shell.open();
     String shellId = WidgetUtil.getId( shell );

@@ -98,14 +98,6 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertAfterPhaseEvent( loggedEvents[ 7 ], PhaseId.RENDER );
   }
 
-  public void testListenersFromPhaseListenerRegistryAreExecuted() throws Exception {
-    LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
-    RWTFactory.getPhaseListenerRegistry().add( phaseListener );
-    SimpleLifeCycle lifeCycle = new SimpleLifeCycle();
-    lifeCycle.execute();
-    assertTrue( phaseListener.getLoggedEvents().length > 0 );
-  }
-  
   public void testThreadIsAttachedInInitialRequest() throws IOException {
     Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
     ThreadRecordingPhaseListener phaseListener = new ThreadRecordingPhaseListener( );
