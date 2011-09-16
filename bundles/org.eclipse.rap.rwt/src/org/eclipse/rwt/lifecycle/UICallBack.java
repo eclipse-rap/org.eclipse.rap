@@ -20,8 +20,8 @@ import org.eclipse.swt.widgets.Display;
 
 
 /**
- * A utility class that provides some static helper methods to perform
- * commonly needed tasks with respect to background thread management.
+ * A utility class that provides methods to perform tasks related 
+ * to UI updates from background threads.
  * 
  * @since 1.0
  */
@@ -51,13 +51,46 @@ public final class UICallBack {
   }
 
   /**
-   * To allow automatic UI-updates by server side background threads
-   * activate the UI callback mechanism. Call this method before the start of
-   * a thread and {@link UICallBack#deactivate} at the end. Each activation
-   * needs a session unique identifier as a kind of reference pointer to be able
-   * to decide when all background threads are finished.
+   * Call this method to enable UI updates from background threads (e.g. via 
+   * <code>Display.asyncExec()</code>}.
+   * The UI callback must be activated from the UI thread before the background thread starts.
+   * Each activation is given a session-unique id to allow reference-counting activation and
+   * deactivation.
+   *  
+   * <p>If not deactivated explixitly, any active UI callbacks are released when the session 
+   * terminates.</p>
    * 
-   * <p>Note: this method can only be called from the UI-Thread of an RWT application.</p>
+   * <p>Note: this method must only be called from the UI-Thread of an RWT application.</p>
+   * 
+   * <p>
+   * Example code:
+   * <pre></code>
+   * final String callbackId = "callback id";
+   * Runnable bgRunnable = new Runnable() {
+   *   public void run() {
+   *   // do some work...
+   *   // schedule the UI update
+   *   display.asyncExec( new Runnable() {
+   *     public void run() {
+   *       if( !widget.isDisposed() ) {
+   *         // update the UI
+   *       }
+   *     }
+   *   } );
+   *   // Deactivate the UI call-back
+   *   UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
+   *     public void run() {
+   *       UICallBack.deactivate( callbackId );
+   *     }
+   *   } );
+   *   }
+   * };
+   * UICallBack.activate( callbackId );
+   * Thread bgThread = new Thread( bgRunnable );
+   * bgThread.setDaemon( true );
+   * bgThread.start();
+   * </code></pre>
+   * </p>
    * 
    * @param id a session unique identifier to trace the activation and
    *           deactivation. Must not be <code>null</code>.
@@ -92,8 +125,8 @@ public final class UICallBack {
    * of the same id must be followed by the same number deactivations in oder to actually 
    * stop the UI callback.</p> 
    * 
-   * <p>Note: this method can only be called from code that is associated with a session. That 
-   * is, either code running in the UI thread or executed via 
+   * <p>Note: this method must only be called from code that is associated with a session. 
+   * That is, either code running in the UI thread or executed via 
    * {@link UICallBack#runNonUIThreadWithFakeContext(Display, Runnable)}</p>
    *          
    * @param id A session unique identifier to trace the activation and
