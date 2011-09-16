@@ -25,15 +25,15 @@ public final class BrandingUtil {
 
   private static final String ATTR_BRANDING_ID = BrandingUtil.class.getName() + "#brandingId";
 
-  public static void replacePlaceholder( final StartupPageTemplateHolder template, 
-                                         final StartupPageTemplateHolder.Variable variable, 
-                                         final String replacement ) 
+  public static void replacePlaceholder( StartupPageTemplateHolder template, 
+                                         StartupPageTemplateHolder.Variable variable, 
+                                         String replacement ) 
   {
     String safeReplacement = replacement == null ? "" : replacement;
     template.replace( variable, safeReplacement );
   }
 
-  public static String headerMarkup( final AbstractBranding branding ) {
+  public static String headerMarkup( AbstractBranding branding ) {
     Header[] headers = branding.getHeaders();
     StringBuffer buffer = new StringBuffer();
     appendFavIconMarkup( buffer, branding );
@@ -68,9 +68,7 @@ public final class BrandingUtil {
   //////////////////
   // Helping methods
   
-  private static void appendFavIconMarkup( final StringBuffer buffer,
-                                           final AbstractBranding branding )
-  {
+  private static void appendFavIconMarkup( StringBuffer buffer, AbstractBranding branding ) {
     String favIcon = branding.getFavIcon();
     if( favIcon != null && !"".equals( favIcon ) ) {
       String[] names = new String[] { 
@@ -90,9 +88,7 @@ public final class BrandingUtil {
     }
   }
 
-  private static String appendHeaderMarkup( final StringBuffer buffer,
-                                            final Header header ) 
-  {
+  private static String appendHeaderMarkup( StringBuffer buffer, Header header ) {
     buffer.append( "<" );
     buffer.append( header.getTagName() );
     buffer.append( " " );
