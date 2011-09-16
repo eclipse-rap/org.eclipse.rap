@@ -351,6 +351,39 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       widget.destroy();
     },
 
+    testSetHasSelectionListenerWithDefaultButtonByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "PUSH" ],
+          "parent" : "w2"
+        }
+      } );
+      var defaultButton = objectManager.getObject( "w4" );
+      shell.setDefaultButton( defaultButton );
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Text",
+        "properties" : {
+          "style" : [ "SINGLE" ],
+          "parent" : "w2"
+        }
+      } );
+      this._protocolListen( "w3", { "selection" : true } );
+      testUtil.flush();
+      var widget = objectManager.getObject( "w3" );
+      assertFalse( widget.hasSelectionListener() );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testSetHasModifyListenerByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = testUtil.createShellByProtocol( "w2" );

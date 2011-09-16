@@ -56,7 +56,7 @@ final class TextLCAUtil {
     adapter.preserve( PROP_VERIFY_LISTENER,
                       Boolean.valueOf( VerifyEvent.hasListener( text ) ) );
     adapter.preserve( PROP_SELECTION_LISTENER,
-                      Boolean.valueOf( hasSelectionListener( text ) ) );
+                      Boolean.valueOf( SelectionEvent.hasListener( text ) ) );
     WidgetLCAUtil.preserveCustomVariant( text );
   }
 
@@ -163,7 +163,7 @@ final class TextLCAUtil {
   }
 
   static void renderListenSelection( Text text ) {
-    Boolean newValue = Boolean.valueOf( hasSelectionListener( text ) );
+    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( text ) );
     if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION_LISTENER, newValue, Boolean.FALSE ) ) {
       renderListen( text, "selection", newValue.booleanValue() );
     }
@@ -214,16 +214,6 @@ final class TextLCAUtil {
 
   private static String getEchoChar( Text text ) {
     return text.getEchoChar() == 0 ? null : String.valueOf( text.getEchoChar() );
-  }
-
-  private static boolean hasSelectionListener( Text text ) {
-    // Emulate SWT (on Windows) where a default button takes precedence over
-    // a SelectionListener on a text field when both are on the same shell.
-    Button defButton = text.getShell().getDefaultButton();
-    // TODO [rst] On GTK, the SelectionListener is also off when the default
-    //      button is invisible or disabled. Check with Windows and repair.
-    boolean hasDefaultButton = defButton != null && defButton.isVisible();
-    return !hasDefaultButton && SelectionEvent.hasListener( text );
   }
 
   private static ITextAdapter getTextAdapter( Text text ) {
