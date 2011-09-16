@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -37,8 +38,8 @@ public class ProgressBar extends Control {
   private static final int SIZE_BASE = 16;
   private int minimum;
   private int selection;
-  private int maximum = 100;
-  private int state = SWT.NORMAL;
+  private int maximum;
+  private int state;
 
   /**
    * Constructs a new instance of this class given its parent and a style value
@@ -51,7 +52,7 @@ public class ProgressBar extends Control {
    * style constants. The class description lists the style constants that are
    * applicable to the class. Style bits are also inherited from superclasses.
    * </p>
-   * 
+   *
    * @param parent a composite control which will be the parent of the new
    *            instance (cannot be null)
    * @param style the style of control to construct
@@ -72,22 +73,22 @@ public class ProgressBar extends Control {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public ProgressBar( final Composite parent, final int style ) {
+  public ProgressBar( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
+    maximum = 100;
+    state = SWT.NORMAL;
   }
 
-  static int checkStyle( final int style ) {
+  static int checkStyle( int style ) {
     int currStyle = style | SWT.NO_FOCUS;
     return checkBits( currStyle, SWT.HORIZONTAL, SWT.VERTICAL, 0, 0, 0, 0 );
   }
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int border = getBorderWidth();
-    int width = border * 2, height = border * 2;
+    int width = border * 2;
+    int height = border * 2;
     if( ( style & SWT.HORIZONTAL ) != 0 ) {
       width += SIZE_BASE * 10;
       height += SIZE_BASE;
@@ -106,7 +107,7 @@ public class ProgressBar extends Control {
 
   /**
    * Returns the maximum value which the receiver will allow.
-   * 
+   *
    * @return the maximum
    * @exception SWTException
    *                <ul>
@@ -123,7 +124,7 @@ public class ProgressBar extends Control {
 
   /**
    * Returns the minimum value which the receiver will allow.
-   * 
+   *
    * @return the minimum
    * @exception SWTException
    *                <ul>
@@ -140,7 +141,7 @@ public class ProgressBar extends Control {
 
   /**
    * Returns the single 'selection' that is the receiver's position.
-   * 
+   *
    * @return the selection
    * @exception SWTException
    *                <ul>
@@ -160,7 +161,7 @@ public class ProgressBar extends Control {
    * ignored if it is not greater than the receiver's current minimum value. If
    * the new maximum is applied then the receiver's selection value will be
    * adjusted if necessary to fall within its new range.
-   * 
+   *
    * @param value the new maximum, which must be greater than the current
    *            minimum
    * @exception SWTException
@@ -171,7 +172,7 @@ public class ProgressBar extends Control {
    *                thread that created the receiver</li>
    *                </ul>
    */
-  public void setMaximum( final int value ) {
+  public void setMaximum( int value ) {
     checkWidget();
     if( value > getMinimum() ) {
       this.maximum = value;
@@ -186,7 +187,7 @@ public class ProgressBar extends Control {
    * ignored if it is negative or is not less than the receiver's current
    * maximum value. If the new minimum is applied then the receiver's selection
    * value will be adjusted if necessary to fall within its new range.
-   * 
+   *
    * @param value the new minimum, which must be nonnegative and less than the
    *            current maximum
    * @exception SWTException
@@ -197,7 +198,7 @@ public class ProgressBar extends Control {
    *                thread that created the receiver</li>
    *                </ul>
    */
-  public void setMinimum( final int value ) {
+  public void setMinimum( int value ) {
     checkWidget();
     if( value > 0 && value < getMaximum() ) {
       this.minimum = value;
@@ -210,7 +211,7 @@ public class ProgressBar extends Control {
   /**
    * Sets the single 'selection' that is the receiver's position to the argument
    * which must be greater than or equal to zero.
-   * 
+   *
    * @param value the new selection (must be zero or greater)
    * @exception SWTException
    *                <ul>
@@ -220,7 +221,7 @@ public class ProgressBar extends Control {
    *                thread that created the receiver</li>
    *                </ul>
    */
-  public void setSelection( final int value ) {
+  public void setSelection( int value ) {
     checkWidget();
     if( value < minimum ) {
       selection = minimum;
@@ -238,7 +239,7 @@ public class ProgressBar extends Control {
    * <li>{@link SWT#ERROR}</li>
    * <li>{@link SWT#PAUSED}</li>
    * </ul>
-   * 
+   *
    * @param state the new state
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
@@ -261,7 +262,7 @@ public class ProgressBar extends Control {
    * <li>{@link SWT#ERROR}</li>
    * <li>{@link SWT#PAUSED}</li>
    * </ul>
-   * 
+   *
    * @return the state
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>

@@ -1,36 +1,39 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.progressbarkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.widgets.ControlUtil;
-import org.eclipse.swt.internal.widgets.IControlAdapter;
-import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.swt.widgets.Widget;
+import org.eclipse.swt.widgets.*;
 
 
 public class ProgressBarLCA extends AbstractWidgetLCA {
 
-  private static final String PROP_MINIMUM = "minimum";
-  private static final String PROP_MAXIMUM = "maximum";
-  private static final String PROP_SELECTION = "selection";
+  private static final String TYPE = "rwt.widgets.ProgressBar";
+
+  static final String PROP_MINIMUM = "minimum";
+  static final String PROP_MAXIMUM = "maximum";
+  static final String PROP_SELECTION = "selection";
   static final String PROP_STATE = "state";
-  static final String PROP_BACKGROUND_IMAGE_SIZED = "backgroundImageSized";
+
+  // Default values
+  private static final Integer DEFAULT_MINIMUM = new Integer( 0 );
+  private static final Integer DEFAULT_MAXIMUM = new Integer( 100 );
+  private static final Integer DEFAULT_SELECTION = new Integer( 0 );
+  private static final String DEFAULT_STATE = "normal";
 
   public void preserveValues( Widget widget ) {
     ProgressBar progressBar = ( ProgressBar )widget;
@@ -40,7 +43,6 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_MAXIMUM, new Integer( progressBar.getMaximum() ) );
     adapter.preserve( PROP_SELECTION, new Integer( progressBar.getSelection() ) );
     adapter.preserve( PROP_STATE, getState( progressBar ) );
-    preserveBackgroundImage( progressBar );
     WidgetLCAUtil.preserveCustomVariant( progressBar );
   }
 
@@ -54,60 +56,42 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     ProgressBar progressBar = ( ProgressBar )widget;
-    JSWriter writer = JSWriter.getWriterFor( progressBar );
-    writer.newWidget( "org.eclipse.swt.widgets.ProgressBar" );    
-    ControlLCAUtil.writeStyleFlags( progressBar );
-    writer.set( "flag", progressBar.getStyle() );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( progressBar );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( progressBar.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( progressBar ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
     ProgressBar pBar = ( ProgressBar )widget;
-    ControlLCAUtil.writeChanges( pBar );
-    // do not change range and selection order
-    writeSetInt( pBar, PROP_MINIMUM, "minimum", pBar.getMinimum(), 0 );
-    writeSetInt( pBar, PROP_MAXIMUM, "maximum", pBar.getMaximum(), 100 );
-    writeSetInt( pBar, PROP_SELECTION, "selection", pBar.getSelection(), 0 );
-    writeState( pBar );
-    writeBackgroundImage( pBar );
-    WidgetLCAUtil.writeCustomVariant( pBar );
+    ControlLCAUtil.renderChanges( pBar );
+    WidgetLCAUtil.renderCustomVariant( pBar );
+    renderProperty( pBar, PROP_MINIMUM, new Integer( pBar.getMinimum() ), DEFAULT_MINIMUM );
+    renderProperty( pBar, PROP_MAXIMUM, new Integer( pBar.getMaximum() ), DEFAULT_MAXIMUM );
+    renderProperty( pBar, PROP_SELECTION, new Integer( pBar.getSelection() ), DEFAULT_SELECTION );
+    renderProperty( pBar, PROP_STATE, getState( pBar ), DEFAULT_STATE );
   }
-  
-  private static void preserveBackgroundImage( ProgressBar progressBar ) {
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( progressBar );
-    Image image = controlAdapter.getUserBackgroundImage();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( progressBar );
-    adapter.preserve( PROP_BACKGROUND_IMAGE_SIZED, image );
-  }
-  
-  private static void writeBackgroundImage( ProgressBar progressBar ) throws IOException {
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( progressBar );
-    Image image = controlAdapter.getUserBackgroundImage();
-    if( WidgetLCAUtil.hasChanged( progressBar, PROP_BACKGROUND_IMAGE_SIZED, image, null ) ) {
-      String imagePath = ImageFactory.getImagePath( image );
-      JSWriter writer = JSWriter.getWriterFor( progressBar );
-      Rectangle bounds = image != null ? image.getBounds() : null;      
-      Object[] args = new Object[] {
-        imagePath,
-        new Integer( bounds != null ? bounds.width : 0 ),
-        new Integer( bounds != null ? bounds.height : 0 )
-      };
-      writer.set( "backgroundImageSized", new Object[]{ args } );
-    }
-  }
-  
+
   public void renderDispose( Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
-  
-  private static void writeState( ProgressBar progressBar ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( progressBar );
-    String currentState = getState( progressBar );
-    writer.set( PROP_STATE, "state", currentState , null );
+
+  //////////////////
+  // Helping methods
+
+  private static void renderProperty( ProgressBar progressBar,
+                                      String property,
+                                      Object newValue,
+                                      Object defValue )
+  {
+    if( WidgetLCAUtil.hasChanged( progressBar, property, newValue, defValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( progressBar );
+      clientObject.setProperty( property, newValue );
+    }
   }
 
   private static String getState( ProgressBar progressBar ) {
-    String result = null;
+    String result = "normal";
     int state = progressBar.getState();
     if( state == SWT.ERROR ) {
       result = "error";
@@ -115,16 +99,5 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
       result = "paused";
     }
     return result;
-  }
-
-  private static void writeSetInt( ProgressBar progressBar,
-                                   String javaProperty,
-                                   String jsProperty,
-                                   int newValue,
-                                   int defValue )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( progressBar );
-    writer.set( javaProperty, jsProperty, new Integer( newValue ), new Integer( defValue ) );
   }
 }

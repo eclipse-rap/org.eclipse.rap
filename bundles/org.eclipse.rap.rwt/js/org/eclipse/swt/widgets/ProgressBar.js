@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
  
 qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
@@ -17,6 +17,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     this.base( arguments );
     this.setOverflow( "hidden" );
     this.setAppearance( "progressbar" );
+    this.setState( "normal" );
     this._timer = null;
     this._gfxCanvasAppended = false;
     // TODO [tb] : Create a superclass for vector-based widgets (canvas?)
@@ -34,7 +35,6 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     this._minimum = 0;
     this._maximum = 100;
     this._selection = 0;
-    this._flag = 0;
   },
   
   destruct : function() {
@@ -52,10 +52,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
   },
 
   statics : {
-    UNDETERMINED_SIZE : 40,
-    FLAG_UNDETERMINED : 2,
-    FLAG_HORIZONTAL : 256,
-    FLAG_VERTICAL : 512
+    UNDETERMINED_SIZE : 40
   },
 
   properties : {
@@ -123,51 +120,44 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
       this.addToQueue( "indicatorSelection" );
     },
 
-    setFlag : function( flag ) {
-      this._flag = flag;
-      if( this._isUndetermined() ) {
+    addState : function( state ) {
+      if( state === "rwt_INDETERMINATE" ) {
         this._timer = new qx.client.Timer( 120 );
         this._timer.addEventListener( "interval", this._onInterval, this );
         this._timer.start();
-        this.addState( "rwt_UNDETERMINED" );
       }
-      if( this._isVertical() ) {
-        this.addState( "rwt_VERTICAL" );        
-      }
+      this.base( arguments, state );
     },
-    
-   setState : function( state ) {
+
+    setState : function( state ) {
       if( state == "error" ) {
+        this.removeState( "normal" );
         this.removeState( "paused" );
         this.addState( "error" );
       } else if( state == "paused" ) {
+        this.removeState( "normal" );
         this.removeState( "error" );
         this.addState( "paused" );
       } else {
         this.removeState( "error" );
         this.removeState( "paused" );
+        this.addState( "normal" );
       }
     },
 
     //////////////
     // state-info
 
-    _isUndetermined : function() {
-      var masked = 
-        this._flag & org.eclipse.swt.widgets.ProgressBar.FLAG_UNDETERMINED;
-      return masked != 0;
+    _isIndeterminate : function() {
+      return this.hasState( "rwt_INDETERMINATE" );
     },
 
     _isHorizontal : function() {
-      var masked
-        = this._flag & org.eclipse.swt.widgets.ProgressBar.FLAG_HORIZONTAL;
-      return masked != 0;
+      return this.hasState( "rwt_HORIZONTAL" );
     },
 
     _isVertical : function() {
-      var masked
-        = this._flag & org.eclipse.swt.widgets.ProgressBar.FLAG_VERTICAL;
-      return masked != 0;
+      return this.hasState( "rwt_VERTICAL" );
     },
 
     ////////////////
@@ -310,7 +300,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
       var border = this.getSeparatorBorder();
       if( border != null ) {
         if( !this._useSeparator ) {
-          if( this._isUndetermined() ) {
+          if( this._isIndeterminate() ) {
             if( this._separatorStartShape == null ) {
               this._separatorStartShape = gfxUtil.createShape( "rect" );
             }
@@ -326,13 +316,13 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
         // use one color for all edges:
         var color = border.getColorTop();
         gfxUtil.setFillColor( this._separatorEndShape, color );
-        if( this._isUndetermined() ) {
+        if( this._isIndeterminate() ) {
           gfxUtil.setFillColor( this._separatorStartShape, color );
         }
       } else if( this._useSeparator ) {
         gfxUtil.removeFromCanvas( this._canvs, this._separatorEndShape );
         this._useSeparator = false;
-        if( this._isUndetermined() ) {
+        if( this._isIndeterminate() ) {
           gfxUtil.removeFromCanvas( canvas, this._separatorStartShape );
         }
         this._separatorWidth = 0;   
@@ -462,12 +452,12 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
       var full = length + position == this._getIndicatorFullLength();
       if( length == 0 ) {
         gfxUtil.setDisplay( this._separatorEndShape, false );
-        if( this._isUndetermined() ) {
+        if( this._isIndeterminate() ) {
           gfxUtil.setDisplay( this._separatorStartShape, false );
         }
       } else {
         gfxUtil.setDisplay( this._separatorEndShape, !full );
-        if( this._isUndetermined() ) {
+        if( this._isIndeterminate() ) {
           gfxUtil.setDisplay( this._separatorStartShape, position != 0 );
         }
         var displayPosition =   position 
@@ -512,7 +502,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
     _getIndicatorLength : function( virtualPosition ) {
       var result = this._getIndicatorVirtualLength();
       var fullLength = this._getIndicatorFullLength();
-      if( this._isUndetermined() ) {
+      if( this._isIndeterminate() ) {
         // shorten the length to fit in the bar 
         if( virtualPosition < 0 ) {
           result += virtualPosition;
@@ -540,7 +530,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
 
     _getIndicatorVirtualLength : function() {
       var result;
-      if( this._isUndetermined() ) {
+      if( this._isIndeterminate() ) {
         result = org.eclipse.swt.widgets.ProgressBar.UNDETERMINED_SIZE;
       } else {
         var fullLength = this._getIndicatorFullLength();
@@ -553,7 +543,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ProgressBar", {
         
     _getIndicatorVirtualPosition : function() {
       var result = 0;
-      if( this._isUndetermined() ) {
+      if( this._isIndeterminate() ) {
         result = this._computeNextSaveIndicatorPosition();
       }
       return result;

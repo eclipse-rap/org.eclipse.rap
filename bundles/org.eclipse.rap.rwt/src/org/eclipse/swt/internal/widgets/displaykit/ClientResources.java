@@ -218,6 +218,7 @@ final class ClientResources {
     "org/eclipse/swt/widgets/Shell.js",
     "org/eclipse/swt/widgets/ShellAdapter.js",
     "org/eclipse/swt/widgets/ProgressBar.js",
+    "org/eclipse/swt/widgets/ProgressBarAdapter.js",
     "org/eclipse/swt/widgets/Link.js",
     "org/eclipse/swt/widgets/LinkAdapter.js",
     "org/eclipse/swt/widgets/Scrollable.js",
