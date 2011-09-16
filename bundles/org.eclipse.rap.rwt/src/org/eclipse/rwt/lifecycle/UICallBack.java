@@ -15,6 +15,7 @@ import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -42,9 +43,7 @@ public final class UICallBack {
    * @see org.eclipse.rwt.SessionSingletonBase
    * @see org.eclipse.rwt.internal.service.ContextProvider
    */
-  public static void runNonUIThreadWithFakeContext( final Display display,
-                                                    final Runnable runnable )
-  {
+  public static void runNonUIThreadWithFakeContext( Display display, Runnable runnable ) {
     if( display == null || runnable == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -53,22 +52,28 @@ public final class UICallBack {
 
   /**
    * To allow automatic UI-updates by server side background threads
-   * activate the UICallBack mechanism. Call this method before the start of
+   * activate the UI callback mechanism. Call this method before the start of
    * a thread and {@link UICallBack#deactivate} at the end. Each activation
    * needs a session unique identifier as a kind of reference pointer to be able
    * to decide when all background threads are finished.
    * 
-   * <p>Note: this method can only be called in the UI-Thread of an RWT application.</p>
+   * <p>Note: this method can only be called from the UI-Thread of an RWT application.</p>
    * 
-   * @param id A session unique identifier to trace the activation and
+   * @param id a session unique identifier to trace the activation and
    *           deactivation. Must not be <code>null</code>.
    *           
+   * </ul>
+   * @throws SWTException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the id is <code>null</code></li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the UI thread</li>
+   * </ul>
+   * 
    * @see Display#syncExec
    * @see Display#asyncExec
    * @see Display#getThread
    * @see Display#wake
    */
-  public static void activate( final String id ) {
+  public static void activate( String id ) {
     if( id == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -79,23 +84,33 @@ public final class UICallBack {
   }
   
   /**
-   * To allow automatic UI-updates by server side background threads
-   * activate the UICallBack mechanism. Call {@link UICallBack#deactivate} method
-   * before the start of a thread and deactivateUICallBack at the end. Each 
-   * activation needs a session unique identifier as a kind of reference pointer
-   * to be able to decide when all background threads are finished.
+   * This method deactivates a previously {@link #activate(String) activated} UI callback 
+   * with the same <code>id</code>. 
+   * Calling this method with an id that wasn't activated before has no effect.
    * 
-   * <p>Note: this method can only be called in the UI-Thread of an RWT application.</p>
+   * <p>For each id, the system maintans a reference counter so that multiple activations 
+   * of the same id must be followed by the same number deactivations in oder to actually 
+   * stop the UI callback.</p> 
+   * 
+   * <p>Note: this method can only be called from code that is associated with a session. That 
+   * is, either code running in the UI thread or executed via 
+   * {@link UICallBack#runNonUIThreadWithFakeContext(Display, Runnable)}</p>
    *          
    * @param id A session unique identifier to trace the activation and
    *           deactivation. Must not be <code>null</code>
    *           
+   * </ul>
+   * @throws SWTException <ul>
+   *    <li>ERROR_NULL_ARGUMENT - if the id is <code>null</code></li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from session code</li>
+   * </ul>
+   * 
    * @see Display#syncExec
    * @see Display#asyncExec
    * @see Display#getThread
    * @see Display#wake
    */
-  public static void deactivate( final String id ) {
+  public static void deactivate( String id ) {
     if( id == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
