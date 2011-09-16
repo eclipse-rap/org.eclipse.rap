@@ -110,15 +110,16 @@ org.eclipse.rwt.protocol.AdapterUtil = {
         }
       }
     },
-    "menu" : function( widget, menuId ) {
-      var menu = menuId == null ? null : org.eclipse.rwt.protocol.ObjectManager.getObject( menuId );
-      widget.setContextMenu( menu );
-      var contextMenuHandler = org.eclipse.rwt.widgets.Menu.contextMenuHandler;
-      if( menu == null ) {
-        widget.removeEventListener( "contextmenu", contextMenuHandler );
-      } else {
-        widget.addEventListener( "contextmenu", contextMenuHandler );
-      }
+    "menu" : function( widget, value ) {
+      org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( menu ) {
+        widget.setContextMenu( menu );
+        var listener = org.eclipse.rwt.widgets.Menu.contextMenuHandler;
+        if( menu == null ) {
+          widget.removeEventListener( "contextmenu", listener );
+        } else {
+          widget.addEventListener( "contextmenu", listener );
+        }
+      } );
     }
   },
 
@@ -303,7 +304,7 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     if( id == null ) {
       fun( null );
     } else {
-      var target = org.eclipse.swt.WidgetManager.getInstance().findWidgetById( id );
+      var target = wm.findWidgetById( id );
       if( target ) {
         fun( target );
       } else {

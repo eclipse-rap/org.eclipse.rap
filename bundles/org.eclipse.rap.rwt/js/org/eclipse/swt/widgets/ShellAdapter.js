@@ -46,7 +46,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
     "hasShellListener",
     "minimumSize",
     "defaultButton",
-    "menu",
     "activeControl"
   ] ),
 
@@ -72,17 +71,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
       org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( widget ) {
         shell.setActiveControl( widget );
       } );
-    },
-    "menu" : function( shell, value ) {
-      org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( menu ) {
-        shell.setContextMenu( menu );
-        var listener = org.eclipse.rwt.widgets.Menu.contextMenuHandler;
-        if( menu == null ) {
-          shell.removeEventListener( "contextmenu", listener ); 
-        } else {
-          shell.addEventListener( "contextmenu", listener );
-        }
-      } );     
     },
     "mode" : function( shell, value ) {
       var fullscreen = value === "fullscreen";
