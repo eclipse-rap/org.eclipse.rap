@@ -16,13 +16,13 @@
 
   <groupId>org.eclipse.rap</groupId>
   <artifactId>org.eclipse.rap.runtime.requirements</artifactId>
-  <version>${rap-version}-SNAPSHOT</version>
+  <version>1.5.0-SNAPSHOT</version>
   <packaging>eclipse-feature</packaging>
 
   <parent>
     <groupId>org.eclipse.rap</groupId>
     <artifactId>org.eclipse.rap.runtime-parent</artifactId>
-    <version>${rap-version}-SNAPSHOT</version>
+    <version>1.5.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
