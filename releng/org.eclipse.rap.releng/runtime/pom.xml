@@ -23,7 +23,7 @@
     <maven>3.0</maven>
   </prerequisites>
 
-  <name>Parent POM for RAP runtime build</name>
+  <name>RAP Runtime repository build</name>
 
   <groupId>org.eclipse.rap</groupId>
   <artifactId>org.eclipse.rap.runtime-parent</artifactId>
