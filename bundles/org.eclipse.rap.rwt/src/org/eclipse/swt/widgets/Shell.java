@@ -133,19 +133,19 @@ public class Shell extends Decorations {
     public Control getActiveControl() {
       return Shell.this.lastActive;
     }
-  
+
     public void setActiveControl( final Control control ) {
       Shell.this.setActiveControl( control );
     }
-  
+
     public Rectangle getMenuBounds() {
       return Shell.this.getMenuBounds();
     }
-  
+
     public void setBounds( final Rectangle bounds ) {
       Shell.this.setBounds( bounds, false );
     }
-  
+
     public ToolTip[] getToolTips() {
       return Shell.this.getToolTips();
     }
@@ -848,6 +848,13 @@ public class Shell extends Decorations {
     }
   }
 
+  void updateDefaultButton( Control focusControl, boolean set ) {
+    if( focusControl instanceof Button ) {
+      Button defaultButton = set ? ( Button )focusControl : null;
+      setDefaultButton( defaultButton, false );
+    }
+  }
+
   /**
    * Returns the receiver's default button if one had
    * previously been set, otherwise returns null.
@@ -1025,16 +1032,16 @@ public class Shell extends Decorations {
    * Returns the instance of the ToolBar object representing the tool bar that can appear on the
    * trim of the shell. This will return <code>null</code> if the platform does not support tool
    * bars that not part of the content area of the shell, or if the style of the shell does not
-   * support a tool bar. 
+   * support a tool bar.
    * <p>
-   * 
+   *
    * @return a ToolBar object representing the window's tool bar or null.
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.4
    */
   public ToolBar getToolBar() {
@@ -1407,10 +1414,10 @@ public class Shell extends Decorations {
     checkWidget();
     return ( mode & MODE_FULLSCREEN ) != 0;
   }
-  
+
   ///////////////////
   // ToolTips support
-  
+
   void createToolTip( ToolTip toolTip ) {
     int id = 0;
     if( toolTips == null ) {
@@ -1426,7 +1433,7 @@ public class Shell extends Decorations {
     }
     toolTips[ id ] = toolTip;
   }
-  
+
   void destroyToolTip( ToolTip toolTip ) {
     boolean found = false;
     for( int i = 0; !found && i < toolTips.length; i++ ) {
@@ -1436,7 +1443,7 @@ public class Shell extends Decorations {
       }
     }
   }
-  
+
   private ToolTip[] getToolTips() {
     ToolTip[] result;
     if( toolTips == null ) {

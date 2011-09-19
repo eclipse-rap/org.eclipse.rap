@@ -276,16 +276,18 @@ public class Display extends Device implements Adaptable {
     return focusControl;
   }
 
-  private void setFocusControl( final Control focusControl ) {
+  private void setFocusControl( Control focusControl ) {
     if( this.focusControl != focusControl ) {
       if( this.focusControl != null && !this.focusControl.isInDispose() ) {
         FocusEvent event = new FocusEvent( this.focusControl, FocusEvent.FOCUS_LOST );
         event.processEvent();
+        this.focusControl.getShell().updateDefaultButton( this.focusControl, false );
       }
       this.focusControl = focusControl;
       if( this.focusControl != null ) {
         FocusEvent event = new FocusEvent( this.focusControl, FocusEvent.FOCUS_GAINED );
         event.processEvent();
+        this.focusControl.getShell().updateDefaultButton( this.focusControl, true );
       }
     }
   }
@@ -870,7 +872,7 @@ public class Display extends Device implements Adaptable {
       return thread;
     }
   }
-  
+
   private void attachThread() {
     thread = Thread.currentThread();
   }
@@ -881,7 +883,7 @@ public class Display extends Device implements Adaptable {
 
   //////////////////////
   // Information methods
-  
+
   /**
    * Returns the display which the given thread is the
    * user-interface thread for, or null if the given thread
@@ -1266,13 +1268,13 @@ public class Display extends Device implements Adaptable {
     checkDevice();
     return null;
   }
-  
+
   /**
    * Returns the single instance of the application menu bar or null
    * when there is no application menu bar for the platform.
    *
    * @return the application menu bar or <code>null</code>
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
@@ -1289,7 +1291,7 @@ public class Display extends Device implements Adaptable {
    * when there is no system taskBar available for the platform.
    *
    * @return the system taskBar or <code>null</code>
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
@@ -1306,7 +1308,7 @@ public class Display extends Device implements Adaptable {
    * On platforms where no menu is provided for the application this method returns null.
    *
    * @return the system menu or <code>null</code>
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
@@ -2136,10 +2138,10 @@ public class Display extends Device implements Adaptable {
     checkDevice();
   }
 
-  /**    
+  /**
    * Returns true if a touch-aware input device is attached to the system,
    * enabled, and ready for use.
-   * 
+   *
    * @since 1.4
    */
   public boolean getTouchEnabled() {
@@ -2195,7 +2197,7 @@ public class Display extends Device implements Adaptable {
   private static WeakReference<Display>[] getDisplays() {
     return RWTFactory.getDisplaysHolder().getDisplays();
   }
-  
+
   private static void setDisplays( WeakReference<Display>[] displays ) {
     RWTFactory.getDisplaysHolder().setDisplays( displays );
   }
@@ -2274,7 +2276,7 @@ public class Display extends Device implements Adaptable {
     }
     return result;
   }
-  
+
   /////////////////
   // Inner classes
 
@@ -2401,11 +2403,11 @@ public class Display extends Device implements Adaptable {
     public int getAsyncRunnablesCount() {
       return Display.this.synchronizer.getMessageCount();
     }
-    
+
     public void attachThread() {
       Display.this.attachThread();
     }
-    
+
     public void detachThread() {
       Display.this.detachThread();
     }

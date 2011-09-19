@@ -41,7 +41,7 @@ public class Shell_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-  
+
   public void testGetAdapterWithShellAdapter() {
     Object adapter = shell.getAdapter( IShellAdapter.class );
     assertNotNull( adapter );
@@ -209,7 +209,7 @@ public class Shell_Test extends TestCase {
     shell.setVisible( false );
     assertEquals( "", log.toString() );
   }
-  
+
   public void testCloseNotifiesShellListeners() {
     final ShellEvent[] shellEvent = { null };
     shell.addShellListener( new ShellAdapter() {
@@ -347,6 +347,38 @@ public class Shell_Test extends TestCase {
     assertSame( defaultButton, shell.getDefaultButton() );
     shell.setDefaultButton( null );
     assertNull( shell.getDefaultButton() );
+  }
+
+  public void testSetDefaultButtonOnFocus() {
+    shell.open();
+    assertNull( shell.getDefaultButton() );
+    Button button = new Button( shell, SWT.PUSH );
+    Combo combo = new Combo( shell, SWT.NONE );
+    button.setFocus();
+    assertSame( button, shell.getDefaultButton() );
+    combo.setFocus();
+    assertNull( shell.getDefaultButton() );
+  }
+
+  public void testSetDefaultButtonOnFocus_EventOrder() {
+    final ArrayList<Button> log = new ArrayList<Button>();
+    shell.open();
+    assertNull( shell.getDefaultButton() );
+    Button button = new Button( shell, SWT.PUSH );
+    Combo combo = new Combo( shell, SWT.NONE );
+    button.addFocusListener( new FocusListener() {
+      public void focusGained( FocusEvent e ) {
+        log.add( shell.getDefaultButton() );
+      }
+      public void focusLost( FocusEvent e ) {
+        log.add( shell.getDefaultButton() );
+      }
+    } );
+    button.setFocus();
+    combo.setFocus();
+    assertEquals( 2, log.size() );
+    assertNull( log.get( 0 ) );
+    assertSame( button, log.get( 1 ) );
   }
 
   public void testForceActive() {
@@ -699,7 +731,7 @@ public class Shell_Test extends TestCase {
     shell.setFullScreen( true );
     assertEquals( shell, display.getActiveShell() );
   }
-  
+
   public void testGetToolTipsWhenNoToolTipWasCreated() {
     IShellAdapter adapter = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
     assertNotNull( adapter.getToolTips() );
@@ -712,7 +744,7 @@ public class Shell_Test extends TestCase {
     assertEquals( 1, adapter.getToolTips().length );
     assertEquals( toolTip, adapter.getToolTips()[ 0 ] );
   }
-  
+
   public void testGetToolTipsAfterToolTipWasDisposed() {
     ToolTip toolTip = new ToolTip( shell, SWT.NONE );
     toolTip.dispose();
@@ -729,12 +761,12 @@ public class Shell_Test extends TestCase {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     return ( IDisplayAdapter )adapter;
   }
-  
+
   public void testIsSerializable() throws Exception {
     shell.setText( "text" );
-    
+
     Shell deserializedShell = Fixture.serializeAndDeserialize( shell );
-    
+
     assertEquals( shell.getText(), deserializedShell.getText() );
   }
 }
