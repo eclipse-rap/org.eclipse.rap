@@ -14,7 +14,10 @@ import javax.servlet.ServletContext;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.*;
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestServletContext;
+import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;

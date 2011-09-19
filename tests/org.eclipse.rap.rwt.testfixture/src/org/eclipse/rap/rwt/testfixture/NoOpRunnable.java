@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt;
+package org.eclipse.rap.rwt.testfixture;
 
 
 public class NoOpRunnable implements Runnable {

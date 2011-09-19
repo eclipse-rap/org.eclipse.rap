@@ -8,8 +8,9 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt;
+package org.eclipse.rap.rwt.testfixture;
 
+import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 
 

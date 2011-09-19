@@ -7,8 +7,22 @@
  * Contributors:
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt;
+package org.eclipse.rap.rwt.testfixture;
 
-public interface TestLogger {
-  void log( String message, Throwable throwable );
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import javax.servlet.ServletOutputStream;
+
+public class TestServletOutputStream extends ServletOutputStream {
+
+  private ByteArrayOutputStream stream = new ByteArrayOutputStream();
+  
+  public void write( final int b ) throws IOException {
+    stream.write( b );
+  }
+  
+  public ByteArrayOutputStream getContent() {
+    return stream;
+  }
 }

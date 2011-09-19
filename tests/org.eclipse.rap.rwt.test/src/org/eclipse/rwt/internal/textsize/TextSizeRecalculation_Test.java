@@ -13,7 +13,7 @@ package org.eclipse.rwt.internal.textsize;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
@@ -22,7 +22,8 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ControlUtil;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
 

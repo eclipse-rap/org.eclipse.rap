@@ -18,7 +18,8 @@ import java.util.jar.JarInputStream;
 
 import junit.framework.*;
 
-import org.eclipse.rwt.Fixture;
+
+import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class RWTAllTestSuite {

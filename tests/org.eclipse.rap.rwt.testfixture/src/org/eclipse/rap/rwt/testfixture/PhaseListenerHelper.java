@@ -8,7 +8,7 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt;
+package org.eclipse.rap.rwt.testfixture;
 
 import org.eclipse.rwt.lifecycle.*;
 

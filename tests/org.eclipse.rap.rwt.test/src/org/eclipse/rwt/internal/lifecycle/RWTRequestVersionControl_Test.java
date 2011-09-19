@@ -12,7 +12,7 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class RWTRequestVersionControl_Test extends TestCase {

@@ -14,8 +14,9 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.TestServletContext;
-import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rap.rwt.testfixture.TestServletContext;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.RWTConfiguration;
 
 
 public class RWTConfigurationConfigurable_Test extends TestCase {

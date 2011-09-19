@@ -24,7 +24,7 @@ import javax.servlet.http.HttpSessionBindingListener;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.*;
+import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.*;

@@ -9,5 +9,5 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.mockito;bundle-version="[1.8.4,2.0.0)",
  org.objenesis;bundle-version="[1.0.0,2.0.0)",
  org.junit
-Import-Package: org.eclipse.rwt,
- org.eclipse.rwt.branding
+Import-Package: org.eclipse.rwt.branding,
+ org.eclipse.rap.rwt.testfixture

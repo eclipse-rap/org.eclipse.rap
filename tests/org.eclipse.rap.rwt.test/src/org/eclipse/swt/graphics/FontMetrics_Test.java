@@ -9,11 +9,11 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import org.eclipse.rwt.Fixture;
+import junit.framework.TestCase;
+
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-
-import junit.framework.TestCase;
 
 
 public class FontMetrics_Test extends TestCase {

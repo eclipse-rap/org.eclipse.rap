@@ -9,11 +9,12 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import java.io.*;
+import java.io.InputStream;
+import java.io.NotSerializableException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;

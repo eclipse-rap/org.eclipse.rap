@@ -12,7 +12,7 @@ package org.eclipse.rwt.lifecycle;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.PhaseListenerHelper;
+import org.eclipse.rap.rwt.testfixture.PhaseListenerHelper;
 
 
 public class PhaseListenerUtil_Test extends TestCase {

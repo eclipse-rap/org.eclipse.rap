@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServlet;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.osgi.RWTContext;
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.engine.*;
 import org.mockito.invocation.InvocationOnMock;

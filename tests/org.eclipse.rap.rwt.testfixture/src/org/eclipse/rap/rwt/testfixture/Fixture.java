@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing implementation
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
-package org.eclipse.rwt;
+package org.eclipse.rap.rwt.testfixture;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -34,6 +34,7 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
+
 
 public class Fixture {
   public final static File TEMP_DIR = new File( System.getProperty( "java.io.tmpdir" ) );

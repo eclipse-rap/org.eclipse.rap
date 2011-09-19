@@ -13,7 +13,7 @@ package org.eclipse.swt.internal.widgets;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.MenuHolder.IMenuHolderAdapter;
 import org.eclipse.swt.widgets.*;

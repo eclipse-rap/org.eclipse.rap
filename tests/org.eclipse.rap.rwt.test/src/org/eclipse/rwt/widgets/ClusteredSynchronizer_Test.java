@@ -14,7 +14,7 @@ import javax.servlet.http.Cookie;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.TestRequest;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
 
 
 public class ClusteredSynchronizer_Test extends TestCase {

@@ -13,11 +13,12 @@
 package org.eclipse.rwt.graphics;
 
 import java.io.*;
-import java.net.*;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;

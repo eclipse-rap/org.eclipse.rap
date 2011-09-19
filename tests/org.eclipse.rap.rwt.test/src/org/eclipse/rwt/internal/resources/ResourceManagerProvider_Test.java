@@ -14,7 +14,7 @@ package org.eclipse.rwt.internal.resources;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.TestResourceManager;
+import org.eclipse.rap.rwt.testfixture.TestResourceManager;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
 

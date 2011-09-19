@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
-import org.eclipse.rwt.TestResourceManager;
+import org.eclipse.rap.rwt.testfixture.TestResourceManager;
 
 
 public class ApplicationContextHelper {

@@ -10,9 +10,9 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import org.eclipse.rwt.internal.util.NumberFormatUtil;
-
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.internal.util.NumberFormatUtil;
 
 public class NumberFormatUtil_Test extends TestCase {
 

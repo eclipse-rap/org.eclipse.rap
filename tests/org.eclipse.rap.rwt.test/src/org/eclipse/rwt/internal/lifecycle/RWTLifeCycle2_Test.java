@@ -21,8 +21,11 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.*;
-import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rwt.internal.engine.RWTDelegate;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResourceManager;

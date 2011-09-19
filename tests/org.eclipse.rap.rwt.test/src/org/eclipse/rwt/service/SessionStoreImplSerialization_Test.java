@@ -10,12 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rwt.service;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.NotSerializableException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.TestSession;
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
 
 

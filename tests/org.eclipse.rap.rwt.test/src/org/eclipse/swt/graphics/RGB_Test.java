@@ -13,7 +13,7 @@ package org.eclipse.swt.graphics;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 
 public class RGB_Test extends TestCase {
 

@@ -17,8 +17,8 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.*;
-import org.eclipse.rwt.LoggingPhaseListener.PhaseEventInfo;
+import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rap.rwt.testfixture.LoggingPhaseListener.PhaseEventInfo;
 import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;

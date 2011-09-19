@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.TestSession;
+import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.eclipse.rwt.internal.service.ServiceContext;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
 

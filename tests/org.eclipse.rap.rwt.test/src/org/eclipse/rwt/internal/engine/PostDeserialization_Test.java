@@ -12,7 +12,7 @@ package org.eclipse.rwt.internal.engine;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.TestSession;
+import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rwt.service.ISessionStore;
 

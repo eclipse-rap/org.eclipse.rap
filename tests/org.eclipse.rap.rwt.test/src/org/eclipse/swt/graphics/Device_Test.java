@@ -9,9 +9,9 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import org.eclipse.rwt.Fixture;
-
 import junit.framework.TestCase;
+
+import org.eclipse.rap.rwt.testfixture.Fixture;
 
 public class Device_Test extends TestCase {
 

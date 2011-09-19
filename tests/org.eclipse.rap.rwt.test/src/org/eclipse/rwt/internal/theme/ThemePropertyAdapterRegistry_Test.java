@@ -10,9 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
-import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
-import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.*;
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.BoxDimensionsPropertyAdapter;
+import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.DimensionPropertyAdapter;
+import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.DirectPropertyAdapter;
+import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ImagePropertyAdapter;
+import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 
 
 public class ThemePropertyAdapterRegistry_Test extends TestCase {

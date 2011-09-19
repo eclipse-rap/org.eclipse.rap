@@ -12,9 +12,9 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import java.util.Arrays;
 
-import org.eclipse.rwt.internal.util.EncodingUtil;
-
 import junit.framework.TestCase;
+
+import org.eclipse.rwt.internal.util.EncodingUtil;
 
 public class EncodingUtil_Test extends TestCase {
 

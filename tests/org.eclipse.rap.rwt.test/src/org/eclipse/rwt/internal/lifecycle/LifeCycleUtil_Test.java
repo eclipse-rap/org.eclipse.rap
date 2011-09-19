@@ -12,7 +12,7 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.*;
+import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.ISessionStore;

@@ -14,8 +14,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import junit.framework.TestCase;
 
-import org.eclipse.swt.internal.widgets.IRichTextParserCallback;
-import org.eclipse.swt.internal.widgets.RichTextParser;
 import org.mockito.Mockito;
 
 

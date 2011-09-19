@@ -12,15 +12,15 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
+import static org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter.PROCESS_MESSAGE;
+
 import java.util.Locale;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.rwt.TestResponse;
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rwt.internal.util.HTTP;
-
-import static org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter.PROCESS_MESSAGE;
 
 
 public class JavaScriptResponseWriter_Test extends TestCase {

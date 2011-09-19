@@ -12,14 +12,14 @@ package org.eclipse.swt.internal.widgets.groupkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.Fixture;
+import junit.framework.TestCase;
+
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.internal.protocol.Message;
 import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
-
-import junit.framework.TestCase;
 
 
 public class GroupLCA_Test extends TestCase {

@@ -12,7 +12,7 @@ package org.eclipse.swt.internal.widgets;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class IdGenerator_Test extends TestCase {

@@ -12,11 +12,11 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.Fixture;
+import junit.framework.TestCase;
+
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.widgets.Display;
-
-import junit.framework.TestCase;
 
 
 public class Render_Test extends TestCase {

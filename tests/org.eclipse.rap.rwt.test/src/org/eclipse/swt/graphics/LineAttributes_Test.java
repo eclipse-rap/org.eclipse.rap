@@ -9,9 +9,9 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import org.eclipse.swt.SWT;
-
 import junit.framework.TestCase;
+
+import org.eclipse.swt.SWT;
 
 
 public class LineAttributes_Test extends TestCase {

@@ -13,9 +13,9 @@ package org.eclipse.swt.internal.widgets;
 
 import java.util.List;
 
-import org.eclipse.rwt.Fixture;
-
 import junit.framework.TestCase;
+
+import org.eclipse.rap.rwt.testfixture.Fixture;
 
 public class SlimList_Test extends TestCase {
 

@@ -12,6 +12,7 @@ package org.eclipse.rwt;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rwt.internal.SingletonManager;
 import org.eclipse.rwt.internal.service.*;
 

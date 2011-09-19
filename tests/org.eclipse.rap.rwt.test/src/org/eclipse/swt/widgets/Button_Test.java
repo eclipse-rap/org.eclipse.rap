@@ -17,7 +17,7 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rwt.internal.theme.ThemeUtil;

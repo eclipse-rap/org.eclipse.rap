@@ -13,7 +13,7 @@ package org.eclipse.rwt.internal.theme.css;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.WidgetMatcher.Constraint;
 import org.eclipse.rwt.lifecycle.WidgetUtil;

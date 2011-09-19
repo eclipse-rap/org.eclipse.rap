@@ -11,13 +11,22 @@ package org.eclipse.swt.graphics;
 
 import java.util.Arrays;
 
-import org.eclipse.rwt.Fixture;
+import junit.framework.TestCase;
+
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.graphics.*;
-import org.eclipse.swt.internal.graphics.GCOperation.*;
+import org.eclipse.swt.internal.graphics.GCOperation.DrawArc;
+import org.eclipse.swt.internal.graphics.GCOperation.DrawImage;
+import org.eclipse.swt.internal.graphics.GCOperation.DrawLine;
+import org.eclipse.swt.internal.graphics.GCOperation.DrawPoint;
+import org.eclipse.swt.internal.graphics.GCOperation.DrawPolyline;
+import org.eclipse.swt.internal.graphics.GCOperation.DrawRectangle;
+import org.eclipse.swt.internal.graphics.GCOperation.DrawRoundRectangle;
+import org.eclipse.swt.internal.graphics.GCOperation.DrawText;
+import org.eclipse.swt.internal.graphics.GCOperation.FillGradientRectangle;
+import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 import org.eclipse.swt.widgets.*;
-
-import junit.framework.TestCase;
 
 
 public class ControlGC_Test extends TestCase {

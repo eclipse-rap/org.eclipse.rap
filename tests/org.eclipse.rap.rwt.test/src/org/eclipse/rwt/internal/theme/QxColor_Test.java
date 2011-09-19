@@ -13,10 +13,10 @@ package org.eclipse.rwt.internal.theme;
 
 import java.util.Locale;
 
-import org.eclipse.rwt.Fixture;
-import org.eclipse.swt.graphics.Color;
-
 import junit.framework.TestCase;
+
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.swt.graphics.Color;
 
 
 public class QxColor_Test extends TestCase {

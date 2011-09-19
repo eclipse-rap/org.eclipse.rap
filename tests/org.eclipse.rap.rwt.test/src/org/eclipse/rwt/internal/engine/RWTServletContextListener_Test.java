@@ -18,7 +18,8 @@ import javax.servlet.ServletContextEvent;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.*;
+import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.engine.Configurator;
 import org.eclipse.rwt.engine.Context;

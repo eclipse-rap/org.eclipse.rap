@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
-package org.eclipse.rwt;
+package org.eclipse.rap.rwt.testfixture;
 
 import java.util.*;
 

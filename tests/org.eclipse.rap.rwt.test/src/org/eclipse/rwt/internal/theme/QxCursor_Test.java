@@ -11,7 +11,7 @@ package org.eclipse.rwt.internal.theme;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.engine.ResourceLoader;
 
 

@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 class LoggingListener implements Listener {

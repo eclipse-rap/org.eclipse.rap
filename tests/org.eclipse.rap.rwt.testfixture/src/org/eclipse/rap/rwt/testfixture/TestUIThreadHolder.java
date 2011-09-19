@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt;
+package org.eclipse.rap.rwt.testfixture;
 
 import org.eclipse.rwt.internal.lifecycle.IUIThreadHolder;
 import org.eclipse.rwt.internal.service.ServiceContext;

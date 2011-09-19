@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.ui.forms.internal.widgets.formtextkit;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;

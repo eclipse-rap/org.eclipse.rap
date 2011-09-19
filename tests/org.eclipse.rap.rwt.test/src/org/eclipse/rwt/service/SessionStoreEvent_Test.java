@@ -10,10 +10,10 @@
  ******************************************************************************/
 package org.eclipse.rwt.service;
 
-import org.eclipse.rwt.TestSession;
-import org.eclipse.rwt.internal.service.SessionStoreImpl;
-
 import junit.framework.TestCase;
+
+import org.eclipse.rap.rwt.testfixture.TestSession;
+import org.eclipse.rwt.internal.service.SessionStoreImpl;
 
 
 public class SessionStoreEvent_Test extends TestCase {

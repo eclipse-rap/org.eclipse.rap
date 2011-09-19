@@ -14,7 +14,7 @@ import javax.servlet.ServletContext;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.service.MemorySettingStoreFactory;
 import org.eclipse.rwt.internal.service.SettingStoreManager;

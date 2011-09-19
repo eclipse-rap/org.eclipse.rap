@@ -12,7 +12,7 @@ package org.eclipse.swt.internal.graphics;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class InternalImage_Test extends TestCase {

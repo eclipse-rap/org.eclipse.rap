@@ -17,7 +17,10 @@ import javax.servlet.ServletException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.*;
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestServletContext;
+import org.eclipse.rwt.Adaptable;
+import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.engine.Configurator;
 import org.eclipse.rwt.engine.Context;

@@ -16,10 +16,9 @@ import java.util.Arrays;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.protocol.Message;
-import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rwt.internal.protocol.*;
 import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
 import org.eclipse.rwt.internal.protocol.Message.DestroyOperation;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;

@@ -10,11 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.internal.protocol.Message.CallOperation;
 import org.eclipse.rwt.internal.protocol.Message.CreateOperation;
 import org.eclipse.rwt.internal.protocol.Message.DestroyOperation;

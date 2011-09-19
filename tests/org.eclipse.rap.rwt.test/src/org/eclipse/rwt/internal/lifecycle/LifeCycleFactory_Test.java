@@ -11,12 +11,12 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
+import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.lifecycle.PhaseListener;
-import static org.mockito.Mockito.mock;
 
 
 public class LifeCycleFactory_Test extends TestCase {

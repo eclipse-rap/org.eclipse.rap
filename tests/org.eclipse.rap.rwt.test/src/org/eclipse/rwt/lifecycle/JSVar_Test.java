@@ -13,7 +13,7 @@ package org.eclipse.rwt.lifecycle;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class JSVar_Test extends TestCase {

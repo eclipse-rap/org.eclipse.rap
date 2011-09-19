@@ -18,7 +18,7 @@ import javax.servlet.ServletContext;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.TestServletContext;
+import org.eclipse.rap.rwt.testfixture.TestServletContext;
 
 
 public class ServletContextWrapper_Test extends TestCase {

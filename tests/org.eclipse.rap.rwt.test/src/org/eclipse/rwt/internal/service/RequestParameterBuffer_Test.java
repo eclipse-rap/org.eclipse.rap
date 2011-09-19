@@ -16,7 +16,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class RequestParameterBuffer_Test extends TestCase {

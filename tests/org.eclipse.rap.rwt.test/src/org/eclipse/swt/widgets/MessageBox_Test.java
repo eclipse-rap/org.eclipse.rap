@@ -13,7 +13,7 @@ package org.eclipse.swt.widgets;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 
 public class MessageBox_Test extends TestCase {

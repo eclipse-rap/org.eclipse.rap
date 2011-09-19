@@ -12,7 +12,7 @@ package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.Fixture;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
