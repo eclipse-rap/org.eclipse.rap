@@ -183,6 +183,8 @@ public class TextTab extends ExampleTab {
         if( setDefaultButton.getSelection() ) {
           parent.getShell().setDefaultButton( defaultButton );
         } else {
+          // To clear the default button you have to call it twice (same for SWT)
+          parent.getShell().setDefaultButton( null );
           parent.getShell().setDefaultButton( null );
         }
       }
