@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -37,24 +37,24 @@ public class TextTab extends ExampleTab {
   private final VerifyListener numberOnlyVerifyListener;
   private final ModifyListener modifyListener;
 
-  public TextTab( final CTabFolder topFolder ) {
+  public TextTab( CTabFolder topFolder ) {
     super( topFolder, "Text" );
     selectionListener = new SelectionAdapter() {
 
-      public void widgetDefaultSelected( final SelectionEvent event ) {
+      public void widgetDefaultSelected( SelectionEvent event ) {
         String msg = "You pressed the Enter key.";
         MessageDialog.openInformation( getShell(), "Information", msg );
       }
     };
     blockingVerifyListener = new VerifyListener() {
 
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         event.doit = false;
       }
     };
     numberOnlyVerifyListener = new VerifyListener() {
 
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         StringBuffer allowedText = new StringBuffer();
         for( int i = 0; i < event.text.length(); i++ ) {
           char ch = event.text.charAt( i );
@@ -67,14 +67,14 @@ public class TextTab extends ExampleTab {
     };
     modifyListener = new ModifyListener() {
 
-      public void modifyText( final ModifyEvent event ) {
+      public void modifyText( ModifyEvent event ) {
         Text text = ( Text )event.widget;
         textLabel.setText( text.getText() );
       }
     };
   }
 
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "WRAP", SWT.WRAP );
     createStyleButton( "SINGLE", SWT.SINGLE );
@@ -103,7 +103,7 @@ public class TextTab extends ExampleTab {
     createMessage( parent );
   }
 
-  protected void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( Composite parent ) {
     parent.setLayout( new GridLayout() );
     Composite textComposite = new Composite( parent, SWT.NONE );
     textComposite.setLayoutData( new GridData( SWT.FILL, SWT.FILL, true, true ) );
@@ -121,7 +121,7 @@ public class TextTab extends ExampleTab {
     btnGetText.setText( "getText" );
     btnGetText.addSelectionListener( new SelectionAdapter() {
 
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         textLabel.setText( text.getText() );
       }
     } );
@@ -129,7 +129,7 @@ public class TextTab extends ExampleTab {
     btnGetSelection.setText( "getSelection" );
     btnGetSelection.addSelectionListener( new SelectionAdapter() {
 
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         Point selection = text.getSelection();
         selectionLabel.setText( selection.x + ", " + selection.y );
       }
@@ -138,7 +138,7 @@ public class TextTab extends ExampleTab {
     btnFixedSize.setText( "200 x 100" );
     btnFixedSize.addSelectionListener( new SelectionAdapter() {
 
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         text.setLayoutData( new GridData( 200, 100 ) );
         text.getParent().layout();
       }
@@ -193,7 +193,7 @@ public class TextTab extends ExampleTab {
     btnModifyListener = createPropertyButton( "ModifyListener" );
     btnModifyListener.addSelectionListener( new SelectionAdapter() {
 
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         updateModifyListener();
       }
     } );
@@ -204,7 +204,7 @@ public class TextTab extends ExampleTab {
       = createPropertyButton( "VerifyListener (numbers only)" );
     btnNumbersOnlyVerifyListener.addSelectionListener( new SelectionAdapter() {
 
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         updateNumbersOnlyVerifyListener();
       }
     } );
@@ -215,7 +215,7 @@ public class TextTab extends ExampleTab {
       = createPropertyButton( "VerifyListener (reject all)" );
     btnBlockingVerifyListener.addSelectionListener( new SelectionAdapter() {
 
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         updateBlockingVerifyListener();
       }
     } );
@@ -225,7 +225,7 @@ public class TextTab extends ExampleTab {
     btnSelectionListener = createPropertyButton( "SelectionListener" );
     btnSelectionListener.addSelectionListener( new SelectionAdapter() {
 
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         updateSelectionListener();
       }
     } );
@@ -236,7 +236,7 @@ public class TextTab extends ExampleTab {
     btnEditable.setSelection( true );
     btnEditable.addSelectionListener( new SelectionAdapter() {
 
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         updateEditable();
       }
     } );
@@ -246,27 +246,27 @@ public class TextTab extends ExampleTab {
     btnEchoChar= createPropertyButton( "EchoChar" );
     btnEchoChar.setSelection( false );
     btnEchoChar.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         updateEchoChar();
       }
     } );
   }
 
-  private void createSelectionChooser( final Composite parent ) {
+  private void createSelectionChooser( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
-    composite.setLayout( new RowLayout( SWT.HORIZONTAL ) );
+    composite.setLayout( new GridLayout( 6, false ) );
     Label lblSelectionFrom = new Label( composite, SWT.NONE );
     lblSelectionFrom.setText( "Selection from" );
     final Text txtSelectionFrom = new Text( composite, SWT.BORDER );
-    Util.textSizeAdjustment( lblSelectionFrom, txtSelectionFrom );
+    txtSelectionFrom.setLayoutData( new GridData( 30, SWT.DEFAULT ) );
     Label lblSelectionTo = new Label( composite, SWT.NONE );
     lblSelectionTo.setText( "to" );
     final Text txtSelectionTo = new Text( composite, SWT.BORDER );
-    Util.textSizeAdjustment( lblSelectionTo, txtSelectionTo );
+    txtSelectionTo.setLayoutData( new GridData( 30, SWT.DEFAULT ) );
     Button btnChange = new Button( composite, SWT.PUSH );
     btnChange.setText( "Set" );
     btnChange.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         int from = parseInt( txtSelectionFrom.getText() );
         int to = parseInt( txtSelectionTo.getText() );
         if( to >= 0 && from >= 0  ) {
@@ -285,14 +285,14 @@ public class TextTab extends ExampleTab {
     Button selectAllButton = new Button( composite, SWT.PUSH );
     selectAllButton.setText( "Select all" );
     selectAllButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         text.selectAll();
         text.setFocus();
       }
     } );
   }
 
-  private void createLimitText( final Composite parent ) {
+  private void createLimitText( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 4, false ) );
     Label label = new Label( composite, SWT.NONE );
@@ -304,7 +304,7 @@ public class TextTab extends ExampleTab {
     Button resetButton = new Button( composite, SWT.PUSH );
     resetButton.setText( "Reset" );
     Listener changeListener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         try {
           text.setTextLimit( Integer.parseInt( limitText.getText() ) );
           limitText.setText( String.valueOf( text.getTextLimit() ) );
@@ -317,7 +317,7 @@ public class TextTab extends ExampleTab {
     limitText.addListener( SWT.DefaultSelection, changeListener );
     setButton.addListener( SWT.Selection, changeListener  );
     resetButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         text.setTextLimit( Text.LIMIT );
         limitText.setText( "" );
         limitText.setBackground( null );
@@ -325,7 +325,7 @@ public class TextTab extends ExampleTab {
     } );
   }
 
-  private void createText( final Composite parent ) {
+  private void createText( Composite parent ) {
     Group group = new Group( parent, SWT.NONE );
     group.setText( "Text" );
     group.setLayout( new GridLayout( 2, false ) );
@@ -334,7 +334,7 @@ public class TextTab extends ExampleTab {
     Button setButton = new Button( group, SWT.PUSH );
     setButton.setText( "Set" );
     setButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         text.setText( setText.getText() );
       }
     } );
@@ -343,7 +343,7 @@ public class TextTab extends ExampleTab {
     Button appendButton = new Button( group, SWT.PUSH );
     appendButton.setText( "Append" );
     appendButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         text.append( appendText.getText() );
       }
     } );
@@ -352,13 +352,13 @@ public class TextTab extends ExampleTab {
     Button insertButton = new Button( group, SWT.PUSH );
     insertButton.setText( "Insert" );
     insertButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         text.insert( insertText.getText() );
       }
     } );
   }
 
-  private void createMessage( final Composite parent ) {
+  private void createMessage( Composite parent ) {
     Composite composite = new Composite( parent, SWT.NONE );
     composite.setLayout( new GridLayout( 3, false ) );
     Label label = new Label( composite, SWT.NONE );
@@ -368,13 +368,13 @@ public class TextTab extends ExampleTab {
     Button setButton = new Button( composite, SWT.PUSH );
     setButton.setText( "Set" );
     setButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         text.setMessage( message.getText() );
       }
     } );
   }
 
-  private int parseInt( final String text ) {
+  private int parseInt( String text ) {
     int result;
     try {
       result = Integer.parseInt( text );
