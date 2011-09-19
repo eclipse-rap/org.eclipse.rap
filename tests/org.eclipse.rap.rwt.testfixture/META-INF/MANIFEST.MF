@@ -11,6 +11,5 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: javax.servlet.descriptor;version="[3.0.0,4.0.0)",
  org.json
 Export-Package: org.eclipse.rap.rwt.testfixture,
- org.eclipse.rwt.internal.engine;x-internal:=true,
- org.eclipse.rwt.internal.protocol;x-internal:=true,
- org.eclipse.rwt.internal.service;x-internal:=true
+ org.eclipse.rap.rwt.testfixture.internal.engine;x-internal:=true,
+ org.eclipse.rap.rwt.testfixture.internal.service;x-internal:=true

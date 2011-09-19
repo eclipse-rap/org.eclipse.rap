@@ -20,7 +20,7 @@ import javax.servlet.*;
 import javax.servlet.ServletRegistration.Dynamic;
 import javax.servlet.descriptor.JspConfigDescriptor;
 
-import org.eclipse.rwt.internal.engine.ThemeManagerHelper;
+import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 
 
 public class TestServletContext implements ServletContext {

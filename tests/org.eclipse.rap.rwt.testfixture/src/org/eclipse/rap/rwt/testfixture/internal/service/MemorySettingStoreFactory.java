@@ -8,7 +8,7 @@
  * Contributors:
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.service;
+package org.eclipse.rap.rwt.testfixture.internal.service;
 
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.*;

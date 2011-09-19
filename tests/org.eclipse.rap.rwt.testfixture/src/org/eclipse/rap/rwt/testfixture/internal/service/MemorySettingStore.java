@@ -9,7 +9,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rwt.internal.service;
+package org.eclipse.rap.rwt.testfixture.internal.service;
 
 import java.util.*;
 

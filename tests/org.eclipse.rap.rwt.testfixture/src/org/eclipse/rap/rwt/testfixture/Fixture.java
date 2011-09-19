@@ -19,6 +19,8 @@ import java.util.List;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.*;
 
+import org.eclipse.rap.rwt.testfixture.internal.engine.ApplicationContextHelper;
+import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.eclipse.rwt.engine.Configurator;
 import org.eclipse.rwt.engine.Context;
 import org.eclipse.rwt.internal.engine.*;

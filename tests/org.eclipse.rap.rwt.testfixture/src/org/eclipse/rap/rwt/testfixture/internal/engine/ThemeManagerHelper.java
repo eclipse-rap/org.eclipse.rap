@@ -9,13 +9,15 @@
  *    Frank Appel - initial API and implementation
  *    EclipseSource - bug 348056: Eliminate compiler warnings
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rap.rwt.testfixture.internal.engine;
 
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rwt.engine.ResourceLoader;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 
 

@@ -24,11 +24,19 @@ import javax.servlet.http.HttpSessionBindingListener;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.NoOpRunnable;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
+import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
-import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.internal.service.ServiceContext;
+import org.eclipse.rwt.internal.service.ServiceStateInfo;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;

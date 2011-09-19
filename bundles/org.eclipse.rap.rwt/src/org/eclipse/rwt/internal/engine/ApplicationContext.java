@@ -12,20 +12,34 @@
 package org.eclipse.rwt.internal.engine;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.branding.BrandingManager;
-import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.resources.*;
-import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
+import org.eclipse.rwt.internal.lifecycle.PhaseListenerRegistry;
+import org.eclipse.rwt.internal.resources.JSLibraryConcatenator;
+import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
+import org.eclipse.rwt.internal.resources.ResourceRegistry;
+import org.eclipse.rwt.internal.service.ApplicationStoreImpl;
+import org.eclipse.rwt.internal.service.LifeCycleServiceHandler;
+import org.eclipse.rwt.internal.service.ServiceManager;
+import org.eclipse.rwt.internal.service.SettingStoreManager;
+import org.eclipse.rwt.internal.service.StartupPage;
 import org.eclipse.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.service.IApplicationStore;
-import org.eclipse.swt.internal.graphics.*;
+import org.eclipse.swt.internal.graphics.FontDataFactory;
+import org.eclipse.swt.internal.graphics.ImageDataFactory;
+import org.eclipse.swt.internal.graphics.ImageFactory;
+import org.eclipse.swt.internal.graphics.InternalImageFactory;
+import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.DisplaysHolder;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
 
@@ -33,13 +47,13 @@ import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
 public class ApplicationContext {
   // TODO [fappel]: this allows to set a fake double of the resource manager for testing purpose.
   //                Think about a less intrusive solution.
-  static IResourceManager testResourceManager;
+  public static IResourceManager testResourceManager;
   // TODO [fappel]: the testMode flag is used to ignore resource registration. Think about
   //                a less intrusive solution.
-  static boolean ignoreResoureRegistration;
+  public static boolean ignoreResoureRegistration;
   // TODO [fappel]: the testMode flag is used to ignore resource deletion. Think about
   //                a less intrusive solution.
-  static boolean ignoreResoureDeletion;
+  public static boolean ignoreResoureDeletion;
   // TODO [fappel]: themeManager isn't final for performance reasons of the testsuite.
   //                TestServletContext#setAttribute(String,Object) will replace the runtime
   //                implementation with an optimized version for testing purpose. Think about
@@ -179,7 +193,7 @@ public class ApplicationContext {
   //                TestServletContext#setAttribute(String,Object) will replace the runtime
   //                implementation with an optimized version for testing purpose using this
   //                method. Think about a less intrusive solution.
-  void setThemeManager( ThemeManager themeManager ) {
+  public void setThemeManager( ThemeManager themeManager ) {
     this.themeManager = themeManager;
   }
 

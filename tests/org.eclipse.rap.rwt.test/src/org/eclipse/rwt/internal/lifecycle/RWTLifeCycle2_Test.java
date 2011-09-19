@@ -21,20 +21,40 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestLogger;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
+import org.eclipse.rap.rwt.testfixture.TestResourceManager;
+import org.eclipse.rap.rwt.testfixture.TestResponse;
+import org.eclipse.rap.rwt.testfixture.TestServletContext;
+import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.engine.RWTDelegate;
 import org.eclipse.rwt.internal.engine.RWTFactory;
-import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.LifeCycleServiceHandler;
+import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManagerFactory;
-import org.eclipse.rwt.service.*;
+import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rwt.service.SessionStoreEvent;
+import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+
 
 /*
  * Tests in here are separated from RWTLifeCycle_Test because they need 

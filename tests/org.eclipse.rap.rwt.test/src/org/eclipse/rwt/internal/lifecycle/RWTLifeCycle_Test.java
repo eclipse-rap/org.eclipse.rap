@@ -24,13 +24,29 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.IPhase.IInterruptible;
-import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.rwt.service.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.internal.service.ServiceContext;
+import org.eclipse.rwt.internal.service.ServiceStateInfo;
+import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
+import org.eclipse.rwt.lifecycle.PhaseEvent;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.PhaseListener;
+import org.eclipse.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rwt.service.SessionStoreEvent;
+import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class RWTLifeCycle_Test extends TestCase {

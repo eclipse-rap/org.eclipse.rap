@@ -8,9 +8,10 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rap.rwt.testfixture.internal.engine;
 
 import org.eclipse.rap.rwt.testfixture.TestResourceManager;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
 
 
 public class ApplicationContextHelper {
