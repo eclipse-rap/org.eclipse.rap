@@ -17,10 +17,10 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.protocol.Message;
 import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.swt.SWT;

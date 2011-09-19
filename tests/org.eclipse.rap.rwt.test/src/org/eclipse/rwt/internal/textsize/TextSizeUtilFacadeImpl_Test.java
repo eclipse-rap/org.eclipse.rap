@@ -13,9 +13,9 @@ package org.eclipse.rwt.internal.textsize;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.protocol.Message;
-import org.eclipse.rwt.internal.protocol.Message.CallOperation;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;

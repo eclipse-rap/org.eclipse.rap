@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.protocol;
+package org.eclipse.rap.rwt.testfixture;
 
 import java.util.*;
 
