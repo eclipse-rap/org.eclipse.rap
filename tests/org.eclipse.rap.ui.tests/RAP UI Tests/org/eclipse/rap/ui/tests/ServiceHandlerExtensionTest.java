@@ -17,9 +17,9 @@ import javax.servlet.ServletException;
 
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.ui.tests.impl.ServiceHandler1;
 import org.eclipse.rap.ui.tests.impl.ServiceHandler2;
-import org.eclipse.rwt.Fixture;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.service.IServiceHandler;
 
