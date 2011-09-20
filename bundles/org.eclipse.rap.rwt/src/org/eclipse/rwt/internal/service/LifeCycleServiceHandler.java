@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,7 +76,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
       LifeCycle lifeCycle = ( LifeCycle )lifeCycleFactory.getLifeCycle();
       lifeCycle.execute();
     } else {
-      Map parameters = ContextProvider.getRequest().getParameterMap();
+      Map<String, String[]> parameters = ContextProvider.getRequest().getParameterMap();
       RequestParameterBuffer.store( parameters );
       startupPage.send();
     }
@@ -139,4 +139,5 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     SingletonManager.install( sessionStore );
     RWTRequestVersionControl.getInstance().setCurrentRequestId( version );
   }
+
 }

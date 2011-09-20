@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
@@ -20,8 +20,8 @@ import org.eclipse.rwt.service.ISessionStore;
 
 
 /**
- * This class serves as a session-wide buffer to store and later on merge the 
- * once stored request parameters with those of the current request. 
+ * This class serves as a session-wide buffer to store and later on merge the
+ * once stored request parameters with those of the current request.
  */
 final class RequestParameterBuffer {
 
@@ -32,19 +32,19 @@ final class RequestParameterBuffer {
    * use with <code>merge</code>. If the session has already parameters stored,
    * the method returns immediately.
    */
-  static void store( Map<?,?> parameters ) {
+  static void store( Map<String, String[]> parameters ) {
     // [if] Store parameters only once.
     // Workaround for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=265008
     if( getBufferedParameters() == null ) {
-      Map buffer = new HashMap<Object,Object>( parameters );
+      HashMap<String, String[]> buffer = new HashMap<String, String[]>( parameters );
       ISessionStore sessionStore = ContextProvider.getSession();
       sessionStore.setAttribute( BUFFER, buffer );
-    }      
+    }
   }
 
   /**
-   * Merges previously <code>store</code>d request parameters with those of 
-   * the current request. Parameters of the current request take precedence 
+   * Merges previously <code>store</code>d request parameters with those of
+   * the current request. Parameters of the current request take precedence
    * over the stored parameters.
    * <p>If there are no stored parameters, this method does nothing.</p>
    * <p>After this method has completed, the buffered request parameters are
@@ -52,7 +52,7 @@ final class RequestParameterBuffer {
    */
   static void merge() {
     HttpServletRequest request = ContextProvider.getRequest();
-    Map bufferedParams = getBufferedParameters();
+    Map<String, String[]> bufferedParams = getBufferedParameters();
     if( bufferedParams != null ) {
       WrappedRequest wrappedRequest = new WrappedRequest( request, bufferedParams );
       ServiceContext context = ContextProvider.getContext();
@@ -60,12 +60,14 @@ final class RequestParameterBuffer {
     }
     ContextProvider.getSession().removeAttribute( BUFFER );
   }
-  
-  static Map getBufferedParameters() {
-    return ( Map )ContextProvider.getSession().getAttribute( BUFFER );
+
+  @SuppressWarnings("unchecked")
+  static Map<String, String[]> getBufferedParameters() {
+    return ( Map<String, String[]> )ContextProvider.getSession().getAttribute( BUFFER );
   }
 
   private RequestParameterBuffer() {
     // prevent instantiation
   }
+
 }

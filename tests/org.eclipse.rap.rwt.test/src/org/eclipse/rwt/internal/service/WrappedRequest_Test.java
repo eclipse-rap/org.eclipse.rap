@@ -49,7 +49,7 @@ public class WrappedRequest_Test extends TestCase {
     original.addParameter( p1, v1a );
     original.addParameter( p1, v1b );
     
-    Map<String,Object> paramMap = new HashMap<String,Object>();
+    Map<String, String[]> paramMap = new HashMap<String, String[]>();
     String p2 = "p2";
     String v2 = "v2";
     String p3 = "p3";
@@ -125,4 +125,5 @@ public class WrappedRequest_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
+
 }

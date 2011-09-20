@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
+import static org.junit.Assert.assertArrayEquals;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,17 +24,21 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 public class RequestParameterBuffer_Test extends TestCase {
 
   public void testStore() {
-    Map<String,String> parameters = new HashMap<String,String>();
-    parameters.put( "key", "value" );
+    Map<String, String[]> parameters = new HashMap<String, String[]>();
+    parameters.put( "key", new String[] { "value" } );
+
     RequestParameterBuffer.store( parameters );
     Map bufferedParameters = RequestParameterBuffer.getBufferedParameters();
+
     assertNotSame( parameters, bufferedParameters );
-    assertEquals( "value", bufferedParameters.get( "key" ) );
+    assertArrayEquals( new String[]{ "value" }, ( String[] )bufferedParameters.get( "key" ) );
+
     // ensure that merge() only works once per session
-    parameters = new HashMap<String,String>();
-    parameters.put( "anotherKey", "anotherValue" );
+    parameters = new HashMap<String, String[]>();
+    parameters.put( "anotherKey", new String[] { "anotherValue" } );
     RequestParameterBuffer.store( parameters );
-    assertEquals( "value", bufferedParameters.get( "key" ) );
+
+    assertArrayEquals( new String[] { "value" }, (String[])bufferedParameters.get( "key" ) );
     assertNull( bufferedParameters.get( "anotherKey" ) );
   }
   
@@ -43,4 +49,5 @@ public class RequestParameterBuffer_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
+
 }
