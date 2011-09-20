@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.internal.jetty;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.SessionIdManager;
 import org.eclipse.jetty.server.SessionManager;
@@ -20,7 +22,7 @@ class ClusteredSessionManagerProvider implements ISessionManagerProvider {
   private static final long SCAVENGE_INTERVAL = 60 * 60; // 1 hour
   private static final int SAVE_INTERVAL = 1; // 1 sec
 
-  private static int nodeCounter = 0;
+  private static AtomicInteger nodeCounter = new AtomicInteger();
 
   private final DatabaseServer databaseServer;
 
@@ -45,11 +47,7 @@ class ClusteredSessionManagerProvider implements ISessionManagerProvider {
   }
 
   private String generateNodeName() {
-    int nodeId;
-    synchronized( ClusteredSessionManagerProvider.class ) {
-      nodeId = nodeCounter;
-      nodeCounter++ ;
-    }
+    int nodeId = nodeCounter.getAndIncrement();
     return "node" + nodeId;
   }
 }
