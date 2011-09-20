@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.util;
 
@@ -21,7 +21,6 @@ import java.util.regex.Pattern;
  * Utility class to provide commonly used encoding methods.
  */
 public final class EncodingUtil {
-
 
   private static final Pattern DOUBLE_HYPHEN_PATTERN = Pattern.compile( "--" );
   private static final String UNIX_NEWLINE = "\\n";
@@ -154,7 +153,7 @@ public final class EncodingUtil {
 
   public static String[] splitNewLines( final String input ) {
     int length = input.length();
-    List resultList = new ArrayList();
+    List<String> resultList = new ArrayList<String>();
     int start = 0;
     char last = 0;
     for( int i = 0; i < length; i++ ) {
