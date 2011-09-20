@@ -14,7 +14,6 @@ import java.util.*;
 
 import org.eclipse.rap.examples.IExampleContribution;
 import org.eclipse.rap.examples.IExamplePage;
-import org.eclipse.rap.examples.demo.fileupload.FileUploadExamplePage;
 import org.eclipse.rap.examples.pages.*;
 
 
@@ -41,7 +40,6 @@ class Contributions {
     addContribution( "row-layout", "Row Layout", RowLayoutExample.class );
     addContribution( "fill-layout", "Fill Layout", FillLayoutExample.class );
     addContribution( "grid-layout", "Grid Layout", GridLayoutExample.class );
-    addContribution( "file-upload", "File Upload", FileUploadExamplePage.class );
   }
 
   private void addContribution( final String id,
