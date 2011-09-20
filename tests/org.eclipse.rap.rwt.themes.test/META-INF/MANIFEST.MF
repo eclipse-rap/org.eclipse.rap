@@ -11,3 +11,5 @@ Require-Bundle: org.junit,
 Bundle-Vendor: %Bundle-Vendor
 Export-Package: org.eclipse.rap.rwt.themes.test;x-internal:=true,
  org.eclipse.rap.rwt.themes.test.business;x-internal:=true
+Import-Package: org.eclipse.rap.rwt.testfixture,
+ org.eclipse.rap.rwt.testfixture.internal.engine
