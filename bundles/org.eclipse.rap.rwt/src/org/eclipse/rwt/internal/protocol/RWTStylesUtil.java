@@ -52,7 +52,7 @@ public final class RWTStylesUtil {
     TAB_FOLDER( TabFolder.class.getName(), new String[] { "TOP", "BOTTOM", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     TABLE( Table.class.getName(), new String[] { "SINGLE", "MULTI", "CHECK", "FULL_SELECTION", "HIDE_SELECTION", "VIRTUAL", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     TABLE_COLUMN( TableColumn.class.getName(), new String[] { "LEFT", "RIGHT", "CENTER" } ),
-    TEXT( Text.class.getName(), new String[] { "CENTER", "LEFT", "MULTI", "PASSWORD", "SEARCH", "SINGLE", "RIGHT", "READ_ONLY", "WRAP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
+    TEXT( Text.class.getName(), new String[] { "CENTER", "LEFT", "MULTI", "PASSWORD", "SEARCH", "ICON_SEARCH", "ICON_CANCEL", "SINGLE", "RIGHT", "READ_ONLY", "WRAP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     TOOL_BAR( ToolBar.class.getName(), new String[] { "FLAT", "HORIZONTAL", "VERTICAL", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     TOOL_ITEM( ToolItem.class.getName(), new String[] { "PUSH", "CHECK", "RADIO", "SEPARATOR", "DROP_DOWN" } ),
     TOOL_TIP( ToolTip.class.getName(), new String[] { "BALLOON", "ICON_ERROR", "ICON_INFORMATION", "ICON_WARNING" } ),
