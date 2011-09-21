@@ -83,7 +83,7 @@ public class TreeViewerExample implements IExamplePage {
     group.setLayoutData( footerData );
     createControlButtons( group );
   }
-  
+
   private void setFocus() {
     Tree tree = simpleTree.getTree();
     tree.forceFocus();
@@ -158,7 +158,7 @@ public class TreeViewerExample implements IExamplePage {
     Transfer[] types = new Transfer[] { TreeObjectTransfer.getInstance() };
     TreeDragListener dragListener = new TreeDragListener( viewer );
     viewer.addDragSupport( DND.DROP_MOVE, types, dragListener );
-    TreeDropListener dropListener = new TreeDropListener();
+    TreeDropListener dropListener = new TreeDropListener( viewer );
     viewer.addDropSupport( DND.DROP_MOVE, types, dropListener );
   }
 
@@ -206,6 +206,7 @@ public class TreeViewerExample implements IExamplePage {
   }
 
   private final class TreeFocusGainedHandler extends FocusAdapter {
+    @Override
     public void focusGained( FocusEvent event ) {
       currentViewer = null;
       Tree currentTree = ( Tree )event.widget;
@@ -261,6 +262,7 @@ public class TreeViewerExample implements IExamplePage {
 
   private final class RemoveButtonSelectionHandler extends SelectionAdapter {
 
+    @Override
     public void widgetSelected( SelectionEvent event ) {
       if( currentViewer != null && !currentViewer.getSelection().isEmpty() ) {
         ITreeSelection sel = ( ITreeSelection )currentViewer.getSelection();
@@ -294,6 +296,7 @@ public class TreeViewerExample implements IExamplePage {
   }
 
   private final class NewButtonSelectionHandler extends SelectionAdapter {
+    @Override
     public void widgetSelected( SelectionEvent event ) {
       if( currentViewer != null && !currentViewer.getSelection().isEmpty() ) {
         ITreeSelection sel = ( ITreeSelection )currentViewer.getSelection();
@@ -315,23 +318,26 @@ public class TreeViewerExample implements IExamplePage {
   private static class TreeDragListener extends DragSourceAdapter {
     private final TreeViewer viewer;
     private Object dragData;
-    
+
     TreeDragListener( TreeViewer viewer ) {
       this.viewer = viewer;
     }
 
+    @Override
     public void dragStart( DragSourceEvent event ) {
       dragData = getTreeObject( event.x, event.y );
     }
-    
+
+    @Override
     public void dragSetData( DragSourceEvent event ) {
       event.data = dragData;
     }
 
+    @Override
     public void dragFinished( DragSourceEvent event ) {
       viewer.refresh();
     }
-    
+
     private TreeObject getTreeObject( int x, int y ) {
       TreeObject result = null;
       ViewerCell cell = viewer.getCell( new Point( x, y ) );
@@ -343,11 +349,18 @@ public class TreeViewerExample implements IExamplePage {
   }
 
   private static class TreeDropListener extends DropTargetAdapter {
-    public void dragEnter( DropTargetEvent event ){
-      event.feedback
-        = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
+    private final TreeViewer viewer;
+
+    public TreeDropListener( TreeViewer viewer ) {
+      this.viewer = viewer;
     }
 
+    @Override
+    public void dragEnter( DropTargetEvent event ){
+      event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SELECT | DND.FEEDBACK_SCROLL;
+    }
+
+    @Override
     public void drop( DropTargetEvent event ) {
       if( event.data == null ) {
         event.detail = DND.DROP_NONE;
@@ -357,6 +370,7 @@ public class TreeViewerExample implements IExamplePage {
         if( isValidDrop( draggedObject, targetObject ) ) {
           draggedObject.getParent().removeChild( draggedObject );
           targetObject.addChild( draggedObject );
+          viewer.refresh();
         }
       }
     }
@@ -389,14 +403,17 @@ public class TreeViewerExample implements IExamplePage {
       return ( TreeObjectTransfer )instance;
     }
 
+    @Override
     protected int[] getTypeIds() {
       return new int[]{ TYPE_ID };
     }
 
+    @Override
     protected String[] getTypeNames() {
       return new String[]{ TYPE_NAME };
     }
 
+    @Override
     public TransferData[] getSupportedTypes() {
       int[] types = getTypeIds();
       TransferData[] result = new TransferData[ types.length ];
@@ -407,6 +424,7 @@ public class TreeViewerExample implements IExamplePage {
       return result;
     }
 
+    @Override
     public boolean isSupportedType( TransferData transferData ) {
       boolean result = false;
       if( transferData != null ) {
@@ -419,10 +437,12 @@ public class TreeViewerExample implements IExamplePage {
       return result;
     }
 
+    @Override
     public void javaToNative( Object object, TransferData transferData ) {
       transferData.data = object;
     }
 
+    @Override
     public Object nativeToJava( TransferData transferData ) {
       return transferData.data;
     }
@@ -490,6 +510,7 @@ public class TreeViewerExample implements IExamplePage {
       super( viewer );
     }
 
+    @Override
     protected boolean isEditorActivationEvent( ColumnViewerEditorActivationEvent event ) {
       boolean isTraversal = event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL;
       boolean isDoubleClick
@@ -548,6 +569,7 @@ public class TreeViewerExample implements IExamplePage {
       return children.size() > 0;
     }
 
+    @Override
     public String toString() {
       return name;
     }
@@ -614,6 +636,7 @@ public class TreeViewerExample implements IExamplePage {
       }
     }
 
+    @Override
     public void update( ViewerCell cell ) {
       TreeObject treeObject = ( TreeObject )cell.getElement();
       int columnIndex = cell.getColumnIndex();
@@ -630,6 +653,7 @@ public class TreeViewerExample implements IExamplePage {
       }
     }
 
+    @Override
     public String getToolTipText( Object element ) {
       String result = "";
       if( element instanceof City ) {
