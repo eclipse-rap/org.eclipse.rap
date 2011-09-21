@@ -14,11 +14,11 @@ import org.eclipse.rwt.engine.Configurator;
 import org.eclipse.rwt.internal.engine.configurables.*;
 import org.eclipse.rwt.internal.util.ClassUtil;
 
-class ConfigurablesProvider {
+public class ConfigurablesProvider {
   private static final String CONFIGURABLES
     = ConfigurablesProvider.class.getName() + "#CONFIGURABLES";
 
-  Configurable[] createConfigurables( ServletContext servletContext ) {
+  public Configurable[] createConfigurables( ServletContext servletContext ) {
     Configurable[] result;
     if( hasConfiguratorParam( servletContext ) ) {
       result = getContextConfigurable( servletContext );

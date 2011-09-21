@@ -225,7 +225,7 @@ public class RWTServletContextListener_Test extends TestCase {
 
   private RWTServletContextListener createListener( final Configurable testConfigurable ) {
     ConfigurablesProvider configurablesProvider = new ConfigurablesProvider() {
-      Configurable[] createConfigurables( ServletContext servletContext ) {
+      public Configurable[] createConfigurables( ServletContext servletContext ) {
         Configurable[] configurables = super.createConfigurables( servletContext );
         Configurable[] result = new Configurable[ configurables.length + 1 ];
         System.arraycopy( configurables, 0, result, 0, configurables.length );
