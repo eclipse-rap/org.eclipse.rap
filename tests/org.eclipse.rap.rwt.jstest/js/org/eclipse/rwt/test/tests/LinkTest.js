@@ -68,6 +68,31 @@ qx.Class.define( "org.eclipse.rwt.test.tests.LinkTest", {
       widget.destroy();
     },
 
+    testSetTextWithLineBreaksByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Link",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "text" : [ [ "text\ntext ", null ], [ "link\nlink", 0 ] ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      var expected 
+        = "text<br/>text "
+        + "<span tabIndex=\"1\" style=\"text-decoration:underline; \" id=\"0\">link<br/>link</span>";
+      assertEquals( expected, widget._link.getHtml() );
+      assertEquals( 1, widget._linksCount );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testSetTextEscapedByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = testUtil.createShellByProtocol( "w2" );

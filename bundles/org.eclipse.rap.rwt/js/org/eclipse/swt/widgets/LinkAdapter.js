@@ -31,6 +31,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Link", {
       widget.clear();
       for (var i = 0; i < value.length; i++ ) {
         var text = encodingUtil.escapeText( value[ i ][ 0 ], false );
+        text = encodingUtil.replaceNewLines( text, "<br/>" );
         var index = value[ i ][ 1 ];
         if( index !== null ) {
           widget.addLink( text, index );
