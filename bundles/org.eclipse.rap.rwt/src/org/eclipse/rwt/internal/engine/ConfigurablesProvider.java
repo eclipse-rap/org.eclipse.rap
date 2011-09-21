@@ -28,20 +28,20 @@ class ConfigurablesProvider {
     return result;
   }
 
-  private Configurable[] getContextConfigurable( ServletContext servletContext ) {
+  private static Configurable[] getContextConfigurable( ServletContext servletContext ) {
     String className = servletContext.getInitParameter( ContextConfigurable.CONFIGURATOR_PARAM );
-    ClassLoader loader = getClass().getClassLoader();
+    ClassLoader loader = ConfigurablesProvider.class.getClassLoader();
     Configurator configurator = ( Configurator )ClassUtil.newInstance( loader, className );
     return new Configurable[] {
       new ContextConfigurable( configurator, servletContext )
     };
   }
 
-  private boolean hasConfiguratorParam( ServletContext servletContext ) {
+  private static boolean hasConfiguratorParam( ServletContext servletContext ) {
     return null != servletContext.getInitParameter( ContextConfigurable.CONFIGURATOR_PARAM );
   }
 
-  private Configurable[] getCompatibilityConfigurables( ServletContext servletContext ) {
+  private static Configurable[] getCompatibilityConfigurables( ServletContext servletContext ) {
     Configurable[] result;
     result = new Configurable[]{
       new RWTConfigurationConfigurable( servletContext ),
