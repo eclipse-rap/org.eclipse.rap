@@ -17,8 +17,6 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.jetty.server.Handler;
@@ -35,16 +33,12 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.resource.FileResource;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.server.DelegatingServletEngine;
-import org.eclipse.rap.rwt.cluster.testfixture.internal.server.SimpleLifeCycleConfigurator;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.server.RWTStartup;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.FileUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rwt.internal.engine.Configurable;
-import org.eclipse.rwt.internal.engine.ConfigurablesProvider;
-import org.eclipse.rwt.internal.engine.ContextConfigurable;
 import org.eclipse.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rwt.internal.engine.RWTDelegate;
-import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 
@@ -119,7 +113,7 @@ public class JettyEngine implements IServletEngine {
     ServletContextHandler context = createServletContext( "/" );
     context.addServlet( new ServletHolder( new RWTDelegate() ), IServletEngine.SERVLET_PATH );
     context.addFilter( RWTClusterSupport.class, IServletEngine.SERVLET_PATH, FilterMapping.DEFAULT );
-    context.addEventListener( createServletContextListener( entryPointClass ) );
+    context.addEventListener( RWTStartup.createServletContextListener( entryPointClass ) );
   }
 
   private SessionManager createSessionManager( ISessionManagerProvider sessionManagerProvider ) {
@@ -139,20 +133,6 @@ public class JettyEngine implements IServletEngine {
     result.setBaseResource( createServletContextPath() );
     result.addServlet( DefaultServlet.class.getName(), "/" );
     return result;
-  }
-
-  private ServletContextListener createServletContextListener( 
-    Class<? extends IEntryPoint> entryPointClass )
-  {
-    SimpleLifeCycleConfigurator.setEntryPointClass( entryPointClass );
-    ConfigurablesProvider configurablesProvider = new ConfigurablesProvider() {
-      public Configurable[] createConfigurables( ServletContext servletContext ) {
-        return new Configurable[] {
-          new ContextConfigurable( new SimpleLifeCycleConfigurator(), servletContext )
-        };
-      }
-    };
-    return new RWTServletContextListener( configurablesProvider );
   }
 
   private FileResource createServletContextPath() {

@@ -9,10 +9,10 @@ import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 
-import org.apache.catalina.Context;
 import org.apache.catalina.Engine;
 import org.apache.catalina.Session;
 import org.apache.catalina.Wrapper;
+import org.apache.catalina.core.StandardContext;
 import org.apache.catalina.deploy.FilterDef;
 import org.apache.catalina.deploy.FilterMap;
 import org.apache.catalina.servlets.DefaultServlet;
@@ -20,13 +20,12 @@ import org.apache.catalina.session.ManagerBase;
 import org.apache.catalina.session.StandardManager;
 import org.apache.catalina.startup.Tomcat;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.server.DelegatingServletEngine;
-import org.eclipse.rap.rwt.cluster.testfixture.internal.server.SimpleLifeCycleConfigurator;
+import org.eclipse.rap.rwt.cluster.testfixture.internal.server.RWTStartup;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.FileUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rwt.internal.engine.RWTDelegate;
-import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 
@@ -38,7 +37,7 @@ public class TomcatEngine implements IServletEngine {
   }
   
   private final Tomcat tomcat;
-  private final Context context;
+  private final StandardContext context;
 
   public TomcatEngine() {
     this( SocketUtil.getFreePort() ); 
@@ -47,7 +46,7 @@ public class TomcatEngine implements IServletEngine {
   public TomcatEngine( int port ) {
     this.tomcat = new Tomcat();
     configureTomcat( port ); 
-    this.context = tomcat.addContext( "/", tomcat.getHost().getAppBase() );
+    this.context = ( StandardContext )tomcat.addContext( "/", tomcat.getHost().getAppBase() );
   }
   
   private void configureTomcat( int port ) {
@@ -109,10 +108,8 @@ public class TomcatEngine implements IServletEngine {
     }
     context.setSessionTimeout( -1 );
     context.setBackgroundProcessorDelay( 1 );
-    SimpleLifeCycleConfigurator.setEntryPointClass( entryPointClass );
-    context.addParameter( "org.eclipse.rwt.Configurator",
-                          SimpleLifeCycleConfigurator.class.getName() );
-    context.addApplicationListener( RWTServletContextListener.class.getName() );
+    Object listener = RWTStartup.createServletContextListener( entryPointClass );
+    context.addApplicationLifecycleListener( listener );
     Wrapper rwtServlet = addServlet( "rwtServlet", new RWTDelegate() );
     context.addServletMapping( IServletEngine.SERVLET_PATH, rwtServlet.getName() );
     Wrapper defaultServlet = addServlet( "defaultServlet", new DefaultServlet() );
