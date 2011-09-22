@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
   extend : qx.core.Object,
@@ -80,6 +81,32 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeDateTest", {
       assertEquals( 3, calendar.getLeft() );
       var expectedTop = dateTime.getTop() - calendar.getHeightValue();
       assertEquals( expectedTop, calendar.getTop() );
+      dateTime.destroy();
+    },
+
+    // see bug 358531
+    testEditingWithKeyboard_InitialEditing : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dateTime = this._createDefaultDateTime();
+      dateTime._setDate( new Date( 2011, 8, 2 ) );
+      testUtil.click( dateTime._dayTextField );
+      testUtil.flush();
+      testUtil.pressOnce( dateTime, "1" );
+      testUtil.pressOnce( dateTime, "3" );
+      assertEquals( "13", dateTime._dayTextField.getText() );
+      dateTime.destroy();
+    },
+
+    testEditingWithKeyboard_ContinualEditing : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dateTime = this._createDefaultDateTime();
+      dateTime._setDate( new Date( 2011, 8, 2 ) );
+      testUtil.click( dateTime._dayTextField );
+      testUtil.flush();
+      testUtil.pressOnce( dateTime, "2" );
+      testUtil.pressOnce( dateTime, "1" );
+      testUtil.pressOnce( dateTime, "3" );
+      assertEquals( "03", dateTime._dayTextField.getText() );
       dateTime.destroy();
     },
 

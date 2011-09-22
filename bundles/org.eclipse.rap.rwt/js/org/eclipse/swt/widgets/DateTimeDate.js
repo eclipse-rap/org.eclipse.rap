@@ -298,6 +298,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
 
     _onFocusIn : function( evt ) {
       this._focusedTextField.addState( "selected" );
+      this._initialEditing = true;
     },
 
     _onFocusOut : function( evt ) {
@@ -315,28 +316,27 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
     },
 
     _setFocusedTextField :  function( textField ) {
-      var tmpValue;
-      this._focusedTextField.removeState( "selected" );
-      // Set focused text field to null
-      this._focusedTextField = null;
-      if( textField === this._dayTextField ) {
-        this._spinner.setMin( 1 );
-        this._spinner.setMax( this._getDaysInMonth() );
-        tmpValue = this._removeLeadingZero( this._dayTextField.getText() );
-        this._spinner.setValue( parseInt( tmpValue ), 10 );
-      } else if( textField === this._monthTextField ) {
-        this._spinner.setMin( 1 );
-        this._spinner.setMax( 12 );
-        this._spinner.setValue( this._monthInt );
-      } else if( textField === this._yearTextField ) {
-        this._spinner.setMax( 9999 );
-        this._spinner.setMin( 1752 );
-        this._spinner.setValue( this._lastValidYear );
+      if( this._focusedTextField !== textField ) {
+        this._focusedTextField.removeState( "selected" );
+        this._focusedTextField = null;
+        if( textField === this._dayTextField ) {
+          this._spinner.setMin( 1 );
+          this._spinner.setMax( this._getDaysInMonth() );
+          var tmpValue = this._removeLeadingZero( this._dayTextField.getText() );
+          this._spinner.setValue( parseInt( tmpValue ), 10 );
+        } else if( textField === this._monthTextField ) {
+          this._spinner.setMin( 1 );
+          this._spinner.setMax( 12 );
+          this._spinner.setValue( this._monthInt );
+        } else if( textField === this._yearTextField ) {
+          this._spinner.setMax( 9999 );
+          this._spinner.setMin( 1752 );
+          this._spinner.setValue( this._lastValidYear );
+        }
+        this._focusedTextField = textField;
+        this._focusedTextField.addState( "selected" );
+        this._initialEditing = true;
       }
-      // Set focused text field
-      this._focusedTextField = textField;
-      // Set highlight on focused text field
-      this._focusedTextField.addState( "selected" );
     },
 
     _onSpinnerChange : function( evt ) {
@@ -351,14 +351,15 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
             this._focusedTextField.setText( this._monthname[ this._monthInt - 1 ] );
           }
         } else if( this._focusedTextField === this._yearTextField ) {
-            this._lastValidYear = this._spinner.getValue();
-            this._focusedTextField.setText( "" + this._spinner.getValue() );
+          this._lastValidYear = this._spinner.getValue();
+          this._focusedTextField.setText( "" + this._spinner.getValue() );
         } else {
           this._focusedTextField.setText( this._addLeadingZero( this._spinner.getValue() ) );
         }
         // Adjust date field
-        if( this._focusedTextField == this._monthTextField || // month
-            this._focusedTextField == this._yearTextField ) { // year
+        if(    this._focusedTextField == this._monthTextField // month
+            || this._focusedTextField == this._yearTextField ) // year
+        {
           var dateValue = this._dayTextField.getText();
           if( dateValue > this._getDaysInMonth() ) {
             this._dayTextField.setText( "" + this._getDaysInMonth() );
@@ -412,22 +413,14 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
           switch( keyIdentifier ) {
             case "Left":
               if( this._datePattern == "MDY") {
-                this._rollLeft( this._monthTextField,
-                                this._dayTextField,
-                                this._yearTextField );
+                this._rollLeft( this._monthTextField, this._dayTextField, this._yearTextField );
               } else if( this._datePattern == "DMY") {
-                this._rollLeft( this._dayTextField,
-                                this._monthTextField,
-                                this._yearTextField );
+                this._rollLeft( this._dayTextField, this._monthTextField, this._yearTextField );
               } else {
                 if( this._medium ) {
-                  this._rollLeft( this._yearTextField,
-                                  this._monthTextField,
-                                  this._dayTextField );
+                  this._rollLeft( this._yearTextField, this._monthTextField, this._dayTextField );
                 } else {
-                  this._rollLeft( this._monthTextField,
-                                  this._dayTextField,
-                                  this._yearTextField );
+                  this._rollLeft( this._monthTextField, this._dayTextField, this._yearTextField );
                 }
               }
               evt.preventDefault();
@@ -435,22 +428,14 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
               break;
             case "Right":
               if( this._datePattern == "MDY") {
-                this._rollRight( this._monthTextField,
-                                 this._dayTextField,
-                                 this._yearTextField );
+                this._rollRight( this._monthTextField, this._dayTextField, this._yearTextField );
               } else if( this._datePattern == "DMY") {
-                this._rollRight( this._dayTextField,
-                                 this._monthTextField,
-                                 this._yearTextField );
+                this._rollRight( this._dayTextField, this._monthTextField, this._yearTextField );
               } else {
                 if( this._medium ) {
-                  this._rollRight( this._yearTextField,
-                                   this._monthTextField,
-                                   this._dayTextField );
+                  this._rollRight( this._yearTextField, this._monthTextField, this._dayTextField );
                 } else {
-                  this._rollRight( this._monthTextField,
-                                   this._dayTextField,
-                                   this._yearTextField );
+                  this._rollRight( this._monthTextField, this._dayTextField, this._yearTextField );
                 }
               }
               evt.preventDefault();
@@ -527,7 +512,7 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
         this._checkAndApplyYearValue();
       }
       // Roll left
-      if( this._focusedTextField === first ){
+      if( this._focusedTextField === first ) {
         if( third.isSeeable() ) {
           this._setFocusedTextField( third );
         } else {
@@ -563,21 +548,20 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
                 maxChars = 2;
               }
               var newValue = keypress;
-              if( value.length < maxChars ) {
+              if( value.length < maxChars && !this._initialEditing ) {
                 newValue = value + keypress;
               }
               var intValue = parseInt( newValue, 10 );
-              if( this._focusedTextField === this._dayTextField ||
-                  this._focusedTextField === this._monthTextField ) {
-                if( intValue >= this._spinner.getMin() &&
-                    intValue <= this._spinner.getMax() ) {
+              if(    this._focusedTextField === this._dayTextField
+                  || this._focusedTextField === this._monthTextField )
+              {
+                if( intValue >= this._spinner.getMin() && intValue <= this._spinner.getMax() ) {
                   this._spinner.setValue( intValue );
                 } else {
                   // Do it again without adding the old value
                   newValue = keypress;
                   intValue = parseInt( newValue, 10 );
-                  if( intValue >= this._spinner.getMin() &&
-                      intValue <= this._spinner.getMax() ) {
+                  if( intValue >= this._spinner.getMin() && intValue <= this._spinner.getMax() ) {
                     this._spinner.setValue( intValue );
                   }
                 }
@@ -587,18 +571,21 @@ qx.Class.define( "org.eclipse.swt.widgets.DateTimeDate", {
                   this._checkAndApplyYearValue();
                 }
               }
+              this._initialEditing = false;
               evt.preventDefault();
               evt.stopPropagation();
               break;
             case "Home":
               var newValue = this._spinner.getMin();
               this._spinner.setValue( newValue );
+              this._initialEditing = true;
               evt.preventDefault();
               evt.stopPropagation();
               break;
             case "End":
               var newValue = this._spinner.getMax();
               this._spinner.setValue( newValue );
+              this._initialEditing = true;
               evt.preventDefault();
               evt.stopPropagation();
               break;
