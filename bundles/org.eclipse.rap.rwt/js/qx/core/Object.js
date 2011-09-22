@@ -452,7 +452,7 @@ qx.Class.define("qx.core.Object",
     // Prevent old custom widgets using logging from crashing:
     debug : qx.core.Variant.select( "qx.debug", {
       "on" : function( msg ) {
-        if( console && typeof console.log === "function" ) {
+        if( window.console && typeof console.log === "function" ) {
           console.log( msg );
         }
       },
