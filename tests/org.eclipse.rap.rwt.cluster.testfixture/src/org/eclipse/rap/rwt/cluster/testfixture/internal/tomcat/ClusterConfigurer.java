@@ -21,7 +21,6 @@ import org.apache.catalina.tribes.Channel;
 import org.apache.catalina.tribes.group.GroupChannel;
 import org.apache.catalina.tribes.group.interceptors.MessageDispatch15Interceptor;
 import org.apache.catalina.tribes.group.interceptors.TcpFailureDetector;
-import org.apache.catalina.tribes.membership.McastService;
 import org.apache.catalina.tribes.transport.ReplicationTransmitter;
 import org.apache.catalina.tribes.transport.nio.NioReceiver;
 import org.apache.catalina.tribes.transport.nio.PooledParallelSender;
@@ -54,29 +53,29 @@ class ClusterConfigurer {
   private static final int CHANNEL_SEND_OPTIONS 
     = Channel.SEND_OPTIONS_DEFAULT | Channel.SEND_OPTIONS_SYNCHRONIZED_ACK;
   
-  private final SimpleTcpCluster cluster;
-  private final GroupChannel channel;
+  private final Engine engine;
 
   ClusterConfigurer( Engine engine ) {
-    cluster = new SimpleTcpCluster();
-    channel = new GroupChannel();
-    engine.setCluster( cluster );
+    this.engine = engine;
   }
   
   void configure() {
-    configureChannel();
-    configureCluster();
+    SimpleTcpCluster cluster = new SimpleTcpCluster();
+    GroupChannel channel = new GroupChannel();
+    cluster.setChannel( channel );
+    configureCluster( cluster );
+    configureChannel( channel );
+    engine.setCluster( cluster );
   }
 
-  private void configureChannel() {
-    channel.setMembershipService( createMembershipService() );
+  private void configureChannel( GroupChannel channel ) {
     channel.setChannelReceiver( createChannelReceiver() );
     channel.setChannelSender( createChannelSender() );
     channel.addInterceptor( new TcpFailureDetector() );
     channel.addInterceptor( new MessageDispatch15Interceptor() );
   }
 
-  private void configureCluster() {
+  private void configureCluster( SimpleTcpCluster cluster ) {
     cluster.setManagerTemplate( createDeltaManager() );
     cluster.setChannelSendOptions( CHANNEL_SEND_OPTIONS );
     cluster.addValve( new ReplicationValve() );
@@ -93,21 +92,13 @@ class ClusterConfigurer {
     return result;
   }
 
-  private McastService createMembershipService() {
-    McastService result = new McastService();
-    result.setAddress( LOCALHOST );
-    result.setPort( SocketUtil.getFreePort() );
-    result.setFrequency( 500 );
-    result.setDropTime( 3000 );
-    return result;
-  }
-
   private NioReceiver createChannelReceiver() {
     NioReceiver result = new NioReceiver();
     result.setAddress( LOCALHOST );
     result.setPort( SocketUtil.getFreePort() );
     result.setAutoBind( -1 );
     result.setSelectorTimeout( 5000 );
+    result.setMinThreads( 1 );
     return result;
   }
 
