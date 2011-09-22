@@ -45,7 +45,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
   }
   
   public void testResponseContentType() {
-    UICallBackServiceHandler.writeUiRequestNeeded( getResponseWriter() );
+    UICallBackServiceHandler.writeUIRequestNeeded( getResponseWriter() );
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertEquals( "text/javascript; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }

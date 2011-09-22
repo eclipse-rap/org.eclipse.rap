@@ -23,7 +23,6 @@ import org.eclipse.rwt.service.ISessionStore;
 
 public class UICallBackServiceHandler implements IServiceHandler {
 
-  // keep in sync with function enableUICallBack() in Request.js
   public final static String HANDLER_ID = UICallBackServiceHandler.class.getName();
 
   private static final String JS_SEND_UI_REQUEST
@@ -39,7 +38,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
     if( success && sessionStore.isBound() ) {
       JavaScriptResponseWriter writer = new JavaScriptResponseWriter( response );
       writeUICallBackActivation( writer );
-      writeUiRequestNeeded( writer );
+      writeUIRequestNeeded( writer );
     }
   }
 
@@ -58,7 +57,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
     }
   }
 
-  static void writeUiRequestNeeded( JavaScriptResponseWriter writer ) {
+  static void writeUIRequestNeeded( JavaScriptResponseWriter writer ) {
     if( UICallBackManager.getInstance().hasRunnables() ) {
       writer.write( JS_SEND_UI_REQUEST );
     }

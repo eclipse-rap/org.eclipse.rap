@@ -145,7 +145,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       writeExitConfirmation( display );
       renderShells( display );
       writeFocus( display );
-      writeUiCallBackAcvtivation( display );
+      writeUICallBackActivation( display );
       markInitialized( display );
       ActiveKeysUtil.writeActiveKeys( display );
     }
@@ -324,7 +324,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  private static void writeUiCallBackAcvtivation( Display display ) {
+  private static void writeUICallBackActivation( Display display ) {
     JavaScriptResponseWriter responseWriter = ContextProvider.getStateInfo().getResponseWriter();
     UICallBackServiceHandler.writeUICallBackActivation( responseWriter );
   }
