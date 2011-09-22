@@ -1,16 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
 import java.util.Locale;
+
 
 public final class LifeCycleAdapterUtil {
 
@@ -35,7 +37,7 @@ public final class LifeCycleAdapterUtil {
   static String[] getKitPackageVariants( String packageName, String className ) {
     String[] result;
     if( packageName == null || "".equals( packageName ) ) {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append( "internal." );
       buffer.append( className.toLowerCase( Locale.ENGLISH ) );
       buffer.append( "kit" );
@@ -44,20 +46,20 @@ public final class LifeCycleAdapterUtil {
       String[] segments = packageName.split( "\\." );
       result = new String[ segments.length + 1 ];
       for( int i = 0; i < result.length; i++ ) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for( int j = 0; j < segments.length; j++ ) {
           if( j == i ) {
             buffer.append( "internal." );
           }
           buffer.append( segments[ j ] );
           if( j < segments.length - 1 ) {
-            buffer.append( "." );
+            buffer.append( '.' );
           }
         }
         if( i == segments.length ) {
           buffer.append( ".internal" );
         }
-        buffer.append( "." );
+        buffer.append( '.' );
         buffer.append( className.toLowerCase( Locale.ENGLISH ) );
         buffer.append( "kit" );
         result[ i ] = buffer.toString();
