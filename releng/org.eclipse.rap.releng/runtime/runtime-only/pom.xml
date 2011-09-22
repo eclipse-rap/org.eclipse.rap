@@ -34,21 +34,21 @@
   <modules>
     <module>repository</module>
     <module>feature</module>
-    <module>../../../runtime.rwt/org.eclipse.rap.rwt</module>
-    <module>../../../runtime.rwt/org.eclipse.rap.rwt.osgi</module>
-    <module>../../../runtime.rwt/org.eclipse.rap.rwt.theme.classic</module>
-    <module>../../../runtime.ui/org.eclipse.rap.demo</module>
-    <module>../../../runtime.ui/org.eclipse.rap.demo.databinding</module>
-    <module>../../../runtime.ui/org.eclipse.rap.design.example</module>
-    <module>../../../runtime.ui/org.eclipse.rap.jface</module>
-    <module>../../../runtime.ui/org.eclipse.rap.jface.databinding</module>
-    <module>../../../runtime.ui/org.eclipse.rap.junit</module>
-    <module>../../../runtime.ui/org.eclipse.rap.junit.runtime</module>
-    <module>../../../runtime.ui/org.eclipse.rap.ui</module>
-    <module>../../../runtime.ui/org.eclipse.rap.ui.cheatsheets</module>
-    <module>../../../runtime.ui/org.eclipse.rap.ui.forms</module>
-    <module>../../../runtime.ui/org.eclipse.rap.ui.views</module>
-    <module>../../../runtime.ui/org.eclipse.rap.ui.workbench</module>
+    <module>../../../../runtime.rwt/org.eclipse.rap.rwt</module>
+    <module>../../../../runtime.rwt/org.eclipse.rap.rwt.osgi</module>
+    <module>../../../../runtime.rwt/org.eclipse.rap.rwt.theme.classic</module>
+    <module>../../../../runtime.ui/org.eclipse.rap.demo</module>
+    <module>../../../../runtime.ui/org.eclipse.rap.demo.databinding</module>
+    <module>../../../../runtime.ui/org.eclipse.rap.design.example</module>
+    <module>../../../../runtime.ui/org.eclipse.rap.jface</module>
+    <module>../../../../runtime.ui/org.eclipse.rap.jface.databinding</module>
+    <module>../../../../runtime.ui/org.eclipse.rap.junit</module>
+    <module>../../../../runtime.ui/org.eclipse.rap.junit.runtime</module>
+    <module>../../../../runtime.ui/org.eclipse.rap.ui</module>
+    <module>../../../../runtime.ui/org.eclipse.rap.ui.cheatsheets</module>
+    <module>../../../../runtime.ui/org.eclipse.rap.ui.forms</module>
+    <module>../../../../runtime.ui/org.eclipse.rap.ui.views</module>
+    <module>../../../../runtime.ui/org.eclipse.rap.ui.workbench</module>
   </modules>
 
   <repositories>
@@ -76,6 +76,20 @@
         <configuration>
           <format>yyyyMMdd-HHmm</format>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-source-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <executions>
+          <execution>
+            <id>plugin-source</id>
+            <goals>
+              <goal>plugin-source</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>
