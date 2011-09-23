@@ -100,7 +100,7 @@ public final class WidgetLCAUtil {
    * Preserves the value of the property <code>bounds</code> of the
    * specified widget.
    *
-   * @param widget the widget whose toolTip property to preserve
+   * @param widget the widget whose bounds property to preserve
    * @param bounds the value to preserve
    * @see #writeBounds(Widget, Control, Rectangle)
    */
