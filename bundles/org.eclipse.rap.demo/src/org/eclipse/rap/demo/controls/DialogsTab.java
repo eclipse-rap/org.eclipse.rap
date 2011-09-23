@@ -450,8 +450,9 @@ public class DialogsTab extends ExampleTab {
     if( useDialogCallback ) {
       DialogUtil.open( dialog, new DialogCallback() {
         public void dialogClosed( int returnCode ) {
-          FontData fontData = dialog.getFontList()[ 0 ];
-          messageBoxDlgResLabel.setText( "Result: " + fontData + " / " + dialog.getRGB() );
+          FontData fontData = returnCode == SWT.OK ? dialog.getFontList()[ 0 ] : null;
+          RGB rgb = dialog.getRGB();
+          messageBoxDlgResLabel.setText( "Result: " + fontData+ " / " + rgb );
           messageBoxDlgResLabel.pack();
         }
       } );
