@@ -13,6 +13,8 @@ package org.eclipse.rwt.service;
 import java.io.IOException;
 import java.io.NotSerializableException;
 
+import javax.servlet.http.HttpSession;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -30,7 +32,7 @@ public class SessionStoreImplSerialization_Test extends TestCase {
     }
   }
 
-  private TestSession httpSession;
+  private HttpSession httpSession;
   private SessionStoreImpl sessionStore;
 
   public void testAttributesAreSerializable() throws Exception {
@@ -38,31 +40,31 @@ public class SessionStoreImplSerialization_Test extends TestCase {
     String attributeValue = "bar";
     sessionStore.setAttribute( attributeName, attributeValue );
     SessionStoreImpl deserializedSession = Fixture.serializeAndDeserialize( sessionStore );
-    
+
     assertEquals( attributeValue, deserializedSession.getAttribute( attributeName ) );
   }
-  
+
   public void testHttpSessionIsNotSerializable() throws Exception {
     SessionStoreImpl deserializedSession = Fixture.serializeAndDeserialize( sessionStore );
-    
+
     assertNull( deserializedSession.getHttpSession() );
   }
-  
+
   public void testBoundIsSerializable() throws Exception {
     SessionStoreImpl deserializedSession = Fixture.serializeAndDeserialize( sessionStore );
 
     assertTrue( deserializedSession.isBound() );
   }
-  
+
   public void testListenersAreSerializable() throws Exception {
     SessionStoreListener listener = new LoggingSessionStoreListener();
     sessionStore.addSessionStoreListener( listener );
     SessionStoreImpl deserializedSession = Fixture.serializeAndDeserialize( sessionStore );
-    TestSession newHttpSession = new TestSession();
+    HttpSession newHttpSession = new TestSession();
     deserializedSession.attachHttpSession( newHttpSession );
     SessionStoreImpl.attachInstanceToSession( newHttpSession, deserializedSession );
     newHttpSession.invalidate();
-    
+
     assertTrue( LoggingSessionStoreListener.wasCalled );
   }
 
@@ -74,10 +76,10 @@ public class SessionStoreImplSerialization_Test extends TestCase {
     } catch( NotSerializableException expected ) {
     }
   }
-  
+
   protected void setUp() throws Exception {
     LoggingSessionStoreListener.wasCalled = false;
     httpSession = new TestSession();
-    sessionStore = new SessionStoreImpl( httpSession );  
+    sessionStore = new SessionStoreImpl( httpSession );
   }
 }

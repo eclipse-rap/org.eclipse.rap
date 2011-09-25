@@ -68,7 +68,15 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class Fixture {
+/**
+ * Test fixture for RWT.
+ * <p>
+ * <strong>IMPORTANT:</strong> This class is <em>not</em> part the public RAP
+ * API. It may change or disappear without further notice. Use this class at
+ * your own risk.
+ * </p>
+ */
+public final class Fixture {
 
   public final static File TEMP_DIR = new File( System.getProperty( "java.io.tmpdir" ) );
   public static final File WEB_CONTEXT_DIR = new File( TEMP_DIR, "testapp" );
@@ -158,7 +166,7 @@ public class Fixture {
   public static void createServiceContext() {
     TestRequest request = new TestRequest();
     TestResponse response = new TestResponse();
-    TestSession session = createTestSession();
+    HttpSession session = createTestSession();
     request.setSession( session );
     createServiceContext( response, request );
   }

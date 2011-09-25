@@ -19,6 +19,13 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 
+/**
+ * <p>
+ * <strong>IMPORTANT:</strong> This class is <em>not</em> part the public RAP
+ * API. It may change or disappear without further notice. Use this class at
+ * your own risk.
+ * </p>
+ */
 public final class TestRequest implements HttpServletRequest {
 
   private static final String DEFAULT_SCHEME = "http";
@@ -32,14 +39,14 @@ public final class TestRequest implements HttpServletRequest {
   private HttpSession session;
   private String scheme;
   private String serverName;
-  private String contextPath;
+  private final String contextPath;
   private String requestURI;
   private String servletPath;
   private String pathInfo;
-  private Map<String,String[]> parameters;
-  private Map<String,String> headers;
-  private Map<String,Object> attributes;
-  private Collection<Cookie> cookies;
+  private final Map<String,String[]> parameters;
+  private final Map<String,String> headers;
+  private final Map<String,Object> attributes;
+  private final Collection<Cookie> cookies;
   private Locale locale;
   private String contentType;
   private String body;
@@ -88,7 +95,7 @@ public final class TestRequest implements HttpServletRequest {
 
   public Enumeration<String> getHeaderNames() {
     return new Enumeration<String>() {
-      private Iterator iterator = headers.keySet().iterator();
+      private final Iterator iterator = headers.keySet().iterator();
       public boolean hasMoreElements() {
         return iterator.hasNext();
       }
@@ -239,7 +246,7 @@ public final class TestRequest implements HttpServletRequest {
 
   public Enumeration<String> getParameterNames() {
     return new Enumeration<String>() {
-      private Iterator iterator = parameters.keySet().iterator();
+      private final Iterator iterator = parameters.keySet().iterator();
       public boolean hasMoreElements() {
         return iterator.hasNext();
       }

@@ -17,6 +17,7 @@ import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
@@ -85,7 +86,7 @@ public class RWTDelegate_Test extends TestCase {
 
   private static TestRequest createTestRequest( ApplicationContext applicationContext ) {
     TestRequest result = new TestRequest();
-    TestSession session = new TestSession();
+    HttpSession session = new TestSession();
     ServletContext servletContext = session.getServletContext();
     String name = ApplicationContext.class.getName() + "#INSTANCE";
     servletContext.setAttribute( name, applicationContext );

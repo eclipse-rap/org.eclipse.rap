@@ -23,6 +23,13 @@ import javax.servlet.descriptor.JspConfigDescriptor;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 
 
+/**
+ * <p>
+ * <strong>IMPORTANT:</strong> This class is <em>not</em> part the public RAP
+ * API. It may change or disappear without further notice. Use this class at
+ * your own risk.
+ * </p>
+ */
 public class TestServletContext implements ServletContext {
   private final Map<String,Object> initParameters = new HashMap<String,Object>();
   private final Map<String,Object> attributes = new HashMap<String,Object>();

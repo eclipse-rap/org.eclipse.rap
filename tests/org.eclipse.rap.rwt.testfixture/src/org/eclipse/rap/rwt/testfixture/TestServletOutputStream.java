@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright (c) 2009 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
@@ -14,14 +14,22 @@ import java.io.IOException;
 
 import javax.servlet.ServletOutputStream;
 
+
+/**
+ * <p>
+ * <strong>IMPORTANT:</strong> This class is <em>not</em> part the public RAP
+ * API. It may change or disappear without further notice. Use this class at
+ * your own risk.
+ * </p>
+ */
 public class TestServletOutputStream extends ServletOutputStream {
 
-  private ByteArrayOutputStream stream = new ByteArrayOutputStream();
-  
+  private final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+
   public void write( final int b ) throws IOException {
     stream.write( b );
   }
-  
+
   public ByteArrayOutputStream getContent() {
     return stream;
   }

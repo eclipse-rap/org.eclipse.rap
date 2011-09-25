@@ -26,7 +26,6 @@ import org.eclipse.rap.rwt.testfixture.TestLogger;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
-import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.SessionSingletonBase;
@@ -71,7 +70,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   private static java.util.List<Object> eventLog;
   private static PhaseId currentPhase;
 
-  private TestSession session;
+  private HttpSession session;
 
   public static class FakeResourceManagerFactory
     implements IResourceManagerFactory
@@ -338,7 +337,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   }
 
   private void registerTestLogger() {
-    session = ( TestSession )ContextProvider.getSession().getHttpSession();
+    session = ContextProvider.getSession().getHttpSession();
     ServletContext servletContext = session.getServletContext();
     TestServletContext servletContextImpl
       = ( TestServletContext )servletContext;

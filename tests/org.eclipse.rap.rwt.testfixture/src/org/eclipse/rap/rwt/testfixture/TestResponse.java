@@ -18,13 +18,20 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 
+/**
+ * <p>
+ * <strong>IMPORTANT:</strong> This class is <em>not</em> part the public RAP
+ * API. It may change or disappear without further notice. Use this class at
+ * your own risk.
+ * </p>
+ */
 public class TestResponse implements HttpServletResponse {
 
   private TestServletOutputStream outStream;
   private String contentType;
   private String characterEncoding;
-  private Map<String,Cookie> cookies;
-  private Map<String,String> headers;
+  private final Map<String,Cookie> cookies;
+  private final Map<String,String> headers;
   private int errorStatus;
   private String redirect;
   private PrintWriter printWriter;

@@ -18,6 +18,13 @@ import org.eclipse.swt.widgets.Widget;
 import org.json.*;
 
 
+/**
+ * <p>
+ * <strong>IMPORTANT:</strong> This class is <em>not</em> part the public RAP
+ * API. It may change or disappear without further notice. Use this class at
+ * your own risk.
+ * </p>
+ */
 public final class Message {
 
   private JSONObject message;

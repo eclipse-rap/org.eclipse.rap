@@ -17,29 +17,36 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.*;
 
 
+/**
+ * <p>
+ * <strong>IMPORTANT:</strong> This class is <em>not</em> part the public RAP
+ * API. It may change or disappear without further notice. Use this class at
+ * your own risk.
+ * </p>
+ */
 public class TestSession implements HttpSession {
-  
+
   private final Map<String,Object> attributes;
   private String id;
   private ServletContext servletContext;
   private boolean isInvalidated;
   private boolean newSession;
   private int maxInactiveInterval;
-  
+
   public TestSession() {
     attributes = new HashMap<String,Object>();
     servletContext = new TestServletContext();
     id = String.valueOf( hashCode() );
   }
-  
+
   public long getCreationTime() {
     return 0;
   }
-  
+
   public void setId( String id ) {
     this.id = id;
   }
-  
+
   public String getId() {
     if( isInvalidated ) {
       String text = "Unable to obtain session id. Session already invalidated.";
@@ -47,42 +54,42 @@ public class TestSession implements HttpSession {
     }
     return id;
   }
-  
+
   public long getLastAccessedTime() {
     return 0;
   }
-  
+
   public ServletContext getServletContext() {
     return servletContext ;
   }
-  
+
   public void setServletContext( ServletContext servletContext ) {
     this.servletContext = servletContext;
   }
-  
+
   public void setMaxInactiveInterval( final int maxInactiveInterval ) {
     this.maxInactiveInterval = maxInactiveInterval;
   }
-  
+
   public int getMaxInactiveInterval() {
     return maxInactiveInterval;
   }
-  
+
   /**
    * @deprecated
    */
   public HttpSessionContext getSessionContext() {
     return null;
   }
-  
+
   public Object getAttribute( final String arg0 ) {
     return attributes.get( arg0 );
   }
-  
+
   public Object getValue( final String arg0 ) {
     return null;
   }
-  
+
   public Enumeration<String> getAttributeNames() {
     final Iterator iterator = attributes.keySet().iterator();
     return new Enumeration<String>() {
@@ -94,11 +101,11 @@ public class TestSession implements HttpSession {
       }
     };
   }
-  
+
   public String[] getValueNames() {
     return null;
   }
-  
+
   public void setAttribute( final String arg0, final Object arg1 ) {
     if( arg1 instanceof HttpSessionBindingListener ) {
       HttpSessionBindingListener listener
@@ -107,10 +114,10 @@ public class TestSession implements HttpSession {
     }
     attributes.put( arg0, arg1 );
   }
-  
+
   public void putValue( final String arg0, final Object arg1 ) {
   }
-  
+
   public void removeAttribute( final String arg0 ) {
     Object removed = attributes.remove( arg0 );
     if( removed instanceof HttpSessionBindingListener ) {
@@ -121,10 +128,10 @@ public class TestSession implements HttpSession {
       listener.valueUnbound( evt );
     }
   }
-  
+
   public void removeValue( final String arg0 ) {
   }
-  
+
   public void invalidate() {
     Object[] keys = attributes.keySet().toArray();
     for( int i = 0; i < keys.length; i++ ) {
@@ -138,11 +145,11 @@ public class TestSession implements HttpSession {
     attributes.clear();
     isInvalidated = true;
   }
-  
+
   public boolean isInvalidated() {
     return isInvalidated;
   }
-  
+
   public boolean isNew() {
     return newSession;
   }

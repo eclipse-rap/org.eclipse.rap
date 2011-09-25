@@ -14,6 +14,7 @@ package org.eclipse.rwt.service;
 import java.io.Serializable;
 import java.util.*;
 
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
@@ -38,8 +39,8 @@ public class SessionStoreImpl_Test extends TestCase {
     private final List<HttpSessionBindingEvent> eventLog;
 
     LoggingSessionBindingListener( ) {
-      this.eventTypes = "";
-      this.eventLog = new LinkedList<HttpSessionBindingEvent>();
+      eventTypes = "";
+      eventLog = new LinkedList<HttpSessionBindingEvent>();
     }
 
     public void valueBound( HttpSessionBindingEvent event ) {
@@ -51,16 +52,16 @@ public class SessionStoreImpl_Test extends TestCase {
       eventLog.add( event );
       eventTypes += VALUE_UNBOUND;
     }
-    
+
     void clearEvents() {
       eventTypes = "";
       eventLog.clear();
     }
-    
+
     String getEventTypes() {
       return eventTypes;
     }
-    
+
     HttpSessionBindingEvent[] getEvents() {
       HttpSessionBindingEvent[] result = new HttpSessionBindingEvent[ eventLog.size() ];
       eventLog.toArray( result );
@@ -71,11 +72,11 @@ public class SessionStoreImpl_Test extends TestCase {
   private static final String BEFORE_DESTROY = "beforeDestroy|";
   private static final String VALUE_BOUND = "valueBound";
   private static final String VALUE_UNBOUND = "valueUnbound";
-  
-  private TestSession httpSession;
+
+  private HttpSession httpSession;
   private SessionStoreImpl session;
   private List<Throwable> servletLogEntries;
-  
+
   public void testConstructorWithNullArgument() {
     try {
       new SessionStoreImpl( null );
@@ -83,31 +84,31 @@ public class SessionStoreImpl_Test extends TestCase {
     } catch( NullPointerException expected ) {
     }
   }
-  
+
   public void testGetId() {
     assertNotNull( session.getId() );
   }
-  
+
   public void testGetIdAfterSessionWasInvalidated() {
     String id = session.getId();
     httpSession.invalidate();
-    
+
     assertEquals( id, session.getId() );
   }
-  
+
   public void testGetHttpSession() {
     assertSame( httpSession, session.getHttpSession() );
   }
-  
+
   public void testIsBound() {
     assertTrue( session.isBound() );
   }
-  
+
   public void testIsBoundAfterSessionWasInvalidated() {
     httpSession.invalidate();
     assertFalse( session.isBound() );
   }
-  
+
   public void testGetAttributeWithNullName() {
     try {
       session.getAttribute( null );
@@ -115,24 +116,24 @@ public class SessionStoreImpl_Test extends TestCase {
     } catch( NullPointerException expected ) {
     }
   }
-  
+
   public void testGetAttributeWithNonExistingName() {
     Object attribute = session.getAttribute( "does.not.exist" );
     assertNull( attribute );
   }
-  
+
   public void testGetAttribute() {
     String attributeName = "name";
     Object attributeValue = new Object();
     session.setAttribute( attributeName, attributeValue );
-    
+
     Object returnedAttributeValue = session.getAttribute( attributeName );
     Object otherAttributeValue = session.getAttribute( "other.name" );
 
     assertSame( attributeValue, returnedAttributeValue );
     assertNull( otherAttributeValue );
   }
-  
+
   public void testRemoveAttributeWithNullName() {
     try {
       session.removeAttribute( null );
@@ -140,47 +141,47 @@ public class SessionStoreImpl_Test extends TestCase {
     } catch( NullPointerException expected ) {
     }
   }
-  
+
   public void testRemoveAttributeWithExistingAttribute() {
     String attributeName = "name";
     session.setAttribute( attributeName, new Object() );
 
     session.removeAttribute( attributeName );
-    
+
     assertNull( session.getAttribute( attributeName ) );
   }
 
   public void testRemoveAttributeWithNonExistingAttribute() {
     String attributeName = "does.not.exist";
-    
+
     session.removeAttribute( attributeName );
-    
+
     assertNull( session.getAttribute( attributeName ) );
   }
-  
+
   public void testGetAttributeNames() {
     String attributeName = "name";
     session.setAttribute( attributeName, new Object() );
-    
+
     Enumeration attributeNames = session.getAttributeNames();
-    
+
     assertTrue( attributeNames.hasMoreElements() );
     assertSame( attributeNames.nextElement(), attributeName );
     assertFalse( attributeNames.hasMoreElements() );
   }
-  
+
   public void testGetAttributeNamesReturnsSnapshot() {
     String attributeName = "name";
     session.setAttribute( attributeName, new Object() );
-    
+
     Enumeration attributeNames = session.getAttributeNames();
     session.setAttribute( "other.name", new Object() );
-    
+
     assertTrue( attributeNames.hasMoreElements() );
     assertSame( attributeName, attributeNames.nextElement() );
     assertFalse( attributeNames.hasMoreElements() );
   }
-  
+
   public void testSetAttributeWithNullName() {
     try {
       session.setAttribute( null, new Object() );
@@ -188,12 +189,12 @@ public class SessionStoreImpl_Test extends TestCase {
     } catch( NullPointerException expected ) {
     }
   }
-  
+
   public void testSetAttributeWithSessionBindingListener() {
     String attributeName = "name";
     LoggingSessionBindingListener attributeValue = new LoggingSessionBindingListener();
     session.setAttribute( attributeName, attributeValue );
-    
+
     HttpSessionBindingEvent[] events = attributeValue.getEvents();
     assertEquals( 1, events.length );
     assertEquals( attributeName, events[ 0 ].getName() );
@@ -201,15 +202,15 @@ public class SessionStoreImpl_Test extends TestCase {
     assertSame( httpSession, events[ 0 ].getSession() );
     assertSame( attributeValue, events[ 0 ].getValue() );
   }
-  
+
   public void testSetAttributeToNullWithSessionBindingListener() {
     String attributeName = "name";
     LoggingSessionBindingListener attributeValue = new LoggingSessionBindingListener();
     session.setAttribute( attributeName, attributeValue );
     attributeValue.clearEvents();
-    
+
     session.setAttribute( attributeName, null );
-    
+
     HttpSessionBindingEvent[] events = attributeValue.getEvents();
     assertEquals( 1, events.length );
     assertEquals( attributeName, events[ 0 ].getName() );
@@ -218,7 +219,7 @@ public class SessionStoreImpl_Test extends TestCase {
     assertSame( attributeValue, events[ 0 ].getValue() );
     assertEquals( VALUE_UNBOUND, attributeValue.getEventTypes() );
   }
-  
+
   public void testOverrideAttributeWithExceptionInUnbound() {
     String attributeName = "name";
     session.setAttribute( attributeName, new HttpSessionBindingListener() {
@@ -231,18 +232,18 @@ public class SessionStoreImpl_Test extends TestCase {
     LoggingSessionBindingListener attributeValue = new LoggingSessionBindingListener();
 
     session.setAttribute( attributeName, attributeValue );
-    
+
     assertEquals( 1, attributeValue.getEvents().length );
   }
-  
+
   public void testRemoveAttributeWithSessionBindingListener() {
     String attributeName = "name";
     LoggingSessionBindingListener attributeValue = new LoggingSessionBindingListener();
     session.setAttribute( attributeName, attributeValue );
     attributeValue.clearEvents();
-    
+
     session.removeAttribute( attributeName );
-    
+
     HttpSessionBindingEvent[] events = attributeValue.getEvents();
     assertEquals( 1, events.length );
     assertEquals( attributeName, events[ 0 ].getName() );
@@ -251,15 +252,15 @@ public class SessionStoreImpl_Test extends TestCase {
     assertSame( attributeValue, events[ 0 ].getValue() );
     assertEquals( VALUE_UNBOUND, attributeValue.getEventTypes() );
   }
-  
+
   public void testOverrideSessionBindingListenerAttribute() {
     String attributeName = "name";
     LoggingSessionBindingListener attributeValue = new LoggingSessionBindingListener();
     session.setAttribute( attributeName, attributeValue );
     attributeValue.clearEvents();
-    
+
     session.setAttribute( attributeName, new Object() );
-    
+
     HttpSessionBindingEvent[] events = attributeValue.getEvents();
     assertEquals( 1, events.length );
     assertEquals( attributeName, events[ 0 ].getName() );
@@ -268,15 +269,15 @@ public class SessionStoreImpl_Test extends TestCase {
     assertSame( attributeValue, events[ 0 ].getValue() );
     assertEquals( VALUE_UNBOUND, attributeValue.getEventTypes() );
   }
-  
+
   public void testOverrideListenerAttributeWithSessionBindingListener() {
     String attributeName = "name";
     LoggingSessionBindingListener attributeValue = new LoggingSessionBindingListener();
     session.setAttribute( attributeName, attributeValue );
     attributeValue.clearEvents();
-    
+
     session.setAttribute( attributeName, attributeValue );
-    
+
     assertEquals( VALUE_UNBOUND + VALUE_BOUND, attributeValue.getEventTypes() );
     HttpSessionBindingEvent[] events = attributeValue.getEvents();
     assertEquals( 2, events.length );
@@ -289,7 +290,7 @@ public class SessionStoreImpl_Test extends TestCase {
     assertSame( httpSession, events[ 1 ].getSession() );
     assertSame( attributeValue, events[ 1 ].getValue() );
   }
-  
+
   public void testGetAttributeInValueUnbound() {
     final Object[] attributeValueInUnbound = { new Object() };
     final String attributeName = "name";
@@ -301,12 +302,12 @@ public class SessionStoreImpl_Test extends TestCase {
       }
     };
     session.setAttribute( attributeName, attributeValue );
-    
+
     session.setAttribute( attributeName, "newValue" );
 
     assertNull( attributeValueInUnbound[ 0 ] );
   }
-  
+
   public void testGetAttributeInValueBound() {
     final Object[] attributeValueInBound = { new Object() };
     final String attributeName = "name";
@@ -318,10 +319,10 @@ public class SessionStoreImpl_Test extends TestCase {
       }
     };
     session.setAttribute( attributeName, attributeValue );
-    
+
     assertSame( attributeValue, attributeValueInBound[ 0 ] );
   }
-  
+
   public void testEventOrderOnInvalidate() {
     final StringBuffer log = new StringBuffer();
     HttpSessionBindingListener attributeValue = new HttpSessionBindingListener() {
@@ -339,50 +340,50 @@ public class SessionStoreImpl_Test extends TestCase {
       }
     } );
     log.setLength( 0 );
-    
+
     httpSession.invalidate();
 
     assertEquals( BEFORE_DESTROY + VALUE_UNBOUND, log.toString() );
   }
-  
+
   public void testSetAttributeForUnboundSessionStore() {
     httpSession.invalidate();
-    
+
     boolean setAttribute = session.setAttribute( "name", null );
-    
+
     assertFalse( setAttribute );
   }
-  
+
   public void testGetAttributeForUnboundSessionStore() {
     String attributeName = "name";
     session.setAttribute( attributeName, null );
     httpSession.invalidate();
-    
+
     Object attributeValue = session.getAttribute( attributeName );
 
     assertNull( attributeValue );
   }
-  
+
   public void testRemoveAttributeForUnboundSessionStore() {
     String attributeName = "name";
     session.setAttribute( attributeName, null );
     httpSession.invalidate();
-    
+
     boolean removeAttribute = session.removeAttribute( attributeName );
-    
+
     assertFalse( removeAttribute );
   }
-  
+
   public void testGetAttributeNamesForUnboundSessionStore() {
     session.setAttribute( "name", "value" );
     httpSession.invalidate();
 
     Enumeration attributeNames = session.getAttributeNames();
-    
+
     assertNotNull( attributeNames );
     assertFalse( attributeNames.hasMoreElements() );
   }
-  
+
   public void testAddSessionStoreListenerWithNullArgument() {
     try {
       session.addSessionStoreListener( null );
@@ -390,7 +391,7 @@ public class SessionStoreImpl_Test extends TestCase {
     } catch( NullPointerException expected ) {
     }
   }
-  
+
   public void testRemoveSessionStoreListenerWithNullArgument() {
     try {
       session.removeSessionStoreListener( null );
@@ -398,25 +399,25 @@ public class SessionStoreImpl_Test extends TestCase {
     } catch( NullPointerException expected ) {
     }
   }
-  
+
   public void testAddSessionStoreListenerForUnboundSessionStore() {
     httpSession.invalidate();
     EmptySessionStoreListener listener = new EmptySessionStoreListener();
-    
+
     boolean addSessionStoreListener = session.addSessionStoreListener( listener );
 
     assertFalse( addSessionStoreListener );
   }
-  
+
   public void testRemoveSessionStoreListenerForUnboundSessionStore() {
     httpSession.invalidate();
     EmptySessionStoreListener listener = new EmptySessionStoreListener();
-    
+
     boolean removeSessionStoreListener = session.removeSessionStoreListener( listener );
-    
+
     assertFalse( removeSessionStoreListener );
   }
-  
+
   public void testAddSessionStoreListenerWhileDestroyingSessionStore() {
     final boolean[] aboutUnboundListener = { true };
     session.addSessionStoreListener( new SessionStoreListener() {
@@ -425,12 +426,12 @@ public class SessionStoreImpl_Test extends TestCase {
         aboutUnboundListener[ 0 ] = session.addSessionStoreListener( listener );
       }
     } );
-    
+
     httpSession.invalidate();
-    
+
     assertFalse( aboutUnboundListener[ 0 ] );
   }
-  
+
   public void testSetAttributeWhileDestroyingSessionStore() {
     final boolean[] valueUnboundWasCalled = { false };
     final HttpSessionBindingListener httpSessionBindingListener = new HttpSessionBindingListener() {
@@ -448,13 +449,13 @@ public class SessionStoreImpl_Test extends TestCase {
       public void valueBound( HttpSessionBindingEvent event ) {
       }
     } );
-    
+
     httpSession.invalidate();
-    
+
     assertTrue( setAttribute[ 0 ] );
     assertFalse( valueUnboundWasCalled[ 0 ] );
   }
-  
+
   public void testServiceContextAvailableInBeforeDestroyEvent() {
     final boolean[] hasContext = { false };
     session.addSessionStoreListener( new SessionStoreListener() {
@@ -462,12 +463,12 @@ public class SessionStoreImpl_Test extends TestCase {
         hasContext[ 0 ] = ContextProvider.hasContext();
       }
     } );
-    
+
     httpSession.invalidate();
-    
+
     assertTrue( hasContext[ 0 ] );
   }
-  
+
   public void testDestroyEventDetails() {
     final List<SessionStoreEvent> eventLog = new LinkedList<SessionStoreEvent>();
     session.addSessionStoreListener( new SessionStoreListener() {
@@ -475,14 +476,14 @@ public class SessionStoreImpl_Test extends TestCase {
         eventLog.add( event );
       }
     } );
-    
+
     httpSession.invalidate();
-    
+
     assertEquals( 1, eventLog.size() );
     SessionStoreEvent event = eventLog.get( 0 );
     assertSame( session, event.getSessionStore() );
   }
-  
+
   public void testShutdownCallback() {
     final boolean[] interceptShutdownWasCalled = { false };
     final Runnable[] shutdownCallback = { null };
@@ -504,9 +505,9 @@ public class SessionStoreImpl_Test extends TestCase {
       public void processShutdown() {
       }
     } );
-    
+
     session.valueUnbound( null );
-    
+
     assertTrue( interceptShutdownWasCalled[ 0 ] );
     assertTrue( session.isBound() );
     assertFalse( listenerWasCalled[ 0 ] );
@@ -514,7 +515,7 @@ public class SessionStoreImpl_Test extends TestCase {
     assertTrue( listenerWasCalled[ 0 ] );
     assertFalse( session.isBound() );
   }
-  
+
   public void testExceptionHandlingInSessionStoreListeners() {
     session.addSessionStoreListener( new SessionStoreListener() {
       public void beforeDestroy( SessionStoreEvent event ) {
@@ -526,18 +527,18 @@ public class SessionStoreImpl_Test extends TestCase {
         throw new RuntimeException();
       }
     } );
-    
+
     httpSession.invalidate();
-    
+
     assertEquals( 2, servletLogEntries.size() );
   }
-  
+
   public void testOverrideAtributeWithNull() {
     String attributeName = "name";
     session.setAttribute( attributeName, new Object() );
-  
+
     session.setAttribute( attributeName, null );
-    
+
     assertNull( session.getAttribute( attributeName ) );
   }
 
@@ -548,7 +549,7 @@ public class SessionStoreImpl_Test extends TestCase {
 
     Object overridingAtribute = new Object();
     session.setAttribute( attributeName, overridingAtribute );
-    
+
     assertSame( overridingAtribute, session.getAttribute( attributeName ) );
   }
 
@@ -559,10 +560,10 @@ public class SessionStoreImpl_Test extends TestCase {
 
     Serializable overridingAtribute = new String();
     session.setAttribute( attributeName, overridingAtribute );
-    
+
     assertSame( overridingAtribute, session.getAttribute( attributeName ) );
   }
-  
+
   public void testGetAttributeNamesIsThreadSafe() throws InterruptedException {
     final Throwable[] exception = { null };
     Runnable runnable = new Runnable() {
@@ -583,32 +584,32 @@ public class SessionStoreImpl_Test extends TestCase {
     Fixture.joinThreads( threads );
     assertNull( exception[ 0 ] );
   }
-  
+
   public void testAttachHttpSessionWithNullArgument() {
     try {
       session.attachHttpSession( null );
     } catch( NullPointerException expected ) {
     }
   }
-  
+
   public void testAttachHttpSession() {
-    TestSession anotherSession = new TestSession();
+    HttpSession anotherSession = new TestSession();
     session.attachHttpSession( anotherSession );
-    
-    assertSame( session.getHttpSession(), anotherSession );
+
+    assertSame( anotherSession, session.getHttpSession() );
   }
-  
+
   public void testAttachSessionDoesNotChangeId() {
     String initialId = session.getId();
     TestSession anotherSession = new TestSession();
     anotherSession.setId( "some.other.id" );
     session.attachHttpSession( anotherSession );
-    
+
     String id = session.getId();
-    
+
     assertEquals( initialId, id );
   }
-  
+
   public void testAttachSessionDoesNotTriggerListener() {
     final boolean[] wasCalled = { false };
     session.addSessionStoreListener( new SessionStoreListener() {
@@ -616,22 +617,22 @@ public class SessionStoreImpl_Test extends TestCase {
         wasCalled[ 0 ] = true;
       }
     } );
-    
+
     session.attachHttpSession( new TestSession() );
     assertFalse( wasCalled[ 0 ] );
   }
-  
+
   public void testGetInstanceFromSession() {
     SessionStoreImpl returnedSession = SessionStoreImpl.getInstanceFromSession( httpSession );
     assertSame( returnedSession, session );
   }
-  
+
   public void testGetInstanceFromSessionAfterInvalidate() {
     httpSession.invalidate();
     SessionStoreImpl returnedSession = SessionStoreImpl.getInstanceFromSession( httpSession );
     assertNull( returnedSession );
   }
-  
+
   protected void setUp() throws Exception {
     httpSession = new TestSession();
     session = new SessionStoreImpl( httpSession );
