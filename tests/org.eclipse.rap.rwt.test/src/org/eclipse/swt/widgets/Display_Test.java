@@ -12,6 +12,9 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -36,27 +39,26 @@ import org.eclipse.swt.layout.FillLayout;
 
 public class Display_Test extends TestCase {
 
-  public static final class EnsureIdEntryPoint implements IEntryPoint {
-    public int createUI() {
-      Display display = new Display();
-      Shell shell = new Shell( display );
-      WidgetUtil.getId( shell );
-      return 0;
-    }
+  protected void setUp() throws Exception {
+    Fixture.setUp();
   }
-  
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testGetAdapterWithDisplayAdapter() {
     Display display = new Display();
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     assertTrue( adapter instanceof IDisplayAdapter );
   }
-  
+
   public void testGetAdapterWithWidgetAdapter() {
     Display display = new Display();
     Object adapter = display.getAdapter( IWidgetAdapter.class );
     assertTrue( adapter instanceof IWidgetAdapter );
   }
-  
+
   public void testGetAdapterWithLifeCycleAdapter() {
     Display display = new Display();
     Object adapter = display.getAdapter( ILifeCycleAdapter.class );
@@ -94,37 +96,39 @@ public class Display_Test extends TestCase {
         } );
       }
     };
-    
+
     Fixture.runInThread( runnable );
-    
+
     assertNull( displayFromBgThread[ 0 ] );
     assertNull( displayFromBgThreadWithFakeContext[ 0 ] );
   }
-  
+
   public void testGetDefaultFromUIThread() {
-    TestUIThreadHolder uiThreadHolder = new TestUIThreadHolder( Thread.currentThread() );
+    IUIThreadHolder uiThreadHolder = mock( IUIThreadHolder.class );
+    when( uiThreadHolder.getThread() ).thenReturn( Thread.currentThread() );
     LifeCycleUtil.setUIThread( RWT.getSessionStore(), uiThreadHolder );
-    
+
     Display display = Display.getDefault();
-    
+
     assertNotNull( display );
     assertSame( display, Display.getDefault() );
   }
-  
+
   public void testGetDefaultWithTerminatedUIThread() {
-    TestUIThreadHolder uiThreadHolder = new TestUIThreadHolder( Thread.currentThread() );
+    IUIThreadHolder uiThreadHolder = mock( IUIThreadHolder.class );
+    when( uiThreadHolder.getThread() ).thenReturn( Thread.currentThread() );
     LifeCycleUtil.setUIThread( RWT.getSessionStore(), uiThreadHolder );
-    
+
     Display display = Display.getDefault();
-    
+
     assertNotNull( display );
   }
-  
+
   public void testGetDefaultWithExistingDisplayFromUIThread() {
     Display display = new Display();
     assertSame( display, Display.getDefault() );
   }
-  
+
   public void testGetDefaultFromBackgroundThreadWithoutContext() throws Throwable {
     final Display[] backgroundDisplay = { null };
     new Display();
@@ -133,12 +137,12 @@ public class Display_Test extends TestCase {
         backgroundDisplay[ 0 ] = Display.getDefault();
       }
     };
-    
+
     Fixture.runInThread( runnable );
-    
+
     assertNull( backgroundDisplay[ 0 ] );
   }
-  
+
   public void testGetDefaultFromBackgroundThreadDoesNotCreateDisplay() throws Throwable {
     final Display[] backgroundDisplay = { null };
     Runnable runnable = new Runnable() {
@@ -146,9 +150,9 @@ public class Display_Test extends TestCase {
         backgroundDisplay[ 0 ] = Display.getDefault();
       }
     };
-    
+
     Fixture.runInThread( runnable );
-    
+
     assertNull( backgroundDisplay[ 0 ] ) ;
   }
 
@@ -164,18 +168,19 @@ public class Display_Test extends TestCase {
         } );
       }
     };
-    
+
     Fixture.runInThread( runnable );
-    
+
     assertSame( display, backgroundDisplay[ 0 ] );
   }
-  
+
   public void testGetDefaultWithDisposedDisplay() {
-    TestUIThreadHolder uiThreadHolder = new TestUIThreadHolder( Thread.currentThread() );
+    IUIThreadHolder uiThreadHolder = mock( IUIThreadHolder.class );
+    when( uiThreadHolder.getThread() ).thenReturn( Thread.currentThread() );
     LifeCycleUtil.setUIThread( RWT.getSessionStore(), uiThreadHolder );
     Display display = new Display();
     display.dispose();
-    
+
     Display newDisplay = Display.getDefault();
     assertNotNull( newDisplay );
     assertNotSame( display, newDisplay );
@@ -183,13 +188,13 @@ public class Display_Test extends TestCase {
 
   public void testGetThreadFromUIThread() {
     Display display = new Display();
-    
+
     Thread thread = display.getThread();
-    
+
     assertSame( Thread.currentThread(), thread );
     display.dispose();
   }
-  
+
   public void testGetThreadFromBackgroundThreadWithoutContext() throws Throwable {
     final Display display = new Display();
     final Thread[] thread = { null };
@@ -198,17 +203,17 @@ public class Display_Test extends TestCase {
         thread[ 0 ] = display.getThread();
       }
     };
-    
+
     Fixture.runInThread( runnable );
-    
+
     assertSame( Thread.currentThread(), thread[ 0 ] );
   }
-  
+
   public void testGetSessionDisplay() {
     Display display = new Display();
     assertSame( display, LifeCycleUtil.getSessionDisplay() );
   }
-  
+
   public void testAttachAndDetachThread() {
     Display display = new Display();
     IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
@@ -919,7 +924,7 @@ public class Display_Test extends TestCase {
     }
     // Further timerExec tests can be found in UICallbackManager_Test
   }
-  
+
   public void testTimerExecFromBackgroundThread() throws Throwable {
     final Display display = new Display();
     // Ensure that invoking from background thread throws InvalidThreadAccess
@@ -953,7 +958,7 @@ public class Display_Test extends TestCase {
     assertNotNull( monitor );
     // Further monitor tests can be found in Monitor_Test
   }
-  
+
   public void testDisposeExecWithNullArgument() {
     Display display = new Display();
     display.disposeExec( null );
@@ -1028,7 +1033,7 @@ public class Display_Test extends TestCase {
     display.dispose();
     assertTrue( display.isDisposed() );
   }
-  
+
   public void testSystemCursor() {
     Display display = new Display();
     Cursor arrow = display.getSystemCursor( SWT.CURSOR_ARROW );
@@ -1078,7 +1083,7 @@ public class Display_Test extends TestCase {
       assertEquals( exceptionMessage, e.getMessage() );
     }
   }
-  
+
   public void testGetDismissalAlignment() {
     Display display = new Display();
     assertEquals( SWT.LEFT, display.getDismissalAlignment() );
@@ -1094,7 +1099,7 @@ public class Display_Test extends TestCase {
     display.close();
     assertFalse( display.isDisposed() );
   }
-  
+
   public void testCheckDevice() throws Exception {
     final Throwable[] throwable = { null };
     final Display display = new Display();
@@ -1171,13 +1176,13 @@ public class Display_Test extends TestCase {
     Event listenerEevent = events.get( 1 );
     assertSame( filterEvent, listenerEevent );
   }
-  
+
   public void testGetCursorControlWithNoControl() {
     Display display = new Display();
     setCursorLocation( display, 234, 345 );
     assertNull( display.getCursorControl() );
   }
-  
+
   public void testGetCursorControlWithVisibleControl() {
     Display display = new Display();
     setCursorLocation( display, 234, 345 );
@@ -1186,7 +1191,7 @@ public class Display_Test extends TestCase {
     control.setVisible( true );
     assertSame( control, display.getCursorControl() );
   }
-  
+
   public void testGetCursorControlWithNestedControl() {
     Display display = new Display();
     setCursorLocation( display, 234, 345 );
@@ -1197,7 +1202,7 @@ public class Display_Test extends TestCase {
     control.setBounds( 0, 0, 500, 500 );
     assertSame( control, display.getCursorControl() );
   }
-  
+
   public void testGetCursorControlWithTwiceNestedControl() {
     Display display = new Display();
     setCursorLocation( display, 234, 345 );
@@ -1239,7 +1244,7 @@ public class Display_Test extends TestCase {
     overlappingButton.setBounds( 130, 240, 10, 10 );
     assertSame( button, display.getCursorControl() );
   }
-  
+
   public void testGetCursorControlWithOverlappingAndHiddenControls() {
     Display display = new Display();
     setCursorLocation( display, 234, 345 );
@@ -1255,7 +1260,7 @@ public class Display_Test extends TestCase {
     overlappingButton.setBounds( 130, 240, 10, 10 );
     assertSame( overlappingButton, display.getCursorControl() );
   }
-  
+
   public void testGetCursorControlWithDisposedControl() {
     Display display = new Display();
     setCursorLocation( display, 234, 345 );
@@ -1265,16 +1270,16 @@ public class Display_Test extends TestCase {
     shell.dispose();
     assertNull( display.getCursorControl() );
   }
-  
+
   public void testAppName() {
     Display.setAppName( "App name" );
     assertEquals( "App name", Display.getAppName() );
   }
-  
+
   public void testAppNameDefaultValue() {
     assertNull( Display.getAppName() );
   }
-  
+
   public void testAppNameWithNullArgument() {
     Display.setAppName( null );
     assertNull( Display.getAppName() );
@@ -1284,11 +1289,11 @@ public class Display_Test extends TestCase {
     Display.setAppVersion( "v1.3" );
     assertEquals( "v1.3", Display.getAppVersion() );
   }
-  
+
   public void testAppVersionDefaultValue() {
     assertNull( Display.getAppVersion() );
   }
-  
+
   public void testAppVersionWithNullArgument() {
     Display.setAppVersion( null );
     assertNull( Display.getAppVersion() );
@@ -1298,12 +1303,12 @@ public class Display_Test extends TestCase {
     Display display = new Display();
     assertSame( display, Display.findDisplay( display.getThread() ) );
   }
-  
+
   public void testFindDisplayWithNull() {
     Display foundDisplay = Display.findDisplay( null );
     assertNull( foundDisplay );
   }
-  
+
   public void testFindDisplayWithDisposedDisplay() {
     Display display = new Display();
     Thread disposedDisplayThread = display.getThread();
@@ -1327,7 +1332,7 @@ public class Display_Test extends TestCase {
     assertNotNull( display );
     assertSame( otherDisplay[ 0 ], display );
   }
-  
+
   public void testFindDisplayForReCreatedDisplay() {
     Display display = new Display();
     display.dispose();
@@ -1339,7 +1344,7 @@ public class Display_Test extends TestCase {
     Display display = new Display();
     assertNull( display.getSystemTray() );
   }
-  
+
   public void testGetMenuBar() {
     Display display = new Display();
     assertNull( display.getMenuBar() );
@@ -1354,7 +1359,7 @@ public class Display_Test extends TestCase {
     Display display = new Display();
     assertNull( display.getSystemMenu() );
   }
-  
+
   public void testSyncExecIsReleasedOnSessionTimeout() throws Exception {
     final AtomicBoolean executed = new AtomicBoolean( false );
     final Display display = new Display();
@@ -1372,24 +1377,26 @@ public class Display_Test extends TestCase {
     while( display.getSynchronizer().getMessageCount() < 1 ) {
       Thread.yield();
     }
-    
+
     display.dispose();
-    
+
     thread.join( 5000 );
     assertFalse( thread.isAlive() );
     assertFalse( executed.get() );
-  }
-  
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 
   private static void setCursorLocation( Display display, int x, int y ) {
     IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
     adapter.setCursorLocation( x, y );
   }
+
+  public static final class EnsureIdEntryPoint implements IEntryPoint {
+    public int createUI() {
+      Display display = new Display();
+      Shell shell = new Shell( display );
+      WidgetUtil.getId( shell );
+      return 0;
+    }
+  }
+
 }
