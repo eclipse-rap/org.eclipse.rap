@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +17,8 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.*;
-import org.eclipse.rap.rwt.testfixture.LoggingPhaseListener.PhaseEventInfo;
+import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener;
+import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener.PhaseEventInfo;
 import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;

@@ -19,6 +19,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.widgets.Display;

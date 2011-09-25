@@ -16,8 +16,8 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.testfixture.LoggingPhaseListener;
-import org.eclipse.rap.rwt.testfixture.LoggingPhaseListener.PhaseEventInfo;
+import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener;
+import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener.PhaseEventInfo;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Display;
 

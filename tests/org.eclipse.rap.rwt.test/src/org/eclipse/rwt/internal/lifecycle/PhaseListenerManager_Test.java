@@ -17,7 +17,8 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.*;
-import org.eclipse.rap.rwt.testfixture.LoggingPhaseListener.PhaseEventInfo;
+import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener;
+import org.eclipse.rap.rwt.testfixture.internal.LoggingPhaseListener.PhaseEventInfo;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.lifecycle.*;
 

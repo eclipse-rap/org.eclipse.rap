@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.testfixture;
+package org.eclipse.rap.rwt.testfixture.internal;
 
 import java.util.LinkedList;
 import java.util.List;

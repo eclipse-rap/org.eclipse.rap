@@ -18,8 +18,8 @@ import javax.servlet.ServletContext;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.NoOpRunnable;
 import org.eclipse.rap.rwt.testfixture.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rwt.service.ISessionStore;
 

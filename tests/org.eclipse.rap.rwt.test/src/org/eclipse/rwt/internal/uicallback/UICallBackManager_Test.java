@@ -25,9 +25,9 @@ import javax.servlet.http.HttpSessionBindingListener;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.NoOpRunnable;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
+import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;

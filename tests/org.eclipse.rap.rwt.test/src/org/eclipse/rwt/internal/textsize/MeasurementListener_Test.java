@@ -14,6 +14,7 @@ package org.eclipse.rwt.internal.textsize;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rap.rwt.testfixture.internal.PhaseListenerHelper;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.engine.RWTFactory;
