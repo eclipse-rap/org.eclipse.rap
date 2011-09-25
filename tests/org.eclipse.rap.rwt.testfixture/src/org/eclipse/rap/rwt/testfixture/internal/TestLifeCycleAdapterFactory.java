@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.testfixture;
+package org.eclipse.rap.rwt.testfixture.internal;
 
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory;
@@ -17,7 +17,7 @@ import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 public class TestLifeCycleAdapterFactory implements AdapterFactory {
 
   private static AdapterFactory factory = new LifeCycleAdapterFactory();
-  
+
   public Object getAdapter( Object adaptable, Class adapter ) {
     return factory.getAdapter( adaptable, adapter );
   }

@@ -12,24 +12,54 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletContextEvent;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import org.eclipse.rap.rwt.testfixture.internal.TestLifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ApplicationContextHelper;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.eclipse.rwt.engine.Configurator;
 import org.eclipse.rwt.engine.Context;
-import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
+import org.eclipse.rwt.internal.engine.ContextConfigurable;
+import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.internal.engine.configurables.AdapterManagerConfigurable;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
+import org.eclipse.rwt.internal.lifecycle.IUIThreadHolder;
+import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.resources.SystemProps;
-import org.eclipse.rwt.internal.service.*;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.internal.service.LifeCycleServiceHandler;
+import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.rwt.internal.service.ServiceContext;
+import org.eclipse.rwt.internal.service.ServiceStateInfo;
+import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
@@ -38,6 +68,7 @@ import org.eclipse.swt.widgets.Widget;
 
 
 public class Fixture {
+
   public final static File TEMP_DIR = new File( System.getProperty( "java.io.tmpdir" ) );
   public static final File WEB_CONTEXT_DIR = new File( TEMP_DIR, "testapp" );
   public static final File WEB_CONTEXT_RWT_RESOURCES_DIR
@@ -47,32 +78,32 @@ public class Fixture {
   public static final String IMAGE3 = "resources/images/image3.gif";
   public static final String IMAGE_100x50 = "resources/images/test-100x50.png";
   public static final String IMAGE_50x100 = "resources/images/test-50x100.png";
-  
+
   private static final String SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS
     = "usePerformanceOptimizations";
-  
+
   static {
     ThemeManagerHelper.replaceStandardResourceLoader();
     setIgnoreResourceRegistration( usePerformanceOptimizations() );
     setIgnoreResourceDeletion( usePerformanceOptimizations() );
   }
-  
+
   private static TestServletContext servletContext;
-  
+
   public static class FixtureConfigurator implements Configurator {
     public void configure( Context context ) {
     }
   }
-  
+
   ////////////////////////////////////////////
   // Methods to control global servlet context
-  
+
   public static TestServletContext createServletContext() {
     servletContext = new TestServletContext();
     Fixture.useTestResourceManager();
     return getServletContext();
   }
-  
+
   public static TestServletContext getServletContext() {
     return servletContext;
   }
@@ -84,45 +115,45 @@ public class Fixture {
     ensureServletContext();
     servletContext.setInitParameter( name, value );
   }
-  
+
   public static void triggerServletContextInitialized() {
     ensureServletContext();
     registerConfigurer();
     ServletContextEvent event = new ServletContextEvent( servletContext );
     new RWTServletContextListener().contextInitialized( event );
   }
-  
+
   public static void triggerServletContextDestroyed() {
     ServletContextEvent event = new ServletContextEvent( servletContext );
     new RWTServletContextListener().contextDestroyed( event );
   }
 
-  
+
   ////////////////////////////////////////
   // Methods to control ApplicationContext
-  
+
   public static void createApplicationContext() {
     ensureServletContext();
     createWebContextDirectories();
     triggerServletContextInitialized();
   }
-  
+
   public static void disposeOfApplicationContext() {
     triggerServletContextDestroyed();
     disposeOfServletContext();
-    // TODO [ApplicationContext]: At the time beeing this improves RWTAllTestSuite performance by 
+    // TODO [ApplicationContext]: At the time beeing this improves RWTAllTestSuite performance by
     //      50% on my machine without causing any test to fail. However this has a bad smell
-    //      with it, so I introduced a flag that can be switch on for fast tests on local machines 
+    //      with it, so I introduced a flag that can be switch on for fast tests on local machines
     //      and switched of for the integration build tests. Think about a less intrusive solution.
     if( !usePerformanceOptimizations() ) {
       deleteWebContextDirectories();
     }
   }
 
-  
+
   ////////////////////////////////////
   // Methods to control ServiceContext
-  
+
   public static void createServiceContext() {
     TestRequest request = new TestRequest();
     TestResponse response = new TestResponse();
@@ -131,8 +162,8 @@ public class Fixture {
     createServiceContext( response, request );
   }
 
-  public static void createServiceContext( HttpServletResponse response, 
-                                           HttpServletRequest request ) 
+  public static void createServiceContext( HttpServletResponse response,
+                                           HttpServletRequest request )
   {
     ServiceContext context = new ServiceContext( request, response );
     ServiceStateInfo stateInfo = new ServiceStateInfo();
@@ -155,7 +186,7 @@ public class Fixture {
     session.invalidate();
   }
 
-  
+
   /////////////////////////////////////////////////////////////////////
   // Methods to control web context directories and resource management
 
@@ -176,8 +207,8 @@ public class Fixture {
       delete( WEB_CONTEXT_DIR );
     }
   }
-  
-  
+
+
   //////////////////////////////
   // general setup and tear down
 
@@ -202,7 +233,7 @@ public class Fixture {
   public static void useDefaultResourceManager() {
     ApplicationContextHelper.useDefaultResourceManager();
   }
-  
+
   public static void useTestResourceManager() {
     ApplicationContextHelper.useTestResourceManager();
   }
@@ -213,11 +244,11 @@ public class Fixture {
     disposeOfServletContext();
     unsetSystemProperties();
   }
-  
+
 
   ////////////////////
   // LifeCycle helpers
-  
+
   public static void readDataAndProcessAction( Display display ) {
     IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     fakePhase( PhaseId.READ_DATA );
@@ -266,7 +297,7 @@ public class Fixture {
     displayLCA.clearPreserved( display );
     fakePhase( bufferedPhaseId );
   }
-  
+
   public static String getAllMarkup() {
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     return response.getContent();
@@ -316,7 +347,7 @@ public class Fixture {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     stateInfo.setAttribute( CurrentPhase.class.getName() + "#value", phase );
   }
-  
+
   public static void executeLifeCycleFromServerThread() {
     IUIThreadHolder threadHolder = registerCurrentThreadAsUIThreadHolder();
     Thread serverThread = fakeRequestThread( threadHolder );
@@ -336,11 +367,11 @@ public class Fixture {
     }
     ContextProvider.disposeContext();
     ContextProvider.setContext( context );
-  }  
-  
+  }
+
   ////////////////
   // general stuff
-  
+
   public static boolean usePerformanceOptimizations() {
     return Boolean.getBoolean( SYS_PROP_USE_PERFORMANCE_OPTIMIZATIONS );
   }
@@ -380,7 +411,7 @@ public class Fixture {
   public static void unsetSystemProperties() {
     System.getProperties().remove( SystemProps.USE_VERSIONED_JAVA_SCRIPT );
   }
-  
+
   public static void setSystemProperties() {
     // disable js-versioning by default to make comparison easier
     System.setProperty( SystemProps.USE_VERSIONED_JAVA_SCRIPT, "false" );
@@ -442,13 +473,13 @@ public class Fixture {
     objectOutputStream.writeObject( object );
     return outputStream.toByteArray();
   }
-  
+
   public static Object deserialize( byte[] bytes ) throws IOException, ClassNotFoundException {
     ByteArrayInputStream inputStream = new ByteArrayInputStream( bytes );
     ObjectInputStream objectInputStream = new ObjectInputStream( inputStream );
     return objectInputStream.readObject();
   }
-  
+
   @SuppressWarnings("unchecked")
   public static <T> T serializeAndDeserialize( T instance ) throws Exception {
     byte[] bytes = serialize( instance );
@@ -464,7 +495,7 @@ public class Fixture {
     displayAdapter.attachThread();
     return result;
   }
-  
+
   private static void ensureServletContext() {
     if( servletContext == null ) {
       createServletContext();
@@ -474,7 +505,7 @@ public class Fixture {
   private static void registerConfigurer() {
     setInitParameter( ContextConfigurable.CONFIGURATOR_PARAM, FixtureConfigurator.class.getName() );
   }
-  
+
   private static void simulateRequest( IUIThreadHolder threadHolder, Thread serverThread ) {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     synchronized( threadHolder.getLock() ) {
@@ -513,8 +544,8 @@ public class Fixture {
 
   private static IUIThreadHolder registerCurrentThreadAsUIThreadHolder() {
     final IUIThreadHolder result = new IUIThreadHolder() {
-      private Thread thread = Thread.currentThread();
-  
+      private final Thread thread = Thread.currentThread();
+
       public void setServiceContext( ServiceContext serviceContext ) {
       }
       public void switchThread() {

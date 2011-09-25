@@ -13,5 +13,6 @@ Import-Package: javax.servlet;version="[3.0.0,4.0.0)",
  javax.servlet.http;version="[3.0.0,4.0.0)",
  org.json
 Export-Package: org.eclipse.rap.rwt.testfixture,
+ org.eclipse.rap.rwt.testfixture.internal;x-internal:=true,
  org.eclipse.rap.rwt.testfixture.internal.engine;x-internal:=true,
  org.eclipse.rap.rwt.testfixture.internal.service;x-internal:=true
