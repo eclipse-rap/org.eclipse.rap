@@ -27,13 +27,19 @@
     <relativePath>../../releng/org.eclipse.rap.releng/runtime/pom-test.xml</relativePath>
   </parent>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.eclipse.rap</groupId>
-      <artifactId>org.eclipse.rap.rwt.testfixture</artifactId>
-      <version>${rap-version}</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!-- manually include jar in classpath (maven-surefire does not use tycho's classpath resolver) -->
+          <additionalClasspathElements>
+            <additionalClasspathElement>${basedir}/lib/resource_manager_test.jar</additionalClasspathElement>
+          </additionalClasspathElements>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
