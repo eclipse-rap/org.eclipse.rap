@@ -24,10 +24,10 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestLogger;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
-import org.eclipse.rap.rwt.testfixture.TestResourceManager;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.eclipse.rap.rwt.testfixture.TestSession;
+import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.engine.RWTDelegate;
@@ -57,7 +57,7 @@ import org.eclipse.swt.widgets.Shell;
 
 
 /*
- * Tests in here are separated from RWTLifeCycle_Test because they need 
+ * Tests in here are separated from RWTLifeCycle_Test because they need
  * different setUp/tearDown implementations.
  */
 @SuppressWarnings("deprecation")
@@ -86,8 +86,8 @@ public class RWTLifeCycle2_Test extends TestCase {
     }
   }
 
-  public static final class ExceptionInReadAndDispatchEntryPoint 
-    implements IEntryPoint 
+  public static final class ExceptionInReadAndDispatchEntryPoint
+    implements IEntryPoint
   {
     public int createUI() {
       createUIEntered = true;
@@ -123,9 +123,9 @@ public class RWTLifeCycle2_Test extends TestCase {
       }
     }
   }
-  
-  public static final class EventProcessingOnSessionRestartEntryPoint 
-    implements IEntryPoint 
+
+  public static final class EventProcessingOnSessionRestartEntryPoint
+    implements IEntryPoint
   {
     public int createUI() {
       createUIEntered = true;
@@ -185,7 +185,7 @@ public class RWTLifeCycle2_Test extends TestCase {
       return 0;
     }
   }
-  
+
   public void testSessionRestartAfterExceptionInUIThread() throws Exception {
     TestRequest request;
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, ExceptionInReadAndDispatchEntryPoint.class );
@@ -198,7 +198,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertTrue( createUIEntered );
     assertFalse( createUIExited );
     assertEquals( 0, eventLog.size() );
-    
+
     // send 'application startup' request - response is JavaScript to create
     // client-side representation of what was created in IEntryPoint#createUI
     request = newRequest();
@@ -208,7 +208,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertTrue( createUIEntered );
     assertFalse( createUIExited );
     assertEquals( 0, eventLog.size() );
-    
+
     // send 'malicious button click' - response is HTTP 500
     request = newRequest();
     request.setParameter( RequestParams.UIROOT, "w1" );
@@ -223,7 +223,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertTrue( createUIEntered );
     assertTrue( createUIExited );
     assertEquals( 0, eventLog.size() );
-    
+
     // send 'refresh' request - session is restarted, response is index.html
     request = newRequest();
     request.setParameter( RequestParams.STARTUP, "default" );
@@ -231,7 +231,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertEquals( 1, eventLog.size() );
     assertTrue( eventLog.get( 0 ) instanceof Event );
   }
-  
+
   public void testEventProcessingOnSessionRestart() throws Exception {
     TestRequest request;
     Class entryPoint = EventProcessingOnSessionRestartEntryPoint.class;
@@ -258,7 +258,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   }
 
   /*
-   * Bug 225167: [Display] dispose() causes an IllegalStateException (The 
+   * Bug 225167: [Display] dispose() causes an IllegalStateException (The
    *             context has been disposed)
    * https://bugs.eclipse.org/bugs/show_bug.cgi?id=225167
    */
@@ -286,9 +286,9 @@ public class RWTLifeCycle2_Test extends TestCase {
     assertEquals( PhaseId.PROCESS_ACTION, currentPhase );
     assertEquals( 0, eventLog.size() );
   }
-  
-  private static TestResponse runRWTDelegate( final HttpServletRequest request ) 
-    throws Exception 
+
+  private static TestResponse runRWTDelegate( final HttpServletRequest request )
+    throws Exception
   {
     final Exception[] exception = { null };
     final TestResponse[] response = { new TestResponse() };
@@ -302,7 +302,7 @@ public class RWTLifeCycle2_Test extends TestCase {
           delegate.doPost( request, response[ 0 ] );
         } catch( Exception e ) {
           exception[ 0 ] = e;
-        } 
+        }
       }
     };
     Thread thread = new Thread( runnable );
@@ -324,7 +324,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     result.setParameter( LifeCycleServiceHandler.RWT_INITIALIZE, "true" );
     return result;
   }
-  
+
   protected void setUp() throws Exception {
     Fixture.setSystemProperties();
     Fixture.createApplicationContext();

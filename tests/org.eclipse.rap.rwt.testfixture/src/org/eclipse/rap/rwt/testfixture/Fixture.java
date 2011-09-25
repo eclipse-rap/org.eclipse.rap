@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -88,7 +89,7 @@ public class Fixture {
     setIgnoreResourceDeletion( usePerformanceOptimizations() );
   }
 
-  private static TestServletContext servletContext;
+  private static ServletContext servletContext;
 
   public static class FixtureConfigurator implements Configurator {
     public void configure( Context context ) {
@@ -98,13 +99,13 @@ public class Fixture {
   ////////////////////////////////////////////
   // Methods to control global servlet context
 
-  public static TestServletContext createServletContext() {
+  public static ServletContext createServletContext() {
     servletContext = new TestServletContext();
     Fixture.useTestResourceManager();
     return getServletContext();
   }
 
-  public static TestServletContext getServletContext() {
+  public static ServletContext getServletContext() {
     return servletContext;
   }
 

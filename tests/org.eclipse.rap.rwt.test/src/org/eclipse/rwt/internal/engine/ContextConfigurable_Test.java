@@ -80,19 +80,19 @@ public class ContextConfigurable_Test extends TestCase {
       return null;
     }
   }
-  
+
   private static class TestSettingStoreFactory implements ISettingStoreFactory {
     public ISettingStore createSettingStore( String storeId ) {
       return new MemorySettingStore( "" );
     }
   }
-  
+
   private static class TestEntryPoint implements IEntryPoint {
     public int createUI() {
       return 0;
     }
   }
-  
+
   private static class TestAdapterFactory implements AdapterFactory {
     public Object getAdapter( Object adaptable, Class adapter ) {
       return new TestAdapter() {};
@@ -102,15 +102,15 @@ public class ContextConfigurable_Test extends TestCase {
       return new Class[] { TestAdapter.class };
     }
   }
-  
+
   private static class TestAdaptable implements Adaptable  {
     public Object getAdapter( Class adapter ) {
       return null;
     }
   }
-  
+
   private interface TestAdapter {}
-  
+
   private class TestResource implements IResource {
 
     public ClassLoader getLoader() {
@@ -137,23 +137,23 @@ public class ContextConfigurable_Test extends TestCase {
       return false;
     }
   }
-  
+
   private static class TestServiceHandler implements IServiceHandler {
     public void service() throws IOException, ServletException {
     }
   }
-  
+
   private static class TestBranding extends AbstractBranding {}
-  
+
   private static class TestWidget extends Composite {
     TestWidget( Composite parent ) {
       super( parent, SWT.NONE );
     }
   }
-  
+
   public void testConfigure() {
     runConfigurator( createConfigurator() );
-    
+
     checkContextDirectoryHasBeenSet();
     checkPhaseListenersHaveBeenAdded();
     checkSettingStoreManagerHasBeenSet();
@@ -174,15 +174,15 @@ public class ContextConfigurable_Test extends TestCase {
         context.addTheme( THEME_ID, STYLE_SHEET );
       }
     } );
-    
+
     assertTrue( applicationContext.getSettingStoreManager().hasFactory() );
   }
-  
+
   public void testReset() {
     runConfigurator( createConfigurator() );
-    
+
     applicationContext.deactivate();
-    
+
     checkAdapterFactoriesHaveBeenRemoved();
     checkBrandingHasBeenRemoved();
     checkEntryPointHasBeenRemoved();
@@ -215,7 +215,7 @@ public class ContextConfigurable_Test extends TestCase {
   }
 
   private void createDisplay() {
-    TestServletContext servletContext = Fixture.createServletContext();
+    ServletContext servletContext = Fixture.createServletContext();
     Fixture.createServiceContext();
     ApplicationContextUtil.set( servletContext, applicationContext );
     display = new Display();
@@ -246,12 +246,12 @@ public class ContextConfigurable_Test extends TestCase {
       }
     };
   }
-  
+
   private void checkAttributeHasBeenSet() {
     Object attribute = applicationContext.getApplicationStore().getAttribute( ATTRIBUTE_NAME );
     assertSame( ATTRIBUTE_VALUE, attribute );
   }
-  
+
   private void checkThemeContributionHasBeenAdded() {
     Theme theme = applicationContext.getThemeManager().getTheme( THEME_ID );
     assertEquals( 18, theme.getValuesMap().getAllValues().length );
@@ -309,7 +309,7 @@ public class ContextConfigurable_Test extends TestCase {
     RWTConfiguration configuration = applicationContext.getConfiguration();
     assertEquals( Fixture.WEB_CONTEXT_DIR, configuration.getContextDirectory() );
   }
-  
+
   private void checkAdapterFactoriesHaveBeenRemoved() {
     AdapterManager adapterManager = applicationContext.getAdapterManager();
     Object testAdapter = adapterManager.getAdapter( new TestAdaptable(), TestAdapter.class );
@@ -349,7 +349,7 @@ public class ContextConfigurable_Test extends TestCase {
     TestThemeManager themeManager = ( TestThemeManager )applicationContext.getThemeManager();
     assertEquals( 0, themeManager.getRegisteredThemeIds().length );
   }
-  
+
   private void checkApplicationStoreHasBeenResetted() {
     Object attribute = applicationContext.getApplicationStore().getAttribute( ATTRIBUTE_NAME );
     assertNull( attribute );

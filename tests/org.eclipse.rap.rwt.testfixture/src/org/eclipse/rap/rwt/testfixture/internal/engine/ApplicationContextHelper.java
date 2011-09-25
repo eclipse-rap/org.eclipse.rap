@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture.internal.engine;
 
-import org.eclipse.rap.rwt.testfixture.TestResourceManager;
+import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 
 

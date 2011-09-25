@@ -10,20 +10,19 @@
  ******************************************************************************/
 package org.eclipse.rwt;
 
+import javax.servlet.http.HttpSession;
+
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.internal.SingletonManager;
-import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.ServiceContext;
+import org.eclipse.rwt.internal.service.SessionStoreImpl;
 
 
 public class SessionSingletonBase_Test extends TestCase {
-  
-  private static class TestSingleton {
-  }
 
-  private ServiceContext serviceContext;
-  
   public void testGetInstanceWithNullArgument() {
     try {
       SessionSingletonBase.getInstance( null );
@@ -34,19 +33,20 @@ public class SessionSingletonBase_Test extends TestCase {
 
   public void testGetInstance() {
     Object instance = SessionSingletonBase.getInstance( TestSingleton.class );
-    
+
     assertNotNull( instance );
-    assertSame( instance.getClass(), TestSingleton.class );
+    assertSame( TestSingleton.class, instance.getClass() );
   }
 
   public void testGetInstanceWithSameType() {
     Object instance1 = SessionSingletonBase.getInstance( TestSingleton.class );
     Object instance2 = SessionSingletonBase.getInstance( TestSingleton.class );
-    
+
     assertSame( instance1, instance2 );
   }
-  
+
   public void testGetInstanceFromBackgroundThreadWithContext() throws Throwable {
+    final ServiceContext serviceContext = ContextProvider.getContext();
     final Object[] instance = { null };
     Runnable runnable = new Runnable() {
       public void run() {
@@ -54,12 +54,12 @@ public class SessionSingletonBase_Test extends TestCase {
         instance[ 0 ] = SessionSingletonBase.getInstance( TestSingleton.class );
       }
     };
-    
+
     Fixture.runInThread( runnable );
-    
+
     assertNotNull( instance[ 0 ] );
   }
-  
+
   public void testGetInstanceFromBackgroundThreadWithoutContext() {
     ContextProvider.disposeContext();
     try {
@@ -67,28 +67,27 @@ public class SessionSingletonBase_Test extends TestCase {
       fail();
     } catch( IllegalStateException expected ) {
     }
-    
   }
-  
+
   protected void setUp() throws Exception {
-    serviceContext = createServiceContext();
-    ContextProvider.setContext( serviceContext );
-    SingletonManager.install( serviceContext.getSessionStore() );
+    Fixture.createServiceContext();
+    createSessionStore();
+    SingletonManager.install( ContextProvider.getSession() );
   }
-  
+
   protected void tearDown() throws Exception {
     if( ContextProvider.hasContext() ) {
       Fixture.disposeOfServiceContext();
     }
   }
 
-  private static ServiceContext createServiceContext() {
-    TestSession session = new TestSession();
-    TestResponse response = new TestResponse();
-    TestRequest request = new TestRequest();
-    request.setSession( session );
-    ServiceContext result = new ServiceContext( request, response );
-    result.setSessionStore( new SessionStoreImpl( session ) );
-    return result;
+  private static void createSessionStore() {
+    ServiceContext serviceContext = ContextProvider.getContext();
+    HttpSession session = serviceContext.getRequest().getSession();
+    serviceContext.setSessionStore( new SessionStoreImpl( session ) );
   }
+
+  private static class TestSingleton {
+  }
+
 }

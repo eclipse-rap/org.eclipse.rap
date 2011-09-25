@@ -12,6 +12,8 @@ package org.eclipse.rwt.internal.engine.configurables;
 
 import java.io.File;
 
+import javax.servlet.ServletContext;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
@@ -20,38 +22,38 @@ import org.eclipse.rwt.internal.engine.RWTConfiguration;
 
 
 public class RWTConfigurationConfigurable_Test extends TestCase {
-  private TestServletContext servletContext;
+  private ServletContext servletContext;
   private RWTConfigurationConfigurable configurable;
   private ApplicationContext applicationContext;
 
   public void testConfigure() {
     configurable.configure( applicationContext );
-    
+
     assertEquals( getRealPath(), getConfiguration().getContextDirectory() );
   }
-  
+
   public void testReset() {
     configurable.configure( applicationContext );
-    
+
     configurable.reset( applicationContext );
-    
+
     try {
       getConfiguration().getLibraryDirectory();
       fail();
     } catch( IllegalStateException expected ) {
     }
   }
-  
+
   protected void setUp() {
     servletContext = new TestServletContext();
     configurable = new RWTConfigurationConfigurable( servletContext );
     applicationContext = new ApplicationContext();
   }
-  
+
   private RWTConfiguration getConfiguration() {
     return applicationContext.getConfiguration();
   }
-  
+
   private File getRealPath() {
     return new File( servletContext.getRealPath( "/" ) );
   }

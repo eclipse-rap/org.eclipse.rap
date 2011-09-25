@@ -32,7 +32,7 @@ public class TestServletContext implements ServletContext {
   public void setLogger( TestLogger logger ) {
     this.logger = logger;
   }
-  
+
   public ServletContext getContext( String arg0 ) {
     return null;
   }
@@ -106,7 +106,7 @@ public class TestServletContext implements ServletContext {
   public String getInitParameter( String name ) {
     return ( String )initParameters.get( name );
   }
-  
+
   public boolean setInitParameter( String name, String value ) {
     initParameters.put( name, value );
     return true;
@@ -122,8 +122,8 @@ public class TestServletContext implements ServletContext {
 
   public Enumeration<String> getAttributeNames() {
     return new Enumeration<String>() {
-      Iterator<String> iterator = TestServletContext.this.attributes.keySet().iterator();
-      
+      Iterator<String> iterator = attributes.keySet().iterator();
+
       public boolean hasMoreElements() {
         return iterator.hasNext();
       }
@@ -146,7 +146,7 @@ public class TestServletContext implements ServletContext {
   public String getServletContextName() {
     return servletContextName;
   }
-  
+
   public void setServletContextName( String servletContextName ) {
     this.servletContextName = servletContextName;
   }

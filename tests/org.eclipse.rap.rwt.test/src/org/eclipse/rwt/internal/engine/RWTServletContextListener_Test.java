@@ -10,7 +10,6 @@
  *    EclipseSource - ongoing implementation
  *    Frank Appel - replaced singletons and static fields (Bug 337787)
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.engine;
 
 import javax.servlet.ServletContext;
@@ -18,19 +17,27 @@ import javax.servlet.ServletContextEvent;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestServletContext;
+import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.engine.Configurator;
 import org.eclipse.rwt.engine.Context;
-import org.eclipse.rwt.internal.engine.configurables.*;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.internal.engine.configurables.BrandingManagerConfigurable;
+import org.eclipse.rwt.internal.engine.configurables.EntryPointManagerConfigurable;
+import org.eclipse.rwt.internal.engine.configurables.PhaseListenerRegistryConfigurable;
+import org.eclipse.rwt.internal.engine.configurables.ResourceRegistryConfigurable;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rwt.lifecycle.PhaseEvent;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
 public class RWTServletContextListener_Test extends TestCase {
-  
+
   private static class TestConfigurable implements Configurable {
     private boolean configured;
     private boolean reset;
@@ -46,7 +53,7 @@ public class RWTServletContextListener_Test extends TestCase {
       return configured;
     }
 
-    
+
     boolean isReset() {
       return reset;
     }
@@ -57,21 +64,21 @@ public class RWTServletContextListener_Test extends TestCase {
       return 0;
     }
   }
-  
+
   public static class TestPhaseListener implements PhaseListener {
     private static final long serialVersionUID = 1L;
-    
+
     public void beforePhase( final PhaseEvent event ) {
     }
-    
+
     public void afterPhase( final PhaseEvent event ) {
     }
-    
+
     public PhaseId getPhaseId() {
       return PhaseId.ANY;
     }
   }
-  
+
   public static class TestResource implements IResource {
     public String getCharset() {
       return null;
@@ -92,10 +99,10 @@ public class RWTServletContextListener_Test extends TestCase {
       return false;
     }
   }
-  
+
   public static class TestBranding extends AbstractBranding {
   }
-  
+
   public static class TestConfigurator implements Configurator {
     public void configure( Context context ) {
       context.addEntryPoint( "ep", TestEntryPoint.class );
@@ -104,11 +111,11 @@ public class RWTServletContextListener_Test extends TestCase {
       context.addBranding( new TestBranding() );
     }
   }
-  
+
   public void testResourceManagerInitialization() {
     Fixture.triggerServletContextInitialized();
     Fixture.createServiceContext();
-    
+
     assertTrue( RWT.getResourceManager() instanceof TestResourceManager );
   }
 
@@ -116,15 +123,15 @@ public class RWTServletContextListener_Test extends TestCase {
     setEntryPointInitParameter();
     triggerServletContextInitialized();
     Fixture.createServiceContext();
-    
+
     checkEntryPointHasBeenRegistered();
   }
-    
+
   public void testPhaseListenerInitialization()  {
     setPhaseListenerInitParameter();
     triggerServletContextInitialized();
     Fixture.createServiceContext();
-    
+
     checkPhaseListenerHasBeenRegistered();
   }
 
@@ -132,7 +139,7 @@ public class RWTServletContextListener_Test extends TestCase {
     setResourceInitParameter();
     triggerServletContextInitialized();
     Fixture.createServiceContext();
-    
+
     checkResourceHasBeenRegistered();
   }
 
@@ -140,18 +147,18 @@ public class RWTServletContextListener_Test extends TestCase {
     setBrandingInitParameter();
     triggerServletContextInitialized();
     Fixture.createServiceContext();
-    
+
     checkBrandingHasBeenRegistered();
   }
-  
+
   public void testCreateConfigurables() {
-    TestServletContext context = new TestServletContext();
-    
+    ServletContext context = new TestServletContext();
+
     Configurable[] configurables = new ConfigurablesProvider().createConfigurables( context );
-    
+
     assertEquals( 9, configurables.length );
   }
-  
+
   public void testConfigurationLifeCyle() {
     TestConfigurable configurable = new TestConfigurable();
 
@@ -161,12 +168,12 @@ public class RWTServletContextListener_Test extends TestCase {
     assertTrue( configurable.isConfigured() );
     assertTrue( configurable.isReset() );
   }
-  
+
   public void testConfigurator() {
     setConfiguratorInitParameter();
     triggerServletContextInitialized();
     Fixture.createServiceContext();
-    
+
     checkEntryPointHasBeenRegistered();
     checkPhaseListenersHaveBeenRegistered();
     checkResourceHasBeenRegistered();
@@ -196,12 +203,12 @@ public class RWTServletContextListener_Test extends TestCase {
     assertEquals( 1, phaseListeners.length );
     assertTrue( phaseListeners[ 0 ] instanceof TestPhaseListener );
   }
-  
+
   private void checkResourceHasBeenRegistered() {
     assertTrue( RWTFactory.getResourceRegistry().get()[ 0 ] instanceof TestResource );
     assertEquals( 1, RWTFactory.getResourceRegistry().get().length );
   }
-  
+
   private void checkBrandingHasBeenRegistered() {
     AbstractBranding[] allBrandings = RWTFactory.getBrandingManager().getAll();
     assertEquals( 1, allBrandings.length );
@@ -211,7 +218,7 @@ public class RWTServletContextListener_Test extends TestCase {
   private void checkPhaseListenersHaveBeenRegistered() {
     assertEquals( 3, RWTFactory.getPhaseListenerRegistry().getAll().length );
   }
-  
+
   private void destroyServletContext() {
     Fixture.triggerServletContextDestroyed();
     Fixture.disposeOfServletContext();
@@ -241,7 +248,7 @@ public class RWTServletContextListener_Test extends TestCase {
     String value = TestEntryPoint.class.getName();
     Fixture.setInitParameter( name, value );
   }
-  
+
   private void setPhaseListenerInitParameter() {
     String name = PhaseListenerRegistryConfigurable.PHASE_LISTENERS_PARAM;
     String value = TestPhaseListener.class.getName();
@@ -259,7 +266,7 @@ public class RWTServletContextListener_Test extends TestCase {
     String value = TestBranding.class.getName();
     Fixture.setInitParameter( name, value );
   }
-  
+
   private void setConfiguratorInitParameter() {
     String name = ContextConfigurable.CONFIGURATOR_PARAM;
     String value = TestConfigurator.class.getName();
