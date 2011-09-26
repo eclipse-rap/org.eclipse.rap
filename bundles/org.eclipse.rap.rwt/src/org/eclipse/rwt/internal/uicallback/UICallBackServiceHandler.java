@@ -37,24 +37,45 @@ public class UICallBackServiceHandler implements IServiceHandler {
     boolean success = UICallBackManager.getInstance().processRequest( response );
     if( success && sessionStore.isBound() ) {
       JavaScriptResponseWriter writer = new JavaScriptResponseWriter( response );
-      writeUICallBackActivation( writer );
+      writeUICallBackDeactivation( writer );
       writeUIRequestNeeded( writer );
     }
   }
 
   public static void writeUICallBackActivation( JavaScriptResponseWriter writer ) {
     boolean actual = UICallBackManager.getInstance().needsActivation();
-    ISessionStore sessionStore = ContextProvider.getSession();
-    Boolean preserved = ( Boolean )sessionStore.getAttribute( ATTR_NEEDS_UICALLBACK );
-    if( preserved == null ) {
-      preserved = Boolean.FALSE;
-    }
-    if( preserved.booleanValue() != actual ) {
-      writer.write(   "org.eclipse.swt.Request.getInstance().setUiCallBackActive( "
-                    + Boolean.toString( actual )
-                    + " );" );
+    boolean preserved = getPreservedUICallBackActivation();
+    if( preserved != actual && actual ) {
+      writeUICallBackActivation( writer, actual );
+      ISessionStore sessionStore = ContextProvider.getSession();
       sessionStore.setAttribute( ATTR_NEEDS_UICALLBACK, Boolean.valueOf( actual ) );
     }
+  }
+
+  public static void writeUICallBackDeactivation( JavaScriptResponseWriter writer ) {
+    boolean actual = UICallBackManager.getInstance().needsActivation();
+    boolean preserved = getPreservedUICallBackActivation();
+    if( preserved != actual && !actual ) {
+      writeUICallBackActivation( writer, actual );
+      ISessionStore sessionStore = ContextProvider.getSession();
+      sessionStore.setAttribute( ATTR_NEEDS_UICALLBACK, Boolean.valueOf( actual ) );
+    }
+  }
+  
+  private static void writeUICallBackActivation( JavaScriptResponseWriter writer, boolean value ) {
+    writer.write(   "org.eclipse.swt.Request.getInstance().setUiCallBackActive( "
+                  + Boolean.toString( value )
+                  + " );" );
+  }
+
+  private static boolean getPreservedUICallBackActivation() {
+    boolean result = false;
+    ISessionStore sessionStore = ContextProvider.getSession();
+    Boolean preserved = ( Boolean )sessionStore.getAttribute( ATTR_NEEDS_UICALLBACK );
+    if( preserved != null ) {
+      result = preserved.booleanValue();
+    }
+    return result;
   }
 
   static void writeUIRequestNeeded( JavaScriptResponseWriter writer ) {

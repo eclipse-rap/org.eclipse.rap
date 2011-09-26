@@ -46,7 +46,6 @@ public final class UICallBackManager implements SerializableCompatibility {
   private boolean uiThreadRunning;
   // indicates whether the display has runnables to execute
   private boolean hasRunnables;
-  private boolean wakeCalled;
   private int requestCheckInterval;
   private transient CallBackRequestTracker callBackRequestTracker;
 
@@ -54,7 +53,6 @@ public final class UICallBackManager implements SerializableCompatibility {
     lock = new SerializableLock();
     idManager = new IdManager();
     uiThreadRunning = false;
-    wakeCalled = false;
     requestCheckInterval = DEFAULT_REQUEST_CHECK_INTERVAL;
     callBackRequestTracker = new CallBackRequestTracker();
   }
@@ -75,7 +73,6 @@ public final class UICallBackManager implements SerializableCompatibility {
 
   public void releaseBlockedRequest() {
     synchronized( lock ) {
-      wakeCalled = true;
       lock.notifyAll();
     }
   }
@@ -138,8 +135,7 @@ public final class UICallBackManager implements SerializableCompatibility {
         SessionTerminationListener listener = attachSessionTerminationListener();
         try {
           boolean canRelease = false;
-          wakeCalled = false;
-          while( !wakeCalled && !canRelease ) {
+          while( !canRelease ) {
             lock.wait( requestCheckInterval );
             canRelease = canReleaseBlockedRequest( response, requestStartTime );
           }
@@ -159,9 +155,7 @@ public final class UICallBackManager implements SerializableCompatibility {
     return result;
   }
 
-  private boolean canReleaseBlockedRequest( HttpServletResponse response, 
-                                            long requestStartTime ) 
-  {
+  private boolean canReleaseBlockedRequest( HttpServletResponse response, long requestStartTime ) {
     boolean result = false;
     if( !mustBlockCallBackRequest() ) {
       result = true;
@@ -259,7 +253,6 @@ public final class UICallBackManager implements SerializableCompatibility {
   }
 
   private static class CallBackRequestTracker {
-
     private transient List<Thread> callBackRequests;
 
     CallBackRequestTracker() {

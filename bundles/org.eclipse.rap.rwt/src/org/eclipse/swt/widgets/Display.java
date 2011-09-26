@@ -1198,7 +1198,7 @@ public class Display extends Device implements Adaptable {
       if( thread != Thread.currentThread() ) {
         UICallBack.runNonUIThreadWithFakeContext( this, new Runnable() {
           public void run() {
-            UICallBackManager.getInstance().releaseBlockedRequest();
+            synchronizer.asyncExec( new WakeRunnable() );
           }
         } );
       }
@@ -2282,6 +2282,11 @@ public class Display extends Device implements Adaptable {
   /////////////////
   // Inner classes
 
+  private static class WakeRunnable implements Runnable, SerializableCompatibility {
+    public void run() {
+    }
+  }
+  
   private static class FilterEntry implements IFilterEntry, SerializableCompatibility {
 
     private final int eventType;

@@ -18,10 +18,13 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.RequestParams;
+import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -65,7 +68,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
     
     Fixture.fakeNewRequest();
     UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackDeactivation( getResponseWriter() );
     
     assertEquals( DISABLE_UI_CALLBACK, Fixture.getAllMarkup() );
   }
@@ -78,11 +81,35 @@ public class UICallBackServiceHandler_Test extends TestCase {
     Fixture.fakeNewRequest();
     display.dispose();
     UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackDeactivation( getResponseWriter() );
     
     assertEquals( DISABLE_UI_CALLBACK, Fixture.getAllMarkup() );
   }
+  
+  public void testWriteUICallBackDeactivateIsNotSentFromUIRequest() throws Exception {
+    Display display = new Display();
+    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    
+    Fixture.fakeNewRequest();
+    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
+    UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
+    new DisplayLCA().render( display );
+    
+    assertFalse( Fixture.getAllMarkup().contains( DISABLE_UI_CALLBACK ) );
+  }
 
+  public void testWriteUICallBackDeactivateIsSentFromServiceHandler() throws Exception {
+    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    
+    Fixture.fakeNewRequest();
+    UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
+    new UICallBackServiceHandler().service();
+    
+    assertEquals( DISABLE_UI_CALLBACK, Fixture.getAllMarkup() );
+  }
+  
   public void testWriteUICallBackActivateTwice() throws Exception {
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
     UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
@@ -98,19 +125,6 @@ public class UICallBackServiceHandler_Test extends TestCase {
     UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
     
     assertEquals( "", Fixture.getAllMarkup() );
-  }
-
-  public void testUICallBackActivationUpdated() throws Exception {
-    Display display = new Display();
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
-    Fixture.fakeNewRequest();
-    UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
-    display.asyncExec( new NoOpRunnable() );    
-
-    new UICallBackServiceHandler().service();
-
-    assertTrue( Fixture.getAllMarkup().contains( DISABLE_UI_CALLBACK ) );
   }
 
   public void testWriteUICallBackActivationWithoutDisplay() throws Exception {
@@ -150,6 +164,22 @@ public class UICallBackServiceHandler_Test extends TestCase {
     
     display.asyncExec( new NoOpRunnable() );
     UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
+    new UICallBackServiceHandler().service();
+    
+    assertEquals( SEND_UI_REQUEST, Fixture.getAllMarkup() );
+  }
+  
+  public void testWriteUiRequestNeededAfterWake() throws Throwable {
+    final Display display = new Display();
+    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    Fixture.fakeNewRequest();
+    
+    Runnable runnable = new Runnable() {
+      public void run() {
+        display.wake();
+      }
+    };
+    Fixture.runInThread( runnable );
     new UICallBackServiceHandler().service();
     
     assertEquals( SEND_UI_REQUEST, Fixture.getAllMarkup() );
