@@ -16,32 +16,30 @@ import java.util.Set;
 import org.eclipse.rwt.internal.util.SerializableLock;
 import org.eclipse.swt.internal.SerializableCompatibility;
 
-final class IdManager implements SerializableCompatibility {
+final class CallBackActivationTracker implements SerializableCompatibility {
   private final Set<String> ids;
   private final SerializableLock lock;
 
-  IdManager() {
+  CallBackActivationTracker() {
     ids = new HashSet<String>();
     lock = new SerializableLock();
   }
 
-  int add( String id ) {
+  void activate( String id ) {
     synchronized( lock ) {
       ids.add( id );
-      return ids.size();
     }
   }
 
-  int remove( String id ) {
+  void deactivate( String id ) {
     synchronized( lock ) {
       ids.remove( id );
-      return ids.size();
     }
   }
 
-  boolean isEmpty() {
+  boolean isActive() {
     synchronized( lock ) {
-      return ids.isEmpty();
+      return !ids.isEmpty();
     }
   }
 }

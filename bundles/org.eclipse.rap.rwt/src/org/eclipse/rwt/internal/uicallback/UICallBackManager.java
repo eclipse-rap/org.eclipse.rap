@@ -12,8 +12,6 @@
 package org.eclipse.rwt.internal.uicallback;
 
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -38,7 +36,7 @@ public final class UICallBackManager implements SerializableCompatibility {
     return ( UICallBackManager )SessionSingletonBase.getInstance( UICallBackManager.class );
   }
 
-  private final IdManager idManager;
+  private final CallBackActivationTracker callBackActivationTracker;
 
   private final SerializableLock lock;
   // Flag that indicates whether a request is processed. In that case no
@@ -51,7 +49,7 @@ public final class UICallBackManager implements SerializableCompatibility {
 
   private UICallBackManager() {
     lock = new SerializableLock();
-    idManager = new IdManager();
+    callBackActivationTracker = new CallBackActivationTracker();
     uiThreadRunning = false;
     requestCheckInterval = DEFAULT_REQUEST_CHECK_INTERVAL;
     callBackRequestTracker = new CallBackRequestTracker();
@@ -107,12 +105,12 @@ public final class UICallBackManager implements SerializableCompatibility {
   }
 
   public void activateUICallBacksFor( final String id ) {
-    idManager.add( id );
+    callBackActivationTracker.activate( id );
   }
 
   public void deactivateUICallBacksFor( final String id ) {
-    int size = idManager.remove( id );
-    if( size == 0 ) {
+    callBackActivationTracker.deactivate( id );
+    if( !callBackActivationTracker.isActive() ) {
       releaseBlockedRequest();
     }
   }
@@ -174,7 +172,7 @@ public final class UICallBackManager implements SerializableCompatibility {
   }
 
   boolean isUICallBackActive() {
-    return !idManager.isEmpty();
+    return callBackActivationTracker.isActive();
   }
 
   boolean needsActivation() {
@@ -193,7 +191,7 @@ public final class UICallBackManager implements SerializableCompatibility {
     return result;
   }
 
-  private boolean isSessionExpired( long requestStartTime ) {
+  private static boolean isSessionExpired( long requestStartTime ) {
     return isSessionExpired( requestStartTime, System.currentTimeMillis() );
   }
 
@@ -249,30 +247,6 @@ public final class UICallBackManager implements SerializableCompatibility {
 
     public void beforeDestroy( SessionStoreEvent event ) {
       currentThread.interrupt();
-    }
-  }
-
-  private static class CallBackRequestTracker {
-    private transient List<Thread> callBackRequests;
-
-    CallBackRequestTracker() {
-      callBackRequests = new LinkedList<Thread>();
-    }
-
-    void deactivate( Thread thread ) {
-      callBackRequests.remove( thread );
-    }
-
-    void activate( Thread thread ) {
-      callBackRequests.add( 0, thread );
-    }
-
-    boolean hasActive() {
-      return callBackRequests.isEmpty();
-    }
-
-    boolean isActive( Thread thread ) {
-      return !hasActive() && callBackRequests.get( 0 ) == thread;
     }
   }
 }
