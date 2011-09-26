@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+    id="org.eclipse.rap.runtime.sdk"
+    label="Rich Ajax Platform (RAP) Target (Compatibility feature for Tooling)"
+    version="1.5.0.qualifier"
+    provider-name="Eclipse.org - RAP">
+
+  <description url="http://www.eclipse.org/rap">
+    %description
+  </description>
+
+  <copyright>
+    %copyright
+  </copyright>
+
+  <license url="%licenseURL">
+    %license
+  </license>
+
+  <url>
+    <update
+        label="Rich Ajax Platform (RAP) 1.5 Runtime Repository"
+        url="http://download.eclipse.org/rt/rap/1.5/runtime/"/>
+  </url>
+
+  <includes
+      id="org.eclipse.rap.runtime"
+      version="0.0.0"/>
+  <includes
+      id="org.eclipse.rap.runtime.requirements"
+      version="0.0.0"/>
+
+</feature>
