@@ -36,10 +36,8 @@ import org.eclipse.rwt.internal.service.ServiceContext;
 import org.eclipse.rwt.internal.service.ServiceStateInfo;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
-import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -63,8 +61,7 @@ public class UICallBackManager_Test extends TestCase {
     TIMER_EXEC_DELAY = timerExecDelayProp == null ? 5000 :Integer.parseInt( timerExecDelayProp );
   }
 
-  private static String log = "";
-
+  private volatile String log = "";
   private Display display;
   private UICallBackManager manager;
   private UICallBackServiceHandler uiCallBackServiceHandler;
@@ -114,107 +111,101 @@ public class UICallBackManager_Test extends TestCase {
   }
 
   public void testWaitOnUIThread() throws Exception {
-    final Throwable[] uiCallBackServiceHandlerThrowable = { null };
-    ServiceContext context = ContextProvider.getContext();
-    simulateUiCallBackThread( uiCallBackServiceHandlerThrowable, context );
-    assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
+    CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator();
+    callBackRequestSimulator.sendRequest();
+    
     display.wake();
+
     assertTrue( manager.isCallBackRequestBlocked() );
+    assertFalse( callBackRequestSimulator.exceptionOccured() );
     manager.releaseBlockedRequest();
   }
 
   public void testWaitOnBackgroundThread() throws Throwable {
-    final Throwable[] uiCallBackServiceHandlerThrowable = { null };
-    ServiceContext context = ContextProvider.getContext();
-    simulateUiCallBackThread( uiCallBackServiceHandlerThrowable, context );
-    assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
+    CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator();
+    callBackRequestSimulator.sendRequest();
     assertTrue( manager.isCallBackRequestBlocked() );
-    Runnable runnable = new Runnable() {
-      public void run() {
-        display.wake();
-      }
-    };
-    Fixture.runInThread( runnable );
-    Thread.sleep( SLEEP_TIME );
+
+    callDisplayWake();
+    callBackRequestSimulator.waitForRequest();
+    
     assertFalse( manager.isCallBackRequestBlocked() );
+    assertFalse( callBackRequestSimulator.exceptionOccured() );
   }
 
   // same test as above, but while UIThread running
   public void testWaitOnBackgroundThreadDuringLifecycle() throws Throwable {
-    final Throwable[] uiCallBackServiceHandlerThrowable = { null };
-    ServiceContext context = ContextProvider.getContext();
-    simulateUiCallBackThread( uiCallBackServiceHandlerThrowable, context );
-    assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
+    CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator();
+    callBackRequestSimulator.sendRequest();
     assertTrue( manager.isCallBackRequestBlocked() );
-    Runnable runnable = new Runnable() {
-      public void run() {
-        display.wake();
-      }
-    };
+    
     // assume that UIThread is currently running the life cycle
     manager.notifyUIThreadStart();
-    Fixture.runInThread( runnable );
+    callDisplayWake();
     manager.notifyUIThreadEnd();
-    Thread.sleep( SLEEP_TIME );
+    callBackRequestSimulator.waitForRequest();
+    
+    assertFalse( callBackRequestSimulator.exceptionOccured() );
     assertFalse( manager.isCallBackRequestBlocked() );
   }
 
   public void testAsyncExecWhileLifeCycleIsRunning() {
-    fakeRequestParam( display );
+    fakeRequestParam();
     Fixture.fakePhase( PhaseId.READ_DATA );
-    simulateBackgroundAdditionDuringLifeCycle( display );
+    simulateAsyncExecDuringLifeCycle();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display.readAndDispatch();
-    assertEquals( 1, getDisplayAdapter().getAsyncRunnablesCount() );
+    assertTrue( manager.hasRunnables() );
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( RUN_ASYNC_EXEC, log );
     assertFalse( manager.isCallBackRequestBlocked() );
   }
 
-  public void testAsyncExecWithBackgroundAndLifeCycleRunnables() throws Exception {
+  public void testAsyncExecWithBackgroundAndLifeCycleRunnables() throws Throwable {
     // test unblocking in case of background addition of runnables
     simulateBackgroundAddition( ContextProvider.getContext() );
     // test runnables execution during lifecycle with interlocked additions
-    fakeRequestParam( display );
+    fakeRequestParam();
     Fixture.fakePhase( PhaseId.READ_DATA );
-    simulateBackgroundAdditionDuringLifeCycle( display );
+    simulateAsyncExecDuringLifeCycle();
     Fixture.executeLifeCycleFromServerThread();
     assertFalse( manager.isCallBackRequestBlocked() );
     assertEquals( RUN_ASYNC_EXEC + RUN_ASYNC_EXEC + RUN_ASYNC_EXEC, log );
   }
 
   public void testCallBackRequestBlocking() throws Exception {
-    final Throwable[] uiCallBackServiceHandlerThrowable = { null };
-    ServiceContext context = ContextProvider.getContext();
-    simulateUiCallBackThread( uiCallBackServiceHandlerThrowable, context );
-    assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
+    CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator();
+    callBackRequestSimulator.sendRequest();
+    assertFalse( callBackRequestSimulator.exceptionOccured() );
     assertTrue( manager.isCallBackRequestBlocked() );
   }
 
-  public void testCallBackRequestReleasing() throws Exception {
-    final Throwable[] uiCallBackServiceHandlerThrowable = { null };
+  public void testCallBackRequestReleasing() throws Throwable {
     ServiceContext context = ContextProvider.getContext();
-    Thread uiCallBackThread
-      = simulateUiCallBackThread( uiCallBackServiceHandlerThrowable, context );
+    CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator( context );
+    callBackRequestSimulator.sendRequest();
+    
     simulateBackgroundAddition( context );
+    callBackRequestSimulator.waitForRequest();
+    
     assertFalse( manager.isCallBackRequestBlocked() );
-    assertFalse( uiCallBackThread.isAlive() );
+    assertFalse( callBackRequestSimulator.isRequestRunning() );
     assertEquals( "", log );
   }
 
   public void testCallBackRequestIsReleasedOnSessionInvalidate() throws Exception {
-    Throwable[] uiCallBackHandlerThrowable = { null };
     ServiceContext context = ContextProvider.getContext();
-    Thread uiCallBackThread = simulateUiCallBackThread( uiCallBackHandlerThrowable, context );
-
+    CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator( context );
+    callBackRequestSimulator.sendRequest();
+    
     context.getSessionStore().getHttpSession().invalidate();
-    uiCallBackThread.join();
+    callBackRequestSimulator.waitForRequest();
 
     TestResponse response = ( TestResponse )context.getResponse();
     assertEquals( "", response.getContent().trim() );
     assertFalse( manager.isCallBackRequestBlocked() );
-    assertFalse( uiCallBackThread.isAlive() );
-    assertNull( uiCallBackHandlerThrowable[ 0 ] );
+    assertFalse( callBackRequestSimulator.isRequestRunning() );
+    assertFalse( callBackRequestSimulator.exceptionOccured() );
   }
 
   public void testCallBackRequestIsReleasedWhenSessionExpires() throws Exception {
@@ -233,25 +224,24 @@ public class UICallBackManager_Test extends TestCase {
   public void testMultipleCallBackRequests() throws Exception {
     manager.setRequestCheckInterval( 20 );
     ServiceContext context1 = ContextProvider.getContext();
-    Throwable[] uiCallBackHandlerThrowable1 = { null };
-    Thread uiCallBackThread1 = simulateUiCallBackThread( uiCallBackHandlerThrowable1, context1 );
-    ServiceContext context2 = createServiceContext( context1.getSessionStore().getHttpSession() );
-    Throwable[] uiCallBackHandlerThrowable2 = { null };
-    Thread uiCallBackThread2 = simulateUiCallBackThread( uiCallBackHandlerThrowable2, context2 );
-
-    Thread.sleep( SLEEP_TIME );
+    CallBackRequestSimulator callBackRequestSimulator1 = new CallBackRequestSimulator( context1 );
+    callBackRequestSimulator1.sendRequest();
+    ServiceContext context2 = createServiceContext( new TestResponse() );
+    CallBackRequestSimulator callBackRequestSimulator2 = new CallBackRequestSimulator( context2 );
+    
+    callBackRequestSimulator2.sendRequest();
+    callBackRequestSimulator1.waitForRequest();
 
     assertTrue( manager.isCallBackRequestBlocked() );
-    assertNull( uiCallBackHandlerThrowable1[ 0 ] );
-    assertNull( uiCallBackHandlerThrowable2[ 0 ] );
-    assertFalse( uiCallBackThread1.isAlive() );
+    assertFalse( callBackRequestSimulator1.exceptionOccured() );
+    assertFalse( callBackRequestSimulator2.exceptionOccured() );
+    assertFalse( callBackRequestSimulator1.isRequestRunning() );
     assertEquals( "", ( ( TestResponse )context1.getResponse() ).getContent().trim() );
-    assertTrue( uiCallBackThread2.isAlive() );
+    assertTrue( callBackRequestSimulator2.isRequestRunning() );
   }
 
   public void testCallBackRequestTerminatsWhenConnectionBreaks() throws Exception {
     manager.setRequestCheckInterval( 20 );
-    HttpSession httpSession = ContextProvider.getContext().getSessionStore().getHttpSession();
     TestResponse response = new TestResponse() {
       @Override
       public PrintWriter getWriter() throws IOException {
@@ -260,31 +250,32 @@ public class UICallBackManager_Test extends TestCase {
         return failingWriter;
       }
     };
-    ServiceContext context2 = createServiceContext( httpSession, response );
-    Throwable[] uiCallBackHandlerThrowable = { null };
-    Thread uiCallBackThread = simulateUiCallBackThread( uiCallBackHandlerThrowable, context2 );
-
+    ServiceContext context2 = createServiceContext( response );
+    CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator( context2 );
+    callBackRequestSimulator.sendRequest();
+    
     Thread.sleep( SLEEP_TIME );
 
     assertFalse( manager.isCallBackRequestBlocked() );
-    uiCallBackThread.join( 100 );
-    assertFalse( uiCallBackThread.isAlive() );
+    callBackRequestSimulator.waitForRequest();
+    assertFalse( callBackRequestSimulator.isRequestRunning() );
   }
 
-  public void testAsyncExec() throws InterruptedException {
+  public void testAsyncExec() throws Throwable {
     Throwable[] uiCallBackServiceHandlerThrowable = { null };
     ServiceContext context = ContextProvider.getContext();
     // test runnables addition while no uiCallBack thread is not blocked
-    Thread uiCallBackThread
-      = simulateUiCallBackThread( uiCallBackServiceHandlerThrowable, context );
+    CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator( context );
+    callBackRequestSimulator.sendRequest();
+    
     manager.notifyUIThreadEnd();
     simulateBackgroundAddition( context );
-    fakeRequestParam( display );
+    fakeRequestParam();
     Fixture.executeLifeCycleFromServerThread();
 
     assertNull( uiCallBackServiceHandlerThrowable[ 0 ] );
     assertFalse( manager.isCallBackRequestBlocked() );
-    assertFalse( uiCallBackThread.isAlive() );
+    assertFalse( callBackRequestSimulator.isRequestRunning() );
     assertEquals( RUN_ASYNC_EXEC + RUN_ASYNC_EXEC, log );
   }
 
@@ -333,34 +324,28 @@ public class UICallBackManager_Test extends TestCase {
   }
 
   public void testTimerExecFromBackgroundThread() throws Exception {
-    final Throwable[] exceptionInTimerExec = { null };
     Runnable runnable = new Runnable() {
       public void run() {
-        try {
-          display.timerExec( TIMER_EXEC_DELAY, EMPTY_RUNNABLE );
-        } catch( Throwable t ) {
-          exceptionInTimerExec[ 0 ] = t;
-        }
+        display.timerExec( TIMER_EXEC_DELAY, EMPTY_RUNNABLE );
       }
     };
-    Thread thread = new Thread( runnable );
-    thread.setDaemon( true );
-    thread.start();
-    thread.join();
-    assertNotNull( exceptionInTimerExec[ 0 ] );
-    assertTrue( exceptionInTimerExec[ 0 ] instanceof SWTException );
-    SWTException swtException = ( SWTException )exceptionInTimerExec[ 0 ];
+
+    Throwable exceptionInTimerExec = null;
+    try {
+      Fixture.runInThread( runnable );
+    } catch( Throwable thr ) {
+      exceptionInTimerExec = thr;
+    }
+    
+    assertTrue( exceptionInTimerExec instanceof SWTException );
+    SWTException swtException = ( SWTException )exceptionInTimerExec;
     assertEquals( swtException.code, SWT.ERROR_THREAD_INVALID_ACCESS );
   }
 
   // Ensure that runnables that were added via addTimer but should be executed
   // in the future are *not* executed on session shutdown
   public void testNoTimerExecAfterSessionShutdown() throws Exception {
-    Runnable runnable = new Runnable() {
-      public void run() {
-        log += RUN_TIMER_EXEC;
-      }
-    };
+    Runnable runnable = new TimerExecRunnable();
     display.timerExec( TIMER_EXEC_DELAY, runnable );
     display.dispose();
     Thread.sleep( SLEEP_TIME );
@@ -368,15 +353,11 @@ public class UICallBackManager_Test extends TestCase {
   }
 
   public void testRemoveAddedTimerExec() throws Exception {
-    Runnable runnable = new Runnable() {
-      public void run() {
-        log += RUN_TIMER_EXEC;
-      }
-    };
+    Runnable runnable = new TimerExecRunnable();
     display.timerExec( TIMER_EXEC_DELAY, runnable );
     display.timerExec( -1, runnable );
     Thread.sleep( SLEEP_TIME );
-    assertEquals( 0, getDisplayAdapter().getAsyncRunnablesCount() );
+    assertFalse( manager.hasRunnables() );
     assertEquals( "", log );
   }
 
@@ -394,8 +375,7 @@ public class UICallBackManager_Test extends TestCase {
       public void run() {
         ContextProvider.setContext( context );
         Fixture.fakeResponseWriter();
-        Runnable doNothing = new NoOpRunnable();
-        display.syncExec( doNothing );
+        display.syncExec( EMPTY_RUNNABLE );
       }
     };
     // simulate a lot "parallel" bg-threads to provoke multi-threading problems
@@ -419,8 +399,7 @@ public class UICallBackManager_Test extends TestCase {
       bgThread.join();
       display.readAndDispatch();
     }
-    IDisplayAdapter adapter = getDisplayAdapter();
-    assertEquals( 0, adapter.getAsyncRunnablesCount() );
+    assertFalse( manager.hasRunnables() );
   }
 
   // This test ensures that SyncRunnable releases the blocked thread in case of
@@ -455,23 +434,33 @@ public class UICallBackManager_Test extends TestCase {
     try {
       display.readAndDispatch();
       fail( "Exception from causeException-runnable must end up here" );
-    } catch( SWTException e ) {
-      // expected
+    } catch( SWTException expected ) {
     }
     Thread.sleep( SLEEP_TIME );
     assertNotNull( exceptionInBgThread[ 0 ] );
     assertFalse( bgThread.isAlive() );
   }
 
-  public void testMustBlock() {
+  public void testMustBlockCallBackRequest() {
     assertFalse( manager.mustBlockCallBackRequest() );
   }
 
-  public void testMustBlockWhenActive() {
+  public void testMustBlockCallBackRequestWhenActive() {
     manager.activateUICallBacksFor( "foo" );
     assertTrue( manager.mustBlockCallBackRequest() );
   }
+  
+  public void testMustBlockCallBackRequestWhenActiveAndRunnablesPending() {
+    manager.activateUICallBacksFor( "foo" );
+    manager.setHasRunnables( true );
+    assertFalse( manager.mustBlockCallBackRequest() );
+  }
 
+  public void testMustBlockCallBackRequestWhenDeactivatedAndRunnablesPending() {
+    manager.setHasRunnables( true );
+    assertFalse( manager.mustBlockCallBackRequest() );
+  }
+  
   public void testNeedActivationFromDifferentSession() throws Throwable {
     // test that on/off switching is managed in session scope
     manager.activateUICallBacksFor( ID_1 );
@@ -564,104 +553,114 @@ public class UICallBackManager_Test extends TestCase {
       fail();
     }
   }
-
-  private Thread simulateUiCallBackThread(
-    final Throwable[] uiCallBackServiceHandlerThrowable,
-    final ServiceContext context )
-    throws InterruptedException
-  {
-    Thread uiCallBackThread = new Thread( new Runnable() {
+  
+  private void simulateBackgroundAddition( final ServiceContext serviceContext ) throws Throwable {
+    Runnable runnable = new Runnable() {
       public void run() {
-        ContextProvider.setContext( context );
-        Fixture.fakeResponseWriter();
-        try {
-          manager.activateUICallBacksFor( "foo" );
-          uiCallBackServiceHandler.service();
-        } catch( Throwable thr ) {
-          uiCallBackServiceHandlerThrowable[ 0 ] = thr;
-        }
+        ContextProvider.setContext( serviceContext );
+        display.asyncExec( new AsyncExecRunnable() );
+        display.asyncExec( new AsyncExecRunnable() );
       }
-    } );
-    uiCallBackThread.start();
-    Thread.sleep( SLEEP_TIME );
-    return uiCallBackThread;
+    };
+    Fixture.runInThread( runnable );
   }
 
-  private void simulateBackgroundAddition( final ServiceContext context )
-    throws InterruptedException
-  {
-    Thread backgroundThread = new Thread( new Runnable() {
-      public void run() {
-        ContextProvider.setContext( context );
-        display.asyncExec( new Runnable() {
-          public void run() {
-            log += RUN_ASYNC_EXEC;
-          }
-        } );
-        display.asyncExec( new Runnable() {
-          public void run() {
-            log += RUN_ASYNC_EXEC;
-          }
-        } );
-      }
-    } );
-    backgroundThread.start();
-    Thread.sleep( SLEEP_TIME );
-  }
-
-  private static void simulateBackgroundAdditionDuringLifeCycle(
-    final Display display )
-  {
+  private void simulateAsyncExecDuringLifeCycle() {
     ProcessActionRunner.add( new Runnable() {
       public void run() {
-        Thread thread = new Thread( new Runnable() {
+        Runnable target = new Runnable() {
           public void run() {
-            UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
-              public void run() {
-                display.asyncExec( new Runnable() {
-                  public void run() {
-                    log += RUN_ASYNC_EXEC;
-                  }
-                } );
-              }
-            } );
+            display.asyncExec( new AsyncExecRunnable() );
           }
-        } );
-        thread.start();
+        };
         try {
-          thread.join();
-        } catch( InterruptedException e ) {
+          Fixture.runInThread( target );
+        } catch( Throwable e ) {
           e.printStackTrace();
         }
       }
     } );
   }
 
-  private static void fakeRequestParam( final Display display ) {
+  private void callDisplayWake() throws Throwable {
+    Runnable runnable = new Runnable() {
+      public void run() {
+        display.wake();
+      }
+    };
+    Fixture.runInThread( runnable );
+  }
+
+  private void fakeRequestParam() {
     Fixture.fakeResponseWriter();
-    String id = "org.eclipse.swt.display";
-    ContextProvider.getSession().setAttribute( id, display );
+    ContextProvider.getSession().setAttribute( "org.eclipse.swt.display", display );
     String displayId = DisplayUtil.getAdapter( display ).getId();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
   }
 
-  private IDisplayAdapter getDisplayAdapter() {
-    return ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
-  }
-
-  private ServiceContext createServiceContext( HttpSession httpSession ) throws IOException {
-    return createServiceContext( httpSession, new TestResponse() );
-  }
-
-  private static ServiceContext createServiceContext( HttpSession session, TestResponse response )
-    throws IOException
-  {
+  private static ServiceContext createServiceContext( TestResponse response ) throws IOException {
+    HttpSession httpSession = ContextProvider.getContext().getSessionStore().getHttpSession();
     TestRequest request = new TestRequest();
-    request.setSession( session );
+    request.setSession( httpSession );
     ServiceContext result = new ServiceContext( request, response );
     ServiceStateInfo stateInfo = new ServiceStateInfo();
     result.setStateInfo( stateInfo );
     stateInfo.setResponseWriter( new JavaScriptResponseWriter( response ) );
     return result;
+  }
+
+  private class TimerExecRunnable implements Runnable {
+    public void run() {
+      log += RUN_TIMER_EXEC;
+    }
+  }
+
+  private class AsyncExecRunnable implements Runnable {
+    public void run() {
+      log += RUN_ASYNC_EXEC;
+    }
+  }
+
+  private class CallBackRequestSimulator {
+    private final ServiceContext serviceContext;
+    private volatile Thread requestThread;
+    private volatile Throwable exception;
+    
+    CallBackRequestSimulator() {
+      this.serviceContext = ContextProvider.getContext();
+    }
+    
+    CallBackRequestSimulator( ServiceContext serviceContext ) {
+      this.serviceContext = serviceContext;
+    }
+    
+    void sendRequest() throws InterruptedException {
+      requestThread = new Thread( new Runnable() {
+        public void run() {
+          ContextProvider.setContext( serviceContext );
+          Fixture.fakeResponseWriter();
+          try {
+            manager.activateUICallBacksFor( "foo" );
+            uiCallBackServiceHandler.service();
+          } catch( Throwable thr ) {
+            exception = thr;
+          }
+        }
+      } );
+      requestThread.start();
+      Thread.sleep( SLEEP_TIME );
+    }
+    
+    void waitForRequest() throws InterruptedException {
+      requestThread.join();
+    }
+    
+    boolean isRequestRunning() {
+      return requestThread.isAlive();
+    }
+    
+    boolean exceptionOccured() {
+      return exception != null;
+    }
   }
 }

@@ -33,7 +33,6 @@ public interface IDisplayAdapter {
   ISessionStore getSessionStore();
   IFilterEntry[] getFilters();
   
-  int getAsyncRunnablesCount();
   void attachThread();
   void detachThread();
   boolean isValidThread();

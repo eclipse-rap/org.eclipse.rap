@@ -2407,10 +2407,6 @@ public class Display extends Device implements Adaptable {
       return getFilterEntries();
     }
 
-    public int getAsyncRunnablesCount() {
-      return Display.this.synchronizer.getMessageCount();
-    }
-
     public void attachThread() {
       Display.this.attachThread();
     }
