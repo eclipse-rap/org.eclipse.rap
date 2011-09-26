@@ -34,7 +34,8 @@
     <module>runtime-feature</module>
     <module>runtime.requirements-feature</module>
     <module>runtime-repository</module>
-    <module>runtime-repository/runtime.sdk-feature</module>
+    <module>runtime-repository-compatibility</module>
+    <module>runtime-repository-compatibility/runtime.sdk-feature</module>
   </modules>
 
   <!-- repositories to get pre-built pieces from -->
