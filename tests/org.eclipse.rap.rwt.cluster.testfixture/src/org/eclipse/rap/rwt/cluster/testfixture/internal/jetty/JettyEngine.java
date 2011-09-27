@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,7 +82,7 @@ public class JettyEngine implements IServletEngine {
     this.server.setGracefulShutdown( 2000 );
     this.contextHandlers = new ContextHandlerCollection();
     this.server.setHandler( contextHandlers );
-    this.sessions = new HashMap<String,HttpSession>();
+    this.sessions = Collections.synchronizedMap( new HashMap<String,HttpSession>() );
   }
   
   public void start( Class<? extends IEntryPoint> entryPointClass ) throws Exception {
@@ -108,7 +110,8 @@ public class JettyEngine implements IServletEngine {
   }
 
   public HttpSession[] getSessions() {
-    return sessions.values().toArray( new HttpSession[ sessions.size() ] );
+    Collection<HttpSession> values = sessions.values();
+    return values.toArray( new HttpSession[ values.size() ] );
   }
 
   private void createSessionManager() {
