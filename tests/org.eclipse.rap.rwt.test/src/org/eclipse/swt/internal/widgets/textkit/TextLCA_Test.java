@@ -330,24 +330,6 @@ public class TextLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
-  public void testPreserveModifyListener() {
-    Fixture.markInitialized( display );
-    Text text = new Text( shell, SWT.SINGLE );
-    text.addModifyListener( createModifyListener() );
-    Fixture.preserveWidgets();
-    Object preserved = getPreserved( text, TextLCAUtil.PROP_MODIFY_LISTENER );
-    assertEquals( Boolean.TRUE, preserved );
-  }
-
-  public void testPreserveModifyListenerWhenReadOnly() {
-    Fixture.markInitialized( display );
-    Text text = new Text( shell, SWT.READ_ONLY );
-    text.addModifyListener( createModifyListener() );
-    Fixture.preserveWidgets();
-    Object preserved = getPreserved( text, TextLCAUtil.PROP_MODIFY_LISTENER );
-    assertEquals( Boolean.TRUE, preserved );
-  }
-
   public void testWriteModifyListenerWhenReadOnly() throws IOException {
     Text text = new Text( shell, SWT.READ_ONLY );
     text.addModifyListener( createModifyListener() );

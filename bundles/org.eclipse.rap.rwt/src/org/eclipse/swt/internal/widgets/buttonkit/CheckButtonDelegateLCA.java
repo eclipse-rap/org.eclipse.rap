@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Button;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 
@@ -24,8 +25,7 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
 
   void preserveValues( Button button ) {
     ButtonLCAUtil.preserveValues( button );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    adapter.preserve( PROP_GRAYED, Boolean.valueOf( button.getGrayed() ) );
+    preserveProperty( button, PROP_GRAYED, Boolean.valueOf( button.getGrayed() ) );
   }
 
   void readData( Button button ) {

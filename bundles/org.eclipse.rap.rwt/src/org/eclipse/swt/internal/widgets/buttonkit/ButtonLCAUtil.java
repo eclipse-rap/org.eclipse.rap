@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Button;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
@@ -48,11 +49,10 @@ final class ButtonLCAUtil {
   static void preserveValues( Button button ) {
     ControlLCAUtil.preserveValues( button );
     WidgetLCAUtil.preserveCustomVariant( button );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    adapter.preserve( PROP_TEXT, button.getText() );
-    adapter.preserve( PROP_IMAGE, button.getImage() );
-    adapter.preserve( PROP_SELECTION, Boolean.valueOf( button.getSelection() ) );
-    adapter.preserve( PROP_ALIGNMENT, new Integer( button.getAlignment() ) );
+    preserveProperty( button, PROP_TEXT, button.getText() );
+    preserveProperty( button, PROP_IMAGE, button.getImage() );
+    preserveProperty( button, PROP_SELECTION, Boolean.valueOf( button.getSelection() ) );
+    preserveProperty( button, PROP_ALIGNMENT, new Integer( button.getAlignment() ) );
     preserveListener( button, PROP_SELECTION_LISTENERS, SelectionEvent.hasListener( button ) );
   }
 

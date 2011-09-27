@@ -29,6 +29,7 @@ import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Widget;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
@@ -43,8 +44,7 @@ public class LinkLCA extends AbstractWidgetLCA {
     Link link = ( Link )widget;
     ControlLCAUtil.preserveValues( link );
     WidgetLCAUtil.preserveCustomVariant( link );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( link );
-    adapter.preserve( PROP_TEXT, link.getText() );
+    preserveProperty( link, PROP_TEXT, link.getText() );
     preserveListener( link, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( link ) );
   }
 

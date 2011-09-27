@@ -19,6 +19,7 @@ import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.*;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
@@ -47,12 +48,11 @@ public final class ScaleLCA extends AbstractWidgetLCA {
     Scale scale = ( Scale )widget;
     ControlLCAUtil.preserveValues( scale );
     WidgetLCAUtil.preserveCustomVariant( scale );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( scale );
-    adapter.preserve( PROP_MINIMUM, new Integer( scale.getMinimum() ) );
-    adapter.preserve( PROP_MAXIMUM, new Integer( scale.getMaximum() ) );
-    adapter.preserve( PROP_SELECTION, new Integer( scale.getSelection() ) );
-    adapter.preserve( PROP_INCREMENT, new Integer( scale.getIncrement() ) );
-    adapter.preserve( PROP_PAGE_INCREMENT, new Integer( scale.getPageIncrement() ) );
+    preserveProperty( scale, PROP_MINIMUM, new Integer( scale.getMinimum() ) );
+    preserveProperty( scale, PROP_MAXIMUM, new Integer( scale.getMaximum() ) );
+    preserveProperty( scale, PROP_SELECTION, new Integer( scale.getSelection() ) );
+    preserveProperty( scale, PROP_INCREMENT, new Integer( scale.getIncrement() ) );
+    preserveProperty( scale, PROP_PAGE_INCREMENT, new Integer( scale.getPageIncrement() ) );
     preserveListener( scale, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( scale ) );
   }
 

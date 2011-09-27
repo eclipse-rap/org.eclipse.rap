@@ -18,6 +18,7 @@ import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 
@@ -40,11 +41,10 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     ProgressBar progressBar = ( ProgressBar )widget;
     ControlLCAUtil.preserveValues( progressBar );
     WidgetLCAUtil.preserveCustomVariant( progressBar );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( progressBar );
-    adapter.preserve( PROP_MINIMUM, new Integer( progressBar.getMinimum() ) );
-    adapter.preserve( PROP_MAXIMUM, new Integer( progressBar.getMaximum() ) );
-    adapter.preserve( PROP_SELECTION, new Integer( progressBar.getSelection() ) );
-    adapter.preserve( PROP_STATE, getState( progressBar ) );
+    preserveProperty( progressBar, PROP_MINIMUM, new Integer( progressBar.getMinimum() ) );
+    preserveProperty( progressBar, PROP_MAXIMUM, new Integer( progressBar.getMaximum() ) );
+    preserveProperty( progressBar, PROP_SELECTION, new Integer( progressBar.getSelection() ) );
+    preserveProperty( progressBar, PROP_STATE, getState( progressBar ) );
   }
 
   public void readData( Widget widget ) {

@@ -20,6 +20,7 @@ import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.*;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
@@ -50,13 +51,12 @@ public class SliderLCA extends AbstractWidgetLCA {
     Slider slider = ( Slider )widget;
     ControlLCAUtil.preserveValues( slider );
     WidgetLCAUtil.preserveCustomVariant( slider );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( slider );
-    adapter.preserve( PROP_MINIMUM, new Integer( slider.getMinimum() ) );
-    adapter.preserve( PROP_MAXIMUM, new Integer( slider.getMaximum() ) );
-    adapter.preserve( PROP_SELECTION, new Integer( slider.getSelection() ) );
-    adapter.preserve( PROP_INCREMENT, new Integer( slider.getIncrement() ) );
-    adapter.preserve( PROP_PAGE_INCREMENT, new Integer( slider.getPageIncrement() ) );
-    adapter.preserve( PROP_THUMB, new Integer( slider.getThumb() ) );
+    preserveProperty( slider, PROP_MINIMUM, new Integer( slider.getMinimum() ) );
+    preserveProperty( slider, PROP_MAXIMUM, new Integer( slider.getMaximum() ) );
+    preserveProperty( slider, PROP_SELECTION, new Integer( slider.getSelection() ) );
+    preserveProperty( slider, PROP_INCREMENT, new Integer( slider.getIncrement() ) );
+    preserveProperty( slider, PROP_PAGE_INCREMENT, new Integer( slider.getPageIncrement() ) );
+    preserveProperty( slider, PROP_THUMB, new Integer( slider.getThumb() ) );
     preserveListener( slider, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( slider ) );
   }
 

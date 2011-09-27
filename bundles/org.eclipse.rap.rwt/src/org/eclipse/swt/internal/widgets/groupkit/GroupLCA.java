@@ -19,6 +19,7 @@ import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Widget;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 
@@ -32,8 +33,7 @@ public class GroupLCA extends AbstractWidgetLCA {
     Group group = ( Group )widget;
     ControlLCAUtil.preserveValues( group );
     WidgetLCAUtil.preserveCustomVariant( group );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( group );
-    adapter.preserve( PROP_TEXT, group.getText() );
+    preserveProperty( group, PROP_TEXT, group.getText() );
   }
 
   public void readData( Widget widget ) {

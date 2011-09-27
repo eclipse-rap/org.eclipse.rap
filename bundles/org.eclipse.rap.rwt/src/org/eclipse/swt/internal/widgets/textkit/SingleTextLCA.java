@@ -44,9 +44,4 @@ final class SingleTextLCA extends AbstractTextDelegateLCA {
     TextLCAUtil.renderChanges( text );
   }
 
-  ///////////////////////////////////////////
-  // Helping methods to write JavaScript code
-
-
-
 }

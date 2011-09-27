@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 
 
 public final class ShellLCA extends AbstractWidgetLCA {
@@ -44,22 +45,22 @@ public final class ShellLCA extends AbstractWidgetLCA {
   private static final String PROP_DEFAULT_BUTTON = "defaultButton";
 
   @Override
-  public void preserveValues( final Widget widget ) {
-    ControlLCAUtil.preserveValues( ( Control )widget );
+  public void preserveValues( Widget widget ) {
     Shell shell = ( Shell )widget;
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
-    adapter.preserve( PROP_ACTIVE_CONTROL, getActiveControl( shell ) );
-    adapter.preserve( PROP_ACTIVE_SHELL, shell.getDisplay().getActiveShell() );
-    adapter.preserve( PROP_TEXT, shell.getText() );
-    adapter.preserve( PROP_IMAGE, shell.getImage() );
-    adapter.preserve( PROP_ALPHA, new Integer( shell.getAlpha() ) );
-    adapter.preserve( PROP_MODE, getMode( shell ) );
-    adapter.preserve( PROP_FULLSCREEN, Boolean.valueOf( shell.getFullScreen() ) );
-    adapter.preserve( PROP_SHELL_LISTENER, Boolean.valueOf( ShellEvent.hasListener( shell ) ) );
-    adapter.preserve( PROP_SHELL_MENU, shell.getMenuBar() );
-    adapter.preserve( PROP_MINIMUM_SIZE, shell.getMinimumSize() );
-    adapter.preserve( PROP_DEFAULT_BUTTON, shell.getDefaultButton() );
+    ControlLCAUtil.preserveValues( shell );
     WidgetLCAUtil.preserveCustomVariant( shell );
+    preserveProperty( shell, PROP_ACTIVE_CONTROL, getActiveControl( shell ) );
+    preserveProperty( shell, PROP_ACTIVE_SHELL, shell.getDisplay().getActiveShell() );
+    preserveProperty( shell, PROP_TEXT, shell.getText() );
+    preserveProperty( shell, PROP_IMAGE, shell.getImage() );
+    preserveProperty( shell, PROP_ALPHA, new Integer( shell.getAlpha() ) );
+    preserveProperty( shell, PROP_MODE, getMode( shell ) );
+    preserveProperty( shell, PROP_FULLSCREEN, Boolean.valueOf( shell.getFullScreen() ) );
+    preserveProperty( shell, PROP_SHELL_MENU, shell.getMenuBar() );
+    preserveProperty( shell, PROP_MINIMUM_SIZE, shell.getMinimumSize() );
+    preserveProperty( shell, PROP_DEFAULT_BUTTON, shell.getDefaultButton() );
+    Boolean hasListener = Boolean.valueOf( ShellEvent.hasListener( shell ) );
+    preserveProperty( shell, PROP_SHELL_LISTENER, hasListener );
   }
 
   public void readData( Widget widget ) {
@@ -112,7 +113,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   }
 
   @Override
-  public void renderDispose( final Widget widget ) throws IOException {
+  public void renderDispose( Widget widget ) throws IOException {
     IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
     clientObject.destroy();
   }
@@ -226,7 +227,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     return activeControl;
   }
 
-  private static void setActiveControl( Shell shell, final Widget widget ) {
+  private static void setActiveControl( Shell shell, Widget widget ) {
     if( EventUtil.isAccessible( widget ) ) {
       Object adapter = shell.getAdapter( IShellAdapter.class );
       IShellAdapter shellAdapter = ( IShellAdapter )adapter;
@@ -282,9 +283,9 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   private static void renderListenShell( Shell shell ) {
     // Note that a "shell" listener also implies an "activate" listener, but "shellActivated"
-    // events are sent by the client in any case. "Shell_close" events are also always being sent,    
+    // events are sent by the client in any case. "Shell_close" events are also always being sent,
     // but with a listener the shell is not closed by the client itself but by the server.
-    // Also, the "shellActivated" events are different from the "activeControl" property and 
+    // Also, the "shellActivated" events are different from the "activeControl" property and
     // "controlActivated" event also sent by the shell and processed in ShellLCA#processActivate.
     // The listener property for this event is rendered by ControlLCAUtil#renderActivateListener
     Boolean newValue = Boolean.valueOf( ShellEvent.hasListener( shell ) );

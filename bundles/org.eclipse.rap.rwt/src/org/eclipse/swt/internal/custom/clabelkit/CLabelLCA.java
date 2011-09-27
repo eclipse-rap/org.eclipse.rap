@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Widget;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 public final class CLabelLCA extends AbstractWidgetLCA {
@@ -43,14 +44,13 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     CLabel label = ( CLabel )widget;
     ControlLCAUtil.preserveValues( label );
     WidgetLCAUtil.preserveCustomVariant( label );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( label );
-    adapter.preserve( PROP_TEXT, label.getText() );
-    adapter.preserve( PROP_IMAGE, label.getImage() );
-    adapter.preserve( PROP_ALIGNMENT, getAlignment( label ) );
-    adapter.preserve( PROP_LEFT_MARGIN, new Integer( label.getLeftMargin() ) );
-    adapter.preserve( PROP_TOP_MARGIN, new Integer( label.getTopMargin() ) );
-    adapter.preserve( PROP_RIGHT_MARGIN, new Integer( label.getRightMargin() ) );
-    adapter.preserve( PROP_BOTTOM_MARGIN, new Integer( label.getBottomMargin() ) );
+    preserveProperty( label, PROP_TEXT, label.getText() );
+    preserveProperty( label, PROP_IMAGE, label.getImage() );
+    preserveProperty( label, PROP_ALIGNMENT, getAlignment( label ) );
+    preserveProperty( label, PROP_LEFT_MARGIN, new Integer( label.getLeftMargin() ) );
+    preserveProperty( label, PROP_TOP_MARGIN, new Integer( label.getTopMargin() ) );
+    preserveProperty( label, PROP_RIGHT_MARGIN, new Integer( label.getRightMargin() ) );
+    preserveProperty( label, PROP_BOTTOM_MARGIN, new Integer( label.getBottomMargin() ) );
     WidgetLCAUtil.preserveBackgroundGradient( label );
   }
 

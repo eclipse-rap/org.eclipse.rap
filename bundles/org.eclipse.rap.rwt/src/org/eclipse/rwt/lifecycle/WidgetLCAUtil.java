@@ -95,6 +95,20 @@ public final class WidgetLCAUtil {
   // Methods to preserve common property values
 
   /**
+   * Preserves the value of the property of the specified widget.
+   *
+   * @param widget the widget whose property to preserve
+   * @param property the name of the property
+   * @param value the value to preserve
+   *
+   * @since 1.5
+   */
+  public static void preserveProperty( Widget widget, String property, Object value ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( property, value );
+  }
+
+  /**
    * Preserves the value of the listener of the specified widget.
    *
    * @param widget the widget whose listener to preserve

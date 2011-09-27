@@ -21,20 +21,25 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.eclipse.swt.widgets.*;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
 
 final class TextLCAUtil {
 
   private static final String TYPE = "rwt.widgets.Text";
+
   static final String PROP_TEXT = "text";
   static final String PROP_TEXT_LIMIT = "textLimit";
   static final String PROP_SELECTION = "selection";
   static final String PROP_EDITABLE = "editable";
   static final String PROP_ECHO_CHAR = "echoChar";
   static final String PROP_MESSAGE = "message";
-  static final String PROP_MODIFY_LISTENER = "modifyListener";
-  static final String PROP_VERIFY_LISTENER = "verifyListener";
-  static final String PROP_SELECTION_LISTENER = "selectionListener";
+  static final String PROP_MODIFY_LISTENER = "modify";
+  static final String PROP_VERIFY_LISTENER = "verify";
+  static final String PROP_SELECTION_LISTENER = "selection";
 
   private static final Point DEFAULT_SELECTION = new Point( 0, 0 );
 
@@ -44,20 +49,16 @@ final class TextLCAUtil {
 
   static void preserveValues( Text text ) {
     ControlLCAUtil.preserveValues( text );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
-    adapter.preserve( PROP_TEXT, text.getText() );
-    adapter.preserve( PROP_SELECTION, text.getSelection() );
-    adapter.preserve( PROP_TEXT_LIMIT, getTextLimit( text ) );
-    adapter.preserve( PROP_EDITABLE, Boolean.valueOf( text.getEditable() ) );
-    adapter.preserve( PROP_ECHO_CHAR, getEchoChar( text ) );
-    adapter.preserve( PROP_MESSAGE, text.getMessage() );
-    adapter.preserve( PROP_MODIFY_LISTENER,
-                      Boolean.valueOf( ModifyEvent.hasListener( text ) ) );
-    adapter.preserve( PROP_VERIFY_LISTENER,
-                      Boolean.valueOf( VerifyEvent.hasListener( text ) ) );
-    adapter.preserve( PROP_SELECTION_LISTENER,
-                      Boolean.valueOf( SelectionEvent.hasListener( text ) ) );
     WidgetLCAUtil.preserveCustomVariant( text );
+    preserveProperty( text, PROP_TEXT, text.getText() );
+    preserveProperty( text, PROP_SELECTION, text.getSelection() );
+    preserveProperty( text, PROP_TEXT_LIMIT, getTextLimit( text ) );
+    preserveProperty( text, PROP_EDITABLE, Boolean.valueOf( text.getEditable() ) );
+    preserveProperty( text, PROP_ECHO_CHAR, getEchoChar( text ) );
+    preserveProperty( text, PROP_MESSAGE, text.getMessage() );
+    preserveListener( text, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( text ) );
+    preserveListener( text, PROP_VERIFY_LISTENER, VerifyEvent.hasListener( text ) );
+    preserveListener( text, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( text ) );
   }
 
   static void renderInitialization( Text text ) {
@@ -163,45 +164,19 @@ final class TextLCAUtil {
   }
 
   static void renderListenSelection( Text text ) {
-    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( text ) );
-    if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION_LISTENER, newValue, Boolean.FALSE ) ) {
-      renderListen( text, "selection", newValue.booleanValue() );
-    }
+    renderListener( text, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( text ), false );
   }
 
   private static void renderListenModify( Text text ) {
-    Boolean newValue = Boolean.valueOf( ModifyEvent.hasListener( text ) );
-    if( WidgetLCAUtil.hasChanged( text, PROP_MODIFY_LISTENER, newValue, Boolean.FALSE ) ) {
-      renderListen( text, "modify", newValue.booleanValue() );
-    }
+    renderListener( text, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( text ), false );
   }
 
   private static void renderListenVerify( Text text ) {
-    Boolean newValue = Boolean.valueOf( VerifyEvent.hasListener( text ) );
-    if( WidgetLCAUtil.hasChanged( text, PROP_VERIFY_LISTENER, newValue, Boolean.FALSE ) ) {
-      renderListen( text, "verify", newValue.booleanValue() );
-    }
+    renderListener( text, PROP_VERIFY_LISTENER, VerifyEvent.hasListener( text ), false );
   }
 
   //////////////////
   // Helping methods
-
-  private static void renderProperty( Text text, String property, Object newValue, Object defValue )
-  {
-    if( WidgetLCAUtil.hasChanged( text, property, newValue, defValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
-      clientObject.setProperty( property, newValue );
-    }
-  }
-
-  private static void renderListen( Text text, String eventType, boolean hasListener ) {
-    IClientObject clientObject = ClientObjectFactory.getForWidget( text );
-    if( hasListener ) {
-      clientObject.addListener( eventType );
-    } else {
-      clientObject.removeListener( eventType );
-    }
-  }
 
   private static Integer getTextLimit( Text text ) {
     Integer result = null;

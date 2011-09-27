@@ -21,6 +21,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Label;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 final class StandardLabelLCA extends AbstractLabelLCADelegate {
@@ -36,10 +37,9 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
   void preserveValues( Label label ) {
     ControlLCAUtil.preserveValues( label );
     WidgetLCAUtil.preserveCustomVariant( label );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( label );
-    adapter.preserve( PROP_TEXT, label.getText() );
-    adapter.preserve( PROP_IMAGE, label.getImage() );
-    adapter.preserve( PROP_ALIGNMENT, getAlignment( label ) );
+    preserveProperty( label, PROP_TEXT, label.getText() );
+    preserveProperty( label, PROP_IMAGE, label.getImage() );
+    preserveProperty( label, PROP_ALIGNMENT, getAlignment( label ) );
   }
 
   void readData( Label label ) {
