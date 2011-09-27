@@ -304,7 +304,17 @@ qx.Class.define("qx.ui.form.TextField",
         // Apply properties
         inp.disabled = this.getEnabled()===false;
         inp.readOnly = this.getReadOnly();
-        inp.value = this.getValue() != null ? this.getValue().toString() : "";
+        if( org.eclipse.rwt.Client.isMshtml() ) {
+          if( this.getValue() != null && this.getValue() != "" ) {
+            inp.value = this.getValue();
+          } else {
+          // See Bug 243557 - [Text] Pasting text from clipboard does not trigger ModifyListener
+            inp.value = " ";
+          }
+        } else {
+          inp.value = this.getValue() != null ? this.getValue().toString() : "";
+        }
+        
 
         if (this.getMaxLength() != null) {
           inp.maxLength = this.getMaxLength();
@@ -822,18 +832,17 @@ qx.Class.define("qx.ui.form.TextField",
      * @type member
      * @signature function()
      */
-    _ieFirstInputFix : qx.core.Variant.select("qx.client",
-    {
-      "mshtml" : function()
-      {
-        this._inValueProperty = true;
-        this._inputElement.value = this.getValue() === null ? "" : this.getValue().toString();
-        this._firstInputFixApplied = true;
-        delete this._inValueProperty;
+    _ieFirstInputFix : qx.core.Variant.select("qx.client", {
+      "mshtml" : function() {
+        if( !this.isDisposed() ) {
+          this._inValueProperty = true;
+          this._inputElement.value = this.getValue() === null ? "" : this.getValue().toString();
+          this._firstInputFixApplied = true;
+          delete this._inValueProperty;
+        }
       },
-
       "default" : null
-    }),
+    } ),
 
 
     /**

@@ -717,6 +717,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       composite.destroy();      
     },
 
+    testFirstInputIE : qx.core.Variant.select( "qx.client", {
+      "default" : function() {},
+      "mshtml" : function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        testUtil.prepareTimerUse();
+        var text = new org.eclipse.rwt.widgets.Text( true );
+        org.eclipse.swt.TextUtil.initialize( text );
+        text.addToDocument();
+        testUtil.flush();
+        assertEquals( " ", text._inputElement.value );
+        testUtil.forceTimerOnce();
+        assertEquals( "", text._inputElement.value );          
+        text.destroy();
+      }
+    } ),
+    
     _protocolListen : function( target, properties ) {
       var processor = org.eclipse.rwt.protocol.Processor;
       processor.processOperation( {
