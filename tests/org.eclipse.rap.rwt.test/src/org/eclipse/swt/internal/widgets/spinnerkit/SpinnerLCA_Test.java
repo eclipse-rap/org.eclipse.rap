@@ -55,7 +55,6 @@ public class SpinnerLCA_Test extends TestCase {
 
   public void testPreserveValues() {
     Spinner spinner = new Spinner( shell, SWT.NONE );
-    Boolean hasListeners;
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( spinner );
@@ -73,10 +72,6 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), pageIncrement );
     Object textLimit = adapter.getPreserved( SpinnerLCA.PROP_TEXT_LIMIT );
     assertNull( textLimit );
-    hasListeners = ( Boolean )adapter.getPreserved( SpinnerLCA.PROP_MODIFY_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    hasListeners = ( Boolean )adapter.getPreserved( SpinnerLCA.PROP_SELECTION_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
     spinner.setSelection( 5 );
     spinner.setMinimum( 3 );
@@ -106,10 +101,6 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( new Integer( 2 ), increment );
     assertEquals( new Integer( 9 ), pageIncrement );
     assertEquals( new Integer( 10 ), textLimit );
-    hasListeners = ( Boolean )adapter.getPreserved( SpinnerLCA.PROP_MODIFY_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
-    hasListeners = ( Boolean )adapter.getPreserved( SpinnerLCA.PROP_SELECTION_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
     // control: enabled
     Fixture.preserveWidgets();
@@ -156,7 +147,7 @@ public class SpinnerLCA_Test extends TestCase {
     // control_listeners
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
+    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
     spinner.addControlListener( new ControlAdapter() {} );
@@ -630,6 +621,20 @@ public class SpinnerLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( spinner, "selection" ) );
   }
 
+  public void testRenderSelectionListenerUnchanged() throws Exception {
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( spinner );
+    Fixture.preserveWidgets();
+
+    spinner.addSelectionListener( new SelectionAdapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( spinner );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( spinner, "selection" ) );
+  }
+
   public void testRenderAddModifyListener() throws Exception {
     Spinner spinner = new Spinner( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -662,5 +667,22 @@ public class SpinnerLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( spinner, "modify" ) );
+  }
+
+  public void testRenderModifyListenerUnchanged() throws Exception {
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( spinner );
+    Fixture.preserveWidgets();
+
+    spinner.addModifyListener( new ModifyListener() {
+      public void modifyText( ModifyEvent event ) {
+      }
+    } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( spinner );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( spinner, "modify" ) );
   }
 }

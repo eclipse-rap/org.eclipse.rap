@@ -69,10 +69,7 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( new Integer( Text.LIMIT ), adapter.getPreserved( CComboLCA.PROP_TEXT_LIMIT ) );
     assertEquals( new Point( 0, 0 ), adapter.getPreserved( CComboLCA.PROP_SELECTION ) );
     assertEquals( Boolean.FALSE, adapter.getPreserved( CComboLCA.PROP_LIST_VISIBLE ) );
-    Boolean hasListeners;
-    hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
     assertEquals( Boolean.FALSE, adapter.getPreserved( CComboLCA.PROP_EDITABLE ) );
-    assertEquals( Boolean.FALSE, hasListeners );
     // Test preserving CCombo with items, where one is selected
     Fixture.clearPreserved();
     ccombo.add( "item 1" );
@@ -99,15 +96,11 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( "item 2", adapter.getPreserved( Props.TEXT ) );
     assertEquals( new Integer( 10 ), adapter.getPreserved( CComboLCA.PROP_TEXT_LIMIT ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( CComboLCA.PROP_LIST_VISIBLE ) );
-    hasListeners = ( Boolean )adapter.getPreserved( CComboLCA.PROP_SELECTION_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
     assertEquals( Boolean.FALSE, adapter.getPreserved( CComboLCA.PROP_EDITABLE ) );
-    hasListeners = ( Boolean )adapter.getPreserved( CComboLCA.PROP_MODIFY_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
     // control_listeners
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( ccombo );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
+    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
     ccombo.addControlListener( new ControlAdapter() {} );
@@ -787,6 +780,20 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( ccombo, "selection" ) );
   }
 
+  public void testRenderSelectionListenerUnchanged() throws Exception {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+    Fixture.preserveWidgets();
+
+    ccombo.addSelectionListener( new SelectionAdapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( ccombo, "selection" ) );
+  }
+
   public void testRenderAddModifyListener() throws Exception {
     CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -821,6 +828,23 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( ccombo, "modify" ) );
   }
 
+  public void testRenderModifyListenerUnchanged() throws Exception {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+    Fixture.preserveWidgets();
+
+    ccombo.addModifyListener( new ModifyListener() {
+      public void modifyText( ModifyEvent event ) {
+      }
+    } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( ccombo, "modify" ) );
+  }
+
   public void testRenderAddVerifyListener() throws Exception {
     CCombo ccombo = new CCombo( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -853,5 +877,22 @@ public class CComboLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( ccombo, "verify" ) );
+  }
+
+  public void testRenderVerifyListenerUnchanged() throws Exception {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( ccombo );
+    Fixture.preserveWidgets();
+
+    ccombo.addVerifyListener( new VerifyListener() {
+      public void verifyText( VerifyEvent event ) {
+      }
+    } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( ccombo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( ccombo, "verify" ) );
   }
 }

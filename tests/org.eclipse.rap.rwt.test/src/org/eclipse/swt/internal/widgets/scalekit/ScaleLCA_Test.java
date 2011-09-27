@@ -68,8 +68,6 @@ public class ScaleLCA_Test extends TestCase {
     Fixture.clearPreserved();
     // Test preserved control properties
     testPreserveControlProperties( scale );
-    // Test preserved selection listeners
-    testPreserveSelectionListener( scale );
   }
 
   public void testSelectionEvent() {
@@ -131,22 +129,6 @@ public class ScaleLCA_Test extends TestCase {
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( Props.FOREGROUND ) );
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
-    Fixture.clearPreserved();
-  }
-
-  private void testPreserveSelectionListener( Scale scale ) {
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( scale );
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( ScaleLCA.PROP_SELECTION_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    SelectionListener selectionListener = new SelectionAdapter() {
-    };
-    scale.addSelectionListener( selectionListener );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( scale );
-    hasListeners = ( Boolean )adapter.getPreserved( ScaleLCA.PROP_SELECTION_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
   }
 
@@ -394,5 +376,19 @@ public class ScaleLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( scale, "selection" ) );
+  }
+
+  public void testRenderSelectionListenerUnchanged() throws Exception {
+    Scale scale = new Scale( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( scale );
+    Fixture.preserveWidgets();
+
+    scale.addSelectionListener( new SelectionAdapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( scale );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( scale, "selection" ) );
   }
 }

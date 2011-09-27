@@ -67,9 +67,7 @@ public class ComboLCA_Test extends TestCase {
                   adapter.getPreserved( ComboLCA.PROP_TEXT_LIMIT ) );
     Object visibleItemCount = adapter.getPreserved( ComboLCA.PROP_VISIBLE_ITEM_COUNT );
     assertEquals( new Integer( combo.getVisibleItemCount() ), visibleItemCount );
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( ComboLCA.PROP_SELECTION_LISTENER );
     assertEquals( Boolean.FALSE, adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
-    assertEquals( Boolean.FALSE, hasListeners );
     assertEquals( new Point( 0, 0 ),
                   adapter.getPreserved( ComboLCA.PROP_SELECTION ) );
     // Test preserving combo with items were one is selected
@@ -95,15 +93,11 @@ public class ComboLCA_Test extends TestCase {
     visibleItemCount = adapter.getPreserved( ComboLCA.PROP_VISIBLE_ITEM_COUNT );
     assertEquals( new Integer( combo.getVisibleItemCount() ), visibleItemCount );
     assertEquals( "item 2", adapter.getPreserved( Props.TEXT ) );
-    hasListeners = ( Boolean )adapter.getPreserved( ComboLCA.PROP_SELECTION_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
     assertEquals( Boolean.FALSE, adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
-    hasListeners = ( Boolean )adapter.getPreserved( ComboLCA.PROP_MODIFY_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
     //control_listeners
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
+    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
     combo.addControlListener( new ControlAdapter() {} );
@@ -749,6 +743,20 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( combo, "selection" ) );
   }
 
+  public void testRenderSelectionListenerUnchanged() throws Exception {
+    Combo combo = new Combo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+    Fixture.preserveWidgets();
+
+    combo.addSelectionListener( new SelectionAdapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( combo, "selection" ) );
+  }
+
   public void testRenderAddModifyListener() throws Exception {
     Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -783,6 +791,23 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( combo, "modify" ) );
   }
 
+  public void testRenderModifyListenerUnchanged() throws Exception {
+    Combo combo = new Combo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+    Fixture.preserveWidgets();
+
+    combo.addModifyListener( new ModifyListener() {
+      public void modifyText( ModifyEvent event ) {
+      }
+    } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( combo, "modify" ) );
+  }
+
   public void testRenderAddVerifyListener() throws Exception {
     Combo combo = new Combo( shell, SWT.NONE );
     Fixture.markInitialized( display );
@@ -815,5 +840,22 @@ public class ComboLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( combo, "verify" ) );
+  }
+
+  public void testRenderVerifyListenerUnchanged() throws Exception {
+    Combo combo = new Combo( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( combo );
+    Fixture.preserveWidgets();
+
+    combo.addVerifyListener( new VerifyListener() {
+      public void verifyText( VerifyEvent event ) {
+      }
+    } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( combo );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( combo, "verify" ) );
   }
 }

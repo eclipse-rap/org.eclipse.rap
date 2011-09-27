@@ -41,11 +41,13 @@ public class ButtonLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private ButtonLCA lca;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
+    lca = new ButtonLCA();
     Fixture.fakeNewRequest( display );
   }
 
@@ -423,7 +425,6 @@ public class ButtonLCA_Test extends TestCase {
 
   public void testRenderCreate() throws IOException {
     Button pushButton = new Button( shell, SWT.PUSH );
-    ButtonLCA lca = new ButtonLCA();
 
     lca.renderInitialization( pushButton );
 
@@ -436,7 +437,6 @@ public class ButtonLCA_Test extends TestCase {
 
   public void testRenderParent() throws IOException {
     Button pushButton = new Button( shell, SWT.PUSH );
-    ButtonLCA lca = new ButtonLCA();
 
     lca.renderInitialization( pushButton );
 
@@ -448,7 +448,6 @@ public class ButtonLCA_Test extends TestCase {
   public void testRenderNoRadioGroup() throws IOException {
     Composite composite = new Composite( shell, SWT.NO_RADIO_GROUP );
     Button radio = new Button( composite, SWT.RADIO );
-    ButtonLCA lca = new ButtonLCA();
 
     lca.renderInitialization( radio );
 
@@ -459,7 +458,6 @@ public class ButtonLCA_Test extends TestCase {
 
   public void testRenderInitialText() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
-    ButtonLCA lca = new ButtonLCA();
 
     lca.renderChanges( button );
 
@@ -469,7 +467,6 @@ public class ButtonLCA_Test extends TestCase {
 
   public void testRenderText() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
-    ButtonLCA lca = new ButtonLCA();
 
     button.setText( "test" );
     lca.renderChanges( button );
@@ -480,7 +477,6 @@ public class ButtonLCA_Test extends TestCase {
 
   public void testRenderTextWithQuotationMarks() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
-    ButtonLCA lca = new ButtonLCA();
 
     button.setText( "te\"s't" );
     lca.renderChanges( button );
@@ -491,7 +487,6 @@ public class ButtonLCA_Test extends TestCase {
 
   public void testRenderTextWithNewlines() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
-    ButtonLCA lca = new ButtonLCA();
 
     button.setText( "\ntes\r\nt\n" );
     lca.renderChanges( button );
@@ -504,7 +499,6 @@ public class ButtonLCA_Test extends TestCase {
     Button button = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
-    ButtonLCA lca = new ButtonLCA();
 
     button.setText( "foo" );
     Fixture.preserveWidgets();
@@ -516,7 +510,6 @@ public class ButtonLCA_Test extends TestCase {
 
   public void testRenderInitialAlignment() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
-    ButtonLCA lca = new ButtonLCA();
 
     lca.renderChanges( button );
 
@@ -526,7 +519,6 @@ public class ButtonLCA_Test extends TestCase {
 
   public void testRenderAlignment() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
-    ButtonLCA lca = new ButtonLCA();
 
     button.setAlignment( SWT.RIGHT );
     lca.renderChanges( button );
@@ -539,7 +531,6 @@ public class ButtonLCA_Test extends TestCase {
     Button button = new Button( shell, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
-    ButtonLCA lca = new ButtonLCA();
 
     button.setAlignment( SWT.RIGHT );
     Fixture.preserveWidgets();
@@ -554,7 +545,6 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
     Fixture.preserveWidgets();
-    ButtonLCA lca = new ButtonLCA();
 
     button.addSelectionListener( new SelectionAdapter() { } );
     lca.renderChanges( button );
@@ -570,7 +560,6 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
     Fixture.preserveWidgets();
-    ButtonLCA lca = new ButtonLCA();
 
     button.removeSelectionListener( listener );
     lca.renderChanges( button );
@@ -579,9 +568,22 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, message.findListenProperty( button, "selection" ) );
   }
 
+  public void testRenderSelectionListenerUnchanged() throws Exception {
+    Button button = new Button( shell, SWT.PUSH );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( button );
+    Fixture.preserveWidgets();
+
+    button.addSelectionListener( new SelectionAdapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( button );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( button, "selection" ) );
+  }
+
   public void testRenderInitialImage() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
-    ButtonLCA lca = new ButtonLCA();
 
     lca.renderChanges( button );
 
@@ -591,7 +593,6 @@ public class ButtonLCA_Test extends TestCase {
 
   public void testRenderImage() throws IOException, JSONException {
     Button button = new Button( shell, SWT.PUSH );
-    ButtonLCA lca = new ButtonLCA();
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 
     button.setImage( image );
@@ -609,7 +610,6 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
-    ButtonLCA lca = new ButtonLCA();
 
     button.setImage( image );
     Fixture.preserveWidgets();
@@ -624,7 +624,6 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
-    ButtonLCA lca = new ButtonLCA();
     button.setImage( image );
 
     Fixture.preserveWidgets();
@@ -637,7 +636,6 @@ public class ButtonLCA_Test extends TestCase {
 
   public void testRenderInitialSelection() throws IOException {
     Button button = new Button( shell, SWT.CHECK );
-    ButtonLCA lca = new ButtonLCA();
 
     lca.renderChanges( button );
 
@@ -647,7 +645,6 @@ public class ButtonLCA_Test extends TestCase {
 
   public void testRenderSelection() throws IOException {
     Button button = new Button( shell, SWT.CHECK );
-    ButtonLCA lca = new ButtonLCA();
 
     button.setSelection( true );
     lca.renderChanges( button );
@@ -660,7 +657,6 @@ public class ButtonLCA_Test extends TestCase {
     Button button = new Button( shell, SWT.CHECK );
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
-    ButtonLCA lca = new ButtonLCA();
 
     button.setSelection( true );
     Fixture.preserveWidgets();
@@ -672,7 +668,6 @@ public class ButtonLCA_Test extends TestCase {
 
   public void testRenderInitialGrayed() throws IOException {
     Button button = new Button( shell, SWT.CHECK );
-    ButtonLCA lca = new ButtonLCA();
 
     lca.renderChanges( button );
 
@@ -682,7 +677,6 @@ public class ButtonLCA_Test extends TestCase {
 
   public void testRenderGrayed() throws IOException {
     Button button = new Button( shell, SWT.CHECK );
-    ButtonLCA lca = new ButtonLCA();
 
     button.setGrayed( true );
     lca.renderChanges( button );
@@ -695,7 +689,6 @@ public class ButtonLCA_Test extends TestCase {
     Button button = new Button( shell, SWT.CHECK );
     Fixture.markInitialized( display );
     Fixture.markInitialized( button );
-    ButtonLCA lca = new ButtonLCA();
 
     button.setGrayed( true );
     Fixture.preserveWidgets();

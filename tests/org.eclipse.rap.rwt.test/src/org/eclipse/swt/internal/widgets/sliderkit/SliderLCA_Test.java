@@ -71,8 +71,6 @@ public class SliderLCA_Test extends TestCase {
     Fixture.clearPreserved();
     // Test preserved control properties
     testPreserveControlProperties( slider );
-    // Test preserved selection listeners
-    testPreserveSelectionListener( slider );
   }
 
   public void testSelectionEvent() {
@@ -127,22 +125,6 @@ public class SliderLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( slider );
     assertEquals( background, adapter.getPreserved( Props.BACKGROUND ) );
-    Fixture.clearPreserved();
-  }
-
-  private void testPreserveSelectionListener( Slider slider ) {
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( slider );
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( SliderLCA.PROP_SELECTION_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    SelectionListener selectionListener = new SelectionAdapter() {
-    };
-    slider.addSelectionListener( selectionListener );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( slider );
-    hasListeners = ( Boolean )adapter.getPreserved( SliderLCA.PROP_SELECTION_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
   }
 
@@ -423,5 +405,19 @@ public class SliderLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( slider, "selection" ) );
+  }
+
+  public void testRenderSelectionListenerUnchanged() throws Exception {
+    Slider slider = new Slider( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( slider );
+    Fixture.preserveWidgets();
+
+    slider.addSelectionListener( new SelectionAdapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( slider );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( slider, "selection" ) );
   }
 }

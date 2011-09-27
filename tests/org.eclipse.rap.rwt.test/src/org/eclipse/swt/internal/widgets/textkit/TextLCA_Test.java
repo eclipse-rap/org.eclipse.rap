@@ -36,13 +36,13 @@ public class TextLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
-  private TextLCA textLCA;
+  private TextLCA lca;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Fixture.fakeResponseWriter();
-    textLCA = new TextLCA();
+    lca = new TextLCA();
     display = new Display();
     shell = new Shell( display );
   }
@@ -64,20 +64,6 @@ public class TextLCA_Test extends TestCase {
   public void testSinglePreserveValues() {
     Text text = new Text( shell, SWT.SINGLE );
     testPreserveValues( text );
-    //Selection_Listener
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( text );
-    String propSelectionLsnr = TextLCAUtil.PROP_SELECTION_LISTENER;
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( propSelectionLsnr );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    SelectionListener selectionListener = new SelectionAdapter() {
-    };
-    text.addSelectionListener( selectionListener );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( text );
-    hasListeners = ( Boolean )adapter.getPreserved( propSelectionLsnr );
-    assertEquals( Boolean.TRUE, hasListeners );
   }
 
   public void testReadData() {
@@ -296,29 +282,6 @@ public class TextLCA_Test extends TestCase {
     readonly = ( Boolean )getPreserved( text, TextLCAUtil.PROP_EDITABLE );
     assertEquals( Boolean.FALSE, readonly );
     Fixture.clearPreserved();
-    //verify modify-Listeners
-    Fixture.preserveWidgets();
-    Boolean hasModifyListener = ( Boolean )getPreserved( text, TextLCAUtil.PROP_MODIFY_LISTENER );
-    assertEquals( Boolean.FALSE, hasModifyListener );
-    text.addModifyListener( new ModifyListener() {
-      public void modifyText( ModifyEvent event ) {
-      }
-    } );
-    Fixture.preserveWidgets();
-    hasModifyListener = ( Boolean )getPreserved( text, TextLCAUtil.PROP_MODIFY_LISTENER );
-    assertEquals( Boolean.TRUE, hasModifyListener );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    Boolean hasVerifyListener = ( Boolean )getPreserved( text, TextLCAUtil.PROP_VERIFY_LISTENER );
-    assertEquals( Boolean.FALSE, hasVerifyListener );
-    text.addVerifyListener( new VerifyListener() {
-      public void verifyText( VerifyEvent event ) {
-      }
-    } );
-    Fixture.preserveWidgets();
-    hasVerifyListener = ( Boolean )getPreserved( text, TextLCAUtil.PROP_VERIFY_LISTENER );
-    assertEquals( Boolean.TRUE, hasVerifyListener );
-    Fixture.clearPreserved();
     //Bounds
     Rectangle rectangle = new Rectangle( 10, 10, 200, 100 );
     text.setBounds( rectangle );
@@ -389,7 +352,7 @@ public class TextLCA_Test extends TestCase {
     Text text = new Text( shell, SWT.READ_ONLY );
     text.addModifyListener( createModifyListener() );
 
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findListenProperty( text, "modify" ) );
@@ -398,7 +361,7 @@ public class TextLCA_Test extends TestCase {
   public void testRenderCreate() throws IOException {
     Text text = new Text( shell, SWT.SINGLE );
 
-    textLCA.renderInitialization( text );
+    lca.renderInitialization( text );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
@@ -410,7 +373,7 @@ public class TextLCA_Test extends TestCase {
   public void testRenderCreateMultiWithWrap() throws IOException {
     Text text = new Text( shell, SWT.MULTI | SWT.WRAP );
 
-    textLCA.renderInitialization( text );
+    lca.renderInitialization( text );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
@@ -424,7 +387,7 @@ public class TextLCA_Test extends TestCase {
     Text text = new Text( shell, SWT.SINGLE | SWT.CENTER );
     Fixture.fakeResponseWriter();
 
-    textLCA.renderInitialization( text );
+    lca.renderInitialization( text );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
@@ -435,7 +398,7 @@ public class TextLCA_Test extends TestCase {
   public void testRenderParent() throws IOException {
     Text text = new Text( shell, SWT.SINGLE );
 
-    textLCA.renderInitialization( text );
+    lca.renderInitialization( text );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
@@ -445,7 +408,7 @@ public class TextLCA_Test extends TestCase {
   public void testRenderInitialMessage() throws IOException {
     Text text = new Text( shell, SWT.SINGLE );
 
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "message" ) );
@@ -455,7 +418,7 @@ public class TextLCA_Test extends TestCase {
     Text text = new Text( shell, SWT.SINGLE );
 
     text.setMessage( "test" );
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( "test", message.findSetProperty( text, "message" ) );
@@ -468,7 +431,7 @@ public class TextLCA_Test extends TestCase {
 
     text.setMessage( "test" );
     Fixture.preserveWidgets();
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "message" ) );
@@ -477,7 +440,7 @@ public class TextLCA_Test extends TestCase {
   public void testRenderPasswordEchoChar() throws IOException {
     Text text = new Text( shell, SWT.PASSWORD );
 
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( "?", message.findSetProperty( text, "echoChar" ) );
@@ -486,7 +449,7 @@ public class TextLCA_Test extends TestCase {
   public void testRenderMultiEchoChar() throws IOException {
     Text text = new Text( shell, SWT.MULTI );
 
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "echoChar" ) );
@@ -495,7 +458,7 @@ public class TextLCA_Test extends TestCase {
   public void testRenderInitialEchoChar() throws IOException {
     Text text = new Text( shell, SWT.SINGLE );
 
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "echoChar" ) );
@@ -505,7 +468,7 @@ public class TextLCA_Test extends TestCase {
     Text text = new Text( shell, SWT.SINGLE );
 
     text.setEchoChar( '*' );
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( "*", message.findSetProperty( text, "echoChar" ) );
@@ -518,7 +481,7 @@ public class TextLCA_Test extends TestCase {
 
     text.setEchoChar( '*' );
     Fixture.preserveWidgets();
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "echoChar" ) );
@@ -527,7 +490,7 @@ public class TextLCA_Test extends TestCase {
   public void testRenderInitialEditable() throws IOException {
     Text text = new Text( shell, SWT.SINGLE );
 
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "editable" ) );
@@ -537,7 +500,7 @@ public class TextLCA_Test extends TestCase {
     Text text = new Text( shell, SWT.SINGLE );
 
     text.setEditable( false );
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findSetProperty( text, "editable" ) );
@@ -550,7 +513,7 @@ public class TextLCA_Test extends TestCase {
 
     text.setEditable( false );
     Fixture.preserveWidgets();
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "editable" ) );
@@ -560,7 +523,7 @@ public class TextLCA_Test extends TestCase {
     Text text = new Text( shell, SWT.SINGLE );
     text.setText( "foo bar" );
 
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "selection" ) );
@@ -571,7 +534,7 @@ public class TextLCA_Test extends TestCase {
     text.setText( "foo bar" );
 
     text.setSelection( 1, 3 );
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     JSONArray actual = ( JSONArray )message.findSetProperty( text, "selection" );
@@ -586,7 +549,7 @@ public class TextLCA_Test extends TestCase {
 
     text.setSelection( 1, 3 );
     Fixture.preserveWidgets();
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "selection" ) );
@@ -595,7 +558,7 @@ public class TextLCA_Test extends TestCase {
   public void testRenderInitialTextLimit() throws IOException {
     Text text = new Text( shell, SWT.SINGLE );
 
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "textLimit" ) );
@@ -605,7 +568,7 @@ public class TextLCA_Test extends TestCase {
     Text text = new Text( shell, SWT.SINGLE );
 
     text.setTextLimit( 10 );
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( new Integer( 10 ), message.findSetProperty( text, "textLimit" ) );
@@ -618,7 +581,7 @@ public class TextLCA_Test extends TestCase {
 
     text.setTextLimit( 10 );
     Fixture.preserveWidgets();
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "textLimit" ) );
@@ -632,7 +595,7 @@ public class TextLCA_Test extends TestCase {
     text.setTextLimit( 10 );
     Fixture.preserveWidgets();
     text.setTextLimit( Text.LIMIT );
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( JSONObject.NULL, message.findSetProperty( text, "textLimit" ) );
@@ -646,7 +609,7 @@ public class TextLCA_Test extends TestCase {
     text.setTextLimit( 10 );
     Fixture.preserveWidgets();
     text.setTextLimit( -5 );
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( JSONObject.NULL, message.findSetProperty( text, "textLimit" ) );
@@ -659,7 +622,7 @@ public class TextLCA_Test extends TestCase {
     Fixture.preserveWidgets();
 
     text.addSelectionListener( new SelectionAdapter() { } );
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findListenProperty( text, "selection" ) );
@@ -674,10 +637,24 @@ public class TextLCA_Test extends TestCase {
     Fixture.preserveWidgets();
 
     text.removeSelectionListener( listener );
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( text, "selection" ) );
+  }
+
+  public void testRenderSelectionListenerUnchanged() throws Exception {
+    Text text = new Text( shell, SWT.SINGLE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+    Fixture.preserveWidgets();
+
+    text.addSelectionListener( new SelectionAdapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( text, "selection" ) );
   }
 
   public void testRenderAddModifyListener() throws Exception {
@@ -690,7 +667,7 @@ public class TextLCA_Test extends TestCase {
       public void modifyText( ModifyEvent event ) {
       }
     } );
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findListenProperty( text, "modify" ) );
@@ -708,10 +685,27 @@ public class TextLCA_Test extends TestCase {
     Fixture.preserveWidgets();
 
     text.removeModifyListener( listener );
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( text, "modify" ) );
+  }
+
+  public void testRenderModifyListenerUnchanged() throws Exception {
+    Text text = new Text( shell, SWT.SINGLE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+    Fixture.preserveWidgets();
+
+    text.addModifyListener( new ModifyListener() {
+      public void modifyText( ModifyEvent event ) {
+      }
+    } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( text, "modify" ) );
   }
 
   public void testRenderAddVerifyListener() throws Exception {
@@ -724,7 +718,7 @@ public class TextLCA_Test extends TestCase {
       public void verifyText( VerifyEvent event ) {
       }
     } );
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findListenProperty( text, "verify" ) );
@@ -742,16 +736,33 @@ public class TextLCA_Test extends TestCase {
     Fixture.preserveWidgets();
 
     text.removeVerifyListener( listener );
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( text, "verify" ) );
   }
 
+  public void testRenderVerifyListenerUnchanged() throws Exception {
+    Text text = new Text( shell, SWT.SINGLE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( text );
+    Fixture.preserveWidgets();
+
+    text.addVerifyListener( new VerifyListener() {
+      public void verifyText( VerifyEvent event ) {
+      }
+    } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( text );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( text, "verify" ) );
+  }
+
   public void testRenderInitialText() throws IOException {
     Text text = new Text( shell, SWT.SINGLE );
 
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "text" ) );
@@ -761,7 +772,7 @@ public class TextLCA_Test extends TestCase {
     Text text = new Text( shell, SWT.SINGLE );
 
     text.setText( "test" );
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( "test", message.findSetProperty( text, "text" ) );
@@ -774,7 +785,7 @@ public class TextLCA_Test extends TestCase {
 
     text.setText( "foo" );
     Fixture.preserveWidgets();
-    textLCA.renderChanges( text );
+    lca.renderChanges( text );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( text, "text" ) );

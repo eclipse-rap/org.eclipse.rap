@@ -56,16 +56,12 @@ public class LinkLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( link );
     assertEquals( "", adapter.getPreserved( LinkLCA.PROP_TEXT ) );
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( LinkLCA.PROP_SELECTION_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
     link.setText( "some text" );
     link.addSelectionListener( new SelectionAdapter() {} );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
     assertEquals( "some text", adapter.getPreserved( LinkLCA.PROP_TEXT ) );
-    hasListeners = ( Boolean )adapter.getPreserved( LinkLCA.PROP_SELECTION_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
     // control: enabled
     Fixture.preserveWidgets();
@@ -112,7 +108,7 @@ public class LinkLCA_Test extends TestCase {
     // control_listeners
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
+    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
     link.addControlListener( new ControlAdapter() {} );
@@ -321,5 +317,19 @@ public class LinkLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( link, "selection" ) );
+  }
+
+  public void testRenderSelectionListenerUnchanged() throws Exception {
+    Link link = new Link( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( link );
+    Fixture.preserveWidgets();
+
+    link.addSelectionListener( new SelectionAdapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( link );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( link, "selection" ) );
   }
 }
