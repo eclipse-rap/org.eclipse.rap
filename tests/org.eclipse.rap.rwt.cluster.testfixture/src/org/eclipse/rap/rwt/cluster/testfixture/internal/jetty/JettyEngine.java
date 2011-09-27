@@ -179,19 +179,23 @@ public class JettyEngine implements IServletEngine {
     public void doFilter( ServletRequest request, ServletResponse response, FilterChain chain )
       throws IOException, ServletException
     {
-        chain.doFilter( request, response );
-        HttpServletRequest httpRequest = ( HttpServletRequest )request;
-        trackSession( httpRequest );
+      chain.doFilter( request, response );
+      trackSession( request );
     }
 
     public void destroy() {
     }
 
-    private void trackSession( HttpServletRequest httpRequest ) {
-      HttpSession session = httpRequest.getSession( false );
+    private void trackSession( ServletRequest request ) {
+      HttpSession session = getSession( request );
       if( session != null ) {
         sessions.put( session.getId(), session );
       }
+    }
+
+    private HttpSession getSession( ServletRequest request ) {
+      HttpServletRequest httpRequest = ( HttpServletRequest )request;
+      return httpRequest.getSession( false );
     }
   }
 }
