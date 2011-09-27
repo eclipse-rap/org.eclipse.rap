@@ -67,7 +67,7 @@
               <execution>
                 <id>pack</id>
                 <configuration>
-                  <inputFile>${project.build.directory}/org.eclipse.rap.tooling-repository.zip</inputFile>
+                  <inputFile>${project.build.directory}/org.eclipse.rap.runtime-repository-compatibility.zip</inputFile>
                 </configuration>
                 <phase>package</phase>
                 <goals>
@@ -77,7 +77,7 @@
               <execution>
                 <id>sign</id>
                 <configuration>
-                  <inputFile>${project.build.directory}/packed/org.eclipse.rap.tooling-repository.zip</inputFile>
+                  <inputFile>${project.build.directory}/packed/org.eclipse.rap.runtime-repository-compatibility.zip</inputFile>
                   <signerInputDirectory>/home/data/httpd/download-staging.priv/rt/rap</signerInputDirectory>
                 </configuration>
                 <phase>package</phase>
