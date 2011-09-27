@@ -10,9 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.internal.server;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,7 +29,6 @@ public class DelegatingServletEngine_Test extends TestCase {
     static final String STOP = "stop";
     static final String GET_PORT = "getPort";
     static final String GET_SESSIONS = "getSessions";
-    static final String CREATE_CONNECTION = "createConnection";
     
     List<String> invocations;
     
@@ -59,11 +55,6 @@ public class DelegatingServletEngine_Test extends TestCase {
 
     public HttpSession[] getSessions() {
       invocations.add( GET_SESSIONS );
-      return null;
-    }
-
-    public HttpURLConnection createConnection( URL url ) throws IOException {
-      invocations.add( CREATE_CONNECTION );
       return null;
     }
   }
@@ -149,16 +140,6 @@ public class DelegatingServletEngine_Test extends TestCase {
     engine.getPort();
     
     assertTrue( testServletEngine.invocations.contains( TestServletEngine.GET_PORT ) );
-  }
-  
-  public void testCreateConnectionDoesNotDelegate() throws Exception {
-    IServletEngine engine = new DelegatingServletEngine( testServletEngine );
-    URL url = new URL( "http://localhost:123/"  );
-    
-    HttpURLConnection connection = engine.createConnection( url );
-    
-    assertNotNull( connection );
-    assertTrue( testServletEngine.invocations.isEmpty() );
   }
   
   private IServletEngine startServletEngine( Class<? extends IEntryPoint> entryPoint )

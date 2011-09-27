@@ -12,8 +12,6 @@ package org.eclipse.rap.rwt.cluster.testfixture.internal.server;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import javax.servlet.http.HttpSession;
 
@@ -72,10 +70,6 @@ public class DelegatingServletEngine implements IServletEngine {
       throw new IllegalStateException( msg );
     } 
     return delegate.getSessions();
-  }
-
-  public HttpURLConnection createConnection( URL url ) throws IOException {
-    return ( HttpURLConnection )url.openConnection();
   }
 
   private void checkNotNull( Class<? extends IEntryPoint> entryPointClass ) {

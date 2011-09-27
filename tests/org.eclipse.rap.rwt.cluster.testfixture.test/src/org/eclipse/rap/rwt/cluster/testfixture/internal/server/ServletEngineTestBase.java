@@ -13,8 +13,6 @@ package org.eclipse.rap.rwt.cluster.testfixture.internal.server;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,15 +55,6 @@ public abstract class ServletEngineTestBase extends TestCase {
     engine.start( TestEntryPoint.class );
 
     assertEquals( freePort, engine.getPort() );
-  }
-  
-  public void testCreateConnection() throws IOException {
-    IServletEngine engine = getServletEngineFactory().createServletEngine();
-    
-    URL url = new URL( "http://localhost:123/"  );
-    HttpURLConnection connection = engine.createConnection( url );
-
-    assertEquals( url, connection.getURL() );
   }
   
   public void testEntryPoint() throws Exception {

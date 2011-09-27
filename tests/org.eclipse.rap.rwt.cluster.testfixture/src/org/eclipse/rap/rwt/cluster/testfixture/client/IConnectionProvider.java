@@ -8,20 +8,13 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.cluster.testfixture.server;
+package org.eclipse.rap.rwt.cluster.testfixture.client;
 
-import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 
-import org.eclipse.rwt.lifecycle.IEntryPoint;
 
-public interface IServletEngine {
-  String SERVLET_NAME= "rap";
-  String SERVLET_PATH = "/" + SERVLET_NAME;
-
-  void start( Class<? extends IEntryPoint> entryPointClass ) throws Exception;
-  void stop( int timeout ) throws Exception;
-  void stop() throws Exception;
-  int getPort();
-  
-  HttpSession[] getSessions();
+interface IConnectionProvider {
+  URLConnection createConnection( URL url ) throws IOException;
 }

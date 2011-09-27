@@ -12,8 +12,6 @@ package org.eclipse.rap.rwt.cluster.testfixture.internal.jetty;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -105,10 +103,6 @@ public class JettyEngine implements IServletEngine {
     return server.getConnectors()[ 0 ].getLocalPort();
   }
   
-  public HttpURLConnection createConnection( URL url ) throws IOException {
-    return ( HttpURLConnection )url.openConnection();
-  }
-
   public HttpSession[] getSessions() {
     Collection<HttpSession> values = sessions.values();
     return values.toArray( new HttpSession[ values.size() ] );

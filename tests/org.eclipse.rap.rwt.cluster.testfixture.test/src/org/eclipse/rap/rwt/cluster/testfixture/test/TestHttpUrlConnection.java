@@ -67,8 +67,8 @@ public class TestHttpUrlConnection extends HttpURLConnection {
   private static URL getUrl() {
     try {
       return new URL( "http://localhost/path" );
-    } catch( MalformedURLException e ) {
-      throw new RuntimeException( e );
+    } catch( MalformedURLException mue ) {
+      throw new RuntimeException( mue );
     }
   }
 }

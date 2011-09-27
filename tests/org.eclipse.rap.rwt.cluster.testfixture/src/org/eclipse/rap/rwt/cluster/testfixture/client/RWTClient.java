@@ -13,6 +13,7 @@ package org.eclipse.rap.rwt.cluster.testfixture.client;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,13 +29,19 @@ public class RWTClient {
   private static final String TEXT_TRANSFER_DATA_TYPE
     = String.valueOf( Transfer.registerType( "text" ) );
   
-  private long startTime;
   private IServletEngine servletEngine;
+  private final IConnectionProvider connectionProvider;
+  private long startTime;
   private String sessionId;
   private int requestCounter;
 
   public RWTClient( IServletEngine servletEngine ) {
+    this( servletEngine, new DefaultConnectionProvider() );
+  }
+  
+  RWTClient( IServletEngine servletEngine, IConnectionProvider connectionProvider ) {
     this.servletEngine = servletEngine;
+    this.connectionProvider = connectionProvider;
     this.startTime = System.currentTimeMillis();
     this.sessionId = "";
     this.requestCounter = -2;
@@ -157,7 +164,7 @@ public class RWTClient {
   }
 
   private HttpURLConnection createConnection( URL url, int timeout ) throws IOException {
-    HttpURLConnection result = servletEngine.createConnection( url );
+    HttpURLConnection result = ( HttpURLConnection )connectionProvider.createConnection( url );
     result.setInstanceFollowRedirects( false );
     result.setAllowUserInteraction( false );
     result.setRequestMethod( "GET" );
@@ -182,6 +189,12 @@ public class RWTClient {
     if( cookieField != null ) {
       String[] parts = cookieField.split( ";" );
       sessionId = parts[ 0 ].split( "=" )[ 1 ];
+    }
+  }
+
+  private static class DefaultConnectionProvider implements IConnectionProvider {
+    public URLConnection createConnection( URL url ) throws IOException {
+      return url.openConnection();
     }
   }
 }

@@ -1,9 +1,6 @@
 package org.eclipse.rap.rwt.cluster.testfixture.internal.tomcat;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
@@ -81,10 +78,6 @@ public class TomcatEngine implements IServletEngine {
     return tomcat.getConnector().getPort();
   }
   
-  public HttpURLConnection createConnection( URL url ) throws IOException {
-    return ( HttpURLConnection )url.openConnection();
-  }
-
   public HttpSession[] getSessions() {
     Session[] sessions = context.getManager().findSessions();
     HttpSession[] result = new HttpSession[ sessions.length ];

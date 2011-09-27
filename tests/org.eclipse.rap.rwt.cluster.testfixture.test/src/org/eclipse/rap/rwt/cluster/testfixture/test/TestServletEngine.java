@@ -10,19 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.test;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 
 public class TestServletEngine implements IServletEngine {
-
   private final int port;
-  private HttpURLConnection connection;
-  private URL connectionUrl;
 
   public TestServletEngine() {
     this( -1 );
@@ -47,18 +40,5 @@ public class TestServletEngine implements IServletEngine {
   
   public HttpSession[] getSessions() {
     return null;
-  }
-
-  public URL getConnectionUrl() {
-    return connectionUrl;
-  }
-  
-  public void setConnection( HttpURLConnection connection ) {
-    this.connection = connection;
-  }
-  
-  public HttpURLConnection createConnection( URL url ) throws IOException {
-    connectionUrl = url;
-    return connection;
   }
 }
