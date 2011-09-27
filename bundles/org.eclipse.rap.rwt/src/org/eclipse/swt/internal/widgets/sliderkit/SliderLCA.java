@@ -20,6 +20,9 @@ import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.*;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
 
 public class SliderLCA extends AbstractWidgetLCA {
@@ -33,7 +36,7 @@ public class SliderLCA extends AbstractWidgetLCA {
   static final String PROP_INCREMENT = "increment";
   static final String PROP_PAGE_INCREMENT = "pageIncrement";
   static final String PROP_THUMB = "thumb";
-  static final String PROP_SELECTION_LISTENER = "selectionListener";
+  static final String PROP_SELECTION_LISTENER = "selection";
 
   // Default values
   static final Integer DEFAULT_MINIMUM = new Integer( 0 );
@@ -46,6 +49,7 @@ public class SliderLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     Slider slider = ( Slider )widget;
     ControlLCAUtil.preserveValues( slider );
+    WidgetLCAUtil.preserveCustomVariant( slider );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( slider );
     adapter.preserve( PROP_MINIMUM, new Integer( slider.getMinimum() ) );
     adapter.preserve( PROP_MAXIMUM, new Integer( slider.getMaximum() ) );
@@ -53,9 +57,7 @@ public class SliderLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_INCREMENT, new Integer( slider.getIncrement() ) );
     adapter.preserve( PROP_PAGE_INCREMENT, new Integer( slider.getPageIncrement() ) );
     adapter.preserve( PROP_THUMB, new Integer( slider.getThumb() ) );
-    boolean hasListeners = SelectionEvent.hasListener( slider );
-    adapter.preserve( PROP_SELECTION_LISTENER, Boolean.valueOf( hasListeners ) );
-    WidgetLCAUtil.preserveCustomVariant( slider );
+    preserveListener( slider, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( slider ) );
   }
 
   public void readData( Widget widget ) {
@@ -95,8 +97,8 @@ public class SliderLCA extends AbstractWidgetLCA {
     ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
-  ////////////////////////////////////////
-  // Helping methods to render the changes
+  ///////////////////////////////////////////////////
+  // Helping methods to render the changed properties
 
   private static void renderMinimum( Slider slider ) {
     renderProperty( slider, PROP_MINIMUM, new Integer( slider.getMinimum() ), DEFAULT_MINIMUM );
@@ -127,33 +129,6 @@ public class SliderLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListenSelection( Slider slider ) {
-    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( slider ) );
-    if( WidgetLCAUtil.hasChanged( slider, PROP_SELECTION_LISTENER, newValue, Boolean.FALSE ) ) {
-      renderListen( slider, "selection", newValue.booleanValue() );
-    }
+    renderListener( slider, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( slider ), false );
   }
-
-  //////////////////
-  // Helping methods
-
-  private static void renderProperty( Slider slider,
-                                      String property,
-                                      Object newValue,
-                                      Object defValue )
-  {
-    if( WidgetLCAUtil.hasChanged( slider, property, newValue, defValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( slider );
-      clientObject.setProperty( property, newValue );
-    }
-  }
-
-  private static void renderListen( Slider slider, String eventType, boolean hasListener ) {
-    IClientObject clientObject = ClientObjectFactory.getForWidget( slider );
-    if( hasListener ) {
-      clientObject.addListener( eventType );
-    } else {
-      clientObject.removeListener( eventType );
-    }
-  }
-
 }

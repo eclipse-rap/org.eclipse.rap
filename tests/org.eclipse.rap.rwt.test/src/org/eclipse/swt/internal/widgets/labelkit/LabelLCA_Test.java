@@ -77,26 +77,26 @@ public class LabelLCA_Test extends TestCase {
     //aligment
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
-    Integer alignment = ( Integer )adapter.getPreserved( "alignment" );
-    assertEquals( new Integer( SWT.LEFT ), alignment );
+    String alignment = ( String )adapter.getPreserved( "alignment" );
+    assertEquals( "left", alignment );
     Fixture.clearPreserved();
     label.setAlignment( SWT.RIGHT );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
-    alignment = ( Integer )adapter.getPreserved( "alignment" );
-    assertEquals( new Integer( SWT.RIGHT ), alignment );
+    alignment = ( String )adapter.getPreserved( "alignment" );
+    assertEquals( "right", alignment );
     Fixture.clearPreserved();
     label.setAlignment( SWT.CENTER );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
-    alignment = ( Integer )adapter.getPreserved( "alignment" );
-    assertEquals( new Integer( SWT.CENTER ), alignment );
+    alignment = ( String )adapter.getPreserved( "alignment" );
+    assertEquals( "center", alignment );
     Fixture.clearPreserved();
     label.setAlignment( SWT.LEFT );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
-    alignment = ( Integer )adapter.getPreserved( "alignment" );
-    assertEquals( new Integer( SWT.LEFT ), alignment );
+    alignment = ( String )adapter.getPreserved( "alignment" );
+    assertEquals( "left", alignment );
   }
 
   private void testPreserveValues( final Display display, final Label label ) {

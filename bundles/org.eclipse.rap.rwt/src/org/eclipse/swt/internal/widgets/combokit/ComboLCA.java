@@ -22,18 +22,14 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.*;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
-/**
- * Life cycle adapter for Combo widgets.
- */
+
 public class ComboLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Combo";
-  private static final String[] DEFAUT_ITEMS = new String[ 0 ];
-  private static final Integer DEFAULT_SELECTION_INDEX = new Integer( -1 );
-  private static final Point DEFAULT_SELECTION = new Point( 0, 0 );
-  private static final Integer DEFAULT_TEXT_LIMIT = new Integer( Combo.LIMIT );
-  private static final Integer DEFAULT_VISIBLE_ITEM_COUNT = new Integer( 5 );
 
   // Must be in sync with appearance "list-item"
   private static final int LIST_ITEM_PADDING = 3;
@@ -48,13 +44,21 @@ public class ComboLCA extends AbstractWidgetLCA {
   static final String PROP_EDITABLE = "editable";
   static final String PROP_VISIBLE_ITEM_COUNT = "visibleItemCount";
   static final String PROP_ITEM_HEIGHT = "itemHeight";
-  static final String PROP_SELECTION_LISTENER = "selectionListener";
-  static final String PROP_MODIFY_LISTENER = "modifyListener";
-  static final String PROP_VERIFY_LISTENER = "verifyListener";
+  static final String PROP_SELECTION_LISTENER = "selection";
+  static final String PROP_MODIFY_LISTENER = "modify";
+  static final String PROP_VERIFY_LISTENER = "verify";
+
+  // Default values
+  private static final String[] DEFAUT_ITEMS = new String[ 0 ];
+  private static final Integer DEFAULT_SELECTION_INDEX = new Integer( -1 );
+  private static final Point DEFAULT_SELECTION = new Point( 0, 0 );
+  private static final Integer DEFAULT_TEXT_LIMIT = new Integer( Combo.LIMIT );
+  private static final Integer DEFAULT_VISIBLE_ITEM_COUNT = new Integer( 5 );
 
   public void preserveValues( Widget widget ) {
     Combo combo = ( Combo )widget;
     ControlLCAUtil.preserveValues( combo );
+    WidgetLCAUtil.preserveCustomVariant( combo );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( PROP_ITEMS, combo.getItems() );
     adapter.preserve( PROP_SELECTION_INDEX, new Integer( combo.getSelectionIndex() ) );
@@ -65,13 +69,9 @@ public class ComboLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_TEXT, combo.getText() );
     adapter.preserve( PROP_LIST_VISIBLE, new Boolean( combo.getListVisible() ) );
     adapter.preserve( PROP_EDITABLE, Boolean.valueOf( isEditable( combo ) ) );
-    adapter.preserve( PROP_SELECTION_LISTENER,
-                      Boolean.valueOf( SelectionEvent.hasListener( combo ) ) );
-    adapter.preserve( PROP_MODIFY_LISTENER,
-                      Boolean.valueOf( ModifyEvent.hasListener( combo ) ) );
-    adapter.preserve( PROP_VERIFY_LISTENER,
-                      Boolean.valueOf( VerifyEvent.hasListener( combo ) ) );
-    WidgetLCAUtil.preserveCustomVariant( combo );
+    preserveListener( combo, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( combo ) );
+    preserveListener( combo, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( combo ) );
+    preserveListener( combo, PROP_VERIFY_LISTENER, VerifyEvent.hasListener( combo ) );
   }
 
   public void readData( Widget widget ) {
@@ -173,8 +173,8 @@ public class ComboLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  //////////////////////////////////////////////
-  // Helping methods to write changed properties
+  ///////////////////////////////////////////////////
+  // Helping methods to render the changed properties
 
   private static void renderItemHeight( Combo combo ) {
     Integer newValue = new Integer( getItemHeight( combo ) );
@@ -248,48 +248,19 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListenSelection( Combo combo ) {
-    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( combo ) );
-    if( WidgetLCAUtil.hasChanged( combo, PROP_SELECTION_LISTENER, newValue, Boolean.FALSE ) ) {
-      renderListen( combo, "selection", newValue.booleanValue() );
-    }
+    renderListener( combo, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( combo ), false );
   }
 
   private static void renderListenModify( Combo combo ) {
-    Boolean newValue = Boolean.valueOf( ModifyEvent.hasListener( combo ) );
-    if( WidgetLCAUtil.hasChanged( combo, PROP_MODIFY_LISTENER, newValue, Boolean.FALSE ) ) {
-      renderListen( combo, "modify", newValue.booleanValue() );
-    }
+    renderListener( combo, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( combo ), false );
   }
 
   private static void renderListenVerify( Combo combo ) {
-    Boolean newValue = Boolean.valueOf( VerifyEvent.hasListener( combo ) );
-    if( WidgetLCAUtil.hasChanged( combo, PROP_VERIFY_LISTENER, newValue, Boolean.FALSE ) ) {
-      renderListen( combo, "verify", newValue.booleanValue() );
-    }
+    renderListener( combo, PROP_VERIFY_LISTENER, VerifyEvent.hasListener( combo ), false );
   }
 
   //////////////////
   // Helping methods
-
-  private static void renderProperty( Combo combo,
-                                      String property,
-                                      Object newValue,
-                                      Object defValue )
-  {
-    if( WidgetLCAUtil.hasChanged( combo, property, newValue, defValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
-      clientObject.setProperty( property, newValue );
-    }
-  }
-
-  private static void renderListen( Combo combo, String eventType, boolean hasListener ) {
-    IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
-    if( hasListener ) {
-      clientObject.addListener( eventType );
-    } else {
-      clientObject.removeListener( eventType );
-    }
-  }
 
   private static boolean isEditable( Combo combo ) {
     return ( ( combo.getStyle() & SWT.READ_ONLY ) == 0 );

@@ -18,6 +18,7 @@ import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 
 public class ProgressBarLCA extends AbstractWidgetLCA {
@@ -38,12 +39,12 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     ProgressBar progressBar = ( ProgressBar )widget;
     ControlLCAUtil.preserveValues( progressBar );
+    WidgetLCAUtil.preserveCustomVariant( progressBar );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( progressBar );
     adapter.preserve( PROP_MINIMUM, new Integer( progressBar.getMinimum() ) );
     adapter.preserve( PROP_MAXIMUM, new Integer( progressBar.getMaximum() ) );
     adapter.preserve( PROP_SELECTION, new Integer( progressBar.getSelection() ) );
     adapter.preserve( PROP_STATE, getState( progressBar ) );
-    WidgetLCAUtil.preserveCustomVariant( progressBar );
   }
 
   public void readData( Widget widget ) {
@@ -78,17 +79,6 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
 
   //////////////////
   // Helping methods
-
-  private static void renderProperty( ProgressBar progressBar,
-                                      String property,
-                                      Object newValue,
-                                      Object defValue )
-  {
-    if( WidgetLCAUtil.hasChanged( progressBar, property, newValue, defValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( progressBar );
-      clientObject.setProperty( property, newValue );
-    }
-  }
 
   private static String getState( ProgressBar progressBar ) {
     String result = "normal";

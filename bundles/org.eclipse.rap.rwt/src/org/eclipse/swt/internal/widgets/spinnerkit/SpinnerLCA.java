@@ -21,6 +21,9 @@ import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.widgets.*;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
 
 public final class SpinnerLCA extends AbstractWidgetLCA {
@@ -36,8 +39,8 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   static final String PROP_PAGE_INCREMENT = "pageIncrement";
   static final String PROP_TEXT_LIMIT = "textLimit";
   static final String PROP_DECIMAL_SEPARATOR = "decimalSeparator";
-  static final String PROP_MODIFY_LISTENER = "modifyListener";
-  static final String PROP_SELECTION_LISTENER = "selectionListener";
+  static final String PROP_MODIFY_LISTENER = "modify";
+  static final String PROP_SELECTION_LISTENER = "selection";
 
   // Default values
   private static final Integer DEFAULT_MINIMUM = new Integer( 0 );
@@ -51,7 +54,8 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     Spinner spinner = ( Spinner )widget;
     ControlLCAUtil.preserveValues( spinner );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    WidgetLCAUtil.preserveCustomVariant( spinner );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( spinner );
     adapter.preserve( PROP_MINIMUM, new Integer( spinner.getMinimum() ) );
     adapter.preserve( PROP_MAXIMUM, new Integer( spinner.getMaximum() ) );
     adapter.preserve( PROP_SELECTION, new Integer( spinner.getSelection() ) );
@@ -60,10 +64,8 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     adapter.preserve( PROP_PAGE_INCREMENT, new Integer( spinner.getPageIncrement() ) );
     adapter.preserve( PROP_TEXT_LIMIT, getTextLimit( spinner ) );
     adapter.preserve( PROP_DECIMAL_SEPARATOR, getDecimalSeparator() );
-    adapter.preserve( PROP_MODIFY_LISTENER, Boolean.valueOf( ModifyEvent.hasListener( spinner ) ) );
-    adapter.preserve( PROP_SELECTION_LISTENER,
-                      Boolean.valueOf( SelectionEvent.hasListener( spinner ) ) );
-    WidgetLCAUtil.preserveCustomVariant( spinner );
+    preserveListener( spinner, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( spinner ) );
+    preserveListener( spinner, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( spinner ) );
   }
 
   /* (intentionally non-JavaDoc'ed)
@@ -111,8 +113,8 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
     ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
-  //////////////////////////////////////
-  // Helping methods to write JavaScript
+  ///////////////////////////////////////////////////
+  // Helping methods to render the changed properties
 
   private static void renderMinimum( Spinner spinner ) {
     renderProperty( spinner, PROP_MINIMUM, new Integer( spinner.getMinimum() ), DEFAULT_MINIMUM );
@@ -152,41 +154,16 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListenModify( Spinner spinner ) {
-    Boolean newValue = Boolean.valueOf( ModifyEvent.hasListener( spinner ) );
-    if( WidgetLCAUtil.hasChanged( spinner, PROP_MODIFY_LISTENER, newValue, Boolean.FALSE ) ) {
-      renderListen( spinner, "modify", newValue.booleanValue() );
-    }
+    renderListener( spinner, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( spinner ), false );
   }
 
   private static void renderListenSelection( Spinner spinner ) {
-    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( spinner ) );
-    if( WidgetLCAUtil.hasChanged( spinner, PROP_SELECTION_LISTENER, newValue, Boolean.FALSE ) ) {
-      renderListen( spinner, "selection", newValue.booleanValue() );
-    }
+    String prop = PROP_SELECTION_LISTENER;
+    renderListener( spinner, prop, SelectionEvent.hasListener( spinner ), false );
   }
 
   //////////////////
   // Helping methods
-
-  private static void renderProperty( Spinner spinner,
-                                      String property,
-                                      Object newValue,
-                                      Object defValue )
-  {
-    if( WidgetLCAUtil.hasChanged( spinner, property, newValue, defValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( spinner );
-      clientObject.setProperty( property, newValue );
-    }
-  }
-
-  private static void renderListen( Spinner spinner, String eventType, boolean hasListener ) {
-    IClientObject clientObject = ClientObjectFactory.getForWidget( spinner );
-    if( hasListener ) {
-      clientObject.addListener( eventType );
-    } else {
-      clientObject.removeListener( eventType );
-    }
-  }
 
   private static Integer getTextLimit( Spinner spinner ) {
     Integer result = null;

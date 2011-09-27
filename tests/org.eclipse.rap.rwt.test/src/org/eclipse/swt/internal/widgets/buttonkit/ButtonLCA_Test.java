@@ -39,6 +39,8 @@ import org.json.*;
 // TODO [rst] Split into different test classes for button types
 public class ButtonLCA_Test extends TestCase {
 
+  private static final String PROP_SELECTION_LISTENER = "listener_selection";
+
   private Display display;
   private Shell shell;
   private ButtonLCA lca;
@@ -153,7 +155,7 @@ public class ButtonLCA_Test extends TestCase {
     //Selection_Listener
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    hasListeners = ( Boolean )adapter.getPreserved( PROP_SELECTION_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
     SelectionListener selectionListener = new SelectionAdapter() {
@@ -161,7 +163,7 @@ public class ButtonLCA_Test extends TestCase {
     button.addSelectionListener( selectionListener );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
+    hasListeners = ( Boolean )adapter.getPreserved( PROP_SELECTION_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
     //bound

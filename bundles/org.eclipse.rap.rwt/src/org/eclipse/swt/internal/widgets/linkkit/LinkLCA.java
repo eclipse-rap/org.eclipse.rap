@@ -29,21 +29,23 @@ import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Widget;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
 public class LinkLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Link";
+
   static final String PROP_TEXT = "text";
-  static final String PROP_SELECTION_LISTENER = "selectionListener";
+  static final String PROP_SELECTION_LISTENER = "selection";
 
   public void preserveValues( Widget widget ) {
     Link link = ( Link )widget;
     ControlLCAUtil.preserveValues( link );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_TEXT, link.getText() );
-    adapter.preserve( PROP_SELECTION_LISTENER,
-                      Boolean.valueOf( SelectionEvent.hasListener( link ) ) );
     WidgetLCAUtil.preserveCustomVariant( link );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( link );
+    adapter.preserve( PROP_TEXT, link.getText() );
+    preserveListener( link, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( link ) );
   }
 
   public void readData( Widget widget ) {
@@ -68,30 +70,21 @@ public class LinkLCA extends AbstractWidgetLCA {
     ControlLCAUtil.renderChanges( link );
     WidgetLCAUtil.renderCustomVariant( link );
     renderText( link );
-    renderListenSelection( link );
+    renderListener( link, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( link ), false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
+  ///////////////////////////////////////////////////
+  // Helping methods to render the changed properties
+
   private static void renderText( Link link ) {
     String newValue = link.getText();
     if( WidgetLCAUtil.hasChanged( link, PROP_TEXT, newValue, "" ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( link );
       clientObject.setProperty( PROP_TEXT, getTextObject( link ) );
-    }
-  }
-
-  private static void renderListenSelection( Link link ) {
-    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( link ) );
-    if( WidgetLCAUtil.hasChanged( link, PROP_SELECTION_LISTENER, newValue, Boolean.FALSE ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( link );
-      if( newValue.booleanValue() ) {
-        clientObject.addListener( "selection" );
-      } else {
-        clientObject.removeListener( "selection" );
-      }
     }
   }
 

@@ -13,10 +13,9 @@ package org.eclipse.swt.internal.widgets.buttonkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Button;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 
 final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
@@ -24,9 +23,9 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
   static final String PROP_GRAYED = "grayed";
 
   void preserveValues( Button button ) {
+    ButtonLCAUtil.preserveValues( button );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
     adapter.preserve( PROP_GRAYED, Boolean.valueOf( button.getGrayed() ) );
-    ButtonLCAUtil.preserveValues( button );
   }
 
   void readData( Button button ) {
@@ -43,18 +42,7 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
   }
 
   void renderChanges( Button button ) throws IOException {
-    // TODO [rh] the JSConst.JS_WIDGET_SELECTED does unnecessarily send
-    // bounds of the widget that was clicked -> In the SelectionEvent
-    // for Button the bounds are undefined
     ButtonLCAUtil.renderChanges( button );
-    renderGrayed( button );
-  }
-
-  private static void renderGrayed( Button button ) {
-    Boolean newValue = Boolean.valueOf( button.getGrayed() );
-    if( WidgetLCAUtil.hasChanged( button, PROP_GRAYED, newValue, Boolean.FALSE ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( button );
-      clientObject.setProperty( PROP_GRAYED, newValue );
-    }
+    renderProperty( button, PROP_GRAYED, Boolean.valueOf( button.getGrayed() ), Boolean.FALSE );
   }
 }

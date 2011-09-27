@@ -64,8 +64,8 @@ public class CLabelLCA_Test extends TestCase {
     assertEquals( "text", text );
     Image image = ( Image )adapter.getPreserved( CLabelLCA.PROP_IMAGE );
     assertEquals( Graphics.getImage( Fixture.IMAGE_100x50 ), image );
-    Integer alignment = ( Integer )adapter.getPreserved( CLabelLCA.PROP_ALIGNMENT );
-    assertEquals( SWT.LEFT, alignment.intValue() );
+    String alignment = ( String )adapter.getPreserved( CLabelLCA.PROP_ALIGNMENT );
+    assertEquals( "left", alignment );
     Integer leftMargin = ( Integer )adapter.getPreserved( CLabelLCA.PROP_LEFT_MARGIN );
     assertEquals( 1, leftMargin.intValue() );
     Integer topMargin = ( Integer )adapter.getPreserved( CLabelLCA.PROP_TOP_MARGIN );

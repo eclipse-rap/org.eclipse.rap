@@ -21,23 +21,25 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Label;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 final class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   private static final String TYPE = "rwt.widgets.Label";
+
   private static final String PROP_TEXT = "text";
   private static final String PROP_ALIGNMENT = "alignment";
   private static final String PROP_IMAGE = "image";
 
-  private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
+  private static final String DEFAULT_ALIGNMENT = "left";
 
   void preserveValues( Label label ) {
     ControlLCAUtil.preserveValues( label );
+    WidgetLCAUtil.preserveCustomVariant( label );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( label );
     adapter.preserve( PROP_TEXT, label.getText() );
     adapter.preserve( PROP_IMAGE, label.getImage() );
-    adapter.preserve( PROP_ALIGNMENT, new Integer( label.getAlignment() ) );
-    WidgetLCAUtil.preserveCustomVariant( label );
+    adapter.preserve( PROP_ALIGNMENT, getAlignment( label ) );
   }
 
   void readData( Label label ) {
@@ -56,22 +58,14 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   void renderChanges( Label label ) throws IOException {
     ControlLCAUtil.renderChanges( label );
-    renderText( label );
-    renderImage( label );
-    renderAlignment( label );
     WidgetLCAUtil.renderCustomVariant( label );
+    renderProperty( label, PROP_TEXT, label.getText(), "" );
+    renderImage( label );
+    renderProperty( label, PROP_ALIGNMENT, getAlignment( label ), DEFAULT_ALIGNMENT );
   }
 
-  //////////////////////////////////////
-  // Helping methods to write JavaScript
-
-  private static void renderText( Label label ) {
-    String newValue = label.getText();
-    if( WidgetLCAUtil.hasChanged( label, PROP_TEXT, newValue, "" ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( label );
-      clientObject.setProperty( "text", newValue );
-    }
-  }
+  ///////////////////////////////////////////////////
+  // Helping methods to render the changed properties
 
   private static void renderImage( Label label ) {
     Image newValue = label.getImage();
@@ -91,15 +85,11 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
     }
   }
 
-  private static void renderAlignment( Label label ) {
-    Integer newValue = new Integer( label.getAlignment() );
-    if( WidgetLCAUtil.hasChanged( label, PROP_ALIGNMENT, newValue, DEFAULT_ALIGNMENT ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( label );
-      clientObject.setProperty( PROP_ALIGNMENT, getAlignment( label.getAlignment() ) );
-    }
-  }
+  //////////////////
+  // Helping methods
 
-  private static String getAlignment( int alignment ) {
+  private static String getAlignment( Label label ) {
+    int alignment = label.getAlignment();
     String result;
     if( ( alignment & SWT.LEFT ) != 0 ) {
       result = "left";
@@ -112,5 +102,4 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
     }
     return result;
   }
-
 }

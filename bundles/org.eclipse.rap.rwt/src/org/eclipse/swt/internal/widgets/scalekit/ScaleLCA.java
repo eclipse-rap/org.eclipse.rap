@@ -19,6 +19,9 @@ import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.*;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
 
 public final class ScaleLCA extends AbstractWidgetLCA {
@@ -31,7 +34,7 @@ public final class ScaleLCA extends AbstractWidgetLCA {
   static final String PROP_SELECTION = "selection";
   static final String PROP_INCREMENT = "increment";
   static final String PROP_PAGE_INCREMENT = "pageIncrement";
-  static final String PROP_SELECTION_LISTENER = "selectionListener";
+  static final String PROP_SELECTION_LISTENER = "selection";
 
   // Default values
   static final Integer DEFAULT_MINIMUM = new Integer( 0 );
@@ -43,15 +46,14 @@ public final class ScaleLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     Scale scale = ( Scale )widget;
     ControlLCAUtil.preserveValues( scale );
+    WidgetLCAUtil.preserveCustomVariant( scale );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( scale );
     adapter.preserve( PROP_MINIMUM, new Integer( scale.getMinimum() ) );
     adapter.preserve( PROP_MAXIMUM, new Integer( scale.getMaximum() ) );
     adapter.preserve( PROP_SELECTION, new Integer( scale.getSelection() ) );
     adapter.preserve( PROP_INCREMENT, new Integer( scale.getIncrement() ) );
     adapter.preserve( PROP_PAGE_INCREMENT, new Integer( scale.getPageIncrement() ) );
-    adapter.preserve( PROP_SELECTION_LISTENER,
-                      Boolean.valueOf( SelectionEvent.hasListener( scale ) ) );
-    WidgetLCAUtil.preserveCustomVariant( scale );
+    preserveListener( scale, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( scale ) );
   }
 
   public void readData( Widget widget ) {
@@ -91,8 +93,8 @@ public final class ScaleLCA extends AbstractWidgetLCA {
     ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
-  ////////////////////////////////////////
-  // Helping methods to render the changes
+  ///////////////////////////////////////////////////
+  // Helping methods to render the changed properties
 
   private static void renderMinimum( Scale scale ) {
     renderProperty( scale, PROP_MINIMUM, new Integer( scale.getMinimum() ), DEFAULT_MINIMUM );
@@ -113,39 +115,11 @@ public final class ScaleLCA extends AbstractWidgetLCA {
   }
 
   private static void renderPageIncrement( Scale scale ) {
-    String prop = PROP_PAGE_INCREMENT;
     Integer defValue = DEFAULT_PAGE_INCREMENT;
-    renderProperty( scale, prop, new Integer( scale.getPageIncrement() ), defValue );
+    renderProperty( scale, PROP_PAGE_INCREMENT, new Integer( scale.getPageIncrement() ), defValue );
   }
 
   private static void renderListenSelection( Scale scale ) {
-    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( scale ) );
-    if( WidgetLCAUtil.hasChanged( scale, PROP_SELECTION_LISTENER, newValue, Boolean.FALSE ) ) {
-      renderListen( scale, "selection", newValue.booleanValue() );
-    }
+    renderListener( scale, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( scale ), false );
   }
-
-  //////////////////
-  // Helping methods
-
-  private static void renderProperty( Scale scale,
-                                      String property,
-                                      Object newValue,
-                                      Object defValue )
-  {
-    if( WidgetLCAUtil.hasChanged( scale, property, newValue, defValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( scale );
-      clientObject.setProperty( property, newValue );
-    }
-  }
-
-  private static void renderListen( Scale scale, String eventType, boolean hasListener ) {
-    IClientObject clientObject = ClientObjectFactory.getForWidget( scale );
-    if( hasListener ) {
-      clientObject.addListener( eventType );
-    } else {
-      clientObject.removeListener( eventType );
-    }
-  }
-
 }

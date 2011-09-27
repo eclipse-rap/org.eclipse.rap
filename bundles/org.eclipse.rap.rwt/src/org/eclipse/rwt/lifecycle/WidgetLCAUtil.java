@@ -55,19 +55,17 @@ public final class WidgetLCAUtil {
   private static final String PROP_FOREGROUND = "foreground";
   private static final String PROP_BACKGROUND = "background";
   private static final String PROP_BACKGROUND_TRANSPARENCY = "backgroundTrans";
-  private static final String PROP_BACKGROUND_GRADIENT_COLORS
-    = "backgroundGradientColors";
-  private static final String PROP_BACKGROUND_GRADIENT_PERCENTS
-    = "backgroundGradientPercents";
-  private static final String PROP_BACKGROUND_GRADIENT_VERTICAL
-    = "backgroundGradientVertical";
+  private static final String PROP_BACKGROUND_GRADIENT_COLORS = "backgroundGradientColors";
+  private static final String PROP_BACKGROUND_GRADIENT_PERCENTS = "backgroundGradientPercents";
+  private static final String PROP_BACKGROUND_GRADIENT_VERTICAL = "backgroundGradientVertical";
   private static final String PROP_ROUNDED_BORDER_WIDTH = "roundedBorderWidth";
   private static final String PROP_ROUNDED_BORDER_COLOR = "roundedBorderColor";
-  private static final String PROP_ROUNDED_BORDER_RADIUS
-    = "roundedBorderRadius";
+  private static final String PROP_ROUNDED_BORDER_RADIUS = "roundedBorderRadius";
   private static final String PROP_ENABLED = "enabled";
   private static final String PROP_VARIANT = "variant";
   private static final String PROP_HELP_LISTENER = "helpListener";
+
+  private static final String LISTENER_PREFIX = "listener_";
 
   private static final String JS_PROP_SPACE = "space";
 
@@ -95,6 +93,20 @@ public final class WidgetLCAUtil {
 
   /////////////////////////////////////////////
   // Methods to preserve common property values
+
+  /**
+   * Preserves the value of the listener of the specified widget.
+   *
+   * @param widget the widget whose listener to preserve
+   * @param listener the type of the listener
+   * @param value the value to preserve
+   *
+   * @since 1.5
+   */
+  public static void preserveListener( Widget widget, String listener, boolean value ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( LISTENER_PREFIX + listener, new Boolean( value ) );
+  }
 
   /**
    * Preserves the value of the property <code>bounds</code> of the
@@ -386,6 +398,59 @@ public final class WidgetLCAUtil {
 
   /////////////////////////////////////////////////////////
   // Methods to write JavaScript code for widget properties
+
+  /**
+   * Determines whether the property of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side property of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param property the property name
+   * @param newValue the new value of the property
+   * @param defaultValue the default value of the property
+   *
+   * @since 1.5
+   */
+  public static void renderProperty( Widget widget,
+                                     String property,
+                                     Object newValue,
+                                     Object defaultValue )
+  {
+    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( property, newValue );
+    }
+  }
+
+  /**
+   * Determines whether the listener of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side listener of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param listener the listener type
+   * @param newValue the new value of the listener (true if listener is attached, false otherwise)
+   * @param defaultValue the default value of the listener
+   *
+   * @since 1.5
+   */
+  public static void renderListener( Widget widget,
+                                     String listener,
+                                     boolean newValue,
+                                     boolean defaultValue )
+  {
+    String property = LISTENER_PREFIX + listener;
+    Boolean value = new Boolean( newValue );
+    Boolean defValue = new Boolean( defaultValue );
+    if( WidgetLCAUtil.hasChanged( widget, property, value, defValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      if( newValue ) {
+        clientObject.addListener( listener );
+      } else {
+        clientObject.removeListener( listener );
+      }
+    }
+  }
 
   /**
    * Determines whether the bounds of the given widget have changed during the

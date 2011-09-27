@@ -23,14 +23,20 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Button;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
 
 final class ButtonLCAUtil {
 
   private static final String TYPE = "rwt.widgets.Button";
+
+  static final String PROP_TEXT = "text";
+  static final String PROP_IMAGE = "image";
   static final String PROP_SELECTION = "selection";
   static final String PROP_ALIGNMENT = "alignment";
-  static final String PROP_SELECTION_LISTENERS = "selectionListeners";
+  static final String PROP_SELECTION_LISTENERS = "selection";
 
   private static final String PARAM_SELECTION = "selection";
   private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.CENTER );
@@ -41,16 +47,13 @@ final class ButtonLCAUtil {
 
   static void preserveValues( Button button ) {
     ControlLCAUtil.preserveValues( button );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    adapter.preserve( Props.TEXT, button.getText() );
-    adapter.preserve( Props.IMAGE, button.getImage() );
-    adapter.preserve( PROP_SELECTION, Boolean.valueOf( button.getSelection() ) );
-    adapter.preserve( PROP_SELECTION_LISTENERS,
-                      Boolean.valueOf( SelectionEvent.hasListener( button ) ) );
-    adapter.preserve( PROP_ALIGNMENT, new Integer( button.getAlignment() ) );
-    boolean hasListeners = SelectionEvent.hasListener( button );
-    adapter.preserve( Props.SELECTION_LISTENERS, Boolean.valueOf( hasListeners ) );
     WidgetLCAUtil.preserveCustomVariant( button );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
+    adapter.preserve( PROP_TEXT, button.getText() );
+    adapter.preserve( PROP_IMAGE, button.getImage() );
+    adapter.preserve( PROP_SELECTION, Boolean.valueOf( button.getSelection() ) );
+    adapter.preserve( PROP_ALIGNMENT, new Integer( button.getAlignment() ) );
+    preserveListener( button, PROP_SELECTION_LISTENERS, SelectionEvent.hasListener( button ) );
   }
 
   static void renderInitialization( Button button ) {
@@ -78,15 +81,14 @@ final class ButtonLCAUtil {
     return value != null;
   }
 
-  static void renderText( Button button ) {
-    String newValue = button.getText();
-    if( WidgetLCAUtil.hasChanged( button, Props.TEXT, newValue, "" ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( button );
-      clientObject.setProperty( "text", newValue );
-    }
+  ///////////////////////////////////////////////////
+  // Helping methods to render the changed properties
+
+  private static void renderText( Button button ) {
+    renderProperty( button, PROP_TEXT, button.getText(), "" );
   }
 
-  static void renderImage( Button button ) {
+  private static void renderImage( Button button ) {
     Image image = button.getImage();
     if( WidgetLCAUtil.hasChanged( button, Props.IMAGE, image, null ) ) {
       Object[] args = null;
@@ -104,7 +106,7 @@ final class ButtonLCAUtil {
     }
   }
 
-  static void renderAlignment( Button button ) {
+  private static void renderAlignment( Button button ) {
     if( ( button.getStyle() & SWT.ARROW ) == 0 ) {
       Integer newValue = new Integer( button.getAlignment() );
       if( WidgetLCAUtil.hasChanged( button, PROP_ALIGNMENT, newValue, DEFAULT_ALIGNMENT ) ) {
@@ -129,24 +131,12 @@ final class ButtonLCAUtil {
     }
   }
 
-  static void renderSelection( Button button ) {
-    Boolean newValue = Boolean.valueOf( button.getSelection() );
-    if( WidgetLCAUtil.hasChanged( button, PROP_SELECTION, newValue, Boolean.FALSE ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( button );
-      clientObject.setProperty( "selection", newValue );
-    }
+  private static void renderSelection( Button button ) {
+    String prop = PROP_SELECTION;
+    renderProperty( button, prop, Boolean.valueOf( button.getSelection() ), Boolean.FALSE );
   }
 
-  static void renderListenSelection( Button button ) {
-    boolean hasListener = SelectionEvent.hasListener( button );
-    Boolean newValue = Boolean.valueOf( hasListener );
-    if( WidgetLCAUtil.hasChanged( button, PROP_SELECTION_LISTENERS, newValue, Boolean.FALSE ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( button );
-      if( newValue.booleanValue() ) {
-        clientObject.addListener( "selection" );
-      } else {
-        clientObject.removeListener( "selection" );
-      }
-    }
+  private static void renderListenSelection( Button button ) {
+    renderListener( button, PROP_SELECTION_LISTENERS, SelectionEvent.hasListener( button ), false );
   }
 }

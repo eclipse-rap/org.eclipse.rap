@@ -19,18 +19,21 @@ import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Widget;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+
 
 public class GroupLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Group";
+
   private static final String PROP_TEXT = "text";
 
   public void preserveValues( final Widget widget ) {
     Group group = ( Group )widget;
     ControlLCAUtil.preserveValues( group );
+    WidgetLCAUtil.preserveCustomVariant( group );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( group );
     adapter.preserve( PROP_TEXT, group.getText() );
-    WidgetLCAUtil.preserveCustomVariant( group );
   }
 
   public void readData( Widget widget ) {
@@ -52,15 +55,7 @@ public class GroupLCA extends AbstractWidgetLCA {
     Group group = ( Group )widget;
     ControlLCAUtil.renderChanges( group );
     WidgetLCAUtil.renderCustomVariant( group );
-    renderText( group );
-  }
-
-  private static void renderText( Group group ) {
-    String text = group.getText();
-    if( WidgetLCAUtil.hasChanged( group, PROP_TEXT, text, "" ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( group );
-      clientObject.setProperty( PROP_TEXT, text );
-    }
+    renderProperty( group, PROP_TEXT, group.getText(), "" );
   }
 
   public void renderDispose( Widget widget ) throws IOException {

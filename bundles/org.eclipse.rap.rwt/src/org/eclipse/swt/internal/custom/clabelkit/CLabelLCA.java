@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Widget;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 public final class CLabelLCA extends AbstractWidgetLCA {
 
@@ -36,20 +37,20 @@ public final class CLabelLCA extends AbstractWidgetLCA {
   static final String PROP_RIGHT_MARGIN = "rightMargin";
   static final String PROP_BOTTOM_MARGIN = "bottomMargin";
 
-  private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
+  private static final String DEFAULT_ALIGNMENT = "left";
 
   public void preserveValues( Widget widget ) {
     CLabel label = ( CLabel )widget;
     ControlLCAUtil.preserveValues( label );
+    WidgetLCAUtil.preserveCustomVariant( label );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( label );
     adapter.preserve( PROP_TEXT, label.getText() );
     adapter.preserve( PROP_IMAGE, label.getImage() );
-    adapter.preserve( PROP_ALIGNMENT, new Integer( label.getAlignment() ) );
+    adapter.preserve( PROP_ALIGNMENT, getAlignment( label ) );
     adapter.preserve( PROP_LEFT_MARGIN, new Integer( label.getLeftMargin() ) );
     adapter.preserve( PROP_TOP_MARGIN, new Integer( label.getTopMargin() ) );
     adapter.preserve( PROP_RIGHT_MARGIN, new Integer( label.getRightMargin() ) );
     adapter.preserve( PROP_BOTTOM_MARGIN, new Integer( label.getBottomMargin() ) );
-    WidgetLCAUtil.preserveCustomVariant( label );
     WidgetLCAUtil.preserveBackgroundGradient( label );
   }
 
@@ -73,9 +74,9 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     CLabel clabel = ( CLabel )widget;
     ControlLCAUtil.renderChanges( clabel );
     WidgetLCAUtil.renderCustomVariant( clabel );
-    renderText( clabel );
+    renderProperty( clabel, PROP_TEXT, clabel.getText(), null );
     renderImage( clabel );
-    renderAlignment( clabel );
+    renderProperty( clabel, PROP_ALIGNMENT, getAlignment( clabel ), DEFAULT_ALIGNMENT );
     renderMargins( clabel );
     WidgetLCAUtil.renderBackgroundGradient( clabel );
   }
@@ -84,16 +85,8 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
-  ////////////////////////////////////
-  // Helping methods to set properties
-
-  private static void renderText( CLabel clabel ) {
-    String newValue = clabel.getText();
-    if( WidgetLCAUtil.hasChanged( clabel, PROP_TEXT, newValue, null ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( clabel );
-      clientObject.setProperty( "text", newValue );
-    }
-  }
+  ///////////////////////////////////////////////////
+  // Helping methods to render the changed properties
 
   private static void renderImage( CLabel clabel ) {
     Image newValue = clabel.getImage();
@@ -113,14 +106,6 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void renderAlignment( CLabel clabel ) {
-    Integer newValue = new Integer( clabel.getAlignment() );
-    if( WidgetLCAUtil.hasChanged( clabel, PROP_ALIGNMENT, newValue, DEFAULT_ALIGNMENT ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( clabel );
-      clientObject.setProperty( PROP_ALIGNMENT, getAlignment( clabel.getAlignment() ) );
-    }
-  }
-
   private static void renderMargins( CLabel clabel ) {
     Rectangle padding = getThemeAdapter( clabel ).getPadding( clabel );
     renderSingleMargin( clabel, PROP_LEFT_MARGIN, clabel.getLeftMargin(), padding.x );
@@ -134,7 +119,8 @@ public final class CLabelLCA extends AbstractWidgetLCA {
   //////////////////
   // Helping methods
 
-  private static String getAlignment( int alignment ) {
+  private static String getAlignment( CLabel clabel ) {
+    int alignment = clabel.getAlignment();
     String result;
     if( ( alignment & SWT.LEFT ) != 0 ) {
       result = "left";
@@ -154,12 +140,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
                                           int defaultMargin )
   {
 
-    Integer newValue = new Integer( margin );
-    Integer defValue = new Integer( defaultMargin );
-    if( WidgetLCAUtil.hasChanged( clabel, property, newValue , defValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( clabel );
-      clientObject.setProperty( property, newValue );
-    }
+    renderProperty( clabel, property, new Integer( margin ), new Integer( defaultMargin ) );
   }
 
   private static CLabelThemeAdapter getThemeAdapter( CLabel clabel ) {
