@@ -107,7 +107,7 @@ org.eclipse.rwt.protocol.EncodingUtil = {
    * replaced
    */
   escapeLeadingTrailingSpaces : function( text ) {
-    return text.replace( this._outerWhitespaceRegExp2, this._outerWhitespaceResolver );;
+    return text.replace( this._outerWhitespaceRegExp2, this._outerWhitespaceResolver );
   },
 
   /////////
