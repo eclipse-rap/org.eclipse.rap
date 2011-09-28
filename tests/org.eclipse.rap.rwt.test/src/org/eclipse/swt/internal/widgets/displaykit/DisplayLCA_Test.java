@@ -12,6 +12,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -323,6 +326,22 @@ public class DisplayLCA_Test extends TestCase {
     assertTrue( message.getOperation( 0 ) instanceof DestroyOperation );
     assertEquals( "w2", message.getOperation( 0 ).getTarget() );
   }
+
+  public void testRenderRunnableIsExecutedAndCleared() throws IOException {
+    Display display = new Display();
+    Widget widget = new Shell( display );
+    WidgetAdapter widgetAdapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
+    IRenderRunnable renderRunnable = mock( IRenderRunnable.class );
+    widgetAdapter.setRenderRunnable( renderRunnable );
+    Fixture.fakeNewRequest( display );
+    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
+    
+    displayLCA.render( display );
+
+    verify( renderRunnable ).afterRender();
+    assertEquals( null, widgetAdapter.getRenderRunnable() );
+  }
+  
 
   public void testFocusControl() {
     Display display = new Display();

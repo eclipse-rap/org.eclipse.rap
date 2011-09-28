@@ -191,7 +191,7 @@ public class Display extends Device implements Adaptable {
   private Control focusControl;
   private transient Monitor monitor;
   private transient IDisplayAdapter displayAdapter;
-  private transient WidgetAdapter widgetAdapter;
+  private WidgetAdapter widgetAdapter;
   private Set<Listener> closeListeners;
   private Set<Listener> disposeListeners;
   private Runnable[] disposeList;
@@ -752,7 +752,7 @@ public class Display extends Device implements Adaptable {
   /////////////////////
   // Adaptable override
 
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result = null;
     if( adapter == IDisplayAdapter.class ) {
       if( displayAdapter == null ) {

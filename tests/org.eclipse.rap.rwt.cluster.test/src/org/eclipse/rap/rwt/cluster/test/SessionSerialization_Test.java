@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.test;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 
 import junit.framework.TestCase;
@@ -27,14 +28,16 @@ import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineCluster;
 public class SessionSerialization_Test extends TestCase {
 
   private IServletEngineCluster cluster;
-  private IServletEngine servletEngine;
+  private IServletEngine primary;
+  private IServletEngine secondary;
   private RWTClient client;
 
-  public void testIsSerializable() throws Exception {
-    client.sendStartupRequest();
-    client.sendInitializationRequest();
-    Response response = client.sendDisplayResizeRequest( 600, 800 );
+  public void testWidgetsAreSerializable() throws Exception {
+    Response response = sendRequestToPrimary();
+    assertEquals( HttpURLConnection.HTTP_OK, response.getResponseCode() );
+    assertTrue( response.isValidJavascript() );
     
+    response = switchToSecondary();
     assertEquals( HttpURLConnection.HTTP_OK, response.getResponseCode() );
     assertTrue( response.isValidJavascript() );
   }
@@ -42,13 +45,26 @@ public class SessionSerialization_Test extends TestCase {
   protected void setUp() throws Exception {
     ClusterFixture.setUp();
     cluster = new JettyCluster();
-    servletEngine = cluster.addServletEngine();
+    primary = cluster.addServletEngine();
+    secondary = cluster.addServletEngine();
     cluster.start( WidgetsEntryPoint.class );
-    client = new RWTClient( servletEngine );
+    client = new RWTClient( primary );
   }
 
   protected void tearDown() throws Exception {
     cluster.stop();
     ClusterFixture.tearDown();
+  }
+
+  private Response sendRequestToPrimary() throws IOException {
+    client.sendStartupRequest();
+    client.sendInitializationRequest();
+    return client.sendDisplayResizeRequest( 600, 800 );
+  }
+
+  private Response switchToSecondary() throws IOException {
+    cluster.removeServletEngine( primary );
+    client.changeServletEngine( secondary );
+    return client.sendDisplayResizeRequest( 500, 700 );
   }
 }

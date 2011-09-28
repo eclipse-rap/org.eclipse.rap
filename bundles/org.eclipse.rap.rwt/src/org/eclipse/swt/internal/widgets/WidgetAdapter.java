@@ -24,10 +24,10 @@ public final class WidgetAdapter implements IWidgetAdapter, SerializableCompatib
 
   private final String id;
   private boolean initialized;
-  private /*final*/ transient Map<String,Object> preservedValues;
+  private transient Map<String,Object> preservedValues;
   private String jsParent;
-  private IRenderRunnable renderRunnable;
-  private String variant;
+  private transient IRenderRunnable renderRunnable;
+  private transient String cachedVariant;
 
   public WidgetAdapter() {
     this( IdGenerator.getInstance().newId() );
@@ -90,11 +90,11 @@ public final class WidgetAdapter implements IWidgetAdapter, SerializableCompatib
   }
 
   public String getCachedVariant() {
-    return variant;
+    return cachedVariant;
   }
 
-  public void setCachedVariant( String variant ) {
-    this.variant = variant;
+  public void setCachedVariant( String cachedVariant ) {
+    this.cachedVariant = cachedVariant;
   }
 
   public void markDisposed( Widget widget ) {

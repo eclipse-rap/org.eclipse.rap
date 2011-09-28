@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import static org.mockito.Mockito.mock;
+
 import java.io.IOException;
 
 import junit.framework.TestCase;
@@ -67,12 +69,10 @@ public class WidgetAdapter_Test extends TestCase {
   }
 
   public void testId() {
-    IWidgetAdapter adapter1
-      = ( IWidgetAdapter )display.getAdapter( IWidgetAdapter.class );
+    IWidgetAdapter adapter1 = ( IWidgetAdapter )display.getAdapter( IWidgetAdapter.class );
     display.dispose();
     display = new Display();
-    IWidgetAdapter adapter2
-      = ( IWidgetAdapter )display.getAdapter( IWidgetAdapter.class );
+    IWidgetAdapter adapter2 = ( IWidgetAdapter )display.getAdapter( IWidgetAdapter.class );
     assertEquals( adapter1.getId(), adapter2.getId() );
   }
 
@@ -98,40 +98,25 @@ public class WidgetAdapter_Test extends TestCase {
     assertEquals( true, adapter.isInitialized() );
   }
   
-  public void testRenderRunnable() throws IOException {
-    final StringBuffer log = new StringBuffer();
-    Composite shell = new Shell( display, SWT.NONE );
-    WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( shell );
-    IRenderRunnable runnable = new IRenderRunnable() {
-      public void afterRender() throws IOException {
-        log.append( "executed" );
-      }
-    };
-    adapter.setRenderRunnable( runnable );
-    assertSame( runnable, adapter.getRenderRunnable() );
-
-    // ensure that renderRunnable can only be set once
-    try {
-      IRenderRunnable otherRunnable = new IRenderRunnable() {
-        public void afterRender() throws IOException {
-          // do nothing
-        }
-      };
-      adapter.setRenderRunnable( otherRunnable );
-      fail( "Must not allow to set renderRunnable twice" );
-    } catch( IllegalStateException e ) {
-      // expected
-    }
+  public void testRenderRunnable() {
+    WidgetAdapter adapter = new WidgetAdapter();
+    IRenderRunnable runnable = mock( IRenderRunnable.class );
     
-    // ensure that renderRunnable is executed and cleared at the end of 
-    // request/DisplayLCA
-    log.setLength( 0 );
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
-    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
-    displayLCA.render( display );
-    assertEquals( "executed", log.toString() );
-    assertEquals( null, adapter.getRenderRunnable() );
+    adapter.setRenderRunnable( runnable );
+    
+    assertSame( runnable, adapter.getRenderRunnable() );
+  }
+  
+  public void testSetRenderRunnableTwice() {
+    WidgetAdapter adapter = new WidgetAdapter();
+    adapter.setRenderRunnable( mock( IRenderRunnable.class ) );
+    IRenderRunnable otherRenderRunnable = mock( IRenderRunnable.class );
+
+    try {
+      adapter.setRenderRunnable( otherRenderRunnable );
+      fail( "Must not allow to set renderRunnable twice" );
+    } catch( IllegalStateException expected ) {
+    }
   }
   
   public void testMarkDisposed() {
@@ -151,5 +136,31 @@ public class WidgetAdapter_Test extends TestCase {
     widget.dispose();
     assertTrue( widget.isDisposed() );
     assertEquals( 1, DisposedWidgets.getAll().length );
+  }
+  
+  public void testSerializableFields() throws Exception {
+    WidgetAdapter adapter = new WidgetAdapter();
+    adapter.setJSParent( "jsParent" );
+    adapter.setInitialized( true );
+    
+    WidgetAdapter deserializedAdapter = Fixture.serializeAndDeserialize( adapter );
+    
+    assertEquals( adapter.getId(), deserializedAdapter.getId() );
+    assertEquals( adapter.getJSParent(), deserializedAdapter.getJSParent() );
+    assertEquals( adapter.isInitialized(), deserializedAdapter.isInitialized() );
+  }
+
+  public void testNonSerializableFields() throws Exception {
+    String property = "foo";
+    WidgetAdapter adapter = new WidgetAdapter();
+    adapter.setCachedVariant( "cachedVariant" );
+    adapter.setRenderRunnable( mock( IRenderRunnable.class ) );
+    adapter.preserve( property, "bar" );
+    
+    WidgetAdapter deserializedAdapter = Fixture.serializeAndDeserialize( adapter );
+    
+    assertNull( deserializedAdapter.getCachedVariant() );
+    assertNull( deserializedAdapter.getRenderRunnable() );
+    assertNull( deserializedAdapter.getPreserved( property ) );
   }
 }
