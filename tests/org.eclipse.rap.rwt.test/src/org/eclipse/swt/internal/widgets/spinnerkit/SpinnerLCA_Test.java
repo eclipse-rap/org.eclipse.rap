@@ -563,6 +563,7 @@ public class SpinnerLCA_Test extends TestCase {
   public void testRenderInitialDecimalSeparator() throws IOException {
     Spinner spinner = new Spinner( shell, SWT.NONE );
 
+    RWT.setLocale( Locale.US );
     lca.render( spinner );
 
     Message message = Fixture.getProtocolMessage();
