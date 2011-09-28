@@ -61,7 +61,6 @@ public class ShellLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( ShellLCA.PROP_SHELL_LISTENER );
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
     assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
-    assertEquals( Boolean.FALSE, hasListeners );
     assertEquals( null, adapter.getPreserved( ShellLCA.PROP_ACTIVE_CONTROL ) );
     assertEquals( null, adapter.getPreserved( ShellLCA.PROP_ACTIVE_SHELL ) );
     assertEquals( null, adapter.getPreserved( ShellLCA.PROP_MODE ) );
@@ -80,10 +79,8 @@ public class ShellLCA_Test extends TestCase {
     shell.setMinimumSize( 100, 100 );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
-    hasListeners = ( Boolean )adapter.getPreserved( ShellLCA.PROP_SHELL_LISTENER );
     assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
     assertEquals( image, adapter.getPreserved( Props.IMAGE ) );
-    assertEquals( Boolean.TRUE, hasListeners );
     assertEquals( button, adapter.getPreserved( ShellLCA.PROP_ACTIVE_CONTROL ) );
     assertEquals( shell, adapter.getPreserved( ShellLCA.PROP_ACTIVE_SHELL ) );
     assertEquals( "maximized", adapter.getPreserved( ShellLCA.PROP_MODE ) );
@@ -398,14 +395,29 @@ public class ShellLCA_Test extends TestCase {
   }
 
   public void testRenderFullscreen() throws Exception {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
     shell.open();
     ShellLCA lca = new ShellLCA();
+    shell.setFullScreen( true );
+    Fixture.preserveWidgets();
 
+    shell.setFullScreen( false );
+    lca.renderChanges( shell );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( shell, "mode" ) );
+  }
+  
+  public void testResetFullscreen() throws Exception {
+    shell.open();
+    ShellLCA lca = new ShellLCA();
+    
     shell.setFullScreen( true );
     lca.renderChanges( shell );
     
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Boolean.TRUE, message.findSetProperty( shell, "fullscreen" ) );
+    assertEquals( "fullscreen", message.findSetProperty( shell, "mode" ) );
   }
 
   public void testRenderDefaultButtonIntiallyNull() throws IOException {
@@ -569,6 +581,36 @@ public class ShellLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findListenProperty( shell, "shell" ) );
+  }
+  
+  public void testRenderShellListenerUnchanged() throws Exception {
+    Shell shell = new Shell( display , SWT.SHELL_TRIM );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    shell.addShellListener( new ShellAdapter(){ } );
+    ShellLCA lca = new ShellLCA();
+    
+    Fixture.preserveWidgets();
+    lca.renderChanges( shell );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( shell, "shell" ) );
+  }
+
+  public void testRenderRemoveShellListener() throws Exception {
+    Shell shell = new Shell( display , SWT.SHELL_TRIM );
+    ShellLCA lca = new ShellLCA();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    ShellListener listener = new ShellAdapter(){};
+    shell.addShellListener( listener );
+
+    Fixture.preserveWidgets();
+    shell.removeShellListener( listener );
+    lca.renderChanges( shell );
+    
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( shell, "shell" ) );
   }
 
   public void testRenderActive() throws Exception {

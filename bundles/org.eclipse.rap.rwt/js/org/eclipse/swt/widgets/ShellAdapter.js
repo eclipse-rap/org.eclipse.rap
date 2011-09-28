@@ -42,7 +42,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Shell", {
     "alpha",
     "active",
     "mode",
-    "fullScreen",
     "hasShellListener",
     "minimumSize",
     "defaultButton",

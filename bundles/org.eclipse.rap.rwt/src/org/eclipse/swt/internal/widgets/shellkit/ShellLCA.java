@@ -11,6 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.shellkit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +31,6 @@ import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 
 
 public final class ShellLCA extends AbstractWidgetLCA {
@@ -39,7 +43,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
   static final String PROP_MODE = "mode";
   static final String PROP_FULLSCREEN = "fullScreen";
   static final String PROP_MINIMUM_SIZE = "minimumSize";
-  static final String PROP_SHELL_LISTENER = "shellListener";
+  static final String PROP_SHELL_LISTENER = "shell";
   private static final String PROP_SHELL_MENU  = "menuBar";
   private static final String PROP_SHELL_MENU_BOUNDS = "menuBarShellClientArea";
   private static final String PROP_DEFAULT_BUTTON = "defaultButton";
@@ -59,8 +63,7 @@ public final class ShellLCA extends AbstractWidgetLCA {
     preserveProperty( shell, PROP_SHELL_MENU, shell.getMenuBar() );
     preserveProperty( shell, PROP_MINIMUM_SIZE, shell.getMinimumSize() );
     preserveProperty( shell, PROP_DEFAULT_BUTTON, shell.getDefaultButton() );
-    Boolean hasListener = Boolean.valueOf( ShellEvent.hasListener( shell ) );
-    preserveProperty( shell, PROP_SHELL_LISTENER, hasListener );
+    preserveListener( shell, PROP_SHELL_LISTENER, ShellEvent.hasListener( shell ) );
   }
 
   public void readData( Widget widget ) {
@@ -104,7 +107,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
     // Important: Order matters, write setMode() after open() and before
     // setBounds() - see bug 302224
     renderMode( shell );
-    renderFullScreen( shell );
     renderMinimumSize( shell );
     renderDefaultButton( shell );
     renderActiveControl( shell );
@@ -122,19 +124,11 @@ public final class ShellLCA extends AbstractWidgetLCA {
   // Helping methods
 
   private static void renderText( Shell shell ) {
-    String newValue = shell.getText();
-    if( WidgetLCAUtil.hasChanged( shell, PROP_TEXT, newValue, "" ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
-      clientObject.setProperty( "text", newValue );
-    }
+    renderProperty( shell, PROP_TEXT, shell.getText(), "" );
   }
 
   private void renderAlpha( Shell shell ) {
-    int alpha = shell.getAlpha();
-    if( WidgetLCAUtil.hasChanged( shell, PROP_ALPHA, new Integer( alpha ), new Integer( 0xFF ) ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
-      clientObject.setProperty( "alpha", alpha );
-    }
+    renderProperty( shell, PROP_ALPHA, new Integer( shell.getAlpha() ), new Integer( 0xFF ) );
   }
 
   private static void renderMinimumSize( Shell shell ) {
@@ -282,33 +276,24 @@ public final class ShellLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListenShell( Shell shell ) {
-    // Note that a "shell" listener also implies an "activate" listener, but "shellActivated"
-    // events are sent by the client in any case. "Shell_close" events are also always being sent,
-    // but with a listener the shell is not closed by the client itself but by the server.
-    // Also, the "shellActivated" events are different from the "activeControl" property and
-    // "controlActivated" event also sent by the shell and processed in ShellLCA#processActivate.
+    // Note that "shell" events include "activate", "deactivate" and "close" events.
+    // "shellActivated" is sent the client in any case, event without listener. 
+    // "Shell_close" events are also always being sent, but with a listener the shell is not closed
+    // by the client itself but by the server. Also, the "shellActivated" events are different from #
+    // the "activeControl" property and "controlActivated" event (also sent by the shell and 
+    // processed in ShellLCA#processActivate).
     // The listener property for this event is rendered by ControlLCAUtil#renderActivateListener
-    Boolean newValue = Boolean.valueOf( ShellEvent.hasListener( shell ) );
-    if( WidgetLCAUtil.hasChanged( shell, PROP_SHELL_LISTENER, newValue, Boolean.FALSE ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
-      clientObject.addListener( "shell" );
-    }
-  }
-
-  private static void renderFullScreen( Shell shell ) {
-    Object defValue = Boolean.FALSE;
-    Boolean newValue = Boolean.valueOf( shell.getFullScreen() );
-    if( WidgetLCAUtil.hasChanged( shell, PROP_FULLSCREEN, newValue, defValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
-      clientObject.setProperty( "fullscreen", true );
-    }
+    boolean newValue = ShellEvent.hasListener( shell );
+    renderListener( shell, PROP_SHELL_LISTENER, newValue, false );
   }
 
   private static String getMode( Shell shell ) {
     String result = null;
     if( shell.getMinimized() ) {
       result = "minimized";
-    } else if( shell.getMaximized() || shell.getFullScreen() ) {
+    } else if( shell.getFullScreen() ) {
+      result = "fullscreen";
+    } else if( shell.getMaximized() ) {
       result = "maximized";
     }
     return result;
