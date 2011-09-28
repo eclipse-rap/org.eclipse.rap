@@ -47,7 +47,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     this.add( this._line );
     
     // Thumb
-    this._thumb = new qx.ui.basic.Image();
+    this._thumb = new org.eclipse.rwt.widgets.BasicButton( "push", true );
     if( this._horizontal ) {
       this._thumb.addState( org.eclipse.swt.widgets.Scale.STATE_HORIZONTAL );
     }
@@ -99,22 +99,20 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     this._thumb.removeEventListener( "mouseup", this._onThumbMouseUp, this );
     if( this._horizontal ) {
       this.removeEventListener( "changeWidth", this._onChangeWidth, this );
-    } else {  
+    } else {
       this.removeEventListener( "changeHeight", this._onChangeHeight, this );
     }
     this.removeEventListener( "contextmenu", this._onContextMenu, this );
     this.removeEventListener( "keypress", this._onKeyPress, this );
     this.removeEventListener( "mousewheel", this._onMouseWheel, this );
-    this._disposeObjects( "_line",
-                          "_thumb",
-                          "_minMarker",
-                          "_maxMarker" );
+    this._disposeObjects( "_line", "_thumb", "_minMarker", "_maxMarker" );
     // Clear and dispose markers
     for( var i = 0; i < this._middleMarkers.length; i++ ) {
-      var marker = this._middleMarkers[ i ];      
+      var marker = this._middleMarkers[ i ];
       marker.dispose();
-    }                      
-  },  
+    }
+    this._thumb = null;
+  },
 
   statics : {
     STATE_HORIZONTAL : "horizontal",
@@ -134,20 +132,16 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
   
   members : {
     _onChangeWidth : function( evt ) {
-      this._line.setWidth(   this.getWidth() 
-                           - 2 * org.eclipse.swt.widgets.Scale.PADDING );
-      this._maxMarker.setLeft(   this.getWidth() 
-                               - org.eclipse.swt.widgets.Scale.MAX_MARKER_OFFSET );
+      this._line.setWidth( this.getWidth() - 2 * org.eclipse.swt.widgets.Scale.PADDING );
+      this._maxMarker.setLeft( this.getWidth() - org.eclipse.swt.widgets.Scale.MAX_MARKER_OFFSET );
       this._updateStep();
       this._updateThumbPosition();
       this._updateMiddleMarkers();
     },
     
     _onChangeHeight : function( evt ) {
-      this._line.setHeight(   this.getHeight() 
-                            - 2 * org.eclipse.swt.widgets.Scale.PADDING );
-      this._maxMarker.setTop(   this.getHeight()
-                              - org.eclipse.swt.widgets.Scale.MAX_MARKER_OFFSET );
+      this._line.setHeight( this.getHeight() - 2 * org.eclipse.swt.widgets.Scale.PADDING );
+      this._maxMarker.setTop( this.getHeight() - org.eclipse.swt.widgets.Scale.MAX_MARKER_OFFSET );
       this._updateStep();
       this._updateThumbPosition();
       this._updateMiddleMarkers();
@@ -225,20 +219,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
             evt.stopPropagation();
             break;
         }
-        
         if( sel != undefined ) {
-          if( sel < this._minimum ) {
-            sel = this._minimum;
-          } 
-          if( sel > this._maximum ) {
-            sel = this._maximum;
-          }
           this.setSelection( sel );
-          if( this._readyToSendChanges ) {
-            this._readyToSendChanges = false;
-            // Send changes
-            qx.client.Timer.once( this._sendChanges, this, 500 );
-          }
+          this._scheduleSendChanges();
         }
       }
     },
@@ -248,19 +231,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
         evt.preventDefault();
         evt.stopPropagation();
         var change = Math.round( evt.getWheelDelta() );
-        var sel = this._selection - change;
-        if( sel < this._minimum ) {
-          sel = this._minimum;
-        } 
-        if( sel > this._maximum ) {
-          sel = this._maximum;
-        } 
-        this.setSelection( sel );
-        if( this._readyToSendChanges ) {
-          this._readyToSendChanges = false;
-          // Send changes
-          qx.client.Timer.once( this._sendChanges, this, 500 );
-        }
+        this.setSelection( this._selection - change );
+        this._scheduleSendChanges();
       }
     },
     
@@ -270,48 +242,30 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
       var sel;
       if( evt.isLeftButtonPressed() ){
         if( this._horizontal ) {
-          pxSel
-            = this._thumb.getLeft() + org.eclipse.swt.widgets.Scale.HALF_THUMB;
-          mousePos
-            = evt.getPageX() - qx.bom.element.Location.getLeft( this.getElement() );
+          pxSel = this._thumb.getLeft() + org.eclipse.swt.widgets.Scale.HALF_THUMB;
+          mousePos = evt.getPageX() - qx.bom.element.Location.getLeft( this.getElement() );
         } else {
-          pxSel 
-            = this._thumb.getTop() + org.eclipse.swt.widgets.Scale.HALF_THUMB;
-          mousePos
-            = evt.getPageY() - qx.bom.element.Location.getTop( this.getElement() );
+          pxSel = this._thumb.getTop() + org.eclipse.swt.widgets.Scale.HALF_THUMB;
+          mousePos = evt.getPageY() - qx.bom.element.Location.getTop( this.getElement() );
         }
         if( mousePos > pxSel ) {
           sel = this._selection + this._pageIncrement;         
         } else {
           sel = this._selection - this._pageIncrement;        
         }
-        
-        if( sel < this._minimum ) {
-          sel = this._minimum;
-        } 
-        if( sel > this._maximum ) {
-          sel = this._maximum;
-        } 
         this.setSelection( sel );
-        
-        if( this._readyToSendChanges ) {
-          this._readyToSendChanges = false;
-          // Send changes
-          qx.client.Timer.once( this._sendChanges, this, 500 );
-        }
+        this._scheduleSendChanges();
       }
     },
     
     _onThumbMouseDown : function( evt ) {
       var mousePos;
-      if( evt.isLeftButtonPressed() ){
+      if( evt.isLeftButtonPressed() ) {
         if( this._horizontal ) {        
-          mousePos = evt.getPageX() 
-            - qx.bom.element.Location.getLeft( this.getElement() );
+          mousePos = evt.getPageX() - qx.bom.element.Location.getLeft( this.getElement() );
           this._thumbOffset = mousePos - this._thumb.getLeft();
         } else {        
-          mousePos = evt.getPageY()
-            - qx.bom.element.Location.getTop( this.getElement() );
+          mousePos = evt.getPageY() - qx.bom.element.Location.getTop( this.getElement() );
           this._thumbOffset = mousePos - this._thumb.getTop();  
         }
         this._thumb.setCapture(true);
@@ -322,22 +276,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
       var mousePos;
       if( this._thumb.getCapture() ) {
         if( this._horizontal ) {        
-          mousePos
-            = evt.getPageX() 
-            - qx.bom.element.Location.getLeft( this.getElement() );
+          mousePos = evt.getPageX() - qx.bom.element.Location.getLeft( this.getElement() );
         } else {        
-          mousePos
-            = evt.getPageY()
-            - qx.bom.element.Location.getTop( this.getElement() );
+          mousePos = evt.getPageY() - qx.bom.element.Location.getTop( this.getElement() );
         }
         var sel = this._getSelectionFromThumbPosition( mousePos - this._thumbOffset );
         if( this._selection != sel ) {
           this.setSelection( sel );
-          if( this._readyToSendChanges ) {
-            this._readyToSendChanges = false;
-            // Send changes
-            qx.client.Timer.once( this._sendChanges, this, 500 );
-          }
+          this._scheduleSendChanges();
         }
       }
     },
@@ -378,11 +324,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
       var padding =   org.eclipse.swt.widgets.Scale.PADDING
                     + org.eclipse.swt.widgets.Scale.HALF_THUMB;
       if( this._horizontal ) {
-        this._pxStep
-          = ( this.getWidth() - 2 * padding ) / ( this._maximum - this._minimum );
+        this._pxStep = ( this.getWidth() - 2 * padding ) / ( this._maximum - this._minimum );
       } else {
-        this._pxStep
-          = ( this.getHeight() - 2 * padding ) / ( this._maximum - this._minimum );
+        this._pxStep = ( this.getHeight() - 2 * padding ) / ( this._maximum - this._minimum );
       }
     },
     
@@ -397,16 +341,26 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     },
     
     _getSelectionFromThumbPosition : function( position ) {
-      var sel =   ( position - org.eclipse.swt.widgets.Scale.PADDING )
-                / this._pxStep + this._minimum;
-      sel = Math.round( sel );
-      if( sel < this._minimum ) {
-        sel = this._minimum;
+      var sel = ( position - org.eclipse.swt.widgets.Scale.PADDING ) / this._pxStep + this._minimum;
+      return this._normalizeSelection( Math.round( sel ) );
+    },
+
+    _normalizeSelection : function( value ) {
+      var result = value;
+      if( value < this._minimum ) {
+        result = this._minimum;
       } 
-      if( sel > this._maximum ) {
-        sel = this._maximum;
+      if( value > this._maximum ) {
+        result = this._maximum;
       }
-      return sel;
+      return result;
+    },
+
+    _scheduleSendChanges : function() {
+      if( this._readyToSendChanges ) {
+        this._readyToSendChanges = false;
+        qx.client.Timer.once( this._sendChanges, this, 500 );
+      }
     },
     
     _sendChanges : function() {
@@ -429,7 +383,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     },
     
     setSelection : function( value ) {
-      this._selection = value;
+      this._selection = this._normalizeSelection( value );
       this._updateThumbPosition();
     },
     

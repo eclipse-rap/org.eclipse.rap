@@ -619,6 +619,7 @@ Scale {
 
 Scale-Thumb {
   background-color: #f1f1ff;
+  border: 1px outset;
 }
 
 /* Shell Classic theme */

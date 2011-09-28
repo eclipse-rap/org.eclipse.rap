@@ -1784,7 +1784,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
   },
 
   "scale-thumb" : {
-    include : "image",
+    include : "atom",
 
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
@@ -1792,12 +1792,18 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       if( states.horizontal ) {
         result.left = org.eclipse.swt.widgets.Scale.PADDING;
         result.top = org.eclipse.swt.widgets.Scale.THUMB_OFFSET;
-        result.source = "widget/scale/h_thumb.gif";
+        // TODO: make it themable
+        result.width = 11;
+        result.height = 21;
       } else {
         result.left = org.eclipse.swt.widgets.Scale.THUMB_OFFSET;
         result.top = org.eclipse.swt.widgets.Scale.PADDING;
-        result.source = "widget/scale/v_thumb.gif";
+        // TODO: make it themable
+        result.width = 21;
+        result.height = 11;
       }
+      // TODO: add themable background-image (gradient)
+      result.border = tv.getCssBorder( "Scale-Thumb", "border" );
       result.backgroundColor = tv.getCssColor( "Scale-Thumb", "background-color" );
       return result;
     }
