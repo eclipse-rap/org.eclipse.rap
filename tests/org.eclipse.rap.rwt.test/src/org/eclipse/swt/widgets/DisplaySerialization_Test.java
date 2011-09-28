@@ -219,7 +219,7 @@ public class DisplaySerialization_Test extends TestCase {
   }
   
   public void testTimerExecIsSerializable() throws Exception {
-    display.timerExec( 10, new SerializableRunnable() );
+    display.timerExec( 1, new SerializableRunnable() );
     
     Display deserializedDisplay = serializeAndDeserialize( display );
     display.dispose();
