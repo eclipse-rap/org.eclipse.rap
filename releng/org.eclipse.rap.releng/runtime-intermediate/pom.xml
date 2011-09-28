@@ -41,6 +41,11 @@
       <layout>p2</layout>
       <url>file://${runtimeRepo}</url>
     </repository>
+    <repository>
+      <id>requirements-base</id>
+      <layout>p2</layout>
+      <url>file://${requirementsBaseRepo}</url>
+    </repository>
   </repositories>
 
   <pluginRepositories>
