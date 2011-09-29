@@ -149,6 +149,16 @@ public class ServletContextWrapper_Test extends TestCase {
     assertEquals( CONTEXT_DIRECTORY + path, realPath );
   }
 
+  public void testGetRealPathInServletContainer() {
+    String path = "/path";
+    String containerRealPath = "containerContextPath" +  path;
+    when( context.getRealPath( path ) ).thenReturn( containerRealPath );
+    
+    String realPath = wrapper.getRealPath( path );
+    
+    assertEquals( containerRealPath, realPath );
+  }
+
   public void testGetServerInfo() {
     wrapper.getServerInfo();
 

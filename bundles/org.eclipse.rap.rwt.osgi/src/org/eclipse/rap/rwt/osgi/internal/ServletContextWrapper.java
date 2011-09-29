@@ -101,7 +101,11 @@ class ServletContextWrapper implements ServletContext {
   }
 
   public String getRealPath( String path ) {
-    return contextDirectory + path;
+    String result = servletContext.getRealPath( path );
+    if( result == null ) {
+      result = contextDirectory + path;
+    }
+    return result;
   }
 
   public String getServerInfo() {
