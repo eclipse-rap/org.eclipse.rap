@@ -669,6 +669,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       shell.destroy();
     },
 
+    testProtocolListen : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      testUtil.protocolListen( "w2", { "shell" : true } );
+      assertTrue( shell._hasShellListener );
+      shell.destroy();
+    },
+
     /////////
     // helper
     

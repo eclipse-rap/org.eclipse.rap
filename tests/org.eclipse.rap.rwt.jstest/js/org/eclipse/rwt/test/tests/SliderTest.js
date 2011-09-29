@@ -206,7 +206,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
           "parent" : "w2"
         }
       } );
-      this._protocolListen( "w3", { "selection" : true } );
+      testUtil.protocolListen( "w3", { "selection" : true } );
       var objectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = objectManager.getObject( "w3" );
       assertTrue( widget._hasSelectionListener );
@@ -873,15 +873,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
       result.setIncrement( 5 );
       testUtil.flush();
       return result;
-    },
-
-    _protocolListen : function( target, properties ) {
-      var processor = org.eclipse.rwt.protocol.Processor;
-      processor.processOperation( {
-        "target" : target,
-        "action" : "listen",
-        "properties" : properties
-      } );
     }
     
   }

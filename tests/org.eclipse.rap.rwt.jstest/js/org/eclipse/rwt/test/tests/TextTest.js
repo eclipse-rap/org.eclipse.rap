@@ -322,7 +322,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      this._protocolListen( "w3", { "selection" : true } );
+      testUtil.protocolListen( "w3", { "selection" : true } );
       var objectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = objectManager.getObject( "w3" );
       assertTrue( widget.hasSelectionListener() );
@@ -343,7 +343,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      this._protocolListen( "w3", { "selection" : true } );
+      testUtil.protocolListen( "w3", { "selection" : true } );
       var objectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = objectManager.getObject( "w3" );
       assertFalse( widget.hasSelectionListener() );
@@ -376,7 +376,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      this._protocolListen( "w3", { "selection" : true } );
+      testUtil.protocolListen( "w3", { "selection" : true } );
       testUtil.flush();
       var widget = objectManager.getObject( "w3" );
       assertFalse( widget.hasSelectionListener() );
@@ -397,7 +397,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      this._protocolListen( "w3", { "modify" : true } );
+      testUtil.protocolListen( "w3", { "modify" : true } );
       var objectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = objectManager.getObject( "w3" );
       assertTrue( widget.hasModifyListener() );
@@ -419,7 +419,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
           "parent" : "w2"
         }
       } );
-      this._protocolListen( "w3", { "verify" : true } );
+      testUtil.protocolListen( "w3", { "verify" : true } );
       var objectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = objectManager.getObject( "w3" );
       assertTrue( widget.hasVerifyListener() );
@@ -731,16 +731,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         assertEquals( "", text._inputElement.value );          
         text.destroy();
       }
-    } ),
-    
-    _protocolListen : function( target, properties ) {
-      var processor = org.eclipse.rwt.protocol.Processor;
-      processor.processOperation( {
-        "target" : target,
-        "action" : "listen",
-        "properties" : properties
-      } );
-    }
+    } )
 
   }
   
