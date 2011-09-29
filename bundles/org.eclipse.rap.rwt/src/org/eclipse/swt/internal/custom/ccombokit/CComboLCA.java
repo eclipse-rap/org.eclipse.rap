@@ -10,6 +10,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ccombokit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
@@ -20,10 +25,7 @@ import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Widget;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+
 
 public final class CComboLCA extends AbstractWidgetLCA {
 
@@ -46,22 +48,21 @@ public final class CComboLCA extends AbstractWidgetLCA {
   // Default values
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
   private static final Integer DEFAULT_SELECTION_INDEX = new Integer( -1 );
-  private static final Integer DEFAULT_TEXT_LIMIT = new Integer( CCombo.LIMIT );
   private static final Point DEFAULT_SELECTION = new Point( 0, 0 );
-  private static final Integer DEFAULT_VISIBLE_ITEM_COUNT = new Integer( 5 );
+  private static final int DEFAULT_VISIBLE_ITEM_COUNT = 5;
 
   public void preserveValues( Widget widget ) {
     CCombo ccombo = ( CCombo )widget;
     ControlLCAUtil.preserveValues( ccombo );
     WidgetLCAUtil.preserveCustomVariant( ccombo );
     preserveProperty( ccombo, PROP_ITEMS, ccombo.getItems() );
-    preserveProperty( ccombo, PROP_SELECTION_INDEX, new Integer( ccombo.getSelectionIndex() ) );
+    preserveProperty( ccombo, PROP_SELECTION_INDEX, ccombo.getSelectionIndex() );
     preserveProperty( ccombo, PROP_SELECTION, ccombo.getSelection() );
-    preserveProperty( ccombo, PROP_TEXT_LIMIT, new Integer( ccombo.getTextLimit() ) );
-    preserveProperty( ccombo, PROP_VISIBLE_ITEM_COUNT, new Integer( ccombo.getVisibleItemCount() ) );
-    preserveProperty( ccombo, PROP_ITEM_HEIGHT, new Integer( ccombo.getItemHeight() ) );
+    preserveProperty( ccombo, PROP_TEXT_LIMIT, getTextLimit( ccombo ) );
+    preserveProperty( ccombo, PROP_VISIBLE_ITEM_COUNT, ccombo.getVisibleItemCount() );
+    preserveProperty( ccombo, PROP_ITEM_HEIGHT, ccombo.getItemHeight() );
     preserveProperty( ccombo, PROP_TEXT, ccombo.getText() );
-    preserveProperty( ccombo, PROP_LIST_VISIBLE, new Boolean( ccombo.getListVisible() ) );
+    preserveProperty( ccombo, PROP_LIST_VISIBLE, ccombo.getListVisible() );
     preserveProperty( ccombo, PROP_EDITABLE, Boolean.valueOf( ccombo.getEditable() ) );
     preserveListener( ccombo, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( ccombo ) );
     preserveListener( ccombo, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( ccombo ) );
@@ -180,9 +181,8 @@ public final class CComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderVisibleItemCount( CCombo ccombo ) {
-    Integer newValue = new Integer( ccombo.getVisibleItemCount() );
-    Integer defValue = DEFAULT_VISIBLE_ITEM_COUNT;
-    renderProperty( ccombo, PROP_VISIBLE_ITEM_COUNT, newValue, defValue );
+    int defValue = DEFAULT_VISIBLE_ITEM_COUNT;
+    renderProperty( ccombo, PROP_VISIBLE_ITEM_COUNT, ccombo.getVisibleItemCount(), defValue );
   }
 
   private static void renderItems( CCombo ccombo ) {
@@ -190,9 +190,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListVisible( CCombo ccombo ) {
-    String prop = PROP_LIST_VISIBLE;
-    Boolean defValue = Boolean.FALSE;
-    renderProperty( ccombo, prop, Boolean.valueOf( ccombo.getListVisible() ), defValue );
+    renderProperty( ccombo, PROP_LIST_VISIBLE, ccombo.getListVisible(), false );
   }
 
   private static void renderSelectionIndex( CCombo ccombo ) {
@@ -213,7 +211,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderEditable( CCombo ccombo ) {
-    renderProperty( ccombo, PROP_EDITABLE, Boolean.valueOf( ccombo.getEditable() ), Boolean.TRUE );
+    renderProperty( ccombo, PROP_EDITABLE, ccombo.getEditable(), true );
   }
 
   private static void renderText( CCombo ccombo ) {
@@ -221,26 +219,12 @@ public final class CComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderSelection( CCombo ccombo ) {
-    Point newValue = ccombo.getSelection();
-    if( WidgetLCAUtil.hasChanged( ccombo, PROP_SELECTION, newValue, DEFAULT_SELECTION ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
-      Integer start = new Integer( newValue.x );
-      Integer end = new Integer( newValue.y );
-      clientObject.setProperty( PROP_SELECTION, new Object[] { start, end } );
-    }
+    renderProperty( ccombo, PROP_SELECTION, ccombo.getSelection(), DEFAULT_SELECTION );
   }
 
   private static void renderTextLimit( CCombo ccombo ) {
-    Integer newValue = new Integer( ccombo.getTextLimit() );
-    if( WidgetLCAUtil.hasChanged( ccombo, PROP_TEXT_LIMIT, newValue, DEFAULT_TEXT_LIMIT ) ) {
-      if( newValue.intValue() == CCombo.LIMIT ) {
-        newValue = null;
-      }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
-      clientObject.setProperty( PROP_TEXT_LIMIT, newValue );
-    }
+    renderProperty( ccombo, PROP_TEXT_LIMIT, getTextLimit( ccombo ), null );
   }
-
 
   private static void renderListenSelection( CCombo ccombo ) {
     renderListener( ccombo, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( ccombo ), false );
@@ -252,5 +236,16 @@ public final class CComboLCA extends AbstractWidgetLCA {
 
   private static void renderListenVerify( CCombo ccombo ) {
     renderListener( ccombo, PROP_VERIFY_LISTENER, VerifyEvent.hasListener( ccombo ), false );
+  }
+
+  //////////////////
+  // Helping methods
+
+  private static Integer getTextLimit( CCombo ccombo ) {
+    Integer result = Integer.valueOf( ccombo.getTextLimit() );
+    if( result.intValue() == CCombo.LIMIT  ) {
+      result = null;
+    }
+    return result;
   }
 }

@@ -11,6 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.spinnerkit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+
 import java.io.IOException;
 import java.text.DecimalFormatSymbols;
 
@@ -21,10 +26,6 @@ import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.widgets.*;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
 
 public final class SpinnerLCA extends AbstractWidgetLCA {
@@ -44,24 +45,24 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   static final String PROP_SELECTION_LISTENER = "selection";
 
   // Default values
-  private static final Integer DEFAULT_MINIMUM = new Integer( 0 );
-  private static final Integer DEFAULT_MAXIMUM = new Integer( 100 );
-  private static final Integer DEFAULT_SELECTION = new Integer( 0 );
-  private static final Integer DEFAULT_DIGITS = new Integer( 0 );
-  private static final Integer DEFAULT_INCREMENT = new Integer( 1 );
-  private static final Integer DEFAULT_PAGE_INCREMENT = new Integer( 10 );
+  private static final int DEFAULT_MINIMUM = 0;
+  private static final int DEFAULT_MAXIMUM = 100;
+  private static final int DEFAULT_SELECTION = 0;
+  private static final int DEFAULT_DIGITS = 0;
+  private static final int DEFAULT_INCREMENT = 1;
+  private static final int DEFAULT_PAGE_INCREMENT = 10;
   private static final String DEFAULT_DECIMAL_SEPARATOR = ".";
 
   public void preserveValues( Widget widget ) {
     Spinner spinner = ( Spinner )widget;
     ControlLCAUtil.preserveValues( spinner );
     WidgetLCAUtil.preserveCustomVariant( spinner );
-    preserveProperty( spinner, PROP_MINIMUM, new Integer( spinner.getMinimum() ) );
-    preserveProperty( spinner, PROP_MAXIMUM, new Integer( spinner.getMaximum() ) );
-    preserveProperty( spinner, PROP_SELECTION, new Integer( spinner.getSelection() ) );
-    preserveProperty( spinner, PROP_DIGITS, new Integer( spinner.getDigits() ) );
-    preserveProperty( spinner, PROP_INCREMENT, new Integer( spinner.getIncrement() ) );
-    preserveProperty( spinner, PROP_PAGE_INCREMENT, new Integer( spinner.getPageIncrement() ) );
+    preserveProperty( spinner, PROP_MINIMUM, spinner.getMinimum() );
+    preserveProperty( spinner, PROP_MAXIMUM, spinner.getMaximum() );
+    preserveProperty( spinner, PROP_SELECTION, spinner.getSelection() );
+    preserveProperty( spinner, PROP_DIGITS, spinner.getDigits() );
+    preserveProperty( spinner, PROP_INCREMENT, spinner.getIncrement() );
+    preserveProperty( spinner, PROP_PAGE_INCREMENT, spinner.getPageIncrement() );
     preserveProperty( spinner, PROP_TEXT_LIMIT, getTextLimit( spinner ) );
     preserveProperty( spinner, PROP_DECIMAL_SEPARATOR, getDecimalSeparator() );
     preserveListener( spinner, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( spinner ) );
@@ -117,31 +118,28 @@ public final class SpinnerLCA extends AbstractWidgetLCA {
   // Helping methods to render the changed properties
 
   private static void renderMinimum( Spinner spinner ) {
-    renderProperty( spinner, PROP_MINIMUM, new Integer( spinner.getMinimum() ), DEFAULT_MINIMUM );
+    renderProperty( spinner, PROP_MINIMUM, spinner.getMinimum(), DEFAULT_MINIMUM );
   }
 
   private static void renderMaximum( Spinner spinner ) {
-    renderProperty( spinner, PROP_MAXIMUM, new Integer( spinner.getMaximum() ), DEFAULT_MAXIMUM );
+    renderProperty( spinner, PROP_MAXIMUM, spinner.getMaximum(), DEFAULT_MAXIMUM );
   }
 
   private static void renderSelection( Spinner spinner ) {
-    Integer defValue = DEFAULT_SELECTION;
-    renderProperty( spinner, PROP_SELECTION, new Integer( spinner.getSelection() ), defValue );
+    renderProperty( spinner, PROP_SELECTION, spinner.getSelection(), DEFAULT_SELECTION );
   }
 
   private static void renderDigits( Spinner spinner ) {
-    renderProperty( spinner, PROP_DIGITS, new Integer( spinner.getDigits() ), DEFAULT_DIGITS );
+    renderProperty( spinner, PROP_DIGITS, spinner.getDigits(), DEFAULT_DIGITS );
   }
 
   private static void renderIncrement( Spinner spinner ) {
-    Integer defValue = DEFAULT_INCREMENT;
-    renderProperty( spinner, PROP_INCREMENT, new Integer( spinner.getIncrement() ), defValue );
+    renderProperty( spinner, PROP_INCREMENT, spinner.getIncrement(), DEFAULT_INCREMENT );
   }
 
   private static void renderPageIncrement( Spinner spinner ) {
-    String prop = PROP_PAGE_INCREMENT;
-    Integer defValue = DEFAULT_PAGE_INCREMENT;
-    renderProperty( spinner, prop, new Integer( spinner.getPageIncrement() ), defValue );
+    int defValue = DEFAULT_PAGE_INCREMENT;
+    renderProperty( spinner, PROP_PAGE_INCREMENT, spinner.getPageIncrement(), defValue );
   }
 
   private static void renderTextLimit( Spinner spinner ) {

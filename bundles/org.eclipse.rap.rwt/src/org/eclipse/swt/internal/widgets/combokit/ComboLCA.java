@@ -11,6 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.combokit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+
 import java.io.IOException;
 
 import org.eclipse.rwt.graphics.Graphics;
@@ -22,10 +27,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.*;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
 
 public class ComboLCA extends AbstractWidgetLCA {
@@ -51,23 +52,22 @@ public class ComboLCA extends AbstractWidgetLCA {
 
   // Default values
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
-  private static final Integer DEFAULT_SELECTION_INDEX = new Integer( -1 );
+  private static final Integer DEFAULT_SELECTION_INDEX = Integer.valueOf( -1 );
   private static final Point DEFAULT_SELECTION = new Point( 0, 0 );
-  private static final Integer DEFAULT_TEXT_LIMIT = new Integer( Combo.LIMIT );
-  private static final Integer DEFAULT_VISIBLE_ITEM_COUNT = new Integer( 5 );
+  private static final int DEFAULT_VISIBLE_ITEM_COUNT = 5;
 
   public void preserveValues( Widget widget ) {
     Combo combo = ( Combo )widget;
     ControlLCAUtil.preserveValues( combo );
     WidgetLCAUtil.preserveCustomVariant( combo );
     preserveProperty( combo, PROP_ITEMS, combo.getItems() );
-    preserveProperty( combo, PROP_SELECTION_INDEX, new Integer( combo.getSelectionIndex() ) );
+    preserveProperty( combo, PROP_SELECTION_INDEX, Integer.valueOf( combo.getSelectionIndex() ) );
     preserveProperty( combo, PROP_SELECTION, combo.getSelection() );
-    preserveProperty( combo, PROP_TEXT_LIMIT, new Integer( combo.getTextLimit() ) );
-    preserveProperty( combo, PROP_VISIBLE_ITEM_COUNT, new Integer( combo.getVisibleItemCount() ) );
-    preserveProperty( combo, PROP_ITEM_HEIGHT, new Integer( getItemHeight( combo ) ) );
+    preserveProperty( combo, PROP_TEXT_LIMIT, getTextLimit( combo ) );
+    preserveProperty( combo, PROP_VISIBLE_ITEM_COUNT, combo.getVisibleItemCount() );
+    preserveProperty( combo, PROP_ITEM_HEIGHT, getItemHeight( combo ) );
     preserveProperty( combo, PROP_TEXT, combo.getText() );
-    preserveProperty( combo, PROP_LIST_VISIBLE, new Boolean( combo.getListVisible() ) );
+    preserveProperty( combo, PROP_LIST_VISIBLE, combo.getListVisible() );
     preserveProperty( combo, PROP_EDITABLE, Boolean.valueOf( isEditable( combo ) ) );
     preserveListener( combo, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( combo ) );
     preserveListener( combo, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( combo ) );
@@ -185,9 +185,8 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderVisibleItemCount( Combo combo ) {
-    Integer newValue = new Integer( combo.getVisibleItemCount() );
-    Integer defValue = DEFAULT_VISIBLE_ITEM_COUNT;
-    renderProperty( combo, PROP_VISIBLE_ITEM_COUNT, newValue, defValue );
+    int defValue = DEFAULT_VISIBLE_ITEM_COUNT;
+    renderProperty( combo, PROP_VISIBLE_ITEM_COUNT, combo.getVisibleItemCount(), defValue );
   }
 
   private static void renderItems( Combo combo ) {
@@ -195,8 +194,7 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderListVisible( Combo combo ) {
-    Boolean defValue = Boolean.FALSE;
-    renderProperty( combo, PROP_LIST_VISIBLE, Boolean.valueOf( combo.getListVisible() ), defValue );
+    renderProperty( combo, PROP_LIST_VISIBLE, combo.getListVisible(), false );
   }
 
   private static void renderSelectionIndex( Combo combo ) {
@@ -227,24 +225,11 @@ public class ComboLCA extends AbstractWidgetLCA {
   }
 
   private static void renderSelection( Combo combo ) {
-    Point newValue = combo.getSelection();
-    if( WidgetLCAUtil.hasChanged( combo, PROP_SELECTION, newValue, DEFAULT_SELECTION ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
-      Integer start = new Integer( newValue.x );
-      Integer end = new Integer( newValue.y );
-      clientObject.setProperty( PROP_SELECTION, new Object[] { start, end } );
-    }
+    renderProperty( combo, PROP_SELECTION, combo.getSelection(), DEFAULT_SELECTION );
   }
 
   private static void renderTextLimit( Combo combo ) {
-    Integer newValue = new Integer( combo.getTextLimit() );
-    if( WidgetLCAUtil.hasChanged( combo, PROP_TEXT_LIMIT, newValue, DEFAULT_TEXT_LIMIT ) ) {
-      if( newValue.intValue() == Combo.LIMIT ) {
-        newValue = null;
-      }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
-      clientObject.setProperty( PROP_TEXT_LIMIT, newValue );
-    }
+    renderProperty( combo, PROP_TEXT_LIMIT, getTextLimit( combo ), null );
   }
 
   private static void renderListenSelection( Combo combo ) {
@@ -266,9 +251,17 @@ public class ComboLCA extends AbstractWidgetLCA {
     return ( ( combo.getStyle() & SWT.READ_ONLY ) == 0 );
   }
 
-  static int getItemHeight( Combo combo ) {
+  private static int getItemHeight( Combo combo ) {
     int charHeight = Graphics.getCharHeight( combo.getFont() );
     int padding = 2 * LIST_ITEM_PADDING;
     return charHeight + padding;
+  }
+
+  private static Integer getTextLimit( Combo combo ) {
+    Integer result = Integer.valueOf( combo.getTextLimit() );
+    if( result.intValue() == Combo.LIMIT  ) {
+      result = null;
+    }
+    return result;
   }
 }

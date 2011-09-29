@@ -11,18 +11,17 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.labelkit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Label;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+
 
 final class StandardLabelLCA extends AbstractLabelLCADelegate {
 
@@ -60,29 +59,8 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
     ControlLCAUtil.renderChanges( label );
     WidgetLCAUtil.renderCustomVariant( label );
     renderProperty( label, PROP_TEXT, label.getText(), "" );
-    renderImage( label );
+    renderProperty( label, PROP_IMAGE, label.getImage(), null );
     renderProperty( label, PROP_ALIGNMENT, getAlignment( label ), DEFAULT_ALIGNMENT );
-  }
-
-  ///////////////////////////////////////////////////
-  // Helping methods to render the changed properties
-
-  private static void renderImage( Label label ) {
-    Image newValue = label.getImage();
-    if( WidgetLCAUtil.hasChanged( label, PROP_IMAGE, newValue, null ) ) {
-      Object[] args = null;
-      if( newValue != null ) {
-        String imagePath = ImageFactory.getImagePath( newValue );
-        Rectangle bounds = newValue.getBounds();
-        args = new Object[] {
-          imagePath,
-          new Integer( bounds.width ),
-          new Integer( bounds.height )
-        };
-      }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( label );
-      clientObject.setProperty( "image", args );
-    }
   }
 
   //////////////////

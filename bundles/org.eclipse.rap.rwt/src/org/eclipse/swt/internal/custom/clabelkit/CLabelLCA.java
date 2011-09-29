@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.clabelkit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
@@ -19,12 +22,9 @@ import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Widget;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+
 
 public final class CLabelLCA extends AbstractWidgetLCA {
 
@@ -47,10 +47,10 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     preserveProperty( label, PROP_TEXT, label.getText() );
     preserveProperty( label, PROP_IMAGE, label.getImage() );
     preserveProperty( label, PROP_ALIGNMENT, getAlignment( label ) );
-    preserveProperty( label, PROP_LEFT_MARGIN, new Integer( label.getLeftMargin() ) );
-    preserveProperty( label, PROP_TOP_MARGIN, new Integer( label.getTopMargin() ) );
-    preserveProperty( label, PROP_RIGHT_MARGIN, new Integer( label.getRightMargin() ) );
-    preserveProperty( label, PROP_BOTTOM_MARGIN, new Integer( label.getBottomMargin() ) );
+    preserveProperty( label, PROP_LEFT_MARGIN, label.getLeftMargin() );
+    preserveProperty( label, PROP_TOP_MARGIN, label.getTopMargin() );
+    preserveProperty( label, PROP_RIGHT_MARGIN, label.getRightMargin() );
+    preserveProperty( label, PROP_BOTTOM_MARGIN, label.getBottomMargin() );
     WidgetLCAUtil.preserveBackgroundGradient( label );
   }
 
@@ -75,7 +75,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     ControlLCAUtil.renderChanges( clabel );
     WidgetLCAUtil.renderCustomVariant( clabel );
     renderProperty( clabel, PROP_TEXT, clabel.getText(), null );
-    renderImage( clabel );
+    renderProperty( clabel, PROP_IMAGE, clabel.getImage(), null );
     renderProperty( clabel, PROP_ALIGNMENT, getAlignment( clabel ), DEFAULT_ALIGNMENT );
     renderMargins( clabel );
     WidgetLCAUtil.renderBackgroundGradient( clabel );
@@ -88,32 +88,14 @@ public final class CLabelLCA extends AbstractWidgetLCA {
   ///////////////////////////////////////////////////
   // Helping methods to render the changed properties
 
-  private static void renderImage( CLabel clabel ) {
-    Image newValue = clabel.getImage();
-    if( WidgetLCAUtil.hasChanged( clabel, PROP_IMAGE, newValue, null ) ) {
-      Object[] args = null;
-      if( newValue != null ) {
-        String imagePath = ImageFactory.getImagePath( newValue );
-        Rectangle bounds = newValue.getBounds();
-        args = new Object[] {
-          imagePath,
-          new Integer( bounds.width ),
-          new Integer( bounds.height )
-        };
-      }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( clabel );
-      clientObject.setProperty( "image", args );
-    }
-  }
-
   private static void renderMargins( CLabel clabel ) {
     Rectangle padding = getThemeAdapter( clabel ).getPadding( clabel );
-    renderSingleMargin( clabel, PROP_LEFT_MARGIN, clabel.getLeftMargin(), padding.x );
-    renderSingleMargin( clabel, PROP_TOP_MARGIN, clabel.getTopMargin(), padding.y );
+    renderProperty( clabel, PROP_LEFT_MARGIN, clabel.getLeftMargin(), padding.x );
+    renderProperty( clabel, PROP_TOP_MARGIN, clabel.getTopMargin(), padding.y );
     int defRightMargin = padding.width - padding.x;
-    renderSingleMargin( clabel, PROP_RIGHT_MARGIN, clabel.getRightMargin(), defRightMargin );
+    renderProperty( clabel, PROP_RIGHT_MARGIN, clabel.getRightMargin(), defRightMargin );
     int defBottomMargin = padding.height - padding.y;
-    renderSingleMargin( clabel, PROP_BOTTOM_MARGIN, clabel.getBottomMargin(), defBottomMargin );
+    renderProperty( clabel, PROP_BOTTOM_MARGIN, clabel.getBottomMargin(), defBottomMargin );
   }
 
   //////////////////
@@ -132,15 +114,6 @@ public final class CLabelLCA extends AbstractWidgetLCA {
       result = "left";
     }
     return result;
-  }
-
-  private static void renderSingleMargin( CLabel clabel,
-                                          String property,
-                                          int margin,
-                                          int defaultMargin )
-  {
-
-    renderProperty( clabel, property, new Integer( margin ), new Integer( defaultMargin ) );
   }
 
   private static CLabelThemeAdapter getThemeAdapter( CLabel clabel ) {

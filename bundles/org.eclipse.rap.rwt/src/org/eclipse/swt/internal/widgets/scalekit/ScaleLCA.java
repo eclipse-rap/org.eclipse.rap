@@ -11,6 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.scalekit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
@@ -19,10 +24,6 @@ import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.*;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
 
 public final class ScaleLCA extends AbstractWidgetLCA {
@@ -38,21 +39,21 @@ public final class ScaleLCA extends AbstractWidgetLCA {
   static final String PROP_SELECTION_LISTENER = "selection";
 
   // Default values
-  static final Integer DEFAULT_MINIMUM = new Integer( 0 );
-  static final Integer DEFAULT_MAXIMUM = new Integer( 100 );
-  static final Integer DEFAULT_SELECTION = new Integer( 0 );
-  static final Integer DEFAULT_INCREMENT = new Integer( 1 );
-  static final Integer DEFAULT_PAGE_INCREMENT = new Integer( 10 );
+  private  static final int DEFAULT_MINIMUM = 0;
+  private static final int DEFAULT_MAXIMUM = 100;
+  private static final int DEFAULT_SELECTION = 0;
+  private static final int DEFAULT_INCREMENT = 1;
+  private static final int DEFAULT_PAGE_INCREMENT = 10;
 
   public void preserveValues( Widget widget ) {
     Scale scale = ( Scale )widget;
     ControlLCAUtil.preserveValues( scale );
     WidgetLCAUtil.preserveCustomVariant( scale );
-    preserveProperty( scale, PROP_MINIMUM, new Integer( scale.getMinimum() ) );
-    preserveProperty( scale, PROP_MAXIMUM, new Integer( scale.getMaximum() ) );
-    preserveProperty( scale, PROP_SELECTION, new Integer( scale.getSelection() ) );
-    preserveProperty( scale, PROP_INCREMENT, new Integer( scale.getIncrement() ) );
-    preserveProperty( scale, PROP_PAGE_INCREMENT, new Integer( scale.getPageIncrement() ) );
+    preserveProperty( scale, PROP_MINIMUM, scale.getMinimum() );
+    preserveProperty( scale, PROP_MAXIMUM, scale.getMaximum() );
+    preserveProperty( scale, PROP_SELECTION, scale.getSelection() );
+    preserveProperty( scale, PROP_INCREMENT, scale.getIncrement() );
+    preserveProperty( scale, PROP_PAGE_INCREMENT, scale.getPageIncrement() );
     preserveListener( scale, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( scale ) );
   }
 
@@ -81,45 +82,15 @@ public final class ScaleLCA extends AbstractWidgetLCA {
     Scale scale = ( Scale )widget;
     ControlLCAUtil.renderChanges( scale );
     WidgetLCAUtil.renderCustomVariant( scale );
-    renderMinimum( scale );
-    renderMaximum( scale );
-    renderSelection( scale );
-    renderIncrement( scale );
-    renderPageIncrement( scale );
-    renderListenSelection( scale );
+    renderProperty( scale, PROP_MINIMUM, scale.getMinimum(), DEFAULT_MINIMUM );
+    renderProperty( scale, PROP_MAXIMUM, scale.getMaximum(), DEFAULT_MAXIMUM );
+    renderProperty( scale, PROP_SELECTION, scale.getSelection(), DEFAULT_SELECTION );
+    renderProperty( scale, PROP_INCREMENT, scale.getIncrement(), DEFAULT_INCREMENT );
+    renderProperty( scale, PROP_PAGE_INCREMENT, scale.getPageIncrement(), DEFAULT_PAGE_INCREMENT );
+    renderListener( scale, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( scale ), false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getForWidget( widget ).destroy();
-  }
-
-  ///////////////////////////////////////////////////
-  // Helping methods to render the changed properties
-
-  private static void renderMinimum( Scale scale ) {
-    renderProperty( scale, PROP_MINIMUM, new Integer( scale.getMinimum() ), DEFAULT_MINIMUM );
-  }
-
-  private static void renderMaximum( Scale scale ) {
-    renderProperty( scale, PROP_MAXIMUM, new Integer( scale.getMaximum() ), DEFAULT_MAXIMUM );
-  }
-
-  private static void renderSelection( Scale scale ) {
-    Integer defValue = DEFAULT_SELECTION;
-    renderProperty( scale, PROP_SELECTION, new Integer( scale.getSelection() ), defValue );
-  }
-
-  private static void renderIncrement( Scale scale ) {
-    Integer defValue = DEFAULT_INCREMENT;
-    renderProperty( scale, PROP_INCREMENT, new Integer( scale.getIncrement() ), defValue );
-  }
-
-  private static void renderPageIncrement( Scale scale ) {
-    Integer defValue = DEFAULT_PAGE_INCREMENT;
-    renderProperty( scale, PROP_PAGE_INCREMENT, new Integer( scale.getPageIncrement() ), defValue );
-  }
-
-  private static void renderListenSelection( Scale scale ) {
-    renderListener( scale, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( scale ), false );
   }
 }

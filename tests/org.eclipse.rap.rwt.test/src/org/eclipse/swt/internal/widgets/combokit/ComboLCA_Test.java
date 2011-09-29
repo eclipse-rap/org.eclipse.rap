@@ -63,13 +63,11 @@ public class ComboLCA_Test extends TestCase {
     String[] items = ( ( String[] )adapter.getPreserved( PROP_ITEMS ) );
     assertEquals( 0, items.length );
     assertEquals( new Integer( -1 ), adapter.getPreserved( PROP_SELECTION_INDEX ) );
-    assertEquals( new Integer( Combo.LIMIT ),
-                  adapter.getPreserved( ComboLCA.PROP_TEXT_LIMIT ) );
+    assertNull( adapter.getPreserved( ComboLCA.PROP_TEXT_LIMIT ) );
     Object visibleItemCount = adapter.getPreserved( ComboLCA.PROP_VISIBLE_ITEM_COUNT );
     assertEquals( new Integer( combo.getVisibleItemCount() ), visibleItemCount );
     assertEquals( Boolean.FALSE, adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
-    assertEquals( new Point( 0, 0 ),
-                  adapter.getPreserved( ComboLCA.PROP_SELECTION ) );
+    assertEquals( new Point( 0, 0 ), adapter.getPreserved( ComboLCA.PROP_SELECTION ) );
     // Test preserving combo with items were one is selected
     Fixture.clearPreserved();
     combo.add( "item 1" );

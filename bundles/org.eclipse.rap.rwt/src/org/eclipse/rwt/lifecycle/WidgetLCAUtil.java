@@ -109,6 +109,32 @@ public final class WidgetLCAUtil {
   }
 
   /**
+   * Preserves the value of the property of the specified widget.
+   *
+   * @param widget the widget whose property to preserve
+   * @param property the name of the property
+   * @param value the value to preserve
+   *
+   * @since 1.5
+   */
+  public static void preserveProperty( Widget widget, String property, int value ) {
+    preserveProperty( widget, property, Integer.valueOf( value ) );
+  }
+
+  /**
+   * Preserves the value of the property of the specified widget.
+   *
+   * @param widget the widget whose property to preserve
+   * @param property the name of the property
+   * @param value the value to preserve
+   *
+   * @since 1.5
+   */
+  public static void preserveProperty( Widget widget, String property, boolean value ) {
+    preserveProperty( widget, property, Boolean.valueOf( value ) );
+  }
+
+  /**
    * Preserves the value of the listener of the specified widget.
    *
    * @param widget the widget whose listener to preserve
@@ -433,6 +459,108 @@ public final class WidgetLCAUtil {
     if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
       clientObject.setProperty( property, newValue );
+    }
+  }
+
+  /**
+   * Determines whether the property of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side property of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param property the property name
+   * @param newValue the new value of the property
+   * @param defaultValue the default value of the property
+   *
+   * @since 1.5
+   */
+  public static void renderProperty( Widget widget,
+                                     String property,
+                                     int newValue,
+                                     int defaultValue )
+  {
+    Integer defValue = Integer.valueOf( defaultValue );
+    renderProperty( widget, property, Integer.valueOf( newValue ), defValue );
+  }
+
+  /**
+   * Determines whether the property of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side property of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param property the property name
+   * @param newValue the new value of the property
+   * @param defaultValue the default value of the property
+   *
+   * @since 1.5
+   */
+  public static void renderProperty( Widget widget,
+                                     String property,
+                                     boolean newValue,
+                                     boolean defaultValue )
+  {
+    Boolean defValue = Boolean.valueOf( defaultValue );
+    renderProperty( widget, property, Boolean.valueOf( newValue ), defValue );
+  }
+
+  /**
+   * Determines whether the property of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side property of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param property the property name
+   * @param newValue the new value of the property
+   * @param defaultValue the default value of the property
+   *
+   * @since 1.5
+   */
+  public static void renderProperty( Widget widget,
+                                     String property,
+                                     Image newValue,
+                                     Image defaultValue )
+  {
+    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+      Object[] args = null;
+      if( newValue != null ) {
+        String imagePath = ImageFactory.getImagePath( newValue );
+        Rectangle bounds = newValue.getBounds();
+        args = new Object[] {
+          imagePath,
+          new Integer( bounds.width ),
+          new Integer( bounds.height )
+        };
+      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( property, args );
+    }
+  }
+
+  /**
+   * Determines whether the property of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side property of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param property the property name
+   * @param newValue the new value of the property
+   * @param defaultValue the default value of the property
+   *
+   * @since 1.5
+   */
+  public static void renderProperty( Widget widget,
+                                     String property,
+                                     Point newValue,
+                                     Point defaultValue )
+  {
+    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+      int[] args = null;
+      if( newValue != null ) {
+        args = new int[] { newValue.x, newValue.y };
+      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( property, args );
     }
   }
 

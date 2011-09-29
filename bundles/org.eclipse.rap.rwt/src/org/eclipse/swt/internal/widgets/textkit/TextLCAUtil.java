@@ -11,6 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.textkit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
@@ -21,10 +26,6 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
 import org.eclipse.swt.widgets.*;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
 
 final class TextLCAUtil {
@@ -53,7 +54,7 @@ final class TextLCAUtil {
     preserveProperty( text, PROP_TEXT, text.getText() );
     preserveProperty( text, PROP_SELECTION, text.getSelection() );
     preserveProperty( text, PROP_TEXT_LIMIT, getTextLimit( text ) );
-    preserveProperty( text, PROP_EDITABLE, Boolean.valueOf( text.getEditable() ) );
+    preserveProperty( text, PROP_EDITABLE, text.getEditable() );
     preserveProperty( text, PROP_ECHO_CHAR, getEchoChar( text ) );
     preserveProperty( text, PROP_MESSAGE, text.getMessage() );
     preserveListener( text, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( text ) );
@@ -71,15 +72,15 @@ final class TextLCAUtil {
   static void renderChanges( Text text ) throws IOException {
     ControlLCAUtil.renderChanges( text );
     WidgetLCAUtil.renderCustomVariant( text );
-    renderText( text );
-    renderEditable( text );
-    renderSelection( text );
-    renderTextLimit( text );
-    renderEchoChar( text );
-    renderMessage( text );
-    renderListenModify( text );
-    renderListenVerify( text );
-    renderListenSelection( text );
+    renderProperty( text, PROP_TEXT, text.getText(), "" );
+    renderProperty( text, PROP_EDITABLE, text.getEditable(), true );
+    renderProperty( text, PROP_SELECTION, text.getSelection(), DEFAULT_SELECTION );
+    renderProperty( text, PROP_TEXT_LIMIT, getTextLimit( text ), null );
+    renderProperty( text, PROP_ECHO_CHAR, getEchoChar( text ), null );
+    renderProperty( text, PROP_MESSAGE, text.getMessage(), "" );
+    renderListener( text, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( text ), false );
+    renderListener( text, PROP_VERIFY_LISTENER, VerifyEvent.hasListener( text ), false );
+    renderListener( text, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( text ), false );
   }
 
   static void readTextAndSelection( final Text text ) {
@@ -131,48 +132,6 @@ final class TextLCAUtil {
       }
     }
     return result;
-  }
-
-  private static void renderText( Text text ) {
-    renderProperty( text, PROP_TEXT, text.getText(), "" );
-  }
-
-  private static void renderEditable( Text text ) {
-    renderProperty( text, PROP_EDITABLE, Boolean.valueOf( text.getEditable() ), Boolean.TRUE );
-  }
-
-  private static void renderTextLimit( Text text ) {
-    renderProperty( text, PROP_TEXT_LIMIT, getTextLimit( text ), null );
-  }
-
-  private static void renderSelection( Text text ) {
-    Point newValue = text.getSelection();
-    if( WidgetLCAUtil.hasChanged( text, PROP_SELECTION, newValue, DEFAULT_SELECTION ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( text );
-      Integer start = new Integer( newValue.x );
-      Integer end = new Integer( newValue.y );
-      clientObject.setProperty( PROP_SELECTION, new Object[] { start, end } );
-    }
-  }
-
-  private static void renderEchoChar( Text text ) {
-    renderProperty( text, PROP_ECHO_CHAR, getEchoChar( text ), null );
-  }
-
-  private static void renderMessage( Text text ) {
-    renderProperty( text, PROP_MESSAGE, text.getMessage(), "" );
-  }
-
-  static void renderListenSelection( Text text ) {
-    renderListener( text, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( text ), false );
-  }
-
-  private static void renderListenModify( Text text ) {
-    renderListener( text, PROP_MODIFY_LISTENER, ModifyEvent.hasListener( text ), false );
-  }
-
-  private static void renderListenVerify( Text text ) {
-    renderListener( text, PROP_VERIFY_LISTENER, VerifyEvent.hasListener( text ), false );
   }
 
   //////////////////

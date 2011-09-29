@@ -66,7 +66,7 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( new Integer( -1 ), adapter.getPreserved( PROP_SELECTION_INDEX ) );
     Object visibleItemCount = adapter.getPreserved( CComboLCA.PROP_VISIBLE_ITEM_COUNT );
     assertEquals( new Integer( ccombo.getVisibleItemCount() ), visibleItemCount );
-    assertEquals( new Integer( Text.LIMIT ), adapter.getPreserved( CComboLCA.PROP_TEXT_LIMIT ) );
+    assertNull( adapter.getPreserved( CComboLCA.PROP_TEXT_LIMIT ) );
     assertEquals( new Point( 0, 0 ), adapter.getPreserved( CComboLCA.PROP_SELECTION ) );
     assertEquals( Boolean.FALSE, adapter.getPreserved( CComboLCA.PROP_LIST_VISIBLE ) );
     assertEquals( Boolean.FALSE, adapter.getPreserved( CComboLCA.PROP_EDITABLE ) );
