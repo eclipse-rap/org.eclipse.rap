@@ -244,12 +244,10 @@ public final class WidgetLCAUtil {
       int[] bgGradientPercents = gfxAdapter.getBackgroundGradientPercents();
       boolean bgGradientVertical = gfxAdapter.isBackgroundGradientVertical();
       IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( widget );
-      widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_COLORS,
-                              bgGradientColors );
-      widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_PERCENTS,
-                              bgGradientPercents );
+      widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_COLORS, bgGradientColors );
+      widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_PERCENTS, bgGradientPercents );
       widgetAdapter.preserve( PROP_BACKGROUND_GRADIENT_VERTICAL,
-                              new Boolean( bgGradientVertical ) );
+                              Boolean.valueOf( bgGradientVertical ) );
     }
   }
 
@@ -268,7 +266,7 @@ public final class WidgetLCAUtil {
       Color color = gfxAdapter.getRoundedBorderColor();
       Rectangle radius = gfxAdapter.getRoundedBorderRadius();
       IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( widget );
-      widgetAdapter.preserve( PROP_ROUNDED_BORDER_WIDTH, new Integer( width ) );
+      widgetAdapter.preserve( PROP_ROUNDED_BORDER_WIDTH, Integer.valueOf( width ) );
       widgetAdapter.preserve( PROP_ROUNDED_BORDER_COLOR, color );
       widgetAdapter.preserve( PROP_ROUNDED_BORDER_RADIUS, radius );
     }
@@ -565,6 +563,30 @@ public final class WidgetLCAUtil {
   }
 
   /**
+   * Determines whether the property of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side property of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param property the property name
+   * @param newValue the new value of the property
+   * @param defaultValue the default value of the property
+   *
+   * @since 1.5
+   */
+  public static void renderProperty( Widget widget,
+                                     String property,
+                                     Widget newValue,
+                                     Widget defaultValue )
+  {
+    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+      String widgetId = newValue == null ? null : WidgetUtil.getId( newValue );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( property, widgetId );
+    }
+  }
+
+  /**
    * Determines whether the listener of the given widget has changed during the processing of the
    * current request and if so, writes a protocol message to the response that updates the
    * client-side listener of the specified widget.
@@ -707,11 +729,7 @@ public final class WidgetLCAUtil {
    * @throws IOException
    */
   public static void renderMenu( Widget widget, Menu menu ) throws IOException {
-    if( WidgetLCAUtil.hasChanged( widget, Props.MENU, menu, null ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      String menuId = menu == null ? null : WidgetUtil.getId( menu );
-      clientObject.setProperty( "menu", menuId );
-    }
+    renderProperty( widget, Props.MENU, menu, null );
   }
 
   /**
