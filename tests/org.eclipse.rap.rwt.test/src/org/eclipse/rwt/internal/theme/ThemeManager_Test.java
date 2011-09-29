@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,8 +27,9 @@ import org.eclipse.swt.widgets.Button;
 
 public class ThemeManager_Test extends TestCase {
 
+  private ThemeManager manager;
+
   public void testCreate() {
-    ThemeManager manager = new ThemeManager();
     assertEquals( "org.eclipse.rap.rwt.theme.Default", ThemeManager.DEFAULT_THEME_ID );
     manager.activate();
     Theme defaultTheme = manager.getTheme( ThemeManager.DEFAULT_THEME_ID );
@@ -34,7 +38,6 @@ public class ThemeManager_Test extends TestCase {
   }
 
   public void testRegisterResources() {
-    ThemeManager manager = new ThemeManager();
     manager.activate();
     manager.registerResources();
     String[] themeIds = manager.getRegisteredThemeIds();
@@ -43,7 +46,6 @@ public class ThemeManager_Test extends TestCase {
   }
 
   public void testRegisterTheme() {
-    ThemeManager manager = new ThemeManager();
     StyleSheet emptyStyleSheet = new StyleSheet( new StyleRule[ 0 ] );
     Theme customTheme = new Theme( "custom.id", "foo", emptyStyleSheet );
     manager.registerTheme( customTheme );
@@ -55,7 +57,6 @@ public class ThemeManager_Test extends TestCase {
   }
 
   public void testRegisterThemeTwice() {
-    ThemeManager manager = new ThemeManager();
     StyleSheet emptyStyleSheet = new StyleSheet( new StyleRule[ 0 ] );
     Theme theme = new Theme( "id1", "foo", emptyStyleSheet );
     manager.registerTheme( theme );
@@ -67,7 +68,6 @@ public class ThemeManager_Test extends TestCase {
   }
 
   public void testGetThemeableWidget() {
-    ThemeManager manager = new ThemeManager();
     manager.activate();
     ThemeableWidget themeableWidget = manager.getThemeableWidget( Button.class );
     assertNotNull( themeableWidget );
@@ -78,7 +78,6 @@ public class ThemeManager_Test extends TestCase {
   }
 
   public void testDefaultThemeInitialized() {
-    ThemeManager manager = new ThemeManager();
     manager.activate();
     Theme defaultTheme = manager.getTheme( ThemeManager.DEFAULT_THEME_ID );
     assertNotNull( defaultTheme.getValuesMap() );
@@ -86,7 +85,6 @@ public class ThemeManager_Test extends TestCase {
   }
 
   public void testCustomAndDefaultThemeInitialized() throws Exception {
-    ThemeManager manager = new ThemeManager();
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );
     manager.registerTheme( customTheme );
@@ -99,20 +97,39 @@ public class ThemeManager_Test extends TestCase {
   }
   
   public void testActivateAndDeactivate() {
-    ThemeManager themeManager = new ThemeManager();
-    
-    Theme beforeActivate = getTheme( themeManager );
-    themeManager.activate();
-    Theme afterActivate = getTheme( themeManager );
-    themeManager.deactivate();
-    Theme afterDeactivate = getTheme( themeManager );
+    Theme beforeActivate = getDefaultTheme();
+    manager.activate();
+    Theme afterActivate = getDefaultTheme();
+    manager.deactivate();
+    Theme afterDeactivate = getDefaultTheme();
     
     assertNull( beforeActivate );
     assertNotNull( afterActivate );
     assertNull( afterDeactivate );
   }
 
+  public void testRegisterThemeContribution() {
+    String themeId = "id";
+    StyleSheet contribution = registerThemeContributionBeforeThemeRegistration( themeId );
+    Theme spyTheme = registerSpyTheme( themeId );
+    
+    manager.activate();
+    
+    verify( spyTheme ).addStyleSheet( contribution );
+  }
+
+  public void testRegisterThemeContributionForNonExistingThemeId() {
+    manager.registerThemeContribution( "id", new StyleSheet( new StyleRule[ 0 ] ) );
+
+    try {
+      manager.activate();
+      fail();
+    } catch( ThemeManagerException expected ) {
+    }
+  }
+  
   protected void setUp() {
+    manager = new ThemeManager();
     Fixture.setUp();
   }
 
@@ -120,7 +137,21 @@ public class ThemeManager_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  private Theme getTheme( ThemeManager themeManager ) {
-    return themeManager.getTheme( ThemeManager.DEFAULT_THEME_ID );
+  private Theme getDefaultTheme() {
+    return manager.getTheme( ThemeManager.DEFAULT_THEME_ID );
+  }
+
+  private Theme registerSpyTheme( String themeId ) {
+    StyleSheet styleSheet = new StyleSheet( new StyleRule[ 0 ] );
+    Theme theme = new Theme( themeId, "foo", styleSheet );
+    Theme result = spy( theme );
+    manager.registerTheme( result );
+    return result;
+  }
+
+  private StyleSheet registerThemeContributionBeforeThemeRegistration( String themeId ) {
+    StyleSheet result = new StyleSheet( new StyleRule[ 0 ] );
+    manager.registerThemeContribution( themeId, result );
+    return result;
   }
 }

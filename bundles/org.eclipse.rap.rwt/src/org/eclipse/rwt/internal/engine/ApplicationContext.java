@@ -253,19 +253,24 @@ public class ApplicationContext {
     }
   }
   
-  private void notifyConfigurablesAboutActivation() {
-    Iterator iterator = configurables.iterator();
-    while( iterator.hasNext() ) {
-      Configurable configurable = ( Configurable )iterator.next();
-      configurable.configure( this );
-    }
-  }
-  
   private void notifyConfigurablesAboutDeactivation() {
     Iterator iterator = configurables.iterator();
     while( iterator.hasNext() ) {
       Configurable configurable = ( Configurable )iterator.next();
       configurable.reset( this );
+    }
+  }
+
+  private void doActivate() {
+    notifyConfigurablesAboutActivation();
+    activateInstances();
+  }
+  
+  private void notifyConfigurablesAboutActivation() {
+    Iterator iterator = configurables.iterator();
+    while( iterator.hasNext() ) {
+      Configurable configurable = ( Configurable )iterator.next();
+      configurable.configure( this );
     }
   }
   
@@ -275,11 +280,6 @@ public class ApplicationContext {
         doActivateInstances();
       }
     } );
-  }
-
-  private void doActivate() {
-    notifyConfigurablesAboutActivation();
-    activateInstances();
   }
 
   private void doActivateInstances() {

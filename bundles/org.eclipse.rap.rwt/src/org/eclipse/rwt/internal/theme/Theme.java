@@ -16,7 +16,7 @@ import java.text.MessageFormat;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
 
-public final class Theme {
+public class Theme {
 
   private static final String JS_THEME_PREFIX = "org.eclipse.swt.theme.";
 
@@ -26,8 +26,7 @@ public final class Theme {
   private ThemeCssValuesMap valuesMap;
   private StyleSheetBuilder styleSheetBuilder;
 
-  public Theme( final String id, final String name, final StyleSheet styleSheet )
-  {
+  public Theme( String id, String name, StyleSheet styleSheet ) {
     if( id == null ) {
       throw new NullPointerException( "id" );
     }
@@ -53,14 +52,14 @@ public final class Theme {
     return name;
   }
 
-  public void addStyleSheet( final StyleSheet styleSheet ) {
+  public void addStyleSheet( StyleSheet styleSheet ) {
     if( valuesMap != null ) {
       throw new IllegalStateException( "Theme is already initialized" );
     }
     styleSheetBuilder.addStyleSheet( styleSheet );
   }
 
-  public void initialize( final ThemeableWidget[] themeableWidgets ) {
+  public void initialize( ThemeableWidget[] themeableWidgets ) {
     if( valuesMap != null ) {
       String pattern = "Theme ''{0}'' is already initialized.";
       String msg = MessageFormat.format( pattern, new Object[] { id } );

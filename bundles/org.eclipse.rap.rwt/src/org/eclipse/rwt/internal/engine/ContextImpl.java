@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
+ * 
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
@@ -33,26 +33,28 @@ import org.eclipse.rwt.service.ISettingStoreFactory;
 import org.eclipse.swt.widgets.Widget;
 
 class ContextImpl implements Context {
+
   private final ApplicationContext applicationContext;
   private final Configurator configurator;
-
+  
   static class ResourceLoaderImpl implements ResourceLoader {
+
     private final ClassLoader loader;
-    
+
     private ResourceLoaderImpl( ClassLoader loader ) {
       this.loader = loader;
-      
     }
+
     public InputStream getResourceAsStream( String resourceName ) throws IOException {
       return loader.getResourceAsStream( resourceName );
     }
   }
-  
+
   ContextImpl( ApplicationContext applicationContext, Configurator configurator ) {
     this.applicationContext = applicationContext;
     this.configurator = configurator;
   }
-  
+
   public void setLifeCycleMode( LifeCycleMode lifeCycleMode ) {
     ParamCheck.notNull( lifeCycleMode, "lifeCycleMode" );
     if( LifeCycleMode.THREADED.equals( lifeCycleMode ) ) {
@@ -116,15 +118,15 @@ class ContextImpl implements Context {
   }
 
   public void addThemeContribution( String themeId, String location, ResourceLoader loader ) {
-    StyleSheet styleSheet = readStyleSheet( location, loader  );
-    applicationContext.getThemeManager().getTheme( themeId ).addStyleSheet( styleSheet );
+    StyleSheet styleSheet = readStyleSheet( location, loader );
+    ThemeManager themeManager = applicationContext.getThemeManager();
+    themeManager.registerThemeContribution( themeId, styleSheet );
   }
 
   private ClassLoader getClassLoader() {
-    ClassLoader classLoader = configurator.getClass().getClassLoader();
-    return classLoader;
+    return configurator.getClass().getClassLoader();
   }
-  
+
   public void setAttribute( String name, Object value ) {
     applicationContext.getApplicationStore().setAttribute( name, value );
   }
