@@ -11,7 +11,6 @@
 package org.eclipse.rap.rwt.osgi.internal;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
 
 
@@ -49,8 +48,6 @@ public class RWTContextContainer_Test extends TestCase {
   }
   
   private RWTContextImpl mockRWTContext() {
-    RWTContextImpl result = mock( RWTContextImpl.class );
-    when( Boolean.valueOf( result.isAlive() ) ).thenReturn( Boolean.TRUE );
-    return result;
+    return mock( RWTContextImpl.class );
   }
 }

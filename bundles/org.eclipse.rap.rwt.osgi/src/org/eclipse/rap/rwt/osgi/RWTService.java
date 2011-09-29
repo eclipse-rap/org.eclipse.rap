@@ -31,6 +31,4 @@ public interface RWTService {
                     String contextName,
                     String contextDirectory );
 
-  boolean isAlive();
-
 }

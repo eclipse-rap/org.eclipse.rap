@@ -110,17 +110,6 @@ public class RWTServiceImpl_Test extends TestCase {
     
     checkProblemHasBeenLogged();
   }
-
-  public void testInitialActivationState() {
-    assertTrue( service.isAlive() );
-  }
-  
-  public void testActivationStateAfterActivation() {
-    RWTContext context = startRWTContext();
-
-    assertTrue( service.isAlive() );
-    assertTrue( context.isAlive() );
-  }
   
   public void testActivationStateAfterDeactivation() {
     RWTContext context = startRWTContext();
@@ -183,7 +172,7 @@ public class RWTServiceImpl_Test extends TestCase {
   }
   
   public void testDeactivate() {
-    RWTContext context = startRWTContext();
+    RWTContextImpl context = ( RWTContextImpl )startRWTContext();
     
     service.deactivate();
     
@@ -221,8 +210,8 @@ public class RWTServiceImpl_Test extends TestCase {
   }
   
   public void testRemoveHttpService() {
-    RWTContext context1 = startRWTContext();
-    RWTContext context2 = startRWTContext();
+    RWTContextImpl context1 = ( RWTContextImpl )startRWTContext();
+    RWTContextImpl context2 = ( RWTContextImpl )startRWTContext();
     
     service.removeHttpService( httpService );
     
@@ -355,46 +344,13 @@ public class RWTServiceImpl_Test extends TestCase {
   }
 
   private void checkDeactivateStateOfRWTContext( RWTContext context ) {
-    assertFalse( context.isAlive() );
-    try {
-      context.stop();
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
+    assertFalse( ( ( RWTContextImpl )context ).isAlive() );
+    context.stop(); // check that repeatedly calls to stop do not cause any problems
   }
 
   private void checkDeactivatedStateOfRWTService() {
     assertFalse( service.isAlive() );
-    try {
-      service.deactivate();
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
-    try {
-      service.start( mock( Configurator.class ), httpService, null, null, "/contextPath" );
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
-    try {
-      service.addConfigurator( configuratorReference );
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
-    try {
-      service.removeConfigurator( configurator );
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
-    try {
-      service.addHttpService( httpServiceReference );
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
-    try {
-      service.removeHttpService( httpService );
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
+    assertNull( service.start( configurator, httpService, null, null, "/contextPath" ) );
   }
 
   private HttpContext checkHttpContextHasBeenWrapped() {

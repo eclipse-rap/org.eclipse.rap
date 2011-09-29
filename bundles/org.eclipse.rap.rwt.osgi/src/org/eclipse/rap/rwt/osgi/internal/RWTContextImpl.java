@@ -37,7 +37,7 @@ class RWTContextImpl implements RWTContext {
   private ContextControl contextControl;
   private RWTServiceImpl rwtServiceImpl;
   private ServiceRegistration<?> serviceRegistration;
-  private boolean alive;
+  private volatile boolean alive;
 
   public RWTContextImpl( Configurator configurator,
                          HttpService httpService,
@@ -53,42 +53,76 @@ class RWTContextImpl implements RWTContext {
     this.contextName = contextName;
     this.rwtServiceImpl = rwtServiceImpl;
   }
-
-  public boolean isAlive() {
-    return alive;
-  }
-
-  public void stop() {
-    checkAlive();
-    markNotAlive();
-    registerServletContextProvider();
-    notifyAboutToStop();
-    try {
-      stopContext();
-    } finally {
-      unregisterServletContextProvider();
-    }
-    clearFields();
-  }
-
+  
   void start() {
     createContextControl( registerServletContextProvider() );
     try {
-      startContext();
+      startRWTContext();
     } finally {
       unregisterServletContextProvider();
     }
     markAlive();
   }
 
-  boolean belongsTo( Object service ) {
-    return configurator == service || httpService == service;
-  }
-
   private void createContextControl( HttpServlet contextProvider ) {
     ServletContext servletContext = contextProvider.getServletContext();
     servletContextWrapper = new ServletContextWrapper( servletContext, contextLocation );
     contextControl = new ContextControl( servletContextWrapper, configurator );
+  }
+
+  private void startRWTContext() {
+    contextControl.startContext();
+    String[] aliases = contextControl.getServletNames();
+    if( aliases.length == 0 ) {
+      registerServlet( DEFAULT_ALIAS, contextControl.createServlet() );
+    }
+    for( String alias : aliases ) {
+      registerServlet( alias, contextControl.createServlet() );
+    }
+    registerResourceDirectory();
+    registerAsService();
+  }
+
+  public void stop() {
+    if( !hasBeenStopped() ) {
+      doStop();
+    }
+  }
+
+  private synchronized boolean hasBeenStopped() {
+    boolean result = !alive;
+    if( alive ) {
+      markNotAlive();
+    }
+    return result;
+  }
+
+  private void doStop() {
+    registerServletContextProvider();
+    notifyAboutToStop();
+    try {
+      stopRWTContext();
+    } finally {
+      unregisterServletContextProvider();
+    }
+    clearFields();
+  }
+  
+  private void stopRWTContext() {
+    String[] aliases = contextControl.getServletNames();
+    if( aliases.length == 0 ) {
+      unregisterServlet( DEFAULT_ALIAS );
+    }
+    for( String alias : aliases ) {
+      unregisterServlet( alias );
+    }
+    unregisterResourcesDirectory();
+    serviceRegistration.unregister();
+    contextControl.stopContext();
+  }
+
+  boolean belongsTo( Object service ) {
+    return configurator == service || httpService == service;
   }
 
   private void unregisterServletContextProvider() {
@@ -117,19 +151,6 @@ class RWTContextImpl implements RWTContext {
     return result;
   }
 
-  private void startContext() {
-    contextControl.startContext();
-    String[] aliases = contextControl.getServletNames();
-    if( aliases.length == 0 ) {
-      registerServlet( DEFAULT_ALIAS, contextControl.createServlet() );
-    }
-    for( String alias : aliases ) {
-      registerServlet( alias, contextControl.createServlet() );
-    }
-    registerResourceDirectory();
-    registerAsService();
-  }
-
   private void registerAsService() {
     BundleContext bundleContext = rwtServiceImpl.getBundleContext();
     serviceRegistration = bundleContext.registerService( RWTContext.class.getName(), this, null );
@@ -156,19 +177,6 @@ class RWTContextImpl implements RWTContext {
     } catch( Exception shouldNotHappen ) {
       throw new RuntimeException( shouldNotHappen );
     }
-  }
-
-  private void stopContext() {
-    String[] aliases = contextControl.getServletNames();
-    if( aliases.length == 0 ) {
-      unregisterServlet( DEFAULT_ALIAS );
-    }
-    for( String alias : aliases ) {
-      unregisterServlet( alias );
-    }
-    unregisterResourcesDirectory();
-    serviceRegistration.unregister();
-    contextControl.stopContext();
   }
 
   private void clearFields() {
@@ -201,11 +209,9 @@ class RWTContextImpl implements RWTContext {
     }
     return result;
   }
-
-  private void checkAlive() {
-    if( !isAlive() ) {
-      throw new IllegalStateException( "RWTContext is not alive." );
-    }
+  
+  boolean isAlive() {
+    return alive;
   }
 
   private void markAlive() {

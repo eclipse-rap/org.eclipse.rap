@@ -21,6 +21,4 @@ public interface RWTContext {
 
   void stop();
 
-  boolean isAlive();
-
 }
