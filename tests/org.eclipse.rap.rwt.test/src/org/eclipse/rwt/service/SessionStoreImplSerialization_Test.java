@@ -49,6 +49,12 @@ public class SessionStoreImplSerialization_Test extends TestCase {
 
     assertNull( deserializedSession.getHttpSession() );
   }
+  
+  public void testIdIsSerializable() throws Exception {
+    SessionStoreImpl deserializedSession = Fixture.serializeAndDeserialize( sessionStore );
+
+    assertEquals( sessionStore.getId(), deserializedSession.getId() );
+  }
 
   public void testBoundIsSerializable() throws Exception {
     SessionStoreImpl deserializedSession = Fixture.serializeAndDeserialize( sessionStore );
