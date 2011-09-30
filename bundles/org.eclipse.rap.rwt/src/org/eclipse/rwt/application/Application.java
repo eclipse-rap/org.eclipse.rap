@@ -23,6 +23,7 @@ import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
 import org.eclipse.rwt.internal.engine.Configurable;
 import org.eclipse.rwt.internal.engine.RWTDelegate;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
+import org.eclipse.rwt.internal.util.ParamCheck;
 
 public class Application {
   
@@ -31,15 +32,20 @@ public class Application {
   private final ServletContext servletContext;
   private final ApplicationConfigurator configurator;
   private final ApplicationContext applicationContext;
+
+  private Configurable configurable;
   
   public Application( ServletContext servletContext, ApplicationConfigurator configurator ) {
+    ParamCheck.notNull( servletContext, "servletContext" );
+    ParamCheck.notNull( configurator, "configurator" );
+    
     this.applicationContext = new ApplicationContext();
     this.servletContext = servletContext;
     this.configurator = configurator;
   }
   
   public void start() {
-    Configurable configurable = new ApplicationConfigurable( configurator, servletContext );
+    configurable = new ApplicationConfigurable( configurator, servletContext );
     applicationContext.addConfigurable( configurable );
     ApplicationContextUtil.set( servletContext, applicationContext );
     activateApplicationContext();
@@ -49,6 +55,8 @@ public class Application {
     try {
       if( applicationContext.isActivated() ) {
         applicationContext.deactivate();
+        // TODO [fappel]: test remove configurable..
+        applicationContext.removeConfigurable( configurable );
       }
     } finally {
       ApplicationContextUtil.remove( servletContext );

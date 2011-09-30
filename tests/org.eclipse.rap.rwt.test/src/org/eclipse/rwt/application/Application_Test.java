@@ -23,9 +23,6 @@ import javax.servlet.http.HttpServlet;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.application.ApplicationConfigurator;
-import org.eclipse.rwt.application.ApplicationConfiguration;
-import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.RWTDelegate;
@@ -95,6 +92,22 @@ public class Application_Test extends TestCase {
     
     assertEquals( 1, servletNames.length );
     assertEquals( SERVLET_NAME, servletNames[ 0 ] );
+  }
+  
+  public void testParamServletContextMustNotBeNull() {
+    try {
+      new Application( null, mock( ApplicationConfigurator.class ) );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+  
+  public void testParamConfiguratorMustNotBeNull() {
+    try {
+      new Application( mock( ServletContext.class ), null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
   }
   
   protected void setUp() {

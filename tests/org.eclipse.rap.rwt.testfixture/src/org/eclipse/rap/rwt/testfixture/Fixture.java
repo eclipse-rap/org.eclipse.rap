@@ -98,6 +98,7 @@ public final class Fixture {
   }
 
   private static ServletContext servletContext;
+  private static RWTServletContextListener rwtServletContextListener;
 
   public static class FixtureApplicationConfigurator implements ApplicationConfigurator {
     public void configure( ApplicationConfiguration configuration ) {
@@ -128,13 +129,17 @@ public final class Fixture {
   public static void triggerServletContextInitialized() {
     ensureServletContext();
     registerConfigurer();
+    rwtServletContextListener = new RWTServletContextListener();
     ServletContextEvent event = new ServletContextEvent( servletContext );
-    new RWTServletContextListener().contextInitialized( event );
+    rwtServletContextListener.contextInitialized( event );
   }
 
   public static void triggerServletContextDestroyed() {
     ServletContextEvent event = new ServletContextEvent( servletContext );
-    new RWTServletContextListener().contextDestroyed( event );
+    if( rwtServletContextListener != null ) {
+      rwtServletContextListener.contextDestroyed( event );
+    }
+    rwtServletContextListener = null;
   }
 
 

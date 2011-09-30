@@ -12,7 +12,17 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
-import javax.servlet.*;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
+import org.eclipse.rwt.application.Application;
+import org.eclipse.rwt.application.ApplicationConfiguration;
+import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.internal.engine.configurables.EntryPointManagerConfigurable;
+import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rwt.internal.util.ClassUtil;
+import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 
 public class RWTServletContextListener implements ServletContextListener {
@@ -20,56 +30,73 @@ public class RWTServletContextListener implements ServletContextListener {
   public static final String PARAMETER_SEPARATOR = ",";
   public static final String PARAMETER_SPLIT = "#";
   
-  private final ConfigurablesProvider configurablesProvider;
-
-  public RWTServletContextListener( ConfigurablesProvider configurablesProvider ) {
-    this.configurablesProvider = configurablesProvider;
-  }
-
-  public RWTServletContextListener() {
-    this( new ConfigurablesProvider() );
-  }
+  private Application application;
   
+  private static class EntryPointRunnerConfigurator implements ApplicationConfigurator {
+
+    private final Class<? extends IEntryPoint> entryPointClass;
+
+    private EntryPointRunnerConfigurator( Class<? extends IEntryPoint> entryPointClass ) {
+      this.entryPointClass = entryPointClass;
+    }
+
+    public void configure( ApplicationConfiguration configuration ) {
+      configuration.addEntryPoint( EntryPointManager.DEFAULT, entryPointClass );
+    }
+  }
+    
   public void contextInitialized( ServletContextEvent evt ) {
-    createApplicationContext( evt.getServletContext() );
-    configureApplicationContext( evt.getServletContext() );
-    activateApplicationContext( evt.getServletContext() );
+    ServletContext servletContext = evt.getServletContext();
+    ApplicationConfigurator configurator = readConfigurator( servletContext );
+    application = new Application( servletContext, configurator );
+    application.start();
   }
 
   public void contextDestroyed( ServletContextEvent evt ) {
-    deactivateApplicationContext( evt.getServletContext() );
-    deconfigureApplicationContext( evt.getServletContext() );
-    disposeOfApplicationContext( evt.getServletContext() );
+    application.stop();
+    application = null;
   }
 
-  private void createApplicationContext( ServletContext servletContext ) {
-    ApplicationContext applicationContext = new ApplicationContext();
-    ApplicationContextUtil.set( servletContext, applicationContext );
-  }
-  
-  private void configureApplicationContext( ServletContext servletContext ) {
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-    Configurable[] configurables = configurablesProvider.createConfigurables( servletContext );
-    ConfigurablesProvider.addConfigurables( configurables, applicationContext );
-    ConfigurablesProvider.bufferConfigurables( configurables, servletContext );
-  }
-  
-  private void activateApplicationContext( ServletContext servletContext ) {
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-    applicationContext.activate();
+  private ApplicationConfigurator readConfigurator( ServletContext servletContext ) {
+    ApplicationConfigurator result;
+    if( hasConfiguratorParam( servletContext ) ) {
+      result = readApplicationConfigurator( servletContext );
+    } else {
+      result = readEntryPointRunnerConfigurator( servletContext );
+    }
+    return result;
   }
 
-  private void deactivateApplicationContext( ServletContext servletContext ) {
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-    applicationContext.deactivate();
+  private boolean hasConfiguratorParam( ServletContext servletContext ) {
+    return null != servletContext.getInitParameter( ApplicationConfigurable.CONFIGURATOR_PARAM );
   }
   
-  private void deconfigureApplicationContext( ServletContext servletContext ) {
-    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
-    ConfigurablesProvider.removeConfigurables( servletContext, applicationContext );
+  private ApplicationConfigurator readApplicationConfigurator( ServletContext servletContext ) {
+    String name = servletContext.getInitParameter( ApplicationConfigurable.CONFIGURATOR_PARAM );
+    return newConfigurator( name );
   }
   
-  private void disposeOfApplicationContext( ServletContext servletContext ) {
-    ApplicationContextUtil.remove( servletContext );
+  private ApplicationConfigurator newConfigurator( String className ) {
+    ClassLoader loader = getClass().getClassLoader();
+    return ( ApplicationConfigurator )ClassUtil.newInstance( loader, className );
+  }
+
+  private ApplicationConfigurator readEntryPointRunnerConfigurator( ServletContext context ) {
+    try {
+      return doReadEntryPointRunnerConfigurator( context );
+    } catch( ClassNotFoundException cnfe ) {
+      throw new IllegalArgumentException( cnfe );
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private ApplicationConfigurator doReadEntryPointRunnerConfigurator( ServletContext context )
+    throws ClassNotFoundException
+  {
+    String entryPointsParam = EntryPointManagerConfigurable.ENTRY_POINTS_PARAM;
+    String className = context.getInitParameter( entryPointsParam );
+    ClassLoader loader = getClass().getClassLoader();
+    Class<?> entryPointClass = loader.loadClass( className );
+    return new EntryPointRunnerConfigurator( ( Class<? extends IEntryPoint> )entryPointClass );
   }
 }
