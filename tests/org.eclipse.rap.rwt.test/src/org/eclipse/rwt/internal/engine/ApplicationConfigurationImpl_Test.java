@@ -22,19 +22,19 @@ import org.eclipse.rwt.lifecycle.ILifeCycle;
 
 public class ApplicationConfigurationImpl_Test extends TestCase {
   
-  private ApplicationConfigurationImpl context;
+  private ApplicationConfigurationImpl applicationConfiguration;
   private ApplicationContext applicationContext;
 
   public void testSetLifeCycleModeWithNullArgument() {
     try {
-      context.setLifeCycleMode( null );
+      applicationConfiguration.setLifeCycleMode( null );
       fail();
     } catch( NullPointerException expected ) {
     }
   }
   
   public void testSetLifeCycleModeToThreadless() {
-    context.setLifeCycleMode( ApplicationConfiguration.LifeCycleMode.THREADLESS );
+    applicationConfiguration.setLifeCycleMode( ApplicationConfiguration.LifeCycleMode.THREADLESS );
 
     applicationContext.activate();
     ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
@@ -43,7 +43,7 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
   }
   
   public void testSetLifeCycleModeToThreaded() {
-    context.setLifeCycleMode( ApplicationConfiguration.LifeCycleMode.THREADED );
+    applicationConfiguration.setLifeCycleMode( ApplicationConfiguration.LifeCycleMode.THREADED );
     
     applicationContext.activate();
     ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
@@ -55,7 +55,7 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
     applicationContext = new ApplicationContext();
     setupRWTConfiguration();
     ApplicationConfigurator configurator = mock( ApplicationConfigurator.class );
-    context = new ApplicationConfigurationImpl( applicationContext, configurator );
+    applicationConfiguration = new ApplicationConfigurationImpl( applicationContext, configurator );
   }
 
   private void setupRWTConfiguration() {
