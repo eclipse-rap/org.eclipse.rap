@@ -9,8 +9,17 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
+import java.io.ObjectInputValidation;
+import java.io.ObjectOutputStream;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.eclipse.rwt.internal.engine.PostDeserialization;
 import org.eclipse.rwt.service.ISessionStore;
@@ -91,6 +100,12 @@ final class TimerExecScheduler implements SerializableCompatibility {
     tasks.remove( task );
   }
   
+  private void writeObject( ObjectOutputStream stream ) throws IOException {
+    synchronized( display.getDeviceLock() ) {
+      stream.defaultWriteObject();
+    }
+  }
+
   private void readObject( ObjectInputStream stream ) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
     stream.registerValidation( new PostDeserializationValidation(), 0 );

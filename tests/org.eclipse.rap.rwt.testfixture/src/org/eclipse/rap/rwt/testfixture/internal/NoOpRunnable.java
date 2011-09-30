@@ -10,8 +10,11 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.testfixture.internal;
 
+import java.io.Serializable;
 
-public class NoOpRunnable implements Runnable {
+
+public class NoOpRunnable implements Runnable, Serializable {
+  private static final long serialVersionUID = 1L;
 
   public void run() {
   }
