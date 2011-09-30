@@ -15,8 +15,8 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 
 import org.eclipse.rwt.AdapterFactory;
+import org.eclipse.rwt.application.*;
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.engine.*;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rwt.internal.service.ServiceManager;
@@ -28,14 +28,15 @@ import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
+import org.eclipse.rwt.resources.ResourceLoader;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISettingStoreFactory;
 import org.eclipse.swt.widgets.Widget;
 
-class ContextImpl implements Context {
+class ApplicationConfigurationImpl implements ApplicationConfiguration {
 
   private final ApplicationContext applicationContext;
-  private final Configurator configurator;
+  private final ApplicationConfigurator configurator;
   
   static class ResourceLoaderImpl implements ResourceLoader {
 
@@ -50,7 +51,9 @@ class ContextImpl implements Context {
     }
   }
 
-  ContextImpl( ApplicationContext applicationContext, Configurator configurator ) {
+  ApplicationConfigurationImpl( ApplicationContext applicationContext,
+                                ApplicationConfigurator configurator )
+  {
     this.applicationContext = applicationContext;
     this.configurator = configurator;
   }

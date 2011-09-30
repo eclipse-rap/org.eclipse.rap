@@ -8,7 +8,7 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.engine;
+package org.eclipse.rwt.application;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -23,70 +23,75 @@ import javax.servlet.http.HttpServlet;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration;
+import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.RWTDelegate;
 
 
-public class ContextControl_Test extends TestCase {
+public class Application_Test extends TestCase {
+  
   private static final String SERVLET_NAME = "servletName";
   
   private ServletContext servletContext;
-  private Configurator configurator;
-  private ContextControl contextControl;
+  private ApplicationConfigurator configurator;
+  private Application application;
 
   public void testCreateServlet() {
-    HttpServlet servlet1 = contextControl.createServlet();
-    HttpServlet servlet2 = contextControl.createServlet();
+    HttpServlet servlet1 = application.createServlet();
+    HttpServlet servlet2 = application.createServlet();
     
     assertTrue( servlet1 instanceof RWTDelegate );
     assertTrue( servlet2 instanceof RWTDelegate );
     assertNotSame( servlet1, servlet2 );
   }
   
-  public void testStartContext() {
-    contextControl.startContext();
+  public void testStart() {
+    application.start();
     
     checkContexthasBeenConfigured();
     checkApplicationContextHasBeenRegistered();
   }
   
-  public void testStartContextWithProblem() {
+  public void testStartWithProblem() {
     createConfiguratorWithProblem();
     
-    startContextWithProblem();
+    startWithProblem();
     
     checkApplicationContextHasBeenDeregistered();
   }
   
-  public void testStopContext() {
-    contextControl.startContext();
+  public void testStop() {
+    application.start();
   
-    contextControl.stopContext();
+    application.stop();
+    
     checkApplicationContextHasBeenDeregistered();
   }
   
-  public void testStopContextThatHasFailedOnStart() {
+  public void testStopThatHasFailedOnStart() {
     createConfiguratorWithProblem();
-    startContextWithProblem();
+    startWithProblem();
 
-    contextControl.stopContext();
+    application.stop();
     
     checkApplicationContextGetsDeregisteredAnyway();
   }
 
   public void testGetDefaultServletNames() {
-    contextControl.startContext();
+    application.start();
     
-    String[] servletNames = contextControl.getServletNames();
+    String[] servletNames = application.getServletNames();
     
     assertEquals( 0, servletNames.length );
   }
   
   public void testGetServletNames() {
-    startContextWithBrandingConfiguration();
+    startWithBrandingConfiguration();
 
-    String[] servletNames = contextControl.getServletNames();
+    String[] servletNames = application.getServletNames();
     
     assertEquals( 1, servletNames.length );
     assertEquals( SERVLET_NAME, servletNames[ 0 ] );
@@ -96,44 +101,44 @@ public class ContextControl_Test extends TestCase {
     servletContext = mock( ServletContext.class );
     when( servletContext.getRealPath( "/" ) )
       .thenReturn( Fixture.WEB_CONTEXT_RWT_RESOURCES_DIR.getPath() );
-    configurator = mock( Configurator.class );
-    contextControl = new ContextControl( servletContext, configurator );
+    configurator = mock( ApplicationConfigurator.class );
+    application = new Application( servletContext, configurator );
   }
   
-
   private void checkApplicationContextHasBeenRegistered() {
     verify( servletContext ).setAttribute( any( String.class ), any( ApplicationContext.class ) );
   }
 
   private void checkContexthasBeenConfigured() {
-    verify( configurator ).configure( any( Context.class ) );
+    verify( configurator ).configure( any( ApplicationConfiguration.class ) );
   }
 
   private void checkApplicationContextHasBeenDeregistered() {
     verify( servletContext ).removeAttribute( any( String.class ) );
   }
   
-  private void startContextWithBrandingConfiguration() {
-    configurator = new Configurator() {
-      public void configure( Context context ) {
-        context.addBranding( new AbstractBranding() {
+  private void startWithBrandingConfiguration() {
+    configurator = new ApplicationConfigurator() {
+      public void configure( ApplicationConfiguration configuration ) {
+        configuration.addBranding( new AbstractBranding() {
           public String getServletName() {
             return SERVLET_NAME;
           }
         } );
       }
     };
-    contextControl = new ContextControl( servletContext, configurator );
-    contextControl.startContext();
+    application = new Application( servletContext, configurator );
+    application.start();
   }
 
   private void createConfiguratorWithProblem() {
-    doThrow( new IllegalStateException() ).when( configurator ).configure( any( Context.class ) );
+    doThrow( new IllegalStateException() )
+      .when( configurator ).configure( any( ApplicationConfiguration.class ) );
   }
 
-  private void startContextWithProblem() {
+  private void startWithProblem() {
     try {
-      contextControl.startContext();
+      application.start();
       fail();
     } catch( IllegalStateException expected ) {
     }

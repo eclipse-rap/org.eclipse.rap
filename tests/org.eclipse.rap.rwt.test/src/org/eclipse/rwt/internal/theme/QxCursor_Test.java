@@ -12,7 +12,7 @@ package org.eclipse.rwt.internal.theme;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.engine.ResourceLoader;
+import org.eclipse.rwt.resources.ResourceLoader;
 
 
 public class QxCursor_Test extends TestCase {

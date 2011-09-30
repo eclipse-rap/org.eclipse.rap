@@ -21,9 +21,9 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.engine.Configurator;
-import org.eclipse.rwt.engine.Context;
 import org.eclipse.rwt.internal.engine.configurables.BrandingManagerConfigurable;
 import org.eclipse.rwt.internal.engine.configurables.EntryPointManagerConfigurable;
 import org.eclipse.rwt.internal.engine.configurables.PhaseListenerRegistryConfigurable;
@@ -103,12 +103,12 @@ public class RWTServletContextListener_Test extends TestCase {
   public static class TestBranding extends AbstractBranding {
   }
 
-  public static class TestConfigurator implements Configurator {
-    public void configure( Context context ) {
-      context.addEntryPoint( "ep", TestEntryPoint.class );
-      context.addPhaseListener( new TestPhaseListener() );
-      context.addResource( new TestResource() );
-      context.addBranding( new TestBranding() );
+  public static class TestConfigurator implements ApplicationConfigurator {
+    public void configure( ApplicationConfiguration configuration ) {
+      configuration.addEntryPoint( "ep", TestEntryPoint.class );
+      configuration.addPhaseListener( new TestPhaseListener() );
+      configuration.addResource( new TestResource() );
+      configuration.addBranding( new TestBranding() );
     }
   }
 
@@ -268,7 +268,7 @@ public class RWTServletContextListener_Test extends TestCase {
   }
 
   private void setConfiguratorInitParameter() {
-    String name = ContextConfigurable.CONFIGURATOR_PARAM;
+    String name = ApplicationConfigurable.CONFIGURATOR_PARAM;
     String value = TestConfigurator.class.getName();
     Fixture.setInitParameter( name, value );
   }

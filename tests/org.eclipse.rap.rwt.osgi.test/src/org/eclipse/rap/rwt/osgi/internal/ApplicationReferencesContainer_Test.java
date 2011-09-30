@@ -14,27 +14,27 @@ import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
 
-public class RWTContextContainer_Test extends TestCase {
+public class ApplicationReferencesContainer_Test extends TestCase {
   
-  private RWTContextContainer container;
-  private RWTContextImpl context;
+  private ApplicationReferencesContainer container;
+  private ApplicationReferenceImpl applicationReference;
 
   public void testAdd() {
-    container.add( context );
+    container.add( applicationReference );
     
     assertEquals( 1, container.getAll().length );
   }
   
   public void testRemove() {
-    container.add( context );
+    container.add( applicationReference );
     
-    container.remove( context );
+    container.remove( applicationReference );
     
     assertEquals( 0, container.getAll().length );
   }
   
   public void testClear() {
-    container.add( context );
+    container.add( applicationReference );
 
     container.clear();
     
@@ -43,11 +43,11 @@ public class RWTContextContainer_Test extends TestCase {
   
 
   protected void setUp() {
-    container = new RWTContextContainer();
-    context = mockRWTContext();
+    container = new ApplicationReferencesContainer();
+    applicationReference = mockApplicationReference();
   }
   
-  private RWTContextImpl mockRWTContext() {
-    return mock( RWTContextImpl.class );
+  private ApplicationReferenceImpl mockApplicationReference() {
+    return mock( ApplicationReferenceImpl.class );
   }
 }

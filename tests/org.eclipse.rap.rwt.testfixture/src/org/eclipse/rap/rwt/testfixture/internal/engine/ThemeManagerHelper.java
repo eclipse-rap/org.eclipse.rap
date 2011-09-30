@@ -15,10 +15,10 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.engine.ResourceLoader;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.resources.ResourceLoader;
 
 
 public class ThemeManagerHelper {

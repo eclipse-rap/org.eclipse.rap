@@ -14,78 +14,82 @@ package org.eclipse.rap.rwt.osgi.internal;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 
-import org.eclipse.rap.rwt.osgi.RWTContext;
-import org.eclipse.rwt.engine.Configurator;
-import org.eclipse.rwt.engine.ContextControl;
+import org.eclipse.rap.rwt.osgi.ApplicationReference;
+import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.Application;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 
 
-class RWTContextImpl implements RWTContext {
+class ApplicationReferenceImpl implements ApplicationReference {
 
   static final String SERVLET_CONTEXT_FINDER_ALIAS = "servlet_context_finder";
   static final String DEFAULT_ALIAS = "rap";
 
-  private Configurator configurator;
+  private ApplicationConfigurator configurator;
   private HttpService httpService;
   private HttpContext httpContext;
   private String contextLocation;
   private String contextName;
   private ServletContext servletContextWrapper;
-  private ContextControl contextControl;
-  private RWTServiceImpl rwtServiceImpl;
+  private Application application;
+  private ApplicationLauncherImpl applicationLauncher;
   private ServiceRegistration<?> serviceRegistration;
   private volatile boolean alive;
 
-  public RWTContextImpl( Configurator configurator,
-                         HttpService httpService,
-                         HttpContext httpContext,
-                         String contextName,
-                         String contextLocation,
-                         RWTServiceImpl rwtServiceImpl )
+  ApplicationReferenceImpl( ApplicationConfigurator configurator,
+                            HttpService httpService,
+                            HttpContext httpContext,
+                            String contextName,
+                            String contextLocation,
+                            ApplicationLauncherImpl applicationLauncher )
   {
     this.configurator = configurator;
     this.httpService = httpService;
     this.httpContext = createWrappedHttpContext( httpContext );
     this.contextLocation = contextLocation;
     this.contextName = contextName;
-    this.rwtServiceImpl = rwtServiceImpl;
+    this.applicationLauncher = applicationLauncher;
   }
   
   void start() {
-    createContextControl( registerServletContextProvider() );
+    createApplication( registerServletContextProviderServlet() );
     try {
-      startRWTContext();
+      startRWTApplication();
     } finally {
-      unregisterServletContextProvider();
+      unregisterServletContextProviderServlet();
     }
     markAlive();
   }
 
-  private void createContextControl( HttpServlet contextProvider ) {
-    ServletContext servletContext = contextProvider.getServletContext();
+  private void createApplication( HttpServlet contextProviderServlet ) {
+    ServletContext servletContext = contextProviderServlet.getServletContext();
     servletContextWrapper = new ServletContextWrapper( servletContext, contextLocation );
-    contextControl = new ContextControl( servletContextWrapper, configurator );
+    application = new Application( servletContextWrapper, configurator );
   }
 
-  private void startRWTContext() {
-    contextControl.startContext();
-    String[] aliases = contextControl.getServletNames();
-    if( aliases.length == 0 ) {
-      registerServlet( DEFAULT_ALIAS, contextControl.createServlet() );
-    }
-    for( String alias : aliases ) {
-      registerServlet( alias, contextControl.createServlet() );
-    }
+  private void startRWTApplication() {
+    application.start();
+    registerServlets();
     registerResourceDirectory();
     registerAsService();
   }
 
-  public void stop() {
+  private void registerServlets() {
+    String[] aliases = application.getServletNames();
+    if( aliases.length == 0 ) {
+      registerServlet( DEFAULT_ALIAS, application.createServlet() );
+    }
+    for( String alias : aliases ) {
+      registerServlet( alias, application.createServlet() );
+    }
+  }
+
+  public void stopApplication() {
     if( !hasBeenStopped() ) {
-      doStop();
+      doStopApplication();
     }
   }
 
@@ -97,35 +101,39 @@ class RWTContextImpl implements RWTContext {
     return result;
   }
 
-  private void doStop() {
-    registerServletContextProvider();
+  private void doStopApplication() {
+    registerServletContextProviderServlet();
     notifyAboutToStop();
     try {
-      stopRWTContext();
+      stopRWTApplication();
     } finally {
-      unregisterServletContextProvider();
+      unregisterServletContextProviderServlet();
     }
     clearFields();
   }
   
-  private void stopRWTContext() {
-    String[] aliases = contextControl.getServletNames();
+  private void stopRWTApplication() {
+    unregisterServlets();
+    unregisterResourcesDirectory();
+    serviceRegistration.unregister();
+    application.stop();
+  }
+
+  private void unregisterServlets() {
+    String[] aliases = application.getServletNames();
     if( aliases.length == 0 ) {
       unregisterServlet( DEFAULT_ALIAS );
     }
     for( String alias : aliases ) {
       unregisterServlet( alias );
     }
-    unregisterResourcesDirectory();
-    serviceRegistration.unregister();
-    contextControl.stopContext();
   }
 
   boolean belongsTo( Object service ) {
     return configurator == service || httpService == service;
   }
 
-  private void unregisterServletContextProvider() {
+  private void unregisterServletContextProviderServlet() {
     unregisterServlet( SERVLET_CONTEXT_FINDER_ALIAS );
   }
 
@@ -143,7 +151,7 @@ class RWTContextImpl implements RWTContext {
     return new HttpContextWrapper( createDefaultHttpContext );
   }
 
-  private HttpServlet registerServletContextProvider() {
+  private HttpServlet registerServletContextProviderServlet() {
     HttpServlet result = new HttpServlet() {
       private static final long serialVersionUID = 1L;
     };
@@ -152,11 +160,16 @@ class RWTContextImpl implements RWTContext {
   }
 
   private void registerAsService() {
-    BundleContext bundleContext = rwtServiceImpl.getBundleContext();
-    serviceRegistration = bundleContext.registerService( RWTContext.class.getName(), this, null );
+    String clazz = ApplicationReference.class.getName();
+    serviceRegistration = getBundleContext().registerService( clazz, this, null );
   }
 
-  private void registerServlet( String alias, final HttpServlet servlet ) {
+  private BundleContext getBundleContext() {
+    // TODO [fappel]: use FrameworkUtil instead..
+    return applicationLauncher.getBundleContext();
+  }
+
+  private void registerServlet( String alias, HttpServlet servlet ) {
     try {
       HttpServlet wrapper = new CutOffContextPathWrapper( servlet, servletContextWrapper, alias );
       httpService.registerServlet( getContextSegment() + "/" + alias, wrapper, null, httpContext );
@@ -168,7 +181,7 @@ class RWTContextImpl implements RWTContext {
   }
 
   private void registerResourceDirectory() {
-    String alias = ContextControl.RESOURCES;
+    String alias = Application.RESOURCES;
     String location = contextLocation + "/" + alias;
     try {
       httpService.registerResources( getContextSegment() + "/" + alias, location, httpContext );
@@ -180,13 +193,13 @@ class RWTContextImpl implements RWTContext {
   }
 
   private void clearFields() {
-    contextControl = null;
+    application = null;
     httpService = null;
     httpContext = null;
     configurator = null;
     contextName = null;
     contextLocation = null;
-    rwtServiceImpl = null;
+    applicationLauncher = null;
     servletContextWrapper = null;
   }
 
@@ -195,11 +208,11 @@ class RWTContextImpl implements RWTContext {
   }
 
   private void unregisterResourcesDirectory() {
-    httpService.unregister( getContextSegment() + "/" + ContextControl.RESOURCES );
+    httpService.unregister( getContextSegment() + "/" + Application.RESOURCES );
   }
 
   private void notifyAboutToStop() {
-    rwtServiceImpl.notifyContextAboutToStop( this );
+    applicationLauncher.notifyContextAboutToStop( this );
   }
 
   private String getContextSegment() {

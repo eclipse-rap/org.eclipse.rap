@@ -8,17 +8,9 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rap.rwt.osgi;
+package org.eclipse.rwt.application;
 
 
-/**
- * <strong>Note:</strong> This API is <em>provisional</em>. It is likely to change before the final
- * release.
- *
- * @since 1.5
- */
-public interface RWTContext {
-
-  void stop();
-
+public interface ApplicationConfigurator {
+  void configure( ApplicationConfiguration configuration );
 }

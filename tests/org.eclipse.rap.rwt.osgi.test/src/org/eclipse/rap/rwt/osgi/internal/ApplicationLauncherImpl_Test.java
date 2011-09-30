@@ -27,10 +27,10 @@ import javax.servlet.http.HttpServlet;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.osgi.RWTContext;
+import org.eclipse.rap.rwt.osgi.ApplicationReference;
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.application.*;
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.engine.*;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osgi.framework.*;
@@ -39,7 +39,8 @@ import org.osgi.service.http.HttpService;
 import org.osgi.service.log.LogService;
 
 
-public class RWTServiceImpl_Test extends TestCase {
+public class ApplicationLauncherImpl_Test extends TestCase {
+  
   private static final String CONTEXT_NAME = "context";
   private static final String FILTER_EXPRESSION = "(key=value)";
   private static final String SERVLET_ALIAS_1 = "servlet1";
@@ -48,41 +49,42 @@ public class RWTServiceImpl_Test extends TestCase {
   private BundleContext bundleContext;
   private HttpService httpService;
   private ServiceReference< HttpService > httpServiceReference;
-  private Configurator configurator;
-  private ServiceReference< Configurator > configuratorReference;
-  private RWTServiceImpl service;
+  private ApplicationConfigurator configurator;
+  private ServiceReference< ApplicationConfigurator > configuratorReference;
+  private ApplicationLauncherImpl applicationLauncher;
   private ServiceRegistration serviceRegistration;
   private LogService log;
   
-  public void testStart() {
+  public void testLaunch() {
     String path = Fixture.WEB_CONTEXT_DIR.getPath();
     
-    service.start( configurator, httpService, null, null, path );
+    applicationLauncher.launch( configurator, httpService, null, null, path );
     
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
     checkHttpContextHasBeenCreated();
-    checkRWTContextHasBeenRegisteredAsService();
+    checkApplicationReferenceHasBeenRegisteredAsService();
   }
 
-  public void testStartWithHttpContext() {
+  public void testLaunchWithHttpContext() {
     HttpContext httpContext = mock( HttpContext.class );
-    service.start( configurator, httpService, httpContext, null, Fixture.WEB_CONTEXT_DIR.getPath() );
+    String path = Fixture.WEB_CONTEXT_DIR.getPath();
+    applicationLauncher.launch( configurator, httpService, httpContext, null, path );
     
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
     checkHttpContextHasBeenWrapped();
-    checkRWTContextHasBeenRegisteredAsService();
+    checkApplicationReferenceHasBeenRegisteredAsService();
   }
   
-  public void testStartWithDefaultContextDirectory() {
-    startRWTContext();
+  public void testLaunchWithDefaultContextDirectory() {
+    launchApplication();
     
     checkDefaultAliasHasBeenRegistered();
     checkWebContextResourcesHaveBeenCreated();
   }
   
-  public void testStartWithProblem() {
+  public void testLaunchWithProblem() {
     prepareConfiguratorToThrowException();
     mockLogService();
     
@@ -91,77 +93,78 @@ public class RWTServiceImpl_Test extends TestCase {
     checkProblemHasBeenLogged();
   }
 
-  public void testStop() {
+  public void testStopApplication() {
     String path = Fixture.WEB_CONTEXT_DIR.getPath();
-    RWTContext context = startRWTContext( path );
+    ApplicationReference context = launchApplicationReference( path );
     
-    context.stop();
+    context.stopApplication();
 
     checkDefaultAliasHasBeenUnregistered();
     checkWebContextResourcesHaveBeenDeleted();
-    checkRWTContextHasBeenUnregisteredAsService();
+    checkApplicationReferenceHasBeenUnregisteredAsService();
   }
   
-  public void testStopWithProblem() {
+  public void testStopApplicationReferenceWithProblem() {
     mockLogService();
-    RWTContextImpl rwtContext = createMalignRWTContext();
+    ApplicationReferenceImpl applicationReference = createMalignApplicationReference();
     
-    service.stopContext( rwtContext );
+    applicationLauncher.stopApplicationReference( applicationReference );
     
     checkProblemHasBeenLogged();
   }
   
   public void testActivationStateAfterDeactivation() {
-    RWTContext context = startRWTContext();
+    ApplicationReference applicationReference = launchApplication();
 
-    service.deactivate();
+    applicationLauncher.deactivate();
 
-    checkDeactivateStateOfRWTContext( context );
-    checkDeactivatedStateOfRWTService();
+    checkDeactivateStateOfApplicationReference( applicationReference );
+    checkDeactivatedStateOfApplicationLauncher();
     checkDefaultAliasHasBeenUnregistered();
     checkWebContextResourcesHaveBeenDeleted();
   }
   
-  public void testStartWithMultipleServletNames() {
+  public void testLaunchWithMultipleServletNames() {
     createAliasConfigurator( SERVLET_ALIAS_1, SERVLET_ALIAS_2 );
-    createService();
+    createApplicationLauncher();
     
-    startRWTContext();
+    launchApplication();
     
     checkAliasHasBeenRegistered( SERVLET_ALIAS_1 );
     checkAliasHasBeenRegistered( SERVLET_ALIAS_2 );
   }
   
-  public void testStopWithMultipleServletNames() {
+  public void testStopApplicationWithMultipleServletNames() {
     createAliasConfigurator( SERVLET_ALIAS_1, SERVLET_ALIAS_2 );
-    createService();
-    RWTContext context = startRWTContext();
+    createApplicationLauncher();
+    ApplicationReference applicationReference = launchApplication();
 
-    context.stop();
+    applicationReference.stopApplication();
     
     checkAliasHasBeenUnregistered( SERVLET_ALIAS_1 );
     checkAliasHasBeenUnregistered( SERVLET_ALIAS_2 );
   }
   
-  public void testStartWithContextName() {
+  public void testLaunchWithContextName() {
     mockBundleContext( CONTEXT_NAME );
-    createService();
-    String location = service.getLocation( CONTEXT_NAME, configurator, httpService );
+    createApplicationLauncher();
+    String location = applicationLauncher.getLocation( CONTEXT_NAME, configurator, httpService );
     
-    service.start( configurator, httpService, null, CONTEXT_NAME, location );
+    applicationLauncher.launch( configurator, httpService, null, CONTEXT_NAME, location );
     
-    checkAliasHasBeenRegistered( CONTEXT_NAME + "/" + RWTContextImpl.DEFAULT_ALIAS );
+    checkAliasHasBeenRegistered( CONTEXT_NAME + "/" + ApplicationReferenceImpl.DEFAULT_ALIAS );
   }
   
-  public void testStopWithContextName() {
+  public void testStopApplicationWithContextName() {
     mockBundleContext( CONTEXT_NAME );
-    createService();
-    String location = service.getLocation( CONTEXT_NAME, configurator, httpService );
-    RWTContext context = service.start( configurator, httpService, null, CONTEXT_NAME, location );
+    createApplicationLauncher();
+    String location = applicationLauncher.getLocation( CONTEXT_NAME, configurator, httpService );
+    ApplicationReference applicationReference
+      = applicationLauncher.launch( configurator, httpService, null, CONTEXT_NAME, location );
     
-    context.stop();
+    applicationReference.stopApplication();
     
-    checkAliasHasBeenUnregistered( CONTEXT_NAME + "/" + RWTContextImpl.DEFAULT_ALIAS );
+    checkAliasHasBeenUnregistered( CONTEXT_NAME + "/" + ApplicationReferenceImpl.DEFAULT_ALIAS );
   }
   
   public void testActivate() {
@@ -172,17 +175,18 @@ public class RWTServiceImpl_Test extends TestCase {
   }
   
   public void testDeactivate() {
-    RWTContextImpl context = ( RWTContextImpl )startRWTContext();
+    ApplicationReferenceImpl applicationreference
+      = ( ApplicationReferenceImpl )launchApplication();
     
-    service.deactivate();
+    applicationLauncher.deactivate();
     
-    assertFalse( context.isAlive() );
+    assertFalse( applicationreference.isAlive() );
   }
   
   public void testAddConfigurator() {
-    service.addHttpService( httpServiceReference );
+    applicationLauncher.addHttpService( httpServiceReference );
     
-    Configurator added = service.addConfigurator( configuratorReference );
+    ApplicationConfigurator added = applicationLauncher.addConfigurator( configuratorReference );
 
     assertSame( configurator, added );
     checkDefaultAliasHasBeenRegistered();
@@ -190,19 +194,19 @@ public class RWTServiceImpl_Test extends TestCase {
   }
   
   public void testRemoveConfigurator() {
-    service.addHttpService( httpServiceReference );
-    service.addConfigurator( configuratorReference );
+    applicationLauncher.addHttpService( httpServiceReference );
+    applicationLauncher.addConfigurator( configuratorReference );
 
-    service.removeConfigurator( configurator );
+    applicationLauncher.removeConfigurator( configurator );
     
     checkDefaultAliasHasBeenUnregistered();
     checkWebContextResourcesHaveBeenDeleted();
   }
   
   public void testAddHttpService() {
-    service.addConfigurator( configuratorReference );
+    applicationLauncher.addConfigurator( configuratorReference );
     
-    HttpService added = service.addHttpService( httpServiceReference );
+    HttpService added = applicationLauncher.addHttpService( httpServiceReference );
     
     assertSame( httpService, added );
     checkDefaultAliasHasBeenRegistered();
@@ -210,20 +214,20 @@ public class RWTServiceImpl_Test extends TestCase {
   }
   
   public void testRemoveHttpService() {
-    RWTContextImpl context1 = ( RWTContextImpl )startRWTContext();
-    RWTContextImpl context2 = ( RWTContextImpl )startRWTContext();
+    ApplicationReferenceImpl reference1 = ( ApplicationReferenceImpl )launchApplication();
+    ApplicationReferenceImpl reference2 = ( ApplicationReferenceImpl )launchApplication();
     
-    service.removeHttpService( httpService );
+    applicationLauncher.removeHttpService( httpService );
     
-    assertFalse( context1.isAlive() );
-    assertFalse( context2.isAlive() );
+    assertFalse( reference1.isAlive() );
+    assertFalse( reference2.isAlive() );
     checkWebContextResourcesHaveBeenDeleted();
   }
   
-  public void testAddConfigurerAfterStart() {
-    RWTContext context = startRWTContext();
-    service.addHttpService( httpServiceReference );
-    context.stop();
+  public void testAddConfigurerAfterLaunch() {
+    ApplicationReference reference = launchApplication();
+    applicationLauncher.addHttpService( httpServiceReference );
+    reference.stopApplication();
     
     mockSecondConfiguratorReference();
     
@@ -269,7 +273,7 @@ public class RWTServiceImpl_Test extends TestCase {
     mockConfigurator();
     mockHttpService();
     mockBundleContext();
-    createService();
+    createApplicationLauncher();
   }
 
   protected void tearDown() {
@@ -278,26 +282,26 @@ public class RWTServiceImpl_Test extends TestCase {
   }
 
   @SuppressWarnings( "unchecked" )
-  private ServiceRegistration< ? > checkRWTContextHasBeenRegisteredAsService() {
-    return verify( bundleContext ).registerService( eq( RWTContext.class.getName() ),
-                                             any( RWTContext.class ),
+  private ServiceRegistration< ? > checkApplicationReferenceHasBeenRegisteredAsService() {
+    return verify( bundleContext ).registerService( eq( ApplicationReference.class.getName() ),
+                                             any( ApplicationReference.class ),
                                              any( Dictionary.class ) );
   }
 
-  private void checkRWTContextHasBeenUnregisteredAsService() {
+  private void checkApplicationReferenceHasBeenUnregisteredAsService() {
     verify( serviceRegistration ).unregister();
   }
 
   private void checkDefaultAliasHasBeenRegisteredTwice() {
-    checkAliasHasBeenRegistered( RWTContextImpl.DEFAULT_ALIAS, 2 );
+    checkAliasHasBeenRegistered( ApplicationReferenceImpl.DEFAULT_ALIAS, 2 );
   }
 
   private void checkDefaultAliasHasNotBeenRegistered() {
-    checkAliasHasBeenRegistered( RWTContextImpl.DEFAULT_ALIAS, 0 );
+    checkAliasHasBeenRegistered( ApplicationReferenceImpl.DEFAULT_ALIAS, 0 );
   }
   
   private void checkDefaultAliasHasBeenRegistered() {
-    checkAliasHasBeenRegistered( RWTContextImpl.DEFAULT_ALIAS, 1 );
+    checkAliasHasBeenRegistered( ApplicationReferenceImpl.DEFAULT_ALIAS, 1 );
   }
 
   private void checkAliasHasBeenRegistered( String alias ) {
@@ -319,15 +323,15 @@ public class RWTServiceImpl_Test extends TestCase {
   }
 
   private String getResourcesDirectory( String alias ) {
-    String result = "/" + ContextControl.RESOURCES;
+    String result = "/" + Application.RESOURCES;
     if( alias.contains( "/" ) ) {
-      result = "/" + CONTEXT_NAME + "/" + ContextControl.RESOURCES;
+      result = "/" + CONTEXT_NAME + "/" + Application.RESOURCES;
     }
     return result;
   }
   
   private void checkDefaultAliasHasBeenUnregistered() {
-    checkAliasHasBeenUnregistered( RWTContextImpl.DEFAULT_ALIAS );
+    checkAliasHasBeenUnregistered( ApplicationReferenceImpl.DEFAULT_ALIAS );
   }
 
   private void checkAliasHasBeenUnregistered( String alias ) {
@@ -343,14 +347,14 @@ public class RWTServiceImpl_Test extends TestCase {
     assertFalse( Fixture.WEB_CONTEXT_RWT_RESOURCES_DIR.exists() );
   }
 
-  private void checkDeactivateStateOfRWTContext( RWTContext context ) {
-    assertFalse( ( ( RWTContextImpl )context ).isAlive() );
-    context.stop(); // check that repeatedly calls to stop do not cause any problems
+  private void checkDeactivateStateOfApplicationReference( ApplicationReference reference ) {
+    assertFalse( ( ( ApplicationReferenceImpl )reference ).isAlive() );
+    reference.stopApplication(); // check that repeatedly calls to stop do not cause any problems
   }
 
-  private void checkDeactivatedStateOfRWTService() {
-    assertFalse( service.isAlive() );
-    assertNull( service.start( configurator, httpService, null, null, "/contextPath" ) );
+  private void checkDeactivatedStateOfApplicationLauncher() {
+    assertFalse( applicationLauncher.isAlive() );
+    assertNull( applicationLauncher.launch( configurator, httpService, null, null, "/contextPath" ) );
   }
 
   private HttpContext checkHttpContextHasBeenWrapped() {
@@ -377,8 +381,8 @@ public class RWTServiceImpl_Test extends TestCase {
   }
 
   private void registerServiceReferences() {
-    service.addConfigurator( configuratorReference );
-    service.addHttpService( httpServiceReference );
+    applicationLauncher.addConfigurator( configuratorReference );
+    applicationLauncher.addHttpService( httpServiceReference );
   }
   
   private void configureConfiguratorFilter( String value ) {
@@ -389,7 +393,7 @@ public class RWTServiceImpl_Test extends TestCase {
   }
 
   private void configureHttpServiceFilter( String value ) {
-    Class< ? > targetType = Configurator.class;
+    Class< ? > targetType = ApplicationConfigurator.class;
     ServiceReference< ?> serviceReference = httpServiceReference;
     ServiceReference< ? > targetReference = configuratorReference;
     configureFilterScenario( value, targetType, serviceReference, targetReference );
@@ -405,8 +409,8 @@ public class RWTServiceImpl_Test extends TestCase {
     when( targetReference.getProperty( "key" ) ).thenReturn( value );
   }
 
-  private void createService() {
-    service = new RWTServiceImpl( bundleContext );
+  private void createApplicationLauncher() {
+    applicationLauncher = new ApplicationLauncherImpl( bundleContext );
   }
 
   @SuppressWarnings( "unchecked" )
@@ -415,7 +419,7 @@ public class RWTServiceImpl_Test extends TestCase {
   }
 
   private void mockConfigurator() {
-    configurator = mock( Configurator.class );
+    configurator = mock( ApplicationConfigurator.class );
     mockConfiguratorReference();
   }
 
@@ -426,18 +430,18 @@ public class RWTServiceImpl_Test extends TestCase {
 
   private void mockSecondConfiguratorReference() {
     mockConfiguratorReference();
-    configurator = mock( Configurator.class );
+    configurator = mock( ApplicationConfigurator.class );
     when( bundleContext.getService( configuratorReference ) ).thenReturn( configurator );
     when( bundleContext.getDataFile( any( String.class ) ) ).thenReturn( Fixture.WEB_CONTEXT_DIR );
-    service.addConfigurator( configuratorReference );
+    applicationLauncher.addConfigurator( configuratorReference );
   }
 
   
   private void createAliasConfigurator( final String alias1, final String alias2 ) {
-    configurator = new Configurator() {
-      public void configure( Context application ) {
-        application.addBranding( mockBranding( alias1 ) );
-        application.addBranding( mockBranding( alias2 ) );
+    configurator = new ApplicationConfigurator() {
+      public void configure( ApplicationConfiguration configuration ) {
+        configuration.addBranding( mockBranding( alias1 ) );
+        configuration.addBranding( mockBranding( alias2 ) );
       }
     };
     mockBundleContext();
@@ -450,8 +454,9 @@ public class RWTServiceImpl_Test extends TestCase {
   }
 
   private void mockServletConfigForServletContextRetrieval( HttpService service ) {
-    String alias1 = "/" + RWTContextImpl.SERVLET_CONTEXT_FINDER_ALIAS;
-    String alias2 = "/" + CONTEXT_NAME + "/" + RWTContextImpl.SERVLET_CONTEXT_FINDER_ALIAS;
+    String servletContextFinderAlias = ApplicationReferenceImpl.SERVLET_CONTEXT_FINDER_ALIAS;
+    String alias1 = "/" + servletContextFinderAlias;
+    String alias2 = "/" + CONTEXT_NAME + "/" + servletContextFinderAlias;
     mockServletConfigForServletContextRetrieval( service, alias1 );
     mockServletConfigForServletContextRetrieval( service, alias2 );
   }
@@ -501,13 +506,13 @@ public class RWTServiceImpl_Test extends TestCase {
   @SuppressWarnings( "unchecked" )
   private void mockBundleContext( String contextName ) {
     bundleContext = mock( BundleContext.class );
-    String name = RWTServiceImpl.getContextFileName( contextName, configurator, httpService );
+    String name = ApplicationLauncherImpl.getContextFileName( contextName, configurator, httpService );
     when( bundleContext.getDataFile( eq( name ) ) ).thenReturn( Fixture.WEB_CONTEXT_DIR );
     when( bundleContext.getService( httpServiceReference ) ).thenReturn( httpService );
     when( bundleContext.getService( configuratorReference ) ).thenReturn( configurator );
     serviceRegistration = mock( ServiceRegistration.class );
-    when( bundleContext.registerService( eq( RWTContext.class.getName() ), 
-                                         any( RWTContext.class ),
+    when( bundleContext.registerService( eq( ApplicationReference.class.getName() ), 
+                                         any( ApplicationReference.class ),
                                          any( Dictionary.class ) ) )
       .thenReturn( serviceRegistration );
   }
@@ -518,22 +523,23 @@ public class RWTServiceImpl_Test extends TestCase {
     return result;
   }
   
-  private RWTContext startRWTContext() {
-    String location = service.getLocation( null, configurator, httpService );
-    return startRWTContext( location );
+  private ApplicationReference launchApplication() {
+    String location = applicationLauncher.getLocation( null, configurator, httpService );
+    return launchApplicationReference( location );
   }
 
-  private RWTContext startRWTContext( String location ) {
-    return service.start( configurator, httpService, null, null, location );
+  private ApplicationReference launchApplicationReference( String location ) {
+    return applicationLauncher.launch( configurator, httpService, null, null, location );
   }
   
   private void prepareConfiguratorToThrowException() {
-    doThrow( new IllegalStateException() ).when( configurator ).configure( any( Context.class ) );
+    doThrow( new IllegalStateException() )
+      .when( configurator ).configure( any( ApplicationConfiguration.class ) );
   }
 
-  private RWTContextImpl createMalignRWTContext() {
-    RWTContextImpl result = mock( RWTContextImpl.class );
-    doThrow( new IllegalStateException() ).when( result ).stop();
+  private ApplicationReferenceImpl createMalignApplicationReference() {
+    ApplicationReferenceImpl result = mock( ApplicationReferenceImpl.class );
+    doThrow( new IllegalStateException() ).when( result ).stopApplication();
     return result;
   }
 }

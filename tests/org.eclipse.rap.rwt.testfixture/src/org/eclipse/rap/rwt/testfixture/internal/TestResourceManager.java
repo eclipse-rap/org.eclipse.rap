@@ -15,15 +15,15 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-import org.eclipse.rwt.engine.ContextControl;
+import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.resources.IResourceManager;
 
 
 public class TestResourceManager implements IResourceManager {
+  
   private ClassLoader loader = Thread.currentThread().getContextClassLoader();
-
   private final Set<String> registeredResources;
 
   public TestResourceManager() {
@@ -110,7 +110,7 @@ public class TestResourceManager implements IResourceManager {
   private void createResourcesDirectory() {
     if( registeredResources.isEmpty() ) {
       File contextDirectory = RWTFactory.getConfiguration().getContextDirectory();
-      File file = new File( contextDirectory, ContextControl.RESOURCES );
+      File file = new File( contextDirectory, Application.RESOURCES );
       if( !file.exists() ) {
         file.mkdirs();
       }

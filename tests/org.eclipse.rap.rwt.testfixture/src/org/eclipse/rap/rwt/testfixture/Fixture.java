@@ -35,10 +35,10 @@ import javax.servlet.http.HttpSession;
 import org.eclipse.rap.rwt.testfixture.internal.TestLifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ApplicationContextHelper;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
-import org.eclipse.rwt.engine.Configurator;
-import org.eclipse.rwt.engine.Context;
+import org.eclipse.rwt.application.ApplicationConfiguration;
+import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.internal.engine.ApplicationConfigurable;
 import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
-import org.eclipse.rwt.internal.engine.ContextConfigurable;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.internal.engine.configurables.AdapterManagerConfigurable;
@@ -99,8 +99,8 @@ public final class Fixture {
 
   private static ServletContext servletContext;
 
-  public static class FixtureConfigurator implements Configurator {
-    public void configure( Context context ) {
+  public static class FixtureApplicationConfigurator implements ApplicationConfigurator {
+    public void configure( ApplicationConfiguration configuration ) {
     }
   }
 
@@ -512,7 +512,8 @@ public final class Fixture {
   }
 
   private static void registerConfigurer() {
-    setInitParameter( ContextConfigurable.CONFIGURATOR_PARAM, FixtureConfigurator.class.getName() );
+    setInitParameter( ApplicationConfigurable.CONFIGURATOR_PARAM,
+                      FixtureApplicationConfigurator.class.getName() );
   }
 
   private static void simulateRequest( IUIThreadHolder threadHolder, Thread serverThread ) {

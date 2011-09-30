@@ -10,19 +10,19 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
-import org.eclipse.rap.rwt.osgi.RWTService;
+import org.eclipse.rap.rwt.osgi.ApplicationLauncher;
 import org.osgi.framework.*;
 
 
 public class Activator implements BundleActivator {
 
-  private RWTServiceImpl rwtService;
-  private ServiceRegistration<RWTService> rwtServiceRegistration;
+  private ApplicationLauncherImpl applicationLauncher;
+  private ServiceRegistration<ApplicationLauncher> applicationLauncherRegistration;
   private HttpTracker httpTracker;
-  private ConfiguratorTracker configuratorTracker;
+  private ApplicationConfiguratorTracker configuratorTracker;
 
   public void start( BundleContext context ) {
-    registerRWTService( context );
+    registerApplicationLauncher( context );
     openHttpServiceTracker( context );
     openConfiguratorTracker( context );
   }
@@ -30,28 +30,32 @@ public class Activator implements BundleActivator {
   public void stop( BundleContext context ) {
     configuratorTracker.close();
     httpTracker.close();
-    rwtServiceRegistration.unregister();
-    rwtService.deactivate();
+    applicationLauncherRegistration.unregister();
+    applicationLauncher.deactivate();
     configuratorTracker = null;
     httpTracker = null;
-    rwtService = null;
+    applicationLauncher = null;
   }
 
   @SuppressWarnings( "unchecked" )
-  private void registerRWTService( BundleContext context ) {
-    rwtService = new RWTServiceImpl( context );
-    String name = RWTService.class.getName();
-    ServiceRegistration<?> registration = context.registerService( name, rwtService, null );
-    rwtServiceRegistration = ( ServiceRegistration<RWTService> )registration;
+  private void registerApplicationLauncher( BundleContext context ) {
+    applicationLauncher = new ApplicationLauncherImpl( context );
+    String name = ApplicationLauncher.class.getName();
+    ServiceRegistration<?> registration = registerService( context, name );
+    applicationLauncherRegistration = ( ServiceRegistration<ApplicationLauncher> )registration;
+  }
+
+  private ServiceRegistration< ? > registerService( BundleContext context, String name ) {
+    return context.registerService( name, applicationLauncher, null );
   }
 
   private void openConfiguratorTracker( BundleContext context ) {
-    configuratorTracker = new ConfiguratorTracker( context, rwtService );
+    configuratorTracker = new ApplicationConfiguratorTracker( context, applicationLauncher );
     configuratorTracker.open();
   }
 
   private void openHttpServiceTracker( BundleContext context ) {
-    httpTracker = new HttpTracker( context, rwtService );
+    httpTracker = new HttpTracker( context, applicationLauncher );
     httpTracker.open();
   }
 }

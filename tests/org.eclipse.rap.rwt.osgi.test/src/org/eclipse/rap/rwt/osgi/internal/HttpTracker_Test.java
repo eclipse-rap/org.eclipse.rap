@@ -25,7 +25,7 @@ import org.osgi.service.http.HttpService;
 public class HttpTracker_Test extends TestCase {
 
   private BundleContext bundleContext;
-  private RWTServiceImpl rwtService;
+  private ApplicationLauncherImpl applicationLauncher;
   private ServiceReference< HttpService> serviceReference;
   private HttpService service;
   private HttpTracker tracker;
@@ -33,26 +33,26 @@ public class HttpTracker_Test extends TestCase {
   public void testAddingService() {
     tracker.addingService( serviceReference );
     
-    verify( rwtService ).addHttpService( serviceReference );
+    verify( applicationLauncher ).addHttpService( serviceReference );
   }
   
   public void testRemovedService() {
     tracker.removedService( serviceReference, service );
     
-    verify( rwtService ).removeHttpService( service );
+    verify( applicationLauncher ).removeHttpService( service );
   }
   
   public void testOpen() {
     tracker.open();
     
-    verify( rwtService ).addHttpService( serviceReference );
+    verify( applicationLauncher ).addHttpService( serviceReference );
   }
   
   @SuppressWarnings( "unchecked" )
   protected void setUp() throws Exception {
     mockBundleContext();
-    rwtService = mock( RWTServiceImpl.class );
-    tracker = new HttpTracker( bundleContext, rwtService );
+    applicationLauncher = mock( ApplicationLauncherImpl.class );
+    tracker = new HttpTracker( bundleContext, applicationLauncher );
     serviceReference = mock( ServiceReference.class );
     service = mock( HttpService.class );
   }

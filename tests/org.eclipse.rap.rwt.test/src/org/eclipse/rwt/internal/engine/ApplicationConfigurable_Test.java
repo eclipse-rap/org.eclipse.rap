@@ -23,9 +23,9 @@ import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper.TestTh
 import org.eclipse.rap.rwt.testfixture.internal.service.MemorySettingStore;
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.AdapterFactory;
+import org.eclipse.rwt.application.ApplicationConfiguration;
+import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.engine.Configurator;
-import org.eclipse.rwt.engine.Context;
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.engine.configurables.RWTConfigurationConfigurable;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
@@ -50,7 +50,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
 
-public class ContextConfigurable_Test extends TestCase {
+public class ApplicationConfigurable_Test extends TestCase {
+  
   private static final Object ATTRIBUTE_VALUE = new Object();
   private static final String ATTRIBUTE_NAME = "name";
   private static final String THEME_ID = "TestTheme";
@@ -169,9 +170,9 @@ public class ContextConfigurable_Test extends TestCase {
   }
 
   public void testConfigureWithDefaultSettingStoreFactory() {
-    runConfigurator( new Configurator() {
-      public void configure( Context context ) {
-        context.addTheme( THEME_ID, STYLE_SHEET );
+    runConfigurator( new ApplicationConfigurator() {
+      public void configure( ApplicationConfiguration configuration ) {
+        configuration.addTheme( THEME_ID, STYLE_SHEET );
       }
     } );
 
@@ -223,26 +224,27 @@ public class ContextConfigurable_Test extends TestCase {
     Fixture.disposeOfServletContext();
   }
 
-  private void runConfigurator( Configurator configurator ) {
+  private void runConfigurator( ApplicationConfigurator configurator ) {
     ServletContext servletContext = new TestServletContext();
-    applicationContext.addConfigurable( new ContextConfigurable( configurator, servletContext ) );
+    Configurable configurable = new ApplicationConfigurable( configurator, servletContext );
+    applicationContext.addConfigurable( configurable );
     applicationContext.activate();
   }
 
-  private Configurator createConfigurator() {
-    return new Configurator() {
-      public void configure( Context context ) {
-        context.addEntryPoint( entryPointName, TestEntryPoint.class );
-        context.addResource( testResource );
-        context.addPhaseListener( testPhaseListener );
-        context.addAdapterFactory( TestAdaptable.class, testAdapterFactory );
-        context.setSettingStoreFactory( testSettingStoreFactory );
-        context.addServiceHandler( testServiceHandlerId, testServiceHandler );
-        context.addBranding( testBranding );
-        context.addTheme( THEME_ID, STYLE_SHEET );
-        context.addThemableWidget( TestWidget.class );
-        context.addThemeContribution( THEME_ID, STYLE_SHEET_2 );
-        context.setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
+  private ApplicationConfigurator createConfigurator() {
+    return new ApplicationConfigurator() {
+      public void configure( ApplicationConfiguration configuration ) {
+        configuration.addEntryPoint( entryPointName, TestEntryPoint.class );
+        configuration.addResource( testResource );
+        configuration.addPhaseListener( testPhaseListener );
+        configuration.addAdapterFactory( TestAdaptable.class, testAdapterFactory );
+        configuration.setSettingStoreFactory( testSettingStoreFactory );
+        configuration.addServiceHandler( testServiceHandlerId, testServiceHandler );
+        configuration.addBranding( testBranding );
+        configuration.addTheme( THEME_ID, STYLE_SHEET );
+        configuration.addThemableWidget( TestWidget.class );
+        configuration.addThemeContribution( THEME_ID, STYLE_SHEET_2 );
+        configuration.setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
       }
     };
   }
@@ -306,8 +308,8 @@ public class ContextConfigurable_Test extends TestCase {
   }
 
   private void checkContextDirectoryHasBeenSet() {
-    RWTConfiguration configuration = applicationContext.getConfiguration();
-    assertEquals( Fixture.WEB_CONTEXT_DIR, configuration.getContextDirectory() );
+    RWTConfiguration rwtConfiguration = applicationContext.getConfiguration();
+    assertEquals( Fixture.WEB_CONTEXT_DIR, rwtConfiguration.getContextDirectory() );
   }
 
   private void checkAdapterFactoriesHaveBeenRemoved() {

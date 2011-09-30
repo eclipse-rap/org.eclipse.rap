@@ -16,7 +16,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.*;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.rap.ui.internal.servlet.EntryPointExtension;
-import org.eclipse.rwt.engine.Context;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.framework.Bundle;
@@ -51,7 +51,9 @@ public final class ApplicationRegistry {
     return application;
   }
 
-  private static void registerApplication( IExtension extension, Context context ) {
+  private static void registerApplication( IExtension extension,
+                                           ApplicationConfiguration configuration )
+  {
     IConfigurationElement configElement
       = extension.getConfigurationElements()[0];
     String contributorName = configElement.getContributor().getName();
@@ -67,7 +69,7 @@ public final class ApplicationRegistry {
         Bundle bundle = Platform.getBundle( contributorName );
         Class clazz = bundle.loadClass( className );
         appEntrypointMapping.put( applicationParameter, clazz );
-        context.addEntryPoint( applicationParameter, EntrypointApplicationWrapper.class );
+        configuration.addEntryPoint( applicationParameter, EntrypointApplicationWrapper.class );
         EntryPointExtension.bind( applicationId, applicationParameter );
       }
     } catch( final ClassNotFoundException e ) {
@@ -81,10 +83,10 @@ public final class ApplicationRegistry {
     }
   }
 
-  public static void registerApplicationEntryPoints( Context context ) {
+  public static void registerApplicationEntryPoints( ApplicationConfiguration configuration ) {
     IExtension[] elements = getApplicationExtensions();
     for( int i = 0; i < elements.length; i++ ) {
-      registerApplication( elements[ i ], context );
+      registerApplication( elements[ i ], configuration );
     }
   }
 

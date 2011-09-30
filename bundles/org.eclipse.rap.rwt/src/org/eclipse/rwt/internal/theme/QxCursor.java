@@ -12,7 +12,7 @@ package org.eclipse.rwt.internal.theme;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.rwt.engine.ResourceLoader;
+import org.eclipse.rwt.resources.ResourceLoader;
 
 
 public class QxCursor implements QxType {

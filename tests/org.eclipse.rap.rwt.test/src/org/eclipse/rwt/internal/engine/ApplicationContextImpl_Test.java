@@ -13,16 +13,16 @@ package org.eclipse.rwt.internal.engine;
 import static org.mockito.Mockito.mock;
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.engine.Configurator;
-import org.eclipse.rwt.engine.Context;
+import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 
 
-public class ContextImpl_Test extends TestCase {
+public class ApplicationContextImpl_Test extends TestCase {
   
-  private ContextImpl context;
+  private ApplicationConfigurationImpl context;
   private ApplicationContext applicationContext;
 
   public void testSetLifeCycleModeWithNullArgument() {
@@ -34,7 +34,7 @@ public class ContextImpl_Test extends TestCase {
   }
   
   public void testSetLifeCycleModeToThreadless() {
-    context.setLifeCycleMode( Context.LifeCycleMode.THREADLESS );
+    context.setLifeCycleMode( ApplicationConfiguration.LifeCycleMode.THREADLESS );
 
     applicationContext.activate();
     ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
@@ -43,7 +43,7 @@ public class ContextImpl_Test extends TestCase {
   }
   
   public void testSetLifeCycleModeToThreaded() {
-    context.setLifeCycleMode( Context.LifeCycleMode.THREADED );
+    context.setLifeCycleMode( ApplicationConfiguration.LifeCycleMode.THREADED );
     
     applicationContext.activate();
     ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
@@ -54,8 +54,8 @@ public class ContextImpl_Test extends TestCase {
   protected void setUp() throws Exception {
     applicationContext = new ApplicationContext();
     setupRWTConfiguration();
-    Configurator configurator = mock( Configurator.class );
-    context = new ContextImpl( applicationContext, configurator );
+    ApplicationConfigurator configurator = mock( ApplicationConfigurator.class );
+    context = new ApplicationConfigurationImpl( applicationContext, configurator );
   }
 
   private void setupRWTConfiguration() {

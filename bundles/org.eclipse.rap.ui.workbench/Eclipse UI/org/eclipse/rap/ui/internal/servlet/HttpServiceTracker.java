@@ -15,8 +15,9 @@ package org.eclipse.rap.ui.internal.servlet;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.http.registry.HttpContextExtensionService;
-import org.eclipse.rap.rwt.osgi.RWTContext;
-import org.eclipse.rap.rwt.osgi.RWTService;
+import org.eclipse.rap.rwt.osgi.ApplicationReference;
+import org.eclipse.rap.rwt.osgi.ApplicationLauncher;
+import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.*;
 import org.osgi.service.http.HttpContext;
@@ -25,14 +26,15 @@ import org.osgi.util.tracker.ServiceTracker;
 
 
 public class HttpServiceTracker extends ServiceTracker {
+  
   public static final String DEFAULT_SERVLET = "rap";
   public static final String ID_HTTP_CONTEXT = "org.eclipse.rap.httpcontext";
 
   private HttpContextExtensionService httpCtxExtService;
   private ServiceTracker httpContextTracker;
-  private ServiceTracker rwtServiceTracker;
-  private RWTService rwtService;
-  private RWTContext rwtContext;
+  private ServiceTracker ApplicationLauncherTracker;
+  private ApplicationLauncher applicationLauncher;
+  private ApplicationReference applicationReference;
 
   private class HttpContextTracker extends ServiceTracker {
 
@@ -43,7 +45,7 @@ public class HttpServiceTracker extends ServiceTracker {
     public Object addingService( ServiceReference reference ) {
       Object result = super.addingService( reference );
       httpCtxExtService = getHttpCtxExtService( reference );
-      openAsSoonAsRWTServiceHasBeenStarted();
+      openAsSoonAsApplicationLauncherHasBeenStarted();
       return result;
     }
 
@@ -53,21 +55,21 @@ public class HttpServiceTracker extends ServiceTracker {
     }
   }
 
-  private class RWTServiceTracker extends ServiceTracker {
+  private class ApplicationLauncherTracker extends ServiceTracker {
 
-    private RWTServiceTracker( BundleContext context ) {
-      super( context, RWTService.class.getName(), null );
+    private ApplicationLauncherTracker( BundleContext context ) {
+      super( context, ApplicationLauncher.class.getName(), null );
     }
 
     public Object addingService( ServiceReference reference ) {
       Object result = super.addingService( reference );
-      rwtService = ( RWTService )context.getService( reference );
+      applicationLauncher = ( ApplicationLauncher )context.getService( reference );
       HttpServiceTracker.super.open();
       return result;
     }
 
     public void removedService( ServiceReference reference, Object service ) {
-      rwtService = null;
+      applicationLauncher = null;
       super.removedService( reference, service );
     }
   }
@@ -80,12 +82,12 @@ public class HttpServiceTracker extends ServiceTracker {
   public Object addingService( ServiceReference reference ) {
     HttpService result = getHttpService( reference );
     HttpContext httpContext = getHttpContext( reference );
-    rwtContext = startRWTContext( reference, result, httpContext );
+    applicationReference = startApplication( reference, result, httpContext );
     return result;
   }
 
   public void removedService( ServiceReference reference, Object service ) {
-    rwtContext.stop();
+    applicationReference.stopApplication();
     super.removedService( reference, service );
   }
 
@@ -98,24 +100,28 @@ public class HttpServiceTracker extends ServiceTracker {
     httpContextTracker.open();
   }
 
-  private void openAsSoonAsRWTServiceHasBeenStarted() {
-    rwtServiceTracker = new RWTServiceTracker( context );
-    rwtServiceTracker.open();
+  private void openAsSoonAsApplicationLauncherHasBeenStarted() {
+    ApplicationLauncherTracker = new ApplicationLauncherTracker( context );
+    ApplicationLauncherTracker.open();
   }
   
   public void close() {
     super.close();
     httpContextTracker.close();
-    rwtServiceTracker.close();
+    ApplicationLauncherTracker.close();
   }
 
-  private RWTContext startRWTContext( ServiceReference httpServiceReference,
+  private ApplicationReference startApplication( ServiceReference httpServiceReference,
                                       HttpService service,
                                       HttpContext context )
   {
-    RWTConfigurator rwtConfigurator = new RWTConfigurator( httpServiceReference );
+    ApplicationConfigurator configurator = newConfigurator( httpServiceReference );
     String contextDirectory = findContextPath().toString();
-    return rwtService.start( rwtConfigurator, service, context, null, contextDirectory );
+    return applicationLauncher.launch( configurator, service, context, null, contextDirectory );
+  }
+
+  private ApplicationConfigurator newConfigurator( ServiceReference httpServiceReference ) {
+    return new WorkbenchApplicationConfigurator( httpServiceReference );
   }
 
   private static IPath findContextPath() {

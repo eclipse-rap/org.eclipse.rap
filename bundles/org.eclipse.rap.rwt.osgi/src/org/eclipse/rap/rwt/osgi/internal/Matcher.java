@@ -10,7 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
-import org.eclipse.rwt.engine.Configurator;
+import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.osgi.framework.*;
 import org.osgi.service.http.HttpService;
 
@@ -18,10 +18,10 @@ import org.osgi.service.http.HttpService;
 class Matcher {
 
   private final ServiceReference<HttpService> httpServiceReference;
-  private final ServiceReference<Configurator> configuratorReference;
+  private final ServiceReference<ApplicationConfigurator> configuratorReference;
 
   Matcher( ServiceReference<HttpService> httpServiceReference,
-           ServiceReference<Configurator> configuratorReference )
+           ServiceReference<ApplicationConfigurator> configuratorReference )
   {
     this.httpServiceReference = httpServiceReference;
     this.configuratorReference = configuratorReference;
@@ -36,7 +36,7 @@ class Matcher {
   }
 
   private boolean matchesConfigurator() {
-    Class<Configurator> targetType = Configurator.class;
+    Class<ApplicationConfigurator> targetType = ApplicationConfigurator.class;
     return matchesTarget( httpServiceReference, configuratorReference, targetType );
   }
 

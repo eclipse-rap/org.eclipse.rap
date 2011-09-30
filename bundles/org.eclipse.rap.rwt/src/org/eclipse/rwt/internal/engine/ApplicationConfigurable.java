@@ -12,7 +12,7 @@ package org.eclipse.rwt.internal.engine;
 
 import javax.servlet.ServletContext;
 
-import org.eclipse.rwt.engine.Configurator;
+import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
@@ -26,13 +26,15 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class ContextConfigurable implements Configurable {
+public class ApplicationConfigurable implements Configurable {
   public static final String CONFIGURATOR_PARAM = "org.eclipse.rwt.Configurator";
   
-  private final Configurator configurator;
+  private final ApplicationConfigurator configurator;
   private final ServletContext servletContext;
 
-  public ContextConfigurable( Configurator configurator, ServletContext servletContext ) {
+  public ApplicationConfigurable( ApplicationConfigurator configurator,
+                                  ServletContext servletContext )
+  {
     this.configurator = configurator;
     this.servletContext = servletContext;
   }
@@ -112,7 +114,7 @@ public class ContextConfigurable implements Configurable {
     }
   }
 
-  private ContextImpl createContext( ApplicationContext applicationContext ) {
-    return new ContextImpl( applicationContext, configurator );
+  private ApplicationConfigurationImpl createContext( ApplicationContext applicationContext ) {
+    return new ApplicationConfigurationImpl( applicationContext, configurator );
   }
 }

@@ -16,45 +16,45 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.engine.Configurator;
+import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.osgi.framework.*;
 
 
-public class ConfiguratorTracker_Test extends TestCase {
+public class ApplicationConfiguratorTracker_Test extends TestCase {
 
   private BundleContext bundleContext;
-  private RWTServiceImpl rwtService;
-  private ServiceReference< Configurator> serviceReference;
-  private Configurator service;
-  private ConfiguratorTracker tracker;
+  private ApplicationLauncherImpl applicationLauncher;
+  private ServiceReference< ApplicationConfigurator> configuratorReference;
+  private ApplicationConfigurator configurator;
+  private ApplicationConfiguratorTracker tracker;
 
   public void testAddingService() {
-    tracker.addingService( serviceReference );
+    tracker.addingService( configuratorReference );
     
-    verify( rwtService ).addConfigurator( serviceReference );
+    verify( applicationLauncher ).addConfigurator( configuratorReference );
   }
   
   public void testRemovedService() {
-    tracker.removedService( serviceReference, service );
+    tracker.removedService( configuratorReference, configurator );
     
-    verify( rwtService ).removeConfigurator( service );
+    verify( applicationLauncher ).removeConfigurator( configurator );
   }
   
   public void testOpen() {
     tracker.open();
     
-    verify( rwtService ).addConfigurator( serviceReference );
+    verify( applicationLauncher ).addConfigurator( configuratorReference );
   }
   
   @SuppressWarnings( "unchecked" )
   protected void setUp() throws Exception {
     mockBundleContext();
-    rwtService = mock( RWTServiceImpl.class );
-    tracker = new ConfiguratorTracker( bundleContext, rwtService );
-    serviceReference = mock( ServiceReference.class );
-    service = mock( Configurator.class );
+    applicationLauncher = mock( ApplicationLauncherImpl.class );
+    tracker = new ApplicationConfiguratorTracker( bundleContext, applicationLauncher );
+    configuratorReference = mock( ServiceReference.class );
+    configurator = mock( ApplicationConfigurator.class );
   }
 
   private void mockBundleContext() throws InvalidSyntaxException {
@@ -74,6 +74,6 @@ public class ConfiguratorTracker_Test extends TestCase {
 
   private void triggerServiceRegistration( InvocationOnMock invocation ) {
     ServiceListener listener = ( ServiceListener )invocation.getArguments()[ 0 ];
-    listener.serviceChanged( new ServiceEvent( ServiceEvent.REGISTERED, serviceReference ) );
+    listener.serviceChanged( new ServiceEvent( ServiceEvent.REGISTERED, configuratorReference ) );
   }
 }

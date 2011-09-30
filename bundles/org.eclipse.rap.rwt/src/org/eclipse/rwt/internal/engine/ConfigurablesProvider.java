@@ -10,8 +10,16 @@ package org.eclipse.rwt.internal.engine;
 
 import javax.servlet.ServletContext;
 
-import org.eclipse.rwt.engine.Configurator;
-import org.eclipse.rwt.internal.engine.configurables.*;
+import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.internal.engine.configurables.AdapterManagerConfigurable;
+import org.eclipse.rwt.internal.engine.configurables.BrandingManagerConfigurable;
+import org.eclipse.rwt.internal.engine.configurables.EntryPointManagerConfigurable;
+import org.eclipse.rwt.internal.engine.configurables.PhaseListenerRegistryConfigurable;
+import org.eclipse.rwt.internal.engine.configurables.RWTConfigurationConfigurable;
+import org.eclipse.rwt.internal.engine.configurables.ResourceRegistryConfigurable;
+import org.eclipse.rwt.internal.engine.configurables.ServiceManagerConfigurable;
+import org.eclipse.rwt.internal.engine.configurables.SettingStoreManagerConfigurable;
+import org.eclipse.rwt.internal.engine.configurables.ThemeManagerConfigurable;
 import org.eclipse.rwt.internal.util.ClassUtil;
 
 public class ConfigurablesProvider {
@@ -29,16 +37,20 @@ public class ConfigurablesProvider {
   }
 
   private static Configurable[] getContextConfigurable( ServletContext servletContext ) {
-    String className = servletContext.getInitParameter( ContextConfigurable.CONFIGURATOR_PARAM );
+    String className = servletContext.getInitParameter( ApplicationConfigurable.CONFIGURATOR_PARAM );
     ClassLoader loader = ConfigurablesProvider.class.getClassLoader();
-    Configurator configurator = ( Configurator )ClassUtil.newInstance( loader, className );
+    ApplicationConfigurator configurator = newConfigurator( className, loader );
     return new Configurable[] {
-      new ContextConfigurable( configurator, servletContext )
+      new ApplicationConfigurable( configurator, servletContext )
     };
   }
 
+  private static ApplicationConfigurator newConfigurator( String className, ClassLoader loader ) {
+    return ( ApplicationConfigurator )ClassUtil.newInstance( loader, className );
+  }
+
   private static boolean hasConfiguratorParam( ServletContext servletContext ) {
-    return null != servletContext.getInitParameter( ContextConfigurable.CONFIGURATOR_PARAM );
+    return null != servletContext.getInitParameter( ApplicationConfigurable.CONFIGURATOR_PARAM );
   }
 
   private static Configurable[] getCompatibilityConfigurables( ServletContext servletContext ) {

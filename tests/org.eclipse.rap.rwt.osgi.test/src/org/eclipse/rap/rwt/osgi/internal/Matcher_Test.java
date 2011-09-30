@@ -14,18 +14,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.engine.Configurator;
+import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 
 
 public class Matcher_Test extends TestCase {
+  
   private static final String KEY = "key";
   private static final String VALUE = "value";
   private static final String KEY_VALUE = "(" + KEY + "=" + VALUE + ")";
 
   private ServiceReference< HttpService > httpServiceReference;
-  private ServiceReference< Configurator > configuratorReference;
+  private ServiceReference< ApplicationConfigurator > configuratorReference;
   private Matcher matcher;
 
   public void testMatchesWithoutFilters() {
@@ -109,7 +110,7 @@ public class Matcher_Test extends TestCase {
   }
   
   public void testIllegalFilterSyntax() {
-    String configuratorKey = Matcher.createTargetKey( Configurator.class );
+    String configuratorKey = Matcher.createTargetKey( ApplicationConfigurator.class );
     when( httpServiceReference.getProperty( configuratorKey ) ).thenReturn( "(((" );
 
     try {
@@ -148,7 +149,7 @@ public class Matcher_Test extends TestCase {
   }
   
   private void createConfiguratorFilter() {
-    String configuratorKey = Matcher.createTargetKey( Configurator.class );
+    String configuratorKey = Matcher.createTargetKey( ApplicationConfigurator.class );
     when( httpServiceReference.getProperty( configuratorKey ) ).thenReturn( KEY_VALUE );
   }
   

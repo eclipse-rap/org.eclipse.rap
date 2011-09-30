@@ -20,13 +20,14 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.*;
 import org.eclipse.rap.ui.branding.IExitConfirmation;
+import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.engine.Context;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.osgi.framework.*;
 
 
 public final class BrandingExtension {
+  
   private static final String EP_BRANDING = "org.eclipse.rap.ui.branding"; //$NON-NLS-1$
   private static final String ATT_ID = "id"; //$NON-NLS-1$
   private static final String ATT_DEFAULT_ENTRYPOINT_ID = "defaultEntrypointId"; //$NON-NLS-1$
@@ -49,11 +50,13 @@ public final class BrandingExtension {
   private static final String ELEM_SERVICE_SELECTOR = "httpServiceFilter"; //$NON-NLS-1$
   private static final String ATT_CLASS = "class"; //$NON-NLS-1$
   
-  private final Context context;
+  private final ApplicationConfiguration configuration;
   private final ServiceReference httpServiceReference;
 
-  public BrandingExtension( Context context, ServiceReference httpServiceReference ) {
-    this.context = context;
+  public BrandingExtension( ApplicationConfiguration configuration,
+                            ServiceReference httpServiceReference )
+  {
+    this.configuration = configuration;
     this.httpServiceReference = httpServiceReference;
   }
 
@@ -107,7 +110,7 @@ public final class BrandingExtension {
     }
     Filter serviceFilter = readServiceFilter( element, branding );
     if( ( serviceFilter == null || serviceFilter.match( httpServiceReference ) ) ) {
-      context.addBranding( branding );
+      configuration.addBranding( branding );
     }
   }
 
@@ -179,7 +182,7 @@ public final class BrandingExtension {
       }
     }
     if( !found ) {
-      context.addBranding( new AbstractBranding() {
+      configuration.addBranding( new AbstractBranding() {
         public String getServletName() {
           return BrandingManager.DEFAULT_SERVLET_NAME;
         }

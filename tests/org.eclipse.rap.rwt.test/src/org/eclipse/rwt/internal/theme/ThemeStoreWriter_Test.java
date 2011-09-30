@@ -17,8 +17,8 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.engine.ResourceLoader;
 import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.resources.ResourceLoader;
 
 
 public class ThemeStoreWriter_Test extends TestCase {

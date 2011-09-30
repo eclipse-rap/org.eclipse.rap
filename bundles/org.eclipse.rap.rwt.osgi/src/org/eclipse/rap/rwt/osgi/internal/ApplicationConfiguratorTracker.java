@@ -10,28 +10,34 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.osgi.internal;
 
+import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
 
 
-class HttpTracker extends ServiceTracker<HttpService, HttpService> {
+class ApplicationConfiguratorTracker
+  extends ServiceTracker<ApplicationConfigurator, ApplicationConfigurator>
+{
 
   private final ApplicationLauncherImpl applicationLauncher;
 
-  HttpTracker( BundleContext context, ApplicationLauncherImpl applicationLauncher ) {
-    super( context, HttpService.class.getName(), null );
+  ApplicationConfiguratorTracker( BundleContext context,
+                                  ApplicationLauncherImpl applicationLauncher )
+  {
+    super( context, ApplicationConfigurator.class.getName(), null );
     this.applicationLauncher = applicationLauncher;
   }
 
   @Override
-  public HttpService addingService( ServiceReference<HttpService> reference ) {
-    return applicationLauncher.addHttpService( reference );
+  public ApplicationConfigurator addingService( ServiceReference<ApplicationConfigurator> ref ) {
+    return applicationLauncher.addConfigurator( ref );
   }
 
   @Override
-  public void removedService( ServiceReference<HttpService> reference, HttpService service ) {
-    applicationLauncher.removeHttpService( service );
+  public void removedService( ServiceReference<ApplicationConfigurator> reference,
+                              ApplicationConfigurator service )
+  {
+    applicationLauncher.removeConfigurator( service );
   }
 }

@@ -8,19 +8,20 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.engine;
+package org.eclipse.rwt.application;
 
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
+import org.eclipse.rwt.resources.ResourceLoader;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISettingStoreFactory;
 import org.eclipse.swt.widgets.Widget;
 
 
-public interface Context {
+public interface ApplicationConfiguration {
 
   enum LifeCycleMode {
     THREADED,

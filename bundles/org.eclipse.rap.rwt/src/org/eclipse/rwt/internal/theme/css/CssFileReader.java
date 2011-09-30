@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.rwt.apache.batik.css.parser.ParseException;
-import org.eclipse.rwt.engine.ResourceLoader;
 import org.eclipse.rwt.internal.theme.ThemeManagerException;
+import org.eclipse.rwt.resources.ResourceLoader;
 import org.w3c.css.sac.*;
 
 public class CssFileReader {

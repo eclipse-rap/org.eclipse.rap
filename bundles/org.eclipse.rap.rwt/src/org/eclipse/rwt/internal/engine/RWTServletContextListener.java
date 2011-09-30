@@ -16,6 +16,7 @@ import javax.servlet.*;
 
 
 public class RWTServletContextListener implements ServletContextListener {
+  
   public static final String PARAMETER_SEPARATOR = ",";
   public static final String PARAMETER_SPLIT = "#";
   

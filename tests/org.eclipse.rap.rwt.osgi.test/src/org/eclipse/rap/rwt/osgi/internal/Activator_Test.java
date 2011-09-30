@@ -21,11 +21,12 @@ import java.util.Dictionary;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.osgi.RWTService;
+import org.eclipse.rap.rwt.osgi.ApplicationLauncher;
 import org.osgi.framework.*;
 
 
 public class Activator_Test extends TestCase {
+  
   private BundleContext context;
   private ServiceRegistration serviceRegistration;
 
@@ -33,7 +34,7 @@ public class Activator_Test extends TestCase {
     new Activator().start( context );
     
     checkTrackersHaveBeenOpend();
-    checkRWTServiceHasBeenRegistered();
+    checkApplicationLauncherHasBeenRegistered();
   }
   
   public void testStop() {
@@ -43,13 +44,13 @@ public class Activator_Test extends TestCase {
     activator.stop( context );
     
     checkTrackersHaveBeenClosed();
-    checkRWTServiceHasBeenUnregistered();
+    checkApplicationLauncherHasBeenUnregistered();
   }
   protected void setUp() {
     mockBundleContext();
   }
 
-  private void checkRWTServiceHasBeenUnregistered() {
+  private void checkApplicationLauncherHasBeenUnregistered() {
     verify( serviceRegistration ).unregister();
   }
 
@@ -58,10 +59,10 @@ public class Activator_Test extends TestCase {
   }
   
   @SuppressWarnings( "unchecked" )
-  private void checkRWTServiceHasBeenRegistered() {
+  private void checkApplicationLauncherHasBeenRegistered() {
     verify( context )
-      .registerService( eq( RWTService.class.getName() ),
-                        any( RWTServiceImpl.class ), 
+      .registerService( eq( ApplicationLauncher.class.getName() ),
+                        any( ApplicationLauncherImpl.class ), 
                         any( Dictionary.class ) );
   }
 
@@ -74,8 +75,8 @@ public class Activator_Test extends TestCase {
   private void mockBundleContext() {
     context = mock( BundleContext.class );
     serviceRegistration = mock( ServiceRegistration.class );
-    when( context.registerService( eq( RWTService.class.getName() ),
-                                   any( RWTServiceImpl.class ),
+    when( context.registerService( eq( ApplicationLauncher.class.getName() ),
+                                   any( ApplicationLauncherImpl.class ),
                                    any( Dictionary.class ) ) ).thenReturn( serviceRegistration );
   }
 }

@@ -15,9 +15,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
-import org.eclipse.rwt.engine.ResourceLoader;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
+import org.eclipse.rwt.resources.ResourceLoader;
 import org.eclipse.swt.graphics.*;
 
 

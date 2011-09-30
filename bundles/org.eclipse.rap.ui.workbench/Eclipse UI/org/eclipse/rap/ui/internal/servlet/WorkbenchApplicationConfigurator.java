@@ -23,18 +23,20 @@ import org.eclipse.rap.ui.internal.application.ApplicationRegistry;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rwt.AdapterFactory;
-import org.eclipse.rwt.engine.*;
+import org.eclipse.rwt.application.*;
 import org.eclipse.rwt.internal.engine.configurables.SettingStoreManagerConfigurable;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
+import org.eclipse.rwt.resources.ResourceLoader;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISettingStoreFactory;
 import org.eclipse.ui.internal.WorkbenchPlugin;
 import org.osgi.framework.*;
 
 
-public final class RWTConfigurator implements Configurator {
+public final class WorkbenchApplicationConfigurator implements ApplicationConfigurator {
+ 
   private static final String ID_ADAPTER_FACTORY = "org.eclipse.rap.ui.adapterfactory";
   private static final String ID_ENTRY_POINT = "org.eclipse.rap.ui.entrypoint";
   private static final String ID_THEMES = "org.eclipse.rap.ui.themes";
@@ -64,25 +66,25 @@ public final class RWTConfigurator implements Configurator {
     }
   }
 
-  RWTConfigurator( ServiceReference httpServiceReference ) {
+  WorkbenchApplicationConfigurator( ServiceReference httpServiceReference ) {
     this.httpServiceReference = httpServiceReference;
   }
 
-  public void configure( Context context ) {
-    registerPhaseListener( context );
-    registerSettingStoreFactory( context );
-    registerWorkbenchEntryPoint( context );
-    registerThemeableWidgets( context );
-    registerThemes( context );
-    registerThemeContributions( context );
-    registerFactories( context );
-    registerResources( context );
-    registerServiceHandlers( context );
-    registerApplicationEntryPoints( context );
-    registerBrandings( context );
+  public void configure( ApplicationConfiguration configuration ) {
+    registerPhaseListener( configuration );
+    registerSettingStoreFactory( configuration );
+    registerWorkbenchEntryPoint( configuration );
+    registerThemeableWidgets( configuration );
+    registerThemes( configuration );
+    registerThemeContributions( configuration );
+    registerFactories( configuration );
+    registerResources( configuration );
+    registerServiceHandlers( configuration );
+    registerApplicationEntryPoints( configuration );
+    registerBrandings( configuration );
   }
 
-  private void registerPhaseListener( Context context ) {
+  private void registerPhaseListener( ApplicationConfiguration configuration ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_PHASE_LISTENER );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -90,14 +92,14 @@ public final class RWTConfigurator implements Configurator {
       try {
         Object instance = elements[ i ].createExecutableExtension( "class" );
         PhaseListener listener = ( PhaseListener )instance;
-        context.addPhaseListener( listener );
+        configuration.addPhaseListener( listener );
       } catch( final CoreException ce ) {
         WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );
       }
     }
   }
 
-  private void registerSettingStoreFactory( Context context ) {
+  private void registerSettingStoreFactory( ApplicationConfiguration configuration ) {
     // determine which factory to use via an environment setting / config.ini
     String settingStoreFactoryParam = SettingStoreManagerConfigurable.SETTING_STORE_FACTORY_PARAM;
     String factoryId = getOSGiProperty( settingStoreFactoryParam );
@@ -108,7 +110,7 @@ public final class RWTConfigurator implements Configurator {
     if( result == null ) {
       result = new WorkbenchFileSettingStoreFactory(); // default
     }
-    context.setSettingStoreFactory( result );
+    configuration.setSettingStoreFactory( result );
   }
 
   private ISettingStoreFactory loadSettingStoreFactory( String factoryId ) {
@@ -144,7 +146,7 @@ public final class RWTConfigurator implements Configurator {
 	return systemBundle.getBundleContext().getProperty( name );
   }
 
-  private void registerFactories( Context context ) {
+  private void registerFactories( ApplicationConfiguration configuration ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_ADAPTER_FACTORY );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -157,7 +159,7 @@ public final class RWTConfigurator implements Configurator {
         Class factoryClass = bundle.loadClass( factoryName );
         Class adaptableClass = bundle.loadClass( adaptableName );
         AdapterFactory adapterFactory = ( AdapterFactory )ClassUtil.newInstance( factoryClass ) ;
-        context.addAdapterFactory( adaptableClass, adapterFactory );
+        configuration.addAdapterFactory( adaptableClass, adapterFactory );
       } catch( Throwable thr ) {
         String text = "Could not register adapter factory ''{0}''  for the adapter type ''{1}''.";
         Object[] param = new Object[] { factoryName, adaptableName};
@@ -167,7 +169,7 @@ public final class RWTConfigurator implements Configurator {
   }
 
 
-  private void registerWorkbenchEntryPoint( Context context ) {
+  private void registerWorkbenchEntryPoint( ApplicationConfiguration configuration ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_ENTRY_POINT );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -179,7 +181,7 @@ public final class RWTConfigurator implements Configurator {
       try {
         Bundle bundle = Platform.getBundle( contributorName );
         Class clazz = bundle.loadClass( className );
-        context.addEntryPoint( parameter, clazz );
+        configuration.addEntryPoint( parameter, clazz );
         EntryPointExtension.bind( id, parameter );
       } catch( final Throwable thr ) {
         String text = "Could not register entry point ''{0}'' with startup parameter ''{1}''.";
@@ -189,7 +191,7 @@ public final class RWTConfigurator implements Configurator {
     }
   }
 
-  private void registerThemeableWidgets( Context context ) {
+  private void registerThemeableWidgets( ApplicationConfiguration configuration ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( ID_THEMEABLE_WIDGETS );
     IConfigurationElement[] widgetExts = ep.getConfigurationElements();
@@ -200,7 +202,7 @@ public final class RWTConfigurator implements Configurator {
         final Bundle bundle = Platform.getBundle( contributorName );
         ResourceLoader resLoader = createThemableWidgetsResourceLoader( bundle );
         Class widget = bundle.loadClass( widgetClass );
-        context.addThemableWidget( widget, resLoader );
+        configuration.addThemableWidget( widget, resLoader );
       } catch( final Throwable thr ) {
         String text = "Could not register themeable widget ''{0}''.";
         Object[] param = new Object[] { widgetClass };
@@ -227,7 +229,7 @@ public final class RWTConfigurator implements Configurator {
     };
   }
 
-  private void registerThemes( Context context ) {
+  private void registerThemes( ApplicationConfiguration configuration ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( ID_THEMES );
     IConfigurationElement[] elements = ep.getConfigurationElements();
@@ -239,7 +241,7 @@ public final class RWTConfigurator implements Configurator {
         try {
           Bundle bundle = Platform.getBundle( contributorName );
           ResourceLoader resourceLoader = createThemeResourceLoader( bundle );
-          context.addTheme( themeId, themeFile, resourceLoader );
+          configuration.addTheme( themeId, themeFile, resourceLoader );
         } catch( final Exception e ) {
           String text = "Could not register custom theme ''{0}'' from file ''{1}''.";
           Object[] param = new Object[]{ themeId, themeFile };
@@ -249,7 +251,7 @@ public final class RWTConfigurator implements Configurator {
     }
   }
 
-  private void registerThemeContributions( Context context ) {
+  private void registerThemeContributions( ApplicationConfiguration configuration ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint ep = registry.getExtensionPoint( ID_THEMES );
     IConfigurationElement[] elements = ep.getConfigurationElements();
@@ -261,7 +263,7 @@ public final class RWTConfigurator implements Configurator {
         try {
           Bundle bundle = Platform.getBundle( contributorName );
           ResourceLoader loader = createThemeResourceLoader( bundle );
-          context.addThemeContribution( themeId, themeFile, loader );
+          configuration.addThemeContribution( themeId, themeFile, loader );
         } catch( final Exception e ) {
           String text = "Could not register contribution for theme ''{0}'' from file ''{1}''.";
           Object[] param = new Object[]{ themeId, themeFile };
@@ -289,13 +291,13 @@ public final class RWTConfigurator implements Configurator {
     return result;
   }
 
-  private void registerResources( Context context ) {
+  private void registerResources( ApplicationConfiguration configuration ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_RESOURCES );
     IConfigurationElement[] elements = point.getConfigurationElements();
     DependentResource[] resources = loadResources( elements );
     resources = sortResources( resources );
-    registerResources( resources, context );
+    registerResources( resources, configuration );
   }
 
   private static DependentResource[] loadResources( IConfigurationElement[] elements ) {
@@ -358,15 +360,17 @@ public final class RWTConfigurator implements Configurator {
     return result;
   }
 
-  private void registerResources( DependentResource[] resources, Context context ) {
+  private void registerResources( DependentResource[] resources,
+                                  ApplicationConfiguration configuration )
+  {
     for( int i = 0; i < resources.length; i++ ) {
       if( resources[ i ] != null ) {
-        context.addResource( resources[ i ].resource );
+        configuration.addResource( resources[ i ].resource );
       }
     }
   }
 
-  private void registerServiceHandlers( Context context ) {
+  private void registerServiceHandlers( ApplicationConfiguration configuration ) {
     IExtensionRegistry registry = Platform.getExtensionRegistry();
     IExtensionPoint point = registry.getExtensionPoint( ID_SERVICE_HANDLER );
     IConfigurationElement[] elements = point.getConfigurationElements();
@@ -376,7 +380,7 @@ public final class RWTConfigurator implements Configurator {
         if( id != null ) {
           Object extObject = elements[ i ].createExecutableExtension( "class" );
           IServiceHandler handler = ( IServiceHandler )extObject;
-          context.addServiceHandler( id, handler );
+          configuration.addServiceHandler( id, handler );
         }
       } catch( final CoreException ce ) {
         WorkbenchPlugin.getDefault().getLog().log( ce.getStatus() );
@@ -384,16 +388,16 @@ public final class RWTConfigurator implements Configurator {
     }
   }
 
-  private void registerBrandings( Context context ) {
+  private void registerBrandings( ApplicationConfiguration configuration ) {
     try {
-      new BrandingExtension( context, httpServiceReference ).read();
+      new BrandingExtension( configuration, httpServiceReference ).read();
     } catch( final IOException ioe ) {
       throw new RuntimeException( "Unable to read branding extension", ioe );
     }
   }
 
-  private void registerApplicationEntryPoints( Context context ) {
-    ApplicationRegistry.registerApplicationEntryPoints( context );
+  private void registerApplicationEntryPoints( ApplicationConfiguration configuration ) {
+    ApplicationRegistry.registerApplicationEntryPoints( configuration );
   }
   
   private void logProblem( String text, Object[] textParams, Throwable problem, String bundleId ) {

@@ -8,7 +8,7 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.engine;
+package org.eclipse.rwt.application;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,30 +17,35 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rwt.internal.engine.ApplicationConfigurable;
+import org.eclipse.rwt.internal.engine.ApplicationContext;
+import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
+import org.eclipse.rwt.internal.engine.Configurable;
+import org.eclipse.rwt.internal.engine.RWTDelegate;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 
-// TODO [fappel]: clarify API and write Tests...
-public class ContextControl {
+public class Application {
+  
   public final static String RESOURCES = ResourceManagerImpl.RESOURCES;
   
   private final ServletContext servletContext;
-  private final Configurator configurator;
+  private final ApplicationConfigurator configurator;
   private final ApplicationContext applicationContext;
   
-  public ContextControl( ServletContext servletContext, Configurator configurator ) {
+  public Application( ServletContext servletContext, ApplicationConfigurator configurator ) {
     this.applicationContext = new ApplicationContext();
     this.servletContext = servletContext;
     this.configurator = configurator;
   }
   
-  public void startContext() {
-    applicationContext.addConfigurable( new ContextConfigurable( configurator, servletContext ) );
+  public void start() {
+    Configurable configurable = new ApplicationConfigurable( configurator, servletContext );
+    applicationContext.addConfigurable( configurable );
     ApplicationContextUtil.set( servletContext, applicationContext );
     activateApplicationContext();
   }
   
-  public void stopContext() {
+  public void stop() {
     try {
       if( applicationContext.isActivated() ) {
         applicationContext.deactivate();
