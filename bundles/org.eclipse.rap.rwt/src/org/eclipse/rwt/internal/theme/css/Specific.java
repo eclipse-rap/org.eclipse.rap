@@ -13,7 +13,7 @@ package org.eclipse.rwt.internal.theme.css;
 
 
 /**
- * See {@link http://www.w3.org/TR/CSS21/cascade.html#specificity}
+ * See <a href="http://www.w3.org/TR/CSS21/cascade.html#specificity">specificity</a>
  */
 public interface Specific {
 

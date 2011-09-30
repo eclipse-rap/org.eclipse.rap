@@ -131,7 +131,7 @@ public class Browser extends Composite {
    *    <li>ERROR_NO_HANDLES if a handle could not be obtained for browser creation</li>
    * </ul>
    *
-   * @see org.eclipse.swt.Widget#getStyle
+   * @see org.eclipse.swt.widgets.Widget#getStyle
    */
   public Browser( Composite parent, int style ) {
     super( parent, style );

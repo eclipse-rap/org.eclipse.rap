@@ -146,7 +146,7 @@ public final class Image extends Resource {
    * </p>
    *
    * @param device the device on which to create the image
-   * @param filename the name of the file to load the image from
+   * @param fileName the name of the file to load the image from
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if device is null and there is no current device</li>
@@ -230,7 +230,7 @@ public final class Image extends Resource {
    * <code>ImageData</code>.
    *
    * @param device the device on which to create the image
-   * @param data the image data to create the image from (must not be null)
+   * @param imageData the image data to create the image from (must not be null)
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if device is null and there is no current device</li>

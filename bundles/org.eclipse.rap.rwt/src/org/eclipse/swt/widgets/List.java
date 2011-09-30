@@ -580,7 +580,7 @@ public class List extends Scrollable {
    * at the top of the receiver. This index can change when items
    * are scrolled or new items are added and removed.
    *
-   * @param index the index of the top item
+   * @param topIndex the index of the top item
    *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>

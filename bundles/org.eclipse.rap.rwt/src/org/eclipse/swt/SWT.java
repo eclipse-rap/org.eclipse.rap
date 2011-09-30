@@ -13,6 +13,7 @@ package org.eclipse.swt;
 
 
 import org.eclipse.rwt.internal.RWTMessages;
+import org.eclipse.swt.graphics.Cursor;
 
 
 
@@ -68,7 +69,9 @@ public class SWT {
    * @see org.eclipse.swt.widgets.Event
    *
    * @see org.eclipse.swt.widgets.Control#addKeyListener
+   * <!--
    * @see org.eclipse.swt.widgets.Tracker#addKeyListener
+   * -->
    * @see org.eclipse.swt.events.KeyListener#keyReleased
    * @see org.eclipse.swt.events.KeyEvent
    *
@@ -2196,27 +2199,18 @@ public class SWT {
   /**
    * The font style constant indicating a normal weight, non-italic font
    * (value is 0).
-   *
-   * @see Graphics#getFont(org.eclipse.swt.graphics.FontData)
-   * @see Graphics#getFont(String, int, int)
    */
   public static final int NORMAL = 0;
 
   /**
    * The font style constant indicating a bold weight font
    * (value is 1&lt;&lt;0).
-   *
-   * @see Graphics#getFont(org.eclipse.swt.graphics.FontData)
-   * @see Graphics#getFont(String, int, int)
    */
   public static final int BOLD = 1 << 0;
 
   /**
    * The font style constant indicating an italic font
    * (value is 1&lt;&lt;1).
-   *
-   * @see Graphics#getFont(org.eclipse.swt.graphics.FontData)
-   * @see Graphics#getFont(String, int, int)
    */
   public static final int ITALIC = 1 << 1;
 
@@ -2225,7 +2219,7 @@ public class SWT {
   /**
    * System arrow cursor  (value is 0).
    *
-   * @see Graphics#getCursor(int)
+   * @see Cursor
    * @since 1.2
    */
   public static final int CURSOR_ARROW = 0;
@@ -2233,7 +2227,7 @@ public class SWT {
   /**
    * System wait cursor  (value is 1).
    *
-   * @see Graphics#getCursor(int)
+   * @see Cursor
    * @since 1.2
    */
   public static final int CURSOR_WAIT = 1;
@@ -2241,7 +2235,6 @@ public class SWT {
   /**
    * System cross hair cursor  (value is 2).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.2
    */
   public static final int CURSOR_CROSS = 2;
@@ -2255,7 +2248,6 @@ public class SWT {
   /**
    * System help cursor  (value is 4).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.2
    */
   public static final int CURSOR_HELP = 4;
@@ -2263,7 +2255,6 @@ public class SWT {
   /**
    * System resize all directions cursor (value is 5).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.2
    */
   public static final int CURSOR_SIZEALL = 5;
@@ -2277,13 +2268,13 @@ public class SWT {
   /**
    * System resize north-south cursor  (value is 7).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.2
    */
   public static final int CURSOR_SIZENS = 7;
 
   /**
    * System resize north-west-south-east cursor  (value is 8).
+   * 
    * @since 1.4
    */
   public static final int CURSOR_SIZENWSE = 8;
@@ -2291,7 +2282,6 @@ public class SWT {
   /**
    * System resize west-east cursor  (value is 9).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.2
    */
   public static final int CURSOR_SIZEWE = 9;
@@ -2299,7 +2289,6 @@ public class SWT {
   /**
    * System resize north cursor  (value is 10).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.2
    */
   public static final int CURSOR_SIZEN = 10;
@@ -2307,7 +2296,6 @@ public class SWT {
   /**
    * System resize south cursor  (value is 11).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.2
    */
   public static final int CURSOR_SIZES = 11;
@@ -2315,7 +2303,6 @@ public class SWT {
   /**
    * System resize east cursor  (value is 12).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.2
    */
   public static final int CURSOR_SIZEE = 12;
@@ -2323,7 +2310,6 @@ public class SWT {
   /**
    * System resize west cursor  (value is 13).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.2
    */
   public static final int CURSOR_SIZEW = 13;
@@ -2331,7 +2317,6 @@ public class SWT {
   /**
    * System resize north-east cursor (value is 14).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.2
    */
   public static final int CURSOR_SIZENE = 14;
@@ -2339,7 +2324,6 @@ public class SWT {
   /**
    * System resize south-east cursor (value is 15).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.2
    */
   public static final int CURSOR_SIZESE = 15;
@@ -2347,7 +2331,6 @@ public class SWT {
   /**
    * System resize south-west cursor (value is 16).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.2
    */
   public static final int CURSOR_SIZESW = 16;
@@ -2355,7 +2338,6 @@ public class SWT {
   /**
    * System resize north-west cursor (value is 17).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.2
    */
   public static final int CURSOR_SIZENW = 17;
@@ -2363,7 +2345,6 @@ public class SWT {
   /**
    * System up arrow cursor  (value is 18).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.3
    */
   public static final int CURSOR_UPARROW = 18;
@@ -2371,7 +2352,6 @@ public class SWT {
   /**
    * System i-beam cursor (value is 19).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.2
    */
   public static final int CURSOR_IBEAM = 19;
@@ -2379,16 +2359,13 @@ public class SWT {
   /**
    * System "not allowed" cursor (value is 20).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.3
-
    */
   public static final int CURSOR_NO = 20;
 
   /**
    * System hand cursor (value is 21).
    *
-   * @see Graphics#getCursor(int)
    * @since 1.2
    */
   public static final int CURSOR_HAND = 21;

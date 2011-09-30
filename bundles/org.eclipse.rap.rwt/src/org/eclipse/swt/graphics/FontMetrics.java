@@ -47,9 +47,11 @@ public final class FontMetrics {
    * leading area.
    * 
    * @return the height of the font
+   * <!--
    * @see #getAscent
    * @see #getDescent
    * @see #getLeading
+   * -->
    */
   public int getHeight() {
     return Graphics.getCharHeight( font );

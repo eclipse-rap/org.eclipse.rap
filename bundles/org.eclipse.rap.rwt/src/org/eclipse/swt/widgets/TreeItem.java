@@ -435,7 +435,7 @@ public class TreeItem extends Item {
    * Returns the font that the receiver will use to paint textual information
    * for the specified cell in this item.
    *
-   * @param columnIndex the column index
+   * @param index the column index
    * @return the receiver's font
    * @exception SWTException <ul>
    *              <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed
@@ -1014,7 +1014,7 @@ public class TreeItem extends Item {
    * Returns a rectangle describing the size and location relative to its parent
    * of an image at a column in the tree.
    *
-   * @param index the index that specifies the column
+   * @param columnIndex the index that specifies the column
    * @return the receiver's bounding image rectangle
    * @exception SWTException <ul> <li>ERROR_WIDGET_DISPOSED - if the receiver
    *              has been disposed</li> <li>ERROR_THREAD_INVALID_ACCESS - if

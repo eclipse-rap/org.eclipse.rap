@@ -169,9 +169,9 @@ public class CTabFolder extends Composite {
    *
    * @see SWT#TOP
    * @see SWT#BOTTOM
-   * @see SWT#FLAT  (not fully implemented yet)
-   * @see SWT#BORDER  (not fully implemented yet)
-   * @see SWT#SINGLE (not fully implemented yet)
+   * @see SWT#FLAT
+   * @see SWT#BORDER
+   * @see SWT#SINGLE
    * @see SWT#MULTI
    * @see #getStyle()
    */

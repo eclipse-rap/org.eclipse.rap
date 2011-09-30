@@ -1023,7 +1023,7 @@ public final class WidgetLCAUtil {
    * @param transparency the new background transparency, if <code>true</code>,
    *            the <code>background</code> parameter is ignored
    * @throws IOException
-   * @see {@link #preserveBackground(Widget, Color, boolean)}
+   * @see #preserveBackground(Widget, Color, boolean)
    */
   public static void writeBackground( Widget widget, Color background, boolean transparency )
     throws IOException
@@ -1080,7 +1080,7 @@ public final class WidgetLCAUtil {
    * @param transparency the new background transparency, if <code>true</code>,
    *            the <code>background</code> parameter is ignored
    * @throws IOException
-   * @see {@link #preserveBackground(Widget, Color, boolean)}
+   * @see #preserveBackground(Widget, Color, boolean)
    */
   public static void renderBackground( Widget widget, Color background, boolean transparency )
     throws IOException
@@ -1108,7 +1108,7 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose background gradient properties to set
    * @throws IOException
-   * @see {@link #preserveBackgroundGradient(Widget)}
+   * @see #preserveBackgroundGradient(Widget)
    * @since 1.3
    */
   public static void writeBackgroundGradient( Widget widget ) throws IOException {
@@ -1144,7 +1144,7 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose background gradient properties to set
    * @throws IOException
-   * @see {@link #preserveBackgroundGradient(Widget)}
+   * @see #preserveBackgroundGradient(Widget)
    * @since 1.5
    */
   public static void renderBackgroundGradient( Widget widget ) throws IOException {
@@ -1204,7 +1204,7 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose rounded border properties to set
    * @throws IOException
-   * @see {@link #preserveRoundedBorder(Widget)}
+   * @see #preserveRoundedBorder(Widget)
    * @since 1.3
    */
   public static void writeRoundedBorder( Widget widget )
@@ -1238,7 +1238,7 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose rounded border properties to set
    * @throws IOException
-   * @see {@link #preserveRoundedBorder(Widget)}
+   * @see #preserveRoundedBorder(Widget)
    * @since 1.5
    */
   public static void renderRoundedBorder( Widget widget ) throws IOException {

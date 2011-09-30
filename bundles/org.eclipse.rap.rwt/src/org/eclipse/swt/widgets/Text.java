@@ -13,6 +13,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontUtil;
@@ -105,7 +106,7 @@ public class Text extends Scrollable {
    * @see SWT#READ_ONLY
    * @see SWT#WRAP
    * @see SWT#PASSWORD
-   * @see SWT#SEARCH;
+   * @see SWT#SEARCH
    * @see SWT#ICON_SEARCH
    * @see SWT#ICON_CANCEL
    * @see Widget#checkSubclass

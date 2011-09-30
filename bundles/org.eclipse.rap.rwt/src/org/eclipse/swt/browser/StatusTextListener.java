@@ -17,8 +17,10 @@ import org.eclipse.swt.internal.SWTEventListener;
  * {@link StatusTextEvent} notification when the status text for a
  * {@link Browser} is changed.
  *
+ * <!--
  * @see Browser#addStatusTextListener(StatusTextListener)
  * @see Browser#removeStatusTextListener(StatusTextListener)
+ * -->
  * @since 1.4
  */
 public interface StatusTextListener extends SWTEventListener {

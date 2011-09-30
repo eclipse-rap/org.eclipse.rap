@@ -27,7 +27,7 @@ public interface SettingStoreListener {
    * This method is invoked by the setting store, when an attribute inside
    * the store has been changed (i.e. added, modified, removed).
    *
-   * @param event a non-null {@link ISettingStoreEvent} instance with
+   * @param event a non-null {@link SettingStoreEvent} instance with
    *                   specific information about the change
    */
   void settingChanged( SettingStoreEvent event );

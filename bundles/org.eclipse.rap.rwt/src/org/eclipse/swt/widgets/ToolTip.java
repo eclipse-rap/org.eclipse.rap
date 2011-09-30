@@ -186,6 +186,28 @@ public class ToolTip extends Widget {
   }
 
   /**
+   * Returns <code>true</code> if the receiver is visible, and
+   * <code>false</code> otherwise.
+   * <p>
+   * If one of the receiver's ancestors is not visible or some
+   * other condition makes the receiver not visible, this method
+   * may still indicate that it is considered visible even though
+   * it may not actually be showing.
+   * </p>
+   *
+   * @return the receiver's visibility state
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
+   * </ul>
+   */
+  public boolean getVisible() {
+    checkWidget();
+    return visible;
+  }
+  
+  /**
    * Marks the receiver as visible if the argument is <code>true</code>,
    * and marks it invisible otherwise.
    * <p>
@@ -225,7 +247,7 @@ public class ToolTip extends Widget {
   /**
    * Sets the receiver's text.
    *
-   * @param string the new text
+   * @param text the new text
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the text is null</li>
@@ -262,7 +284,7 @@ public class ToolTip extends Widget {
   /**
    * Sets the receiver's message.
    *
-   * @param string the new message
+   * @param message the new message
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the text is null</li>

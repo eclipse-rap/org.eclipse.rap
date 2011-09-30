@@ -12,6 +12,7 @@
 package org.eclipse.swt.graphics;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
 
 /**
  * Instances of this class manage operating system resources that specify the
@@ -34,7 +35,6 @@ import org.eclipse.swt.SWT;
  * Note: Only one of the above styles may be specified.
  * </p>
  *
- * @see Graphics
  * @since 1.2
  */
 public final class Cursor extends Resource {

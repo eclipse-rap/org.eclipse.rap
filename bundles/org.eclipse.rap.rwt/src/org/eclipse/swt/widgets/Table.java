@@ -325,7 +325,7 @@ public class Table extends Composite {
    *
    * @see #ITEM_HEIGHT
    * @see #IMAGE_MAP
-   * @see TableItem#setText(String);
+   * @see TableItem#setText(String)
    * @since 1.5
    */
   public static final String ENABLE_RICH_TEXT = Table.class.getName() + "#enableRichText";

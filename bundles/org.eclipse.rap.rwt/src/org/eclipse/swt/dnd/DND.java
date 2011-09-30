@@ -25,7 +25,9 @@ public class DND {
 	 * The transfer mechanism for data that is being cut
 	 * and then pasted or copied and then pasted (value is 1).
 	 * 
+	 * <!--
 	 * @see Clipboard
+	 * -->
 	 */
 	public final static int CLIPBOARD = 1 << 0;
 	
@@ -33,7 +35,9 @@ public class DND {
 	 * The transfer mechanism for clients that use the selection 
 	 * mechanism (value is 2).
 	 * 
-	 * @see Clipboard
+   * <!--
+   * @see Clipboard
+   * -->
 	 */
 	public final static int SELECTION_CLIPBOARD = 1 << 1;
 

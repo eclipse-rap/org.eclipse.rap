@@ -10,6 +10,7 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 
 /**
  * Instances of this class represent the system tray that is part of the task

@@ -970,7 +970,7 @@ public final class CCombo extends Composite {
    * it one of the messages defined in the <code>VerifyListener</code>
    * interface.
    *
-   * @param listener the listener which should be notified
+   * @param verifyListener the listener which should be notified
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
@@ -993,7 +993,7 @@ public final class CCombo extends Composite {
    * Removes the listener from the collection of listeners who will
    * be notified when the control is verified.
    *
-   * @param listener the listener which should no longer be notified
+   * @param verifyListener the listener which should no longer be notified
    *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the listener is null</li>

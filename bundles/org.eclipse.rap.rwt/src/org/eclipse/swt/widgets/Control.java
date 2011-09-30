@@ -1949,7 +1949,9 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @see #update()
    * @see PaintListener
+   * <!--
    * @see SWT#Paint
+   * -->
    * @see SWT#NO_BACKGROUND
    * @see SWT#NO_REDRAW_RESIZE
    * @see SWT#NO_MERGE_PAINTS

@@ -19,7 +19,7 @@ package org.eclipse.rwt.service;
  * of the <code>org.eclipse.rap.ui.settingstores</code> for details on how
  * to configure which factory is used.
  * <p>
- * If nothing is specified the {@link FileSettingStoreFactory} will be used
+ * If nothing is specified the {@link RWTFileSettingStoreFactory} will be used
  * by default.
  * <p>
  * This interface must be implemented by clients who wish to use their own

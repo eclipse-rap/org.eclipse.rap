@@ -39,7 +39,7 @@ public class DragDetectEvent extends MouseEvent {
    * Constructs a new instance of this class based on the
    * information in the given untyped event.
    *
-   * @param e the untyped event containing the information
+   * @param event the untyped event containing the information
    */
   public DragDetectEvent( final Event event ) {
     super( event );

@@ -37,7 +37,7 @@ public final class DialogUtil {
    * 
    * @see Dialog
    * @see DialogCallback
-   * @see ILifeCycle
+   * @see org.eclipse.rwt.lifecycle.ILifeCycle
    */
   public static void open( Dialog dialog, DialogCallback dialogCallback ) {
     ParamCheck.notNull( dialog, "dialog" );

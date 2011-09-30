@@ -103,13 +103,13 @@ public final class TraverseEvent extends KeyEvent {
    * <li>{@link org.eclipse.swt.SWT#TRAVERSE_RETURN}</li>
    * <li>{@link org.eclipse.swt.SWT#TRAVERSE_TAB_NEXT}</li>
    * <li>{@link org.eclipse.swt.SWT#TRAVERSE_TAB_PREVIOUS}</li>
+   * <!--
    * <li>{@link org.eclipse.swt.SWT#TRAVERSE_ARROW_NEXT}</li>
    * <li>{@link org.eclipse.swt.SWT#TRAVERSE_ARROW_PREVIOUS}</li>
-   * <!--
    * <li>{@link org.eclipse.swt.SWT#TRAVERSE_MNEMONIC}</li>
-   * -->
    * <li>{@link org.eclipse.swt.SWT#TRAVERSE_PAGE_NEXT}</li>
    * <li>{@link org.eclipse.swt.SWT#TRAVERSE_PAGE_PREVIOUS}</li>
+   * -->
    * </ul>
    * </p>
    * Setting this field will change the type of traversal. For example, setting
