@@ -14,6 +14,144 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
   
   members : {
 
+    testCreateScrolledCompositeByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrolledComposite",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget instanceof org.eclipse.swt.custom.ScrolledComposite );
+      assertIdentical( shell, widget.getParent() );
+      assertTrue( widget.getUserData( "isControl") );
+      assertEquals( "scrolledcomposite", widget.getAppearance() );
+      assertNull( widget._content );
+      assertFalse( widget._hasSelectionListener );
+      assertFalse( widget._showFocusedControl );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetBoundsByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrolledComposite",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "bounds" : [ 1, 2, 3, 4 ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( 1, widget.getLeft() );
+      assertEquals( 2, widget.getTop() );
+      assertEquals( 3, widget.getWidth() );
+      assertEquals( 3, widget.getClipWidth() );
+      assertEquals( 4, widget.getHeight() );
+      assertEquals( 4, widget.getClipHeight() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetOriginByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrolledComposite",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "origin" : [ 1, 2 ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( 1, widget._horzScrollBar.getValue() );
+      assertEquals( 2, widget._vertScrollBar.getValue() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetShowFocusedControlByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrolledComposite",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "showFocusedControl" : true
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget._showFocusedControl );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetScrollBarsVisibleByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrolledComposite",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "scrollBarsVisible" : [ false, false ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertFalse( widget._horzScrollBar.getDisplay() );
+      assertFalse( widget._vertScrollBar.getDisplay() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHasSelectionListenerByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.ScrolledComposite",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      testUtil.protocolListen( "w3", { "scrollBarsSelection" : true } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget._hasSelectionListener );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testSetParent : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var wm = org.eclipse.swt.WidgetManager.getInstance();

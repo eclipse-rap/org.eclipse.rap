@@ -71,6 +71,14 @@ public final class JsonArray extends JsonValue {
     return result;
   }
 
+  public static JsonArray valueOf( boolean[] array ) {
+    JsonArray result = new JsonArray();
+    for( int i = 0; i < array.length; i++ ) {
+      result.append( array[ i ] );
+    }
+    return result;
+  }
+
   public static JsonArray valueOf( String[] array ) {
     JsonArray result = new JsonArray();
     for( int i = 0; i < array.length; i++ ) {

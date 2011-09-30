@@ -61,6 +61,8 @@ final class JsonUtil {
       result = JsonObject.valueOf( ( ( Boolean )value ).booleanValue() );
     } else if( value instanceof int[] ) {
       result = JsonArray.valueOf( ( int[] )value );
+    } else if( value instanceof boolean[] ) {
+      result = JsonArray.valueOf( ( boolean[] )value );
     } else if( value instanceof Object[] ) {
       result = createJsonArray( ( Object[] )value );
     } else if( value instanceof JsonValue ) {
@@ -69,6 +71,6 @@ final class JsonUtil {
       String message = "Parameter object can not be converted to JSON value: " + value;
       throw new IllegalArgumentException( message );
     }
-    return result;    
+    return result;
   }
 }

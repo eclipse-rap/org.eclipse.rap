@@ -111,8 +111,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
       this._clientArea.addEventListener( "create", this._onClientCreate, this );
       this._clientArea.addEventListener( "appear", this._onClientAppear, this );
       // TOOD [tb] : Do this with an eventlistner after fixing Bug 327023 
-      this._clientArea._layoutPost 
-        = qx.lang.Function.bindEvent( this._onClientLayout, this );
+      this._clientArea._layoutPost = qx.lang.Function.bindEvent( this._onClientLayout, this );
     },
     
     _configureScrollBars : function() {
@@ -121,12 +120,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
       this._horzScrollBar.addEventListener( "dragstart", dragBlocker );
       this._vertScrollBar.setTop( 0 );
       this._vertScrollBar.addEventListener( "dragstart", dragBlocker );
-      this._horzScrollBar.addEventListener( "changeValue", 
-                                            this._onHorzScrollBarChangeValue, 
-                                            this );
-      this._vertScrollBar.addEventListener( "changeValue", 
-                                            this._onVertScrollBarChangeValue, 
-                                            this );      
+      this._horzScrollBar.addEventListener( "changeValue", this._onHorzScrollBarChangeValue, this );
+      this._vertScrollBar.addEventListener( "changeValue", this._onVertScrollBarChangeValue, this );      
     },
 
     _applyWidth : function( newValue, oldValue ) {
@@ -152,7 +147,8 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
       } 
       this._clientArea.setWidth( clientWidth );
       this._vertScrollBar.setLeft( clientWidth );
-      this._horzScrollBar.setWidth( clientWidth );    },
+      this._horzScrollBar.setWidth( clientWidth );
+    },
 
     _layoutY : function() {        
       var clientHeight = this.getHeight() - this.getFrameHeight();
@@ -173,8 +169,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
     },
 
     _onClientLayout : function() {
-      var barWidth 
-        = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
+      var barWidth = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
       var node = this._clientArea._getTargetNode();
       var el = this._clientArea.getElement();
       var overflow = this._clientArea.getOverflow();

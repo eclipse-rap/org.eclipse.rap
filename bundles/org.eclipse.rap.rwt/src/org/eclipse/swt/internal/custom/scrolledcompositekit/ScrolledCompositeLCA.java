@@ -1,67 +1,67 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.scrolledcompositekit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.EventLCAUtil;
-import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
 
 
 public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
 
-  private static final String QX_TYPE = "org.eclipse.swt.custom.ScrolledComposite";
-  private static final String SET_CONTENT = "setContent";
-
-  private static final Integer ZERO = new Integer( 0 );
+  private static final String TYPE = "rwt.widgets.ScrolledComposite";
 
   // Request parameter names
   private static final String PARAM_H_BAR_SELECTION = "horizontalBar.selection";
   private static final String PARAM_V_BAR_SELECTION = "verticalBar.selection";
 
-  // Property names for preserve value mechanism
-  static final String PROP_BOUNDS = "clientArea";
-  static final String PROP_HAS_H_SCROLL_BAR = "hasHScrollBar";
-  static final String PROP_HAS_V_SCROLL_BAR = "hasVScrollBar";
-  private static final String PROP_H_BAR_SELECTION = "hBarSelection";
-  private static final String PROP_V_BAR_SELECTION = "vBarSelection";
+  // Property names
+  private static final String PROP_ORIGIN = "origin";
+  private static final String PROP_CONTENT = "content";
   private static final String PROP_SHOW_FOCUSED_CONTROL = "showFocusedControl";
-  static final String PROP_CONTENT = "content";
+  // TODO: [if] Move scrollbars synchronization to the ScrollBarLCA once it exists
+  private static final String PROP_SCROLLBARS_VISIBLE = "scrollBarsVisible";
+  private static final String PROP_SCROLLBARS_SELECTION_LISTENER = "scrollBarsSelection";
+
+  // Default values
+  private static final Point DEFAULT_ORIGIN = new Point( 0, 0 );
+  private static final boolean[] DEFAULT_SCROLLBARS_VISIBLE = new boolean[] { true, true };
 
   public void preserveValues( Widget widget ) {
     ScrolledComposite composite = ( ScrolledComposite )widget;
     ControlLCAUtil.preserveValues( composite );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( composite );
-    adapter.preserve( PROP_BOUNDS, composite.getBounds() );
-    adapter.preserve( PROP_HAS_H_SCROLL_BAR, Boolean.valueOf( hasHScrollBar( composite ) ) );
-    adapter.preserve( PROP_HAS_V_SCROLL_BAR, Boolean.valueOf( hasVScrollBar( composite ) ) );
-    adapter.preserve( PROP_H_BAR_SELECTION, getBarSelection( composite.getHorizontalBar() ) );
-    adapter.preserve( PROP_V_BAR_SELECTION, getBarSelection( composite.getVerticalBar() ) );
-    adapter.preserve( Props.SELECTION_LISTENERS,
-                      Boolean.valueOf( hasSelectionListener( composite ) ) );
-    adapter.preserve( PROP_SHOW_FOCUSED_CONTROL,
-                      Boolean.valueOf( composite.getShowFocusedControl() ) );
-    adapter.preserve( PROP_CONTENT, composite.getContent() );
     WidgetLCAUtil.preserveCustomVariant( composite );
+    preserveProperty( composite, PROP_ORIGIN, composite.getOrigin() );
+    preserveProperty( composite, PROP_CONTENT, composite.getContent() );
+    preserveProperty( composite, PROP_SHOW_FOCUSED_CONTROL, composite.getShowFocusedControl() );
+    // TODO: [if] Move scrollbars synchronization to the ScrollBarLCA once it exists
+    preserveProperty( composite, PROP_SCROLLBARS_VISIBLE, getScrollBarsVisible( composite ) );
+    preserveListener( composite,
+                      PROP_SCROLLBARS_SELECTION_LISTENER,
+                      hasScrollBarsSelectionListener( composite ) );
   }
 
   public void readData( Widget widget ) {
@@ -88,134 +88,42 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     ScrolledComposite scrolledComposite = ( ScrolledComposite )widget;
-    JSWriter writer = JSWriter.getWriterFor( scrolledComposite );
-    writer.newWidget( QX_TYPE );
-    ControlLCAUtil.writeStyleFlags( scrolledComposite );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( scrolledComposite );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( scrolledComposite.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( scrolledComposite ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
     ScrolledComposite composite = ( ScrolledComposite )widget;
-    ControlLCAUtil.writeChanges( composite );
-    writeContent( composite );
-    writeClipBounds( composite );
-    // TODO [rh] initial positioning of the client-side scroll bar does not work
-    writeBarSelection( composite );
-    // [if] Order is important: writeScrollBars after writeBarSelection
-    writeScrollBars( composite );
-    writeSelectionListener( composite );
-    writeShowFocusedControl( composite );
-    WidgetLCAUtil.writeCustomVariant( composite );
+    ControlLCAUtil.renderChanges( composite );
+    WidgetLCAUtil.renderCustomVariant( composite );
+    renderProperty( composite, PROP_CONTENT, composite.getContent(), null );
+    renderProperty( composite, PROP_ORIGIN, composite.getOrigin(), DEFAULT_ORIGIN );
+    renderProperty( composite,
+                    PROP_SHOW_FOCUSED_CONTROL,
+                    composite.getShowFocusedControl(),
+                    false );
+    // TODO: [if] Move scrollbars synchronization to the ScrollBarLCA once it exists
+    renderProperty( composite,
+                    PROP_SCROLLBARS_VISIBLE,
+                    getScrollBarsVisible( composite ),
+                    DEFAULT_SCROLLBARS_VISIBLE );
+    renderListener( composite,
+                    PROP_SCROLLBARS_SELECTION_LISTENER,
+                    hasScrollBarsSelectionListener( composite ),
+                    false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    ScrolledComposite composite = ( ScrolledComposite )widget;
-    JSWriter writer = JSWriter.getWriterFor( composite );
-    writer.dispose();
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
-  ///////////////////////////////////
-  // Helping methods to write changes
+  //////////////////
+  // Helping methods
 
-  private static void writeContent( ScrolledComposite composite ) throws IOException {
-    Control content = composite.getContent();
-    if( WidgetLCAUtil.hasChanged( composite, PROP_CONTENT, content, null ) ) {
-      final JSWriter writer = JSWriter.getWriterFor( composite );
-      final Object[] args = new Object[] { content };
-      if( content != null ) {
-        // defer call since content is rendered after composite
-        WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( content );
-        adapter.setRenderRunnable( new IRenderRunnable() {
-          public void afterRender() throws IOException {
-            writer.call( SET_CONTENT, args );
-          }
-        } );
-      } else {
-        writer.call( SET_CONTENT, args );
-      }
-    }
-  }
-
-  private static void writeScrollBars( ScrolledComposite composite ) throws IOException {
-    boolean hasHBar = hasHScrollBar( composite );
-    boolean hasVBar = hasVScrollBar( composite );
-    boolean hasHChanged = WidgetLCAUtil.hasChanged( composite,
-                                                    PROP_HAS_H_SCROLL_BAR,
-                                                    Boolean.valueOf( hasHBar ),
-                                                    Boolean.TRUE );
-    boolean hasVChanged = WidgetLCAUtil.hasChanged( composite,
-                                                    PROP_HAS_V_SCROLL_BAR,
-                                                    Boolean.valueOf( hasVBar ),
-                                                    Boolean.TRUE );
-    if( hasHChanged || hasVChanged ) {
-      JSWriter writer = JSWriter.getWriterFor( composite );
-      writer.set( "scrollBarsVisible", new boolean[]{ hasHBar, hasVBar } );
-    }
-  }
-
-  private static void writeBarSelection( ScrolledComposite composite ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( composite );
-    Integer hBarSelection = getBarSelection( composite.getHorizontalBar() );
-    if( hBarSelection != null ) {
-      writer.set( PROP_H_BAR_SELECTION, "hBarSelection", hBarSelection, ZERO );
-    }
-    Integer vBarSelection = getBarSelection( composite.getVerticalBar() );
-    if( vBarSelection != null ) {
-      writer.set( PROP_V_BAR_SELECTION, "vBarSelection", vBarSelection, ZERO );
-    }
-  }
-
-  private static void writeClipBounds( ScrolledComposite composite ) throws IOException {
-    Rectangle bounds = composite.getBounds();
-    if( WidgetLCAUtil.hasChanged( composite, PROP_BOUNDS, bounds, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( composite );
-      writer.set( "clipWidth", bounds.width );
-      writer.set( "clipHeight", bounds.height );
-    }
-  }
-
-  private static void writeSelectionListener( ScrolledComposite composite ) throws IOException {
-    boolean hasListener = hasSelectionListener( composite );
-    Boolean newValue = Boolean.valueOf( hasListener );
-    String prop = Props.SELECTION_LISTENERS;
-    if( WidgetLCAUtil.hasChanged( composite, prop, newValue, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( composite );
-      writer.set( "hasSelectionListener", newValue );
-    }
-  }
-
-  private static void writeShowFocusedControl( ScrolledComposite composite ) throws IOException {
-    Boolean newValue = Boolean.valueOf( composite.getShowFocusedControl() );
-    String prop = PROP_SHOW_FOCUSED_CONTROL;
-    if( WidgetLCAUtil.hasChanged( composite, prop, newValue, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( composite );
-      writer.set( "showFocusedControl", newValue );
-    }
-  }
-
-  //////////////////////////////////////////////////
-  // Helping methods to obtain scroll bar properties
-
-  private static Integer getBarSelection( ScrollBar scrollBar ) {
-    Integer result;
-    if( scrollBar != null ) {
-      result = new Integer( scrollBar.getSelection() );
-    } else {
-      result = null;
-    }
-    return result;
-  }
-
-  private static boolean hasSelectionListener( ScrolledComposite composite ) {
-    boolean result = false;
-    ScrollBar horizontalBar = composite.getHorizontalBar();
-    if( horizontalBar != null ) {
-      result = result || SelectionEvent.hasListener( horizontalBar );
-    }
-    ScrollBar verticalBar = composite.getVerticalBar();
-    if( verticalBar != null ) {
-      result = result || SelectionEvent.hasListener( verticalBar );
-    }
-    return result;
+  private static boolean[] getScrollBarsVisible( ScrolledComposite composite ) {
+    return new boolean[] { hasHScrollBar( composite ), hasVScrollBar( composite ) };
   }
 
   private static boolean hasHScrollBar( ScrolledComposite composite ) {
@@ -226,6 +134,19 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   private static boolean hasVScrollBar( ScrolledComposite composite ) {
     ScrollBar verticalBar = composite.getVerticalBar();
     return verticalBar != null && verticalBar.getVisible();
+  }
+
+  private static boolean hasScrollBarsSelectionListener( ScrolledComposite composite ) {
+    boolean result = false;
+    ScrollBar horizontalBar = composite.getHorizontalBar();
+    if( horizontalBar != null ) {
+      result = result || SelectionEvent.hasListener( horizontalBar );
+    }
+    ScrollBar verticalBar = composite.getVerticalBar();
+    if( verticalBar != null ) {
+      result = result || SelectionEvent.hasListener( verticalBar );
+    }
+    return result;
   }
 
   private static void processSelection( ScrollBar scrollBar ) {

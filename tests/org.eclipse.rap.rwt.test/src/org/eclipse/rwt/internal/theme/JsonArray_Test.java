@@ -18,7 +18,7 @@ public class JsonArray_Test extends TestCase {
 
   public void testToStringWhenEmpty() {
     JsonArray array = new JsonArray();
-    
+
     assertEquals( "[]", array.toString() );
   }
 
@@ -26,7 +26,7 @@ public class JsonArray_Test extends TestCase {
     JsonArray array = new JsonArray();
 
     array.append( 23 );
-    
+
     assertEquals( "[ 23 ]", array.toString() );
   }
 
@@ -44,7 +44,7 @@ public class JsonArray_Test extends TestCase {
 
   public void testAppendAfterToString() {
     JsonArray array = new JsonArray();
-    
+
     array.append( 23 );
     array.toString();
     array.append( false );
@@ -90,9 +90,9 @@ public class JsonArray_Test extends TestCase {
     JsonArray expected = new JsonArray();
     expected.append( 23f );
     expected.append( 3.14f );
-    
+
     JsonArray created = JsonArray.valueOf( new float[] { 23f, 3.14f } );
-    
+
     assertEquals( expected.toString(), created.toString() );
   }
 
@@ -102,6 +102,16 @@ public class JsonArray_Test extends TestCase {
     expected.append( "B" );
 
     JsonArray created = JsonArray.valueOf( new String[] { "A", "B" } );
+
+    assertEquals( expected.toString(), created.toString() );
+  }
+
+  public void testValueOfBooleanArray() {
+    JsonArray expected = new JsonArray();
+    expected.append( true );
+    expected.append( false );
+
+    JsonArray created = JsonArray.valueOf( new boolean[] { true, false } );
 
     assertEquals( expected.toString(), created.toString() );
   }
