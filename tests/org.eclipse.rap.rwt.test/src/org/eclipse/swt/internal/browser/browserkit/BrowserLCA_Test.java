@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -133,20 +134,6 @@ public class BrowserLCA_Test extends TestCase {
     lca.renderChanges( browser );
 
     assertFalse( getAdapter( browser).hasUrlChanged() );
-  }
-
-  public void testRenderUrl() throws IOException {
-    Fixture.markInitialized( display );
-    Browser browser = new Browser( shell, SWT.NONE );
-    browser.setUrl( "http://eclipse.org/rap" );
-    BrowserLCA lca = new BrowserLCA();
-    Fixture.markInitialized( browser );
-    Fixture.preserveWidgets();
-    Fixture.fakeResponseWriter();
-    lca.renderChanges( browser );
-    String expected = "w.setSource( \"http://eclipse.org/rap\" );";
-    expected += "w.syncSource()";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
   }
 
   public void testExecuteFunction() {
@@ -421,6 +408,58 @@ public class BrowserLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( browser, "progress" ) );
+  }
+  
+  public void testRenderInitialUrl() throws IOException {
+    Browser browser = new Browser( shell, SWT.NONE );
+
+    lca.render( browser );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( browser );
+    assertTrue( operation.getPropertyNames().indexOf( "url" ) != -1 );
+  }
+
+  public void testRenderUrl() throws IOException {
+    Browser browser = new Browser( shell, SWT.NONE );
+
+    browser.setUrl( "http://eclipse.org/rap" );
+    lca.renderChanges( browser );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "http://eclipse.org/rap", message.findSetProperty( browser, "url" ) );
+  }
+
+  public void testRenderUrlUnchanged() throws IOException {
+    Browser browser = new Browser( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( browser );
+
+    browser.setUrl( "http://eclipse.org/rap" );
+    lca.renderChanges( browser );
+    Fixture.fakeNewRequest( display );
+    lca.renderChanges( browser );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( browser, "url" ) );
+  }
+  
+  public void testCallEvaluate() {
+    Browser browser = new Browser( shell, SWT.NONE ) {
+      public boolean execute( String script ) {        
+        executeScript = script;  
+        return true;
+      }
+    };
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( browser );
+    
+    browser.execute( "alert('33');" );
+    Fixture.executeLifeCycleFromServerThread();
+    
+    Message message = Fixture.getProtocolMessage();
+    CallOperation callOperation = message.findCallOperation( browser, "evaluate" );
+    assertEquals( "alert('33');", callOperation.getProperty( "script" ) );
   }
 
   private static IBrowserAdapter getAdapter( Browser browser ) {

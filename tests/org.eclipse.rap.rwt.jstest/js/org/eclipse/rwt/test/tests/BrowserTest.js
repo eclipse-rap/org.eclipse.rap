@@ -16,6 +16,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
   members : {
 
     BLANK : "../rwt-resources/resource/static/html/blank.html",
+    URL1 : "http://www.google.de/",
 
     testCreateBrowserByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -59,6 +60,31 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       shell.destroy();
       widget.destroy();
     },
+
+    testSetUrlByProtocol :  [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var shell = testUtil.createShellByProtocol( "w2" );
+        var processor = org.eclipse.rwt.protocol.Processor;
+        processor.processOperation( {
+          "target" : "w3",
+          "action" : "create",
+          "type" : "rwt.widgets.Browser",
+          "properties" : {
+            "style" : [],
+            "parent" : "w2",
+            "url" : this.URL1
+          }
+        } );
+        testUtil.delayTest( 1000 );
+      },
+      function() {
+        var browser = org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" );
+        assertEquals( this.URL1, browser.getSource() );
+        assertTrue( "slow connection?", browser._isLoaded );
+        browser.destroy();
+      }
+    ],
 
     testGetDomain : function() {
       var url1 = "HTtp://google.de/";
@@ -116,21 +142,37 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       }
     ],
 
-    testEvaluate :  [
+    testEvaluateByProtocol :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-        var browser = this._createBrowser();
+        var shell = testUtil.createShellByProtocol( "w2" );
+        org.eclipse.rwt.protocol.Processor.processOperation( {
+          "target" : "w3",
+          "action" : "create",
+          "type" : "rwt.widgets.Browser",
+          "properties" : {
+            "style" : [],
+            "parent" : "w2"
+          }
+        } );
         testUtil.delayTest( 300 );
-        testUtil.store( browser );
       },
       function( browser ) {
+        var browser = org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" );
         assertTrue( "slow connection?", browser._isLoaded );
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         testUtil.initRequestLog();
-        browser.execute( "33;" );
+        org.eclipse.rwt.protocol.Processor.processOperation( {
+          "target" : "w3",
+          "action" : "call",
+          "method" : "evaluate",
+          "properties" : {
+            "script" : "33;"
+          }
+        } );
         var msg = testUtil.getMessage();
-        assertTrue( msg.indexOf( "w6.evaluateResult=%5B33%5D" ) != -1 )
-        assertTrue( msg.indexOf( "w6.executeResult=true" ) != -1 )
+        assertTrue( msg.indexOf( "w3.evaluateResult=%5B33%5D" ) != -1 )
+        assertTrue( msg.indexOf( "w3.executeResult=true" ) != -1 )
         browser.destroy();
       }
     ],

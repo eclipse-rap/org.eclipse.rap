@@ -22,9 +22,14 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Browser", {
   destructor : org.eclipse.rwt.protocol.AdapterUtil.getControlDestructor(),
 
   properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
+    "url"
   ] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
+    "url" : function( widget, value ) {
+      widget.setSource( value );
+      widget.syncSource();
+    }
   } ),
 
   listeners : org.eclipse.rwt.protocol.AdapterUtil.extendControlListeners( [
@@ -33,6 +38,14 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Browser", {
 
   listenerHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
 
-  methods : []
+  methods : [
+    "evaluate"
+  ],
+  
+  methodHandler : {
+    "evaluate" : function( widget, properties ) {
+      widget.execute( properties.script );
+    }
+  }
 
 } );

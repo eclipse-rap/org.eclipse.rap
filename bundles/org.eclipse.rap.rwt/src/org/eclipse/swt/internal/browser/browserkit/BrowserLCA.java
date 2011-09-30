@@ -11,14 +11,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.browser.browserkit;
 
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
@@ -39,8 +39,6 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   private static final String TYPE = "rwt.widgets.Browser";
 
   static final String BLANK_HTML = "<html><script></script></html>";
-
-  private static final String QX_FIELD_SOURCE = "source";
 
   // Request parameters that denote ProgressEvents
   public static final String EVENT_PROGRESS_COMPLETED
@@ -91,9 +89,9 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     ControlLCAUtil.renderChanges( browser );
     WidgetLCAUtil.renderCustomVariant( browser );
     destroyBrowserFunctions( browser );
-    writeUrl( browser );
+    renderUrl( browser );
     createBrowserFunctions( browser );
-    writeExecute( browser );
+    renderEvaluate( browser );
     writeFunctionResult( browser );
     renderListener( browser, PARAM_PROGRESS_LISTENER, ProgressEvent.hasListener( browser ), false );    
   }
@@ -127,11 +125,10 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeUrl( Browser browser ) throws IOException {
+  private static void renderUrl( Browser browser ) throws IOException {
     if( hasUrlChanged( browser ) ) {
-      JSWriter writer = JSWriter.getWriterFor( browser );
-      writer.set( QX_FIELD_SOURCE, getUrl( browser ) );
-      writer.call( "syncSource", null );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
+      clientObject.setProperty( "url", getUrl( browser ) );
       getAdapter( browser ).resetUrlChanged();
     }
   }
@@ -155,24 +152,24 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static void writeExecute( final Browser browser ) {
+  private static void renderEvaluate( final Browser browser ) {
     IBrowserAdapter adapter = getAdapter( browser );
     final String executeScript = adapter.getExecuteScript();
     boolean executePending = adapter.getExecutePending();
     if( executeScript != null && !executePending ) {
       // [if] Put the execution to the end of the rendered script. This is very
       // important when Browser#execute is called from within a BrowserFunction,
-      // because than, we have a synchronous requests.
+      // because then we have a synchronous requests.
       RWTFactory.getLifeCycleFactory().getLifeCycle().addPhaseListener( new PhaseListener() {
-        public void beforePhase( final PhaseEvent event ) {
+        public void beforePhase( PhaseEvent event ) {
         }
-        public void afterPhase( final PhaseEvent event ) {
+        public void afterPhase( PhaseEvent event ) {
           if( browser.getDisplay() == LifeCycleUtil.getSessionDisplay() ) {
             try {
-              JSWriter writer = JSWriter.getWriterFor( browser );
-              writer.call( "execute", new Object[] { executeScript } );
-            } catch( IOException e ) {
-              throw new RuntimeException( e );
+              IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
+              Map<String, Object> properties = new HashMap<String, Object>();
+              properties.put( "script", executeScript );
+              clientObject.call( "evaluate", properties );
             } finally {
               RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
             }
