@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.service;
+package org.eclipse.rwt.internal.service;
 
 import java.io.IOException;
 import java.io.NotSerializableException;
@@ -20,6 +20,8 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rwt.service.SessionStoreEvent;
+import org.eclipse.rwt.service.SessionStoreListener;
 
 
 public class SessionStoreImplSerialization_Test extends TestCase {

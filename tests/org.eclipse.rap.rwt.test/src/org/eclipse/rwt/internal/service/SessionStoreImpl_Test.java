@@ -9,7 +9,7 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rwt.service;
+package org.eclipse.rwt.internal.service;
 
 import java.io.Serializable;
 import java.util.*;
@@ -24,6 +24,9 @@ import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rwt.internal.lifecycle.ISessionShutdownAdapter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
+import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rwt.service.SessionStoreEvent;
+import org.eclipse.rwt.service.SessionStoreListener;
 
 
 public class SessionStoreImpl_Test extends TestCase {
