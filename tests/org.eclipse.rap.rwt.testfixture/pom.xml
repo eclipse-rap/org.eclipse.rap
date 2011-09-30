@@ -22,9 +22,9 @@
 
   <parent>
     <groupId>org.eclipse.rap</groupId>
-    <artifactId>org.eclipse.rap.runtime-test-parent</artifactId>
+    <artifactId>org.eclipse.rap.runtime-parent</artifactId>
     <version>1.5.0-SNAPSHOT</version>
-    <relativePath>../../releng/org.eclipse.rap.releng/runtime/pom-test.xml</relativePath>
+    <relativePath>../../releng/org.eclipse.rap.releng/runtime/pom.xml</relativePath>
   </parent>
       
 </project>
