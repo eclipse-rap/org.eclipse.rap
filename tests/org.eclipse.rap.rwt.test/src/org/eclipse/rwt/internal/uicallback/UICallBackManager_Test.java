@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingListener;
@@ -407,7 +408,7 @@ public class UICallBackManager_Test extends TestCase {
   public void testAddSyncWithExceptionInRunnable() throws Exception {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final ServiceContext context = ContextProvider.getContext();
-    final SWTException[] exceptionInBgThread = { null };
+    final AtomicReference<SWTException> exceptionInBgThread = new AtomicReference<SWTException>();
     // the code in bgRunnable simulates a bg-thread that calls Display#addSync
     // and causes an exception in the runnable
     Runnable bgRunnable = new Runnable() {
@@ -422,7 +423,7 @@ public class UICallBackManager_Test extends TestCase {
         try {
           display.syncExec( causeException );
         } catch( SWTException e ) {
-          exceptionInBgThread[ 0 ] = e;
+          exceptionInBgThread.set( e );
         }
       }
     };
@@ -430,14 +431,16 @@ public class UICallBackManager_Test extends TestCase {
     Thread bgThread = new Thread( bgRunnable );
     bgThread.setDaemon( true );
     bgThread.start();
-    Thread.sleep( SLEEP_TIME );
     try {
-      display.readAndDispatch();
+      while( !display.readAndDispatch() ) {
+        Thread.yield();
+        Thread.sleep( SLEEP_TIME );
+      }
       fail( "Exception from causeException-runnable must end up here" );
     } catch( SWTException expected ) {
     }
     Thread.sleep( SLEEP_TIME );
-    assertNotNull( exceptionInBgThread[ 0 ] );
+    assertNotNull( exceptionInBgThread.get() );
     assertFalse( bgThread.isAlive() );
   }
 
