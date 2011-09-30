@@ -17,6 +17,49 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     BLANK : "../rwt-resources/resource/static/html/blank.html",
 
+    testCreateBrowserByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Browser",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget instanceof org.eclipse.swt.browser.Browser );
+      assertIdentical( shell, widget.getParent() );
+      assertTrue( widget.getUserData( "isControl") );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHasProgressListenerByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Browser",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      testUtil.protocolListen( "w3", { "progress" : true } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget._hasProgressListener );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testGetDomain : function() {
       var url1 = "HTtp://google.de/";
       var url2 =   "http://www.sub.somedomain.com:84/"

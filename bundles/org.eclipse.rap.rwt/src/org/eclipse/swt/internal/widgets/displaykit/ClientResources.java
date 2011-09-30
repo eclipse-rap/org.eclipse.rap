@@ -209,6 +209,7 @@ final class ClientResources {
     "org/eclipse/rwt/widgets/TableHeader.js",
     "org/eclipse/swt/widgets/TableColumn.js",
     "org/eclipse/swt/browser/Browser.js",
+    "org/eclipse/swt/browser/BrowserAdapter.js",
     "org/eclipse/rwt/widgets/ExternalBrowser.js",
     "org/eclipse/swt/FontSizeCalculation.js",
     "org/eclipse/rwt/widgets/BasicButton.js",

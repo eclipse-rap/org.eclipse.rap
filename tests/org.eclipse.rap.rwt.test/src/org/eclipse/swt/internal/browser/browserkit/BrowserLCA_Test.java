@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.*;
@@ -29,11 +31,14 @@ public class BrowserLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private BrowserLCA lca;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
+    lca = new BrowserLCA();
+    Fixture.fakeNewRequest( display );
   }
 
   protected void tearDown() throws Exception {
@@ -321,29 +326,6 @@ public class BrowserLCA_Test extends TestCase {
     assertEquals( expected, result );
   }
 
-  public void testPreserveProgressListener() {
-    Fixture.markInitialized( display );
-    Browser browser = new Browser( shell, SWT.NONE );
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( browser );
-    Boolean hasListeners
-      = ( Boolean )adapter.getPreserved( BrowserLCA.PARAM_PROGRESS_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    browser.addProgressListener( new ProgressListener() {
-      public void changed( final ProgressEvent event ) {
-      }
-      public void completed( final ProgressEvent event ) {
-      }
-    } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( browser );
-    hasListeners
-      = ( Boolean )adapter.getPreserved( BrowserLCA.PARAM_PROGRESS_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-  }
-
   public void testProgressEvent() {
     final ArrayList<String> log = new ArrayList<String>();
     Fixture.markInitialized( display );
@@ -362,6 +344,83 @@ public class BrowserLCA_Test extends TestCase {
     assertEquals( 2, log.size() );
     assertEquals( "changed", log.get( 0 ) );
     assertEquals( "completed", log.get( 1 ) );
+  }
+
+  public void testRenderCreate() throws IOException {
+    Browser browser = new Browser( shell, SWT.NONE );
+
+    lca.renderInitialization( browser );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( browser );
+    assertEquals( "rwt.widgets.Browser", operation.getType() );
+  }
+
+  public void testRenderParent() throws IOException {
+    Browser browser = new Browser( shell, SWT.NONE );
+
+    lca.renderInitialization( browser );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( browser );
+    assertEquals( WidgetUtil.getId( browser.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderAddSelectionListener() throws Exception {
+    Browser browser = new Browser( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( browser );
+    Fixture.preserveWidgets();
+
+    browser.addProgressListener( new ProgressListener(){
+      public void changed( ProgressEvent event ) {
+      }
+      public void completed( ProgressEvent event ) {
+      }
+    } );
+    lca.renderChanges( browser );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( browser, "progress" ) );
+  }
+
+  public void testRenderRemoveSelectionListener() throws Exception {
+    Browser browser = new Browser( shell, SWT.NONE );
+    ProgressListener listener = new ProgressListener(){
+      public void changed( ProgressEvent event ) {
+      }
+      public void completed( ProgressEvent event ) {
+      }
+    };
+    browser.addProgressListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( browser );
+    Fixture.preserveWidgets();
+
+    browser.removeProgressListener( listener );
+    lca.renderChanges( browser );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( browser, "progress" ) );
+  }
+
+  public void testRenderSelectionListenerUnchanged() throws Exception {
+    Browser browser = new Browser( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( browser );
+    Fixture.preserveWidgets();
+
+    browser.addProgressListener( new ProgressListener(){
+      public void changed( ProgressEvent event ) {
+      }
+      public void completed( ProgressEvent event ) {
+      }
+    } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( browser );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( browser, "progress" ) );
   }
 
   private static IBrowserAdapter getAdapter( Browser browser ) {

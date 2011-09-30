@@ -11,6 +11,11 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.browser.browserkit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +23,8 @@ import java.util.List;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.EncodingUtil;
@@ -28,10 +35,11 @@ import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Widget;
 
 public final class BrowserLCA extends AbstractWidgetLCA {
+  
+  private static final String TYPE = "rwt.widgets.Browser";
 
   static final String BLANK_HTML = "<html><script></script></html>";
 
-  private static final String QX_TYPE = "org.eclipse.swt.browser.Browser";
   private static final String QX_FIELD_SOURCE = "source";
 
   // Request parameters that denote ProgressEvents
@@ -42,7 +50,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   private static final String PARAM_EVALUATE_RESULT = "evaluateResult";
   static final String PARAM_EXECUTE_FUNCTION = "executeFunction";
   static final String PARAM_EXECUTE_ARGUMENTS = "executeArguments";
-  static final String PARAM_PROGRESS_LISTENERS = "progressListeners";
+  private static final String PARAM_PROGRESS_LISTENER = "progress";
 
   static final String EXECUTED_FUNCTION_NAME
     = Browser.class.getName() + "#executedFunctionName.";
@@ -59,10 +67,8 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     Browser browser = ( Browser )widget;
     ControlLCAUtil.preserveValues( browser );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( browser );
-    boolean hasListeners = ProgressEvent.hasListener( browser );
-    adapter.preserve( PARAM_PROGRESS_LISTENERS, Boolean.valueOf( hasListeners ) );
     WidgetLCAUtil.preserveCustomVariant( browser );
+    preserveListener( browser, PARAM_PROGRESS_LISTENER, ProgressEvent.hasListener( browser ) );
   }
 
   public void readData( Widget widget ) {
@@ -72,28 +78,28 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     fireProgressEvent( browser );
   }
 
-  public void renderInitialization( final Widget widget ) throws IOException {
+  public void renderInitialization( Widget widget ) throws IOException {
     Browser browser = ( Browser )widget;
-    JSWriter writer = JSWriter.getWriterFor( browser );
-    writer.newWidget( QX_TYPE );
-    ControlLCAUtil.writeStyleFlags( browser );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( browser.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( browser ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
     Browser browser = ( Browser )widget;
-    ControlLCAUtil.writeChanges( browser );
-    WidgetLCAUtil.writeCustomVariant( browser );
+    ControlLCAUtil.renderChanges( browser );
+    WidgetLCAUtil.renderCustomVariant( browser );
     destroyBrowserFunctions( browser );
     writeUrl( browser );
     createBrowserFunctions( browser );
     writeExecute( browser );
     writeFunctionResult( browser );
-    writeListener( browser );
+    renderListener( browser, PARAM_PROGRESS_LISTENER, ProgressEvent.hasListener( browser ), false );    
   }
 
-  public void renderDispose( final Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
+  public void renderDispose( Widget widget ) throws IOException {
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
   private static void fireProgressEvent( Browser browser ) {
@@ -205,16 +211,6 @@ public final class BrowserLCA extends AbstractWidgetLCA {
 
   private static IBrowserAdapter getAdapter( Browser browser ) {
     return ( IBrowserAdapter )browser.getAdapter( IBrowserAdapter.class );
-  }
-
-  private void writeListener( Browser browser ) throws IOException {
-    boolean hasListener = ProgressEvent.hasListener( browser );
-    Boolean newValue = Boolean.valueOf( hasListener );
-    String prop = PARAM_PROGRESS_LISTENERS;
-    if( WidgetLCAUtil.hasChanged( browser, prop, newValue, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( browser );
-      writer.set( "hasProgressListener", newValue );
-    }
   }
 
   //////////////////////////////////////
