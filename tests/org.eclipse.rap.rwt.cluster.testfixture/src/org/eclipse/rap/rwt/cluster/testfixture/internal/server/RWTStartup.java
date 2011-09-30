@@ -13,11 +13,11 @@ package org.eclipse.rap.rwt.cluster.testfixture.internal.server;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
 
-import org.eclipse.rwt.engine.Configurator;
-import org.eclipse.rwt.engine.Context;
+import org.eclipse.rwt.application.ApplicationConfiguration;
+import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.internal.engine.ApplicationConfigurable;
 import org.eclipse.rwt.internal.engine.Configurable;
 import org.eclipse.rwt.internal.engine.ConfigurablesProvider;
-import org.eclipse.rwt.internal.engine.ContextConfigurable;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
@@ -28,36 +28,35 @@ public class RWTStartup {
   public static ServletContextListener createServletContextListener( 
     Class<? extends IEntryPoint> entryPointClass ) 
   {
-    Configurator configurator = new SimpleLifeCycleConfigurator( entryPointClass );
+    ApplicationConfigurator configurator = new SimpleLifeCycleConfigurator( entryPointClass );
     ConfigurablesProvider configurablesProvider = new CustomConfigurablesProvider( configurator );
     return new RWTServletContextListener( configurablesProvider );
   }
   
   private static class CustomConfigurablesProvider extends ConfigurablesProvider {
-    private final Configurator configurator;
+    private final ApplicationConfigurator configurator;
 
-    private CustomConfigurablesProvider( Configurator configurator ) {
+    private CustomConfigurablesProvider( ApplicationConfigurator configurator ) {
       this.configurator = configurator;
     }
 
     public Configurable[] createConfigurables( ServletContext servletContext ) {
       return new Configurable[]{
-        new ContextConfigurable( configurator, servletContext )
+        new ApplicationConfigurable( configurator, servletContext )
       };
     }
   }
 
-  private static class SimpleLifeCycleConfigurator implements Configurator {
+  private static class SimpleLifeCycleConfigurator implements ApplicationConfigurator {
     private final Class<? extends IEntryPoint> entryPointClass;
     
     private SimpleLifeCycleConfigurator( Class<? extends IEntryPoint> entryPointClass ) {
       this.entryPointClass = entryPointClass;
     }
     
-    public void configure( Context context ) {
-      context.setLifeCycleMode( Context.LifeCycleMode.THREADLESS );
+    public void configure( ApplicationConfiguration context ) {
+      context.setLifeCycleMode( ApplicationConfiguration.LifeCycleMode.THREADLESS );
       context.addEntryPoint( EntryPointManager.DEFAULT, entryPointClass );
     }
   }
-
 }
