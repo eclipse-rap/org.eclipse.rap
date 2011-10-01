@@ -15,16 +15,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <properties>
-    <tycho-version>0.13.0</tycho-version>
+    <tycho-version>0.12.0</tycho-version>
     <rap-version>1.5.0</rap-version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <prerequisites>
     <maven>3.0</maven>
   </prerequisites>
 
-  <name>RAP Runtime build</name>
+  <name>RAP Runtime repository build</name>
 
   <groupId>org.eclipse.rap</groupId>
   <artifactId>org.eclipse.rap.runtime-parent</artifactId>
@@ -33,26 +32,19 @@
 
   <modules>
     <module>runtime-feature</module>
-    <module>runtime-repository</module>
-    <module>../../../runtime.rwt/org.eclipse.rap.rwt</module>
-    <module>../../../runtime.rwt/org.eclipse.rap.rwt.osgi</module>
-    <module>../../../runtime.rwt/org.eclipse.rap.rwt.theme.classic</module>
-    <module>../../../runtime.rwt.test/org.eclipse.rap.rwt.testfixture</module>
-    <module>../../../runtime.ui/org.eclipse.rap.demo</module>
-    <module>../../../runtime.ui/org.eclipse.rap.demo.databinding</module>
-    <module>../../../runtime.ui/org.eclipse.rap.design.example</module>
-    <module>../../../runtime.ui/org.eclipse.rap.jface</module>
-    <module>../../../runtime.ui/org.eclipse.rap.jface.databinding</module>
-    <module>../../../runtime.ui/org.eclipse.rap.junit</module>
-    <module>../../../runtime.ui/org.eclipse.rap.junit.runtime</module>
-    <module>../../../runtime.ui/org.eclipse.rap.ui</module>
-    <module>../../../runtime.ui/org.eclipse.rap.ui.cheatsheets</module>
-    <module>../../../runtime.ui/org.eclipse.rap.ui.forms</module>
-    <module>../../../runtime.ui/org.eclipse.rap.ui.views</module>
-    <module>../../../runtime.ui/org.eclipse.rap.ui.workbench</module>
+    <module>runtime.requirements-feature</module>
+    <module>runtime-aggregation-repository</module>
+    <module>runtime-repository-compatibility</module>
+    <module>runtime-repository-compatibility/runtime.sdk-feature</module>
   </modules>
 
+  <!-- repositories to get pre-built pieces from -->
   <repositories>
+    <repository>
+      <id>requirements-base</id>
+      <layout>p2</layout>
+      <url>file://${requirementsBaseRepo}</url>
+    </repository>
     <repository>
       <id>runtime</id>
       <layout>p2</layout>
@@ -77,20 +69,6 @@
         <configuration>
           <format>yyyyMMdd-HHmm</format>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.eclipse.tycho</groupId>
-        <artifactId>tycho-source-plugin</artifactId>
-        <version>${tycho-version}</version>
-        <executions>
-          <execution>
-            <id>plugin-source</id>
-            <goals>
-              <goal>plugin-source</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
     </plugins>
