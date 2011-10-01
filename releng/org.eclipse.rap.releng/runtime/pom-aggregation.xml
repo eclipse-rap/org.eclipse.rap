@@ -23,19 +23,19 @@
     <maven>3.0</maven>
   </prerequisites>
 
-  <name>RAP Runtime repository build</name>
+  <name>RAP Runtime aggregation repository build</name>
 
   <groupId>org.eclipse.rap</groupId>
-  <artifactId>org.eclipse.rap.runtime-parent</artifactId>
+  <artifactId>org.eclipse.rap.runtime-aggregation-parent</artifactId>
   <version>1.5.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <modules>
-    <module>runtime-feature</module>
     <module>runtime.requirements-feature</module>
     <module>runtime-aggregation-repository</module>
-    <module>runtime-repository-compatibility</module>
-    <module>runtime-repository-compatibility/runtime.sdk-feature</module>
+    <module>runtime-aggregation-repository/runtime-feature</module>
+    <module>runtime-compatibility-repository</module>
+    <module>runtime-compatibility-repository/runtime.sdk-feature</module>
   </modules>
 
   <!-- repositories to get pre-built pieces from -->
