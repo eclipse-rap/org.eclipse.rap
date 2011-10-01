@@ -11,9 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -97,35 +94,15 @@ public class ThemeManager_Test extends TestCase {
   }
   
   public void testActivateAndDeactivate() {
-    Theme beforeActivate = getDefaultTheme();
+    int beforeActivate = getDefaultTheme().getStyleSheet().getStyleRules().length;
     manager.activate();
-    Theme afterActivate = getDefaultTheme();
+    int afterActivate = getDefaultTheme().getValuesMap().getAllValues().length;
     manager.deactivate();
-    Theme afterDeactivate = getDefaultTheme();
+    int afterDeactivate = getDefaultTheme().getStyleSheet().getStyleRules().length;
     
-    assertNull( beforeActivate );
-    assertNotNull( afterActivate );
-    assertNull( afterDeactivate );
-  }
-
-  public void testRegisterThemeContribution() {
-    String themeId = "id";
-    StyleSheet contribution = registerThemeContributionBeforeThemeRegistration( themeId );
-    Theme spyTheme = registerSpyTheme( themeId );
-    
-    manager.activate();
-    
-    verify( spyTheme ).addStyleSheet( contribution );
-  }
-
-  public void testRegisterThemeContributionForNonExistingThemeId() {
-    manager.registerThemeContribution( "id", new StyleSheet( new StyleRule[ 0 ] ) );
-
-    try {
-      manager.activate();
-      fail();
-    } catch( ThemeManagerException expected ) {
-    }
+    assertEquals( 0, beforeActivate );
+    assertTrue( 0 < afterActivate );
+    assertEquals( 0, afterDeactivate );
   }
   
   protected void setUp() {
@@ -139,19 +116,5 @@ public class ThemeManager_Test extends TestCase {
 
   private Theme getDefaultTheme() {
     return manager.getTheme( ThemeManager.DEFAULT_THEME_ID );
-  }
-
-  private Theme registerSpyTheme( String themeId ) {
-    StyleSheet styleSheet = new StyleSheet( new StyleRule[ 0 ] );
-    Theme theme = new Theme( themeId, "foo", styleSheet );
-    Theme result = spy( theme );
-    manager.registerTheme( result );
-    return result;
-  }
-
-  private StyleSheet registerThemeContributionBeforeThemeRegistration( String themeId ) {
-    StyleSheet result = new StyleSheet( new StyleRule[ 0 ] );
-    manager.registerThemeContribution( themeId, result );
-    return result;
   }
 }

@@ -10,7 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rwt.application;
 
-
+/**
+ * <strong>Note:</strong> This API is <em>provisional</em>. It is likely to change before the final
+ * release.
+ *
+ * @since 1.5
+ */
 public interface ApplicationConfigurator {
   
   public static final String CONFIGURATOR_PARAM = "org.eclipse.rwt.Configurator";

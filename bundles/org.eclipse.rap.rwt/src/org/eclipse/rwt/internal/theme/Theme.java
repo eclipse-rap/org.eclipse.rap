@@ -23,8 +23,8 @@ public class Theme {
   private final String id;
   private final String jsId;
   private final String name;
-  private ThemeCssValuesMap valuesMap;
   private StyleSheetBuilder styleSheetBuilder;
+  private ThemeCssValuesMap valuesMap;
 
   public Theme( String id, String name, StyleSheet styleSheet ) {
     if( id == null ) {
@@ -68,6 +68,10 @@ public class Theme {
     StyleSheet styleSheet = styleSheetBuilder.getStyleSheet();
     valuesMap = new ThemeCssValuesMap( styleSheet, themeableWidgets );
     styleSheetBuilder = null;
+  }
+  
+  public StyleSheet getStyleSheet() {
+    return styleSheetBuilder.getStyleSheet();
   }
 
   public ThemeCssValuesMap getValuesMap() {

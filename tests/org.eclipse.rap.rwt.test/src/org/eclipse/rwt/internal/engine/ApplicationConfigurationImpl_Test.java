@@ -18,7 +18,6 @@ import javax.servlet.ServletContext;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
@@ -30,29 +29,19 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
   private ApplicationConfigurationImpl applicationConfiguration;
   private ApplicationContext applicationContext;
 
-  public void testSetLifeCycleModeWithNullArgument() {
-    try {
-      applicationConfiguration.setLifeCycleMode( null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-  
-  public void testSetLifeCycleModeToThreadless() {
-    applicationConfiguration.setLifeCycleMode( ApplicationConfiguration.LifeCycleMode.THREADLESS );
+  public void testUseJEECompatibility() {
+    applicationConfiguration.useJEECompatibilityMode();
 
     applicationContext.activate();
-    ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
     
+    ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
     assertSame( SimpleLifeCycle.class, lifeCycle.getClass() );
   }
   
-  public void testSetLifeCycleModeToThreaded() {
-    applicationConfiguration.setLifeCycleMode( ApplicationConfiguration.LifeCycleMode.THREADED );
-    
+  public void testStandardLifecycleConfiguration() {
     applicationContext.activate();
-    ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
     
+    ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
     assertSame( RWTLifeCycle.class, lifeCycle.getClass() );
   }
   

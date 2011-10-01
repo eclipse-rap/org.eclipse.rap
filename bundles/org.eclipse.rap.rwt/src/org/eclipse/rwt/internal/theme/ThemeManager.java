@@ -23,8 +23,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,8 +36,8 @@ import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.rwt.resources.ResourceLoader;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
+import org.eclipse.rwt.resources.ResourceLoader;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -61,25 +59,6 @@ public class ThemeManager {
     }
   };
   
-  private static class ThemeContribution {
-
-    private final String themeId;
-    private final StyleSheet styleSheet;
-    
-    private ThemeContribution( String themeId, StyleSheet styleSheet ) {
-      this.themeId = themeId;
-      this.styleSheet = styleSheet;
-    }
-
-    String getThemeId() {
-      return themeId;
-    }
-
-    StyleSheet getStyleSheet() {
-      return styleSheet;
-    }
-  }
-
   /** Expected character set of JS files. */
   private static final String CHARSET = "UTF-8";
 
@@ -130,7 +109,6 @@ public class ThemeManager {
 
   private final Set<String> customAppearances;
   private final Map<String, Theme> themes;
-  private final List<ThemeContribution> themeContributions;
   private final Set<String> registeredThemeFiles;
   private final ThemeableWidgetHolder themeableWidgets;
   private final CssElementHolder registeredCssElements;
@@ -149,8 +127,8 @@ public class ThemeManager {
     registeredCssElements = new CssElementHolder();
     themeAdapterManager = new ThemeAdapterManager();
     themes = new HashMap<String, Theme>();
-    themeContributions = new LinkedList<ThemeContribution>();
     resolvedPackageNames = new HashMap<String, String>();
+    addDefaultTheme();
   }
 
   public void activate() {
@@ -161,7 +139,6 @@ public class ThemeManager {
   public void deactivate() {
     resolvedPackageNames.clear();
     themes.clear();
-    themeContributions.clear();
     themeAdapterManager.reset();
     registeredCssElements.clear();
     registeredThemeFiles.clear();
@@ -169,6 +146,7 @@ public class ThemeManager {
     themeableWidgets.reset();
     widgetsInitialized = false;
     initialized = false;
+    addDefaultTheme();
   }
   
   /**
@@ -179,7 +157,6 @@ public class ThemeManager {
   private void initialize() {
     if( !initialized ) {
       initializeThemeableWidgets();
-      addThemeContributions();
       Collection allThemes = themes.values();
       Iterator iterator = allThemes.iterator();
       ThemeableWidget[] allThemeableWidgets = themeableWidgets.getAll();
@@ -191,30 +168,14 @@ public class ThemeManager {
     }
   }
 
-  private void addThemeContributions() {
-    Iterator<ThemeContribution> contributions = themeContributions.iterator();
-    while( contributions.hasNext() ) {
-      addThemeContribution( contributions.next() );
-    }
-  }
-
-  private void addThemeContribution( ThemeContribution contribution ) {
-    checkIfThemeExists( contribution );
-    Theme theme = getTheme( contribution.getThemeId() );
-    theme.addStyleSheet( contribution.getStyleSheet() );
-  }
-
-  private void checkIfThemeExists( ThemeContribution contribution ) {
-    if( getTheme( contribution.getThemeId() ) == null ) {
-      String pattern = "Cannot contribute to theme ''{0}'' since theme does not exist.";
-      String message = MessageFormat.format( pattern, contribution.getThemeId() );
-      throw new ThemeManagerException( message );
-    }
-  }
-
   private void initializeThemeableWidgets() {
+    StyleSheet defaultThemeContributionsBuffer = defaultTheme.getStyleSheet();
+    doInitializeThemableWidgets();
+    defaultTheme.addStyleSheet( defaultThemeContributionsBuffer );
+  }
+
+  private void doInitializeThemableWidgets() {
     if( !widgetsInitialized ) {
-      addDefaultTheme();
       addDefaultThemableWidgets();
       ThemeableWidget[] widgets = themeableWidgets.getAll();
       for( int i = 0; i < widgets.length; i++ ) {
@@ -279,12 +240,6 @@ public class ThemeManager {
     themes.put( id, theme );
   }
   
-
-  public void registerThemeContribution( String themeId, StyleSheet styleSheet ) {
-    themeContributions.add( new ThemeContribution( themeId, styleSheet ) );
-  }
-
-
   /**
    * Determines whether a theme with the specified id has been registered.
    *

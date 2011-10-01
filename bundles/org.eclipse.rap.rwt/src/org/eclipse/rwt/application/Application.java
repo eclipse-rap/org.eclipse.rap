@@ -23,6 +23,12 @@ import org.eclipse.rwt.internal.engine.RWTDelegate;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.util.ParamCheck;
 
+/**
+ * <strong>Note:</strong> This API is <em>provisional</em>. It is likely to change before the final
+ * release.
+ *
+ * @since 1.5
+ */
 public class Application {
   
   public final static String RESOURCES = ResourceManagerImpl.RESOURCES;

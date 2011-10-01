@@ -23,9 +23,7 @@ public class StyleRule {
 
   private final IStylePropertyMap properties;
 
-  public StyleRule( final SelectorList selectors,
-                    final IStylePropertyMap properties )
-  {
+  public StyleRule( SelectorList selectors, IStylePropertyMap properties ) {
     this.selectors = selectors;
     this.properties = properties;
   }

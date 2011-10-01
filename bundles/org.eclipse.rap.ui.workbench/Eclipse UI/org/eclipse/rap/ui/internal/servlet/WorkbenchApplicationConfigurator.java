@@ -25,6 +25,7 @@ import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.internal.engine.ApplicationConfigurationImpl;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
@@ -159,7 +160,8 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         Class factoryClass = bundle.loadClass( factoryName );
         Class adaptableClass = bundle.loadClass( adaptableName );
         AdapterFactory adapterFactory = ( AdapterFactory )ClassUtil.newInstance( factoryClass ) ;
-        configuration.addAdapterFactory( adaptableClass, adapterFactory );
+        ( ( ApplicationConfigurationImpl )configuration )
+            .addAdapterFactory( adaptableClass, adapterFactory );
       } catch( Throwable thr ) {
         String text = "Could not register adapter factory ''{0}''  for the adapter type ''{1}''.";
         Object[] param = new Object[] { factoryName, adaptableName};
@@ -200,33 +202,14 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
       String widgetClass = widgetExts[ i ].getAttribute( "class" );
       try {
         final Bundle bundle = Platform.getBundle( contributorName );
-        ResourceLoader resLoader = createThemableWidgetsResourceLoader( bundle );
         Class widget = bundle.loadClass( widgetClass );
-        configuration.addThemableWidget( widget, resLoader );
+        configuration.addThemableWidget( widget );
       } catch( final Throwable thr ) {
         String text = "Could not register themeable widget ''{0}''.";
         Object[] param = new Object[] { widgetClass };
         logProblem( text, param, thr, contributorName );
       }
     }
-  }
-
-
-  private ResourceLoader createThemableWidgetsResourceLoader( final Bundle bundle ) {
-    return new ResourceLoader() {
-      public InputStream getResourceAsStream( final String resourceName )
-        throws IOException
-      {
-        InputStream result = null;
-        // We need to call getResource() here since resources must be loaded
-        // by the bundle classloader
-        URL url = bundle.getResource( resourceName );
-        if( url != null ) {
-          result = url.openStream();
-        }
-        return result;
-      }
-    };
   }
 
   private void registerThemes( ApplicationConfiguration configuration ) {
@@ -241,7 +224,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         try {
           Bundle bundle = Platform.getBundle( contributorName );
           ResourceLoader resourceLoader = createThemeResourceLoader( bundle );
-          configuration.addTheme( themeId, themeFile, resourceLoader );
+          configuration.addStyleSheet( themeId, themeFile, resourceLoader );
         } catch( final Exception e ) {
           String text = "Could not register custom theme ''{0}'' from file ''{1}''.";
           Object[] param = new Object[]{ themeId, themeFile };
@@ -263,7 +246,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
         try {
           Bundle bundle = Platform.getBundle( contributorName );
           ResourceLoader loader = createThemeResourceLoader( bundle );
-          configuration.addThemeContribution( themeId, themeFile, loader );
+          configuration.addStyleSheet( themeId, themeFile, loader );
         } catch( final Exception e ) {
           String text = "Could not register contribution for theme ''{0}'' from file ''{1}''.";
           Object[] param = new Object[]{ themeId, themeFile };

@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.application;
 
-import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.PhaseListener;
@@ -20,41 +19,35 @@ import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISettingStoreFactory;
 import org.eclipse.swt.widgets.Widget;
 
-
+/**
+ * <strong>Note:</strong> This API is <em>provisional</em>. It is likely to change before the final
+ * release.
+ *
+ * @since 1.5
+ */
 public interface ApplicationConfiguration {
-
-  enum LifeCycleMode {
-    THREADED,
-    THREADLESS
-  }
-
+  
   void addEntryPoint( String entryPointName, Class<? extends IEntryPoint> entryPointType );
-
-  void setLifeCycleMode( LifeCycleMode lifeCycleMode );
-
-  void addPhaseListener( PhaseListener phaseListener );
-
-  void setSettingStoreFactory( ISettingStoreFactory settingStoreFactory );
-
-  void addAdapterFactory( Class<?> adaptable, AdapterFactory adapterFactory );
-
-  void addResource( IResource resource );
-
-  void addServiceHandler( String serviceHandlerId, IServiceHandler serviceHandler );
 
   void addBranding( AbstractBranding branding );
 
-  void addTheme( String themeId, String styleSheetLocation );
-
-  void addTheme( String themeId, String styleSheetLocation, ResourceLoader resourceLoader );
-
-  void addThemableWidget( Class<? extends Widget> widget );
-
-  void addThemableWidget( Class<? extends Widget> widget, ResourceLoader resourceLoader );
-
-  void addThemeContribution( String themeId, String styleSheetLocation );
-
-  void addThemeContribution( String themeId, String styleSheetLocation, ResourceLoader loader );
+  void addStyleSheet( String themeId, String styleSheetLocation );
+  
+  void addStyleSheet( String themeId, String styleSheetLocation, ResourceLoader resourceLoader );
+  
+  void addPhaseListener( PhaseListener phaseListener );
   
   void setAttribute( String name, Object value );
+
+  void setSettingStoreFactory( ISettingStoreFactory settingStoreFactory );
+
+  void addThemableWidget( Class<? extends Widget> widget );
+  
+  void addServiceHandler( String serviceHandlerId, IServiceHandler serviceHandler );
+  
+  void useJEECompatibilityMode();
+  
+  /////////////////////////////////////////////
+  // TODO [fappel]: replace with proper mechanism (Javascript)
+  void addResource( IResource resource );
 }

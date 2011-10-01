@@ -23,39 +23,35 @@ public class DocumentHandlerImpl implements DocumentHandler {
   private final StyleSheetBuilder styleSheetBuilder;
   private StylePropertyMap currentStyleProperties;
 
-  public DocumentHandlerImpl( final CssFileReader reader,
-                              final ResourceLoader loader )
-  {
+  public DocumentHandlerImpl( CssFileReader reader, ResourceLoader loader ) {
     this.reader = reader;
     this.loader = loader;
     styleSheetBuilder = new StyleSheetBuilder();
   }
 
-  public void startDocument( final InputSource source ) throws CSSException {
+  public void startDocument( InputSource source ) throws CSSException {
     uri = source.getURI();
     log( "=== startDocument " + uri + "===" );
   }
 
-  public void endDocument( final InputSource source ) throws CSSException {
+  public void endDocument( InputSource source ) throws CSSException {
     log( "___ endDocument ___" );
   }
 
-  public void startSelector( final SelectorList selectors ) throws CSSException
+  public void startSelector( SelectorList selectors ) throws CSSException
   {
     log( "startSelector " + toString( selectors ) );
     currentStyleProperties = new StylePropertyMap();
   }
 
-  public void endSelector( final SelectorList selectors ) throws CSSException {
+  public void endSelector( SelectorList selectors ) throws CSSException {
     log( "endSelector " + toString( selectors ) );
     StyleRule styleRule = new StyleRule( selectors, currentStyleProperties );
     styleSheetBuilder.addStyleRule( styleRule );
     currentStyleProperties = null;
   }
 
-  public void property( final String name,
-                        final LexicalUnit value,
-                        final boolean important )
+  public void property( String name, LexicalUnit value,  boolean important )
     throws CSSException
   {
     log( "  property "
@@ -81,21 +77,19 @@ public class DocumentHandlerImpl implements DocumentHandler {
   }
 
   // -- ignored --
-  public void comment( final String text ) throws CSSException {
+  public void comment( String text ) throws CSSException {
     log( "    /*" + text + "*/" );
   }
 
   // -- unsupported --
-  public void importStyle( final String uri,
-                           final SACMediaList media,
-                           final String defaultNamespaceURI )
+  public void importStyle( String uri, SACMediaList media, String defaultNamespaceURI )
     throws CSSException
   {
     log( "importStyle " + uri + ", " + media + ", " + defaultNamespaceURI );
     reader.addProblem( new CSSException( "import rules not supported - ignored" ) );
   }
 
-  public void namespaceDeclaration( final String prefix, final String uri )
+  public void namespaceDeclaration( String prefix, String uri )
     throws CSSException
   {
     log( "namespaceDeclaration " + prefix + ", " + uri );
@@ -106,32 +100,32 @@ public class DocumentHandlerImpl implements DocumentHandler {
                                          + "' - ignored" ) );
   }
 
-  public void ignorableAtRule( final String atRule ) throws CSSException {
+  public void ignorableAtRule( String atRule ) throws CSSException {
     log( "ignorableAtRule " + atRule );
     reader.addProblem( new CSSException( "unsupported at rule '"
                                          + atRule
                                          + "' - ignored" ) );
   }
 
-  public void startPage( final String name, final String pseudo_page )
+  public void startPage( String name, String pseudo_page )
     throws CSSException
   {
     log( "startPage " + name + ", " + pseudo_page );
     reader.addProblem( new CSSException( "page rules not supported - ignored" ) );
   }
 
-  public void endPage( final String name, final String pseudo_page )
+  public void endPage( String name, String pseudo_page )
     throws CSSException
   {
     log( "endPage " + name + ", " + pseudo_page );
   }
 
-  public void startMedia( final SACMediaList media ) throws CSSException {
+  public void startMedia( SACMediaList media ) throws CSSException {
     log( "startMedia " + media );
     reader.addProblem( new CSSException( "media rules not supported - ignored" ) );
   }
 
-  public void endMedia( final SACMediaList media ) throws CSSException {
+  public void endMedia( SACMediaList media ) throws CSSException {
     log( "endMedia " + media );
   }
 
@@ -149,11 +143,11 @@ public class DocumentHandlerImpl implements DocumentHandler {
     return styleSheetBuilder.getStyleSheet();
   }
 
-  private void log( final String message ) {
+  private void log( String message ) {
     //    System.out.println( message );
   }
 
-  private static String toString( final SelectorList patterns ) {
+  private static String toString( SelectorList patterns ) {
     StringBuffer buffer = new StringBuffer();
     buffer.append( "[" );
     int length = patterns.getLength();

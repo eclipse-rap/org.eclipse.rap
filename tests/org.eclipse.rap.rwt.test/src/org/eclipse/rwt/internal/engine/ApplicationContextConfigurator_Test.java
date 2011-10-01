@@ -54,7 +54,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   private static final String ATTRIBUTE_NAME = "name";
   private static final String THEME_ID = "TestTheme";
   private static final String STYLE_SHEET = "resources/theme/TestExample.css";
-  private static final String STYLE_SHEET_2 = "resources/theme/TestExample2.css";
+  private static final String STYLE_SHEET_CONTRIBUTION = "resources/theme/TestExample2.css";
 
   private TestPhaseListener testPhaseListener;
   private TestSettingStoreFactory testSettingStoreFactory;
@@ -170,7 +170,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   public void testConfigureWithDefaultSettingStoreFactory() {
     activateApplicationContext( new ApplicationConfigurator() {
       public void configure( ApplicationConfiguration configuration ) {
-        configuration.addTheme( THEME_ID, STYLE_SHEET );
+        configuration.addStyleSheet( THEME_ID, STYLE_SHEET );
       }
     } );
 
@@ -227,14 +227,17 @@ public class ApplicationContextConfigurator_Test extends TestCase {
         configuration.addEntryPoint( entryPointName, TestEntryPoint.class );
         configuration.addResource( testResource );
         configuration.addPhaseListener( testPhaseListener );
-        configuration.addAdapterFactory( TestAdaptable.class, testAdapterFactory );
         configuration.setSettingStoreFactory( testSettingStoreFactory );
         configuration.addServiceHandler( testServiceHandlerId, testServiceHandler );
         configuration.addBranding( testBranding );
-        configuration.addTheme( THEME_ID, STYLE_SHEET );
+        configuration.addStyleSheet( THEME_ID, STYLE_SHEET );
+        configuration.addStyleSheet( THEME_ID, STYLE_SHEET_CONTRIBUTION );
         configuration.addThemableWidget( TestWidget.class );
-        configuration.addThemeContribution( THEME_ID, STYLE_SHEET_2 );
         configuration.setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
+
+        // Only supported for Workbench API backward compatibilty
+        ( ( ApplicationConfigurationImpl )configuration )
+          .addAdapterFactory( TestAdaptable.class, testAdapterFactory );
       }
     };
   }

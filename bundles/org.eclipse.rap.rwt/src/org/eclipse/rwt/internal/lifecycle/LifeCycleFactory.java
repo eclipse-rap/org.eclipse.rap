@@ -18,6 +18,7 @@ import org.eclipse.rwt.lifecycle.PhaseListener;
 
 
 public class LifeCycleFactory {
+  
   private static final Class<RWTLifeCycle> DEFAULT_LIFE_CYCLE_CLASS = RWTLifeCycle.class;
   
   private final PhaseListenerRegistry phaseListenerRegistry;
