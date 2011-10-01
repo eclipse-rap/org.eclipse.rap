@@ -34,8 +34,10 @@
     <module>runtime.requirements-feature</module>
     <module>runtime-aggregation-repository</module>
     <module>runtime-aggregation-repository/runtime-feature</module>
+    <!-- 
     <module>runtime-compatibility-repository</module>
     <module>runtime-compatibility-repository/runtime.sdk-feature</module>
+     -->
   </modules>
 
   <!-- repositories to get pre-built pieces from -->
