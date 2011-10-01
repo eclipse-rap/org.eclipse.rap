@@ -96,7 +96,7 @@ public class Application_Test extends TestCase {
   
   public void testParamServletContextMustNotBeNull() {
     try {
-      new Application( null, mock( ApplicationConfigurator.class ) );
+      new Application( mock( ApplicationConfigurator.class ), null );
       fail();
     } catch( NullPointerException expected ) {
     }
@@ -104,7 +104,7 @@ public class Application_Test extends TestCase {
   
   public void testParamConfiguratorMustNotBeNull() {
     try {
-      new Application( mock( ServletContext.class ), null );
+      new Application( null, mock( ServletContext.class ) );
       fail();
     } catch( NullPointerException expected ) {
     }
@@ -115,7 +115,7 @@ public class Application_Test extends TestCase {
     when( servletContext.getRealPath( "/" ) )
       .thenReturn( Fixture.WEB_CONTEXT_RWT_RESOURCES_DIR.getPath() );
     configurator = mock( ApplicationConfigurator.class );
-    application = new Application( servletContext, configurator );
+    application = new Application( configurator, servletContext );
   }
   
   private void checkApplicationContextHasBeenRegistered() {
@@ -140,7 +140,7 @@ public class Application_Test extends TestCase {
         } );
       }
     };
-    application = new Application( servletContext, configurator );
+    application = new Application( configurator, servletContext );
     application.start();
   }
 

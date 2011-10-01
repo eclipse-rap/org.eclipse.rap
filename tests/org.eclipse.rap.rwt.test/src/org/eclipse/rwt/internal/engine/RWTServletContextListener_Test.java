@@ -23,7 +23,6 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.internal.engine.configurables.EntryPointManagerConfigurable;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rwt.lifecycle.PhaseId;
@@ -109,7 +108,7 @@ public class RWTServletContextListener_Test extends TestCase {
   }
 
   public void testEntryPointInitializationWithNonExistingClassName() {
-    Fixture.setInitParameter( EntryPointManagerConfigurable.ENTRY_POINTS_PARAM, "does.not.Exist" );
+    Fixture.setInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM, "does.not.Exist" );
     
     try {
       triggerServletContextInitialized();
@@ -170,13 +169,13 @@ public class RWTServletContextListener_Test extends TestCase {
   }
 
   private void setEntryPointInitParameter() {
-    String name = EntryPointManagerConfigurable.ENTRY_POINTS_PARAM;
+    String name = RWTServletContextListener.ENTRY_POINTS_PARAM;
     String value = TestEntryPoint.class.getName();
     Fixture.setInitParameter( name, value );
   }
 
   private void setConfiguratorInitParameter() {
-    String name = ApplicationConfigurable.CONFIGURATOR_PARAM;
+    String name = ApplicationConfigurator.CONFIGURATOR_PARAM;
     String value = TestConfigurator.class.getName();
     Fixture.setInitParameter( name, value );
   }

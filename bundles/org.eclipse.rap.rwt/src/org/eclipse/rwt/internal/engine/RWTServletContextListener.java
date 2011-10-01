@@ -19,16 +19,13 @@ import javax.servlet.ServletContextListener;
 import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
-import org.eclipse.rwt.internal.engine.configurables.EntryPointManagerConfigurable;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 
 public class RWTServletContextListener implements ServletContextListener {
-  
-  public static final String PARAMETER_SEPARATOR = ",";
-  public static final String PARAMETER_SPLIT = "#";
+  public static final String ENTRY_POINTS_PARAM = "org.eclipse.rwt.entryPoints";
   
   private Application application;
   
@@ -48,7 +45,7 @@ public class RWTServletContextListener implements ServletContextListener {
   public void contextInitialized( ServletContextEvent evt ) {
     ServletContext servletContext = evt.getServletContext();
     ApplicationConfigurator configurator = readConfigurator( servletContext );
-    application = new Application( servletContext, configurator );
+    application = new Application( configurator, servletContext );
     application.start();
   }
 
@@ -68,11 +65,11 @@ public class RWTServletContextListener implements ServletContextListener {
   }
 
   private boolean hasConfiguratorParam( ServletContext servletContext ) {
-    return null != servletContext.getInitParameter( ApplicationConfigurable.CONFIGURATOR_PARAM );
+    return null != servletContext.getInitParameter( ApplicationConfigurator.CONFIGURATOR_PARAM );
   }
   
   private ApplicationConfigurator readApplicationConfigurator( ServletContext servletContext ) {
-    String name = servletContext.getInitParameter( ApplicationConfigurable.CONFIGURATOR_PARAM );
+    String name = servletContext.getInitParameter( ApplicationConfigurator.CONFIGURATOR_PARAM );
     return newConfigurator( name );
   }
   
@@ -93,8 +90,7 @@ public class RWTServletContextListener implements ServletContextListener {
   private ApplicationConfigurator doReadEntryPointRunnerConfigurator( ServletContext context )
     throws ClassNotFoundException
   {
-    String entryPointsParam = EntryPointManagerConfigurable.ENTRY_POINTS_PARAM;
-    String className = context.getInitParameter( entryPointsParam );
+    String className = context.getInitParameter( ENTRY_POINTS_PARAM );
     ClassLoader loader = getClass().getClassLoader();
     Class<?> entryPointClass = loader.loadClass( className );
     return new EntryPointRunnerConfigurator( ( Class<? extends IEntryPoint> )entryPointClass );

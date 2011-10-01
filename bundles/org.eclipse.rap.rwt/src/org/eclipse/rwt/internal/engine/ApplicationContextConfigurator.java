@@ -26,25 +26,24 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
 
-public class ApplicationConfigurable implements Configurable {
-  public static final String CONFIGURATOR_PARAM = "org.eclipse.rwt.Configurator";
+class ApplicationContextConfigurator {
   
   private final ApplicationConfigurator configurator;
   private final ServletContext servletContext;
 
-  public ApplicationConfigurable( ApplicationConfigurator configurator,
+  ApplicationContextConfigurator( ApplicationConfigurator configurator,
                                   ServletContext servletContext )
   {
     this.configurator = configurator;
     this.servletContext = servletContext;
   }
 
-  public void configure( ApplicationContext applicationContext ) {
+  void configure( ApplicationContext applicationContext ) {
     configureCustomSettings( applicationContext );
     configureInternalSettings( applicationContext );
   }
 
-  public void reset( ApplicationContext applicationContext ) {
+  void reset( ApplicationContext applicationContext ) {
     resetSubSystems( applicationContext );
     resetApplicationStore( applicationContext );
   }

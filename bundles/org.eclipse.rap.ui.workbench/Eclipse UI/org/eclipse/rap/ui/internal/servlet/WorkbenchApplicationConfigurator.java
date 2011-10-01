@@ -23,8 +23,8 @@ import org.eclipse.rap.ui.internal.application.ApplicationRegistry;
 import org.eclipse.rap.ui.internal.branding.BrandingExtension;
 import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rwt.AdapterFactory;
-import org.eclipse.rwt.application.*;
-import org.eclipse.rwt.internal.engine.configurables.SettingStoreManagerConfigurable;
+import org.eclipse.rwt.application.ApplicationConfiguration;
+import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
@@ -101,7 +101,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
 
   private void registerSettingStoreFactory( ApplicationConfiguration configuration ) {
     // determine which factory to use via an environment setting / config.ini
-    String settingStoreFactoryParam = SettingStoreManagerConfigurable.SETTING_STORE_FACTORY_PARAM;
+    String settingStoreFactoryParam = "org.eclipse.rwt.settingStoreFactory";
     String factoryId = getOSGiProperty( settingStoreFactoryParam );
     ISettingStoreFactory result = null;
     if( factoryId != null ) {

@@ -69,7 +69,7 @@ public class RWTDelegate_Test extends TestCase {
 
   public void testServiceHandlerHasStateInfo() throws ServletException, IOException {
     final List<Object> log = new ArrayList<Object>();
-    ApplicationContext applicationContext = new ApplicationContext();
+    ApplicationContext applicationContext = new ApplicationContext( null, null );
     TestRequest request = createTestRequest( applicationContext );
     request.setParameter( IServiceHandler.REQUEST_PARAM, "foo" );
     applicationContext.getServiceManager().registerServiceHandler( "foo", new IServiceHandler() {

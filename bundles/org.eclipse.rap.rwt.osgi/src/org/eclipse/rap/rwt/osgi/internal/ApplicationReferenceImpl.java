@@ -67,7 +67,7 @@ class ApplicationReferenceImpl implements ApplicationReference {
   private void createApplication( HttpServlet contextProviderServlet ) {
     ServletContext servletContext = contextProviderServlet.getServletContext();
     servletContextWrapper = new ServletContextWrapper( servletContext, contextLocation );
-    application = new Application( servletContextWrapper, configurator );
+    application = new Application( configurator, servletContextWrapper );
   }
 
   private void startRWTApplication() {

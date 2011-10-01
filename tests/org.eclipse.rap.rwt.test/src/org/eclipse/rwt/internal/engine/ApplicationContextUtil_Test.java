@@ -26,18 +26,23 @@ import org.eclipse.rwt.service.ISessionStore;
 
 public class ApplicationContextUtil_Test extends TestCase {
 
+  private ApplicationContext applicationContext;
+
+  public void setUp() {
+    applicationContext = new ApplicationContext( null, null );
+  }
+
   public void testSetToServletContext() {
     ServletContext servletContext = Fixture.createServletContext();
-    ApplicationContext appContext = new ApplicationContext();
 
-    ApplicationContextUtil.set( servletContext, appContext );
+    ApplicationContextUtil.set( servletContext, applicationContext );
 
-    assertSame( appContext, ApplicationContextUtil.get( servletContext ) );
+    assertSame( applicationContext, ApplicationContextUtil.get( servletContext ) );
   }
 
   public void testRemoveFromServletContext() {
     ServletContext servletContext = Fixture.createServletContext();
-    ApplicationContextUtil.set( servletContext, new ApplicationContext() );
+    ApplicationContextUtil.set( servletContext, applicationContext );
 
     ApplicationContextUtil.remove( servletContext );
 
@@ -46,7 +51,7 @@ public class ApplicationContextUtil_Test extends TestCase {
 
   public void testSetToSessionStore() {
     SessionStoreImpl sessionStore = new SessionStoreImpl( new TestSession() );
-    ApplicationContext applicationContext = new ApplicationContext();
+    ApplicationContext applicationContext = new ApplicationContext( null, null );
 
     ApplicationContextUtil.set( sessionStore, applicationContext );
 
@@ -55,7 +60,7 @@ public class ApplicationContextUtil_Test extends TestCase {
 
   public void testRemoveFromSessionStore() {
     SessionStoreImpl sessionStore = new SessionStoreImpl( new TestSession() );
-    ApplicationContextUtil.set( sessionStore, new ApplicationContext() );
+    ApplicationContextUtil.set( sessionStore, applicationContext );
 
     ApplicationContextUtil.remove( sessionStore );
 
@@ -63,7 +68,6 @@ public class ApplicationContextUtil_Test extends TestCase {
   }
 
   public void testRunWith() {
-    ApplicationContext applicationContext = new ApplicationContext();
     final ApplicationContext[] found = new ApplicationContext[ 1 ];
     Runnable runnable = new Runnable() {
       public void run() {
@@ -107,14 +111,13 @@ public class ApplicationContextUtil_Test extends TestCase {
 
   public void testParamRunnableNotNull() {
     try {
-      ApplicationContextUtil.runWith( new ApplicationContext(), null );
+      ApplicationContextUtil.runWith( applicationContext, null );
       fail();
     } catch( NullPointerException expected ) {
     }
   }
 
   public void testRunWithWithNestedCall() {
-    final ApplicationContext applicationContext = new ApplicationContext();
     Runnable runnable = new Runnable() {
       public void run() {
         ApplicationContextUtil.runWith( applicationContext, this );
@@ -131,11 +134,11 @@ public class ApplicationContextUtil_Test extends TestCase {
   public void testGetInstance() {
     ServletContext servletContext = Fixture.createServletContext();
     Fixture.createServiceContext();
-    ApplicationContext appContext = createAndSet( servletContext );
+    ApplicationContextUtil.set( servletContext, applicationContext );    
 
     ApplicationContext found = ApplicationContextUtil.getInstance();
 
-    assertSame( appContext, found );
+    assertSame( applicationContext, found );
     Fixture.disposeOfServiceContext();
   }
 
@@ -162,7 +165,7 @@ public class ApplicationContextUtil_Test extends TestCase {
 
   public void testApplicationContextInSessionStoreIsNotSerialized() throws Exception {
     SessionStoreImpl sessionStore = new SessionStoreImpl( new TestSession() );
-    ApplicationContextUtil.set( sessionStore, new ApplicationContext() );
+    ApplicationContextUtil.set( sessionStore, applicationContext );
 
     ISessionStore deserializedSessionStore = Fixture.serializeAndDeserialize( sessionStore );
 
@@ -171,20 +174,14 @@ public class ApplicationContextUtil_Test extends TestCase {
     assertNull( appContext );
   }
 
-  private static RuntimeException runWithExceptionExpected( Runnable runnable ) {
+  private RuntimeException runWithExceptionExpected( Runnable runnable ) {
     RuntimeException result = null;
     try {
-      ApplicationContextUtil.runWith( new ApplicationContext(), runnable );
+      ApplicationContextUtil.runWith( applicationContext, runnable );
       fail();
     } catch( RuntimeException runtimeException ) {
       result = runtimeException;
     }
-    return result;
-  }
-
-  private ApplicationContext createAndSet( ServletContext servletContext ) {
-    ApplicationContext result = new ApplicationContext();
-    ApplicationContextUtil.set( servletContext, result );
     return result;
   }
 }

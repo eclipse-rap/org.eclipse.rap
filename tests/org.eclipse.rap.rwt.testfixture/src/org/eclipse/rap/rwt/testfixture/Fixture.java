@@ -32,16 +32,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.eclipse.rap.rwt.testfixture.internal.TestLifeCycleAdapterFactory;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ApplicationContextHelper;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
-import org.eclipse.rwt.internal.engine.ApplicationConfigurable;
 import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
 import org.eclipse.rwt.internal.engine.RWTFactory;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener;
-import org.eclipse.rwt.internal.engine.configurables.AdapterManagerConfigurable;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
@@ -227,21 +224,10 @@ public final class Fixture {
   // general setup and tear down
 
   public static void setUp() {
-    registerLifeCycleAdapterFactory();
     useTestResourceManager();
     setSystemProperties();
     createApplicationContext();
     createServiceContext();
-  }
-
-  private static void registerLifeCycleAdapterFactory() {
-    String factory = TestLifeCycleAdapterFactory.class.getName();
-    String adaptable1 = Widget.class.getName();
-    String adaptable2 = Display.class.getName();
-    String split = RWTServletContextListener.PARAMETER_SPLIT;
-    String separator = RWTServletContextListener.PARAMETER_SEPARATOR;
-    String value = factory + split + adaptable1 + separator + factory + split + adaptable2;
-    setInitParameter( AdapterManagerConfigurable.ADAPTER_FACTORIES_PARAM, value );
   }
 
   public static void useDefaultResourceManager() {
@@ -517,7 +503,7 @@ public final class Fixture {
   }
 
   private static void registerConfigurer() {
-    setInitParameter( ApplicationConfigurable.CONFIGURATOR_PARAM,
+    setInitParameter( ApplicationConfigurator.CONFIGURATOR_PARAM,
                       FixtureApplicationConfigurator.class.getName() );
   }
 

@@ -11,15 +11,22 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
+import org.eclipse.rap.rwt.testfixture.TestResponse;
+import org.eclipse.rap.rwt.testfixture.TestSession;
+import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
-import org.eclipse.rwt.internal.engine.configurables.RWTConfigurationConfigurable;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;
 
@@ -27,9 +34,9 @@ import org.eclipse.swt.widgets.Display;
 public class ServiceContext_Test extends TestCase {
   
   private SessionStoreImpl sessionStore;
+  private ApplicationContext applicationContext;
 
   public void testGetApplicationContext() {
-    ApplicationContext applicationContext = new ApplicationContext();
     ServiceContext context = createContext( applicationContext );
     
     ApplicationContext foundInContext = context.getApplicationContext();
@@ -39,7 +46,6 @@ public class ServiceContext_Test extends TestCase {
   }
 
   public void testGetApplicationContextWithNullSessionStore() {
-    ApplicationContext applicationContext = new ApplicationContext();
     sessionStore = null;
     ServiceContext context = createContext( applicationContext );
     
@@ -50,7 +56,7 @@ public class ServiceContext_Test extends TestCase {
   
   public void testGetApplicationContextFromSessionStore() {
     ServiceContext context = createContext();
-    ApplicationContext applicationContext = createActivatedApplicationContext( context );
+    applicationContext.activate();
     ApplicationContextUtil.set( sessionStore, applicationContext );
 
     ApplicationContext found = context.getApplicationContext();
@@ -59,7 +65,6 @@ public class ServiceContext_Test extends TestCase {
   }
   
   public void testGetApplicationContextFromSessionStoreWithDeactivatedApplicationContext() {
-    ApplicationContext applicationContext = new ApplicationContext();
     ServiceContext context = createContext();
     ApplicationContextUtil.set( sessionStore, applicationContext );
     
@@ -80,7 +85,7 @@ public class ServiceContext_Test extends TestCase {
   }
   
   public void testGetApplicationContextFromBackgroundThread() throws Throwable {
-    ServiceContext serviceContext = createContext( new ApplicationContext() );
+    ServiceContext serviceContext = createContext( applicationContext );
     ContextProvider.setContext( serviceContext );
     final ApplicationContext[] backgroundApplicationContext = { null };
     final Display display = new Display();
@@ -100,6 +105,10 @@ public class ServiceContext_Test extends TestCase {
   }
   
   protected void setUp() {
+    ApplicationConfigurator applicationConfigurator = mock( ApplicationConfigurator.class );
+    ServletContext servletContext = mock( ServletContext.class );
+    when( servletContext.getRealPath( anyString() ) ).thenReturn( "" );
+    applicationContext = new ApplicationContext( applicationConfigurator, servletContext );
     sessionStore = new SessionStoreImpl( new TestSession() );
   }
   
@@ -126,14 +135,6 @@ public class ServiceContext_Test extends TestCase {
     }
     request.setSession( session );
     return createContext( request, response );
-  }
-
-  private ApplicationContext createActivatedApplicationContext( ServiceContext context ) {
-    ApplicationContext result = new ApplicationContext();
-    ServletContext servletContext = context.getRequest().getSession().getServletContext();
-    result.addConfigurable( new RWTConfigurationConfigurable( servletContext ) );
-    result.activate();
-    return result;
   }
 
   private ServiceContext createContext( TestRequest request, TestResponse response ) {

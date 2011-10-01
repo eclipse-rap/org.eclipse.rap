@@ -17,10 +17,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.internal.engine.ApplicationConfigurable;
 import org.eclipse.rwt.internal.engine.ApplicationContext;
 import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
-import org.eclipse.rwt.internal.engine.Configurable;
 import org.eclipse.rwt.internal.engine.RWTDelegate;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.util.ParamCheck;
@@ -30,23 +28,17 @@ public class Application {
   public final static String RESOURCES = ResourceManagerImpl.RESOURCES;
   
   private final ServletContext servletContext;
-  private final ApplicationConfigurator configurator;
   private final ApplicationContext applicationContext;
 
-  private Configurable configurable;
-  
-  public Application( ServletContext servletContext, ApplicationConfigurator configurator ) {
+  public Application( ApplicationConfigurator configurator, ServletContext servletContext ) {
     ParamCheck.notNull( servletContext, "servletContext" );
     ParamCheck.notNull( configurator, "configurator" );
     
-    this.applicationContext = new ApplicationContext();
+    this.applicationContext = new ApplicationContext( configurator, servletContext );
     this.servletContext = servletContext;
-    this.configurator = configurator;
   }
   
   public void start() {
-    configurable = new ApplicationConfigurable( configurator, servletContext );
-    applicationContext.addConfigurable( configurable );
     ApplicationContextUtil.set( servletContext, applicationContext );
     activateApplicationContext();
   }
@@ -55,8 +47,6 @@ public class Application {
     try {
       if( applicationContext.isActivated() ) {
         applicationContext.deactivate();
-        // TODO [fappel]: test remove configurable..
-        applicationContext.removeConfigurable( configurable );
       }
     } finally {
       ApplicationContextUtil.remove( servletContext );

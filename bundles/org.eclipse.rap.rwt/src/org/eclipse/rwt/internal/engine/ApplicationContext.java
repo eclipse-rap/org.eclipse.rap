@@ -12,10 +12,10 @@
 package org.eclipse.rwt.internal.engine;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
+import javax.servlet.ServletContext;
+
+import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
@@ -32,7 +32,6 @@ import org.eclipse.rwt.internal.service.StartupPage;
 import org.eclipse.rwt.internal.textsize.ProbeStore;
 import org.eclipse.rwt.internal.textsize.TextSizeStorage;
 import org.eclipse.rwt.internal.theme.ThemeManager;
-import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.service.IApplicationStore;
 import org.eclipse.swt.internal.graphics.FontDataFactory;
@@ -80,10 +79,10 @@ public class ApplicationContext {
   private final DisplaysHolder displaysHolder;
   private final TextSizeStorage textSizeStorage;
   private final ProbeStore probeStore;
-  private final Set<Configurable> configurables;
+  private final ApplicationContextConfigurator contextConfigurator;
   private boolean activated;
   
-  public ApplicationContext() {
+  public ApplicationContext( ApplicationConfigurator configurator, ServletContext servletContext ) {
     applicationStoreImpl = new ApplicationStoreImpl();
     configuration = new RWTConfigurationImpl();
     resourceManager = new ResourceManagerImpl( configuration );
@@ -106,9 +105,9 @@ public class ApplicationContext {
     jsLibraryConcatenator = new JSLibraryConcatenator();
     textSizeStorage = new TextSizeStorage();
     probeStore = new ProbeStore( textSizeStorage );
-    configurables = new HashSet<Configurable>();
+    contextConfigurator = new ApplicationContextConfigurator( configurator, servletContext );
   }
-
+  
   public boolean isActivated() {
     return activated;
   }
@@ -131,18 +130,6 @@ public class ApplicationContext {
     } finally {
       activated = false;
     }
-  }
-
-  public void addConfigurable( Configurable configurable ) {
-    checkIsActivated();
-    ParamCheck.notNull( configurable, "configurable" );
-    configurables.add( configurable );
-  }
-  
-  public void removeConfigurable( Configurable configurable ) {
-    checkIsActivated();
-    ParamCheck.notNull( configurable, "configurable" );
-    configurables.remove( configurable );
   }
   
   public RWTConfiguration getConfiguration() {
@@ -253,27 +240,11 @@ public class ApplicationContext {
     }
   }
   
-  private void notifyConfigurablesAboutDeactivation() {
-    Iterator iterator = configurables.iterator();
-    while( iterator.hasNext() ) {
-      Configurable configurable = ( Configurable )iterator.next();
-      configurable.reset( this );
-    }
-  }
-
   private void doActivate() {
-    notifyConfigurablesAboutActivation();
+    contextConfigurator.configure( this );
     activateInstances();
   }
-  
-  private void notifyConfigurablesAboutActivation() {
-    Iterator iterator = configurables.iterator();
-    while( iterator.hasNext() ) {
-      Configurable configurable = ( Configurable )iterator.next();
-      configurable.configure( this );
-    }
-  }
-  
+    
   private void activateInstances() {
     ApplicationContextUtil.runWith( this, new Runnable() {
       public void run() {
@@ -296,7 +267,7 @@ public class ApplicationContext {
 
   private void doDeactivate() {
     deactivateInstances();
-    notifyConfigurablesAboutDeactivation();
+    contextConfigurator.reset( this );
   }
 
   private void deactivateInstances() {

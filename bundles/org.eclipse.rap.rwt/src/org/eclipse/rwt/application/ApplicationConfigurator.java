@@ -12,5 +12,8 @@ package org.eclipse.rwt.application;
 
 
 public interface ApplicationConfigurator {
+  
+  public static final String CONFIGURATOR_PARAM = "org.eclipse.rwt.Configurator";
+
   void configure( ApplicationConfiguration configuration );
 }

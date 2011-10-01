@@ -11,55 +11,16 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-
-import javax.servlet.ServletContext;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.internal.engine.configurables.RWTConfigurationConfigurable;
 
 
 public class ApplicationContext_Test extends TestCase {
   private ApplicationContext context;
   
-  private static class TestConfigurable implements Configurable {
-    private ApplicationContext configureContext;
-    private ApplicationContext resetContext;
-    private boolean activatedOnConfigure;
-    private boolean activatedOnReset;
-
-    public void configure( ApplicationContext context ) {
-      this.configureContext = context;
-      activatedOnConfigure = context.isActivated();
-    }
-
-    public void reset( ApplicationContext context ) {
-      this.resetContext = context;
-      activatedOnReset = context.isActivated();
-    }
-
-    ApplicationContext getConfigureContext() {
-      return configureContext;
-    }
-    
-    ApplicationContext getResetContext() {
-      return resetContext;
-    }
-
-    boolean isActivatedDuringConfigure() {
-      return activatedOnConfigure;
-    }
-
-    boolean isActivatedDuringReset() {
-      return activatedOnReset;
-    }
-  }  
   
   public void testApplicationContextSingletons() {
-    ApplicationContext context = new ApplicationContext();
     assertNotNull( context.getThemeManager() );
     assertSame( context.getThemeManager(), context.getThemeManager() );
 
@@ -129,79 +90,10 @@ public class ApplicationContext_Test extends TestCase {
     checkUnallowedMethodAccessIfNotActivated();
   }
   
-  public void testActivate() {
-    TestConfigurable configurable = new TestConfigurable();
-    context.addConfigurable( configurable );
-
-    context.activate();
-    
-    assertTrue( context.isActivated() );
-    assertSame( context, configurable.getConfigureContext() );
-    assertTrue( configurable.isActivatedDuringConfigure() );
-    checkUnallowedMethodAccessIfActivated();
-  }
-  
-  public void testDeactivate() {
-    TestConfigurable configurable = new TestConfigurable();
-    context.addConfigurable( configurable );
-    context.activate();
-
-    context.deactivate();
-    
-    assertFalse( context.isActivated() );
-    assertSame( context, configurable.getResetContext() );
-    assertTrue( configurable.isActivatedDuringReset() );
-    checkUnallowedMethodAccessIfNotActivated();
-  }
-  
-  public void testActivateWithException() {
-    context.addConfigurable( createConfigurableWithConfigureProblem() );
-    
-    activateContextWithException();
-    
-    assertFalse( context.isActivated() );
-  }
-  
-  public void testDeactivateWithException() {
-    Configurable configurable = createConfigurableWithResetProblem();
-    context.addConfigurable( configurable );
-    context.activate();
-    
-    deactivateContextWithException();
-    
-    assertFalse( context.isActivated() );
-  }
-    
-  public void testAddConfigurableWithNullParam() {
-    try {
-      context.addConfigurable( null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-    
-  public void testRemoveConfigurable() {
-    TestConfigurable configurable = new TestConfigurable();
-    context.addConfigurable( configurable );
-    
-    context.removeConfigurable( configurable );
-    context.activate();
-    
-    assertNull( configurable.getConfigureContext() );
-  }
-  
-  public void testRemoveConfigurableWithNullParam() {
-    try {
-      context.removeConfigurable( null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
-  }
-  
   protected void setUp() throws Exception {
-    ServletContext servletContext = Fixture.createServletContext();
-    context = new ApplicationContext();
-    context.addConfigurable( new RWTConfigurationConfigurable( servletContext ) );
+    context = new ApplicationContext( null, null );
+    RWTConfigurationImpl configuration = ( RWTConfigurationImpl )context.getConfiguration();
+    configuration.configure( Fixture.WEB_CONTEXT_DIR.getAbsolutePath() );
   }
 
   private void checkUnallowedMethodAccessIfNotActivated() {
@@ -212,32 +104,7 @@ public class ApplicationContext_Test extends TestCase {
     }
   }
   
-  private void checkUnallowedMethodAccessIfActivated() {
-    activateContextWithException();
-    try {
-      context.addConfigurable( null );
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
-    try {
-      context.removeConfigurable( null );
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
-  }
   
-  private Configurable createConfigurableWithConfigureProblem() {
-    Configurable result = mock( Configurable.class );
-    doThrow( new IllegalStateException() ).when( result ).configure( context );
-    return result;
-  }
-  
-  private Configurable createConfigurableWithResetProblem() {
-    Configurable result = mock( Configurable.class );
-    doThrow( new IllegalStateException() ).when( result ).reset( context );
-    return result;
-  }
-
   private void deactivateContextWithException() {
     try {
       context.deactivate();

@@ -18,7 +18,6 @@ import javax.servlet.ServletException;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper.TestThemeManager;
 import org.eclipse.rap.rwt.testfixture.internal.service.MemorySettingStore;
 import org.eclipse.rwt.Adaptable;
@@ -27,7 +26,6 @@ import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.AdapterManager;
-import org.eclipse.rwt.internal.engine.configurables.RWTConfigurationConfigurable;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
@@ -50,7 +48,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
 
-public class ApplicationConfigurable_Test extends TestCase {
+public class ApplicationContextConfigurator_Test extends TestCase {
   
   private static final Object ATTRIBUTE_VALUE = new Object();
   private static final String ATTRIBUTE_NAME = "name";
@@ -153,7 +151,7 @@ public class ApplicationConfigurable_Test extends TestCase {
   }
 
   public void testConfigure() {
-    runConfigurator( createConfigurator() );
+    activateApplicationContext( createConfigurator() );
 
     checkContextDirectoryHasBeenSet();
     checkPhaseListenersHaveBeenAdded();
@@ -170,7 +168,7 @@ public class ApplicationConfigurable_Test extends TestCase {
   }
 
   public void testConfigureWithDefaultSettingStoreFactory() {
-    runConfigurator( new ApplicationConfigurator() {
+    activateApplicationContext( new ApplicationConfigurator() {
       public void configure( ApplicationConfiguration configuration ) {
         configuration.addTheme( THEME_ID, STYLE_SHEET );
       }
@@ -180,7 +178,7 @@ public class ApplicationConfigurable_Test extends TestCase {
   }
 
   public void testReset() {
-    runConfigurator( createConfigurator() );
+    activateApplicationContext( createConfigurator() );
 
     applicationContext.deactivate();
 
@@ -198,9 +196,6 @@ public class ApplicationConfigurable_Test extends TestCase {
 
   @Override
   protected void setUp() {
-    applicationContext = new ApplicationContext();
-    applicationContext.addConfigurable( createConfigurationConfigurable() );
-    createDisplay();
     testPhaseListener = new TestPhaseListener();
     testSettingStoreFactory = new TestSettingStoreFactory();
     entryPointName = "entryPoint";
@@ -211,24 +206,19 @@ public class ApplicationConfigurable_Test extends TestCase {
     testBranding = new TestBranding();
   }
 
-  private RWTConfigurationConfigurable createConfigurationConfigurable() {
-    return new RWTConfigurationConfigurable( new TestServletContext() );
+  private void activateApplicationContext( ApplicationConfigurator configurator ) {
+    ServletContext servletContext = Fixture.createServletContext();
+    applicationContext = new ApplicationContext( configurator, servletContext );
+    ApplicationContextUtil.set( Fixture.getServletContext(), applicationContext );
+    createDisplay();
+    applicationContext.activate();
   }
 
   private void createDisplay() {
-    ServletContext servletContext = Fixture.createServletContext();
     Fixture.createServiceContext();
-    ApplicationContextUtil.set( servletContext, applicationContext );
     display = new Display();
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfServletContext();
-  }
-
-  private void runConfigurator( ApplicationConfigurator configurator ) {
-    ServletContext servletContext = new TestServletContext();
-    Configurable configurable = new ApplicationConfigurable( configurator, servletContext );
-    applicationContext.addConfigurable( configurable );
-    applicationContext.activate();
   }
 
   private ApplicationConfigurator createConfigurator() {
