@@ -55,6 +55,10 @@ echo "Build type: $buildType"
 
 latestStableBuild=`ls -1 $jobDir/lastStable/archive/*/*.zip`
 echo "Latest build: $latestStableBuild"
+if [ -z "$latestStableBuild" ]; then
+  echo >&2 "No latest stable build found, exiting"
+  exit 0
+fi
 
 zipFileName=`basename $latestStableBuild`
 
@@ -90,6 +94,12 @@ cp $latestStableBuild . || exit 1
 echo "Uncompress latest stable build"
 unzip -q $zipFileName || exit 1
 
+# ensure structure of uncompressedd
+if [ ! -d $workingDir/features ]; then
+  echo >&2 "Missing features directory in $workingDir"
+  exit 1
+fi
+
 mkdir -p $targetDir || exit 1
 
 # Publish p2 repository
@@ -99,8 +109,7 @@ java -jar $launcher \
    -application org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher \
    -metadataRepository file:$targetDir \
    -artifactRepository file:$targetDir \
-   -source $workingDir/eclipse \
-   -configs gtk.linux.x86 \
+   -source $workingDir \
    -reusePackedFiles \
    -compress \
    -publishArtifacts || exit 1
