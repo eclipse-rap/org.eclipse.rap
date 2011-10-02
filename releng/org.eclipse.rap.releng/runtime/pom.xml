@@ -57,7 +57,7 @@
     <module>../../../runtime.ui.test/org.eclipse.rap.ui.forms.test</module>
     <!-- 
     <module>../../../runtime.rwt.test/org.eclipse.rap.rwt.themes.test</module>
-    <module>../../../runtime.rwt.test/org.eclipse.rwt.widgets.styledtext.test</module>
+    <module>../../../sandbox/org.eclipse.rwt.widgets.styledtext.test</module>
      -->
     <!-- Packaging projects -->
     <module>runtime-feature</module>
