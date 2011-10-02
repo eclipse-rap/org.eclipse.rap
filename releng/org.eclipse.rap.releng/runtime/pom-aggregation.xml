@@ -14,16 +14,15 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <properties>
-    <tycho-version>0.12.0</tycho-version>
-    <rap-version>1.5.0</rap-version>
-  </properties>
-
   <prerequisites>
     <maven>3.0</maven>
   </prerequisites>
 
-  <name>RAP Runtime aggregation repository build</name>
+  <properties>
+    <tycho-version>0.13.0</tycho-version>
+  </properties>
+
+  <name>RAP Runtime aggregation build</name>
 
   <groupId>org.eclipse.rap</groupId>
   <artifactId>org.eclipse.rap.runtime-aggregation-parent</artifactId>
