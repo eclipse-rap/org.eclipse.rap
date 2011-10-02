@@ -42,14 +42,19 @@
   <!-- repositories to get pre-built pieces from -->
   <repositories>
     <repository>
-      <id>requirements-base</id>
-      <layout>p2</layout>
-      <url>file://${requirementsBaseRepo}</url>
-    </repository>
-    <repository>
       <id>runtime</id>
       <layout>p2</layout>
       <url>file://${runtimeRepo}</url>
+    </repository>
+    <repository>
+      <id>platform-base-repository</id>
+      <layout>p2</layout>
+      <url>${platformBaseRepo}</url>
+    </repository>
+    <repository>
+      <id>extra-dependencies-repository</id>
+      <layout>p2</layout>
+      <url>${extraDependenciesRepo}</url>
     </repository>
   </repositories>
 
