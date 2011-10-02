@@ -44,7 +44,7 @@
     <repository>
       <id>runtime</id>
       <layout>p2</layout>
-      <url>file://${runtimeRepo}</url>
+      <url>${runtimeRepo}</url>
     </repository>
     <repository>
       <id>platform-base-repository</id>

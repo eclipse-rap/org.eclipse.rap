@@ -68,12 +68,12 @@
     <repository>
       <id>platform-base-repository</id>
       <layout>p2</layout>
-      <url>file://${runtimeRepo}</url>
+      <url>${platformBaseRepo}</url>
     </repository>
     <repository>
-      <id>test-dependencies-repository</id>
+      <id>extra-dependencies-repository</id>
       <layout>p2</layout>
-      <url>file://${testDepsRepo}</url>
+      <url>${extraDependenciesRepo}</url>
     </repository>
   </repositories>
 
