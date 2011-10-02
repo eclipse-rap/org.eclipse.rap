@@ -66,14 +66,18 @@
 
   <repositories>
     <repository>
-      <id>platform-base-repository</id>
+      <id>base-platform-repository</id>
       <layout>p2</layout>
-      <url>${platformBaseRepo}</url>
+      <!--
+        TODO [rst]: Because of bug 348045, we cannot add the entire platform repository to the
+                    target platform, try target definitions instead.
+        -->
+      <url>http://build.eclipse.org/rt/rap/base-platforms/1.5M2/runtime-base</url>
     </repository>
     <repository>
       <id>extra-dependencies-repository</id>
       <layout>p2</layout>
-      <url>${extraDependenciesRepo}</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/extra-dependencies</url>
     </repository>
   </repositories>
 

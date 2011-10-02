@@ -20,6 +20,7 @@
 
   <properties>
     <tycho-version>0.13.0</tycho-version>
+    <base-platform>3.8milestones/S-3.8M2-201109151308</base-platform>
   </properties>
 
   <name>RAP Runtime aggregation build</name>
@@ -47,14 +48,14 @@
       <url>${runtimeRepo}</url>
     </repository>
     <repository>
-      <id>platform-base-repository</id>
+      <id>base-platform-repository</id>
       <layout>p2</layout>
-      <url>${platformBaseRepo}</url>
+      <url>http://download.eclipse.org/eclipse/updates/${base-platform}</url>
     </repository>
     <repository>
       <id>extra-dependencies-repository</id>
       <layout>p2</layout>
-      <url>${extraDependenciesRepo}</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/extra-dependencies</url>
     </repository>
   </repositories>
 
