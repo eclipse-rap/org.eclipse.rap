@@ -14,15 +14,17 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <properties>
-    <tycho-version>0.13.0</tycho-version>
-    <rap-version>1.5.0</rap-version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
   <prerequisites>
     <maven>3.0</maven>
   </prerequisites>
+
+  <properties>
+    <tycho-version>0.13.0</tycho-version>
+    <surefire-version>2.9</surefire-version>
+    <junit-version>3.8.2</junit-version>
+    <mockito-version>1.8.4</mockito-version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
   <name>RAP Runtime build</name>
 
@@ -32,8 +34,7 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>runtime-feature</module>
-    <module>runtime-repository</module>
+    <!-- Runtime projects -->
     <module>../../../runtime.rwt/org.eclipse.rap.rwt</module>
     <module>../../../runtime.rwt/org.eclipse.rap.rwt.osgi</module>
     <module>../../../runtime.rwt/org.eclipse.rap.rwt.theme.classic</module>
@@ -50,13 +51,29 @@
     <module>../../../runtime.ui/org.eclipse.rap.ui.forms</module>
     <module>../../../runtime.ui/org.eclipse.rap.ui.views</module>
     <module>../../../runtime.ui/org.eclipse.rap.ui.workbench</module>
+    <!-- Test projects -->
+    <module>../../../runtime.rwt.test/org.eclipse.rap.rwt.test</module>
+    <module>../../../runtime.rwt.test/org.eclipse.rap.rwt.osgi.test</module>
+    <module>../../../runtime.ui.test/org.eclipse.rap.ui.forms.test</module>
+    <!-- 
+    <module>../../../runtime.rwt.test/org.eclipse.rap.rwt.themes.test</module>
+    <module>../../../runtime.rwt.test/org.eclipse.rwt.widgets.styledtext.test</module>
+     -->
+    <!-- Packaging projects -->
+    <module>runtime-feature</module>
+    <module>runtime-repository</module>
   </modules>
 
   <repositories>
     <repository>
-      <id>runtime</id>
+      <id>platform-base-repository</id>
       <layout>p2</layout>
       <url>file://${runtimeRepo}</url>
+    </repository>
+    <repository>
+      <id>test-dependencies-repository</id>
+      <layout>p2</layout>
+      <url>file://${testDepsRepo}</url>
     </repository>
   </repositories>
 
@@ -100,7 +117,44 @@
         </executions>
       </plugin>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${surefire-version}</version>
+        <executions>
+          <execution>
+            <id>test</id>
+            <phase>test</phase>
+            <configuration>
+              <testClassesDirectory>${project.build.outputDirectory}</testClassesDirectory>
+              <includes>
+                <include>**/*_Test.java</include>
+              </includes>
+              <runOrder>random</runOrder>
+            </configuration>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit-version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito-version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
 </project>
