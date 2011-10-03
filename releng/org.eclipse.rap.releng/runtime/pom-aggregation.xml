@@ -14,6 +14,13 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <name>RAP Runtime aggregation build</name>
+
+  <groupId>org.eclipse.rap</groupId>
+  <artifactId>org.eclipse.rap.runtime-aggregation-parent</artifactId>
+  <version>1.5.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
   <prerequisites>
     <maven>3.0</maven>
   </prerequisites>
@@ -22,13 +29,6 @@
     <tycho-version>0.13.0</tycho-version>
     <base-platform>3.8milestones/S-3.8M2-201109151308</base-platform>
   </properties>
-
-  <name>RAP Runtime aggregation build</name>
-
-  <groupId>org.eclipse.rap</groupId>
-  <artifactId>org.eclipse.rap.runtime-aggregation-parent</artifactId>
-  <version>1.5.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
 
   <modules>
     <module>runtime.requirements-feature</module>
