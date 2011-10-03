@@ -166,6 +166,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellTest", {
       assertFalse( shell._maximizeButton.hasState( variant) );
       assertFalse( shell._restoreButton.hasState( variant) );
       assertFalse( shell._closeButton.hasState( variant) );
+    },
+
+    testDefaultButtonState : function() {
+      var shell = new org.eclipse.swt.widgets.Shell( [ "APPLICATION_MODAL" ] );
+      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      assertFalse( button.hasState( "default") );
+      shell.setDefaultButton( button );
+      assertTrue( button.hasState( "default") );
+      shell.setDefaultButton( null );
+      assertFalse( button.hasState( "default") );
+      button.destroy();
+      shell.destroy();
     }
 
   }

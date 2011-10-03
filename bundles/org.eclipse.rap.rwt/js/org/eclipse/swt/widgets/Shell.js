@@ -215,7 +215,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Shell", {
     },
 
     setDefaultButton : function( value ) {
+      if( this._defaultButton != null ) {
+        this._defaultButton.removeState( "default" );
+      }
       this._defaultButton = value;
+      if( this._defaultButton != null ) {
+        this._defaultButton.addState( "default" );
+      }
     },
 
     getDefaultButton : function() {
