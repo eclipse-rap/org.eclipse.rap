@@ -25,7 +25,7 @@ public class DialogEntryPoint implements IEntryPoint {
   private static final String RETURN_CODE = "returnCode";
   
   public static int getDialogReturnCode( ISessionStore sessionStore ) {
-    return ( ( Integer )sessionStore.getAttribute( "returnCode" ) ).intValue();
+    return ( ( Integer )sessionStore.getAttribute( RETURN_CODE ) ).intValue();
   }
 
   public int createUI() {
