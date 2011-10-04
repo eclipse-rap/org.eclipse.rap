@@ -119,9 +119,13 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     _autoFlushHelper : function() {
-      qx.ui.core.Widget._autoFlushTimeout = null;
-      if( !qx.core.Object.inGlobalDispose() ) {
-        qx.ui.core.Widget.flushGlobalQueues();
+      try {
+        qx.ui.core.Widget._autoFlushTimeout = null;
+        if( !qx.core.Object.inGlobalDispose() ) {
+          qx.ui.core.Widget.flushGlobalQueues();
+        } 
+      }catch( ex ) {
+        org.eclipse.rwt.ErrorHandler.processJavaScriptError( ex );
       }
     },
 
@@ -1704,11 +1708,11 @@ qx.Class.define( "qx.ui.core.Widget", {
             var index = vParent.getChildren().indexOf( this );
             vParent.getLayoutImpl().updateChildrenOnRemoveChild( this, index );
             vParent.addToJobQueue( "removeChild" );
-            var parentNode = this.getElement().parentNode;
+            var parentNode = org.eclipse.rwt.Client.isMshtml() ? this.getElement().parentElement : this.getElement().parentNode;
             if( parentNode ){
               parentNode.removeChild( this.getElement() )
+              this._afterRemoveDom();
             }
-            this._afterRemoveDom();
           }
           vParent._removeChildFromChildrenQueue( this );
           if( this.getVisibility() ) {
@@ -1786,7 +1790,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     _afterRemoveDom : function() {
-      this._isInDom = true;
+      this._isInDom = false;
     },
 
     //////////////////////
@@ -1900,137 +1904,117 @@ qx.Class.define( "qx.ui.core.Widget", {
 
     _flushJobQueue : function(q) {
       // 1. Pre checks
-      try {
-        var vQueue = this._jobQueue;
-        var vParent = this.getParent();
-        if (!vParent || qx.lang.Object.isEmpty(vQueue)) {
-          return;
-        }
-        var vLayoutImpl = this instanceof qx.ui.core.Parent ? this.getLayoutImpl() : null;
-        if (vLayoutImpl) {
-          vLayoutImpl.updateSelfOnJobQueueFlush(vQueue);
-        }
-      } catch(ex) {
-        throw new Error( "Flushing job queue (prechecks#1) failed " + ex );
+      var vQueue = this._jobQueue;
+      var vParent = this.getParent();
+      if (!vParent || qx.lang.Object.isEmpty(vQueue)) {
+        return;
+      }
+      var vLayoutImpl = this instanceof qx.ui.core.Parent ? this.getLayoutImpl() : null;
+      if (vLayoutImpl) {
+        vLayoutImpl.updateSelfOnJobQueueFlush(vQueue);
       }
       // 2. Recompute dimensions
-      try {
-        var vFlushParentJobQueue = false;
-        var vRecomputeOuterWidth = vQueue.marginLeft || vQueue.marginRight;
-        var vRecomputeOuterHeight = vQueue.marginTop || vQueue.marginBottom;
-        var vRecomputeInnerWidth = vQueue.frameWidth;
-        var vRecomputeInnerHeight = vQueue.frameHeight;
-        var vRecomputeParentPreferredInnerWidth 
-          = (vQueue.frameWidth || vQueue.preferredInnerWidth) && this._recomputePreferredBoxWidth();
-        var vRecomputeParentPreferredInnerHeight 
-          = (vQueue.frameHeight || vQueue.preferredInnerHeight) && this._recomputePreferredBoxHeight();
-        if (vRecomputeParentPreferredInnerWidth) {
-          var vPref = this.getPreferredBoxWidth();
-          if (this._computedWidthTypeAuto) {
-            this._computedWidthValue = vPref;
-            vQueue.width = true;
-          }
-          if (this._computedMinWidthTypeAuto) {
-            this._computedMinWidthValue = vPref;
-            vQueue.minWidth = true;
-          }
-          if (this._computedMaxWidthTypeAuto) {
-            this._computedMaxWidthValue = vPref;
-            vQueue.maxWidth = true;
-          }
+      var vFlushParentJobQueue = false;
+      var vRecomputeOuterWidth = vQueue.marginLeft || vQueue.marginRight;
+      var vRecomputeOuterHeight = vQueue.marginTop || vQueue.marginBottom;
+      var vRecomputeInnerWidth = vQueue.frameWidth;
+      var vRecomputeInnerHeight = vQueue.frameHeight;
+      var vRecomputeParentPreferredInnerWidth 
+        = (vQueue.frameWidth || vQueue.preferredInnerWidth) && this._recomputePreferredBoxWidth();
+      var vRecomputeParentPreferredInnerHeight 
+        = (vQueue.frameHeight || vQueue.preferredInnerHeight) && this._recomputePreferredBoxHeight();
+      if (vRecomputeParentPreferredInnerWidth) {
+        var vPref = this.getPreferredBoxWidth();
+        if (this._computedWidthTypeAuto) {
+          this._computedWidthValue = vPref;
+          vQueue.width = true;
         }
-        if (vRecomputeParentPreferredInnerHeight) {
-          var vPref = this.getPreferredBoxHeight();
-          if (this._computedHeightTypeAuto) {
-            this._computedHeightValue = vPref;
-            vQueue.height = true;
-          }
-          if (this._computedMinHeightTypeAuto) {
-            this._computedMinHeightValue = vPref;
-            vQueue.minHeight = true;
-          }
-          if (this._computedMaxHeightTypeAuto) {
-            this._computedMaxHeightValue = vPref;
-            vQueue.maxHeight = true;
-          }
+        if (this._computedMinWidthTypeAuto) {
+          this._computedMinWidthValue = vPref;
+          vQueue.minWidth = true;
         }
-        if ((vQueue.width || vQueue.minWidth || vQueue.maxWidth || vQueue.left || vQueue.right) && this._recomputeBoxWidth()) {
-          vRecomputeOuterWidth = vRecomputeInnerWidth = true;
+        if (this._computedMaxWidthTypeAuto) {
+          this._computedMaxWidthValue = vPref;
+          vQueue.maxWidth = true;
         }
-        if ((vQueue.height || vQueue.minHeight || vQueue.maxHeight || vQueue.top || vQueue.bottom) && this._recomputeBoxHeight()) {
-          vRecomputeOuterHeight = vRecomputeInnerHeight = true;
+      }
+      if (vRecomputeParentPreferredInnerHeight) {
+        var vPref = this.getPreferredBoxHeight();
+        if (this._computedHeightTypeAuto) {
+          this._computedHeightValue = vPref;
+          vQueue.height = true;
         }
-      } catch(ex) {
-        throw new Error( "Flushing job queue (recompute#2) failed " + ex );
+        if (this._computedMinHeightTypeAuto) {
+          this._computedMinHeightValue = vPref;
+          vQueue.minHeight = true;
+        }
+        if (this._computedMaxHeightTypeAuto) {
+          this._computedMaxHeightValue = vPref;
+          vQueue.maxHeight = true;
+        }
+      }
+      if ((vQueue.width || vQueue.minWidth || vQueue.maxWidth || vQueue.left || vQueue.right) && this._recomputeBoxWidth()) {
+        vRecomputeOuterWidth = vRecomputeInnerWidth = true;
+      }
+      if ((vQueue.height || vQueue.minHeight || vQueue.maxHeight || vQueue.top || vQueue.bottom) && this._recomputeBoxHeight()) {
+        vRecomputeOuterHeight = vRecomputeInnerHeight = true;
       }
       // 3. Signals to parent widgets
-      try {
-        if ((vRecomputeOuterWidth && this._recomputeOuterWidth()) || vRecomputeParentPreferredInnerWidth) {
-          vParent._invalidatePreferredInnerWidth();
-          vParent.getLayoutImpl().updateSelfOnChildOuterWidthChange(this);
-          vFlushParentJobQueue = true;
-        }
-        if ((vRecomputeOuterHeight && this._recomputeOuterHeight()) || vRecomputeParentPreferredInnerHeight) {
-          vParent._invalidatePreferredInnerHeight();
-          vParent.getLayoutImpl().updateSelfOnChildOuterHeightChange(this);
-          vFlushParentJobQueue = true;
-        }
-        if (vFlushParentJobQueue) {
-          vParent._flushJobQueue();
-        }
-      } catch(ex) {
-        throw new Error( "Flushing job queue (parentsignals#3) failed " + ex );
+      if ((vRecomputeOuterWidth && this._recomputeOuterWidth()) || vRecomputeParentPreferredInnerWidth) {
+        vParent._invalidatePreferredInnerWidth();
+        vParent.getLayoutImpl().updateSelfOnChildOuterWidthChange(this);
+        vFlushParentJobQueue = true;
+      }
+      if ((vRecomputeOuterHeight && this._recomputeOuterHeight()) || vRecomputeParentPreferredInnerHeight) {
+        vParent._invalidatePreferredInnerHeight();
+        vParent.getLayoutImpl().updateSelfOnChildOuterHeightChange(this);
+        vFlushParentJobQueue = true;
+      }
+      if (vFlushParentJobQueue) {
+        vParent._flushJobQueue();
       }
       //  4. Add layout jobs
-      try {
-        // add to layout queue
-        vParent._addChildToChildrenQueue(this);
-        // convert jobs to layout jobs
-        for (var i in vQueue) {
-          this._layoutChanges[i] = true;
-        }
-      } catch(ex) {
-        throw new Error( "Flushing job queue (addjobs#4) failed " + ex );
+      // add to layout queue
+      vParent._addChildToChildrenQueue(this);
+      // convert jobs to layout jobs
+      for (var i in vQueue) {
+        this._layoutChanges[i] = true;
       }
       // 5. Signals to children
-      try {
-        // inform children about padding change
-        if (this instanceof qx.ui.core.Parent && (vQueue.paddingLeft || vQueue.paddingRight || vQueue.paddingTop || vQueue.paddingBottom)) {
-          var ch = this.getChildren(), chl = ch.length;
-          if (vQueue.paddingLeft) {
-            for (var i=0; i<chl; i++) {
-              ch[i].addToLayoutChanges("parentPaddingLeft");
-            }
-          }
-          if (vQueue.paddingRight) {
-            for (var i=0; i<chl; i++) {
-              ch[i].addToLayoutChanges("parentPaddingRight");
-            }
-          } 
-          if (vQueue.paddingTop) {
-            for (var i=0; i<chl; i++) {
-              ch[i].addToLayoutChanges("parentPaddingTop");
-            }
-          } 
-          if (vQueue.paddingBottom) {
-            for (var i=0; i<chl; i++) {
-              ch[i].addToLayoutChanges("parentPaddingBottom");
-            }
-          }
-        } 
-        if (vRecomputeInnerWidth) { 
-          this._recomputeInnerWidth();
-        } 
-        if (vRecomputeInnerHeight) {
-          this._recomputeInnerHeight();
-        } 
-        if (this._initialLayoutDone) {
-          if (vLayoutImpl) {
-            vLayoutImpl.updateChildrenOnJobQueueFlush(vQueue);
+      // inform children about padding change
+      if (this instanceof qx.ui.core.Parent && (vQueue.paddingLeft || vQueue.paddingRight || vQueue.paddingTop || vQueue.paddingBottom)) {
+        var ch = this.getChildren(), chl = ch.length;
+        if (vQueue.paddingLeft) {
+          for (var i=0; i<chl; i++) {
+            ch[i].addToLayoutChanges("parentPaddingLeft");
           }
         }
-      } catch(ex) {
-        throw new Error( "Flushing job queue (childrensignals#5) failed " + ex );
+        if (vQueue.paddingRight) {
+          for (var i=0; i<chl; i++) {
+            ch[i].addToLayoutChanges("parentPaddingRight");
+          }
+        } 
+        if (vQueue.paddingTop) {
+          for (var i=0; i<chl; i++) {
+            ch[i].addToLayoutChanges("parentPaddingTop");
+          }
+        } 
+        if (vQueue.paddingBottom) {
+          for (var i=0; i<chl; i++) {
+            ch[i].addToLayoutChanges("parentPaddingBottom");
+          }
+        }
+      } 
+      if (vRecomputeInnerWidth) { 
+        this._recomputeInnerWidth();
+      } 
+      if (vRecomputeInnerHeight) {
+        this._recomputeInnerHeight();
+      } 
+      if (this._initialLayoutDone) {
+        if (vLayoutImpl) {
+          vLayoutImpl.updateChildrenOnJobQueueFlush(vQueue);
+        }
       }
       // 5. Cleanup
       delete this._jobQueue;

@@ -58,7 +58,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       gfxUtil.addToCanvas( canvas, shape );
       parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
       gfxUtil.handleAppear( canvas );
-      gfxUtil.setFillColor( shape, null);
+      gfxUtil.setFillColor( shape, null );
       assertEquals( null, gfxUtil.getFillType( shape ) );
       assertEquals( null, gfxUtil.getFillColor( shape ) );
       assertFalse( shape.fill.on );
@@ -70,7 +70,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       assertEquals( "green", gfxUtil.getFillColor( shape ) );
       parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );      
     },
-    
+
+    testTransparentFill : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var gfxUtil = org.eclipse.rwt.GraphicsUtil
+      testUtil.flush();
+      var parentNode = document.body;
+      var canvas = gfxUtil.createCanvas();
+      var shape = gfxUtil.createShape( "rect" );
+      gfxUtil.addToCanvas( canvas, shape );
+      parentNode.appendChild( gfxUtil.getCanvasNode( canvas ) );
+      gfxUtil.handleAppear( canvas );
+      gfxUtil.setFillColor( shape, "green" );
+      gfxUtil.setFillColor( shape, "transparent" );
+      assertEquals( null, gfxUtil.getFillType( shape ) );
+      assertEquals( null, gfxUtil.getFillColor( shape ) );
+      assertFalse( shape.fill.on );
+      parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );      
+    },
+
     testColorRestore : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil

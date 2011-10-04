@@ -258,6 +258,7 @@ qx.Class.define("qx.ui.core.ClientDocument",
     _isDisplayable : true,
     _hasParent : false,
     _initialLayoutDone : true,
+    _isInDom : true,
 
 
 

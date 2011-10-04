@@ -231,7 +231,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     setFillColor : function( shape, color ) {
       var fill = shape.fill;
       fill.type = "solid";
-      if( color != null ) {
+      if( color != null && color != "transparent" ) {
         this._setFillEnabled( shape, true );
         fill.color = color;
         shape.restoreData.fill.color = color;
@@ -491,12 +491,16 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     
     _copyData : function( source, target ) {
       if( !source || !target ) {
-        throw "VML._copyData: source or target missing!";
+        throw "VML._copyData: source or target missing.";
       }
       for( var key in source ) {
         var value = source[ key ];
         if( typeof value === "object" ) {
-          this._copyData( value, target[ key ] );
+          try {  
+            this._copyData( value, target[ key ] );
+          } catch( ex ) {
+            throw new Error( "Could not copy " + key + ": " + ex );
+          }
         } else {
           target[ key ] = value;
         }

@@ -1131,57 +1131,29 @@ qx.Class.define("qx.ui.core.Parent",
       // APPLY LAYOUT
       var vChanges = vChild._layoutChanges;
 
-      try {
-        if (vChild.renderBorder && vChanges.border ) {
-          vChild.renderBorder( vChanges );
-        }
-      }
-      catch(ex)
-      {
-        throw new Error( "Could not apply border to child " + vChild + " " + ex );
+      if (vChild.renderBorder && vChanges.border ) {
+        vChild.renderBorder( vChanges );
       }
 
-      try
+      if (vChild.renderPadding)
       {
-        if (vChild.renderPadding)
-        {
-          if (vChanges.paddingLeft || vChanges.paddingRight || vChanges.paddingTop || vChanges.paddingBottom) {
-            vChild.renderPadding(vChanges);
-          }
+        if (vChanges.paddingLeft || vChanges.paddingRight || vChanges.paddingTop || vChanges.paddingBottom) {
+          vChild.renderPadding(vChanges);
         }
-      }
-      catch(ex)
-      {
-        throw new Error( "Could not apply padding to child " + vChild + " " + ex);
       }
 
       // WRAP TO LAYOUT ENGINE
-      try {
-        this.getLayoutImpl().layoutChild(vChild, vChanges);
-      } catch(ex) {
-        throw new Error( "Could not layout child " + vChild + " through layout handler " + ex );
-      }
+      this.getLayoutImpl().layoutChild(vChild, vChanges);
 
       // POST LAYOUT
-      try {
-        vChild._layoutPost(vChanges);
-      } catch(ex) {
-        throw new Error( "Could not post layout child " + vChild + " " + ex );
-      }
+      vChild._layoutPost(vChanges);
 
       // DISPLAY DOM NODE
-      try
+      // insert dom node (if initial flag enabled)
+      if (vChanges.initial)
       {
-        // insert dom node (if initial flag enabled)
-        if (vChanges.initial)
-        {
-          vChild._initialLayoutDone = true;
-          qx.ui.core.Widget.addToGlobalDisplayQueue(vChild);
-        }
-      }
-      catch(ex)
-      {
-        throw new Error( "Could not handle display updates from layout flush for child " + vChild + " " + ex );
+        vChild._initialLayoutDone = true;
+        qx.ui.core.Widget.addToGlobalDisplayQueue(vChild);
       }
 
       // CLEANUP

@@ -108,6 +108,98 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       child2.destroy();
     },
     
+    testInsertDomEventLazy : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var parent = new qx.ui.layout.CanvasLayout();
+      parent.addToDocument();
+      testUtil.flush();
+      // Note: parent must be seeable for the lazy queue to be used in Widget.js
+      assertTrue( parent.isSeeable() ); 
+      // Note: we need at least 3 siblings for the documentFragment to be used
+      var child1 = new qx.ui.basic.Terminator();
+      var child2 = new qx.ui.basic.Terminator();
+      var child3 = new qx.ui.basic.Terminator();
+      child1.setParent( parent );
+      child2.setParent( parent );
+      child3.setParent( parent );
+      var log = [];
+      var logger = function( event ) {
+        log.push( event.getTarget().getElement().parentNode );
+      }
+      child1.addEventListener( "insertDom", logger );
+      testUtil.flush();
+      assertEquals( [ parent.getElement() ], log );
+      parent.destroy();
+      child1.destroy();
+      child2.destroy();
+      child3.destroy();
+    },
+    
+    testInsertDomEventFastQueue : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var parent = new qx.ui.layout.CanvasLayout();
+      parent.addToDocument();
+      var child = new qx.ui.basic.Terminator();
+      child.setParent( parent );
+      var log = [];
+      var logger = function( event ) {
+        log.push( event.getTarget().getElement().parentNode );
+      }
+      child.addEventListener( "insertDom", logger );
+      testUtil.flush();
+      assertEquals( [ parent.getElement() ], log );
+      parent.destroy();
+      child.destroy();
+    },
+
+	// failed Attempt to reproduce Bug 359665 - "Background transparent don't work in IE"
+    testInsertDomEventSetDisplay : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var parent = new qx.ui.layout.CanvasLayout();
+      parent.addToDocument();
+      var child = new qx.ui.basic.Terminator();
+      child.setParent( parent );
+      testUtil.flush();
+      assertTrue( child.isInDom() );
+      assertTrue( parent.isInDom() );
+      child.setDisplay( true ); 
+      child.setDisplay( false ); // removes child node from parent (must happen first)
+      testUtil.flush();
+      glob = child;
+      assertTrue( !child.getElement().parentElement );
+      parent.getParent().remove( parent ); // 
+      testUtil.flush();
+      assertTrue( !parent.getElement().parentElement );
+      var log = [];
+      var logger = function( event ) {
+        log.push( event.getTarget().getElement().parentElement.parentElement );
+      }
+      child.addEventListener( "insertDom", logger );
+      assertEquals( [ ], log );
+      parent.addToDocument();
+      child.setDisplay( true );
+      testUtil.flush();
+      assertEquals( [ parent.getParent() ], log );
+      parent.destroy();
+      child.destroy();
+    },
+
+    testRemoveDom : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var parent = new qx.ui.layout.CanvasLayout();
+      parent.addToDocument();
+      var child = new qx.ui.basic.Terminator();
+      child.setParent( parent );
+      testUtil.flush();
+      assertTrue( child.isInDom() );
+      testUtil.flush();
+      child.setDisplay( false );
+      testUtil.flush();
+      assertFalse( child.isInDom() );
+      parent.destroy();
+      child.destroy();
+    },
+    
     testInsertDomEventOnPrepareEnhancedBorder : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = new qx.ui.layout.CanvasLayout();
