@@ -246,6 +246,8 @@ final class ClientResources {
     "org/eclipse/swt/widgets/Canvas.js",
     "org/eclipse/swt/widgets/List.js",
     "org/eclipse/swt/TabUtil.js",
+    "org/eclipse/swt/widgets/TabFolderAdapter.js",
+    "org/eclipse/swt/widgets/TabItemAdapter.js",
     "org/eclipse/swt/widgets/DateTimeCalendar.js",
     "org/eclipse/swt/widgets/Calendar.js",
     "org/eclipse/swt/widgets/CoolItem.js",

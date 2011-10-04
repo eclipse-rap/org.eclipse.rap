@@ -12,29 +12,31 @@
 
 package org.eclipse.swt.internal.widgets.tabitemkit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.internal.widgets.WidgetAdapter;
 import org.eclipse.swt.widgets.*;
 
 
 public class TabItemLCA extends AbstractWidgetLCA {
 
-  private static final String PROP_SELECTED = "selected";
+  private static final String TYPE = "rwt.widgets.TabItem";
+
   private static final String PROP_CONTROL = "control";
 
   public void preserveValues( Widget widget ) {
     TabItem item = ( TabItem )widget;
-    ItemLCAUtil.preserve( item );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_SELECTED, Boolean.valueOf( isSelected( item ) ) );
-    adapter.preserve( PROP_CONTROL, item.getControl() );
-    WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
     WidgetLCAUtil.preserveCustomVariant( item );
+    WidgetLCAUtil.preserveToolTipText( item, item.getToolTipText() );
+    ItemLCAUtil.preserve( item );
+    preserveProperty( item, PROP_CONTROL, item.getControl() );
   }
 
   public void readData( Widget widget ) {
@@ -54,60 +56,24 @@ public class TabItemLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     TabItem tabItem = ( TabItem )widget;
-    JSWriter writer = JSWriter.getWriterFor( widget );
     TabFolder parent = tabItem.getParent();
-    Object[] args = new Object[] {
-      WidgetUtil.getId( tabItem ),
-      WidgetUtil.getId( parent ),
-      new Integer( parent.indexOf( tabItem ) )
-    };
-    writer.callStatic( "org.eclipse.swt.TabUtil.createTabItem", args );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( tabItem );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "id", WidgetUtil.getId( tabItem ) );
+    clientObject.setProperty( "parent", WidgetUtil.getId( parent ) );
+    clientObject.setProperty( "index", parent.indexOf( tabItem ) ) ;
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( tabItem ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
     TabItem tabItem = ( TabItem )widget;
-    writeControlJsParent( tabItem );
-    ItemLCAUtil.writeChanges( tabItem );
-    writeSelection( tabItem );
-    WidgetLCAUtil.writeToolTip( tabItem, tabItem.getToolTipText() );
-    WidgetLCAUtil.writeCustomVariant( tabItem );
+    WidgetLCAUtil.renderCustomVariant( tabItem );
+    WidgetLCAUtil.renderToolTip( tabItem, tabItem.getToolTipText() );
+    ItemLCAUtil.renderChanges( tabItem );
+    renderProperty( tabItem, PROP_CONTROL, tabItem.getControl(), null );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    Object[] args = new Object[]{ WidgetUtil.getId( widget ), };
-    writer.callStatic( "org.eclipse.swt.TabUtil.releaseTabItem", args );
-    writer.dispose();
-  }
-
-  //////////////////
-  // helping methods
-
-  private void writeSelection( TabItem item ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( item );
-    Boolean newValue = Boolean.valueOf( isSelected( item ) );
-    writer.set( PROP_SELECTED, "checked", newValue, Boolean.FALSE );
-  }
-
-  private boolean isSelected( TabItem tabItem ) {
-    TabFolder parent = tabItem.getParent();
-    int selectionIndex = parent.getSelectionIndex();
-    return selectionIndex != -1 && parent.getItem( selectionIndex ) == tabItem;
-  }
-
-  private static void writeControlJsParent( TabItem tabItem ) {
-    Control control = tabItem.getControl();
-    if( WidgetLCAUtil.hasChanged( tabItem, PROP_CONTROL, control, null ) ) {
-      if( control != null ) {
-        final JSWriter writer = JSWriter.getWriterFor( control );
-        final String jsParentId = WidgetUtil.getId( tabItem ) + "pg";
-        WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( control );
-        adapter.setRenderRunnable( new IRenderRunnable() {
-          public void afterRender() throws IOException {
-            writer.setParent( jsParentId );
-          }
-        } );
-      }
-    }
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
 }

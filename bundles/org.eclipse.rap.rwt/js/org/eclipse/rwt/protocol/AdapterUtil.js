@@ -75,12 +75,16 @@ org.eclipse.rwt.protocol.AdapterUtil = {
       }
     },
     "bounds" : function( widget, value ) {
-      if( widget.getUserData( "scrolledComposite" ) === null ) {
-        widget.setLeft( value[ 0 ] );
-        widget.setTop( value[ 1 ] );
+      var bounds = value;
+      if( widget.getUserData( "tabFolder" ) !== null ) {
+        bounds = org.eclipse.swt.TabUtil.adjustBounds( widget, bounds );
       }
-      widget.setWidth( value[ 2 ] );
-      widget.setHeight( value[ 3 ] );
+      if( widget.getUserData( "scrolledComposite" ) === null ) {
+        widget.setLeft( bounds[ 0 ] );
+        widget.setTop( bounds[ 1 ] );
+      }
+      widget.setWidth( bounds[ 2 ] );
+      widget.setHeight( bounds[ 3 ] );
     },
     "toolTip" : function( widget, toolTipText ) {
       if( toolTipText != null && toolTipText != "" ) {
@@ -292,6 +296,8 @@ org.eclipse.rwt.protocol.AdapterUtil = {
       // [if] do nothing, parent is set in ScrolledComposite#setContent which is called from the 
       // server-side - see bug 349161
       widget.setUserData( "scrolledComposite", parent ); // Needed by "bounds" handler
+    } else if ( parent instanceof qx.ui.pageview.tabview.TabView ) {
+      widget.setUserData( "tabFolder", parent ); // Needed by "bounds" handler
     } else if( parent instanceof org.eclipse.swt.widgets.ExpandBar ) {
       parent.addWidget( widget );
     } else {

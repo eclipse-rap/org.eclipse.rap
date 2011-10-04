@@ -1,44 +1,48 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.TabUtil", {
 
   statics : {
     createTabItem : function( id, parentId, index ) {
-      var tabButton = new qx.ui.pageview.tabview.Button();
-      tabButton.setTabIndex( null );
-      tabButton.setLabel( "(empty)" );
-      tabButton.getLabelObject().setMode( "html" ); 
-      tabButton.setLabel( "" );
-      tabButton.setEnableElementFocus( false );
-      tabButton.addEventListener( "changeFocused", org.eclipse.swt.TabUtil._onTabItemChangeFocus );
-      tabButton.addEventListener( "changeChecked", org.eclipse.swt.TabUtil._onTabItemSelected );
-      tabButton.addEventListener( "click", org.eclipse.swt.TabUtil._onTabItemClick );
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var tabView = widgetManager.findWidgetById( parentId );
-      tabView.getBar().addAt( tabButton, index );
-      var tabViewPage = new qx.ui.pageview.tabview.Page( tabButton );
-      tabView.getPane().add( tabViewPage );
-      widgetManager.add( tabButton, id );
+      var tabFolder = widgetManager.findWidgetById( parentId );
+      var tabItem = new qx.ui.pageview.tabview.Button();
+      tabItem.setTabIndex( null );
+      tabItem.setLabel( "(empty)" );
+      tabItem.getLabelObject().setMode( "html" ); 
+      tabItem.setLabel( "" );
+      tabItem.setEnableElementFocus( false );
+      tabItem.addEventListener( "changeFocused", org.eclipse.swt.TabUtil._onTabItemChangeFocus );
+      tabItem.addEventListener( "changeChecked", org.eclipse.swt.TabUtil._onTabItemSelected );
+      tabItem.addEventListener( "click", org.eclipse.swt.TabUtil._onTabItemClick );
+      tabFolder.getBar().addAt( tabItem, index );
+      var tabViewPage = new qx.ui.pageview.tabview.Page( tabItem );
+      tabFolder.getPane().add( tabViewPage );
       widgetManager.add( tabViewPage, id + "pg" );
+      this.applySelectionIndex( tabFolder );
+      return tabItem;
     },
     
     releaseTabItem : function( itemId ) {
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var tabButton = widgetManager.findWidgetById( itemId );
-      tabButton.removeEventListener( "changeFocused", org.eclipse.swt.TabUtil._onTabItemChangeFocus );
-      tabButton.removeEventListener( "changeChecked", org.eclipse.swt.TabUtil._onTabItemSelected );
-      tabButton.removeEventListener( "click", org.eclipse.swt.TabUtil._onTabItemClick );
+      var tabItem = widgetManager.findWidgetById( itemId );
+      var tabFolder = tabItem.getParent().getParent();
+      tabItem.removeEventListener( "changeFocused", org.eclipse.swt.TabUtil._onTabItemChangeFocus );
+      tabItem.removeEventListener( "changeChecked", org.eclipse.swt.TabUtil._onTabItemSelected );
+      tabItem.removeEventListener( "click", org.eclipse.swt.TabUtil._onTabItemClick );
       widgetManager.dispose( itemId + "pg" );
+      widgetManager.dispose( itemId );
+      this.applySelectionIndex( tabFolder );
     },
 
     _onTabItemChangeFocus : function( evt ) {
@@ -106,6 +110,37 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
       if( item != null && folder.getFocused() ) {
         item.addState( "focused" );
       }
+    },
+
+    applySelectionIndex : function( folder ) {
+      if( folder != null && folder.getParent() != null ) {
+        var selectionIndex = folder.getUserData( "selectionIndex" );
+        var items = folder.getBar().getChildren();
+        for( var index = 0; index < items.length; index++ ) {
+          if( index === selectionIndex ) {
+            items[ index ].setChecked( true );
+          } else {
+            items[ index ].setChecked( false );
+          }
+        }
+      }
+    },
+
+    // Ported from TabFolderLCA#adjustCoordinates
+    adjustBounds : function( widget, bounds ) {
+      var result = bounds;
+      var folder = widget.getUserData( "tabFolder" );
+      if( folder != null ) {
+        var tabBarHeight = folder.getPlaceBarOnTop() ? 23 : 0;
+        var border = folder.getBorder();
+        var borderWidth = 1;
+        if( border != null ) {
+          borderWidth += border.getWidthTop();
+        }
+        result[ 0 ] -= borderWidth + 10;
+        result[ 1 ] -= borderWidth + 10 + tabBarHeight;
+      }
+      return result;
     }
   }
 });

@@ -1,21 +1,25 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tabfolderkit;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
@@ -34,9 +38,22 @@ import org.eclipse.swt.widgets.*;
 public class TabFolderLCA_Test extends TestCase {
 
   private Display display;
+  private Shell shell;
+  private TabFolderLCA lca;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
+    lca = new TabFolderLCA();
+    Fixture.fakeNewRequest( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testPreserveValues() {
-    Composite shell = new Shell( display, SWT.NONE );
     TabFolder tabfolder = new TabFolder( shell, SWT.NONE );
     Boolean hasListeners;
     Fixture.markInitialized( display );
@@ -154,7 +171,6 @@ public class TabFolderLCA_Test extends TestCase {
   }
 
   public void testSelectionWithoutListener() {
-    Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item0 = new TabItem( folder, SWT.NONE );
@@ -172,7 +188,7 @@ public class TabFolderLCA_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, folderId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED_ITEM, item1Id );
     Fixture.readDataAndProcessAction( display );
-    
+
     assertEquals( 1, folder.getSelectionIndex() );
     assertFalse( control0.getVisible() );
     assertTrue( control1.getVisible() );
@@ -180,7 +196,6 @@ public class TabFolderLCA_Test extends TestCase {
 
   public void testSelectionWithListener() {
     final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>();
-    Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item0 = new TabItem( folder, SWT.NONE );
@@ -224,12 +239,89 @@ public class TabFolderLCA_Test extends TestCase {
     assertNull( event.text );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    display = new Display();
+  public void testRenderCreate() throws IOException {
+    TabFolder folder = new TabFolder( shell, SWT.NONE );
+
+    lca.renderInitialization( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertEquals( "rwt.widgets.TabFolder", operation.getType() );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "TOP" ) );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testRenderCreateOnBottom() throws IOException {
+    TabFolder folder = new TabFolder( shell, SWT.BOTTOM );
+
+    lca.renderInitialization( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertEquals( "rwt.widgets.TabFolder", operation.getType() );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "BOTTOM" ) );
+  }
+
+  public void testRenderParent() throws IOException {
+    TabFolder folder = new TabFolder( shell, SWT.NONE );
+
+    lca.renderInitialization( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertEquals( WidgetUtil.getId( folder.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderInitialSelectionIndexWithoutItems() throws IOException {
+    TabFolder folder = new TabFolder( shell, SWT.NONE );
+
+    lca.render( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertTrue( operation.getPropertyNames().indexOf( "selectionIndex" ) == -1 );
+  }
+
+  public void testRenderInitialSelectionIndexWithItems() throws IOException {
+    TabFolder folder = new TabFolder( shell, SWT.NONE );
+    new TabItem( folder, SWT.NONE );
+    new TabItem( folder, SWT.NONE );
+    new TabItem( folder, SWT.NONE );
+
+    lca.render( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertEquals( Integer.valueOf( 0 ), operation.getProperty( "selectionIndex" ) );
+  }
+
+  public void testRenderSelectionIndex() throws IOException {
+    TabFolder folder = new TabFolder( shell, SWT.NONE );
+    new TabItem( folder, SWT.NONE );
+    new TabItem( folder, SWT.NONE );
+    new TabItem( folder, SWT.NONE );
+
+    folder.setSelection( 1 );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 1 ), message.findSetProperty( folder, "selectionIndex" ) );
+  }
+
+  public void testRenderMinimumUnchanged() throws IOException {
+    TabFolder folder = new TabFolder( shell, SWT.NONE );
+    new TabItem( folder, SWT.NONE );
+    new TabItem( folder, SWT.NONE );
+    new TabItem( folder, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+
+    folder.setSelection( 1 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( folder, "selectionIndex" ) );
   }
 }
