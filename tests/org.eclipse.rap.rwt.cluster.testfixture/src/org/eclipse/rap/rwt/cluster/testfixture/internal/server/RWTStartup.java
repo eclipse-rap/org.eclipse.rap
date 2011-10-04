@@ -10,15 +10,12 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.internal.server;
 
-import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
-import org.eclipse.rwt.internal.engine.ApplicationConfigurable;
-import org.eclipse.rwt.internal.engine.Configurable;
-import org.eclipse.rwt.internal.engine.ConfigurablesProvider;
-import org.eclipse.rwt.internal.engine.RWTServletContextListener;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
@@ -28,35 +25,38 @@ public class RWTStartup {
   public static ServletContextListener createServletContextListener( 
     Class<? extends IEntryPoint> entryPointClass ) 
   {
-    ApplicationConfigurator configurator = new SimpleLifeCycleConfigurator( entryPointClass );
-    ConfigurablesProvider configurablesProvider = new CustomConfigurablesProvider( configurator );
-    return new RWTServletContextListener( configurablesProvider );
+    return new TestApplicationController( entryPointClass );
   }
   
-  private static class CustomConfigurablesProvider extends ConfigurablesProvider {
-    private final ApplicationConfigurator configurator;
+  private static class TestApplicationController implements ServletContextListener {
+    private final Class<? extends IEntryPoint> entryPointClass;
+    private Application application;
 
-    private CustomConfigurablesProvider( ApplicationConfigurator configurator ) {
-      this.configurator = configurator;
+    private TestApplicationController( Class<? extends IEntryPoint> entryPointClass ) {
+      this.entryPointClass = entryPointClass;
     }
 
-    public Configurable[] createConfigurables( ServletContext servletContext ) {
-      return new Configurable[]{
-        new ApplicationConfigurable( configurator, servletContext )
-      };
+    public void contextInitialized( ServletContextEvent event ) {
+      ApplicationConfigurator configurator = new TestApplicationConfigurator( entryPointClass );
+      application = new Application( configurator, event.getServletContext() );
+      application.start();
+    }
+
+    public void contextDestroyed( ServletContextEvent event ) {
+      application.stop();
     }
   }
 
-  private static class SimpleLifeCycleConfigurator implements ApplicationConfigurator {
+  private static class TestApplicationConfigurator implements ApplicationConfigurator {
     private final Class<? extends IEntryPoint> entryPointClass;
     
-    private SimpleLifeCycleConfigurator( Class<? extends IEntryPoint> entryPointClass ) {
+    private TestApplicationConfigurator( Class<? extends IEntryPoint> entryPointClass ) {
       this.entryPointClass = entryPointClass;
     }
     
-    public void configure( ApplicationConfiguration context ) {
-      context.setLifeCycleMode( ApplicationConfiguration.LifeCycleMode.THREADLESS );
-      context.addEntryPoint( EntryPointManager.DEFAULT, entryPointClass );
+    public void configure( ApplicationConfiguration configuration ) {
+      configuration.useJEECompatibilityMode();
+      configuration.addEntryPoint( EntryPointManager.DEFAULT, entryPointClass );
     }
   }
 }
