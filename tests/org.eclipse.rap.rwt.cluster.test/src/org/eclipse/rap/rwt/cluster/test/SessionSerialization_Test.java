@@ -19,9 +19,9 @@ import org.eclipse.rap.rwt.cluster.test.entrypoints.WidgetsEntryPoint;
 import org.eclipse.rap.rwt.cluster.testfixture.ClusterFixture;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
-import org.eclipse.rap.rwt.cluster.testfixture.internal.jetty.JettyCluster;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineCluster;
+import org.eclipse.rap.rwt.cluster.testfixture.server.JettyFactory;
 
 
 
@@ -44,7 +44,7 @@ public class SessionSerialization_Test extends TestCase {
 
   protected void setUp() throws Exception {
     ClusterFixture.setUp();
-    cluster = new JettyCluster();
+    cluster = new JettyFactory().createServletEngineCluster();
     primary = cluster.addServletEngine();
     secondary = cluster.addServletEngine();
     cluster.start( WidgetsEntryPoint.class );
