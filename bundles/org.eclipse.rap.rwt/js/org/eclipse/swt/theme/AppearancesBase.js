@@ -788,7 +788,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       result.border = tv.getCssBorder( "Combo-List", "border" );
       result.textColor = tv.getCssColor( "Combo", "color" );
-      result.font = tv.getCssFont( "*", "font" );
+      result.font = tv.getCssFont( "Combo", "font" );
       result.backgroundColor = tv.getCssColor( "Combo", "background-color" );
       result.shadow = tv.getCssShadow( "Combo-List", "box-shadow" );
       result.textShadow = tv.getCssShadow( "Combo", "text-shadow" );
@@ -800,7 +800,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.font = tv.getCssFont( "*", "font" );
+      result.font = tv.getCssFont( "Combo", "font" );
       // [if] Do not apply top/bottom paddings on the client
       var cssPadding = tv.getCssBoxDimensions( "Combo-Field", "padding" );
       result.paddingRight = cssPadding[ 1 ];
@@ -867,7 +867,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       var result = {};
       result.border = tv.getCssBorder( "CCombo-List", "border" );
       result.textColor = tv.getCssColor( "CCombo", "color" );
-      result.font = tv.getCssFont( "*", "font" );
+      result.font = tv.getCssFont( "CCombo", "font" );
       result.backgroundColor = tv.getCssColor( "CCombo", "background-color" );
       result.shadow = tv.getCssShadow( "CCombo-List", "box-shadow" );
       result.textShadow = tv.getCssShadow( "CCombo", "text-shadow" );
@@ -879,7 +879,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.font = tv.getCssFont( "*", "font" );
+      result.font = tv.getCssFont( "CCombo", "font" );
       // [if] Do not apply top/bottom paddings on the client
       var cssPadding = tv.getCssBoxDimensions( "CCombo-Field", "padding" );
       result.paddingRight = cssPadding[ 1 ];
