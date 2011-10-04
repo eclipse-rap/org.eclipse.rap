@@ -181,10 +181,12 @@ public final class Image extends Resource {
    * <dl>
    * <dt><b>{@link SWT#IMAGE_COPY}</b></dt>
    * <dd>the result is an identical copy of srcImage</dd>
+   * <!--
    * <dt><b>{@link SWT#IMAGE_DISABLE}</b></dt>
    * <dd>the result is a copy of srcImage which has a <em>disabled</em> look</dd>
    * <dt><b>{@link SWT#IMAGE_GRAY}</b></dt>
    * <dd>the result is a copy of srcImage which has a <em>gray scale</em> look</dd>
+   * -->
    * </dl>
    *
    * @param device the device on which to create the image

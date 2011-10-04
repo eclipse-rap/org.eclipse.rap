@@ -606,17 +606,17 @@ public class GC extends Resource {
    * 
    * @see #setAlpha
    * @see #setAntialias
-   * @see #setBackgroundPattern
-   * @see #setClipping(Path)
-   * @see #setForegroundPattern
    * @see #setLineAttributes
-   * @see #setInterpolation
    * @see #setTextAntialias
-   * @see #setTransform
    * @see #getAdvanced
    * 
    * @since 1.4
    */
+//  * @see #setClipping(Path)
+//  * @see #setInterpolation
+//  * @see #setForegroundPattern
+//  * @see #setBackgroundPattern
+//  * @see #setTransform
   public void setAdvanced( final boolean advanced ) {
     checkDisposed();
     this.advanced = advanced;

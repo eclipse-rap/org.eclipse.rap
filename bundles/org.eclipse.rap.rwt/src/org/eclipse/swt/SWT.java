@@ -69,14 +69,12 @@ public class SWT {
    * @see org.eclipse.swt.widgets.Event
    *
    * @see org.eclipse.swt.widgets.Control#addKeyListener
-   * <!--
-   * @see org.eclipse.swt.widgets.Tracker#addKeyListener
-   * -->
    * @see org.eclipse.swt.events.KeyListener#keyReleased
    * @see org.eclipse.swt.events.KeyEvent
    *
    * @since 1.2
    */
+//  * @see org.eclipse.swt.widgets.Tracker#addKeyListener
   public static final int KeyUp = 2;
 
   /**

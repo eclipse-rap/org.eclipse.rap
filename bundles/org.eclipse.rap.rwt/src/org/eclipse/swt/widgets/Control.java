@@ -63,7 +63,7 @@ public abstract class Control extends Widget implements Drawable {
       return Control.this.tabIndex;
     }
 
-    public void setTabIndex( final int index ) {
+    public void setTabIndex( int index ) {
       Control.this.tabIndex = index;
     }
 
@@ -151,7 +151,7 @@ public abstract class Control extends Widget implements Drawable {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public Control( final Composite parent, final int style ) {
+  public Control( Composite parent, int style ) {
     super( parent, style );
     this.parent = parent;
     this.controlAdapter = new ControlAdapter();
@@ -244,7 +244,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setVisible( final boolean visible ) {
+  public void setVisible( boolean visible ) {
     checkWidget();
     if( ( state & HIDDEN ) != 0 != !visible ) {
       if( visible ) {
@@ -325,7 +325,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *                </ul>
    */
-  public void setEnabled( final boolean enabled ) {
+  public void setEnabled( boolean enabled ) {
     checkWidget();
     /*
      * TODO [rst] handle focus
@@ -401,7 +401,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setBackground( final Color color ) {
+  public void setBackground( Color color ) {
     checkWidget();
     if( color != null && color.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -468,7 +468,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @since 1.1
    */
-  public void setBackgroundImage( final Image image ) {
+  public void setBackgroundImage( Image image ) {
     checkWidget();
     if( image != null && image.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -516,7 +516,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *                </ul>
    */
-  public void setForeground( final Color color ) {
+  public void setForeground( Color color ) {
     checkWidget();
     if( color != null && color.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -625,7 +625,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *                </ul>
    */
-  public void setFont( final Font font ) {
+  public void setFont( Font font ) {
     checkWidget();
     if( font != null && font.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -678,7 +678,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @since 1.2
    */
-  public void setCursor( final Cursor cursor ) {
+  public void setCursor( Cursor cursor ) {
     checkWidget();
     if( cursor != null && cursor.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -825,7 +825,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *                </ul>
    */
-  public void setBounds( final Rectangle bounds ) {
+  public void setBounds( Rectangle bounds ) {
     checkWidget();
     if( bounds == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -856,11 +856,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *                </ul>
    */
-  public void setBounds( final int x,
-                         final int y,
-                         final int width,
-                         final int height )
-  {
+  public void setBounds( int x, int y, int width, int height ) {
     setBounds( new Rectangle( x, y, width, height ) );
   }
 
@@ -878,7 +874,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *                </ul>
    */
-  public void setLocation( final Point location ) {
+  public void setLocation( Point location ) {
     if( location == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -904,7 +900,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *                </ul>
    */
-  public void setLocation( final int x, final int y ) {
+  public void setLocation( int x, int y ) {
     setLocation( new Point( x, y ) );
   }
 
@@ -944,7 +940,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *                </ul>
    */
-  public void setSize( final Point size ) {
+  public void setSize( Point size ) {
     if( size == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -967,7 +963,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *                </ul>
    */
-  public void setSize( final int width, final int height ) {
+  public void setSize( int width, int height ) {
     setSize( new Point( width, height ) );
   }
 
@@ -1016,7 +1012,7 @@ public abstract class Control extends Widget implements Drawable {
    * @see #pack(boolean)
    * @see "computeTrim, getClientArea for controls that implement them"
    */
-  public Point computeSize( final int wHint, final int hHint ) {
+  public Point computeSize( int wHint, int hHint ) {
     return computeSize( wHint, hHint, true );
   }
 
@@ -1054,10 +1050,7 @@ public abstract class Control extends Widget implements Drawable {
    * @see #pack(boolean)
    * @see "computeTrim, getClientArea for controls that implement them"
    */
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = DEFAULT_WIDTH;
     int height = DEFAULT_HEIGHT;
@@ -1111,7 +1104,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @see #computeSize(int, int, boolean)
    */
-  public void pack( final boolean changed ) {
+  public void pack( boolean changed ) {
     checkWidget();
     setSize( computeSize( SWT.DEFAULT, SWT.DEFAULT, changed ) );
     packed = true;
@@ -1155,7 +1148,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *                </ul>
    */
-  public Point toControl( final int x, final int y ) {
+  public Point toControl( int x, int y ) {
     checkWidget();
     return getDisplay().map( null, this, x, y );
   }
@@ -1176,7 +1169,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *                </ul>
    */
-  public Point toControl( final Point point ) {
+  public Point toControl( Point point ) {
     checkWidget();
     if( point == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -1198,7 +1191,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public Point toDisplay( final int x, final int y ) {
+  public Point toDisplay( int x, int y ) {
     checkWidget();
     return getDisplay().map( this, null, x, y );
   }
@@ -1219,7 +1212,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *                </ul>
    */
-  public Point toDisplay( final Point point ) {
+  public Point toDisplay( Point point ) {
     checkWidget();
     if( point == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -1255,16 +1248,16 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *                </ul>
    */
-  public void setLayoutData( final Object layoutData ) {
+  public void setLayoutData( Object layoutData ) {
     checkWidget();
     this.layoutData = layoutData;
   }
 
-  void markLayout( final boolean changed, final boolean all ) {
+  void markLayout( boolean changed, boolean all ) {
     /* Do nothing */
   }
 
-  void updateLayout( final boolean resize, final boolean all ) {
+  void updateLayout( boolean resize, boolean all ) {
     /* Do nothing */
   }
 
@@ -1282,7 +1275,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setToolTipText( final String toolTipText ) {
+  public void setToolTipText( String toolTipText ) {
     checkWidget();
     this.toolTipText = toolTipText;
   }
@@ -1331,7 +1324,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *                </ul>
    */
-  public void setMenu( final Menu menu ) {
+  public void setMenu( Menu menu ) {
     checkWidget();
     if( this.menu != menu ) {
       if( menu != null ) {
@@ -1394,7 +1387,7 @@ public abstract class Control extends Widget implements Drawable {
    * @see Control#moveBelow
    * @see Composite#getChildren
    */
-  public void moveAbove( final Control control ) {
+  public void moveAbove( Control control ) {
     checkWidget();
     if( control != null && control.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -1429,7 +1422,7 @@ public abstract class Control extends Widget implements Drawable {
    * @see Control#moveAbove
    * @see Composite#getChildren
    */
-  public void moveBelow( final Control control ) {
+  public void moveBelow( Control control ) {
     checkWidget();
     if( control != null && control.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -1444,7 +1437,7 @@ public abstract class Control extends Widget implements Drawable {
     }
   }
 
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result = null;
     if( adapter == IControlAdapter.class ) {
       if( controlAdapter == null ) {
@@ -1479,7 +1472,7 @@ public abstract class Control extends Widget implements Drawable {
    * @see ControlListener
    * @see #removeControlListener
    */
-  public void addControlListener( final ControlListener listener ) {
+  public void addControlListener( ControlListener listener ) {
     checkWidget();
     ControlEvent.addListener( this, listener );
   }
@@ -1501,7 +1494,7 @@ public abstract class Control extends Widget implements Drawable {
    * @see ControlListener
    * @see #addControlListener
    */
-  public void removeControlListener( final ControlListener listener ) {
+  public void removeControlListener( ControlListener listener ) {
     checkWidget();
     ControlEvent.removeListener( this, listener );
   }
@@ -1527,7 +1520,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @since 1.1
    */
-  public void addMouseListener( final MouseListener listener ) {
+  public void addMouseListener( MouseListener listener ) {
     checkWidget();
     MouseEvent.addListener( this, listener );
   }
@@ -1551,7 +1544,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @since 1.1
    */
-  public void removeMouseListener( final MouseListener listener ) {
+  public void removeMouseListener( MouseListener listener ) {
     checkWidget();
     MouseEvent.removeListener( this, listener );
   }
@@ -1596,7 +1589,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @since 1.2
    */
-  public void addKeyListener( final KeyListener listener ) {
+  public void addKeyListener( KeyListener listener ) {
     checkWidget();
     KeyEvent.addListener( this, listener );
   }
@@ -1620,7 +1613,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @since 1.2
    */
-  public void removeKeyListener( final KeyListener listener ) {
+  public void removeKeyListener( KeyListener listener ) {
     checkWidget();
     KeyEvent.removeListener( this, listener );
   }
@@ -1646,7 +1639,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @since 1.2
    */
-  public void addTraverseListener( final TraverseListener listener ) {
+  public void addTraverseListener( TraverseListener listener ) {
     checkWidget();
     TraverseEvent.addListener( this, listener );
   }
@@ -1670,7 +1663,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @since 1.2
    */
-  public void removeTraverseListener( final TraverseListener listener ) {
+  public void removeTraverseListener( TraverseListener listener ) {
     checkWidget();
     TraverseEvent.removeListener( this, listener );
   }
@@ -1694,7 +1687,7 @@ public abstract class Control extends Widget implements Drawable {
    * @see FocusListener
    * @see #removeFocusListener
    */
-  public void addFocusListener( final FocusListener listener ) {
+  public void addFocusListener( FocusListener listener ) {
     checkWidget();
     FocusEvent.addListener( this, listener );
   }
@@ -1716,7 +1709,7 @@ public abstract class Control extends Widget implements Drawable {
    * @see FocusListener
    * @see #addFocusListener
    */
-  public void removeFocusListener( final FocusListener listener ) {
+  public void removeFocusListener( FocusListener listener ) {
     checkWidget();
     FocusEvent.removeListener( this, listener );
   }
@@ -1741,7 +1734,7 @@ public abstract class Control extends Widget implements Drawable {
    * @see #removeHelpListener
    * @since 1.3
    */
-  public void addHelpListener( final HelpListener listener ) {
+  public void addHelpListener( HelpListener listener ) {
     checkWidget();
     HelpEvent.addListener( this, listener );
   }
@@ -1764,7 +1757,7 @@ public abstract class Control extends Widget implements Drawable {
    * @see #addHelpListener
    * @since 1.3
    */
-  public void removeHelpListener( final HelpListener listener ) {
+  public void removeHelpListener( HelpListener listener ) {
     checkWidget();
     HelpEvent.removeListener( this, listener );
   }
@@ -1790,7 +1783,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @since 1.3
    */
-  public void addDragDetectListener( final DragDetectListener listener ) {
+  public void addDragDetectListener( DragDetectListener listener ) {
     checkWidget();
     DragDetectEvent.addListener( this, listener );
   }
@@ -1814,7 +1807,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @since 1.3
    */
-  public void removeDragDetectListener( final DragDetectListener listener ) {
+  public void removeDragDetectListener( DragDetectListener listener ) {
     checkWidget();
     DragDetectEvent.removeListener( this, listener );
   }
@@ -1841,7 +1834,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @since 1.3
    */
-  public void addMenuDetectListener( final MenuDetectListener listener ) {
+  public void addMenuDetectListener( MenuDetectListener listener ) {
     checkWidget();
     MenuDetectEvent.addListener( this, listener );
   }
@@ -1866,7 +1859,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @since 1.3
    */
-  public void removeMenuDetectListener( final MenuDetectListener listener ) {
+  public void removeMenuDetectListener( MenuDetectListener listener ) {
     checkWidget();
     MenuDetectEvent.removeListener( this, listener );
   }
@@ -1900,7 +1893,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setRedraw( final boolean redraw ) {
+  public void setRedraw( boolean redraw ) {
     checkWidget();
     internalSetRedraw( redraw );
   }
@@ -1949,28 +1942,21 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @see #update()
    * @see PaintListener
-   * <!--
-   * @see SWT#Paint
-   * -->
    * @see SWT#NO_BACKGROUND
    * @see SWT#NO_REDRAW_RESIZE
    * @see SWT#NO_MERGE_PAINTS
    * @see SWT#DOUBLE_BUFFERED
    * @since 1.3
    */
-  public void redraw( final int x,
-                      final int y,
-                      final int width,
-                      final int height,
-                      final boolean all )
-  {
+//  * @see SWT#Paint
+  public void redraw( int x, int y, int width, int height, boolean all ) {
     checkWidget();
     if( width > 0 && height > 0 ) {
       internalSetRedraw( true );
     }
   }
 
-  void internalSetRedraw( final boolean redraw ) {
+  void internalSetRedraw( boolean redraw ) {
     display.redrawControl( this, redraw );
   }
 
@@ -2014,7 +2000,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    *  @since 1.3
    */
-  public boolean setParent( final Composite parent ) {
+  public boolean setParent( Composite parent ) {
     checkWidget();
     return false;
   }
@@ -2053,7 +2039,7 @@ public abstract class Control extends Widget implements Drawable {
    * 
    * @since 1.4  
    */
-  public void setOrientation( final int orientation ) { 
+  public void setOrientation( int orientation ) { 
     checkWidget();
   }
 
@@ -2309,7 +2295,7 @@ public abstract class Control extends Widget implements Drawable {
   ////////////////////////////////
   // Helping methods for setBounds
 
-  void setBounds( final Rectangle bounds, final boolean updateMode ) {
+  void setBounds( Rectangle bounds, boolean updateMode ) {
     Point oldLocation = getLocation();
     Point oldSize = getSize();
     this.bounds = new Rectangle( bounds.x, bounds.y, bounds.width, bounds.height );
@@ -2327,13 +2313,13 @@ public abstract class Control extends Widget implements Drawable {
     // subclasses may override
   }
 
-  void notifyResize( final Point oldSize ) {
+  void notifyResize( Point oldSize ) {
     if( !oldSize.equals( getSize() ) ) {
       new ControlEvent( this, ControlEvent.CONTROL_RESIZED ).processEvent();
     }
   }
 
-  void notifyMove( final Point oldLocation ) {
+  void notifyMove( Point oldLocation ) {
     if( !oldLocation.equals( getLocation() ) ) {
       new ControlEvent( this, ControlEvent.CONTROL_MOVED ).processEvent();
     }
@@ -2342,7 +2328,7 @@ public abstract class Control extends Widget implements Drawable {
   ////////////////////////
   // Focus helping methods
 
-  private void setFocusControl( final Control control ) {
+  private void setFocusControl( Control control ) {
     if( control != null ) {
       display.setActiveShell( control.getShell() );
     }
@@ -2430,7 +2416,7 @@ public abstract class Control extends Widget implements Drawable {
     if( menu != null ) {
       if( menuDisposeListener == null ) {
         menuDisposeListener = new DisposeListener() {
-          public void widgetDisposed( final DisposeEvent event ) {
+          public void widgetDisposed( DisposeEvent event ) {
             Control.this.menu = null;
           }
         };
