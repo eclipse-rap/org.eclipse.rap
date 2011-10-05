@@ -937,9 +937,10 @@ qx.Class.define("qx.ui.core.Parent",
       this.base( arguments );
       // NOTE: a "visible" Child is actually every "displayable" child here  
       this.forEachVisibleChild( function() {
-        //if( this.getElement() ) {
+        // Check if the nodes are actually connected - See Bug 359665
+        if( this.getElement().parentNode === this.getParent()._getTargetNode() ) {
           this._afterInsertDom();
-        //}
+        }
       } );
     },
 
@@ -949,7 +950,9 @@ qx.Class.define("qx.ui.core.Parent",
     _afterRemoveDom : function() {
       this.base( arguments );
       this.forEachVisibleChild( function() {
-        this._afterRemoveDom();
+        if( this.isInDom() ) {
+          this._afterRemoveDom();
+        }
       } );
     },
 

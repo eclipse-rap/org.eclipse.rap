@@ -107,7 +107,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       child1.destroy();
       child2.destroy();
     },
-    
+
+    testNoInsertDomEventOnParentInsert : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var parent1 = new qx.ui.layout.CanvasLayout();
+      parent1.addToDocument();
+      var child1 = new qx.ui.basic.Terminator();
+      var log = [];
+      child1.addEventListener( "insertDom", function( event ) {
+        log.push( event.getTarget().getElement().parentNode );
+      } );
+      parent1.addEventListener( "insertDom", function( event ) {
+        log.push( "parent" );
+      } );
+      child1.setParent( parent1 );
+      testUtil.flush();
+      assertIdentical( parent1._getTargetNode(), child1.getElement().parentNode );
+      assertEquals( 2, log.length );
+      assertIdentical( "parent", log[ 0 ] );
+      assertIdentical( parent1._getTargetNode(), log[ 1 ] );
+      parent1.destroy();
+      child1.destroy();
+    },
+
     testInsertDomEventLazy : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = new qx.ui.layout.CanvasLayout();
@@ -152,34 +174,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       child.destroy();
     },
 
-	// failed Attempt to reproduce Bug 359665 - "Background transparent don't work in IE"
-    testInsertDomEventSetDisplay : function() {
+	  // See Bug 359665 - "Background transparent don't work in IE"
+    testNoInsertDomEventOnRoundedBorderRender : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var parent = new qx.ui.layout.CanvasLayout();
       parent.addToDocument();
+      testUtil.flush();
       var child = new qx.ui.basic.Terminator();
-      child.setParent( parent );
-      testUtil.flush();
-      assertTrue( child.isInDom() );
-      assertTrue( parent.isInDom() );
-      child.setDisplay( true ); 
-      child.setDisplay( false ); // removes child node from parent (must happen first)
-      testUtil.flush();
-      glob = child;
-      assertTrue( !child.getElement().parentElement );
-      parent.getParent().remove( parent ); // 
-      testUtil.flush();
-      assertTrue( !parent.getElement().parentElement );
       var log = [];
       var logger = function( event ) {
-        log.push( event.getTarget().getElement().parentElement.parentElement );
+        log.push( event.getTarget().getElement().parentNode );
       }
       child.addEventListener( "insertDom", logger );
-      assertEquals( [ ], log );
-      parent.addToDocument();
-      child.setDisplay( true );
+      child.setParent( parent );
+      parent.setBorder( new org.eclipse.rwt.Border( 3, "rounded", "#FF00FF", [ 0, 1, 2, 3 ] ) );
       testUtil.flush();
-      assertEquals( [ parent.getParent() ], log );
+      assertEquals( 1, log.length );
+      assertIdentical( parent._getTargetNode(), log[ 0 ] );
       parent.destroy();
       child.destroy();
     },
