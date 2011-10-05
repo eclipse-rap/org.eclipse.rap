@@ -21,8 +21,13 @@ class DatabaseServer {
   private static final String CONNECTION_URL_PATTERN
     = "jdbc:h2:tcp://localhost:{0}/mem:sessions;DB_CLOSE_DELAY=-1";
 
+  private final org.h2.Driver driver;
   private Server server;
   
+  DatabaseServer() {
+    driver = new org.h2.Driver();
+  }
+
   void start() {
     int port = SocketUtil.getFreePort();
     try {
@@ -47,8 +52,8 @@ class DatabaseServer {
     }
   }
 
-  String getDriverClassName() {
-    return org.h2.Driver.class.getName();
+  java.sql.Driver getDriver() {
+    return driver;
   }
   
   String getConnectionUrl() {

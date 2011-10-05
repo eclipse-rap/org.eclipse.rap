@@ -93,7 +93,6 @@ class ServletEngineLogger implements Logger {
   }
 
   public void ignore( Throwable ignored ) {
-    throw rethrow( ignored );
   }
 
   private static RuntimeException rethrow( Throwable throwable ) {

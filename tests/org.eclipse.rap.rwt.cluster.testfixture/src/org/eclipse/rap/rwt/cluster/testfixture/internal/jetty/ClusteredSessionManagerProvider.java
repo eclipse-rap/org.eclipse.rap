@@ -10,6 +10,8 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.internal.jetty;
 
+import java.sql.Driver;
+import java.sql.DriverManager;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.eclipse.jetty.server.Server;
@@ -37,17 +39,30 @@ class ClusteredSessionManagerProvider implements ISessionManagerProvider {
   }
 
   public SessionIdManager createSessionIdManager( Server server ) {
-    JDBCSessionIdManager result = new JDBCSessionIdManager( server );
+    JDBCSessionIdManager result = new CleanJDBCSessionIdManager( server );
     result.setScavengeInterval( SCAVENGE_INTERVAL );
     result.setWorkerName( generateNodeName() );
-    String driverClassName = databaseServer.getDriverClassName();
+    Driver driver = databaseServer.getDriver();
     String connectionUrl = databaseServer.getConnectionUrl();
-    result.setDriverInfo( driverClassName, connectionUrl );
+    result.setDriverInfo( driver, connectionUrl );
     return result;
   }
 
   private String generateNodeName() {
     int nodeId = nodeCounter.getAndIncrement();
     return "node" + nodeId;
+  }
+  
+  private class CleanJDBCSessionIdManager extends JDBCSessionIdManager {
+
+    public CleanJDBCSessionIdManager( Server server ) {
+      super( server );
+    }
+    
+    @Override
+    public void doStop() throws Exception {
+      super.doStop();
+      DriverManager.deregisterDriver( databaseServer.getDriver() );
+    }
   }
 }

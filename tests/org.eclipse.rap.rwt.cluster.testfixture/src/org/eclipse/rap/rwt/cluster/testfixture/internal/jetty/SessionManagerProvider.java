@@ -21,7 +21,6 @@ class SessionManagerProvider implements ISessionManagerProvider {
   public SessionManager createSessionManager( Server server ) {
     HashSessionManager result = new HashSessionManager();
     result.setScavengePeriod( 1 );
-    result.setUsingCookies( true );
     return result;
   }
 

@@ -14,9 +14,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -34,7 +36,6 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.servlet.FilterMapping;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.log.Log;
@@ -116,7 +117,7 @@ public class JettyEngine implements IServletEngine {
     SessionManager result = sessionManagerProvider.createSessionManager( server );
     SessionIdManager sessionIdManager = sessionManagerProvider.createSessionIdManager( server );
     result.setMaxInactiveInterval( 60 * 60 );
-    result.setIdManager( sessionIdManager );
+    result.setSessionIdManager( sessionIdManager );
     server.setSessionIdManager( sessionIdManager );
     return result;
   }
@@ -131,7 +132,8 @@ public class JettyEngine implements IServletEngine {
 
   private static void addServletContextFilter( ServletContextHandler context, Filter filter ) {
     FilterHolder filterHolder = new FilterHolder( filter );
-    context.addFilter( filterHolder, IServletEngine.SERVLET_PATH, FilterMapping.DEFAULT );
+    EnumSet<DispatcherType> dispatcherType = EnumSet.of( DispatcherType.REQUEST );
+    context.addFilter( filterHolder, IServletEngine.SERVLET_PATH, dispatcherType );
   }
 
   private ServletContextHandler createServletContext( String path ) {

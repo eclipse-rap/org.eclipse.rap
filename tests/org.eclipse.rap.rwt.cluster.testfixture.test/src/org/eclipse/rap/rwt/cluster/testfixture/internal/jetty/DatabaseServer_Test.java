@@ -11,6 +11,7 @@
 package org.eclipse.rap.rwt.cluster.testfixture.internal.jetty;
 
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -81,9 +82,14 @@ public class DatabaseServer_Test extends TestCase {
     }
   }
   
+  public void testGetDriver() {
+    Driver driver1 = databaseServer.getDriver();
+    Driver driver2 = databaseServer.getDriver();
+    assertSame( driver1, driver2 );
+  }
+  
   protected void setUp() throws Exception {
     databaseServer = new DatabaseServer();
-    Class.forName( databaseServer.getDriverClassName() );
   }
   
   protected void tearDown() throws Exception {
