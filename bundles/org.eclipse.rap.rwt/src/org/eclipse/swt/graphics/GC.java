@@ -70,6 +70,8 @@ public class GC extends Resource {
   
   private final GCDelegate delegate;
   private boolean advanced;
+  private int antialias;
+  private int textAntialias;
 
   /**
    * Constructs a new instance of this class which has been
@@ -128,6 +130,8 @@ public class GC extends Resource {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     delegate = determineDelegate( drawable );
+    antialias = SWT.DEFAULT;
+    textAntialias = SWT.DEFAULT;
   }
 
   /**
@@ -622,7 +626,121 @@ public class GC extends Resource {
     this.advanced = advanced;
     if( !advanced ) {
       delegate.setAlpha( 255 );
+      antialias = SWT.DEFAULT;
+      textAntialias = SWT.DEFAULT;
     }
+  }
+
+  /**
+   * Sets the receiver's anti-aliasing value to the parameter, 
+   * which must be one of <code>SWT.DEFAULT</code>, <code>SWT.OFF</code>
+   * or <code>SWT.ON</code>. Note that this controls anti-aliasing for all
+   * <em>non-text drawing</em> operations.
+   * <p>
+   * This operation requires the operating system's advanced
+   * graphics subsystem which may not be available on some
+   * platforms.
+   * </p>
+   *
+   * @param antialias the anti-aliasing setting
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the parameter is not one of <code>SWT.DEFAULT</code>,
+   *                                 <code>SWT.OFF</code> or <code>SWT.ON</code></li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_NO_GRAPHICS_LIBRARY - if advanced graphics are not available</li>
+   * </ul>
+   * 
+   * @see #getAdvanced
+   * @see #setAdvanced
+   * @see #setTextAntialias
+   * 
+   * @since 1.5
+   */
+  public void setAntialias( int antialias ) {
+    if( antialias != SWT.DEFAULT && antialias != SWT.ON && antialias != SWT.OFF ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    this.antialias = antialias;
+    advanced = true;
+  }
+
+  /**
+   * Returns the receiver's anti-aliasing setting value, which will be
+   * one of <code>SWT.DEFAULT</code>, <code>SWT.OFF</code> or
+   * <code>SWT.ON</code>. Note that this controls anti-aliasing for all
+   * <em>non-text drawing</em> operations.
+   *
+   * @return the anti-aliasing setting
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * 
+   * @see #getTextAntialias
+   * 
+   * @since 1.5
+   */
+  public int getAntialias() {
+    return antialias;
+  }
+
+  /**
+   * Sets the receiver's text anti-aliasing value to the parameter, 
+   * which must be one of <code>SWT.DEFAULT</code>, <code>SWT.OFF</code>
+   * or <code>SWT.ON</code>. Note that this controls anti-aliasing only
+   * for all <em>text drawing</em> operations.
+   * <p>
+   * This operation requires the operating system's advanced
+   * graphics subsystem which may not be available on some
+   * platforms.
+   * </p>
+   * 
+   * @param antialias the anti-aliasing setting
+   *
+   * @exception IllegalArgumentException <ul>
+   *    <li>ERROR_INVALID_ARGUMENT - if the parameter is not one of <code>SWT.DEFAULT</code>,
+   *                                 <code>SWT.OFF</code> or <code>SWT.ON</code></li>
+   * </ul>
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   *    <li>ERROR_NO_GRAPHICS_LIBRARY - if advanced graphics are not available</li>
+   * </ul>
+   * 
+   * @see #getAdvanced
+   * @see #setAdvanced
+   * @see #setAntialias
+   * 
+   * @since 1.5
+   */
+  public void setTextAntialias( int antialias ) {
+    if( antialias != SWT.DEFAULT && antialias != SWT.ON && antialias != SWT.OFF ) {
+      SWT.error( SWT.ERROR_INVALID_ARGUMENT );
+    }
+    textAntialias = antialias;
+    advanced = true;
+  }
+
+  /**
+   * Returns the receiver's text drawing anti-aliasing setting value,
+   * which will be one of <code>SWT.DEFAULT</code>, <code>SWT.OFF</code> or
+   * <code>SWT.ON</code>. Note that this controls anti-aliasing
+   * <em>only</em> for text drawing operations.
+   *
+   * @return the anti-aliasing setting
+   *
+   * @exception SWTException <ul>
+   *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
+   * </ul>
+   * 
+   * @see #getAntialias
+   * 
+   * @since 1.5
+   */
+  public int getTextAntialias() {
+    return textAntialias;
   }
 
   /**

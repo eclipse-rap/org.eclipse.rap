@@ -45,6 +45,8 @@ public class GC_Test extends TestCase {
     assertEquals( SWT.JOIN_MITER, lineAttributes.join );
     assertEquals( 0, ( int )lineAttributes.width );
     assertFalse( gc.getAdvanced() );
+    assertEquals( SWT.DEFAULT, gc.getAntialias() );
+    assertEquals( SWT.DEFAULT, gc.getTextAntialias() );
   }
   
   public void testSetFontWithDisposedFont() {
@@ -575,6 +577,11 @@ public class GC_Test extends TestCase {
     assertTrue( gc.getAdvanced() );
   }
   
+  public void testGetAdvancedAfterUsingSetAntialias() {
+    gc.setAntialias( SWT.ON );
+    assertTrue( gc.getAdvanced() );
+  }
+  
   public void testResetAdvancedAfterUsingAdvancedGrahpics() {
     gc.setAlpha( 123 );
     gc.setAdvanced( false );
@@ -596,7 +603,43 @@ public class GC_Test extends TestCase {
     } catch( NotSerializableException expected ) {
     }
   }
+  
+  public void testSetAntialias() {
+    gc.setAntialias( SWT.ON );
+    assertEquals( SWT.ON, gc.getAntialias() );
+  }
+  
+  public void testSetAntialiasWithInvalidArgument() {
+    try {
+      gc.setAntialias( 1234 );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testResetAntialiasAfterUsingSetAdvanced() {
+    gc.setAntialias( SWT.ON );
+    gc.setAdvanced( false );
+    assertEquals( SWT.DEFAULT, gc.getAntialias() );
+  }
 
+  public void testSetTextAntialias() {
+    gc.setTextAntialias( SWT.ON );
+    assertEquals( SWT.ON, gc.getTextAntialias() );
+  }
+  
+  public void testSetTextAntialiasWithInvalidArgument() {
+    try {
+      gc.setTextAntialias( 1234 );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testResetTextAntialiasAfterUsingSetAdvanced() {
+    gc.setTextAntialias( SWT.ON );
+    gc.setAdvanced( false );
+    assertEquals( SWT.DEFAULT, gc.getTextAntialias() );
+  }
+  
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
