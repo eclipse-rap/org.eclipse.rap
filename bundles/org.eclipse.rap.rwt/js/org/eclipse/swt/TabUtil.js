@@ -119,7 +119,7 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
         for( var index = 0; index < items.length; index++ ) {
           if( index === selectionIndex ) {
             items[ index ].setChecked( true );
-          } else {
+          } else if( items[ index ].getChecked() ) {
             items[ index ].setChecked( false );
           }
         }
