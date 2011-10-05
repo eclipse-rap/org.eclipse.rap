@@ -64,6 +64,9 @@ public interface ApplicationConfigurator {
    * of the configuration implementation in question.
    */
   public static final String CONFIGURATOR_PARAM = "org.eclipse.rwt.Configurator";
+  // TODO [fappel]: think about where to locate this documentation, since this is servlet
+  //                specific 
+  public static final String RESOURCE_ROOT_LOCATION = "resource_root_location";
 
   /**
    * Callback method that allows to configure the given application configuration. See 

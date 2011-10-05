@@ -19,16 +19,18 @@ import javax.servlet.*;
 import javax.servlet.ServletRegistration.Dynamic;
 import javax.servlet.descriptor.JspConfigDescriptor;
 
+import org.eclipse.rwt.application.ApplicationConfigurator;
+
 
 class ServletContextWrapper implements ServletContext {
   private final ServletContext servletContext;
-  private final String contextDirectory;
   private final Map<String, Object> attributes;
 
   ServletContextWrapper( ServletContext servletContext, String contextDirectory ) {
     this.servletContext = servletContext;
-    this.contextDirectory = contextDirectory;
-    attributes = new HashMap<String, Object>();
+    this.attributes = new HashMap<String, Object>();
+    this.attributes.put( ApplicationConfigurator.RESOURCE_ROOT_LOCATION, contextDirectory );
+    
   }
 
   public ServletContext getContext( String uripath ) {
@@ -101,11 +103,7 @@ class ServletContextWrapper implements ServletContext {
   }
 
   public String getRealPath( String path ) {
-    String result = servletContext.getRealPath( path );
-    if( result == null ) {
-      result = contextDirectory + path;
-    }
-    return result;
+    return servletContext.getRealPath( path );
   }
 
   public String getServerInfo() {

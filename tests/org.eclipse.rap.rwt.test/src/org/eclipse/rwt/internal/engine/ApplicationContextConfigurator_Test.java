@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.engine;
 
+import java.io.File;
 import java.io.IOException;
 
 import javax.servlet.ServletContext;
@@ -166,6 +167,14 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     checkThemeContributionHasBeenAdded();
     checkAttributeHasBeenSet();
   }
+  
+  public void testConfigureWithDifferentResourceLocation() {
+    File contextDirectory = createTmpFile();
+
+    activateApplicationContext( createConfigurator(), contextDirectory );
+    
+    checkContextDirectoryHasBeenSet( contextDirectory );
+  }
 
   public void testConfigureWithDefaultSettingStoreFactory() {
     activateApplicationContext( new ApplicationConfigurator() {
@@ -207,11 +216,33 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   private void activateApplicationContext( ApplicationConfigurator configurator ) {
+    activateApplicationContext( configurator, null );
+  }
+
+  private void activateApplicationContext( ApplicationConfigurator configurator, 
+                                           File contextDirectory )
+  {
     ServletContext servletContext = Fixture.createServletContext();
+    setContextDirectory( servletContext, contextDirectory );
     applicationContext = new ApplicationContext( configurator, servletContext );
     ApplicationContextUtil.set( Fixture.getServletContext(), applicationContext );
     createDisplay();
     applicationContext.activate();
+  }
+
+  private void setContextDirectory( ServletContext servletContext, File contextDirectory ) {
+    if( contextDirectory != null ) {
+      servletContext.setAttribute( ApplicationConfigurator.RESOURCE_ROOT_LOCATION,
+                                   contextDirectory.toString() );
+    }
+  }
+
+  private File createTmpFile() {
+    try {
+      return File.createTempFile( "applicationContextConfigurationTest", "tmp" );
+    } catch( IOException shouldNotHappen ) {
+      throw new IllegalStateException( shouldNotHappen );
+    }
   }
 
   private void createDisplay() {
@@ -301,8 +332,13 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   private void checkContextDirectoryHasBeenSet() {
+    File webContextDir = Fixture.WEB_CONTEXT_DIR;
+    checkContextDirectoryHasBeenSet( webContextDir );
+  }
+
+  private void checkContextDirectoryHasBeenSet( File contextDirectory ) {
     RWTConfiguration rwtConfiguration = applicationContext.getConfiguration();
-    assertEquals( Fixture.WEB_CONTEXT_DIR, rwtConfiguration.getContextDirectory() );
+    assertEquals( contextDirectory, rwtConfiguration.getContextDirectory() );
   }
 
   private void checkAdapterFactoriesHaveBeenRemoved() {

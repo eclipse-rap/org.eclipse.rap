@@ -63,7 +63,12 @@ class ApplicationContextConfigurator {
   private void setContextDirectory( ApplicationContext applicationContext ) {
     RWTConfiguration configurationInstance = applicationContext.getConfiguration();
     RWTConfigurationImpl configuration = ( RWTConfigurationImpl )configurationInstance;
-    configuration.configure( servletContext.getRealPath( "/" ) );
+    String location = ( String )servletContext.getAttribute( ApplicationConfigurator.RESOURCE_ROOT_LOCATION );
+    if( location != null ) {
+      configuration.configure( location ); 
+    } else {
+      configuration.configure( servletContext.getRealPath( "/" ) );
+    }
   }
 
   private void resetApplicationStore( ApplicationContext applicationContext ) {

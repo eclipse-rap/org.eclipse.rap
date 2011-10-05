@@ -19,6 +19,7 @@ import javax.servlet.ServletContext;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
+import org.eclipse.rwt.application.ApplicationConfigurator;
 
 
 public class ServletContextWrapper_Test extends TestCase {
@@ -27,6 +28,12 @@ public class ServletContextWrapper_Test extends TestCase {
   private ServletContextWrapper wrapper;
   private ServletContext context;
 
+  public void getContextDirectory() {
+    Object found = wrapper.getAttribute( ApplicationConfigurator.RESOURCE_ROOT_LOCATION );
+    
+    assertSame( CONTEXT_DIRECTORY, found );
+  }
+  
   public void testGetContext() {
     String uripath = "uriPath";
     wrapper.getContext( uripath );
@@ -146,7 +153,7 @@ public class ServletContextWrapper_Test extends TestCase {
 
     String realPath = wrapper.getRealPath( path );
 
-    assertEquals( CONTEXT_DIRECTORY + path, realPath );
+    assertEquals( null, realPath );
   }
 
   public void testGetRealPathInServletContainer() {

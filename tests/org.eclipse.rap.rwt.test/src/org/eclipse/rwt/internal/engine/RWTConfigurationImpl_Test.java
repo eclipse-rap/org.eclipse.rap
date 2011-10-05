@@ -17,7 +17,8 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
-public class RWTConfiguration_Test extends TestCase {
+public class RWTConfigurationImpl_Test extends TestCase {
+  
   private RWTConfigurationImpl configuration;
 
   public void testConfigure() {
