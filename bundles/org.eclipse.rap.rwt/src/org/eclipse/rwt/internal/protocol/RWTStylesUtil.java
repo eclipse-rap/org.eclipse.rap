@@ -53,7 +53,7 @@ public final class RWTStylesUtil {
     TABLE( Table.class.getName(), new String[] { "SINGLE", "MULTI", "CHECK", "FULL_SELECTION", "HIDE_SELECTION", "VIRTUAL", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     TABLE_COLUMN( TableColumn.class.getName(), new String[] { "LEFT", "RIGHT", "CENTER" } ),
     TEXT( Text.class.getName(), new String[] { "CENTER", "LEFT", "MULTI", "PASSWORD", "SEARCH", "SINGLE", "RIGHT", "READ_ONLY", "WRAP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
-    TOOL_BAR( ToolBar.class.getName(), new String[] { "FLAT", "HORIZONTAL", "VERTICAL", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
+    TOOL_BAR( ToolBar.class.getName(), new String[] { "FLAT", "HORIZONTAL", "VERTICAL", "NO_FOCUS", "NO_RADIO_GROUP", "BORDER", "LEFT_TO_RIGHT" } ),
     TOOL_ITEM( ToolItem.class.getName(), new String[] { "PUSH", "CHECK", "RADIO", "SEPARATOR", "DROP_DOWN" } ),
     TOOL_TIP( ToolTip.class.getName(), new String[] { "BALLOON", "ICON_ERROR", "ICON_INFORMATION", "ICON_WARNING" } ),
     TREE( Tree.class.getName(), new String[] { "SINGLE", "MULTI", "CHECK", "FULL_SELECTION", "VIRTUAL", "NO_SCROLL", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),

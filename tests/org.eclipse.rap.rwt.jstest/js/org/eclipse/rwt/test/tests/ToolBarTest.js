@@ -19,7 +19,52 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
   },
   
   members : {
-    
+
+    testCreateTooBarByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.ToolBar",
+        "properties" : {
+          "style" : [ "HORIZONTAL" ],
+          "parent" : "w2"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget instanceof org.eclipse.rwt.widgets.ToolBar );
+      assertIdentical( shell, widget.getParent() );
+      assertTrue( widget.getUserData( "isControl") );
+      assertTrue( widget.hasState( "rwt_HORIZONTAL" ) );
+      assertFalse( widget.hasState( "rwt_FLAT" ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testCreateTooBarWithFlatByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.ToolBar",
+        "properties" : {
+          "style" : [ "HORIZONTAL", "FLAT" ],
+          "parent" : "w2"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget.hasState( "rwt_HORIZONTAL" ) );
+      assertTrue( widget.hasState( "rwt_FLAT" ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testClickDropDown : function() {
       var item = new org.eclipse.rwt.widgets.ToolItem( "dropDown" );
       this.item = item; 

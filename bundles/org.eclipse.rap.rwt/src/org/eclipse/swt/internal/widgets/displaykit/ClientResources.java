@@ -226,6 +226,7 @@ final class ClientResources {
     "org/eclipse/swt/custom/ScrolledComposite.js",
     "org/eclipse/swt/custom/ScrolledCompositeAdapter.js",
     "org/eclipse/rwt/widgets/ToolBar.js",
+    "org/eclipse/rwt/widgets/ToolBarAdapter.js",
     "org/eclipse/swt/TextUtil.js",
     "org/eclipse/swt/widgets/Scale.js",
     "org/eclipse/swt/widgets/ScaleAdapter.js",
