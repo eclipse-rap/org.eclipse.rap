@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
@@ -25,7 +26,7 @@ import org.eclipse.swt.widgets.*;
 
 public class TableViewerTab extends ExampleTab {
 
-  private static final int ADD_ITEMS = 300;
+  private static final int ADD_ITEMS = 10000;
 
   private static final int FIRST_NAME = 0;
   private static final int LAST_NAME = 1;
@@ -50,11 +51,7 @@ public class TableViewerTab extends ExampleTab {
     int age;
     boolean editable;
 
-    public Person( final String firstName,
-                   final String lastName,
-                   final int age,
-                   final boolean editable )
-    {
+    public Person( String firstName, String lastName, int age, boolean editable ) {
       this.firstName = firstName;
       this.lastName = lastName;
       this.age = age;
@@ -66,17 +63,13 @@ public class TableViewerTab extends ExampleTab {
     }
   }
 
-  private static final class PersonContentProvider
-    implements IStructuredContentProvider
-  {
+  private static final class PersonContentProvider implements IStructuredContentProvider {
     Object[] elements;
-    public Object[] getElements( final Object inputElement ) {
+    public Object[] getElements( Object inputElement ) {
       return elements;
     }
-    public void inputChanged( final Viewer viewer,
-                              final Object oldInput,
-                              final Object newInput )
-    {
+
+    public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {
       if( newInput == null ) {
         elements = new Object[ 0 ];
       } else {
@@ -89,19 +82,15 @@ public class TableViewerTab extends ExampleTab {
     }
   }
 
-  private static final class LazyPersonContentProvider
-    implements ILazyContentProvider
-  {
+  private static final class LazyPersonContentProvider implements ILazyContentProvider {
     private TableViewer tableViewer;
     private List elements;
-    public void inputChanged( final Viewer viewer,
-                              final Object oldInput,
-                              final Object newInput )
-    {
+
+    public void inputChanged( Viewer viewer, Object oldInput, Object newInput ) {
       tableViewer = ( TableViewer )viewer;
       elements = ( List )newInput;
     }
-    public void updateElement( final int index ) {
+    public void updateElement( int index ) {
       tableViewer.replace( elements.get( index ), index );
     }
     public void dispose() {
@@ -109,16 +98,14 @@ public class TableViewerTab extends ExampleTab {
     }
   }
 
-  private static final class PersonLabelProvider
-    extends CellLabelProvider
-  {
+  private static final class PersonLabelProvider extends CellLabelProvider {
     private int columnIndex;
 
-    public PersonLabelProvider( final int columnIndex ) {
+    public PersonLabelProvider( int columnIndex ) {
       this.columnIndex = columnIndex;
     }
 
-    public void update( final ViewerCell cell ) {
+    public void update( ViewerCell cell ) {
       Person person = ( Person )cell.getElement();
       switch( columnIndex ) {
         case FIRST_NAME:
@@ -136,7 +123,7 @@ public class TableViewerTab extends ExampleTab {
       }
     }
 
-    public String getToolTipText( final Object element ) {
+    public String getToolTipText( Object element ) {
       Person person = ( Person )element;
       String text = null;
       switch( columnIndex ) {
@@ -157,27 +144,22 @@ public class TableViewerTab extends ExampleTab {
     }
   }
 
-  private static final class PersonComparator
-    extends ViewerComparator
-    implements Comparator
-  {
+  private static final class PersonComparator extends ViewerComparator implements Comparator {
     private final boolean ascending;
     private final int property;
-    public PersonComparator( final int property, final boolean ascending ) {
+    public PersonComparator( int property, boolean ascending ) {
       this.property = property;
       this.ascending = ascending;
     }
-    public int compare( final Viewer viewer,
-                        final Object object1,
-                        final Object object2 )
-    {
+
+    public int compare( Viewer viewer, Object object1, Object object2 ) {
       return compare( object1, object2 );
     }
-    public boolean isSorterProperty( final Object elem, final String property )
-    {
+
+    public boolean isSorterProperty( Object elem, String property ) {
       return true;
     }
-    public int compare( final Object object1, final Object object2 ) {
+    public int compare( Object object1, Object object2 ) {
       Person person1 = ( Person )object1;
       Person person2 = ( Person )object2;
       int result = 0;
@@ -206,10 +188,8 @@ public class TableViewerTab extends ExampleTab {
     public void setText( final String string ) {
       this.text = string;
     }
-    public boolean select( final Viewer viewer,
-                           final Object parentElement,
-                           final Object element )
-    {
+
+    public boolean select( Viewer viewer, Object parentElement, Object element ) {
       boolean result = true;
       Person person = ( Person )element;
       if( text != null && text.length() > 0 ) {
@@ -218,23 +198,19 @@ public class TableViewerTab extends ExampleTab {
       }
       return result;
     }
-    public boolean isFilterProperty( final Object element, final String prop ) {
+    public boolean isFilterProperty( Object element, String prop ) {
       return true;
     }
   }
 
-  private static final class EditorActivationStrategy
-    extends ColumnViewerEditorActivationStrategy
-  {
+  private static final class EditorActivationStrategy extends ColumnViewerEditorActivationStrategy {
 
-    private EditorActivationStrategy( final ColumnViewer viewer ) {
+    private EditorActivationStrategy( ColumnViewer viewer ) {
       super( viewer );
       setEnableEditorActivationWithKeyboard( true );
     }
 
-    protected boolean isEditorActivationEvent(
-      final ColumnViewerEditorActivationEvent event )
-    {
+    protected boolean isEditorActivationEvent( ColumnViewerEditorActivationEvent event ) {
       boolean result;
       if( event.character == '\r' ) {
         result = true;
@@ -247,28 +223,28 @@ public class TableViewerTab extends ExampleTab {
 
   private static final class FirstNameEditingSupport extends EditingSupport {
     private final CellEditor editor;
-    public FirstNameEditingSupport( final TableViewer viewer ) {
+    public FirstNameEditingSupport( TableViewer viewer ) {
       super( viewer );
       editor = new TextCellEditor( viewer.getTable() );
     }
 
-    protected boolean canEdit( final Object element ) {
+    protected boolean canEdit( Object element ) {
       Person person = ( Person )element;
       return person.editable;
     }
 
-    protected CellEditor getCellEditor( final Object element ) {
+    protected CellEditor getCellEditor( Object element ) {
       return editor;
     }
 
-    protected Object getValue( final Object element ) {
+    protected Object getValue( Object element ) {
       Person person = ( Person )element;
       String result;
       result = person.firstName;
       return result;
     }
 
-    protected void setValue( final Object element, final Object value ) {
+    protected void setValue( Object element, Object value ) {
       Person person = ( Person )element;
       person.firstName = ( String )value;
       getViewer().update( element, null );
@@ -277,30 +253,28 @@ public class TableViewerTab extends ExampleTab {
 
   private static final class LastNameEditingSupport extends EditingSupport {
     private final CellEditor editor;
-    public LastNameEditingSupport( final TableViewer viewer ) {
+    public LastNameEditingSupport( TableViewer viewer ) {
       super( viewer );
-      editor = new ComboBoxCellEditor( viewer.getTable(),
-                                       LAST_NAMES,
-                                       SWT.NONE );
+      editor = new ComboBoxCellEditor( viewer.getTable(), LAST_NAMES, SWT.NONE );
     }
 
-    protected boolean canEdit( final Object element ) {
+    protected boolean canEdit( Object element ) {
       Person person = ( Person )element;
       return person.editable;
     }
 
-    protected CellEditor getCellEditor( final Object element ) {
+    protected CellEditor getCellEditor( Object element ) {
       return editor;
     }
 
-    protected Object getValue( final Object element ) {
+    protected Object getValue( Object element ) {
       Person person = ( Person )element;
       CCombo ccombo = ( CCombo )editor.getControl();
       ccombo.setText( person.lastName );
       return new Integer( -2 );
     }
 
-    protected void setValue( final Object element, final Object value ) {
+    protected void setValue( Object element, Object value ) {
       Person person = ( Person )element;
       CCombo ccombo = ( CCombo )editor.getControl();
       person.lastName = ccombo.getText();
@@ -310,11 +284,11 @@ public class TableViewerTab extends ExampleTab {
 
   private static final class AgeEditingSupport extends EditingSupport {
     private final CellEditor editor;
-    public AgeEditingSupport( final TableViewer viewer ) {
+    public AgeEditingSupport( TableViewer viewer ) {
       super( viewer );
       editor = new TextCellEditor( viewer.getTable() );
       editor.setValidator( new ICellEditorValidator() {
-        public String isValid( final Object value ) {
+        public String isValid( Object value ) {
           String result = null;
           try {
             Integer.parseInt( ( String )value );
@@ -327,21 +301,21 @@ public class TableViewerTab extends ExampleTab {
       });
     }
 
-    protected boolean canEdit( final Object element ) {
+    protected boolean canEdit( Object element ) {
       Person person = ( Person )element;
       return person.editable;
     }
 
-    protected CellEditor getCellEditor( final Object element ) {
+    protected CellEditor getCellEditor( Object element ) {
       return editor;
     }
 
-    protected Object getValue( final Object element ) {
+    protected Object getValue( Object element ) {
       Person person = ( Person )element;
       return String.valueOf( person.age );
     }
 
-    protected void setValue( final Object element, final Object value ) {
+    protected void setValue( Object element, Object value ) {
       if( value != null ) {
         Person person = ( Person )element;
         person.age = Integer.parseInt( ( String )value );
@@ -352,25 +326,25 @@ public class TableViewerTab extends ExampleTab {
 
   private static final class EditableEditingSupport extends EditingSupport {
     private final CheckboxCellEditor editor;
-    public EditableEditingSupport( final ColumnViewer viewer ) {
+    public EditableEditingSupport( ColumnViewer viewer ) {
       super( viewer );
       editor = new CheckboxCellEditor();
     }
 
-    protected boolean canEdit( final Object element ) {
+    protected boolean canEdit( Object element ) {
       return true;
     }
 
-    protected CellEditor getCellEditor( final Object element ) {
+    protected CellEditor getCellEditor( Object element ) {
       return editor;
     }
 
-    protected Object getValue( final Object element ) {
+    protected Object getValue( Object element ) {
       Person person = ( Person )element;
       return Boolean.valueOf( person.editable );
     }
 
-    protected void setValue( final Object element, final Object value ) {
+    protected void setValue( Object element, Object value ) {
       Person person = ( Person )element;
       person.editable = ( ( Boolean )value ).booleanValue();
       getViewer().update( element, null );
@@ -386,9 +360,9 @@ public class TableViewerTab extends ExampleTab {
   private Label lblSelection;
   private Button btnCreateCellEditor;
   private final PersonFilter viewerFilter;
-  private final java.util.List persons = new ArrayList();
+  private final java.util.List<Person> persons = new ArrayList<Person>();
 
-  public TableViewerTab( final CTabFolder topFolder ) {
+  public TableViewerTab( CTabFolder topFolder ) {
     super( topFolder, "TableViewer" );
     viewerFilter = new PersonFilter();
   }
@@ -408,7 +382,7 @@ public class TableViewerTab extends ExampleTab {
     persons.add( new Person( "Elvis", LAST_NAMES[ 9 ], 10, true ) );
   }
 
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( "MULTI", SWT.MULTI );
     createStyleButton( "VIRTUAL", SWT.VIRTUAL );
     createAddItemsButton();
@@ -418,7 +392,7 @@ public class TableViewerTab extends ExampleTab {
     lblSelection = new Label( styleComp, SWT.NONE );
   }
 
-  protected void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( Composite parent ) {
     if( btnCreateCellEditor != null && !btnCreateCellEditor.isDisposed() ) {
       btnCreateCellEditor.setEnabled( true );
     }
@@ -434,7 +408,7 @@ public class TableViewerTab extends ExampleTab {
     gridDataFactory.align( SWT.FILL, SWT.CENTER );
     gridDataFactory.applyTo( txtFilter );
     txtFilter.addModifyListener( new ModifyListener() {
-      public void modifyText( final ModifyEvent event ) {
+      public void modifyText( ModifyEvent event ) {
         Text text = ( Text )event.widget;
         viewerFilter.setText( text.getText() );
         viewer.refresh();
@@ -459,7 +433,7 @@ public class TableViewerTab extends ExampleTab {
     viewer.setItemCount( persons.size() );
     viewer.addFilter( viewerFilter );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
-      public void selectionChanged( final SelectionChangedEvent event ) {
+      public void selectionChanged( SelectionChangedEvent event ) {
         lblSelection.setText( "Selection: " + event.getSelection() );
         lblSelection.getParent().layout( new Control[] { lblSelection } );
       }
@@ -482,7 +456,7 @@ public class TableViewerTab extends ExampleTab {
     column.setWidth( 170 );
     column.setMoveable( true );
     column.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         int sortDirection = updateSortDirection( ( TableColumn )event.widget );
         sort( viewer, FIRST_NAME, sortDirection == SWT.DOWN );
       }
@@ -498,7 +472,7 @@ public class TableViewerTab extends ExampleTab {
     column.setWidth( 120 );
     column.setMoveable( true );
     column.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         int sortDirection = updateSortDirection( ( TableColumn )event.widget );
         sort( viewer, LAST_NAME, sortDirection == SWT.DOWN );
       }
@@ -514,7 +488,7 @@ public class TableViewerTab extends ExampleTab {
     column.setWidth( 80 );
     column.setMoveable( true );
     column.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         int sortDirection = updateSortDirection( ( TableColumn )event.widget );
         sort( viewer, AGE, sortDirection == SWT.DOWN );
       }
@@ -530,7 +504,7 @@ public class TableViewerTab extends ExampleTab {
     column.setWidth( 50 );
     column.setMoveable( true );
     column.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         int sortDirection = updateSortDirection( ( TableColumn )event.widget );
         sort( viewer, EDITABLE, sortDirection == SWT.DOWN );
       }
@@ -538,24 +512,13 @@ public class TableViewerTab extends ExampleTab {
     return result;
   }
 
-  private void addPerson() {
-    int maxAge = 0;
-    for( int i = 0; i < persons.size(); i++ ) {
-      Person person = ( Person )persons.get( i );
-      if( person.age > maxAge ) {
-        maxAge = person.age;
-      }
-    }
-    persons.add( new Person( "new", "person", maxAge + 1, false ) );
-  }
-
   private void createAddItemsButton() {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Add " + ADD_ITEMS + " Items" );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         for( int i = 0; i < ADD_ITEMS; i++ ) {
-          addPerson();
+          persons.add( new Person( "new", "person", 11 + i, false ) );
         }
         getViewer().setInput( persons );
         if( ( getStyle() & SWT.VIRTUAL ) != 0 ) {
@@ -569,11 +532,11 @@ public class TableViewerTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Select youngest Person" );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         Person youngestPerson = null;
         int minAge = Integer.MAX_VALUE;
         for( int i = 0; i < persons.size(); i++ ) {
-          Person person = ( Person )persons.get( i );
+          Person person = persons.get( i );
           if( person.age < minAge ) {
             minAge = person.age;
             youngestPerson = person;
@@ -589,9 +552,8 @@ public class TableViewerTab extends ExampleTab {
     Button button = new Button( styleComp, SWT.PUSH );
     button.setText( "Remove selected rows" );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        IStructuredSelection selection
-          = ( IStructuredSelection )getViewer().getSelection();
+      public void widgetSelected( SelectionEvent event ) {
+        IStructuredSelection selection = ( IStructuredSelection )getViewer().getSelection();
         Iterator iter = selection.iterator();
         while( iter.hasNext() ) {
           Person person = ( Person )iter.next();
@@ -610,7 +572,7 @@ public class TableViewerTab extends ExampleTab {
     btnCreateCellEditor = new Button( styleComp, SWT.PUSH );
     btnCreateCellEditor.setText( "Create Cell Editor" );
     btnCreateCellEditor.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         createCellEditor();
         btnCreateCellEditor.setEnabled( false );
       }
@@ -636,13 +598,10 @@ public class TableViewerTab extends ExampleTab {
     int feature
       = ColumnViewerEditor.TABBING_HORIZONTAL
       | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR;
-    TableViewerEditor.create( viewer,
-                              focusManager,
-                              activationStrategy,
-                              feature );
+    TableViewerEditor.create( viewer, focusManager, activationStrategy, feature );
   }
 
-  private static int updateSortDirection( final TableColumn column ) {
+  private static int updateSortDirection( TableColumn column ) {
     Table table = column.getParent();
     if( column == table.getSortColumn() ) {
       if( table.getSortDirection() == SWT.UP ) {
@@ -657,10 +616,7 @@ public class TableViewerTab extends ExampleTab {
     return table.getSortDirection();
   }
 
-  private static void sort( final TableViewer viewer,
-                            final int property,
-                            final boolean ascending )
-  {
+  private static void sort( TableViewer viewer, int property, boolean ascending ) {
     if( ( viewer.getControl().getStyle() & SWT.VIRTUAL ) != 0 ) {
       List input = ( List )viewer.getInput();
       Collections.sort( input, new PersonComparator( property, ascending ) );
