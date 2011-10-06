@@ -84,7 +84,8 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
     },
 
     _doInitialize : function( text ) {
-      text.addEventListener( "mouseup", org.eclipse.swt.TextUtil._onMouseUp );
+      text.addEventListener( "mousedown", org.eclipse.swt.TextUtil._onMouseDownUp );
+      text.addEventListener( "mouseup", org.eclipse.swt.TextUtil._onMouseDownUp );
       text.addEventListener( "keyup", org.eclipse.swt.TextUtil._onKeyUp );
       text.addEventListener( "keydown", org.eclipse.swt.TextUtil._onKeyDown );
       text.addEventListener( "keypress", org.eclipse.swt.TextUtil._onKeyPress );
@@ -97,7 +98,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
 
     // === Event listener ===
 
-    _onMouseUp : function( event ) {
+    _onMouseDownUp : function( event ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         var text = event.getTarget();
         org.eclipse.swt.TextUtil._handleSelectionChange( text );
@@ -277,13 +278,9 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
             || text.getUserData( "selectionLength" ) != length )
         {
           text.setUserData( "selectionStart", start );
-          org.eclipse.swt.WidgetUtil.setPropertyParam( widget,
-                                                       "selectionStart",
-                                                       start );
+          org.eclipse.swt.WidgetUtil.setPropertyParam( widget, "selectionStart", start );
           text.setUserData( "selectionLength", length );
-          org.eclipse.swt.WidgetUtil.setPropertyParam( widget,
-                                                       "selectionLength",
-                                                       length );
+          org.eclipse.swt.WidgetUtil.setPropertyParam( widget, "selectionLength", length );
         }
       }
     },
