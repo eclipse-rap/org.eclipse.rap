@@ -14,7 +14,7 @@ package org.eclipse.rwt;
 
 
 /**
- * <p>Adaptable objects lets you add interfaces to a class and lets clients
+ * <p>Adaptable objects lets you add interfaces to a class and lets clients 
  * query whether an object has a particular extension. This means adaptable 
  * objects can be dynamically extended. Adapters are created by adapter 
  * factories, which are registered with an global adapter manager.</p>
