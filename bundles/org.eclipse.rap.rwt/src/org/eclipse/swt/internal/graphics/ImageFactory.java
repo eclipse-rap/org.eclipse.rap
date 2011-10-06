@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.util.*;
 import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.rwt.resources.IResourceManager;

@@ -16,7 +16,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.SessionSingletonBase;
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;

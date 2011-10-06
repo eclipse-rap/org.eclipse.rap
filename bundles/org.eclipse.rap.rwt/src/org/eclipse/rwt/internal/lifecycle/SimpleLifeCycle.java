@@ -12,8 +12,11 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.engine.*;
-import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.application.ApplicationContext;
+import org.eclipse.rwt.internal.application.ApplicationContextUtil;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.ServiceContext;
+import org.eclipse.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.service.ISessionStore;

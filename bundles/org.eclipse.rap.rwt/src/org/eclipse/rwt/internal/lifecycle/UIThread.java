@@ -11,8 +11,8 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import org.eclipse.rwt.internal.engine.ApplicationContext;
-import org.eclipse.rwt.internal.engine.ApplicationContextUtil;
+import org.eclipse.rwt.internal.application.ApplicationContext;
+import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.service.ISessionStore;

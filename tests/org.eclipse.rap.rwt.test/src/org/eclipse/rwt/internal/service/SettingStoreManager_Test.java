@@ -18,7 +18,7 @@ import javax.servlet.http.Cookie;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.*;
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.service.ISettingStore;
 import org.eclipse.rwt.service.ISettingStoreFactory;
 

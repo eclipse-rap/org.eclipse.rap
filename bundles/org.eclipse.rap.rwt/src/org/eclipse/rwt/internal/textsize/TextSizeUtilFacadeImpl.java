@@ -14,7 +14,7 @@ package org.eclipse.rwt.internal.textsize;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;

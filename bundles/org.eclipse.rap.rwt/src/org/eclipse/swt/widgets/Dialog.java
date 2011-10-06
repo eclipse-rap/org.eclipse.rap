@@ -13,7 +13,7 @@ package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.widgets.IDialogAdapter;
 import org.eclipse.rwt.widgets.DialogCallback;
 import org.eclipse.swt.SWT;

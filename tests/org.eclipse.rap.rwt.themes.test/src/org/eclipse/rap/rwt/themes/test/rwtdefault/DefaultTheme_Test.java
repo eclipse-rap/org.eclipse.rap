@@ -12,7 +12,7 @@ package org.eclipse.rap.rwt.themes.test.rwtdefault;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.themes.test.ThemeTestCase;
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 

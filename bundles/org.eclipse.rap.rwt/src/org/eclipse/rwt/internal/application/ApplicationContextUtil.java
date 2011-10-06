@@ -9,7 +9,7 @@
  *    Frank Appel - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.application;
 
 import java.io.File;
 import java.io.Serializable;

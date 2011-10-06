@@ -8,10 +8,11 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.application;
 
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.branding.BrandingManager;
+import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.resources.JSLibraryConcatenator;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;

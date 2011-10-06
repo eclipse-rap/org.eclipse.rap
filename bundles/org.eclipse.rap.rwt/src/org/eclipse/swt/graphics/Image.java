@@ -12,11 +12,19 @@
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
-import org.eclipse.rwt.internal.engine.*;
+import org.eclipse.rwt.internal.application.ApplicationContext;
+import org.eclipse.rwt.internal.application.ApplicationContextUtil;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.service.ISessionStore;
-import org.eclipse.swt.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTError;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.graphics.InternalImage;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;

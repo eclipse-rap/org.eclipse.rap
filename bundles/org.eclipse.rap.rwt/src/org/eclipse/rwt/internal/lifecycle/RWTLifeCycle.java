@@ -13,7 +13,7 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rwt.internal.lifecycle.UIThread.UIThreadTerminatedError;
 import org.eclipse.rwt.internal.service.*;

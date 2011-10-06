@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.textsize;
 
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.internal.graphics.FontUtil;

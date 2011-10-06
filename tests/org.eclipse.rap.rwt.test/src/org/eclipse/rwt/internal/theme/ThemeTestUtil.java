@@ -14,7 +14,7 @@ package org.eclipse.rwt.internal.theme;
 import java.io.*;
 
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.resources.ResourceLoader;

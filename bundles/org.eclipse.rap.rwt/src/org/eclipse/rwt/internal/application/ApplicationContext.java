@@ -9,7 +9,7 @@
  *    Frank Appel - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.application;
 
 import java.io.File;
 
@@ -18,6 +18,8 @@ import javax.servlet.ServletContext;
 import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.branding.BrandingManager;
+import org.eclipse.rwt.internal.engine.RWTConfiguration;
+import org.eclipse.rwt.internal.engine.RWTConfigurationImpl;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.lifecycle.PhaseListenerRegistry;

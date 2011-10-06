@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.service.*;
 import org.eclipse.rwt.internal.util.URLHelper;
 

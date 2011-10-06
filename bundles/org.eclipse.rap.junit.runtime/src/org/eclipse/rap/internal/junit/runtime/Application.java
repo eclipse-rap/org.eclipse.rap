@@ -13,7 +13,7 @@ package org.eclipse.rap.internal.junit.runtime;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.swt.widgets.Display;

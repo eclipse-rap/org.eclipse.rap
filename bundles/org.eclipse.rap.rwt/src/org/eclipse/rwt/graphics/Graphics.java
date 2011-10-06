@@ -13,7 +13,7 @@ package org.eclipse.rwt.graphics;
 
 import java.io.InputStream;
 
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.SWT;

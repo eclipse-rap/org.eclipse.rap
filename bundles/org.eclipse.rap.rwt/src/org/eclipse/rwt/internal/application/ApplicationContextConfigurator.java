@@ -8,11 +8,13 @@
  * Contributors:
  *    Frank Appel - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.application;
 
 import javax.servlet.ServletContext;
 
 import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.internal.engine.RWTConfiguration;
+import org.eclipse.rwt.internal.engine.RWTConfigurationImpl;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;

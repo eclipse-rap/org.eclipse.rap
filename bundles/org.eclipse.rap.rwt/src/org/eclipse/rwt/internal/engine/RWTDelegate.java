@@ -18,6 +18,7 @@ import java.util.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.service.*;
 
 

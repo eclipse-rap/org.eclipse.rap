@@ -16,7 +16,7 @@ import java.io.*;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 
 
 public class ResourceUtil_Test extends TestCase {

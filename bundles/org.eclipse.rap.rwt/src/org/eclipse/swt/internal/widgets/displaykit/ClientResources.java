@@ -14,7 +14,7 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.InputStream;
 
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.resources.ResourceUtil;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.resources.*;

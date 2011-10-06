@@ -12,6 +12,7 @@ package org.eclipse.swt.graphics;
 
 import java.io.*;
 
+import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.internal.engine.*;
 import org.eclipse.rwt.internal.resources.ResourceUtil;
 import org.eclipse.rwt.resources.IResourceManager;

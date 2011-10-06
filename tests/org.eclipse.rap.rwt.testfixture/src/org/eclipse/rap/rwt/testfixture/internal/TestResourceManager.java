@@ -16,7 +16,7 @@ import java.net.URL;
 import java.util.*;
 
 import org.eclipse.rwt.application.Application;
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.resources.IResourceManager;
 

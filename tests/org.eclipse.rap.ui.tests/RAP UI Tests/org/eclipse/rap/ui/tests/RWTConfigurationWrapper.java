@@ -14,7 +14,7 @@ package org.eclipse.rap.ui.tests;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.ui.tests.resources.*;
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.resources.IResource;
 
 public class RWTConfigurationWrapper extends TestCase {

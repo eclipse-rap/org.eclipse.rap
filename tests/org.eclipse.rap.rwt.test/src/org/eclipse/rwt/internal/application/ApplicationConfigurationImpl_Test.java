@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.internal.application;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -19,6 +19,8 @@ import javax.servlet.ServletContext;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.internal.application.ApplicationConfigurationImpl;
+import org.eclipse.rwt.internal.application.ApplicationContext;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rwt.lifecycle.ILifeCycle;

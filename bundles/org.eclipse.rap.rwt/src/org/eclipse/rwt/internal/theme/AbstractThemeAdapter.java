@@ -11,7 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
-import org.eclipse.rwt.internal.engine.RWTFactory;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Widget;
 
