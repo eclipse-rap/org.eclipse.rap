@@ -30,8 +30,7 @@ public class SettingStoreException extends Exception {
    *              the cause is not known. Can be retrieved using 
    *              {@link #getCause()}. 
    */
-  public SettingStoreException( final String message,
-                                final Throwable cause ) {
+  public SettingStoreException( String message, Throwable cause ) {
     super( message, cause );
   }
 }
