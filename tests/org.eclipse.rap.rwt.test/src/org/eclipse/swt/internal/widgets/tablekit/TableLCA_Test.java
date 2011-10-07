@@ -11,6 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablekit;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -1175,6 +1178,26 @@ public class TableLCA_Test extends TestCase {
     String widgetRef = "wm.findWidgetById( \"" + WidgetUtil.getId( table ) + "\" )";
     String expected = "TreeUtil.setFixedColumns( " + widgetRef + ", 0 )";
     assertTrue( markup.indexOf( expected ) == -1 );
+  }
+  
+  // bug 360152
+  public void testReadItemToolTipDoesNotResolveVirtualItems() {
+    Table table = new Table( shell, SWT.VIRTUAL );
+    table.setData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
+    ICellToolTipAdapter toolTipAdapter = CellToolTipUtil.getAdapter( table );
+    ITableAdapter tableAdapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ICellToolTipProvider toolTipProvider = mock( ICellToolTipProvider.class );
+    toolTipAdapter.setCellToolTipProvider( toolTipProvider );
+    table.setItemCount( 2 );
+    TableItem item = table.getItem( 1 );
+    Fixture.fakeNewRequest( display );
+    Fixture.fakeRequestParam( JSConst.EVENT_CELL_TOOLTIP_REQUESTED, WidgetUtil.getId( table ) );
+    Fixture.fakeRequestParam( JSConst.EVENT_CELL_TOOLTIP_DETAILS, WidgetUtil.getId( item ) + ",0" );
+    
+    new TableLCA().readData( table );
+    
+    verify( toolTipProvider ).getToolTipText( item, 0 );
+    assertEquals( 1, tableAdapter.getCreatedItems().length );
   }
 
 

@@ -397,16 +397,14 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   private static void writeEnableCellToolTip( Table table ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( table );
-    String prop = PROP_ENABLE_CELL_TOOLTIP;
     Boolean newValue = new Boolean( CellToolTipUtil.isEnabledFor( table ) );
-    writer.set( prop, "enableCellToolTip", newValue, Boolean.FALSE );
+    writer.set( PROP_ENABLE_CELL_TOOLTIP, "enableCellToolTip", newValue, Boolean.FALSE );
   }
 
   private static void readCellToolTipTextRequested( Table table ) {
     ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
     adapter.setCellToolTipText( null );
-    String event = JSConst.EVENT_CELL_TOOLTIP_REQUESTED;
-    if( WidgetLCAUtil.wasEventSent( table, event ) ) {
+    if( WidgetLCAUtil.wasEventSent( table, JSConst.EVENT_CELL_TOOLTIP_REQUESTED ) ) {
       ICellToolTipProvider provider = adapter.getCellToolTipProvider();
       if( provider != null ) {
         HttpServletRequest request = ContextProvider.getRequest();
@@ -415,8 +413,7 @@ public final class TableLCA extends AbstractWidgetLCA {
         String itemId = details[ 0 ];
         int columnIndex = NumberFormatUtil.parseInt( details[ 1 ] );
         TableItem item = getItem( table, itemId );
-        // Bug 321119: Sometimes the client can request tooltips for already
-        //             disposed cells.
+        // Bug 321119: Sometimes the client can request tooltips for already disposed cells.
         if( item != null && ( columnIndex == 0 || columnIndex < table.getColumnCount() ) ) {
           provider.getToolTipText( item, columnIndex );
         }
@@ -485,8 +482,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     if( scrollBar != null ) {
       scrollBar.setSelection( selection );
       if( SelectionEvent.hasListener( scrollBar ) ) {
-        int eventId = SelectionEvent.WIDGET_SELECTED;
-        SelectionEvent evt = new SelectionEvent( scrollBar, null, eventId );
+        SelectionEvent evt = new SelectionEvent( scrollBar, null, SelectionEvent.WIDGET_SELECTED );
         evt.stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
         evt.processEvent();
       }
