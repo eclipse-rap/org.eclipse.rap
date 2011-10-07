@@ -18,9 +18,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.TabItem", {
   },
 
   destructor : function( widget ) {
-    var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-    var id = widgetManager.findIdByWidget( widget );
-    org.eclipse.swt.TabUtil.releaseTabItem( id );
+    org.eclipse.swt.TabUtil.releaseTabItem( widget );
   },
 
   properties : [
@@ -45,13 +43,15 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.TabItem", {
       }
     },
     "control" : function( widget, value ) {
-      org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( control ) {
-        if( control !== null ) {
+      if( value !== null ) {
+        org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( control ) {
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-          var id = widgetManager.findIdByWidget( widget );
-          control.setParent( widgetManager.findWidgetById( id + "pg" ) );
-        }
-      } );
+          var id = widgetManager.findIdByWidget( widget ) + "pg";
+          org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( id, function( parent ) {
+            control.setParent( parent );
+          } );
+        } );
+      }
     },
     "toolTip" : org.eclipse.rwt.protocol.AdapterUtil.getControlPropertyHandler( "toolTip" )
   },

@@ -33,13 +33,13 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
       return tabItem;
     },
     
-    releaseTabItem : function( itemId ) {
-      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      var tabItem = widgetManager.findWidgetById( itemId );
+    releaseTabItem : function( tabItem ) {
       var tabFolder = tabItem.getParent().getParent();
       tabItem.removeEventListener( "changeFocused", org.eclipse.swt.TabUtil._onTabItemChangeFocus );
       tabItem.removeEventListener( "changeChecked", org.eclipse.swt.TabUtil._onTabItemSelected );
       tabItem.removeEventListener( "click", org.eclipse.swt.TabUtil._onTabItemClick );
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var itemId = widgetManager.findIdByWidget( tabItem );
       widgetManager.dispose( itemId + "pg" );
       widgetManager.dispose( itemId );
       this.applySelectionIndex( tabFolder );
