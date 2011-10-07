@@ -11,8 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
@@ -525,6 +524,17 @@ abstract class ExampleTab implements Serializable {
   protected void log( final String msg ) {
     content.insert( 0, msg.trim() + text.getLineDelimiter() );
     text.setText( content.toString() );
+  }
+  
+  protected Image loadImage( String name ) {
+    InputStream stream = getClass().getClassLoader().getResourceAsStream( name );
+    Image result = new Image( folder.getDisplay(), stream );
+    try {
+      stream.close();
+    } catch( IOException ioe ) {
+      throw new RuntimeException( ioe );
+    }
+    return result;
   }
 
   private void destroyExampleControls() {
