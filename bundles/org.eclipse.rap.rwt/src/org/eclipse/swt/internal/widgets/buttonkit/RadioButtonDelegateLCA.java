@@ -14,10 +14,7 @@ package org.eclipse.swt.internal.widgets.buttonkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
-import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.events.DeselectionEvent;
 import org.eclipse.swt.internal.events.EventLCAUtil;
@@ -46,10 +43,6 @@ final class RadioButtonDelegateLCA extends ButtonDelegateLCA {
 
   void renderInitialization( Button button ) throws IOException {
     ButtonLCAUtil.renderInitialization( button );
-    if( ( button.getParent().getStyle() & SWT.NO_RADIO_GROUP ) != 0 ) {
-      IClientObject clientOblect = ClientObjectFactory.getForWidget( button );
-      clientOblect.setProperty( "noRadioGroup", true );
-    }
   }
 
   void renderChanges( Button button ) throws IOException {

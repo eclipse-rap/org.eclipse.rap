@@ -26,13 +26,15 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Button", {
     org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );
     org.eclipse.rwt.protocol.AdapterUtil.setParent( result, properties.parent );
+    org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( properties.parent, function( parent ) {
+      result.setNoRadioGroup( parent.hasState( "rwt_NO_RADIO_GROUP" ) );
+    } );
     return result;
   },
   
   destructor : org.eclipse.rwt.protocol.AdapterUtil.getControlDestructor(),
 
   properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
-    "noRadioGroup",
     "text",
     "alignment",
     "image",

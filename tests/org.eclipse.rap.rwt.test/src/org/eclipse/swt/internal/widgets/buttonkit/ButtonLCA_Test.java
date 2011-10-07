@@ -447,17 +447,6 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( pushButton.getParent() ), operation.getParent() );
   }
 
-  public void testRenderNoRadioGroup() throws IOException {
-    Composite composite = new Composite( shell, SWT.NO_RADIO_GROUP );
-    Button radio = new Button( composite, SWT.RADIO );
-
-    lca.renderInitialization( radio );
-
-    Message message = Fixture.getProtocolMessage();
-    CreateOperation operation = message.findCreateOperation( radio );
-    assertEquals( Boolean.TRUE, operation.getProperty( "noRadioGroup" ) );
-  }
-
   public void testRenderInitialText() throws IOException {
     Button button = new Button( shell, SWT.PUSH );
 

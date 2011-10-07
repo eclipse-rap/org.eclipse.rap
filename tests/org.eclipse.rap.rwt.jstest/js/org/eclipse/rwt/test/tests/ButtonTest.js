@@ -15,7 +15,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
   
   construct : function() {
     this.base( arguments );
-    this.testUtil = org.eclipse.rwt.test.fixture.TestUtil;        
+    this.testUtil = org.eclipse.rwt.test.fixture.TestUtil;
   },
   
   members : {
@@ -104,6 +104,27 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       var widget = objectManager.getObject( "w3" );
       assertTrue( widget.hasState( "rwt_RADIO" ) );
       assertEquals( "radio-button", widget.getAppearance() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetNoRadioGroupByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      shell.addState( "rwt_NO_RADIO_GROUP" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "style" : [ "RADIO" ],
+          "parent" : "w2"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget.getNoRadioGroup() );
       shell.destroy();
       widget.destroy();
     },
