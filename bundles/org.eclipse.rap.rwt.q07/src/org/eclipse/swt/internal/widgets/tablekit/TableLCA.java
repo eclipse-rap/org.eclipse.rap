@@ -465,7 +465,7 @@ public final class TableLCA extends AbstractWidgetLCA {
         String[] details = cell.split( "," );
         String itemId = details[ 0 ];
         int columnIndex = NumberFormatUtil.parseInt( details[ 1 ] );
-        TableItem item = getItemById( table, itemId );
+        TableItem item = ( TableItem )WidgetUtil.find( table, itemId );
         // Bug 321119: Sometimes the client can request tooltips for already
         //             disposed cells.
         if(    item != null
@@ -488,18 +488,6 @@ public final class TableLCA extends AbstractWidgetLCA {
       text = WidgetLCAUtil.replaceNewLines( text, "<br/>" );
       writer.call( "setCellToolTipText", new String[]{ text } );
     }
-  }
-
-  private static TableItem getItemById( final Table table, final String itemId )
-  {
-    TableItem result = null;
-    TableItem[] items = table.getItems();
-    for( int i = 0; i < items.length && result == null; i++ ) {
-      if( WidgetUtil.getId( items[ i ] ).equals( itemId ) ) {
-        result = items[ i ];
-      }
-    }
-    return result;
   }
 
   //////////////////
