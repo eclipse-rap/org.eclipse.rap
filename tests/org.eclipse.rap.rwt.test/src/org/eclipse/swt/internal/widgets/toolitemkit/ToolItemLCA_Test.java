@@ -38,12 +38,14 @@ public class ToolItemLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private ToolBar toolbar;
   private ToolItemLCA lca;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
+    toolbar = new ToolBar( shell, SWT.NONE );
     lca = new ToolItemLCA();
     Fixture.fakeNewRequest( display );
   }
@@ -54,8 +56,7 @@ public class ToolItemLCA_Test extends TestCase {
 
   public void testCheckItemSelected() {
     final boolean[] wasEventFired = { false };
-    ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
-    final ToolItem item = new ToolItem( toolBar, SWT.CHECK );
+    final ToolItem item = new ToolItem( toolbar, SWT.CHECK );
     item.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
         wasEventFired[ 0 ] = true;
@@ -80,10 +81,9 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRadioItemSelected() {
-    ToolBar toolBar = new ToolBar( shell, SWT.NONE );
-    ToolItem item0 = new ToolItem( toolBar, SWT.RADIO );
+    ToolItem item0 = new ToolItem( toolbar, SWT.RADIO );
     item0.setSelection( true );
-    ToolItem item1 = new ToolItem( toolBar, SWT.RADIO );
+    ToolItem item1 = new ToolItem( toolbar, SWT.RADIO );
     String displayId = DisplayUtil.getAdapter( display ).getId();
     String item0Id = WidgetUtil.getId( item0 );
     String item1Id = WidgetUtil.getId( item1 );
@@ -96,8 +96,7 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testReadData() {
-    ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
-    ToolItem item = new ToolItem( toolBar, SWT.CHECK );
+    ToolItem item = new ToolItem( toolbar, SWT.CHECK );
     String itemId = WidgetUtil.getId( item );
     // read changed selection
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, itemId );
@@ -111,8 +110,7 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testGetImage() {
-    ToolBar toolBar = new ToolBar( shell, SWT.FLAT );
-    ToolItem item = new ToolItem( toolBar, SWT.CHECK );
+    ToolItem item = new ToolItem( toolbar, SWT.CHECK );
 
     Image enabledImage = Graphics.getImage( Fixture.IMAGE1 );
     Image disabledImage = Graphics.getImage( Fixture.IMAGE2 );
@@ -133,7 +131,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderCreatePush() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
     lca.renderInitialization( toolitem );
@@ -147,7 +144,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderCreateCheck() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.CHECK );
 
     lca.renderInitialization( toolitem );
@@ -161,7 +157,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderCreateRadio() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.RADIO );
 
     lca.renderInitialization( toolitem );
@@ -175,7 +170,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderCreateDropDown() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.DROP_DOWN );
 
     lca.renderInitialization( toolitem );
@@ -189,7 +183,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderCreateSeparator() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.SEPARATOR );
 
     lca.renderInitialization( toolitem );
@@ -203,7 +196,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderParent() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
     lca.renderInitialization( toolitem );
@@ -214,7 +206,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderInitialEnabled() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
     lca.render( toolitem );
@@ -225,7 +216,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderEnabled() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
     toolitem.setEnabled( false );
@@ -236,7 +226,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderEnabledUnchanged() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( toolitem );
@@ -250,7 +239,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderInitialToolTip() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
     lca.render( toolitem );
@@ -261,7 +249,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderToolTip() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
     toolitem.setToolTipText( "foo" );
@@ -272,7 +259,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderToolTipUnchanged() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( toolitem );
@@ -286,7 +272,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderInitialCustomVariant() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
     lca.render( toolitem );
@@ -297,7 +282,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderCustomVariant() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
     toolitem.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
@@ -308,7 +292,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderCustomVariantUnchanged() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( toolitem );
@@ -322,7 +305,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderInitialVisible() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     toolbar.setSize( 20, 25 );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
@@ -334,7 +316,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderVisible() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     toolbar.setSize( 20, 25 );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
@@ -346,7 +327,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderVisibleUnchanged() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     toolbar.setSize( 20, 25 );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
@@ -361,7 +341,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderInitialText() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
     lca.render( toolitem );
@@ -372,7 +351,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderText() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
     toolitem.setText( "foo" );
@@ -383,7 +361,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderTextUnchanged() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( toolitem );
@@ -397,7 +374,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderInitialImage() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
     lca.renderChanges( toolitem );
@@ -407,7 +383,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderImage() throws IOException, JSONException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 
@@ -422,7 +397,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderImageUnchanged() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( toolitem );
@@ -437,7 +411,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderInitialHotImage() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
 
     lca.renderChanges( toolitem );
@@ -447,7 +420,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderHotImage() throws IOException, JSONException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
 
@@ -462,7 +434,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderHotImageUnchanged() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( toolitem );
@@ -477,7 +448,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderImageReset() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( toolitem );
@@ -493,7 +463,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderInitialControl() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.SEPARATOR );
 
     lca.render( toolitem );
@@ -504,7 +473,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderControl() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.SEPARATOR );
     Composite control = new Composite( toolbar, SWT.NONE );
     String controlId = WidgetUtil.getId( control );
@@ -517,7 +485,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderControlUnchanged() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.SEPARATOR );
     Composite control = new Composite( toolbar, SWT.NONE );
     Fixture.markInitialized( display );
@@ -532,7 +499,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderInitialSelection() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.CHECK );
 
     lca.render( toolitem );
@@ -543,7 +509,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderSelection() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.CHECK );
 
     toolitem.setSelection( true );
@@ -554,7 +519,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionUnchanged() throws IOException {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.CHECK );
     Fixture.markInitialized( display );
     Fixture.markInitialized( toolitem );
@@ -568,7 +532,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderAddSelectionListener() throws Exception {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( toolitem );
@@ -582,7 +545,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderRemoveSelectionListener() throws Exception {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     SelectionListener listener = new SelectionAdapter() { };
     toolitem.addSelectionListener( listener );
@@ -598,7 +560,6 @@ public class ToolItemLCA_Test extends TestCase {
   }
 
   public void testRenderSelectionListenerUnchanged() throws Exception {
-    ToolBar toolbar = new ToolBar( shell, SWT.NONE );
     ToolItem toolitem = new ToolItem( toolbar, SWT.PUSH );
     Fixture.markInitialized( display );
     Fixture.markInitialized( toolitem );
