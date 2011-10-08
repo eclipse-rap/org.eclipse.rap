@@ -90,7 +90,7 @@ public abstract class Control extends Widget implements Drawable {
     public boolean getBackgroundTransparency() {
       return Control.this.backgroundTransparency;
     }
-    
+
     public boolean isPacked() {
       return Control.this.packed;
     }
@@ -160,7 +160,7 @@ public abstract class Control extends Widget implements Drawable {
     ControlHolder.addControl( parent, this );
     createWidget();
   }
-  
+
   void createWidget () {
     initState();
     checkOrientation( parent );
@@ -583,7 +583,7 @@ public abstract class Control extends Widget implements Drawable {
         state |= PARENT_BACKGROUND;
         return;
       }
-      if (composite == shell) break;    
+      if (composite == shell) break;
       composite = composite.parent;
     } while (true);
   }
@@ -1109,7 +1109,7 @@ public abstract class Control extends Widget implements Drawable {
     setSize( computeSize( SWT.DEFAULT, SWT.DEFAULT, changed ) );
     packed = true;
   }
-  
+
   /**
    * Returns the receiver's border width.
    *
@@ -2031,15 +2031,15 @@ public abstract class Control extends Widget implements Drawable {
    * </p>
    *
    * @param orientation new orientation style
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
-   * @since 1.4  
+   *
+   * @since 1.4
    */
-  public void setOrientation( int orientation ) { 
+  public void setOrientation( int orientation ) {
     checkWidget();
   }
 
@@ -2051,12 +2051,12 @@ public abstract class Control extends Widget implements Drawable {
    * </p>
    *
    * @return the orientation style
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.4
    */
   public int getOrientation() {
@@ -2081,10 +2081,10 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @see Accessible#addAccessibleListener
    * @see Accessible#addAccessibleControlListener
-   * 
+   *
    * @since 1.4
    */
   public Accessible getAccessible() {
@@ -2116,7 +2116,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @see GestureListener
    * @see #removeGestureListener
-   * 
+   *
    * @since 1.4
    */
   public void addGestureListener( GestureListener listener ) {
@@ -2139,7 +2139,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @see GestureListener
    * @see #addGestureListener
-   * 
+   *
    * @since 1.4
    */
   public void removeGestureListener( GestureListener listener ) {
@@ -2152,10 +2152,10 @@ public abstract class Control extends Widget implements Drawable {
    * one of the messages defined in the <code>TouchListener</code>
    * interface.
    * <p>
-   * NOTE: You must also call <code>setTouchEnabled</code> to notify the 
+   * NOTE: You must also call <code>setTouchEnabled</code> to notify the
    * windowing toolkit that you want touch events to be generated.
    * </p>
-   * 
+   *
    * @param listener the listener which should be notified
    *
    * @exception IllegalArgumentException <ul>
@@ -2168,7 +2168,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @see TouchListener
    * @see #removeTouchListener
-   * 
+   *
    * @since 1.4
    */
   public void addTouchListener( TouchListener listener ) {
@@ -2191,7 +2191,7 @@ public abstract class Control extends Widget implements Drawable {
    *
    * @see TouchListener
    * @see #addTouchListener
-   * 
+   *
    * @since 1.4
    */
   public void removeTouchListener( TouchListener listener ) {
@@ -2202,13 +2202,13 @@ public abstract class Control extends Widget implements Drawable {
    * Sets whether the receiver should accept touch events. By default, a Control does not accept
    * touch events. No error or exception is thrown if the underlying hardware does not support touch
    * input.
-   * 
+   *
    * @param enabled the new touch-enabled state
-   * 
+   *
    * @exception SWTException <ul>
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   *    
+   *
    * @since 1.4
    */
   public void setTouchEnabled( boolean enabled ) {
@@ -2229,7 +2229,7 @@ public abstract class Control extends Widget implements Drawable {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.4
    */
   public boolean getTouchEnabled() {
@@ -2304,13 +2304,19 @@ public abstract class Control extends Widget implements Drawable {
     if( updateMode ) {
       updateMode();
     }
-    packed = false;
+    clearPacked( oldSize );
     notifyMove( oldLocation );
     notifyResize( oldSize );
   }
 
   void updateMode() {
     // subclasses may override
+  }
+
+  private void clearPacked( Point oldSize ) {
+    if( !oldSize.equals( getSize() ) ) {
+      packed = false;
+    }
   }
 
   void notifyResize( Point oldSize ) {

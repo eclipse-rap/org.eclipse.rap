@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2009, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -67,7 +67,7 @@ public class Control_Test extends TestCase {
 
     public void renderInitialization( Widget widget ) throws IOException {
     }
-    
+
     public void doRedrawFake( Control control ) {
       log.add( control );
     }
@@ -78,7 +78,7 @@ public class Control_Test extends TestCase {
     public void renderDispose( Widget widget ) throws IOException {
     }
   }
-  
+
   private Display display;
   private Shell shell;
 
@@ -92,7 +92,7 @@ public class Control_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-  
+
   public void testGetAdapterWithControlAdapter() {
     Control control = new Button( shell, SWT.NONE );
     Object adapter = control.getAdapter( IControlAdapter.class );
@@ -241,12 +241,12 @@ public class Control_Test extends TestCase {
     menu.dispose();
     assertEquals( null, control.getMenu() );
   }
-  
+
   public void testInitialTabIndex() {
     Control control = new Button( shell, SWT.PUSH );
-    
+
     IControlAdapter adapter = ControlUtil.getControlAdapter( control );
-    
+
     assertEquals( -1, adapter.getTabIndex() );
   }
 
@@ -289,7 +289,7 @@ public class Control_Test extends TestCase {
   /*
    * In SWT, it is not allowed to dispose of a resource that is in use. (see bug 342943)
    * Though, SWT does not immediately 'react' when disposing of a resource that is in use.
-   * This test mimics the behaviour on Windows. 
+   * This test mimics the behaviour on Windows.
    */
   public void testGetFontAfterDisposingFont() {
     Control control = new Label( shell, SWT.NONE );
@@ -299,7 +299,7 @@ public class Control_Test extends TestCase {
     Font returnedFont = control.getFont();
     assertSame( font, returnedFont );
   }
-  
+
   public void testForeground() {
     Composite comp = new Composite( shell, SWT.NONE );
     Control control = new Label( comp, SWT.PUSH );
@@ -859,7 +859,7 @@ public class Control_Test extends TestCase {
     shell.notifyListeners( SWT.Help, new Event() );
     assertNotNull( untypedHelpEvent[ 0 ] );
   }
-  
+
   public void testSetRedraw() {
     shell.setRedraw( true );
     assertTrue( display.needsRedraw( shell ) );
@@ -871,12 +871,12 @@ public class Control_Test extends TestCase {
     shell.redraw();
     assertTrue( display.needsRedraw( shell ) );
   }
-  
+
   public void testRedrawWithBounds() {
     shell.redraw( 0, 0, -1, 0, true );
     assertFalse( display.needsRedraw( shell ) );
   }
-  
+
   public void testRedrawTriggersLCAInOrder() {
     final List<Widget> log = new ArrayList<Widget>();
     Composite control0 = new RedrawLogginShell( display, log );
@@ -891,22 +891,20 @@ public class Control_Test extends TestCase {
     assertFalse( display.needsRedraw( control0 ) );
     assertFalse( display.needsRedraw( control1 ) );
   }
-  
+
   public void testRedrawDisposed() {
     shell.redraw();
     shell.dispose();
     assertFalse( display.needsRedraw( shell ) );
   }
-  
+
   public void testSetBackground() {
     Color color = display.getSystemColor( SWT.COLOR_RED );
     shell.setBackground( color );
     assertEquals( color, shell.getBackground() );
     shell.setBackground( null );
-    IControlThemeAdapter themeAdapter
-      = ( IControlThemeAdapter )shell.getAdapter( IThemeAdapter.class );
-    assertEquals( themeAdapter.getBackground( shell ), 
-                  shell.getBackground() );
+    IControlThemeAdapter themeAdapter = getThemeAdapter( shell );
+    assertEquals( themeAdapter.getBackground( shell ), shell.getBackground() );
     Color color2 = new Color( display, 0, 0, 0 );
     color2.dispose();
     try {
@@ -954,17 +952,14 @@ public class Control_Test extends TestCase {
   }
 
   public void testSetFont() {
-    Font controlFont = Graphics.getFont( "BeautifullyCraftedTreeFont",
-                                         15,
-                                         SWT.BOLD );
+    Font controlFont = Graphics.getFont( "BeautifullyCraftedTreeFont", 15, SWT.BOLD );
     shell.setFont( controlFont );
     assertSame( controlFont, shell.getFont() );
     Font itemFont = Graphics.getFont( "ItemFont", 40, SWT.NORMAL );
     shell.setFont( itemFont );
     assertSame( itemFont, shell.getFont() );
     shell.setFont( null );
-    IControlThemeAdapter themeAdapter
-      = ( IControlThemeAdapter )shell.getAdapter( IThemeAdapter.class );
+    IControlThemeAdapter themeAdapter = getThemeAdapter( shell );
     assertSame( themeAdapter.getFont( shell ), shell.getFont() );
     // Test with images, that should appear on unselected tabs
     Font font = new Font( display, "Testfont", 10, SWT.BOLD );
@@ -982,10 +977,8 @@ public class Control_Test extends TestCase {
     shell.setForeground( color );
     assertEquals( color, shell.getForeground() );
     shell.setForeground( null );
-    IControlThemeAdapter themeAdapter
-      = ( IControlThemeAdapter )shell.getAdapter( IThemeAdapter.class );
-    assertEquals( themeAdapter.getForeground( shell ), 
-                  shell.getForeground() );
+    IControlThemeAdapter themeAdapter = getThemeAdapter( shell );
+    assertEquals( themeAdapter.getForeground( shell ), shell.getForeground() );
     Color color2 = new Color( display, 255, 0, 0 );
     color2.dispose();
     try {
@@ -994,5 +987,18 @@ public class Control_Test extends TestCase {
     } catch( IllegalArgumentException e ) {
       // Expected Exception
     }
+  }
+
+  public void testNotClearPackedOnSetLocation() {
+    shell.pack();
+
+    shell.setLocation( 1, 2 );
+
+    IControlAdapter controlAdapter = ( IControlAdapter )shell.getAdapter( IControlAdapter.class );
+    assertTrue( controlAdapter.isPacked() );
+  }
+
+  private static IControlThemeAdapter getThemeAdapter( Control control ) {
+    return ( IControlThemeAdapter )control.getAdapter( IThemeAdapter.class );
   }
 }
