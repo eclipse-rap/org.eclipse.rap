@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
@@ -20,15 +20,11 @@ import org.eclipse.swt.widgets.ToolItem;
 
 final class CheckToolItemLCA extends ToolItemDelegateLCA {
 
-  private static final String PARAM_CHECK = "check";
-
-  void preserveValues( final ToolItem toolItem ) {
+  void preserveValues( ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
-    ToolItemLCAUtil.preserveImages( toolItem );
-    ToolItemLCAUtil.preserveSelection( toolItem );
   }
 
-  void readData( final ToolItem toolItem ) {
+  void readData( ToolItem toolItem ) {
     if( WidgetLCAUtil.wasEventSent( toolItem, JSConst.EVENT_WIDGET_SELECTED ) ) {
       String value = WidgetLCAUtil.readPropertyValue( toolItem, "selection" );
       toolItem.setSelection( Boolean.valueOf( value ).booleanValue() );
@@ -36,11 +32,11 @@ final class CheckToolItemLCA extends ToolItemDelegateLCA {
     }
   }
 
-  void renderInitialization( final ToolItem toolItem ) throws IOException {
-    ToolItemLCAUtil.renderInitialization( toolItem, PARAM_CHECK );  }
+  void renderInitialization( ToolItem toolItem ) throws IOException {
+    ToolItemLCAUtil.renderInitialization( toolItem );
+  }
 
-  void renderChanges( final ToolItem toolItem ) throws IOException {
+  void renderChanges( ToolItem toolItem ) throws IOException {
     ToolItemLCAUtil.renderChanges( toolItem );
-    ToolItemLCAUtil.writeSelection( toolItem );
   }
 }

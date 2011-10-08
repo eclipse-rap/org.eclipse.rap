@@ -14,6 +14,7 @@ package org.eclipse.swt.widgets;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
@@ -84,7 +85,7 @@ public class ToolBar extends Composite {
    * <!--@see Widget#checkSubclass()-->
    * @see Widget#getStyle()
    */
-  public ToolBar( final Composite parent, final int style ) {
+  public ToolBar( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
     /*
      * Ensure that either of HORIZONTAL or VERTICAL is set. NOTE: HORIZONTAL and
@@ -100,7 +101,7 @@ public class ToolBar extends Composite {
     this.itemHolder = new ItemHolder<ToolItem>( ToolItem.class );
   }
 
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
       result = itemHolder;
@@ -128,7 +129,7 @@ public class ToolBar extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public ToolItem getItem( final int index ) {
+  public ToolItem getItem( int index ) {
     checkWidget();
     return itemHolder.getItem( index );
   }
@@ -150,7 +151,7 @@ public class ToolBar extends Composite {
    * </ul>
    * @since 1.3
    */
-  public ToolItem getItem( final Point point ) {
+  public ToolItem getItem( Point point ) {
     checkWidget();
     if( point == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -220,7 +221,7 @@ public class ToolBar extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int indexOf( final ToolItem item ) {
+  public int indexOf( ToolItem item ) {
     checkWidget();
     if( item == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -234,10 +235,7 @@ public class ToolBar extends Composite {
   ////////////////////
   // Size computations
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
     int height = 0;
@@ -286,14 +284,12 @@ public class ToolBar extends Composite {
   }
 
   public int getBorderWidth() {
-    ToolBarThemeAdapter themeAdapter
-      = ( ToolBarThemeAdapter )getAdapter( IThemeAdapter.class );
+    ToolBarThemeAdapter themeAdapter = ( ToolBarThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getBorderWidth( this );
   }
 
   Rectangle getToolBarPadding() {
-    ToolBarThemeAdapter themeAdapter
-      = ( ToolBarThemeAdapter )getAdapter( IThemeAdapter.class );
+    ToolBarThemeAdapter themeAdapter = ( ToolBarThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getToolBarPadding( this );
   }
 
@@ -316,25 +312,23 @@ public class ToolBar extends Composite {
     return 1;
   }
 
-  public void setBounds( final Rectangle bounds ) {
+  public void setBounds( Rectangle bounds ) {
+    Point oldSize = getSize();
     super.setBounds( bounds );
-    // check if there is enough space for all items
-    // otherwise - hide all items which could be cut off
-    // TODO: check again because the item bounds are not very exact
-    // see ToolItem#getWidth()
-    for( int i = 0; i < itemHolder.size(); i++ ) {
-      ToolItem item = itemHolder.getItem( i );
-      Rectangle ibounds = item.getBounds();
-      boolean visible = ibounds.x + ibounds.width <= bounds.width;
-      item.setVisible( visible );
-      item.resizeControl();
+    if( !oldSize.equals( getSize() ) ) {
+      layoutItems();
     }
+  }
+
+  public void setFont( Font font ) {
+    super.setFont( font );
+    layoutItems();
   }
 
   ////////////////////////
   // Child control removal
 
-  void removeControl( final Control control ) {
+  void removeControl( Control control ) {
     super.removeControl( control );
     ToolItem[] items = itemHolder.getItems();
     for( int i = 0; i < items.length; i++ ) {
@@ -358,7 +352,7 @@ public class ToolBar extends Composite {
   //////////////////
   // Helping methods
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     /*
     * Even though it is legal to create this widget
     * with scroll bars, they serve no useful purpose
@@ -369,10 +363,31 @@ public class ToolBar extends Composite {
     return style & ~( SWT.H_SCROLL | SWT.V_SCROLL );
   }
 
+  void createItem( ToolItem item, int index ) {
+    ItemHolder.getItemHolder( this ).insert( item, index );
+    layoutItems();
+  }
+
+  void destroyItem( ToolItem item ) {
+    ItemHolder.getItemHolder( this ).remove( item );
+    layoutItems();
+  }
+
+  void layoutItems() {
+    for( int i = 0; i < itemHolder.size(); i++ ) {
+      ToolItem item = itemHolder.getItem( i );
+      Rectangle ibounds = item.getBounds();
+      boolean hasEnoughWidth = ibounds.x + ibounds.width <= bounds.width;
+      boolean hasEnoughHeight = ibounds.y + ibounds.height <= bounds.height;
+      item.setVisible( hasEnoughWidth && hasEnoughHeight );
+      item.resizeControl();
+    }
+  }
+
   ///////////////////
   // Skinning support
 
-  void reskinChildren( final int flags ) {
+  void reskinChildren( int flags ) {
     ToolItem[] items = getItems();
     if( items != null ) {
       for( int i = 0; i < items.length; i++ ) {

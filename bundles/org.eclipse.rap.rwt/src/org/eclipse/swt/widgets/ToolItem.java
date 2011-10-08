@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -19,7 +19,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IToolItemAdapter;
-import org.eclipse.swt.internal.widgets.ItemHolder;
 import org.eclipse.swt.internal.widgets.toolbarkit.ToolBarThemeAdapter;
 
 
@@ -48,7 +47,7 @@ public class ToolItem extends Item {
   private boolean selected;
   private Control control;
   private int width;
-  private boolean computedWidth = true;
+  private boolean computedWidth;
   private String toolTipText;
   private boolean visible;
   private Image disabledImage;
@@ -90,7 +89,7 @@ public class ToolItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public ToolItem( final ToolBar parent, final int style ) {
+  public ToolItem( ToolBar parent, int style ) {
     this( checkNull( parent ), checkStyle( style ), parent.getItemCount() );
   }
 
@@ -130,11 +129,12 @@ public class ToolItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public ToolItem( final ToolBar parent, final int style, final int index ) {
+  public ToolItem( ToolBar parent, int style, int index ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
     this.visible = true;
-    ItemHolder.getItemHolder( parent ).insert( this, index );
+    computedWidth = true;
+    parent.createItem( this, index );
     computeInitialWidth();
   }
 
@@ -181,20 +181,22 @@ public class ToolItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setText( final String text ) {
+  public void setText( String text ) {
     checkWidget();
     if( text == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( ( style & SWT.SEPARATOR ) == 0 ) {
       super.setText( text );
+      parent.layoutItems();
     }
   }
 
-  public void setImage( final Image image ) {
+  public void setImage( Image image ) {
     checkWidget();
     if( ( style & SWT.SEPARATOR ) == 0 ) {
       super.setImage( image );
+      parent.layoutItems();
     }
   }
 
@@ -217,10 +219,11 @@ public class ToolItem extends Item {
    *
    * @since 1.2
    */
-  public void setDisabledImage( final Image image ) {
+  public void setDisabledImage( Image image ) {
     checkWidget();
     if( ( style & SWT.SEPARATOR ) == 0 ) {
       disabledImage = image;
+      parent.layoutItems();
     }
   }
 
@@ -262,10 +265,11 @@ public class ToolItem extends Item {
    * </ul>
    * @since 1.2
    */
-  public void setHotImage( final Image image ) {
+  public void setHotImage( Image image ) {
     checkWidget();
     if( ( style & SWT.SEPARATOR ) == 0 ) {
       hotImage = image;
+      parent.layoutItems();
     }
   }
 
@@ -304,7 +308,7 @@ public class ToolItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setControl( final Control control ) {
+  public void setControl( Control control ) {
     checkWidget();
     if( control != null ) {
       if( control.isDisposed() ) {
@@ -353,7 +357,7 @@ public class ToolItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setToolTipText( final String string ) {
+  public void setToolTipText( String string ) {
     checkWidget();
     toolTipText = string;
   }
@@ -392,7 +396,7 @@ public class ToolItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setEnabled( final boolean enabled ) {
+  public void setEnabled( boolean enabled ) {
     checkWidget();
     if( enabled ) {
       state &= ~DISABLED;
@@ -471,13 +475,10 @@ public class ToolItem extends Item {
         top += getToolBarSpacing();
       } else {
         top += parent.getToolBarPadding().y;
-      }      
-      int innerParentWidth =   parent.getSize().x 
-                             - parent.getToolBarPadding().width;
-      left +=   parent.getToolBarPadding().x 
-              + innerParentWidth / 2 
-              - width / 2;
-      left = Math.max(  left, 0 );
+      }
+      int innerParentWidth = parent.getSize().x - parent.getToolBarPadding().width;
+      left += parent.getToolBarPadding().x + innerParentWidth / 2 - width / 2;
+      left = Math.max( left, 0 );
     } else {
       if( index > 0 ) {
         Rectangle leftSiblingBounds = parent.getItem( index - 1 ).getBounds();
@@ -485,28 +486,26 @@ public class ToolItem extends Item {
         left += getToolBarSpacing();
       } else {
         left += parent.getToolBarPadding().x;
-      }      
-      int innerParentHeight =   parent.getSize().y 
-                              - parent.getToolBarPadding().height
-                              - parent.getBorderWidth() * 2;
-      top +=   parent.getToolBarPadding().y 
-             + innerParentHeight / 2 
-             - height / 2;
-      top = Math.max(  top, 0 );
+      }
+      int innerParentHeight = parent.getSize().y
+                            - parent.getToolBarPadding().height
+                            - parent.getBorderWidth() * 2;
+      top += parent.getToolBarPadding().y + innerParentHeight / 2 - height / 2;
+      top = Math.max( top, 0 );
     }
     return new Rectangle( left, top, width, height );
   }
-  
+
    // TODO [tb] : if needed, cache dimensions to optimize performance
    private int getHeight() {
      int height;
      if(    ( parent.style & SWT.VERTICAL ) != 0
-         && ( style & SWT.SEPARATOR ) != 0 
-         && getControl() == null ) 
-     {     
+         && ( style & SWT.SEPARATOR ) != 0
+         && getControl() == null )
+     {
        height = getSeparatorWidth();
      } else {
-       height = 0; 
+       height = 0;
        ToolItem[] siblings = getParent().getItems();
        for( int i = 0; i < siblings.length; i++ ) {
          height = Math.max(  height, siblings[ i ].getPreferredHeight() );
@@ -514,7 +513,7 @@ public class ToolItem extends Item {
      }
      return height;
    }
-   
+
    /**
     * Gets the width of the receiver.
     *
@@ -533,22 +532,22 @@ public class ToolItem extends Item {
      if( ( style & SWT.SEPARATOR ) != 0 && ( !isVertical || !computedWidth ) ) {
        result = width;
      } else {
-       if( isVertical ) {         
+       if( isVertical ) {
          result = 0;
          ToolItem[] siblings = getParent().getItems();
          for( int i = 0; i < siblings.length; i++ ) {
            if( ( siblings[ i ].style & SWT.SEPARATOR ) == 0 ) {
-             result = Math.max(  result, siblings[ i ].getPreferredWidth() );             
+             result = Math.max(  result, siblings[ i ].getPreferredWidth() );
            }
          }
        } else {
-         result = getPreferredWidth();               
+         result = getPreferredWidth();
        }
      }
      return result;
    }
-   
-  int getPreferredHeight() { 
+
+  int getPreferredHeight() {
     int height = DEFAULT_HEIGHT;
     if( ( style & SWT.SEPARATOR ) == 0 ) {
       int frameHeight = getPadding().height + ( getBorderWidth() * 2 );
@@ -563,8 +562,8 @@ public class ToolItem extends Item {
     }
     return height;
   }
-  
-  int getPreferredWidth() { 
+
+  int getPreferredWidth() {
     int result = 0;
     boolean hasImage = image != null;
     boolean hasText = !"".equals( text );
@@ -591,34 +590,34 @@ public class ToolItem extends Item {
 
   private int getBorderWidth() {
     ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
-    return adapter.getItemBorderWidth( parent ); 
+    return adapter.getItemBorderWidth( parent );
   }
-  
+
   private Point getDropDownImageDimension() {
     ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
     return adapter.getDropDownImageDimension( parent );
   }
 
-  private Rectangle getPadding() { 
+  private Rectangle getPadding() {
     ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
     return adapter.getItemPadding( parent );
   }
-  
-  private int getToolBarSpacing() { 
+
+  private int getToolBarSpacing() {
     ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
     return adapter.getToolBarSpacing( parent );
   }
 
-  private int getSpacing() { 
+  private int getSpacing() {
     ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
     return adapter.getItemSpacing( parent );
   }
-  
-  int getSeparatorWidth() { 
+
+  int getSeparatorWidth() {
     ToolBarThemeAdapter adapter = getToolBarThemeAdapter();
     return adapter.getSeparatorWidth( parent );
   }
-  
+
   private ToolBarThemeAdapter getToolBarThemeAdapter() {
     return ( ToolBarThemeAdapter )parent.getAdapter( IThemeAdapter.class );
   }
@@ -633,12 +632,12 @@ public class ToolItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setWidth( final int width ) {
+  public void setWidth( int width ) {
     checkWidget();
     if( ( style & SWT.SEPARATOR ) != 0 && width >= 0 ) {
       computedWidth = false;
       this.width = width;
-      resizeControl();
+      parent.layoutItems();
     }
   }
 
@@ -686,7 +685,7 @@ public class ToolItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelection( final boolean selected ) {
+  public void setSelection( boolean selected ) {
     checkWidget();
     if( ( style & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
       this.selected = selected;
@@ -721,7 +720,7 @@ public class ToolItem extends Item {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -743,7 +742,7 @@ public class ToolItem extends Item {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
@@ -753,13 +752,13 @@ public class ToolItem extends Item {
 
   void releaseParent() {
     super.releaseParent();
-    ItemHolder.getItemHolder( parent ).remove( this );
+    parent.destroyItem( this );
   }
 
   //////////////////
   // Helping methods
 
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result;
     if ( adapter == IToolItemAdapter.class ) {
       if( toolItemAdapter == null ) {
@@ -793,14 +792,14 @@ public class ToolItem extends Item {
     }
   }
 
-  private static ToolBar checkNull( final ToolBar parent ) {
+  private static ToolBar checkNull( ToolBar parent ) {
     if( parent == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     return parent;
   }
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     return checkBits( style,
                       SWT.PUSH,
                       SWT.CHECK,
@@ -810,7 +809,7 @@ public class ToolItem extends Item {
                       0 );
   }
 
-  void setVisible( final boolean visible ) {
+  void setVisible( boolean visible ) {
     this.visible = visible;
   }
 }

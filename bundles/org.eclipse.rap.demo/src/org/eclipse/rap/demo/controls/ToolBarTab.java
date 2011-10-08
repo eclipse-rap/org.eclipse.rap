@@ -1,17 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rap.demo.controls;
 
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -28,11 +27,11 @@ public class ToolBarTab extends ExampleTab {
   private ToolItem dropDownItem;
   private int count = 0;
 
-  public ToolBarTab( final CTabFolder topFolder ) {
+  public ToolBarTab( CTabFolder topFolder ) {
     super( topFolder, "ToolBar" );
   }
 
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( "HORIZONTAL", SWT.HORIZONTAL );
     createStyleButton( "VERTICAL", SWT.VERTICAL );
     createStyleButton( "BORDER", SWT.BORDER );
@@ -58,10 +57,7 @@ public class ToolBarTab extends ExampleTab {
     index.setLayoutData( new GridData( SWT.FILL, SWT.CENTER, true, false ) );
     index.setText( "0" );
     Button addItemButton = new Button( group, SWT.PUSH );
-    GridData gridData = new GridData( SWT.BEGINNING,
-                                               SWT.CENTER,
-                                               false,
-                                               false );
+    GridData gridData = new GridData( SWT.BEGINNING, SWT.CENTER, false, false );
     gridData.horizontalSpan = 2;
     addItemButton.setLayoutData( gridData );
     addItemButton.setText( "Add Item" );
@@ -75,14 +71,14 @@ public class ToolBarTab extends ExampleTab {
     } );
   }
 
-  protected void createExampleControls( final Composite parent ) {
+  protected void createExampleControls( Composite parent ) {
     parent.setLayout( new RowLayout() );
-    ClassLoader loader = getClass().getClassLoader();
-    Image imageNewFile = Graphics.getImage( "resources/newfile_wiz.gif", loader );
-    Image imagenewFolder = Graphics.getImage( "resources/newfolder_wiz.gif", loader );
-    Image imageNewProj = Graphics.getImage( "resources/newprj_wiz.gif", loader );
-    Image imageSearch = Graphics.getImage( "resources/search_src.gif", loader );
+    Image imageNewFile = loadImage( "resources/newfile_wiz.gif" );
+    Image imagenewFolder = loadImage( "resources/newfolder_wiz.gif" );
+    Image imageNewProj = loadImage( "resources/newprj_wiz.gif" );
+    Image imageSearch = loadImage( "resources/search_src.gif" );
     toolBar = new ToolBar( parent, getStyle() );
+    addContextMenu( toolBar );
     registerControl( toolBar );
     ToolItem item1 = new ToolItem( toolBar, SWT.PUSH );
     item1.setText( "new" );
@@ -138,5 +134,12 @@ public class ToolBarTab extends ExampleTab {
     } );
     ToolItem withoutImageIcon = new ToolItem( toolBar, SWT.PUSH );
     withoutImageIcon.setText( "w/o <image>" );
+  }
+
+  private static void addContextMenu( ToolBar toolbar ) {
+    Menu menu = new Menu( toolbar );
+    MenuItem item = new MenuItem( menu, SWT.PUSH );
+    item.setText( "ToolBar context menu item" );
+    toolbar.setMenu( menu );
   }
 }

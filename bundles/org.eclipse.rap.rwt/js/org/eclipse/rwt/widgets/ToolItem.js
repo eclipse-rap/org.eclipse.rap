@@ -13,7 +13,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
 
   extend : org.eclipse.rwt.widgets.BasicButton,
 
-  construct : function( itemType, flat ) {
+  construct : function( itemType ) {
     this.base( arguments, itemType );
     this._isDropDown = false;
     if( itemType == "dropDown" ) {
@@ -28,9 +28,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
     this.setAppearance( "toolbar-button" );
     this.removeEventListener( "keydown", this._onKeyDown );
     this.removeEventListener( "keyup", this._onKeyUp );
-    if( flat ) {
-      this.addState( "rwt_FLAT" );
-    }
   },
 
   properties : {

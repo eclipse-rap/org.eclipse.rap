@@ -19,6 +19,10 @@ org.eclipse.rwt.protocol.AdapterUtil = {
       // remove from shells list of widgets listening for activate events (if present)
       shell.removeActivateListenerWidget( widget );          
     }
+    org.eclipse.rwt.protocol.AdapterUtil._widgetDestructor( widget );
+  },
+  
+  _widgetDestructor : function( widget ) {
     widget.setToolTip( null );
     widget.setUserData( "toolTipText", null );
     widget.destroy();
@@ -232,6 +236,10 @@ org.eclipse.rwt.protocol.AdapterUtil = {
   ////////////////////////////////
   // lists and handler for adapter
 
+  getWidgetDestructor : function() {
+    return this._widgetDestructor;
+  },
+  
   getControlDestructor : function() {
     return this._controlDestructor;
   },
