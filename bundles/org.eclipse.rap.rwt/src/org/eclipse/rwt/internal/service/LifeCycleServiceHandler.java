@@ -26,11 +26,10 @@ import org.eclipse.rwt.service.ISessionStore;
 
 public class LifeCycleServiceHandler implements IServiceHandler {
   public static final String RWT_INITIALIZE = "rwt_initialize";
-  // TODO [if]: Move this code to a fragment
-  private static final String PATTERN_RELOAD
-    = "qx.core.Init.getInstance().getApplication().reload( \"{0}\" )";
   static final String SESSION_INITIALIZED
     = LifeCycleServiceHandler.class.getName() + "#isSessionInitialized";
+  private static final String PATTERN_RELOAD
+    = "qx.core.Init.getInstance().getApplication().reload( \"{0}\" )";
 
   private final LifeCycleFactory lifeCycleFactory;
   private final StartupPage startupPage;
