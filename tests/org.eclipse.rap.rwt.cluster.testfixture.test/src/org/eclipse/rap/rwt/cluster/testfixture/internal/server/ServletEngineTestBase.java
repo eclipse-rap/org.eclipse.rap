@@ -20,7 +20,7 @@ import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.cluster.testfixture.ClusterFixture;
+import org.eclipse.rap.rwt.cluster.testfixture.ClusterTestHelper;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
@@ -99,7 +99,7 @@ public abstract class ServletEngineTestBase extends TestCase {
     
     HttpSession[] sessions = servletEngine.getSessions();
     assertEquals( 1, sessions.length );
-    assertNotNull( ClusterFixture.getSessionDisplay( sessions[ 0 ] ) );
+    assertNotNull( ClusterTestHelper.getSessionDisplay( sessions[ 0 ] ) );
   }
 
   

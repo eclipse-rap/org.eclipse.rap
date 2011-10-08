@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.cluster.test.entrypoints.SessionCleanupEntryPoint;
-import org.eclipse.rap.rwt.cluster.testfixture.ClusterFixture;
+import org.eclipse.rap.rwt.cluster.testfixture.ClusterTestHelper;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
@@ -35,8 +35,8 @@ public abstract class SessionCleanupTestBase extends TestCase {
     client.sendInitializationRequest();
     client.sendDisplayResizeRequest( 400, 300 );
     
-    HttpSession httpSession = ClusterFixture.getFirstSession( servletEngine );
-    Display display = ClusterFixture.getSessionDisplay( httpSession );
+    HttpSession httpSession = ClusterTestHelper.getFirstSession( servletEngine );
+    Display display = ClusterTestHelper.getSessionDisplay( httpSession );
     httpSession.invalidate();
     
     assertTrue( display.isDisposed() );
@@ -44,7 +44,6 @@ public abstract class SessionCleanupTestBase extends TestCase {
   
   @Override
   protected void setUp() throws Exception {
-    ClusterFixture.setUp();
     servletEngine = getServletEngineFactory().createServletEngine();
     client = new RWTClient( servletEngine );
   }
@@ -52,6 +51,5 @@ public abstract class SessionCleanupTestBase extends TestCase {
   @Override
   protected void tearDown() throws Exception {
     servletEngine.stop();
-    ClusterFixture.tearDown();
   }
 }

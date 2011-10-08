@@ -16,25 +16,15 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
-import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 
 
-
 @SuppressWarnings("restriction")
-public class ClusterFixture {
+public class ClusterTestHelper {
 
-  public static void setUp() {
-    System.setProperty( "lifecycle", SimpleLifeCycle.class.getName() );
-  }
-
-  public static void tearDown() {
-    System.getProperties().remove( "lifecycle" );
-  }
-  
   public static void enableUITests( boolean enable ) {
     try {
       Field field = UITestUtil.class.getDeclaredField( "enabled" );
@@ -61,7 +51,7 @@ public class ClusterFixture {
     return LifeCycleUtil.getSessionDisplay( getSessionStore( httpSession ) );
   }
 
-  private ClusterFixture() {
+  private ClusterTestHelper() {
     // prevent instantiation
   }
 }

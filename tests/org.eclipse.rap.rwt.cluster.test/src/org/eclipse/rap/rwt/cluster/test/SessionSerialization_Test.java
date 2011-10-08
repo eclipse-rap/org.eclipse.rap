@@ -16,7 +16,6 @@ import java.net.HttpURLConnection;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.cluster.test.entrypoints.WidgetsEntryPoint;
-import org.eclipse.rap.rwt.cluster.testfixture.ClusterFixture;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
@@ -43,7 +42,6 @@ public class SessionSerialization_Test extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    ClusterFixture.setUp();
     cluster = new JettyFactory().createServletEngineCluster();
     primary = cluster.addServletEngine();
     secondary = cluster.addServletEngine();
@@ -53,7 +51,6 @@ public class SessionSerialization_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     cluster.stop();
-    ClusterFixture.tearDown();
   }
 
   private Response sendRequestToPrimary() throws IOException {

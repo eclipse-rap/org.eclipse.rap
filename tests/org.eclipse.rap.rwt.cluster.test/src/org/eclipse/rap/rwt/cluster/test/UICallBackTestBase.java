@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.cluster.test.entrypoints.SessionTimeoutEntryPoint;
 import org.eclipse.rap.rwt.cluster.test.entrypoints.UICallbackEntryPoint;
-import org.eclipse.rap.rwt.cluster.testfixture.ClusterFixture;
+import org.eclipse.rap.rwt.cluster.testfixture.ClusterTestHelper;
 import org.eclipse.rap.rwt.cluster.testfixture.client.RWTClient;
 import org.eclipse.rap.rwt.cluster.testfixture.client.Response;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
@@ -40,8 +40,8 @@ public abstract class UICallBackTestBase extends TestCase {
     servletEngine.start( UICallbackEntryPoint.class );
     client.sendStartupRequest();
     client.sendInitializationRequest();
-    HttpSession session = ClusterFixture.getFirstSession( servletEngine );
-    final Display display = ClusterFixture.getSessionDisplay( session );
+    HttpSession session = ClusterTestHelper.getFirstSession( servletEngine );
+    final Display display = ClusterTestHelper.getSessionDisplay( session );
 
     Thread thread = new Thread( new Runnable() {
       public void run() {
@@ -113,20 +113,18 @@ public abstract class UICallBackTestBase extends TestCase {
   }
 
   protected void setUp() throws Exception {
-    ClusterFixture.setUp();
     servletEngine = getServletEngineFactory().createServletEngine();
     client = new RWTClient( servletEngine );
   }
 
   protected void tearDown() throws Exception {
     servletEngine.stop();
-    ClusterFixture.tearDown();
   }
 
   private UICallBackManager getUICallBackManager() {
     final UICallBackManager[] result = { null };
-    HttpSession session = ClusterFixture.getFirstSession( servletEngine );
-    Display display = ClusterFixture.getSessionDisplay( session );
+    HttpSession session = ClusterTestHelper.getFirstSession( servletEngine );
+    Display display = ClusterTestHelper.getSessionDisplay( session );
     UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
       public void run() {
         result[ 0 ] = UICallBackManager.getInstance();
@@ -157,8 +155,8 @@ public abstract class UICallBackTestBase extends TestCase {
   }
 
   private void configureCallbackRequestCheckInterval( final int interval ) {
-    HttpSession session = ClusterFixture.getFirstSession( servletEngine );
-    Display display = ClusterFixture.getSessionDisplay( session );
+    HttpSession session = ClusterTestHelper.getFirstSession( servletEngine );
+    Display display = ClusterTestHelper.getSessionDisplay( session );
     UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
       public void run() {
         UICallBackManager.getInstance().setRequestCheckInterval( interval );
