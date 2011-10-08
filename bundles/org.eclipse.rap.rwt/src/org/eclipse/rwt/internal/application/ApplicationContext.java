@@ -81,33 +81,35 @@ public class ApplicationContext {
   private final DisplaysHolder displaysHolder;
   private final TextSizeStorage textSizeStorage;
   private final ProbeStore probeStore;
+  private final ServletContext servletContext;
   private final ApplicationContextConfigurator contextConfigurator;
   private boolean activated;
   
   public ApplicationContext( ApplicationConfigurator configurator, ServletContext servletContext ) {
-    applicationStoreImpl = new ApplicationStoreImpl();
-    configuration = new RWTConfigurationImpl();
-    resourceManager = new ResourceManagerImpl( configuration );
-    phaseListenerRegistry = new PhaseListenerRegistry();
-    lifeCycleFactory = new LifeCycleFactory( phaseListenerRegistry );
-    themeManager = new ThemeManager();
-    brandingManager = new BrandingManager();
-    entryPointManager = new EntryPointManager();
-    resourceFactory = new ResourceFactory();
-    imageFactory = new ImageFactory();
-    internalImageFactory = new InternalImageFactory();
-    imageDataFactory = new ImageDataFactory( resourceManager );
-    fontDataFactory = new FontDataFactory();
-    adapterManager = new AdapterManager();
-    settingStoreManager = new SettingStoreManager();
-    resourceRegistry = new ResourceRegistry();
-    startupPage = new StartupPage( resourceRegistry );
-    serviceManager = createServiceManager();
-    displaysHolder = new DisplaysHolder();
-    jsLibraryConcatenator = new JSLibraryConcatenator();
-    textSizeStorage = new TextSizeStorage();
-    probeStore = new ProbeStore( textSizeStorage );
-    contextConfigurator = new ApplicationContextConfigurator( configurator, servletContext );
+    this.applicationStoreImpl = new ApplicationStoreImpl();
+    this.configuration = new RWTConfigurationImpl();
+    this.resourceManager = new ResourceManagerImpl( configuration );
+    this.phaseListenerRegistry = new PhaseListenerRegistry();
+    this.lifeCycleFactory = new LifeCycleFactory( phaseListenerRegistry );
+    this.themeManager = new ThemeManager();
+    this.brandingManager = new BrandingManager();
+    this.entryPointManager = new EntryPointManager();
+    this.resourceFactory = new ResourceFactory();
+    this.imageFactory = new ImageFactory();
+    this.internalImageFactory = new InternalImageFactory();
+    this.imageDataFactory = new ImageDataFactory( resourceManager );
+    this.fontDataFactory = new FontDataFactory();
+    this.adapterManager = new AdapterManager();
+    this.settingStoreManager = new SettingStoreManager();
+    this.resourceRegistry = new ResourceRegistry();
+    this.startupPage = new StartupPage( resourceRegistry );
+    this.serviceManager = createServiceManager();
+    this.displaysHolder = new DisplaysHolder();
+    this.jsLibraryConcatenator = new JSLibraryConcatenator();
+    this.textSizeStorage = new TextSizeStorage();
+    this.probeStore = new ProbeStore( textSizeStorage );
+    this.servletContext = servletContext;
+    this.contextConfigurator = new ApplicationContextConfigurator( configurator, servletContext );
   }
   
   public boolean isActivated() {
@@ -132,6 +134,10 @@ public class ApplicationContext {
     } finally {
       activated = false;
     }
+  }
+  
+  public ServletContext getServletContext() {
+    return servletContext;
   }
   
   public RWTConfiguration getConfiguration() {

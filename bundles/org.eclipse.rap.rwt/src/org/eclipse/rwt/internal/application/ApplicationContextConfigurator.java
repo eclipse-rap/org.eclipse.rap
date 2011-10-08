@@ -65,7 +65,8 @@ class ApplicationContextConfigurator {
   private void setContextDirectory( ApplicationContext applicationContext ) {
     RWTConfiguration configurationInstance = applicationContext.getConfiguration();
     RWTConfigurationImpl configuration = ( RWTConfigurationImpl )configurationInstance;
-    String location = ( String )servletContext.getAttribute( ApplicationConfigurator.RESOURCE_ROOT_LOCATION );
+    String location 
+      = ( String )servletContext.getAttribute( ApplicationConfigurator.RESOURCE_ROOT_LOCATION );
     if( location != null ) {
       configuration.configure( location ); 
     } else {

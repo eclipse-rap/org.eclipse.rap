@@ -15,6 +15,7 @@ import javax.servlet.ServletContextListener;
 
 import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.application.ApplicationConfiguration;
+import org.eclipse.rwt.application.ApplicationConfiguration.OperationMode;
 import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
@@ -55,7 +56,7 @@ public class RWTStartup {
     }
     
     public void configure( ApplicationConfiguration configuration ) {
-      configuration.useJEECompatibilityMode();
+      configuration.setOperationMode( OperationMode.SESSION_FAILOVER );
       configuration.addEntryPoint( EntryPointManager.DEFAULT, entryPointClass );
     }
   }

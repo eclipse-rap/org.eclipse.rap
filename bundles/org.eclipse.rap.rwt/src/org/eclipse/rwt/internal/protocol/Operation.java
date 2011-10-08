@@ -10,10 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATION_ACTION;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATION_PROPERTIES;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATION_TARGET;
-
 import java.util.*;
 
 import org.eclipse.rwt.internal.theme.JsonObject;
@@ -67,8 +63,8 @@ final class Operation {
 
   JsonObject toJson() {
     JsonObject json = new JsonObject();
-    json.append( OPERATION_TARGET, target );
-    json.append( OPERATION_ACTION, action );
+    json.append( ProtocolConstants.OPERATION_TARGET, target );
+    json.append( ProtocolConstants.OPERATION_ACTION, action );
     if( !details.isEmpty() ) {
       Set<String> keySet = details.keySet();
       for( String key : keySet ) {
@@ -76,7 +72,8 @@ final class Operation {
       }
     }
     if( !properties.isEmpty() ) {
-      json.append( OPERATION_PROPERTIES, JsonUtil.createJsonObject( properties ) );
+      JsonValue jsonObject = JsonUtil.createJsonObject( properties );
+      json.append( ProtocolConstants.OPERATION_PROPERTIES, jsonObject );
     }
     return json;
   }

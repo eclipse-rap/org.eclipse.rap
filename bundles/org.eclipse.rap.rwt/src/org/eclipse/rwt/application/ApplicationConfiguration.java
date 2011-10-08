@@ -27,6 +27,14 @@ import org.eclipse.swt.widgets.Widget;
  */
 public interface ApplicationConfiguration {
   
+  public enum OperationMode {
+    STANDARD,
+    JEE_COMPATIBILITY,
+    SESSION_FAILOVER
+  }
+
+  void setOperationMode( OperationMode operationMode );
+  
   void addEntryPoint( String entryPointName, Class<? extends IEntryPoint> entryPointType );
 
   void addBranding( AbstractBranding branding );
@@ -44,8 +52,6 @@ public interface ApplicationConfiguration {
   void addThemableWidget( Class<? extends Widget> widget );
   
   void addServiceHandler( String serviceHandlerId, IServiceHandler serviceHandler );
-  
-  void useJEECompatibilityMode();
   
   /////////////////////////////////////////////
   // TODO [fappel]: replace with proper mechanism (Javascript)

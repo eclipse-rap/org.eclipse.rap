@@ -45,7 +45,6 @@ import org.eclipse.rap.rwt.cluster.testfixture.internal.server.RWTStartup;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.FileUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rwt.internal.engine.RWTDelegate;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
@@ -125,7 +124,6 @@ public class JettyEngine implements IServletEngine {
   private void addEntryPoint( Class<? extends IEntryPoint> entryPointClass ) {
     ServletContextHandler context = createServletContext( "/" );
     context.addServlet( new ServletHolder( new RWTDelegate() ), IServletEngine.SERVLET_PATH );
-    addServletContextFilter( context, new RWTClusterSupport() );
     addServletContextFilter( context, new SessionTracker() );
     context.addEventListener( RWTStartup.createServletContextListener( entryPointClass ) );
   }

@@ -16,6 +16,7 @@ import java.util.Map;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
@@ -32,7 +33,7 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class ClientObjectFactory {
 
-  private static final String SYNCHRONIZER_MAP_KEY = "synchronizerMapKey";
+  private static final String CLIENT_OBJECT_MAP_KEY = "synchronizerMapKey";
 
   /**
    * Creates a {@link IClientObject} for a specific Widget. The returned instance
@@ -63,30 +64,33 @@ public final class ClientObjectFactory {
    * {@link Display}.
    */
   public static IClientObject getForDisplay( Display display ) {
-    if( display == null ) {
-      throw new IllegalArgumentException( "Null display" );
-    }
+    ParamCheck.notNull( display, "display" );
     if( !isValidThread( display ) ) {
       throw new IllegalStateException( "Illegal thread access" );
     }
     return getForId( DisplayUtil.getId( display ) );
   }
 
-  @SuppressWarnings("unchecked")
   private static IClientObject getForId( String id ) {
     IClientObject result;
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Map<String, IClientObject> map
-      = ( Map<String, IClientObject> )stateInfo.getAttribute( SYNCHRONIZER_MAP_KEY );
-    if( map == null ) {
-      map = new HashMap<String, IClientObject>();
-      stateInfo.setAttribute( SYNCHRONIZER_MAP_KEY, map );
-    }
+    Map<String, IClientObject> map = getClientObjectMap();
     if( map.containsKey( id ) ) {
       result = map.get( id );
     } else {
       result = new ClientObject( id );
       map.put( id, result );
+    }
+    return result;
+  }
+
+  @SuppressWarnings("unchecked")
+  private static Map<String, IClientObject> getClientObjectMap() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    Map<String, IClientObject> result
+      = ( Map<String, IClientObject> )stateInfo.getAttribute( CLIENT_OBJECT_MAP_KEY );
+    if( result == null ) {
+      result = new HashMap<String, IClientObject>();
+      stateInfo.setAttribute( CLIENT_OBJECT_MAP_KEY, result );
     }
     return result;
   }
@@ -103,5 +107,4 @@ public final class ClientObjectFactory {
   private ClientObjectFactory() {
     // prevent instantiation
   }
-
 }

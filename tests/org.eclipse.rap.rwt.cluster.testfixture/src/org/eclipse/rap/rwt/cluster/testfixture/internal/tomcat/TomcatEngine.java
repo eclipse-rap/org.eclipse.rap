@@ -2,7 +2,6 @@ package org.eclipse.rap.rwt.cluster.testfixture.internal.tomcat;
 
 import java.io.File;
 
-import javax.servlet.Filter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 
@@ -10,8 +9,6 @@ import org.apache.catalina.Engine;
 import org.apache.catalina.Session;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.core.StandardContext;
-import org.apache.catalina.deploy.FilterDef;
-import org.apache.catalina.deploy.FilterMap;
 import org.apache.catalina.servlets.DefaultServlet;
 import org.apache.catalina.session.ManagerBase;
 import org.apache.catalina.session.StandardManager;
@@ -21,7 +18,6 @@ import org.eclipse.rap.rwt.cluster.testfixture.internal.server.RWTStartup;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.FileUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rwt.internal.engine.RWTDelegate;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
@@ -107,7 +103,6 @@ public class TomcatEngine implements IServletEngine {
     context.addServletMapping( IServletEngine.SERVLET_PATH, rwtServlet.getName() );
     Wrapper defaultServlet = addServlet( "defaultServlet", new DefaultServlet() );
     context.addServletMapping( "/", defaultServlet.getName() );
-    addFilter( rwtServlet, new RWTClusterSupport() );
   }
 
   private void configureSessionSweepInterval() {
@@ -124,17 +119,6 @@ public class TomcatEngine implements IServletEngine {
 
   private Wrapper addServlet( String name, HttpServlet servlet ) {
     return Tomcat.addServlet( context, name, servlet );
-  }
-
-  private void addFilter( Wrapper rwtServlet, Filter filter ) {
-    FilterDef filterDef = new FilterDef();
-    filterDef.setFilter( filter );
-    filterDef.setFilterName( "rwtClusterSupport" );
-    context.addFilterDef( filterDef );
-    FilterMap filterMap = new FilterMap();
-    filterMap.addServletName( rwtServlet.getName() );
-    filterMap.setFilterName( filterDef.getFilterName() );
-    context.addFilterMap( filterMap );
   }
 
   private File getBaseDir() {

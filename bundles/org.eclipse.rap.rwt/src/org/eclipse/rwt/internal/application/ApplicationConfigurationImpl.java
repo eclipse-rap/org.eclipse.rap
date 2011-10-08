@@ -58,8 +58,19 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
     this.configurator = configurator;
   }
   
-  public void useJEECompatibilityMode() {
-    applicationContext.getLifeCycleFactory().configure( SimpleLifeCycle.class );
+  public void setOperationMode( OperationMode operationMode ) {
+    switch( operationMode ) {
+      case STANDARD:
+        break;
+      case JEE_COMPATIBILITY:
+        applicationContext.getLifeCycleFactory().configure( SimpleLifeCycle.class );
+        break;
+      case SESSION_FAILOVER:
+        new SessionFailoverConfigurator( applicationContext ).configure();
+        break;
+      default:
+        throw new IllegalArgumentException( "Unsupported operation mode: " + operationMode );
+    }
   }
 
   public void addPhaseListener( PhaseListener phaseListener ) {
@@ -141,15 +152,15 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
     applicationContext.getThemeManager().addThemeableWidget( widget, resourceLoader );
   }
 
-  private ClassLoader getClassLoader() {
-    return configurator.getClass().getClassLoader();
-  }
-
   public void setAttribute( String name, Object value ) {
     ParamCheck.notNull( name, "name");
     ParamCheck.notNull( value, "value" );
     
     applicationContext.getApplicationStore().setAttribute( name, value );
+  }
+
+  private ClassLoader getClassLoader() {
+    return configurator.getClass().getClassLoader();
   }
 
   private StyleSheet readStyleSheet( String styleSheetLocation, ResourceLoader loader ) {

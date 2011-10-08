@@ -14,10 +14,23 @@ package org.eclipse.rap.rwt.testfixture;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.EventListener;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterRegistration;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
 import javax.servlet.ServletRegistration.Dynamic;
+import javax.servlet.SessionCookieConfig;
+import javax.servlet.SessionTrackingMode;
 import javax.servlet.descriptor.JspConfigDescriptor;
 
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
@@ -31,10 +44,26 @@ import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
  * </p>
  */
 public class TestServletContext implements ServletContext {
-  private final Map<String,Object> initParameters = new HashMap<String,Object>();
-  private final Map<String,Object> attributes = new HashMap<String,Object>();
+  private final Map<String,Object> initParameters;
+  private final Map<String,Object> attributes;
+  private final Map<String,FilterRegistration> filters;
+  private final Map<String,ServletRegistration> servlets;
   private String servletContextName;
   private TestLogger logger;
+  private int majorVersion;
+  private int minorVersion;
+
+  public TestServletContext() {
+    this.initParameters = new HashMap<String,Object>();
+    this.attributes = new HashMap<String,Object>();
+    this.filters = new HashMap<String,FilterRegistration>();
+    this.servlets = new HashMap<String,ServletRegistration>();
+  }
+  
+  public void setVersion( int majorVersion, int minorVersion ) {
+    this.majorVersion = majorVersion;
+    this.minorVersion = minorVersion;
+  }
 
   public void setLogger( TestLogger logger ) {
     this.logger = logger;
@@ -45,11 +74,11 @@ public class TestServletContext implements ServletContext {
   }
 
   public int getMajorVersion() {
-    return 0;
+    return majorVersion;
   }
 
   public int getMinorVersion() {
-    return 0;
+    return minorVersion;
   }
 
   public String getMimeType( String arg0 ) {
@@ -175,7 +204,9 @@ public class TestServletContext implements ServletContext {
   }
 
   public Dynamic addServlet( String servletName, Servlet servlet ) {
-    return null;
+    TestServletRegistration result = new TestServletRegistration( servletName, servlet );
+    servlets.put( servletName, result );
+    return result;
   }
 
   public Dynamic addServlet( String servletName, Class<? extends Servlet> servletClass ) {
@@ -187,11 +218,11 @@ public class TestServletContext implements ServletContext {
   }
 
   public ServletRegistration getServletRegistration( String servletName ) {
-    return null;
+    return servlets.get( servletName );
   }
 
   public Map<String, ? extends ServletRegistration> getServletRegistrations() {
-    return null;
+    return servlets;
   }
 
   public javax.servlet.FilterRegistration.Dynamic addFilter( String filterName, String className ) {
@@ -199,7 +230,9 @@ public class TestServletContext implements ServletContext {
   }
 
   public javax.servlet.FilterRegistration.Dynamic addFilter( String filterName, Filter filter ) {
-    return null;
+    TestFilterRegistration result = new TestFilterRegistration( filterName, filter );
+    filters.put( filterName, result );
+    return result;
   }
 
   public javax.servlet.FilterRegistration.Dynamic addFilter( String filterName,
@@ -207,17 +240,17 @@ public class TestServletContext implements ServletContext {
   {
     return null;
   }
-
+  
   public <T extends Filter> T createFilter( Class<T> clazz ) throws ServletException {
     return null;
   }
 
   public FilterRegistration getFilterRegistration( String filterName ) {
-    return null;
+    return filters.get( filterName );
   }
 
   public Map<String, ? extends FilterRegistration> getFilterRegistrations() {
-    return null;
+    return filters;
   }
 
   public SessionCookieConfig getSessionCookieConfig() {
