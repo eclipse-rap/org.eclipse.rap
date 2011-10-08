@@ -17,12 +17,14 @@ import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rap.rwt.testfixture.TestRequest;
+import org.eclipse.rap.rwt.testfixture.TestResponse;
+import org.eclipse.rap.rwt.testfixture.TestSession;
 import org.eclipse.rwt.internal.application.ApplicationContext;
+import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.IServiceHandler;
 
@@ -85,14 +87,12 @@ public class RWTDelegate_Test extends TestCase {
     assertNotNull( log.get( 0 ) );
   }
 
-  private static TestRequest createTestRequest( ApplicationContext applicationContext ) {
+  private TestRequest createTestRequest( ApplicationContext applicationContext ) {
+    TestSession session = new TestSession();
     TestRequest result = new TestRequest();
-    HttpSession session = new TestSession();
     ServletContext servletContext = session.getServletContext();
-    String name = ApplicationContext.class.getName() + "#INSTANCE";
-    servletContext.setAttribute( name, applicationContext );
+    ApplicationContextUtil.set( servletContext, applicationContext );
     result.setSession( session );
     return result;
   }
-
 }
