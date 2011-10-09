@@ -996,4 +996,13 @@ public class Control_Test extends TestCase {
       // Expected Exception
     }
   }
+  
+  public void testNotClearPackedOnSetLocation() {
+    shell.pack();
+
+    shell.setLocation( 1, 2 );
+
+    IControlAdapter controlAdapter = ( IControlAdapter )shell.getAdapter( IControlAdapter.class );
+    assertTrue( controlAdapter.isPacked() );
+  }
 }

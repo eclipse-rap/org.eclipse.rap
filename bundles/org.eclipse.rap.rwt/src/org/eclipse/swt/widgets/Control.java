@@ -2317,13 +2317,19 @@ public abstract class Control extends Widget implements Drawable {
     if( updateMode ) {
       updateMode();
     }
-    packed = false;
+    clearPacked( oldSize );
     notifyMove( oldLocation );
     notifyResize( oldSize );
   }
 
   void updateMode() {
     // subclasses may override
+  }
+  
+  private void clearPacked( Point oldSize ) {
+    if( !oldSize.equals( getSize() ) ) {
+      packed = false;
+    }
   }
 
   void notifyResize( final Point oldSize ) {
