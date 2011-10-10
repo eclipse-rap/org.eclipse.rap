@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Tests for RWT-OSGi Integration Bundle
 Bundle-SymbolicName: org.eclipse.rap.rwt.osgi.test
 Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse.org - RAP
 Fragment-Host: org.eclipse.rap.rwt.osgi;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.mockito;bundle-version="[1.8.4,2.0.0)",
