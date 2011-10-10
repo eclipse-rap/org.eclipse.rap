@@ -15,6 +15,7 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
@@ -31,7 +32,7 @@ public class TableViewerTab extends ExampleTab {
   private static final int FIRST_NAME = 0;
   private static final int LAST_NAME = 1;
   private static final int AGE = 2;
-  private static final int EDITABLE = 3;
+  private static final int MARRIED = 3;
   private static final String[] LAST_NAMES = {
     "Hövl&lt;_'><'&amp;",
     "Panther",
@@ -49,17 +50,17 @@ public class TableViewerTab extends ExampleTab {
     String firstName;
     String lastName;
     int age;
-    boolean editable;
+    boolean married;
 
-    public Person( String firstName, String lastName, int age, boolean editable ) {
+    public Person( String firstName, String lastName, int age, boolean married ) {
       this.firstName = firstName;
       this.lastName = lastName;
       this.age = age;
-      this.editable = editable;
+      this.married = married;
     }
 
     public String toString() {
-      return firstName + " " + lastName + " " + age;
+      return firstName + " " + lastName + " " + age + " " + married;
     }
   }
 
@@ -117,8 +118,8 @@ public class TableViewerTab extends ExampleTab {
         case AGE:
           cell.setText( String.valueOf( person.age ) );
           break;
-        case EDITABLE:
-          cell.setText( person.editable ? "yes" : "no" );
+        case MARRIED:
+          cell.setText( person.married ? "yes" : "no" );
           break;
       }
     }
@@ -136,8 +137,8 @@ public class TableViewerTab extends ExampleTab {
         case AGE:
           text = String.valueOf( person.age );
           break;
-        case EDITABLE:
-          text = person.editable ? "yes" : "no";
+        case MARRIED:
+          text = person.married ? "yes" : "no";
           break;
       }
       return text;
@@ -169,10 +170,10 @@ public class TableViewerTab extends ExampleTab {
         result = person1.lastName.compareTo( person2.lastName );
       } else if( property == AGE ) {
         result = person1.age - person2.age;
-      } else if( property == EDITABLE ) {
-        if( person1.editable && !person2.editable ) {
+      } else if( property == MARRIED ) {
+        if( person1.married && !person2.married ) {
           result = -1;
-        } else if( !person1.editable && person2.editable ) {
+        } else if( !person1.married && person2.married ) {
           result = +1;
         }
       }
@@ -229,8 +230,7 @@ public class TableViewerTab extends ExampleTab {
     }
 
     protected boolean canEdit( Object element ) {
-      Person person = ( Person )element;
-      return person.editable;
+      return true;
     }
 
     protected CellEditor getCellEditor( Object element ) {
@@ -259,8 +259,7 @@ public class TableViewerTab extends ExampleTab {
     }
 
     protected boolean canEdit( Object element ) {
-      Person person = ( Person )element;
-      return person.editable;
+      return true;
     }
 
     protected CellEditor getCellEditor( Object element ) {
@@ -302,8 +301,7 @@ public class TableViewerTab extends ExampleTab {
     }
 
     protected boolean canEdit( Object element ) {
-      Person person = ( Person )element;
-      return person.editable;
+      return true;
     }
 
     protected CellEditor getCellEditor( Object element ) {
@@ -324,11 +322,11 @@ public class TableViewerTab extends ExampleTab {
     }
   }
 
-  private static final class EditableEditingSupport extends EditingSupport {
-    private final CheckboxCellEditor editor;
-    public EditableEditingSupport( ColumnViewer viewer ) {
+  private static final class MarriedEditingSupport extends EditingSupport {
+    private final RealCheckboxCellEditor editor;
+    public MarriedEditingSupport( TableViewer viewer ) {
       super( viewer );
-      editor = new CheckboxCellEditor();
+      editor = new RealCheckboxCellEditor( viewer.getTable() );
     }
 
     protected boolean canEdit( Object element ) {
@@ -341,15 +339,48 @@ public class TableViewerTab extends ExampleTab {
 
     protected Object getValue( Object element ) {
       Person person = ( Person )element;
-      return Boolean.valueOf( person.editable );
+      return Boolean.valueOf( person.married );
     }
 
     protected void setValue( Object element, Object value ) {
       Person person = ( Person )element;
-      person.editable = ( ( Boolean )value ).booleanValue();
+      person.married = ( ( Boolean )value ).booleanValue();
       getViewer().update( element, null );
     }
 
+  }
+
+  private static final class RealCheckboxCellEditor extends CellEditor {
+
+    protected Button checkbox;
+
+    public RealCheckboxCellEditor( Composite parent ) {
+      super( parent, SWT.NONE );
+    }
+
+    @Override
+    protected Control createControl( Composite parent ) {
+      checkbox = new Button( parent, SWT.CHECK );
+      return checkbox;
+    }
+
+    @Override
+    protected Object doGetValue() {
+      return checkbox.getSelection() ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    @Override
+    protected void doSetFocus() {
+      checkbox.setFocus();
+    }
+
+    @Override
+    protected void doSetValue( Object value ) {
+      Assert.isTrue( value instanceof Boolean );
+      if( checkbox != null ) {
+        checkbox.setSelection( ( (Boolean ) value).booleanValue() );
+      }
+    }
   }
 
   private TableViewer viewer;
@@ -498,15 +529,15 @@ public class TableViewerTab extends ExampleTab {
 
   private TableViewerColumn createEditableColumn() {
     TableViewerColumn result = new TableViewerColumn( viewer, SWT.NONE );
-    result.setLabelProvider( new PersonLabelProvider( EDITABLE ) );
+    result.setLabelProvider( new PersonLabelProvider( MARRIED ) );
     TableColumn column = result.getColumn();
-    column.setText( "Editable" );
-    column.setWidth( 50 );
+    column.setText( "Married" );
+    column.setWidth( 60 );
     column.setMoveable( true );
     column.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
         int sortDirection = updateSortDirection( ( TableColumn )event.widget );
-        sort( viewer, EDITABLE, sortDirection == SWT.DOWN );
+        sort( viewer, MARRIED, sortDirection == SWT.DOWN );
       }
     } );
     return result;
@@ -587,7 +618,7 @@ public class TableViewerTab extends ExampleTab {
     lastNameColumn.setEditingSupport( editingSupport );
     editingSupport = new AgeEditingSupport( viewer );
     ageColumn.setEditingSupport( editingSupport );
-    editingSupport = new EditableEditingSupport( viewer );
+    editingSupport = new MarriedEditingSupport( viewer );
     editableColumn.setEditingSupport( editingSupport );
     ColumnViewerEditorActivationStrategy activationStrategy
       = new EditorActivationStrategy( viewer );
