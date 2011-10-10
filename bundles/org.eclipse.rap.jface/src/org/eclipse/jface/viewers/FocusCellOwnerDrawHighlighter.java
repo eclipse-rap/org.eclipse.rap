@@ -51,7 +51,7 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 	public FocusCellOwnerDrawHighlighter(ColumnViewer viewer) {
 		super(viewer);
 		this.viewer = viewer;
-		hookListener(viewer);
+//		hookListener(viewer);
 		// RAP [if]
         viewer.getControl().setData( Table.ALWAYS_HIDE_SELECTION, Boolean.TRUE );
 	}
@@ -115,7 +115,7 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 	  cell.setForeground( cellForeground );
 	}
 
-    private void hookListener(final ColumnViewer viewer) {
+//    private void hookListener(final ColumnViewer viewer) {
 //
 //		Listener listener = new Listener() {
 //
@@ -143,54 +143,7 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 ////		viewer.getControl().addListener(SWT.EraseItem, listener);
 //		viewer.getControl().addListener(SWT.KeyDown, listener);
 //		viewer.getControl().addListener(SWT.MouseDown, listener);
-
-      // [rst] We use a JFace SelectionChanged listener to keep track of
-      //       programmatic selection changes and handle MULTI correctly.
-      //       See https://bugs.eclipse.org/bugs/show_bug.cgi?id=261647
-      viewer.addSelectionChangedListener( new ISelectionChangedListener() {
-
-        private Widget[] oldSelection = getSelectedItems();
-        private ViewerCell oldFocusCell = getFocusCell();
-
-        public void selectionChanged( SelectionChangedEvent event ) {
-          // erase old selection
-          for( int i = 0; i < oldSelection.length; i++ ) {
-            Widget item = oldSelection[ i ];
-            if( !item.isDisposed() ) {
-              ViewerRow row = viewer.getViewerRowFromItem( item );
-              int count = row.getColumnCount();
-              for( int j = 0; j < count; j++ ) {
-                ViewerCell cell = row.getCell( j );
-                removeSelectionInformation( null, cell );
-              }
-            }
-          }
-          if( oldFocusCell != null ) {
-            Widget item = oldFocusCell.getItem();
-            if( !item.isDisposed() ) {
-              removeSelectionInformation( null, oldFocusCell );
-            }
-          }
-          // colorize new selection
-          Widget[] selection = getSelectedItems();
-          ViewerCell focusCell = getFocusCell();
-          int index = 0;
-          if( focusCell != null ) {
-            index = focusCell.getColumnIndex();
-          } else if( oldFocusCell != null ) {
-            index = oldFocusCell.getColumnIndex();
-          }
-          for( int i = 0; i < selection.length; i++ ) {
-            Widget item = selection[ i ];
-            ViewerRow row = viewer.getViewerRowFromItem( item );
-            ViewerCell cell = row.getCell( index );
-            markFocusedCell( null, cell );
-          }
-          oldSelection = selection;
-          oldFocusCell = focusCell;
-        }
-      });
-    }
+//    }
 
 	/**
 	 * The color to use when rendering the background of the selected cell when
@@ -299,40 +252,10 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 //					true);
 //		}
         if( oldCell != null ) {
-          if(    newCell == null
-              || !isItemSelected( oldCell.getItem() )
-              || newCell.getColumnIndex() != oldCell.getColumnIndex() )
-          {
-            removeSelectionInformation( null, oldCell );
-          }
-// [if] Fix for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=264226
-// When selected item is deleted, the oldCell item and element are out of sync
-//          viewer.updateItem( oldCell.getItem(), oldCell.getElement() );
+          removeSelectionInformation( null, oldCell );
         }
-        if( newCell != null && isItemSelected( newCell.getItem() ) ) {
+        if( newCell != null ) {
           markFocusedCell( null, newCell );
         }
 	}
-
-// RAP [if] Helping methods
-    private Widget[] getSelectedItems() {
-      Control control = viewer.getControl();
-      Widget[] result = null;
-      if( control instanceof Table ) {
-        result = ( ( Table )control ).getSelection();
-      } else if( control instanceof Tree ) {
-        result = ( ( Tree )control ).getSelection();
-      }
-      return result;
-    }
-
-	private boolean isItemSelected( final Widget item ) {
-	  boolean result = false;
-      Widget[] selection = getSelectedItems();
-      for( int i = 0; i < selection.length && !result; i++ ) {
-        result = item == selection[ i ];
-      }
-	  return result;
-	}
-// RAPEND
 }
