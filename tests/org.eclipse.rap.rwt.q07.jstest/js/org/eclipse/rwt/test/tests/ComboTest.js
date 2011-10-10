@@ -230,6 +230,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.destroy();
     },
 
+    testStopArrowKeysPropagation : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var composite = new org.eclipse.swt.widgets.Composite();
+      composite.setSpace( 0, 100, 0, 100 );
+      var combo = new org.eclipse.swt.widgets.Combo();
+      combo.setSpace( 239, 81, 6, 23 );
+      combo.setParent( composite );
+      composite.addToDocument();
+      testUtil.flush();
+      combo.focus();
+      var counter = 0;
+      composite.addEventListener( "keypress", function( event ) {
+        counter++
+      } );
+      testUtil.keyDown( combo._getTargetNode(), "PageUp" );
+      testUtil.keyDown( combo._getTargetNode(), "Up" );
+      testUtil.keyDown( combo._getTargetNode(), "Down" );
+      testUtil.keyDown( combo._getTargetNode(), "PageDown" );
+      assertEquals( 0, counter );
+      combo.destroy();
+      composite.destroy(); 
+    },
+
     //////////
     // Helpers
 

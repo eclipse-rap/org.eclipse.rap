@@ -605,6 +605,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           } else if( this._list.getItemsCount() ) {
             this._setSelected( this._list.getItems()[0] );
           }
+          evt.stopPropagation();
           break;
       }
       if(    this._field.isCreated()
