@@ -100,26 +100,20 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 //		GC gc = event.gc;
 //		gc.setBackground(cell.getViewerRow().getBackground(
 //				cell.getColumnIndex()));
-	  Color tableBackground = cell.getControl().getBackground();
-	  Color cellBackground
-	    = cell.getViewerRow().getBackground( cell.getColumnIndex() );
-	  if( !cellBackground.equals( tableBackground ) ) {
-	    cell.setBackground( cellBackground );
-	  } else {
-	    cell.setBackground( null );
-	  }
 //		gc.setForeground(cell.getViewerRow().getForeground(
 //				cell.getColumnIndex()));
-	  Color tableForeground = cell.getControl().getForeground();
-	  Color cellForeground
-	    = cell.getViewerRow().getForeground( cell.getColumnIndex() );
-	  if( !cellForeground.equals( tableForeground ) ) {
-	    cell.setForeground( cellForeground );
-	  } else {
-	    cell.setForeground( null );
-	  }
 //		gc.fillRectangle(cell.getBounds());
 //		event.detail &= ~SWT.SELECTED;
+	  Color cellBackground = null;
+	  Color cellForeground = null;
+	  CellLabelProvider labelProvider = viewer.getLabelProvider( cell.getColumnIndex() );
+	  if( labelProvider instanceof ColumnLabelProvider ) {
+	    ColumnLabelProvider columnLabelProvider = ( ColumnLabelProvider )labelProvider;
+        cellBackground = columnLabelProvider.getBackground( cell.getElement() );
+        cellForeground = columnLabelProvider.getForeground( cell.getElement() );
+	  }
+	  cell.setBackground( cellBackground );
+	  cell.setForeground( cellForeground );
 	}
 
     private void hookListener(final ColumnViewer viewer) {
@@ -306,8 +300,12 @@ public class FocusCellOwnerDrawHighlighter extends FocusCellHighlighter {
 //					true);
 //		}
         if( oldCell != null ) {
-          oldCell.setBackground( null );
-          oldCell.setForeground( null );
+          if(    newCell == null
+              || !isItemSelected( oldCell.getItem() )
+              || newCell.getColumnIndex() != oldCell.getColumnIndex() )
+          {
+            removeSelectionInformation( null, oldCell );
+          }
 // [if] Fix for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=264226
 // When selected item is deleted, the oldCell item and element are out of sync
 //          viewer.updateItem( oldCell.getItem(), oldCell.getElement() );
