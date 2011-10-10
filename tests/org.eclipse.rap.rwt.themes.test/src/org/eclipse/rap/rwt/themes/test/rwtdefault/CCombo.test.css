@@ -16,7 +16,7 @@ CCombo {
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: #fcfcfc;
   color: #464a4e;
-  border-radius: 2px;
+  border-radius: 0;
   background-image: none;
   text-shadow: none;
 }
