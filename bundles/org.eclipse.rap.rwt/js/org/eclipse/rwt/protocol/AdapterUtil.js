@@ -81,7 +81,8 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     "bounds" : function( widget, value ) {
       var bounds = value;
       if( widget.getUserData( "tabFolder" ) !== null ) {
-        bounds = org.eclipse.swt.TabUtil.adjustBounds( widget, bounds );
+        bounds[ 0 ] = 0;
+        bounds[ 1 ] = 0;
       }
       if( widget.getUserData( "scrolledComposite" ) === null ) {
         widget.setLeft( bounds[ 0 ] );

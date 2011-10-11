@@ -124,16 +124,6 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
           }
         }
       }
-    },
-
-    adjustBounds : function( widget, bounds ) {
-      var result = bounds;
-      var folder = widget.getUserData( "tabFolder" );
-      if( folder != null ) {
-        result[ 0 ] = 0
-        result[ 1 ] = 0;
-      }
-      return result;
     }
   }
 });
