@@ -1025,7 +1025,7 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
       result.textColor = tv.getCssColor( "*", "color" );
       result.font = tv.getCssFont( "*", "font" );
       result.spacing = -1;
-      result.border = tv.getCssBorder( "*", "border" );
+      result.border = tv.getCssBorder( "TabFolder", "border" );
       return result;
     }
   },
@@ -1042,11 +1042,9 @@ qx.Theme.define( "org.eclipse.swt.theme.AppearancesBase",
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-//    result.height = "1*";
       result.overflow = "hidden";
       result.backgroundColor = tv.getCssColor( "*", "background-color" );
-      result.border = new org.eclipse.rwt.Border( 1, "solid", tv.getCssNamedColor( "thinborder" ) );
-      result.padding = 10;
+      result.border = tv.getCssBorder( "TabFolder-ContentContainer", "border" );
       return result;
     }
   },

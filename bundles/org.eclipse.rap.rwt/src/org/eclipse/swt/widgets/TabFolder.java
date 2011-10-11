@@ -1,16 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
@@ -18,6 +19,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.IItemHolderAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
+import org.eclipse.swt.internal.widgets.tabfolderkit.TabFolderThemeAdapter;
 
 /**
  * Instances of this class implement the notebook user interface
@@ -82,7 +84,7 @@ public class TabFolder extends Composite {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public TabFolder( final Composite parent, final int style ) {
+  public TabFolder( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
     this.itemHolder = new ItemHolder<TabItem>( TabItem.class );
     this.selectionIndex = -1;
@@ -93,7 +95,7 @@ public class TabFolder extends Composite {
     state &= ~( /* CANVAS | */ THEME_BACKGROUND );
   }
 
-  public Object getAdapter( final Class adapter ) {
+  public Object getAdapter( Class adapter ) {
     Object result;
     if( adapter == IItemHolderAdapter.class ) {
       result = itemHolder;
@@ -142,7 +144,7 @@ public class TabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public TabItem getItem( final int index ) {
+  public TabItem getItem( int index ) {
     checkWidget();
     return itemHolder.getItem( index );
   }
@@ -165,7 +167,7 @@ public class TabFolder extends Composite {
    *
    * @since 1.3
    */
-  public TabItem getItem( final Point point ) {
+  public TabItem getItem( Point point ) {
     checkWidget();
     if( point == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -213,7 +215,7 @@ public class TabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int indexOf( final TabItem item ) {
+  public int indexOf( TabItem item ) {
     checkWidget();
     if( item == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -270,7 +272,7 @@ public class TabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelection( final TabItem item ) {
+  public void setSelection( TabItem item ) {
     checkWidget();
     if( item == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -293,7 +295,7 @@ public class TabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelection( final TabItem[] items ) {
+  public void setSelection( TabItem[] items ) {
     checkWidget();
     if( items == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -323,7 +325,7 @@ public class TabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelection( final int index ) {
+  public void setSelection( int index ) {
     checkWidget ();
     int count = itemHolder.size();
     if( index >= 0 && index < count ) {
@@ -331,7 +333,7 @@ public class TabFolder extends Composite {
     }
   }
 
-  private void setSelection( final int index, final boolean notify ) {
+  private void setSelection( int index, boolean notify ) {
     int oldIndex = getSelectionIndex();
     if( oldIndex != index ) {
       if( oldIndex != -1 ) {
@@ -347,8 +349,7 @@ public class TabFolder extends Composite {
         updateSelectedItemControl();
         if( notify ) {
           TabItem item = itemHolder.getItem( newIndex );
-          SelectionEvent event
-            = new SelectionEvent( this, item, SelectionEvent.WIDGET_SELECTED );
+          SelectionEvent event = new SelectionEvent( this, item, SelectionEvent.WIDGET_SELECTED );
           event.processEvent();
         }
       }
@@ -390,7 +391,7 @@ public class TabFolder extends Composite {
     Rectangle bounds = getBounds();
     int width = bounds.width;
     int height = bounds.height;
-    int border = getBorderWidth() + 1;
+    int border = getBorderWidth() + getContentContainerBorderWidth();
     int hTabBar = onBottom ? 0 : TAB_BAR_HEIGHT;
     return new Rectangle( border,
                           hTabBar + border,
@@ -398,13 +399,9 @@ public class TabFolder extends Composite {
                           height - ( TAB_BAR_HEIGHT + border * 2 ) );
   }
 
-  public Rectangle computeTrim( final int x,
-                                final int y,
-                                final int width,
-                                final int height )
-  {
+  public Rectangle computeTrim( int x, int y, int width, int height ) {
     checkWidget();
-    int border = getBorderWidth() + 1;
+    int border = getBorderWidth() + getContentContainerBorderWidth();
     int hTabBar = onBottom ? 0 : TAB_BAR_HEIGHT;
     int trimX = x - border;
     int trimWidth = width + 2 * border;
@@ -413,10 +410,7 @@ public class TabFolder extends Composite {
     return new Rectangle( trimX, trimY, trimWidth, trimHeight );
   }
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     Point itemsSize = new Point( 0, 0 );
     Point contentsSize = new Point( 0, 0 );
@@ -480,7 +474,7 @@ public class TabFolder extends Composite {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -502,7 +496,7 @@ public class TabFolder extends Composite {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
@@ -521,7 +515,7 @@ public class TabFolder extends Composite {
   ////////////////
   // Item creation
 
-  void createItem( final TabItem item, final int index ) {
+  void createItem( TabItem item, int index ) {
     itemHolder.insert( item, index );
     if( getItemCount() == 1 ) {
       setSelection( 0, true );
@@ -531,7 +525,7 @@ public class TabFolder extends Composite {
   /////////
   // Resize
 
-  void notifyResize( final Point oldSize ) {
+  void notifyResize( Point oldSize ) {
     super.notifyResize( oldSize );
     updateSelectedItemControl();
   }
@@ -550,7 +544,7 @@ public class TabFolder extends Composite {
   ///////////////////
   // Helping methods
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     int result = checkBits( style, SWT.TOP, SWT.BOTTOM, 0, 0, 0, 0 );
     /*
     * Even though it is legal to create this widget
@@ -562,10 +556,15 @@ public class TabFolder extends Composite {
     return result & ~( SWT.H_SCROLL | SWT.V_SCROLL );
   }
 
+  private int getContentContainerBorderWidth() {
+    TabFolderThemeAdapter themeAdapter = ( TabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getContentContainerBorderWidth( this );
+  }
+
   ///////////////////
   // Skinning support
 
-  void reskinChildren( final int flags ) {
+  void reskinChildren( int flags ) {
     TabItem[] items = getItems();
     if( items != null ) {
       for( int i = 0; i < items.length; i++ ) {

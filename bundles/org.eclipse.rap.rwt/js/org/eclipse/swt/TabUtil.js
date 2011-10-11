@@ -126,19 +126,12 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
       }
     },
 
-    // Ported from TabFolderLCA#adjustCoordinates
     adjustBounds : function( widget, bounds ) {
       var result = bounds;
       var folder = widget.getUserData( "tabFolder" );
       if( folder != null ) {
-        var tabBarHeight = folder.getPlaceBarOnTop() ? 23 : 0;
-        var border = folder.getBorder();
-        var borderWidth = 1;
-        if( border != null ) {
-          borderWidth += border.getWidthTop();
-        }
-        result[ 0 ] -= borderWidth + 10;
-        result[ 1 ] -= borderWidth + 10 + tabBarHeight;
+        result[ 0 ] = 0
+        result[ 1 ] = 0;
       }
       return result;
     }

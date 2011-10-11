@@ -11,6 +11,18 @@
 
 /* TabFolder default theme */
 
+TabFolder {
+  border: none;
+}
+
+TabFolder[BORDER] {
+  border: 1px solid #a4a4a4;
+}
+
+TabFolder-ContentContainer {
+  border: 1px solid #a4a4a4;
+}
+
 TabItem {
   background-color: white;
   border-top-color: white;
