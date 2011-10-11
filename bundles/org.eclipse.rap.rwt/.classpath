@@ -7,6 +7,7 @@
 	<classpathentry kind="src" path="yui"/>
 	<classpathentry kind="src" path="js"/>
 	<classpathentry kind="src" path="resources"/>
+	<classpathentry kind="src" path="widgetkits"/>
 	<classpathentry exported="true" kind="lib" path="rhino"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
