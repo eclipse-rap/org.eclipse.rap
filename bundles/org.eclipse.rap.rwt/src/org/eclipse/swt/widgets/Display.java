@@ -119,8 +119,8 @@ import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
 public class Display extends Device implements Adaptable {
 
   private static final IFilterEntry[] EMPTY_FILTERS = new IFilterEntry[ 0 ];
-  private final static String AVAILABLE_WIDTH = "w4t_width";
-  private final static String AVAILABLE_HEIGHT = "w4t_height";
+  private final static String AVAILABLE_WIDTH = "w1.bounds.width";
+  private final static String AVAILABLE_HEIGHT = "w1.bounds.height";
   private static final String ATTR_INVALIDATE_FOCUS
     = DisplayAdapter.class.getName() + "#invalidateFocus";
   private static final String APP_NAME = Display.class.getName() + "#appName";

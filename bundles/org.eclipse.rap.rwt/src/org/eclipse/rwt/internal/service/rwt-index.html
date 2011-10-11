@@ -46,31 +46,10 @@
         return result;
       }
   
-      function discoverSize() {
-        var result = {
-          width: 1024,
-          height: 768
-        };
-        if( window.Touch ) {
-          result.width = document.documentElement.clientWidth;
-          result.height = document.documentElement.clientHeight;        
-        } else if( document.layers || ( document.getElementById && !document.all ) ) {
-          result.width = window.innerWidth;
-          result.height = window.innerHeight;
-        } else if( document.all ) {
-          result.width = document.body.clientWidth;
-          result.height = document.body.clientHeight;
-        }
-        return result;
-      }
-      
       function appendInitParameters() {
         var req = org.eclipse.swt.Request.getInstance();
         req.addParameter( "rwt_initialize", "true" );
         req.addParameter( "startup", "${startup}" );
-        var size = discoverSize();
-        req.addParameter( "w4t_width", size.width );
-        req.addParameter( "w4t_height", size.height );
       }
 
       if( discoverAjax() ) {
