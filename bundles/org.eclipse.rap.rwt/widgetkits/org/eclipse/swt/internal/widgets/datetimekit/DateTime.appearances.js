@@ -1,0 +1,314 @@
+/*******************************************************************************
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ ******************************************************************************/
+appearances = {
+// BEGIN TEMPLATE //
+
+  "datetime-date" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getCssBorder( "DateTime", "border" );
+      result.font = tv.getCssFont( "DateTime", "font" );
+      result.textColor = tv.getCssColor( "DateTime", "color" );
+      result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
+      result.backgroundGradient = tv.getCssGradient( "DateTime", "background-image" );
+      result.textShadow = tv.getCssShadow( "DateTime", "text-shadow" );
+      return result;
+    }
+  },
+
+  "datetime-time" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getCssBorder( "DateTime", "border" );
+      result.font = tv.getCssFont( "DateTime", "font" );
+      result.textColor = tv.getCssColor( "DateTime", "color" );
+      result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
+      result.backgroundGradient = tv.getCssGradient( "DateTime", "background-image" );
+      result.textShadow = tv.getCssShadow( "DateTime", "text-shadow" );
+      return result;
+    }
+  },
+
+  "datetime-calendar" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getCssBorder( "DateTime", "border" );
+      result.font = tv.getCssFont( "*", "font" );
+      result.textColor = tv.getCssColor( "DateTime", "color" );
+      result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
+      result.textShadow = tv.getCssShadow( "DateTime", "text-shadow" );
+      return result;
+    }
+  },
+
+  "datetime-field" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {
+        cursor : "default",
+        textAlign : "center",
+        padding : [ 0, 3 ]
+      };
+      if( states.selected ) {
+        result.textColor = tv.getCssColor( "DateTime-Field", "color" );
+        result.backgroundColor = tv.getCssColor( "DateTime-Field", "background-color" );
+      } else {
+      	result.textColor = tv.getCssColor( "*", "color" );
+        result.backgroundColor = "undefined";
+      }
+      result.textShadow = tv.getCssShadow( "DateTime-Field", "text-shadow" );
+      return result;
+    }
+  },
+
+  "datetime-separator" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {
+        cursor : "default"
+      };
+      return result;
+    }
+  },
+
+  "datetime-button-up" : {
+    style : function( states ) {
+      var result = {};
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      result.width = tv.getCssDimension( "DateTime-UpButton", "width" );
+      result.icon = tv.getCssImage( "DateTime-UpButton-Icon",
+                                    "background-image" );
+      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+        result.icon = tv.getCssImage( "DateTime-UpButton", "background-image" );
+      } else {
+        result.backgroundImage = tv.getCssImage( "DateTime-UpButton", "background-image" );
+      }
+      result.backgroundGradient = tv.getCssGradient( "DateTime-UpButton", "background-image" );
+      result.border = tv.getCssBorder( "DateTime-UpButton", "border" );
+      result.backgroundColor = tv.getCssColor( "DateTime-UpButton", "background-color" );
+      result.cursor = tv.getCssCursor( "DateTime-UpButton", "cursor" );
+      return result;
+    }
+  },
+
+  "datetime-button-down" : {
+    style : function( states ) {
+      var result = {};
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      result.width = tv.getCssDimension( "DateTime-DownButton", "width" );
+      result.icon = tv.getCssImage( "DateTime-DownButton-Icon", "background-image" );
+      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+        result.icon = tv.getCssImage( "DateTime-DownButton", "background-image" );
+      } else {
+        result.backgroundImage = tv.getCssImage( "DateTime-DownButton", "background-image" );
+      }
+      result.backgroundGradient = tv.getCssGradient( "DateTime-DownButton", "background-image" );
+      result.border = tv.getCssBorder( "DateTime-DownButton", "border" );
+      result.backgroundColor = tv.getCssColor( "DateTime-DownButton", "background-color" );
+      result.cursor = tv.getCssCursor( "DateTime-DownButton", "cursor" );
+      return result;
+    }
+  },
+
+  "datetime-drop-down-button" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getCssBorder( "DateTime-DropDownButton", "border" );
+      result.icon = tv.getCssImage( "DateTime-DropDownButton-Icon", "background-image" );
+      if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
+        result.icon = tv.getCssImage( "DateTime-DropDownButton", "background-image" );
+      } else {
+        result.backgroundImage = tv.getCssImage( "DateTime-DropDownButton", "background-image" );
+      }
+      result.backgroundGradient = tv.getCssGradient( "DateTime-DropDownButton", "background-image" );
+      result.backgroundColor = tv.getCssColor( "DateTime-DropDownButton", "background-color" );
+      result.cursor = tv.getCssCursor( "DateTime-DropDownButton", "cursor" );
+      return result;
+    }
+  },
+
+  "datetime-drop-down-calendar" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {};
+      result.border = tv.getCssBorder( "DateTime-DropDownCalendar", "border" );
+      result.backgroundColor = tv.getCssColor( "DateTime", "background-color" );
+      return result;
+    }
+  },
+  
+  //------------------------------------------------------------------------
+  // Calendar
+
+  "calendar-navBar" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+        border : tv.getCssBorder( "DateTime-Calendar-Navbar", "border" ),
+        backgroundColor : tv.getCssColor( "DateTime-Calendar-Navbar", "background-color" ),
+        padding : [ 4, 4, 4, 4 ]
+      };
+    }
+  },
+
+  "calendar-toolbar-button" : {
+    style : function( states ) {
+      var result = {
+        spacing : 4,
+        width : 16,
+        height : 16,
+        clipWidth : 16,
+        clipHeight : 16,
+        verticalChildrenAlign : "middle"
+      };
+      if (states.pressed || states.checked || states.abandoned) {
+        result.padding = [ 2, 0, 0, 2 ];
+      } else {
+        result.padding = 2;
+      }
+      return result;
+    }
+  },
+
+  "calendar-toolbar-previous-year-button" : {
+    include: "calendar-toolbar-button",
+
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+        icon : tv.getCssImage( "DateTime-Calendar-PreviousYearButton", "background-image" ),
+        cursor : tv.getCssCursor( "DateTime-Calendar-PreviousYearButton", "cursor" )
+      };
+    }
+  },
+
+  "calendar-toolbar-previous-month-button" : {
+    include: "calendar-toolbar-button",
+
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+        icon : tv.getCssImage( "DateTime-Calendar-PreviousMonthButton", "background-image" ),
+        cursor : tv.getCssCursor( "DateTime-Calendar-PreviousMonthButton", "cursor" )
+      };
+    }
+  },
+
+  "calendar-toolbar-next-month-button" : {
+    include: "calendar-toolbar-button",
+
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+        icon : tv.getCssImage( "DateTime-Calendar-NextMonthButton", "background-image" ),
+        cursor : tv.getCssCursor( "DateTime-Calendar-NextMonthButton", "cursor" )
+      };
+    }
+  },
+
+  "calendar-toolbar-next-year-button" : {
+    include: "calendar-toolbar-button",
+
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+        icon : tv.getCssImage( "DateTime-Calendar-NextYearButton", "background-image" ),
+        cursor : tv.getCssCursor( "DateTime-Calendar-NextYearButton", "cursor" )
+      };
+    }
+  },
+
+  "calendar-monthyear" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      return {
+        font : tv.getCssFont( "DateTime-Calendar-Navbar", "font" ),
+        textAlign : "center",
+        textColor : tv.getCssColor( "DateTime-Calendar-Navbar", "color" ),
+        textShadow : tv.getCssShadow( "DateTime-Calendar-Navbar", "text-shadow" ),
+        verticalAlign : "middle",
+        cursor : "default"
+      };
+    }
+  },
+
+  "calendar-datepane" : {
+    style : function( states ) {
+      return {
+        backgroundColor : "undefined"
+      };
+    }
+  },
+
+  "calendar-week" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      if( states.header ) {
+        var border = new org.eclipse.rwt.Border( [ 0, 1, 1, 0 ], "solid", "gray" );
+      } else {
+        var border = new org.eclipse.rwt.Border( [ 0, 1, 0, 0 ], "solid", "gray" );
+      }
+      return {
+        textAlign : "center",
+        verticalAlign : "middle",
+        border : border
+      };
+    }
+  },
+
+  "calendar-weekday" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var border = new org.eclipse.rwt.Border( [ 0, 0, 1, 0 ], "solid", "gray" );
+      // FIXME: [if] Bigger font size leads to text cutoff
+      var font = tv.getCssFont( "*", "font" );
+      var smallFont = new qx.ui.core.Font();
+      smallFont.setSize( 11 );
+      smallFont.setFamily( font.getFamily() );
+      smallFont.setBold( font.getBold() );
+      smallFont.setItalic( font.getItalic() );
+      return {
+        font : smallFont,
+        border : border,
+        textAlign : "center"
+      };
+    }
+  },
+
+  "calendar-day" : {
+    style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var result = {
+        textAlign : "center",
+        verticalAlign : "middle"
+      };
+      if( !states.disabled && ( states.selected || states.otherMonth || states.over ) ) {
+        result.textColor = tv.getCssColor( "DateTime-Calendar-Day", "color" );
+        result.backgroundColor = tv.getCssColor( "DateTime-Calendar-Day", "background-color" );
+      } else {
+        result.textColor = tv.getCssColor( "*", "color" );
+        result.backgroundColor = "undefined";
+      }
+      result.textShadow = tv.getCssShadow( "DateTime-Calendar-Day", "text-shadow" );
+      var borderColor = states.disabled ? tv.getCssColor( "*", "color" ) : "red";
+      var border = new org.eclipse.rwt.Border( 1, "solid", borderColor );
+      result.border = states.today ? border : "undefined";
+      return result;
+    }
+  }
+
+// END TEMPLATE //
+};
