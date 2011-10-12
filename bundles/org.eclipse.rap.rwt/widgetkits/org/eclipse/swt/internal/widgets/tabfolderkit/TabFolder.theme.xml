@@ -19,6 +19,9 @@
       <property name="border"
         description="Border for TabFolder." />
 
+      <property name="font"
+        description="Font for tab items text." />
+
       <style name="BORDER"
         description="Indicates that the TabFolder should have a border." />
 
@@ -48,8 +51,17 @@
       <property name="text-shadow"
           description="Shadow for text." />
 
+      <property name="padding"
+          description="Padding (inner distance) for tab items." />
+
       <state name="selected"
           description="On tab item selection" />
+
+      <state name="first"
+          description="Applies to the first tab item." />
+
+      <state name="last"
+          description="Applies to the last tab item." />
 
       <state name="hover"
           description="On mouse over" />

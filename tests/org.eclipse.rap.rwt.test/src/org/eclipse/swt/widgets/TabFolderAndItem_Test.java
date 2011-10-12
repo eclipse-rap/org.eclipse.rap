@@ -282,11 +282,11 @@ public class TabFolderAndItem_Test extends TestCase {
       TabItem tabItem = new TabItem( folder, SWT.NONE );
       tabItem.setText( "TabItem " + i );
     }
-    Rectangle expected = new Rectangle( 0, 0, 69, 22 );
+    Rectangle expected = new Rectangle( 0, 0, 69, 24 );
     assertEquals( expected, folder.getItem( 0 ).getBounds() );
-    expected = new Rectangle( 69, 3, 64, 19 );
+    expected = new Rectangle( 69, 3, 68, 21 );
     assertEquals( expected, folder.getItem( 1 ).getBounds() );
-    expected = new Rectangle( 134, 3, 65, 19 );
+    expected = new Rectangle( 138, 3, 69, 21 );
     assertEquals( expected, folder.getItem( 2 ).getBounds() );
     assertEquals( folder.getItem( 0 ), folder.getItem( new Point( 10, 2 ) ) );
     assertEquals( folder.getItem( 0 ), folder.getItem( new Point( 10, 10 ) ) );
@@ -302,11 +302,11 @@ public class TabFolderAndItem_Test extends TestCase {
       TabItem tabItem = new TabItem( folder, SWT.NONE );
       tabItem.setText( "TabItem " + i );
     }
-    expected = new Rectangle( 0, 378, 69, 22 );
+    expected = new Rectangle( 0, 376, 69, 24 );
     assertEquals( expected, folder.getItem( 0 ).getBounds() );
-    expected = new Rectangle( 69, 378, 64, 19 );
+    expected = new Rectangle( 69, 376, 68, 21 );
     assertEquals( expected, folder.getItem( 1 ).getBounds() );
-    expected = new Rectangle( 134, 378, 65, 19 );
+    expected = new Rectangle( 138, 376, 69, 21 );
     assertEquals( expected, folder.getItem( 2 ).getBounds() );
     assertEquals( folder.getItem( 0 ), folder.getItem( new Point( 10, 398 ) ) );
     assertEquals( folder.getItem( 0 ), folder.getItem( new Point( 10, 390 ) ) );
@@ -328,40 +328,40 @@ public class TabFolderAndItem_Test extends TestCase {
   public void testClientArea() {
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     folder.setSize( 100, 100 );
-    Rectangle expected = new Rectangle( 1, 24, 98, 75 );
+    Rectangle expected = new Rectangle( 1, 22, 98, 77 );
     assertEquals( expected, folder.getClientArea() );
 
     folder = new TabFolder( shell, SWT.BORDER );
     folder.setSize( 100, 100 );
-    expected = new Rectangle( 2, 25, 96, 73 );
+    expected = new Rectangle( 2, 23, 96, 75 );
     assertEquals( expected, folder.getClientArea() );
 
     folder = new TabFolder( shell, SWT.BOTTOM );
     folder.setSize( 100, 100 );
-    expected = new Rectangle( 1, 1, 98, 75 );
+    expected = new Rectangle( 1, 1, 98, 77 );
     assertEquals( expected, folder.getClientArea() );
 
     folder = new TabFolder( shell, SWT.BOTTOM | SWT.BORDER );
     folder.setSize( 100, 100 );
-    expected = new Rectangle( 2, 2, 96, 73 );
+    expected = new Rectangle( 2, 2, 96, 75 );
     assertEquals( expected, folder.getClientArea() );
   }
 
   public void testComputeTrim() {
     TabFolder folder = new TabFolder( shell, SWT.NONE );
-    Rectangle expected = new Rectangle( -1, -24, 2, 25 );
+    Rectangle expected = new Rectangle( -1, -22, 2, 23 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
 
     folder = new TabFolder( shell, SWT.BORDER );
-    expected = new Rectangle( -2, -25, 4, 27 );
+    expected = new Rectangle( -2, -23, 4, 25 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
 
     folder = new TabFolder( shell, SWT.BOTTOM );
-    expected = new Rectangle( -1, -1, 2, 25 );
+    expected = new Rectangle( -1, -1, 2, 23 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
 
     folder = new TabFolder( shell, SWT.BOTTOM | SWT.BORDER );
-    expected = new Rectangle( -2, -2, 4, 27 );
+    expected = new Rectangle( -2, -2, 4, 25 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
   }
 
@@ -383,9 +383,9 @@ public class TabFolderAndItem_Test extends TestCase {
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item = new TabItem( folder, SWT.NONE );
     item.setText( "item1" );
-    
+
     TabFolder deserializedFolder = Fixture.serializeAndDeserialize( folder );
-    
+
     assertEquals( folder.getItemCount(), deserializedFolder.getItemCount() );
     assertSame( deserializedFolder, deserializedFolder.getItem( 0 ).getParent() );
     assertEquals( item.getText(), deserializedFolder.getItem( 0 ).getText() );

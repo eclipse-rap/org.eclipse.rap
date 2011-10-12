@@ -17,7 +17,7 @@ appearances = {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
       result.textColor = tv.getCssColor( "*", "color" );
-      result.font = tv.getCssFont( "*", "font" );
+      result.font = tv.getCssFont( "TabFolder", "font" );
       result.spacing = -1;
       result.border = tv.getCssBorder( "TabFolder", "border" );
       return result;
@@ -68,43 +68,19 @@ appearances = {
       var checkedColorBottom = [ borderColor, borderColor, bottom_color, borderColor ];
       if( states.checked ) {
         result.zIndex = 1; // TODO [rst] Doesn't this interfere with our z-order?
-        result.padding = [ 2, 8, 4, 7 ];
         if( states.barTop ) {
           result.border = new org.eclipse.rwt.Border( [ 3, 1, 0, 1 ], "solid", checkedColorTop );
         } else {
           result.border = new org.eclipse.rwt.Border( [ 0, 1, 3, 1 ], "solid", checkedColorBottom );
         }
         result.margin = [ 0, -1, 0, -2 ];
-        if( states.alignLeft ) {
-          if( states.firstChild ) {
-            result.paddingLeft = 6;
-            result.paddingRight = 7;
-            result.marginLeft = 0;
-          }
-        } else {
-          if( states.lastChild ) {
-            result.paddingLeft = 8;
-            result.paddingRight = 5;
-            result.marginRight = 0;
-          }
+        if( states.firstChild ) {
+          result.marginLeft = 0;
         }
       } else {
         result.zIndex = 0; // TODO [rst] Doesn't this interfere with our z-order?
-        result.padding = [ 2, 6, 2, 5 ];
         result.marginRight = 1;
         result.marginLeft = 0;
-        if( states.alignLeft ) {
-          if( states.firstChild ) {
-            result.paddingLeft = 6;
-            result.paddingRight = 5;
-          }
-        } else {
-          if( states.lastChild ) {
-            result.paddingLeft = 6;
-            result.paddingRight = 5;
-            result.marginRight = 0;
-          }
-        }
         if( states.barTop ) {
           result.border = new org.eclipse.rwt.Border( [ 1, 1, 0, 1 ], "solid", borderColor );
           result.marginTop = 3;
@@ -115,6 +91,7 @@ appearances = {
           result.marginBottom = 3;
         }
       }
+      result.padding = tv.getCssBoxDimensions( "TabItem", "padding" );
       result.backgroundColor = tv.getCssColor( "TabItem", "background-color" );
       result.backgroundImage = tv.getCssImage( "TabItem", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "TabItem", "background-image" );

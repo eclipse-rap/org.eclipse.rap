@@ -11,6 +11,7 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -50,8 +51,6 @@ import org.eclipse.swt.internal.widgets.tabfolderkit.TabFolderThemeAdapter;
 public class TabFolder extends Composite {
 
   private static final TabItem[] EMPTY_TAB_ITEMS = new TabItem[ 0 ];
-  private static final int TAB_BAR_HEIGHT = 23;
-
   private final ItemHolder<TabItem> itemHolder;
   private int selectionIndex;
   private boolean onBottom;
@@ -392,21 +391,23 @@ public class TabFolder extends Composite {
     int width = bounds.width;
     int height = bounds.height;
     int border = getBorderWidth() + getContentContainerBorderWidth();
-    int hTabBar = onBottom ? 0 : TAB_BAR_HEIGHT;
+    int tabBarHeight = getTabBarHeight();
+    int hTabBar = onBottom ? 0 : tabBarHeight;
     return new Rectangle( border,
                           hTabBar + border,
                           width - border * 2,
-                          height - ( TAB_BAR_HEIGHT + border * 2 ) );
+                          height - ( tabBarHeight + border * 2 ) );
   }
 
   public Rectangle computeTrim( int x, int y, int width, int height ) {
     checkWidget();
     int border = getBorderWidth() + getContentContainerBorderWidth();
-    int hTabBar = onBottom ? 0 : TAB_BAR_HEIGHT;
+    int tabBarHeight = getTabBarHeight();
+    int hTabBar = onBottom ? 0 : tabBarHeight;
     int trimX = x - border;
     int trimWidth = width + 2 * border;
     int trimY = y - border - hTabBar;
-    int trimHeight = height + 2 * border + TAB_BAR_HEIGHT;
+    int trimHeight = height + 2 * border + tabBarHeight;
     return new Rectangle( trimX, trimY, trimWidth, trimHeight );
   }
 
@@ -559,6 +560,18 @@ public class TabFolder extends Composite {
   private int getContentContainerBorderWidth() {
     TabFolderThemeAdapter themeAdapter = ( TabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getContentContainerBorderWidth( this );
+  }
+
+  private int getTabBarHeight() {
+    int result = Graphics.getCharHeight( getFont() );
+    result += getItemPadding( true ).height;
+    result += TabItem.SELECTED_ITEM_BORDER;
+    return result;
+  }
+
+  Rectangle getItemPadding( boolean selected ) {
+    TabFolderThemeAdapter themeAdapter = ( TabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
+    return themeAdapter.getItemPadding( true );
   }
 
   ///////////////////

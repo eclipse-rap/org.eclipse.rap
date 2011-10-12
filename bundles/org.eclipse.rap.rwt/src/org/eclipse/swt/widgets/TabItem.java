@@ -37,9 +37,7 @@ public class TabItem extends Item {
   private final static int TABS_SPACING = 1;
   private final static int IMAGE_TEXT_SPACING = 4;
   private final static int ITEM_BORDER = 1;
-  private final static int SELECTED_ITEM_BORDER = 3;
-  private final static int SELECTED_ITEM_ADDITIONAL_PADDING = 4;
-  private final static Rectangle PADDING = new Rectangle( 5, 2, 11, 4 );
+  final static int SELECTED_ITEM_BORDER = 3;
 
   private final TabFolder parent;
   private Control control;
@@ -75,7 +73,7 @@ public class TabItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public TabItem( final TabFolder parent, final int style ) {
+  public TabItem( TabFolder parent, int style ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
     parent.createItem( this, parent.getItemCount() );
@@ -217,6 +215,8 @@ public class TabItem extends Item {
     int index = parent.indexOf( this );
     if( index != -1 ) {
       int selectionIndex = parent.getSelectionIndex();
+      boolean selected = index == selectionIndex;
+      Rectangle padding = parent.getItemPadding( selected );
       String text = getText();
       if( text != null ) {
         Point extent = Graphics.stringExtent( parent.getFont(), text );
@@ -229,10 +229,9 @@ public class TabItem extends Item {
         result.width += imageSize.width + IMAGE_TEXT_SPACING;
         result.height = Math.max( result.height, imageSize.height );
       }
-      result.width += 2 * ITEM_BORDER + PADDING.width;
-      result.height += ITEM_BORDER + PADDING.height;
-      if( index == selectionIndex ) {
-        result.width += SELECTED_ITEM_ADDITIONAL_PADDING;
+      result.width += 2 * ITEM_BORDER + padding.width;
+      result.height += ITEM_BORDER + padding.height;
+      if( selected ) {
         result.height += SELECTED_ITEM_BORDER;
       }
       if( selectionIndex != -1 ) {
@@ -245,9 +244,7 @@ public class TabItem extends Item {
           result.y += SELECTED_ITEM_BORDER;
         }
       } else {
-        result.y = parent.getBounds().height
-                 - 2 * parent.getBorderWidth()
-                 - result.height;
+        result.y = parent.getBounds().height - 2 * parent.getBorderWidth() - result.height;
         if( index != selectionIndex ) {
           result.y -= SELECTED_ITEM_BORDER;
         }
