@@ -157,7 +157,9 @@ public abstract class SessionFailoverTestBase extends TestCase {
     client.sendDisplayResizeRequest( 100, 100 );
     
     prepareExamination( secondary );
+    ISessionStore primarySessionStore = ClusterTestHelper.getFirstSessionStore( primary );
     ISessionStore secondarySessionStore = ClusterTestHelper.getFirstSessionStore( secondary );
+    assertFalse( TimerExecEntryPoint.wasRunnableExecuted( primarySessionStore ) );
     assertTrue( TimerExecEntryPoint.wasRunnableExecuted( secondarySessionStore ) );
   }
 
