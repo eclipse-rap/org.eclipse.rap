@@ -76,7 +76,7 @@ public class RWTDelegate extends HttpServlet {
 
   private void createSessionStore() {
     // Ensure that there is exactly one ISessionStore per session created
-    synchronized( this ) {
+    synchronized( RWTDelegate.class ) {
       ContextProvider.getSession();
     }
   }

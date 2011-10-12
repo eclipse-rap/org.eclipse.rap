@@ -21,7 +21,7 @@ import org.eclipse.rwt.resources.*;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
-final class ClientResources {
+public final class ClientResources {
 
   private static final String CLIENT_LIBRARY_VARIANT = "org.eclipse.rwt.clientLibraryVariant";
   private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";

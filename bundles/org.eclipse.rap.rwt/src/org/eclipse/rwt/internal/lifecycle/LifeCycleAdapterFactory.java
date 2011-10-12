@@ -19,7 +19,7 @@ import org.eclipse.rwt.internal.util.ClassInstantiationException;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rwt.lifecycle.IWidgetLifeCycleAdapter;
-import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
+import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
@@ -69,7 +69,7 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
   private synchronized ILifeCycleAdapter getDisplayLCA() {
     synchronized( displayAdapterLock ) {
       if( displayAdapter == null ) {
-        displayAdapter = DisplayLCAFacade.getDisplayLCA();
+        displayAdapter = new DisplayLCA();
       }
       return displayAdapter;
     }

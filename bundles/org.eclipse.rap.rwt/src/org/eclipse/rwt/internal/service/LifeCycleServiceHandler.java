@@ -15,11 +15,17 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Map;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.SingletonManager;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.engine.RWTDelegate;
+import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
+import org.eclipse.rwt.internal.lifecycle.LifeCycle;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
+import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -127,16 +133,18 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   }
 
   private static void clearSessionStore() {
-    Integer version = RWTRequestVersionControl.getInstance().getCurrentRequestId();
-    SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSession();
-    // clear attributes of session store to enable new startup
-    sessionStore.valueUnbound( null );
-    // reinitialize session store state
-    sessionStore.valueBound( null );
-    // TODO [rh] ContextProvider#getSession() also initializes a session (slightly different)
-    //      merge both code passages
-    SingletonManager.install( sessionStore );
-    RWTRequestVersionControl.getInstance().setCurrentRequestId( version );
+    synchronized( RWTDelegate.class ) {
+      Integer version = RWTRequestVersionControl.getInstance().getCurrentRequestId();
+      SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSession();
+      // clear attributes of session store to enable new startup
+      sessionStore.valueUnbound( null );
+      // reinitialize session store state
+      sessionStore.valueBound( null );
+      // TODO [rh] ContextProvider#getSession() also initializes a session (slightly different)
+      //      merge both code passages
+      SingletonManager.install( sessionStore );
+      RWTRequestVersionControl.getInstance().setCurrentRequestId( version );
+    }
   }
 
 }

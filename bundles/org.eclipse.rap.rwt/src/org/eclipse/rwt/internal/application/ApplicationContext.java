@@ -42,7 +42,7 @@ import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.graphics.InternalImageFactory;
 import org.eclipse.swt.internal.graphics.ResourceFactory;
 import org.eclipse.swt.internal.widgets.DisplaysHolder;
-import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
+import org.eclipse.swt.internal.widgets.displaykit.ClientResources;
 
 
 public class ApplicationContext {
@@ -267,7 +267,7 @@ public class ApplicationContext {
     // Note: order is crucial here
     jsLibraryConcatenator.startJSConcatenation();
     if( !ignoreResoureRegistration ) {
-      DisplayLCAFacade.registerResources();
+      new ClientResources( getResourceManager() ).registerResources();
     }
     themeManager.activate();
     jsLibraryConcatenator.activate();

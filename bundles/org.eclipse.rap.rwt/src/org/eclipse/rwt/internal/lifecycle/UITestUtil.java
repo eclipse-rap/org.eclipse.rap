@@ -14,8 +14,8 @@ package org.eclipse.rwt.internal.lifecycle;
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.JSWriter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.internal.widgets.displaykit.DisplayLCAFacade;
 import org.eclipse.swt.widgets.Widget;
 
 
@@ -35,7 +35,9 @@ public final class UITestUtil {
         String msg = "The widget id contains illegal characters: " + id;
         throw new IllegalArgumentException( msg ) ;
       }
-      DisplayLCAFacade.writeTestWidgetId( widget, id );
+      JSWriter writer = JSWriter.getWriterFor( widget );
+      Object[] args = new Object[] { widget, id };
+      writer.call( JSWriter.WIDGET_MANAGER_REF, "setHtmlId", args );
     }
   }
 
