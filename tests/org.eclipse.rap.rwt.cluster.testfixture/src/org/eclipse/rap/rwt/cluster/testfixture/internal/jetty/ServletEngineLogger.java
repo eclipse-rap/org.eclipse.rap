@@ -59,6 +59,9 @@ class ServletEngineLogger implements Logger {
     if( msg != null ) {
       System.err.println( msg );
     }
+    if( throwable != null ) {
+      throwable.printStackTrace();
+    }
   }
 
   public void info( String msg, Object... args ) {
