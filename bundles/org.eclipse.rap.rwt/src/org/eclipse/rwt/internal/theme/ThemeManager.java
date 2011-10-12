@@ -58,7 +58,7 @@ public class ThemeManager {
       return classLoader.getResourceAsStream( resourceName );
     }
   };
-  
+
   /** Expected character set of JS files. */
   private static final String CHARSET = "UTF-8";
 
@@ -104,6 +104,7 @@ public class ThemeManager {
     org.eclipse.swt.custom.CCombo.class,
     org.eclipse.swt.custom.CLabel.class,
     org.eclipse.swt.browser.Browser.class,
+    org.eclipse.swt.custom.ScrolledComposite.class,
     org.eclipse.swt.widgets.ScrollBar.class
   };
 
@@ -148,7 +149,7 @@ public class ThemeManager {
     initialized = false;
     addDefaultTheme();
   }
-  
+
   /**
    * Initializes the ThemeManager. Theming-relevant files are loaded for all
    * themeable widgets, resources are registered. If the ThemeManager has
@@ -214,7 +215,7 @@ public class ThemeManager {
     }
     themeableWidgets.add( new ThemeableWidget( widget, loader ) );
   }
-  
+
 
   public ThemeAdapterManager getThemeAdapterManager() {
     return themeAdapterManager;
@@ -239,7 +240,7 @@ public class ThemeManager {
     }
     themes.put( id, theme );
   }
-  
+
   /**
    * Determines whether a theme with the specified id has been registered.
    *
@@ -374,7 +375,7 @@ public class ThemeManager {
     }
     return result;
   }
-  
+
   private String resolvePackageName( String packageName ) {
     String result = resolvedPackageNames.get( packageName );
     if( result == null ) {
