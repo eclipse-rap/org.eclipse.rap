@@ -239,25 +239,26 @@ public interface IEditorRegistry {
      */
     public boolean isSystemInPlaceEditorAvailable(String filename);
 
-    // RAP [bm]: no external editors
-//    /**
-//     * Returns whether the system has an editor that could handle a file
-//     * with the given name.
-//     * 
-//     * @param filename the file name
-//     * @return <code>true</code> if an external editor available, and
-//     * <code>false</code> otherwise
-//     */
-//    public boolean isSystemExternalEditorAvailable(String filename);
-//
-//    /**
-//     * Returns the image descriptor associated with the system editor that
-//     * would be used to edit this file externally.
-//     *
-//     * @param filename the file name
-//     * @return the descriptor of the external editor image, or <code>null</code>
-//     * if none
-//     */
-//    public ImageDescriptor getSystemExternalEditorImageDescriptor(
-//            String filename);
+    /**
+     * Returns whether the system has an editor that could handle a file
+     * with the given name.
+     * 
+     * @param filename the file name
+     * @return <code>true</code> if an external editor available, and
+     * <code>false</code> otherwise
+     * @since 1.5
+     */
+    public boolean isSystemExternalEditorAvailable(String filename);
+
+    /**
+     * Returns the image descriptor associated with the system editor that
+     * would be used to edit this file externally.
+     *
+     * @param filename the file name
+     * @return the descriptor of the external editor image, or <code>null</code>
+     * if none
+     * @since 1.5
+     */
+    public ImageDescriptor getSystemExternalEditorImageDescriptor(
+            String filename);
 }
