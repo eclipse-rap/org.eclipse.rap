@@ -78,8 +78,8 @@ public abstract class ServletEngineTestBase extends TestCase {
     
     try {
       client.sendInitializationRequest();
-      fail();
-    } catch( Exception expected ) {
+    } catch( IOException ioe ) {
+      assertTrue( ioe.getMessage().contains( "500" ) );
     }
   }
 

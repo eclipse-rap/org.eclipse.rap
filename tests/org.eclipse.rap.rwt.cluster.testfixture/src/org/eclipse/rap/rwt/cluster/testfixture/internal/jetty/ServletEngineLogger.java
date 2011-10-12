@@ -59,9 +59,6 @@ class ServletEngineLogger implements Logger {
     if( msg != null ) {
       System.err.println( msg );
     }
-    if( throwable != null ) {
-      throw rethrow( throwable );
-    }
   }
 
   public void info( String msg, Object... args ) {
@@ -93,12 +90,5 @@ class ServletEngineLogger implements Logger {
   }
 
   public void ignore( Throwable ignored ) {
-  }
-
-  private static RuntimeException rethrow( Throwable throwable ) {
-    if( throwable instanceof RuntimeException ) {
-      throw ( RuntimeException )throwable;
-    }
-    return new RuntimeException( throwable );
   }
 }

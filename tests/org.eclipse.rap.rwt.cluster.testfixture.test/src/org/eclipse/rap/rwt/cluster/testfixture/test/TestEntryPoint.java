@@ -16,8 +16,8 @@ import org.eclipse.swt.widgets.Display;
 
 public class TestEntryPoint implements IEntryPoint {
 
-  private static boolean wasCreateUIInvoked;
-  private static Runnable runnable;
+  private static volatile boolean wasCreateUIInvoked;
+  private static volatile Runnable runnable;
 
   public static void reset() {
     synchronized( TestEntryPoint.class ) {
