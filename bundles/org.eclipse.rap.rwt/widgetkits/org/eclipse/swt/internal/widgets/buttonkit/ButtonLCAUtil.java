@@ -18,10 +18,6 @@ import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.Button;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
@@ -36,11 +32,12 @@ final class ButtonLCAUtil {
   static final String PROP_TEXT = "text";
   static final String PROP_IMAGE = "image";
   static final String PROP_SELECTION = "selection";
+  static final String PROP_GRAYED = "grayed";
   static final String PROP_ALIGNMENT = "alignment";
   static final String PROP_SELECTION_LISTENERS = "selection";
 
   private static final String PARAM_SELECTION = "selection";
-  private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.CENTER );
+  private static final String DEFAULT_ALIGNMENT = "center";
 
   private ButtonLCAUtil() {
     // prevent instantiation
@@ -52,7 +49,8 @@ final class ButtonLCAUtil {
     preserveProperty( button, PROP_TEXT, button.getText() );
     preserveProperty( button, PROP_IMAGE, button.getImage() );
     preserveProperty( button, PROP_SELECTION, Boolean.valueOf( button.getSelection() ) );
-    preserveProperty( button, PROP_ALIGNMENT, new Integer( button.getAlignment() ) );
+    preserveProperty( button, PROP_GRAYED, Boolean.valueOf( button.getGrayed() ) );
+    preserveProperty( button, PROP_ALIGNMENT, getAlignment( button ) );
     preserveListener( button, PROP_SELECTION_LISTENERS, SelectionEvent.hasListener( button ) );
   }
 
@@ -66,11 +64,12 @@ final class ButtonLCAUtil {
   static void renderChanges( Button button ) throws IOException {
     ControlLCAUtil.renderChanges( button );
     WidgetLCAUtil.renderCustomVariant( button );
-    renderText( button );
-    renderImage( button );
-    renderAlignment( button );
-    renderSelection( button );
-    renderListenSelection( button );
+    renderProperty( button, PROP_TEXT, button.getText(), "" );
+    renderProperty( button, PROP_IMAGE, button.getImage(), null );
+    renderProperty( button, PROP_ALIGNMENT, getAlignment( button ), DEFAULT_ALIGNMENT );
+    renderProperty( button, PROP_SELECTION, button.getSelection(), false );
+    renderProperty( button, PROP_GRAYED, button.getGrayed(), false );
+    renderListener( button, PROP_SELECTION_LISTENERS, SelectionEvent.hasListener( button ), false );
   }
 
   static boolean readSelection( Button button ) {
@@ -81,62 +80,21 @@ final class ButtonLCAUtil {
     return value != null;
   }
 
-  ///////////////////////////////////////////////////
-  // Helping methods to render the changed properties
-
-  private static void renderText( Button button ) {
-    renderProperty( button, PROP_TEXT, button.getText(), "" );
-  }
-
-  private static void renderImage( Button button ) {
-    Image image = button.getImage();
-    if( WidgetLCAUtil.hasChanged( button, Props.IMAGE, image, null ) ) {
-      Object[] args = null;
-      if( image != null ) {
-        String imagePath = ImageFactory.getImagePath( image );
-        Rectangle bounds = image.getBounds();
-        args = new Object[] {
-          imagePath,
-          new Integer( bounds.width ),
-          new Integer( bounds.height )
-        };
-      }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( button );
-      clientObject.setProperty( "image", args );
+  //////////////////
+  // Helping methods
+  
+  private static String getAlignment( Button button ) {
+    int alignment = button.getAlignment();
+    String result;
+    if( ( alignment & SWT.LEFT ) != 0 ) {
+      result = "left";
+    } else if( ( alignment & SWT.CENTER ) != 0 ) {
+      result = "center";
+    } else if( ( alignment & SWT.RIGHT ) != 0 ) {
+      result = "right";
+    } else {
+      result = "left";
     }
-  }
-
-  private static void renderAlignment( Button button ) {
-    if( ( button.getStyle() & SWT.ARROW ) == 0 ) {
-      Integer newValue = new Integer( button.getAlignment() );
-      if( WidgetLCAUtil.hasChanged( button, PROP_ALIGNMENT, newValue, DEFAULT_ALIGNMENT ) ) {
-        String value;
-        switch( newValue.intValue() ) {
-          case SWT.LEFT:
-            value = "left";
-          break;
-          case SWT.CENTER:
-            value = "center";
-          break;
-          case SWT.RIGHT:
-            value = "right";
-          break;
-          default:
-            value = "left";
-          break;
-        }
-        IClientObject clientObject = ClientObjectFactory.getForWidget( button );
-        clientObject.setProperty( "alignment", value );
-      }
-    }
-  }
-
-  private static void renderSelection( Button button ) {
-    String prop = PROP_SELECTION;
-    renderProperty( button, prop, Boolean.valueOf( button.getSelection() ), Boolean.FALSE );
-  }
-
-  private static void renderListenSelection( Button button ) {
-    renderListener( button, PROP_SELECTION_LISTENERS, SelectionEvent.hasListener( button ), false );
+    return result;
   }
 }

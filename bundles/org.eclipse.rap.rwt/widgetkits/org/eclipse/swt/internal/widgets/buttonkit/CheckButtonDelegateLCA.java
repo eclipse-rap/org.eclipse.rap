@@ -15,17 +15,12 @@ import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Button;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
-import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 
 final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
 
-  static final String PROP_GRAYED = "grayed";
-
   void preserveValues( Button button ) {
     ButtonLCAUtil.preserveValues( button );
-    preserveProperty( button, PROP_GRAYED, Boolean.valueOf( button.getGrayed() ) );
   }
 
   void readData( Button button ) {
@@ -43,6 +38,5 @@ final class CheckButtonDelegateLCA extends ButtonDelegateLCA {
 
   void renderChanges( Button button ) throws IOException {
     ButtonLCAUtil.renderChanges( button );
-    renderProperty( button, PROP_GRAYED, Boolean.valueOf( button.getGrayed() ), Boolean.FALSE );
   }
 }

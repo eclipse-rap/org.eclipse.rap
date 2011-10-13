@@ -76,41 +76,7 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
     assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( CheckButtonDelegateLCA.PROP_GRAYED ) );
-  }
-
-  public void testArrowPreserveValues() {
-    Button button = new Button( shell, SWT.ARROW );
-    Fixture.markInitialized( display );
-    testPreserveValues( display, button );
-    //alignment
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
-    Integer alignment = ( Integer )adapter.getPreserved( ButtonLCAUtil.PROP_ALIGNMENT );
-    assertEquals( SWT.UP, alignment.intValue() );
-    button.setAlignment( SWT.LEFT );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    alignment = ( Integer )adapter.getPreserved( ButtonLCAUtil.PROP_ALIGNMENT );
-    assertEquals( SWT.LEFT, alignment.intValue() );
-    Fixture.clearPreserved();
-    button.setAlignment( SWT.RIGHT );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    alignment = ( Integer )adapter.getPreserved( ButtonLCAUtil.PROP_ALIGNMENT );
-    assertEquals( SWT.RIGHT, alignment.intValue() );
-    Fixture.clearPreserved();
-    button.setAlignment( SWT.UP );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    alignment = ( Integer )adapter.getPreserved( ButtonLCAUtil.PROP_ALIGNMENT );
-    assertEquals( SWT.UP, alignment.intValue() );
-    Fixture.clearPreserved();
-    button.setAlignment( SWT.DOWN );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    alignment = ( Integer )adapter.getPreserved( ButtonLCAUtil.PROP_ALIGNMENT );
-    assertEquals( SWT.DOWN, alignment.intValue() );
+    assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_GRAYED ) );
   }
 
   public void testTogglePreserveValues() {
@@ -217,12 +183,7 @@ public class ButtonLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
-    button.addControlListener( new ControlListener() {
-      public void controlMoved( final ControlEvent e ) {
-      }
-      public void controlResized( final ControlEvent e ) {
-      }
-    } );
+    button.addControlListener( new ControlAdapter() { } );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
@@ -262,8 +223,7 @@ public class ButtonLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
-    ActivateEvent.addListener( button, new ActivateAdapter() {
-    } );
+    ActivateEvent.addListener( button, new ActivateAdapter() { } );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
@@ -277,13 +237,13 @@ public class ButtonLCA_Test extends TestCase {
     final Button button = new Button( shell, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
     ActivateEvent.addListener( button, new ActivateAdapter() {
-      public void activated( final ActivateEvent event ) {
+      public void activated( ActivateEvent event ) {
         log.append( "widgetActivated|" );
         button.setEnabled( false );
       }
     } );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         log.append( "widgetSelected|" );
       }
     } );
@@ -302,7 +262,7 @@ public class ButtonLCA_Test extends TestCase {
     final StringBuffer log = new StringBuffer();
     final Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         assertEquals( 0, event.x );
         assertEquals( 0, event.y );
         assertEquals( 0, event.width );
@@ -329,7 +289,7 @@ public class ButtonLCA_Test extends TestCase {
     final Button button3 = new Button( shell, SWT.RADIO );
     button3.setText( "3" );
     SelectionAdapter listener = new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         Button button = ( Button )event.getSource();
         log.append( button.getText() );
         log.append( ":" );
