@@ -33,6 +33,7 @@ import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISettingStoreFactory;
 import org.eclipse.swt.widgets.Widget;
 
+@SuppressWarnings("deprecation")
 public class ApplicationConfigurationImpl implements ApplicationConfiguration {
 
   private final ApplicationContext applicationContext;

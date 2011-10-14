@@ -18,6 +18,7 @@ import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.internal.util.ParamCheck;
 
 
+@SuppressWarnings("deprecation")
 class AdapterFactoryRegistry {
 
   // TODO [rh] if we decide to make the adapter mechanism internal, the concurrency lock can be 

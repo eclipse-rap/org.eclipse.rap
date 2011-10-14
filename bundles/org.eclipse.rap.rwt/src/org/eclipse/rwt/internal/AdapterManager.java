@@ -17,6 +17,7 @@ import java.util.Map;
 import org.eclipse.rwt.AdapterFactory;
 
 
+@SuppressWarnings("deprecation")
 public class AdapterManager {
 
   private static final NullAdapterFactory NULL_ADAPTER_FACTORY = new NullAdapterFactory();

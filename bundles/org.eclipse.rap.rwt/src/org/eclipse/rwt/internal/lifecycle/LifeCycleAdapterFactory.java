@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
 
+@SuppressWarnings("deprecation")
 public final class LifeCycleAdapterFactory implements AdapterFactory {
 
   private static final Class[] ADAPTER_LIST = new Class[] {

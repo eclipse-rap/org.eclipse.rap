@@ -17,8 +17,14 @@ package org.eclipse.rwt;
  * a given object, if available. Adapters are used to add dynamically
  * interfaces to a class (behavioral extension).</p>
  * 
- * <p>AdapterFactories are registered with an global adapter manager.</p>
+ * <p>AdapterFactories are registered with a global adapter manager.</p>
  * 
+ * @deprecated This class was made API accidientially and will be removed in future releases. 
+ *   The <code>AdapterFactory</code> is tailored to the needs of RWT and not meant for general 
+ *   use. Furthermore providing an implementation of the adapter pattern is outside the scope 
+ *   of RWT.
+ *   If clients need to work with the adapter pattern, they should resort to general purpose 
+ *   implementations (e.g. the <code>IAdapterFactory</code> from org.eclipse.core.runtime)
  * @since 1.0
  * @see org.eclipse.rwt.Adaptable
  */
