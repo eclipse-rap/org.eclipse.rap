@@ -39,7 +39,7 @@ public interface Adaptable {
    * exists.</p>
    *
    * @param adapter the lookup class
-   * @return an object castable to the given class or <code>null</code> if 
+   * @return an object that can be cast to the given class or <code>null</code> if 
    *         there is no adapter associated with the given class.
    */
   <T> T getAdapter( Class<T> adapter );
