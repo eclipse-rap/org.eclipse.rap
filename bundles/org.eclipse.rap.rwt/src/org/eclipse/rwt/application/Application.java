@@ -14,12 +14,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
 
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.application.ApplicationContext;
 import org.eclipse.rwt.internal.application.ApplicationContextUtil;
-import org.eclipse.rwt.internal.engine.RWTDelegate;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.util.ParamCheck;
 
@@ -57,10 +55,6 @@ public class Application {
     } finally {
       ApplicationContextUtil.remove( servletContext );
     }
-  }
-  
-  public HttpServlet createServlet() {
-    return new RWTDelegate();
   }
   
   public String[] getServletNames() {

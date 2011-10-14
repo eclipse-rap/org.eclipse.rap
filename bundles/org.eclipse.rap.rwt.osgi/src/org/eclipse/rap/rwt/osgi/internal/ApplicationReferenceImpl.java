@@ -15,8 +15,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 
 import org.eclipse.rap.rwt.osgi.ApplicationReference;
-import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.application.Application;
+import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.engine.RWTServlet;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.http.HttpContext;
@@ -80,10 +81,10 @@ class ApplicationReferenceImpl implements ApplicationReference {
   private void registerServlets() {
     String[] aliases = application.getServletNames();
     if( aliases.length == 0 ) {
-      registerServlet( DEFAULT_ALIAS, application.createServlet() );
+      registerServlet( DEFAULT_ALIAS, new RWTServlet() );
     }
     for( String alias : aliases ) {
-      registerServlet( alias, application.createServlet() );
+      registerServlet( alias, new RWTServlet() );
     }
   }
 

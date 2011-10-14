@@ -20,8 +20,8 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.eclipse.rwt.application.ApplicationConfiguration.OperationMode;
 import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.engine.RWTServlet;
 import org.eclipse.rwt.internal.engine.RWTClusterSupport;
-import org.eclipse.rwt.internal.engine.RWTDelegate;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
@@ -50,7 +50,7 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
   
   public void testSetOperationModeToSessionFailover() {
     servletContext.setVersion( 3, 0 );
-    servletContext.addServlet( "rwtServlet", new RWTDelegate() );
+    servletContext.addServlet( "rwtServlet", new RWTServlet() );
 
     applicationConfiguration.setOperationMode( OperationMode.SESSION_FAILOVER );
     applicationContext.activate();
@@ -76,7 +76,7 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
   
   public void testSetOperationModeToSessionFailoverWithInsufficientServletVersion() {
     servletContext.setVersion( 2, 6 );
-    servletContext.addServlet( "rwtServlet", new RWTDelegate() );
+    servletContext.addServlet( "rwtServlet", new RWTServlet() );
     
     try {
       applicationConfiguration.setOperationMode( OperationMode.SESSION_FAILOVER );

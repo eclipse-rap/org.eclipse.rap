@@ -18,11 +18,10 @@ import org.eclipse.rap.rwt.cluster.testfixture.internal.server.RWTStartup;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.FileUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rwt.internal.engine.RWTDelegate;
+import org.eclipse.rwt.engine.RWTServlet;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 
-@SuppressWarnings("restriction")
 public class TomcatEngine implements IServletEngine {
 
   static {
@@ -99,7 +98,7 @@ public class TomcatEngine implements IServletEngine {
     context.setBackgroundProcessorDelay( 1 );
     Object listener = RWTStartup.createServletContextListener( entryPointClass );
     context.addApplicationLifecycleListener( listener );
-    Wrapper rwtServlet = addServlet( "rwtServlet", new RWTDelegate() );
+    Wrapper rwtServlet = addServlet( "rwtServlet", new RWTServlet() );
     context.addServletMapping( IServletEngine.SERVLET_PATH, rwtServlet.getName() );
     Wrapper defaultServlet = addServlet( "defaultServlet", new DefaultServlet() );
     context.addServletMapping( "/", defaultServlet.getName() );

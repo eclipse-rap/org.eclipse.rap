@@ -17,10 +17,8 @@ import org.eclipse.rwt.application.Application;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfiguration.OperationMode;
 import org.eclipse.rwt.application.ApplicationConfigurator;
-import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
-@SuppressWarnings("restriction")
 public class RWTStartup {
   
   public static ServletContextListener createServletContextListener( 
@@ -57,7 +55,7 @@ public class RWTStartup {
     
     public void configure( ApplicationConfiguration configuration ) {
       configuration.setOperationMode( OperationMode.SESSION_FAILOVER );
-      configuration.addEntryPoint( EntryPointManager.DEFAULT, entryPointClass );
+      configuration.addEntryPoint( "default", entryPointClass );
     }
   }
 }

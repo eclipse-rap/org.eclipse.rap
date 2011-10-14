@@ -18,14 +18,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.application.ApplicationContext;
-import org.eclipse.rwt.internal.engine.RWTDelegate;
 
 
 public class Application_Test extends TestCase {
@@ -36,15 +34,6 @@ public class Application_Test extends TestCase {
   private ApplicationConfigurator configurator;
   private Application application;
 
-  public void testCreateServlet() {
-    HttpServlet servlet1 = application.createServlet();
-    HttpServlet servlet2 = application.createServlet();
-    
-    assertTrue( servlet1 instanceof RWTDelegate );
-    assertTrue( servlet2 instanceof RWTDelegate );
-    assertNotSame( servlet1, servlet2 );
-  }
-  
   public void testStart() {
     application.start();
     

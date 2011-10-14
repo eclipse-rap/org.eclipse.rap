@@ -20,8 +20,8 @@ import javax.servlet.FilterRegistration.Dynamic;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 
+import org.eclipse.rwt.engine.RWTServlet;
 import org.eclipse.rwt.internal.engine.RWTClusterSupport;
-import org.eclipse.rwt.internal.engine.RWTDelegate;
 import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
 
 /*
@@ -83,7 +83,7 @@ class SessionFailoverConfigurator {
     ServletRegistration result = null;
     ServletRegistration[] servletRegistrations = getSerlvetRegistrations();
     for( int i = 0; result == null && i < servletRegistrations.length; i++ ) {
-      if( RWTDelegate.class.getName().equals( servletRegistrations[ i ].getClassName() ) ) {
+      if( RWTServlet.class.getName().equals( servletRegistrations[ i ].getClassName() ) ) {
         result = servletRegistrations[ i ];
       }
     }

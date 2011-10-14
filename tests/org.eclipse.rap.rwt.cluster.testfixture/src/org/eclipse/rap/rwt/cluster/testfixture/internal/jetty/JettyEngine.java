@@ -45,11 +45,10 @@ import org.eclipse.rap.rwt.cluster.testfixture.internal.server.RWTStartup;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.FileUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
-import org.eclipse.rwt.internal.engine.RWTDelegate;
+import org.eclipse.rwt.engine.RWTServlet;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 
-@SuppressWarnings("restriction")
 public class JettyEngine implements IServletEngine {
 
   static {
@@ -123,7 +122,7 @@ public class JettyEngine implements IServletEngine {
 
   private void addEntryPoint( Class<? extends IEntryPoint> entryPointClass ) {
     ServletContextHandler context = createServletContext( "/" );
-    context.addServlet( new ServletHolder( new RWTDelegate() ), IServletEngine.SERVLET_PATH );
+    context.addServlet( new ServletHolder( new RWTServlet() ), IServletEngine.SERVLET_PATH );
     addServletContextFilter( context, new SessionTracker() );
     context.addEventListener( RWTStartup.createServletContextListener( entryPointClass ) );
   }
