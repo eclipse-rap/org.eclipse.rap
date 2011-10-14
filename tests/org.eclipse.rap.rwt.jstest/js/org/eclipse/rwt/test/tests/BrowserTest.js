@@ -76,7 +76,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
             "url" : this.URL1
           }
         } );
-        testUtil.delayTest( 1000 );
+        testUtil.delayTest( 5000 );
       },
       function() {
         var browser = org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" );
@@ -155,7 +155,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
             "parent" : "w2"
           }
         } );
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
       },
       function( browser ) {
         var browser = org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" );
@@ -181,7 +181,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -200,7 +200,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -219,7 +219,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -238,7 +238,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -257,7 +257,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -319,7 +319,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -342,7 +342,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         browser.createFunction( "abc" );
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -361,13 +361,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
         browser.setSource( "javascript:false;" );
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
       function( browser ) {
         browser.createFunction( "abc" );
         browser.getIframeNode().src = this.BLANK;
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -410,7 +410,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -433,7 +433,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -445,7 +445,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         // Simulates navigation: source stays the same, no load event
         // since the "load" flag is already true:
         browser.getIframeNode().src = "http://www.google.com/";
-        testUtil.delayTest( 3000 );
+        testUtil.delayTest( 10000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -461,7 +461,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -495,7 +495,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -523,7 +523,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -573,7 +573,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
           assertTrue( browser.isSeeable() );
         }
         assertTrue( wm.findWidgetById( "w6" ) == null ); /* may be undefined */
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
         testUtil.store( browser, el, iframe );
       },
       function( browser, el, iframe ) {
@@ -595,7 +595,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
         var browser = this._createBrowser();
-        testUtil.delayTest( 300 );
+        testUtil.delayTest( 1000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -633,7 +633,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         testUtil.initRequestLog();
         browser.setSource( "http://www.google.de/" );
         browser.syncSource();
-        testUtil.delayTest( 1000 );
+        testUtil.delayTest( 2000 );
         testUtil.store( browser );
       },
       function( browser ) {

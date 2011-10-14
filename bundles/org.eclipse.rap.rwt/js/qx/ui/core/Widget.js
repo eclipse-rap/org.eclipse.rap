@@ -136,8 +136,7 @@ qx.Class.define( "qx.ui.core.Widget", {
       if( qx.ui.core.Widget._inFlushGlobalQueues ) {
         return;
       }
-      var app = qx.core.Init.getInstance().getApplication();
-      if( app.getUiReady && !app.getUiReady() ) {
+      if( !org.eclipse.rwt.System.getInstance().getUiReady() ) {
         return;
       }
       qx.ui.core.Widget._inFlushGlobalQueues = true;

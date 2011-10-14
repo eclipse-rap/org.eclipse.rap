@@ -31,7 +31,6 @@ import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
 import org.eclipse.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
-import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager;
@@ -49,6 +48,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
   private static final String PROPERTY_URL = "url";
   private static final String PROPERTY_ROOT_ID = "rootId";
   private static final String METHOD_INIT = "init";
+  private static final String PROPERTY_ENTRYPOINT = "entrypoint";
 
   private final List<AbstractBranding> registeredBrandings;
   private final ResourceRegistry resourceRegistry;
@@ -187,6 +187,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
   private static void appendInitDisplay( String id, ProtocolMessageWriter writer ) {
     Map<String, Object> args = new HashMap<String, Object>();
     args.put( PROPERTY_URL, getUrl() );
+    args.put( PROPERTY_ENTRYPOINT, getEntryPoint() );
     args.put( PROPERTY_ROOT_ID, id );  // TODO [tb] : refactor client to remove this line
     writer.appendCall( id, METHOD_INIT, args );
   }
@@ -207,15 +208,8 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
   private void applyBranding() throws IOException {
     AbstractBranding branding = BrandingUtil.determineBranding();
     registerBrandingResources( branding );
-    HttpServletRequest request = ContextProvider.getRequest();
     // TODO: [bm][rh] move into util
-    String entryPoint = request.getParameter( RequestParams.STARTUP );
-    if( entryPoint == null ) {
-      entryPoint = branding.getDefaultEntryPoint();
-      if( entryPoint == null || "".equals( entryPoint ) ) {
-        entryPoint = EntryPointManager.DEFAULT;
-      }
-    }
+    registerBrandingResources( branding );
     if( branding.getThemeId() != null ) {
       ThemeUtil.setCurrentThemeId( branding.getThemeId() );
     }
@@ -229,14 +223,24 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     BrandingUtil.replacePlaceholder( template,
                                      StartupPageTemplateHolder.VAR_HEADERS,
                                      headers );
-    String encodedEntryPoint = EncodingUtil.encodeHTMLEntities( entryPoint );
-    BrandingUtil.replacePlaceholder( template,
-                                     StartupPageTemplateHolder.VAR_STARTUP,
-                                     encodedEntryPoint );
     String noScriptWarning = RWTMessages.getMessage( "RWT_NoScriptWarning" );
     BrandingUtil.replacePlaceholder( template,
                                      StartupPageTemplateHolder.VAR_NO_SCRIPT_MESSAGE,
                                      noScriptWarning );
+  }
+
+  // TODO [tb] : merge with LifeCycleUtil.getEntryPoint(), StartupPage.getEntryPoint() ?
+  private static String getEntryPoint() {
+    AbstractBranding branding = BrandingUtil.determineBranding();
+    HttpServletRequest request = ContextProvider.getRequest();
+    String entryPoint = request.getParameter( RequestParams.STARTUP );
+    if( entryPoint == null ) {
+      entryPoint = branding.getDefaultEntryPoint();
+      if( entryPoint == null || "".equals( entryPoint ) ) {
+        entryPoint = EntryPointManager.DEFAULT;
+      }
+    }
+    return entryPoint;
   }
 
   private void registerBrandingResources( AbstractBranding branding ) throws IOException {

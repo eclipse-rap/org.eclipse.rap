@@ -38,7 +38,8 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       this.__onwindowblur = functionUtil.bind( this._onwindowblur, this );
       this.__onwindowfocus = functionUtil.bind( this._onwindowfocus, this );
       this.__onwindowresize = functionUtil.bind( this._onwindowresize, this );
-      this.__onKeyEvent = qx.lang.Function.bind( this._onKeyEvent, this );     
+      this.__onKeyEvent = qx.lang.Function.bind( this._onKeyEvent, this );
+      org.eclipse.rwt.EventHandlerUtil.applyBrowserFixes();
     },
 
     cleanUp : function() {
@@ -609,7 +610,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
           qx.html.EventRegistration.removeEventListener( el, vEventTypes[i], vFunctionPointer );
         }
       } catch( ex ) {
-        throw new Error("EventHandler: Failed to detach window event types: " + vEventTypes + ": " + ex);
+        throw new Error( "EventHandler: Failed to detach window event types: " + vEventTypes + ": " + ex );
       }
     },
 

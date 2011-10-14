@@ -42,7 +42,7 @@ qx.Class.define("qx.ui.core.ClientDocument",
 
     // Init element
     this.setElement(this._document.body);
-
+    this.getElement().setAttribute( "spellcheck", "false" );
     // Reset absolute position
     this._document.body.style.position = "";
 
@@ -73,6 +73,14 @@ qx.Class.define("qx.ui.core.ClientDocument",
 
     // Register as current focus root
     org.eclipse.rwt.EventHandler.setFocusRoot(this);
+    
+    // Gecko-specific settings
+    if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
+      // Fix for bug 193703:
+      this.getElement().style.position = "absolute";      
+      this.setSelectable( true );
+    }
+    
   },
 
 

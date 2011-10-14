@@ -131,22 +131,30 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
     },
 
     _freezeApplication : function() {
-      var app = qx.core.Init.getInstance().getApplication();
-      app.setExitConfirmation( null );
-      qx.io.remote.RequestQueue.getInstance().setEnabled( false );
-      org.eclipse.rwt.EventHandler.detachEvents();
-      qx.core.Target.prototype.dispatchEvent = function() {};
-      org.eclipse.rwt.Animation._stopLoop();
+      try {
+        var display = org.eclipse.rwt.Display.getCurrent();
+        display.setExitConfirmation( null );
+        qx.io.remote.RequestQueue.getInstance().setEnabled( false );
+        org.eclipse.rwt.EventHandler.detachEvents();
+        qx.core.Target.prototype.dispatchEvent = function() {};
+        org.eclipse.rwt.Animation._stopLoop();
+      } catch( ex ) {
+        try {
+          console.log( "_freezeApplication exception: " + ex );
+        } catch( ex ) {
+          // ignore
+        }
+      }
     },
 
     _enableTextSelection : function() {
       var doc = qx.ui.core.ClientDocument.getInstance();
       doc.setSelectable( true );
       if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
-        var app = qx.core.Init.getInstance().getApplication();
+        var util = org.eclipse.rwt.EventHandlerUtil;
         qx.html.EventRegistration.removeEventListener( document.documentElement,
                                                        "mousedown",
-                                                       app._onFFMouseDown );
+                                                       util._ffMouseFixListener );
       }
     }
 

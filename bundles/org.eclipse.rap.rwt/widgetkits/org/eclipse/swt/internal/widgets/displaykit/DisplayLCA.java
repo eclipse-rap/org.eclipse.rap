@@ -25,13 +25,14 @@ import org.eclipse.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler;
-import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
@@ -158,7 +159,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       renderRequestCounter();
       writeTheme( display );
       writeErrorPages( display );
-      writeExitConfirmation( display );
+      renderExitConfirmation( display );
       renderShells( display );
       writeFocus( display );
       writeUICallBackActivation( display );
@@ -246,7 +247,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     return timeoutPage;
   }
 
-  private static void writeExitConfirmation( Display display ) {
+  private static void renderExitConfirmation( Display display ) {
     String exitConfirmation = getExitConfirmation();
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     Object oldExitConfirmation = adapter.getPreserved( PROP_EXIT_CONFIRMATION );
@@ -254,17 +255,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
                        ? oldExitConfirmation != null
                        : !exitConfirmation.equals( oldExitConfirmation );
     if( hasChanged ) {
-      String exitConfirmationStr = "null";
-      if( exitConfirmation != null ) {
-        exitConfirmationStr = "\"" + EncodingUtil.escapeDoubleQuoted( exitConfirmation ) + "\"";
-      }
-      String code = "qx.core.Init.getInstance().getApplication()"
-                    + ".setExitConfirmation( "
-                    + exitConfirmationStr
-                    + " );";
-      IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
-      responseWriter.write( code );
+      IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+      clientObject.setProperty( PROP_EXIT_CONFIRMATION, exitConfirmation );
     }
   }
 

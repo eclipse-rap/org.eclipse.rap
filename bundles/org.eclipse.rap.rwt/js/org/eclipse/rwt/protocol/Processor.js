@@ -75,7 +75,7 @@ org.eclipse.rwt.protocol.Processor = {
 
   _processSet : function( targetId, properties ) {
     var adapter = this._getAdapter( targetId );
-    if( adapter.properties  instanceof Array ) {
+    if( properties && adapter.properties  instanceof Array ) {
       var targetObject = this._getTarget( targetId );
       for( var i = 0; i < adapter.properties.length; i++ ) {
         var property = adapter.properties [ i ];

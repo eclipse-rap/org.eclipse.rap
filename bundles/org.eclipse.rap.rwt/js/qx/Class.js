@@ -337,7 +337,6 @@ qx.Class.define("qx.Class",
       if (qx.core.Variant.isSet("qx.debug", "on")) {
         qx.Mixin.isCompatible(mixin, clazz);
       }
-
       qx.Class.__addMixin(clazz, mixin, true);
     },
 

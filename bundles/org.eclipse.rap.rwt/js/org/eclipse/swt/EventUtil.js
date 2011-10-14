@@ -42,8 +42,8 @@ qx.Class.define( "org.eclipse.swt.EventUtil", {
     _metaKey : false,
 
     eventTimestamp : function() {
-      var app = qx.core.Init.getInstance().getApplication();
-      return new Date().getTime() - app.getStartupTime();
+      var init = org.eclipse.rwt.System.getInstance();
+      return new Date().getTime() - init.getStartupTime();
     },
 
     widgetDefaultSelected : function( evt ) {

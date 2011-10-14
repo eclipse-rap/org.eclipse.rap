@@ -56,7 +56,6 @@ public final class ClientResources {
     "qx/dom/String.js",
     "qx/html/Entity.js",
     "qx/html/EventRegistration.js",
-    "qx/core/Init.js",
     "qx/util/manager/MConnectedObject.js",
     "org/eclipse/rwt/HtmlUtil.js",
     "org/eclipse/rwt/protocol/AdapterRegistry.js",
@@ -141,7 +140,6 @@ public final class ClientResources {
     "qx/ui/selection/Selection.js",
     "org/eclipse/swt/widgets/AbstractSlider.js",
     "org/eclipse/rwt/widgets/ScrollBar.js",
-    "qx/application/Gui.js",
     "qx/io/image/PreloaderSystem.js",
     "qx/io/remote/RequestQueue.js",
     "qx/io/remote/Exchange.js",
@@ -178,7 +176,6 @@ public final class ClientResources {
     "org/eclipse/rwt/TreeRowContainerWrapper.js",
     "org/eclipse/rwt/TreeUtil.js",
     "org/eclipse/rwt/widgets/TreeRow.js",
-    "org/eclipse/swt/Application.js",
     "org/eclipse/rwt/AsyncKeyEventUtil.js",
     "org/eclipse/swt/Request.js",
     "org/eclipse/rwt/widgets/Menu.js",
@@ -277,6 +274,7 @@ public final class ClientResources {
     "org/eclipse/swt/widgets/ToolTip.js",
     "org/eclipse/swt/WidgetManager.js",
     "org/eclipse/rwt/protocol/Processor.js",
+    "org/eclipse/rwt/System.js"
   };
 
   private static final String[] WIDGET_IMAGES = new String[] {

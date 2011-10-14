@@ -16,8 +16,10 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.Display", {
   },
 
   destructor : null, // destroy is currently not called for display
-  
-  properties : [],
+
+  properties : [
+    "exitConfirmation"
+  ],
 
   listeners : [],
 
@@ -26,7 +28,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.Display", {
     "probe",
     "measureStrings",
     "allowEvent",
-    "cancelEvent"
+    "cancelEvent",
+    "reload"
   ]
 
 } );

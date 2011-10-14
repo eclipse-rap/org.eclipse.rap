@@ -15,12 +15,11 @@
     "org/eclipse/rwt/test/fixture/RAPRequestPatch.js",
     "org/eclipse/rwt/test/fixture/DummyRequest.js",
     "org/eclipse/rwt/test/fixture/RAPServer.js",
-    "org/eclipse/rwt/test/fixture/AppSimulator.js",
     "org/eclipse/rwt/test/Presenter.js",
     "org/eclipse/rwt/test/TestRunner.js",
     "org/eclipse/rwt/test/fixture/TestUtil.js",
     "org/eclipse/rwt/test/Asserts.js",
-    "org/eclipse/rwt/test/Application.js",
+    "org/eclipse/rwt/test/Startup.js",
     "resource/RAPThemeSupport.js"
   ];
 

@@ -12,7 +12,7 @@
 package org.eclipse.rwt.internal.service;
 
 import java.io.IOException;
-import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +25,7 @@ import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
+import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -33,8 +34,6 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   public static final String RWT_INITIALIZE = "rwt_initialize";
   static final String SESSION_INITIALIZED
     = LifeCycleServiceHandler.class.getName() + "#isSessionInitialized";
-  private static final String PATTERN_RELOAD
-    = "qx.core.Init.getInstance().getApplication().reload( \"{0}\" )";
 
   private final LifeCycleFactory lifeCycleFactory;
   private final StartupPage startupPage;
@@ -114,10 +113,11 @@ public class LifeCycleServiceHandler implements IServiceHandler {
 
   private static void handleInvalidRequestCounter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
-    String message = RWTMessages.getMessage( "RWT_MultipleInstancesError" );
-    Object[] args = new Object[] { message };
-    responseWriter.write( MessageFormat.format( PATTERN_RELOAD, args ) );
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "message", RWTMessages.getMessage( "RWT_MultipleInstancesError" ) );
+    ProtocolMessageWriter writer = stateInfo.getResponseWriter().getProtocolWriter();
+    // TODO [tb] : do not assume "w1" as id for display
+    writer.appendCall( "w1", "reload", properties );
   }
 
   private static boolean isSessionInitialized() {

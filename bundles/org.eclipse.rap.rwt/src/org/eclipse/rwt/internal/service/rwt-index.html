@@ -45,16 +45,8 @@
         }
         return result;
       }
-  
-      function appendInitParameters() {
-        var req = org.eclipse.swt.Request.getInstance();
-        req.addParameter( "rwt_initialize", "true" );
-        req.addParameter( "startup", "${startup}" );
-      }
 
       if( discoverAjax() ) {
-        // append application init parameters
-        appendInitParameters();
         // rap runtime application
         ${appScript}
         // end rap runtime application

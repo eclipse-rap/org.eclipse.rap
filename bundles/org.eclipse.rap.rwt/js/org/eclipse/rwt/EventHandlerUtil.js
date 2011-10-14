@@ -24,6 +24,34 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       delete this._lastUpDownType;
       delete this._lastKeyCode;
     },
+    
+    applyBrowserFixes  : qx.core.Variant.select( "qx.client", {
+      "gecko" : function() {
+        // Fix for bug 295475:
+        // Prevent url-dropping in FF as a whole (see bug 304651)
+        var doc = qx.ui.core.ClientDocument.getInstance();
+        doc.getElement().setAttribute( "ondrop", "event.preventDefault();" );
+        var docElement = document.documentElement;
+        // also see ErrorHandler.js#_enableTextSelection
+        this._ffMouseFixListener = function( event ) {
+          var tagName = null;
+          try{
+            tagName = event.originalTarget.tagName;
+          } catch( e ) {
+            // Firefox bug: On the very first mousedown, access to the events target 
+            // is forbidden and causes an error.
+          }
+          // NOTE: See also Bug 321372
+          if( event.button === 0 && tagName != null && tagName != "INPUT" ) {
+            event.preventDefault();
+          }
+        };
+        qx.html.EventRegistration.addEventListener( docElement, 
+                                                    "mousedown", 
+                                                    this._ffMouseFixListener );
+      },
+      "default" : function() { }
+    } ),
 
     /////////////////////////
     // GENERAL EVENT HANDLING

@@ -96,9 +96,7 @@ qx.Class.define("qx.theme.manager.Appearance",
         this.__cache[this._currentTheme.name] = {};
       }
 
-      var app = qx.core.Init.getInstance().getApplication();
-
-      if (app && app.getUiReady()) {
+      if( org.eclipse.rwt.System.getInstance().getUiReady() ) {
         qx.ui.core.ClientDocument.getInstance()._recursiveAppearanceThemeUpdate(this._currentTheme, this._oldTheme);
       }
 
