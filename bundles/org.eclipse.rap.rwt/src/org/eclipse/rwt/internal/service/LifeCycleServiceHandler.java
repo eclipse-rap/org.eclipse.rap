@@ -21,7 +21,6 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.SingletonManager;
-import org.eclipse.rwt.internal.engine.RWTDelegate;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
@@ -133,18 +132,15 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   }
 
   private static void clearSessionStore() {
-    synchronized( RWTDelegate.class ) {
-      Integer version = RWTRequestVersionControl.getInstance().getCurrentRequestId();
-      SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSession();
-      // clear attributes of session store to enable new startup
-      sessionStore.valueUnbound( null );
-      // reinitialize session store state
-      sessionStore.valueBound( null );
-      // TODO [rh] ContextProvider#getSession() also initializes a session (slightly different)
-      //      merge both code passages
-      SingletonManager.install( sessionStore );
-      RWTRequestVersionControl.getInstance().setCurrentRequestId( version );
-    }
+    Integer version = RWTRequestVersionControl.getInstance().getCurrentRequestId();
+    SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSession();
+    // clear attributes of session store to enable new startup
+    sessionStore.valueUnbound( null );
+    // reinitialize session store state
+    sessionStore.valueBound( null );
+    // TODO [rh] ContextProvider#getSession() also initializes a session (slightly different)
+    //      merge both code passages
+    SingletonManager.install( sessionStore );
+    RWTRequestVersionControl.getInstance().setCurrentRequestId( version );
   }
-
 }
