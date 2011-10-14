@@ -59,8 +59,8 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
 
   StartupPageConfigurer( ResourceRegistry resourceRegistry ) {
     this.resourceRegistry = resourceRegistry;
-    this.lastModified = System.currentTimeMillis();
-    this.registeredBrandings = new LinkedList<AbstractBranding>();
+    lastModified = System.currentTimeMillis();
+    registeredBrandings = new LinkedList<AbstractBranding>();
   }
 
   ////////////////////////////////////////////////////
@@ -119,10 +119,10 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
       BufferedReader reader = new BufferedReader( streamReader );
       try {
         String line = reader.readLine();
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         while( line != null ) {
           buffer.append( line );
-          buffer.append( "\n" );
+          buffer.append( '\n' );
           line = reader.readLine();
         }
         template = new StartupPageTemplateHolder( buffer.toString() );
@@ -155,7 +155,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
   // Helping methods to adjust startup page
 
   private static String getAppScript() {
-    StringBuffer code = new StringBuffer();
+    StringBuilder code = new StringBuilder();
     code.append( JavaScriptResponseWriter.PROCESS_MESSAGE );
     code.append( "( " );
     code.append( getStartupProtocolMessage( "w1" ) );
@@ -249,7 +249,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
   }
 
   private String getJsLibraries() {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     IResource[] resources = resourceRegistry.get();
     for( int i = 0; i < resources.length; i++ ) {
       if( resources[ i ].isExternal() && resources[ i ].isJSLibrary() ) {
@@ -260,7 +260,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     return buffer.toString();
   }
 
-  private static void writeScriptTag( StringBuffer buffer, String library ) {
+  private static void writeScriptTag( StringBuilder buffer, String library ) {
     buffer.append( "<script type=\"text/javascript\" src=\"" );
     buffer.append( library );
     buffer.append( "\" charset=\"" );

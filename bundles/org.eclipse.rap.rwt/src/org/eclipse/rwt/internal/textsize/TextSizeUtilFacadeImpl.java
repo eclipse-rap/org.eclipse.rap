@@ -29,7 +29,7 @@ public final class TextSizeUtilFacadeImpl extends TextSizeUtilFacade {
   static final String PROPERTY_FONTS = "fonts";
   static final String METHOD_PROBE = "probe";
 
-  public Object getStartupProbeObjectInternal() {
+  public Object[] getStartupProbeObjectInternal() {
     Object[] result = null;
     Probe[] probeList = RWTFactory.getProbeStore().getProbes();
     if( probeList.length > 0 ) {
