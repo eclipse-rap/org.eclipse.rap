@@ -931,7 +931,7 @@ public class Table_Test extends TestCase {
     // calling setSelection makes the selected item visible
     table.setSelection( 95 );
     ITableAdapter tableAdapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+      = table.getAdapter( ITableAdapter.class );
     assertTrue( tableAdapter.isItemVisible( table.getItem( 95 ) ) );
 
     // calling select does *not* make the selected item visible
@@ -1075,7 +1075,7 @@ public class Table_Test extends TestCase {
     assertTrue( table.isSelected( 0 ) );
     // ensure that calling isSelected does not resolve a virtual item
     ITableAdapter tableAdapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+      = table.getAdapter( ITableAdapter.class );
     boolean selected = table.isSelected( 900 );
     assertFalse( selected );
     assertTrue( tableAdapter.isItemVirtual( 900 ) );
@@ -1087,7 +1087,7 @@ public class Table_Test extends TestCase {
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     ITableAdapter tableAdapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+      = table.getAdapter( ITableAdapter.class );
 
     table.setSelection( item );
     item.setText( "abc" );
@@ -1119,7 +1119,7 @@ public class Table_Test extends TestCase {
     table.setItemCount( 100 );
     shell.layout();
     shell.open();
-    ITableAdapter tableAdapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
 
     table.getItem( 0 ).getText();
     table.select( 0 );
@@ -1745,7 +1745,7 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 10 );
     ITableAdapter adapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+      = table.getAdapter( ITableAdapter.class );
     adapter.checkData( 99 );
     // No assert - the purpose of this test is to ensure that no
     // ArrayIndexOutOfBoundsException is thrown
@@ -2194,7 +2194,7 @@ public class Table_Test extends TestCase {
       new TableItem( table, SWT.NONE );
     }
     ITableAdapter adapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+      = table.getAdapter( ITableAdapter.class );
     assertEquals( 0, adapter.getLeftOffset() );
     table.showColumn( table.getColumn( 8 ) );
     assertEquals( 165, adapter.getLeftOffset() );
@@ -2237,7 +2237,7 @@ public class Table_Test extends TestCase {
     for( int i = 0; i < 10; i++ ) {
       new TableItem( table, SWT.NONE );
     }
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
 
     adapter.setLeftOffset( 100 );
     table.showColumn( table.getColumn( 0 ) );
@@ -2257,7 +2257,7 @@ public class Table_Test extends TestCase {
     for( int i = 0; i < 10; i++ ) {
       new TableItem( table, SWT.NONE );
     }
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( 100 );
     table.showColumn( table.getColumn( 1 ) );
     assertEquals( 0, adapter.getLeftOffset() );
@@ -2440,7 +2440,7 @@ public class Table_Test extends TestCase {
   }
 
   private static int countResolvedItems( final Table table ) {
-    ITableAdapter tableAdapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
     int result = 0;
     TableItem[] createdItems = tableAdapter.getCreatedItems();
     for( int i = 0; i < createdItems.length; i++ ) {
@@ -2459,7 +2459,7 @@ public class Table_Test extends TestCase {
   }
 
   private static void redrawTable( Table table ) {
-    ITableAdapter tableAdapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
     tableAdapter.checkData();
   }
 

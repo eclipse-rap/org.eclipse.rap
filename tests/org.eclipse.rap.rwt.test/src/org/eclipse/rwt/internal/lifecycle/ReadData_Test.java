@@ -27,14 +27,15 @@ public class ReadData_Test extends TestCase {
       super( display );
       this.log = log;
     }
-    public Object getAdapter( Class adapter ) {
+    @SuppressWarnings("unchecked")
+    public <T> T getAdapter( Class<T> adapter ) {
       Object result = null;
       if( adapter == ILifeCycleAdapter.class ) {
         result = new LoggingWidgetLCA( log ); 
       } else {
         result = super.getAdapter( adapter );
       }
-      return result;
+      return ( T )result;
     }
   }
 

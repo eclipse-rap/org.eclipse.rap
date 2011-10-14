@@ -448,17 +448,18 @@ public class Table extends Composite {
     state &= ~( /* CANVAS | */ THEME_BACKGROUND );
   }
 
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IItemHolderAdapter.class ) {
       if( itemHolder == null ) {
         itemHolder = new CompositeItemHolder();
       }
-      result = itemHolder;
+      result = ( T )itemHolder;
     } else if( adapter == ITableAdapter.class ) {
-      result = tableAdapter;
+      result = ( T )tableAdapter;
     } else if( adapter == ICellToolTipAdapter.class ) {
-      result = tableAdapter;
+      result = ( T )tableAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

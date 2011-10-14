@@ -93,7 +93,7 @@ public class ImageSerialzation_Test extends TestCase {
 
   private static ISessionStore getSessionStore( Device device ) {
     Display display = ( Display )device;
-    IDisplayAdapter displayAdapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
     return displayAdapter.getSessionStore();
   }
 

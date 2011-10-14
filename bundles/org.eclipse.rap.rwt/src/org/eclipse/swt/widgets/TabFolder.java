@@ -94,10 +94,11 @@ public class TabFolder extends Composite {
     state &= ~( /* CANVAS | */ THEME_BACKGROUND );
   }
 
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IItemHolderAdapter.class ) {
-      result = itemHolder;
+      result = ( T )itemHolder;
     } else {
       result = super.getAdapter( adapter );
     }

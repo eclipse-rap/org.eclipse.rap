@@ -353,7 +353,7 @@ public class TableColumnLCA_Test extends TestCase {
   public void testMoveColumnFixedColumnTarget() {
     Table table = createFixedColumnsTable( shell );
     table.setSize( 200, 200 );
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( 80 );
     TableColumn column3 = table.getColumn( 3 );
     TableColumnLCA.moveColumn( column3, 105 );
@@ -379,7 +379,7 @@ public class TableColumnLCA_Test extends TestCase {
   public void testMoveColumnFixedColumnRightHalfTarget() {
     Table table = createFixedColumnsTable( shell );
     table.setSize( 200, 200 );
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( 100 );
     TableColumn column3 = table.getColumn( 3 );
     TableColumnLCA.moveColumn( column3, 145 );

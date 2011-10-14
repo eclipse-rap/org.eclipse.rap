@@ -396,8 +396,7 @@ public class CLabel extends Canvas {
   }
 
   private void setBackgroundGradient( Color[] colors, int[] percents, boolean vertical ) {
-    IWidgetGraphicsAdapter adapter
-      = ( IWidgetGraphicsAdapter )getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter adapter = getAdapter( IWidgetGraphicsAdapter.class );
     adapter.setBackgroundGradient( colors, percents, vertical );
   }
 

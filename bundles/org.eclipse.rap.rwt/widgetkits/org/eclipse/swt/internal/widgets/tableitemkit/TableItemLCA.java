@@ -202,7 +202,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   private static boolean writeBackground( final TableItem item ) throws IOException {
-    ITableItemAdapter adapter = ( ITableItemAdapter )item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter adapter = item.getAdapter( ITableItemAdapter.class );
     Color background = adapter.getUserBackground();
     JSWriter writer = JSWriter.getWriterFor( item );
     return writer.set( PROP_BACKGROUND, "background", background, null );
@@ -230,7 +230,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   private static boolean writeCellBackgrounds( TableItem item ) throws IOException {
-    ITableItemAdapter adapter = ( ITableItemAdapter )item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter adapter = item.getAdapter( ITableItemAdapter.class );
     Color[] backgrounds = adapter.getCellBackgrounds();
     // default values are null
     Color[] defValue = new Color[ getColumnCount( item ) ];
@@ -239,7 +239,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   private static boolean writeCellForegrounds( TableItem item ) throws IOException {
-    ITableItemAdapter adapter = ( ITableItemAdapter )item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter adapter = item.getAdapter( ITableItemAdapter.class );
     Color[] foregrounds = adapter.getCellForegrounds();
     // default values are null
     Color[] defValue = new Color[ getColumnCount( item ) ];
@@ -395,7 +395,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   private static boolean isCached( final Table table, final int index ) {
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     return !adapter.isItemVirtual( index );
   }
 
@@ -415,7 +415,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   // helping methods
 
   private static ITableAdapter getTableAdapter( final TableItem item ) {
-    return ( ITableAdapter )item.getParent().getAdapter( ITableAdapter.class );
+    return item.getParent().getAdapter( ITableAdapter.class );
   }
 
   private static void preservingInitialized( TableItem item, IRenderRunnable runnable )
@@ -432,12 +432,12 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   private static boolean isRichTextEnabled( TableItem item ) {
-    ITableItemAdapter adapter = ( ITableItemAdapter )item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter adapter = item.getAdapter( ITableItemAdapter.class );
     return adapter.isRichTextEnabled();
   }
 
   private boolean isParentDisposed( TableItem item ) {
-    ITableItemAdapter adapter = ( ITableItemAdapter )item.getAdapter( ITableItemAdapter.class );
+    ITableItemAdapter adapter = item.getAdapter( ITableItemAdapter.class );
     return adapter.isParentDisposed();
   }
 }

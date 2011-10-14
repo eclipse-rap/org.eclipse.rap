@@ -39,13 +39,14 @@ public class Decorations extends Canvas {
     images = new Image[0];
   }
 
-  public Object getAdapter( final Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IMenuHolderAdapter.class ) {
       if( menuHolder == null ) {
         menuHolder = new MenuHolder();
       }
-      result = menuHolder;
+      result = ( T )menuHolder;
     } else {
       result = super.getAdapter( adapter );
     }

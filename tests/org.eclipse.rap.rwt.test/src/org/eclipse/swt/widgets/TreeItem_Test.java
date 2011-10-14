@@ -844,7 +844,7 @@ public class TreeItem_Test extends TestCase {
     int columnCount = 3;
     createColumns( tree, columnCount );
     TreeItem item = new TreeItem( tree, SWT.NONE );
-    ITreeItemAdapter adapter = ( ITreeItemAdapter )item.getAdapter( ITreeItemAdapter.class );
+    ITreeItemAdapter adapter = item.getAdapter( ITreeItemAdapter.class );
     assertTrue( Arrays.equals( new Color[ 3 ], adapter.getCellBackgrounds() ) );
     assertTrue( Arrays.equals( new Color[ 3 ], adapter.getCellForegrounds() ) );
     assertTrue( Arrays.equals( new Font[ 3 ], adapter.getCellFonts() ) );

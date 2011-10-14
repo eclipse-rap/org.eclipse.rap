@@ -65,7 +65,7 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
   }
 
   public static IExpandBarAdapter getExpandBarAdapter( final ExpandBar bar ) {
-    return ( IExpandBarAdapter )bar.getAdapter( IExpandBarAdapter.class );
+    return bar.getAdapter( IExpandBarAdapter.class );
   }
 
   //////////////////////////////////////

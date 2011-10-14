@@ -220,6 +220,6 @@ public class FileUpload_Test extends TestCase {
   }
 
   private static IFileUploadAdapter getFileUploadAdapter( FileUpload upload ) {
-    return ( IFileUploadAdapter )upload.getAdapter( IFileUploadAdapter.class );
+    return upload.getAdapter( IFileUploadAdapter.class );
   }
 }

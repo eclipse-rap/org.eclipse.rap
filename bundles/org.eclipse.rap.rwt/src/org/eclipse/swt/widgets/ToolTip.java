@@ -95,8 +95,9 @@ public class ToolTip extends Widget {
     this.parent.createToolTip( this );
   }
   
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IToolTipAdapter.class ) {
       if( toolTipAdapter == null ) {
         toolTipAdapter = new IToolTipAdapter() {
@@ -105,7 +106,7 @@ public class ToolTip extends Widget {
           }
         };
       }
-      result = toolTipAdapter;
+      result = ( T )toolTipAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

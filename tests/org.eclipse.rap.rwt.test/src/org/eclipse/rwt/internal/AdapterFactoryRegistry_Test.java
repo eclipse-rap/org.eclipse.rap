@@ -16,6 +16,7 @@ import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.AdapterFactory;
 
 
+@SuppressWarnings("deprecation")
 public class AdapterFactoryRegistry_Test extends TestCase {
   
   private static class TestAdapterFactory implements AdapterFactory {
@@ -28,13 +29,13 @@ public class AdapterFactoryRegistry_Test extends TestCase {
   }
 
   private static class TestAdaptable implements Adaptable {
-    public Object getAdapter( Class adapter ) {
+    public <T> T getAdapter( Class<T> adapter ) {
       return null;
     }
   }
 
   private static class OtherTestAdaptable implements Adaptable {
-    public Object getAdapter( Class adapter ) {
+    public <T> T getAdapter( Class<T> adapter ) {
       return null;
     }
   }

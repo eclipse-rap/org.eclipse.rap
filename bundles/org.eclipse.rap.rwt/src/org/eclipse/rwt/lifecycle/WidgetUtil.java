@@ -103,7 +103,7 @@ public final class WidgetUtil {
    */
   public static IWidgetAdapter getAdapter( Widget widget ) {
     IWidgetAdapter result;
-    result = ( IWidgetAdapter )widget.getAdapter( IWidgetAdapter.class );
+    result = widget.getAdapter( IWidgetAdapter.class );
     if( result == null ) {
       throwAdapterException( IWidgetAdapter.class );
     }

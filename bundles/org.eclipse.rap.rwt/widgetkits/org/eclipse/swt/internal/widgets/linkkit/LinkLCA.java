@@ -97,7 +97,7 @@ public class LinkLCA extends AbstractWidgetLCA {
   // Helping methods
 
   private static Object getTextObject( Link link ) {
-    ILinkAdapter adapter = ( ILinkAdapter )link.getAdapter( ILinkAdapter.class );
+    ILinkAdapter adapter = link.getAdapter( ILinkAdapter.class );
     String displayText = adapter.getDisplayText();
     Point[] offsets = adapter.getOffsets();
     List<Object[]> result = new ArrayList<Object[]>();
@@ -129,7 +129,7 @@ public class LinkLCA extends AbstractWidgetLCA {
       HttpServletRequest request = ContextProvider.getRequest();
       String indexStr = request.getParameter( JSConst.EVENT_WIDGET_SELECTED_INDEX );
       int index = NumberFormatUtil.parseInt( indexStr );
-      ILinkAdapter adapter = ( ILinkAdapter )link.getAdapter( ILinkAdapter.class );
+      ILinkAdapter adapter = link.getAdapter( ILinkAdapter.class );
       String[] ids = adapter.getIds();
       if( index < ids.length ) {
         SelectionEvent event = new SelectionEvent( link, null, SelectionEvent.WIDGET_SELECTED );

@@ -118,7 +118,7 @@ public class Dialog_Test extends TestCase {
     String text = "text";
     TestDialog dialog = new TestDialog( shell );
     dialog.setText( text );
-    IDialogAdapter adapter = ( IDialogAdapter )dialog.getAdapter( IDialogAdapter.class );
+    IDialogAdapter adapter = dialog.getAdapter( IDialogAdapter.class );
     adapter.openNonBlocking( mock( DialogCallback.class ) );
     
     TestDialog deserializedDialog = Fixture.serializeAndDeserialize( dialog );
@@ -136,7 +136,7 @@ public class Dialog_Test extends TestCase {
   
   public void testNonBlockingDialogWithDefaultReturnCode() {
     Dialog dialog = new TestDialog( shell );
-    IDialogAdapter adapter = ( IDialogAdapter )dialog.getAdapter( IDialogAdapter.class );
+    IDialogAdapter adapter = dialog.getAdapter( IDialogAdapter.class );
     DialogCallback dialogCallback = mock( DialogCallback.class );
     
     adapter.openNonBlocking( dialogCallback );
@@ -147,7 +147,7 @@ public class Dialog_Test extends TestCase {
 
   public void testNonBlockingDialogWithCustomReturnCode() {
     Dialog dialog = new TestDialog( shell );
-    IDialogAdapter adapter = ( IDialogAdapter )dialog.getAdapter( IDialogAdapter.class );
+    IDialogAdapter adapter = dialog.getAdapter( IDialogAdapter.class );
     DialogCallback dialogCallback = mock( DialogCallback.class );
     
     adapter.openNonBlocking( dialogCallback );

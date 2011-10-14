@@ -428,7 +428,7 @@ public final class DNDSupport {
   // Helping methods
 
   private static IDNDAdapter getDNDAdapter( DragSource dragSource ) {
-    return ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class );
+    return dragSource.getAdapter( IDNDAdapter.class );
   }
 
   private static DropTarget getDropTarget( Control control ) {

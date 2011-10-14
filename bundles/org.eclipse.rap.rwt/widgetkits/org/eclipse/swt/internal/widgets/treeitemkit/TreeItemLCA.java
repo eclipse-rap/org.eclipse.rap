@@ -47,12 +47,10 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   public void preserveValues( Widget widget ) {
     TreeItem treeItem = ( TreeItem )widget;
     Tree tree = treeItem.getParent();
-    ITreeAdapter treeAdapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
-    ITreeItemAdapter itemAdapter = ( ITreeItemAdapter )treeItem.getAdapter( ITreeItemAdapter.class );
-    IWidgetColorAdapter colorAdapter
-      = ( IWidgetColorAdapter )treeItem.getAdapter( IWidgetColorAdapter.class );
-    IWidgetFontAdapter fontAdapter
-      = ( IWidgetFontAdapter )treeItem.getAdapter( IWidgetFontAdapter.class );
+    ITreeAdapter treeAdapter = tree.getAdapter( ITreeAdapter.class );
+    ITreeItemAdapter itemAdapter = treeItem.getAdapter( ITreeItemAdapter.class );
+    IWidgetColorAdapter colorAdapter = treeItem.getAdapter( IWidgetColorAdapter.class );
+    IWidgetFontAdapter fontAdapter = treeItem.getAdapter( IWidgetFontAdapter.class );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
     adapter.preserve( PROP_SELECTION, Boolean.valueOf( isSelected( treeItem ) ) );
     if( treeAdapter.isCached( treeItem ) ) {
@@ -123,7 +121,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   public void renderChanges( Widget widget ) throws IOException {
     TreeItem treeItem = ( TreeItem )widget;
     Tree tree = treeItem.getParent();
-    ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    ITreeAdapter adapter = tree.getAdapter( ITreeAdapter.class );
     if( adapter.isCached( treeItem ) ) {
       writeItemCount( treeItem );
       writeImages( treeItem );
@@ -145,7 +143,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   @Override
   public void renderDispose( Widget widget ) throws IOException {
     TreeItem item = ( TreeItem )widget;
-    ITreeItemAdapter itemAdapter = ( ITreeItemAdapter )item.getAdapter( ITreeItemAdapter.class );
+    ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
     if( !itemAdapter.isParentDisposed() ) {
       // The tree disposes the items itself on the client (faster)
       JSWriter writer = JSWriter.getWriterFor( item );
@@ -183,8 +181,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   }
 
   private static void preserveFont( TreeItem treeItem ) {
-    IWidgetFontAdapter fontAdapter
-      = ( IWidgetFontAdapter )treeItem.getAdapter( IWidgetFontAdapter.class );
+    IWidgetFontAdapter fontAdapter = treeItem.getAdapter( IWidgetFontAdapter.class );
     Font font = fontAdapter.getUserFont();
     WidgetLCAUtil.preserveFont( treeItem, font );
   }
@@ -222,7 +219,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   }
 
   private static void writeCellFonts( TreeItem item ) throws IOException {
-    ITreeItemAdapter itemAdapter = ( ITreeItemAdapter )item.getAdapter( ITreeItemAdapter.class );
+    ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
     Font[] fonts = itemAdapter.getCellFonts();
     JSWriter writer = JSWriter.getWriterFor( item );
     Font[] defValue = new Font[ fonts.length ];
@@ -237,8 +234,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   }
 
   private static void writeBackground( TreeItem item ) throws IOException {
-    IWidgetColorAdapter colorAdapter
-      = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
+    IWidgetColorAdapter colorAdapter = item.getAdapter( IWidgetColorAdapter.class );
     Color background = colorAdapter.getUserBackgound();
     if( WidgetLCAUtil.hasChanged( item, PROP_BACKGROUND, background, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( item );
@@ -247,8 +243,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   }
 
   private static void writeForeground( TreeItem item ) throws IOException {
-    IWidgetColorAdapter colorAdapter
-      = ( IWidgetColorAdapter )item.getAdapter( IWidgetColorAdapter.class );
+    IWidgetColorAdapter colorAdapter = item.getAdapter( IWidgetColorAdapter.class );
     Color foreground = colorAdapter.getUserForegound();
     if( WidgetLCAUtil.hasChanged( item, PROP_FOREGROUND, foreground, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( item );
@@ -257,7 +252,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   }
 
   private static void writeCellBackgrounds( TreeItem item ) throws IOException {
-    ITreeItemAdapter itemAdapter = ( ITreeItemAdapter )item.getAdapter( ITreeItemAdapter.class );
+    ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
     Color[] backgrounds = itemAdapter.getCellBackgrounds();
     Color[] defValue = new Color[ getColumnCount( item ) ];
     JSWriter writer = JSWriter.getWriterFor( item );
@@ -265,7 +260,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   }
 
   private static void writeCellForegrounds( TreeItem item ) throws IOException {
-    ITreeItemAdapter itemAdapter = ( ITreeItemAdapter )item.getAdapter( ITreeItemAdapter.class );
+    ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
     Color[] foregrounds = itemAdapter.getCellForegrounds();
     Color[] defValue = new Color[ getColumnCount( item ) ];
     JSWriter writer = JSWriter.getWriterFor( item );

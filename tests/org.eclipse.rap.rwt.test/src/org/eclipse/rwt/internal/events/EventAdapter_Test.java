@@ -41,7 +41,7 @@ public class EventAdapter_Test extends TestCase {
   }
   
   public void testActionPerformed()  {
-    IEventAdapter eventAdapter = ( IEventAdapter )widget.getAdapter( IEventAdapter.class );
+    IEventAdapter eventAdapter = widget.getAdapter( IEventAdapter.class );
     assertNotNull( eventAdapter );
     assertSame( eventAdapter, widget.getAdapter( IEventAdapter.class ) );
     assertFalse( eventAdapter.hasListener( SelectionListener.class ) );
@@ -65,7 +65,7 @@ public class EventAdapter_Test extends TestCase {
   }
   
   public void testAddListenerWithIllegalArguments() {
-    IEventAdapter eventAdapter = ( IEventAdapter )widget.getAdapter( IEventAdapter.class );
+    IEventAdapter eventAdapter = widget.getAdapter( IEventAdapter.class );
     try {
       eventAdapter.addListener( SelectionListener.class, new SWTEventListener() { } );
       fail();
@@ -88,7 +88,7 @@ public class EventAdapter_Test extends TestCase {
   }
   
   public void testIsSerializable() throws Exception {
-    IEventAdapter eventAdapter = ( IEventAdapter )widget.getAdapter( IEventAdapter.class );
+    IEventAdapter eventAdapter = widget.getAdapter( IEventAdapter.class );
     eventAdapter.addListener( SerializableListener.class, new SerializableListener() );
 
     IEventAdapter deserialized = Fixture.serializeAndDeserialize( eventAdapter );

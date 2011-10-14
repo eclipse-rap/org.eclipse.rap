@@ -474,15 +474,16 @@ public class ExpandBar extends Composite {
     return new Rectangle( spacing, allItemsHeight, 10, spacing );
   }
 
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IItemHolderAdapter.class ) {
-      result = itemHolder;
+      result = ( T )itemHolder;
     } else if( adapter == IExpandBarAdapter.class ) {
       if( expandBarAdapter == null ) {
         expandBarAdapter = new ExpandBarAdapter();
       }
-      result = expandBarAdapter;
+      result = ( T )expandBarAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

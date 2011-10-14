@@ -125,7 +125,7 @@ public class CLabel_Test extends TestCase {
     int[] percents = new int[] { 33, 66 };
     label.setBackground( colors, percents );
     IWidgetGraphicsAdapter adapter
-      = ( IWidgetGraphicsAdapter )label.getAdapter( IWidgetGraphicsAdapter.class );
+      = label.getAdapter( IWidgetGraphicsAdapter.class );
     assertEquals( colors.length, adapter.getBackgroundGradientColors().length );
     assertEquals( percents.length + 1,
                   adapter.getBackgroundGradientPercents().length );
@@ -142,7 +142,7 @@ public class CLabel_Test extends TestCase {
     int[] percents = new int[] { 33, 66 };
     label.setBackground( colors, percents, true );
     IWidgetGraphicsAdapter adapter
-      = ( IWidgetGraphicsAdapter )label.getAdapter( IWidgetGraphicsAdapter.class );
+      = label.getAdapter( IWidgetGraphicsAdapter.class );
     assertEquals( colors.length, adapter.getBackgroundGradientColors().length );
     assertEquals( percents.length + 1,
                   adapter.getBackgroundGradientPercents().length );
@@ -228,7 +228,7 @@ public class CLabel_Test extends TestCase {
     int[] percents = new int[] { 33, 66 };
     label.setBackground( colors, percents );
     IWidgetGraphicsAdapter adapter
-      = ( IWidgetGraphicsAdapter )label.getAdapter( IWidgetGraphicsAdapter.class );
+      = label.getAdapter( IWidgetGraphicsAdapter.class );
     assertEquals( colors.length, adapter.getBackgroundGradientColors().length );
     assertEquals( display.getSystemColor( SWT.COLOR_GREEN ),
                   adapter.getBackgroundGradientColors()[ 1 ] );

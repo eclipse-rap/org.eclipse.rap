@@ -44,7 +44,8 @@ public class CTabFolderLCA_Test extends TestCase {
       super( parent, style );
     }
 
-    public Object getAdapter( final Class adapter ) {
+    @SuppressWarnings("unchecked")
+    public <T> T getAdapter( Class<T> adapter ) {
       Object result;
       if( adapter == ILifeCycleAdapter.class ) {
         result = new AbstractWidgetLCA() {
@@ -74,7 +75,7 @@ public class CTabFolderLCA_Test extends TestCase {
       } else {
         result = super.getAdapter( adapter );
       }
-      return result;
+      return ( T )result;
     }
   }
 
@@ -134,7 +135,7 @@ public class CTabFolderLCA_Test extends TestCase {
      = ( Boolean )adapter.getPreserved( CTabFolderLCA.PROP_FOLDER_LISTENERS );
     assertEquals( Boolean.FALSE, hasListeners );
     ICTabFolderAdapter folderAdapter
-     = ( ICTabFolderAdapter )folder.getAdapter( ICTabFolderAdapter.class );
+     = folder.getAdapter( ICTabFolderAdapter.class );
     Object minimizerect = adapter.getPreserved( CTabFolderLCA.PROP_MINIMIZE_RECT );
     assertEquals( folderAdapter.getMinimizeRect(), minimizerect );
     Object maximizerect = adapter.getPreserved( CTabFolderLCA.PROP_MAXIMIZE_RECT );

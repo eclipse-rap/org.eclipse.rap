@@ -22,15 +22,14 @@ package org.eclipse.rwt;
  * 
  * <pre>
  *     Adaptable a = ...;
- *     IMyExtension x = ( IMyExtension )a.getAdapter( IMyExtension.class );
+ *     MyExtension x = a.getAdapter( MyExtension.class );
  *     if( x != null ) {
- *       // invoke IMyExtension methods on x ...
+ *       // invoke MyExtension methods on x ...
  *     }
  * </pre>
  * </p>
  *
  * @since 1.0
- * @see org.eclipse.rwt.AdapterFactory
  */
 public interface Adaptable {
 
@@ -40,9 +39,9 @@ public interface Adaptable {
    * exists.</p>
    *
    * @param adapter the lookup class
-   * @return a object castable to the given class or <code>null</code> if 
+   * @return an object castable to the given class or <code>null</code> if 
    *         there is no adapter associated with the given class.
    */
-  Object getAdapter( Class adapter );
+  <T> T getAdapter( Class<T> adapter );
   
 }

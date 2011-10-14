@@ -758,8 +758,9 @@ public class ToolItem extends Item {
   //////////////////
   // Helping methods
 
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if ( adapter == IToolItemAdapter.class ) {
       if( toolItemAdapter == null ) {
         toolItemAdapter = new IToolItemAdapter() {
@@ -768,7 +769,7 @@ public class ToolItem extends Item {
           }
         };
       }
-      result = toolItemAdapter;
+      result = ( T )toolItemAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

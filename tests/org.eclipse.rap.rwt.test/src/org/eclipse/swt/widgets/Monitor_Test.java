@@ -77,6 +77,6 @@ public class Monitor_Test extends TestCase {
   }
 
   private IDisplayAdapter getDisplayAdapter( Display display ) {
-    return( ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class ) );
+    return display.getAdapter( IDisplayAdapter.class );
   }
 }

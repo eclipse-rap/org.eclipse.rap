@@ -105,7 +105,7 @@ public class BrowserFunction_Test extends TestCase {
   public void testDuplicateFunction() {
     BrowserFunction function1 = new BrowserFunction( browser, FUNC );
     IBrowserAdapter adapter
-      = ( IBrowserAdapter )browser.getAdapter( IBrowserAdapter.class );
+      = browser.getAdapter( IBrowserAdapter.class );
     BrowserFunction[] functions = adapter.getBrowserFunctions();
     assertEquals( 1, functions.length );
     assertSame( function1, functions[ 0 ] );

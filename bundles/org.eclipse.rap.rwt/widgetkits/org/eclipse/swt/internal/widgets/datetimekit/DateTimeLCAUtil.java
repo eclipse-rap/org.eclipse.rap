@@ -27,8 +27,8 @@ final class DateTimeLCAUtil {
     // prevent instantiation
   }
 
-  static IDateTimeAdapter getDateTimeAdapter( final DateTime dateTime ) {
-    return ( IDateTimeAdapter )dateTime.getAdapter( IDateTimeAdapter.class );
+  static IDateTimeAdapter getDateTimeAdapter( DateTime dateTime ) {
+    return dateTime.getAdapter( IDateTimeAdapter.class );
   }
 
   static void preserveSubWidgetBounds( final DateTime dateTime,

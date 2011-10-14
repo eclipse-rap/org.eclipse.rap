@@ -29,7 +29,7 @@ public final class ItemHolder<T extends Item>
       String txt = "Widget type does not contain items: " + widget.getClass().getName();
       throw new IllegalArgumentException( txt );
     }
-    return ( IItemHolderAdapter<T> )widget.getAdapter( IItemHolderAdapter.class );
+    return widget.getAdapter( IItemHolderAdapter.class );
   }
 
   public static boolean isItemHolder( Widget widget ) {

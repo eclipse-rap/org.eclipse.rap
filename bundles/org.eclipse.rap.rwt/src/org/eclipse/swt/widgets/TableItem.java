@@ -219,8 +219,9 @@ public class TableItem extends Item {
     }
   }
 
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if(    adapter == IWidgetFontAdapter.class
         || adapter == IWidgetColorAdapter.class
         || adapter == ITableItemAdapter.class )
@@ -228,7 +229,7 @@ public class TableItem extends Item {
       if( tableItemAdapter == null ) {
         tableItemAdapter = new TableItemAdapter();
       }
-      result = tableItemAdapter;
+      result = ( T )tableItemAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

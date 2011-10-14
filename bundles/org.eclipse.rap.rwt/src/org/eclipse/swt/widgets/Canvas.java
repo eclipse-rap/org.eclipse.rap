@@ -91,13 +91,14 @@ public class Canvas extends Composite {
    * from application code.
    * </p>
    */
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IGCAdapter.class ) {
       if( gcAdapter == null ) {
         gcAdapter = new GCAdapter();
       }
-      result = gcAdapter;
+      result = ( T )gcAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

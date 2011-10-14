@@ -52,8 +52,7 @@ final class PopupMenuLCA extends MenuDelegateLCA {
   private static void writeShow( final Menu menu ) throws IOException {
     if( menu.isVisible() ) {
       JSWriter writer = JSWriter.getWriterFor( menu );
-      IMenuAdapter adapter
-        = ( IMenuAdapter )menu.getAdapter( IMenuAdapter.class );
+      IMenuAdapter adapter = menu.getAdapter( IMenuAdapter.class );
       Point location = adapter.getLocation();
       Object[] args = new Object[] {
         menu,

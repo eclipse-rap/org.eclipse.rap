@@ -211,12 +211,10 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     return folderAdapter.getShortenedItemText( item );
   }
 
-  private static boolean showClose( final CTabItem item ) {
+  private static boolean showClose( CTabItem item ) {
     CTabFolder parent = item.getParent();
-    ICTabFolderAdapter adapter
-      = ( ICTabFolderAdapter )parent.getAdapter( ICTabFolderAdapter.class );
-    boolean canClose = adapter.showItemClose( item );
-    return canClose;
+    ICTabFolderAdapter adapter = parent.getAdapter( ICTabFolderAdapter.class );
+    return adapter.showItemClose( item );
   }
 
   ///////////////

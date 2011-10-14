@@ -38,7 +38,7 @@ public class CompositeSerialization_Test extends TestCase {
 
   private static void attachToTestThread( Widget widget ) {
     Display display = widget.getDisplay();
-    IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
     adapter.attachThread();
   }
   

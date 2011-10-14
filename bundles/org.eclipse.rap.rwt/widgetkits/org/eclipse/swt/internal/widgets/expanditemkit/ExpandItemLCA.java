@@ -47,7 +47,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
                       Boolean.valueOf( expandItem.getParent().isEnabled() ) );
     adapter.preserve( PROP_HEADER_HEIGHT,
                       new Integer( expandItem.getHeaderHeight() ) );
-    IExpandBarAdapter expandBarAdapter = getExpandBarAdapter( expandItem.getParent() );
+    IExpandBarAdapter expandBarAdapter = getExpandBarAdapter( expandItem );
     WidgetLCAUtil.preserveBounds( expandItem,
                                   expandBarAdapter.getBounds( expandItem ) );
   }
@@ -91,7 +91,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
     writeExpanded( expandItem );
     writeEnabled( expandItem );
     writeHeaderHeight( expandItem );
-    IExpandBarAdapter adapter = getExpandBarAdapter( expandItem.getParent() );
+    IExpandBarAdapter adapter = getExpandBarAdapter( expandItem );
     WidgetLCAUtil.writeBounds( expandItem,
                                expandItem.getParent(),
                                adapter.getBounds( expandItem ) );
@@ -195,7 +195,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static IExpandBarAdapter getExpandBarAdapter( final ExpandBar bar ) {
-    return ( IExpandBarAdapter )bar.getAdapter( IExpandBarAdapter.class );
+  private static IExpandBarAdapter getExpandBarAdapter( ExpandItem item ) {
+    return item.getParent().getAdapter( IExpandBarAdapter.class );
   }
 }

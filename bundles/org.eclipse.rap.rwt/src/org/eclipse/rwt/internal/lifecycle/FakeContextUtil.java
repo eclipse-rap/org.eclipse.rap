@@ -50,7 +50,7 @@ public final class FakeContextUtil {
     }
     boolean useFakeContext = !ContextProvider.hasContext();
     if( useFakeContext ) {
-      IDisplayAdapter adapter = getDisplayAdapter( display );
+      IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
       ISessionStore session = adapter.getSessionStore();
       ContextProvider.setContext( createFakeContext( session ) );
     }
@@ -75,10 +75,6 @@ public final class FakeContextUtil {
     ServiceContext result = new ServiceContext( request, RESPONSE_PROXY, sessionStore );
     result.setStateInfo( new ServiceStateInfo() );
     return result;
-  }
-
-  private static IDisplayAdapter getDisplayAdapter( Display display ) {
-    return ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
   }
 
   private static HttpServletRequest newRequest( ISessionStore sessionStore ) {

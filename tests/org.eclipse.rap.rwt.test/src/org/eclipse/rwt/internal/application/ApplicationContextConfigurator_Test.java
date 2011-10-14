@@ -27,9 +27,6 @@ import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.AdapterManager;
-import org.eclipse.rwt.internal.application.ApplicationConfigurationImpl;
-import org.eclipse.rwt.internal.application.ApplicationContext;
-import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.engine.RWTConfigurationImpl;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
@@ -54,6 +51,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
 
+@SuppressWarnings("deprecation")
 public class ApplicationContextConfigurator_Test extends TestCase {
   
   private static final Object ATTRIBUTE_VALUE = new Object();
@@ -109,7 +107,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   }
 
   private static class TestAdaptable implements Adaptable  {
-    public Object getAdapter( Class adapter ) {
+    public <T> T getAdapter( Class<T> adapter ) {
       return null;
     }
   }

@@ -92,17 +92,15 @@ public final class TableLCAUtil {
   ////////
   // Focus
 
-  public static void preserveFocusIndex( final Table table ) {
-    ITableAdapter tableAdapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+  public static void preserveFocusIndex( Table table ) {
+    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
     int focusIndex = tableAdapter.getFocusIndex();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( table );
     adapter.preserve( PROP_FOCUS_INDEX, new Integer( focusIndex ) );
   }
 
-  public static boolean hasFocusIndexChanged( final Table table ) {
-    ITableAdapter tableAdapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+  public static boolean hasFocusIndexChanged( Table table ) {
+    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
     Integer focusIndex = new Integer( tableAdapter.getFocusIndex() );
     return WidgetLCAUtil.hasChanged( table,
                                      PROP_FOCUS_INDEX,
@@ -123,7 +121,7 @@ public final class TableLCAUtil {
     for( int i = 0; i < columnCount; i++ ) {
       result[ i ] = new ItemMetrics();
     }
-    ITableAdapter tableAdapter = getTableAdapter( table );
+    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
     TableItem measureItem = tableAdapter.getMeasureItem();
     if( measureItem != null ) {
       for( int i = 0; i < columnCount; i++ ) {
@@ -159,10 +157,6 @@ public final class TableLCAUtil {
       }
     }
     return result;
-  }
-
-  private static ITableAdapter getTableAdapter( Table table ) {
-    return ( ITableAdapter )table.getAdapter( ITableAdapter.class );
   }
 
   private TableLCAUtil() {

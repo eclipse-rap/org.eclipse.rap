@@ -752,20 +752,21 @@ public class Display extends Device implements Adaptable {
   /////////////////////
   // Adaptable override
 
-  public Object getAdapter( Class adapter ) {
-    Object result = null;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IDisplayAdapter.class ) {
       if( displayAdapter == null ) {
         displayAdapter = new DisplayAdapter();
       }
-      result = displayAdapter;
+      result = ( T )displayAdapter;
     } else if( adapter == IWidgetAdapter.class ) {
       if( widgetAdapter == null ) {
         widgetAdapter = new WidgetAdapter( "w1" );
       }
-      result = widgetAdapter;
+      result = ( T )widgetAdapter;
     } else {
-      result = RWTFactory.getAdapterManager().getAdapter( this, adapter );
+      result = ( T )RWTFactory.getAdapterManager().getAdapter( this, adapter );
     }
     return result;
   }

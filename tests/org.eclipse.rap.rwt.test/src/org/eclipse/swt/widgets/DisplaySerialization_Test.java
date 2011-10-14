@@ -274,12 +274,12 @@ public class DisplaySerialization_Test extends TestCase {
   }
 
   private static ISessionStore getSessionStore( Display display ) {
-    IDisplayAdapter displayAdapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
     return displayAdapter.getSessionStore();
   }
 
   private static IDisplayAdapter getDisplayAdapter( Display display ) {
-    return( ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class ) );
+    return display.getAdapter( IDisplayAdapter.class );
   }
 
   private static WidgetAdapter getWidgetAdapter( Display display ) {

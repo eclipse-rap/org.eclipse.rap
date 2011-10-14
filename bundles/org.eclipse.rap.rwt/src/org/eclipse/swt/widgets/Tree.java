@@ -202,14 +202,15 @@ public class Tree extends Composite {
   }
 
   @Override
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IItemHolderAdapter.class ) {
-      result = new CompositeItemHolder();
+      result = ( T )new CompositeItemHolder();
     } else if( adapter == ITreeAdapter.class ) {
-      result = treeAdapter;
+      result = ( T )treeAdapter;
     } else if( adapter == ICellToolTipAdapter.class ) {
-      result = treeAdapter;
+      result = ( T )treeAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

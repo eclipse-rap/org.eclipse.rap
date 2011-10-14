@@ -334,7 +334,7 @@ public class TableColumn_Test extends TestCase {
     shell.setSize( 800, 600 );
     Table table = createFixedColumnsTable( shell );
     table.setSize( 300, 100 );
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     assertTrue( adapter.isFixedColumn( table.getColumn( 0 ) ) );
     assertFalse( adapter.isFixedColumn( table.getColumn( 1 ) ) );
     table.setColumnOrder( new int[]{ 1, 0, 2, 3, 4, 5, 6, 7, 8, 9 } );

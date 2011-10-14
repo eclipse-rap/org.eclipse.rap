@@ -132,8 +132,9 @@ public class Text extends Scrollable {
     }
   }
 
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( ITextAdapter.class.equals( adapter ) ) {
       if( textAdapter == null ) {
         textAdapter = new ITextAdapter() {
@@ -142,7 +143,7 @@ public class Text extends Scrollable {
           }
         };
       }
-      result = textAdapter;
+      result = ( T )textAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

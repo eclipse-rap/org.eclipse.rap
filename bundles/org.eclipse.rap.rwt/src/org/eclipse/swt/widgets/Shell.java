@@ -607,13 +607,14 @@ public class Shell extends Decorations {
   /////////////////////
   // Adaptable override
 
-  public Object getAdapter( final Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IShellAdapter.class ) {
       if( shellAdapter == null ) {
         shellAdapter = new ShellAdapter();
       }
-      result = shellAdapter;
+      result = ( T )shellAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

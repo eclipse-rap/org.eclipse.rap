@@ -121,7 +121,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
           evalResult = parsedValues[ 0 ];
         }
       }
-      getAdapter( browser ).setExecuteResult( executeResult, evalResult );
+      browser.getAdapter( IBrowserAdapter.class ).setExecuteResult( executeResult, evalResult );
     }
   }
 
@@ -129,13 +129,13 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     if( hasUrlChanged( browser ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
       clientObject.setProperty( "url", getUrl( browser ) );
-      getAdapter( browser ).resetUrlChanged();
+      browser.getAdapter( IBrowserAdapter.class ).resetUrlChanged();
     }
   }
 
   static boolean hasUrlChanged( Browser browser ) {
     boolean initialized = WidgetUtil.getAdapter( browser ).isInitialized();
-    return !initialized || getAdapter( browser ).hasUrlChanged();
+    return !initialized || browser.getAdapter( IBrowserAdapter.class ).hasUrlChanged();
   }
 
   static String getUrl( Browser browser ) throws IOException {
@@ -153,7 +153,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   }
 
   private static void renderEvaluate( final Browser browser ) {
-    IBrowserAdapter adapter = getAdapter( browser );
+    IBrowserAdapter adapter = browser.getAdapter( IBrowserAdapter.class );
     final String executeScript = adapter.getExecuteScript();
     boolean executePending = adapter.getExecutePending();
     if( executeScript != null && !executePending ) {
@@ -206,10 +206,6 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     return browserAdapter.getText();
   }
 
-  private static IBrowserAdapter getAdapter( Browser browser ) {
-    return ( IBrowserAdapter )browser.getAdapter( IBrowserAdapter.class );
-  }
-
   //////////////////////////////////////
   // Helping methods for BrowserFunction
 
@@ -245,7 +241,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     String function = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_FUNCTION );
     String arguments = WidgetLCAUtil.readPropertyValue( browser, PARAM_EXECUTE_ARGUMENTS );
     if( function != null ) {
-      IBrowserAdapter adapter = getAdapter( browser );
+      IBrowserAdapter adapter = browser.getAdapter( IBrowserAdapter.class );
       BrowserFunction[] functions = adapter.getBrowserFunctions();
       boolean found = false;
       for( int i = 0; i < functions.length && !found; i++ ) {

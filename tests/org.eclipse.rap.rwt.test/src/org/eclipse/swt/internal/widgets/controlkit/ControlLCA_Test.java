@@ -216,7 +216,8 @@ public class ControlLCA_Test extends TestCase {
     Shell shell = new Shell( display );
     Control control = new Composite( shell, SWT.NONE ) {
       private static final long serialVersionUID = 1L;
-      public Object getAdapter( final Class adapter ) {
+      @SuppressWarnings("unchecked")
+      public <T> T getAdapter( Class<T> adapter ) {
         Object result;
         if( adapter == ILifeCycleAdapter.class ) {
           result = new AbstractWidgetLCA() {
@@ -244,7 +245,7 @@ public class ControlLCA_Test extends TestCase {
         } else {
           result = super.getAdapter( adapter );
         }
-        return result;
+        return ( T )result;
       }
     };
     Fixture.markInitialized( display );

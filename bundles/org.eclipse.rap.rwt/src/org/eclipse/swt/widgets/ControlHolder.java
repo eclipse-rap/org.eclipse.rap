@@ -18,30 +18,27 @@ import org.eclipse.swt.internal.widgets.SlimList;
 /*
  * Holds the child controls of Composites
  */
-final class ControlHolder implements SerializableCompatibility {
+final class ControlHolder implements IControlHolderAdapter, SerializableCompatibility {
 
   private final List<Control> controls;
   
-  static interface IControlHolderAdapter {
-  }
-
   ControlHolder() {
     controls = new SlimList<Control>();
   }
 
-  int size() {
+  public int size() {
     return controls.size();
   }
 
-  Control[] getControls() {
+  public Control[] getControls() {
     return controls.toArray( new Control[ controls.size() ] );
   }
 
-  void add( final Control control ) {
+  public void add( final Control control ) {
     add( control, controls.size() );
   }
   
-  void add( final Control control, final int index ) {
+  public void add( Control control, int index ) {
     if( control == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -51,7 +48,7 @@ final class ControlHolder implements SerializableCompatibility {
     controls.add( index, control );
   }
 
-  void remove( final Control control ) {
+  public void remove( final Control control ) {
     if( control == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -62,7 +59,7 @@ final class ControlHolder implements SerializableCompatibility {
     controls.remove( control );
   }
   
-  int indexOf( final Control control ) {
+  public int indexOf( final Control control ) {
     if( control == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -85,10 +82,6 @@ final class ControlHolder implements SerializableCompatibility {
     return getControlHolder( composite ).size();
   }
 
-  static Control[] getControls( final Composite composite ) {
-    return getControlHolder( composite ).getControls();
-  }
-  
   static void addControl( final Composite composite, final Control control ) {
     if( control.getParent() != composite ) {
       throw new IllegalArgumentException( "The control has the wrong parent" );
@@ -124,7 +117,7 @@ final class ControlHolder implements SerializableCompatibility {
   // ////////////////
   // helping methods
   
-  private static ControlHolder getControlHolder( final Composite composite ) {
-    return ( ControlHolder )composite.getAdapter( IControlHolderAdapter.class );
+  private static IControlHolderAdapter getControlHolder( Composite composite ) {
+    return composite.getAdapter( IControlHolderAdapter.class );
   }
 }

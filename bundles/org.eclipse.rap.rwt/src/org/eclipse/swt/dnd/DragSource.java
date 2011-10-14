@@ -186,13 +186,14 @@ static int checkStyle(int style) {
 	return style;
 }
 
-public Object getAdapter( final Class adapter ) {
-  Object result;
+@SuppressWarnings("unchecked")
+public <T> T getAdapter( Class<T> adapter ) {
+  T result;
   if( adapter == IDNDAdapter.class ) {
     if( dndAdapter == null ) {
       dndAdapter = new DNDAdapter();
     }
-    result = dndAdapter;
+    result = ( T )dndAdapter;
   } else {
     result = super.getAdapter( adapter );
   }

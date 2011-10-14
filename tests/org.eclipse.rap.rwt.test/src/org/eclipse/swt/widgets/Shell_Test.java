@@ -733,14 +733,14 @@ public class Shell_Test extends TestCase {
   }
 
   public void testGetToolTipsWhenNoToolTipWasCreated() {
-    IShellAdapter adapter = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+    IShellAdapter adapter = shell.getAdapter( IShellAdapter.class );
     assertNotNull( adapter.getToolTips() );
     assertEquals( 0, adapter.getToolTips().length );
   }
 
   public void testGetToolTipsWhenToolTipWasCreated() {
     ToolTip toolTip = new ToolTip( shell, SWT.NONE );
-    IShellAdapter adapter = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+    IShellAdapter adapter = shell.getAdapter( IShellAdapter.class );
     assertEquals( 1, adapter.getToolTips().length );
     assertEquals( toolTip, adapter.getToolTips()[ 0 ] );
   }
@@ -748,7 +748,7 @@ public class Shell_Test extends TestCase {
   public void testGetToolTipsAfterToolTipWasDisposed() {
     ToolTip toolTip = new ToolTip( shell, SWT.NONE );
     toolTip.dispose();
-    IShellAdapter adapter = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+    IShellAdapter adapter = shell.getAdapter( IShellAdapter.class );
     assertNotNull( adapter.getToolTips() );
     assertEquals( 0, adapter.getToolTips().length );
   }

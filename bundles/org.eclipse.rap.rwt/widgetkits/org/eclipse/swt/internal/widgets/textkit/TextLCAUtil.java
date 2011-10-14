@@ -94,7 +94,7 @@ final class TextLCAUtil {
         ProcessActionRunner.add( new Runnable() {
 
           public void run() {
-            ITextAdapter textAdapter = getTextAdapter( text );
+            ITextAdapter textAdapter = text.getAdapter( ITextAdapter.class );
             textAdapter.setText( txt, selection );
             // since text is set in process action, preserved values have to be
             // replaced
@@ -148,9 +148,5 @@ final class TextLCAUtil {
 
   private static String getEchoChar( Text text ) {
     return text.getEchoChar() == 0 ? null : String.valueOf( text.getEchoChar() );
-  }
-
-  private static ITextAdapter getTextAdapter( Text text ) {
-    return ( ITextAdapter )text.getAdapter( ITextAdapter.class );
   }
 }

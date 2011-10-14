@@ -57,8 +57,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
 
   public void renderDispose( final Widget widget ) throws IOException {
     DropTarget dropTarget = ( DropTarget )widget;
-    IWidgetAdapter adapter =
-      ( IWidgetAdapter )dropTarget.getAdapter( IWidgetAdapter.class );
+    IWidgetAdapter adapter = dropTarget.getAdapter( IWidgetAdapter.class );
     JSWriter writer = JSWriter.getWriterFor( dropTarget );
     Control control = ( Control )adapter.getPreserved( PROP_CONTROL );
     writer.callStatic( JSFUNC_DEREGISTER, new Object[]{ control } );

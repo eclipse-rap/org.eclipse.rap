@@ -31,8 +31,8 @@ public abstract class Event extends EventObject {
     return id;
   }
   
-  protected static IEventAdapter getEventAdapter( final Adaptable adaptable ) {
-    return ( IEventAdapter )adaptable.getAdapter( IEventAdapter.class );
+  protected static IEventAdapter getEventAdapter( Adaptable adaptable ) {
+    return adaptable.getAdapter( IEventAdapter.class );
   }
 
   public void processEvent() {

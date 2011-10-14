@@ -76,14 +76,15 @@ public class PreserveWidgets_Test extends TestCase {
       this.widgetLCA = widgetLCA;
     }
     
-    public Object getAdapter( Class adapter ) {
+    @SuppressWarnings("unchecked")
+    public <T> T getAdapter( Class<T> adapter ) {
       Object result;
       if( adapter == ILifeCycleAdapter.class ) {
         result = widgetLCA;
       } else {
         result = super.getAdapter( adapter );
       }
-      return result;
+      return ( T )result;
     }
   }
 
@@ -97,14 +98,15 @@ public class PreserveWidgets_Test extends TestCase {
       this.widgetLCA = widgetLCA;
     }
     
-    public Object getAdapter( Class adapter ) {
+    @SuppressWarnings("unchecked")
+    public <T> T getAdapter( Class<T> adapter ) {
       Object result;
       if( adapter == ILifeCycleAdapter.class ) {
         result = widgetLCA;
       } else {
         result = super.getAdapter( adapter );
       }
-      return result;
+      return ( T )result;
     }
   }
 

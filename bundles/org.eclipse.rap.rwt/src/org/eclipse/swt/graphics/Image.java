@@ -68,7 +68,7 @@ public final class Image extends Resource {
   public final InternalImage internalImage;
 
   /* This constructor is called by ImageFactory#createImageInstance() */
-  private Image( final Device device, final InternalImage internalImage ) {
+  private Image( Device device, InternalImage internalImage ) {
     super( device );
     this.internalImage = internalImage;
   }
@@ -130,7 +130,7 @@ public final class Image extends Resource {
    * @see org.eclipse.rwt.graphics.Graphics#getImage(String, java.io.InputStream)
    * @since 1.3
    */
-  public Image( final Device device, final InputStream stream ) {
+  public Image( Device device, InputStream stream ) {
     super( checkDevice( device ) );
     if( stream == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -174,7 +174,7 @@ public final class Image extends Resource {
    * @see org.eclipse.rwt.graphics.Graphics#getImage(String, java.io.InputStream)
    * @since 1.3
    */
-  public Image( final Device device, final String fileName ) {
+  public Image( Device device, String fileName ) {
     super( checkDevice( device ) );
     if( fileName == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -216,7 +216,7 @@ public final class Image extends Resource {
    * </ul>
    * @since 1.3
    */
-  public Image( final Device device, final Image srcImage, final int flag ) {
+  public Image( Device device, Image srcImage, int flag ) {
     super( checkDevice( device ) );
     if( srcImage == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -385,7 +385,7 @@ public final class Image extends Resource {
    * </ul>
    * @since 1.3
    */
-  public void setBackground( final Color color ) {
+  public void setBackground( Color color ) {
     if( isDisposed() ) {
       SWT.error( SWT.ERROR_GRAPHIC_DISPOSED );
     }
@@ -439,20 +439,20 @@ public final class Image extends Resource {
 
   private ApplicationContext getApplicationContext() {
     Display display = ( Display )device;
-    IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
     ISessionStore sessionStore = adapter.getSessionStore();
     return ApplicationContextUtil.get( sessionStore );
   }
 
-  private static InternalImage findInternalImage( final ImageData imageData ) {
+  private static InternalImage findInternalImage( ImageData imageData ) {
     return RWTFactory.getInternalImageFactory().findInternalImage( imageData );
   }
 
-  private static InternalImage findInternalImage( final InputStream stream ) {
+  private static InternalImage findInternalImage( InputStream stream ) {
     return RWTFactory.getInternalImageFactory().findInternalImage( stream );
   }
 
-  private static InternalImage findInternalImage( final String fileName ) {
+  private static InternalImage findInternalImage( String fileName ) {
     return RWTFactory.getInternalImageFactory().findInternalImage( fileName );
   }
 }

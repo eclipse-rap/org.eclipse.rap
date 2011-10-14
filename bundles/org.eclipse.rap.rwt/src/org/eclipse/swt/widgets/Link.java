@@ -226,8 +226,9 @@ public class Link extends Control {
     return result.toString();
   }
 
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == ILinkAdapter.class ) {
       if( linkAdapter == null ) {
         linkAdapter = new ILinkAdapter() {
@@ -242,7 +243,7 @@ public class Link extends Control {
           }
         };
       }
-      result = linkAdapter;
+      result = ( T )linkAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

@@ -153,37 +153,38 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * from application code.
    * </p>
    */
-  public Object getAdapter( final Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IEventAdapter.class ) {
       // Note: This is not implemented via the AdapterManager, since the manager's mapping mechanism 
       // prevents the component being released unless the session is invalidated.
       if( eventAdapter == null ) {
         eventAdapter = new EventAdapter();
       }
-      result = eventAdapter;
+      result = ( T )eventAdapter;
     } else if( adapter == IWidgetAdapter.class ) {
       // [fappel] Directly return the WidgetAdapter instead of consulting the adapter factory. 
       // This is done for performance reasons and must not be changed without good reason.
       if( widgetAdapter == null ) {
         widgetAdapter = new WidgetAdapter();
       }
-      result = widgetAdapter;
+      result = ( T )widgetAdapter;
     } else if( adapter == IThemeAdapter.class ) {
       // This also bypasses the AdapterManager for the sake of performance.
       // ThemeAdapters are requested frequently during size computations.
-      result = RWTFactory.getThemeManager().getThemeAdapterManager().getThemeAdapter( this );
+      result = ( T )RWTFactory.getThemeManager().getThemeAdapterManager().getThemeAdapter( this );
     } else if( adapter == IWidgetGraphicsAdapter.class ) {
       if( widgetGraphicsAdapter == null ) {
         widgetGraphicsAdapter = new WidgetGraphicsAdapter();
       }
-      result = widgetGraphicsAdapter;
+      result = ( T )widgetGraphicsAdapter;
     } else {
       // [fappel] Buffer the adapterManager to improve performance
       if( adapterManager == null ) {
         adapterManager = RWTFactory.getAdapterManager();
       }
-      result = adapterManager.getAdapter( this, adapter );
+      result = ( T )adapterManager.getAdapter( this, adapter );
     }
     return result;
   }
@@ -776,7 +777,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
         state |= RELEASED;
         releaseParent();
         releaseWidget();
-        IWidgetAdapter adapter = ( IWidgetAdapter )getAdapter( IWidgetAdapter.class );
+        IWidgetAdapter adapter = getAdapter( IWidgetAdapter.class );
         adapter.markDisposed( this );
       }
     }

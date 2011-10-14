@@ -1368,18 +1368,19 @@ public class CoolBar extends Composite {
     }
   }
 
-  public Object getAdapter( final Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if ( adapter == IItemHolderAdapter.class ) {
       if( itemHolder == null ) {
         itemHolder = new CoolBarItemHolder();
       }
-      result = itemHolder;
+      result = ( T )itemHolder;
     } else if ( adapter == ICoolBarAdapter.class ) {
       if( coolBarAdapter == null ) {
         coolBarAdapter = new CoolBarAdapter();
       }
-      result = coolBarAdapter;
+      result = ( T )coolBarAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

@@ -70,7 +70,7 @@ public class TreeItemLCA_Test extends TestCase {
     Object selection = adapter.getPreserved( TreeItemLCA.PROP_SELECTION );
     assertEquals( Boolean.FALSE, selection );
     IWidgetColorAdapter colorAdapter
-      = ( IWidgetColorAdapter )treeItem.getAdapter( IWidgetColorAdapter.class );
+      = treeItem.getAdapter( IWidgetColorAdapter.class );
     Object background = adapter.getPreserved( TreeItemLCA.PROP_BACKGROUND );
     assertEquals( colorAdapter.getUserBackgound(), background );
     Object foreground = adapter.getPreserved( TreeItemLCA.PROP_FOREGROUND );
@@ -178,7 +178,7 @@ public class TreeItemLCA_Test extends TestCase {
     TreeItem treeItem = tree.getItem( 99 );
     shell.open();
     Fixture.executeLifeCycleFromServerThread();
-    ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    ITreeAdapter adapter = tree.getAdapter( ITreeAdapter.class );
     assertFalse( adapter.isCached( treeItem ) );
   }
 

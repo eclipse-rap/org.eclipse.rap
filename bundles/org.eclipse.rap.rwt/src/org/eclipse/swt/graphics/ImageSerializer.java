@@ -78,7 +78,7 @@ class ImageSerializer {
 
   private ISessionStore getSessionStore() {
     Display display = ( Display )image.getDevice();
-    IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
     return adapter.getSessionStore();
   }
 

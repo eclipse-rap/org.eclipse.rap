@@ -163,7 +163,7 @@ public class CTabItem_Test extends TestCase {
     // Test with folder that was created with SWT.CLOSE
     folder = new CTabFolder( shell, SWT.CLOSE );
     adapter
-      = ( ICTabFolderAdapter )folder.getAdapter( ICTabFolderAdapter.class );
+      = folder.getAdapter( ICTabFolderAdapter.class );
     item = new CTabItem( folder, SWT.NONE );
     assertFalse( item.getShowClose() );
     assertTrue( adapter.showItemClose( item ) );
@@ -177,7 +177,7 @@ public class CTabItem_Test extends TestCase {
     // Test with folder that was created without SWT.CLOSE
     folder = new CTabFolder( shell, SWT.NONE );
     adapter
-      = ( ICTabFolderAdapter )folder.getAdapter( ICTabFolderAdapter.class );
+      = folder.getAdapter( ICTabFolderAdapter.class );
     item = new CTabItem( folder, SWT.NONE );
     assertFalse( item.getShowClose() );
     assertFalse( adapter.showItemClose( item ) );
@@ -198,7 +198,7 @@ public class CTabItem_Test extends TestCase {
     folder.setSize( 100, 100 );
     folder.setUnselectedImageVisible( true );
     ICTabFolderAdapter adapter
-      = ( ICTabFolderAdapter )folder.getAdapter( ICTabFolderAdapter.class );
+      = folder.getAdapter( ICTabFolderAdapter.class );
     item1 = new CTabItem( folder, SWT.NONE );
     item1.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     item2 = new CTabItem( folder, SWT.NONE );

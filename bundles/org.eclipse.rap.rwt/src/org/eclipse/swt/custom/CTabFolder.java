@@ -1333,15 +1333,16 @@ public class CTabFolder extends Composite {
   ///////////////////////////
   // Adaptable implementation
 
-  public Object getAdapter( final Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IItemHolderAdapter.class ) {
-      result = itemHolder;
+      result = ( T )itemHolder;
     } else if( adapter == ICTabFolderAdapter.class ) {
       if( tabFolderAdapter == null ) {
         tabFolderAdapter = new CTabFolderAdapter();
       }
-      result = tabFolderAdapter;
+      result = ( T )tabFolderAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

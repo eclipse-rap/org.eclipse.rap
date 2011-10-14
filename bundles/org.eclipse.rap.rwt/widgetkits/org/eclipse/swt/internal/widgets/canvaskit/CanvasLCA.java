@@ -50,10 +50,8 @@ public final class CanvasLCA extends AbstractWidgetLCA {
     writer.dispose();
   }
 
-  private static void writeGCOperations( final Canvas canvas )
-    throws IOException
-  {
-    IGCAdapter adapter = ( IGCAdapter )canvas.getAdapter( IGCAdapter.class );
+  private static void writeGCOperations( Canvas canvas ) throws IOException {
+    IGCAdapter adapter = canvas.getAdapter( IGCAdapter.class );
     GCOperation[] operations = adapter.getTrimmedGCOperations();
     if( operations.length > 0 || adapter.getForceRedraw() ) {
       GCOperationWriter operationWriter = new GCOperationWriter( canvas );

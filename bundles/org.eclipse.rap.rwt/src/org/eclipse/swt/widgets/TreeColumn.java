@@ -540,10 +540,11 @@ public class TreeColumn extends Item {
     }
   }
 
-  public Object getAdapter( Class adapter ) {
-    Object result = null;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result = null;
     if( adapter == IColumnAdapter.class ) {
-      result = columnAdapter;
+      result = ( T )columnAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

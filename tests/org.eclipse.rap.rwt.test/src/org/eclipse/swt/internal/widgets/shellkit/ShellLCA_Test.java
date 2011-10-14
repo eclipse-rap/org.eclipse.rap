@@ -70,7 +70,7 @@ public class ShellLCA_Test extends TestCase {
     shell.open();
     shell.setActive();
     IShellAdapter shellAdapter
-     = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+     = shell.getAdapter( IShellAdapter.class );
     shellAdapter.setActiveControl( button );
     shell.addShellListener( new ShellAdapter() { } );
     shell.setMaximized( true );
@@ -480,7 +480,7 @@ public class ShellLCA_Test extends TestCase {
   public void testRenderActiveControlInitiallySet() throws Exception {
     ShellLCA lca = new ShellLCA();
     Button button = new Button( shell, SWT.PUSH );
-    IShellAdapter adapter = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+    IShellAdapter adapter = shell.getAdapter( IShellAdapter.class );
     
     adapter.setActiveControl( button );
     lca.renderChanges( shell );
@@ -493,7 +493,7 @@ public class ShellLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Button button = new Button( shell, SWT.PUSH );
-    IShellAdapter adapter = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+    IShellAdapter adapter = shell.getAdapter( IShellAdapter.class );
     adapter.setActiveControl( button );
     ShellLCA lca = new ShellLCA();
     
@@ -508,7 +508,7 @@ public class ShellLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Button button = new Button( shell, SWT.PUSH );
-    IShellAdapter adapter = ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+    IShellAdapter adapter = shell.getAdapter( IShellAdapter.class );
     adapter.setActiveControl( button );
     ShellLCA lca = new ShellLCA();
     Fixture.preserveWidgets();

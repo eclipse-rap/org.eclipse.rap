@@ -69,10 +69,10 @@ public class WidgetAdapter_Test extends TestCase {
   }
 
   public void testId() {
-    IWidgetAdapter adapter1 = ( IWidgetAdapter )display.getAdapter( IWidgetAdapter.class );
+    IWidgetAdapter adapter1 = display.getAdapter( IWidgetAdapter.class );
     display.dispose();
     display = new Display();
-    IWidgetAdapter adapter2 = ( IWidgetAdapter )display.getAdapter( IWidgetAdapter.class );
+    IWidgetAdapter adapter2 = display.getAdapter( IWidgetAdapter.class );
     assertEquals( adapter1.getId(), adapter2.getId() );
   }
 

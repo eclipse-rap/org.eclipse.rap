@@ -18,7 +18,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.ICompositeAdapter;
-import org.eclipse.swt.widgets.ControlHolder.IControlHolderAdapter;
 
 /**
  * Instances of this class are controls which are capable
@@ -116,12 +115,13 @@ public class Composite extends Scrollable {
     return controlHolder.getControls();
   }
 
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IControlHolderAdapter.class ) {
-      result = controlHolder;
+      result = ( T )controlHolder;
     } else if( adapter == ICompositeAdapter.class ) {
-      result = compositeAdapter;
+      result = ( T )compositeAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

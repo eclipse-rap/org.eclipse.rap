@@ -100,8 +100,9 @@ public class List extends Scrollable {
   /////////////////////
   // Adaptable override
 
-  public Object getAdapter( final Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IListAdapter.class ) {
       if( listAdapter == null ) {
         listAdapter = new IListAdapter() {
@@ -122,7 +123,7 @@ public class List extends Scrollable {
           }
         };
       }
-      result = listAdapter;
+      result = ( T )listAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

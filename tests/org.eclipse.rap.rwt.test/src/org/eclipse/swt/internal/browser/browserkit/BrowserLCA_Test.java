@@ -463,6 +463,6 @@ public class BrowserLCA_Test extends TestCase {
   }
 
   private static IBrowserAdapter getAdapter( Browser browser ) {
-    return ( IBrowserAdapter )browser.getAdapter( IBrowserAdapter.class );
+    return browser.getAdapter( IBrowserAdapter.class );
   }
 }

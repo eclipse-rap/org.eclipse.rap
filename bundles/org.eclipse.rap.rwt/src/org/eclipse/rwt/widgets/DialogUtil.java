@@ -42,7 +42,7 @@ public final class DialogUtil {
   public static void open( Dialog dialog, DialogCallback dialogCallback ) {
     ParamCheck.notNull( dialog, "dialog" );
     ParamCheck.notNull( dialogCallback, "dialogCallback" );
-    IDialogAdapter adapter = ( IDialogAdapter )dialog.getAdapter( IDialogAdapter.class );
+    IDialogAdapter adapter = dialog.getAdapter( IDialogAdapter.class );
     adapter.openNonBlocking( dialogCallback );
   }
   

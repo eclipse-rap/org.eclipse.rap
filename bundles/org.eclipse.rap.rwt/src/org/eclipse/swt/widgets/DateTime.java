@@ -569,13 +569,14 @@ public class DateTime extends Composite {
     computeSubWidgetsBounds();
   }
 
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IDateTimeAdapter.class ) {
       if( dateTimeAdapter == null ) {
         dateTimeAdapter = new DateTimeAdapter();
       }
-      result = dateTimeAdapter;
+      result = ( T )dateTimeAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

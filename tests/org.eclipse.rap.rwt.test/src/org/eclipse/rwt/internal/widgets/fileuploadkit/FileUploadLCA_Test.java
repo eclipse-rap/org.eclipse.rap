@@ -186,6 +186,6 @@ public class FileUploadLCA_Test extends TestCase {
   }
 
   private IFileUploadAdapter getFileUploadAdapter( FileUpload upload ) {
-    return ( IFileUploadAdapter )upload.getAdapter( IFileUploadAdapter.class );
+    return upload.getAdapter( IFileUploadAdapter.class );
   }
 }

@@ -206,10 +206,11 @@ public class Menu extends Widget {
     return null;
   }
 
-  public Object getAdapter( final Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IItemHolderAdapter.class ) {
-      result = itemHolder;
+      result = ( T )itemHolder;
     } else if( adapter == IMenuAdapter.class ) {
       if( menuAdapter == null ) {
         menuAdapter = new IMenuAdapter() {
@@ -218,7 +219,7 @@ public class Menu extends Widget {
           }
         };
       }
-      result = menuAdapter;
+      result = ( T )menuAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

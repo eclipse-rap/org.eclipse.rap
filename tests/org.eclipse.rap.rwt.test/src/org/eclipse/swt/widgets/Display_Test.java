@@ -217,7 +217,7 @@ public class Display_Test extends TestCase {
 
   public void testAttachAndDetachThread() {
     Display display = new Display();
-    IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
     adapter.detachThread();
     assertNull( display.getThread() );
     adapter.attachThread();
@@ -1387,7 +1387,7 @@ public class Display_Test extends TestCase {
   }
 
   private static void setCursorLocation( Display display, int x, int y ) {
-    IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
     adapter.setCursorLocation( x, y );
   }
 

@@ -122,8 +122,9 @@ public class CTabItem extends Item {
     parent.createItem( this, index );
   }
 
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IWidgetFontAdapter.class ) {
       if( widgetFontAdapter == null ) {
         widgetFontAdapter = new IWidgetFontAdapter() {
@@ -132,7 +133,7 @@ public class CTabItem extends Item {
           }
         };
       }
-      result = widgetFontAdapter;
+      result = ( T )widgetFontAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

@@ -106,15 +106,16 @@ public final class BrowserHistory
   ////////////
   // Adaptable
   
-  public Object getAdapter( final Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IEventAdapter.class ) {
       if( eventAdapter == null ) {
         eventAdapter = new EventAdapter();
       }
-      result = eventAdapter;
+      result = ( T )eventAdapter;
     } else {
-      result = RWTFactory.getAdapterManager().getAdapter( this, adapter );
+      result = ( T )RWTFactory.getAdapterManager().getAdapter( this, adapter );
     }
     return result;
   }

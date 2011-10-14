@@ -198,6 +198,6 @@ public class ToolTip_Test extends TestCase {
   }
 
   private static IToolTipAdapter getToolTipAdapter( ToolTip toolTip ) {
-    return ( IToolTipAdapter )toolTip.getAdapter( IToolTipAdapter.class );
+    return toolTip.getAdapter( IToolTipAdapter.class );
   }
 }

@@ -270,11 +270,12 @@ public class TreeItem extends Item {
     }
   }
 
+  @SuppressWarnings("unchecked")
   @Override
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IItemHolderAdapter.class ) {
-      result = new CompositeItemHolder();
+      result = ( T )new CompositeItemHolder();
     } else if(    adapter == IWidgetFontAdapter.class
                || adapter == IWidgetColorAdapter.class
                || adapter == ITreeItemAdapter.class )
@@ -282,7 +283,7 @@ public class TreeItem extends Item {
       if( treeItemAdapter == null ) {
         treeItemAdapter = new TreeItemAdapter();
       }
-      result = treeItemAdapter;
+      result = ( T )treeItemAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

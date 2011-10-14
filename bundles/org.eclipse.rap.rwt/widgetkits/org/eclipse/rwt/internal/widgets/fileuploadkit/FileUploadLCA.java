@@ -67,8 +67,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
   // Helper  
 
   private void readFileName( final FileUpload fileUpload ) {
-    IFileUploadAdapter adapter
-      = ( IFileUploadAdapter )fileUpload.getAdapter( IFileUploadAdapter.class );
+    IFileUploadAdapter adapter = fileUpload.getAdapter( IFileUploadAdapter.class );
     String fileName = WidgetLCAUtil.readPropertyValue( fileUpload, "fileName" );
     if( fileName != null ) {
       adapter.setFileName( fileName == "" ? null : fileName );
@@ -103,8 +102,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
 
   static void writeSubmit( FileUpload fileUpload ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( fileUpload );
-    IFileUploadAdapter adapter 
-      = ( IFileUploadAdapter )fileUpload.getAdapter( IFileUploadAdapter.class );
+    IFileUploadAdapter adapter = fileUpload.getAdapter( IFileUploadAdapter.class );
     String url = adapter.getAndResetUrl();
     if( url != null ) {
       writer.call( "submit", new Object[] { url } );

@@ -24,8 +24,8 @@ public final class DisplayUtil {
     // prevent instance creation
   }
 
-  public static IDisplayLifeCycleAdapter getLCA( final Display display ) {
-    Class clazz = ILifeCycleAdapter.class;
+  public static IDisplayLifeCycleAdapter getLCA( Display display ) {
+    Class<ILifeCycleAdapter> clazz = ILifeCycleAdapter.class;
     IDisplayLifeCycleAdapter result = ( IDisplayLifeCycleAdapter )display.getAdapter( clazz );
     if( result == null ) {
       throwAdapterException( clazz );
@@ -33,12 +33,11 @@ public final class DisplayUtil {
     return result;
   }
 
-  public static IWidgetAdapter getAdapter( final Display display ) {
-    Class clazz = IWidgetAdapter.class;
+  public static IWidgetAdapter getAdapter( Display display ) {
     IWidgetAdapter result;
-    result = ( IWidgetAdapter )display.getAdapter( clazz );
+    result = display.getAdapter( IWidgetAdapter.class );
     if( result == null ) {
-      throwAdapterException( clazz );
+      throwAdapterException( IWidgetAdapter.class );
     }
     return result;
   }

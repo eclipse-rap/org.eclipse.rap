@@ -50,7 +50,7 @@ public class Link_Test extends TestCase {
       = "Visit the <A HREF=\"www.eclipse.org\">Eclipse.org</A> project and "
       + "the <a>SWT</a> homepage.";
     link.setText( text );
-    ILinkAdapter adapter = ( ILinkAdapter )link.getAdapter( ILinkAdapter.class );
+    ILinkAdapter adapter = link.getAdapter( ILinkAdapter.class );
     String displayText = "Visit the Eclipse.org project and the SWT homepage.";
     assertEquals( displayText, adapter.getDisplayText() );
     String[] ids = adapter.getIds();

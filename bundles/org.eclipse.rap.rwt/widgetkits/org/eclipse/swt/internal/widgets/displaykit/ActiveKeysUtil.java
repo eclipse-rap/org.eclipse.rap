@@ -260,7 +260,7 @@ public final class ActiveKeysUtil {
   }
 
   private static IFilterEntry[] getFilterEntries( Display display ) {
-    IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
     return adapter.getFilters();
   }
 

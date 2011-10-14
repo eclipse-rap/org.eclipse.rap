@@ -185,8 +185,9 @@ public class RWTLifeCycle_Test extends TestCase {
       public BuggyShell( Display display ) {
         super( display );
       }
+      @SuppressWarnings("unchecked")
       @Override
-      public Object getAdapter( Class adapter ) {
+      public <T> T getAdapter( Class<T> adapter ) {
         Object result;
         if( adapter.equals( ILifeCycleAdapter.class ) ) {
           result = new AbstractWidgetLCA() {
@@ -212,7 +213,7 @@ public class RWTLifeCycle_Test extends TestCase {
         } else {
           result = super.getAdapter( adapter );
         }
-        return result;
+        return ( T )result;
       }
     }
 

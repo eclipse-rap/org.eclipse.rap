@@ -99,7 +99,7 @@ public class TreeLCA_Test extends TestCase {
     assertTrue( markup.indexOf( "w.setTopItemIndex( " ) == -1 );
     Fixture.clearPreserved();
     Fixture.preserveWidgets();
-    ITreeAdapter treeAdapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    ITreeAdapter treeAdapter = tree.getAdapter( ITreeAdapter.class );
     treeAdapter.setTopItemIndex( 4 );
     lca.renderChanges( tree );
     markup = Fixture.getAllMarkup();
@@ -415,7 +415,7 @@ public class TreeLCA_Test extends TestCase {
     Fixture.clearPreserved();
     // scroll left
     ITreeAdapter treeAdapter
-      = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+      = tree.getAdapter( ITreeAdapter.class );
     treeAdapter.setScrollLeft( 50 );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
@@ -675,7 +675,7 @@ public class TreeLCA_Test extends TestCase {
     Fixture.fakeRequestParam( treeId + ".scrollLeft", "undefined" );
     Fixture.fakeRequestParam( treeId + ".scrollTop", "80" );
     Fixture.readDataAndProcessAction( display );
-    ITreeAdapter adapter = ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    ITreeAdapter adapter = tree.getAdapter( ITreeAdapter.class );
     //assertEquals( 80, adapter.getScrollTop() );
     assertEquals( 0, adapter.getScrollLeft() );
   }

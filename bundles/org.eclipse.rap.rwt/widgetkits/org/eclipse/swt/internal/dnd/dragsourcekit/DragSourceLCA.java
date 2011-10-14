@@ -90,7 +90,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
   }
 
   private void writeDetail( DragSource dragSource ) throws IOException {
-    IDNDAdapter dndAdapter = ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class  );
+    IDNDAdapter dndAdapter = dragSource.getAdapter( IDNDAdapter.class  );
     if( dndAdapter.hasDetailChanged() ) {
       JSWriter writer = JSWriter.getWriterFor( dragSource );
       Object[] args = new Object[]{
@@ -102,7 +102,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
   }
 
   private void writeFeedback( DragSource dragSource ) throws IOException {
-    IDNDAdapter dndAdapter = ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class  );
+    IDNDAdapter dndAdapter = dragSource.getAdapter( IDNDAdapter.class  );
     if( dndAdapter.hasFeedbackChanged() ) {
       JSWriter writer = JSWriter.getWriterFor( dragSource );
       int value = dndAdapter.getFeedbackChangedValue();
@@ -116,7 +116,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
   }
 
   private void writeDataType( DragSource dragSource ) throws IOException {
-    IDNDAdapter dndAdapter = ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class  );
+    IDNDAdapter dndAdapter = dragSource.getAdapter( IDNDAdapter.class  );
     if( dndAdapter.hasDataTypeChanged() ) {
       JSWriter writer = JSWriter.getWriterFor( dragSource );
       TransferData value = dndAdapter.getDataTypeChangedValue();
@@ -129,7 +129,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
   }
   
   private static void writeCancel( DragSource dragSource ) throws IOException {
-    IDNDAdapter dndAdapter = ( IDNDAdapter )dragSource.getAdapter( IDNDAdapter.class  );
+    IDNDAdapter dndAdapter = dragSource.getAdapter( IDNDAdapter.class  );
     if( dndAdapter.isCanceled() ) {
       JSWriter writer = JSWriter.getWriterFor( dragSource );
       writer.callStatic( JSFUNC_CANCEL, null );

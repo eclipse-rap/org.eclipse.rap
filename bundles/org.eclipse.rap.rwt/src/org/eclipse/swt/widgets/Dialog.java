@@ -211,12 +211,13 @@ public abstract class Dialog implements Adaptable, SerializableCompatibility {
    * from application code.
    * </p>
    */
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IDialogAdapter.class ) {
-      result = new DialogAdapter();
+      result = ( T )new DialogAdapter();
     } else {
-      result = RWTFactory.getAdapterManager().getAdapter( this, adapter );
+      result = ( T )RWTFactory.getAdapterManager().getAdapter( this, adapter );
     }
     return result;
   }

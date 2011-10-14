@@ -41,14 +41,15 @@ public class Control_Test extends TestCase {
       this.log = log;
     }
 
-    public Object getAdapter( Class adapter ) {
+    @SuppressWarnings("unchecked")
+    public <T> T getAdapter( Class<T> adapter ) {
       Object result = null;
       if( adapter == ILifeCycleAdapter.class ) {
         result = new LoggingWidgetLCA( log );
       } else {
         result = super.getAdapter( adapter );
       }
-      return result;
+      return ( T )result;
     }
   }
 
@@ -994,7 +995,7 @@ public class Control_Test extends TestCase {
 
     shell.setLocation( 1, 2 );
 
-    IControlAdapter controlAdapter = ( IControlAdapter )shell.getAdapter( IControlAdapter.class );
+    IControlAdapter controlAdapter = shell.getAdapter( IControlAdapter.class );
     assertTrue( controlAdapter.isPacked() );
   }
 

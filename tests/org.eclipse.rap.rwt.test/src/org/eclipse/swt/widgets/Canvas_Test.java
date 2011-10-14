@@ -86,7 +86,7 @@ public class Canvas_Test extends TestCase {
     canvas.redraw();
     canvas.redraw();
     assertEquals( 2, paintEventLog.size() );
-    IGCAdapter adapter = ( IGCAdapter )canvas.getAdapter( IGCAdapter.class );
+    IGCAdapter adapter = canvas.getAdapter( IGCAdapter.class );
     assertEquals( 1, adapter.getGCOperations().length );
   }
   

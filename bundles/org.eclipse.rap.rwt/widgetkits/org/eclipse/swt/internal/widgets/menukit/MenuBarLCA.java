@@ -85,8 +85,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
     JSWriter writer = JSWriter.getWriterFor( menu );
     Decorations parent = getParent( menu );
     if( parent != null ) {
-      IShellAdapter shellAdapter
-        = ( IShellAdapter )parent.getAdapter( IShellAdapter.class );
+      IShellAdapter shellAdapter = parent.getAdapter( IShellAdapter.class );
       Rectangle menuBounds = shellAdapter.getMenuBounds();
       String prop = PROP_SHELL_MENU_BOUNDS;
       // [if] MenuBar and its bounds are preserved in ShellLCA.

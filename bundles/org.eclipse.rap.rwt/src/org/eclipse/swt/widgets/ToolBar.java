@@ -101,10 +101,11 @@ public class ToolBar extends Composite {
     this.itemHolder = new ItemHolder<ToolItem>( ToolItem.class );
   }
 
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IItemHolderAdapter.class ) {
-      result = itemHolder;
+      result = ( T )itemHolder;
     } else {
       result = super.getAdapter( adapter );
     }

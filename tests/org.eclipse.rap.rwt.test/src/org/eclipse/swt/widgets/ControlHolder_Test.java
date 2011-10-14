@@ -65,15 +65,15 @@ public class ControlHolder_Test extends TestCase {
   public void testControlHolderAccessors() {
     final Display outerDisplay = new Display();
     Composite shell = new Shell( outerDisplay, SWT.NONE );
-    Control[] controls = ControlHolder.getControls( shell );
+    Control[] controls = shell.getAdapter( IControlHolderAdapter.class ).getControls();
     assertEquals( 0, controls.length );
     Button control = new Button( shell, SWT.PUSH );
-    controls = ControlHolder.getControls( shell );
+    controls = shell.getAdapter( IControlHolderAdapter.class ).getControls();
     assertEquals( 1, controls.length );
     assertEquals( control, controls[ 0 ] );
     assertEquals( 1, shell.getChildren().length );
     control.dispose();
-    controls = ControlHolder.getControls( shell );
+    controls = shell.getAdapter( IControlHolderAdapter.class ).getControls();
     assertEquals( 0, controls.length );
     Control extended = new Control( null ) {
       public Display getDisplay() {

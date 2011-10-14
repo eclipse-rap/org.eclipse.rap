@@ -315,10 +315,11 @@ public class FileUpload extends Canvas {
     return new Control[ 0 ];
   }
 
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( adapter == IFileUploadAdapter.class ) {
-      result = fileUploadAdapter;
+      result = ( T )fileUploadAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

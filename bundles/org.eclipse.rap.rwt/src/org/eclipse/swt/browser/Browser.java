@@ -445,13 +445,14 @@ public class Browser extends Composite {
     ProgressEvent.removeListener( this, listener );
   }
 
-  public Object getAdapter( Class adapter ) {
-    Object result;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result;
     if( IBrowserAdapter.class.equals( adapter ) ) {
       if( browserAdapter == null ) {
         browserAdapter = new BrowserAdapter();
       }
-      result = browserAdapter;
+      result = ( T )browserAdapter;
     } else {
       result = super.getAdapter( adapter );
     }

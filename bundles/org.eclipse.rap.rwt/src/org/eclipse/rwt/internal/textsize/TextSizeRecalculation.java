@@ -95,10 +95,6 @@ class TextSizeRecalculation {
   }
 
   private void setShellSize( Shell shell, Rectangle bounds ) {
-    getShellAdapter( shell ).setBounds( bounds );
-  }
-
-  private IShellAdapter getShellAdapter( Shell shell ) {
-    return ( IShellAdapter )shell.getAdapter( IShellAdapter.class );
+    shell.getAdapter( IShellAdapter.class ).setBounds( bounds );
   }
 }

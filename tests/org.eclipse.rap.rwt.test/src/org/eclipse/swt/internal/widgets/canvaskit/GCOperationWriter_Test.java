@@ -142,7 +142,7 @@ public class GCOperationWriter_Test extends TestCase {
   }
 
   private static void writeGCOperations( Canvas canvas ) throws IOException {
-    IGCAdapter adapter = ( IGCAdapter )canvas.getAdapter( IGCAdapter.class );
+    IGCAdapter adapter = canvas.getAdapter( IGCAdapter.class );
     GCOperation[] operations = adapter.getGCOperations();
     GCOperationWriter operationWriter = new GCOperationWriter( canvas );
     for( GCOperation operation : operations ) {

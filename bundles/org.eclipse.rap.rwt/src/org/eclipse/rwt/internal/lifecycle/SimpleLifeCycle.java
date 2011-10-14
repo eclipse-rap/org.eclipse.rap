@@ -159,7 +159,7 @@ public class SimpleLifeCycle extends LifeCycle {
 
   private static void attachThread( Display display ) {
     if( display != null ) {
-      IDisplayAdapter displayAdapter = getDisplayAdapter( display );
+      IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
       displayAdapter.attachThread();
       IUIThreadHolder uiThreadHolder = new SimpleUIThreadHolder( Thread.currentThread() );
       LifeCycleUtil.setUIThread( displayAdapter.getSessionStore(), uiThreadHolder );
@@ -168,13 +168,9 @@ public class SimpleLifeCycle extends LifeCycle {
 
   private static void detachThread( Display display ) {
     if( display != null ) {
-      IDisplayAdapter displayAdapter = getDisplayAdapter( display );
+      IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
       displayAdapter.detachThread();
       LifeCycleUtil.setUIThread( displayAdapter.getSessionStore(), null );
     }
-  }
-  
-  private static IDisplayAdapter getDisplayAdapter( Display display ) {
-    return ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
   }
 }

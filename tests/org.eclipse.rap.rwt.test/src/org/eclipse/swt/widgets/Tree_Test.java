@@ -1605,6 +1605,6 @@ public class Tree_Test extends TestCase {
   }
 
   private ITreeAdapter getTreeAdapter( Tree tree ) {
-    return ( ITreeAdapter )tree.getAdapter( ITreeAdapter.class );
+    return tree.getAdapter( ITreeAdapter.class );
   }
 }

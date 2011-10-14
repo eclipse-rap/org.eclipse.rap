@@ -162,7 +162,7 @@ public class TableItem_Test extends TestCase {
     // ensure that horizontal scrolling is detected
     table.setTopIndex( 0 );
     Rectangle column0Bounds = table.getItem( 0 ).getBounds( 0 );
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( column0.getWidth() );
     assertEquals( column0Bounds.x, table.getItem( 0 ).getBounds( 1 ).x );
   }
@@ -176,7 +176,7 @@ public class TableItem_Test extends TestCase {
     TableColumn column1 = new TableColumn( table, SWT.NONE );
     column1.setWidth( 100 );
 
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( 20 );
 
     assertEquals( 0, item.getBounds( 0 ).x );
@@ -193,7 +193,7 @@ public class TableItem_Test extends TestCase {
     column1.setWidth( 50 );
     table.setColumnOrder( new int[]{ 1, 0 } );
 
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( 20 );
 
     assertEquals( 0, item.getBounds( 1 ).x );
@@ -226,7 +226,7 @@ public class TableItem_Test extends TestCase {
     item.setText( 0, "col1" );
     item.setText( 1, "col2" );
 
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( 20 );
 
     assertEquals( 3, item.getTextBounds( 0 ).x );
@@ -303,7 +303,7 @@ public class TableItem_Test extends TestCase {
     item.setText( 0, " Item 0.0" );
     item.setText( 1, " Item 0.1" );
     Rectangle column0TextBounds = item.getTextBounds( 0 );
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( column0.getWidth() );
     assertEquals( column0TextBounds.x, item.getTextBounds( 1 ).x );
   }
@@ -437,7 +437,7 @@ public class TableItem_Test extends TestCase {
     column1.setWidth( 100 );
     Rectangle column0ImageBounds = item.getImageBounds( 0 );
     ITableAdapter adapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+      = table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( column0.getWidth() );
     assertEquals( column0ImageBounds.x, item.getImageBounds( 1 ).x );
   }
@@ -452,7 +452,7 @@ public class TableItem_Test extends TestCase {
     column1.setWidth( 100 );
     item.setImage( 0, Graphics.getImage( Fixture.IMAGE1 ) );
 
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( 20 );
 
     assertEquals( 3, item.getImageBounds( 0 ).x );
@@ -787,7 +787,7 @@ public class TableItem_Test extends TestCase {
     table.setItemCount( 1000 );
     // ensure precondition
     ITableAdapter adapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+      = table.getAdapter( ITableAdapter.class );
     assertTrue( adapter.isItemVirtual( 999 ) );
     // change background color and ensure that no SetData event was fired
     eventLog.clear();
@@ -1227,7 +1227,7 @@ public class TableItem_Test extends TestCase {
   }
 
   private static ITableAdapter getTableAdapter( Table table ) {
-    return ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    return table.getAdapter( ITableAdapter.class );
   }
 
 }

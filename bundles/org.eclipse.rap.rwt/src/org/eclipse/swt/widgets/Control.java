@@ -1437,13 +1437,14 @@ public abstract class Control extends Widget implements Drawable {
     }
   }
 
-  public Object getAdapter( Class adapter ) {
-    Object result = null;
+  @SuppressWarnings("unchecked")
+  public <T> T getAdapter( Class<T> adapter ) {
+    T result = null;
     if( adapter == IControlAdapter.class ) {
       if( controlAdapter == null ) {
         controlAdapter = new ControlAdapter();
       }
-      result = controlAdapter;
+      result = ( T )controlAdapter;
     } else {
       result = super.getAdapter( adapter );
     }
@@ -2339,7 +2340,7 @@ public abstract class Control extends Widget implements Drawable {
       display.setActiveShell( control.getShell() );
     }
     // focus
-    IDisplayAdapter displayAdapter = getDisplayAdapter();
+    IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
     displayAdapter.setFocusControl( control );
     // active
     if( control != null ) {
@@ -2386,7 +2387,7 @@ public abstract class Control extends Widget implements Drawable {
     shell.setSavedFocus (focusControl);
 //    OS.SetFocus (0);
     // Replacement for OS.setFocus( 0 )
-    IDisplayAdapter displayAdapter = getDisplayAdapter();
+    IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
     displayAdapter.setFocusControl( null );
   }
 
@@ -2435,9 +2436,5 @@ public abstract class Control extends Widget implements Drawable {
     if( menu != null ) {
       menu.removeDisposeListener( menuDisposeListener );
     }
-  }
-
-  private IDisplayAdapter getDisplayAdapter() {
-    return ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
   }
 }

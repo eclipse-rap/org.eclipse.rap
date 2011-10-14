@@ -18,6 +18,7 @@ import org.eclipse.rwt.Adaptable;
 import org.eclipse.rwt.AdapterFactory;
 
 
+@SuppressWarnings("deprecation")
 public class AdapterManager_Test extends TestCase {
 
   private AdapterManager adapterManager;
@@ -145,8 +146,9 @@ public class AdapterManager_Test extends TestCase {
     }
     public void doNothing() {
     }
-    public Object getAdapter( Class adapter ) {
-      return adapterManager.getAdapter( this, adapter );
+    @SuppressWarnings("unchecked")
+    public <T> T getAdapter( Class<T> adapter ) {
+      return ( T )adapterManager.getAdapter( this, adapter );
     }
   }
   

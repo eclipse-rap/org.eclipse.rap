@@ -537,7 +537,7 @@ public class TableLCA_Test extends TestCase {
     table.setItemCount( 100 );
     shell.layout();
     shell.open();
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     // precondition: all items are resolved (TableItem#cached == true)
     // resolve all items and ensure
     for( int i = 0; i < table.getItemCount(); i++ ) {
@@ -660,7 +660,7 @@ public class TableLCA_Test extends TestCase {
 
     Fixture.fakePhase( PhaseId.READ_DATA );
     table.setItemCount( 1 );
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     adapter.checkData( 0 );
 
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
@@ -715,7 +715,7 @@ public class TableLCA_Test extends TestCase {
 
     // left offset must be compensated
     ITableAdapter adapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+      = table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( 10 );
     metrics = TableLCAUtil.getItemMetrics( table );
     assertEquals( 0, metrics[ 0 ].left );
@@ -748,7 +748,7 @@ public class TableLCA_Test extends TestCase {
     TableColumn column2 = new TableColumn( table, SWT.NONE );
     column2.setText( "column2" );
     column2.setWidth( 400 );
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( 5 );
     TableItem item1 = new TableItem( table, SWT.NONE );
     item1.setText( "item1" );
@@ -774,7 +774,7 @@ public class TableLCA_Test extends TestCase {
     TableColumn column2 = new TableColumn( table, SWT.NONE );
     column2.setText( "column2" );
     column2.setWidth( 30 );
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( 5 );
     TableItem item1 = new TableItem( table, SWT.NONE );
     item1.setText( "item1" );
@@ -824,7 +824,7 @@ public class TableLCA_Test extends TestCase {
     assertEquals( expected, metrics[ 0 ].textLeft );
 
     // left offset must be compensated
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( 10 );
     metrics = TableLCAUtil.getItemMetrics( table );
     assertEquals( 0, metrics[ 0 ].left );
@@ -1025,8 +1025,7 @@ public class TableLCA_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 3 );
     final StringBuffer log = new StringBuffer();
-    ICellToolTipAdapter tableAdapter
-      = ( ICellToolTipAdapter )table.getAdapter( ICellToolTipAdapter.class );
+    ICellToolTipAdapter tableAdapter = table.getAdapter( ICellToolTipAdapter.class );
     tableAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
       public void getToolTipText( Item item, int columnIndex ) {
         StringBuffer buffer = new StringBuffer();
@@ -1185,7 +1184,7 @@ public class TableLCA_Test extends TestCase {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
     ICellToolTipAdapter toolTipAdapter = CellToolTipUtil.getAdapter( table );
-    ITableAdapter tableAdapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
     ICellToolTipProvider toolTipProvider = mock( ICellToolTipProvider.class );
     toolTipAdapter.setCellToolTipProvider( toolTipProvider );
     table.setItemCount( 2 );

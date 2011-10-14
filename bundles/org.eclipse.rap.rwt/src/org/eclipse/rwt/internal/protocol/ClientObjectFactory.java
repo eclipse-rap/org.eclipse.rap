@@ -100,7 +100,7 @@ public final class ClientObjectFactory {
   }
   
   private static boolean isValidThread( Display display ) {
-    IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
     return adapter.isValidThread();
   }
 

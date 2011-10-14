@@ -97,7 +97,7 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     Table table = ( Table )widget;
-    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     JSWriter writer = JSWriter.getWriterFor( table );
     JsonObject argsMap = new JsonObject();
     argsMap.append( "appearance", "table" );
@@ -204,7 +204,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     String value = WidgetLCAUtil.readPropertyValue( table, "focusItem" );
     if( value != null ) {
       TableItem item = getItem( table, value );
-      ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+      ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
       adapter.setFocusIndex( table.indexOf( item ) );
     }
   }
@@ -267,7 +267,7 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   private static TableItem getFocusedItem( Table table ) {
     TableItem result = null;
-    ITableAdapter tableAdapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
     int focusIndex = tableAdapter.getFocusIndex();
     if( focusIndex != -1 ) {
       // TODO [rh] do something about when index points to unresolved item!
@@ -319,7 +319,7 @@ public final class TableLCA extends AbstractWidgetLCA {
 
   private static void writeFocusItem( Table table ) throws IOException {
     if( TableLCAUtil.hasFocusIndexChanged( table ) ) {
-      ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+      ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
       // TableItemLCA renders focusIndex in case != -1
       if( adapter.getFocusIndex() == -1 ) {
         JSWriter writer = JSWriter.getWriterFor( table );

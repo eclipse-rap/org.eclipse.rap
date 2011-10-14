@@ -119,7 +119,7 @@ public class TableItemLCA_Test extends TestCase {
     Color foreground3 = Graphics.getColor( 88, 134, 34 );
     item1.setForeground( 2, foreground3 );
     table.setSelection( 0 );
-    ITableAdapter tableAdapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
     tableAdapter.setFocusIndex( 0 );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item1 );

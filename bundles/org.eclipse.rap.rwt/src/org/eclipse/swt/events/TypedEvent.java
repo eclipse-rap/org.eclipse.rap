@@ -228,7 +228,7 @@ public class TypedEvent extends Event {
 
   private IFilterEntry[] getFilterEntries() {
     Display display = widget.getDisplay();
-    IDisplayAdapter adapter = ( IDisplayAdapter )display.getAdapter( IDisplayAdapter.class );
+    IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
     return adapter.getFilters();
   }
 
