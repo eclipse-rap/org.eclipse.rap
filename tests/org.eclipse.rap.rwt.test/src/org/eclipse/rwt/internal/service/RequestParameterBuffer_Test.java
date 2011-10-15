@@ -11,8 +11,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
-import static org.junit.Assert.assertArrayEquals;
-
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +21,14 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class RequestParameterBuffer_Test extends TestCase {
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testStore() {
     Map<String, String[]> parameters = new HashMap<String, String[]>();
@@ -41,13 +48,9 @@ public class RequestParameterBuffer_Test extends TestCase {
     assertArrayEquals( new String[] { "value" }, (String[])bufferedParameters.get( "key" ) );
     assertNull( bufferedParameters.get( "anotherKey" ) );
   }
-  
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-  
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+
+  private static void assertArrayEquals( String[] expected, String[] actual ) {
+    assertEquals( Arrays.toString( expected ), Arrays.toString( actual ) );
   }
 
 }
