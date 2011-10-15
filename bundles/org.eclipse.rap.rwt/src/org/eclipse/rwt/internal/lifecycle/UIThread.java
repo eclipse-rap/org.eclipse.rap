@@ -111,7 +111,9 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
     setServiceContext( serviceContext );
     uiThreadTerminating = true;
     // interrupt the UI thread that is expected to wait in switchThread or already be terminated
-    getThread().interrupt();
+    synchronized( getLock() ) {
+      getThread().interrupt();
+    }
     try {
       getThread().join();
     } catch( InterruptedException e ) {
