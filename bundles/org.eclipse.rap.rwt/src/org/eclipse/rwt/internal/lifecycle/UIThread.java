@@ -110,8 +110,7 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
     ServiceContext serviceContext = FakeContextUtil.createFakeContext( sessionStore );
     setServiceContext( serviceContext );
     uiThreadTerminating = true;
-    // interrupt the UI thread that is expected to wait in switchThread or
-    // already be terminated
+    // interrupt the UI thread that is expected to wait in switchThread or already be terminated
     getThread().interrupt();
     try {
       getThread().join();
