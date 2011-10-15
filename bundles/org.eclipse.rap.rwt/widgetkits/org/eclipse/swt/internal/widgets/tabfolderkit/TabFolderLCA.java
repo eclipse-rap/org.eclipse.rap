@@ -20,6 +20,7 @@ import java.io.IOException;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 
 
@@ -65,5 +66,10 @@ public class TabFolderLCA extends AbstractWidgetLCA {
 
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getForWidget( widget ).destroy();
+  }
+
+  // TODO: Remove when all widgets are migrated to the protocol
+  public Rectangle adjustCoordinates( Widget widget, Rectangle newBounds ) {
+    return new Rectangle( 0, 0, newBounds.width, newBounds.height );
   }
 }
