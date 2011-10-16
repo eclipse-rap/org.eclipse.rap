@@ -100,7 +100,7 @@ public interface ISessionStore {
    *         underlying session was invalidated.
    * @see #isBound()
    */
-  Enumeration getAttributeNames();
+  Enumeration<String> getAttributeNames();
 
   /**
    * Returns a string containing the unique identifier assigned to the

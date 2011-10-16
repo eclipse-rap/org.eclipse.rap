@@ -113,7 +113,7 @@ public final class SessionStoreImpl
     return result;
   }
 
-  public Enumeration getAttributeNames() {
+  public Enumeration<String> getAttributeNames() {
     return createAttributeNameEnumeration();
   }
 
@@ -291,17 +291,17 @@ public final class SessionStoreImpl
     httpSession.getServletContext().log( msg, exception );
   }
   
-  private Enumeration createAttributeNameEnumeration() {
+  private Enumeration<String> createAttributeNameEnumeration() {
     Set<String> names;
     synchronized( lock ) {
       names = new HashSet<String>( attributes.keySet() );
     }
-    final Iterator iterator = names.iterator();
-    return new Enumeration() {
+    final Iterator<String> iterator = names.iterator();
+    return new Enumeration<String>() {
       public boolean hasMoreElements() {
         return iterator.hasNext();
       }
-      public Object nextElement() {
+      public String nextElement() {
         return iterator.next();
       }
     };
