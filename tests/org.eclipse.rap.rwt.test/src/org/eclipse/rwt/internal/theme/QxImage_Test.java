@@ -143,6 +143,18 @@ public class QxImage_Test extends TestCase {
     assertEquals( gradient1.hashCode(), gradient2.hashCode() );
   }
 
+  public void testHashCode_GradientWithMoreColors() {
+    String[] gradientColors1
+      = new String[] { "#FFFFFF", "#00AA00", "#00AA00", "#00AA00", "#FFFFFF" };
+    float[] gradientPercents1 = new float[] { 0f, 48f, 52f, 56f, 100f };
+    String[] gradientColors2
+      = new String[] { "#FFFFFF", "#AA0000", "#AA0000", "#AA0000", "#FFFFFF" };
+    float[] gradientPercents2 = new float[] { 0f, 48f, 52f, 56f, 100f };
+    QxImage gradient1 = QxImage.createGradient( gradientColors1, gradientPercents1, true );
+    QxImage gradient2 = QxImage.createGradient( gradientColors2, gradientPercents2, true );
+    assertFalse( gradient1.hashCode() == gradient2.hashCode() );
+  }
+
   public void testIsGradientFalseForNone() {
     QxImage nonImage = QxImage.NONE;
     assertFalse( nonImage.isGradient() );

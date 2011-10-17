@@ -29,7 +29,7 @@ public class ThemeStoreWriter_Test extends TestCase {
   private static final String THEME_WRITE_VERTICAL_GRADIENT = "themeWriteVerticalGradient";
   private static final String THEME_ANIMATIONS = "themeAnimations";
   private static final String THEME_SET_CURRENT_THEME_ID = "themeSetCurrentThemeId";
-  
+
   // static field used for performance improvements of test initialization
   private static Map<String,Theme> themes;
 
@@ -57,7 +57,7 @@ public class ThemeStoreWriter_Test extends TestCase {
                + "[ [ [ \"[BORDER\" ], \"cd56ce7d\" ], [ [], \"ffffffff\" ] ]";
     assertTrue( output.indexOf( expected ) != -1 );
   }
-  
+
   public void testWriteAnimations() throws Exception {
     ThemeCssElement element1 = new ThemeCssElement( "Menu" );
     element1.addProperty( "animation" );
@@ -86,7 +86,7 @@ public class ThemeStoreWriter_Test extends TestCase {
     storeWriter.addTheme( getTheme( THEME_WRITE_VERTICAL_GRADIENT ), true );
     String output = storeWriter.createJs();
     String expected =   "\"gradients\": {\n"
-                      + "\"96f80000\": {\n"
+                      + "\"5b203000\": {\n"
                       + "\"percents\": [ 0.0, 48.0, 52.0, 100.0 ],\n"
                       + "\"colors\": [ \"#ffffff\", \"#f0f0f0\", \"#e0e0e0\", \"#ffffff\" ],\n"
                       + "\"vertical\": true\n"
@@ -94,7 +94,7 @@ public class ThemeStoreWriter_Test extends TestCase {
                       + "}";
     assertTrue( output.indexOf( expected ) != -1 );
     expected =   "\"Button\": {\n"
-               + "\"background-image\": [ [ [], \"96f80000\" ] ]\n"
+               + "\"background-image\": [ [ [], \"5b203000\" ] ]\n"
                + "}";
     assertTrue( output.indexOf( expected ) != -1 );
   }
@@ -107,7 +107,7 @@ public class ThemeStoreWriter_Test extends TestCase {
     storeWriter.addTheme( getTheme( THEME_WRITE_HORIZONTAL_GRADIENT ), true );
     String output = storeWriter.createJs();
     String expected =   "\"gradients\": {\n"
-                      + "\"df000025\": {\n"
+                      + "\"d901800b\": {\n"
                       + "\"percents\": [ 0.0, 48.0, 52.0, 100.0 ],\n"
                       + "\"colors\": [ \"#ffffff\", \"#f0f0f0\", \"#e0e0e0\", \"#ffffff\" ],\n"
                       + "\"vertical\": false\n"
@@ -115,7 +115,7 @@ public class ThemeStoreWriter_Test extends TestCase {
                       + "}";
     assertTrue( output.indexOf( expected ) != -1 );
     expected =   "\"Button\": {\n"
-               + "\"background-image\": [ [ [], \"df000025\" ] ]\n"
+               + "\"background-image\": [ [ [], \"d901800b\" ] ]\n"
                + "}";
     assertTrue( output.indexOf( expected ) != -1 );
   }
@@ -170,14 +170,14 @@ public class ThemeStoreWriter_Test extends TestCase {
                             + "}";
     assertTrue( output.indexOf( expectedImages ) != -1 );
     String expectedGradients =   "\"gradients\": {\n"
-                               + "\"714a0c00\": {\n"
+                               + "\"538c1ec0\": {\n"
                                + "\"percents\": [ 0.0, 100.0 ],\n"
                                + "\"colors\": [ \"#000000\", \"#ffffff\" ],\n"
                                + "\"vertical\": true\n"
                                + "}";
     assertTrue( output.indexOf( expectedGradients ) != -1 );
     String expected =   "\"Button\": {\n"
-                      + "\"background-image\": [ [ [ \".special\" ], \"714a0c00\" ], [ [], \"793f156b\" ] ]\n"
+                      + "\"background-image\": [ [ [ \".special\" ], \"538c1ec0\" ], [ [], \"793f156b\" ] ]\n"
                       + "}";
     assertTrue( output.indexOf( expected ) != -1 );
   }
@@ -190,7 +190,7 @@ public class ThemeStoreWriter_Test extends TestCase {
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-  
+
   private void initializeThemesOnFirstSetUp() throws Exception {
     if( themes == null ) {
       themes = new HashMap<String,Theme>();
@@ -203,7 +203,7 @@ public class ThemeStoreWriter_Test extends TestCase {
       registerThemeForTestWriteVerticalGradient();
     }
   }
-  
+
   private void registerThemeForTestWriteImages() throws IOException {
     String cssCode =   "Button { background-image: url( " + Fixture.IMAGE_100x50 + " ); }\n"
     + "Button.special { background-image: gradient( linear, left top, left bottom,\n"
@@ -255,7 +255,7 @@ public class ThemeStoreWriter_Test extends TestCase {
                      + " ); }\n";
     registerTheme( THEME_SET_CURRENT_THEME_ID, cssCode );
   }
-  
+
 
   private void registerThemeForTestWriteAnimations() throws Exception {
     String cssCode = "Menu { animation: slideIn 2s ease-in, slideOut 2s ease-out; }\n";
@@ -268,7 +268,7 @@ public class ThemeStoreWriter_Test extends TestCase {
     theme.initialize( RWTFactory.getThemeManager().getAllThemeableWidget() );
     themes.put( themeId, theme );
   }
-  
+
   private Theme getTheme( String themeId ) {
     return themes.get( themeId );
   }

@@ -155,14 +155,14 @@ public final class QxImage implements QxType {
     int result = -1;
     if( none ) {
       if( gradientColors != null && gradientPercents != null ) {
-        result = 29;
+        result = 5;
         for( int i = 0; i < gradientColors.length; i++ ) {
-          result += 31 * result + gradientColors[ i ].hashCode();
+          result += 7 * result + gradientColors[ i ].hashCode();
         }
         for( int i = 0; i < gradientPercents.length; i++ ) {
-          result += 31 * result + Float.floatToIntBits( gradientPercents[ i ] );
+          result += 7 * result + Float.floatToIntBits( gradientPercents[ i ] );
         }
-        result += vertical ? 0 : 31 * result + 37;
+        result += vertical ? 0 : 7 * result + 11;
       }
     } else {
       result = path.hashCode();
