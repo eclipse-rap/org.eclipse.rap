@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
+import org.eclipse.rwt.internal.util.ParamCheck;
 
 
 /**
@@ -44,11 +45,18 @@ public final class ServiceStateInfo implements IServiceStateInfo {
     return responseWriter;
   }
 
-  public Object getAttribute( String key ) {
-    return attributes.get( key );
+  public Object getAttribute( String name ) {
+    ParamCheck.notNull( name, "name" );
+    return attributes.get( name );
   }
 
-  public void setAttribute( String key, Object value ) {
-    attributes.put( key, value );
+  public void setAttribute( String name, Object value ) {
+    ParamCheck.notNull( name, "name" );
+    attributes.put( name, value );
+  }
+  
+  public void removeAttribute( String name ) {
+    ParamCheck.notNull( name, "name" );
+    attributes.remove( name );
   }
 }

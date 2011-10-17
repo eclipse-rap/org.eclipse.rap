@@ -23,6 +23,7 @@ package org.eclipse.rwt.service;
  */
 public interface IServiceStore {
   
-  Object getAttribute( String key );
-  void setAttribute( String key, Object value );
+  Object getAttribute( String name );
+  void setAttribute( String name, Object value );
+  void removeAttribute( String name );
 }
