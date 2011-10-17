@@ -12,18 +12,22 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.Adaptable;
-import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.events.EventAdapter;
 import org.eclipse.rwt.internal.events.IEventAdapter;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rwt.internal.theme.IThemeAdapter;
+import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.internal.SerializableCompatibility;
-import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
+import org.eclipse.swt.internal.widgets.UntypedEventAdapter;
+import org.eclipse.swt.internal.widgets.WidgetAdapter;
+import org.eclipse.swt.internal.widgets.WidgetGraphicsAdapter;
 
 
 /**
@@ -95,7 +99,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
   int state;
   Display display;
   private Object data;
-  private transient AdapterManager adapterManager;
+  private transient LifeCycleAdapterFactory lifeCycleAdapterFactory;
   private IWidgetAdapter widgetAdapter;
   private IEventAdapter eventAdapter;
   private UntypedEventAdapter untypedAdapter;
@@ -155,6 +159,8 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    */
   @SuppressWarnings("unchecked")
   public <T> T getAdapter( Class<T> adapter ) {
+    // The adapters returned here are buffered for performance reasons. Don't change this without
+    // good reason
     T result;
     if( adapter == IEventAdapter.class ) {
       // Note: This is not implemented via the AdapterManager, since the manager's mapping mechanism 
@@ -164,27 +170,24 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
       }
       result = ( T )eventAdapter;
     } else if( adapter == IWidgetAdapter.class ) {
-      // [fappel] Directly return the WidgetAdapter instead of consulting the adapter factory. 
-      // This is done for performance reasons and must not be changed without good reason.
       if( widgetAdapter == null ) {
         widgetAdapter = new WidgetAdapter();
       }
       result = ( T )widgetAdapter;
     } else if( adapter == IThemeAdapter.class ) {
-      // This also bypasses the AdapterManager for the sake of performance.
-      // ThemeAdapters are requested frequently during size computations.
       result = ( T )RWTFactory.getThemeManager().getThemeAdapterManager().getThemeAdapter( this );
     } else if( adapter == IWidgetGraphicsAdapter.class ) {
       if( widgetGraphicsAdapter == null ) {
         widgetGraphicsAdapter = new WidgetGraphicsAdapter();
       }
       result = ( T )widgetGraphicsAdapter;
-    } else {
-      // [fappel] Buffer the adapterManager to improve performance
-      if( adapterManager == null ) {
-        adapterManager = RWTFactory.getAdapterManager();
+    } else if ( adapter == ILifeCycleAdapter.class ) {
+      if( lifeCycleAdapterFactory == null ) {
+        lifeCycleAdapterFactory = RWTFactory.getLifeCycleAdapterFactory();
       }
-      result = ( T )adapterManager.getAdapter( this, adapter );
+      result = ( T )lifeCycleAdapterFactory.getAdapter( this );
+    } else {
+      result = ( T )RWTFactory.getAdapterManager().getAdapter( this, adapter );
     }
     return result;
   }
@@ -811,7 +814,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
   }
 
   void releaseWidget() {
-    adapterManager = null;
+    lifeCycleAdapterFactory = null;
     untypedAdapter = null;
     state |= DISPOSED;
   }

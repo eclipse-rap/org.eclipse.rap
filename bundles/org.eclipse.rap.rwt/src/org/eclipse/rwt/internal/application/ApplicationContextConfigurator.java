@@ -16,7 +16,6 @@ import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.engine.RWTConfigurationImpl;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
-import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.ApplicationStoreImpl;
 import org.eclipse.rwt.internal.service.ServiceManager;
@@ -24,8 +23,6 @@ import org.eclipse.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler;
 import org.eclipse.rwt.service.IApplicationStore;
 import org.eclipse.rwt.service.RWTFileSettingStoreFactory;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Widget;
 
 
 class ApplicationContextConfigurator {
@@ -56,7 +53,6 @@ class ApplicationContextConfigurator {
 
   private void configureInternalSettings( ApplicationContext applicationContext ) {
     setContextDirectory( applicationContext );
-    addInternalAdapterFactories( applicationContext );
     addInternalPhaseListeners( applicationContext );
     addInternalServiceHandlers( applicationContext );
     setInternalSettingStoreFactory( applicationContext );
@@ -96,12 +92,6 @@ class ApplicationContextConfigurator {
     configuration.reset();
   }
   
-  private void addInternalAdapterFactories( ApplicationContext applicationContext ) {
-    LifeCycleAdapterFactory adapterFactory = new LifeCycleAdapterFactory();
-    applicationContext.getAdapterManager().registerAdapters( Widget.class, adapterFactory );
-    applicationContext.getAdapterManager().registerAdapters( Display.class, adapterFactory );
-  }
-
   private void addInternalPhaseListeners( ApplicationContext applicationContext ) {
     applicationContext.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     applicationContext.getPhaseListenerRegistry().add( new MeasurementListener() );

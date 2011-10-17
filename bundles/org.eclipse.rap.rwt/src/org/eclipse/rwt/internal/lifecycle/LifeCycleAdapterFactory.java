@@ -14,7 +14,6 @@ package org.eclipse.rwt.internal.lifecycle;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.internal.util.ClassInstantiationException;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
@@ -24,12 +23,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 
 
-@SuppressWarnings("deprecation")
-public final class LifeCycleAdapterFactory implements AdapterFactory {
-
-  private static final Class[] ADAPTER_LIST = new Class[] {
-    ILifeCycleAdapter.class
-  };
+public final class LifeCycleAdapterFactory {
 
   private final Object displayAdapterLock;
   private final Object widgetAdaptersLock;
@@ -46,28 +40,24 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
     widgetAdapters = new HashMap<Class,ILifeCycleAdapter>();
   }
   
-  public Object getAdapter( Object adaptable, Class adapter ) {
+  public Object getAdapter( Object adaptable ) {
     Object result = null;
-    if( isDisplayLCA( adaptable, adapter ) ) {
+    if( isDisplayLCA( adaptable ) ) {
       result = getDisplayLCA();
-    } else if( isWidgetLCA( adaptable, adapter ) ) {
+    } else if( isWidgetLCA( adaptable ) ) {
       result = getWidgetLCA( adaptable.getClass() );
     }
     return result;
   }
 
-  public Class[] getAdapterList() {
-    return ADAPTER_LIST;
-  }
-
   ///////////////////////////////////////////////////////////
   // Helping methods to obtain life cycle adapter for display
 
-  private static boolean isDisplayLCA( Object adaptable, Class adapter ) {
-    return adaptable instanceof Display && adapter == ILifeCycleAdapter.class;
+  private static boolean isDisplayLCA( Object adaptable ) {
+    return adaptable instanceof Display;
   }
 
-  private synchronized ILifeCycleAdapter getDisplayLCA() {
+  private ILifeCycleAdapter getDisplayLCA() {
     synchronized( displayAdapterLock ) {
       if( displayAdapter == null ) {
         displayAdapter = new DisplayLCA();
@@ -79,11 +69,11 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
   ////////////////////////////////////////////////////////////
   // Helping methods to obtain life cycle adapters for widgets
 
-  private static boolean isWidgetLCA( Object adaptable, Class adapter ) {
-    return adaptable instanceof Widget && adapter == ILifeCycleAdapter.class;
+  private static boolean isWidgetLCA( Object adaptable ) {
+    return adaptable instanceof Widget;
   }
 
-  private synchronized ILifeCycleAdapter getWidgetLCA( Class clazz ) {
+  private ILifeCycleAdapter getWidgetLCA( Class clazz ) {
     // [fappel] This code is performance critical, don't change without checking against a profiler
     ILifeCycleAdapter result;
     synchronized( widgetAdaptersLock ) {
@@ -113,7 +103,7 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
     String className = LifeCycleAdapterUtil.getSimpleClassName( clazz );
     String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( clazz );
     for( int i = 0; result == null && i < variants.length; i++ ) {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append( variants[ i ] );
       buffer.append( "." );
       buffer.append( className );
@@ -122,7 +112,7 @@ public final class LifeCycleAdapterFactory implements AdapterFactory {
       ClassLoader loader = clazz.getClassLoader();
       try {
         result = ( IWidgetLifeCycleAdapter )ClassUtil.newInstance( loader, classToLoad );
-      } catch( ClassInstantiationException thr ) {
+      } catch( ClassInstantiationException ignore ) {
         // ignore and try to load next package name variant
       }
     }

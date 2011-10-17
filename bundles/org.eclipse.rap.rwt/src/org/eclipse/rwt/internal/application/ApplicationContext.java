@@ -21,6 +21,7 @@ import org.eclipse.rwt.internal.branding.BrandingManager;
 import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.engine.RWTConfigurationImpl;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.lifecycle.PhaseListenerRegistry;
 import org.eclipse.rwt.internal.resources.JSLibraryConcatenator;
@@ -67,6 +68,7 @@ public class ApplicationContext {
   private final LifeCycleFactory lifeCycleFactory;
   private final EntryPointManager entryPointManager;
   private final AdapterManager adapterManager;
+  private final LifeCycleAdapterFactory lifeCycleAdapterFactory;
   private final SettingStoreManager settingStoreManager;
   private final ServiceManager serviceManager;
   private final ResourceRegistry resourceRegistry;
@@ -100,6 +102,7 @@ public class ApplicationContext {
     this.imageDataFactory = new ImageDataFactory( resourceManager );
     this.fontDataFactory = new FontDataFactory();
     this.adapterManager = new AdapterManager();
+    this.lifeCycleAdapterFactory = new LifeCycleAdapterFactory();
     this.settingStoreManager = new SettingStoreManager();
     this.resourceRegistry = new ResourceRegistry();
     this.startupPage = new StartupPage( resourceRegistry );
@@ -168,6 +171,10 @@ public class ApplicationContext {
     return adapterManager;
   }
   
+  public LifeCycleAdapterFactory getLifeCycleAdapterFactory() {
+    return lifeCycleAdapterFactory;
+  }
+
   public ResourceRegistry getResourceRegistry() {
     return resourceRegistry;
   }

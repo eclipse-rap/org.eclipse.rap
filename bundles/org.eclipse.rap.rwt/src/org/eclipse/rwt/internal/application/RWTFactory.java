@@ -108,6 +108,10 @@ public class RWTFactory {
     return ApplicationContextUtil.getInstance().getAdapterManager();
   }
 
+  public static LifeCycleAdapterFactory getLifeCycleAdapterFactory() {
+    return ApplicationContextUtil.getInstance().getLifeCycleAdapterFactory();
+  }
+
   public static ResourceRegistry getResourceRegistry() {
     return ApplicationContextUtil.getInstance().getResourceRegistry();
   }

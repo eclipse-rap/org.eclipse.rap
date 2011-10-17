@@ -765,6 +765,8 @@ public class Display extends Device implements Adaptable {
         widgetAdapter = new WidgetAdapter( "w1" );
       }
       result = ( T )widgetAdapter;
+    } else if( adapter == ILifeCycleAdapter.class ) {
+      result = ( T )RWTFactory.getLifeCycleAdapterFactory().getAdapter( this );
     } else {
       result = ( T )RWTFactory.getAdapterManager().getAdapter( this, adapter );
     }
