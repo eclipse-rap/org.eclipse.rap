@@ -24,6 +24,7 @@ public class ApplicationStoreImpl implements IApplicationStore {
   }
   
   public Object getAttribute( String name ) {
+    ParamCheck.notNull( name, "name" );
     Object result;
     synchronized( attributes ) {
       result = attributes.get( name );
@@ -32,14 +33,14 @@ public class ApplicationStoreImpl implements IApplicationStore {
   }
 
   public void setAttribute( String name, Object value ) {
-    ParamCheck.notNull( name, "name");
+    ParamCheck.notNull( name, "name" );
     synchronized( attributes ) {
       attributes.put( name, value );
     }
   }
 
   public void removeAttribute( String name ) {
-    ParamCheck.notNull( name, "name");
+    ParamCheck.notNull( name, "name" );
     synchronized( attributes ) {
       attributes.remove( name );
     }

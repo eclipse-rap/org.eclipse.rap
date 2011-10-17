@@ -22,10 +22,19 @@ public class ApplicationStoreImpl_Test extends TestCase {
   public void testSetAttributeWithNullName() {
     try {
       applicationStore.setAttribute( null, new Object() );
+      fail();
     } catch( NullPointerException expected ) {
     }
   }
 
+  public void testGetAttributeWithNullName() {
+    try {
+      applicationStore.getAttribute( null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
+  
   public void testGetAttribute() {
     applicationStore.setAttribute( KEY, VALUE );
     
@@ -45,6 +54,7 @@ public class ApplicationStoreImpl_Test extends TestCase {
   public void testRemoveAttributeWithNullArgument() {
     try {
       applicationStore.removeAttribute( null );
+      fail();
     } catch( NullPointerException expected ) {
     }
   }
