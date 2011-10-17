@@ -92,10 +92,10 @@ public class ApplicationContext {
     this.configuration = new RWTConfigurationImpl();
     this.resourceManager = new ResourceManagerImpl( configuration );
     this.phaseListenerRegistry = new PhaseListenerRegistry();
-    this.lifeCycleFactory = new LifeCycleFactory( phaseListenerRegistry );
+    this.entryPointManager = new EntryPointManager();
+    this.lifeCycleFactory = new LifeCycleFactory( entryPointManager, phaseListenerRegistry );
     this.themeManager = new ThemeManager();
     this.brandingManager = new BrandingManager();
-    this.entryPointManager = new EntryPointManager();
     this.resourceFactory = new ResourceFactory();
     this.imageFactory = new ImageFactory();
     this.internalImageFactory = new InternalImageFactory();

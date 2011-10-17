@@ -508,7 +508,7 @@ public class RWTLifeCycle_Test extends TestCase {
 
   public void testCreateUIIfNecessary() {
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    int returnValue = RWTLifeCycle.createUI();
+    int returnValue = lifeCycle.createUI();
     assertEquals( -1, returnValue );
 
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, MainStartup.class );
@@ -523,16 +523,16 @@ public class RWTLifeCycle_Test extends TestCase {
       }
     } );
 
-    returnValue = RWTLifeCycle.createUI();
+    returnValue = lifeCycle.createUI();
     assertEquals( -1, returnValue );
 
     lifeCycle.continueLifeCycle();
-    returnValue = RWTLifeCycle.createUI();
+    returnValue = lifeCycle.createUI();
     assertEquals( 0, returnValue );
     RWTFactory.getEntryPointManager().deregister( EntryPointManager.DEFAULT );
 
     lifeCycle.continueLifeCycle();
-    returnValue = RWTLifeCycle.createUI();
+    returnValue = lifeCycle.createUI();
     assertEquals( -1, returnValue );
   }
 
@@ -1016,7 +1016,7 @@ public class RWTLifeCycle_Test extends TestCase {
 
   public void testGetUIThreadWhileLifeCycleInExecute() throws IOException {
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    RWTLifeCycle lifeCycle = new RWTLifeCycle( RWTFactory.getEntryPointManager() );
     final Thread[] currentThread = { null };
     final Thread[] uiThread = { null };
     lifeCycle.addPhaseListener( new PhaseListener() {
@@ -1038,8 +1038,9 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testGetUIThreadAfterLifeCycleExecuted() throws IOException {
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
-    RWTLifeCycle lifeCycle = new RWTLifeCycle();
+    EntryPointManager entryPointManager = new EntryPointManager();
+    entryPointManager.register( EntryPointManager.DEFAULT, TestEntryPoint.class );
+    RWTLifeCycle lifeCycle = new RWTLifeCycle( entryPointManager );
     lifeCycle.execute();
 
     Thread uiThread = LifeCycleUtil.getUIThread( ContextProvider.getSession() ).getThread();

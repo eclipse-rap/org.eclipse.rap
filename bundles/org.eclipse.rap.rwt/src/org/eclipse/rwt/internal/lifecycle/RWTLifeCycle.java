@@ -13,10 +13,12 @@ package org.eclipse.rwt.internal.lifecycle;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rwt.internal.lifecycle.UIThread.UIThreadTerminatedError;
-import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.internal.service.ServiceContext;
+import org.eclipse.rwt.internal.service.SessionStoreImpl;
 import org.eclipse.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.PhaseListener;
@@ -104,12 +106,15 @@ public class RWTLifeCycle extends LifeCycle {
     }
   }
 
-  Runnable uiRunnable;
+  private final EntryPointManager entryPointManager;
   private final PhaseListenerManager phaseListenerManager;
+  Runnable uiRunnable;
 
-  public RWTLifeCycle() {
-    phaseListenerManager = new PhaseListenerManager( this );
-    uiRunnable = new UIThreadController();
+  public RWTLifeCycle( EntryPointManager entryPointManager ) {
+    super( entryPointManager );
+    this.entryPointManager = entryPointManager;
+    this.phaseListenerManager = new PhaseListenerManager( this );
+    this.uiRunnable = new UIThreadController();
   }
 
   public void execute() throws IOException {
@@ -196,12 +201,12 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
 
-  static int createUI() {
+  int createUI() {
     int result = -1;
     if( ZERO.equals( getCurrentPhase() ) ) {
       String startup = getEntryPoint();
       if( startup != null ) {
-        result = RWTFactory.getEntryPointManager().createUI( startup );
+        result = entryPointManager.createUI( startup );
       }
     }
     return result;

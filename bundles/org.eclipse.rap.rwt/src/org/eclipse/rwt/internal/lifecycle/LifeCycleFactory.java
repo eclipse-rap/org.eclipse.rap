@@ -18,14 +18,18 @@ import org.eclipse.rwt.lifecycle.PhaseListener;
 
 
 public class LifeCycleFactory {
-  
   private static final Class<RWTLifeCycle> DEFAULT_LIFE_CYCLE_CLASS = RWTLifeCycle.class;
-  
+
+  private final EntryPointManager entryPointManager;
   private final PhaseListenerRegistry phaseListenerRegistry;
   private Class<? extends LifeCycle> lifeCycleClass;
   private LifeCycle lifeCycle;
+
   
-  public LifeCycleFactory( PhaseListenerRegistry phaseListenerRegistry ) {
+  public LifeCycleFactory( EntryPointManager entryPointManager, 
+                           PhaseListenerRegistry phaseListenerRegistry ) 
+  {
+    this.entryPointManager = entryPointManager;
     this.phaseListenerRegistry = phaseListenerRegistry;
     this.lifeCycleClass = DEFAULT_LIFE_CYCLE_CLASS;
   }
@@ -39,10 +43,16 @@ public class LifeCycleFactory {
   }
 
   public void activate() {
-    lifeCycle = ( LifeCycle )ClassUtil.newInstance( lifeCycleClass );
+    lifeCycle = newLifeCycle();
     for( PhaseListener phaseListener : phaseListenerRegistry.getAll() ) {
       lifeCycle.addPhaseListener( phaseListener );
     }
+  }
+
+  private LifeCycle newLifeCycle() {
+    Class[] paramTypes = new Class[] { EntryPointManager.class };
+    Object[] paramValues = new Object[] { entryPointManager };
+    return ( LifeCycle )ClassUtil.newInstance( lifeCycleClass, paramTypes, paramValues );
   }
 
   public void deactivate() {

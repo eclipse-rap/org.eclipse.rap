@@ -11,14 +11,18 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.widgets.Display;
 
 
 
 final class PrepareUIRoot implements IPhase {
+  private final EntryPointManager entryPointManager;
 
+  PrepareUIRoot( EntryPointManager entryPointManager ) {
+    this.entryPointManager = entryPointManager;
+  }
+  
   public PhaseId getPhaseId() {
     return PhaseId.PREPARE_UI_ROOT;
   }
@@ -35,7 +39,7 @@ final class PrepareUIRoot implements IPhase {
     return result;
   }
 
-  private static void createUI( String entryPointName ) {
-    RWTFactory.getEntryPointManager().createUI( entryPointName );
+  private void createUI( String entryPointName ) {
+    entryPointManager.createUI( entryPointName );
   }
 }

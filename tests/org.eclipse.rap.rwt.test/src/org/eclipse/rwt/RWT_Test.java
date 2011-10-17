@@ -17,8 +17,11 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
 import org.eclipse.rwt.internal.application.RWTFactory;
+import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.LifeCycle;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.PhaseListener;
+import org.eclipse.rwt.lifecycle.UICallBack;
 import org.eclipse.rwt.service.IApplicationStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -31,6 +34,10 @@ public class RWT_Test extends TestCase {
     static final String REQUEST_THREAD_EXEC = "requestThreadExec";
     
     private String invocationLog = "";
+    
+    public TestLifeCycle( EntryPointManager entryPointManager ) {
+      super( entryPointManager );
+    }
 
     public void execute() throws IOException {
     }

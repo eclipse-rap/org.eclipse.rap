@@ -240,7 +240,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
     ISessionStore sessionSore = ContextProvider.getSession();
     ApplicationContextUtil.set( sessionSore, ApplicationContextUtil.getInstance() );
-    lifeCycle = new SimpleLifeCycle();
+    lifeCycle = new SimpleLifeCycle( RWTFactory.getEntryPointManager() );
   }
 
   protected void tearDown() throws Exception {

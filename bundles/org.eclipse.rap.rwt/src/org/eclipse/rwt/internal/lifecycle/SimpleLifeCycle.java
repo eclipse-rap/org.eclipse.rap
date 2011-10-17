@@ -26,17 +26,10 @@ import org.eclipse.swt.widgets.Display;
 
 public class SimpleLifeCycle extends LifeCycle {
 
-  private static final IPhase[] PHASES = new IPhase[] {
-    new PrepareUIRoot(),
-    new ReadData(),
-    new ProcessAction(),
-    new Render()
-  };
-
   private static class SessionDisplayPhaseExecutor extends PhaseExecutor {
     
-    SessionDisplayPhaseExecutor( PhaseListenerManager phaseListenerManager ) {
-      super( phaseListenerManager, PHASES );
+    SessionDisplayPhaseExecutor( PhaseListenerManager phaseListenerManager, IPhase[] phases ) {
+      super( phaseListenerManager, phases );
     }
     
     Display getDisplay() {
@@ -117,16 +110,24 @@ public class SimpleLifeCycle extends LifeCycle {
   }
 
   private final PhaseListenerManager phaseListenerManager;
+  private final IPhase[] phases;
 
-  public SimpleLifeCycle() {
-    phaseListenerManager = new PhaseListenerManager( this );
+  public SimpleLifeCycle( EntryPointManager entryPointManager ) {
+    super( entryPointManager );
+    this.phaseListenerManager = new PhaseListenerManager( this );
+    this.phases = new IPhase[] {
+      new PrepareUIRoot( entryPointManager ),
+      new ReadData(),
+      new ProcessAction(),
+      new Render()
+    };
   }
 
   public void execute() throws IOException {
     installSessionShutdownAdapter();
     attachThread( LifeCycleUtil.getSessionDisplay() );
     try {
-      PhaseExecutor phaseExecutor = new SessionDisplayPhaseExecutor( phaseListenerManager );
+      PhaseExecutor phaseExecutor = new SessionDisplayPhaseExecutor( phaseListenerManager, phases );
       phaseExecutor.execute( PhaseId.PREPARE_UI_ROOT );
     } finally {
       detachThread( LifeCycleUtil.getSessionDisplay() );

@@ -22,9 +22,13 @@ import org.eclipse.rwt.lifecycle.PhaseListener;
 public class LifeCycleFactory_Test extends TestCase {
   private LifeCycleFactory lifeCycleFactory;
   private PhaseListenerRegistry phaseListenerRegistry;
+  private EntryPointManager entryPointManager;
 
   private static class TestLifeCycle extends LifeCycle {
     PhaseListener addedPhaseListener;
+    public TestLifeCycle( EntryPointManager entryPointManager ) {
+      super( entryPointManager );
+    }
     public void addPhaseListener( PhaseListener listener ) {
       addedPhaseListener = listener;
     }
@@ -95,7 +99,8 @@ public class LifeCycleFactory_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     phaseListenerRegistry = new PhaseListenerRegistry();
-    lifeCycleFactory = new LifeCycleFactory( phaseListenerRegistry );
+    entryPointManager = new EntryPointManager();
+    lifeCycleFactory = new LifeCycleFactory( entryPointManager, phaseListenerRegistry );
   }
   
   protected void tearDown() throws Exception {
