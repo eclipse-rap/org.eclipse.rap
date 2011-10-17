@@ -62,7 +62,7 @@ public class TableViewerFocusCellManager extends SWTFocusCellManager {
 			FocusCellHighlighter focusDrawingDelegate,
 			CellNavigationStrategy navigationStrategy) {
 		super(viewer, focusDrawingDelegate, navigationStrategy);
-	}	
+	}
 
 	ViewerCell getInitialFocusCell() {
 		Table table = (Table) getViewer().getControl();
@@ -84,25 +84,27 @@ public class TableViewerFocusCellManager extends SWTFocusCellManager {
 
 		return null;
 	}
-	
+
 	private boolean columnInVisibleArea(Rectangle clientArea, ViewerRow row, int colIndex) {
 		return row.getBounds(colIndex).x >= clientArea.x;
 	}
-	
-	public ViewerCell getFocusCell() {
-		ViewerCell cell = super.getFocusCell();
-		Table t = (Table) getViewer().getControl();
 
-		// It is possible that the selection has changed under the hood
-		if (cell != null) {
-			if (t.getSelection().length == 1
-					&& t.getSelection()[0] != cell.getItem()) {
-				setFocusCell(getViewer().getViewerRowFromItem(
-						t.getSelection()[0]).getCell(cell.getColumnIndex()));
-			}
-		}
-
-		return super.getFocusCell();
-	}
+// RAP [if] 361052: Focused cell is not highlighted if navigating with CTRL + Arrow Up/Down
+//          https://bugs.eclipse.org/bugs/show_bug.cgi?id=361052
+//	public ViewerCell getFocusCell() {
+//		ViewerCell cell = super.getFocusCell();
+//		Table t = (Table) getViewer().getControl();
+//
+//		// It is possible that the selection has changed under the hood
+//		if (cell != null) {
+//			if (t.getSelection().length == 1
+//					&& t.getSelection()[0] != cell.getItem()) {
+//				setFocusCell(getViewer().getViewerRowFromItem(
+//						t.getSelection()[0]).getCell(cell.getColumnIndex()));
+//			}
+//		}
+//
+//		return super.getFocusCell();
+//	}
 
 }
