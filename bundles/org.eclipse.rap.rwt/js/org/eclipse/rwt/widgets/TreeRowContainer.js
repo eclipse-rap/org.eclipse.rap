@@ -45,6 +45,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRowContainer", {
     this._items = null;
     this._hoverItem = null;
     this._hoverElement = null;
+    this._asyncTimer.dispose();
+    this._asyncTimer = null;
   },
   
   statics : {

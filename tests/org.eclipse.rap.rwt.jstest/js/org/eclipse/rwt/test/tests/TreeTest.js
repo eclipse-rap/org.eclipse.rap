@@ -1633,6 +1633,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.destroy();
     },
 
+    testDisposeBeforeRenderItemHover : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      testUtil.fakeAppearance( "tree-row",  {
+        style : function( states ) {
+          return {
+            itemBackground : states.over ? "red" : "green"
+          }
+        }
+      } );
+      tree.setItemCount( 1 );
+      new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
+      testUtil.flush();
+      var timer = tree._rowContainer._asyncTimer;
+      testUtil.mouseOver( tree._rowContainer._children[ 0 ] );
+      tree.destroy();
+      testUtil.flush();
+      if( !timer.isDisposed() ) {
+        testUtil.forceInterval( timer );
+      }
+      // Succeeds by not crashing
+    },
+
     testRenderOnCheckBoxHover : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree( false, false, "check", [ 5, 20 ] );
