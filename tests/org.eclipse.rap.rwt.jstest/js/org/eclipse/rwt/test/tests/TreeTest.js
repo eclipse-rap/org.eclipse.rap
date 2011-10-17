@@ -1006,7 +1006,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertFalse( tree.isItemSelected( item1 ) );
       assertFalse( tree.isItemSelected( item2 ) );
       tree.destroy();
-    },    
+    },
 
     testShiftMultiSelection : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -2587,7 +2587,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertFalse( tree.isItemSelected( item2 ) );
       tree.destroy();
     },
-    
+
+    testKeyboardNavigationCtrlUpDown : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      tree.setItemCount( 3 );
+      var item0 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
+      var item1 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 1 );
+      var item2 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 2 );
+      testUtil.flush();
+      testUtil.click( tree._rowContainer._children[ 0 ] );
+      testUtil.pressOnce( tree, "Down", qx.event.type.DomEvent.CTRL_MASK );
+      assertFalse( tree.isItemSelected( item0 ) );
+      assertTrue( tree.isItemSelected( item1 ) );
+      assertFalse( tree.isItemSelected( item2 ) );
+      tree.destroy();
+    },
+
     testKeyboardNavigationRight : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();

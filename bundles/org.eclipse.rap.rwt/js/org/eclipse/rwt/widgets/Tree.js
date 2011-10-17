@@ -904,7 +904,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     // focus & selection
 
     _singleSelectItem : function( event, item ) {
-      if( event instanceof qx.event.type.KeyEvent && event.isCtrlPressed() ) {
+      if( event.isCtrlPressed() && this.isItemSelected( item ) ) {
         // NOTE: Apparently in SWT this is only supported by Table, not Tree.
         //       No reason not to support it in RAP though.
         this._ctrlSelectItem( item );
