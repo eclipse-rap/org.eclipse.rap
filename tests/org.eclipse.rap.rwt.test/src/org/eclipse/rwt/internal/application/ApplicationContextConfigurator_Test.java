@@ -30,14 +30,12 @@ import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.engine.RWTConfigurationImpl;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
-import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
-import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
 import org.eclipse.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.PhaseListener;
@@ -48,7 +46,6 @@ import org.eclipse.rwt.service.ISettingStore;
 import org.eclipse.rwt.service.ISettingStoreFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 
 
 @SuppressWarnings("deprecation")
@@ -69,8 +66,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   private String testServiceHandlerId;
   private TestBranding testBranding;
   private ApplicationContext applicationContext;
-  private Display display;
-
 
   private static class TestPhaseListener implements PhaseListener {
     public void beforePhase( PhaseEvent event ) {
@@ -250,7 +245,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
 
   private void createDisplay() {
     Fixture.createServiceContext();
-    display = new Display();
     Fixture.disposeOfServiceContext();
     Fixture.disposeOfServletContext();
   }
@@ -314,9 +308,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   private void checkAdapterFactoriesHaveBeenAdded() {
     AdapterManager adapterManager = applicationContext.getAdapterManager();
     Object testAdapter = adapterManager.getAdapter( new TestAdaptable(), TestAdapter.class );
-    Object displayAdapter = adapterManager.getAdapter( display, ILifeCycleAdapter.class );
     assertTrue( testAdapter instanceof TestAdapter );
-    assertTrue( displayAdapter instanceof IDisplayLifeCycleAdapter );
   }
 
   private void checkEntryPointHasBeenAdded() {

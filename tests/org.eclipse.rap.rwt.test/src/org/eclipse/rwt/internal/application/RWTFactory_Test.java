@@ -81,6 +81,9 @@ public class RWTFactory_Test extends TestCase {
     
     assertNotNull( RWTFactory.getProbeStore() );
     assertSame( RWTFactory.getProbeStore(), RWTFactory.getProbeStore() );
+    
+    assertNotNull( RWTFactory.getLifeCycleAdapterFactory() );
+    assertSame( RWTFactory.getLifeCycleAdapterFactory(), RWTFactory.getLifeCycleAdapterFactory() );
   }
 
   protected void setUp() throws Exception {
