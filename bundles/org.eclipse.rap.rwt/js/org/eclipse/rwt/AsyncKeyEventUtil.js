@@ -144,13 +144,15 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
       var result = false;
       if( qx.core.Variant.isSet( "qx.client", "gecko" ) ) {
         var tagName = domEvent.target.tagName.toLowerCase();
-        // Check for CTRL key fixes bug 282837
-        if( domEvent.ctrlKey ) {
-          result = true;
-        } else if( tagName == "input" || tagName == "textarea" ) {
-          for( var i = 0; !result && i < this._untrustedKeyCodes.length; i++ ) {
-            if( this._untrustedKeyCodes[ i ] === keyCode ) {
-              result = true;
+        if( tagName == "input" || tagName == "textarea" ) {
+          // Check for CTRL key fixes bug 282837
+          if( domEvent.ctrlKey ) {
+            result = true;
+          } else {
+            for( var i = 0; !result && i < this._untrustedKeyCodes.length; i++ ) {
+              if( this._untrustedKeyCodes[ i ] === keyCode ) {
+                result = true;
+              }
             }
           }
         }
