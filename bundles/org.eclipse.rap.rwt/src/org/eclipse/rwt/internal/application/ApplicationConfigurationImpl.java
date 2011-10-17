@@ -154,9 +154,6 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
   }
 
   public void setAttribute( String name, Object value ) {
-    ParamCheck.notNull( name, "name");
-    ParamCheck.notNull( value, "value" );
-    
     applicationContext.getApplicationStore().setAttribute( name, value );
   }
 

@@ -17,8 +17,16 @@ public class ApplicationStoreImpl_Test extends TestCase {
   private static final String VALUE = "value";
   private static final String KEY = "key";
 
+  private ApplicationStoreImpl applicationStore;
+  
+  public void testSetAttributeWithNullName() {
+    try {
+      applicationStore.setAttribute( null, new Object() );
+    } catch( NullPointerException expected ) {
+    }
+  }
+
   public void testGetAttribute() {
-    ApplicationStoreImpl applicationStore = new ApplicationStoreImpl();
     applicationStore.setAttribute( KEY, VALUE );
     
     Object attribute = applicationStore.getAttribute( KEY );
@@ -27,7 +35,6 @@ public class ApplicationStoreImpl_Test extends TestCase {
   }
 
   public void testRemoveAttribute() {
-    ApplicationStoreImpl applicationStore = new ApplicationStoreImpl();
     applicationStore.setAttribute( KEY, VALUE );
     
     applicationStore.removeAttribute( KEY );
@@ -35,12 +42,23 @@ public class ApplicationStoreImpl_Test extends TestCase {
     assertSame( null, applicationStore.getAttribute( KEY ) );
   }
   
+  public void testRemoveAttributeWithNullArgument() {
+    try {
+      applicationStore.removeAttribute( null );
+    } catch( NullPointerException expected ) {
+    }
+  }
+  
   public void testReset() {
-    ApplicationStoreImpl applicationStore = new ApplicationStoreImpl();
     applicationStore.setAttribute( KEY, VALUE );
 
     applicationStore.reset();
     
     assertSame( null, applicationStore.getAttribute( KEY ) );
+  }
+  
+  @Override
+  protected void setUp() throws Exception {
+    applicationStore = new ApplicationStoreImpl();
   }
 }
