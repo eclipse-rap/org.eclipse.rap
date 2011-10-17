@@ -23,7 +23,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
@@ -101,7 +100,7 @@ public class TableViewerTab extends ExampleTab {
     }
   }
 
-  private static final class PersonLabelProvider extends ColumnLabelProvider {
+  private static final class PersonLabelProvider extends CellLabelProvider {
     private int columnIndex;
 
     public PersonLabelProvider( int columnIndex ) {
@@ -127,25 +126,6 @@ public class TableViewerTab extends ExampleTab {
       }
       return result;
     }
-    
-    public Color getBackground( Object element ) {
-      Color result = null;
-//      switch( columnIndex ) {
-//        case FIRST_NAME:
-//          result = Graphics.getColor( 225, 225, 225 );
-//          break;
-//        case LAST_NAME:
-//          result = Graphics.getColor( 230, 230, 230 );
-//          break;
-//        case AGE:
-//          result = Graphics.getColor( 235, 235, 235 );
-//          break;
-//        case MARRIED:
-//          result = Graphics.getColor( 240, 240, 240 );
-//          break;
-//      }
-      return result;
-    }
 
     public String getToolTipText( Object element ) {
       Person person = ( Person )element;
@@ -165,6 +145,11 @@ public class TableViewerTab extends ExampleTab {
           break;
       }
       return text;
+    }
+
+    @Override
+    public void update( ViewerCell cell ) {
+      cell.setText( getText( cell.getElement() ) );
     }
   }
 
@@ -487,20 +472,9 @@ public class TableViewerTab extends ExampleTab {
     viewer.setItemCount( persons.size() );
     viewer.addFilter( viewerFilter );
     viewer.addSelectionChangedListener( new ISelectionChangedListener() {
-      int[] selection = new int[ 0 ];
       public void selectionChanged( SelectionChangedEvent event ) {
         lblSelection.setText( "Selection: " + event.getSelection() );
         lblSelection.getParent().layout( new Control[] { lblSelection } );
-        Table table = viewer.getTable();
-        if( Boolean.TRUE.equals( table.getData( Table.ALWAYS_HIDE_SELECTION ) ) ) {
-          for( int i = 0; i < selection.length; i++ ) {
-            table.getItem( selection[ i ] ).setBackground( null );
-          }
-          selection = table.getSelectionIndices();
-          for( int i = 0; i < selection.length; i++ ) {
-            table.getItem( selection[ i ] ).setBackground( Graphics.getColor( 160, 205, 230 ) );
-          }
-        }
       }
     } );
     viewer.getTable().setHeaderVisible( true );
