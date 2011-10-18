@@ -45,6 +45,7 @@ Spinner-UpButton {
   );
   width: 18px;
   border: none;
+  border-left: none;
   border-radius: 0px 2px 0px 0px;
   cursor: default;
 }
@@ -75,6 +76,7 @@ Spinner-DownButton {
   );
   width: 18px;
   border: none;
+  border-left: none;
   border-radius: 0px 0px 2px 0px;
   cursor: default;
 }
