@@ -73,7 +73,7 @@ public class ApplicationContext {
   private final ServiceManager serviceManager;
   private final ResourceRegistry resourceRegistry;
   private final JSLibraryConcatenator jsLibraryConcatenator;
-  private final ApplicationStoreImpl applicationStoreImpl;
+  private final ApplicationStoreImpl applicationStore;
   private final ResourceFactory resourceFactory;
   private final ImageFactory imageFactory;
   private final InternalImageFactory internalImageFactory;
@@ -88,7 +88,7 @@ public class ApplicationContext {
   private boolean activated;
   
   public ApplicationContext( ApplicationConfigurator configurator, ServletContext servletContext ) {
-    this.applicationStoreImpl = new ApplicationStoreImpl();
+    this.applicationStore = new ApplicationStoreImpl();
     this.configuration = new RWTConfigurationImpl();
     this.resourceManager = new ResourceManagerImpl( configuration );
     this.phaseListenerRegistry = new PhaseListenerRegistry();
@@ -204,7 +204,7 @@ public class ApplicationContext {
   }
   
   public IApplicationStore getApplicationStore() {
-    return applicationStoreImpl;
+    return applicationStore;
   }
   
   public ResourceFactory getResourceFactory() {
