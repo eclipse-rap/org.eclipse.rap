@@ -13,7 +13,6 @@ import org.apache.catalina.servlets.DefaultServlet;
 import org.apache.catalina.session.ManagerBase;
 import org.apache.catalina.session.StandardManager;
 import org.apache.catalina.startup.Tomcat;
-import org.eclipse.rap.rwt.cluster.testfixture.internal.server.DelegatingServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.server.RWTStartup;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.FileUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
@@ -121,7 +120,7 @@ public class TomcatEngine implements IServletEngine {
   }
 
   private File getBaseDir() {
-    return DelegatingServletEngine.getTempDir( this );
+    return FileUtil.getTempDir( this.toString() );
   }
 
   private File getWebAppsDir() {

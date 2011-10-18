@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.cluster.testfixture.internal.server;
 
-import java.io.File;
-import java.io.IOException;
 
 import javax.servlet.http.HttpSession;
 
@@ -21,16 +19,6 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 public class DelegatingServletEngine implements IServletEngine {
   
-  public static File getTempDir( IServletEngine servletEngine ) {
-    String baseTempDir = System.getProperty( "java.io.tmpdir" );
-    File tempDir = new File( baseTempDir, servletEngine.toString() + "-temp" );
-    try {
-      return tempDir.getCanonicalFile();
-    } catch( IOException ioe ) {
-      throw new RuntimeException( "Failed to obtain temp directory.", ioe );
-    }
-  }
-
   private final IServletEngine delegate;
   private boolean running;
   

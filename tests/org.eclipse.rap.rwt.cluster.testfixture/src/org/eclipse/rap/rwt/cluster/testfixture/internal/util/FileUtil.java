@@ -11,10 +11,21 @@
 package org.eclipse.rap.rwt.cluster.testfixture.internal.util;
 
 import java.io.File;
+import java.io.IOException;
 
 
 public class FileUtil {
   
+  public static File getTempDir( String prefix ) {
+    String baseTempDir = System.getProperty( "java.io.tmpdir" );
+    File tempDir = new File( baseTempDir, prefix + "-temp" );
+    try {
+      return tempDir.getCanonicalFile();
+    } catch( IOException ioe ) {
+      throw new RuntimeException( "Failed to obtain temp directory.", ioe );
+    }
+  }
+
   public static void deleteDirectory( File file ) {
     if( file.isDirectory() ) {
       File[] files = file.listFiles();
