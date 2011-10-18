@@ -27,11 +27,9 @@ import org.eclipse.rap.rwt.cluster.testfixture.internal.util.SocketUtil;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngine;
 import org.eclipse.rap.rwt.cluster.testfixture.server.IServletEngineFactory;
 import org.eclipse.rap.rwt.cluster.testfixture.test.TestEntryPoint;
-import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 
-@SuppressWarnings("restriction")
 public abstract class ServletEngineTestBase extends TestCase {
 
   private List<IServletEngine> startedEngines;
@@ -134,7 +132,6 @@ public abstract class ServletEngineTestBase extends TestCase {
   }
   
   protected void setUp() throws Exception {
-    System.setProperty( "lifecycle", SimpleLifeCycle.class.getName() );
     TestEntryPoint.reset();
     startedEngines = new LinkedList<IServletEngine>();
     bufferedSystemErr = System.err;
