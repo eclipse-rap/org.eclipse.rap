@@ -7,7 +7,7 @@
  http://www.eclipse.org/legal/epl-v10.html
 
  Contributors:
-     EclipseSource - initial API and implementation
+    EclipseSource - initial API and implementation
  -->
 
 <theme>
@@ -89,6 +89,12 @@
       <property name="border">
         <description>
           The border of the drop-down button of the CCombo.
+        </description>
+      </property>
+
+      <property name="border-left">
+        <description>
+          The left side border of the CCombo drop-down button.
         </description>
       </property>
 
