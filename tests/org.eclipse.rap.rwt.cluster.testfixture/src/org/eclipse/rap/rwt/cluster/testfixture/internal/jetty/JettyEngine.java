@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.HandlerContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.SessionIdManager;
 import org.eclipse.jetty.server.SessionManager;
@@ -57,7 +58,6 @@ public class JettyEngine implements IServletEngine {
   
   private final ISessionManagerProvider sessionManagerProvider;
   private final Server server;
-  private final ContextHandlerCollection contextHandlers;
   private final Map<String,HttpSession> sessions;
   private SessionManager sessionManager;
   
@@ -77,8 +77,7 @@ public class JettyEngine implements IServletEngine {
     this.sessionManagerProvider = sessionManagerProvider;
     this.server = new Server( port );
     this.server.setGracefulShutdown( 2000 );
-    this.contextHandlers = new ContextHandlerCollection();
-    this.server.setHandler( contextHandlers );
+    this.server.setHandler( new ContextHandlerCollection() );
     this.sessions = Collections.synchronizedMap( new HashMap<String,HttpSession>() );
   }
   
@@ -136,7 +135,7 @@ public class JettyEngine implements IServletEngine {
   private ServletContextHandler createServletContext( String path ) {
     SessionHandler sessionHandler = new SessionHandler( sessionManager );
     sessionManager.setSessionHandler( sessionHandler );
-    ServletContextHandler result = new ServletContextHandler( contextHandlers, path );
+    ServletContextHandler result = new ServletContextHandler( getHandlerContainer(), path );
     result.setSessionHandler( sessionHandler );
     result.setBaseResource( createServletContextPath() );
     result.addServlet( DefaultServlet.class.getName(), "/" );
@@ -153,17 +152,21 @@ public class JettyEngine implements IServletEngine {
   }
 
   private void cleanUp() throws IOException {
-    Handler[] handlers = contextHandlers.getHandlers();
+    Handler[] handlers = getHandlerContainer().getHandlers();
     if( handlers != null ) {
-      for( int i = 0; i < handlers.length; i++ ) {
-        if( handlers[ i ] instanceof ServletContextHandler ) {
-          ServletContextHandler contextHandler = ( ServletContextHandler )handlers[ i ];
+      for( Handler handler : handlers ) {
+        if( handler instanceof ServletContextHandler ) {
+          ServletContextHandler contextHandler = ( ServletContextHandler )handler;
           FileUtil.deleteDirectory( contextHandler.getBaseResource().getFile() );
         }
       }
     }
   }
   
+  private HandlerContainer getHandlerContainer() {
+    return ( HandlerContainer )server.getHandler();
+  }
+
   private class SessionTracker implements Filter {
     
     public void init( FilterConfig filterConfig ) throws ServletException {
