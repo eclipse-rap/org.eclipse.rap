@@ -17,6 +17,7 @@ import java.util.Arrays;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.resources.ResourceLoader;
 import org.eclipse.swt.graphics.*;
 
@@ -68,13 +69,12 @@ public final class QxImage implements QxType {
       try {
         Point size = readImageSize( path, loader );
         if( size == null ) {
-          throw new IllegalArgumentException( "Failed to read image from " + path );
+          throw new IllegalArgumentException( "Failed to read image: " + path );
         }
         width = size.x;
         height = size.y;
       } catch( IOException e ) {
-        throw new IllegalArgumentException(   "Failed to read image from " + path
-                                            + ": " + e.getMessage() );
+        throw new IllegalArgumentException( "Failed to read image: " + path, e );
       }
     }
   }
@@ -84,9 +84,8 @@ public final class QxImage implements QxType {
     if( NONE_INPUT.equals( input ) ) {
       result = NONE;
     } else {
-      if( input == null || loader == null ) {
-        throw new NullPointerException( "null argument" );
-      }
+      ParamCheck.notNull( input, "input" );
+      ParamCheck.notNull( loader, "loader" );
       if( input.length() == 0 ) {
         throw new IllegalArgumentException( "Empty image path" );
       }
@@ -128,22 +127,22 @@ public final class QxImage implements QxType {
     return none ? NONE_INPUT : "";
   }
 
-  public boolean equals( final Object object ) {
+  public boolean equals( Object object ) {
     boolean result = false;
     if( object == this ) {
       result = true;
     } else if( object.getClass() == QxImage.class ) {
       QxImage other = ( QxImage )object;
-      result =    ( path == null
+      result =    (   path == null
                     ? other.path == null
                     : path.equals( other.path ) )
-               && ( loader == null
+               && (   loader == null
                     ? other.loader == null
                     : loader.equals( other.loader ) )
-               && ( gradientColors == null
+               && (   gradientColors == null
                     ? other.gradientColors == null
                     : Arrays.equals( gradientColors, other.gradientColors ) )
-               && ( gradientPercents == null
+               && (   gradientPercents == null
                     ? other.gradientPercents == null
                     : Arrays.equals( gradientPercents, other.gradientPercents ) )
                && other.vertical == vertical;
@@ -179,7 +178,7 @@ public final class QxImage implements QxType {
       for( int i = 0; i < gradientColors.length; i++ ) {
         result.append( ", " );
         result.append( gradientColors[ i ] );
-        if( i  < gradientPercents.length ) {
+        if( i < gradientPercents.length ) {
           result.append( " " );
           result.append( gradientPercents[ i ] );
         }

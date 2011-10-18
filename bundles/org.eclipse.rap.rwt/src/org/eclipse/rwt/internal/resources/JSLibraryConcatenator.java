@@ -14,7 +14,7 @@ import java.io.*;
 import java.util.zip.GZIPOutputStream;
 
 import org.eclipse.rwt.internal.util.HTTP;
-import org.eclipse.rwt.internal.util.StreamWritingUtil;
+import org.eclipse.rwt.internal.util.StreamUtil;
 
 
 public class JSLibraryConcatenator {
@@ -115,7 +115,7 @@ public class JSLibraryConcatenator {
     //                not so crucial here as we only do in-memory opperations.
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     GZIPOutputStream gzipStream = new GZIPOutputStream( baos );
-    StreamWritingUtil.write( uncompressed, gzipStream );
+    StreamUtil.write( uncompressed, gzipStream );
     gzipStream.close();
     compressed = baos.toByteArray();
   }

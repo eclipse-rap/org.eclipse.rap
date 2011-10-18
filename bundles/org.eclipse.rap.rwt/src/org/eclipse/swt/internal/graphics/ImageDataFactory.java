@@ -11,9 +11,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.rwt.internal.util.StreamUtil;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.graphics.ImageData;
 
@@ -45,18 +45,13 @@ public class ImageDataFactory {
   private ImageData createImageData( InternalImage internalImage ) {
     ImageData result = null;
     String imagePath = internalImage.getResourceName();
-    try {
-      InputStream inputStream = resourceManager.getRegisteredContent( imagePath );
-      if( inputStream != null ) {
-        try {
-          result = new ImageData( inputStream );
-        } finally {
-          inputStream.close();
-        }
+    InputStream inputStream = resourceManager.getRegisteredContent( imagePath );
+    if( inputStream != null ) {
+      try {
+        result = new ImageData( inputStream );
+      } finally {
+        StreamUtil.close( inputStream );
       }
-    } catch( IOException ioe ) {
-      String message = "Failed to close input stream";
-      throw new RuntimeException( message, ioe );
     }
     return result;
   }

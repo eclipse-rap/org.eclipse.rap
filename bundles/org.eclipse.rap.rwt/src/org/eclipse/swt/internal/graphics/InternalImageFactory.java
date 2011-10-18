@@ -11,14 +11,21 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.util.SharedInstanceBuffer;
 import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.graphics.RGB;
 
 
 public class InternalImageFactory {
@@ -110,8 +117,8 @@ public class InternalImageFactory {
       } finally {
         stream.close();
       }
-    } catch( IOException e ) {
-      throw new SWTException( SWT.ERROR_IO, e.getMessage() );
+    } catch( IOException ioe ) {
+      throw new SWTException( SWT.ERROR_IO, ioe.getMessage() );
     }
     return result;
   }

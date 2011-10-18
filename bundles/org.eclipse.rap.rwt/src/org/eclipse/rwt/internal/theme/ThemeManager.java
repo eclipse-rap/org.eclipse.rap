@@ -35,6 +35,7 @@ import org.eclipse.rwt.internal.theme.css.CssElementHolder;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rwt.internal.util.StreamUtil;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 import org.eclipse.rwt.resources.ResourceLoader;
@@ -484,11 +485,7 @@ public class ThemeManager {
             String registerPath = IMAGE_DEST_PATH + "/" + key;
             getResourceManager().register( registerPath, inputStream );
           } finally {
-            try {
-              inputStream.close();
-            } catch( final IOException e ) {
-              throw new RuntimeException( e );
-            }
+            StreamUtil.close( inputStream );
           }
         }
       }
@@ -527,11 +524,7 @@ public class ThemeManager {
             String location = getResourceManager().getLocation( registerPath );
             log( " theme cursor registered @ " + location );
           } finally {
-            try {
-              inputStream.close();
-            } catch( final IOException e ) {
-              throw new RuntimeException( e );
-            }
+            StreamUtil.close( inputStream );
           }
         }
       }

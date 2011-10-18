@@ -7,13 +7,14 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.util;
 
 import java.io.*;
 
 
-public class StreamWritingUtil {
+public class StreamUtil {
 
   public static void write( byte[] content, OutputStream out ) throws IOException {
     out.write( content );
@@ -22,5 +23,13 @@ public class StreamWritingUtil {
 
   public static void writeBuffered( byte[] content, OutputStream out ) throws IOException {
     write( content, new BufferedOutputStream( out ) );
+  }
+
+  public static void close( InputStream inputStream ) {
+    try {
+      inputStream.close();
+    } catch( IOException ioe ) {
+      throw new RuntimeException( "Failed to close input stream.", ioe );
+    }
   }
 }

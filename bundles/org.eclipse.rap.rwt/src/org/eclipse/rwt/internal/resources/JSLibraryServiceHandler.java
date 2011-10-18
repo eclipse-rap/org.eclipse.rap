@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.util.HTTP;
-import org.eclipse.rwt.internal.util.StreamWritingUtil;
+import org.eclipse.rwt.internal.util.StreamUtil;
 import org.eclipse.rwt.service.IServiceHandler;
 
 
@@ -68,6 +68,6 @@ public class JSLibraryServiceHandler implements IServiceHandler {
 
   private static void writeOutput() throws IOException {
     ServletOutputStream out = RWT.getResponse().getOutputStream();
-    StreamWritingUtil.writeBuffered( RWTFactory.getJSLibraryConcatenator().getUncompressed(), out );
+    StreamUtil.writeBuffered( RWTFactory.getJSLibraryConcatenator().getUncompressed(), out );
   }
 }
