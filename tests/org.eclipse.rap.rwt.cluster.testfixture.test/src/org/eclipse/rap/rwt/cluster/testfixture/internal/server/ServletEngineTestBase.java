@@ -143,7 +143,6 @@ public abstract class ServletEngineTestBase extends TestCase {
     System.setErr( bufferedSystemErr );
     stopEngines();
     TestEntryPoint.reset();
-    System.getProperties().remove( "lifecycle" );
   }
 
   private void stopEngines() throws Exception {
