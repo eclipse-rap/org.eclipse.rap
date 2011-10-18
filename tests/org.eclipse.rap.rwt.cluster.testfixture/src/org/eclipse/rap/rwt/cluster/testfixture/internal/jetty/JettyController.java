@@ -38,6 +38,7 @@ class JettyController {
   private final int port;
   private Server server;
   private SessionManager sessionManager;
+  private SessionHandler sessionHandler;
 
   JettyController( ISessionManagerProvider sessionManagerProvider, int port ) {
     this.sessionManagerProvider = sessionManagerProvider;
@@ -58,8 +59,6 @@ class JettyController {
   
   ServletContextHandler createServletContext( String path ) {
     ensureServer();
-    SessionHandler sessionHandler = new SessionHandler( sessionManager );
-    sessionManager.setSessionHandler( sessionHandler );
     ServletContextHandler result = new ServletContextHandler( getHandlerContainer(), path );
     result.setSessionHandler( sessionHandler );
     result.setBaseResource( createServletContextPath() );
@@ -81,6 +80,7 @@ class JettyController {
     if( server == null ) {
       createServer();
       createSessionManager();
+      createSessionHandler();
     }
   }
 
@@ -96,6 +96,11 @@ class JettyController {
     sessionManager.setMaxInactiveInterval( 60 * 60 );
     sessionManager.setSessionIdManager( sessionIdManager );
     server.setSessionIdManager( sessionIdManager );
+  }
+
+  private void createSessionHandler() {
+    sessionHandler = new SessionHandler( sessionManager );
+    sessionManager.setSessionHandler( sessionHandler );
   }
 
   private FileResource createServletContextPath() {
