@@ -121,47 +121,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
           }
         }
       }
-    } ),
-
-    mergeBorders : function( border, borderTop, borderRight, borderBottom, borderLeft ) {
-      if( border == null ) {
-        throw new Error( "Unable to merge borders. Base border is null" );
-      }
-      var result = border;
-      var changed = false;
-      var borderColors = border.getColors();
-      var borderWidths = border.getWidths();
-      var borderStyles = border.getStyles();
-      if( borderTop != null && borderTop.getWidthTop() !== 0 ) {
-        changed = true;
-        borderColors[ 0 ] = borderTop.getColorTop();
-        borderWidths[ 0 ] = borderTop.getWidthTop();
-        borderStyles[ 0 ] = borderTop.getStyleTop();
-      }
-      if( borderRight != null && borderRight.getWidthRight() !== 0 ) {
-        changed = true;
-        borderColors[ 1 ] = borderRight.getColorRight();
-        borderWidths[ 1 ] = borderRight.getWidthRight();
-        borderStyles[ 1 ] = borderRight.getStyleRight();
-      }
-      if( borderBottom != null && borderBottom.getWidthBottom() !== 0 ) {
-        changed = true;
-        borderColors[ 2 ] = borderBottom.getColorBottom();
-        borderWidths[ 2 ] = borderBottom.getWidthBottom();
-        borderStyles[ 2 ] = borderBottom.getStyleBottom();
-      }
-      if( borderLeft != null && borderLeft.getWidthLeft() !== 0 ) {
-        changed = true;
-        borderColors[ 3 ] = borderLeft.getColorLeft();
-        borderWidths[ 3 ] = borderLeft.getWidthLeft();
-        borderStyles[ 3 ] = borderLeft.getStyleLeft();
-      }
-      if( changed ) {
-        // TODO: Border radii are ingnored during the merge.
-        result = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
-      }
-      return result;
-    }
+    } )
 
   },
 

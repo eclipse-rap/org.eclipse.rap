@@ -369,8 +369,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BorderTest", {
       var baseBorder = new org.eclipse.rwt.Border( 3, "solid", "#FF0000" );
       var borderRight = new org.eclipse.rwt.Border( 2, "dashed", "#00FF00" );
       var borderLeft = new org.eclipse.rwt.Border( 1, "dotted", "#0000FF" );
-      var mergedBorder
-        = org.eclipse.rwt.Border.mergeBorders( baseBorder, null, borderRight, null, borderLeft );
+      var tv = new org.eclipse.swt.theme.ThemeValues( {} );
+      var mergedBorder = tv.mergeBorders( baseBorder, null, borderRight, null, borderLeft );
       assertEquals( "#FF0000", mergedBorder.getColorTop() );
       assertEquals( "#00FF00", mergedBorder.getColorRight() );
       assertEquals( "#FF0000", mergedBorder.getColorBottom() );

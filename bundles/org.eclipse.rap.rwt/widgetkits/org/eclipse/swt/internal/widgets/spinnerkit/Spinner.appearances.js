@@ -48,7 +48,7 @@ appearances = {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var border = tv.getCssBorder( "Spinner-UpButton", "border" );
       var borderLeft = tv.getCssBorder( "Spinner-UpButton", "border-left" );
-      result.border = org.eclipse.rwt.Border.mergeBorders( border, null, null, null, borderLeft );
+      result.border = tv.mergeBorders( border, null, null, null, borderLeft );
       result.width = tv.getCssDimension( "Spinner-UpButton", "width" );
       result.icon = tv.getCssImage( "Spinner-UpButton-Icon", "background-image" );
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
@@ -68,14 +68,8 @@ appearances = {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var border = tv.getCssBorder( "Spinner-DownButton", "border" );
-      var borderColors = border.getColors();
-      var borderWidths = border.getWidths();
-      var borderStyles = border.getStyles();
       var borderLeft = tv.getCssBorder( "Spinner-DownButton", "border-left" );
-      borderColors[ 3 ] = borderLeft.getColorLeft();
-      borderWidths[ 3 ] = borderLeft.getWidthLeft();
-      borderStyles[ 3 ] = borderLeft.getStyleLeft();
-      result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
+      result.border = tv.mergeBorders( border, null, null, null, borderLeft );
       result.width = tv.getCssDimension( "Spinner-DownButton", "width" );
       result.icon = tv.getCssImage( "Spinner-DownButton-Icon", "background-image" );
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
