@@ -87,6 +87,15 @@ appearances = {
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var border = tv.getCssBorder( "DateTime-UpButton", "border" );
+      var borderColors = border.getColors();
+      var borderWidths = border.getWidths();
+      var borderStyles = border.getStyles();
+      var borderLeft = tv.getCssBorder( "DateTime-UpButton", "border-left" );
+      borderColors[ 3 ] = borderLeft.getColorLeft();
+      borderWidths[ 3 ] = borderLeft.getWidthLeft();
+      borderStyles[ 3 ] = borderLeft.getStyleLeft();
+      result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
       result.width = tv.getCssDimension( "DateTime-UpButton", "width" );
       result.icon = tv.getCssImage( "DateTime-UpButton-Icon",
                                     "background-image" );
@@ -96,7 +105,6 @@ appearances = {
         result.backgroundImage = tv.getCssImage( "DateTime-UpButton", "background-image" );
       }
       result.backgroundGradient = tv.getCssGradient( "DateTime-UpButton", "background-image" );
-      result.border = tv.getCssBorder( "DateTime-UpButton", "border" );
       result.backgroundColor = tv.getCssColor( "DateTime-UpButton", "background-color" );
       result.cursor = tv.getCssCursor( "DateTime-UpButton", "cursor" );
       return result;
@@ -107,6 +115,15 @@ appearances = {
     style : function( states ) {
       var result = {};
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
+      var border = tv.getCssBorder( "DateTime-DownButton", "border" );
+      var borderColors = border.getColors();
+      var borderWidths = border.getWidths();
+      var borderStyles = border.getStyles();
+      var borderLeft = tv.getCssBorder( "DateTime-DownButton", "border-left" );
+      borderColors[ 3 ] = borderLeft.getColorLeft();
+      borderWidths[ 3 ] = borderLeft.getWidthLeft();
+      borderStyles[ 3 ] = borderLeft.getStyleLeft();
+      result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
       result.width = tv.getCssDimension( "DateTime-DownButton", "width" );
       result.icon = tv.getCssImage( "DateTime-DownButton-Icon", "background-image" );
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
@@ -115,7 +132,6 @@ appearances = {
         result.backgroundImage = tv.getCssImage( "DateTime-DownButton", "background-image" );
       }
       result.backgroundGradient = tv.getCssGradient( "DateTime-DownButton", "background-image" );
-      result.border = tv.getCssBorder( "DateTime-DownButton", "border" );
       result.backgroundColor = tv.getCssColor( "DateTime-DownButton", "background-color" );
       result.cursor = tv.getCssCursor( "DateTime-DownButton", "cursor" );
       return result;
@@ -126,7 +142,15 @@ appearances = {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.border = tv.getCssBorder( "DateTime-DropDownButton", "border" );
+      var border = tv.getCssBorder( "DateTime-DropDownButton", "border" );
+      var borderColors = border.getColors();
+      var borderWidths = border.getWidths();
+      var borderStyles = border.getStyles();
+      var borderLeft = tv.getCssBorder( "DateTime-DropDownButton", "border-left" );
+      borderColors[ 3 ] = borderLeft.getColorLeft();
+      borderWidths[ 3 ] = borderLeft.getWidthLeft();
+      borderStyles[ 3 ] = borderLeft.getStyleLeft();
+      result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
       result.icon = tv.getCssImage( "DateTime-DropDownButton-Icon", "background-image" );
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
         result.icon = tv.getCssImage( "DateTime-DropDownButton", "background-image" );
