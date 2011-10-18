@@ -35,6 +35,7 @@ Combo-Button {
   cursor: default;
   background-color: transparent;
   border: none;
+  border-left: none;
   border-radius: 0px 2px 2px 0px;
   background-image: gradient(
     linear, left top, left bottom,

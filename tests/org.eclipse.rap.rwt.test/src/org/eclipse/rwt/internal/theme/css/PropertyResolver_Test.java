@@ -99,7 +99,7 @@ public class PropertyResolver_Test extends TestCase {
     assertEquals( 255, result.blue );
     assertEquals( 0.25, result.alpha, 0 );
   }
-  
+
   public void testColorWithAlpha_NoTransparency() throws Exception {
     String input = "rgba( 0, 0, 0, 1 )";
     QxColor result
@@ -848,6 +848,8 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testIsBorderProperty() {
     assertTrue( PropertyResolver.isBorderProperty( "border" ) );
+    assertTrue( PropertyResolver.isBorderProperty( "border-left" ) );
+    assertTrue( PropertyResolver.isBorderProperty( "border-bottom" ) );
   }
 
   public void testIsFontProperty() {

@@ -65,7 +65,15 @@ appearances = {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {};
-      result.border = tv.getCssBorder( "Combo-Button", "border" );
+      var border = tv.getCssBorder( "Combo-Button", "border" );
+      var borderColors = border.getColors();
+      var borderWidths = border.getWidths();
+      var borderStyles = border.getStyles();
+      var borderLeft = tv.getCssBorder( "Combo-Button", "border-left" );
+      borderColors[ 3 ] = borderLeft.getColorLeft();
+      borderWidths[ 3 ] = borderLeft.getWidthLeft();
+      borderStyles[ 3 ] = borderLeft.getStyleLeft();
+      result.border = new org.eclipse.rwt.Border( borderWidths, borderStyles, borderColors );
       result.width = tv.getCssDimension( "Combo-Button", "width" );
       result.height = null;
       result.top = 0;

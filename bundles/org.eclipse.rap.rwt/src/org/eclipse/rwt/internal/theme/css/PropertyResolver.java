@@ -259,7 +259,9 @@ public final class PropertyResolver {
   }
 
   static boolean isBorderProperty( String property ) {
-    return "border".equals( property ) || "border-bottom".equals( property );
+    return    "border".equals( property )
+           || "border-left".equals( property )
+           || "border-bottom".equals( property );
   }
 
   static QxBorder readBorder( LexicalUnit unit ) {
@@ -852,7 +854,7 @@ public final class PropertyResolver {
       while( nextUnit != null && ok ) {
         pos++;
         Integer nextValue = readSingleLengthUnit( nextUnit );
-        ok &= nextValue != null && pos <= 4; 
+        ok &= nextValue != null && pos <= 4;
         if( ok ) {
           if( pos == 1 ) {
             offsetX = nextValue;
