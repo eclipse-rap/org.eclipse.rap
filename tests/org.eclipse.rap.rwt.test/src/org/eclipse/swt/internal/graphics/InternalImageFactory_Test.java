@@ -24,7 +24,13 @@ import org.eclipse.swt.widgets.Display;
 
 
 public class InternalImageFactory_Test extends TestCase {
-  private static final ClassLoader CLASS_LOADER = Fixture.class.getClassLoader();
+
+  private static final ClassLoader CLASS_LOADER = InternalImageFactory_Test.class.getClassLoader();
+
+  private static final String IMAGE_SAMPLE1 = "resources/images/image-sample1.png";
+  private static final String IMAGE_SAMPLE2 = "resources/images/image-sample2.png";
+  private static final String IMAGE_OK = "resources/images/ok.png";
+  private static final String IMAGE_OK_BLACK = "resources/images/ok-black.png";
 
   private InternalImageFactory internalImageFactory;
 
@@ -105,6 +111,26 @@ public class InternalImageFactory_Test extends TestCase {
     ImageData imageData2 = new ImageData( 8, 8, 8, palette2 );
     InternalImage internalImage1 = internalImageFactory.findInternalImage( imageData1 );
     InternalImage internalImage2 = internalImageFactory.findInternalImage( imageData2 );
+    assertNotSame( internalImage1, internalImage2 );
+  }
+
+  // Regression test for bug 326888
+  public void testInternalImagesDifferForSimilarImageData() {
+    InputStream stream1 = CLASS_LOADER.getResourceAsStream( IMAGE_SAMPLE1 );
+    InternalImage internalImage1 = internalImageFactory.findInternalImage( stream1 );
+    InputStream stream2 = CLASS_LOADER.getResourceAsStream( IMAGE_SAMPLE2 );
+    InternalImage internalImage2 = internalImageFactory.findInternalImage( stream2 );
+    assertNotNull( internalImage1 );
+    assertNotSame( internalImage1, internalImage2 );
+  }
+
+  // Regression test for bug 326888
+  public void testInternalImagesDifferForDifferentColor() {
+    InputStream stream1 = CLASS_LOADER.getResourceAsStream( IMAGE_OK );
+    InternalImage internalImage1 = internalImageFactory.findInternalImage( stream1 );
+    InputStream stream2 = CLASS_LOADER.getResourceAsStream( IMAGE_OK_BLACK );
+    InternalImage internalImage2 = internalImageFactory.findInternalImage( stream2 );
+    assertNotNull( internalImage1 );
     assertNotSame( internalImage1, internalImage2 );
   }
 

@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.CRC32;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.util.SharedInstanceBuffer;
@@ -29,8 +30,9 @@ import org.eclipse.swt.graphics.RGB;
 
 
 public class InternalImageFactory {
+
   private final SharedInstanceBuffer<String,InternalImage> cache;
-  
+
   public InternalImageFactory() {
     cache = new SharedInstanceBuffer<String,InternalImage>();
   }
@@ -147,41 +149,62 @@ public class InternalImageFactory {
   }
 
   private static String createGeneratedImagePath( ImageData data ) {
-    int hashCode = getHashCode( data );
-    return "generated/" + Integer.toHexString( hashCode );
+    String hash = getHash( data );
+    return "generated/" + hash;
   }
 
-  // TODO [rh] improve test coverage, getHashCode seems to be tested at most indirectly
-  private static int getHashCode( ImageData imageData ) {
-    int result;
-    if( imageData.data  == null ) {
-      result = 0;
-    } else {
-      result = 1;
-      for( int i = 0; i < imageData.data.length; i++ ) {
-        result = 31 * result + imageData.data[ i ];
-      }
+  /*
+   * [cm] Compute a CRC32 value using all of the parts of the ImageData. For
+   * parts that may be null, a unique salt is added to avoid collisions in rare
+   * cases. There is a possibility that, for instance, the alphaData is set in
+   * one image but not the maskData. Then in a second image, the maskData is set
+   * to the same thing as the previous image, but no alphaData is set. In this
+   * case there would be a collision if no other information is added.
+   */
+  private static String getHash( ImageData imageData ) {
+    CRC32 crc32 = new CRC32();
+    if( imageData.data != null ) {
+      crc32.update( 1 );
+      crc32.update( imageData.data );
     }
-    if( imageData.palette != null  ) {
+    if( imageData.alphaData != null ) {
+      crc32.update( 2 );
+      crc32.update( imageData.alphaData );
+    }
+    if( imageData.maskData != null ) {
+      crc32.update( 3 );
+      crc32.update( imageData.maskData );
+    }
+    if( imageData.palette != null ) {
+      crc32.update( 4 );
       if( imageData.palette.isDirect ) {
-        result = result * 29 + imageData.palette.redMask;
-        result = result * 29 + imageData.palette.greenMask;
-        result = result * 29 + imageData.palette.blueMask;
+        crc32.update( 5 );
+        crc32.update( imageData.palette.redMask );
+        crc32.update( imageData.palette.greenMask );
+        crc32.update( imageData.palette.blueMask );
       } else {
+        crc32.update( 6 );
         RGB[] rgb = imageData.palette.getRGBs();
         for( int i = 0; i < rgb.length; i++ ) {
-          result = result * 37 + rgb[ i ].red;
-          result = result * 37 + rgb[ i ].green;
-          result = result * 37 + rgb[ i ].blue;
+          crc32.update( rgb[ i ].red );
+          crc32.update( rgb[ i ].green );
+          crc32.update( rgb[ i ].blue );
         }
       }
     }
-    result = result * 41 + imageData.alpha;
-    result = result * 41 + imageData.transparentPixel;
-    result = result * 41 + imageData.type;
-    result = result * 41 + imageData.bytesPerLine;
-    result = result * 41 + imageData.scanlinePad;
-    result = result * 41 + imageData.maskPad;
-    return result;
+    crc32.update( imageData.alpha );
+    crc32.update( imageData.transparentPixel );
+    crc32.update( imageData.type );
+    crc32.update( imageData.bytesPerLine );
+    crc32.update( imageData.scanlinePad );
+    crc32.update( imageData.maskPad );
+    crc32.update( imageData.x );
+    crc32.update( imageData.y );
+    crc32.update( imageData.width );
+    crc32.update( imageData.height );
+    crc32.update( imageData.depth );
+    crc32.update( imageData.delayTime );
+    crc32.update( imageData.disposalMethod );
+    return Long.toHexString( crc32.getValue() );
   }
 }
