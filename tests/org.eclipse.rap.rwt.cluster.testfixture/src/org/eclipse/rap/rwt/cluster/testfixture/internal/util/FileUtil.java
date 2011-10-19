@@ -19,11 +19,9 @@ public class FileUtil {
   public static File getTempDir( String prefix ) {
     String baseTempDir = System.getProperty( "java.io.tmpdir" );
     File tempDir = new File( baseTempDir, prefix + "-temp" );
-    try {
-      return tempDir.getCanonicalFile();
-    } catch( IOException ioe ) {
-      throw new RuntimeException( "Failed to obtain temp directory.", ioe );
-    }
+    File result = connonicalize( tempDir );
+    result.deleteOnExit();
+    return result;
   }
 
   public static void deleteDirectory( File file ) {
@@ -36,6 +34,17 @@ public class FileUtil {
     if( !file.delete() ) {
       throw new RuntimeException( "Failed to delete file: " + file.getAbsolutePath() );
     }
+  }
+
+  private static File connonicalize( File directory ) {
+    File result;
+    try {
+      result = directory.getCanonicalFile();
+    } catch( IOException ioe ) {
+      String msg = "Failed to obtain cannonical path: " + directory.getAbsolutePath();
+      throw new RuntimeException( msg, ioe );
+    }
+    return result;
   }
 
   private FileUtil() {
