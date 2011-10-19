@@ -10,61 +10,91 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 
 public class EntryPointManager_Test extends TestCase {
 
-  public static String log = "";
-
-  public static class TestEntryPointWithLog implements IEntryPoint {
+  private static final String NAME = "entryPointName";
+  private static final Integer RETURN_VALUE = Integer.valueOf( 123 );
+  
+  private EntryPointManager entryPointManager;
+  private IEntryPointFactory entryPointFactory;
+  private IEntryPoint entryPoint;
+  
+  public static class TestEntryPoint implements IEntryPoint {
     public int createUI() {
-      log = "isRunning";
-      return 123;
+      return 0;
     }
   }
 
-  private EntryPointManager entryPointManager;
-
   protected void setUp() throws Exception {
     Fixture.setUp();
+    mockEntryPoint();
+    mockEntryPointFactory();
     entryPointManager = new EntryPointManager();
+  }
+
+  private void mockEntryPointFactory() {
+    entryPointFactory = mock( IEntryPointFactory.class );
+    when( entryPointFactory.create() ).thenReturn( entryPoint );
+  }
+
+  private void mockEntryPoint() {
+    entryPoint = mock( IEntryPoint.class );
+    when( Integer.valueOf( entryPoint.createUI() ) ).thenReturn( RETURN_VALUE );
   }
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
   
+  public void testRegisterEntryPointWithNullParam() {
+    try {
+      entryPointManager.register( NAME, ( Class<? extends IEntryPoint> )null );
+      fail( "null-entrypoint not allowed" );
+    } catch( NullPointerException expected ) {
+    }
+  }
+  
+  public void testDelegationOfEntryPointRegistration() {
+    EntryPointManager entryPointManagerSpy = spy( entryPointManager );
+    
+    entryPointManagerSpy.register( NAME, TestEntryPoint.class );
+    
+    verify( entryPointManagerSpy ).register( eq( NAME ), any( DefaultEntryPointFactory.class ) );
+  }
+  
   public void testRegisterWithNullName() {
     try {
-      entryPointManager.register( null, TestEntryPointWithLog.class );
+      entryPointManager.register( null, entryPointFactory );
       fail( "null-name not allowed" );
     } catch( NullPointerException expected ) {
     }
   }
 
-  public void testRegisterWithNullClass() {
+  public void testRegisterWithNullFactory() {
     try {
-      entryPointManager.register( "xyz", null );
-      fail( "null-class not allowed" );
+      entryPointManager.register( NAME, ( IEntryPointFactory )null );
+      fail( "null-factory not allowed" );
     } catch( NullPointerException expected ) {
     }
   }
   
-  public void testRegisterWithNonEntryPointClass() {
-    try {
-      entryPointManager.register( "xyz", String.class );
-      fail( "illegal entry point class" );
-    } catch( IllegalArgumentException expected ) {
-    }
-  }
-  
   public void testRegisterDuplicateEntryPoint() {
-    entryPointManager.register( "xyz", TestEntryPointWithLog.class );
+    entryPointManager.register( NAME, entryPointFactory );
     try {
-      entryPointManager.register( "xyz", TestEntryPointWithLog.class );
+      entryPointManager.register( NAME, entryPointFactory );
       fail( "register duplicate names not allowed" );
     } catch( IllegalArgumentException expected ) {
     }
@@ -87,20 +117,20 @@ public class EntryPointManager_Test extends TestCase {
   }
   
   public void testDeregister() {
-    entryPointManager.register( "abc", TestEntryPointWithLog.class );
-    entryPointManager.deregister( "abc" );
+    entryPointManager.register( NAME, entryPointFactory );
+    entryPointManager.deregister( NAME );
     try {
-      entryPointManager.createUI( "abc" );
+      entryPointManager.createUI( NAME );
       fail( "deregistering entry point failed" );
     } catch( RuntimeException expected ) {
     }
   }
 
   public void testDeregisterAll() {
-    entryPointManager.register( "abc", TestEntryPointWithLog.class );
+    entryPointManager.register( NAME, entryPointFactory );
     entryPointManager.deregisterAll();
     try {
-      entryPointManager.createUI( "abc" );
+      entryPointManager.createUI( NAME );
       fail( "deregistering entry point failed" );
     } catch( RuntimeException expected ) {
     }
@@ -123,10 +153,13 @@ public class EntryPointManager_Test extends TestCase {
   }
   
   public void testCreateUI() {
-    entryPointManager.register( EntryPointManager.DEFAULT, TestEntryPointWithLog.class );
+    entryPointManager.register( EntryPointManager.DEFAULT, entryPointFactory );
+    
     int returnVal = entryPointManager.createUI( EntryPointManager.DEFAULT );
-    assertEquals( "isRunning", log );
-    assertEquals( 123, returnVal );
+    
+    verify( entryPointFactory ).create();
+    verify( entryPoint ).createUI();
+    assertEquals( RETURN_VALUE.intValue(), returnVal );
     assertEquals( EntryPointManager.DEFAULT, EntryPointManager.getCurrentEntryPoint() );
   }
 }

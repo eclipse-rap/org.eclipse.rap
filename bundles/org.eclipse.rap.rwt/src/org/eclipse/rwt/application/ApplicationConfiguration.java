@@ -12,6 +12,7 @@ package org.eclipse.rwt.application;
 
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.ResourceLoader;
@@ -36,6 +37,8 @@ public interface ApplicationConfiguration {
   void setOperationMode( OperationMode operationMode );
   
   void addEntryPoint( String entryPointName, Class<? extends IEntryPoint> entryPointType );
+  
+  void addEntryPoint( String entryPointName, IEntryPointFactory entryPointFactory );
 
   void addBranding( AbstractBranding branding );
 

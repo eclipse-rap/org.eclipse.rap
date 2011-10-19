@@ -15,45 +15,53 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rwt.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rwt.service.ISessionStore;
 
 
 public class EntryPointManager {
+  
   public static final String DEFAULT = "default";
-
   private static final String CURRENT_ENTRY_POINT
     = EntryPointManager.class.getName() + "#currentEntryPointName";
   
+  private final Map<String, IEntryPointFactory> registry;
+
   public static String getCurrentEntryPoint() {
     ISessionStore session = ContextProvider.getSession();
     return ( String )session.getAttribute( EntryPointManager.CURRENT_ENTRY_POINT );    
   }
   
-  private final Map<String,Class> registry;
-
   public EntryPointManager() {
-    registry = new HashMap<String,Class>();
+    registry = new HashMap<String, IEntryPointFactory>();
+  }
+  
+  public void register( String name, Class<? extends IEntryPoint> type ) {
+    ParamCheck.notNull( type, "type" );
+    
+    register( name, new DefaultEntryPointFactory( type ) );
   }
 
-  // TODO [rh] consider changing signature to register( String, Class<? extends IEntryPoint> )
-  public void register( String name, Class clazz ) {
+
+  public void register( String name, IEntryPointFactory entryPointFactory ) {
     ParamCheck.notNull( name, "name" );
-    ParamCheck.notNull( clazz, "clazz" );
-    checkClass( clazz );
+    ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
+    
     synchronized( registry ) {
       if( registry.containsKey( name ) ) {
-        String msg = "Entry point already exists: " + name;
+        String msg = "Entry point already registered: " + name;
         throw new IllegalArgumentException( msg );
       }
-      registry.put( name, clazz );
+      registry.put( name, entryPointFactory );
     }
   }
 
   public void deregister( String name ) {
     ParamCheck.notNull( name, "name" );
+    
     synchronized( registry ) {
       checkNameExists( name );
       registry.remove( name );
@@ -69,14 +77,15 @@ public class EntryPointManager {
 
   public int createUI( String name ) {
     ParamCheck.notNull( name, "name" );
-    Class clazz;
+    
+    IEntryPointFactory factory;
     synchronized( registry ) {
       checkNameExists( name );
-      clazz = registry.get( name );
+      factory = registry.get( name );
     }
     // no synchronization during instance creation to avoid lock in case
     // of expensive constructor operations
-    IEntryPoint entryPoint = ( IEntryPoint )ClassUtil.newInstance( clazz );
+    IEntryPoint entryPoint = factory.create();
     setCurrentEntryPoint( name );
     return entryPoint.createUI();
   }
@@ -86,13 +95,6 @@ public class EntryPointManager {
       String[] result = new String[ registry.keySet().size() ];
       registry.keySet().toArray( result );
       return result;
-    }
-  }
-
-  private static void checkClass( Class clazz ) {
-    if( !IEntryPoint.class.isAssignableFrom( clazz ) ) {
-      String msg = "Entry point class must implement " + IEntryPoint.class.getName();
-      throw new IllegalArgumentException( msg ) ;
     }
   }
 

@@ -28,6 +28,7 @@ import org.eclipse.rwt.lifecycle.ILifeCycle;
 
 
 public class ApplicationConfigurationImpl_Test extends TestCase {
+  
   private TestServletContext servletContext;
   private ApplicationContext applicationContext;
   private ApplicationConfigurationImpl applicationConfiguration;

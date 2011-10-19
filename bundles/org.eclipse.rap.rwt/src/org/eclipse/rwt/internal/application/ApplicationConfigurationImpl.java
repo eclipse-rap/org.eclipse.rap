@@ -26,6 +26,7 @@ import org.eclipse.rwt.internal.theme.css.CssFileReader;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
+import org.eclipse.rwt.lifecycle.IEntryPointFactory;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.ResourceLoader;
@@ -92,6 +93,14 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
     
     applicationContext.getEntryPointManager().register( entryPointName, type );
   }
+
+  public void addEntryPoint( String entryPointName, IEntryPointFactory entryPointFactory ) {
+    ParamCheck.notNull( entryPointName, "entryPointName" );
+    ParamCheck.notNull( entryPointFactory, "entryPointFactory" );
+
+    applicationContext.getEntryPointManager().register( entryPointName, entryPointFactory );
+  }
+
 
   // Only supported for Workbench API backward compatibilty
   public void addAdapterFactory( Class<?> adaptable, AdapterFactory adapterFactory ) {

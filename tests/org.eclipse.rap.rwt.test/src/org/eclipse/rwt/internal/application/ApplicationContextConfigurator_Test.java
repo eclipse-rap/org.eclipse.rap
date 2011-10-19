@@ -35,6 +35,7 @@ import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler;
+import org.eclipse.rwt.lifecycle.DefaultEntryPointFactory;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rwt.lifecycle.PhaseId;
@@ -59,7 +60,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
 
   private TestPhaseListener testPhaseListener;
   private TestSettingStoreFactory testSettingStoreFactory;
-  private String entryPointName;
   private TestAdapterFactory testAdapterFactory;
   private TestResource testResource;
   private TestServiceHandler testServiceHandler;
@@ -155,7 +155,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     checkContextDirectoryHasBeenSet();
     checkPhaseListenersHaveBeenAdded();
     checkSettingStoreManagerHasBeenSet();
-    checkEntryPointHasBeenAdded();
+    checkEntryPointsHasBeenAdded();
     checkAdapterFactoriesHaveBeenAdded();
     checkResourceHasBeenAdded();
     checkServiceHandlersHaveBeenAdded();
@@ -205,7 +205,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   protected void setUp() {
     testPhaseListener = new TestPhaseListener();
     testSettingStoreFactory = new TestSettingStoreFactory();
-    entryPointName = "entryPoint";
     testAdapterFactory = new TestAdapterFactory();
     testResource = new TestResource();
     testServiceHandler = new TestServiceHandler();
@@ -252,7 +251,9 @@ public class ApplicationContextConfigurator_Test extends TestCase {
   private ApplicationConfigurator createConfigurator() {
     return new ApplicationConfigurator() {
       public void configure( ApplicationConfiguration configuration ) {
-        configuration.addEntryPoint( entryPointName, TestEntryPoint.class );
+        configuration.addEntryPoint( "entryPoint", TestEntryPoint.class );
+        DefaultEntryPointFactory factory = new DefaultEntryPointFactory( TestEntryPoint.class );
+        configuration.addEntryPoint( "entryPointViaFactory", factory );
         configuration.addResource( testResource );
         configuration.addPhaseListener( testPhaseListener );
         configuration.setSettingStoreFactory( testSettingStoreFactory );
@@ -311,8 +312,8 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     assertTrue( testAdapter instanceof TestAdapter );
   }
 
-  private void checkEntryPointHasBeenAdded() {
-    assertEquals( 1, applicationContext.getEntryPointManager().getEntryPoints().length );
+  private void checkEntryPointsHasBeenAdded() {
+    assertEquals( 2, applicationContext.getEntryPointManager().getEntryPoints().length );
   }
 
   private void checkSettingStoreManagerHasBeenSet() {
