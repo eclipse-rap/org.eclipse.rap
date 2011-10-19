@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
@@ -93,23 +94,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
     },
     
     _isRelevantEvent : function( eventType, keyCode ) {
-      var result;
-      if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-        // TODO [tb] : is the browser-switch still relevant?
-        var keyEventHandler = org.eclipse.rwt.EventHandlerUtil;
-        var nonPrintable  =    keyEventHandler._isNonPrintableKeyCode( keyCode )
-                            || keyCode == 27 // escape
-                            || keyCode == 8  // backspace
-                            || keyCode == 9; // tab
-        if( nonPrintable ) {
-          result = eventType === "keydown";
-        } else {
-          result = eventType === "keypress";
-        }
-      } else {
-        result = eventType === "keypress";
-      }
-      return result;
+      return eventType === "keypress";
     },
 
     _getTargetControl : function() {
