@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.SyncKeyEventUtil",
@@ -22,6 +22,7 @@ qx.Class.define( "org.eclipse.rwt.SyncKeyEventUtil",
   
   members : {
     intercept : function( eventType, keyCode, charCode, domEvent ) {
+      this._cancelEvent = false;
       // [if] Fix for bug 319159
       var keyUtil = org.eclipse.rwt.KeyEventUtil.getInstance();
       var realKeyCode = this._getRealKeyCode( keyCode, domEvent );
@@ -37,7 +38,6 @@ qx.Class.define( "org.eclipse.rwt.SyncKeyEventUtil",
         if( hasKeyListener || ( hasTraverseListener && isTraverseKey ) ) {
           // [if] Don't keep and modify the pending event object outside the
           // "intercept" method. Such approach does not work in IE.
-          this._cancelEvent = false;
           this._sendKeyDown( control, realKeyCode, charCode, domEvent );
           if( this._cancelEvent ) {
             this._cancelDomEvent( domEvent );
