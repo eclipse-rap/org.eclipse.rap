@@ -32,9 +32,9 @@ public class RichTextToHtmlTransformer_Test extends TestCase {
 
   public void testParseWithEmptyText() {
     RichTextParser parser = new RichTextParser( transformer );
-    
+
     parser.parse( "<html></html>" );
-    
+
     assertEquals( "<div style=\"line-height:normal;\"></div>", transformer.getHtml() );
   }
 
@@ -45,45 +45,45 @@ public class RichTextToHtmlTransformer_Test extends TestCase {
     } catch( RichTextParserException expected ) {
     }
   }
-  
+
   public void testParseWithImgElement() throws IOException {
     RichTextParser parser = new RichTextParser( transformer );
     Image image = loadImage( Fixture.IMAGE_100x50 );
     imageMap.put( "foo", image );
 
     parser.parse( "<html><img src=\"foo\"/></html>" );
-    
+
     String expected
-      = "<div style=\"line-height:normal;\">" 
-      + "<img src=\"rwt-resources/generated/866f5ced\" width=\"100px\" height=\"50px\" />" 
+      = "<div style=\"line-height:normal;\">"
+      + "<img src=\"rwt-resources/generated/38c70370\" width=\"100px\" height=\"50px\" />"
       + "</div>";
     assertEquals( expected, transformer.getHtml() );
   }
 
   public void testParseWithFontElement() {
     RichTextParser parser = new RichTextParser( transformer );
-    
+
     parser.parse( "<html><font name=\"font-name\" height=\"1\">foo</font></html>" );
-    
+
     String expected
-      = "<div style=\"line-height:normal;\">" 
-      + "<span style=\"font-family:font-name;font-size:1px\">foo</span>" 
+      = "<div style=\"line-height:normal;\">"
+      + "<span style=\"font-family:font-name;font-size:1px\">foo</span>"
       + "</div>";
     assertEquals( expected, transformer.getHtml() );
   }
-  
+
   public void testParseWithFontElementWithQuotedFontName() {
     RichTextParser parser = new RichTextParser( transformer );
-    
+
     parser.parse( "<html><font name='\"font name\"' height=\"1\">foo</font></html>" );
-    
+
     String expected
-      = "<div style=\"line-height:normal;\">" 
-      + "<span style=\"font-family:&quot;font name&quot;;font-size:1px\">foo</span>" 
+      = "<div style=\"line-height:normal;\">"
+      + "<span style=\"font-family:&quot;font name&quot;;font-size:1px\">foo</span>"
       + "</div>";
     assertEquals( expected, transformer.getHtml() );
   }
-  
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     Display display = new Display();
@@ -94,7 +94,7 @@ public class RichTextToHtmlTransformer_Test extends TestCase {
     tableItem = new TableItem( table, SWT.NONE );
     transformer = new RichTextToHtmlTransformer( tableItem );
   }
-  
+
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
