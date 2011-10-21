@@ -854,8 +854,17 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
         "action" : "listen",
         "properties" : properties
       } );
+    },
+
+    protocolSet : function( id, properties ) {
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : id,
+        "action" : "set",
+        "properties" : properties
+      } );
     }
-     
+
   }
   
 });

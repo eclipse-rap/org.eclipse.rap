@@ -677,6 +677,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       shell.destroy();
     },
 
+    testProtocolSet : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      testUtil.protocolSet( "w2", { "customVariant" : "variant_blue" } );
+      assertTrue( shell.hasState( "variant_blue" ) );
+      shell.destroy();
+    },
+
     /////////
     // helper
     
