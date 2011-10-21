@@ -29,8 +29,8 @@ import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.SessionSingletonBase;
+import org.eclipse.rwt.engine.RWTServlet;
 import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.engine.RWTDelegate;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler;
 import org.eclipse.rwt.internal.service.RequestParams;
@@ -233,7 +233,7 @@ public class RWTLifeCycle2_Test extends TestCase {
 
   public void testEventProcessingOnSessionRestart() throws Exception {
     TestRequest request;
-    Class entryPoint = EventProcessingOnSessionRestartEntryPoint.class;
+    Class<? extends IEntryPoint> entryPoint = EventProcessingOnSessionRestartEntryPoint.class;
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, entryPoint );
     // send initial request - response is index.html
     request = newRequest();
@@ -263,7 +263,7 @@ public class RWTLifeCycle2_Test extends TestCase {
    */
   public void testSessionInvalidateWithDisposeInFinally() throws Exception {
     TestRequest request;
-    Class clazz = TestSessionInvalidateWithDisposeInFinallyEntryPoint.class;
+    Class<? extends IEntryPoint> clazz = TestSessionInvalidateWithDisposeInFinallyEntryPoint.class;
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, clazz );
     // send initial request - response is index.html
     request = newRequest();
@@ -297,7 +297,7 @@ public class RWTLifeCycle2_Test extends TestCase {
           //
         }
         try {
-          RWTDelegate delegate = new RWTDelegate();
+          RWTServlet delegate = new RWTServlet();
           delegate.doPost( request, response[ 0 ] );
         } catch( Exception e ) {
           exception[ 0 ] = e;

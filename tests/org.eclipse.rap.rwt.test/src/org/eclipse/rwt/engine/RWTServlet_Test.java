@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.rwt.internal.engine;
+package org.eclipse.rwt.engine;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,20 +23,21 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rap.rwt.testfixture.TestSession;
+import org.eclipse.rwt.engine.RWTServlet;
 import org.eclipse.rwt.internal.application.ApplicationContext;
 import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.IServiceHandler;
 
 
-public class RWTDelegate_Test extends TestCase {
+public class RWTServlet_Test extends TestCase {
 
   public void testInvalidRequestUrlWithPathInfo() throws Exception {
     TestRequest request = new TestRequest();
     TestResponse response = new TestResponse();
     request.setPathInfo( "foo" );
 
-    RWTDelegate.handleInvalidRequest( request, response );
+    RWTServlet.handleInvalidRequest( request, response );
 
     assertEquals( HttpServletResponse.SC_NOT_FOUND, response.getErrorStatus() );
   }
@@ -45,7 +46,7 @@ public class RWTDelegate_Test extends TestCase {
     TestRequest request = new TestRequest();
     request.setPathInfo( "/" );
 
-    String url = RWTDelegate.createRedirectUrl( request );
+    String url = RWTServlet.createRedirectUrl( request );
 
     assertEquals( "/fooapp/rap", url );
   }
@@ -54,7 +55,7 @@ public class RWTDelegate_Test extends TestCase {
     TestRequest request = new TestRequest();
     request.setParameter( "param1", "value1" );
 
-    String url = RWTDelegate.createRedirectUrl( request );
+    String url = RWTServlet.createRedirectUrl( request );
 
     assertEquals( "/fooapp/rap?param1=value1", url );
   }
@@ -64,7 +65,7 @@ public class RWTDelegate_Test extends TestCase {
     request.setParameter( "param1", "value1" );
     request.setParameter( "param2", "value2" );
 
-    String url = RWTDelegate.createRedirectUrl( request );
+    String url = RWTServlet.createRedirectUrl( request );
 
     assertTrue(    "/fooapp/rap?param1=value1&param2=value2".equals( url )
                 || "/fooapp/rap?param2=value2&param1=value1".equals( url ) );
@@ -80,7 +81,7 @@ public class RWTDelegate_Test extends TestCase {
         log.add( ContextProvider.getStateInfo() );
       }
     } );
-    RWTDelegate rwtDelegate = new RWTDelegate();
+    RWTServlet rwtDelegate = new RWTServlet();
 
     rwtDelegate.doPost( request, new TestResponse() );
 
