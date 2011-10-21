@@ -12,6 +12,7 @@
 
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
@@ -25,12 +26,12 @@ import java.util.NoSuchElementException;
  * <p>
  * CustomHashtable allows a custom comparator and hash code provider.
  */
-/* package */final class CustomHashtable {
+/* package */final class CustomHashtable implements Serializable {
 
     /**
      * HashMapEntry is an internal class which is used to hold the entries of a Hashtable.
      */
-    private static class HashMapEntry {
+    private static class HashMapEntry implements Serializable {
         Object key, value;
 
         HashMapEntry next;

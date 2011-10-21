@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.fieldassist;
 
+import java.io.Serializable;
+
 import org.eclipse.swt.widgets.Control;
 
 /**
@@ -22,7 +24,7 @@ import org.eclipse.swt.widgets.Control;
  * 
  * @since 1.0
  */
-public class AutoCompleteField {
+public class AutoCompleteField implements Serializable {
 
 	private SimpleContentProposalProvider proposalProvider;
 	private ContentProposalAdapter adapter;

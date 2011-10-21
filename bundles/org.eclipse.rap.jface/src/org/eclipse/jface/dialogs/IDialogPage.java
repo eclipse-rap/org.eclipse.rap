@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.dialogs;
 
+import java.io.Serializable;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -18,7 +20,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * Interface for a page in a multi-page dialog.
  */
-public interface IDialogPage {
+public interface IDialogPage extends Serializable {
     /**
      * Creates the top level control for this dialog
      * page under the given parent composite.

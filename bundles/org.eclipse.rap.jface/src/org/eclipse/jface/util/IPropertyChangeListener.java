@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.jface.util;
 
+import java.io.Serializable;
 import java.util.EventListener;
 
 /**
@@ -29,7 +30,7 @@ import java.util.EventListener;
  * </pre>
  * </p>
  */
-public interface IPropertyChangeListener extends EventListener {
+public interface IPropertyChangeListener extends EventListener, Serializable {
     /**
      * Notification that a property has changed.
      * <p>

@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.jface.action;
 
+import java.io.Serializable;
+
 /**
  * A menu listener that gets informed when a menu is about to show.
  *
  * @see MenuManager#addMenuListener
  */
-public interface IMenuListener {
+public interface IMenuListener extends Serializable {
     /**
      * Notifies this listener that the menu is about to be shown by
      * the given menu manager.

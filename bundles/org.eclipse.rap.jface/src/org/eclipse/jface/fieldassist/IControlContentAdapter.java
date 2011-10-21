@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.fieldassist;
 
+import java.io.Serializable;
+
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 
@@ -21,7 +23,7 @@ import org.eclipse.swt.widgets.Control;
  * 
  * @since 1.0
  */
-public interface IControlContentAdapter {
+public interface IControlContentAdapter extends Serializable {
 	/**
 	 * Set the contents of the specified control to the specified text. Must not
 	 * be <code>null</code>.

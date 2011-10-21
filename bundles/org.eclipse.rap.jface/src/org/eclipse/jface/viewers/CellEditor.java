@@ -12,8 +12,11 @@
 
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
+
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.jface.internal.util.SerializableListenerList;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.util.SafeRunnable;
@@ -41,19 +44,19 @@ import org.eclipse.swt.widgets.Display;
  * 
  * @since 1.2
  */
-public abstract class CellEditor {
+public abstract class CellEditor implements Serializable {
 
 	/**
 	 * List of cell editor listeners (element type:
 	 * <code>ICellEditorListener</code>).
 	 */
-	private ListenerList listeners = new ListenerList();
+	private ListenerList listeners = new SerializableListenerList();
 
 	/**
 	 * List of cell editor property change listeners (element type:
 	 * <code>IPropertyChangeListener</code>).
 	 */
-	private ListenerList propertyChangeListeners = new ListenerList();
+	private ListenerList propertyChangeListeners = new SerializableListenerList();
 
 	/**
 	 * Indicates whether this cell editor's current value is valid.

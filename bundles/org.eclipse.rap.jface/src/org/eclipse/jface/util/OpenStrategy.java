@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.jface.util;
 
+import java.io.Serializable;
+
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.internal.util.SerializableListenerList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -39,7 +42,7 @@ import org.eclipse.swt.widgets.Widget;
  * </pre>
  * </p>
  */
-public class OpenStrategy {
+public class OpenStrategy implements Serializable {
     /** 
      * Default behavior. Double click to open the item.
      */
@@ -93,11 +96,11 @@ public class OpenStrategy {
 
     private Listener eventHandler;
 
-    private ListenerList openEventListeners = new ListenerList();
+    private ListenerList openEventListeners = new SerializableListenerList();
 
-    private ListenerList selectionEventListeners = new ListenerList();
+    private ListenerList selectionEventListeners = new SerializableListenerList();
 
-    private ListenerList postSelectionEventListeners = new ListenerList();
+    private ListenerList postSelectionEventListeners = new SerializableListenerList();
 
     /**
      * @param control the control the strategy is applied to

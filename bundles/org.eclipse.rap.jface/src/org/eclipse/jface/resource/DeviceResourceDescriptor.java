@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.resource;
 
+import java.io.Serializable;
+
 import org.eclipse.swt.graphics.Device;
 
 /**
@@ -22,7 +24,7 @@ import org.eclipse.swt.graphics.Device;
  * 
  * @since 1.0
  */
-public abstract class DeviceResourceDescriptor {
+public abstract class DeviceResourceDescriptor implements Serializable {
     /**
      * Creates the resource described by this descriptor
      * 

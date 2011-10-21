@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.fieldassist;
 
+import java.io.Serializable;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -24,7 +26,7 @@ import org.eclipse.swt.widgets.Control;
  *             of {@link DecoratedField}.
  * 
  */
-public interface IControlCreator {
+public interface IControlCreator extends Serializable {
 	/**
 	 * Create a control with the specified parent and style bits.
 	 * 

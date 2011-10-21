@@ -14,6 +14,8 @@
 package org.eclipse.jface.viewers;
 
 //import org.eclipse.swt.custom.StyleRange;
+import java.io.Serializable;
+
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -28,7 +30,7 @@ import org.eclipse.swt.widgets.Widget;
  * @since 1.0
  *
  */
-public class ViewerCell {
+public class ViewerCell implements Serializable {
 	private int columnIndex;
 
 	private ViewerRow row;

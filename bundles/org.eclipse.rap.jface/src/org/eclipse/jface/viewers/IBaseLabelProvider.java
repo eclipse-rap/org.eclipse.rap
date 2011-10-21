@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
+
 /**
  * A label provider maps an element of the viewer's model to
  * an optional image and optional text string used to display
@@ -38,7 +40,7 @@ package org.eclipse.jface.viewers;
  * @see ILabelProvider
  * @see ITableLabelProvider
  */
-public interface IBaseLabelProvider {
+public interface IBaseLabelProvider extends Serializable {
     /**
      * Adds a listener to this label provider. 
      * Has no effect if an identical listener is already registered.

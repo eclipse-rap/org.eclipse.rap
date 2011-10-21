@@ -11,6 +11,8 @@
 
 package org.eclipse.jface.menus;
 
+import java.io.Serializable;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.Menu;
@@ -32,7 +34,7 @@ import org.eclipse.swt.widgets.ToolBar;
  * 
  * @since 1.0
  */
-public interface IWidget {
+public interface IWidget extends Serializable {
 
 	/**
 	 * Disposes of the underlying widgets. This can be called when the widget is

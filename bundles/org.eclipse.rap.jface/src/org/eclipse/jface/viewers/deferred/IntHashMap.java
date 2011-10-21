@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers.deferred;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
@@ -20,7 +21,7 @@ import java.util.HashMap;
  * 
  * @since 1.0
  */
-/* package */ class IntHashMap {
+/* package */ class IntHashMap implements Serializable {
     private HashMap map; 
     
     /**

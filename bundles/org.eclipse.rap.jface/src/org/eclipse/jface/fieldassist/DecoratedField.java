@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.fieldassist;
 
+import java.io.Serializable;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
@@ -58,7 +60,7 @@ import org.eclipse.swt.widgets.Shell;
  * @since 1.0
  * @deprecated As of 3.3, clients should use {@link ControlDecoration} instead.
  */
-public class DecoratedField {
+public class DecoratedField implements Serializable {
 
 	/**
 	 * Cached platform flags for dealing with platform-specific issues.

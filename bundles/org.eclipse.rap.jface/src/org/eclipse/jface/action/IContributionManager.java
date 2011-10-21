@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.action;
 
+import java.io.Serializable;
+
 /**
  * A contribution manager organizes contributions to such UI components
  * as menus, toolbars and status lines.
@@ -34,7 +36,7 @@ package org.eclipse.jface.action;
  * and status lines ({@link StatusLineManager <code>StatusLineManager</code>}).
  * </p>
  */
-public interface IContributionManager {
+public interface IContributionManager extends Serializable {
     /**
      * Adds an action as a contribution item to this manager.
      * Equivalent to <code>add(new ActionContributionItem(action))</code>.

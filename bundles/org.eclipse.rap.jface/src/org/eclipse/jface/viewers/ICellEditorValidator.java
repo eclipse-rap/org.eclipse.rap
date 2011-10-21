@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
+
 /**
  * An interface for validating a cell editor's input.
  * <p>
@@ -17,7 +19,7 @@ package org.eclipse.jface.viewers;
  * act as cell editor validators.
  * </p>
  */
-public interface ICellEditorValidator {
+public interface ICellEditorValidator extends Serializable {
     /**
      * Returns a string indicating whether the given value is valid;
      * <code>null</code> means valid, and non-<code>null</code> means

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers.deferred;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -53,7 +54,7 @@ import org.eclipse.jface.viewers.deferred.ConcurrentTableUpdator.Range;
  * 
  * @since 1.0
  */
-/* package */ final class BackgroundContentProvider {
+/* package */ final class BackgroundContentProvider implements Serializable {
     
 	/**
 	 * Sorting message string

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers.deferred;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -38,7 +39,7 @@ import org.eclipse.core.runtime.Assert;
  * 
  * @since 1.0
  */
-public class LazySortedCollection {
+public class LazySortedCollection implements Serializable {
     private final int MIN_CAPACITY = 8;
     private Object[] contents = new Object[MIN_CAPACITY];
     private int[] leftSubTree = new int[MIN_CAPACITY];

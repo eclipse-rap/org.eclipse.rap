@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
+
 /**
  * A listener which is notified of significant events in the
  * life of a cell editor.
@@ -23,7 +25,7 @@ package org.eclipse.jface.viewers;
  * knows which cell editor is talking to it.
  * </p>
  */
-public interface ICellEditorListener {
+public interface ICellEditorListener extends Serializable {
     /**
      * Notifies that the end user has requested applying a value.
      * All cell editors send this notification.

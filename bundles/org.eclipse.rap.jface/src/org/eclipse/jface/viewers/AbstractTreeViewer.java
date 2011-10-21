@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.internal.util.SerializableListenerList;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -74,7 +75,7 @@ public abstract class AbstractTreeViewer extends ColumnViewer {
 	 * List of registered tree listeners (element type:
 	 * <code>TreeListener</code>).
 	 */
-	private ListenerList treeListeners = new ListenerList();
+	private ListenerList treeListeners = new SerializableListenerList();
 
 	/**
 	 * The level to which the tree is automatically expanded each time the

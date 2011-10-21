@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.jface.window;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +34,7 @@ import org.eclipse.core.runtime.Assert;
  *
  * @see Window
  */
-public class WindowManager {
+public class WindowManager implements Serializable {
 
     /**
      * List of windows managed by this window manager

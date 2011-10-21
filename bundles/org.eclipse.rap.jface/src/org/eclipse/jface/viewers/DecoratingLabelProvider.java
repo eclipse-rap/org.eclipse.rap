@@ -12,6 +12,7 @@ package org.eclipse.jface.viewers;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.internal.util.SerializableListenerList;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -30,7 +31,7 @@ public class DecoratingLabelProvider extends LabelProvider implements
     private ILabelDecorator decorator;
 
     // Need to keep our own list of listeners
-    private ListenerList listeners = new ListenerList();
+    private ListenerList listeners = new SerializableListenerList();
 
 	private IDecorationContext decorationContext = DecorationContext.DEFAULT_CONTEXT;
 

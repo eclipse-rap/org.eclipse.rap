@@ -14,6 +14,8 @@
 
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.swt.events.DisposeEvent;
@@ -29,7 +31,7 @@ import org.eclipse.swt.widgets.Widget;
  * @since 1.0
  * 
  */
-public abstract class ViewerColumn {
+public abstract class ViewerColumn implements Serializable {
 
 	private CellLabelProvider labelProvider;
 

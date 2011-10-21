@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.jface.fieldassist;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -40,7 +41,7 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @since 1.0
  */
-public class FieldDecorationRegistry {
+public class FieldDecorationRegistry implements Serializable {
 
 	/**
 	 * Decoration id for the decoration that should be used to cue the user that

@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.jface.resource;
 
+import java.io.Serializable;
 import java.util.Set;
 
-import org.eclipse.core.commands.common.EventManager;
+import org.eclipse.jface.internal.util.SerializableEventManager;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
@@ -21,7 +22,7 @@ import org.eclipse.jface.util.PropertyChangeEvent;
  * 
  * @since 1.0
  */
-public abstract class ResourceRegistry extends EventManager {
+public abstract class ResourceRegistry extends SerializableEventManager implements Serializable {
 
     /**
      * Adds a property change listener to this registry.

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.fieldassist;
 
+import java.io.Serializable;
+
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -21,7 +23,7 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @since 1.0
  */
-public class FieldDecoration {
+public class FieldDecoration implements Serializable {
 
 	/*
 	 * The image to be shown in the decoration.

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.window;
 
+import java.io.Serializable;
+
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -20,7 +22,7 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @since 1.0
  */
-public interface IShellProvider {
+public interface IShellProvider extends Serializable {
     /**
      * Returns the current shell (or null if none). This return value may
      * change over time, and should not be cached.

@@ -13,6 +13,8 @@
 
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
+
 import org.eclipse.core.runtime.Assert;
 
 /**
@@ -21,7 +23,7 @@ import org.eclipse.core.runtime.Assert;
  * @since 1.0
  *
  */
-public abstract class EditingSupport {
+public abstract class EditingSupport implements Serializable {
 
 	private ColumnViewer viewer;
 

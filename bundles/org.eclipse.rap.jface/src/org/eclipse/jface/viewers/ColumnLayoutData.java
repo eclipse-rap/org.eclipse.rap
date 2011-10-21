@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
+
 /**
  * An abstract column layout data describing the information needed 
  * (by <code>TableLayout</code>) to properly lay out a table. 
@@ -18,7 +20,7 @@ package org.eclipse.jface.viewers;
  * </p>
  * @noextend This class is not intended to be subclassed by clients.
  */
-public abstract class ColumnLayoutData {
+public abstract class ColumnLayoutData implements Serializable {
 
     /**
      * Indicates whether the column is resizable.

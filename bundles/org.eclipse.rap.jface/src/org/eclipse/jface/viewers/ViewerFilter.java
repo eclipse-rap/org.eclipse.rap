@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -22,7 +23,7 @@ import java.util.ArrayList;
  * @see IStructuredContentProvider
  * @see StructuredViewer
  */
-public abstract class ViewerFilter {
+public abstract class ViewerFilter implements Serializable {
     /**
      * Creates a new viewer filter.
      */

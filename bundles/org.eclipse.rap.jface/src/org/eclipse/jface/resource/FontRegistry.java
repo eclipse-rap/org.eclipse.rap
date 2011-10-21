@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.jface.resource;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,6 +24,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.jface.internal.util.SerializableRunnable;
 import org.eclipse.jface.util.Policy;
 import org.eclipse.jface.util.Util;
 import org.eclipse.swt.SWT;
@@ -62,7 +64,7 @@ public class FontRegistry extends ResourceRegistry {
      * FontRecord is a private helper class that holds onto a font
      * and can be used to generate its bold and italic version. 
      */
-    private class FontRecord {
+    private class FontRecord implements Serializable {
 
         Font baseFont;
 
@@ -200,7 +202,7 @@ public class FontRegistry extends ResourceRegistry {
     /**
      * Runnable that cleans up the manager on disposal of the display.
      */
-    protected Runnable displayRunnable = new Runnable() {
+    protected Runnable displayRunnable = new SerializableRunnable() {
         public void run() {
             clearCaches();
         }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers.deferred;
 
+import java.io.Serializable;
+
 
 /**
  * Interface for a set of unordered elements that can fire change notifications.
@@ -31,7 +33,7 @@ package org.eclipse.jface.viewers.deferred;
  * @since 1.0
  * @noimplement This interface is not intended to be implemented by clients.
  */
-public interface IConcurrentModel {
+public interface IConcurrentModel extends Serializable {
 
     /**
      * Requests that the receiver to call the given listener's setContents(...) 

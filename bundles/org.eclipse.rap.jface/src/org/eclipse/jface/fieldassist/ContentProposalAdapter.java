@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.jface.fieldassist;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.Assert;
@@ -62,7 +63,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
  * 
  * @since 1.0
  */
-public class ContentProposalAdapter {
+public class ContentProposalAdapter implements Serializable {
 
 	/*
 	 * The lightweight popup used to show content proposals for a text field. If

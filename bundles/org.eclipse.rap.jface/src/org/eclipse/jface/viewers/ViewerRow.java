@@ -13,6 +13,8 @@
 
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
+
 import org.eclipse.jface.util.Policy;
 //import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
@@ -31,7 +33,7 @@ import org.eclipse.swt.widgets.Widget;
  * @since 1.0
  * 
  */
-public abstract class ViewerRow implements Cloneable {
+public abstract class ViewerRow implements Cloneable, Serializable {
 
 	/**
 	 * Constant denoting the row above the current one (value is 1).

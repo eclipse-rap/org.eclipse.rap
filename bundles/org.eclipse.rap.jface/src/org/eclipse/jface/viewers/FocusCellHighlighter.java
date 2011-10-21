@@ -13,11 +13,13 @@
 
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
+
 /**
  * @since 1.2
  *
  */
-public abstract class FocusCellHighlighter {
+public abstract class FocusCellHighlighter implements Serializable {
 	private ColumnViewer viewer;
 	private SWTFocusCellManager mgr;
 

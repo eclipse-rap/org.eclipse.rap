@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.fieldassist;
 
+import java.io.Serializable;
+
 /**
  * IContentProposalProvider provides an array of IContentProposals that are
  * appropriate for a textual dialog field, given the field's current content and
@@ -19,7 +21,7 @@ package org.eclipse.jface.fieldassist;
  * 
  * @see SimpleContentProposalProvider
  */
-public interface IContentProposalProvider {
+public interface IContentProposalProvider extends Serializable {
 
 	/**
 	 * Return an array of content proposals representing the valid proposals for a

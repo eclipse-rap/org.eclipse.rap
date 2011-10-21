@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.action;
 
+import java.io.Serializable;
+
 import org.eclipse.core.commands.IHandlerAttributes;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -42,7 +44,7 @@ import org.eclipse.swt.widgets.Event;
  * @noimplement This interface is not intended to be implemented by clients.
  * @since 1.0
  */
-public interface IAction {
+public interface IAction extends Serializable {
 
     /**
      * Action style constant (value <code>0</code>) indicating action style 

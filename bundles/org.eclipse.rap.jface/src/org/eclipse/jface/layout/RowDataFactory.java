@@ -11,6 +11,8 @@
 
 package org.eclipse.jface.layout;
 
+import java.io.Serializable;
+
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.widgets.Control;
@@ -28,7 +30,7 @@ import org.eclipse.swt.widgets.Control;
  * 
  * @since 1.3
  */
-public final class RowDataFactory {
+public final class RowDataFactory implements Serializable {
 	private RowData data;
 
 	/**

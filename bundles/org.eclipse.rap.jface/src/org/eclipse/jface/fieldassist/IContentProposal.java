@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.fieldassist;
 
+import java.io.Serializable;
+
 /**
  * IContentProposal describes a content proposal to be shown. It consists of the
  * content that will be provided if the proposal is accepted, an optional label
@@ -22,7 +24,7 @@ package org.eclipse.jface.fieldassist;
  * 
  * @see ContentProposal
  */
-public interface IContentProposal {
+public interface IContentProposal extends Serializable {
 	/**
 	 * Return the content represented by this proposal.
 	 * 

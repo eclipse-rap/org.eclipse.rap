@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers.deferred;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -17,7 +18,7 @@ import java.util.LinkedList;
  * Holds a queue of additions, removals, updates, and SET calls for a
  * BackgroundContentProvider
  */
-final class ChangeQueue {
+final class ChangeQueue implements Serializable {
 	/**
 	 * Represents the addition of an item
 	 * @since 1.0

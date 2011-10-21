@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.preference;
 
+import java.io.Serializable;
+
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -25,7 +27,7 @@ import org.eclipse.swt.graphics.Image;
  * allocated by this node (Images, Fonts, etc).
  * However the node itself may be reused.
  */
-public interface IPreferenceNode {
+public interface IPreferenceNode extends Serializable {
     /**
      * Adds the given preference node as a subnode of this
      * preference node.

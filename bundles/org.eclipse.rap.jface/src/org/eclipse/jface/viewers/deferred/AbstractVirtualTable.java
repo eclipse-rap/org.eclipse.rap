@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers.deferred;
 
+import java.io.Serializable;
+
 import org.eclipse.swt.widgets.Control;
 
 /**
@@ -32,7 +34,7 @@ import org.eclipse.swt.widgets.Control;
  * 
  * @since 1.0
  */
-abstract class AbstractVirtualTable {
+abstract class AbstractVirtualTable implements Serializable {
     /**
      * Tells the receiver that the item at given row has changed. This may indicate
      * that a different element is now at this row, but does not necessarily indicate

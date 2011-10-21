@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers.deferred;
 
+import java.io.Serializable;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
@@ -19,7 +21,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * 
  * @since 1.0
  */
-final class FastProgressReporter {
+final class FastProgressReporter implements Serializable {
     private IProgressMonitor monitor;
     private volatile boolean canceled = false;
     private int cancelCheck = 0;

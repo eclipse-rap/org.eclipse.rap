@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.jface.dialogs;
 
+import java.io.Serializable;
+
 /**
  * Minimal interface to a page change provider. Used for dialogs which can
  * switch between multiple pages.
  * 
  * @since 1.0
  */
-public interface IPageChangeProvider {
+public interface IPageChangeProvider extends Serializable {
 	/**
 	 * Returns the currently selected page in the dialog.
 	 * 

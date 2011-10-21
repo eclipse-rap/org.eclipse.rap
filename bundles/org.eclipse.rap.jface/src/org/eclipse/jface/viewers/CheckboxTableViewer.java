@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.internal.util.SerializableListenerList;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -43,7 +44,7 @@ public class CheckboxTableViewer extends TableViewer implements ICheckable {
     /**
      * List of check state listeners (element type: <code>ICheckStateListener</code>).
      */
-    private ListenerList checkStateListeners = new ListenerList();
+    private ListenerList checkStateListeners = new SerializableListenerList();
     
     /**
      * Provides the desired state of the check boxes.

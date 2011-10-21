@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
+
 /** 
  * A content provider mediates between the viewer's model
  * and the viewer itself.
  * 
  * @see org.eclipse.jface.viewers.ContentViewer#setContentProvider(IContentProvider)
  */
-public interface IContentProvider {
+public interface IContentProvider extends Serializable {
     /**
      * Disposes of this content provider.  
      * This is called by the viewer when it is disposed.

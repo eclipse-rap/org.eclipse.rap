@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.jface.dialogs;
 
+import java.io.Serializable;
+
 /**
  * The IInputValidator is the interface for simple validators. 
  * @see org.eclipse.jface.dialogs.InputDialog
  */
-public interface IInputValidator {
+public interface IInputValidator extends Serializable {
     /**
      * Validates the given string.  Returns an error message to display
      * if the new text is invalid.  Returns <code>null</code> if there

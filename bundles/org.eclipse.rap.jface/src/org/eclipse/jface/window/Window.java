@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.jface.window;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.eclipse.jface.resource.JFaceResources;
@@ -83,7 +84,7 @@ import org.eclipse.swt.widgets.Shell;
  * </ul>
  * </p>
  */
-public abstract class Window implements IShellProvider {
+public abstract class Window implements IShellProvider, Serializable {
 
 // RAP [if] Session scoped defaultModalParent
     private static final String DEFAULT_MODAL_PARENT

@@ -13,6 +13,8 @@
 
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -29,7 +31,7 @@ import org.eclipse.swt.widgets.Listener;
  * @since 1.2
  *
  */
-abstract class SWTFocusCellManager {
+abstract class SWTFocusCellManager implements Serializable {
 
 	private CellNavigationStrategy navigationStrategy;
 

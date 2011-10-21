@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
+
 /** 
  * A listener which is notified when a label provider's state changes.
  *
  * @see IBaseLabelProvider#addListener
  * @see IBaseLabelProvider#removeListener
  */
-public interface ILabelProviderListener {
+public interface ILabelProviderListener extends Serializable {
     /**
      * Notifies this listener that the state of the label provider 
      * has changed in a way that affects the labels it computes.

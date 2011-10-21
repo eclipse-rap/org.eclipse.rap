@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import org.eclipse.core.commands.common.EventManager;
+import org.eclipse.jface.internal.util.SerializableEventManager;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -40,7 +40,7 @@ import org.eclipse.jface.util.SafeRunnable;
  * @see IPreferenceStore
  * @noextend This class is not intended to be subclassed by clients.
  */
-public class PreferenceStore extends EventManager implements
+public class PreferenceStore extends SerializableEventManager implements
 		IPersistentPreferenceStore {
 
 	/**

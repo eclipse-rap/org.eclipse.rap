@@ -11,6 +11,8 @@
 
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 
@@ -25,7 +27,7 @@ import org.eclipse.swt.widgets.Event;
  * @since 1.2
  * 
  */
-public class CellNavigationStrategy {
+public class CellNavigationStrategy implements Serializable {
 	/**
 	 * is the given event an event which moves the selection to another cell
 	 * 

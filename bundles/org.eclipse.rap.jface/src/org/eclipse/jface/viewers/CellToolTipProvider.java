@@ -9,6 +9,8 @@
  ******************************************************************************/
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
+
 import org.eclipse.swt.internal.widgets.ICellToolTipAdapter;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ICellToolTipProvider;
@@ -20,16 +22,14 @@ import org.eclipse.swt.widgets.Tree;
 /**
  * Support for table/tree tool-tips in RAP
  */
-final class CellToolTipProvider implements ICellToolTipProvider {
+final class CellToolTipProvider implements ICellToolTipProvider, Serializable {
   private ColumnViewer viewer;
 
-  CellToolTipProvider( final ColumnViewer viewer ) {
+  CellToolTipProvider( ColumnViewer viewer ) {
     this.viewer = viewer;
   }
 
-  static void attach( final ColumnViewer viewer,
-                      final CellLabelProvider labelProvider )
-  {
+  static void attach( ColumnViewer viewer, CellLabelProvider labelProvider ) {
     ICellToolTipAdapter adapter = getAdapter( viewer );
     if( labelProvider != null ) {
       CellToolTipProvider provider = new CellToolTipProvider( viewer );
@@ -39,7 +39,7 @@ final class CellToolTipProvider implements ICellToolTipProvider {
     }
   }
 
-  private static ICellToolTipAdapter getAdapter( final ColumnViewer viewer ) {
+  private static ICellToolTipAdapter getAdapter( ColumnViewer viewer ) {
     ICellToolTipAdapter result = null;
     if( viewer instanceof TableViewer ) {
       Table table = ( ( TableViewer )viewer ).getTable();
@@ -51,7 +51,7 @@ final class CellToolTipProvider implements ICellToolTipProvider {
     return result;
   }
 
-  public void getToolTipText( final Item item, final int columnIndex ) {
+  public void getToolTipText( Item item, int columnIndex ) {
     Object element =  item.getData();
     ViewerColumn column = viewer.getViewerColumn( columnIndex );
     CellLabelProvider labelProvider = column.getLabelProvider();

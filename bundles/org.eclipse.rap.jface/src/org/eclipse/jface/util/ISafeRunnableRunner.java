@@ -12,6 +12,8 @@
 
 package org.eclipse.jface.util;
 
+import java.io.Serializable;
+
 import org.eclipse.core.runtime.ISafeRunnable;
 
 /**
@@ -26,7 +28,7 @@ import org.eclipse.core.runtime.ISafeRunnable;
  * @see SafeRunnable#run(ISafeRunnable)
  * @since 1.0
  */
-public interface ISafeRunnableRunner {
+public interface ISafeRunnableRunner extends Serializable {
 	
 	/**
 	 * Runs the runnable.  All <code>ISafeRunnableRunners</code> must catch any exception

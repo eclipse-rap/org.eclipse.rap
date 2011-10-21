@@ -13,7 +13,10 @@
 
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
+
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.internal.util.SerializableListenerList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -36,7 +39,7 @@ import org.eclipse.swt.widgets.Item;
  * @see TableViewerEditor
  * @see TreeViewerEditor
  */
-public abstract class ColumnViewerEditor {
+public abstract class ColumnViewerEditor implements Serializable {
 	private CellEditor cellEditor;
 
 	private ICellEditorListener cellEditorListener;
@@ -481,7 +484,7 @@ public abstract class ColumnViewerEditor {
 	public void addEditorActivationListener(
 			ColumnViewerEditorActivationListener listener) {
 		if (editorActivationListener == null) {
-			editorActivationListener = new ListenerList();
+			editorActivationListener = new SerializableListenerList();
 		}
 		editorActivationListener.add(listener);
 	}

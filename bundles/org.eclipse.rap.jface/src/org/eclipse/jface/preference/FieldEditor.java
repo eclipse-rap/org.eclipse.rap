@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.preference;
 
+import java.io.Serializable;
+
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.resource.JFaceResources;
@@ -59,7 +61,7 @@ import org.eclipse.swt.widgets.Label;
  * </ul>
  * </p>
  */
-public abstract class FieldEditor {
+public abstract class FieldEditor implements Serializable {
 
     /**
      * Property name constant (value <code>"field_editor_is_valid"</code>)

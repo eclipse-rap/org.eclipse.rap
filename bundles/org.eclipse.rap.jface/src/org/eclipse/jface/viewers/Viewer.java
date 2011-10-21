@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
+
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.jface.internal.util.SerializableListenerList;
 import org.eclipse.jface.util.SafeRunnable;
 import org.eclipse.swt.events.HelpEvent;
 import org.eclipse.swt.events.HelpListener;
@@ -43,14 +46,14 @@ import org.eclipse.swt.widgets.Item;
  * </ul>
  * </p>
  */
-public abstract class Viewer implements IInputSelectionProvider {
+public abstract class Viewer implements IInputSelectionProvider, Serializable {
 
     /**
      * List of selection change listeners (element type: <code>ISelectionChangedListener</code>).
      *
      * @see #fireSelectionChanged
      */
-    private ListenerList selectionChangedListeners = new ListenerList();
+    private ListenerList selectionChangedListeners = new SerializableListenerList();
 
     /**
      * List of help request listeners (element type: <code>org.eclipse.swt.events.HelpListener</code>).
@@ -58,7 +61,7 @@ public abstract class Viewer implements IInputSelectionProvider {
      *
      * @see #handleHelpRequest
      */
-    private ListenerList helpListeners = new ListenerList();
+    private ListenerList helpListeners = new SerializableListenerList();
 
     /**
      * The names of this viewer's properties.

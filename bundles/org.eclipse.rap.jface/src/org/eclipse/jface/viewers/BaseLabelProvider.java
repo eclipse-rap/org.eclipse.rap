@@ -11,7 +11,7 @@
 
 package org.eclipse.jface.viewers;
 
-import org.eclipse.core.commands.common.EventManager;
+import org.eclipse.jface.internal.util.SerializableEventManager;
 import org.eclipse.jface.util.SafeRunnable;
 
 /**
@@ -21,7 +21,7 @@ import org.eclipse.jface.util.SafeRunnable;
  * @since 1.0
  * 
  */
-public class BaseLabelProvider extends EventManager implements IBaseLabelProvider {
+public class BaseLabelProvider extends SerializableEventManager implements IBaseLabelProvider {
 	
 	/* (non-Javadoc)
      * Method declared on IBaseLabelProvider.

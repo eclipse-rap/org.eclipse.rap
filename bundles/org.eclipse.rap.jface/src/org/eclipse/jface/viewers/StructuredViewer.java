@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.internal.util.SerializableListenerList;
 import org.eclipse.jface.util.IOpenEventListener;
 import org.eclipse.jface.util.OpenStrategy;
 import org.eclipse.jface.util.SafeRunnable;
@@ -106,7 +108,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * 
 	 * @see #fireDoubleClick
 	 */
-	private ListenerList doubleClickListeners = new ListenerList();
+	private ListenerList doubleClickListeners = new SerializableListenerList();
 
 	/**
 	 * List of open listeners (element type:
@@ -114,7 +116,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * 
 	 * @see #fireOpen
 	 */
-	private ListenerList openListeners = new ListenerList();
+	private ListenerList openListeners = new SerializableListenerList();
 
 	/**
 	 * List of post selection listeners (element type:
@@ -122,7 +124,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * 
 	 * @see #firePostSelectionChanged
 	 */
-	private ListenerList postSelectionChangedListeners = new ListenerList();
+	private ListenerList postSelectionChangedListeners = new SerializableListenerList();
 
 	/**
 	 * The colorAndFontCollector is an object used by viewers that
@@ -319,7 +321,7 @@ public abstract class StructuredViewer extends ContentViewer implements IPostSel
 	 * a color or font provider.
 	 *
 	 */
-	protected class ColorAndFontCollector {
+	protected class ColorAndFontCollector implements Serializable {
 
 		Color foreground = null;
 

@@ -11,6 +11,8 @@
  *     Karsten Stoeckmann - bug 156982
  *******************************************************************************/
 package org.eclipse.jface.layout;
+import java.io.Serializable;
+
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
@@ -42,7 +44,7 @@ import org.eclipse.swt.widgets.Composite;
  *
  * @since 1.0
  */
-public final class GridLayoutFactory {
+public final class GridLayoutFactory implements Serializable {
 	
 	/**
 	 * Template layout. The factory will create copies of this layout. 

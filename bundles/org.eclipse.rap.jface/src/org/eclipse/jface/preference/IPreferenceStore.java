@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.preference;
 
+import java.io.Serializable;
+
 import org.eclipse.jface.util.IPropertyChangeListener;
 
 /**
@@ -53,7 +55,7 @@ import org.eclipse.jface.util.IPropertyChangeListener;
  *
  * @see PreferenceStore
  */
-public interface IPreferenceStore {
+public interface IPreferenceStore extends Serializable {
 
     /**
      * The default-default value for boolean preferences (<code>false</code>).

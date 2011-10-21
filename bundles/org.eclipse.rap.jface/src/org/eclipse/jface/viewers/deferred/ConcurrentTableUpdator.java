@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers.deferred;
 
+import java.io.Serializable;
+
 
 
 /**
@@ -21,7 +23,7 @@ package org.eclipse.jface.viewers.deferred;
  * 
  * @since 1.0
  */
-/* package */ final class ConcurrentTableUpdator {
+/* package */ final class ConcurrentTableUpdator implements Serializable {
 	/**
 	 * Wrapper for the real table. May only be accessed in the UI thread.
 	 */

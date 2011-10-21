@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.jface.fieldassist;
 
+import java.io.Serializable;
+
 /**
  * This interface is used to listen to additional notifications from a
  * {@link ContentProposalAdapter}.
  * 
  * @since 1.0
  */
-public interface IContentProposalListener2 {
+public interface IContentProposalListener2 extends Serializable {
 	/**
 	 * A content proposal popup has been opened for content proposal assistance.
 	 * 

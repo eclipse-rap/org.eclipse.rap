@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.jface.preference;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -21,7 +22,7 @@ import org.eclipse.core.runtime.Assert;
  * A preference manager maintains a hierarchy of preference nodes and
  * associated preference pages.
  */
-public class PreferenceManager {
+public class PreferenceManager implements Serializable {
     /**
      * Pre-order traversal means visit the root first,
      * then the children.

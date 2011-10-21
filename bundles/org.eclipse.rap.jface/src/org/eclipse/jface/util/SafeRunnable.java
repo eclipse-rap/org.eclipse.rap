@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.jface.util;
 
+import java.io.Serializable;
+
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -25,7 +27,7 @@ import org.eclipse.jface.resource.JFaceResources;
  * <p>
  * This may be executed on any thread.
  */
-public abstract class SafeRunnable implements ISafeRunnable {
+public abstract class SafeRunnable implements ISafeRunnable, Serializable {
 
 	private static boolean ignoreErrors = false;
 

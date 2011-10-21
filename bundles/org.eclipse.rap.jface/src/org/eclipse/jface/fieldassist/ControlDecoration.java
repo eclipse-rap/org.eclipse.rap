@@ -25,6 +25,8 @@ package org.eclipse.jface.fieldassist;
 //import org.eclipse.swt.events.PaintEvent;
 //import org.eclipse.swt.events.PaintListener;
 //import org.eclipse.swt.events.SelectionEvent;
+import java.io.Serializable;
+
 import org.eclipse.swt.events.SelectionListener;
 //import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -72,7 +74,7 @@ import org.eclipse.swt.internal.widgets.ControlDecorator;
  * @see FieldDecoration
  * @see FieldDecorationRegistry
  */
-public class ControlDecoration {
+public class ControlDecoration implements Serializable {
 //	/**
 //	 * Debug flag for tracing
 //	 */

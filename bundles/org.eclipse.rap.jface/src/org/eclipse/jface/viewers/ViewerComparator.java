@@ -11,6 +11,7 @@
 
 package org.eclipse.jface.viewers;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -37,7 +38,7 @@ import org.eclipse.jface.util.Policy;
  * 
  * @since 1.0
  */
-public class ViewerComparator {
+public class ViewerComparator implements Serializable {
 	/**
 	 * The comparator to use to sort a viewer's contents.
 	 */

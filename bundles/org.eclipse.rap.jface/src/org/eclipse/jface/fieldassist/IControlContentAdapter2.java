@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.fieldassist;
 
+import java.io.Serializable;
+
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
 
@@ -19,7 +21,7 @@ import org.eclipse.swt.widgets.Control;
  * 
  * @since 1.1
  */
-public interface IControlContentAdapter2 {
+public interface IControlContentAdapter2 extends Serializable {
 	/**
 	 * Get the current selection range in the control. The x coordinate of the
 	 * returned point is the position of the first selected character and the y

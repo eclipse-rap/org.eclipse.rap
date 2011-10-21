@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.jface.dialogs;
 
+import java.io.Serializable;
+
 /**
  * A listener which is notified when the current page of a multi-page dialog is
  * changing. Use this listener to perform long-running work that should only be
@@ -20,7 +22,7 @@ package org.eclipse.jface.dialogs;
  * @see PageChangingEvent
  * @since 1.0
  */
-public interface IPageChangingListener {
+public interface IPageChangingListener extends Serializable {
 	
 	/**
 	 * Handle the an <code>IDialogPage</code> changing.

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.dialogs;
 
+import java.io.Serializable;
+
 /**
  * A listener which is notified when the current page of the multi-page dialog
  * is changed.
@@ -19,7 +21,7 @@ package org.eclipse.jface.dialogs;
  * 
  * @since 1.0
  */
-public interface IPageChangedListener {
+public interface IPageChangedListener extends Serializable {
 	/**
 	 * Notifies that the selected page has changed.
 	 * 

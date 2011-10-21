@@ -17,6 +17,8 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.LayoutConstants;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.accessibility.AccessibleAdapter;
+import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
@@ -84,11 +86,9 @@ public abstract class IconAndMessageDialog extends Dialog {
 		Image image = getImage();
 		if (image != null) {
 			imageLabel = new Label(composite, SWT.NULL);
-			// RAP [bm]: Image#setBackground
-//			image.setBackground(imageLabel.getBackground());
+			image.setBackground(imageLabel.getBackground());
 			imageLabel.setImage(image);
-			// RAP [bm]: accessibility
-//			addAccessibleListeners(imageLabel, image);
+			addAccessibleListeners(imageLabel, image);
 			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.BEGINNING)
 					.applyTo(imageLabel);
 		}
@@ -127,25 +127,24 @@ public abstract class IconAndMessageDialog extends Dialog {
 		return null;
 	}
 
-// RAP [if]	Accessibility not available
-//	/**
-//	 * Add an accessible listener to the label if it can be inferred from the
-//	 * image.
-//	 * 
-//	 * @param label
-//	 * @param image
-//	 */
-//	private void addAccessibleListeners(Label label, final Image image) {
-//		label.getAccessible().addAccessibleListener(new AccessibleAdapter() {
-//			public void getName(AccessibleEvent event) {
-//				final String accessibleMessage = getAccessibleMessageFor(image);
-//				if (accessibleMessage == null) {
-//					return;
-//				}
-//				event.result = accessibleMessage;
-//			}
-//		});
-//	}
+	/**
+	 * Add an accessible listener to the label if it can be inferred from the
+	 * image.
+	 * 
+	 * @param label
+	 * @param image
+	 */
+	private void addAccessibleListeners(Label label, final Image image) {
+		label.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+			public void getName(AccessibleEvent event) {
+				final String accessibleMessage = getAccessibleMessageFor(image);
+				if (accessibleMessage == null) {
+					return;
+				}
+				event.result = accessibleMessage;
+			}
+		});
+	}
 
 	/**
 	 * Returns the style for the message label.

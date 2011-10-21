@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.jface.util;
 
+import java.io.Serializable;
+
 import org.eclipse.swt.events.SelectionEvent;
 
 /**
@@ -30,7 +32,7 @@ import org.eclipse.swt.events.SelectionEvent;
  *
  * @see OpenStrategy
  */
-public interface IOpenEventListener {
+public interface IOpenEventListener extends Serializable {
     /**
      * Called when a selection or default selection occurs 
      * depending on the user preference. 

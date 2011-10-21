@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.jface.resource;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +40,7 @@ import org.eclipse.swt.graphics.RGB;
  * 
  * @since 1.0
  */
-public abstract class ResourceManager {
+public abstract class ResourceManager implements Serializable {
     
 	/**
 	 * List of Runnables scheduled to run when the ResourceManager is disposed.

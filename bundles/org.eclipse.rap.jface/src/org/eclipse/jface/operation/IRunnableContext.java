@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.jface.operation;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -30,7 +31,7 @@ import java.lang.reflect.InvocationTargetException;
  * @see org.eclipse.jface.dialogs.ProgressMonitorDialog
  * @see org.eclipse.jface.wizard.WizardDialog
  */
-public interface IRunnableContext {
+public interface IRunnableContext extends Serializable {
     /**
      * <p>
      * Runs the given <code>IRunnableWithProgress</code> in this context.

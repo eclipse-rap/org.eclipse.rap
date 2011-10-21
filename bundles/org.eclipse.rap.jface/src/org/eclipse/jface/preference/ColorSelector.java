@@ -10,35 +10,29 @@
  *******************************************************************************/
 package org.eclipse.jface.preference;
 
-import org.eclipse.core.commands.common.EventManager;
-//import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.internal.util.SerializableEventManager;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
-//import org.eclipse.swt.accessibility.AccessibleAdapter;
-//import org.eclipse.swt.accessibility.AccessibleEvent;
+import org.eclipse.swt.accessibility.AccessibleAdapter;
+import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
-//import org.eclipse.swt.graphics.Font;
-//import org.eclipse.swt.graphics.GC;
-//import org.eclipse.swt.graphics.Image;
-//import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
-//import org.eclipse.swt.widgets.Control;
-//import org.eclipse.swt.widgets.Display;
 
 /**
  * The <code>ColorSelector</code> is a wrapper for a button that displays a
  * selected <code>Color</code> and allows the user to change the selection.
  */
-public class ColorSelector extends EventManager {
+public class ColorSelector extends SerializableEventManager {
     /**
      * Property name that signifies the selected color of this
      * <code>ColorSelector</code> has changed.
@@ -95,17 +89,16 @@ public class ColorSelector extends EventManager {
                 }
             }
         });
-// RAP [if] Accessibility not supported
-//        fButton.getAccessible().addAccessibleListener(new AccessibleAdapter() {
-//            /*
-//             * (non-Javadoc)
-//             *
-//             * @see org.eclipse.swt.accessibility.AccessibleAdapter#getName(org.eclipse.swt.accessibility.AccessibleEvent)
-//             */
-//            public void getName(AccessibleEvent e) {
-//                e.result = JFaceResources.getString("ColorSelector.Name"); //$NON-NLS-1$
-//            }
-//        });
+        fButton.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+            /*
+             * (non-Javadoc)
+             *
+             * @see org.eclipse.swt.accessibility.AccessibleAdapter#getName(org.eclipse.swt.accessibility.AccessibleEvent)
+             */
+            public void getName(AccessibleEvent e) {
+                e.result = JFaceResources.getString("ColorSelector.Name"); //$NON-NLS-1$
+            }
+        });
     }
 
     /**

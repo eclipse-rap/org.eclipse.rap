@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.jface.layout;
 
+import java.io.Serializable;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.RowLayout;
@@ -27,7 +29,7 @@ import org.eclipse.swt.widgets.Composite;
  * 
  * @since 1.3
  */
-public final class RowLayoutFactory {
+public final class RowLayoutFactory implements Serializable {
 	/**
 	 * Template layout. The factory will create copies of this layout.
 	 */

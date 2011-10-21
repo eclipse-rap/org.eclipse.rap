@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.jface.preference;
 
+import java.io.Serializable;
+
 /**
  * An interface used by a preference page to talk to
  * its dialog.
  */
-public interface IPreferencePageContainer {
+public interface IPreferencePageContainer extends Serializable {
     /**
      * Returns the preference store.
      *

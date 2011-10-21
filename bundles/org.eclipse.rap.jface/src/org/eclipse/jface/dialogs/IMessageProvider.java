@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.jface.dialogs;
 
+import java.io.Serializable;
+
 /**
  * Minimal interface to a message provider. Used for dialog pages which can
  * provide a message with an icon.
  * 
  * @since 1.0
  */
-public interface IMessageProvider {
+public interface IMessageProvider extends Serializable {
     /**
      * Constant for a regular message (value 0).
      * <p>

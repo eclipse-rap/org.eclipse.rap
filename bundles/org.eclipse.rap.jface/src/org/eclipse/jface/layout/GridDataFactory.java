@@ -10,6 +10,8 @@
  *     Stefan Xenos, IBM - initial implementation, bug 178888
  *******************************************************************************/
 package org.eclipse.jface.layout;
+import java.io.Serializable;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -107,7 +109,7 @@ import org.eclipse.swt.widgets.Control;
  * 
  * @since 1.0
  */
-public final class GridDataFactory {
+public final class GridDataFactory implements Serializable {
     private GridData data;
     
     /**

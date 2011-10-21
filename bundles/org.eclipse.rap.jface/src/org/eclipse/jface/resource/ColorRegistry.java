@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.jface.internal.util.SerializableRunnable;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
@@ -79,7 +80,7 @@ public class ColorRegistry extends ResourceRegistry {
     /**
      * Runnable that cleans up the manager on disposal of the display.
      */
-    protected Runnable displayRunnable = new Runnable() {
+    protected Runnable displayRunnable = new SerializableRunnable() {
         public void run() {
             clearCaches();
         }

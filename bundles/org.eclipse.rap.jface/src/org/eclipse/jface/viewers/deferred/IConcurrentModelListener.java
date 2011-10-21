@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.jface.viewers.deferred;
 
+import java.io.Serializable;
+
 /**
  * Interface for objects that can listen to changes in an IConcurrentModel.
  * Elements in an IConcurrentModel are unordered.
  * 
  * @since 1.0
  */
-public interface IConcurrentModelListener {
+public interface IConcurrentModelListener extends Serializable {
 	
 	/**
 	 * Called when elements are added to the model 
