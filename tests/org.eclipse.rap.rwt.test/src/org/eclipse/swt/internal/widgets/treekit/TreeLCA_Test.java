@@ -18,9 +18,12 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -32,173 +35,25 @@ import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.internal.widgets.treekit.TreeLCA.ItemMetrics;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class TreeLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private TreeLCA lca;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.fakeResponseWriter();
     display = new Display();
     shell = new Shell( display );
+    lca = new TreeLCA();
+    Fixture.fakeNewRequest( display );
   }
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
-  }
-
-  public void testMinimalInitialization() throws Exception {
-    Tree tree = new Tree( shell, SWT.NONE );
-    TreeLCA lca = new TreeLCA();
-    lca.renderInitialization( tree );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "new org.eclipse.rwt.widgets.Tree( {" ) != -1 );
-    assertTrue( markup.indexOf( "\"appearance\": \"tree\"" ) != -1 );
-    assertTrue( markup.indexOf( "\"selectionPadding\": [ 3, 5 ]" ) != -1 );
-    assertTrue( markup.indexOf( "\"indentionWidth\":" ) != -1 );
-    assertTrue( markup.indexOf( "\"check\": true" ) == -1 );
-    assertTrue( markup.indexOf( "noScroll" ) == -1 );
-    assertTrue( markup.indexOf( "multiSelection" ) == -1 );
-    assertTrue( markup.indexOf( "\"fullSelection\":" ) == -1 );
-    assertTrue( markup.indexOf( "\"checkBoxMetrics\": [ " ) == -1 );
-    assertTrue( markup.indexOf( "w.setIsVirtual( " ) == -1 );
-  }
-
-  public void testInitialization() throws Exception {
-    int style = SWT.MULTI | SWT.CHECK | SWT.FULL_SELECTION | SWT.VIRTUAL;
-    Tree tree = new Tree( shell, style );
-    TreeLCA lca = new TreeLCA();
-    lca.renderInitialization( tree );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "new org.eclipse.rwt.widgets.Tree( {" ) != -1 );
-    assertTrue( markup.indexOf( "\"check\": true" ) != -1 );
-    assertTrue( markup.indexOf( "\"checkBoxMetrics\": [" ) != -1 );
-    assertTrue( markup.indexOf( "\"multiSelection\": true" ) != -1 );
-    assertTrue( markup.indexOf( "\"fullSelection\": true" ) != -1 );
-    assertTrue( markup.indexOf( "\"virtual\": true" ) != -1 );
-    assertTrue( markup.indexOf( "\"selectionPadding\":" ) == -1 );
-  }
-
-  public void testInitializationWithNoScroll() throws Exception {
-    Tree tree = new Tree( shell, SWT.NO_SCROLL );
-    TreeLCA lca = new TreeLCA();
-    lca.renderInitialization( tree );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "\"noScroll\": true" ) != -1 );
-  }
-
-  public void testRenderTopItemIndex() throws Exception {
-    TreeLCA lca = new TreeLCA();
-    Tree tree = new Tree( shell, SWT.NONE );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    lca.renderChanges( tree );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "w.setTopItemIndex( " ) == -1 );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    ITreeAdapter treeAdapter = tree.getAdapter( ITreeAdapter.class );
-    treeAdapter.setTopItemIndex( 4 );
-    lca.renderChanges( tree );
-    markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "w.setTopItemIndex( 4 )" )  != -1 );
-  }
-
-  public void testRenderColumnCount() throws Exception {
-    Tree tree = new Tree( shell, SWT.NONE );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    TreeLCA lca = new TreeLCA();
-    lca.render( tree );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "w.setColumnCount( 0" ) == -1 );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    new TreeColumn( tree, SWT.NONE );
-    new TreeColumn( tree, SWT.NONE );
-    new TreeColumn( tree, SWT.NONE );
-    lca.render( tree );
-    markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "w.setColumnCount( 3" ) != -1 );
-  }
-
-  public void testRenderTreeColumn() throws Exception {
-    Tree tree = new Tree( shell, SWT.NONE );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    TreeLCA lca = new TreeLCA();
-    lca.render( tree );
-    new TreeColumn( tree, SWT.NONE );
-    new TreeColumn( tree, SWT.NONE );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "w.setTreeColumn( " ) == -1 );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    tree.setColumnOrder( new int[]{ 1, 0 } );
-    lca.render( tree );
-    markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "w.setTreeColumn( 1" ) != -1 );
-  }
-
-  public void testRenderLinesVisible() throws Exception {
-    Tree tree = new Tree( shell, SWT.NONE );
-    tree.setBounds( 0, 0, 100, 100 );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    TreeLCA lca = new TreeLCA();
-    lca.render( tree );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "w.setLinesVisible( " ) == -1 );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    tree.setLinesVisible( true );
-    lca.render( tree );
-    markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setLinesVisible( true )" ) != -1 );
-    lca.preserveValues( tree );
-    Fixture.fakeResponseWriter();
-    lca.render( tree );
-    markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setLinesVisible( true )" ) == -1 );
-  }
-
-  public void testRenderHorizontalScrollBar() throws Exception {
-    Tree tree = new Tree( shell, SWT.NONE );
-    tree.setBounds( 0, 0, 100, 100 );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    TreeLCA lca = new TreeLCA();
-    lca.render( tree );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "w.setScrollBarsVisible( " ) == -1 );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    TreeColumn column = new TreeColumn( tree, SWT.NONE );
-    column.setWidth( 200 );
-    lca.render( tree );
-    markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setScrollBarsVisible( true, false )" ) != -1 );
-  }
-
-  public void testRenderVerticalScrollBar() throws Exception {
-    Tree tree = new Tree( shell, SWT.NONE );
-    tree.setBounds( 0, 0, 100, 100 );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    TreeLCA lca = new TreeLCA();
-    lca.render( tree );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "w.setScrollBarsVisible( " ) == -1 );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    for( int i = 0; i < 100; i++ ) {
-      new TreeItem( tree, SWT.None );
-    }
-    lca.render( tree );
-    markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setScrollBarsVisible( false, true )" ) != -1 );
   }
 
   public void testGetItemMetricsImageWidth() {
@@ -356,78 +211,19 @@ public class TreeLCA_Test extends TestCase {
   public void testPreserveValues() {
     Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
-    // Selection_Listener
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( tree );
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    SelectionListener selectionListener = new SelectionAdapter() {};
-    tree.addSelectionListener( selectionListener );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    // HeaderHight,HeaderVisible
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    Object headerheight = adapter.getPreserved( TreeLCA.PROP_HEADER_HEIGHT );
-    assertEquals( new Integer( 0 ), headerheight );
-    Object headervisible = adapter.getPreserved( TreeLCA.PROP_HEADER_VISIBLE );
-    assertEquals( Boolean.FALSE, headervisible );
-    Fixture.clearPreserved();
-    tree.setHeaderVisible( true );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    headerheight = adapter.getPreserved( TreeLCA.PROP_HEADER_HEIGHT );
-    assertEquals( new Integer( tree.getHeaderHeight() ), headerheight );
-    headervisible = adapter.getPreserved( TreeLCA.PROP_HEADER_VISIBLE );
-    assertEquals( Boolean.TRUE, headervisible );
-    Fixture.clearPreserved();
-    // column_count
     TreeColumn child1 = new TreeColumn( tree, SWT.NONE, 0 );
     child1.setText( "child1" );
     TreeColumn child2 = new TreeColumn( tree, SWT.NONE, 1 );
     child2.setText( "child2" );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    Integer columnCount
-      = ( Integer )adapter.getPreserved( TreeLCA.PROP_COLUMN_COUNT );
-    assertEquals( new Integer( 2 ), columnCount );
-    Fixture.clearPreserved();
     // item metrics
     child1.setWidth( 150 );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    ItemMetrics[] metrics
-      = ( ItemMetrics[] )adapter.getPreserved( TreeLCA.PROP_ITEM_METRICS );
-    assertEquals( 150, metrics[ 1 ].left );
-    Fixture.clearPreserved();
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( tree );
     // item height
     TreeItem item = new TreeItem( tree, SWT.NONE );
     item.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
-    Integer itemHeight
-      = ( Integer )adapter.getPreserved( TreeLCA.PROP_ITEM_HEIGHT );
-    assertEquals( new Integer( 56 ) , itemHeight );
-    Fixture.clearPreserved();
-    // scroll left
-    ITreeAdapter treeAdapter
-      = tree.getAdapter( ITreeAdapter.class );
-    treeAdapter.setScrollLeft( 50 );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    assertEquals( new Integer( 50 ),
-                  adapter.getPreserved( TreeLCA.PROP_SCROLL_LEFT ) );
-    Fixture.clearPreserved();
-    // scroll bars
-    Fixture.preserveWidgets();
-    Object preserved = adapter.getPreserved( TreeLCA.PROP_HAS_H_SCROLL_BAR );
-    assertTrue( preserved != null );
-    preserved = adapter.getPreserved( TreeLCA.PROP_HAS_V_SCROLL_BAR );
-    assertTrue( preserved != null );
     Fixture.clearPreserved();
     // control: enabled
     Fixture.preserveWidgets();
@@ -474,7 +270,7 @@ public class TreeLCA_Test extends TestCase {
     // control_listeners
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
+    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
     // z-index
@@ -532,22 +328,6 @@ public class TreeLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( tree );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.TRUE, hasListeners );
-  }
-
-  public void testPreserveEnableCellToolTip() {
-    Tree tree = new Tree( shell, SWT.BORDER );
-    Fixture.markInitialized( display );
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( tree );
-    Boolean preserved = ( Boolean )adapter.getPreserved( TreeLCA.PROP_ENABLE_CELL_TOOLTIP );
-    assertEquals( Boolean.FALSE, preserved );
-    Fixture.clearPreserved();
-    tree.setData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    preserved = ( Boolean )adapter.getPreserved( TreeLCA.PROP_ENABLE_CELL_TOOLTIP );
-    assertEquals( Boolean.TRUE, preserved );
-    Fixture.clearPreserved();
   }
 
   public void testSelectionEvent() {
@@ -702,88 +482,6 @@ public class TreeLCA_Test extends TestCase {
     assertEquals( 10 * tree.getItemHeight(), tree.getVerticalBar().getSelection());
   }
 
-  public void testWriteScrollbarsSelectionListener() throws IOException {
-    Fixture.fakeNewRequest();
-    Tree tree = new Tree( shell, SWT.NONE );
-    SelectionAdapter listener = new SelectionAdapter() { };
-    tree.getHorizontalBar().addSelectionListener( listener );
-    TreeLCA lca = new TreeLCA();
-    lca.renderChanges( tree );
-    String markup = Fixture.getAllMarkup();
-    String expected = "w.setHasScrollBarsSelectionListener( true );";
-    assertTrue( markup.indexOf( expected ) != -1 );
-  }
-
-  public void testWriteEnableCellToolTip() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-    createTreeItems( tree, 5 );
-    Fixture.fakeNewRequest();
-    tree.setData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
-    TreeLCA treeLCA = new TreeLCA();
-    treeLCA.renderChanges( tree );
-    String markup = Fixture.getAllMarkup();
-    String expected = "w.setEnableCellToolTip( true )";
-    assertTrue( markup.indexOf( expected ) != -1 );
-  }
-
-  public void testGetCellToolTipText() {
-    Tree tree = new Tree( shell, SWT.NONE );
-    createTreeItems( tree, 5 );
-    final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
-    adapter.setCellToolTipProvider( new ICellToolTipProvider() {
-      public void getToolTipText( final Item item,
-                                  final int columnIndex )
-      {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append( "[" );
-        buffer.append( WidgetUtil.getId( item ) );
-        buffer.append( "," );
-        buffer.append( columnIndex );
-        buffer.append( "]" );
-        adapter.setCellToolTipText( buffer.toString() );
-      }
-    } );
-    Fixture.fakeNewRequest();
-    Fixture.executeLifeCycleFromServerThread();
-    String markup = Fixture.getAllMarkup();
-    String expected = "w.setCellToolTipText(";
-    assertTrue( markup.indexOf( expected ) == -1 );
-    String itemId = WidgetUtil.getId( tree.getItem( 2 ) );
-    processCellToolTipRequest( tree, itemId, 0 );
-    markup = Fixture.getAllMarkup();
-    expected = "w.setCellToolTipText( \"[" + itemId + ",0]\" );";
-    assertTrue( markup.indexOf( expected ) != -1 );
-  }
-
-  public void testGetCellToolTipTextForSubitems() {
-    Tree tree = new Tree( shell, SWT.NONE );
-    createTreeItems( tree, 5 );
-    final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
-    adapter.setCellToolTipProvider( new ICellToolTipProvider() {
-      public void getToolTipText( final Item item,
-                                  final int columnIndex )
-      {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append( "[" );
-        buffer.append( WidgetUtil.getId( item ) );
-        buffer.append( "," );
-        buffer.append( columnIndex );
-        buffer.append( "]" );
-        adapter.setCellToolTipText( buffer.toString() );
-      }
-    } );
-    Fixture.fakeNewRequest();
-    Fixture.executeLifeCycleFromServerThread();
-    String markup = Fixture.getAllMarkup();
-    String expected = "w.setCellToolTipText(";
-    assertTrue( markup.indexOf( expected ) == -1 );
-    String itemId = WidgetUtil.getId( tree.getItem( 2 ).getItem( 1 ) );
-    processCellToolTipRequest( tree, itemId, 0 );
-    markup = Fixture.getAllMarkup();
-    expected = "w.setCellToolTipText( \"[" + itemId + ",0]\" );";
-    assertTrue( markup.indexOf( expected ) != -1 );
-  }
-
   public void testCellTooltipRequestForMissingCells() {
     Tree tree = new Tree( shell, SWT.NONE );
     createTreeItems( tree, 3 );
@@ -842,37 +540,6 @@ public class TreeLCA_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     assertEquals( 7, countOccurences( "TreeItem.createItem(", Fixture.getAllMarkup() ) );
-  }
-
-  public void testPreserveItemCount() {
-    Tree tree = new Tree( shell, SWT.NONE );
-    Fixture.markInitialized( display );
-
-    Fixture.preserveWidgets();
-
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( tree );
-    Integer preserved = ( Integer )adapter.getPreserved( TreeLCA.PROP_ITEM_COUNT );
-    assertEquals( new Integer( 0 ), preserved );
-
-    Fixture.clearPreserved();
-    tree.setItemCount( 10 );
-    Fixture.preserveWidgets();
-
-    preserved = ( Integer )adapter.getPreserved( TreeLCA.PROP_ITEM_COUNT );
-    assertEquals( new Integer( 10 ), preserved );
-  }
-
-  public void testRenderItemCount() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-    Fixture.markInitialized( tree );
-    Fixture.preserveWidgets();
-
-    tree.setItemCount( 10 );
-    TreeLCA lca = new TreeLCA();
-    lca.render( tree );
-
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setItemCount( 10 )" ) != -1 );
   }
 
   public void testVirtualReadSelection() {
@@ -950,5 +617,680 @@ public class TreeLCA_Test extends TestCase {
     public void widgetDefaultSelected( SelectionEvent event ) {
       events.add( event );
     }
+  }
+
+  public void testRenderCreate() throws IOException, JSONException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.renderInitialization( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertEquals( "rwt.widgets.Tree", operation.getType() );
+    assertEquals( "tree", operation.getProperty( "appearance" ) );
+    assertEquals( Integer.valueOf( 16 ), operation.getProperty( "indentionWidth" ) );
+    JSONArray actual = ( JSONArray )operation.getProperty( "selectionPadding" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[3,5]", actual ) );
+    assertFalse( operation.getPropertyNames().contains( "checkBoxMetrics" ) );
+  }
+
+  public void testRenderParent() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.renderInitialization( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertEquals( WidgetUtil.getId( tree.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderCreateWithVirtualNoScrollMulti() throws IOException {
+    Tree tree = new Tree( shell, SWT.VIRTUAL | SWT.NO_SCROLL | SWT.MULTI );
+
+    lca.renderInitialization( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "VIRTUAL" ) );
+    assertTrue( Arrays.asList( styles ).contains( "NO_SCROLL" ) );
+    assertTrue( Arrays.asList( styles ).contains( "MULTI" ) );
+  }
+
+  public void testRenderCreateWithFullSelection() throws IOException {
+    Tree tree = new Tree( shell, SWT.FULL_SELECTION );
+
+    lca.renderInitialization( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "FULL_SELECTION" ) );
+    assertFalse( operation.getPropertyNames().contains( "selectionPadding" ) );
+  }
+
+  public void testRenderCreateWithCheck() throws IOException, JSONException {
+    Tree tree = new Tree( shell, SWT.CHECK );
+
+    lca.renderInitialization( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "CHECK" ) );
+    JSONArray actual = ( JSONArray )operation.getProperty( "checkBoxMetrics" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,15]", actual ) );
+  }
+
+  public void testRenderInitialItemCount() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "itemCount" ) == -1 );
+  }
+
+  public void testRenderItemCount() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    tree.setItemCount( 10 );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 10 ), message.findSetProperty( tree, "itemCount" ) );
+  }
+
+  public void testRenderItemCountUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setItemCount( 10 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "itemCount" ) );
+  }
+
+  public void testRenderInitialItemHeight() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "itemHeight" ) == -1 );
+  }
+
+  public void testRenderItemHeight() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Font font = Graphics.getFont( "Arial", 26, SWT.NONE );
+
+    tree.setFont( font );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 32 ), message.findSetProperty( tree, "itemHeight" ) );
+  }
+
+  public void testRenderItemHeightUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Font font = Graphics.getFont( "Arial", 26, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setFont( font );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "itemHeight" ) );
+  }
+
+  public void testRenderInitialItemMetrics() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "itemMetrics" ) != -1 );
+  }
+
+  public void testRenderItemMetrics() throws IOException, JSONException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item.setText( "foo" );
+
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( tree, "itemMetrics" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,44,0,0,3,36]", ( JSONArray )actual.get( 0 ) ) );
+  }
+
+  public void testRenderItemMetricsUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    item.setText( "foo" );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "itemMetrics" ) );
+  }
+
+  public void testRenderInitialColumnCount() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "columnCount" ) == -1 );
+  }
+
+  public void testRenderColumnCount() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    new TreeColumn( tree, SWT.NONE );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( tree, "columnCount" ) );
+  }
+
+  public void testRenderColumnCountUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    new TreeColumn( tree, SWT.NONE );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "columnCount" ) );
+  }
+
+  public void testRenderInitialTreeColumn() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "treeColumn" ) == -1 );
+  }
+
+  public void testRenderTreeColumn() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+
+    tree.setColumnOrder( new int[]{ 1, 0 } );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( tree, "treeColumn" ) );
+  }
+
+  public void testRenderTreeColumnUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setColumnOrder( new int[]{ 1, 0 } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "treeColumn" ) );
+  }
+
+  public void testRenderInitialHeaderHeight() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "headerHeight" ) == -1 );
+  }
+
+  public void testRenderHeaderHeight() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    tree.setHeaderVisible( true );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 14 ), message.findSetProperty( tree, "headerHeight" ) );
+  }
+
+  public void testRenderHeaderHeightUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setHeaderVisible( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "headerHeight" ) );
+  }
+
+  public void testRenderInitialHeaderVisible() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "headerVisible" ) == -1 );
+  }
+
+  public void testRenderHeaderVisible() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    tree.setHeaderVisible( true );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( tree, "headerVisible" ) );
+  }
+
+  public void testRenderHeaderVisibleUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setHeaderVisible( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "headerVisible" ) );
+  }
+
+  public void testRenderInitialLinesVisible() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "linesVisible" ) == -1 );
+  }
+
+  public void testRenderLinesVisible() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    tree.setLinesVisible( true );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( tree, "linesVisible" ) );
+  }
+
+  public void testRenderLinesVisibleUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setLinesVisible( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "linesVisible" ) );
+  }
+
+  public void testRenderInitialTopItemIndex() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "topItemIndex" ) == -1 );
+  }
+
+  public void testRenderTopItemIndex() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    tree.setTopItem( item );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 2 ), message.findSetProperty( tree, "topItemIndex" ) );
+  }
+
+  public void testRenderTopItemIndexUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setTopItem( item );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "topItemIndex" ) );
+  }
+
+  public void testRenderInitialScrollLeft() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "scrollLeft" ) == -1 );
+  }
+
+  public void testRenderScrollLeft() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    setScrollLeft( tree, 10 );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 10 ), message.findSetProperty( tree, "scrollLeft" ) );
+  }
+
+  public void testRenderScrollLeftUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    setScrollLeft( tree, 10 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "scrollLeft" ) );
+  }
+
+  public void testRenderAddScrollBarsSelectionListener_Horizontal() throws Exception {
+    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+    Fixture.preserveWidgets();
+
+    tree.getHorizontalBar().addSelectionListener( new SelectionAdapter() { } );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( tree, "scrollBarsSelection" ) );
+  }
+
+  public void testRenderRemoveScrollBarsSelectionListener_Horizontal() throws Exception {
+    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    SelectionListener listener = new SelectionAdapter() { };
+    tree.getHorizontalBar().addSelectionListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+    Fixture.preserveWidgets();
+
+    tree.getHorizontalBar().removeSelectionListener( listener );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( tree, "scrollBarsSelection" ) );
+  }
+
+  public void testRenderScrollBarsSelectionListenerUnchanged_Horizontal() throws Exception {
+    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+    Fixture.preserveWidgets();
+
+    tree.getHorizontalBar().addSelectionListener( new SelectionAdapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( tree, "scrollBarsSelection" ) );
+  }
+
+  public void testRenderAddScrollBarsSelectionListener_Vertical() throws Exception {
+    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+    Fixture.preserveWidgets();
+
+    tree.getVerticalBar().addSelectionListener( new SelectionAdapter() { } );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( tree, "scrollBarsSelection" ) );
+  }
+
+  public void testRenderRemoveScrollBarsSelectionListener_Vertical() throws Exception {
+    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    SelectionListener listener = new SelectionAdapter() { };
+    tree.getVerticalBar().addSelectionListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+    Fixture.preserveWidgets();
+
+    tree.getVerticalBar().removeSelectionListener( listener );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( tree, "scrollBarsSelection" ) );
+  }
+
+  public void testRenderScrollBarsSelectionListenerUnchanged_Vertical() throws Exception {
+    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+    Fixture.preserveWidgets();
+
+    tree.getVerticalBar().addSelectionListener( new SelectionAdapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( tree, "scrollBarsSelection" ) );
+  }
+
+  public void testRenderInitialScrollBarsVisible() throws IOException {
+    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "scrollBarsVisible" ) == -1 );
+  }
+
+  public void testRenderScrollBarsVisible_Horizontal() throws IOException, JSONException {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+
+    column.setWidth( 25 );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( tree, "scrollBarsVisible" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ true, false ]", actual ) );
+  }
+
+  public void testRenderScrollBarsVisible_Vertical() throws IOException, JSONException {
+    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    new TreeColumn( tree, SWT.NONE );
+
+    tree.setHeaderVisible( true );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( tree, "scrollBarsVisible" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ false, true ]", actual ) );
+  }
+
+  public void testRenderScrollBarsVisibleUnchanged() throws IOException {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Tree tree = new Tree( shell, SWT.H_SCROLL | SWT.V_SCROLL );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    column.setWidth( 25 );
+    tree.setHeaderVisible( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "scrollBarsVisible" ) );
+  }
+
+  public void testRenderAddSelectionListener() throws Exception {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+    Fixture.preserveWidgets();
+
+    tree.addSelectionListener( new SelectionAdapter() { } );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( tree, "selection" ) );
+  }
+
+  public void testRenderRemoveSelectionListener() throws Exception {
+    Tree tree = new Tree( shell, SWT.NONE );
+    SelectionListener listener = new SelectionAdapter() { };
+    tree.addSelectionListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+    Fixture.preserveWidgets();
+
+    tree.removeSelectionListener( listener );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( tree, "selection" ) );
+  }
+
+  public void testRenderSelectionListenerUnchanged() throws Exception {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+    Fixture.preserveWidgets();
+
+    tree.addSelectionListener( new SelectionAdapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( tree, "selection" ) );
+  }
+
+  public void testRenderInitialEnableCellToolTip() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "enableCellToolTip" ) == -1 );
+  }
+
+  public void testRenderEnableCellToolTip() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    tree.setData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( tree, "enableCellToolTip" ) );
+  }
+
+  public void testRenderEnableCellToolTipUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setData( ICellToolTipProvider.ENABLE_CELL_TOOLTIP, Boolean.TRUE );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "enableCellToolTip" ) );
+  }
+
+  public void testRenderCellToolTipText() {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+    createTreeItems( tree, 5 );
+    final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
+    adapter.setCellToolTipProvider( new ICellToolTipProvider() {
+      public void getToolTipText( Item item, int columnIndex ) {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append( "[" );
+        buffer.append( WidgetUtil.getId( item ) );
+        buffer.append( "," );
+        buffer.append( columnIndex );
+        buffer.append( "]" );
+        adapter.setCellToolTipText( buffer.toString() );
+      }
+    } );
+
+    String itemId = WidgetUtil.getId( tree.getItem( 2 ) );
+    processCellToolTipRequest( tree, itemId, 0 );
+
+    Message message = Fixture.getProtocolMessage();
+    String expected = "[" + itemId + ",0]";
+    assertEquals( expected, message.findSetProperty( tree, "cellToolTipText" ) );
+  }
+
+  public void testRenderCellToolTipTextNull() {
+    Tree tree = new Tree( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+    createTreeItems( tree, 5 );
+    final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
+    adapter.setCellToolTipProvider( new ICellToolTipProvider() {
+      public void getToolTipText( Item item, int columnIndex ) {
+        adapter.setCellToolTipText( null );
+      }
+    } );
+
+    String itemId = WidgetUtil.getId( tree.getItem( 2 ) );
+    processCellToolTipRequest( tree, itemId, 0 );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "cellToolTipText" ) );
+  }
+
+  private static void setScrollLeft( Tree tree, int scrollLeft ) {
+    ITreeAdapter treeAdapter = getTreeAdapter( tree );
+    treeAdapter.setScrollLeft( scrollLeft);
+  }
+
+  private static ITreeAdapter getTreeAdapter( Tree tree ) {
+    Object adapter = tree.getAdapter( ITreeAdapter.class );
+    return ( ITreeAdapter )adapter;
   }
 }

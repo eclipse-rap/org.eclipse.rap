@@ -15,6 +15,238 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
   
   members : {
 
+    testCreateTreeByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Tree",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "appearance": "tree",
+          "selectionPadding" : [ 2, 4 ],
+          "indentionWidth" : 16,
+          "checkBoxMetrics" : [ 5, 16 ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget instanceof org.eclipse.rwt.widgets.Tree );
+      assertIdentical( shell, widget.getParent() );
+      assertTrue( widget.getUserData( "isControl") );
+      assertEquals( "tree", widget.getAppearance() );
+      assertFalse( widget.getRenderConfig().fullSelection );
+      assertFalse( widget.getRenderConfig().hasCheckBoxes );
+      assertFalse( widget._isVirtual );
+      assertFalse( widget._hasMultiSelection );
+      assertTrue( widget._rowContainer.hasEventListeners( "mousewheel" ) );
+      assertEquals( [ 2, 4 ], widget.getRenderConfig().selectionPadding );
+      assertEquals( 16, widget.getRenderConfig().indentionWidth );
+      assertEquals( undefined, widget.getRenderConfig().checkBoxLeft );
+      assertEquals( undefined, widget.getRenderConfig().checkBoxWidth );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testCreateTreeWithStylesByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var styles = [ "FULL_SELECTION", "NO_SCROLL", "CHECK", "VIRTUAL", "MULTI" ];
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", styles );
+      assertTrue( widget.getRenderConfig().fullSelection );
+      assertTrue( widget.getRenderConfig().hasCheckBoxes );
+      assertTrue( widget._isVirtual );
+      assertTrue( widget._hasMultiSelection );
+      assertFalse( widget._rowContainer.hasEventListeners( "mousewheel" ) );
+      assertEquals( undefined, widget.getRenderConfig().selectionPadding );
+      assertEquals( 16, widget.getRenderConfig().indentionWidth );
+      assertEquals( 5, widget.getRenderConfig().checkBoxLeft );
+      assertEquals( 16, widget.getRenderConfig().checkBoxWidth );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetItemCountByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      testUtil.protocolSet( "w3", { "itemCount" : 10 } );
+      assertEquals( 10, widget._rootItem._children.length );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetItemHeightByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      testUtil.protocolSet( "w3", { "itemHeight" : 20 } );
+      assertEquals( 20, widget._itemHeight );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetItemMetricsByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      var property = { "itemMetrics" : [ [ 0, 1, 2, 3, 4, 5, 6 ], [ 1, 11, 12, 13, 14, 15, 16 ] ] };
+      testUtil.protocolSet( "w3", property );
+      assertEquals( 1, widget.getRenderConfig().itemLeft[ 0 ] );
+      assertEquals( 2, widget.getRenderConfig().itemWidth[ 0 ] );
+      assertEquals( 3, widget.getRenderConfig().itemImageLeft[ 0 ] );
+      assertEquals( 4, widget.getRenderConfig().itemImageWidth[ 0 ] );
+      assertEquals( 5, widget.getRenderConfig().itemTextLeft[ 0 ] );
+      assertEquals( 6, widget.getRenderConfig().itemTextWidth[ 0 ] );
+      assertEquals( 11, widget.getRenderConfig().itemLeft[ 1 ] );
+      assertEquals( 12, widget.getRenderConfig().itemWidth[ 1 ] );
+      assertEquals( 13, widget.getRenderConfig().itemImageLeft[ 1 ] );
+      assertEquals( 14, widget.getRenderConfig().itemImageWidth[ 1 ] );
+      assertEquals( 15, widget.getRenderConfig().itemTextLeft[ 1 ] );
+      assertEquals( 16, widget.getRenderConfig().itemTextWidth[ 1 ] );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetColumnCountByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      testUtil.protocolSet( "w3", { "columnCount" : 3 } );
+      assertEquals( 3, widget.getRenderConfig().columnCount );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetTreeColumnByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      testUtil.protocolSet( "w3", { "treeColumn" : 3 } );
+      assertEquals( 3, widget.getRenderConfig().treeColumn );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHeaderHeightByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      testUtil.protocolSet( "w3", { "headerHeight" : 30 } );
+      assertEquals( 30, widget._headerHeight );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHeaderVisibleByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      testUtil.protocolSet( "w3", { "headerVisible" : true } );
+      assertTrue( widget._columnArea.getDisplay() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetLinesVisibleByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      testUtil.protocolSet( "w3", { "linesVisible" : true } );
+      assertTrue( widget.getRenderConfig().linesVisible );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetTopItemIndexByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      widget.setItemCount( 10 );
+      widget.setItemHeight( 20 );
+      testUtil.flush();
+      testUtil.protocolSet( "w3", { "topItemIndex" : 3 } );
+      assertEquals( 60, widget._vertScrollBar.getValue() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetScrollLeftByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      widget.setItemCount( 1 );
+      widget.setItemMetrics( 0, 0, 150, 0, 0, 0, 0 );
+      testUtil.flush();
+      testUtil.protocolSet( "w3", { "scrollLeft" : 10 } );
+      assertEquals( 10, widget._horzScrollBar.getValue() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetScrollBarsVisibleByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      testUtil.protocolSet( "w3", { "scrollBarsVisible" : [ true, true ] } );
+      assertTrue( widget._horzScrollBar.getDisplay() );
+      assertTrue( widget._vertScrollBar.getDisplay() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHasScrollBarsSelectionListenerByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      testUtil.protocolListen( "w3", { "scrollBarsSelection" : true } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget._hasScrollBarsSelectionListener );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHasSelectionListenerByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      testUtil.protocolListen( "w3", { "selection" : true } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget._hasSelectionListener );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetEnableCellToolTipByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      testUtil.protocolSet( "w3", { "enableCellToolTip" : true } );
+      assertNotNull( widget._cellToolTip );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetCellToolTipTextByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      testUtil.protocolSet( "w3", { "enableCellToolTip" : true } );
+      var cellToolTip = widget._cellToolTip;
+      cellToolTip.setCell( 1, 1 );
+      cellToolTip._requestedCell = "1,1";
+      testUtil.protocolSet( "w3", { "cellToolTipText" : "foo && <> \"\n bar" } );
+      var labelObject = cellToolTip.getAtom().getLabelObject();
+      assertEquals( "foo &amp;&amp; &lt;&gt; &quot;<br/> bar", labelObject.getText() );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testCreate : function() {
       var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
       assertTrue( tree instanceof org.eclipse.rwt.widgets.Tree );
@@ -772,7 +1004,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var node = tree._rowContainer._getTargetNode().childNodes[ 0 ].childNodes[ 0 ];
       testUtil.clickDOM( node.parentNode ); // nothing happens:
       assertFalse( item.isChecked() );
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       testUtil.clickDOM( node );
       assertEquals( 1, testUtil.getRequestsSend() );
       assertTrue( item.isChecked() );
@@ -797,7 +1029,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       wm.add( tree, "w1", true );
       testUtil.flush();
       testUtil.initRequestLog();
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       var node = tree._rowContainer._getTargetNode().childNodes[ 0 ].childNodes[ 0 ];
       testUtil.clickDOM( node );
       assertFalse( tree.getRootItem().getChild( 0 ).isChecked() );
@@ -1291,7 +1523,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       tree.setItemCount( 2 );
       var child1 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       var child2 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 1 );
@@ -1317,7 +1549,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       tree.setItemCount( 1 );
       var child1 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       wm.add( tree, "w1", true );
@@ -1365,7 +1597,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.flush();
       testUtil.click( tree._rowContainer._children[ 0 ] );
       tree._selectionTimestamp = null;
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       testUtil.shiftClick( tree._rowContainer._children[ 3 ] );
       assertEquals( 1, testUtil.getRequestsSend() );
       var request = testUtil.getMessage();
@@ -1383,7 +1615,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       var actions = [ "copy", "move", "alias" ];
       dndSupport.registerDragSource( tree, actions );
       dndSupport.setDragSourceTransferTypes( tree, [ "default" ] );
@@ -1419,7 +1651,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       tree.setItemCount( 1 );
       var child1 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       wm.add( tree, "w1", true );
@@ -1443,7 +1675,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       tree.setItemCount( 1 );
       var child1 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       wm.add( tree, "w1", true );
@@ -1477,7 +1709,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       tree.setItemCount( 2 );
       var child1 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       var child2 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 1 );
@@ -1502,7 +1734,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       tree.setItemCount( 2 );
       var child1 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       var child2 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 1 );
@@ -1529,7 +1761,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree( false, false, "multiSelection" );
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       tree.setItemCount( 3 );
       var child1 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       var child2 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 1 );
@@ -2872,7 +3104,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( tree.isItemSelected( item0 ) );
       assertTrue( tree.isFocusItem( item0 ) );
       testUtil.initRequestLog();
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       testUtil.ctrlPress( tree, "Space" );
       assertFalse( tree.isItemSelected( item0 ) );
       testUtil.ctrlPress( tree, "Space" );
@@ -2917,7 +3149,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( tree.isFocusItem( item ) );
       assertFalse( item.isChecked() );
       testUtil.initRequestLog();
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       testUtil.press( tree, "Space" );
       assertFalse( item.isChecked() );
       assertEquals( 0, testUtil.getRequestsSend() );
@@ -2936,7 +3168,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( tree.isItemSelected( item ) );
       assertTrue( tree.isFocusItem( item ) );
       assertFalse( item.isChecked() );
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       testUtil.press( tree, "Space" );
       assertTrue( item.isChecked() );
       assertEquals( 1, testUtil.getRequestsSend() );
@@ -3105,7 +3337,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       tree.setItemCount( 2 );
       var child0 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       var child1 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 1 );
@@ -3133,7 +3365,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       tree.setItemCount( 2 );
       var child0 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       var child1 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 1 );
@@ -3161,7 +3393,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var tree = this._createDefaultTree();
-      tree.setHasSelectionListeners( true );
+      tree.setHasSelectionListener( true );
       tree.setItemCount( 1 );
       var child0 = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
       tree.setFocusItem( child0 );
@@ -3380,6 +3612,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
 
     /////////
     // helper
+
+    _createDefaultTreeByProtocol : function( id, parentId, styles ) {
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : id,
+        "action" : "create",
+        "type" : "rwt.widgets.Tree",
+        "properties" : {
+          "style" : styles,
+          "parent" : parentId,
+          "appearance" : "tree",
+          "selectionPadding" : [ 2, 4 ],
+          "indentionWidth" : 16,
+          "checkBoxMetrics" : [ 5, 16 ],
+          "bounds" : [ 0, 0, 100, 100 ]
+        }
+      } );
+      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+    },
 
     _createDefaultTree : function( noflush, asTable, option, arg ) {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;

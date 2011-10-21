@@ -200,6 +200,7 @@ public final class ClientResources {
     "org/eclipse/rwt/DNDSupport.js",
     "org/eclipse/swt/theme/ThemeValues.js",
     "org/eclipse/rwt/widgets/Tree.js",
+    "org/eclipse/rwt/widgets/TreeAdapter.js",
     "org/eclipse/rwt/widgets/TreeItem.js",
     "org/eclipse/rwt/TreeDNDFeedback.js",
     "org/eclipse/swt/widgets/TableCellToolTip.js",

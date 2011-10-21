@@ -354,7 +354,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     String prop = PROP_SELECTION_LISTENERS;
     if( WidgetLCAUtil.hasChanged( table, prop, newValue, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( table );
-      writer.set( "hasSelectionListeners", newValue );
+      writer.set( "hasSelectionListener", newValue );
     }
   }
 

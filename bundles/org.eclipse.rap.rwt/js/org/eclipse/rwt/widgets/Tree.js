@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
@@ -21,7 +21,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._isVirtual = false;
     this._hasMultiSelection = false;
     // Internal State:
-    this._hasSelectionListeners = false;
+    this._hasSelectionListener = false;
     this._leadItem = null;
     this._topItemIndex = 0;
     this._selection = [];
@@ -264,8 +264,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._layoutY();
     },
 
-    setHasSelectionListeners : function( value ) {
-      this._hasSelectionListeners = value;
+    setHasSelectionListener : function( value ) {
+      this._hasSelectionListener = value;
     },
 
     setAlignment : function( column, value ) {
@@ -834,7 +834,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     _sendSelectionEvent : function( item, defaultSelected, detail ) {
-      if( this._hasSelectionListeners ) {
+      if( this._hasSelectionListener ) {
         var req = org.eclipse.swt.Request.getInstance();
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         var id = wm.findIdByWidget( this );
