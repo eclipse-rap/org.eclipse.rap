@@ -65,7 +65,7 @@ public class LifeCycleFactory_Test extends TestCase {
     lifeCycleFactory.activate();
 
     Class<?> lifeCycleClass = lifeCycleFactory.getLifeCycle().getClass();
-    assertSame( RWTLifeCycle.class, lifeCycleClass );
+    assertSame( SimpleLifeCycle.class, lifeCycleClass );
   }
   
   public void testConfigure() {
@@ -82,7 +82,7 @@ public class LifeCycleFactory_Test extends TestCase {
 
     Class<?> lifeCycleClass = lifeCycleFactory.getLifeCycle().getClass();
     
-    assertSame( RWTLifeCycle.class, lifeCycleClass );
+    assertSame( SimpleLifeCycle.class, lifeCycleClass );
   }
   
   public void testGetLifeCycleWithRegisteredPhaseListeners() {

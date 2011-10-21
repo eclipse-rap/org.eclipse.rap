@@ -25,6 +25,7 @@ import org.eclipse.rap.ui.internal.preferences.WorkbenchFileSettingStoreFactory;
 import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration.OperationMode;
 import org.eclipse.rwt.internal.application.ApplicationConfigurationImpl;
 import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.lifecycle.PhaseListener;
@@ -72,6 +73,7 @@ public final class WorkbenchApplicationConfigurator implements ApplicationConfig
   }
 
   public void configure( ApplicationConfiguration configuration ) {
+	configuration.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     registerPhaseListener( configuration );
     registerSettingStoreFactory( configuration );
     registerWorkbenchEntryPoint( configuration );

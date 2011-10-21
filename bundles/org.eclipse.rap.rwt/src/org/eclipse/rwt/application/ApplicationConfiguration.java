@@ -29,8 +29,8 @@ import org.eclipse.swt.widgets.Widget;
 public interface ApplicationConfiguration {
   
   public static enum OperationMode {
-    STANDARD,
     JEE_COMPATIBILITY,
+    SWT_COMPATIBILITY,
     SESSION_FAILOVER
   }
 

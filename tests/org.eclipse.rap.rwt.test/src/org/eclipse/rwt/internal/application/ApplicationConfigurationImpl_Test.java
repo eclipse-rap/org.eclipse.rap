@@ -32,9 +32,16 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
   private TestServletContext servletContext;
   private ApplicationContext applicationContext;
   private ApplicationConfigurationImpl applicationConfiguration;
+  
+  public void testDefaultOperationMode() {
+    applicationContext.activate();
+    
+    ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
+    assertSame( SimpleLifeCycle.class, lifeCycle.getClass() );
+  }
 
-  public void testSetOperationModeToStandard() {
-    applicationConfiguration.setOperationMode( OperationMode.STANDARD );
+  public void testSetOperationModeToSWTCompatibility() {
+    applicationConfiguration.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     applicationContext.activate();
     
     ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
@@ -61,7 +68,7 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
     assertFilterRegistered( RWTClusterSupport.class );
   }
 
-  public void testSetOperationModeToSessionFailoverWithMissingRWTDelegate() {
+  public void testSetOperationModeToSessionFailoverWithMissingRWTServlet() {
     servletContext.setVersion( 3, 0 );
     servletContext.addServlet( "fooServlet", mock( Servlet.class ) );
     
@@ -70,9 +77,6 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
       fail();
     } catch( IllegalStateException expected ) {
     }
-    applicationContext.getLifeCycleFactory().activate();
-    ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
-    assertSame( RWTLifeCycle.class, lifeCycle.getClass() );
   }
   
   public void testSetOperationModeToSessionFailoverWithInsufficientServletVersion() {

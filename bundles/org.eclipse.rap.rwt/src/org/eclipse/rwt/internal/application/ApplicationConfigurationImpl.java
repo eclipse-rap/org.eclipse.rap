@@ -18,7 +18,7 @@ import org.eclipse.rwt.AdapterFactory;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.internal.lifecycle.SimpleLifeCycle;
+import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -62,10 +62,10 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
   
   public void setOperationMode( OperationMode operationMode ) {
     switch( operationMode ) {
-      case STANDARD:
-        break;
       case JEE_COMPATIBILITY:
-        applicationContext.getLifeCycleFactory().configure( SimpleLifeCycle.class );
+        break;
+      case SWT_COMPATIBILITY:
+        applicationContext.getLifeCycleFactory().configure( RWTLifeCycle.class );
         break;
       case SESSION_FAILOVER:
         new SessionFailoverConfigurator( applicationContext ).configure();

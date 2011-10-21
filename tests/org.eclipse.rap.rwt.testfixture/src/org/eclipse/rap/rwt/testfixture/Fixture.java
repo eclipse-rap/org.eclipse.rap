@@ -36,6 +36,7 @@ import org.eclipse.rap.rwt.testfixture.internal.engine.ApplicationContextHelper;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.application.ApplicationConfiguration.OperationMode;
 import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.engine.RWTServletContextListener;
@@ -99,6 +100,7 @@ public final class Fixture {
 
   public static class FixtureApplicationConfigurator implements ApplicationConfigurator {
     public void configure( ApplicationConfiguration configuration ) {
+      configuration.setOperationMode( OperationMode.SWT_COMPATIBILITY );
     }
   }
 
