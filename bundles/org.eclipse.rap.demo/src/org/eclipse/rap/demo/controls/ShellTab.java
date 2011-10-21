@@ -28,7 +28,7 @@ public class ShellTab extends ExampleTab {
 
   private static final String ICON_IMAGE_PATH = "resources/newfile_wiz.gif";
 
-  private final java.util.List shells;
+  private final java.util.List<Shell> shells;
   private int shellCounter;
   private final ShellAdapter confirmCloseListener;
   private Image shellImage;
@@ -43,7 +43,7 @@ public class ShellTab extends ExampleTab {
 
   public ShellTab( final CTabFolder topFolder ) {
     super( topFolder, "Shell" );
-    shells = new ArrayList();
+    shells = new ArrayList<Shell>();
     confirmCloseListener = new ShellAdapter() {
       public void shellClosed( final ShellEvent event ) {
         Shell shell = ( Shell )event.widget;
@@ -193,15 +193,8 @@ public class ShellTab extends ExampleTab {
     } else {
       shell = new Shell( getShell().getDisplay(), getStyle() );
     }
-//    if( customBgColorButton.getSelection() ) {
-//      shell.setBackground( BG_COLOR_BROWN );
-//    }
     shell.setLocation( getNextShellLocation() );
-    if( true ) {
-      createShellContents1( shell );
-    } else {
-      createShellContents2( shell );
-    }
+    createShellContents( shell );
     shellCounter++;
     shell.setText( "Test Shell " + shellCounter );
     shell.setAlpha( alpha );
@@ -215,11 +208,7 @@ public class ShellTab extends ExampleTab {
     shells.add( shell );
   }
 
-  /*
-   * Creates a shell with a size of 300 x 200 px and displays the bounds of its
-   * client area.
-   */
-  private void createShellContents1( final Shell shell ) {
+  private void createShellContents( final Shell shell ) {
     shell.setSize( 300, 200 );
     if( createWithMenuButton.getSelection() ) {
       createMenuBar( shell );
@@ -231,15 +220,14 @@ public class ShellTab extends ExampleTab {
       comp1.setBackground( Graphics.getColor( 200, 0, 0 ) );
       comp2.setBackground( Graphics.getColor( 200, 200, 200 ) );
     }
-    Rectangle ca = shell.getClientArea();
-    comp1.setBounds( ca.x, ca.y, ca.width, ca.height );
-    comp2.setBounds( ca.x + 1, ca.y + 1, ca.width - 2, ca.height - 2 );
-    Button closeButton = new Button( shell, SWT.PUSH );
+    Rectangle area = shell.getClientArea();
+    comp1.setBounds( area.x, area.y, area.width, area.height );
+    comp2.setBounds( area.x + 1, area.y + 1, area.width - 2, area.height - 2 );
+    final Button closeButton = new Button( comp2, SWT.PUSH );
     closeButton.setText( "Close This Shell" );
     closeButton.pack();
-    closeButton.moveAbove( comp2 );
-    int centerX = ( ca.width - ca.x ) / 2;
-    closeButton.setLocation( centerX - closeButton.getSize().x / 2, ca.height - 45 );
+    int centerX = ( area.width - area.x ) / 2;
+    closeButton.setLocation( centerX - closeButton.getSize().x / 2, area.height - 45 );
     closeButton.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         shell.close();
@@ -247,35 +235,11 @@ public class ShellTab extends ExampleTab {
     } );
     shell.addControlListener( new ControlAdapter() {
       public void controlResized( final ControlEvent event ) {
-        Rectangle ca = shell.getClientArea();
-        comp1.setBounds( ca.x, ca.y, ca.width, ca.height );
-        comp2.setBounds( ca.x + 1, ca.y + 1, ca.width - 2, ca.height - 2 );
-      }
-    } );
-  }
-
-  /*
-   * Alternative implementation:
-   * Creates a shell with that contains only a button with a predefined size of
-   * 140 x 40 px. Can be used to test the Shell.computeTrim mehtod.
-   */
-  private void createShellContents2( final Shell shell ) {
-    if( createWithMenuButton.getSelection() ) {
-      createMenuBar( shell );
-    }
-    RowLayout layout = new RowLayout();
-    layout.marginLeft = 0;
-    layout.marginTop = 0;
-    layout.marginRight = 0;
-    layout.marginBottom = 0;
-    shell.setLayout( layout );
-    Button closeButton = new Button( shell, SWT.PUSH );
-    closeButton.setText( "Close This Window" );
-    closeButton.setBackground( Graphics.getColor( 25, 55, 55 ) );
-    closeButton.setLayoutData( new RowData( 140, 40 ) );
-    closeButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
-        shell.close();
+        Rectangle area = shell.getClientArea();
+        comp1.setBounds( area.x, area.y, area.width, area.height );
+        comp2.setBounds( area.x + 1, area.y + 1, area.width - 2, area.height - 2 );
+        int centerX = ( area.width - area.x ) / 2;
+        closeButton.setLocation( centerX - closeButton.getSize().x / 2, area.height - 45 );
       }
     } );
   }
