@@ -6,17 +6,15 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import java.io.InputStream;
 import java.io.Serializable;
 
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.swt.SWT;
@@ -102,7 +100,6 @@ public class ControlsDemo implements IEntryPoint, Serializable {
       new ErrorHandlingTab( topFolder ),
       new NLSTab( topFolder ),
     };
-    ensureMinTabHeight( topFolder );
     tabs[ 0 ].createContents();
     topFolder.setSelection( 0 );
     topFolder.addSelectionListener( new SelectionAdapter() {
@@ -111,13 +108,6 @@ public class ControlsDemo implements IEntryPoint, Serializable {
         tabs[ index ].createContents();
       }
     } );
-  }
-
-  private static void ensureMinTabHeight( final CTabFolder folder ) {
-    int result = Graphics.getCharHeight( folder.getItem( 0 ).getFont() );
-    if( result < 18 ) {
-      folder.setTabHeight( 18 );
-    }
   }
 
   private Image loadImage( Display display, String name ) {
