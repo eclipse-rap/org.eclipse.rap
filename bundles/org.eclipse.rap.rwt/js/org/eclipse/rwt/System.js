@@ -106,10 +106,10 @@ qx.Class.define( "org.eclipse.rwt.System", {
     _preloaderDone : function() {
       this.__preloader.dispose();
       this.__preloader = null;
-      qx.ui.core.Widget.flushGlobalQueues();
       org.eclipse.rwt.EventHandler.init();
       org.eclipse.rwt.EventHandler.attachEvents();
       this.setUiReady( true );
+      qx.ui.core.Widget.flushGlobalQueues();
       qx.client.Timer.once( this._postload, this, 100 );
     },
 
