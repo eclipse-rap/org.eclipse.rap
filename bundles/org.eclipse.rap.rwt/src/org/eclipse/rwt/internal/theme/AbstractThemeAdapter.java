@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Widget;
  */
 public abstract class AbstractThemeAdapter implements IThemeAdapter {
 
-  private WidgetMatcher matcher;
+  private final WidgetMatcher matcher;
 
   public AbstractThemeAdapter() {
     matcher = new WidgetMatcher();
@@ -31,86 +31,63 @@ public abstract class AbstractThemeAdapter implements IThemeAdapter {
   /**
    * Returns the name of the main CSS element for a given widget.
    */
-  public static String getPrimaryElement( final Widget widget ) {
-    String result;
+  public static String getPrimaryElement( Widget widget ) {
     Class widgetClass = widget.getClass();
-    ThemeManager manager = RWTFactory.getThemeManager();
-    ThemeableWidget thWidget = manager.getThemeableWidget( widgetClass );
-    if( thWidget != null
-        && thWidget.elements != null
-        && thWidget.elements.length > 0 )
-    {
-      result = thWidget.elements[ 0 ].getName();
-    } else {
-      String className = widgetClass.getName();
-      int last = className.lastIndexOf( '.' );
-      result = className.substring( last + 1 );
+    ThemeableWidget thWidget = findThemeableWidget( widget );
+    if( thWidget == null || thWidget.elements == null ) {
+      throw new RuntimeException( "No themeable widget found for " + widgetClass.getName() );
     }
-    return result;
+    return thWidget.elements[ 0 ].getName();
   }
 
   /**
    * Configures the widget matcher to be able to match widgets. Subclasses need
    * to implement.
    */
-  protected abstract void configureMatcher( final WidgetMatcher matcher );
+  protected abstract void configureMatcher( WidgetMatcher matcher );
 
   ////////////////////
   // Delegator methods
 
-  protected Color getCssColor( final String cssElement,
-                               final String cssProperty,
-                               final Widget widget )
-  {
-    QxType cssValue
-      = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+  protected Color getCssColor( String cssElement, String cssProperty, Widget widget ) {
+    QxType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
     return QxColor.createColor( ( QxColor )cssValue );
   }
 
-  protected Font getCssFont( final String cssElement,
-                             final String cssProperty,
-                             final Widget widget )
-  {
-    QxType cssValue
-      = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+  protected Font getCssFont( String cssElement, String cssProperty, Widget widget ) {
+    QxType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
     return QxFont.createFont( ( QxFont )cssValue );
   }
 
-  protected int getCssBorderWidth( final String cssElement,
-                                   final String cssProperty,
-                                   final Widget widget )
-  {
-    QxType cssValue
-      = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+  protected int getCssBorderWidth( String cssElement, String cssProperty, Widget widget ) {
+    QxType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
     return ( ( QxBorder )cssValue ).width;
   }
 
-  protected int getCssDimension( final String cssElement,
-                                 final String cssProperty,
-                                 final Widget widget )
-  {
-    QxType cssValue
-      = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+  protected int getCssDimension( String cssElement, String cssProperty, Widget widget ) {
+    QxType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
     return ( ( QxDimension )cssValue ).value;
   }
 
-  protected Rectangle getCssBoxDimensions( final String cssElement,
-                                           final String cssProperty,
-                                           final Widget widget )
-  {
-    QxType cssValue
-      = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
+  protected Rectangle getCssBoxDimensions( String cssElement, String cssProperty, Widget widget ) {
+    QxType cssValue = ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
     return QxBoxDimensions.createRectangle( ( QxBoxDimensions )cssValue );
   }
-  
-  protected Point getCssImageDimension( final String cssElement,
-                                        final String cssProperty,
-                                        final Widget widget )
-  {
-    QxImage image = ( QxImage ) ThemeUtil.getCssValue( cssElement,
-                                                       cssProperty, 
-                                                       matcher, 
-                                                       widget );
+
+  protected Point getCssImageDimension( String cssElement, String cssProperty, Widget widget ) {
+    QxImage image = ( QxImage ) ThemeUtil.getCssValue( cssElement, cssProperty, matcher, widget );
     return new Point( image.width, image.height );
+  }
+
+  private static ThemeableWidget findThemeableWidget( Widget widget ) {
+    ThemeableWidget result;
+    Class widgetClass = widget.getClass();
+    ThemeManager manager = RWTFactory.getThemeManager();
+    result = manager.getThemeableWidget( widgetClass );
+    while( ( result == null || result.elements == null ) && widgetClass.getSuperclass() != null ) {
+      widgetClass = widgetClass.getSuperclass();
+      result = manager.getThemeableWidget( widgetClass );
+    }
+    return result;
   }
 }

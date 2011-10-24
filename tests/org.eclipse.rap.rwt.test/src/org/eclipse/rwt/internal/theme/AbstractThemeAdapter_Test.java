@@ -24,19 +24,42 @@ import org.eclipse.swt.widgets.*;
 
 public class AbstractThemeAdapter_Test extends TestCase {
 
-  public void testGetPrimaryElement() {
+  private Shell shell;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakeNewRequest();
     Display display = new Display();
-    Shell shell = new Shell( display );
+    shell = new Shell( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
+  public void testGetPrimaryElementForLabel() {
     Label label = new Label( shell, SWT.NONE );
-    CustomWidget customWidget = new CustomWidget( shell, SWT.NONE );
     assertEquals( "Label", AbstractThemeAdapter.getPrimaryElement( label ) );
-    assertEquals( "CustomWidget",
-                  AbstractThemeAdapter.getPrimaryElement( customWidget ) );
+  }
+
+  public void testGetPrimaryElementForButton() {
+    Button button = new Button( shell, SWT.BORDER );
+    assertEquals( "Button", AbstractThemeAdapter.getPrimaryElement( button ) );
+  }
+
+  public void testGetPrimaryElementForTree() {
+    Tree tree = new Tree( shell, SWT.BORDER );
+    assertEquals( "Tree", AbstractThemeAdapter.getPrimaryElement( tree ) );
+  }
+
+  public void testGetPrimaryElementForCompositeSubclass() {
+    Composite customComposite = new Composite( shell, SWT.BORDER ) {
+      // empty subclass
+    };
+    assertEquals( "Composite", AbstractThemeAdapter.getPrimaryElement( customComposite ) );
   }
 
   public void testGetCssValues() throws Exception {
-    Display display = new Display();
-    Shell shell = new Shell( display );
     CustomWidget custom = new CustomWidget( shell, SWT.NONE );
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme theme = new Theme( "customId", "Custom Theme", styleSheet );
@@ -45,7 +68,7 @@ public class AbstractThemeAdapter_Test extends TestCase {
     themeManager.registerTheme( theme );
     themeManager.activate();
     AbstractThemeAdapter adapter = new AbstractThemeAdapter() {
-      protected void configureMatcher( final WidgetMatcher matcher ) {
+      protected void configureMatcher( WidgetMatcher matcher ) {
       }
     };
     // create theme adapter
@@ -55,26 +78,16 @@ public class AbstractThemeAdapter_Test extends TestCase {
     // check default values
     Color defaultColor = adapter.getCssColor( "CustomWidget", "color", custom );
     assertNotNull( defaultColor );
-    int defaultBorderWidth
-      = adapter.getCssBorderWidth( "CustomWidget", "border", custom );
+    int defaultBorderWidth = adapter.getCssBorderWidth( "CustomWidget", "border", custom );
     // switch theme
     ThemeUtil.setCurrentThemeId( "customId" );
     // color is redefined
     Color customColor = adapter.getCssColor( "CustomWidget", "color", custom );
     assertFalse( defaultColor.equals( customColor ) );
     // borderWidth is not
-    int customBorderWidth
-      = adapter.getCssBorderWidth( "CustomWidget", "border", custom );
+    int customBorderWidth = adapter.getCssBorderWidth( "CustomWidget", "border", custom );
     assertTrue( defaultBorderWidth == customBorderWidth );
     RWTFactory.getThemeManager().deactivate();
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakeNewRequest();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }
