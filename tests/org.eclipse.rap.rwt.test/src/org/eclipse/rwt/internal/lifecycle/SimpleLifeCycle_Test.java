@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Display;
 // TODO [rh] see if it is possible to move this test to org.eclipse.rwt.test
 public class SimpleLifeCycle_Test extends TestCase {
 
+  
   private static class ThreadRecordingPhaseListener implements PhaseListener {
     private static final long serialVersionUID = 1L;
 
@@ -66,10 +67,17 @@ public class SimpleLifeCycle_Test extends TestCase {
     }
   }
 
+  private static class DefaultDisplayEntryPoint implements IEntryPoint {
+    public int createUI() {
+      Display.getDefault();
+      return 0;
+    }
+  }
+
   private LifeCycle lifeCycle;
 
   public void testPhaseOrderForInitialRequest() throws Exception {
-    Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
+    registerEntryPoint( TestEntryPoint.class );
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
     lifeCycle.addPhaseListener( phaseListener );
     lifeCycle.execute();
@@ -99,7 +107,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
 
   public void testThreadIsAttachedInInitialRequest() throws IOException {
-    Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
+    registerEntryPoint( TestEntryPoint.class );
     ThreadRecordingPhaseListener phaseListener = new ThreadRecordingPhaseListener( );
     lifeCycle.addPhaseListener( phaseListener );
     lifeCycle.execute();
@@ -110,14 +118,14 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
   
   public void testThreadIsDetachedInInitialRequest() throws IOException {
-    Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
+    registerEntryPoint( TestEntryPoint.class );
     lifeCycle.execute();
     assertNull( Display.getCurrent() );
     assertNull( LifeCycleUtil.getSessionDisplay().getThread() );
   }
   
   public void testThreadIsAttachedInSubsequentRequest() throws IOException {
-    Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
+    registerEntryPoint( TestEntryPoint.class );
     lifeCycle.execute();
     Fixture.fakeNewRequest();
     ThreadRecordingPhaseListener phaseListener = new ThreadRecordingPhaseListener( );
@@ -130,6 +138,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
 
   public void testThreadIsDetachedInSubsequentRequest() throws IOException {
+    registerEntryPoint( TestEntryPoint.class );
     Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
     lifeCycle.execute();
     Fixture.fakeNewRequest();
@@ -138,7 +147,18 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertNull( LifeCycleUtil.getSessionDisplay().getThread() );
   }
   
+  // bug 361753
+  public void testDefaultDisplayIsAvailableInInitialRequest() throws IOException {
+    registerEntryPoint( DefaultDisplayEntryPoint.class );
+    Fixture.fakeNewRequest();
+    
+    lifeCycle.execute();
+    
+    assertNotNull( LifeCycleUtil.getSessionDisplay( ContextProvider.getSession() ) );
+  }
+  
   public void testPhaseListenersHaveApplicationScope() throws Exception {
+    registerEntryPoint( TestEntryPoint.class );
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
     lifeCycle.addPhaseListener( phaseListener );
     newSession();
@@ -147,6 +167,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
   
   public void testAddPhaseListener() throws Exception {
+    registerEntryPoint( TestEntryPoint.class );
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
     lifeCycle.addPhaseListener( phaseListener );
     lifeCycle.execute();
@@ -154,6 +175,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
   
   public void testRemovePhaseListener() throws Exception {
+    registerEntryPoint( TestEntryPoint.class );
     LoggingPhaseListener phaseListener = new LoggingPhaseListener( PhaseId.ANY );
     lifeCycle.addPhaseListener( phaseListener );
     lifeCycle.removePhaseListener( phaseListener );
@@ -195,6 +217,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
   
   public void testGetUIThreadAfterLifeCycleExecuted() throws IOException {
+    registerEntryPoint( TestEntryPoint.class );
     lifeCycle.execute();
     
     IUIThreadHolder threadHolder = LifeCycleUtil.getUIThread( ContextProvider.getSession() );
@@ -237,7 +260,6 @@ public class SimpleLifeCycle_Test extends TestCase {
   
   protected void setUp() throws Exception {
     Fixture.setUp();
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
     ISessionStore sessionSore = ContextProvider.getSession();
     ApplicationContextUtil.set( sessionSore, ApplicationContextUtil.getInstance() );
     lifeCycle = new SimpleLifeCycle( RWTFactory.getEntryPointManager() );
@@ -259,6 +281,10 @@ public class SimpleLifeCycle_Test extends TestCase {
     assertSame( lifeCycle, beforePrepareUIRoot.source );
   }
   
+  private static void registerEntryPoint( Class<? extends IEntryPoint> type ) {
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, type );
+  }
+
   private static void newSession() {
     ContextProvider.disposeContext();
     Fixture.createServiceContext();

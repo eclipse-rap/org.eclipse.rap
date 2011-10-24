@@ -86,7 +86,7 @@ public class SimpleLifeCycle extends LifeCycle {
       if( isDisplayActive( display ) && isApplicationContextActive() ) {
         FakeContextUtil.runNonUIThreadWithFakeContext( display, new Runnable() {
           public void run() {
-            attachThread( display );
+            attachThread( display, sessionStore );
             CurrentPhase.set( PhaseId.PROCESS_ACTION );
             display.dispose();
           }
@@ -125,12 +125,13 @@ public class SimpleLifeCycle extends LifeCycle {
 
   public void execute() throws IOException {
     installSessionShutdownAdapter();
-    attachThread( LifeCycleUtil.getSessionDisplay() );
+    ISessionStore sessionStore = ContextProvider.getSession();
+    attachThread( LifeCycleUtil.getSessionDisplay(), sessionStore );
     try {
       PhaseExecutor phaseExecutor = new SessionDisplayPhaseExecutor( phaseListenerManager, phases );
       phaseExecutor.execute( PhaseId.PREPARE_UI_ROOT );
     } finally {
-      detachThread( LifeCycleUtil.getSessionDisplay() );
+      detachThread( LifeCycleUtil.getSessionDisplay(), sessionStore );
     }
   }
   
@@ -158,20 +159,20 @@ public class SimpleLifeCycle extends LifeCycle {
     }
   }
 
-  private static void attachThread( Display display ) {
+  private static void attachThread( Display display, ISessionStore sessionStore ) {
     if( display != null ) {
       IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
       displayAdapter.attachThread();
-      IUIThreadHolder uiThreadHolder = new SimpleUIThreadHolder( Thread.currentThread() );
-      LifeCycleUtil.setUIThread( displayAdapter.getSessionStore(), uiThreadHolder );
     }
+    IUIThreadHolder uiThreadHolder = new SimpleUIThreadHolder( Thread.currentThread() );
+    LifeCycleUtil.setUIThread( sessionStore, uiThreadHolder );
   }
 
-  private static void detachThread( Display display ) {
+  private static void detachThread( Display display, ISessionStore sessionStore ) {
     if( display != null ) {
       IDisplayAdapter displayAdapter = display.getAdapter( IDisplayAdapter.class );
       displayAdapter.detachThread();
-      LifeCycleUtil.setUIThread( displayAdapter.getSessionStore(), null );
     }
+    LifeCycleUtil.setUIThread( sessionStore, null );
   }
 }
