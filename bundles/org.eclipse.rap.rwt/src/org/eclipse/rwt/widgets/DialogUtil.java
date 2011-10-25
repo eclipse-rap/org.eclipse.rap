@@ -24,7 +24,7 @@ public final class DialogUtil {
   
   /**
    * Opens the given <code>dialog</code> in a non-blocking way and brings it to the front of the 
-   * display. The <code>dialogCallback</code> is notified when the dialog is closed.
+   * display. If given, the <code>dialogCallback</code> is notified when the dialog is closed.
    * <p>
    * Use this method instead of the <code>open()</code> method from the respective 
    * <code>Dialog</code> implementation when running a <em>life cycle</em> without a dedicated UI 
@@ -32,16 +32,16 @@ public final class DialogUtil {
    * </p>
    * 
    * @param dialog the dialog to open, must not be <code>null</code>.
-   * @param dialogCallback the callback to be notified when the dialog was closed. Must not be 
-   * <code>null</code>.
+   * @param dialogCallback the callback to be notified when the dialog was closed or 
+   *   <code>null</code> if no callback should be notified.
    * 
    * @see Dialog
    * @see DialogCallback
    * @see org.eclipse.rwt.lifecycle.ILifeCycle
+   * @see org.eclipse.rwt.application.ApplicationConfiguration.OperationMode
    */
   public static void open( Dialog dialog, DialogCallback dialogCallback ) {
     ParamCheck.notNull( dialog, "dialog" );
-    ParamCheck.notNull( dialogCallback, "dialogCallback" );
     IDialogAdapter adapter = dialog.getAdapter( IDialogAdapter.class );
     adapter.openNonBlocking( dialogCallback );
   }

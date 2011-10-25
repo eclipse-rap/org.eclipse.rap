@@ -68,7 +68,9 @@ public abstract class Dialog implements Adaptable, SerializableCompatibility {
       shell.open();
       shell.addShellListener( new ShellAdapter() {
         public void shellClosed( ShellEvent event ) {
-          dialogCallback.dialogClosed( returnCode );
+          if( dialogCallback != null ) {
+            dialogCallback.dialogClosed( returnCode );
+          }
         }
       } );
     }

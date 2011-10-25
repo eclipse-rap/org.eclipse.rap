@@ -10,42 +10,47 @@
  ******************************************************************************/
 package org.eclipse.rwt.widgets;
 
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
 
 import org.eclipse.rwt.internal.widgets.IDialogAdapter;
 import org.eclipse.swt.widgets.Dialog;
-import org.mockito.Mockito;
 
 
 public class DialogUtil_Test extends TestCase {
 
+  private Dialog dialog;
+  private IDialogAdapter dialogAdapter;
+
   public void testOpenWithNullDialog() {
+    DialogCallback dialogCallback = mock( DialogCallback.class );
     try {
-      DialogUtil.open( null, mock( DialogCallback.class ) );
+      DialogUtil.open( null, dialogCallback );
       fail();
     } catch( NullPointerException expected ) {
     }
   }
 
   public void testOpenWithNullDialogCallback() {
-    Dialog dialog = mock( Dialog.class );
-    try {
-      DialogUtil.open( dialog, null );
-      fail();
-    } catch( NullPointerException expected ) {
-    }
+    DialogUtil.open( dialog, null );
+    
+    verify( dialogAdapter ).openNonBlocking( same( ( DialogCallback )null ) );
   }
   
   public void testOpen() {
-    IDialogAdapter dialogAdapter = mock( IDialogAdapter.class );
-    Dialog dialog = mock( Dialog.class );
-    when( dialog.getAdapter( IDialogAdapter.class ) ).thenReturn( dialogAdapter );
     DialogCallback dialogCallback = mock( DialogCallback.class );
-
+    
     DialogUtil.open( dialog, dialogCallback );
     
-    Mockito.verify( dialogAdapter ).openNonBlocking( dialogCallback );
+    verify( dialogAdapter ).openNonBlocking( dialogCallback );
+  }
+  
+  protected void setUp() throws Exception {
+    dialog = mock( Dialog.class );
+    dialogAdapter = mock( IDialogAdapter.class );
+    when( dialog.getAdapter( IDialogAdapter.class ) ).thenReturn( dialogAdapter );
   }
 }
