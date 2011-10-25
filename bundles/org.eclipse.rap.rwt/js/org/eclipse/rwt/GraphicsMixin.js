@@ -469,7 +469,9 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         util.setFillPattern( this._gfxData.backgroundShape, image, size[ 0 ], size[ 1 ] );
       } else { //assume fillType is "solid"
         var color = this.getGfxProperty( "backgroundColor" );
-        color = color == "" ? null : color;
+        if( color && ( color === "transparent" || color.slice( 0, 4 ) === "rgba" ) ) {
+          color = null;
+        }
         util.setFillColor( this._gfxData.backgroundShape, color );
       }
     },

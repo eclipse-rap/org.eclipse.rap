@@ -206,7 +206,7 @@ qx.Class.define( "org.eclipse.rwt.AnimationRenderer", {
       switch( this._renderType ) {
         case "backgroundColor":
           if( typeof value == "string" ) {
-            if( value == "transparent" || value == "" ) {
+            if( value == "transparent" || value == "" || value.slice( 0, 4 ) === "rgba" ) {
               result = null;
             } else {
               result = qx.util.ColorUtil.cssStringToRgb( value );

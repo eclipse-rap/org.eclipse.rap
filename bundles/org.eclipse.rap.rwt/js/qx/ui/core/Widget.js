@@ -1874,6 +1874,7 @@ qx.Class.define( "qx.ui.core.Widget", {
         if( this._targetNodeEnabled ) {
           this.prepareEnhancedBorder();
         }
+        this.initBackgroundColor();
         this._applyStyleProperties(value);
         this._applyHtmlProperties(value);
         this._applyHtmlAttributes(value);
@@ -3695,9 +3696,22 @@ qx.Class.define( "qx.ui.core.Widget", {
       org.eclipse.rwt.HtmlUtil.setTextShadow( this, value );      
     },
 
-    _styleBackgroundColor : function(value) {
-      value ? this.setStyleProperty("backgroundColor", value) : this.removeStyleProperty("backgroundColor");
+    _styleBackgroundColor : function( value ) {
+      if( value == null || value === "transparent" ) {
+        this._removeBackgroundColor();
+      } else {
+        this.setStyleProperty( "backgroundColor", value );
+      }
     },
+
+    _removeBackgroundColor : qx.core.Variant.select( "qx.client", {
+      "default" : function() {
+        this.removeStyleProperty( "backgroundColor" );
+       },
+      "newmshtml" : function() {
+        this.setStyleProperty( "backgroundColor", "rgba( 0, 0, 0, 0 )" );
+      } 
+    } ),
 
     _applyTextColor : function(value, old) {
       // place holder

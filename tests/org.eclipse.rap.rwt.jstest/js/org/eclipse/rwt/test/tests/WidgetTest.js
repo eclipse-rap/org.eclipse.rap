@@ -505,6 +505,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
     },
 
+    testBackgroundColorTransparent : qx.core.Variant.select( "qx.client", {
+      "default" : function() {},
+      "newmshtml" : function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var widget = this._createWidget();
+        assertEquals( "rgba(0, 0, 0, 0)", widget._style.backgroundColor );
+        widget.setBackgroundColor( "red" );
+        widget.setBackgroundColor( "transparent" );
+        assertEquals( "rgba(0, 0, 0, 0)", widget._style.backgroundColor );
+        widget.setBackgroundColor( "red" );
+        widget.setBackgroundColor( null );
+        assertEquals( "rgba(0, 0, 0, 0)", widget._style.backgroundColor );
+        widget.destroy();
+      }
+    } ),
+
     /////////
     // Helper
     

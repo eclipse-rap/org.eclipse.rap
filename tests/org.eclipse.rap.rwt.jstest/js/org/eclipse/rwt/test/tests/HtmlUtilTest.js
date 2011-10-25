@@ -60,9 +60,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
       var htmlUtil = org.eclipse.rwt.HtmlUtil;
       var widget = this._createWidget( true );
       var red = "red";
-      htmlUtil.setStyleProperty( widget, "backgroundColor", red);
+      htmlUtil.setStyleProperty( widget, "color", red );
       testUtil.flush();
-      assertEquals( red, testUtil.getCssBackgroundColor( widget ) );
+      assertEquals( red, widget._style.color );
       widget.destroy();
     },
     
@@ -71,10 +71,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
       var htmlUtil = org.eclipse.rwt.HtmlUtil;
       var red = "red";
       var widget = this._createWidget( true );
-      htmlUtil.setStyleProperty( widget, "backgroundColor", red );
-      htmlUtil.removeStyleProperty( widget, "backgroundColor" );
+      htmlUtil.setStyleProperty( widget, "color", red );
+      htmlUtil.removeStyleProperty( widget, "color" );
       testUtil.flush();
-      assertNull( testUtil.getCssBackgroundColor( widget ) );
+      assertTrue( widget._style.color == "" );
       widget.destroy();
     },
 

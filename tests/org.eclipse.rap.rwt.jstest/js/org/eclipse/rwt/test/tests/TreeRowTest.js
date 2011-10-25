@@ -13,7 +13,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
 
   extend : qx.core.Object,
 
-
   // TODO [tb] : Since TreeRow has been refactored to work without reference to Tree, the
   //             tests could also be refactored to not use the an tree instance anymore.
   members : {
@@ -690,6 +689,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
     },
 
     testRenderItemBackgroundDisabled : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createTree();
       tree.setEnabled( false );
       var row = this._createRow( tree );
@@ -698,8 +698,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       item.setTexts( [ "Test" ] );
       item.setBackground( "red" );
       row.renderItem( item, tree._config, false, null );
-      var node = row._getTargetNode();
-      assertEquals( "", node.style.backgroundColor );
+      assertNull( testUtil.getCssBackgroundColor( row ) );
       tree.destroy();
       row.destroy();
     },

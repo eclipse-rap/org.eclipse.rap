@@ -111,7 +111,11 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     getCssBackgroundColor : function( widget ) {      
       var inner = widget._getTargetNode().style.backgroundColor;
       var outer = widget.getElement().style.backgroundColor;
-      return ( ( inner || outer ) || null );      
+      var result = ( ( inner || outer ) || null );
+      if( result === "transparent" || result === "rgba(0, 0, 0, 0)" ) {
+        result = null;
+      }
+      return result;
     },
     
     hasCssBorder : function( node ) {
