@@ -335,6 +335,13 @@ qx.Class.define("qx.ui.core.Font",
              ( this.__weight ? "font-weight:" + this.__weight + ";" : "" ) +
              ( this.__style ? "font-style:" + this.__style + ";" : "" ) +
              ( this.__decoration ? "text-decoration:" + this.__decoration + ";" : "" );
+    },
+
+    toCss : function() {
+      return ( this.getItalic() ? "italic " : "" ) +
+             ( this.getBold() ? "bold " : "" ) +
+             ( this.__size ? this.getSize() + "px " : "" ) +
+             ( this.__family ? this.__family.replace(/\"/g, "'") : "" );
     }
   }
 });

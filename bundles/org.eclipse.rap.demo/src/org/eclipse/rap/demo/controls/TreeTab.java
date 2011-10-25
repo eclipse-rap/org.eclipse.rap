@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rap.demo.controls;
@@ -21,8 +21,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.widgets.*;
 
@@ -39,14 +38,14 @@ public class TreeTab extends ExampleTab {
   private final Image treeImage;
   private boolean addMouseListener;
 
-  public TreeTab( final CTabFolder topFolder ) {
+  public TreeTab( CTabFolder topFolder ) {
     super( topFolder, "Tree" );
     treeImage = Graphics.getImage( "resources/tree_item.gif", getClass().getClassLoader() );
     showImages = true;
     headerVisible = true;
   }
 
-  protected void createStyleControls( final Composite parent ) {
+  protected void createStyleControls( Composite parent ) {
     createStyleButton( "BORDER", SWT.BORDER );
     createStyleButton( "CHECK", SWT.CHECK );
     createStyleButton( "MULTI", SWT.MULTI );
@@ -67,28 +66,16 @@ public class TreeTab extends ExampleTab {
     createSetSelectionButton( parent );
     createChangeItemCountControl();
     createShowColumnControl();
+    createBgImageButton();
     createFgColorButton();
     createBgColorButton();
-    createBgImageButton();
     createFontChooser();
-    final Button itemFgButton = createPropertyButton( "Custom foreground on 1st item", SWT.CHECK );
-    itemFgButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
-        TreeItem item = tree.getItem( 0 );
-        Display display = parent.getDisplay();
-        Color green = display.getSystemColor( SWT.COLOR_GREEN );
-        item.setForeground( itemFgButton.getSelection() ? green  : null );
-      }
-    } );
-    final Button itemBgButton = createPropertyButton( "Custom background on 1st item", SWT.CHECK );
-    itemBgButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( SelectionEvent e ) {
-        TreeItem item = tree.getItem( 0 );
-        Display display = parent.getDisplay();
-        Color red = display.getSystemColor( SWT.COLOR_DARK_RED );
-        item.setBackground( itemBgButton.getSelection() ? red  : null );
-      }
-    } );
+    createItemForegroundControl();
+    createItemBackgroundControl();
+    createItemFontControl();
+    createCellForegroundControl();
+    createCellBackgroundControl();
+    createCellFontControl();
     final Button itemGrayButton2 = createPropertyButton( "Gray out 2nd item", SWT.CHECK );
     itemGrayButton2.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent e ) {
@@ -97,7 +84,7 @@ public class TreeTab extends ExampleTab {
     } );
     Button columnsAlignmentButton = createPropertyButton( "Change columns alignment", SWT.PUSH );
     columnsAlignmentButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         TreeColumn col1 = tree.getColumn( 1 );
         if( col1.getAlignment() == SWT.RIGHT ) {
           col1.setAlignment( SWT.LEFT );
@@ -114,7 +101,7 @@ public class TreeTab extends ExampleTab {
     } );
     Button columnsPackButton = createPropertyButton( "Pack all columns", SWT.PUSH );
     columnsPackButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         for( int i = 0; i < tree.getColumnCount(); i++ ) {
           tree.getColumn( i ).pack();
         }
@@ -131,7 +118,7 @@ public class TreeTab extends ExampleTab {
     cbAddMouseListener.setSelection( addMouseListener );
     Button getTopItemButton = createPropertyButton( "Query topItem", SWT.PUSH );
     getTopItemButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         TreeItem item = tree.getTopItem();
         String message = "Current topItem: " + item.toString();
         MessageDialog.openInformation( tree.getShell(),
@@ -141,7 +128,7 @@ public class TreeTab extends ExampleTab {
     } );
     Button setTopItemButton = createPropertyButton( "Set selection as topItem", SWT.PUSH );
     setTopItemButton.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         TreeItem[] item = tree.getSelection();
         if( item.length > 0 ) {
           tree.setTopItem( item[ 0 ] );
@@ -204,7 +191,7 @@ public class TreeTab extends ExampleTab {
     Menu treeMenu = new Menu( tree );
     MenuItem treeMenuItem = new MenuItem( treeMenu, SWT.PUSH );
     treeMenuItem.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         TreeItem item = tree.getSelection()[ 0 ];
         String itemText = "null";
         if( item != null ) {
@@ -219,17 +206,17 @@ public class TreeTab extends ExampleTab {
     treeMenuItem.setText( "TreeContextMenuItem" );
     tree.setMenu( treeMenu );
     tree.addTreeListener( new TreeListener() {
-      public void treeCollapsed( final TreeEvent event ) {
+      public void treeCollapsed( TreeEvent event ) {
         Item item = ( Item )event.item;
         lblTreeEvent.setText( "Collapsed: "  + item.getText() );
       }
-      public void treeExpanded( final TreeEvent event ) {
+      public void treeExpanded( TreeEvent event ) {
         Item item = ( Item )event.item;
         lblTreeEvent.setText( "Expanded: "  + item.getText() );
       }
     } );
     tree.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         String msg = "Selected: ";
         TreeItem item = ( TreeItem )event.item;
         if( ( getStyle() & SWT.CHECK ) != 0 ) {
@@ -247,7 +234,7 @@ public class TreeTab extends ExampleTab {
         lblTreeEvent.setText( msg );
       }
 
-      public void widgetDefaultSelected( final SelectionEvent event ) {
+      public void widgetDefaultSelected( SelectionEvent event ) {
         String title = "Widget Default Selected";
         Item item = ( Item )event.item;
         String message = "Widget default selected on " + item.getText() + " received";
@@ -304,7 +291,7 @@ public class TreeTab extends ExampleTab {
     button.setText( "headerVisible" );
     button.setSelection( headerVisible );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         headerVisible = button.getSelection();
         tree.setHeaderVisible( headerVisible );
       }
@@ -316,30 +303,30 @@ public class TreeTab extends ExampleTab {
     button.setText( "linesVisible" );
     button.setSelection( linesVisible );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         linesVisible = button.getSelection();
         tree.setLinesVisible( linesVisible );
       }
     } );
   }
 
-  private void createImagesButton( final Composite parent ) {
+  private void createImagesButton( Composite parent ) {
     final Button button = new Button( parent, SWT.TOGGLE );
     button.setText( "Show Images" );
     button.setSelection( true );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         showImages = button.getSelection();
         changeImage( tree, showImages ? treeImage : null );
       }
     } );
   }
 
-  private void createAddNodeButton( final Composite parent ) {
+  private void createAddNodeButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Add child item" );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         if( tree.getSelectionCount() > 0 ) {
           TreeItem selection = tree.getSelection()[ 0 ];
           TreeItem treeItem = new TreeItem( selection, SWT.NONE );
@@ -358,11 +345,11 @@ public class TreeTab extends ExampleTab {
     } );
   }
 
-  private void createDisposeNodeButton( final Composite parent ) {
+  private void createDisposeNodeButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Dispose Selected Item" );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         if( tree.getSelectionCount() > 0 ) {
           TreeItem selection = tree.getSelection()[ 0 ];
           selection.dispose();
@@ -371,31 +358,31 @@ public class TreeTab extends ExampleTab {
     } );
   }
 
-  private void createSelectAllButton( final Composite parent ) {
+  private void createSelectAllButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Select All" );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         tree.selectAll();
       }
     } );
   }
 
-  private void createDeselectAllButton( final Composite parent ) {
+  private void createDeselectAllButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Deselect All" );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         tree.deselectAll();
       }
     } );
   }
 
-  private void createSelectButton( final Composite parent ) {
+  private void createSelectButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Select second node" );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         if( tree.getItemCount() > 1 ) {
           tree.select( tree.getItem( 1 ) );
         }
@@ -403,11 +390,11 @@ public class TreeTab extends ExampleTab {
     } );
   }
 
-  private void createDeselectButton( final Composite parent ) {
+  private void createDeselectButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Deselect second node" );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         if( tree.getItemCount() > 1 ) {
           tree.deselect( tree.getItem( 1 ) );
         }
@@ -415,11 +402,11 @@ public class TreeTab extends ExampleTab {
     } );
   }
 
-  private void createSetSelectionButton( final Composite parent ) {
+  private void createSetSelectionButton( Composite parent ) {
     Button button = new Button( parent, SWT.PUSH );
     button.setText( "Set selection to first node" );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         if( tree.getItemCount() > 0 ) {
           tree.setSelection( tree.getItem( 0 ) );
         }
@@ -440,7 +427,7 @@ public class TreeTab extends ExampleTab {
     Button button = new Button( composite, SWT.PUSH );
     button.setText( "Show" );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         try {
           int index = Integer.parseInt( text.getText() );
           TreeColumn column = tree.getColumn( index );
@@ -490,14 +477,14 @@ public class TreeTab extends ExampleTab {
     } );
   }
 
-  private static void changeImage( final Tree tree, final Image image ) {
+  private static void changeImage( Tree tree, Image image ) {
     TreeItem[] items = tree.getItems();
     for( int i = 0; i < items.length; i++ ) {
       changeImage( items[ i ], image );
     }
   }
 
-  private static void changeImage( final TreeItem item, final Image image ) {
+  private static void changeImage( TreeItem item, Image image ) {
     item.setImage( 0, image );
     if( item.getParent().getColumnCount() > 1 ) {
       item.setImage( 1, image );
@@ -506,5 +493,93 @@ public class TreeTab extends ExampleTab {
     for( int i = 0; i < items.length; i++ ) {
       changeImage( items[ i ], image );
     }
+  }
+
+  private void createItemForegroundControl() {
+    final Button btn = new Button( styleComp, SWT.TOGGLE );
+    btn.setText( "Item 0 Foreground" );
+    btn.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        if( getTree().getItemCount() > 0 ) {
+          Color color = btn.getSelection() ? FG_COLOR_ORANGE  : null;
+          getTree().getItem( 0 ).setForeground( color );
+        }
+      }
+    } );
+  }
+
+  private void createItemBackgroundControl() {
+    final Button btn = new Button( styleComp, SWT.TOGGLE );
+    btn.setText( "Item 0 Background" );
+    btn.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        if( getTree().getItemCount() > 0 ) {
+          Color color = btn.getSelection() ? BG_COLOR_BROWN  : null;
+          getTree().getItem( 0 ).setBackground( color );
+        }
+      }
+    } );
+  }
+
+  private void createItemFontControl() {
+    final Button btn = new Button( styleComp, SWT.TOGGLE );
+    btn.setText( "Item 0 Font" );
+    btn.addSelectionListener( new SelectionAdapter() {
+
+      Font customFont = Graphics.getFont( "Courier", 11, SWT.BOLD );
+
+      public void widgetSelected( SelectionEvent e ) {
+        if( getTree().getItemCount() > 0 ) {
+          Font font = btn.getSelection() ? customFont : null;
+          getTree().getItem( 0 ).setFont( font );
+        }
+      }
+    } );
+  }
+
+  private void createCellForegroundControl() {
+    final Button btn = new Button( styleComp, SWT.TOGGLE );
+    btn.setText( "Cell 0,0 Foreground" );
+    btn.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        if( getTree().getItemCount() > 0 ) {
+          Color color = btn.getSelection() ? FG_COLOR_RED  : null;
+          getTree().getItem( 0 ).setForeground( 0, color );
+        }
+      }
+    } );
+  }
+
+  private void createCellBackgroundControl() {
+    final Button btn = new Button( styleComp, SWT.TOGGLE );
+    btn.setText( "Cell 0,0 Background" );
+    btn.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( SelectionEvent e ) {
+        if( getTree().getItemCount() > 0 ) {
+          Color color = btn.getSelection() ? BG_COLOR_GREEN  : null;
+          getTree().getItem( 0 ).setBackground( 0, color );
+        }
+      }
+    } );
+  }
+
+  private void createCellFontControl() {
+    final Button btn = new Button( styleComp, SWT.TOGGLE );
+    btn.setText( "Cell 0,0 Font" );
+    btn.addSelectionListener( new SelectionAdapter() {
+
+      Font cellFont = Graphics.getFont( "Times", 13, SWT.ITALIC );
+
+      public void widgetSelected( SelectionEvent e ) {
+        if( getTree().getItemCount() > 0 ) {
+          Font font = btn.getSelection() ? cellFont : null;
+          getTree().getItem( 0 ).setFont( 0, font );
+        }
+      }
+    } );
+  }
+
+  private Tree getTree() {
+    return tree;
   }
 }

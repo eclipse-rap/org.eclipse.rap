@@ -404,7 +404,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SliderTest", {
     testSendEvent : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var slider = this._createSlider( false );
-      slider.setUserData( "id", "w99" );
+      org.eclipse.swt.WidgetManager.getInstance().add( slider, "w99" );
       testUtil.click( slider._maxButton );
       assertTrue( slider._requestScheduled );
       testUtil.forceTimerOnce();

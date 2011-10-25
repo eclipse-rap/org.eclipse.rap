@@ -345,7 +345,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ToolBarTest", {
       item.addToDocument();
       qx.ui.core.Widget.flushGlobalQueues();
       var lineStyle = item.getCellNode( 3 ).style;
-      item.setUserData( "id", "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( item, "w1" );
       this.testUtil.clearRequestLog();
       item.setHasSelectionListener( true );
       this.testUtil.fakeMouseClick( item, 103, 103 );

@@ -539,7 +539,9 @@ public class TreeLCA_Test extends TestCase {
 
     Fixture.executeLifeCycleFromServerThread();
 
-    assertEquals( 7, countOccurences( "TreeItem.createItem(", Fixture.getAllMarkup() ) );
+    Message message = Fixture.getProtocolMessage();
+    String expected =  "\"type\": \"rwt.widgets.TreeItem\"";
+    assertEquals( 7, countOccurences( expected, message.toString() ) );
   }
 
   public void testVirtualReadSelection() {
@@ -1027,6 +1029,52 @@ public class TreeLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( tree, "scrollLeft" ) );
+  }
+
+  public void testRenderInitialSelection() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
+  }
+
+  public void testRenderSelection() throws IOException, JSONException {
+    Tree tree = new Tree( shell, SWT.MULTI );
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    TreeItem item3 = new TreeItem( tree, SWT.NONE );
+
+    tree.setSelection( new TreeItem[] { item1, item3 } );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( tree, "selection" );
+    StringBuilder expected = new StringBuilder();
+    expected.append( "[" );
+    expected.append( WidgetUtil.getId( item1 ) );
+    expected.append( "," );
+    expected.append( WidgetUtil.getId( item3 ) );
+    expected.append( "]" );
+    assertTrue( ProtocolTestUtil.jsonEquals( expected.toString(), actual ) );
+  }
+
+  public void testRenderSelectionUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.MULTI );
+    TreeItem item1 = new TreeItem( tree, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    TreeItem item3 = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setSelection( new TreeItem[] { item1, item3 } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "selection" ) );
   }
 
   public void testRenderAddScrollBarsSelectionListener_Horizontal() throws Exception {

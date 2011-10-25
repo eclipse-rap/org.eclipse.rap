@@ -47,6 +47,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static final String PROP_LINES_VISIBLE = "linesVisible";
   private static final String PROP_TOP_ITEM_INDEX = "topItemIndex";
   private static final String PROP_SCROLL_LEFT = "scrollLeft";
+  private static final String PROP_SELECTION = "selection";
   private static final String PROP_SCROLLBARS_VISIBLE = "scrollBarsVisible";
   private static final String PROP_SCROLLBARS_SELECTION_LISTENER = "scrollBarsSelection";
   private static final String PROP_SELECTION_LISTENER = "selection";
@@ -55,6 +56,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   private static final int ZERO = 0 ;
   private static final int DEFAULT_ITEM_HEIGHT = 18;
+  private static final String[] DEFAULT_SELECTION = new String[ 0 ];
   private static final boolean[] DEFAULT_SCROLLBARS_VISIBLE = new boolean[] { false, false };
 
   public void preserveValues( Widget widget ) {
@@ -71,6 +73,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     preserveProperty( tree, PROP_LINES_VISIBLE, tree.getLinesVisible() );
     preserveProperty( tree, PROP_TOP_ITEM_INDEX, getTopItemIndex( tree ) );
     preserveProperty( tree, PROP_SCROLL_LEFT, getScrollLeft( tree ) );
+    preserveProperty( tree, PROP_SELECTION, getSelection( tree ) );
     preserveProperty( tree, PROP_SCROLLBARS_VISIBLE, getScrollBarsVisible( tree ) );
     preserveListener( tree,
                       PROP_SCROLLBARS_SELECTION_LISTENER,
@@ -128,6 +131,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     renderProperty( tree, PROP_LINES_VISIBLE, tree.getLinesVisible(), false );
     renderProperty( tree, PROP_TOP_ITEM_INDEX, getTopItemIndex( tree ), ZERO );
     renderProperty( tree, PROP_SCROLL_LEFT, getScrollLeft( tree ), ZERO );
+    renderProperty( tree, PROP_SELECTION, getSelection( tree ), DEFAULT_SELECTION );
     renderProperty( tree,
                     PROP_SCROLLBARS_VISIBLE,
                     getScrollBarsVisible( tree ),
@@ -292,6 +296,15 @@ public final class TreeLCA extends AbstractWidgetLCA {
 
   //////////////////
   // Helping methods
+
+  private static String[] getSelection( Tree tree ) {
+    TreeItem[] selection = tree.getSelection();
+    String[] result = new String[ selection.length ];
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = WidgetUtil.getId( selection[ i ] );
+    }
+    return result;
+  }
 
   private static int getScrollLeft( Tree tree ) {
     ITreeAdapter treeAdapter = getTreeAdapter( tree );

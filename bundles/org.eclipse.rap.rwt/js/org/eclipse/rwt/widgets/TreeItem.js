@@ -49,6 +49,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     if( this._parent != null ) {
       this._parent._remove( this );
     }
+    // TODO: Remove this line when TableItem is migrated to the protocol
     org.eclipse.swt.WidgetManager.getInstance().remove( this );
   },
 
@@ -56,14 +57,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
 
     createItem : function( parent, index, id ) {
       var parentItem = this._getItem( parent );
-      var item;
+      var result;
       if( parentItem.isChildCreated( index ) && !parentItem.isChildCached( index ) ) {
-        item = parentItem.getChild( index );
-        item.markCached();
+        result = parentItem.getChild( index );
+        result.markCached();
       } else {
-        item = new org.eclipse.rwt.widgets.TreeItem( parentItem, index, false );
+        result = new org.eclipse.rwt.widgets.TreeItem( parentItem, index, false );
       }
-      org.eclipse.swt.WidgetManager.getInstance().add( item, id, false );
+      if( id ) {
+        // TODO: Remove this line and id parameter when TableItem is migrated to the protocol
+        org.eclipse.swt.WidgetManager.getInstance().add( result, id, false );
+      }
+      return result;
     },
 
     _getItem : function( treeOrItem ) {

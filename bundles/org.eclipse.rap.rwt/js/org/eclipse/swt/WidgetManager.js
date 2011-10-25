@@ -21,7 +21,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
 
   construct : function() {
     this.base( arguments );
-    this._callbacks = {};
     
     // this field is needed as Opera has some problems with
     // accessing local variables in eval expressions.
@@ -65,18 +64,10 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      * Registers the given widget under the given id at the WidgetManager.
      */
     add : function( widget, id, isControl, type ) {
-      org.eclipse.rwt.protocol.ObjectManager.add( id, widget, type );
       if( isControl != "undefined" && isControl == true ) {
         widget.setUserData( "isControl", true );
       }
-      widget.setUserData( "id", id );
-      widget.setUserData( "rwtType", type );
-      if( this._callbacks[ id ] ) {
-        for( var i = 0; i < this._callbacks[ id ].length; i++ ) {
-           this._callbacks[ id ][ i ]( widget );
-        }
-        delete this._callbacks[ id ];
-      }
+      org.eclipse.rwt.protocol.ObjectManager.add( id, widget, type );
     },
 
     /**
@@ -86,13 +77,6 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     remove : function( widget ) {
       var id = this.findIdByWidget( widget );
       org.eclipse.rwt.protocol.ObjectManager.remove( id );
-    },
-    
-    addRegistrationCallback : function( id, fun ) {
-      if( !this._callbacks[ id ] ) {
-        this._callbacks[ id ] = [];
-      }
-      this._callbacks[ id ].push( fun );
     },
 
     /**
@@ -108,11 +92,7 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
      * registered.
      */
     findIdByWidget : function( widget ) {
-      var result;
-      if( widget != null ) {
-        result = widget.getUserData( "id" );
-      }
-      return result;
+      return org.eclipse.rwt.protocol.ObjectManager.getId( widget );
     },
 
     /**

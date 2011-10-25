@@ -17,8 +17,11 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -28,18 +31,25 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.IWidgetColorAdapter;
 import org.eclipse.swt.widgets.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class TreeItemLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private Tree tree;
+  private TreeItemLCA lca;
 
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
-    Fixture.fakeResponseWriter();
+    tree = new Tree( shell, SWT.NONE );
+    lca = new TreeItemLCA();
+    Fixture.fakeNewRequest( display );
   }
 
   @Override
@@ -48,7 +58,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    Tree tree = new Tree( shell, SWT.NONE );
     Fixture.markInitialized( display );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     new TreeColumn( tree, SWT.NONE, 0 );
@@ -67,10 +76,7 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, adapter.getPreserved( TreeItemLCA.PROP_EXPANDED ) );
     Image[] images = ( Image[] )adapter.getPreserved( TreeItemLCA.PROP_IMAGES );
     assertEquals( image, images[ 0 ] );
-    Object selection = adapter.getPreserved( TreeItemLCA.PROP_SELECTION );
-    assertEquals( Boolean.FALSE, selection );
-    IWidgetColorAdapter colorAdapter
-      = treeItem.getAdapter( IWidgetColorAdapter.class );
+    IWidgetColorAdapter colorAdapter = treeItem.getAdapter( IWidgetColorAdapter.class );
     Object background = adapter.getPreserved( TreeItemLCA.PROP_BACKGROUND );
     assertEquals( colorAdapter.getUserBackgound(), background );
     Object foreground = adapter.getPreserved( TreeItemLCA.PROP_FOREGROUND );
@@ -121,7 +127,6 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( Graphics.getImage( Fixture.IMAGE1 ), images[ 0 ] );
     assertEquals( Graphics.getImage( Fixture.IMAGE2 ), images[ 1 ] );
     assertEquals( Graphics.getImage( Fixture.IMAGE3 ), images[ 2 ] );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( TreeItemLCA.PROP_SELECTION ) );
     assertEquals( background, adapter.getPreserved( TreeItemLCA.PROP_BACKGROUND ) );
     assertEquals( foreground, adapter.getPreserved( TreeItemLCA.PROP_FOREGROUND ) );
     fonts = ( Font[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_FONTS );
@@ -139,7 +144,7 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   public void testCheckPreserveValues() {
-    Tree tree = new Tree( shell, SWT.CHECK );
+    tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
@@ -156,7 +161,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   public void testPreserveVariant() {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
@@ -168,11 +172,11 @@ public class TreeItemLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( treeItem );
     variant = adapter.getPreserved( TreeItemLCA.PROP_VARIANT );
-    assertEquals( "abc", variant );
+    assertEquals( "variant_abc", variant );
   }
 
   public void testLcaDoesNotMaterializeItem() {
-    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree = new Tree( shell, SWT.VIRTUAL );
     tree.setItemCount( 100 );
     tree.setSize( 100, 100 );
     TreeItem treeItem = tree.getItem( 99 );
@@ -183,7 +187,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   public void testTreeEvent() {
-    final Tree tree = new Tree( shell, SWT.NONE );
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     final TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     new TreeItem( treeItem, SWT.NONE );
@@ -226,7 +229,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   public void testExpandCollapse() {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     new TreeItem( treeItem, SWT.NONE );
     treeItem.setExpanded( false );
@@ -240,7 +242,7 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   public void testChecked() {
-    Tree tree = new Tree( shell, SWT.CHECK );
+    tree = new Tree( shell, SWT.CHECK );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     String treeItemId = WidgetUtil.getId( treeItem );
     Fixture.fakeNewRequest( display );
@@ -249,81 +251,8 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( true, treeItem.getChecked() );
   }
 
-  public void testRenderChanges() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    shell.open();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    Fixture.markInitialized( tree );
-    Fixture.markInitialized( treeItem );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    TreeItemLCA tiLCA = new TreeItemLCA();
-    treeItem.setBackground( display.getSystemColor( SWT.COLOR_RED ) );
-    tiLCA.renderChanges( treeItem );
-    String expected;
-    expected = "w.setBackground( \"#ff0000\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-    Fixture.fakeResponseWriter();
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    treeItem.setForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
-    tiLCA.renderChanges( treeItem );
-    expected = "w.setForeground( \"#00ff00\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-  }
-
-  public void testRenderSelection() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    String treeRef = "wm.findWidgetById( \"" + WidgetUtil.getId( tree ) +"\" )";
-    String treeItemRef = "wm.findWidgetById( \"" + WidgetUtil.getId( treeItem ) +"\" )";
-    shell.open();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    Fixture.markInitialized( tree );
-    Fixture.markInitialized( treeItem );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    TreeItemLCA tiLCA = new TreeItemLCA();
-    tiLCA.renderChanges( treeItem );
-    assertTrue( Fixture.getAllMarkup().indexOf( "select" ) == -1 );
-    Fixture.fakeResponseWriter();
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    tree.select( treeItem );
-    tiLCA.renderChanges( treeItem );
-    String expectedSelect = treeRef + ";w.selectItem( " + treeItemRef + " );";
-    String expectedFocus = ";w.setFocusItem( " + treeItemRef + " );";
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( expectedSelect ) != -1 );
-    assertTrue( markup.indexOf( expectedFocus ) != -1 );
-  }
-
-  public void testRenderDeselection() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    tree.setSelection( treeItem );
-    String treeRef = "wm.findWidgetById( \"" + WidgetUtil.getId( tree ) +"\" )";
-    String treeItemRef = "wm.findWidgetById( \"" + WidgetUtil.getId( treeItem ) +"\" )";
-    shell.open();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    Fixture.markInitialized( tree );
-    Fixture.markInitialized( treeItem );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    TreeItemLCA tiLCA = new TreeItemLCA();
-    tree.deselect( treeItem );
-    tiLCA.renderChanges( treeItem );
-    String expected = treeRef + ";w.deselectItem( " + treeItemRef + " );";
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( expected ) != -1 );
-  }
-
   public void testDontRenderDeselectionOnMaterialize() throws IOException {
-    Tree tree = new Tree( shell, SWT.VIRTUAL );
+    tree = new Tree( shell, SWT.VIRTUAL );
     TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     shell.open();
     Fixture.clearPreserved();
@@ -336,35 +265,7 @@ public class TreeItemLCA_Test extends TestCase {
     assertFalse( Fixture.getAllMarkup().contains( "deselectItem" ) );
   }
 
-  public void testRenderMultiSelection() throws IOException {
-    Tree tree = new Tree( shell, SWT.MULTI );
-    TreeItem treeItem1 = new TreeItem( tree, SWT.NONE );
-    TreeItem treeItem2 = new TreeItem( tree, SWT.NONE );
-    String treeItem1Ref = "wm.findWidgetById( \"" + WidgetUtil.getId( treeItem1 ) +"\" )";
-    String treeItem2Ref = "wm.findWidgetById( \"" + WidgetUtil.getId( treeItem2 ) +"\" )";
-    shell.open();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    Fixture.markInitialized( tree );
-    Fixture.markInitialized( treeItem1 );
-    Fixture.markInitialized( treeItem2 );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    TreeItemLCA tiLCA = new TreeItemLCA();
-    tree.selectAll();
-    tiLCA.renderChanges( treeItem1 );
-    tiLCA.renderChanges( treeItem2 );
-    String expectedSelect1 = "w.selectItem( " + treeItem1Ref + " );";
-    String expectedSelect2 = "w.selectItem( " + treeItem2Ref + " );";
-    String expectedFocus = "w.setFocusItem( " + treeItem1Ref + " );";
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( expectedSelect1 ) != -1 );
-    assertTrue( markup.indexOf( expectedFocus ) != -1 );
-    assertTrue( markup.indexOf( expectedSelect2 ) != -1 );
-  }
-
   public void testGetBoundsWithScrolling() {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeItem rootItem = new TreeItem( tree, 0 );
     TreeItem rootItem2 = new TreeItem( tree, 0 );
     TreeItem rootItem3 = new TreeItem( tree, 0 );
@@ -384,46 +285,7 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( 0, rootItem3.getBounds().y );
   }
 
-  public void testTextEscape() throws Exception {
-    Tree tree = new Tree( shell, SWT.NONE );
-    TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
-    col1.setText( "<x>&Col1" );
-    TreeItem item1 = new TreeItem( tree, SWT.NONE );
-    item1.setText( "<x>&Item1" );
-    shell.open();
-    TreeItemLCA lca = new TreeItemLCA();
-    lca.renderChanges( item1 );
-    String expected = "w.setTexts( [ \"&lt;x&gt;&amp;Item1\" ] );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
-  }
-
-  public void testInitialization() throws Exception {
-    Tree tree = new Tree( shell, SWT.NONE );
-    TreeItem item1 = new TreeItem( tree, SWT.NONE );
-    TreeItem item2 = new TreeItem( item1, SWT.NONE  );
-    TreeItem item3 = new TreeItem( item1, SWT.NONE );
-    String item1Id = WidgetUtil.getId( item1 );
-    String item2Id = WidgetUtil.getId( item2 );
-    String item3Id = WidgetUtil.getId( item3 );
-    String treeId = WidgetUtil.getId( tree );
-    TreeItemLCA lca = new TreeItemLCA();
-    lca.renderInitialization( item1 );
-    lca.renderInitialization( item2 );
-    lca.renderInitialization( item3 );
-    String expected1 = "org.eclipse.rwt.widgets.TreeItem.createItem( "
-                     + "wm.findWidgetById( \"" + treeId + "\" ), 0, \"" + item1Id + "\" );";
-    String expected2 = "org.eclipse.rwt.widgets.TreeItem.createItem( "
-                     + "wm.findWidgetById( \"" + item1Id + "\" ), 0, \"" + item2Id + "\" );";
-    String expected3 = "org.eclipse.rwt.widgets.TreeItem.createItem( "
-                     + "wm.findWidgetById( \"" + item1Id + "\" ), 1, \"" + item3Id + "\" );";
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( expected1 ) != -1 );
-    assertTrue( markup.indexOf( expected2 ) != -1 );
-    assertTrue( markup.indexOf( expected3 ) != -1 );
-  }
-
   public void testPreserveInitialItemCount() {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
 
@@ -433,7 +295,6 @@ public class TreeItemLCA_Test extends TestCase {
   }
 
   public void testPreserveItemCount() {
-    Tree tree = new Tree( shell, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
 
@@ -443,18 +304,515 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), getPreservedProperty( item, TreeItemLCA.PROP_ITEM_COUNT ) );
   }
 
-  public void testRenderItemCount() throws IOException {
-    Tree tree = new Tree( shell, SWT.NONE );
+  public void testRenderCreate() throws IOException {
+    new TreeItem( tree, SWT.NONE );
     TreeItem item = new TreeItem( tree, SWT.NONE );
-    Fixture.markInitialized( item );
-    Fixture.preserveWidgets();
 
-    item.setItemCount( 10 );
-    TreeItemLCA lca = new TreeItemLCA();
+    lca.renderInitialization( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertEquals( "rwt.widgets.TreeItem", operation.getType() );
+    assertEquals( Integer.valueOf( 1 ), operation.getProperty( "index" ) );
+  }
+
+  public void testRenderParent() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    lca.renderInitialization( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertEquals( WidgetUtil.getId( item.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderInitialItemCount() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
     lca.render( item );
 
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setItemCount( 10 )" ) != -1 );
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "itemCount" ) == -1 );
+  }
+
+  public void testRenderItemCount() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    item.setItemCount( 10 );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 10 ), message.findSetProperty( item, "itemCount" ) );
+  }
+
+  public void testRenderItemCountUnchanged() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setItemCount( 10 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "itemCount" ) );
+  }
+
+  public void testRenderInitialTexts() throws IOException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "texts" ) == -1 );
+  }
+
+  public void testRenderTexts() throws IOException, JSONException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    item.setText( new String[] { "item 0.0", "item 0.1" } );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "texts" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[\"item 0.0\",\"item 0.1\"]", actual ) );
+  }
+
+  public void testRenderTextsUnchanged() throws IOException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setText( new String[] { "item 0.0", "item 0.1" } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "texts" ) );
+  }
+
+  public void testRenderInitialImages() throws IOException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "images" ) == -1 );
+  }
+
+  public void testRenderImages() throws IOException, JSONException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
+
+    item.setImage( new Image[] { null, image } );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "images" );
+    String expected = "[\"rwt-resources/generated/90fb0bfe\",58,12]";
+    assertEquals( JSONObject.NULL, actual.get( 0 ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual.getJSONArray( 1 ) ) );
+  }
+
+  public void testRenderImagesUnchanged() throws IOException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
+
+    item.setImage( new Image[] { null, image } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "images" ) );
+  }
+
+  public void testRenderInitialBackground() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "background" ) == -1 );
+  }
+
+  public void testRenderBackground() throws IOException, JSONException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    item.setBackground( display.getSystemColor( SWT.COLOR_GREEN ) );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "background" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", actual ) );
+  }
+
+  public void testRenderBackgroundUnchanged() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setBackground( display.getSystemColor( SWT.COLOR_GREEN ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "background" ) );
+  }
+
+  public void testRenderInitialForeground() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "foreground" ) == -1 );
+  }
+
+  public void testRenderForeground() throws IOException, JSONException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    item.setForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "foreground" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", actual ) );
+  }
+
+  public void testRenderForegroundUnchanged() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "foreground" ) );
+  }
+
+  public void testRenderInitialFont() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "font" ) == -1 );
+  }
+
+  public void testRenderFont() throws IOException, JSONException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    item.setFont( Graphics.getFont( "Arial", 20, SWT.BOLD ) );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "font" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[\"Arial\"]", actual.getJSONArray( 0 ) ) );
+    assertEquals( Integer.valueOf( 20 ), actual.get( 1 ) );
+    assertEquals( Boolean.TRUE, actual.get( 2 ) );
+    assertEquals( Boolean.FALSE, actual.get( 3 ) );
+  }
+
+  public void testRenderFontUnchanged() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setFont( Graphics.getFont( "Arial", 20, SWT.BOLD ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "font" ) );
+  }
+
+  public void testRenderInitialCellBackgrounds() throws IOException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "cellBackgrounds" ) == -1 );
+  }
+
+  public void testRenderCellBackgrounds() throws IOException, JSONException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    item.setBackground( 1, display.getSystemColor( SWT.COLOR_GREEN ) );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "cellBackgrounds" );
+    assertEquals( JSONObject.NULL, actual.get( 0 ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", actual.getJSONArray( 1 ) ) );
+  }
+
+  public void testRenderCellBackgroundsUnchanged() throws IOException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setBackground( 1, display.getSystemColor( SWT.COLOR_GREEN ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "cellBackgrounds" ) );
+  }
+
+  public void testRenderInitialCellForegrounds() throws IOException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "cellForegrounds" ) == -1 );
+  }
+
+  public void testRenderCellForegrounds() throws IOException, JSONException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    item.setForeground( 1, display.getSystemColor( SWT.COLOR_GREEN ) );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "cellForegrounds" );
+    assertEquals( JSONObject.NULL, actual.get( 0 ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", actual.getJSONArray( 1 ) ) );
+  }
+
+  public void testRenderCellForegroundsUnchanged() throws IOException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setForeground( 1, display.getSystemColor( SWT.COLOR_GREEN ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "cellForegrounds" ) );
+  }
+
+  public void testRenderInitialCellFonts() throws IOException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "cellFonts" ) == -1 );
+  }
+
+  public void testRenderCellFonts() throws IOException, JSONException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    item.setFont( 1, Graphics.getFont( "Arial", 20, SWT.BOLD ) );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "cellFonts" );
+    assertEquals( JSONObject.NULL, actual.get( 0 ) );
+    JSONArray cellFont = actual.getJSONArray( 1 );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[\"Arial\"]", cellFont.getJSONArray( 0 ) ) );
+    assertEquals( Integer.valueOf( 20 ), cellFont.get( 1 ) );
+    assertEquals( Boolean.TRUE, cellFont.get( 2 ) );
+    assertEquals( Boolean.FALSE, cellFont.get( 3 ) );
+  }
+
+  public void testRenderCellFontsUnchanged() throws IOException {
+    new TreeColumn( tree, SWT.NONE );
+    new TreeColumn( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setFont( 1, Graphics.getFont( "Arial", 20, SWT.BOLD ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "cellFonts" ) );
+  }
+
+  public void testRenderInitialExpanded() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "expanded" ) == -1 );
+  }
+
+  public void testRenderExpanded() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    new TreeItem( item, SWT.NONE );
+
+    item.setExpanded( true );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( item, "expanded" ) );
+  }
+
+  public void testRenderExpandedUnchanged() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    new TreeItem( item, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setExpanded( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "expanded" ) );
+  }
+
+  public void testRenderInitialChecked() throws IOException {
+    tree = new Tree( shell, SWT.CHECK );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "checked" ) == -1 );
+  }
+
+  public void testRenderChecked() throws IOException {
+    tree = new Tree( shell, SWT.CHECK );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    item.setChecked( true );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( item, "checked" ) );
+  }
+
+  public void testRenderCheckedUnchanged() throws IOException {
+    tree = new Tree( shell, SWT.CHECK );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setChecked( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "checked" ) );
+  }
+
+  public void testRenderInitialGrayed() throws IOException {
+    tree = new Tree( shell, SWT.CHECK );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "grayed" ) == -1 );
+  }
+
+  public void testRenderGrayed() throws IOException {
+    tree = new Tree( shell, SWT.CHECK );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    item.setGrayed( true );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( item, "grayed" ) );
+  }
+
+  public void testRenderGrayedUnchanged() throws IOException {
+    tree = new Tree( shell, SWT.CHECK );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setGrayed( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "grayed" ) );
+  }
+
+  public void testRenderInitialVariant() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "variant" ) == -1 );
+  }
+
+  public void testRenderVariant() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    item.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "variant_blue", message.findSetProperty( item, "variant" ) );
+  }
+
+  public void testRenderVariantUnchanged() throws IOException {
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "variant" ) );
   }
 
   private static Object getPreservedProperty( Widget widget, String property ) {

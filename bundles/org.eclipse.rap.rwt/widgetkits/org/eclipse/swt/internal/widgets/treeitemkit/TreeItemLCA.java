@@ -11,86 +11,81 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.treeitemkit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.FontUtil;
-import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
 
 
 public final class TreeItemLCA extends AbstractWidgetLCA {
 
+  private static final String TYPE = "rwt.widgets.TreeItem";
+
   static final String PROP_ITEM_COUNT = "itemCount";
-  static final String PROP_CHECKED = "checked";
-  static final String PROP_EXPANDED = "expanded";
-  static final String PROP_SELECTION = "selection";
+  static final String PROP_TEXTS = "texts";
+  static final String PROP_IMAGES = "images";
   static final String PROP_BACKGROUND = "background";
   static final String PROP_FOREGROUND = "foreground";
   static final String PROP_FONT = "font";
-  static final String PROP_CELL_BACKGROUNDS = "backgrounds";
-  static final String PROP_CELL_FOREGROUNDS = "foregrounds";
-  static final String PROP_CELL_FONTS = "fonts";
+  static final String PROP_CELL_BACKGROUNDS = "cellBackgrounds";
+  static final String PROP_CELL_FOREGROUNDS = "cellForegrounds";
+  static final String PROP_CELL_FONTS = "cellFonts";
+  static final String PROP_EXPANDED = "expanded";
+  static final String PROP_CHECKED = "checked";
   static final String PROP_GRAYED = "grayed";
-  static final String PROP_TEXTS = "texts";
-  static final String PROP_IMAGES = "images";
   static final String PROP_VARIANT = "variant";
 
-  private static final Integer DEFAULT_ITEM_COUNT = new Integer( 0 );
+  private static final int DEFAULT_ITEM_COUNT = 0;
 
   @Override
   public void preserveValues( Widget widget ) {
-    TreeItem treeItem = ( TreeItem )widget;
-    Tree tree = treeItem.getParent();
-    ITreeAdapter treeAdapter = tree.getAdapter( ITreeAdapter.class );
-    ITreeItemAdapter itemAdapter = treeItem.getAdapter( ITreeItemAdapter.class );
-    IWidgetColorAdapter colorAdapter = treeItem.getAdapter( IWidgetColorAdapter.class );
-    IWidgetFontAdapter fontAdapter = treeItem.getAdapter( IWidgetFontAdapter.class );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
-    adapter.preserve( PROP_SELECTION, Boolean.valueOf( isSelected( treeItem ) ) );
-    if( treeAdapter.isCached( treeItem ) ) {
-      adapter.preserve( PROP_ITEM_COUNT, new Integer( treeItem.getItemCount() ) );
-      preserveFont( treeItem );
-      adapter.preserve( PROP_CHECKED, Boolean.valueOf( treeItem.getChecked() ) );
-      adapter.preserve( TreeItemLCA.PROP_EXPANDED, Boolean.valueOf( treeItem.getExpanded() ) );
-      adapter.preserve( PROP_TEXTS, getTexts( treeItem ) );
-      adapter.preserve( PROP_IMAGES, getImages( treeItem ) );
-      adapter.preserve( PROP_BACKGROUND, colorAdapter.getUserBackgound() );
-      adapter.preserve( PROP_FOREGROUND, colorAdapter.getUserForegound() );
-      adapter.preserve( PROP_FONT, fontAdapter.getUserFont() );
-      adapter.preserve( PROP_CELL_BACKGROUNDS, itemAdapter.getCellBackgrounds() );
-      adapter.preserve( PROP_CELL_FOREGROUNDS, itemAdapter.getCellForegrounds() );
-      adapter.preserve( PROP_CELL_FONTS, itemAdapter.getCellFonts() );
-      adapter.preserve( PROP_GRAYED, Boolean.valueOf( treeItem.getGrayed() ) );
+    TreeItem item = ( TreeItem )widget;
+    if( isCached( item ) ) {
+      preserveProperty( item, PROP_ITEM_COUNT, item.getItemCount() );
+      preserveProperty( item, PROP_TEXTS, getTexts( item ) );
+      preserveProperty( item, PROP_IMAGES, getImages( item ) );
+      WidgetLCAUtil.preserveBackground( item, getUserBackgound( item ) );
+      WidgetLCAUtil.preserveForeground( item, getUserForegound( item ) );
+      WidgetLCAUtil.preserveFont( item, getUserFont( item ) );
+      preserveProperty( item, PROP_CELL_BACKGROUNDS, getCellBackgrounds( item ) );
+      preserveProperty( item, PROP_CELL_FOREGROUNDS, getCellForegrounds( item ) );
+      preserveProperty( item, PROP_CELL_FONTS, getCellFonts( item ) );
+      preserveProperty( item, PROP_EXPANDED, item.getExpanded() );
+      preserveProperty( item, PROP_CHECKED, item.getChecked() );
+      preserveProperty( item, PROP_GRAYED, item.getGrayed() );
+      preserveProperty( item, PROP_VARIANT, getVariant( item ) );
     }
-    adapter.preserve( PROP_VARIANT, WidgetUtil.getVariant( treeItem ) );
   }
 
   public void readData( Widget widget ) {
-    final TreeItem treeItem = ( TreeItem )widget;
+    final TreeItem item = ( TreeItem )widget;
     String value = WidgetLCAUtil.readPropertyValue( widget, "checked" );
     if( value != null ) {
-      treeItem.setChecked( Boolean.valueOf( value ).booleanValue() );
+      item.setChecked( Boolean.valueOf( value ).booleanValue() );
     }
-    if( WidgetLCAUtil.wasEventSent( treeItem, JSConst.EVENT_TREE_EXPANDED ) ) {
+    if( WidgetLCAUtil.wasEventSent( item, JSConst.EVENT_TREE_EXPANDED ) ) {
       // The event is fired before the setter is called. Order like in SWT.
-      processTreeExpandedEvent( treeItem );
+      processTreeExpandedEvent( item );
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          treeItem.setExpanded( true );
+          item.setExpanded( true );
         }
       } );
     }
-    if( WidgetLCAUtil.wasEventSent( treeItem, JSConst.EVENT_TREE_COLLAPSED ) ) {
-      processTreeCollapsedEvent( treeItem );
+    if( WidgetLCAUtil.wasEventSent( item, JSConst.EVENT_TREE_COLLAPSED ) ) {
+      processTreeCollapsedEvent( item );
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          treeItem.setExpanded( false );
+          item.setExpanded( false );
         }
       } );
     }
@@ -98,46 +93,49 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
 
   @Override
   public void renderInitialization( Widget widget ) throws IOException {
-    TreeItem treeItem = ( TreeItem )widget;
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    Object parent;
-    Integer index;
-    if( treeItem.getParentItem() == null ) {
-      parent = treeItem.getParent();
-      index  = new Integer( treeItem.getParent().indexOf( treeItem ) );
+    TreeItem item = ( TreeItem )widget;
+    Widget parent;
+    int index;
+    if( item.getParentItem() == null ) {
+      parent = item.getParent();
+      index  = item.getParent().indexOf( item );
     } else {
-      parent = treeItem.getParentItem();
-      index = new Integer( treeItem.getParentItem().indexOf( treeItem ) );
+      parent = item.getParentItem();
+      index = item.getParentItem().indexOf( item );
     }
-    Object[] args = new Object[] {
-      parent,
-      index,
-      WidgetUtil.getId( widget )
-    };
-    writer.callStatic( "org.eclipse.rwt.widgets.TreeItem.createItem", args );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( item );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( parent ) );
+    clientObject.setProperty( "index", index );
   }
 
   @Override
   public void renderChanges( Widget widget ) throws IOException {
-    TreeItem treeItem = ( TreeItem )widget;
-    Tree tree = treeItem.getParent();
-    ITreeAdapter adapter = tree.getAdapter( ITreeAdapter.class );
-    if( adapter.isCached( treeItem ) ) {
-      writeItemCount( treeItem );
-      writeImages( treeItem );
-      writeTexts( treeItem );
-      writeBackground( treeItem );
-      writeForeground( treeItem );
-      writeFont( treeItem );
-      writeCellBackgrounds( treeItem );
-      writeCellForegrounds( treeItem );
-      writeCellFonts( treeItem );
-      writeSelection( treeItem );
-      writeExpanded( treeItem );
-      writeChecked( treeItem );
-      writeGrayed( treeItem );
+    TreeItem item = ( TreeItem )widget;
+    if( isCached( item ) ) {
+      renderProperty( item, PROP_ITEM_COUNT, item.getItemCount(), DEFAULT_ITEM_COUNT );
+      renderProperty( item, PROP_TEXTS, getTexts( item ), getDefaultTexts( item ) );
+      renderProperty( item, PROP_IMAGES, getImages( item ), new Image[ getColumnCount( item ) ] );
+      WidgetLCAUtil.renderBackground( item, getUserBackgound( item ) );
+      WidgetLCAUtil.renderForeground( item, getUserForegound( item ) );
+      WidgetLCAUtil.renderFont( item, getUserFont( item ) );
+      renderProperty( item,
+                      PROP_CELL_BACKGROUNDS,
+                      getCellBackgrounds( item ),
+                      new Color[ getColumnCount( item ) ] );
+      renderProperty( item,
+                      PROP_CELL_FOREGROUNDS,
+                      getCellForegrounds( item ),
+                      new Color[ getColumnCount( item ) ] );
+      renderProperty( item,
+                      PROP_CELL_FONTS,
+                      getCellFonts( item ),
+                      new Font[ getColumnCount( item ) ] );
+      renderProperty( item, PROP_EXPANDED, item.getExpanded(), false );
+      renderProperty( item, PROP_CHECKED, item.getChecked(), false );
+      renderProperty( item, PROP_GRAYED, item.getGrayed(), false );
+      renderProperty( item, PROP_VARIANT, getVariant( item ), null );
     }
-    writeVariant( treeItem );
   }
 
   @Override
@@ -146,139 +144,17 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
     if( !itemAdapter.isParentDisposed() ) {
       // The tree disposes the items itself on the client (faster)
-      JSWriter writer = JSWriter.getWriterFor( item );
-      writer.call( "dispose", null );
+      ClientObjectFactory.getForWidget( widget ).destroy();
     }
   }
 
-  private static void writeItemCount( TreeItem item ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( item );
-    Integer newValue = new Integer( item.getItemCount() );
-    writer.set( PROP_ITEM_COUNT, "itemCount", newValue, DEFAULT_ITEM_COUNT );
-  }
+  //////////////////
+  // Helping methods
 
-  private static void writeVariant( TreeItem item ) throws IOException {
-    String variant = WidgetUtil.getVariant( item );
-    if( WidgetLCAUtil.hasChanged( item, PROP_VARIANT, variant, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( item );
-      writer.set( "variant", new Object[] { "variant_" + variant } );
-    }
-  }
-
-  private static void writeImages( TreeItem item ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( item );
-    // TODO [rh] optimize when !isInitialized: for all images != null: setImg
-    Image[] images = getImages( item );
-    if( WidgetLCAUtil.hasChanged( item, PROP_IMAGES, images ) ) {
-      String[] imagePaths = new String[ images.length ];
-      for( int i = 0; i < imagePaths.length; i++ ) {
-        imagePaths[ i ] = ImageFactory.getImagePath( images[ i ] );
-      }
-      writer.set( "images", new Object[]{
-        imagePaths
-      } );
-    }
-  }
-
-  private static void preserveFont( TreeItem treeItem ) {
-    IWidgetFontAdapter fontAdapter = treeItem.getAdapter( IWidgetFontAdapter.class );
-    Font font = fontAdapter.getUserFont();
-    WidgetLCAUtil.preserveFont( treeItem, font );
-  }
-
-  private static void writeExpanded( TreeItem item ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( item );
-    Boolean newValue = Boolean.valueOf( item.getExpanded() );
-    writer.set( PROP_EXPANDED, "expanded", newValue, Boolean.FALSE );
-  }
-
-  private static void writeChecked( TreeItem item ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( item );
-    Boolean newValue = Boolean.valueOf( item.getChecked() );
-    writer.set( PROP_CHECKED, "checked", newValue, Boolean.FALSE );
-  }
-
-  private static void writeSelection( TreeItem item ) throws IOException {
-    Boolean newValue = Boolean.valueOf( isSelected( item ) );
-    Boolean defValue = Boolean.FALSE;
-    if( WidgetLCAUtil.hasChanged( item, PROP_SELECTION, newValue, defValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( item.getParent() );
-      String jsFunction = isSelected( item ) ? "selectItem" : "deselectItem";
-      writer.call( jsFunction, new Object[]{ item } );
-      if( isFocused( item ) ) {
-        writer.set( "focusItem", new Object[]{ item } );
-      }
-    }
-  }
-
-  private static void writeFont( TreeItem treeItem ) throws IOException {
-    Object adapter = treeItem.getAdapter( IWidgetFontAdapter.class );
-    IWidgetFontAdapter fontAdapter = ( IWidgetFontAdapter )adapter;
-    Font font = fontAdapter.getUserFont();
-    WidgetLCAUtil.writeFont( treeItem, font );
-  }
-
-  private static void writeCellFonts( TreeItem item ) throws IOException {
-    ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
-    Font[] fonts = itemAdapter.getCellFonts();
-    JSWriter writer = JSWriter.getWriterFor( item );
-    Font[] defValue = new Font[ fonts.length ];
-    if( WidgetLCAUtil.hasChanged( item, PROP_CELL_FONTS, fonts, defValue ) ) {
-      String[] css = null;
-      css = new String[ fonts.length ];
-      for( int i = 0; i < fonts.length; i++ ) {
-        css[ i ] = toCss( fonts[ i ] );
-      }
-      writer.set( "cellFonts", new Object[]{ css } );
-    }
-  }
-
-  private static void writeBackground( TreeItem item ) throws IOException {
-    IWidgetColorAdapter colorAdapter = item.getAdapter( IWidgetColorAdapter.class );
-    Color background = colorAdapter.getUserBackgound();
-    if( WidgetLCAUtil.hasChanged( item, PROP_BACKGROUND, background, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( item );
-      writer.set( "background", background );
-    }
-  }
-
-  private static void writeForeground( TreeItem item ) throws IOException {
-    IWidgetColorAdapter colorAdapter = item.getAdapter( IWidgetColorAdapter.class );
-    Color foreground = colorAdapter.getUserForegound();
-    if( WidgetLCAUtil.hasChanged( item, PROP_FOREGROUND, foreground, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( item );
-      writer.set( "foreground", foreground );
-    }
-  }
-
-  private static void writeCellBackgrounds( TreeItem item ) throws IOException {
-    ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
-    Color[] backgrounds = itemAdapter.getCellBackgrounds();
-    Color[] defValue = new Color[ getColumnCount( item ) ];
-    JSWriter writer = JSWriter.getWriterFor( item );
-    writer.set( PROP_CELL_BACKGROUNDS, "cellBackgrounds", backgrounds, defValue );
-  }
-
-  private static void writeCellForegrounds( TreeItem item ) throws IOException {
-    ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
-    Color[] foregrounds = itemAdapter.getCellForegrounds();
-    Color[] defValue = new Color[ getColumnCount( item ) ];
-    JSWriter writer = JSWriter.getWriterFor( item );
-    writer.set( PROP_CELL_FOREGROUNDS, "cellForegrounds", foregrounds, defValue );
-  }
-
-  private static void writeTexts( final TreeItem item ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( item );
-    String[] texts = getTexts( item );
-    if( WidgetLCAUtil.hasChanged( item, PROP_TEXTS, texts ) ) {
-      for( int i = 0; i < texts.length; i++ ) {
-        texts[ i ] = WidgetLCAUtil.escapeText( texts[ i ], false );
-        texts[ i ] = texts[ i ].replaceAll( " ", "&nbsp;" );
-      }
-      writer.set( "texts", new Object[]{
-        texts
-      } );
-    }
+  private static boolean isCached( TreeItem item ) {
+    Tree tree = item.getParent();
+    ITreeAdapter treeAdapter = tree.getAdapter( ITreeAdapter.class );
+    return treeAdapter.isCached( item );
   }
 
   private static String[] getTexts( TreeItem item ) {
@@ -290,6 +166,14 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     return texts;
   }
 
+  private static String[] getDefaultTexts( TreeItem item ) {
+    String[] result = new String[ getColumnCount( item ) ];
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = "";
+    }
+    return result;
+  }
+
   private static Image[] getImages( TreeItem item ) {
     int columnCount = getColumnCount( item );
     Image[] images = new Image[ columnCount ];
@@ -299,68 +183,61 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     return images;
   }
 
-  private static int getColumnCount( TreeItem item ) {
-    return Math.max( 1, item.getParent().getColumnCount() );
+  private static Color getUserBackgound( TreeItem item ) {
+    IWidgetColorAdapter colorAdapter = item.getAdapter( IWidgetColorAdapter.class );
+    return colorAdapter.getUserBackgound();
   }
 
-  private static void writeGrayed( TreeItem item ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( item );
-    Boolean newValue = Boolean.valueOf( item.getGrayed() );
-    writer.set( PROP_GRAYED, "grayed", newValue, Boolean.FALSE );
+  private static Color getUserForegound( TreeItem item ) {
+    IWidgetColorAdapter colorAdapter = item.getAdapter( IWidgetColorAdapter.class );
+    return colorAdapter.getUserForegound();
   }
 
-  private static boolean isFocused( TreeItem item ) {
-    Tree tree = item.getParent();
-    return tree.getSelectionCount() > 0 && tree.getSelection()[ 0 ] == item;
+  private static Font getUserFont( TreeItem item ) {
+    IWidgetFontAdapter fontAdapter = item.getAdapter( IWidgetFontAdapter.class );
+    return fontAdapter.getUserFont();
   }
 
-  private static boolean isSelected( TreeItem item ) {
-    boolean result = false;
-    Tree tree = item.getParent();
-    TreeItem[] selectedItems = tree.getSelection();
-    for( int i = 0; !result && i < selectedItems.length; i++ ) {
-      if( item == selectedItems[ i ] ) {
-        result = true;
-      }
+  private static Color[] getCellBackgrounds( TreeItem item ) {
+    ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
+    return itemAdapter.getCellBackgrounds();
+  }
+
+  private static Color[] getCellForegrounds( TreeItem item ) {
+    ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
+    return itemAdapter.getCellForegrounds();
+  }
+
+  private static Font[] getCellFonts( TreeItem item ) {
+    ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
+    return itemAdapter.getCellFonts();
+  }
+
+  private static String getVariant( TreeItem item ) {
+    String result = WidgetUtil.getVariant( item );
+    if( result != null ) {
+      result = "variant_" + result;
     }
     return result;
   }
 
-  private static String toCss( Font font ) {
-    StringBuffer result = new StringBuffer();
-    if( font != null ) {
-      FontData fontData = FontUtil.getData( font );
-      if( ( fontData.getStyle() & SWT.ITALIC ) != 0 ) {
-        result.append( "italic " );
-      }
-      if( ( fontData.getStyle() & SWT.BOLD ) != 0 ) {
-        result.append( "bold " );
-      }
-      result.append( fontData.getHeight() );
-      result.append( "px " );
-      // TODO [rh] preliminary: low budget font-name-escaping
-      String escapedName = fontData.getName().replaceAll( "\"", "" );
-      result.append( escapedName );
-    } else {
-      // TODO [if] Revise when properly implemented in TreeItem.js
-      result.append( "" );
-    }
-    return result.toString();
+  private static int getColumnCount( TreeItem item ) {
+    return Math.max( 1, item.getParent().getColumnCount() );
   }
 
   /////////////////////////////////
   // Process expand/collapse events
 
-  private static void processTreeExpandedEvent( TreeItem treeItem ) {
-    if( TreeEvent.hasListener( treeItem.getParent() ) ) {
-      TreeEvent event = new TreeEvent( treeItem.getParent(), treeItem, TreeEvent.TREE_EXPANDED );
+  private static void processTreeExpandedEvent( TreeItem item ) {
+    if( TreeEvent.hasListener( item.getParent() ) ) {
+      TreeEvent event = new TreeEvent( item.getParent(), item, TreeEvent.TREE_EXPANDED );
       event.processEvent();
     }
   }
 
-  private static void processTreeCollapsedEvent( TreeItem treeItem ) {
-    if( TreeEvent.hasListener( treeItem.getParent() ) ) {
-      TreeEvent event = new TreeEvent( treeItem.getParent(), treeItem, TreeEvent.TREE_COLLAPSED );
+  private static void processTreeCollapsedEvent( TreeItem item ) {
+    if( TreeEvent.hasListener( item.getParent() ) ) {
+      TreeEvent event = new TreeEvent( item.getParent(), item, TreeEvent.TREE_COLLAPSED );
       event.processEvent();
     }
   }

@@ -336,7 +336,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       parentTarget.setLocation( 10, 10 );
       parentTarget.setDimension( 100, 100 );
       parentTarget.addToDocument();
-      parentTarget.setUserData( "id", "w3" );
+      org.eclipse.swt.WidgetManager.getInstance().add( parentTarget, "w3" );
       parentTarget.setUserData( "isControl", true );
       dndSupport.registerDropTarget( parentTarget, actions );
       dndSupport.setDropTargetTransferTypes( parentTarget, [ "default" ] );
@@ -1151,7 +1151,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       };
       var tree = new org.eclipse.rwt.widgets.Tree( argsMap );
       tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500 );      
-      tree.setUserData( "id", "w2" );
+      org.eclipse.swt.WidgetManager.getInstance().add( tree, "w2" );
       tree.setUserData( "isControl", true );
       tree.setSpace( 13, 364, 27, 30 );
       tree.addToDocument();
@@ -1190,7 +1190,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
         "selectionPadding" : [ 2, 2 ]
       };
       var tree = new org.eclipse.rwt.widgets.Tree( argsMap );
-      tree.setUserData( "id", "w2" );
+      org.eclipse.swt.WidgetManager.getInstance().add( tree, "w2" );
       tree.setUserData( "isControl", true );
       tree.setSpace( 13, 364, 27, 30 );
       tree.setItemMetrics( 0, 50, 40, 50, 12, 65, 12 );
@@ -1296,7 +1296,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       result.setLocation( 10, 10 );
       result.setDimension( 10, 10 );
       result.addToDocument();
-      result.setUserData( "id", "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( result, "w1" );
       result.setUserData( "isControl", true );
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var actions = [ "copy", "move", "alias" ];
@@ -1311,7 +1311,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       result.setLocation( 30, 10 );
       result.setDimension( 10, 10 );
       result.addToDocument();
-      result.setUserData( "id", "w2" );
+      org.eclipse.swt.WidgetManager.getInstance().add( result, "w2" );
       result.setUserData( "isControl", true );
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var actions = [ "copy", "move", "alias" ];
@@ -1328,7 +1328,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       	"selectionPadding" : [ 2, 2 ]
       };
       var tree = new org.eclipse.rwt.widgets.Tree( argsMap );
-      tree.setUserData( "id", "w2" );
+      org.eclipse.swt.WidgetManager.getInstance().add( tree, "w2" );
       tree.setUserData( "isControl", true );
       tree.setSpace( 13, 364, 27, 30 );
       tree.setItemMetrics( 0, 0, 500, 0, 0, 0, 500 );

@@ -187,6 +187,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       widget.destroy();
     },
 
+    testSetSelectionByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var processor = org.eclipse.rwt.protocol.Processor;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [ "MULTI" ] );
+      widget.setItemCount( 3 );
+      var item1 = this._createTreeItemByProtocol( "w4", "w3", 0 );
+      var item2 = this._createTreeItemByProtocol( "w5", "w3", 1 );
+      widget.selectItem( item1 );
+      var item3 = this._createTreeItemByProtocol( "w6", "w3", 2 );
+      testUtil.protocolSet( "w3", { "selection" : [ "w4", "w6" ] } );
+      assertTrue( widget.isItemSelected( item1 ) );
+      assertFalse( widget.isItemSelected( item2 ) );
+      assertTrue( widget.isItemSelected( item3 ) );
+      assertIdentical( widget._focusItem, item1 );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testSetScrollBarsVisibleByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = testUtil.createShellByProtocol( "w2" );
@@ -295,11 +314,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
 
     testChildren : function() {
       var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
-      var child1 = org.eclipse.rwt.widgets.TreeItem.createItem( tree, 0, "w121" );
-      var child2 = org.eclipse.rwt.widgets.TreeItem.createItem( tree, 1, "w122" );
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var child1 = wm.findWidgetById( "w121" );
-      var child2 = wm.findWidgetById( "w122" );
+      var child1 = org.eclipse.rwt.widgets.TreeItem.createItem( tree, 0 );
+      var child2 = org.eclipse.rwt.widgets.TreeItem.createItem( tree, 1 );
       assertEquals( [ child1, child2 ], tree.getRootItem()._children );
       tree.destroy();
     },
@@ -3626,6 +3642,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
           "indentionWidth" : 16,
           "checkBoxMetrics" : [ 5, 16 ],
           "bounds" : [ 0, 0, 100, 100 ]
+        }
+      } );
+      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+    },
+
+    _createTreeItemByProtocol : function( id, parentId, index ) {
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : id,
+        "action" : "create",
+        "type" : "rwt.widgets.TreeItem",
+        "properties" : {
+          "parent" : parentId,
+          "index": index
         }
       } );
       return org.eclipse.rwt.protocol.ObjectManager.getObject( id );

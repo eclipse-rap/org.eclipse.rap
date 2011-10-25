@@ -246,6 +246,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._scheduleItemUpdate( item );
     },
 
+    deselectAll : function() {
+      this._selection = [];
+      this._scheduleUpdate();
+    },
+
     setFocusItem : function( item ) {
       this._focusItem = item;
       this._sendItemFocusChange()

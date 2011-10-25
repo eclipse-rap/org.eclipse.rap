@@ -407,7 +407,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     
     testMenuShowEvent : function() {
       this.createMenuBar( "push" );
-      this.menu.setUserData( "id", "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( this.menu, "w1" );
       this.testUtil.clearRequestLog();
       this.testUtil.flush();
       this.testUtil.click( this.menuBarItem );
@@ -443,7 +443,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     
     testExecutePushItem : function() {
       this.createSimpleMenu( "push" );
-      this.menuItem.setUserData( "id", "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( this.menuItem, "w1" );
       this.testUtil.flush();
       this.testUtil.clearRequestLog();
       this.testUtil.click( this.menuItem );
@@ -463,7 +463,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testExecuteCheckItem: function() { 
       this.createSimpleMenu( "check" );
-      this.menuItem.setUserData( "id", "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( this.menuItem, "w1" );
       this.testUtil.flush();
       this.testUtil.clearRequestLog();
       this.testUtil.click( this.menuItem );
@@ -491,7 +491,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testExecuteRadioButton : function() {
       this.createSimpleMenu( "radio" );
-      this.menuItem.setUserData( "id", "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( this.menuItem, "w1" );
       this.testUtil.flush();      
       this.testUtil.clearRequestLog();
       this.testUtil.click( this.menuItem );
@@ -513,7 +513,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertContains( "w1.selection=true",  this.testUtil.getMessage() );
       var item2 = new this._menuItemClass( "radio" );
       this.menu.addMenuItemAt( item2, 0 );      
-      item2.setUserData( "id", "w2" );      
+      org.eclipse.swt.WidgetManager.getInstance().add( item2, "w2" );
       item2.setHasSelectionListener( true );
       this.testUtil.clearRequestLog();
       this.testUtil.flush();
@@ -539,12 +539,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
     testExecuteRadioButton_NoRadioGroup : function() {
       this.createSimpleMenu( "radio" );
-      this.menuItem.setUserData( "id", "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( this.menuItem, "w1" );
       this.menuItem.setNoRadioGroup( true );
       this.menuItem.setHasSelectionListener( true );
       var menuItem2 = new this._menuItemClass( "radio" );
       this.menu.addMenuItemAt( menuItem2, 0 );
-      menuItem2.setUserData( "id", "w2" );
+      org.eclipse.swt.WidgetManager.getInstance().add( menuItem2, "w2" );
       menuItem2.setNoRadioGroup( true );
       menuItem2.setHasSelectionListener( true );
       this.testUtil.clearRequestLog();
@@ -657,7 +657,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertTrue( subMenu.isSeeable() );
       assertTrue( this.testUtil.isActive( subMenu ) );
       assertTrue( subMenuItem.hasState( "over" ) );
-      subMenuItem.setUserData( "id", "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( subMenuItem, "w1" );
       subMenuItem.setHasSelectionListener( true );
       this.testUtil.clearRequestLog();
       this.testUtil.press( subMenu, "Enter", true );

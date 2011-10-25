@@ -363,7 +363,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       this._setScrollDimension( composite, 200, 200 );
       testUtil.prepareTimerUse();
       composite.setHasSelectionListener( true );
-      composite.setUserData( "id", "w3" );
+      org.eclipse.swt.WidgetManager.getInstance().add( composite, "w3" );
       // set directly, otherwise the changes are not sent
       composite._clientArea.setScrollLeft( 10 ); 
       composite._clientArea.setScrollTop( 20 );

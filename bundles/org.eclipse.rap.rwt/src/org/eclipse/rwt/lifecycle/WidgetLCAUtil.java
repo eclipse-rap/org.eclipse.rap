@@ -210,8 +210,7 @@ public final class WidgetLCAUtil {
    * @see #writeBackground(Widget, Color)
    */
   public static void preserveBackground( Widget widget, Color background ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_BACKGROUND, background );
+    preserveBackground( widget, background, false );
   }
 
   /**
@@ -520,18 +519,107 @@ public final class WidgetLCAUtil {
                                      Image defaultValue )
   {
     if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
-      Object[] args = null;
-      if( newValue != null ) {
-        String imagePath = ImageFactory.getImagePath( newValue );
-        Rectangle bounds = newValue.getBounds();
-        args = new Object[] {
-          imagePath,
-          new Integer( bounds.width ),
-          new Integer( bounds.height )
-        };
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( property, getImageAsArray( newValue ) );
+    }
+  }
+
+  /**
+   * Determines whether the property of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side property of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param property the property name
+   * @param newValue the new value of the property
+   * @param defaultValue the default value of the property
+   *
+   * @since 1.5
+   */
+  public static void renderProperty( Widget widget,
+                                     String property,
+                                     Image[] newValue,
+                                     Image[] defaultValue )
+  {
+    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+      Object[] images = new Object[ newValue.length ];
+      for( int i = 0; i < images.length; i++ ) {
+        images[ i ] = getImageAsArray( newValue[ i ] );
       }
       IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      clientObject.setProperty( property, args );
+      clientObject.setProperty( property, images );
+    }
+  }
+
+  private static Object[] getImageAsArray( Image image ) {
+    Object[] result = null;
+    if( image != null ) {
+      String imagePath = ImageFactory.getImagePath( image );
+      Rectangle bounds = image.getBounds();
+      result = new Object[] {
+        imagePath,
+        Integer.valueOf( bounds.width ),
+        Integer.valueOf( bounds.height )
+      };
+    }
+    return result;
+  }
+
+  /**
+   * Determines whether the property of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side property of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param property the property name
+   * @param newValue the new value of the property
+   * @param defaultValue the default value of the property
+   *
+   * @since 1.5
+   */
+  public static void renderProperty( Widget widget,
+                                     String property,
+                                     Color[] newValue,
+                                     Color[] defaultValue )
+  {
+    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+      Object[] colors = new Object[ newValue.length ];
+      for( int i = 0; i < colors.length; i++ ) {
+        int[] colorProperties = null;
+        if( newValue[ i ] != null ) {
+          colorProperties = getColorValueAsArray( newValue[ i ], false );
+        }
+        colors[ i ] = colorProperties;
+      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( property, colors );
+    }
+  }
+
+  /**
+   * Determines whether the property of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side property of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param property the property name
+   * @param newValue the new value of the property
+   * @param defaultValue the default value of the property
+   *
+   * @since 1.5
+   */
+  public static void renderProperty( Widget widget,
+                                     String property,
+                                     Font[] newValue,
+                                     Font[] defaultValue )
+  {
+    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+      Object[] fonts = new Object[ newValue.length ];
+      for( int i = 0; i < fonts.length; i++ ) {
+        fonts[ i ] = getFontAsArray( newValue[ i ] );
+      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( property, fonts );
     }
   }
 
@@ -838,24 +926,6 @@ public final class WidgetLCAUtil {
     writer.set( jsProperty, path );
   }
 
-  public static String[] parseFontName( final String name ) {
-    return parsedFonts.get( name, new IInstanceCreator<String[]>() {
-      public String[] createInstance() {
-        return parseFontNameInternal( name );
-      }
-    } );
-  }
-
-  private static String[] parseFontNameInternal( String name ) {
-    String[] result = name.split( "," );
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = result[ i ].trim();
-      Matcher matcher = FONT_NAME_FILTER_PATTERN.matcher( result[ i ] );
-      result[ i ] = matcher.replaceAll( "" );
-    }
-    return result;
-  }
-
   /**
    * Determines whether the property <code>font</code> of the given widget has
    * changed during the processing of the current request and if so, writes
@@ -902,20 +972,41 @@ public final class WidgetLCAUtil {
    */
   public static void renderFont( Widget widget, Font font ) throws IOException {
     if( WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, null ) ) {
-      Object[] fontArray = null;
-      if( font != null ) {
-        FontData fontData = FontUtil.getData( font );
-        String[] names = parseFontName( fontData.getName() );
-        fontArray = new Object[]{
-          names,
-          new Integer( fontData.getHeight() ),
-          Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 ),
-          Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 )
-        };
-      }
       IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      clientObject.setProperty( "font", fontArray );
+      clientObject.setProperty( PROP_FONT, getFontAsArray( font ) );
     }
+  }
+
+  private static Object[] getFontAsArray( Font font ) {
+    Object[] result = null;
+    if( font != null ) {
+      FontData fontData = FontUtil.getData( font );
+      result = new Object[] {
+        parseFontName( fontData.getName() ),
+        Integer.valueOf( fontData.getHeight() ),
+        Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 ),
+        Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 )
+      };
+    }
+    return result;
+  }
+
+  public static String[] parseFontName( final String name ) {
+    return parsedFonts.get( name, new IInstanceCreator<String[]>() {
+      public String[] createInstance() {
+        return parseFontNameInternal( name );
+      }
+    } );
+  }
+
+  private static String[] parseFontNameInternal( String name ) {
+    String[] result = name.split( "," );
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = result[ i ].trim();
+      Matcher matcher = FONT_NAME_FILTER_PATTERN.matcher( result[ i ] );
+      result[ i ] = matcher.replaceAll( "" );
+    }
+    return result;
   }
 
   /**
@@ -958,7 +1049,7 @@ public final class WidgetLCAUtil {
   public static void renderForeground( Widget widget, Color newColor ) throws IOException {
     if( WidgetLCAUtil.hasChanged( widget, PROP_FOREGROUND, newColor, null ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      clientObject.setProperty( "foreground", getColorValueAsArray( newColor, false ) );
+      clientObject.setProperty( PROP_FOREGROUND, getColorValueAsArray( newColor, false ) );
     }
   }
 
@@ -983,13 +1074,13 @@ public final class WidgetLCAUtil {
     return buffer.toString();
   }
 
-  private static Integer[] getColorValueAsArray( Color color, boolean transparent ) {
-    Integer[] result = new Integer[ 4 ];
+  private static int[] getColorValueAsArray( Color color, boolean transparent ) {
+    int[] result = new int[ 4 ];
     RGB rgb = color == null ? new RGB( 0, 0, 0 ) : color.getRGB();
-    result[ 0 ] = new Integer( rgb.red );
-    result[ 1 ] = new Integer( rgb.green );
-    result[ 2 ] = new Integer( rgb.blue );
-    result[ 3 ] = new Integer( transparent ? 0 : 255 );
+    result[ 0 ] = rgb.red;
+    result[ 1 ] = rgb.green;
+    result[ 2 ] = rgb.blue;
+    result[ 3 ] = transparent ? 0 : 255;
     return result;
   }
 
@@ -1092,11 +1183,11 @@ public final class WidgetLCAUtil {
     boolean colorChanged = WidgetLCAUtil.hasChanged( widget, PROP_BACKGROUND, background, null );
     if( transparencyChanged || colorChanged ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      Integer[] color = null;
+      int[] color = null;
       if( transparency || background != null ) {
         color = getColorValueAsArray( background, transparency );
       }
-      clientObject.setProperty( "background", color );
+      clientObject.setProperty( PROP_BACKGROUND, color );
     }
   }
 

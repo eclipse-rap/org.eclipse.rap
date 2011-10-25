@@ -12,26 +12,51 @@
 namespace( "org.eclipse.rwt.protocol" );
 
 org.eclipse.rwt.protocol.ObjectManager = {
-  
+
   _map : {},
+  _callbacks : {},
 
   add : function( id, object, type ) {
     this._map[ id ] = {
       "object" : object,
       "type" : type
     };
+    object._rwtId = id;
+    if( this._callbacks[ id ] ) {
+      for( var i = 0; i < this._callbacks[ id ].length; i++ ) {
+        this._callbacks[ id ][ i ]( object );
+      }
+      delete this._callbacks[ id ];
+    }
   },
-  
+
   remove : function( id ) {
-    delete this._map[ id ];
+    if( id != null ) {
+      delete this._map[ id ];
+    }
   },
-  
+
+  getId : function( object ) {
+    var result = null;
+    if( object != null && object._rwtId != null ) {
+      result = object._rwtId;
+    }
+    return result;
+  },
+
   getObject : function( id ) {
     return this._map[ id ] ? this._map[ id ].object : undefined;
   },
 
   getType : function( id ) {
     return this._map[ id ] ? this._map[ id ].type : undefined;
+  },
+
+  addRegistrationCallback : function( id, fun ) {
+    if( !this._callbacks[ id ] ) {
+      this._callbacks[ id ] = [];
+    }
+    this._callbacks[ id ].push( fun );
   }
 
 };

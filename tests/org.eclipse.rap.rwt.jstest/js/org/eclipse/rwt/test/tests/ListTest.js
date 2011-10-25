@@ -151,7 +151,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       testUtil.flush();
       var item = this._getItems( list )[ 1 ];
       list.setChangeSelectionNotification( "action" );
-      list.setUserData( "id", "w3" );
+      org.eclipse.swt.WidgetManager.getInstance().add( list, "w3" );
       testUtil.click( item );
       assertEquals( 1, testUtil.getRequestsSend() );
       assertTrue( testUtil.getMessage().indexOf( "w3.selection=1" ) != -1 );
@@ -186,7 +186,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       testUtil.flush();
       var item = this._getItems( list )[ 1 ];
       list.setChangeSelectionNotification( "action" );
-      list.setUserData( "id", "w3" );
+      org.eclipse.swt.WidgetManager.getInstance().add( list, "w3" );
       testUtil.doubleClick( item );
       assertEquals( 2, testUtil.getRequestsSend() );
       var msg = testUtil.getRequestLog()[ 1 ];

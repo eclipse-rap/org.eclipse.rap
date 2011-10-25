@@ -393,7 +393,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       //var button = new org.eclipse.swt.widgets.CheckBox();
       var button = new org.eclipse.rwt.widgets.Button( "check" );
       button.addState( "rwt_CHECK" );
-      button.setUserData( "id", "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( button, "w1" );
       this._currentButton = button;
       button.addToDocument();
       qx.ui.core.Widget.flushGlobalQueues();
@@ -427,7 +427,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     testExecuteRadioButton : function() {
       var button = new org.eclipse.rwt.widgets.Button( "radio" );
       button.addState( "rwt_RADIO" );
-      button.setUserData( "id", "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( button, "w1" );
       this._currentButton = button;
       button.addToDocument();
       qx.ui.core.Widget.flushGlobalQueues();
@@ -446,7 +446,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       assertContains( "w1.selection=true",  this.testUtil.getMessage() );
       var button2 = new org.eclipse.rwt.widgets.Button( "radio" );
       button2.addState( "rwt_RADIO" );
-      button2.setUserData( "id", "w2" );
+      org.eclipse.swt.WidgetManager.getInstance().add( button2, "w2" );
       button2.addToDocument();
       qx.ui.core.Widget.flushGlobalQueues();
       this.testUtil.clearRequestLog();
@@ -471,13 +471,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
     testExecuteRadioButton_NoRadioGroup : function() {
       var button1 = new org.eclipse.rwt.widgets.Button( "radio" );
       button1.addState( "rwt_RADIO" );
-      button1.setUserData( "id", "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( button1, "w1" );
       button1.setNoRadioGroup( true );
       button1.setHasSelectionListener( true );
       button1.addToDocument();
       var button2 = new org.eclipse.rwt.widgets.Button( "radio" );
       button2.addState( "rwt_RADIO" );
-      button2.setUserData( "id", "w2" );
+      org.eclipse.swt.WidgetManager.getInstance().add( button2, "w2" );
       button2.setNoRadioGroup( true );
       button2.setHasSelectionListener( true );
       button2.addToDocument();
@@ -514,7 +514,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ButtonTest", {
       this._currentButton = button;
       button.addToDocument();
       qx.ui.core.Widget.flushGlobalQueues();
-      button.setUserData( "id", "w1" );
+      org.eclipse.swt.WidgetManager.getInstance().add( button, "w1" );
       this.testUtil.clearRequestLog();
       this.testUtil.click( button );
       assertEquals( 0, this.testUtil.getRequestsSend() );      

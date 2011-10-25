@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
@@ -13,6 +14,353 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
   extend : qx.core.Object,
   
   members : {
+
+    testCreateTreeItemByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.TreeItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 3
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = objectManager.getObject( "w4" );
+      assertTrue( item instanceof org.eclipse.rwt.widgets.TreeItem );
+      assertIdentical( tree.getRootItem(), item.getParent() );
+      assertNull( item.getUserData( "isControl") );
+      assertEquals( 3, tree.getRootItem().indexOf( item ) )
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testDestroyTreeItemByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.TreeItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 3
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = objectManager.getObject( "w4" );
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : "w4",
+        "action" : "destroy"
+      } );
+      testUtil.flush();
+      assertIdentical( undefined, objectManager.getObject( "w4" ) );
+      assertEquals( -1, tree.getRootItem().indexOf( item ) );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testSetItemCountByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.TreeItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "itemCount" : 10
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = objectManager.getObject( "w4" );
+      assertEquals( 10, item._children.length );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testSetTextsByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.TreeItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "texts" : [ "1", "2&<  >\"", "3" ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = objectManager.getObject( "w4" );
+      assertEquals( "1", item.getText( 0 ) );
+      assertEquals( "2&amp;&lt;&nbsp; &gt;&quot;", item.getText( 1 ) );
+      assertEquals( "3", item.getText( 2 ) );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testSetImagesByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.TreeItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "images" : [ [ "1.gif", 1, 1 ], [ "2.gif", 2, 2 ], [ "3.gif", 3, 3 ] ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = objectManager.getObject( "w4" );
+      assertEquals( "1.gif", item.getImage( 0 ) );
+      assertEquals( "2.gif", item.getImage( 1 ) );
+      assertEquals( "3.gif", item.getImage( 2 ) );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testSetBackgroundByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.TreeItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "background" : [ 0, 255, 0, 255 ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = objectManager.getObject( "w4" );
+      assertEquals( "rgb(0,255,0)", item.getBackground() );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testSetForegroundByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.TreeItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "foreground" : [ 0, 255, 0, 255 ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = objectManager.getObject( "w4" );
+      assertEquals( "rgb(0,255,0)", item._foreground );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testSetFontByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.TreeItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "font" : [ ["Arial"], 20, true, false ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = objectManager.getObject( "w4" );
+      assertEquals( "bold 20px Arial", item._font.toCss() );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testSetCellBackgroundsByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.TreeItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "cellBackgrounds" : [ null, [ 0, 255, 0, 255 ], null ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = objectManager.getObject( "w4" );
+      assertNull( item.getCellBackground( 0 ) );
+      assertEquals( "rgb(0,255,0)", item.getCellBackground( 1 ) );
+      assertNull( item.getCellBackground( 2 ) );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testSetCellForegroundsByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.TreeItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "cellForegrounds" : [ null, [ 0, 255, 0, 255 ], null ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = objectManager.getObject( "w4" );
+      assertNull( item.getCellForeground( 0 ) );
+      assertEquals( "rgb(0,255,0)", item.getCellForeground( 1 ) );
+      assertNull( item.getCellForeground( 2 ) );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testSetCellFontsByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.TreeItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "cellFonts" : [ null, [ ["Arial"], 20, true, false ], null ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = objectManager.getObject( "w4" );
+      assertNull( item.getCellFont( 0 ) );
+      assertEquals( "bold 20px Arial", item.getCellFont( 1 ) );
+      assertNull( item.getCellFont( 2 ) );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testSetExpandedByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.TreeItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "expanded" : true
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = objectManager.getObject( "w4" );
+      assertTrue( item.isExpanded() );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testSetCheckedByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [ "CHECK" ] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.TreeItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "checked" : true
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = objectManager.getObject( "w4" );
+      assertTrue( item.isChecked() );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testSetGrayedByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [ "CHECK" ] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.TreeItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "grayed" : true
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = objectManager.getObject( "w4" );
+      assertTrue( item.isGrayed() );
+      shell.destroy();
+      tree.destroy();
+    },
+
+    testSetVariantByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.TreeItem",
+        "properties" : {
+          "parent" : "w3",
+          "index": 0,
+          "variant" : "variant_blue"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var item = objectManager.getObject( "w4" );
+      assertEquals( "variant_blue", item.getVariant() );
+      shell.destroy();
+      tree.destroy();
+    },
 
     testCreateItem : function() {
       var item = new org.eclipse.rwt.widgets.TreeItem();
@@ -23,13 +371,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
 
     testCreateAndDisposeByServer: function() {
       var parent = new org.eclipse.rwt.widgets.TreeItem();
-      org.eclipse.rwt.widgets.TreeItem.createItem( parent, 0, "w111" );
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
-      var item = wm.findWidgetById( "w111" );
+      var item = org.eclipse.rwt.widgets.TreeItem.createItem( parent, 0 );
       assertTrue( item instanceof org.eclipse.rwt.widgets.TreeItem );
       assertTrue( item.isCached() );
       item.dispose();
-      assertIdentical( undefined, wm.findWidgetById( "w111" ) );
+      assertIdentical( undefined, parent._children[ 0 ] );
     },
 
     testCreatePlaceholderItem : function() {
@@ -381,15 +727,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
     },
 
     testAddItemAt : function() {
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
       var root = new org.eclipse.rwt.widgets.TreeItem();
       root.setItemCount( 3 );
-      org.eclipse.rwt.widgets.TreeItem.createItem( root, 0, "w1" );
-      org.eclipse.rwt.widgets.TreeItem.createItem( root, 1, "w2" );
-      org.eclipse.rwt.widgets.TreeItem.createItem( root, 1, "w3" );
-      var child1 = wm.findWidgetById( "w1" );
-      var child2 = wm.findWidgetById( "w2" );
-      var child3 = wm.findWidgetById( "w3" );
+      var child1 = org.eclipse.rwt.widgets.TreeItem.createItem( root, 0 );
+      var child2 = org.eclipse.rwt.widgets.TreeItem.createItem( root, 1 );
+      var child3 = org.eclipse.rwt.widgets.TreeItem.createItem( root, 1 );
       assertEquals( [ child1, child3, child2 ], root._children );
       root.dispose();
     },
@@ -510,9 +852,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
       parent.setItemCount( 4 );
       var item = parent.getChild( 2 );
       assertFalse( item.isCached() );
-      org.eclipse.rwt.widgets.TreeItem.createItem( parent, 2, "w111" );
-      var wm = org.eclipse.swt.WidgetManager.getInstance();
-      assertIdentical( item, wm.findWidgetById( "w111" ) );
+      var newItem = org.eclipse.rwt.widgets.TreeItem.createItem( parent, 2 );
+      assertIdentical( item, newItem );
       assertTrue( item.isCached() );
       assertEquals( "", item.getText( 0 ) );
       item.dispose();
@@ -630,7 +971,26 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeItemTest", {
 
     //////////////////////
     // create complex tree
-    
+
+    _createTreeByProtocol : function( id, parentId, styles ) {
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : id,
+        "action" : "create",
+        "type" : "rwt.widgets.Tree",
+        "properties" : {
+          "style" : styles,
+          "parent" : parentId,
+          "appearance" : "tree",
+          "selectionPadding" : [ 2, 4 ],
+          "indentionWidth" : 16,
+          "checkBoxMetrics" : [ 5, 16 ],
+          "bounds" : [ 0, 0, 100, 100 ],
+          "columnCount" : 3
+        }
+      } );
+      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+    },
+
     _createRoot : function() {
       var result = new org.eclipse.rwt.widgets.TreeItem();
       result.setItemCount( 20 );

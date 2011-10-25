@@ -45,6 +45,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Tree", {
     "linesVisible",
     "topItemIndex",
     "scrollLeft",
+    "selection",
     "scrollBarsVisible",
     "enableCellToolTip",
     "cellToolTipText"
@@ -60,6 +61,17 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Tree", {
                                value[ i ][ 4 ],
                                value[ i ][ 5 ],
                                value[ i ][ 6 ] );
+      }
+    },
+    "selection" : function( widget, value ) {
+      widget.deselectAll();
+      for( var i = 0; i < value.length; i++ ) {
+        org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value[ i ], function( item ) {
+          widget.selectItem( item );
+          if( i === 0 ) {
+            widget.setFocusItem( item );
+          }
+        } );
       }
     },
     "scrollBarsVisible" : function( widget, value ) {

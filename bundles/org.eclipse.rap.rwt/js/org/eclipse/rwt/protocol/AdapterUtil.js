@@ -315,15 +315,14 @@ org.eclipse.rwt.protocol.AdapterUtil = {
   },
 
   callWithTarget : function( id, fun ) {
-    var wm = org.eclipse.swt.WidgetManager.getInstance();
     if( id == null ) {
       fun( null );
     } else {
-      var target = wm.findWidgetById( id );
+      var target = org.eclipse.rwt.protocol.ObjectManager.getObject( id );
       if( target ) {
         fun( target );
       } else {
-        wm.addRegistrationCallback( id, fun );
+        org.eclipse.rwt.protocol.ObjectManager.addRegistrationCallback( id, fun );
       }
     }
   },
