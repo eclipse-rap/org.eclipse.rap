@@ -435,7 +435,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     __computeCellDimension : function( cellEntry, wrapWidth ) {
       var dimension;
       if( cellEntry[ 0 ] == "label" && cellEntry[ 1 ] != null ) {
-        dimension = this._computeTextDimensions( cellEntry[ 1 ], wrapWidth );
+        var calc = org.eclipse.swt.FontSizeCalculation;
+        dimension = calc.computeTextDimensions( cellEntry[ 1 ], this.__fontCache, wrapWidth );
       } else {
         dimension = [ 0, 0 ];
       }
@@ -608,8 +609,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
           width = this.getCellWidth( i );
           if( this._cellHasContent( i ) ) {
             style = this.getCellNode( i ).style;
-            style.left = left;
-            style.width = width;
+            style.left = left + "px";
+            style.width = width  + "px";
           }
           left += ( width + space );
         }
@@ -643,8 +644,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
         break;
       }
       var style = this.getCellNode( cell ).style;
-      style.top = top;
-      style.height = height;
+      style.top = top + "px";
+      style.height = height + "px";
     },
 
     /*
@@ -788,36 +789,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
           this._updateLabel( i );
         }
       }
-    },
-
-    _computeTextDimensions : function( text, wrapWidth ) {
-        var element = qx.ui.basic.Label._getMeasureNode();
-        var style = element.style;
-        var source = this.__fontCache;
-        style.fontFamily = source.fontFamily || "";
-        style.fontSize = source.fontSize || "";
-        style.fontWeight = source.fontWeight || "";
-        style.fontStyle = source.fontStyle || "";
-        element.innerHTML = text;
-        if( wrapWidth ) {
-          style.width = wrapWidth + "px";
-        }
-        var result;
-        if( element.getBoundingClientRect ) {
-          // See Bug 340841
-          var bounds = element.getBoundingClientRect();
-          // In FF 3.0.x getBoundingClientRect has no width/height properties
-          if( bounds.width != null && bounds.height != null ) {
-            result = [ Math.ceil( bounds.width ), Math.ceil( bounds.height ) ];
-          } else {
-            result = [ element.scrollWidth, element.scrollHeight ];
-          }
-        } else {
-          result = [ element.scrollWidth, element.scrollHeight ];
-        }
-        style.width = "auto";
-        return result;
     }
+
   }
   
 } );

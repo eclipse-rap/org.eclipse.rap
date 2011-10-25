@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004,2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -144,7 +144,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
       var clientWidth = this.getWidth() - this.getFrameWidth();
       if( this._vertScrollBar.getDisplay() ) {
         clientWidth -= this._vertScrollBar.getWidth();
-      } 
+      }
       this._clientArea.setWidth( clientWidth );
       this._vertScrollBar.setLeft( clientWidth );
       this._horzScrollBar.setWidth( clientWidth );
@@ -167,23 +167,43 @@ qx.Class.define( "org.eclipse.swt.widgets.Scrollable", {
       var eventUtil = qx.html.EventRegistration;
       eventUtil.addEventListener( el, "scroll", this.__onscroll );
     },
-
-    _onClientLayout : function() {
-      var barWidth = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
-      var node = this._clientArea._getTargetNode();
-      var el = this._clientArea.getElement();
-      var overflow = this._clientArea.getOverflow();
-      var width = parseInt( el.style.width );
-      var height = parseInt( el.style.height );
-      if( overflow === "scroll" || overflow === "scrollY" ) {
-        width += barWidth;
+    
+    _onClientLayout : qx.core.Variant.select( "qx.client", {
+      "default" : function() {
+        var barWidth = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
+        var node = this._clientArea._getTargetNode();
+        var el = this._clientArea.getElement();
+        var overflow = this._clientArea.getOverflow();
+        var width = parseInt( el.style.width );
+        var height = parseInt( el.style.height );
+        if( overflow === "scroll" || overflow === "scrollY" ) {
+          width += barWidth;
+        }
+        if( overflow === "scroll" || overflow === "scrollX" ) {
+          height += barWidth;
+        }
+        node.style.width = width + "px";
+        node.style.height = height + "px";
+      },
+      "newmshtml" : function() {
+        // NOTE [tb] : there is a bug in IE where the scrollbar is substracted from the inner size
+        //             of an element, not added. Therefore add the barWidth twice.
+        var barWidth = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
+        var node = this._clientArea._getTargetNode();
+        var el = this._clientArea.getElement();
+        var overflow = this._clientArea.getOverflow();
+        var width = parseInt( el.style.width );
+        var height = parseInt( el.style.height );
+        if( overflow === "scroll" || overflow === "scrollY" ) {
+          width += ( 2 * barWidth );
+        }
+        if( overflow === "scroll" || overflow === "scrollX" ) {
+          height += ( 2 * barWidth );
+        }
+        node.style.width = width + "px";
+        node.style.height = height + "px";
       }
-      if( overflow === "scroll" || overflow === "scrollX" ) {
-        height += barWidth;
-      }
-      node.style.width = width
-      node.style.height = height;
-    },
+    } ),
     
     ////////////
     // Scrolling

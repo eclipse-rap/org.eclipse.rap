@@ -201,14 +201,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var client = composite._clientArea;
       var hbar = composite._horzScrollBar;
       var vbar = composite._vertScrollBar;
-      var barWidth 
-        = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
+      var barWidth = org.eclipse.swt.widgets.Scrollable.getNativeScrollBarWidth();
       assertEquals( "scroll", client._getTargetNode().style.overflow );
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = testUtil.getElementBounds( client.getElement() );
       var targetBounds = testUtil.getElementBounds( client._getTargetNode() );
-      assertEquals( elementBounds.width + barWidth, targetBounds.width );
-      assertEquals( elementBounds.height + barWidth, targetBounds.height );
+      if( org.eclipse.rwt.Client.isNewMshtml() ) {
+        assertEquals( elementBounds.width + ( barWidth * 2 ), targetBounds.width );
+        assertEquals( elementBounds.height + ( barWidth * 2 ), targetBounds.height );
+      } else {
+        assertEquals( elementBounds.width + barWidth, targetBounds.width );
+        assertEquals( elementBounds.height + barWidth, targetBounds.height );
+      }
       composite.destroy();
     },
             
@@ -481,8 +485,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       assertEquals( "hidden", client.getElement().style.overflow );
       var elementBounds = testUtil.getElementBounds( client.getElement() );
       var targetBounds = testUtil.getElementBounds( client._getTargetNode() );
-      assertEquals( elementBounds.width + barWidth, targetBounds.width );
-      assertEquals( elementBounds.height + barWidth, targetBounds.height );
+      if( org.eclipse.rwt.Client.isNewMshtml() ) {
+        assertEquals( elementBounds.width + ( barWidth * 2 ), targetBounds.width );
+        assertEquals( elementBounds.height + ( barWidth * 2 ), targetBounds.height );
+      } else {
+        assertEquals( elementBounds.width + barWidth, targetBounds.width );
+        assertEquals( elementBounds.height + barWidth, targetBounds.height );
+      }
       composite.setWidth( 200 );
       composite.setHeight( 200 );
       composite.setScrollBarsVisible( false, false );

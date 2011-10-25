@@ -176,14 +176,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
     testComplexBorderWithGradient: function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
-      var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
+      var engine = org.eclipse.rwt.Client.getEngine();
       var widget = this._createWidget();
       widget.setBorder( new org.eclipse.rwt.Border( [ 0, 1, 2, 3 ], "complex", "red", "blue" ) );
       testUtil.flush();
       testUtil.flush();
       widget.setBackgroundGradient( this.gradient );
       testUtil.flush();
-      if( isMshtml ) {
+      if( engine === "mshtml" ) {
         assertEquals ( [ 0, 2, 2, 0 ], this.getFakePadding( widget ) );      
       } else {
         assertEquals( "100%", widget._innerStyle.width );
@@ -192,9 +192,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       var shape = widget._gfxData.backgroundShape;
       var expected1;
       var expected2;
-      if( isMshtml ) {
+      if( engine === "mshtml" ) {
         expected1 = " m-5,-5 l955,-5,955,975,-5,975 xe";
         expected2 = " m-5,-5 l1155,-5,1155,1475,-5,1475 xe";
+      } else if( engine === "newmshtml" ) {
+        expected1 = "M 0 0 L 96 0 L 96 0 L 96 98 L 96 98 L 0 98 L 0 98 Z";
+        expected2 = "M 0 0 L 116 0 L 116 0 L 116 148 L 116 148 L 0 148 L 0 148 Z";
       } else {
         expected1 = "M 0 0 L 96 0 96 0 L 96 98 96 98 L 0 98 0 98 Z";
         expected2 = "M 0 0 L 116 0 116 0 L 116 148 116 148 L 0 148 0 148 Z";

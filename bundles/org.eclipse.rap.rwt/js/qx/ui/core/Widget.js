@@ -2437,19 +2437,11 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     _computePreferredBoxWidth : function() {
-      try {
-        return Math.max(0, this.getPreferredInnerWidth() + this.getFrameWidth());
-      } catch(ex) {
-        throw new Error( "_computePreferredBoxWidth failed " + ex);
-      }
+      return Math.max(0, this.getPreferredInnerWidth() + this.getFrameWidth());
     },
 
     _computePreferredBoxHeight : function() {
-      try {
-        return Math.max(0, this.getPreferredInnerHeight() + this.getFrameHeight());
-      } catch(ex) {
-        throw new Error( "_computePreferredBoxHeight failed " + ex );
-      }
+      return Math.max(0, this.getPreferredInnerHeight() + this.getFrameHeight());
     },
 
     ///////////////
@@ -2998,11 +2990,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     },
 
     _recursiveAppearanceThemeUpdate : function(vNewAppearanceTheme, vOldAppearanceTheme) {
-      try {
-        this._resetAppearanceThemeWrapper(vNewAppearanceTheme, vOldAppearanceTheme);
-      } catch(ex) {
-        throw new Error( "Failed to update appearance theme " + ex );
-      }
+      this._resetAppearanceThemeWrapper(vNewAppearanceTheme, vOldAppearanceTheme);
     },
 
     ///////////////
@@ -3124,7 +3112,8 @@ qx.Class.define( "qx.ui.core.Widget", {
       filter : true,
       display : true,
       visibility : true,
-      outline : true
+      outline : true,
+      boxShadow : true
     },
 
     setStyleProperty : function(propName, value) {
@@ -3805,6 +3794,7 @@ qx.Class.define( "qx.ui.core.Widget", {
             case "MozOpacity":
             case "display":
             case "cursor":
+            case "boxShadow":
             break;
             default:
               this._innerStyle[i] = this._styleProperties[i];

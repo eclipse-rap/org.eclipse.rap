@@ -22,13 +22,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
     },
     
     testQuirksmode : function() {
-      // NOTE: RAP should always run in quirksmode. (Currently no exceptions.)
-      assertTrue( org.eclipse.rwt.Client.isInQuirksMode() );
+      // NOTE: RAP should always run in quirksmode in IE7/8
+      var expected = !org.eclipse.rwt.Client.isNewMshtml();
+      assertIdentical( expected, org.eclipse.rwt.Client.isInQuirksMode() );
     },
-    
+
     testEngine : function() {
       var client = org.eclipse.rwt.Client;
-      var engines = [ "mshtml", "gecko", "webkit", "opera" ];
+      var engines = [ "mshtml", "gecko", "webkit", "opera", "newmshtml" ];
       var currentEngine = client.getEngine();
       assertTrue( engines.indexOf( currentEngine ) != -1 );
       var isEngine = 0;
@@ -36,6 +37,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ClientTest", {
       isEngine = client.isGecko() ? isEngine + 1 : isEngine;
       isEngine = client.isOpera() ? isEngine + 1 : isEngine;
       isEngine = client.isWebkit() ? isEngine + 1 : isEngine;
+      isEngine = client.isNewMshtml() ? isEngine + 1 : isEngine;
       assertEquals( 1, isEngine );
       assertEquals( "string", typeof client.getBrowser() );
       // NOTE: No check for specific browsers since there many clones that are 

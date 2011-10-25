@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -100,7 +100,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       assertEquals( 4, gc._context.lineWidth );
       assertEquals( "round", gc._context.lineCap );
       assertEquals( "bevel", gc._context.lineJoin );
-      assertEquals( "italic bold 16px Arial", gc._context.font );
+      assertTrue(    gc._context.font === "italic bold 16px Arial" 
+                  || gc._context.font === "bold italic 16px Arial" );
       gc.init( 300, 300, "10px Arial", "#ffffff", "#000000" );
       assertEquals( "#000000", gc._context.strokeStyle );
       assertEquals( "#ffffff", gc._context.fillStyle.toLowerCase() );

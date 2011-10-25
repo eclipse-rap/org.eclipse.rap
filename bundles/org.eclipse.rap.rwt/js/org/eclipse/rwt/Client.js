@@ -80,6 +80,10 @@ qx.Class.define( "org.eclipse.rwt.Client", {
       return this._engineName === "mshtml";
     },
 
+    isNewMshtml : function() {
+      return this._engineName === "newmshtml";
+    },
+
     isGecko : function() {
       return this._engineName === "gecko";
     },
@@ -150,7 +154,8 @@ qx.Class.define( "org.eclipse.rwt.Client", {
       var version = org.eclipse.rwt.Client.getVersion();
       var result =    engine === "gecko" && version >= 1.8
                    || engine === "webkit" && version >= 523 
-                   || engine === "opera" && version >= 9;
+                   || engine === "opera" && version >= 9
+                   || engine === "newmshtml";
       if( this.isAndroidBrowser() ) {
         result = false;
       }
@@ -164,6 +169,7 @@ qx.Class.define( "org.eclipse.rwt.Client", {
       var version = org.eclipse.rwt.Client.getVersion();
       var result =    engine === "webkit" && version >= 522 // 
                    || engine === "gecko" && version >= 2; // firefox 4+
+                   // TODO [tb] : ie10+
       return result;
     },
 
@@ -268,8 +274,12 @@ qx.Class.define( "org.eclipse.rwt.Client", {
       if( this._engineName === null ) {
         var isMshtml = /MSIE\s+([^\);]+)(\)|;)/.test( navigator.userAgent );
         if( isMshtml ) {
-          this._engineName = "mshtml";
           this._parseVersion( RegExp.$1 );
+          if( this._engineVersion >= 9 ) {
+            this._engineName = "newmshtml";            
+          } else {
+            this._engineName = "mshtml";
+          }
           this._browserName = "explorer";
         }
       }
@@ -303,7 +313,7 @@ qx.Class.define( "org.eclipse.rwt.Client", {
     },    
     
     _initLocale : function() {
-      var language =   this._engineName == "mshtml" 
+      var language =   ( this._engineName.indexOf( "mshtml" ) !== -1 ) 
                      ? navigator.userLanguage 
                      : navigator.language;
       var browserLocale = language.toLowerCase();

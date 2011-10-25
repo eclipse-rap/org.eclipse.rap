@@ -730,7 +730,7 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
      */
     layoutChild_sizeX : qx.core.Variant.select("qx.client",
     {
-      "mshtml|opera|webkit" : function(vChild, vJobs)
+      "mshtml|newmshtml|opera|webkit" : function(vChild, vJobs)
       {
         if (vJobs.initial || vJobs.width || vJobs.minWidth || vJobs.maxWidth)
         {
@@ -767,7 +767,7 @@ qx.Class.define("qx.ui.layout.impl.HorizontalBoxLayoutImpl",
      */
     layoutChild_sizeY : qx.core.Variant.select("qx.client",
     {
-      "mshtml|opera|webkit" : function(vChild, vJobs)
+      "mshtml|newmshtml|opera|webkit" : function(vChild, vJobs)
       {
         if (vJobs.initial || vJobs.height || vJobs.minHeight || vJobs.maxHeight)
         {

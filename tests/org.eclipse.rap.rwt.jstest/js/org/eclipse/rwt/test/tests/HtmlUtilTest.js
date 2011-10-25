@@ -126,7 +126,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.HtmlUtilTest", {
       testUtil.flush();
       var element = widget.getElement();
       var css = element.style.cssText.toLowerCase();
-      var isMshtml = org.eclipse.rwt.Client.isMshtml();
+      var isMshtml = org.eclipse.rwt.Client.isMshtml() || org.eclipse.rwt.Client.isNewMshtml();
       if( isMshtml ) {
         assertFalse( css.indexOf( "text-shadow:" ) !== -1 );
       } else {

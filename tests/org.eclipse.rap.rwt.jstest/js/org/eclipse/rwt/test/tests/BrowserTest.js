@@ -16,7 +16,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
   members : {
 
     BLANK : "../rwt-resources/resource/static/html/blank.html",
-    URL1 : "http://www.google.de/",
+    URL1 : "http://www.eclipse.org/rap",
 
     testCreateBrowserByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -76,7 +76,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
             "url" : this.URL1
           }
         } );
-        testUtil.delayTest( 5000 );
+        testUtil.delayTest( 7000 );
       },
       function() {
         var browser = org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" );
@@ -416,9 +416,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       function( browser ) {
         assertTrue( "slow connection?", browser._isLoaded );
         browser.createFunction( "abc" );
-        browser.setSource( "http://www.google.com/" );
+        browser.setSource( this.URL1 );
         browser.syncSource();
-        testUtil.delayTest( 2500 );
+        testUtil.delayTest( 7000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -444,7 +444,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         };
         // Simulates navigation: source stays the same, no load event
         // since the "load" flag is already true:
-        browser.getIframeNode().src = "http://www.google.com/";
+        browser.getIframeNode().src = this.URL1;
         testUtil.delayTest( 10000 );
         testUtil.store( browser );
       },
@@ -470,8 +470,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         browser.getIframeNode().onload = function() {
           browser.setUserData( "nativeLoaded", true );
         };
-        browser.getIframeNode().src = "http://www.google.com/";
-        testUtil.delayTest( 2000 );
+        browser.getIframeNode().src = this.URL1;
+        testUtil.delayTest( 7000 );
         testUtil.store( browser );
       },
       function( browser ) {
@@ -631,9 +631,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         var browser = this._createBrowser();
         browser.setHasProgressListener( true );
         testUtil.initRequestLog();
-        browser.setSource( "http://www.google.de/" );
+        browser.setSource( this.URL1 );
         browser.syncSource();
-        testUtil.delayTest( 2000 );
+        testUtil.delayTest( 7000 );
         testUtil.store( browser );
       },
       function( browser ) {

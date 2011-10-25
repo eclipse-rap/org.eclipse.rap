@@ -199,7 +199,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
         var hasCharCode = event.type === "keypress" && event.keyCode !== 13;
         return hasCharCode ? event.charCode : 0;
       },
-      "mshtml" : function( event ) {
+      "mshtml|newmshtml" : function( event ) {
         var hasCharCode = event.type === "keypress" && event.keyCode !== 13;
         return hasCharCode ? event.keyCode : 0;
       },

@@ -32,7 +32,7 @@ qx.Class.define("qx.bom.element.BoxSizing",
     /** {Map} Internal helper structure to return the valid box-sizing style property names */
     __styleProperties : qx.core.Variant.select("qx.client",
     {
-      "mshtml" : null,
+      "mshtml|newmshtml" : null,
       "webkit" : ["boxSizing", "KhtmlBoxSizing", "WebkitBoxSizing"],
       "gecko" : ["MozBoxSizing", "boxSizing"],
       "opera" : ["boxSizing"]

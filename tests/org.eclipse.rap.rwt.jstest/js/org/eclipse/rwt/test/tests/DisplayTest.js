@@ -37,7 +37,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       var request = org.eclipse.swt.Request.getInstance();
       assertNotNull( request.getParameter( "-785380229" ) );
       assertNotNull( request.getParameter( "-785380485" ) );
-      assertEquals( text, org.eclipse.swt.FontSizeCalculation.MEASUREMENT_LABEL.getText() );
     },
 
     testCallMeasureStringsByProtocol : function() {
@@ -61,7 +60,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       assertTrue( log[ 0 ].indexOf( "-1114032847=" ) != -1 );
       assertTrue( log[ 1 ].indexOf( "1767849485=" ) != -1 );
       var expected = "&nbsp;&nbsp;Push &amp;<br/> Button&nbsp;";
-      assertEquals( expected, org.eclipse.swt.FontSizeCalculation.MEASUREMENT_LABEL.getText() );
     }
 
   }

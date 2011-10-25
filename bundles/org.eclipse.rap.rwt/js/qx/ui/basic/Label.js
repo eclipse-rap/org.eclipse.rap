@@ -71,51 +71,6 @@ qx.Class.define("qx.ui.basic.Label",
   },
 
 
-
-
-  /*
-  *****************************************************************************
-     STATICS
-  *****************************************************************************
-  */
-
-  statics :
-  {
-    /**
-     * Create a DOM element, which can be used to measure the needed width of the label
-     *
-     * @internal
-     * @type static
-     * @return {Element} measure node
-     */
-    _getMeasureNode : function()
-    {
-      var node = this._measureNode;
-
-      if (!node)
-      {
-        node = document.createElement("div");
-        var style = node.style;
-
-        style.width = style.height = "auto";
-        style.visibility = "hidden";
-        style.position = "absolute";
-        style.zIndex = "-1";
-
-        document.body.appendChild(node);
-
-        this._measureNode = node;
-      }
-      if( !qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-        node.style.font = "";
-      }
-      return node;
-    }
-  },
-
-
-
-
   /*
   *****************************************************************************
      PROPERTIES
@@ -430,50 +385,12 @@ qx.Class.define("qx.ui.basic.Label",
      *
      * @type member
      */
-    _computeObjectNeededDimensions : function()
-    {
-      // get node
-      var element = this.self(arguments)._getMeasureNode();
-      var style = element.style;
-
-      // sync styles
-      var source = this._styleProperties;
-      style.fontFamily = source.fontFamily || "";
-      style.fontSize = source.fontSize || "";
-      style.fontWeight = source.fontWeight || "";
-      style.fontStyle = source.fontStyle || "";
-
-      // apply html
-// TODO [rh] unused: replacement for below      
-      element.innerHTML = this._content;
-/*
-      if (this._isHtml)
-      {
-        element.innerHTML = this._content;
-      }
-      else
-      {
-        element.innerHTML = "";
-        qx.dom.Element.setTextContent(element, this._content);
-      }
-*/
-
-      // store values
-      if( org.eclipse.rwt.Client.isGecko() && element.getBoundingClientRect ) {
-        // See Bug 264448, 340841
-        var bounds = element.getBoundingClientRect();
-        // In FF 3.0.x getBoundingClientRect has no width/height properties
-        if( bounds.width != null && bounds.height != null ) {
-          this._cachedPreferredInnerWidth = Math.ceil( bounds.width );
-          this._cachedPreferredInnerHeight = Math.ceil( bounds.height );
-        } else {
-          this._cachedPreferredInnerWidth = element.scrollWidth;
-          this._cachedPreferredInnerHeight = element.scrollHeight;
-        }
-      } else {
-        this._cachedPreferredInnerWidth = element.scrollWidth;
-        this._cachedPreferredInnerHeight = element.scrollHeight;
-      }
+    _computeObjectNeededDimensions : function() {
+      var fontProps = this._styleProperties;
+      var calc = org.eclipse.swt.FontSizeCalculation;
+      var dimensions = calc.computeTextDimensions( this._content, fontProps );
+      this._cachedPreferredInnerWidth = dimensions[ 0 ];
+      this._cachedPreferredInnerHeight = dimensions[ 1 ];
     },
 
 

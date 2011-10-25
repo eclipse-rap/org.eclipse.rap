@@ -85,14 +85,6 @@ qx.Class.define( "org.eclipse.rwt.System", {
         return;
       }
       this._onloadDone = true;
-      if( qx.core.Variant.isSet( "qx.debug", "on" ) ) {
-        if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-          var cl = org.eclipse.rwt.Client;
-          if( !cl.isInQuirksMode() ) {
-            throw new Error( "Wrong box sizing: Please modify the document's DOCTYPE!" );
-          }
-        }
-      }
       qx.theme.manager.Meta.getInstance().initialize();
       qx.ui.core.ClientDocument.getInstance();
       qx.client.Timer.once(this._preload, this, 0);

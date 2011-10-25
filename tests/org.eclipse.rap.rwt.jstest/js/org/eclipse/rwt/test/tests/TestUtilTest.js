@@ -469,7 +469,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       testUtil.press( widget, "Enter" );
       var expected = qx.core.Variant.select( "qx.client", {
         "webkit" : [ 13, 13 ],
-        "mshtml|opera" : [ 13, undefined ],
+        "mshtml|opera|newmshtml" : [ 13, undefined ],
         "default" : [ 13, 0 ]
       } );
       assertEquals( expected, log );
@@ -700,6 +700,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
     _addKeyLogger : function( widget, type, identifier, modifier ) {
       var log = [];
       var logger = function( event ) {
+        if( typeof glob === "undefined" ) glob = [];
+        glob.push( event );
         if( type ) {
           log.push( event.getType() );
         }

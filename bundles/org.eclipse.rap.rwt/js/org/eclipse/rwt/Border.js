@@ -73,7 +73,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
         "-webkit-border-bottom-right-radius", 
         "-webkit-border-bottom-left-radius" 
       ],
-      "gecko" : [ 
+      "gecko|newmshtml" : [ 
         "borderTopLeftRadius", 
         "borderTopRightRadius", 
         "borderBottomRightRadius", 

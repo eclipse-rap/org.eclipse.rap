@@ -61,13 +61,19 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       this._handleGfxBackground();
     },
 
-    _applyShadow : function( value, oldValue ) {
-      if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {
-        this.setGfxProperty( "shadow", value );
-        this.setGfxProperty( "shadowLayouted", null );
-        this._handleGfxShadow();
+    _applyShadow : qx.core.Variant.select( "qx.client", {
+      "default" : function( value, oldValue ) {
+        if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {
+          this.setGfxProperty( "shadow", value );
+          this.setGfxProperty( "shadowLayouted", null );
+          this._handleGfxShadow();
+        }
+      },
+      "newmshtml" : function( value, oldValue ) {
+        // Use CSS3 shadows for i9+
+        this.base( arguments, value, oldValue );
       }
-    },
+    } ),
 
     //overwritten
     _styleBackgroundColor : function( value ) {
@@ -146,7 +152,20 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       this.setGfxProperty( "backgroundLayouted", null );
       this.setGfxProperty( "shadowLayouted", null );
       this._handleGfxBorder();
+      this._handleCssRadii( radii );
     },
+
+    _handleCssRadii : qx.core.Variant.select( "qx.client", {
+      "default" : qx.lang.Function.returnTrue,
+      "newmshtml" : function( radii ) {
+        // NOTE : While the actual border is rendred with vector graphics, CSS radii
+        //        are set anyway to provide clipping and rounded CSS-shadows
+        var props = org.eclipse.rwt.Border._BORDERRADII
+        for( var i = 0; i < 4; i++ ) {
+          this._style[ props[ i ] ] = radii ? radii[ i ] + "px" : "";
+        }
+      }
+    } ),
 
     setGfxProperty : function( key, value ) {
       if( this._gfxProperties === null ) {

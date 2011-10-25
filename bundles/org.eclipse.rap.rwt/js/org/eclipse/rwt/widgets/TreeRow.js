@@ -390,10 +390,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     _getVisualTextWidth : function( item, cell, config ) {
       var text = item.getText( cell );
       var font = this._getCellFont( item, cell, config );
-      var element = qx.ui.basic.Label._getMeasureNode();
-      element.innerHTML = text;
-      this._setFont( element, font );
-      return element.scrollWidth;
+      var fontProps = this._getFontProps( font );
+      var calc = org.eclipse.swt.FontSizeCalculation;
+      var dimensions = calc.computeTextDimensions( text, fontProps );
+      return dimensions[ 0 ];
     },
 
     _renderAsUnfocused : function( config ) {
@@ -405,6 +405,19 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     	             && ( !config.hideSelection || config.focused )
     	             && !config.alwaysHideSelection;
     	return result;
+    },
+
+    _getFontProps : function( font ) {
+      var result = {};
+      var fontObject;
+      if( font instanceof qx.ui.core.Font ) {
+        fontObject = font;
+      } else {
+        fontObject = qx.ui.core.Font.fromString( font );
+      }
+      fontObject.renderStyle( result );
+      fontObject.dispose();
+      return result;
     },
 
     /////////////

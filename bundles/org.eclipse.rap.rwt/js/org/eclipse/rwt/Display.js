@@ -45,7 +45,7 @@ org.eclipse.rwt.Display.prototype = {
   },
 
   measureStrings : function( args ) {
-    org.eclipse.swt.FontSizeCalculation.measureStrings( args.strings );
+    org.eclipse.swt.FontSizeCalculation.measureStringItems( args.strings );
   },
 
   allowEvent : function() {

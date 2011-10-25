@@ -275,7 +275,7 @@ qx.Class.define("qx.bom.element.Location",
      */
     __computeOffset : qx.core.Variant.select("qx.client",
     {
-      "mshtml|webkit" : function(elem)
+      "mshtml|newmshtml|webkit" : function(elem)
       {
         var doc = qx.dom.Node.getDocument(elem);
 

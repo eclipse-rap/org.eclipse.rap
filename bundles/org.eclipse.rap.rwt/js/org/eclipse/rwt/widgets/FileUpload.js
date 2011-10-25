@@ -57,17 +57,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.FileUpload", {
     // Internals
 
     _createSubelements : function() {
-      this.base( arguments );
       // NOTE: MultiCellWidget uses innerHTML, therefore this must be done here:
       if( this._formElement === null ) {
+        this.base( arguments );
         this._createFormElement();
         this._createInputElement();
       } else {
+        this._formElement.removeChild( this._inputElement );
+        this._getTargetNode().removeChild( this._formElement );
+        this.base( arguments );
         this._getTargetNode().appendChild( this._formElement );
-        var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
-        if( isMshtml ) {
-          this._formElement.appendChild( this._inputElement );
-        }
+        this._formElement.appendChild( this._inputElement );
       }
     },
 
@@ -156,7 +156,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.FileUpload", {
       var iterations = 0;
       while( this._inputElement.offsetWidth <= inputTargetWidth ) {
         fontSize += 10;
-        this._inputElement.style.fontSize = fontSize;
+        this._inputElement.style.font = fontSize + "px monospace";
         iterations++;
         if( iterations > 100 ) {
           // crash the rap-application instead of freezing the browser.
