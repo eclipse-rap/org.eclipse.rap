@@ -36,11 +36,15 @@ public class TreeTab extends ExampleTab {
   private Tree tree;
   private boolean showImages;
   private final Image treeImage;
+  private boolean columnImages;
+  private final Image columnImage;
+  private boolean columnsMoveable;
   private boolean addMouseListener;
 
   public TreeTab( CTabFolder topFolder ) {
     super( topFolder, "Tree" );
     treeImage = Graphics.getImage( "resources/tree_item.gif", getClass().getClassLoader() );
+    columnImage = loadImage( "resources/shell.gif" );
     showImages = true;
     headerVisible = true;
   }
@@ -56,6 +60,8 @@ public class TreeTab extends ExampleTab {
     createEnablementButton();
     createHeaderVisibleButton();
     createLinesVisibleButton();
+    createColumnsMoveableButton();
+    createColumnImagesButton();
     createImagesButton( parent );
     createAddNodeButton( parent );
     createDisposeNodeButton( parent );
@@ -169,7 +175,11 @@ public class TreeTab extends ExampleTab {
     for( int i = 0; i < INITIAL_COLUMNS; i++ ) {
       TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
       col1.setText( "Col " + i );
+      if( columnImages ) {
+        col1.setImage( columnImage );
+      }
       col1.setWidth( 150 );
+      col1.setMoveable( columnsMoveable );
     }
     for( int i = 0; i < INITIAL_ITEMS; i++ ) {
       TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -574,6 +584,40 @@ public class TreeTab extends ExampleTab {
         if( getTree().getItemCount() > 0 ) {
           Font font = btn.getSelection() ? cellFont : null;
           getTree().getItem( 0 ).setFont( 0, font );
+        }
+      }
+    } );
+  }
+
+  private void createColumnsMoveableButton() {
+    final Button button = new Button( styleComp, SWT.CHECK );
+    button.setText( "Moveable Columns" );
+    button.setSelection( columnsMoveable );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        columnsMoveable = button.getSelection();
+        TreeColumn[] columns = getTree().getColumns();
+        for( int i = 0; i < columns.length; i++ ) {
+          columns[ i ].setMoveable( columnsMoveable );
+        }
+      }
+    } );
+  }
+
+  private void createColumnImagesButton() {
+    final Button button = new Button( styleComp, SWT.CHECK );
+    button.setText( "Column images" );
+    button.setSelection( columnImages );
+    button.addSelectionListener( new SelectionAdapter() {
+      public void widgetSelected( final SelectionEvent event ) {
+        columnImages = button.getSelection();
+        TreeColumn[] columns = getTree().getColumns();
+        for( int i = 0; i < columns.length; i++ ) {
+          if( columnImages ) {
+            columns[ i ].setImage( columnImage );
+          } else {
+            columns[ i ].setImage( null );
+          }
         }
       }
     } );
