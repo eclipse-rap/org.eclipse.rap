@@ -20,7 +20,7 @@ import org.eclipse.core.commands.common.EventManager;
 /*
  * Exists in RAP only.  Serializable version of the EventManager from core.commands.
  */
-public class SerializableEventManager extends EventManager implements Serializable {
+public abstract class SerializableEventManager extends EventManager implements Serializable {
 
 	private void writeObject(ObjectOutputStream stream) throws IOException {
 		stream.writeObject(getListeners());

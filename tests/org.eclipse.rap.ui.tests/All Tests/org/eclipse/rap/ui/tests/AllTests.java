@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rap.ui.tests;
 
+import org.eclipse.jface.internal.util.SerializableEventManagerTest;
 import org.eclipse.jface.tests.viewers.Bug264226TableViewerTest;
 
 import junit.framework.Test;
@@ -30,6 +31,7 @@ public class AllTests {
       suite.addTestSuite( RWTConfigurationWrapper.class );
       // RAP JFace Tests
       suite.addTestSuite( Bug264226TableViewerTest.class );
+      suite.addTestSuite(SerializableEventManagerTest.class );
       // Cleanup
       suite.addTestSuite( Cleanup.class );
       return suite;
