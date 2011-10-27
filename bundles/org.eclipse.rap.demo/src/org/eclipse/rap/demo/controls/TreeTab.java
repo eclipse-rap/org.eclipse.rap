@@ -173,13 +173,28 @@ public class TreeTab extends ExampleTab {
     }
     tree.setLayoutData( new GridData( GridData.FILL_BOTH ) );
     for( int i = 0; i < INITIAL_COLUMNS; i++ ) {
-      TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
+      final TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
       col1.setText( "Col " + i );
       if( columnImages ) {
         col1.setImage( columnImage );
       }
       col1.setWidth( 150 );
       col1.setMoveable( columnsMoveable );
+      col1.addSelectionListener( new SelectionAdapter() {
+        public void widgetSelected( final SelectionEvent event ) {
+          Tree tree = col1.getParent();
+          if( tree.getSortColumn() == col1 ) {
+            if( tree.getSortDirection() == SWT.UP ) {
+              tree.setSortDirection( SWT.DOWN );
+            } else {
+              tree.setSortDirection( SWT.UP );
+            }
+          } else {
+            tree.setSortDirection( SWT.UP );
+            tree.setSortColumn( col1 );
+          }
+        }
+      } );
     }
     for( int i = 0; i < INITIAL_ITEMS; i++ ) {
       TreeItem item = new TreeItem( tree, SWT.NONE );
