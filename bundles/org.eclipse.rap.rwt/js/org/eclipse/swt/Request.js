@@ -394,7 +394,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
 
     _isConnectionError : function( statusCode ) {
       var result;
-      if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+      if( qx.core.Variant.isSet( "qx.client", "mshtml|newmshtml" ) ) {
         // for a description of the IE status codes, see
         // http://support.microsoft.com/kb/193625
         result = (    statusCode === 12007    // ERROR_INTERNET_NAME_NOT_RESOLVED
