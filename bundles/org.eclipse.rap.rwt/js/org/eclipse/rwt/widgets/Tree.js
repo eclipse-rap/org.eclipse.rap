@@ -76,6 +76,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._vertScrollBar = null;
     this._leadItem = null;
     this._focusItem = null;
+    this._sortColumn = null;
     this._resizeLine = null;
     if( this._cellToolTip ) {
       this._cellToolTip.destroy();
