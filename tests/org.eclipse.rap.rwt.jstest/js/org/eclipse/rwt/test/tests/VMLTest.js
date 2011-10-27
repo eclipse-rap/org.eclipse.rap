@@ -85,6 +85,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       gfxUtil.setFillColor( shape, "transparent" );
       assertEquals( null, gfxUtil.getFillType( shape ) );
       assertEquals( null, gfxUtil.getFillColor( shape ) );
+      gfxUtil.setFillColor( shape, "" );
+      assertEquals( null, gfxUtil.getFillType( shape ) );
+      assertEquals( null, gfxUtil.getFillColor( shape ) );
       assertFalse( shape.fill.on );
       parentNode.removeChild( gfxUtil.getCanvasNode( canvas ) );      
     },

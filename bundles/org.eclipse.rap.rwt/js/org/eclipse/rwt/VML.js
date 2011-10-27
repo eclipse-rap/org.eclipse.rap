@@ -231,7 +231,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     setFillColor : function( shape, color ) {
       var fill = shape.fill;
       fill.type = "solid";
-      if( color != null && color != "transparent" ) {
+      if( color != null && color != "transparent" && color != "" ) {
         this._setFillEnabled( shape, true );
         fill.color = color;
         shape.restoreData.fill.color = color;
