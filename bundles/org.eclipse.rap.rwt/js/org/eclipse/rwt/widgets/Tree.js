@@ -31,6 +31,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._selectionTimestamp = null;
     this._selectionOffsetX = null;
     this._delayedSelection = false;
+    this._sortDirection = null;
+    this._sortColumn = null;
     // Layout:
     this._headerHeight = 0;
     this._itemHeight = 16;
@@ -254,6 +256,23 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     setFocusItem : function( item ) {
       this._focusItem = item;
       this._sendItemFocusChange()
+    },
+
+    setSortDirection : function( direction ) {
+      this._sortDirection = direction;
+      if( this._sortColumn !== null ) {
+        this._sortColumn.setSortDirection( this._sortDirection );
+      }
+    },
+
+    setSortColumn : function( column ) {
+      if( this._sortColumn !== null ) {
+        this._sortColumn.setSortDirection( "none" );
+      }
+      this._sortColumn = column;
+      if( this._sortColumn !== null ) {
+        this._sortColumn.setSortDirection( this._sortDirection );
+      }
     },
 
     setScrollBarsVisible : function( horzVisible, vertVisible ) {

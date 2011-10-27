@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 /**
@@ -32,6 +32,7 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
     this._inMove = false;
     this._offsetX = 0;
     this._initialLeft = 0;
+    this._index = 0;
     // Init width property, without this Table._updateScrollWidth would 
     // accidentially calculate a width of "0auto"
     this.setWidth( 0 );
@@ -88,6 +89,14 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
    
   members : {
 
+    setIndex : function( value ) {
+      this._index = value;
+    },
+
+    getIndex : function() {
+      return this._index;
+    },
+
     setSortDirection : function( value ) {
       if( value == "up" ) {
         this._sortImage.addState( "up" );
@@ -130,7 +139,9 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
         this.addState( org.eclipse.swt.widgets.TableColumn.STATE_MOUSE_OVER );
       }
     },
-    
+
+    // TODO: Remove index parameter when TableColumnLCA is switched to the protocol.
+    // Use _index field instead.
     setAlignment : function( index, value ) {
       this._table.setAlignment( index, value );
       this.getLabelObject().setTextAlign( value );

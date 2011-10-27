@@ -207,6 +207,7 @@ public final class ClientResources {
     "org/eclipse/swt/widgets/TableCellToolTip.js",
     "org/eclipse/rwt/widgets/TableHeader.js",
     "org/eclipse/swt/widgets/TableColumn.js",
+    "org/eclipse/swt/widgets/TableColumnAdapter.js",
     "org/eclipse/swt/browser/Browser.js",
     "org/eclipse/swt/browser/BrowserAdapter.js",
     "org/eclipse/rwt/widgets/ExternalBrowser.js",

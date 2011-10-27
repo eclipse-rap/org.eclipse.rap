@@ -48,6 +48,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static final String PROP_TOP_ITEM_INDEX = "topItemIndex";
   private static final String PROP_SCROLL_LEFT = "scrollLeft";
   private static final String PROP_SELECTION = "selection";
+  private static final String PROP_SORT_DIRECTION = "sortDirection";
+  private static final String PROP_SORT_COLUMN = "sortColumn";
   private static final String PROP_SCROLLBARS_VISIBLE = "scrollBarsVisible";
   private static final String PROP_SCROLLBARS_SELECTION_LISTENER = "scrollBarsSelection";
   private static final String PROP_SELECTION_LISTENER = "selection";
@@ -58,6 +60,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static final int DEFAULT_ITEM_HEIGHT = 18;
   private static final String[] DEFAULT_SELECTION = new String[ 0 ];
   private static final boolean[] DEFAULT_SCROLLBARS_VISIBLE = new boolean[] { false, false };
+  private static final String DEFAULT_SORT_DIRECTION = "none";
 
   public void preserveValues( Widget widget ) {
     Tree tree = ( Tree )widget;
@@ -74,6 +77,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
     preserveProperty( tree, PROP_TOP_ITEM_INDEX, getTopItemIndex( tree ) );
     preserveProperty( tree, PROP_SCROLL_LEFT, getScrollLeft( tree ) );
     preserveProperty( tree, PROP_SELECTION, getSelection( tree ) );
+    preserveProperty( tree, PROP_SORT_DIRECTION, getSortDirection( tree ) );
+    preserveProperty( tree, PROP_SORT_COLUMN, tree.getSortColumn() );
     preserveProperty( tree, PROP_SCROLLBARS_VISIBLE, getScrollBarsVisible( tree ) );
     preserveListener( tree,
                       PROP_SCROLLBARS_SELECTION_LISTENER,
@@ -132,6 +137,8 @@ public final class TreeLCA extends AbstractWidgetLCA {
     renderProperty( tree, PROP_TOP_ITEM_INDEX, getTopItemIndex( tree ), ZERO );
     renderProperty( tree, PROP_SCROLL_LEFT, getScrollLeft( tree ), ZERO );
     renderProperty( tree, PROP_SELECTION, getSelection( tree ), DEFAULT_SELECTION );
+    renderProperty( tree, PROP_SORT_DIRECTION, getSortDirection( tree ), DEFAULT_SORT_DIRECTION );
+    renderProperty( tree, PROP_SORT_COLUMN, tree.getSortColumn(), null );
     renderProperty( tree,
                     PROP_SCROLLBARS_VISIBLE,
                     getScrollBarsVisible( tree ),
@@ -319,6 +326,16 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static int getTreeColumn( Tree tree ) {
     int[] values = tree.getColumnOrder();
     return values.length > 0 ? values[ 0 ] : 0;
+  }
+
+  private static String getSortDirection( Tree tree ) {
+    String result = "none";
+    if( tree.getSortDirection() == SWT.UP ) {
+      result = "up";
+    } else if( tree.getSortDirection() == SWT.DOWN ) {
+      result = "down";
+    }
+    return result;
   }
 
   private static ITreeAdapter getTreeAdapter( Tree tree ) {

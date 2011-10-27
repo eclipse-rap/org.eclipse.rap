@@ -46,6 +46,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Tree", {
     "topItemIndex",
     "scrollLeft",
     "selection",
+    "sortDirection",
+    "sortColumn",
     "scrollBarsVisible",
     "enableCellToolTip",
     "cellToolTipText"
@@ -73,6 +75,11 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Tree", {
           }
         } );
       }
+    },
+    "sortColumn" : function( widget, value ) {
+      org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( column ) {
+        widget.setSortColumn( column );
+      } );
     },
     "scrollBarsVisible" : function( widget, value ) {
       widget.setScrollBarsVisible( value[ 0 ], value[ 1 ] );

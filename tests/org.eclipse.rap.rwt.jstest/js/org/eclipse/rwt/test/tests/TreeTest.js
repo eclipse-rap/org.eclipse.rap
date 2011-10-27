@@ -266,6 +266,36 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       widget.destroy();
     },
 
+    testSetSortDirectionByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      var column = new org.eclipse.swt.widgets.TableColumn( widget );
+      org.eclipse.rwt.protocol.ObjectManager.add( "w4", column );
+      widget.setSortColumn( column );
+      testUtil.protocolSet( "w3", { "sortDirection" : "up" } );
+      assertEquals( "up", widget._sortDirection );
+      assertTrue( column._sortImage.hasState( "up" ) );
+      shell.destroy();
+      column.destroy();
+      widget.destroy();
+    },
+
+    testSetSortColumnByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      var column = new org.eclipse.swt.widgets.TableColumn( widget );
+      org.eclipse.rwt.protocol.ObjectManager.add( "w4", column );
+      widget.setSortDirection( "down" );
+      testUtil.protocolSet( "w3", { "sortColumn" : "w4" } );
+      assertIdentical( column, widget._sortColumn );
+      assertTrue( column._sortImage.hasState( "down" ) );
+      shell.destroy();
+      column.destroy();
+      widget.destroy();
+    },
+
     testCreate : function() {
       var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
       assertTrue( tree instanceof org.eclipse.rwt.widgets.Tree );

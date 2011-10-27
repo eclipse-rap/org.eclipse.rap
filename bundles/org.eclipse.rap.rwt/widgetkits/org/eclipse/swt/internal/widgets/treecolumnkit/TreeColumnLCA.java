@@ -1,21 +1,27 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.treecolumnkit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -26,34 +32,31 @@ import org.eclipse.swt.widgets.*;
 
 public final class TreeColumnLCA extends AbstractWidgetLCA {
 
-  // Property names to preserve values
+  private static final String TYPE = "rwt.widgets.TableColumn";
+
+  static final String PROP_INDEX = "index";
   static final String PROP_LEFT = "left";
   static final String PROP_WIDTH = "width";
-  static final String PROP_Z_INDEX = "zIndex";
-  static final String PROP_SORT_DIRECTION = "sortDirection";
   static final String PROP_RESIZABLE = "resizable";
   static final String PROP_MOVEABLE = "moveable";
   static final String PROP_ALIGNMENT = "alignment";
-  static final String PROP_SELECTION_LISTENERS = "selectionListeners";
+  static final String PROP_SELECTION_LISTENER = "selection";
 
-  private static final Integer DEFAULT_LEFT = new Integer( 0 );
-  private static final Integer DEFAULT_ALIGNMENT = new Integer( SWT.LEFT );
+  private static final int ZERO = 0;
+  private static final String DEFAULT_ALIGNMENT = "left";
 
   public void preserveValues( Widget widget ) {
     TreeColumn column = ( TreeColumn )widget;
-    ItemLCAUtil.preserve( column );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
     WidgetLCAUtil.preserveToolTipText( column, column.getToolTipText() );
-    adapter.preserve( PROP_Z_INDEX, new Integer( getZIndex( column ) ) );
-    adapter.preserve( PROP_LEFT, new Integer( getLeft( column ) ) );
-    adapter.preserve( PROP_WIDTH, new Integer( column.getWidth() ) );
-    adapter.preserve( PROP_SORT_DIRECTION, getSortDirection( column ) );
-    adapter.preserve( PROP_RESIZABLE, Boolean.valueOf( column.getResizable() ) );
-    adapter.preserve( PROP_MOVEABLE, Boolean.valueOf( column.getMoveable() ) );
-    adapter.preserve( PROP_ALIGNMENT, new Integer( column.getAlignment() ) );
-    adapter.preserve( PROP_SELECTION_LISTENERS,
-                      Boolean.valueOf( SelectionEvent.hasListener( column ) ) );
     WidgetLCAUtil.preserveCustomVariant( column );
+    ItemLCAUtil.preserve( column );
+    preserveProperty( column, PROP_INDEX, getIndex( column ) );
+    preserveProperty( column, PROP_LEFT, getLeft( column ) );
+    preserveProperty( column, PROP_WIDTH, column.getWidth() );
+    preserveProperty( column, PROP_RESIZABLE, column.getResizable() );
+    preserveProperty( column, PROP_MOVEABLE, column.getMoveable() );
+    preserveProperty( column, PROP_ALIGNMENT, getAlignment( column ) );
+    preserveListener( column, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( column ) );
   }
 
   public void readData( Widget widget ) {
@@ -91,96 +94,36 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     TreeColumn column = ( TreeColumn )widget;
-    JSWriter writer = JSWriter.getWriterFor( column );
-    Object[] args = new Object[] { column.getParent() };
-    writer.newWidget( "org.eclipse.swt.widgets.TableColumn", args );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( column );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( column.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( column ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
     TreeColumn column = ( TreeColumn )widget;
-    ItemLCAUtil.writeChanges( column );
-    writeLeft( column );
-    writeWidth( column );
-    writeZIndex( column );
-    WidgetLCAUtil.writeToolTip( column, column.getToolTipText() );
-    writeSortDirection( column );
-    writeResizable( column );
-    writeMoveable( column );
-    writeAlignment( column );
-    writeSelectionListener( column );
-    WidgetLCAUtil.writeCustomVariant( column );
+    WidgetLCAUtil.renderToolTip( column, column.getToolTipText() );
+    WidgetLCAUtil.renderCustomVariant( column );
+    ItemLCAUtil.renderChanges( column );
+    renderProperty( column, PROP_INDEX, getIndex( column ), ZERO );
+    renderProperty( column, PROP_LEFT, getLeft( column ), ZERO );
+    renderProperty( column, PROP_WIDTH, column.getWidth(), ZERO );
+    renderProperty( column, PROP_RESIZABLE, column.getResizable(), true );
+    renderProperty( column, PROP_MOVEABLE, column.getMoveable(), false );
+    renderProperty( column, PROP_ALIGNMENT, getAlignment( column ), DEFAULT_ALIGNMENT );
+    renderListener( column, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( column ), false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    TreeColumn column = ( TreeColumn )widget;
-    JSWriter writer = JSWriter.getWriterFor( column );
-    writer.dispose();
-  }
-
-  //////////////////////////////////////////
-  // Helping method to write JavaScript code
-
-  private static void writeLeft( TreeColumn column ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( column );
-    Integer newValue = new Integer( getLeft( column ) );
-    writer.set( PROP_LEFT, "left", newValue, DEFAULT_LEFT );
-  }
-
-  private static void writeWidth( TreeColumn column ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( column );
-    Integer newValue = new Integer( column.getWidth() );
-    writer.set( PROP_WIDTH, "width", newValue, null );
-  }
-
-  private static void writeZIndex( TreeColumn column ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( column );
-    Integer newValue = new Integer( getZIndex( column ) );
-    writer.set( PROP_Z_INDEX, "zIndex", newValue, null );
-  }
-
-  private static void writeSortDirection( TreeColumn column ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( column );
-    String newValue = getSortDirection( column );
-    writer.set( PROP_SORT_DIRECTION, "sortDirection", newValue, null );
-  }
-
-  private static void writeResizable( TreeColumn column ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( column );
-    Boolean newValue = Boolean.valueOf( column.getResizable() );
-    writer.set( PROP_RESIZABLE, "resizable", newValue, Boolean.TRUE );
-  }
-
-  private static void writeMoveable( TreeColumn column ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( column );
-    Boolean newValue = Boolean.valueOf( column.getMoveable() );
-    writer.set( PROP_MOVEABLE, "moveable", newValue, Boolean.FALSE );
-  }
-
-  private static void writeAlignment( TreeColumn column ) throws IOException {
-    Integer newValue = new Integer( column.getAlignment() );
-    Integer defValue = DEFAULT_ALIGNMENT;
-    if( WidgetLCAUtil.hasChanged( column, PROP_ALIGNMENT, newValue, defValue ) ) {
-      JSVar alignment = JSConst.QX_CONST_ALIGN_LEFT;
-      if( newValue.intValue() == SWT.CENTER ) {
-        alignment = JSConst.QX_CONST_ALIGN_CENTER;
-      } else if( newValue.intValue() == SWT.RIGHT ) {
-        alignment = JSConst.QX_CONST_ALIGN_RIGHT;
-      }
-      Integer index = new Integer( column.getParent().indexOf( column ) );
-      JSWriter writer = JSWriter.getWriterFor( column );
-      writer.set( "alignment", new Object[] { index, alignment } );
-    }
-  }
-
-  // TODO [rh] selection event is also fired when resizing columns!
-  private static void writeSelectionListener( TreeColumn column ) throws IOException {
-    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( column ) );
-    JSWriter writer = JSWriter.getWriterFor( column );
-    writer.set( PROP_SELECTION_LISTENERS, "hasSelectionListener", newValue, Boolean.FALSE );
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
   //////////////////////////////////////////////////
   // Helping methods to obtain calculated properties
+
+  private static int getIndex( TreeColumn column ) {
+    return column.getParent().indexOf( column );
+  }
 
   static int getLeft( TreeColumn column ) {
     Object adapter = column.getParent().getAdapter( ITreeAdapter.class );
@@ -188,19 +131,13 @@ public final class TreeColumnLCA extends AbstractWidgetLCA {
     return treeAdapter.getColumnLeft( column );
   }
 
-  static int getZIndex( TreeColumn column ) {
-    return ControlLCAUtil.getZIndex( column.getParent() ) + 1;
-  }
-
-  static String getSortDirection( TreeColumn column ) {
-    String result = null;
-    Tree tree = column.getParent();
-    if( tree.getSortColumn() == column ) {
-      if( tree.getSortDirection() == SWT.UP ) {
-        result = "up";
-      } else if( tree.getSortDirection() == SWT.DOWN ) {
-        result = "down";
-      }
+  private static String getAlignment( TreeColumn column ) {
+    int alignment = column.getAlignment();
+    String result = "left";
+    if( ( alignment & SWT.CENTER ) != 0 ) {
+      result = "center";
+    } else if( ( alignment & SWT.RIGHT ) != 0 ) {
+      result = "right";
     }
     return result;
   }

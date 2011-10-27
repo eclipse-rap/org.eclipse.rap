@@ -1332,6 +1332,78 @@ public class TreeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( tree, "cellToolTipText" ) );
   }
 
+  public void testRenderInitialSortDirection() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "sortDirection" ) == -1 );
+  }
+
+  public void testRenderSortDirection() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+
+    tree.setSortColumn( column );
+    tree.setSortDirection( SWT.UP );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "up", message.findSetProperty( tree, "sortDirection" ) );
+  }
+
+  public void testRenderSortDirectionUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setSortColumn( column );
+    tree.setSortDirection( SWT.UP );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "sortDirection" ) );
+  }
+
+  public void testRenderInitialSortColumn() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "sortColumn" ) == -1 );
+  }
+
+  public void testRenderSortColumn() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+
+    tree.setSortColumn( column );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( WidgetUtil.getId( column ), message.findSetProperty( tree, "sortColumn" ) );
+  }
+
+  public void testRenderSortColumnUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    TreeColumn column = new TreeColumn( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setSortColumn( column );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "sortColumn" ) );
+  }
+
   private static void setScrollLeft( Tree tree, int scrollLeft ) {
     ITreeAdapter treeAdapter = getTreeAdapter( tree );
     treeAdapter.setScrollLeft( scrollLeft);
