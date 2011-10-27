@@ -12,36 +12,41 @@
 /* Menu default theme */
 
 Menu {
-  background-image: none;
-  padding: 2px 0px;
-  opacity: 1;
+  background-image: url( resource/widget/rap/menu/menu-background.png );
+  padding: 10px 15px;
+  opacity: 0.9;
   animation: none;
   color: #0059a5;
-  background-color: white;
-  border: 1px #0059a5;
+  background-color: #f0f0f0;
+  border: 1px solid #bdbdbd;
   border-radius: 2px;
-  box-shadow: 2px 2px 2px rgba( 0, 0, 0, 0.5 );
+  box-shadow: none;
 }
 
 MenuItem {
+	color: #4a4a4a;
+	background-color: transparent;
   background-image: none;
-  color: black;
-  background-color: transparent;
   opacity: 1;
   text-shadow: none;
 }
 
 MenuItem:hover {
-  background-color: #dae9f7;
-  color: #4a4a4a;
-  text-shadow: none;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #818181 ),
+    to( #b5b5b5 )
+  );
+  color: #ffffff;
 }
 
-MenuItem[BAR]:pressed {
+/*TODO delete MenuItem[BAR] test, because BAR style flag does not exist in Menu.theme.xml? [nimu]*/
+
+/* MenuItem[BAR]:pressed {
   background-color: #00589f;
   color: white;
   text-shadow: none;
-}
+} */
 
 MenuItem-CheckIcon {
   background-image: url( resource/widget/rap/menu/checkbox.gif );

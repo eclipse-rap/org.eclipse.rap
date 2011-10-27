@@ -62,6 +62,11 @@ public final class ThemeTestUtil {
     return result;
   }
 
+  public static void setCustomTheme( String css ) throws IOException {
+    registerCustomTheme( "customTestTheme", css, null );
+    ThemeUtil.setCurrentThemeId( "customTestTheme" );
+  }
+
   public static void registerCustomTheme( String themeId, String cssCode, ResourceLoader loader )
     throws IOException
   {

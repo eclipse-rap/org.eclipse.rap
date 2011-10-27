@@ -9,311 +9,52 @@
  *     EclipseSource - initial API and implementation
  ******************************************************************************/
 
-ScrollBar {
-  border: none;
-  background-color: #f3f3f4;
-  border-radius: 3px 3px 3px 3px;
-  width: 15px;
-  background-image: none;
-}
-
+ScrollBar[HORIZONTAL],
 ScrollBar[VERTICAL] {
+  background-color: #f0f0f0;
   background-image: none;
-}
-
-ScrollBar[HORIZONTAL] {
-  background-image: none;
+  border: none;
+  border-radius: 0;
+  width: 10px;
 }
 
 /* Thumb */
 
+ScrollBar-Thumb[HORIZONTAL],
 ScrollBar-Thumb[VERTICAL] {
-  background-color: transparent;
-  border: 1px solid #b4b4b4;
-  border-radius: 0px;
-  background-image: gradient(
-    linear, left top, right top,
-    from( #ffffff ),
-    color-stop( 38%, #f0f0f0 ),
-    color-stop( 62%, #e0e0e0 ),
-    to( #ffffff )
-  );
-  min-height: 20px;
-}
-
-ScrollBar-Thumb[HORIZONTAL] {
-  background-color: transparent;
-  border: 1px solid #b4b4b4;
-  border-radius: 0px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 38%, #f0f0f0 ),
-    color-stop( 62%, #e0e0e0 ),
-    to( #ffffff )
-  );
-  min-height: 20px;
-}
-
-ScrollBar-Thumb[VERTICAL]:hover {
-  background-color: transparent;
-  border: 1px solid #b4b4b4;
-  border-radius: 0px;
-  background-image: gradient(
-    linear, left top, right top,
-    from( #ffffff ),
-    color-stop( 42%, #f0f0f0 ),
-    color-stop( 58%, #e0e0e0 ),
-    to( #cccccc )
-  );
-  min-height: 20px;
-}
-
-ScrollBar-Thumb[HORIZONTAL]:hover {
-  background-color: transparent;
-  border: 1px solid #b4b4b4;
-  border-radius: 0px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 42%, #f0f0f0 ),
-    color-stop( 58%, #e0e0e0 ),
-    to( #cccccc )
-  );
-  min-height: 20px;
-}
-
-ScrollBar-Thumb[VERTICAL]:pressed {
-  background-color: transparent;
-  border: 1px solid #999999;
-  border-radius: 0px;
-  background-image: gradient(
-    linear, left top, right top,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
-  min-height: 20px;
-}
-
-ScrollBar-Thumb[HORIZONTAL]:pressed {
-  background-color: transparent;
-  border: 1px solid #999999;
-  border-radius: 0px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
+  background-color: #f0f0f0;
+  border: 1px solid #bdbdbd;
+  border-radius: 15px;
+  background-image: url( resource/widget/rap/scrollbar/scrollbar-background.png );
   min-height: 20px;
 }
 
 /* Buttons */
 
-ScrollBar-UpButton[HORIZONTAL] {
-  background-color: transparent;
-  border: 1px solid #b4b4b4;
-  cursor: default;
-  border-radius: 0px 3px 3px 0px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 38%, #f0f0f0 ),
-    color-stop( 62%, #e0e0e0 ),
-    to( #ffffff )
-  );
-}
-
-ScrollBar-UpButton[VERTICAL] {
-  background-color: transparent;
-  border: 1px solid #b4b4b4;
-  cursor: default;
-  border-radius: 0px 0px 3px 3px;
-  background-image: gradient(
-    linear, left top, right top,
-    from( #ffffff ),
-    color-stop( 38%, #f0f0f0 ),
-    color-stop( 62%, #e0e0e0 ),
-    to( #ffffff )
-  );
-}
-
-ScrollBar-DownButton[HORIZONTAL] {
-  background-color: transparent;
-  border: 1px solid #b4b4b4;
-  cursor: default;
-  border-radius: 3px 0px 0px 3px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 38%, #f0f0f0 ),
-    color-stop( 62%, #e0e0e0 ),
-    to( #ffffff )
-  );
-}
-
+ScrollBar-UpButton[HORIZONTAL],
+ScrollBar-UpButton[VERTICAL],
+ScrollBar-DownButton[HORIZONTAL],
 ScrollBar-DownButton[VERTICAL] {
-  background-color: transparent;
-  border: 1px solid #b4b4b4;
+	background-color: transparent;
+  border: none;
+  border-radius: 0;
   cursor: default;
-  border-radius: 3px 3px 0px 0px;
-  background-image: gradient(
-    linear, left top, right top,
-    from( #ffffff ),
-    color-stop( 38%, #f0f0f0 ),
-    color-stop( 62%, #e0e0e0 ),
-    to( #ffffff )
-  );
 }
-
-ScrollBar-UpButton[HORIZONTAL]:hover {
-  background-color: transparent;
-  border: 1px solid #b4b4b4;
-  cursor: default;
-  border-radius: 0px 3px 3px 0px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 42%, #f0f0f0 ),
-    color-stop( 58%, #e0e0e0 ),
-    to( #cccccc )
-  );
-}
-
-ScrollBar-UpButton[VERTICAL]:hover {
-  background-color: transparent;
-  border: 1px solid #b4b4b4;
-  cursor: default;
-  border-radius: 0px 0px 3px 3px;
-  background-image: gradient(
-    linear, left top, right top,
-    from( #ffffff ),
-    color-stop( 42%, #f0f0f0 ),
-    color-stop( 58%, #e0e0e0 ),
-    to( #cccccc )
-  );
-}
-
-ScrollBar-DownButton[HORIZONTAL]:hover {
-  background-color: transparent;
-  border: 1px solid #b4b4b4;
-  cursor: default;
-  border-radius: 3px 0px 0px 3px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 42%, #f0f0f0 ),
-    color-stop( 58%, #e0e0e0 ),
-    to( #cccccc )
-  );
-}
-
-ScrollBar-DownButton[VERTICAL]:hover {
-  background-color: transparent;
-  border: 1px solid #b4b4b4;
-  cursor: default;
-  border-radius: 3px 3px 0px 0px;
-  background-image: gradient(
-    linear, left top, right top,
-    from( #ffffff ),
-    color-stop( 42%, #f0f0f0 ),
-    color-stop( 58%, #e0e0e0 ),
-    to( #cccccc )
-  );
-}
-
-ScrollBar-UpButton[HORIZONTAL]:pressed {
-  background-color: transparent;
-  border: 1px solid #b4b4b4;
-  cursor: default;
-  border-radius: 0px 3px 3px 0px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
-}
-
-ScrollBar-UpButton[VERTICAL]:pressed {
-  background-color: transparent;
-  border: 1px solid #b4b4b4;
-  cursor: default;
-  border-radius: 0px 0px 3px 3px;
-  background-image: gradient(
-    linear, left top, right top,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
-}
-
-ScrollBar-DownButton[HORIZONTAL]:pressed {
-  background-color: transparent;
-  border: 1px solid #b4b4b4;
-  cursor: default;
-  border-radius: 3px 0px 0px 3px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
-}
-
-ScrollBar-DownButton[VERTICAL]:pressed {
-  background-color: transparent;
-  border: 1px solid #b4b4b4;
-  cursor: default;
-  border-radius: 3px 3px 0px 0px;
-  background-image: gradient(
-    linear, left top, right top,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
-}
-
 
 /* Icons */
 
-ScrollBar-Thumb-Icon[VERTICAL] {
-  background-image: url( resource/widget/rap/scrollbar/v-knob.png );
-}
-
-ScrollBar-Thumb-Icon[HORIZONTAL] {
-  background-image: url( resource/widget/rap/scrollbar/h-knob.png );
-}
-
-ScrollBar-UpButton-Icon[VERTICAL] {
-  background-image: url( resource/widget/rap/spinner/down.png );
-}
-
-ScrollBar-UpButton-Icon[VERTICAL]:hover {
-  background-image: url( resource/widget/rap/spinner/down-hover.png );
-}
-
-ScrollBar-UpButton-Icon[HORIZONTAL] {
+ScrollBar-UpButton[HORIZONTAL] {
   background-image: url( resource/widget/rap/scrollbar/right.png );
 }
 
-ScrollBar-UpButton-Icon[HORIZONTAL]:hover {
-  background-image: url( resource/widget/rap/scrollbar/right-hover.png );
-}
-
-ScrollBar-DownButton-Icon[VERTICAL] {
-  background-image: url( resource/widget/rap/spinner/up.png );
-}
-
-ScrollBar-DownButton-Icon[VERTICAL]:hover {
-  background-image: url( resource/widget/rap/spinner/up-hover.png );
-}
-
-ScrollBar-DownButton-Icon[HORIZONTAL] {
+ScrollBar-DownButton[HORIZONTAL] {
   background-image: url( resource/widget/rap/scrollbar/left.png );
 }
 
-ScrollBar-DownButton-Icon[HORIZONTAL]:hover {
-  background-image: url( resource/widget/rap/scrollbar/left-hover.png );
+ScrollBar-UpButton[VERTICAL] {
+  background-image: url( resource/widget/rap/scrollbar/down.png )
+}
+
+ScrollBar-DownButton[VERTICAL] {
+  background-image: url( resource/widget/rap/scrollbar/up.png );
 }

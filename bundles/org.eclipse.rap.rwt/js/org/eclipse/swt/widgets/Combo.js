@@ -158,12 +158,17 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
     },
 
     _onAppear : function( evt ) {
-      if( this._ccombo && this.hasState( "rwt_FLAT" ) ) {
-        this._field.addState( "rwt_FLAT" );
-        this._button.addState( "rwt_FLAT" );
-        this._list.addState( "rwt_FLAT" );
-      }
-      this.getTopLevelWidget().add( this._list );
+        if( this.hasState( "rwt_FLAT" ) ) {
+          this._field.addState( "rwt_FLAT" );
+          this._button.addState( "rwt_FLAT" );
+          this._list.addState( "rwt_FLAT" );
+        }
+        if( this.hasState( "rwt_BORDER" ) ) {
+          this._field.addState( "rwt_BORDER" );
+          this._button.addState( "rwt_BORDER" );
+          this._list.addState( "rwt_BORDER" );
+        }
+        this.getTopLevelWidget().add( this._list );
       org.eclipse.swt.TextUtil._updateLineHeight( this._field );
     },
     

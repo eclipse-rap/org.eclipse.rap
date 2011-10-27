@@ -8,8 +8,6 @@
 *   EclipseSource - initial API and implementation
 *******************************************************************************/
 
-/* Sash default theme */
-
 Sash {
   border: none;
   background-image: none;
@@ -17,14 +15,13 @@ Sash {
 }
 
 Sash[BORDER] {
-  border: 1px solid #a4a4a4;
+  border: 1px solid #bdbdbd;
 }
 
 Sash:hover {
-  background-color: #dae9f7;
+  background-color: #5882b5;
 }
 
-Sash-Handle:horizontal,
-Sash-Handle:vertical {
+Sash-Handle {
   background-image: none;
 }

@@ -12,15 +12,16 @@
 /* Link default theme */
 
 Link {
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;
   text-shadow: none;
 }
 
 Link-Hyperlink {
-  color: #00589f;
+  color: #416693;
   text-shadow: none;
 }
 
 Link-Hyperlink:disabled {
   color: #959595;
-  text-shadow: none;
 }

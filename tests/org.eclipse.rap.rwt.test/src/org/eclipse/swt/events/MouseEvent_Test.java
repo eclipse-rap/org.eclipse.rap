@@ -159,26 +159,26 @@ public class MouseEvent_Test extends TestCase {
     shell.setLocation( 100, 100 );
     shell.open();
     shell.addMouseListener( new LoggingMouseListener( events ) );
-    int shellX = shell.getLocation().x;
-    int shellY = shell.getLocation().y;
+    int eventX = shell.getLocation().x + shell.getClientArea().x + 1;
+    int eventY = shell.getLocation().y + shell.getClientArea().y + 1;
     // Simulate request that sends a mouseDown + mouseUp sequence
     Fixture.fakeNewRequest( display );
-    fakeMouseDownRequest( shell, shellX + 30, shellY + 30 );
-    fakeMouseUpRequest( shell, shellX + 30, shellY + 30 );
+    fakeMouseDownRequest( shell, eventX, eventY );
+    fakeMouseUpRequest( shell, eventX, eventY );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 2, events.size() );
     MouseEvent mouseDown = ( ( MouseEvent )events.get( 0 ) );
     assertEquals( MouseEvent.MOUSE_DOWN, mouseDown.getID() );
     assertSame( shell, mouseDown.widget );
     assertEquals( 1, mouseDown.button );
-    assertEquals( 28, mouseDown.x );
-    assertEquals( 28, mouseDown.y );
+    assertEquals( 15, mouseDown.x );
+    assertEquals( 53, mouseDown.y );
     MouseEvent mouseUp = ( ( MouseEvent )events.get( 1 ) );
     assertEquals( MouseEvent.MOUSE_UP, mouseUp.getID() );
     assertSame( shell, mouseUp.widget );
     assertEquals( 1, mouseUp.button );
-    assertEquals( 28, mouseUp.x );
-    assertEquals( 28, mouseUp.y );
+    assertEquals( 15, mouseUp.x );
+    assertEquals( 53, mouseUp.y );
     assertTrue( ( mouseUp.stateMask & SWT.BUTTON1 ) != 0 );
   }
   
@@ -186,35 +186,35 @@ public class MouseEvent_Test extends TestCase {
     shell.setLocation( 100, 100 );
     shell.open();
     shell.addMouseListener( new LoggingMouseListener( events ) );
-    int shellX = shell.getLocation().x;
-    int shellY = shell.getLocation().y;
+    int eventX = shell.getLocation().x + shell.getClientArea().x + 1;
+    int eventY = shell.getLocation().y + shell.getClientArea().y + 1;
     // Simulate request that sends a mouseDown + mouseUp + dblClick sequence
     Fixture.fakeNewRequest( display );
-    fakeMouseDownRequest( shell, shellX + 30, shellY + 30 );
-    fakeMouseUpRequest( shell, shellX + 30, shellY + 30 );
-    fakeMouseDoubleClickRequest( shell, shellX + 30, shellY + 30 );
+    fakeMouseDownRequest( shell, eventX, eventY );
+    fakeMouseUpRequest( shell, eventX, eventY );
+    fakeMouseDoubleClickRequest( shell, eventX, eventY );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 3, events.size() );
     MouseEvent mouseDown = ( ( MouseEvent )events.get( 0 ) );
     assertEquals( MouseEvent.MOUSE_DOWN, mouseDown.getID() );
     assertSame( shell, mouseDown.widget );
     assertEquals( 1, mouseDown.button );
-    assertEquals( 28, mouseDown.x );
-    assertEquals( 28, mouseDown.y );
+    assertEquals( 15, mouseDown.x );
+    assertEquals( 53, mouseDown.y );
     assertTrue( ( mouseDown.stateMask & SWT.BUTTON1 ) != 0 );
     MouseEvent mouseDoubleClick = ( ( MouseEvent )events.get( 1 ) );
     assertEquals( MouseEvent.MOUSE_DOUBLE_CLICK, mouseDoubleClick.getID() );
     assertSame( shell, mouseDoubleClick.widget );
     assertEquals( 1, mouseDoubleClick.button );
-    assertEquals( 28, mouseDoubleClick.x );
-    assertEquals( 28, mouseDoubleClick.y );
+    assertEquals( 15, mouseDoubleClick.x );
+    assertEquals( 53, mouseDoubleClick.y );
     assertTrue( ( mouseDoubleClick.stateMask & SWT.BUTTON1 ) != 0 );
     MouseEvent mouseUp = ( ( MouseEvent )events.get( 2 ) );
     assertEquals( MouseEvent.MOUSE_UP, mouseUp.getID() );
     assertSame( shell, mouseUp.widget );
     assertEquals( 1, mouseUp.button );
-    assertEquals( 28, mouseUp.x );
-    assertEquals( 28, mouseUp.y );
+    assertEquals( 15, mouseUp.x );
+    assertEquals( 53, mouseUp.y );
     assertTrue( ( mouseUp.stateMask & SWT.BUTTON1 ) != 0 );
   }
 
@@ -224,61 +224,61 @@ public class MouseEvent_Test extends TestCase {
     shell.addListener( SWT.MouseDown, new LoggingListener( events ) );
     shell.addListener( SWT.MouseUp, new LoggingListener( events ) );
     shell.addListener( SWT.MouseDoubleClick, new LoggingListener( events ) );
-    int shellX = shell.getLocation().x;
-    int shellY = shell.getLocation().y;
+    int eventX = shell.getLocation().x + shell.getClientArea().x + 1;
+    int eventY = shell.getLocation().y + shell.getClientArea().y + 1;
     // Simulate request that sends a mouseDown + mouseUp sequence
     Fixture.fakeNewRequest( display );
-    fakeMouseDownRequest( shell, shellX + 30, shellY + 30 );
-    fakeMouseUpRequest( shell, shellX + 30, shellY + 30 );
+    fakeMouseDownRequest( shell, eventX, eventY );
+    fakeMouseUpRequest( shell, eventX, eventY );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 2, events.size() );
     Event mouseEvent = ( ( Event )events.get( 0 ) );
     assertEquals( SWT.MouseDown, mouseEvent.type );
     assertSame( shell, mouseEvent.widget );
     assertEquals( 1, mouseEvent.button );
-    assertEquals( 28, mouseEvent.x );
-    assertEquals( 28, mouseEvent.y );
+    assertEquals( 15, mouseEvent.x );
+    assertEquals( 53, mouseEvent.y );
     mouseEvent = ( ( Event )events.get( 1 ) );
     assertEquals( SWT.MouseUp, mouseEvent.type );
     assertSame( shell, mouseEvent.widget );
     assertEquals( 1, mouseEvent.button );
-    assertEquals( 28, mouseEvent.x );
-    assertEquals( 28, mouseEvent.y );
+    assertEquals( 15, mouseEvent.x );
+    assertEquals( 53, mouseEvent.y );
   }
   
   public void testUntypedMouseEventOrderWithDoubleClick() {
-    shell.setLocation( 100, 100 );
+    shell.setBounds( 100, 100, 200, 200 );
     shell.open();
     shell.addListener( SWT.MouseDown, new LoggingListener( events ) );
     shell.addListener( SWT.MouseUp, new LoggingListener( events ) );
     shell.addListener( SWT.MouseDoubleClick, new LoggingListener( events ) );
-    int shellX = shell.getLocation().x;
-    int shellY = shell.getLocation().y;
+    int eventX = shell.getLocation().x + shell.getClientArea().x + 1;
+    int eventY = shell.getLocation().y + shell.getClientArea().y + 1;
     // Simulate request that sends a mouseDown + mouseUp + dblClick sequence
     Fixture.fakeNewRequest( display );
-    fakeMouseDownRequest( shell, shellX + 30, shellY + 30 );
-    fakeMouseUpRequest( shell, shellX + 30, shellY + 30 );
-    fakeMouseDoubleClickRequest( shell, shellX + 30, shellY + 30 );
+    fakeMouseDownRequest( shell, eventX, eventY );
+    fakeMouseUpRequest( shell, eventX, eventY );
+    fakeMouseDoubleClickRequest( shell, eventX, eventY );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 3, events.size() );
     Event mouseDown = ( ( Event )events.get( 0 ) );
     assertEquals( SWT.MouseDown, mouseDown.type );
     assertSame( shell, mouseDown.widget );
     assertEquals( 1, mouseDown.button );
-    assertEquals( 28, mouseDown.x );
-    assertEquals( 28, mouseDown.y );
+    assertEquals( 15, mouseDown.x );
+    assertEquals( 53, mouseDown.y );
     Event mouseDoubleClick = ( ( Event )events.get( 1 ) );
     assertEquals( SWT.MouseDoubleClick, mouseDoubleClick.type );
     assertSame( shell, mouseDoubleClick.widget );
     assertEquals( 1, mouseDoubleClick.button );
-    assertEquals( 28, mouseDoubleClick.x );
-    assertEquals( 28, mouseDoubleClick.y );
+    assertEquals( 15, mouseDoubleClick.x );
+    assertEquals( 53, mouseDoubleClick.y );
     Event mouseUp = ( ( Event )events.get( 2 ) );
     assertEquals( SWT.MouseUp, mouseUp.type );
     assertSame( shell, mouseUp.widget );
     assertEquals( 1, mouseUp.button );
-    assertEquals( 28, mouseUp.x );
-    assertEquals( 28, mouseUp.y );
+    assertEquals( 15, mouseUp.x );
+    assertEquals( 53, mouseUp.y );
   }
 
   public void testNoMouseEventOutsideClientArea() {
@@ -294,7 +294,7 @@ public class MouseEvent_Test extends TestCase {
     fakeMouseDownRequest( shell, shellX + 1, shellY + 1 );
     fakeMouseUpRequest( shell, shellX + 1, shellY + 1 );
     Fixture.readDataAndProcessAction( display );
-    assertEquals( 2, shell.getBorderWidth() );
+    assertEquals( 1, shell.getBorderWidth() );
     assertEquals( 0, events.size() );
     events.clear();
     // Simulate request that sends a mouseDown + mouseUp on shell titlebar
@@ -319,11 +319,11 @@ public class MouseEvent_Test extends TestCase {
       new TableItem( table, SWT.NONE);
     }
     table.addMouseListener( new LoggingMouseListener( events ) );
-    assertEquals( new Rectangle( 0, 0, 85, 100 ), table.getClientArea() );
+    assertEquals( new Rectangle( 0, 0, 90, 100 ), table.getClientArea() );
     // Simulate request that sends a mouseDown + mouseUp on scrollbar
     Fixture.fakeNewRequest( display );
-    fakeMouseDownRequest( table, 90, 10 );
-    fakeMouseUpRequest( table, 90, 10 );
+    fakeMouseDownRequest( table, 93, 50 );
+    fakeMouseUpRequest( table, 93, 50 );
     Fixture.readDataAndProcessAction( display );
     assertEquals( 0, events.size() );
   }

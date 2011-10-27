@@ -12,36 +12,21 @@
 /* Text default theme */
 
 Text {
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border: none;
-  padding: 2px 3px;
+  padding: 5px 3px 5px 3px;
+  color: #4a4a4a;
+  background-color: #f0f0f0;
   background-image: none;
-  color: #464a4e;
-  background-color: #fcfcfc;
   text-shadow: none;
 }
 
 Text[BORDER] {
-  border: 1px solid #a4a4a4;
-  border-radius: 2px 2px 2px 2px;
-  text-shadow: none;
-}
-
-Text[SINGLE] {
-  /* padding: 2px 3px; */
-  text-shadow: none;
-}
-
-Text[MULTI] {
-  /* padding: 0px 0px 0px 3px; */
-  text-shadow: none;
-}
-
-Text[MULTI][BORDER] {
-  /* padding: 0px 0px 0px 4px; */
-  text-shadow: none;
+  border: 1px solid #bdbdbd;
+  border-radius: 2px;
 }
 
 Text-Message {
-  color: #a7a6aa;
+  color: #4a4a4a;
   text-shadow: none;
 }

@@ -11,20 +11,22 @@
 
 /* Label default theme */
 
-Label, Label:hover {
+Label {
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
-  background-color: white;
+  background-color: #ffffff;
   background-image: none;
   border: none;
+  border-radius: 2px;
+  text-decoration: none;
   cursor: default;
   opacity: 1;
   text-shadow: none;
 }
 
 Label[BORDER] {
-  border: 1px solid #a4a4a4;
+  border: 1px solid #bdbdbd;
   border-radius: 2px;
-  text-shadow: none;
 }
 
 Label-SeparatorLine {

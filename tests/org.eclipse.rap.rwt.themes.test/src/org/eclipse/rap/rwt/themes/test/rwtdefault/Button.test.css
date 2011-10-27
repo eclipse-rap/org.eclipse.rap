@@ -11,100 +11,116 @@
 
 /* Button default theme */
 
-Button {
-  background-image: none;
-  padding: 4px 5px;
-  spacing: 2px;
-  cursor: default;
-  animation: none;
-  color: #4a4a4a;
-  background-color: white;
-  opacity: 1;
-}
+/* PUSH and TOGGLE */
 
-Button[PUSH], Button[TOGGLE], Button[BORDER],
-Button[PUSH][FLAT], Button[TOGGLE][FLAT] {
-  border: 1px solid #A4A4A4;
-  border-radius: 3px;
-  padding: 2px 5px;
-  background-image: gradient(
+Button[PUSH], 
+Button[TOGGLE],
+Button[PUSH][BORDER], 
+Button[TOGGLE][BORDER],
+Button[PUSH][FLAT], 
+Button[TOGGLE][FLAT] {
+	font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+	color: #4a4a4a;
+	background-color: #ffffff;
+	background-image: gradient(
     linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #ffffff )
+    from( #f9f9f9 ),
+    to( #e4e4e4 )
   );
-  animation: hoverOut 500ms ease-out;
+  padding: 6px 15px;
+  spacing: 2px;
+  border: 1px solid #bdbdbd;
+  border-radius: 2px;
+  animation: none;
   cursor: pointer;
   opacity: 1;
-  text-shadow: none;
+  text-shadow: 0 1px 0 #ffffff;
 }
 
-Button[PUSH]:disabled, Button[TOGGLE]:disabled,
-Button[PUSH][FLAT]:disabled, Button[TOGGLE][FLAT]:disabled {
+Button[PUSH]:disabled, 
+Button[TOGGLE]:disabled,
+Button[PUSH][BORDER]:disabled, 
+Button[TOGGLE][BORDER]:disabled,
+Button[PUSH][FLAT]:disabled, 
+Button[TOGGLE][FLAT]:disabled {
   cursor: default;
   opacity: 1;
-  text-shadow: none;
 }
 
-Button[PUSH]:hover, Button[TOGGLE]:hover,
-Button[PUSH][FLAT]:hover, Button[TOGGLE][FLAT]:hover {
+Button[PUSH]:hover, 
+Button[TOGGLE]:hover,
+Button[PUSH][BORDER]:hover, 
+Button[TOGGLE][BORDER]:hover,
+Button[PUSH][FLAT]:hover, 
+Button[TOGGLE][FLAT]:hover {
   background-image: gradient(
     linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #cccccc )
+    from( #eaeaea ),
+    to( #d5d5d5 )
   );
-  opacity: 1;
-  text-shadow: none;
 }
 
-Button[PUSH]:pressed, Button[TOGGLE]:pressed,
-Button[PUSH][FLAT]:pressed, Button[TOGGLE][FLAT]:pressed {
-  animation: none;
+Button[PUSH]:pressed, 
+Button[TOGGLE]:pressed,
+Button[PUSH][BORDER]:pressed, 
+Button[TOGGLE][BORDER]:pressed,
+Button[PUSH][FLAT]:pressed, 
+Button[TOGGLE][FLAT]:pressed {
   background-image: gradient(
     linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
+    from( #d5d5d5 ),
+    to( #eaeaea )
   );
-  padding: 4px 5px 2px 7px;
-  opacity: 1;
-  text-shadow: none;
 }
 
-Button[TOGGLE]:selected {
+Button[TOGGLE]:selected, 
+Button[TOGGLE][BORDER]:selected, 
+Button[TOGGLE][FLAT]:selected {
   background-image: gradient(
     linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 30%, #f0f0f0 ),
-    color-stop( 70%, #e0e0e0 ),
-    to( #b0b0b0 )
+    from( #d5d5d5 ),
+    to( #eaeaea )
   );
-  opacity: 1;
-  text-shadow: none;
 }
 
 Button[TOGGLE]:selected:hover {
   background-image: gradient(
     linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
+    from( #d5d5d5 ),
+    to( #eaeaea )
   );
-  opacity: 1;
-  text-shadow: none;
 }
 
-Button[CHECK], Button[RADIO] {
-  spacing: 4px;
-  opacity: 1;
-  text-shadow: none;
-}
+/* CHECK and RADIO */
 
-Button[CHECK][BORDER], Button[RADIO][BORDER] {
+Button[CHECK], 
+Button[RADIO] {
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;
+  background-color: #ffffff;
   background-image: none;
+  padding: 6px 3px;
+  spacing: 7px;
+  border: none;
+  border-radius: 2px;
+  animation: none;
+  cursor: default;
+  opacity: 1;
+  text-shadow: none;
+}
+
+Button[CHECK][BORDER], 
+Button[RADIO][BORDER] {
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;
+  background-color: #ffffff;
+  background-image: none;
+  padding: 6px 3px;
+  spacing: 7px;
+  border: 1px solid #bdbdbd;
+  border-radius: 2px;
+  animation: none;
+  cursor: default;
   opacity: 1;
   text-shadow: none;
 }

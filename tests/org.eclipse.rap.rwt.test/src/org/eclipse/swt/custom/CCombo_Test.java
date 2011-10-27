@@ -622,22 +622,22 @@ public class CCombo_Test extends TestCase {
 
   public void testComputeSize() {
     CCombo combo = new CCombo( shell, SWT.NONE );
-    Point expected = new Point( 64, 17 );
+    Point expected = new Point( 64, 26 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     combo = new CCombo( shell, SWT.BORDER );
-    expected = new Point( 66, 19 );
+    expected = new Point( 66, 28 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     combo = new CCombo( shell, SWT.FLAT );
-    expected = new Point( 64, 17 );
+    expected = new Point( 64, 26 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     combo = new CCombo( shell, SWT.NONE );
     combo.add( "1" );
     combo.add( "22" );
     combo.add( "333" );
-    expected = new Point( 50, 17 );
+    expected = new Point( 66, 26 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     expected = new Point( 100, 100 );
@@ -661,11 +661,11 @@ public class CCombo_Test extends TestCase {
   public void testGetTextHeight() {
     CCombo combo = new CCombo( shell, SWT.NONE );
     // default theme font is 11px
-    assertEquals( 13, combo.getTextHeight() );
+    assertEquals( 16, combo.getTextHeight() );
     combo.setFont( Graphics.getFont( "Helvetica", 12, SWT.NORMAL ) );
     assertEquals( 14, combo.getTextHeight() );
     combo.setFont( null );
-    assertEquals( 13, combo.getTextHeight() );
+    assertEquals( 16, combo.getTextHeight() );
   }
 
   public void testSelectionIsSerializable() throws Exception {

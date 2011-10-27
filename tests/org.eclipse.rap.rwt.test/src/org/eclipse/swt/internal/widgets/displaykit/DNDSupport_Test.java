@@ -133,8 +133,8 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( 2, events.size() );
     DragDetectEvent dragDetect = ( DragDetectEvent )events.get( 0 );
     assertEquals( DragDetectEvent.DRAG_DETECT, dragDetect.getID() );
-    assertEquals( -17, dragDetect.x );
-    assertEquals( -27, dragDetect.y );
+    assertEquals( -16, dragDetect.x );
+    assertEquals( -26, dragDetect.y );
     assertSame( dragSourceControl, dragDetect.widget );
     DragSourceEvent dragStart = ( DragSourceEvent )events.get( 1 );
     assertEquals( DragSourceEvent.DRAG_START, dragStart.getID() );
@@ -1202,8 +1202,8 @@ public class DNDSupport_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
 
     assertEquals( 1, events.size() );
-    assertEquals( 3, ( ( DragSourceEvent )events.get( 0 ) ).x );
-    assertEquals( 3, ( ( DragSourceEvent )events.get( 0 ) ).y );
+    assertEquals( 4, ( ( DragSourceEvent )events.get( 0 ) ).x );
+    assertEquals( 4, ( ( DragSourceEvent )events.get( 0 ) ).y );
   }
 
   // Mirrors _sendDragSourceEvent in DNDSupport.js

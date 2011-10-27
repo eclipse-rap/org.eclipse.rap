@@ -14,22 +14,34 @@
 
 ProgressBar {
   background-color: #ffffff;
-  background-image: none;
-  border: 1px solid #A4A4A4;
+  background-image: url( resource/widget/rap/progressbar/progressbar-background.png );
+  border: 1px solid #bdbdbd;
   border-radius: 2px;
 }
 
 ProgressBar-Indicator {
   background-color: #00589f;
-  background-image: none;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #5882b5 ),
+    to( #416693 )
+  );
   border: none;
   opacity: 1;
 }
 
 ProgressBar-Indicator:paused {
-  background-color: #ebebeb;
+  background-image: gradient(
+    linear, left top, right top,
+    from( #818181 ),
+    to( #b5b5b5 )
+  );
 }
 
 ProgressBar-Indicator:error {
-  background-color: #cb2020;
+  background-image: gradient(
+    linear, left top, right top,
+    from( #e9614f ),
+    to( #ec7869 )
+  );
 }

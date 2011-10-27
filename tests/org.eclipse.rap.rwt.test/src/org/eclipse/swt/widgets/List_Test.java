@@ -1093,28 +1093,28 @@ public class List_Test extends TestCase {
     list.add( "test 1" );
     list.add( "test 22" );
     list.add( "test 333" );
-    expected = new Point( 56, 54 );
+    expected = new Point( 64, 60 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     list = new List( shell, SWT.V_SCROLL );
     list.add( "test 1" );
     list.add( "test 22" );
     list.add( "test 333" );
-    expected = new Point( 71, 54 );
+    expected = new Point( 74, 60 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     list = new List( shell, SWT.H_SCROLL );
     list.add( "test 1" );
     list.add( "test 22" );
     list.add( "test 333" );
-    expected = new Point( 56, 69 );
+    expected = new Point( 64, 70 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     list = new List( shell, SWT.BORDER );
     list.add( "test 1" );
     list.add( "test 22" );
     list.add( "test 333" );
-    expected = new Point( 58, 56 );
+    expected = new Point( 66, 62 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     expected = new Point( 102, 102 );
@@ -1290,15 +1290,15 @@ public class List_Test extends TestCase {
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     assertEquals( new Point( 0, 0 ), list.getItemDimensions() );
     list.add( "123" );
-    assertEquals( new Point( 27, 18 ), list.getItemDimensions() );
+    assertEquals( new Point( 30, 20 ), list.getItemDimensions() );
     list.setSize( 100, 100 );
-    assertEquals( new Point( 100, 18 ), list.getItemDimensions() );
+    assertEquals( new Point( 100, 20 ), list.getItemDimensions() );
     for( int i = 0; i < 10; i++ ) {
       list.add( "123" );
     }
-    assertEquals( new Point( 85, 18 ), list.getItemDimensions() );
+    assertEquals( new Point( 90, 20 ), list.getItemDimensions() );
     list.add( "Very long list item" );
-    assertEquals( new Point( 119, 18 ), list.getItemDimensions() );
+    assertEquals( new Point( 138, 20 ), list.getItemDimensions() );
   }
   
   public void testIsSerialized() throws Exception {

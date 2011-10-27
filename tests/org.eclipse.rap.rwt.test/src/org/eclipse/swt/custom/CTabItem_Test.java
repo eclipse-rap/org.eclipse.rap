@@ -195,7 +195,7 @@ public class CTabItem_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     // Test with images, that should appear on unselected tabs
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
-    folder.setSize( 100, 100 );
+    folder.setSize( 120, 120 );
     folder.setUnselectedImageVisible( true );
     ICTabFolderAdapter adapter
       = folder.getAdapter( ICTabFolderAdapter.class );
@@ -208,7 +208,7 @@ public class CTabItem_Test extends TestCase {
     assertTrue( adapter.showItemImage( item2 ) );
     // Test with images, that should not appear on unselected tabs
     folder = new CTabFolder( shell, SWT.NONE );
-    folder.setSize( 100, 100 );
+    folder.setSize( 120, 120 );
     folder.setUnselectedImageVisible( false );
     item1 = new CTabItem( folder, SWT.NONE );
     item1.setImage( Graphics.getImage( Fixture.IMAGE1 ) );

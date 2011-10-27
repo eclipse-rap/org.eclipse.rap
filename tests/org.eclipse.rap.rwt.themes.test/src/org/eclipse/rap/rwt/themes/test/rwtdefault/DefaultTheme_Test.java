@@ -26,7 +26,7 @@ public class DefaultTheme_Test extends ThemeTestCase {
     ThemeUtil.setCurrentThemeId( ThemeManager.DEFAULT_THEME_ID );
     processCssTestFile( getClass(), "Button.test.css" );
     processCssTestFile( getClass(), "Shell.test.css" );
-    processCssTestFile( getClass(), "Toolbar.test.css" );
+    processCssTestFile( getClass(), "ToolBar.test.css" ); 
     processCssTestFile( getClass(), "Tree.test.css" );
     processCssTestFile( getClass(), "Table.test.css" );
     processCssTestFile( getClass(), "List.test.css" );
@@ -36,7 +36,6 @@ public class DefaultTheme_Test extends ThemeTestCase {
     processCssTestFile( getClass(), "Label.test.css" );
     processCssTestFile( getClass(), "ExpandBar.test.css" );
     processCssTestFile( getClass(), "Combo.test.css" );
-    processCssTestFile( getClass(), "CCombo.test.css" );
     processCssTestFile( getClass(), "Spinner.test.css" );
     processCssTestFile( getClass(), "DateTime.test.css" );
     processCssTestFile( getClass(), "Text.test.css" );

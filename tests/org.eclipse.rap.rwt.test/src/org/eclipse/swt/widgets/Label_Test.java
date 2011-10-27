@@ -133,11 +133,11 @@ public class Label_Test extends TestCase {
 
   public void testComputeSize() {
     Label label = new Label( shell, SWT.NONE );
-    Point expected = new Point( 0, 12 );
+    Point expected = new Point( 0, 14 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     label.setText( "label text" );
-    expected = new Point( 58, 17 );
+    expected = new Point( 67, 20 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     label.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );

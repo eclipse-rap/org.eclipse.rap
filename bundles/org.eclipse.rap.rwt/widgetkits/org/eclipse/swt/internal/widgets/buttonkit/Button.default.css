@@ -13,82 +13,94 @@
 /* Button default theme */
 
 Button {
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-image: none;
-  padding: 4px 5px;
+  border: none;
+  border-radius: 2px;
+  padding: 6px 15px;
   spacing: 2px;
   cursor: default;
   animation: none;
   color: #4a4a4a;
-  background-color: white;
+  background-color: #ffffff;
   opacity: 1;
   text-shadow: none;
 }
 
-Button[PUSH], Button[TOGGLE], Button[BORDER] {
-  border: 1px solid #A4A4A4;
-  border-radius: 3px;
-  padding: 2px 5px;
+Button[PUSH],
+Button[TOGGLE],
+Button[PUSH][BORDER], 
+Button[TOGGLE][BORDER],
+Button[PUSH][FLAT], 
+Button[TOGGLE][FLAT] {
+  border: 1px solid #bdbdbd;
+  border-radius: 2px;
+  padding: 6px 15px;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #ffffff )
+    from( #f9f9f9 ),
+    to( #e4e4e4 )
   );
-  animation: hoverOut 500ms ease-out;
-  cursor: pointer;
-}
-
-Button[PUSH]:disabled, Button[TOGGLE]:disabled {
-  cursor: default;
-}
-
-Button[PUSH]:hover, Button[TOGGLE]:hover {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #cccccc )
-  );
-}
-
-Button[PUSH]:pressed, Button[TOGGLE]:pressed {
   animation: none;
+  cursor: pointer;
+  text-shadow: 0 1px 0 #ffffff;
+}
+
+Button[PUSH]:disabled, 
+Button[TOGGLE]:disabled {
+  cursor: default;
+  color: #d2d2d2;
+  background-image: none;
+  background-color: #fafafa;
+  border: 1px solid #d2d2d2;
+}
+
+Button[PUSH]:hover, 
+Button[TOGGLE]:hover {
   background-image: gradient(
     linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
+    from( #eaeaea ),
+    to( #d5d5d5 )
   );
-  padding: 4px 5px 2px 7px;
+}
+
+Button[PUSH]:pressed, 
+Button[TOGGLE]:pressed {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #d5d5d5 ),
+    to( #eaeaea )
+  );
 }
 
 Button[TOGGLE]:selected {
   background-image: gradient(
     linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 30%, #f0f0f0 ),
-    color-stop( 70%, #e0e0e0 ),
-    to( #b0b0b0 )
+    from( #d5d5d5 ),
+    to( #eaeaea )
   );
 }
 
 Button[TOGGLE]:selected:hover {
   background-image: gradient(
     linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
+    from( #d5d5d5 ),
+    to( #eaeaea )
   );
 }
 
-Button[CHECK], Button[RADIO] {
-  spacing: 4px;
+Button[CHECK], 
+Button[RADIO] {
+  padding: 6px 3px 6px 3px;
+  spacing: 7px;
 }
 
-Button[CHECK][BORDER], Button[RADIO][BORDER] {
+Button[CHECK][BORDER], 
+Button[RADIO][BORDER] {
+	cursor: default;
   background-image: none;
+  border: 1px solid #bdbdbd;
+  border-radius: 2px;
 }
 
 Button-CheckIcon {

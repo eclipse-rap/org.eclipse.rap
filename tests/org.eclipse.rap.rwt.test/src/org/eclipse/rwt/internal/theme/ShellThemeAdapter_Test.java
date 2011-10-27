@@ -11,12 +11,13 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
+import static org.eclipse.rwt.internal.theme.ThemeTestUtil.setCustomTheme;
+
 import java.io.IOException;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -40,45 +41,50 @@ public class ShellThemeAdapter_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testPlainShell() {
-    Color defFgColor = Graphics.getColor( 74, 74, 74 );
-    Color defBgColor = Graphics.getColor( 255, 255, 255 );
+  public void testPlainShell() throws IOException {
+    Color yellow = display.getSystemColor( SWT.COLOR_YELLOW );
+    Color blue = display.getSystemColor( SWT.COLOR_BLUE );
     Shell shell = new Shell( display, SWT.NONE );
-    ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )shell.getAdapter( IThemeAdapter.class );
-    assertEquals( 1, themeAdapter.getBorderWidth( shell ) );
-    assertEquals( defFgColor, themeAdapter.getForeground( shell ) );
-    assertEquals( defBgColor, themeAdapter.getBackground( shell ) );
-    shell.setMaximized( true );
-    assertEquals( 0, themeAdapter.getBorderWidth( shell ) );
+    ShellThemeAdapter themeAdapter = getShellThemeAdapter( shell );
+
+    setCustomTheme(   " * { color: blue; }"
+                    + "Shell { border: 3px solid blue; background-color: yellow; }" );
+
+    assertEquals( 3, themeAdapter.getBorderWidth( shell ) );
+    assertEquals( blue, themeAdapter.getForeground( shell ) );
+    assertEquals( yellow, themeAdapter.getBackground( shell ) );
   }
 
   public void testShellWithBorder() {
     Shell shell = new Shell( display, SWT.BORDER );
-    ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )shell.getAdapter( IThemeAdapter.class );
-    assertEquals( 2, themeAdapter.getBorderWidth( shell ) );
+    ShellThemeAdapter themeAdapter = getShellThemeAdapter( shell );
+    assertEquals( 1, themeAdapter.getBorderWidth( shell ) );
     shell.setMaximized( true );
     assertEquals( 0, themeAdapter.getBorderWidth( shell ) );
   }
 
   public void testTitleBarHeightFromCustomVariant() throws IOException {
-    String css = "Shell-Titlebar.special { height: 50px }";
-    ThemeTestUtil.registerCustomTheme( "custom", css, null );
-    ThemeUtil.setCurrentThemeId( "custom" );
     Shell shell = new Shell( display, SWT.TITLE );
+    ShellThemeAdapter shellThemeAdapter = getShellThemeAdapter( shell );
+
+    setCustomTheme( "Shell-Titlebar.special { height: 50px }" );
     shell.setData( WidgetUtil.CUSTOM_VARIANT, "special" );
-    ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )shell.getAdapter( IThemeAdapter.class );
-    assertEquals( 50, themeAdapter.getTitleBarHeight( shell ) );
+
+    assertEquals( 50, shellThemeAdapter.getTitleBarHeight( shell ) );
   }
 
   public void testTitleBarMarginFromCustomVariant() throws IOException {
-    String css = "Shell-Titlebar.special { margin: 1px 2px 3px 4px }";
-    ThemeTestUtil.registerCustomTheme( "custom", css, null );
-    ThemeUtil.setCurrentThemeId( "custom" );
     Shell shell = new Shell( display, SWT.TITLE );
+    ShellThemeAdapter shellThemeAdapter = getShellThemeAdapter( shell );
+
+    setCustomTheme( "Shell-Titlebar.special { margin: 1px 2px 3px 4px }" );
     shell.setData( WidgetUtil.CUSTOM_VARIANT, "special" );
-    ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )shell.getAdapter( IThemeAdapter.class );
-    Rectangle expected = new Rectangle( 4, 1, 6, 4 );
-    Rectangle margin = themeAdapter.getTitleBarMargin( shell );    
-    assertEquals( expected, margin );
+
+    assertEquals( new Rectangle( 4, 1, 6, 4 ), shellThemeAdapter.getTitleBarMargin( shell ) );
   }
+
+  private static ShellThemeAdapter getShellThemeAdapter( Shell shell ) {
+    return ( ShellThemeAdapter )shell.getAdapter( IThemeAdapter.class );
+  }
+
 }

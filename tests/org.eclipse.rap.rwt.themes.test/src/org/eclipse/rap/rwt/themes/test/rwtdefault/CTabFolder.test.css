@@ -12,30 +12,27 @@
 /* CTabFolder default theme */
 
 CTabFolder {
-  border-color: #A4A4A4;
+  border-color: #bdbdbd;
   border-radius: 2px;
 }
 
 CTabItem {
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
-  background-color: white;
+  background-color: #f0f0f0;
   background-image: none;
-  padding: 2px 4px;
-  spacing: 4px;
+  padding: 6px 15px;
+  spacing: 10px;
   text-shadow: none;
 }
 
 CTabItem:selected {
-  color: white;
-  background-color: #00589f;
-  text-shadow: none;
+  color: #4a4a4a;
+  background-color: #d6d6d6;
 }
 
-/* Do not gray out disabled CTabItems, this is SWT behavior */
 CTabItem:disabled {
   color: black;
-  text-shadow: none;
 }
 
 CTabFolder-DropDownButton-Icon {

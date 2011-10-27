@@ -204,17 +204,17 @@ public class CoolBar_Test extends TestCase {
     assertEquals( expected, coolBar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     createItem( coolBar );
-    expected = new Point( 139, 22 );
+    expected = new Point( 178, 30 );
     assertEquals( expected, coolBar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     coolBar = new CoolBar( shell, SWT.VERTICAL );
     createItem( coolBar );
-    expected = new Point( 129, 32 );
+    expected = new Point( 168, 40 );
     assertEquals( expected, coolBar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     coolBar = new CoolBar( shell, SWT.FLAT );
     createItem( coolBar );
-    expected = new Point( 139, 22 );
+    expected = new Point( 178, 30 );
     assertEquals( expected, coolBar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     expected = new Point( 100, 100 );

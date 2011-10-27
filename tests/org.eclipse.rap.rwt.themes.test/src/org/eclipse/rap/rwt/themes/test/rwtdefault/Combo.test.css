@@ -12,65 +12,72 @@
 /* Combo default theme */
 
 Combo {
-  border: 1px solid #c1c1c1;
-  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  background-color: #fcfcfc;
-  color: #464a4e;
-  border-radius: 2px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e2e2e2 ),
-    color-stop( 15%, #f8f8f8 ),
-    to( #fbfbfb )
-  );
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;
+  background-color: #f0f0f0;
+  background-image: none;
+  border: 1px solid #bdbdbd;
+  border-radius: 0 2px 2px 0;
   text-shadow: none;
 }
 
-Combo[BORDER] {
-  border: 1px solid #c1c1c1;
-  border-radius: 2px;
+CCombo {
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 0 2px 2px 0;
+  background-image: none;
+  text-shadow: none;
 }
 
-Combo-Button {
+Combo[BORDER],
+CCombo[BORDER] {
+  border: 1px solid #bdbdbd;
+  border-radius: 0 2px 2px 0;
+}
+
+Combo-Button, 
+CCombo-Button {
   cursor: default;
-  background-color: transparent;
+  background-color: #efefef;
   border: none;
-  border-left: none;
+  border-left: 1px solid #bdbdbd;
   border-radius: 0px 2px 2px 0px;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #cccccc )
+    from( #f9f9f9 ),
+    to( #e4e4e4 )
   );
-  width: 18px;
-}
-  
-Combo-Button:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e0e0e0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
+  width: 30px;
 }
 
 Combo-Button-Icon {
-  background-image: url( resource/widget/rap/ccombo/down.png );
-} 
+  background-image: url( resource/widget/rap/combo/down.png );
+}
+
+CCombo-Button-Icon {
+	background-image: url( resource/widget/rap/ccombo/down.png );
+}
 
 Combo-Button-Icon:hover {
+  background-image: url( resource/widget/rap/combo/down-hover.png );
+}
+
+CCombo-Button-Icon:hover {
   background-image: url( resource/widget/rap/ccombo/down-hover.png );
 }
 
-Combo-List {
-  border: 1px solid #c1c1c1;
-  border-radius: 0px 0px 2px 2px;
+Combo-List,
+CCombo-List {
+  border: 1px solid #bdbdbd;
+  border-radius: 2px;
+  box-shadow:  0 0 3px #bdbdbd;
 }
 
-Combo-Field {
-  padding: 2px 3px;
+Combo-Field,
+CCombo-Field {
+  padding: 5px 3px 5px 3px;
 }
 
 Combo-FocusIndicator {

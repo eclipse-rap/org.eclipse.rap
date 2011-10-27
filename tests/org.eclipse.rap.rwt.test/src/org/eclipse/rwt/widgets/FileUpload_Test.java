@@ -176,16 +176,16 @@ public class FileUpload_Test extends TestCase {
     // Text and image to use
     String text = "Click me!";
     Point extent = Graphics.stringExtent( shell.getFont(), text );
-    assertEquals( new Point( 52, 14 ), extent );
+    assertEquals( new Point( 60, 16 ), extent );
     Image image = createImage( Fixture.IMAGE_100x50 );
     FileUpload upload = new FileUpload( shell, SWT.NONE );
     Point expected = new Point( 12, 16 );
     assertEquals( expected, upload.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     upload.setText( text );
-    expected = new Point( 64, 20 );
+    expected = new Point( 72, 22 );
     assertEquals( expected, upload.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     upload.setImage( image );
-    expected = new Point( 166, 56 );
+    expected = new Point( 174, 56 );
     assertEquals( expected, upload.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     upload.setText( "" );
     expected = new Point( 112, 56 );
@@ -196,7 +196,7 @@ public class FileUpload_Test extends TestCase {
     assertEquals( expected, upload.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     upload.setText( text );
     upload.setImage( image );
-    expected = new Point( 166, 56 );
+    expected = new Point( 174, 56 );
     assertEquals( expected, upload.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     // fixed size
     expected = new Point( 102, 102 );

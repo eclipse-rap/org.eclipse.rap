@@ -13,14 +13,36 @@
 /* Table default theme */
 
 Table {
-  background-color: white;
+  background-color: #ffffff;
   background-image: none;
   color: #4a4a4a;
   border: none;
 }
 
 Table[BORDER] {
-  border: 1px solid #a4a4a4;
+  border: 1px solid #bdbdbd;
+}
+
+TableColumn {
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  background-color: #f0f0f0;
+  padding: 11px 2px 11px 2px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #f9f9f9 ),
+    to( #e4e4e4 )
+  );
+  color: #4a4a4a;
+  border-bottom:none;
+  text-shadow: 0 1px 0 #ffffff;
+}
+
+TableColumn:hover {
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e4e4e4 ),
+    to( #f9f9f9 )
+  );
 }
 
 TableItem {
@@ -60,29 +82,6 @@ TableItem:linesvisible:even:selected {
 TableItem:linesvisible:even:selected:unfocused {
   background-color: #959595;
   color: #ffffff;
-}
-
-TableColumn {
-  background-color: #f8f8ff;
-  padding: 1px 2px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #fbfcfd ),
-    to( #ececec )
-  );
-  color: #666666;
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  border-bottom:none;
-  text-shadow: none;
-}
-
-TableColumn:hover {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #f4f5f6 ),
-    to( #e6e6e6 )
-  );
-  border-bottom: none;
 }
 
 TableColumn-SortIndicator {

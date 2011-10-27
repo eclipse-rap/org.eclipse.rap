@@ -18,20 +18,15 @@ ToolTip[ICON_WARNING],
 ToolTip[ICON_INFORMATION]
 {
   cursor: default;
-  border: 1px solid #a4a4a4;
-  border-radius: 5px 5px 5px 5px;
-  padding: 3px 3px 3px 3px;
-  opacity: 1;
-  color: #000000;
-  background-image : gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    to( #e4e5f0 )
-  );
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border: 1px solid #bdbdbd;
+  border-radius: 2px;
+  padding: 8px;
+  opacity: 0.9;
+  color: #4a4a4a;
+  background-image : url( resource/widget/rap/scrollbar/scrollbar-background.png );
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: #fcfcfc;
   animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
-  box-shadow: 4px 4px 2px rgba( 0, 0, 0, 0.4 );
 }
 
 ToolTip-Image[ICON_ERROR] {
@@ -47,13 +42,13 @@ ToolTip-Image[ICON_WARNING] {
 }
 
 ToolTip-Text {
-  color: #003399;
+  color: #4a4a4a;
   font: bold 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   text-shadow: none;
 }
 
 ToolTip-Message {
-  color: #000000;
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   text-shadow: none;
 }

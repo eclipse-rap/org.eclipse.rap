@@ -806,8 +806,8 @@ public class TreeItem_Test extends TestCase {
     // default height is 16
     assertEquals( 0, root.getBounds().y );
     assertEquals( 0, sub1.getBounds().y ); // not expanded
-    assertEquals( 18, root2.getBounds().y );
-    assertEquals( 36, sub2.getBounds().y );
+    assertEquals( 27, root2.getBounds().y );
+    assertEquals( 54, sub2.getBounds().y );
     // default indent for each level is 16
     assertEquals( 16, root.getBounds().x );
     assertEquals( 0, sub1.getBounds().x ); // not expanded
@@ -896,8 +896,8 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 0, col2Bounds.width );
     // but x and y have to be set correctly
     assertTrue( col0Bounds.x > 0 ); // > 0 as we have an indent
-    assertEquals( 103, col1Bounds.x );
-    assertEquals( 203, col2Bounds.x );
+    assertEquals( 106, col1Bounds.x );
+    assertEquals( 206, col2Bounds.x );
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     item.setImage( 0, image );
     item.setImage( 1, image );
@@ -946,8 +946,8 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 0, col2Bounds.width );
     // but x and y have to be set correctly
     assertTrue( col0Bounds.x > 0 ); // > 0 as we have an indent
-    assertEquals( 103, col1Bounds.x );
-    assertEquals( 203, col2Bounds.x );
+    assertEquals( 106, col1Bounds.x );
+    assertEquals( 206, col2Bounds.x );
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     item.setImage( 0, image );
     item.setImage( 1, image );
@@ -1351,7 +1351,7 @@ public class TreeItem_Test extends TestCase {
     assertEquals( 1, log.size() );
     log.clear();
     item.setExpanded( true );
-    assertEquals( 10, log.size() );
+    assertEquals( 6, log.size() );
   }
 
   public void testInsertColumn_ShiftData_() {

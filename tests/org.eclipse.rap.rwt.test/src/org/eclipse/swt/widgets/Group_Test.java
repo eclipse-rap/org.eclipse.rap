@@ -54,32 +54,32 @@ public class Group_Test extends TestCase {
     group.setLayout( new FillLayout( SWT.VERTICAL ) );
     new Button( group, SWT.RADIO ).setText( "Radio 1" );
     new Button( group, SWT.RADIO ).setText( "Radio 2" );
-    Point expected = new Point( 75, 66 );
+    Point expected = new Point( 115, 113 );
     assertEquals( expected, group.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     group.setText( "This is a very long group title." );
-    expected = new Point( 211, 66 );
+    expected = new Point( 204, 113 );
     assertEquals( expected, group.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     group = new Group( shell, SWT.BORDER );
     group.setLayout( new FillLayout( SWT.VERTICAL ) );
     new Button( group, SWT.RADIO ).setText( "Radio 1" );
     new Button( group, SWT.RADIO ).setText( "Radio 2" );
-    expected = new Point( 79, 70 );
+    expected = new Point( 119, 117 );
     assertEquals( expected, group.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     // hint + trimmings + border
-    expected = new Point( 110, 124 );
+    expected = new Point( 142, 159 );
     assertEquals( expected, group.computeSize( 100, 100 ) );
   }
 
   public void testComputeTrim() {
     Group group = new Group( shell, SWT.NONE );
     // trimmings = 3, 17, 6, 20
-    Rectangle expected = new Rectangle( -3, -17, 6, 20 );
+    Rectangle expected = new Rectangle( -19, -36, 38, 55 );
     assertEquals( expected, group.computeTrim( 0, 0, 0, 0 ) );
 
-    expected = new Rectangle( 17, 3, 106, 120 );
+    expected = new Rectangle( 1, -16, 138, 155 );
     assertEquals( expected, group.computeTrim( 20, 20, 100, 100 ) );
   }
 
@@ -92,7 +92,7 @@ public class Group_Test extends TestCase {
     new Button( group, SWT.RADIO ).setText( "Radio 2" );
 
     // trimmings = 3, 17, 6, 20
-    Rectangle expected = new Rectangle( 3, 17, 94, 80 );
+    Rectangle expected = new Rectangle( 19, 36, 62, 45 );
     assertEquals( expected, group.getClientArea() );
   }
   

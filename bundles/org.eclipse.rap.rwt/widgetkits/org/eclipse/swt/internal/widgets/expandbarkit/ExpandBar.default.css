@@ -18,11 +18,13 @@ ExpandBar {
 }
 
 ExpandBar[BORDER] {
-  border: 1px solid #C1C1C1;
+  border: 1px solid #bdbdbd;
+  border-radius: 2px;
 }
 
 ExpandItem {
-  border: 1px solid #c1c1c1;
+  border: 1px solid #bdbdbd;
+  border-radius: 2px;
 }
 
 ExpandItem-Header {
@@ -30,9 +32,8 @@ ExpandItem-Header {
   cursor: pointer;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 55%, #e0e0e0 ),
-    to( #f0f0f0 )
+    from( #f9f9f9 ),
+    to( #e4e4e4 )
   );
   text-shadow: none;
 }

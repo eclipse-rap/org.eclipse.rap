@@ -671,14 +671,14 @@ public class Combo_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display, SWT.NONE );
     Combo combo = new Combo( shell, SWT.NONE );
-    Point expected = new Point( 66, 19 );
+    Point expected = new Point( 66, 28 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     combo = new Combo( shell, SWT.NONE );
     combo.add( "1" );
     combo.add( "22" );
     combo.add( "333" );
-    expected = new Point( 52, 19 );
+    expected = new Point( 68, 28 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     expected = new Point( 102, 102 );
@@ -717,11 +717,11 @@ public class Combo_Test extends TestCase {
     Shell shell = new Shell( display );
     Combo combo = new Combo( shell, SWT.NONE );
     // default theme font is 11px
-    assertEquals( 13, combo.getTextHeight() );
+    assertEquals( 16, combo.getTextHeight() );
     combo.setFont( Graphics.getFont( "Helvetica", 12, SWT.NORMAL ) );
     assertEquals( 14, combo.getTextHeight() );
     combo.setFont( null );
-    assertEquals( 13, combo.getTextHeight() );
+    assertEquals( 16, combo.getTextHeight() );
   }
   
   public void testIsSerializable() throws Exception {

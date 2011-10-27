@@ -13,13 +13,13 @@
 /* Tree default theme */
 
 Tree {
-  background-color: white;
+  background-color: #ffffff;
   border: none;
   color: #4a4a4a;
 }
 
 Tree[BORDER] {
-  border: 1px solid #a4a4a4;
+  border: 1px solid #bdbdbd;
 }
 
 TreeItem {
@@ -62,26 +62,25 @@ TreeItem:linesvisible:even:selected:unfocused {
 }
 
 TreeColumn {
-  background-color: #f8f8ff;
-  padding: 1px 2px;
-  background-image: gradient(
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;
+  background-color: #f0f0f0;
+   background-image: gradient(
     linear, left top, left bottom,
-    from( #fbfcfd ),
-    to( #ececec )
+    from( #f9f9f9 ),
+    to( #e4e4e4 )
   );
-  color: #666666;
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  border-bottom:none;
+  padding: 11px 2px 11px 2px;
+  border-bottom: 1px solid #bdbdbd;
   text-shadow: none;
 }
 
 TreeColumn:hover {
   background-image: gradient(
     linear, left top, left bottom,
-    from( #f4f5f6 ),
-    to( #e6e6e6 )
+    from( #e4e4e4 ),
+    to( #f9f9f9 )
   );
-  border-bottom:none;
 }
 
 TreeColumn-SortIndicator {
@@ -97,8 +96,8 @@ TreeColumn-SortIndicator:down {
 }
 
 Tree-Cell {
-  spacing: 3px;
-  padding: 2px 3px 3px 3px;
+  spacing: 0;
+  padding: 6px;
 }
 
 Tree-GridLine {

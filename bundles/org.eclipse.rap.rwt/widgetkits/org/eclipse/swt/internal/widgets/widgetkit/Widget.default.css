@@ -14,9 +14,9 @@
 
 * {
   color: #4a4a4a;
-  background-color: white;
+  background-color: #fff;
   background-image: none;
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
 *:disabled {
@@ -24,15 +24,15 @@
 }
 
 Widget-ToolTip {
-  padding: 1px 3px 2px 3px;
-  background-color: #dae9f7;
-  border: 1px solid #00589f;
-  border-radius: 2px 2px 2px 2px;
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  padding: 8px;
+  background-color: #f0f0f0;
+  border: 1px solid #bdbdbd;
+  border-radius: 2px;
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
-  opacity: 1;
+  opacity: 0.9;
   animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
-  box-shadow: 3px 4px 2px rgba( 0, 0, 0, 0.3 );
+  box-shadow: none;
 }
 
 Display {
@@ -50,8 +50,8 @@ Display {
   rwt-warning-image: url( resource/widget/rap/dialog/warning.png );
   rwt-working-image: url( resource/widget/rap/dialog/information.png );
   
-  rwt-fontlist: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode';
+  rwt-fontlist: 14px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode';
   
   background-image: url( resource/widget/rap/display/browser_bg.png );
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }

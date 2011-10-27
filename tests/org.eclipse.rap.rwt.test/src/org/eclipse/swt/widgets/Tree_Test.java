@@ -561,7 +561,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, adapter.getTopItemIndex() );
 
     tree.showItem( tree.getItem( 70 ) );
-    assertEquals( 60, adapter.getTopItemIndex() );
+    assertEquals( 64, adapter.getTopItemIndex() );
   }
 
   public void testGetParentItem() {
@@ -766,7 +766,7 @@ public class Tree_Test extends TestCase {
 
   public void testUpdateScrollBarOnItemExpand() {
     Tree tree = new Tree( composite, SWT.NONE );
-    tree.setSize( 50, 20 );
+    tree.setSize( 50, tree.getItemHeight() + 4 );
     assertFalse( tree.hasVScrollBar() );
 
     TreeItem item = new TreeItem( tree, SWT.NONE );
@@ -874,7 +874,7 @@ public class Tree_Test extends TestCase {
     TreeColumn column = new TreeColumn( tree, SWT.LEFT );
     column.setWidth( 20 );
     new TreeItem( tree, SWT.NONE );
-    int itemHeight = 16;
+    int itemHeight = tree.getItemHeight();
 
     tree.setSize( 30, itemHeight + 4 );
     assertFalse( tree.needsVScrollBar() );
@@ -905,14 +905,14 @@ public class Tree_Test extends TestCase {
 
   public void testComputeSizeWithColumns() {
     Tree tree = new Tree( composite, SWT.NONE );
-    Point expected = new Point( 79, 79 );
+    Point expected = new Point( 74, 74 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     for( int i = 0; i < 10; i++ ) {
       new TreeItem( tree, SWT.NONE ).setText( "Item " + i );
     }
     new TreeItem( tree, SWT.NONE ).setText( "Long long item 100" );
-    expected = new Point( 130, 213 );
+    expected = new Point( 145, 307 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     tree = new Tree( composite, SWT.BORDER );
@@ -920,13 +920,13 @@ public class Tree_Test extends TestCase {
       new TreeItem( tree, SWT.NONE ).setText( "Item " + i );
     }
     new TreeItem( tree, SWT.NONE ).setText( "Long long item 100" );
-    expected = new Point( 132, 215 );
+    expected = new Point( 147, 309 );
     assertEquals( 1, tree.getBorderWidth() );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     tree.setHeaderVisible( true );
-    assertEquals( 14, tree.getHeaderHeight() );
-    expected = new Point( 132, 229 );
+    assertEquals( 37, tree.getHeaderHeight() );
+    expected = new Point( 147, 346 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
@@ -935,19 +935,19 @@ public class Tree_Test extends TestCase {
     col2.setText( "Column 2" );
     TreeColumn col3 = new TreeColumn( tree, SWT.NONE );
     col3.setText( "Wider Column" );
-    expected = new Point( 81, 229 );
+    expected = new Point( 76, 346 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.pack();
     col2.pack();
     col3.pack();
-    expected = new Point( 271, 229 );
+    expected = new Point( 306, 346 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.setWidth( 10 );
     col2.setWidth( 10 );
-    assertEquals( 73, col3.getWidth() );
-    expected = new Point( 110, 229 );
+    assertEquals( 85, col3.getWidth() );
+    expected = new Point( 117, 346 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     tree = new Tree( composite, SWT.CHECK );
@@ -958,19 +958,19 @@ public class Tree_Test extends TestCase {
     item.setText( "Long long item 100" );
     TreeItem subitem = new TreeItem( item, SWT.NONE );
     subitem.setText( "Subitem 1" );
-    expected = new Point( 147, 213 );
+    expected = new Point( 168, 307 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     item.setExpanded( true );
-    expected = new Point( 147, 231 );
+    expected = new Point( 168, 334 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    expected = new Point( 315, 315 );
+    expected = new Point( 310, 310 );
     assertEquals( expected, tree.computeSize( 300, 300 ) );
   }
 
   public void testComputeSizeWithIndention() {
     Tree tree = new Tree( composite, SWT.NONE );
-    Point expected = new Point( 79, 79 );
+    Point expected = new Point( 74, 74 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
@@ -984,7 +984,7 @@ public class Tree_Test extends TestCase {
     item1.setExpanded( true );
     item2.setExpanded( true );
     item3.setExpanded( true );
-    expected = new Point( 109, 87 );
+    expected = new Point( 112, 118 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 
@@ -1004,7 +1004,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, adapter.getScrollLeft() );
 
     tree.showColumn( tree.getColumn( 8 ) );
-    assertEquals( 165, adapter.getScrollLeft() );
+    assertEquals( 160, adapter.getScrollLeft() );
 
     tree.showColumn( tree.getColumn( 1 ) );
     assertEquals( 50, adapter.getScrollLeft() );
@@ -1038,7 +1038,7 @@ public class Tree_Test extends TestCase {
     assertEquals( 0, adapter.getScrollLeft() );
 
     tree.showColumn( tree.getColumn( 5 ) );
-    assertEquals( 115, adapter.getScrollLeft() );
+    assertEquals( 110, adapter.getScrollLeft() );
   }
 
   public void testImageCutOff() {
@@ -1270,12 +1270,12 @@ public class Tree_Test extends TestCase {
     } );
 
     // DEFAULT_WIDTH + scrollbar (16) + 2 * border (1)
-    Point expected = new Point( 81, 197 );
+    Point expected = new Point( 76, 282 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     tree.setHeaderVisible( true );
-    assertEquals( 14, tree.getHeaderHeight() );
-    expected = new Point( 81, 211 );
+    assertEquals( 37, tree.getHeaderHeight() );
+    expected = new Point( 76, 319 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
@@ -1284,21 +1284,21 @@ public class Tree_Test extends TestCase {
     col2.setText( "Column 2" );
     TreeColumn col3 = new TreeColumn( tree, SWT.NONE );
     col3.setText( "Wider Column" );
-    expected = new Point( 81, 211 );
+    expected = new Point( 76, 319 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.pack();
     col2.pack();
     col3.pack();
-    expected = new Point( 173, 211 );
+    expected = new Point( 193, 319 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.setWidth( 10 );
     col2.setWidth( 10 );
-    assertEquals( 73, col3.getWidth() );
-    expected = new Point( 110, 211 );
+    assertEquals( 85, col3.getWidth() );
+    expected = new Point( 117, 319 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
-    expected = new Point( 317, 317 );
+    expected = new Point( 312, 312 );
     assertEquals( expected, tree.computeSize( 300, 300 ) );
   }
 
@@ -1379,7 +1379,7 @@ public class Tree_Test extends TestCase {
     assertEquals( items[ 1 ], tree.getTopItem() );
 
     tree.setTopItem( items[ 58 ] );
-    assertEquals( items[ 56 ], tree.getTopItem() );
+    assertEquals( items[ 57 ], tree.getTopItem() );
     assertTrue( items[ 54 ].getExpanded() );
   }
 
@@ -1465,19 +1465,19 @@ public class Tree_Test extends TestCase {
     Tree tree = new Tree( composite, SWT.NONE );
 
     TreeItem item1 = new TreeItem( tree, SWT.NONE );
-    assertEquals( 11, item1.getPreferredWidthBuffer( 0 ) );
+    assertEquals( 14, item1.getPreferredWidthBuffer( 0 ) );
 
     item1.setText( "text" );
-    assertEquals( 34, item1.getPreferredWidthBuffer( 0 ) );
+    assertEquals( 41, item1.getPreferredWidthBuffer( 0 ) );
 
     item1.setText( 0, "anotherText" );
-    assertEquals( 74, item1.getPreferredWidthBuffer( 0 ) );
+    assertEquals( 88, item1.getPreferredWidthBuffer( 0 ) );
 
     // unfortunately tree doesn't allow to set images with different sizes
     // therefore the size of the first image gets cached -> we only test
     // the setImage(int,image) method
     item1.setImage( 0, Graphics.getImage( Fixture.IMAGE1 ) );
-    assertEquals( 135, item1.getPreferredWidthBuffer( 0 ) );
+    assertEquals( 146, item1.getPreferredWidthBuffer( 0 ) );
 
     tree.setFont( new Font( display, "arial", 40, SWT.BOLD ) );
     assertEquals( 378, item1.getPreferredWidthBuffer( 0 ) );

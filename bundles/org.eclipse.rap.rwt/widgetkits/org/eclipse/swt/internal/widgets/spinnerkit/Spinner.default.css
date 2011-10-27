@@ -13,50 +13,36 @@
 /* Spinner default theme */
 
 Spinner {
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border: none;
-  padding: 1px 2px;
+  border-radius: 0 2px 2px 0;
   color: #464a4e;
-  background-color: #fcfcfc;
+  background-color: #f0f0f0;
   background-image: none;
   text-shadow: none;
 }
 
 Spinner-Field {
-  padding: 2px 3px;
+  padding: 6px 3px 6px 3px;
 }
 
 Spinner[BORDER] {
-  border: 1px solid #a4a4a4;
-  border-radius: 2px 2px 2px 2px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e2e2e2 ),
-    color-stop( 15%, #f8f8f8 ),
-    to( #fbfbfb )
-  );
+  border: 1px solid #bdbdbd;
+  border-radius: 0 2px 2px 0;
 }
 
 Spinner-UpButton {
-  background-color: transparent;
+  background-color: #efefef;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #ffffff ),
-    to( #e0e0e0 )
+    from( #f9f9f9 ),
+    to( #efefef )
   );
-  width: 18px;
+  width: 30px;
   border: none;
-  border-left: none;
+  border-left: 1px solid #bdbdbd;
   border-radius: 0px 2px 0px 0px;
   cursor: default;
-}
-
-Spinner-UpButton:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
 }
 
 Spinner-UpButton-Icon {
@@ -68,26 +54,17 @@ Spinner-UpButton-Icon:hover {
 }
 
 Spinner-DownButton {
-  background-color: transparent;
+  background-color: #efefef;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #e0e0e0 ),
-    to( #ffffff )
+    from( #efefef ),
+    to( #e4e4e4 )
   );
-  width: 18px;
+  width: 30px;
   border: none;
-  border-left: none;
+  border-left: 1px solid #bdbdbd;
   border-radius: 0px 0px 2px 0px;
   cursor: default;
-}
-
-Spinner-DownButton:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b0b0b0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #ffffff )
-  );
 }
 
 Spinner-DownButton-Icon {

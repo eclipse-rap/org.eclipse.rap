@@ -179,7 +179,7 @@ public class ToolBar_Test extends TestCase {
     separator.setControl( new Text( toolbar, SWT.NONE ) );
     ToolItem toolItem3 = new ToolItem( toolbar, SWT.DROP_DOWN );
     toolItem3.setText( "Item 3" );
-    assertEquals( new Point( 153, 22 ), toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 208, 30 ), toolbar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     assertEquals( new Point( 100, 100 ), toolbar.computeSize( 100, 100 ) );
   }
   

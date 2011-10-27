@@ -11,24 +11,24 @@
 /* Shell default theme */
 
 Shell {
-  border: 1px black;
-  background-color: white;
-  padding: 0px;
+  border: none;
+  background-color: #ffffff;
+  padding: 0;
   background-image: none;
   opacity: 1;
   box-shadow: none;
 }
 
 Shell[TITLE], Shell[BORDER] {
-  background-color: white;
-  border: 2px solid #005092;
-  border-radius: 5px 5px 0px 0px;
-  padding: 5px;
-  box-shadow: 5px 5px 3px rgba( 0, 0, 0, 0.5 );
+  background-color: #ffffff;
+  border: 1px solid #6e6e6e;
+  border-radius: 2px;
+  padding: 15px;
+  box-shadow: 0 0 4px #ababab;
 }
 
 Shell[BORDER]:inactive, Shell[TITLE]:inactive {
-  border: 2px solid #4b4b4b;
+  border: 1px solid #bdbdbd;
   box-shadow: none;
 }
 
@@ -46,26 +46,29 @@ Shell-DisplayOverlay {
 /* Shell titlebar */
 
 Shell-Titlebar {
+	font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: #0080c0;
   background-gradient-color: #0080c0;
-  color: white;
-  background-image: gradient( linear, left top, left bottom, from( #005fac ), to( #005092 ) );
-  padding: 2px 5px 2px;
+  color: #ffffff;
+  background-image: gradient( 
+    linear, left top, left bottom,
+    from( #416693 ), to( #5882b5 ) 
+  );
+  padding: 0 10px 0 10px;
   margin: 0px;
-  height: 22px;
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  height: 38px;
   border: none;
-  border-radius: 1px 1px 0px 0px;
+  border-radius: 0;
   text-shadow: none;
 }
 
 Shell-Titlebar:inactive {
   background-color: #7996a5;
   background-gradient-color: #7996a5;
-  color: #aaaaaa;
-  background-image: gradient( linear, left top, left bottom,
-                              from( #595959 ), to( #4b4b4b ) );
-  text-shadow: none;
+  background-image:  gradient( 
+    linear, left top, left bottom, 
+    from( #818181 ), to( #b5b5b5 ) 
+  );
 }
 
 /* Shell buttons */
@@ -74,7 +77,7 @@ Shell-Titlebar:inactive {
 
 Shell-MinButton {
   background-image: url( resource/widget/rap/window/shell-min.png );
-  margin: 0px 6px 0px 0px;
+  margin: 0 -2px 0 0;
 }
 
 Shell-MinButton:hover {
@@ -83,7 +86,7 @@ Shell-MinButton:hover {
 
 Shell-MinButton:inactive {
   background-image: url( resource/widget/rap/window/shell-min.png );
-  margin: 0px 6px 0px 0px;
+  margin: 0 -2px 0 0;
 }
 
 Shell-MinButton:inactive:hover {
@@ -94,7 +97,7 @@ Shell-MinButton:inactive:hover {
 
 Shell-MaxButton {
   background-image: url( resource/widget/rap/window/shell-max.png );
-  margin: 0px 6px 0px 0px;
+  margin: 0 -2px 0 0;
 }
 
 Shell-MaxButton:hover {
@@ -103,7 +106,6 @@ Shell-MaxButton:hover {
 
 Shell-MaxButton:inactive {
   background-image: url( resource/widget/rap/window/shell-max.png );
-  margin: 0px 6px 0px 0px;
 }
 
 Shell-MaxButton:inactive:hover {
@@ -114,6 +116,7 @@ Shell-MaxButton:inactive:hover {
 
 Shell-MaxButton:maximized {
   background-image: url( resource/widget/rap/window/shell-restore.png );
+  margin: 0 -2px 0 0;
 }
 
 Shell-MaxButton:maximized:hover {
@@ -132,7 +135,7 @@ Shell-MaxButton:maximized:inactive:hover {
 
 Shell-CloseButton {
   background-image: url( resource/widget/rap/window/shell-close.png );
-  margin: 0px 5px 0px 0px;
+  margin: 0 -2px 0 0;
 }
 
 Shell-CloseButton:hover {
@@ -141,7 +144,6 @@ Shell-CloseButton:hover {
 
 Shell-CloseButton:inactive {
   background-image: url( resource/widget/rap/window/shell-close.png );
-  margin: 0px 5px 0px 0px;
 }
 
 Shell-CloseButton:inactive:hover {

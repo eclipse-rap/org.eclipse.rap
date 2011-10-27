@@ -12,37 +12,35 @@
 /* TabFolder default theme */
 
 TabFolder {
-  border: none;
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border: none
 }
 
 TabFolder[BORDER] {
-  border: 1px solid #a4a4a4;
+  border: 1px solid #bdbdbd;
 }
 
 TabFolder-ContentContainer {
-  border: 1px solid #a4a4a4;
+  border: 1px solid #bdbdbd;
 }
 
 TabItem {
-  background-color: white;
-  border-top-color: white;
-  border-bottom-color: white;
-  background-image: none;
-  text-shadow: none;
-  padding : 2px 6px 2px 5px;
+  background-color: #ffffff;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #f9f9f9 ),
+    to( #e4e4e4 )
+  );
+  border-top-color: #bdbdbd;
+  border-bottom-color: #bdbdbd;
+  text-shadow: 0 1px 0 #ffffff;
+  padding : 12px 9px 9px 9px;
 }
 
 TabItem:selected {
-  background-color: white;
-  border-top-color: #00589f;
-  border-bottom-color: #00589f;
-  background-image: none;
-  text-shadow: none;
-  padding : 2px 8px 4px 7px;
-}
-
-TabItem:hover {
-  background-color: #dae9f7;
-  background-image: none;
-  text-shadow: none;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #d5d5d5 ),
+    to( #eaeaea )
+  );
 }

@@ -13,12 +13,12 @@
 /* ToolBar default theme */
 
 ToolBar {
-  color: black;
-  padding: 0px;
-  spacing: 0px;
-  background-color: #ffffff;
+  color: #4a4a4a;
+  padding: 0;
+  spacing: 0;
+  background-color: #f0f0f0;
   background-image: none;
-  border: none;
+  border: #bdbdbd;
   opacity: 1;
 }
 
@@ -28,39 +28,42 @@ ToolBar[BORDER] {
 }
 
 ToolItem {
-  color: inherit;
-  background-color: transparent;
+  color: #4a4a4a;
+  background-color: #f0f0f0;
   background-image: none;
   border: none;
-  border-radius: 0px;
-  padding: 2px 3px;
+  border-radius: 2px;
+  padding: 8px;
   spacing: 4px;
   opacity: 1;
   animation: none;
   text-shadow: none;
 }
 
-ToolItem[FLAT] {
-  border: none;
-  padding: 3px 4px;
-}
-
 ToolItem:hover {
-  background-color: white;
-  border: 1px solid #a4a4a4;
-  border-radius: 2px 2px 2px 2px;
-  padding: 2px 3px;
+  background-color: #f0f0f0;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #f9f9f9 ),
+    to( #e4e4e4 )
+  );
+  border: 1px solid #bdbdbd;
+  border-radius: 2px;
 }
 
 ToolItem:pressed, ToolItem:selected {
   border: 1px solid #a4a4a4;
   border-radius: 2px;
-  padding: 3px 2px 1px 4px;
-  background-image: url( resource/static/image/dotted_white.gif );
+  padding: 9px 8px 8px 9px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e4e4e4 ),
+    to( #f9f9f9 )
+  );
 }
 
 ToolItem-DropDownIcon {
-  background-image: url( resource/widget/rap/arrows/down.gif );
+  background-image: url( resource/widget/rap/toolbar/down.png );
   border: none;
 }
 

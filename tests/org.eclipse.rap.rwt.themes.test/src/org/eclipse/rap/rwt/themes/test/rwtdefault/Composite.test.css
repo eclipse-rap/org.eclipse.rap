@@ -12,7 +12,7 @@
 /* Default theme for all composites */
 
 Composite {
-  padding: 0px;
+  padding: 0;
   opacity: 1;
   background-color: #ffffff;
   background-image: none;
@@ -21,7 +21,6 @@ Composite {
 }
 
 Composite[BORDER] {
-  background-color: white;
-  background-image: none;
-  box-shadow: none;
+  border: 1px solid #bdbdbd;
+  border-radius: 2px;
 }

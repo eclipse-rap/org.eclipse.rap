@@ -13,33 +13,46 @@
 /* Menu default theme */
 
 Menu {
-  background-image: none;
-  padding: 2px 0px;
-  opacity: 1;
-  animation: none;
+  padding: 10px 15px;
   color: #0059a5;
-  background-color: white;
-  border: 1px #0059a5;
+  background-color: #f0f0f0;
+  background-image: url( resource/widget/rap/menu/menu-background.png );
+  border: 1px solid #bdbdbd;
   border-radius: 2px;
-  box-shadow: 2px 2px 2px rgba( 0, 0, 0, 0.5 );
+  box-shadow: none;
+  opacity: 0.9;
+  animation: none;
 }
 
 MenuItem {
+	color: #4a4a4a;
+	background-color: transparent;
   background-image: none;
-  color: black;
-  background-color: transparent;
   opacity: 1;
   text-shadow: none;
 }
 
 MenuItem:hover {
-  background-color: #dae9f7;
-  color: #4a4a4a;
+  color: #ffffff;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #818181 ),
+    to( #b5b5b5 )
+  );
 }
 
 MenuItem:pressed {
-  background-color: #00589f;
-  color: white;
+  color: #ffffff;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #416693 ),
+    to( #5882b5 )
+  );
+}
+
+MenuItem:disabled {
+  color: #bdbdbd;
+  text-shadow: none;
 }
 
 MenuItem-CheckIcon {

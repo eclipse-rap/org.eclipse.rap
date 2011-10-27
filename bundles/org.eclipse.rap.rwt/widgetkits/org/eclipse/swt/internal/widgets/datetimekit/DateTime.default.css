@@ -1,41 +1,35 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Innoopract Informationssysteme GmbH - initial API and implementation
- *    EclipseSource - ongoing development
+ *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *     EclipseSource - ongoing development
  ******************************************************************************/
 
 /* DateTime default theme */
 
 DateTime {
-  color: #464a4e;
-  background-color: #fcfcfc;
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border: none;
-  padding: 1px 2px;
-  font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  border-radius: 0 2px 2px 0;
+  color: #464a4e;
+  background-color: #f0f0f0;
   background-image: none;
   text-shadow: none;
 }
 
 DateTime-Field {
-  padding: 2px 3px;
+  padding: 5px 3px 6px 3px;
   text-shadow: none;
 }
 
 DateTime[BORDER] {
-  border: 1px solid #a4a4a4;
-  border-radius: 2px 2px 2px 2px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e2e2e2 ),
-    color-stop( 15%, #f8f8f8 ),
-    to( #fbfbfb )
-  );
+  border: 1px solid #bdbdbd;
+  border-radius: 0 2px 2px 0;
 }
 
 DateTime-Calendar-Day {
@@ -69,7 +63,7 @@ DateTime-Calendar-Navbar {
   border: none;
   background-color: #00569c;
   color: white;
-  font: bold 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   text-shadow: none;
 }
 
@@ -110,73 +104,61 @@ DateTime-Calendar-NextYearButton:hover {
 }
 
 DateTime-UpButton {
-  background-color: transparent;
+  background-color: #f0f0f0;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #ffffff ),
-    to( #e0e0e0 )
-  );
-  width: 18px;
+    from( #f9f9f9 ),
+    to( #efefef )
+  );;
+  width: 30px;
   border: none;
-  border-left: none;
+  border-left: 1px solid #bdbdbd;
   border-radius: 0px 2px 0px 0px;
   cursor: default;
 }
 
-DateTime-UpButton:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #b0b0b0 )
-  );
-}
-
 DateTime-UpButton-Icon {
-  background-image: url( resource/widget/rap/spinner/up.png );
+  background-image: url( resource/widget/rap/datetime/up.png );
 }
 
 DateTime-UpButton-Icon:hover {
-  background-image: url( resource/widget/rap/spinner/up-hover.png );
+  background-image: url( resource/widget/rap/datetime/up-hover.png );
 }
 
 DateTime-DownButton {
-  background-color: transparent;
+  background-color: #f0f0f0;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #e0e0e0 ),
-    to( #ffffff )
+    from( #efefef ),
+    to( #e4e4e4 )
   );
-  width: 18px;
+  width: 30px;
   border: none;
-  border-left: none;
+  border-left: 1px solid #bdbdbd;
   border-radius: 0px 0px 2px 0px;
   cursor: default;
 }
 
-DateTime-DownButton:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b0b0b0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #ffffff )
-  );
-}  
+DateTime-DownButton-Icon {
+  background-image: url( resource/widget/rap/datetime/down.png );
+}
+
+DateTime-DownButton-Icon:hover {
+  background-image: url( resource/widget/rap/datetime/down-hover.png );
+}
 
 DateTime-DropDownButton {
   cursor: default;
-  background-color: transparent;
+  background-color: #f0f0f0;
   border: none;
-  border-left: none;
+  border-left: 1px solid #bdbdbd;
   border-radius: 0px 2px 2px 0px;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #ffffff ),
-    color-stop( 48%, #f0f0f0 ),
-    color-stop( 52%, #e0e0e0 ),
-    to( #cccccc )
+    from( #f9f9f9 ),
+    to( #e4e4e4 )
   );
-  width: 18px;
+  width: 30px;
 }
 
 DateTime-DropDownButton-Icon {
@@ -186,15 +168,6 @@ DateTime-DropDownButton-Icon {
 DateTime-DropDownButton-Icon:hover {
   background-image: url( resource/widget/rap/spinner/down-hover.png );
 }
-
-DateTime-DownButton-Icon {
-  background-image: url( resource/widget/rap/spinner/down.png );
-}
-
-DateTime-DownButton-Icon:hover {
-  background-image: url( resource/widget/rap/spinner/down-hover.png );
-}
-
 
 DateTime-DropDownCalendar {
   border: 1px #a7a6aa;

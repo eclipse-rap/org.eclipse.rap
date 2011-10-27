@@ -66,16 +66,16 @@ public class CLabel_Test extends TestCase {
 
   public void testComputeSize() {
     CLabel label = new CLabel( shell, SWT.RIGHT );
-    Point expected = new Point( 6, 18 );
+    Point expected = new Point( 12, 26 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     label.setText( "bar" );
-    expected = new Point( 23, 21 );
+    expected = new Point( 32, 30 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     label.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
-    expected = new Point( 128, 56 );
+    expected = new Point( 137, 62 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     label.setMargins( 1, 2, 3, 4 );
-    expected = new Point( 126, 56 );
+    expected = new Point( 129, 56 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
   }
 

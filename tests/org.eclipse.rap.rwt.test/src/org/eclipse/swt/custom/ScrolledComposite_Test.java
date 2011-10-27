@@ -148,16 +148,16 @@ public class ScrolledComposite_Test extends TestCase {
     sc.setSize( 100, 100 );
     assertEquals( new Rectangle( 0, 0, 100, 100), sc.getClientArea() );
     sc.setAlwaysShowScrollBars( true );
-    assertEquals( new Rectangle( 0, 0, 85, 85), sc.getClientArea() );
+    assertEquals( new Rectangle( 0, 0, 90, 90 ), sc.getClientArea() );
   }
   
   public void testNeedHScroll() {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     sc.setSize( 100, 100 );
-    assertFalse( sc.needHScroll( new Rectangle( 0, 0, 90, 90 ), false ) );
-    assertTrue( sc.needHScroll( new Rectangle( 0, 0, 90, 90 ), true ) );
+    assertFalse( sc.needHScroll( new Rectangle( 0, 0, 95, 95 ), false ) );
+    assertTrue( sc.needHScroll( new Rectangle( 0, 0, 95, 95 ), true ) );
     sc.setExpandHorizontal( true );
-    sc.setMinWidth( 90 );
+    sc.setMinWidth( 95 );
     assertFalse( sc.needHScroll( new Rectangle( 0, 0, 50, 50 ), false ) );
     assertTrue( sc.needHScroll( new Rectangle( 0, 0, 50, 50 ), true ) );
     sc.setMinWidth( 50 );
@@ -171,10 +171,10 @@ public class ScrolledComposite_Test extends TestCase {
   public void testNeedVScroll() {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.V_SCROLL | SWT.H_SCROLL );
     sc.setSize( 100, 100 );
-    assertFalse( sc.needVScroll( new Rectangle( 0, 0, 90, 90 ), false ) );
-    assertTrue( sc.needVScroll( new Rectangle( 0, 0, 90, 90 ), true ) );
+    assertFalse( sc.needVScroll( new Rectangle( 0, 0, 95, 95 ), false ) );
+    assertTrue( sc.needVScroll( new Rectangle( 0, 0, 95, 95 ), true ) );
     sc.setExpandVertical( true );
-    sc.setMinHeight( 90 );
+    sc.setMinHeight( 95 );
     assertFalse( sc.needVScroll( new Rectangle( 0, 0, 50, 50 ), false ) );
     assertTrue( sc.needVScroll( new Rectangle( 0, 0, 50, 50 ), true ) );
     sc.setMinHeight( 50 );

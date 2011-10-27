@@ -98,14 +98,11 @@ public class Hyperlink_Test extends TestCase {
     Form form = toolkit.createForm( shell );
     form.getBody().setLayout( new TableWrapLayout() );
     String text = "This is a hyperlink!";
-    Hyperlink hyperlink
-      = toolkit.createHyperlink( form.getBody(), text, SWT.NONE );
+    Hyperlink hyperlink = toolkit.createHyperlink( form.getBody(), text, SWT.NONE );
     assertNotNull( hyperlink );
-    Point expected = new Point( 117, 17 );
-    assertEquals( expected, hyperlink.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
+    assertEquals( new Point( 136, 20 ), hyperlink.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     // fixed size
-    expected = new Point( 50, 17 );
-    assertEquals( expected, hyperlink.computeSize( 50, 50 ) );
+    assertEquals( new Point( 50, 20 ), hyperlink.computeSize( 50, 50 ) );
   }
 
   protected void setUp() throws Exception {

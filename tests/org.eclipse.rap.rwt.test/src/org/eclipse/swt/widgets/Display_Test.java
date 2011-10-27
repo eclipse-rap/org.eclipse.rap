@@ -382,9 +382,6 @@ public class Display_Test extends TestCase {
       shell.open();
 
       Point shellOffset = shell.getLocation();
-      // [rst] Shell offset includes 1px border in RAP
-      shellOffset.x += 1;
-      shellOffset.y += 1;
       Point result;
 
       result = display.map(button1, button2, 0, 0);
@@ -450,9 +447,6 @@ public class Display_Test extends TestCase {
       shell.open();
 
       Point shellOffset = shell.getLocation();
-      // [rst] Shell offset includes 1px border in RAP
-      shellOffset.x += 1;
-      shellOffset.y += 1;
       Rectangle result;
 
       result = display.map(button1, button2, 0, 0, 100, 100);
@@ -520,10 +514,6 @@ public class Display_Test extends TestCase {
       Point result;
       Point point = new Point(0,0);
       Point shellOffset = shell.getLocation();
-      // [rst] Shell offset includes 1px border in RAP
-      shellOffset.x += 1;
-      shellOffset.y += 1;
-
 
       result = display.map(button1, button2, point);
       assertEquals(new Point(-200,-100), result);
@@ -597,9 +587,6 @@ public class Display_Test extends TestCase {
       Rectangle result;
       Rectangle rect = new Rectangle(0,0,100,100);
       Point shellOffset = shell.getLocation();
-      // [rst] Shell offset includes 1px border in RAP
-      shellOffset.x += 1;
-      shellOffset.y += 1;
 
       result = display.map(button1, button2, rect);
       assertEquals(new Rectangle(-200,-100,100,100), result);
@@ -783,7 +770,7 @@ public class Display_Test extends TestCase {
     color = display.getSystemColor( SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT );
     assertEquals( new RGB( 121, 150, 165 ), color.getRGB() );
     color = display.getSystemColor( SWT.COLOR_TITLE_INACTIVE_FOREGROUND );
-    assertEquals( new RGB( 170, 170, 170 ), color.getRGB() );
+    assertEquals( new RGB( 255, 255, 255 ), color.getRGB() );
     // Fix colors
     color = display.getSystemColor( SWT.COLOR_BLACK );
     assertEquals( new RGB( 0, 0, 0 ), color.getRGB() );

@@ -28,12 +28,10 @@ public class ToolBarThemeAdapter_Test extends TestCase {
     ToolBarThemeAdapter themeAdapter
       = ( ToolBarThemeAdapter )toolBar.getAdapter( IThemeAdapter.class );
     assertEquals( 0, themeAdapter.getItemBorderWidth( toolBar ) );
-    assertEquals( new Rectangle( 3, 2, 6, 4 ),
-                  themeAdapter.getItemPadding( toolBar ) );
+    assertEquals( new Rectangle( 8, 8, 16, 16 ), themeAdapter.getItemPadding( toolBar ) );
     ToolBar flatToolBar = new ToolBar( shell, SWT.HORIZONTAL | SWT.FLAT );
     assertEquals( 0, themeAdapter.getItemBorderWidth( flatToolBar ) );
-    assertEquals( new Rectangle( 4, 3, 8, 6 ),
-                  themeAdapter.getItemPadding( flatToolBar ) );
+    assertEquals( new Rectangle( 8, 8, 16, 16 ), themeAdapter.getItemPadding( flatToolBar ) );
   }
 
   protected void setUp() throws Exception {
