@@ -281,11 +281,8 @@ appearances = {
       var border = new org.eclipse.rwt.Border( [ 0, 0, 1, 0 ], "solid", "gray" );
       // FIXME: [if] Bigger font size leads to text cutoff
       var font = tv.getCssFont( "*", "font" );
-      var smallFont = new qx.ui.core.Font();
+      var smallFont = qx.ui.core.Font.fromString( font.toCss() );
       smallFont.setSize( 11 );
-      smallFont.setFamily( font.getFamily() );
-      smallFont.setBold( font.getBold() );
-      smallFont.setItalic( font.getItalic() );
       return {
         font : smallFont,
         border : border,
