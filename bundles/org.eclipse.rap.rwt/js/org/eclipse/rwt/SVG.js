@@ -168,7 +168,7 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
 
     setFillColor : function( shape, color ) {
       this.setFillGradient( shape, null );
-      if( color != null ) {
+      if( color != null && color != "" ) {
         shape.node.setAttribute( "fill", color );
       } else {
         shape.node.setAttribute( "fill", "none" );
