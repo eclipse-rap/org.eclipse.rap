@@ -94,9 +94,12 @@
             Slider-DownButton-Icon for slider down button.
           </description>
       </property>
-      
+
       <property name="cursor"
           description="Slider down button cursor." />
+
+      <property name="padding"
+          description="Padding (inner distance) for Slider down button." />
 
       <state name="hover"
           description="On button roll over" />
@@ -183,13 +186,16 @@
             Slider-UpButton-Icon for slider up button.
           </description>
       </property>
-      
+
       <property name="cursor"
           description="Slider up button cursor." />
 
+      <property name="padding"
+          description="Padding (inner distance) for Slider up button." />
+
       <style name="HORIZONTAL"
           description="Indicates that the slider horizontal." />
-  
+
       <style name="VERTICAL"
           description="Indicates that the slider vertical." />
 

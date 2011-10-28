@@ -45,7 +45,7 @@ appearances = {
       result.font = tv.getCssFont( "Button", "font" );
       result.textColor = tv.getCssColor( "Button", "color" );
       result.spacing = tv.getCssDimension( "Button", "spacing" );
-      result.padding = tv.getCssBoxDimensions( "Button", "padding" );
+      result.padding = tv.getCssBoxDimensions( "Slider-DownButton", "padding" );
       result.backgroundColor = tv.getCssColor( "Slider-DownButton", "background-color" );
       result.icon = tv.getCssSizedImage( "Slider-DownButton-Icon", "background-image" );
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {
@@ -73,7 +73,7 @@ appearances = {
       result.font = tv.getCssFont( "Button", "font" );
       result.textColor = tv.getCssColor( "Button", "color" );
       result.spacing = tv.getCssDimension( "Button", "spacing" );
-      result.padding = tv.getCssBoxDimensions( "Button", "padding" );
+      result.padding = tv.getCssBoxDimensions( "Slider-UpButton", "padding" );
       result.backgroundColor = tv.getCssColor( "Slider-UpButton", "background-color" );
       result.icon = tv.getCssSizedImage( "Slider-UpButton-Icon", "background-image" );
       if( result.icon === org.eclipse.swt.theme.ThemeValues.NONE_IMAGE ) {

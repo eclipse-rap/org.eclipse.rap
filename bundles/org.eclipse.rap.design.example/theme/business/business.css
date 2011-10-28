@@ -1593,6 +1593,7 @@ Slider-UpButton, Slider-DownButton {
   background-color: transparent;
   border: 1px solid #a4a4a4;
   cursor: default;
+  padding: 0;
 }
 
 Slider-UpButton[HORIZONTAL], Slider-DownButton[HORIZONTAL] {
