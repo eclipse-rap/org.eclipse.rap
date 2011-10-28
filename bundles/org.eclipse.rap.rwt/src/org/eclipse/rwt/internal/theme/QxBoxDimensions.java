@@ -115,7 +115,7 @@ public class QxBoxDimensions implements QxType {
     return result;
 }
 
-  public int hashCode () {
+  public int hashCode() {
     CRC32 result = new CRC32();
     result.update( top );
     result.update( right );
@@ -144,7 +144,7 @@ public class QxBoxDimensions implements QxType {
     return result.intValue();
   }
 
-  public static Rectangle createRectangle( final QxBoxDimensions boxdim ) {
+  public static Rectangle createRectangle( QxBoxDimensions boxdim ) {
     return new Rectangle( boxdim.left,
                           boxdim.top,
                           boxdim.left + boxdim.right,
