@@ -1,11 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2011 Rüdiger Herrmann and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011 Rüdiger Herrmann and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Rüdiger Herrmann - initial API and implementation
+ *    Rüdiger Herrmann - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
  
 qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
@@ -149,7 +151,7 @@ qx.Class.define( "org.eclipse.swt.widgets.ToolTip", {
       data[ 4 ] = this._messageFont.getBold();
       data[ 5 ] = this._messageFont.getItalic();
       data[ 6 ] = width;
-      var textSize = org.eclipse.swt.FontSizeCalculation._doMeasurement( data );
+      var textSize = org.eclipse.swt.FontSizeCalculation._measureItem( data );
       return {
         x : textSize[ 0 ],
         y : textSize[ 1 ]
