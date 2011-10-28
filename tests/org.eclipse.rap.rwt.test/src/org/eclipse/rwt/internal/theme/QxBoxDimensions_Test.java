@@ -99,4 +99,16 @@ public class QxBoxDimensions_Test extends TestCase {
     QxBoxDimensions dim1 = QxBoxDimensions.create( 1, 1, 1, 1 );
     assertEquals( "1px", dim1.toDefaultString() );
   }
+
+  public void testHashCode() {
+    QxBoxDimensions dim1 = QxBoxDimensions.create( 1, 1, 0, 0 );
+    QxBoxDimensions dim2 = QxBoxDimensions.create( 0, 25, 0, 0 );
+    assertTrue( dim1.hashCode() != dim2.hashCode() );
+  }
+
+  public void testHashCode2() {
+    QxBoxDimensions dim1 = QxBoxDimensions.create( 0, 0, 1, 0 );
+    QxBoxDimensions dim2 = QxBoxDimensions.create( 0, 0, 0, 1 );
+    assertTrue( dim1.hashCode() != dim2.hashCode() );
+  }
 }

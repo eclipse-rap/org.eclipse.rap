@@ -46,8 +46,8 @@ public class ThemePropertyAdapterRegistry_Test extends TestCase {
   public void testBoxDimensionsPropertyAdapter() {
     ThemePropertyAdapter adapter = new BoxDimensionsPropertyAdapter();
     QxBoxDimensions testBoxDimensions = QxBoxDimensions.create( 0, 1, 2, 3 );
-    assertEquals( "1203f000", adapter.getKey( QxBoxDimensions.ZERO ) );
-    assertEquals( "1203f273", adapter.getKey( testBoxDimensions ) );
+    assertEquals( "2144df1c", adapter.getKey( QxBoxDimensions.ZERO ) );
+    assertEquals( "8bb98613", adapter.getKey( testBoxDimensions ) );
     assertEquals( "boxdims", adapter.getSlot( QxBoxDimensions.ZERO ) );
     assertEquals( "[ 0, 0, 0, 0 ]", adapter.getValue( QxBoxDimensions.ZERO ).toString() );
     assertEquals( "[ 0, 1, 2, 3 ]", adapter.getValue( testBoxDimensions ).toString() );

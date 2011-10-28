@@ -1,15 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rwt.internal.theme;
+
+import java.util.zip.CRC32;
 
 import org.eclipse.swt.graphics.Rectangle;
 
@@ -25,22 +28,14 @@ public class QxBoxDimensions implements QxType {
 
   public final int left;
 
-  private QxBoxDimensions( final int top,
-                           final int right,
-                           final int bottom,
-                           final int left )
-  {
+  private QxBoxDimensions( int top, int right, int bottom, int left ) {
     this.top = top;
     this.right = right;
     this.bottom = bottom;
     this.left = left;
   }
 
-  public static QxBoxDimensions create( final int top,
-                                        final int right,
-                                        final int bottom,
-                                        final int left )
-  {
+  public static QxBoxDimensions create( int top, int right, int bottom, int left ) {
     QxBoxDimensions result;
     if( top == 0 && right == 0 && bottom == 0 && left == 0 ) {
       result = ZERO;
@@ -50,7 +45,7 @@ public class QxBoxDimensions implements QxType {
     return result;
   }
 
-  public static QxBoxDimensions valueOf( final String input ) {
+  public static QxBoxDimensions valueOf( String input ) {
     if( input == null ) {
       throw new NullPointerException( "null argument" );
     }
@@ -106,7 +101,7 @@ public class QxBoxDimensions implements QxType {
     return buffer.toString();
   }
 
-  public boolean equals( final Object object ) {
+  public boolean equals( Object object ) {
     boolean result = false;
     if( object == this ) {
       result = true;
@@ -121,12 +116,12 @@ public class QxBoxDimensions implements QxType {
 }
 
   public int hashCode () {
-    int result = 911;
-    result += 23 * result + top;
-    result += 23 * result + right;
-    result += 23 * result + bottom;
-    result += 23 * result + left;
-    return result;
+    CRC32 result = new CRC32();
+    result.update( top );
+    result.update( right );
+    result.update( bottom );
+    result.update( left );
+    return ( int )result.getValue();
   }
 
   public String toString () {
@@ -141,7 +136,7 @@ public class QxBoxDimensions implements QxType {
            + " }";
   }
 
-  private static int parsePxValue( final String part ) {
+  private static int parsePxValue( String part ) {
     Integer result = QxDimension.parseLength( part );
     if( result == null ) {
       throw new IllegalArgumentException( "Illegal parameter: " + part );

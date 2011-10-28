@@ -14,6 +14,7 @@ package org.eclipse.rwt.internal.theme;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.zip.CRC32;
 
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
@@ -151,22 +152,25 @@ public final class QxImage implements QxType {
   }
 
   public int hashCode() {
-    int result = -1;
+    CRC32 result = new CRC32();
     if( none ) {
+      result.update( 1 );
       if( gradientColors != null && gradientPercents != null ) {
-        result = 5;
         for( int i = 0; i < gradientColors.length; i++ ) {
-          result += 7 * result + gradientColors[ i ].hashCode();
+          result.update( gradientColors[ i ].getBytes() );
         }
         for( int i = 0; i < gradientPercents.length; i++ ) {
-          result += 7 * result + Float.floatToIntBits( gradientPercents[ i ] );
+          result.update( Float.floatToIntBits( gradientPercents[ i ] ) );
         }
-        result += vertical ? 0 : 7 * result + 11;
+        if( vertical ) {
+          result.update( 2 );
+        }
       }
     } else {
-      result = path.hashCode();
+      result.update( 3 );
+      result.update( path.getBytes() );
     }
-    return result;
+    return ( int )result.getValue();
   }
 
   public String toString() {

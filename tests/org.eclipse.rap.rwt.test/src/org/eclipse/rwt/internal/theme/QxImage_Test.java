@@ -130,7 +130,7 @@ public class QxImage_Test extends TestCase {
   }
 
   public void testHashCode() {
-    assertEquals( -1, QxImage.NONE.hashCode() );
+    assertEquals( -1526341861, QxImage.NONE.hashCode() );
     QxImage qxImage1 = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     QxImage qxImage2 = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     assertEquals( qxImage1, qxImage2 );
@@ -164,7 +164,7 @@ public class QxImage_Test extends TestCase {
     QxImage image = QxImage.NONE;
     assertNull( image.getResourceName() );
     image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
-    assertEquals( "themes/images/cd56ce7d", image.getResourceName() );
+    assertEquals( "themes/images/ba873d77", image.getResourceName() );
   }
 
   public void testCreateSWTImageFromNone() throws IOException {

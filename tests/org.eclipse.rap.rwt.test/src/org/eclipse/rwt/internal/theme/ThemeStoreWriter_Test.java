@@ -46,7 +46,7 @@ public class ThemeStoreWriter_Test extends TestCase {
     assertTrue( output.indexOf( "\"#ff0000\"" ) != -1 );
     // register images, with sizes
     String expected;
-    expected = "\"cd56ce7d\": [ 50, 100 ]";
+    expected = "\"ba873d77\": [ 50, 100 ]";
     assertTrue( output.indexOf( expected ) != -1 );
     // conditional colors
     expected =   "\"color\": [ [ [ \"[BORDER\" ], "
@@ -54,7 +54,7 @@ public class ThemeStoreWriter_Test extends TestCase {
     assertTrue( output.indexOf( expected ) != -1 );
     // conditional background-images
     expected =   "\"background-image\": "
-               + "[ [ [ \"[BORDER\" ], \"cd56ce7d\" ], [ [], \"ffffffff\" ] ]";
+               + "[ [ [ \"[BORDER\" ], \"ba873d77\" ], [ [], \"a505df1b\" ] ]";
     assertTrue( output.indexOf( expected ) != -1 );
   }
 
@@ -86,7 +86,7 @@ public class ThemeStoreWriter_Test extends TestCase {
     storeWriter.addTheme( getTheme( THEME_WRITE_VERTICAL_GRADIENT ), true );
     String output = storeWriter.createJs();
     String expected =   "\"gradients\": {\n"
-                      + "\"5b203000\": {\n"
+                      + "\"2eb911d6\": {\n"
                       + "\"percents\": [ 0.0, 48.0, 52.0, 100.0 ],\n"
                       + "\"colors\": [ \"#ffffff\", \"#f0f0f0\", \"#e0e0e0\", \"#ffffff\" ],\n"
                       + "\"vertical\": true\n"
@@ -94,7 +94,7 @@ public class ThemeStoreWriter_Test extends TestCase {
                       + "}";
     assertTrue( output.indexOf( expected ) != -1 );
     expected =   "\"Button\": {\n"
-               + "\"background-image\": [ [ [], \"5b203000\" ] ]\n"
+               + "\"background-image\": [ [ [], \"2eb911d6\" ] ]\n"
                + "}";
     assertTrue( output.indexOf( expected ) != -1 );
   }
@@ -107,7 +107,7 @@ public class ThemeStoreWriter_Test extends TestCase {
     storeWriter.addTheme( getTheme( THEME_WRITE_HORIZONTAL_GRADIENT ), true );
     String output = storeWriter.createJs();
     String expected =   "\"gradients\": {\n"
-                      + "\"d901800b\": {\n"
+                      + "\"2762759\": {\n"
                       + "\"percents\": [ 0.0, 48.0, 52.0, 100.0 ],\n"
                       + "\"colors\": [ \"#ffffff\", \"#f0f0f0\", \"#e0e0e0\", \"#ffffff\" ],\n"
                       + "\"vertical\": false\n"
@@ -115,7 +115,7 @@ public class ThemeStoreWriter_Test extends TestCase {
                       + "}";
     assertTrue( output.indexOf( expected ) != -1 );
     expected =   "\"Button\": {\n"
-               + "\"background-image\": [ [ [], \"d901800b\" ] ]\n"
+               + "\"background-image\": [ [ [], \"2762759\" ] ]\n"
                + "}";
     assertTrue( output.indexOf( expected ) != -1 );
   }
@@ -166,18 +166,18 @@ public class ThemeStoreWriter_Test extends TestCase {
     storeWriter.addTheme( getTheme( THEME_WRITE_IMAGES ), true );
     String output = storeWriter.createJs();
     String expectedImages =   "\"images\": {\n"
-                            + "\"793f156b\": [ 100, 50 ]\n"
+                            + "\"c84ae54c\": [ 100, 50 ]\n"
                             + "}";
     assertTrue( output.indexOf( expectedImages ) != -1 );
     String expectedGradients =   "\"gradients\": {\n"
-                               + "\"538c1ec0\": {\n"
+                               + "\"154e1724\": {\n"
                                + "\"percents\": [ 0.0, 100.0 ],\n"
                                + "\"colors\": [ \"#000000\", \"#ffffff\" ],\n"
                                + "\"vertical\": true\n"
                                + "}";
     assertTrue( output.indexOf( expectedGradients ) != -1 );
     String expected =   "\"Button\": {\n"
-                      + "\"background-image\": [ [ [ \".special\" ], \"538c1ec0\" ], [ [], \"793f156b\" ] ]\n"
+                      + "\"background-image\": [ [ [ \".special\" ], \"154e1724\" ], [ [], \"c84ae54c\" ] ]\n"
                       + "}";
     assertTrue( output.indexOf( expected ) != -1 );
   }
