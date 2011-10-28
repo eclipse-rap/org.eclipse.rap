@@ -545,6 +545,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
           }
           this.setFocused( true );
           evt.stopPropagation();
+          evt.preventDefault();
           break;
         case "Escape":
           if( this._dropped ) {
@@ -609,6 +610,9 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
             }
           }
           break;
+        case "Enter":
+          evt.preventDefault();
+        break;
       }
       if( this._field.isCreated() && !org.eclipse.swt.EventUtil.getSuspended() ) {
         this._handleSelectionChange();

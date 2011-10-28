@@ -53,6 +53,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.Text", {
       this._inputElement.style.paddingRight = "1px";
     },
 
+    _webkitMultilineFix : function() {
+      if( this._inputTag !== "textarea" ) {
+        this.base( arguments );
+      }
+    },
+
     _applyWrap : function( value, oldValue ) {
       if( this._inputTag == "textarea" ) {
         this._styleWrap();

@@ -358,12 +358,27 @@ qx.Class.define("qx.ui.form.TextField",
         } else {
           inp.addEventListener("input", this.__oninput, false);
         }
+        
+        if (qx.core.Variant.isSet( "qx.client", "webkit" ) ) {
+          this._webkitMultilineFix();
+        }
 
         // TODO [tb] : write test:
         this._getTargetNode().appendChild( inp );
       }
     },
+    
+    _webkitMultilineFix : function(){
+      this.addEventListener( "keydown", this._preventEnter, this );
+      this.addEventListener( "keypress", this._preventEnter, this );
+      this.addEventListener( "keyup", this._preventEnter, this );
+    },
 
+    _preventEnter : function( event ) {
+      if( event.getKeyIdentifier() === "Enter" ) {
+        event.preventDefault();
+      }
+    },
 
     /**
      * We could not use width/height = 100% because the outer elements
