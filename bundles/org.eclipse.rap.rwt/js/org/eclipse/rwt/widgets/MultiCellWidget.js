@@ -41,6 +41,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     this.initSelectable();
     this.initCursor();    
     this.initTextColor();        
+    this.initHorizontalChildrenAlign();
   },
   
   destruct : function() {
@@ -305,6 +306,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     
     _applyHorizontalChildrenAlign : function( value, old ) {
       this._scheduleLayoutX();
+      this.setStyleProperty( "textAlign", value );
     },
     
     _applyVerticalChildrenAlign : function( value, old ) {

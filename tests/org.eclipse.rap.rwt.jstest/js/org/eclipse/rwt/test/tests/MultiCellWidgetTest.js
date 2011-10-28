@@ -359,6 +359,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MultiCellWidgetTest", {
       this.disposeWidget( widget );
     },
     
+    testTextAlign : function() {
+      var widget = this.createDefaultWidget();
+      this.initWidget( widget );
+      assertEquals( "center", widget.getStyleProperty( "textAlign" ) );
+      widget.setHorizontalChildrenAlign( "right" );
+      assertEquals( "right", widget.getStyleProperty( "textAlign" ) );
+      widget.destroy();
+    },
+    
     testFont : function() {
       var widget = this.createDefaultWidget();  
       widget.setFont( new qx.ui.core.Font( 10, [ "monospace" ] ) );
