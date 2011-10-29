@@ -57,7 +57,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static final String PROP_CELL_TOOLTIP_TEXT = "cellToolTipText";
 
   private static final int ZERO = 0 ;
-  private static final int DEFAULT_ITEM_HEIGHT = 18;
   private static final String[] DEFAULT_SELECTION = new String[ 0 ];
   private static final boolean[] DEFAULT_SCROLLBARS_VISIBLE = new boolean[] { false, false };
   private static final String DEFAULT_SORT_DIRECTION = "none";
@@ -127,7 +126,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     ControlLCAUtil.renderChanges( tree );
     WidgetLCAUtil.renderCustomVariant( tree );
     renderProperty( tree, PROP_ITEM_COUNT, tree.getItemCount(), ZERO );
-    renderProperty( tree, PROP_ITEM_HEIGHT, tree.getItemHeight(), DEFAULT_ITEM_HEIGHT );
+    renderProperty( tree, PROP_ITEM_HEIGHT, tree.getItemHeight(), ZERO );
     renderItemMetrics( tree );
     renderProperty( tree, PROP_COLUMN_COUNT, tree.getColumnCount(), ZERO );
     renderProperty( tree, PROP_TREE_COLUMN, getTreeColumn( tree ), ZERO );

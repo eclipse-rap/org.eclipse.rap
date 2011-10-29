@@ -715,16 +715,15 @@ public class TreeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( tree, "itemCount" ) );
   }
 
-//  TODO [rst] Default item height has changed
-//  public void testRenderInitialItemHeight() throws IOException {
-//    Tree tree = new Tree( shell, SWT.NONE );
-//
-//    lca.render( tree );
-//
-//    Message message = Fixture.getProtocolMessage();
-//    CreateOperation operation = message.findCreateOperation( tree );
-//    assertTrue( operation.getPropertyNames().indexOf( "itemHeight" ) == -1 );
-//  }
+  public void testRenderInitialItemHeight() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "itemHeight" ) != -1 );
+  }
 
   public void testRenderItemHeight() throws IOException {
     Tree tree = new Tree( shell, SWT.NONE );
