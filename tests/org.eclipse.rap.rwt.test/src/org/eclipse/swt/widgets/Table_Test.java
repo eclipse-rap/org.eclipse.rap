@@ -1805,7 +1805,7 @@ public class Table_Test extends TestCase {
       new TableItem( table, SWT.NONE ).setText( "Item " + i );
     }
     new TableItem( table, SWT.NONE ).setText( "Long long item 10" );
-    expected = new Point( 151, 241 );
+    expected = new Point( 155, 241 );
     assertEquals( expected, table.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     expected = new Point( 310, 310 );
@@ -2311,7 +2311,7 @@ public class Table_Test extends TestCase {
     new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     // 33 = 21 ( check width ) + 12
-    assertEquals( 33, table.getItemsPreferredWidth( 0 ) );
+    assertEquals( 37, table.getItemsPreferredWidth( 0 ) );
     assertEquals( 12, table.getItemsPreferredWidth( 1 ) );
   }
 

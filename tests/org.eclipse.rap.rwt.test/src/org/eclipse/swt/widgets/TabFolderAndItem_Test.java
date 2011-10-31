@@ -282,11 +282,11 @@ public class TabFolderAndItem_Test extends TestCase {
       TabItem tabItem = new TabItem( folder, SWT.NONE );
       tabItem.setText( "TabItem " + i );
     }
-    Rectangle expected = new Rectangle( 0, 0, 80, 42 );
+    Rectangle expected = new Rectangle( 0, 0, 74, 32 );
     assertEquals( expected, folder.getItem( 0 ).getBounds() );
-    expected = new Rectangle( 80, 3, 79, 39 );
+    expected = new Rectangle( 74, 3, 73, 29 );
     assertEquals( expected, folder.getItem( 1 ).getBounds() );
-    expected = new Rectangle( 160, 3, 80, 39 );
+    expected = new Rectangle( 148, 3, 74, 29 );
     assertEquals( expected, folder.getItem( 2 ).getBounds() );
     assertEquals( folder.getItem( 0 ), folder.getItem( new Point( 10, 2 ) ) );
     assertEquals( folder.getItem( 0 ), folder.getItem( new Point( 10, 10 ) ) );
@@ -302,11 +302,11 @@ public class TabFolderAndItem_Test extends TestCase {
       TabItem tabItem = new TabItem( folder, SWT.NONE );
       tabItem.setText( "TabItem " + i );
     }
-    expected = new Rectangle( 0, 358, 80, 42 );
+    expected = new Rectangle( 0, 368, 74, 32 );
     assertEquals( expected, folder.getItem( 0 ).getBounds() );
-    expected = new Rectangle( 80, 358, 79, 39 );
+    expected = new Rectangle( 74, 368, 73, 29 );
     assertEquals( expected, folder.getItem( 1 ).getBounds() );
-    expected = new Rectangle( 160, 358, 80, 39 );
+    expected = new Rectangle( 148, 368, 74, 29 );
     assertEquals( expected, folder.getItem( 2 ).getBounds() );
     assertEquals( folder.getItem( 0 ), folder.getItem( new Point( 10, 398 ) ) );
     assertEquals( folder.getItem( 0 ), folder.getItem( new Point( 10, 390 ) ) );
@@ -328,40 +328,40 @@ public class TabFolderAndItem_Test extends TestCase {
   public void testClientArea() {
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     folder.setSize( 100, 100 );
-    Rectangle expected = new Rectangle( 1, 40, 98, 59 );
+    Rectangle expected = new Rectangle( 1, 30, 98, 69 );
     assertEquals( expected, folder.getClientArea() );
 
     folder = new TabFolder( shell, SWT.BORDER );
     folder.setSize( 100, 100 );
-    expected = new Rectangle( 2, 41, 96, 57 );
+    expected = new Rectangle( 2, 31, 96, 67 );
     assertEquals( expected, folder.getClientArea() );
 
     folder = new TabFolder( shell, SWT.BOTTOM );
     folder.setSize( 100, 100 );
-    expected = new Rectangle( 1, 1, 98, 59 );
+    expected = new Rectangle( 1, 1, 98, 69 );
     assertEquals( expected, folder.getClientArea() );
 
     folder = new TabFolder( shell, SWT.BOTTOM | SWT.BORDER );
     folder.setSize( 100, 100 );
-    expected = new Rectangle( 2, 2, 96, 57 );
+    expected = new Rectangle( 2, 2, 96, 67 );
     assertEquals( expected, folder.getClientArea() );
   }
 
   public void testComputeTrim() {
     TabFolder folder = new TabFolder( shell, SWT.NONE );
-    Rectangle expected = new Rectangle( -1, -40, 2, 41 );
+    Rectangle expected = new Rectangle( -1, -30, 2, 31 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
 
     folder = new TabFolder( shell, SWT.BORDER );
-    expected = new Rectangle( -2, -41, 4, 43 );
+    expected = new Rectangle( -2, -31, 4, 33 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
 
     folder = new TabFolder( shell, SWT.BOTTOM );
-    expected = new Rectangle( -1, -1, 2, 41 );
+    expected = new Rectangle( -1, -1, 2, 31 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
 
     folder = new TabFolder( shell, SWT.BOTTOM | SWT.BORDER );
-    expected = new Rectangle( -2, -2, 4, 43 );
+    expected = new Rectangle( -2, -2, 4, 33 );
     assertEquals( expected, folder.computeTrim( 0, 0, 0, 0 ) );
   }
 

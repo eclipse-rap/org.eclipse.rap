@@ -31,17 +31,16 @@ TabItem {
     from( #f9f9f9 ),
     to( #e4e4e4 )
   );
-  border-top-color: #bdbdbd;
+  border-top-color: #5882b5;
   border-bottom-color: #bdbdbd;
   text-shadow: 0 1px 0 #ffffff;
-  padding : 12px 9px 9px 9px;
+  padding : 6px;
 }
 
 TabItem:selected {
-  background-image: gradient(
+ background-image: gradient(
     linear, left top, left bottom,
     from( #d5d5d5 ),
     to( #eaeaea )
   );
-  padding : 12px 9px 10px 9px;
 }

@@ -47,19 +47,25 @@ TableColumn:hover {
 
 TableItem {
   background-color: transparent;
-  color: inherit;
+  color: #4a4a4a;
   text-decoration: none;
   text-shadow: none;
   background-image: none;
 }
 
 TableItem:hover {
-  background-color: #dae9f7;
+	color: #ffffff;
+	background-color: #b5b5b5;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #818181 ),
+    to( #b5b5b5 )
+  );
 }
 
 TableItem:selected {
-  color: white;
-  background-color: #00589f;
+  color: #ffffff;
+  background-color: #5882b5;
   background-image: gradient(
     linear, left top, left bottom,
     from( #416693 ),
@@ -68,8 +74,8 @@ TableItem:selected {
 }
 
 TableItem:selected:unfocused {
-  background-color: #959595;
-  color: #ffffff;
+	color: #ffffff;
+  background-color: #b5b5b5;
   background-image: gradient(
     linear, left top, left bottom,
     from( #818181 ),
@@ -78,21 +84,35 @@ TableItem:selected:unfocused {
 }
 
 TableItem:linesvisible:even {
-  background-color: #f3f3f4;
+  background-color: #f0f0f0;
+  color: #4a4a4a;
 }
 
 TableItem:linesvisible:even:hover {
-  background-color: #dae9f7;
+  color: #ffffff;
+  background-color: #b5b5b5;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #818181 ),
+    to( #b5b5b5 )
+  );
 }
 
 TableItem:linesvisible:even:selected {
-  background-color: #00589f;
-  color: white;
+  color: #ffffff;
+  background-color: #5882b5;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #416693 ),
+    to( #5882b5 )
+  );
 }
 
 TableItem:linesvisible:even:selected:unfocused {
   background-color: #959595;
   color: #ffffff;
+  text-decoration: none;
+  text-shadow: none;
 }
 
 TableColumn-SortIndicator {
@@ -126,7 +146,7 @@ Table-Checkbox {
   Deprecated, use "margin" instead.
   */
   width: 21px;
-  margin: 0px;
+  margin: 0 0 0 4px;
   background-image: url( resource/widget/rap/button/check-unselected.png );
 }
 

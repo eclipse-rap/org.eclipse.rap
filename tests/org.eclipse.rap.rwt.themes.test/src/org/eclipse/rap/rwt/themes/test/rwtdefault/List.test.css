@@ -31,9 +31,10 @@ List-Item {
 }
 
 List-Item:hover {
+  color: #ffffff;
   background-color: #dae9f7;
   background-image: gradient(
-    linear, left top, right top,
+    linear, left top, left bottom,
     from( #818181 ),
     to( #b5b5b5 )
   );
@@ -66,7 +67,7 @@ List-Item:even {
 List-Item:even:hover {
   background-color: #818181;
   background-image: gradient(
-    linear, left top, right top,
+    linear, left top, left bottom,
     from( #818181 ),
     to( #b5b5b5 )
   );

@@ -23,23 +23,25 @@ Tree[BORDER] {
 
 TreeItem {
   background-color: transparent;
-  color: inherit;
+  color: #4a4a4a;
   text-decoration: none;
   text-shadow: none;
   background-image: none;
 }
 
 TreeItem:hover {
-  background-color: #dae9f7;
-  text-decoration: none;
-  text-shadow: none;
+  color: #ffffff;
+  background-color: #b5b5b5;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #818181 ),
+    to( #b5b5b5 )
+  );
 }
 
 TreeItem:selected {
-  background-color: #00589f;
   color: #ffffff;
-  text-decoration: none;
-  text-shadow: none;
+  background-color: #5882b5;
   background-image: gradient(
     linear, left top, left bottom,
     from( #416693 ),
@@ -48,10 +50,8 @@ TreeItem:selected {
 }
 
 TreeItem:selected:unfocused {
-  background-color: #959595;
   color: #ffffff;
-  text-decoration: none;
-  text-shadow: none;
+  background-color: #b5b5b5;
   background-image: gradient(
     linear, left top, left bottom,
     from( #818181 ),
