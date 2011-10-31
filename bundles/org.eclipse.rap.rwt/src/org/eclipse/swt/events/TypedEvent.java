@@ -25,7 +25,10 @@ import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.internal.events.*;
+import org.eclipse.swt.internal.events.ActivateEvent;
+import org.eclipse.swt.internal.events.DeselectionEvent;
+import org.eclipse.swt.internal.events.SetDataEvent;
+import org.eclipse.swt.internal.events.ShowEvent;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
 import org.eclipse.swt.widgets.Display;
@@ -43,9 +46,8 @@ public class TypedEvent extends Event {
   private static final long serialVersionUID = 1L;
 
   private static final String ATTR_SCHEDULED_EVENT_LIST
-    = TypedEvent.class.getName() + "_scheduledEventList";
+    = TypedEvent.class.getName() + "#scheduledEventList";
 
-  // TODO [rh] event order is preliminary
   private static final Class[] EVENT_ORDER = {
     ControlEvent.class,
     ActivateEvent.class,
@@ -173,24 +175,6 @@ public class TypedEvent extends Event {
    * from application code.
    * </p>
    */
-  public static void processScheduledEvents() {
-    TypedEvent[] events = getScheduledEvents();
-    for( int i = 0; i < events.length; i++ ) {
-      TypedEvent event = events[ i ];
-      if( event.allowProcessing() ) {
-        event.processEvent();
-      }
-    }
-    clearScheduledEventList();
-  }
-
-  /**
-   * <p><strong>IMPORTANT:</strong> This method is <em>not</em> part of the RWT
-   * public API. It is marked public only so that it can be shared
-   * within the packages provided by RWT. It should never be accessed
-   * from application code.
-   * </p>
-   */
   public static boolean executeNext() {
     boolean result = false;
     TypedEvent[] events = getScheduledEvents();
@@ -265,10 +249,6 @@ public class TypedEvent extends Event {
       stateInfo.setAttribute( ATTR_SCHEDULED_EVENT_LIST, result );
     }
     return result;
-  }
-
-  private static void clearScheduledEventList() {
-    getScheduledEventList().clear();
   }
 
   ///////////////////////
