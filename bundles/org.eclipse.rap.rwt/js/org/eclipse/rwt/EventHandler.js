@@ -311,20 +311,22 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     } ),
 
     _onmouseevent_post : function( vDomEvent, vType, vDomTarget ) {
+      var eventConsumed = false;
       var util = org.eclipse.rwt.EventHandlerUtil;
       var vCaptureTarget = this.getCaptureWidget();
-      var vOriginalTarget 
-        = util.getOriginalTargetObject( vDomTarget );
+      var vOriginalTarget = util.getOriginalTargetObject( vDomTarget );
       var vTarget = util.getTargetObject( null, vOriginalTarget, true );
       if( !vTarget ) {
         return;
       }
       var vDispatchTarget = vCaptureTarget ? vCaptureTarget : vTarget;
-      var vFixClick 
-        = this._onmouseevent_click_fix( vDomTarget, vType, vDispatchTarget );
-      if(    vType == "contextmenu" 
-          && !this._allowContextMenu( vOriginalTarget, vDomTarget ) ) {
-       util.stopDomEvent( vDomEvent );
+      var vFixClick = this._onmouseevent_click_fix( vDomTarget, vType, vDispatchTarget );
+      if( vType == "contextmenu" ) {
+        if( this._allowContextMenu( vOriginalTarget, vDomTarget ) ) {
+          eventConsumed = true;
+        } else {
+          util.stopDomEvent( vDomEvent );
+        } 
       }
       if( vDispatchTarget.getEnabled() && vType == "mousedown" ) {
         qx.event.handler.FocusHandler.mouseFocus = true;
@@ -367,7 +369,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
                                                        vRelatedTarget );
       // Store last Event in MouseEvent Constructor. Needed for Tooltips, ...
       qx.event.type.MouseEvent.storeEventState( vEventObject );
-      if( vDispatchTarget.getEnabled() ) {
+      if( vDispatchTarget.getEnabled() && !eventConsumed ) {
         vDispatchTarget.dispatchEvent( vEventObject );
         this._onmouseevent_special_post( vType, 
                                          vTarget, 

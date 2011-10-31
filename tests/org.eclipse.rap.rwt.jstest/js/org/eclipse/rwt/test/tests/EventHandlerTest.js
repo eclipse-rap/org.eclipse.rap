@@ -471,6 +471,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget1.destroy();
       widget2.destroy();
     },
+    
+    testNativeMenuConsumesEvent : function(){
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var text = new org.eclipse.rwt.widgets.Text( false );
+      text.addToDocument();
+      org.eclipse.swt.TextUtil.initialize( text );
+      text.setSpace( 0, 50, 0, 21 );
+      testUtil.flush();
+      text.focus();
+      var log = [];
+      text.addEventListener( "contextmenu", function( event ) {
+        log.push( event );
+      } );
+      var right = qx.event.type.MouseEvent.buttons.right;
+      testUtil.fakeMouseEventDOM( text.getElement(), "contextmenu", right );
+      assertEquals( 1, log.length );
+  
+      testUtil.fakeMouseEventDOM( text._inputElement, "contextmenu", right );
+      assertEquals( 1, log.length );
+      
+      text.destroy();
+    },
 
     /////////
     // Helper
