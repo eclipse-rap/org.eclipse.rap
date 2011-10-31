@@ -812,7 +812,7 @@ TabItem:selected {
   border-top-color: #00589f;
   border-bottom-color: #00589f;
   background-image: none;
-  padding : 2px 8px 4px 7px;
+  padding : 2px 8px 3px 7px;
 }
 
 TabItem:hover {

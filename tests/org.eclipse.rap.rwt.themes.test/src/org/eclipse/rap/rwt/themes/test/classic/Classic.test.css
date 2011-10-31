@@ -876,17 +876,23 @@ Spinner-UpButton-Icon, Spinner-DownButton-Icon {
 
 /* TabFolder Classic theme */
 
+TabFolder-ContentContainer {
+  border: 1px solid #aca899;
+}
+
 TabItem {
   background-color: #f8f8ff;
   border-top-color: #aca899;
   border-bottom-color: #aca899;
   background-image: none;
+  padding : 2px 6px 2px 5px;
 }
 
 TabItem:selected {
   background-color: #f8f8ff;
   border-top-color: #fec83c;
   border-bottom-color: #fec83c;
+  padding : 2px 8px 3px 7px;
 }
 
 TabItem:hover {

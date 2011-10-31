@@ -92,6 +92,11 @@ appearances = {
         }
       }
       result.padding = tv.getCssBoxDimensions( "TabItem", "padding" );
+      if( states.checked ) {
+        // Hack to hide the content containder border below the selected tab
+        var containerBorder = tv.getCssBorder( "TabFolder-ContentContainer", "border" );
+        result.paddingBottom = result.padding[ 2 ]  + containerBorder.getWidthTop();
+      }
       result.backgroundColor = tv.getCssColor( "TabItem", "background-color" );
       result.backgroundImage = tv.getCssImage( "TabItem", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "TabItem", "background-image" );

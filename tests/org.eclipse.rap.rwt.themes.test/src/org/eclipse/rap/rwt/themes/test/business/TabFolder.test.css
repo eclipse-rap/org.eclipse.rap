@@ -8,11 +8,16 @@
 *   EclipseSource - initial API and implementation
 *******************************************************************************/
 
+TabFolder-ContentContainer {
+  border: 1px solid #a4a4a4;
+}
+
 TabItem {
   background-color: white;
   border-top-color: white;
   border-bottom-color: white;
   background-image: none;
+  padding : 2px 6px 2px 5px;
 }
 
 TabItem:selected {
@@ -20,6 +25,7 @@ TabItem:selected {
   border-top-color: #00589f;
   border-bottom-color: #00589f;
   background-image: none;
+  padding : 2px 8px 3px 7px;
 }
 
 TabItem:hover {

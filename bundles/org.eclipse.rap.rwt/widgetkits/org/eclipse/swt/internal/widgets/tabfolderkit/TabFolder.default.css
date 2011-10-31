@@ -44,4 +44,5 @@ TabItem:selected {
     from( #d5d5d5 ),
     to( #eaeaea )
   );
+  padding : 12px 9px 10px 9px;
 }
