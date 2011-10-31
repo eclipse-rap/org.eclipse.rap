@@ -128,15 +128,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
 
     _renderBackground : function( item, config, selected ) {
       var color = null;
+      var image = null;
       var gradient = null;
       if( this._getRenderThemingBackground( item, config, selected ) ) {
         color = this._styleMap.itemBackground;
+        image = this._styleMap.itemBackgroundImage;
         gradient = this._styleMap.itemBackgroundGradient;
       } else {
         color = item.getBackground();
       }
       // Note: "undefined" is a string stored in the themestore
       this.setBackgroundColor( color !== "undefined" ? color : null );
+      this.setBackgroundImage( image !== "undefined" ? image : null );
       this.setBackgroundGradient( gradient !== "undefined" ? gradient : null );
     },
 

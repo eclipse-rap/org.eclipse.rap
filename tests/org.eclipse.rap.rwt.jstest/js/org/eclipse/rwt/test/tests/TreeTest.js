@@ -1894,7 +1894,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
         style : function( states ) {
           return {
             itemBackground : states.over ? "red" : "green",
-            itemBackgroundGradient : null
+            itemBackgroundGradient : null,
+            itemBackgroundImage : null
           }
         }
       } );
@@ -1919,7 +1920,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
         style : function( states ) {
           return {
             itemBackground : states.over ? "red" : "green",
-            itemBackgroundGradient : null
+            itemBackgroundGradient : null,
+            itemBackgroundImage : null
           }
         }
       } );
@@ -2741,6 +2743,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
             result.itemBackground = "white";
           }
           result.itemBackgroundGradient = null;
+          result.itemBackgroundImage = null;
           return result;
         }
       } );  
@@ -3760,6 +3763,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
           return {
             "itemBackground" : "undefined",
             "itemBackgroundGradient" : "undefined",
+            "itemBackgroundImage" : null,
             "itemForeground" : "undefined",
             "backgroundImage" : null
           }

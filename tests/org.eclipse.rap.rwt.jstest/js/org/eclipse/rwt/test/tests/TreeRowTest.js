@@ -248,6 +248,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           var result = {};
           result.itemBackground = "blue";
           result.itemBackgroundGradient = null;
+          result.itemBackgroundImage = null;
           result.itemForeground = "white";
           result.textDecoration = "line-through";
           return result;
@@ -1263,6 +1264,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
 
+    testRenderThemingItemBackgroundImage : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree();
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test1" ] );
+      row.renderItem( item, tree._config, false, null );
+      assertNull( row.getBackgroundImage() );
+      this._setItemBackgroundImage( "test.png" );
+      row.renderItem( item, tree._config, false, null );
+      assertEquals( "test.png", row.getBackgroundImage() );
+      tree.destroy();
+      row.destroy();
+    },
+
     testRenderItemBackgroundSelected : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createTree();
@@ -1348,6 +1365,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             result.itemBackground = "#888888";
           }
           result.itemBackgroundGradient = null;
+          result.itemBackgroundImage = null;
           return result;
         }
       } );
@@ -1379,6 +1397,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             result.itemForeground = "black"
           }
           result.itemBackgroundGradient = null;
+          result.itemBackgroundImage = null;
           return result;
         }
       } );
@@ -1417,6 +1436,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             result.itemForeground = "black"
           }
           result.itemBackgroundGradient = null;
+          result.itemBackgroundImage = null;
           return result;
         }
       } );
@@ -1503,6 +1523,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             result.itemForeground = "black";
           }
           result.itemBackgroundGradient = null;
+          result.itemBackgroundImage = null;
           return result;
         }
       } );
@@ -1540,6 +1561,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             result.itemForeground = "black";
           }
           result.itemBackgroundGradient = null;
+          result.itemBackgroundImage = null;
           return result;
         }
       } );
@@ -1578,6 +1600,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             result.itemForeground = "black";
           }
           result.itemBackgroundGradient = null;
+          result.itemBackgroundImage = null;
           return result;
         }
       } );
@@ -1615,6 +1638,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             result.itemForeground = "black";
           }
           result.itemBackgroundGradient = null;
+          result.itemBackgroundImage = null;
           return result;
         }
       } );
@@ -1786,6 +1810,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             result.itemBackground = "#888888";
           }
           result.itemBackgroundGradient = null;
+          result.itemBackgroundImage = null;
           return result;
         }
       } );
@@ -1819,6 +1844,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             result.itemBackground = "#888888";
           }
           result.itemBackgroundGradient = null;
+          result.itemBackgroundImage = null;
           return result;
         }
       } );
@@ -1849,6 +1875,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             result.itemBackground = "#888888";
           }
           result.itemBackgroundGradient = null;
+          result.itemBackgroundImage = null;
           return result;
         }
       } );
@@ -1891,6 +1918,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           return {
             "itemBackground" : "undefined",
             "itemBackgroundGradient" : "undefined",
+            "itemBackgroundImage" : "undefined",
             "itemForeground" : "undefined",
             "checkBox" : null
           }
@@ -1981,6 +2009,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             "itemBackground" : value,
             "itemForeground" : "undefined",
             "itemBackgroundGradient" : null,
+            "itemBackgroundImage" : null,
             "checkBox" : null
           }
         }
@@ -1993,6 +2022,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
         style : function( states ) {
           return {
             "itemBackgroundGradient" : value,
+            "itemBackground" : "transparent",
+            "itemBackgroundImage" : null,
+            "itemForeground" : "undefined",
+            "checkBox" : null
+          }
+        }
+      } );
+    },
+
+    _setItemBackgroundImage : function( value ) {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      testUtil.fakeAppearance( "tree-row",  {
+        style : function( states ) {
+          return {
+            "itemBackgroundImage" : value,
+            "itemBackgroundGradient" : null,
             "itemBackground" : "transparent",
             "itemForeground" : "undefined",
             "checkBox" : null
@@ -2008,6 +2053,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           return {
             "itemBackground" : "undefined",
             "itemBackgroundGradient" : "undefined",
+            "itemBackgroundImage" : null,
             "itemForeground" : value,
             "checkBox" : null
           }
