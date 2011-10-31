@@ -554,6 +554,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       bar.setSelection( 50 );
       qx.ui.core.Widget.flushGlobalQueues();
       bar.setIndicatorColor( "green" );
+      bar.setIndicatorGradient( null );
       var shape = bar._indicatorShape;
       assertEquals( "color", gfxUtil.getFillType( shape ) );
       bar.setIndicatorGradient( [ [ 0, "red" ], [ 1, "yellow" ] ] );
@@ -575,6 +576,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       bar.addToDocument();
       bar.setSelection( 50 );
       bar.setBackgroundColor( "green" );
+      bar.setBackgroundGradient( null ); 
+      bar.setBackgroundImageSized( null );
       qx.ui.core.Widget.flushGlobalQueues();
       var shape = bar._backgroundShape;
       assertEquals( "color", gfxUtil.getFillType( shape ) );

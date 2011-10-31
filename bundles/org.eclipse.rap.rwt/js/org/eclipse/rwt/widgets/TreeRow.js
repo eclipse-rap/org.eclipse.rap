@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -127,15 +127,17 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
     },
 
     _renderBackground : function( item, config, selected ) {
-      // TODO [tb] : Support gradient
-      var color = null
+      var color = null;
+      var gradient = null;
       if( this._getRenderThemingBackground( item, config, selected ) ) {
         color = this._styleMap.itemBackground;
+        gradient = this._styleMap.itemBackgroundGradient;
       } else {
         color = item.getBackground();
       }
       // Note: "undefined" is a string stored in the themestore
-      this.setBackgroundColor( color != "undefined" ? color : null );
+      this.setBackgroundColor( color !== "undefined" ? color : null );
+      this.setBackgroundGradient( gradient !== "undefined" ? gradient : null );
     },
 
     _getRenderThemingBackground : function( item, config, selected ) {

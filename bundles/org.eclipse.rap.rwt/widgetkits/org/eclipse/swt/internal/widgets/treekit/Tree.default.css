@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 /* Tree default theme */
@@ -27,6 +27,7 @@ TreeItem {
   color: inherit;
   text-decoration: none;
   text-shadow: none;
+  background-image: none;
 }
 
 TreeItem:hover {
@@ -36,11 +37,21 @@ TreeItem:hover {
 TreeItem:selected {
   background-color: #00589f;
   color: #ffffff;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #416693 ),
+    to( #5882b5 )
+  );
 }
 
 TreeItem:selected:unfocused {
   background-color: #959595;
   color: #ffffff;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #818181 ),
+    to( #b5b5b5 )
+  );
 }
 
 TreeItem:linesvisible:even {

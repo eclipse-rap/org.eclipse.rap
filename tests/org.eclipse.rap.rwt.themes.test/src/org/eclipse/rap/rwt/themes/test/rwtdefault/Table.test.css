@@ -27,6 +27,7 @@ TableItem {
   color: inherit;
   text-decoration: none;
   text-shadow: none;
+  background-image: none;
 }
 
 TableItem:hover {
@@ -40,6 +41,11 @@ TableItem:selected {
   background-color: #00589f;
   text-decoration: none;
   text-shadow: none;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #416693 ),
+    to( #5882b5 )
+  );
 }
 
 TableItem:selected:unfocused {
@@ -47,6 +53,11 @@ TableItem:selected:unfocused {
   color: #ffffff;
   text-decoration: none;
   text-shadow: none;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #818181 ),
+    to( #b5b5b5 )
+  );
 }
 
 TableItem:linesvisible:even {

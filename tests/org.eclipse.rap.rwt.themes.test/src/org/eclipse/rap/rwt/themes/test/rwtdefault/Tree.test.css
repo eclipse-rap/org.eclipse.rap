@@ -26,6 +26,7 @@ TreeItem {
   color: inherit;
   text-decoration: none;
   text-shadow: none;
+  background-image: none;
 }
 
 TreeItem:hover {
@@ -39,6 +40,11 @@ TreeItem:selected {
   color: #ffffff;
   text-decoration: none;
   text-shadow: none;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #416693 ),
+    to( #5882b5 )
+  );
 }
 
 TreeItem:selected:unfocused {
@@ -46,6 +52,11 @@ TreeItem:selected:unfocused {
   color: #ffffff;
   text-decoration: none;
   text-shadow: none;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #818181 ),
+    to( #b5b5b5 )
+  );
 }
 
 TreeColumn {

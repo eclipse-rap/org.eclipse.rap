@@ -46,14 +46,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       var vBounds = testUtil.getElementBounds( vBar.getElement() );
       assertEquals( 100, hBounds.width );
       assertEquals( 100, vBounds.height );
-      assertEquals( 15, vBounds.width );
-      assertEquals( 15, hBounds.height );
+      assertEquals( 10, vBounds.width );
+      assertEquals( 10, hBounds.height );
       var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
       if( isMshtml ) {
         var hTargetBounds = testUtil.getElementBounds( hBar._getTargetNode() );
         var vTargetBounds = testUtil.getElementBounds( vBar._getTargetNode() );
-        assertEquals( 15, vTargetBounds.width );
-        assertEquals( 15, hTargetBounds.height );
+        assertEquals( 10, vTargetBounds.width );
+        assertEquals( 10, hTargetBounds.height );
       }
       hBar.destroy();
       vBar.destroy();
@@ -127,8 +127,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( [ 0, 0 ], this._getRelativeKnobPosition( hBar ) );
       vBar.setValue( 100 );
       hBar.setValue( 100 );
-      assertEquals( [ 0, 34 ], this._getRelativeKnobPosition( vBar ) );
-      assertEquals( [ 34, 0 ], this._getRelativeKnobPosition( hBar ) );
+      assertEquals( [ 0, 33 ], this._getRelativeKnobPosition( vBar ) );
+      assertEquals( [ 33, 0 ], this._getRelativeKnobPosition( hBar ) );
       hBar.setMaximum( 400 );
       vBar.setMaximum( 400 );
       assertEquals( [ 0, 25 ], this._getRelativeKnobPosition( vBar ) );
@@ -148,7 +148,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( [ 0, 50 ], this._getRelativeKnobPosition( vBar ) );
       vBar.setHeight( 200 );
       testUtil.flush();
-      assertEquals( [ 0, 34 ], this._getRelativeKnobPosition( vBar ) );
+      assertEquals( [ 0, 33 ], this._getRelativeKnobPosition( vBar ) );
       vBar.destroy();      
     },
 
@@ -172,29 +172,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       vBar.setValue( 100 );
       vBar.setVisibility( true );
       assertEquals( 100, vBar.getValue() );
-      assertEquals( [ 0, 34 ], this._getRelativeKnobPosition( vBar ) );
+      assertEquals( [ 0, 33 ], this._getRelativeKnobPosition( vBar ) );
       vBar.destroy();
     },
 
     testKnobSize : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
-      assertEquals( [ 0, 34 ], this._getRelativeThumbLength( vBar ) );
+      assertEquals( [ 0, 40 ], this._getRelativeThumbLength( vBar ) );
       vBar.setMaximum( 200 );
-      assertEquals( [ 0, 51 ], this._getRelativeThumbLength( vBar ) );
+      assertEquals( [ 0, 59 ], this._getRelativeThumbLength( vBar ) );
       vBar.setHeight( 50 );
-      assertEquals( [ 0, 28 ], this._getRelativeThumbLength( vBar ) );
+      assertEquals( [ 0, 44 ], this._getRelativeThumbLength( vBar ) );
       vBar.destroy();
     },  
 
     testKnobVisibility : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var vBar = this._createScrollBar( false, false );
-      vBar._thumb.setImage( "bla.jpg", 10, 17 );
-      assertEquals( 23, vBar._thumb.getHeight() );
+      vBar._thumb.setImage( "bla.jpg", 10, 20 );
+      assertEquals( 27, vBar._thumb.getHeight() );
       assertTrue( vBar._thumb.isCellVisible( 1 ) );
       vBar.setHeight( 95 );
-      assertEquals( 21, vBar._thumb.getHeight() );
+      assertEquals( 24, vBar._thumb.getHeight() );
       assertFalse( vBar._thumb.isCellVisible( 1 ) );
       vBar.destroy();
     },
@@ -396,7 +396,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( minSize, bar._thumb.getHeight() );
       bar.setMaximum( 400 );
       assertEquals( 100, bar._thumbLength );
-      assertEquals( 18, bar._thumb.getHeight() );
+      assertEquals( 20, bar._thumb.getHeight() );
       bar.setValue( 400 );
       assertEquals( 300, bar.getValue() );
       bar.destroy();
@@ -411,7 +411,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       assertEquals( minSize, bar._thumb.getHeight() );
       bar.setHeight( 500 );
       assertEquals( 500, bar._thumbLength );
-      assertEquals( 235, bar._thumb.getHeight() );
+      assertEquals( 240, bar._thumb.getHeight() );
       bar.setValue( 1000 );
       assertEquals( 500, bar.getValue() );
       bar.destroy();
@@ -502,7 +502,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
 
     _getRelativeKnobPosition : function( bar ) {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var button = 15; 
+      var button = 10; 
       var result = [ 0, 0 ];
       if( bar._horizontal ) {
         var length = bar.getWidth() - button * 2;

@@ -201,7 +201,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       var client = list._clientArea;
       var hbar = list._horzScrollBar;
       var vbar = list._vertScrollBar;
-      var barWidth = 15;
+      var barWidth = 10;
       assertIdentical( list, client.getParent() );
       assertIdentical( list, hbar.getParent() );
       assertIdentical( list, vbar.getParent() );

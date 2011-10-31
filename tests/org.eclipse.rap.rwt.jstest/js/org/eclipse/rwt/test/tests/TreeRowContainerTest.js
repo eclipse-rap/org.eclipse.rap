@@ -248,6 +248,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
         style : function( states ) {
           return {
             "itemBackground" : "undefined",
+            "itemBackgroundGradient" : "undefined",
             "itemForeground" : "undefined",
             "backgroundImage" : null
           }

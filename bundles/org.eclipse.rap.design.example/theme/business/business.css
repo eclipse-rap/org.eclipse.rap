@@ -838,6 +838,7 @@ TableItem {
   color: inherit;
   text-decoration: none;
   text-shadow: none;
+  background-image: none;
 }
 
 TableItem:hover {
@@ -1072,6 +1073,7 @@ TreeItem {
   color: inherit;
   text-decoration: none;
   text-shadow: none;
+  background-image: none;
 }
 
 TreeItem:hover {

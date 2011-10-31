@@ -676,7 +676,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       tree.setTopItemIndex( 55 ); // NOTE: NO Flush!
       var area = tree._rowContainer._getTargetNode();
       assertEquals( 1100, tree._vertScrollBar.getValue() );
-      assertEquals( 273, parseInt( tree._vertScrollBar._thumb.getElement().style.top ) );
+      assertEquals( 274, parseInt( tree._vertScrollBar._thumb.getElement().style.top ) );
       assertEquals( "Test55", area.childNodes[ 0 ].childNodes[ 0 ].innerHTML );
       tree.destroy();
     },
@@ -1893,7 +1893,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.fakeAppearance( "tree-row",  {
         style : function( states ) {
           return {
-            itemBackground : states.over ? "red" : "green"
+            itemBackground : states.over ? "red" : "green",
+            itemBackgroundGradient : null
           }
         }
       } );
@@ -1917,7 +1918,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.fakeAppearance( "tree-row",  {
         style : function( states ) {
           return {
-            itemBackground : states.over ? "red" : "green"
+            itemBackground : states.over ? "red" : "green",
+            itemBackgroundGradient : null
           }
         }
       } );
@@ -2738,6 +2740,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
           } else {
             result.itemBackground = "white";
           }
+          result.itemBackgroundGradient = null;
           return result;
         }
       } );  
@@ -3756,6 +3759,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
         style : function( states ) {
           return {
             "itemBackground" : "undefined",
+            "itemBackgroundGradient" : "undefined",
             "itemForeground" : "undefined",
             "backgroundImage" : null
           }

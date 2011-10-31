@@ -16,6 +16,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
   // TODO [tb] : Since TreeRow has been refactored to work without reference to Tree, the
   //             tests could also be refactored to not use the an tree instance anymore.
   members : {
+  
+    _gradient : [ [ 0, "red" ], [ 1, "yellow" ] ],
 
     testCreateRow : function() {
       var tree = this._createTree();
@@ -245,6 +247,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
         style : function( states ) {
           var result = {};
           result.itemBackground = "blue";
+          result.itemBackgroundGradient = null;
           result.itemForeground = "white";
           result.textDecoration = "line-through";
           return result;
@@ -1227,7 +1230,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.destroy();
     },
 
-    testRenderThemingItemBackground : function() {
+    testRenderThemingItemBackgroundColor : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createTree();
       var row = this._createRow( tree );
@@ -1240,6 +1243,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
       row.renderItem( item, tree._config, false, null );
       assertEquals( "green", row.getBackgroundColor() );
       assertEquals( 2, row._getTargetNode().childNodes.length );
+      tree.destroy();
+      row.destroy();
+    },
+
+    testRenderThemingItemBackgroundGradient : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createTree();
+      var row = this._createRow( tree );
+      this._addToDom( row );
+      var item = this._createItem( tree );
+      item.setTexts( [ "Test1" ] );
+      row.renderItem( item, tree._config, false, null );
+      assertNull( row.getBackgroundGradient() );
+      this._setItemBackgroundGradient( this._gradient );
+      row.renderItem( item, tree._config, false, null );
+      assertEquals( this._gradient, row.getBackgroundGradient() );
       tree.destroy();
       row.destroy();
     },
@@ -1328,6 +1347,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           } else {
             result.itemBackground = "#888888";
           }
+          result.itemBackgroundGradient = null;
           return result;
         }
       } );
@@ -1358,6 +1378,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             result.itemBackground = "#888888";
             result.itemForeground = "black"
           }
+          result.itemBackgroundGradient = null;
           return result;
         }
       } );
@@ -1395,6 +1416,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
             result.itemBackground = "#888888";
             result.itemForeground = "black"
           }
+          result.itemBackgroundGradient = null;
           return result;
         }
       } );
@@ -1480,6 +1502,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           } else {
             result.itemForeground = "black";
           }
+          result.itemBackgroundGradient = null;
           return result;
         }
       } );
@@ -1516,6 +1539,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           } else {
             result.itemForeground = "black";
           }
+          result.itemBackgroundGradient = null;
           return result;
         }
       } );
@@ -1553,6 +1577,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           } else {
             result.itemForeground = "black";
           }
+          result.itemBackgroundGradient = null;
           return result;
         }
       } );
@@ -1589,6 +1614,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           } else {
             result.itemForeground = "black";
           }
+          result.itemBackgroundGradient = null;
           return result;
         }
       } );
@@ -1759,6 +1785,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           } else {
             result.itemBackground = "#888888";
           }
+          result.itemBackgroundGradient = null;
           return result;
         }
       } );
@@ -1791,6 +1818,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           } else {
             result.itemBackground = "#888888";
           }
+          result.itemBackgroundGradient = null;
           return result;
         }
       } );
@@ -1820,6 +1848,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           } else {
             result.itemBackground = "#888888";
           }
+          result.itemBackgroundGradient = null;
           return result;
         }
       } );
@@ -1861,6 +1890,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
         style : function( states ) {
           return {
             "itemBackground" : "undefined",
+            "itemBackgroundGradient" : "undefined",
             "itemForeground" : "undefined",
             "checkBox" : null
           }
@@ -1950,6 +1980,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
           return {
             "itemBackground" : value,
             "itemForeground" : "undefined",
+            "itemBackgroundGradient" : null,
+            "checkBox" : null
+          }
+        }
+      } );
+    },
+
+    _setItemBackgroundGradient : function( value ) {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      testUtil.fakeAppearance( "tree-row",  {
+        style : function( states ) {
+          return {
+            "itemBackgroundGradient" : value,
+            "itemBackground" : "transparent",
+            "itemForeground" : "undefined",
             "checkBox" : null
           }
         }
@@ -1962,6 +2007,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowTest", {
         style : function( states ) {
           return {
             "itemBackground" : "undefined",
+            "itemBackgroundGradient" : "undefined",
             "itemForeground" : value,
             "checkBox" : null
           }

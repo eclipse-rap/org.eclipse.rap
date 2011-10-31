@@ -175,7 +175,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrolledCompositeTest", {
       var client = composite._clientArea;
       var hbar = composite._horzScrollBar;
       var vbar = composite._vertScrollBar;
-      var barWidth = 15;
+      var barWidth = 10;
       assertIdentical( composite, client.getParent() );
       assertIdentical( composite, hbar.getParent() );
       assertIdentical( composite, vbar.getParent() );

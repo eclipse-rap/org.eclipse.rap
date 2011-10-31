@@ -915,15 +915,18 @@ Table[BORDER] {
 TableItem {
   color: inherit;
   background-color: transparent;
+  background-image: none;
 }
 
 TableItem:selected {
   color: white;
   background-color: #316ac5;
+  background-image: none;
 }
 
 TableItem:selected:unfocused {
   background-color: #c0c0c0;
+  background-image: none;
 }
 
 TableColumn {
