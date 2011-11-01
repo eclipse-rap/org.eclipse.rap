@@ -66,52 +66,6 @@ appearances = {
       result.backgroundColor = tv.getCssColor( "Scale-Thumb", "background-color" );
       return result;
     }
-  },
-
-  "scale-min-marker" : {
-    include : "image",
-
-    style : function( states ) {
-      var result = {};
-      if( states.horizontal ) {
-        result.left =   org.eclipse.swt.widgets.Scale.PADDING
-                      + org.eclipse.swt.widgets.Scale.HALF_THUMB;
-        result.source = "widget/scale/h_marker_big.gif";
-      } else {
-        result.top =   org.eclipse.swt.widgets.Scale.PADDING
-                     + org.eclipse.swt.widgets.Scale.HALF_THUMB;
-        result.source = "widget/scale/v_marker_big.gif";
-      }
-      return result;
-    }
-  },
-
-  "scale-max-marker" : {
-    include : "image",
-
-    style : function( states ) {
-      var result = {};
-      if( states.horizontal ) {
-        result.source = "widget/scale/h_marker_big.gif";
-      } else {
-        result.source = "widget/scale/v_marker_big.gif";
-      }
-      return result;
-    }
-  },
-
-  "scale-middle-marker" : {
-    include : "image",
-
-    style : function( states ) {
-      var result = {};
-      if( states.horizontal ) {
-        result.source = "widget/scale/h_marker_small.gif";
-      } else {
-        result.source = "widget/scale/v_marker_small.gif";
-      }
-      return result;
-    }
   }
 
 // END TEMPLATE //

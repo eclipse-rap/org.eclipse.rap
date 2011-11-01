@@ -35,7 +35,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     this._increment = 1;
     this._pageIncrement = 10;    
     this._pxStep = 1.34;
-    
+
     // Base line
     this._line = new qx.ui.basic.Image();
     if( this._horizontal ) {
@@ -45,7 +45,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     this._line.setResizeToInner( true ); 
     this._line.addEventListener( "mousedown", this._onLineMouseDown, this );
     this.add( this._line );
-    
+
     // Thumb
     this._thumb = new org.eclipse.rwt.widgets.BasicButton( "push", true );
     if( this._horizontal ) {
@@ -60,23 +60,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     this.add( this._thumb );    
     // Thumb offset
     this._thumbOffset = 0;
-    
-    // Min marker
-    this._minMarker = new qx.ui.basic.Image();
-    if( this._horizontal ) {
-      this._minMarker.addState( org.eclipse.swt.widgets.Scale.STATE_HORIZONTAL );
-    }
-    this._minMarker.setAppearance( "scale-min-marker" );
-    this.add( this._minMarker );
-    
-    // Max marker    
-    this._maxMarker = new qx.ui.basic.Image();
-    if( this._horizontal ) {
-      this._maxMarker.addState( org.eclipse.swt.widgets.Scale.STATE_HORIZONTAL );
-    }
-    this._maxMarker.setAppearance( "scale-max-marker" );
-    this.add( this._maxMarker );
-    
+
     // Add events listeners
     if( this._horizontal ) {
       this.addEventListener( "changeWidth", this._onChangeWidth, this );
@@ -86,10 +70,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     this.addEventListener( "contextmenu", this._onContextMenu, this );
     this.addEventListener( "keypress", this._onKeyPress, this );
     this.addEventListener( "mousewheel", this._onMouseWheel, this );
-    
-    // Middle markers
-    this._middleMarkers = new Array();
-    this._updateMiddleMarkers();
   },
   
   destruct : function() {
@@ -105,19 +85,13 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     this.removeEventListener( "contextmenu", this._onContextMenu, this );
     this.removeEventListener( "keypress", this._onKeyPress, this );
     this.removeEventListener( "mousewheel", this._onMouseWheel, this );
-    this._disposeObjects( "_line", "_thumb", "_minMarker", "_maxMarker" );
-    // Clear and dispose markers
-    for( var i = 0; i < this._middleMarkers.length; i++ ) {
-      var marker = this._middleMarkers[ i ];
-      marker.dispose();
-    }
+    this._disposeObjects( "_line", "_thumb" );
     this._thumb = null;
   },
 
   statics : {
     STATE_HORIZONTAL : "horizontal",
     PADDING : 8,
-    MAX_MARKER_OFFSET : 12,    
     SCALE_LINE_OFFSET : 9,
     THUMB_OFFSET : 10,
     HALF_THUMB : 5,
@@ -133,18 +107,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
   members : {
     _onChangeWidth : function( evt ) {
       this._line.setWidth( this.getWidth() - 2 * org.eclipse.swt.widgets.Scale.PADDING );
-      this._maxMarker.setLeft( this.getWidth() - org.eclipse.swt.widgets.Scale.MAX_MARKER_OFFSET );
       this._updateStep();
       this._updateThumbPosition();
-      this._updateMiddleMarkers();
     },
     
     _onChangeHeight : function( evt ) {
       this._line.setHeight( this.getHeight() - 2 * org.eclipse.swt.widgets.Scale.PADDING );
-      this._maxMarker.setTop( this.getHeight() - org.eclipse.swt.widgets.Scale.MAX_MARKER_OFFSET );
       this._updateStep();
       this._updateThumbPosition();
-      this._updateMiddleMarkers();
     },
     
     _onContextMenu : function( evt ) {
@@ -291,34 +261,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     _onThumbMouseUp : function( evt ) {
       this._thumb.setCapture( false );
     },
-        
-    _updateMiddleMarkers : function() {
-      // Clear and dispose markers
-      for( var i = 0; i < this._middleMarkers.length; i++ ) {
-        var marker = this._middleMarkers[ i ];
-        this.remove( marker );
-        marker.dispose();
-      }
-      
-      // Create and add new markets
-      this._middleMarkers = new Array();
-      var markersNum = Math.round( ( this._maximum - this._minimum ) / this._pageIncrement ) - 1;
-      for( var i = 0; i < markersNum; i++ ) {
-        var marker = new qx.ui.basic.Image();
-        var pos =   org.eclipse.swt.widgets.Scale.PADDING
-                  + org.eclipse.swt.widgets.Scale.HALF_THUMB
-                  + ( i + 1 ) * this._pageIncrement * this._pxStep;
-        if( this._horizontal ) {
-          marker.addState( org.eclipse.swt.widgets.Scale.STATE_HORIZONTAL );          
-          marker.setLeft( pos );
-        } else {
-          marker.setTop( pos );
-        }
-        marker.setAppearance( "scale-middle-marker" );        
-        this.add( marker );       
-        this._middleMarkers[ i ] = marker;
-      }
-    },
     
     _updateStep : function() {
       var padding =   org.eclipse.swt.widgets.Scale.PADDING
@@ -391,14 +333,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
       this._minimum = value;
       this._updateStep();
       this._updateThumbPosition();
-      this._updateMiddleMarkers();
     },
     
     setMaximum : function( value ) {
       this._maximum = value;
       this._updateStep();
       this._updateThumbPosition();
-      this._updateMiddleMarkers();
     },
     
     setIncrement : function( value ) {
@@ -407,7 +347,6 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     
     setPageIncrement : function( value ) {
       this._pageIncrement = value;
-      this._updateMiddleMarkers();
     },
     
     // overwritten:

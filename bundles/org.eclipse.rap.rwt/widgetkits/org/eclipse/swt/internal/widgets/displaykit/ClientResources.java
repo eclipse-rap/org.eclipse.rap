@@ -295,11 +295,7 @@ public final class ClientResources {
     "resource/widget/rap/cursors/nodrop.gif",
     "resource/widget/rap/cursors/up_arrow.cur",
     "resource/widget/rap/scale/h_line.gif",
-    "resource/widget/rap/scale/v_line.gif",
-    "resource/widget/rap/scale/h_marker_big.gif",
-    "resource/widget/rap/scale/v_marker_big.gif",
-    "resource/widget/rap/scale/h_marker_small.gif",
-    "resource/widget/rap/scale/v_marker_small.gif",
+    "resource/widget/rap/scale/v_line.gif"
   };
 
   private final IResourceManager resourceManager;
