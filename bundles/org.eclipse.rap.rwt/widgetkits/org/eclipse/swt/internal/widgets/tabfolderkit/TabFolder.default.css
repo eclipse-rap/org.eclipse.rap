@@ -33,7 +33,7 @@ TabItem {
     to( #e4e4e4 )
   );
   border-top-color: #5882b5;
-  border-bottom-color: #bdbdbd;
+  border-bottom-color: #5882b5;
   text-shadow: 0 1px 0 #ffffff;
   padding : 6px;
 }
@@ -44,4 +44,5 @@ TabItem:selected {
     from( #d5d5d5 ),
     to( #eaeaea )
   );
+  padding : 6px 6px 7px 6px;
 }
