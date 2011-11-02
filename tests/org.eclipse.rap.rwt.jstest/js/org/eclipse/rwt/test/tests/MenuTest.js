@@ -12,7 +12,7 @@
 qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
 
   extend : qx.core.Object,
-  
+
   construct : function() {
     this.base( arguments );
     this._menuClass = org.eclipse.rwt.widgets.Menu;
@@ -21,13 +21,13 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     this._menuBarItemClass = org.eclipse.rwt.widgets.MenuItem;
     this.testUtil = org.eclipse.rwt.test.fixture.TestUtil;
   },  
-  
+
   members : {
     menu : null,
     menuItem : null,
     menuBar : null,
     menuBarItem : null,
- 
+
     testTextOnly : function() {
       this.createSimpleMenu( "push" );      
       this.menuItem.setText( "Hello World!" );
@@ -39,7 +39,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       );
       this.disposeMenu();
     },    
-    
+
     testImageOnly : function() {
       this.createSimpleMenu( "push" );      
       this.menuItem.setImage( "url.jpg", 20, 30 );
@@ -55,7 +55,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertEquals( 30, bounds.height );
       this.disposeMenu();
     },    
-        
+
     testArrowOnly : function() {
       this.createSimpleMenu( "push" );      
       this.menuItem.setArrow( [ "url.jpg", 13, 13 ] );
@@ -126,7 +126,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertEquals( oldMenuBounds.width - 33, newMenuBounds.width );
       this.disposeMenu();
     },
-    
+
     testItemHover : function() {
       this.createSimpleMenu( "push" );
       this.testUtil.flush();
@@ -136,7 +136,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertFalse( this.menuItem.hasState( "over" ) );
       this.disposeMenu();
     },
-    
+
     testMenuLayout : function() {
       this.createSimpleMenu( "push" );
       this.menuItem.setText( "hello" );
@@ -172,7 +172,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertTrue( this.itemsXLayoutIsIdentical( this.menu ) );
       this.disposeMenu();
     },
-    
+
     testOpenMenuByMenuBar : function() {    
       this.createMenuBar( "push" );
       this.testUtil.flush();
@@ -195,7 +195,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertFalse( this.menu.isSeeable() );      
       this.disposeMenuBar();
     },
-    
+
     testOpenMenuAsContextmenu : function() {
       this.menu = new this._menuClass();
       this.menuItem = new this._menuItemClass( "push" );
@@ -206,9 +206,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget.setLocation( 10, 10 );
       widget.setDimension( 10, 10 );
       widget.setContextMenu( this.menu );
-      widget.addEventListener( 
-        "contextmenu", 
-        org.eclipse.rwt.widgets.Menu.contextMenuHandler );      
+      this._addContextMenuListener( widget );
       this.testUtil.flush();
       assertTrue( widget.isSeeable() );
       assertFalse( this.menu.isSeeable() );
@@ -219,15 +217,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.testUtil.flush();
       assertFalse( this.menu.isSeeable() );
       widget.setContextMenu( null );
-      widget.removeEventListener( 
-        "contextmenu", 
-        org.eclipse.rwt.widgets.Menu.contextMenuHandler
-      );  
+      this._removeContextMenuListener( widget );  
       widget.setParent( null );
       widget.dispose();
       this.disposeMenu();            
     },
-    
+
     testContextmenuStopsPropagation : function() {
       var menu1 = new org.eclipse.rwt.widgets.Menu();
       var menu2 = new org.eclipse.rwt.widgets.Menu();
@@ -236,15 +231,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       var parent = new org.eclipse.swt.widgets.Composite();
       parent.addToDocument();    
       parent.setContextMenu( menu1 );
-      parent.addEventListener( 
-        "contextmenu", 
-        org.eclipse.rwt.widgets.Menu.contextMenuHandler );      
+      this._addContextMenuListener( parent );      
       var widget = new qx.ui.basic.Atom( "bla" );
       widget.setContextMenu( menu2 );
       widget.setParent( parent );
-      widget.addEventListener( 
-        "contextmenu", 
-        org.eclipse.rwt.widgets.Menu.contextMenuHandler );      
+      this._addContextMenuListener( widget );      
       this.testUtil.flush();
       assertFalse( menu1.isSeeable() );
       assertFalse( menu2.isSeeable() );
@@ -256,7 +247,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget.destroy();
       parent.destroy();
     },
-    
+
     testDropDownExecuteMenuItem : function() {
       this.createMenuBar( "push" );
       this.executed = false;
@@ -276,8 +267,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       delete this.executed;
       this.disposeMenuBar();
     },
-    
-    
+
     testExecuteWithoutOpener : function() {
       this.createSimpleMenu( "push" );
       this.executed = false;
@@ -294,8 +284,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       delete this.executed;
       this.disposeMenu();
     },
-    
-    
+
     testOpenSubmenuByMouse : function() {
       this.testUtil.prepareTimerUse();
       this.createMenuBar( "cascade" );
@@ -375,7 +364,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       item2.dispose();
       this.disposeMenuBar();
     },
-    
+
     testCheckSelection : function() {
       this.createSimpleMenu( "check" );      
       this.testUtil.flush();      
@@ -404,7 +393,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       );      
       this.disposeMenu();
     },
-    
+
     testMenuShowEvent : function() {
       this.createMenuBar( "push" );
       org.eclipse.swt.WidgetManager.getInstance().add( this.menu, "w1" );
@@ -440,7 +429,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertContains( "org.eclipse.swt.events.menuHidden",  msg );
       this.disposeMenuBar();         
     },
-    
+
     testExecutePushItem : function() {
       this.createSimpleMenu( "push" );
       org.eclipse.swt.WidgetManager.getInstance().add( this.menuItem, "w1" );
@@ -459,7 +448,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.testUtil.clearRequestLog();
       this.disposeMenu();
     },    
-
 
     testExecuteCheckItem: function() { 
       this.createSimpleMenu( "check" );
@@ -671,7 +659,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.testUtil.clearRequestLog();      
       this.disposeMenuBar();
     },
-    
+
     testGetMenuBar : function() {
       this.createMenuBar( "push" );
       var widget = new qx.ui.basic.Atom( "bla" );
@@ -688,7 +676,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertIdentical( this.menuBar, manager._getMenuBar( this.menuBar ) );
       this.disposeMenuBar();
     },
-    
+
     testContextMenuCloseOnOpenerClick : function() {
       this.menu = new this._menuClass();
       this.menuItem = new this._menuItemClass( "push" );
@@ -699,9 +687,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget.setLocation( 10, 10 );
       widget.setDimension( 10, 10 );
       widget.setContextMenu( this.menu );
-      widget.addEventListener( 
-        "contextmenu", 
-        org.eclipse.rwt.widgets.Menu.contextMenuHandler );      
+      this._addContextMenuListener( widget );
       this.testUtil.flush();
       assertTrue( widget.isSeeable() );
       assertFalse( this.menu.isSeeable() );
@@ -712,15 +698,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.testUtil.flush();
       assertFalse( this.menu.isSeeable() );
       widget.setContextMenu( null );
-      widget.removeEventListener( 
-        "contextmenu", 
-        org.eclipse.rwt.widgets.Menu.contextMenuHandler
-      );  
+      this._removeContextMenuListener( widget );
       widget.setParent( null );
       widget.dispose();
       this.disposeMenu();        
     },
-    
+
     testContextMenuCloseOnOtherContextMenu : function() {
       this.menu = new this._menuClass();
       this.menuItem = new this._menuItemClass( "push" );
@@ -731,9 +714,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget.setLocation( 10, 10 );
       widget.setDimension( 10, 10 );
       widget.setContextMenu( this.menu );
-      widget.addEventListener( 
-        "contextmenu", 
-        org.eclipse.rwt.widgets.Menu.contextMenuHandler );
+      this._addContextMenuListener( widget );
       var menu2 = new this._menuClass();
       var menuItem2 = new this._menuItemClass( "push" );
       menuItem2.setText( "bla2" ); 
@@ -743,9 +724,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget2.setLocation( 20, 20 );
       widget2.setDimension( 20, 20 );
       widget2.setContextMenu( menu2 );
-      widget2.addEventListener( 
-        "contextmenu", 
-        org.eclipse.rwt.widgets.Menu.contextMenuHandler );
+      this._addContextMenuListener( widget2 );
       this.testUtil.flush();
       assertTrue( widget.isSeeable() );
       assertTrue( widget2.isSeeable() );
@@ -760,14 +739,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertFalse( this.menu.isSeeable() );
       widget.setContextMenu( null );
       widget2.setContextMenu( null );
-      widget.removeEventListener( 
-        "contextmenu", 
-        org.eclipse.rwt.widgets.Menu.contextMenuHandler
-      );  
-      widget2.removeEventListener( 
-        "contextmenu", 
-        org.eclipse.rwt.widgets.Menu.contextMenuHandler
-      );  
+      this._removeContextMenuListener( widget );
+      this._removeContextMenuListener( widget2 );
       widget.setParent( null );
       widget2.setParent( null );
       widget.destroy();
@@ -778,7 +751,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       menuItem2.destroy();
       this.disposeMenu();        
     },
-    
+
     testContextMenuCloseOnMenuBarClick : function() {
       this.createMenuBar( "push" );
       var bar = this.menuBar;
@@ -793,9 +766,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget.setLocation( 10, 10 );
       widget.setDimension( 10, 10 );
       widget.setContextMenu( menu2 );
-      widget.addEventListener( 
-        "contextmenu", 
-        org.eclipse.rwt.widgets.Menu.contextMenuHandler );      
+      this._addContextMenuListener( widget );      
       this.testUtil.flush();
       assertTrue( widget.isSeeable() );
       assertTrue( bar.isSeeable() );
@@ -815,14 +786,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       menu2.dispose();
       menuItem2.dispose();
       widget.setContextMenu( null );
-      widget.removeEventListener( 
-        "contextmenu", 
-        org.eclipse.rwt.widgets.Menu.contextMenuHandler
-      );  
+      this._removeContextMenuListener( widget );
       widget.setParent( null );
       widget.dispose();
     },
-        
+
     testDropDownMenuCloseOnOpenerClick : function() {
       this.createMenuBar( "push" );
       this.testUtil.flush();
@@ -839,7 +807,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       assertFalse( this.menu.isSeeable() );
       this.disposeMenuBar();
     },
-        
+
     testDropDownMenuCloseOnSameMenuBarClick : function() {
       this.createMenuBar( "push" );
       var bar = this.menuBar;
@@ -870,7 +838,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       barItem2.destroy();
       this.disposeMenuBar();      
     },
-        
+
     testDropDownMenuCloseOnOtherMenuBarClick : function() {
       this.createMenuBar( "push" );      
       var bar = this.menuBar;
@@ -905,7 +873,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       barItem2.destroy();
       this.disposeMenuBar();            
     },
-    
+
     testDisposeWithAnimaton : function() {
       this.createSimpleMenu( "push" );
       var menu = this.menu;
@@ -927,7 +895,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.menu = null;
       this.menuItem = null;
     },
-        
+
     testDisposeWithRunningAnimaton : function() {
       this.createSimpleMenu( "push" );
       var menu = this.menu;
@@ -968,9 +936,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       parent.setLocation( 10, 10 );
       parent.setDimension( 10, 10 );
       parent.setContextMenu( this.menu );
-      parent.addEventListener( 
-        "contextmenu", 
-        org.eclipse.rwt.widgets.Menu.contextMenuHandler );      
+      this._addContextMenuListener( parent );      
       this.testUtil.flush();
       assertTrue( widget.isSeeable() );
       assertFalse( this.menu.isSeeable() );
@@ -981,24 +947,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.testUtil.flush();
       assertFalse( this.menu.isSeeable() );
       widget.setContextMenu( null );
-      widget.removeEventListener( 
-        "contextmenu", 
-        org.eclipse.rwt.widgets.Menu.contextMenuHandler
-      );  
       widget.setParent( null );
       widget.dispose();
       this.disposeMenu();            
     },
-        
+
     /************************* Helper *****************************/
-        
+
     createSimpleMenu : function( type ) {
       this.menu = new this._menuClass(); 
       this.menuItem = new this._menuItemClass( type );
       this.menu.addMenuItemAt( this.menuItem, 0 );
       this.menu.show();
     },
-    
+
     createMenuBar : function( type ) {
       this.menuBar = new this._menuBarClass();
       this.menuBar.addToDocument();            
@@ -1010,7 +972,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.menuBarItem.setMenu( this.menu );
       this.menuBar.addMenuItemAt( this.menuBarItem, 0 );
     },
-    
+
     disposeMenu : function() {
       this.menu.setParent( null );
       this.menuItem.setParent( null );
@@ -1019,7 +981,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.menu = null;
       this.menuItem = null;
     },
-    
+
     disposeMenuBar : function() {
       this.menuBar.setParent( null );
       this.menuBar.dispose();
@@ -1029,7 +991,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.menuBarItem = null;      
       this.disposeMenu();
     },
-    
+
     itemsXLayoutIsIdentical : function( menu ) {
       var ret = true;
       var children = menu._layout.getChildren();
@@ -1069,7 +1031,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       }
       return ret;
     },
-    
+
     getMenuItemLayout : function( item ) {
       var node = null;
       var nodeBounds = null;
@@ -1108,8 +1070,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
         layout.arrowWidth = nodeBounds.width;
       }
       return layout;
+    },
+
+    _addContextMenuListener : function( widget ) {
+      var detectByKey = org.eclipse.rwt.widgets.Menu.menuDetectedByKey;
+      var detectByMouse = org.eclipse.rwt.widgets.Menu.menuDetectedByMouse;
+      widget.addEventListener( "keydown", detectByKey );
+      widget.addEventListener( "mouseup", detectByMouse );
+    },
+
+    _removeContextMenuListener : function( widget ) {
+      var detectByKey = org.eclipse.rwt.widgets.Menu.menuDetectedByKey;
+      var detectByMouse = org.eclipse.rwt.widgets.Menu.menuDetectedByMouse;
+      widget.removeEventListener( "keydown", detectByKey );
+      widget.removeEventListener( "mouseup", detectByMouse );
     }
-    
+
   }
   
 } );

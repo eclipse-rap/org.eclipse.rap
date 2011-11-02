@@ -8,7 +8,7 @@
  *   EclipseSource - initial API and implementation
  ******************************************************************************/
 
-qx.Class.define("org.eclipse.rwt.widgets.Menu", {  
+qx.Class.define( "org.eclipse.rwt.widgets.Menu", {  
   extend : qx.ui.popup.Popup,
 
   construct : function() {
@@ -50,10 +50,7 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
   },
 
   destruct : function() {
-    this._disposeObjects( "_openTimer", 
-                          "_closeTimer", 
-                          "_preItem", 
-                          "_animation" );
+    this._disposeObjects( "_openTimer", "_closeTimer", "_preItem", "_animation" );
     this._disposeFields( "_lastActive", 
                          "_lastFocus", 
                          "_layout", 
@@ -63,18 +60,32 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
   },
   
   statics : {
-    
+
+    menuDetectedByKey : function( evt ) {
+      if( evt.getKeyIdentifier() === "Apps" ) {
+        org.eclipse.rwt.widgets.Menu.contextMenuHandler( evt );
+      }
+    },
+
+    menuDetectedByMouse : function( evt ) {
+      if( evt.getButton() === qx.event.type.MouseEvent.C_BUTTON_RIGHT ) {
+        org.eclipse.rwt.widgets.Menu.contextMenuHandler( evt );
+      }
+    },
+
     contextMenuHandler : function( event ) {
       var widget = event.getCurrentTarget();
       var contextMenu = widget.getContextMenu();
-      if( contextMenu != null ) {
+      if( contextMenu != null && !this._hasNativeMenu( event.getDomTarget() ) ) {
         event.stopPropagation();
-        contextMenu.setLocation( event.getPageX(), event.getPageY() );
-        contextMenu.setOpener( this );
+        event.preventDefault();
+        var pageX = qx.event.type.MouseEvent.getPageX();
+        var pageY = qx.event.type.MouseEvent.getPageY();
+        contextMenu.setLocation( pageX, pageY );
         contextMenu.show();
       }
     },
-    
+
     getAllowContextMenu : function( target, domTarget ) {
       var result = false;
       switch( target.classname ) {
@@ -83,18 +94,20 @@ qx.Class.define("org.eclipse.rwt.widgets.Menu", {
         case "qx.ui.form.TextArea":
           // NOTE: "enabled" can be "inherit", so it is not always a boolean
           if( target.getEnabled() != false ) {
-            var tagName =   typeof domTarget.tagName == "string" 
-                          ? domTarget.tagName 
-                          : "";
-            if( tagName.toUpperCase() != "DIV" ) {
+            if( org.eclipse.rwt.widgets.Menu._hasNativeMenu( domTarget ) ) {
               result = target.getContextMenu() == null;
             }
           }
         break;
       }
       return result;
+    },
+
+    _hasNativeMenu : function( element ) {
+      var tagName =   typeof element.tagName == "string" ? element.tagName.toUpperCase() : "";
+      return tagName === "INPUT";
     }
-    
+
   },
   
   properties :  {

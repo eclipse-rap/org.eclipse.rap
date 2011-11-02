@@ -385,9 +385,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       qx.ui.core.Widget.flushGlobalQueues();
       // Fix Click (Gecko Bug, see above)
       if( vFixClick ) {
-        this._onmouseevent_post( vDomEvent, 
-                                 "click", 
-                                 this._lastMouseDownDomTarget );
+        this._onmouseevent_post( vDomEvent, "click", this._lastMouseDownDomTarget );
         this._lastMouseDownDomTarget = null;
         this._lastMouseDownDispatchTarget = null;
       }

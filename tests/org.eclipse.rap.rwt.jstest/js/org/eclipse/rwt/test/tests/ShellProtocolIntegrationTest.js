@@ -245,7 +245,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
         "menu" : "wMenu" 
       } );
       assertIdentical( menu, shell.getContextMenu() );
-      assertTrue( shell.hasEventListeners( "contextmenu" ) );
+      assertTrue( shell.hasEventListeners( "mouseup" ) );
       widgetManager.remove( menu );
       this._disposeShell();
     },
@@ -259,7 +259,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       } );
       widgetManager.add( menu, "wMenu", true );
       assertIdentical( menu, shell.getContextMenu() );
-      assertTrue( shell.hasEventListeners( "contextmenu" ) );
+      assertTrue( shell.hasEventListeners( "mouseup" ) );
       widgetManager.remove( menu );
       this._disposeShell();
     },

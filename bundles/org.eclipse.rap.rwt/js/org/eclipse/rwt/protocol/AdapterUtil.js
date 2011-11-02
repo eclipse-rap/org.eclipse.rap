@@ -122,11 +122,14 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     "menu" : function( widget, value ) {
       org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( menu ) {
         widget.setContextMenu( menu );
-        var listener = org.eclipse.rwt.widgets.Menu.contextMenuHandler;
+        var detectByKey = org.eclipse.rwt.widgets.Menu.menuDetectedByKey;
+        var detectByMouse = org.eclipse.rwt.widgets.Menu.menuDetectedByMouse;
         if( menu == null ) {
-          widget.removeEventListener( "contextmenu", listener );
+          widget.removeEventListener( "keydown", detectByKey );
+          widget.removeEventListener( "mouseup", detectByMouse );
         } else {
-          widget.addEventListener( "contextmenu", listener );
+          widget.addEventListener( "keydown", detectByKey );
+          widget.addEventListener( "mouseup", detectByMouse );
         }
       } );
     }

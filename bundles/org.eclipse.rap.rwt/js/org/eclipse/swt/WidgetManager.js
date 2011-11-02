@@ -345,9 +345,14 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
       ],
       "contextMenu" : [
         { 
-          nativeType : "contextmenu", 
+          nativeType : "keydown", 
           context : undefined, 
-          listener : org.eclipse.rwt.widgets.Menu.contextMenuHandler
+          listener : org.eclipse.rwt.widgets.Menu.menuDetectedByKey
+        },
+        { 
+          nativeType : "mouseup", 
+          context : undefined, 
+          listener : org.eclipse.rwt.widgets.Menu.menuDetectedByMouse
         }
       ],
       "menuDetect" : [
