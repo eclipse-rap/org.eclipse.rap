@@ -903,6 +903,17 @@ qx.Class.define("qx.ui.core.Parent",
       });
     },
 
+    _ieFixLayoutOnAppear : qx.core.Variant.select( "qx.client", {
+      "mshtml" : function() {
+        this.base( arguments );
+        this.forEachVisibleChild( function() {
+          if( this._isCreated ) {
+            this._ieFixLayoutOnAppear();
+          }
+        } );
+      }, 
+      "default" : qx.lang.Function.returnTrue
+    } ),
 
     // overridden
     _beforeDisappear : function()

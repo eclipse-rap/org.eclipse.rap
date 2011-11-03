@@ -1740,6 +1740,26 @@ qx.Class.define( "qx.ui.core.Widget", {
       this.createDispatchEvent("appear");
     },
 
+    _ieFixLayoutOnAppear : qx.core.Variant.select( "qx.client", {
+      "mshtml" : function() {
+        var width = this._style.width;
+        var height = this._style.height;
+        this._style.width = "0px";
+        this._style.height = "0px";
+        this._style.width = width;
+        this._style.height = height;
+        if( this._innerStyle ) {
+          width = this._innerStyle.width;
+          height = this._innerStyle.height;
+          this._innerStyle.width = "0px";
+          this._innerStyle.height = "0px";
+          this._innerStyle.width = width;
+          this._innerStyle.height = height;
+        }
+      }, 
+      "default" : qx.lang.Function.returnTrue
+    } ),
+
     _beforeDisappear : function() {
       // Remove any hover/pressed styles
       this.removeState("over");
@@ -1803,6 +1823,7 @@ qx.Class.define( "qx.ui.core.Widget", {
         this.removeStyleProperty("display");
         if ( this._isDisplayable && this._isCreated ) {
           this._afterAppear();
+          this._ieFixLayoutOnAppear();
         }
       } else {
         if ( this._isDisplayable && this._isCreated ) {
