@@ -114,8 +114,8 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       var doc = qx.ui.core.ClientDocument.getInstance();
       var left = ( doc.getClientWidth() - width ) / 2;
       var top = ( doc.getClientHeight() - height ) / 2;
-      style.left = left < 0 ? 0 : left;
-      style.top = top < 0 ? 0 : top;
+      style.left = ( left < 0 ? 0 : left ) + "px";
+      style.top = ( top < 0 ? 0 : top ) + "px";
       style.backgroundColor = "#dae9f7";
       style.border = "1px solid black";
       style.zIndex = 100000001;
