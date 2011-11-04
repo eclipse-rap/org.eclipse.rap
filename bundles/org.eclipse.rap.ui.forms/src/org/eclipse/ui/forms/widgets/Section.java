@@ -542,5 +542,14 @@ public class Section extends ExpandableComposite {
         gfxAdapter.setRoundedBorder( 1, getBackground(), 8, 8, 0, 0 );
 	  }
 	}
+
+	// Fix 1px border introduced by the titlebar rounded border
+	public int getBorderWidth() {
+	  int result = super.getBorderWidth();
+	  if( ( getExpansionStyle() & TITLE_BAR ) != 0 ) {
+	    result = 1;
+	  }
+	  return result;
+	}
 // ENDRAP [if]
 }
