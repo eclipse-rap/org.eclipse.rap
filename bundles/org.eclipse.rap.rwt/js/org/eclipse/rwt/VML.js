@@ -14,11 +14,9 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     
     init : function() {
       document.namespaces.add( "v", "urn:schemas-microsoft-com:vml");
-      document.namespaces.add( "o",
-                               "urn:schemas-microsoft-com:office:office");
+      document.namespaces.add( "o", "urn:schemas-microsoft-com:office:office");
       var sheet = document.createStyleSheet();
-      sheet.cssText = "v\\:* { behavior:url(#default#VML);" +
-                              "display:inline-block; } "+
+      sheet.cssText = "v\\:* { behavior:url(#default#VML);display:inline-block; } "+
                       "o\\:* { behavior: url(#default#VML);}";
       this._vmlEnabled = true;      
     },
@@ -591,9 +589,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
     
     _BLUROFFSETS : [
       // NOTE: these values are chosen to resemble the blur-effect on css3-shadows
-      // as closely as possible, but in doubt going for the stronger effect. In IE9
-      // the effect does not seem consistent: Sometimes its like in IE7/8, but most of the time
-      // much weaker (around 1/3). Would be solved if we use CSS3 in IE9.
+      // as closely as possible, but in doubt going for the stronger effect.
       [ 0, 0, 0 ],
       [ 2, 2, 1 ],
       [ 3, 3, 1 ], 
