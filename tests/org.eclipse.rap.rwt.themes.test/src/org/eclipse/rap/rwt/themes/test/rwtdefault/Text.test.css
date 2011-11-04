@@ -21,6 +21,10 @@ Text {
   text-shadow: none;
 }
 
+Text[MULTI] {
+  padding: 0 0 0 4px;
+}
+
 Text[BORDER] {
   border: 1px solid #bdbdbd;
   border-radius: 0;

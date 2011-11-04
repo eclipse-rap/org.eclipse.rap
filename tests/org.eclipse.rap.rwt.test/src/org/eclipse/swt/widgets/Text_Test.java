@@ -375,21 +375,21 @@ public class Text_Test extends TestCase {
 
     text = new Text( shell, SWT.MULTI );
     text.setText( "This is a long long text!\nThis is the second row." );
-    expected = new Point( 175, 47 );
+    expected = new Point( 173, 37 );
     assertEquals( expected, text.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     text = new Text( shell, SWT.MULTI | SWT.WRAP );
     text.setText( "This is a long long text!\nThis is the second row." );
-    expected = new Point( 57, 152 );
+    expected = new Point( 55, 142 );
     assertEquals( expected, text.computeSize( 50, SWT.DEFAULT ) );
 
     text = new Text( shell, SWT.MULTI | SWT.WRAP | SWT.BORDER );
     text.setText( "This is a long long text!\nThis is the second row." );
     assertEquals( 1, text.getBorderWidth() );
-    expected = new Point( 59, 154 );
+    expected = new Point( 57, 144 );
     assertEquals( expected, text.computeSize( 50, SWT.DEFAULT ) );
 
-    expected = new Point( 109, 114 );
+    expected = new Point( 107, 104 );
     assertEquals( expected, text.computeSize( 100, 100 ) );
   }
 
@@ -404,9 +404,9 @@ public class Text_Test extends TestCase {
     assertEquals( expected, text.computeTrim( 10, 10, 100, 100 ) );
 
     text = new Text( shell, SWT.H_SCROLL );
-    expected = new Rectangle( -3, -5, 7, 10 );
+    expected = new Rectangle( -4, 0, 5, 0 );
     assertEquals( expected, text.computeTrim( 0, 0, 0, 0 ) );
-    expected = new Rectangle( 7, 5, 107, 110 );
+    expected = new Rectangle( 6, 10, 105, 100 );
     assertEquals( expected, text.computeTrim( 10, 10, 100, 100 ) );
 
     text = new Text( shell, SWT.BORDER );
@@ -542,7 +542,7 @@ public class Text_Test extends TestCase {
       assertEquals( string.charAt( i ), result[ i ] );
     }
   }
-  
+
   public void testIsSerializable() throws Exception {
     Display display = new Display();
     Shell shell = new Shell( display );
@@ -550,7 +550,7 @@ public class Text_Test extends TestCase {
     text.setText( "foo" );
 
     Text deserializedText = Fixture.serializeAndDeserialize( text );
-    
+
     assertEquals( text.getText(), deserializedText.getText() );
   }
 }
