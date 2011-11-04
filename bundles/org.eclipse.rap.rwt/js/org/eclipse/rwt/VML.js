@@ -146,25 +146,20 @@ qx.Class.define( "org.eclipse.rwt.VML", {
 
     setRoundRectLayout : function( shape, x, y, width, height, radii ) {
       var quarter = this._VMLDEGREE * 90;
-      var radiusLeftTop = this._convertNumeric( radii[ 0 ], false );
-      var radiusTopRight = this._convertNumeric( radii[ 1 ], false );
-      var radiusRightBottom = this._convertNumeric( radii[ 2 ], false );
-      var radiusBottomLeft = this._convertNumeric( radii[ 3 ], false );
+      var maxRadius = Math.floor( Math.min( width, height ) / 2 );
+      var radiusLeftTop = Math.min( radii[ 0 ], maxRadius );
+      var radiusTopRight = Math.min( radii[ 1 ], maxRadius );
+      var radiusRightBottom = Math.min( radii[ 2 ], maxRadius );
+      var radiusBottomLeft = Math.min( radii[ 3 ], maxRadius );      
+      radiusLeftTop = this._convertNumeric( radiusLeftTop, false );
+      radiusTopRight = this._convertNumeric( radiusTopRight, false );
+      radiusRightBottom = this._convertNumeric( radiusRightBottom, false );
+      radiusBottomLeft = this._convertNumeric( radiusBottomLeft, false );
       var bluroffsets = this._getBlurOffsets( shape.blurRadius );
       var rectLeft = this._convertNumeric( x - bluroffsets[ 1 ], true );
       var rectTop = this._convertNumeric( y - bluroffsets[ 1 ], true )
       var rectWidth = this._convertNumeric( width - bluroffsets[ 2 ], false );
       var rectHeight = this._convertNumeric( height - bluroffsets[ 2 ], false );
-      if(    ( radiusLeftTop + radiusTopRight ) > rectWidth
-          || ( radiusRightBottom  + radiusBottomLeft ) > rectWidth
-          || ( radiusLeftTop + radiusBottomLeft ) > rectHeight
-          || ( radiusRightBottom + radiusTopRight ) > rectHeight )
-      {
-        radiusLeftTop = 0;
-        radiusTopRight = 0;
-        radiusRightBottom = 0;
-        radiusBottomLeft = 0;         
-      }      
       var path = [];
       if( radiusLeftTop > 0 ) {
         path.push( "AL", rectLeft + radiusLeftTop, rectTop + radiusLeftTop );
@@ -193,7 +188,6 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       } else {
         path.push( "L", rectLeft, rectTop + rectHeight );
       }
-
       path.push( "X E" );
       shape.node.path = path.join( " " );      
     },

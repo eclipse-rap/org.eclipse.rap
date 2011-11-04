@@ -178,10 +178,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       gfxUtil.addToCanvas( canvas, shape );
       parent.appendChild( gfxUtil.getCanvasNode( canvas ) );
       gfxUtil.handleAppear( canvas );
-      var expected =   "M 10 30 A 20 20 0 0 1 30 10 L 30 10 30 10 L 30 30 "
-                     + "30 30 L 10 30 10 30 Z";
+      var expected = "M 10 20 A 10 10 0 0 1 20 10 L 30 10 30 10 L 30 30 30 30 L 10 30 10 30 Z";
       if( org.eclipse.rwt.Client.isNewMshtml() ) {
-        expected = "M 10 30 A 20 20 0 0 1 30 10 L 30 10 L 30 10 L 30 30 L 30 30 L 10 30 L 10 30 Z";
+        expected = "M 10 20 A 10 10 0 0 1 20 10 L 30 10 L 30 10 L 30 30 L 30 30 L 10 30 L 10 30 Z";
       }
       assertEquals( expected, shape.node.getAttribute( "d" ) );
       parent.removeChild( gfxUtil.getCanvasNode( canvas ) );
@@ -199,9 +198,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       gfxUtil.addToCanvas( canvas, shape );
       parent.appendChild( gfxUtil.getCanvasNode( canvas ) );
       gfxUtil.handleAppear( canvas );
-      var expected = "M 10 10 L 30 10 30 10 L 30 30 30 30 L 10 30 10 30 Z";
+      var expected = "M 10 20 A 10 10 0 0 1 20 10 L 30 10 30 10 L 30 30 30 30 L 10 30 10 30 Z";
       if( org.eclipse.rwt.Client.isNewMshtml() ) {
-        expected = "M 10 10 L 30 10 L 30 10 L 30 30 L 30 30 L 10 30 L 10 30 Z";
+        expected = "M 10 20 A 10 10 0 0 1 20 10 L 30 10 L 30 10 L 30 30 L 30 30 L 10 30 L 10 30 Z";
       } 
       assertEquals( expected, shape.node.getAttribute( "d" ) );
       parent.removeChild( gfxUtil.getCanvasNode( canvas ) );

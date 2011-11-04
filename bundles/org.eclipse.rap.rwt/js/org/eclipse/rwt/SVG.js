@@ -127,20 +127,11 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
     },
 
     setRoundRectLayout : function( shape, x, y, width, height, radii ) {
-      var radiusLeftTop = radii[ 0 ];
-      var radiusTopRight = radii[ 1 ];
-      var radiusRightBottom = radii[ 2 ];
-      var radiusBottomLeft = radii[ 3 ];
-      if(    ( radiusLeftTop + radiusTopRight ) > width
-          || ( radiusRightBottom  + radiusBottomLeft ) > width
-          || ( radiusLeftTop + radiusBottomLeft ) > height
-          || ( radiusRightBottom + radiusTopRight ) > height )
-      {
-        radiusLeftTop = 0;
-        radiusTopRight = 0;
-        radiusRightBottom = 0;
-        radiusBottomLeft = 0;         
-      }
+      var maxRadius = Math.floor( Math.min( width, height ) / 2 );
+      var radiusLeftTop = Math.min( radii[ 0 ], maxRadius );
+      var radiusTopRight = Math.min( radii[ 1 ], maxRadius );
+      var radiusRightBottom = Math.min( radii[ 2 ], maxRadius );
+      var radiusBottomLeft = Math.min( radii[ 3 ], maxRadius );
       var path = [];
       path.push( "M", x , y + radiusLeftTop );
       if( radiusLeftTop > 0 ) {

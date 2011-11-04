@@ -184,8 +184,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       gfxUtil.addToCanvas( canvas, shape );
       parent.appendChild( gfxUtil.getCanvasNode( canvas ) );
       gfxUtil.handleAppear( canvas );
-      var expected =   " al295,295,200,200,-11796300,-5898150 " 
-                     + "l295,95,295,295,95,295 x e"
+      var expected = " al195,195,100,100,-11796300,-5898150 l295,95,295,295,95,295 x e";
       assertEquals( expected, shape.node.path.v );
       parent.removeChild( gfxUtil.getCanvasNode( canvas ) );
     },
@@ -202,7 +201,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.VMLTest", {
       gfxUtil.addToCanvas( canvas, shape );
       parent.appendChild( gfxUtil.getCanvasNode( canvas ) );
       gfxUtil.handleAppear( canvas );
-      var expected = " m95,95 l295,95,295,295,95,295 xe";
+      var expected = " al195,195,100,100,-11796300,-5898150 l295,95,295,295,95,295 x e";
       assertEquals( expected, shape.node.path.v );
       parent.removeChild( gfxUtil.getCanvasNode( canvas ) );
     },
