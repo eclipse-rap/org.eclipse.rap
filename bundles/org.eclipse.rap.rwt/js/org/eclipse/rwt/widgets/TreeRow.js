@@ -512,7 +512,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         node.appendChild( result );
       }
       result.style.zIndex = zIndex;
-      this._usedNodes++; //TODO store in element? (method could be static again)
+      this._usedNodes++;
       return result;
     },
 
@@ -522,6 +522,18 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         node.childNodes[ i ].style.display = "none";
       }
     },
+
+    _ieFixLayoutOnAppear : qx.core.Variant.select( "qx.client", {
+      "mshtml" : function() {
+        this.base( arguments );
+        var node = this._getTargetNode();
+        for( var i = this._usedNodes; i < node.childNodes.length; i++ ) {
+          node.childNodes[ i ].style.display = "";
+          node.childNodes[ i ].style.display = "none";
+        }
+      }, 
+      "default" : qx.lang.Function.returnTrue
+    } ),
 
     ////////////////
     // layout-helper
