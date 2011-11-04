@@ -13,7 +13,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
 
   members : {
 
-    TARGETENGINE : [ "gecko", "webkit" ],
+    TARGETENGINE : [ "gecko", "webkit", "newmshtml" ],
 
     testDrawShapeInWidget : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -180,6 +180,9 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       gfxUtil.handleAppear( canvas );
       var expected =   "M 10 30 A 20 20 0 0 1 30 10 L 30 10 30 10 L 30 30 "
                      + "30 30 L 10 30 10 30 Z";
+      if( org.eclipse.rwt.Client.isNewMshtml() ) {
+        expected = "M 10 30 A 20 20 0 0 1 30 10 L 30 10 L 30 10 L 30 30 L 30 30 L 10 30 L 10 30 Z";
+      }
       assertEquals( expected, shape.node.getAttribute( "d" ) );
       parent.removeChild( gfxUtil.getCanvasNode( canvas ) );
     },
@@ -196,7 +199,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       gfxUtil.addToCanvas( canvas, shape );
       parent.appendChild( gfxUtil.getCanvasNode( canvas ) );
       gfxUtil.handleAppear( canvas );
-      var expected = "M 10 10 L 30 10 30 10 L 30 30 30 30 L 10 30 10 30 Z"; 
+      var expected = "M 10 10 L 30 10 30 10 L 30 30 30 30 L 10 30 10 30 Z";
+      if( org.eclipse.rwt.Client.isNewMshtml() ) {
+        expected = "M 10 10 L 30 10 L 30 10 L 30 30 L 30 30 L 10 30 L 10 30 Z";
+      } 
       assertEquals( expected, shape.node.getAttribute( "d" ) );
       parent.removeChild( gfxUtil.getCanvasNode( canvas ) );
     },
@@ -339,7 +345,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.SVGTest", {
       assertIdentical( canvas.node, canvas.group.parentNode );
       assertIdentical( canvas.group, shape.node.parentNode );
       var transform = canvas.group.getAttribute( "transform" );
-      transform = transform.split( " " ).join( "" );
+      if( org.eclipse.rwt.Client.isNewMshtml() ) {
+        transform = transform.split( " " ).join( "," );
+      } else {
+        transform = transform.split( " " ).join( "" );
+      }
       assertEquals( "translate(50,30)", transform );
       gfxUtil.enableOverflow( canvas, 0, 0, 110, 120 );
       assertEquals( "0px", canvas.node.style.left );
