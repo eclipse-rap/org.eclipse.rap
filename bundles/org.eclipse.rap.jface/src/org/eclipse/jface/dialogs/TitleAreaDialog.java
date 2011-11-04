@@ -228,8 +228,8 @@ public class TitleAreaDialog extends TrayDialog {
 		}
 
 		parent.setBackground(background);
-		int verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
-		int horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+		final int verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+		final int horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
 		// Dialog image @ right
 		titleImageLabel = new Label(parent, SWT.CENTER);
 		titleImageLabel.setBackground(background);
@@ -267,6 +267,16 @@ public class TitleAreaDialog extends TrayDialog {
 		messageLabel.setText(" \n "); // two lines//$NON-NLS-1$
 		messageLabel.setFont(JFaceResources.getDialogFont());
 		messageLabelHeight = messageLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
+		// RAP [if] Re-layout after TSD
+        messageLabel.addListener( SWT.Resize, new Listener() {
+          public void handleEvent( Event event ) {
+            messageLabelHeight = messageLabel.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y;
+            setLayoutsForNormalMessage( verticalSpacing, horizontalSpacing );
+            determineTitleImageLargest();
+            layoutForNewMessage( true );
+          }
+        } );
+        // ENDRAP [if]
 		// Filler labels
 		leftFillerLabel = new Label(parent, SWT.CENTER);
 		leftFillerLabel.setBackground(background);
