@@ -26,11 +26,12 @@
 Widget-ToolTip {
   padding: 8px;
   background-color: #f0f0f0;
+  background-image: url( resource/widget/rap/menu/menu-background.png );
   border: 1px solid #bdbdbd;
   border-radius: 2px;
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
-  opacity: 0.9;
+  opacity: 1;
   animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
   box-shadow: none;
 }

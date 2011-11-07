@@ -14,6 +14,7 @@
 
 Shell {
   border: none;
+  border-radius: 2px;
   background-color: #ffffff;
   background-image: none;
   padding: 0;

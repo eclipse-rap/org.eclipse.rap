@@ -14,7 +14,7 @@
 Menu {
   background-image: url( resource/widget/rap/menu/menu-background.png );
   padding: 10px 15px;
-  opacity: 0.9;
+  opacity: 1;
   animation: none;
   color: #0059a5;
   background-color: #f0f0f0;

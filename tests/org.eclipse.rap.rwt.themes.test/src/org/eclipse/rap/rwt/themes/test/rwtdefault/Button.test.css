@@ -99,7 +99,7 @@ Button[RADIO] {
   color: #4a4a4a;
   background-color: #ffffff;
   background-image: none;
-  padding: 6px 3px;
+  padding: 3px;
   spacing: 7px;
   border: none;
   border-radius: 2px;
@@ -115,7 +115,7 @@ Button[RADIO][BORDER] {
   color: #4a4a4a;
   background-color: #ffffff;
   background-image: none;
-  padding: 6px 3px;
+  padding: 3px;
   spacing: 7px;
   border: 1px solid #bdbdbd;
   border-radius: 2px;

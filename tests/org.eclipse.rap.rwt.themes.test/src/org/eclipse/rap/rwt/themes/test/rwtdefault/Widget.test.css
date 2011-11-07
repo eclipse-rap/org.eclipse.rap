@@ -15,7 +15,7 @@ Widget-ToolTip {
   border-radius: 2px;
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
-  opacity: 0.9;
+  opacity: 1;
   animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
   box-shadow: none;
 }
