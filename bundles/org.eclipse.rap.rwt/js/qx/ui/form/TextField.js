@@ -889,11 +889,8 @@ qx.Class.define("qx.ui.form.TextField",
         var innerHeight = this.getInnerHeight();
         var inputElementHeight = qx.html.Dimension.getBoxHeight( this._inputElement );
         if( inputElementHeight != 0 ) {
-          if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+          if( qx.core.Variant.isSet( "qx.client", "mshtml|newmshtml" ) ) {
             inputElementHeight -= 2;
-          }
-          if( qx.core.Variant.isSet( "qx.client", "newmshtml" ) ) {
-            inputElementHeight += 3;
           }
           var top = ( innerHeight - inputElementHeight ) / 2 - 1;
           if( top < 0 ) {
