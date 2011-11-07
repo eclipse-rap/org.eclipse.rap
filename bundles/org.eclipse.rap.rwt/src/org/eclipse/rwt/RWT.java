@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Listener;
  * the server and client communication. It is responsible for
  * providing access to the {@link ISessionStore} and the
  * {@link HttpServletRequest}.
- * 
+ *
  * @since 1.0
  * @see ILifeCycle
  * @see ISessionStore
@@ -53,7 +53,7 @@ import org.eclipse.swt.widgets.Listener;
  * @see HttpServletResponse
  */
 public final class RWT {
-  
+
   private static final String LOCALE = RWT.class.getName() + ".LOCALE";
 
   /**
@@ -68,7 +68,7 @@ public final class RWT {
    * <pre>
    *  public class FooMessages {
    *    private static final String BUNDLE_NAME = "foo.bar.messages";
-   *    
+   *
    *    public String MyMessage;
    *
    *    public static FooMessages get() {
@@ -76,13 +76,13 @@ public final class RWT {
    *    }
    *  }
    * </pre>
-   * 
+   *
    * BUNDLE_NAME contains the name of a properties file (without file extension)
    * that follows the conventions of standard {@link ResourceBundle} property
    * files. For each field (in the example 'MyMessage') there has to be a
    * key entry in the localization property file. Use the
    * <code>FooMessages</code> like this in the application code:
-   * 
+   *
    * <pre>
    *   Label label = ...;
    *   label.setText( FooMessages.get().MyMessage );
@@ -90,17 +90,17 @@ public final class RWT {
    * </p>
    */
   public static final class NLS {
-    
+
     private final static Map<ResourceBundle,Object> map = new HashMap<ResourceBundle, Object>();
 
     /**
-     * Returns a NLS object for the given bundle and type. See
+     * Returns a NLS object for the given resource bundle and type. See
      * class description for usage information.
      * The resource bundles read by this method have to be ISO 8859-1 encoded.
      * This is according to the {@link java.util.Properties Properties} file
-     * specification. 
-     * 
-     * @param bundleName the bundle to load.
+     * specification.
+     *
+     * @param bundleName the resource bundle to load.
      * @param clazz the class of the NLS object to load.
      */
     public static Object getISO8859_1Encoded( String bundleName, Class clazz ) {
@@ -110,13 +110,13 @@ public final class RWT {
     }
 
     /**
-     * Returns a NLS object for the given bundle and type. See
+     * Returns a NLS object for the given resource bundle and type. See
      * class description for usage information.
      * The resource bundles read by this method have to be UTF-8 encoded. Note
-     * that this is not according to the {@link java.util.Properties Properties} 
-     * file specification and meant for a more convenient use. 
-     * 
-     * @param bundleName the bundle to load.
+     * that this is not according to the {@link java.util.Properties Properties}
+     * file specification and meant for a more convenient use.
+     *
+     * @param bundleName the resource bundle to load.
      * @param clazz the class of the NLS object to load.
      */
     public static Object getUTF8Encoded( String bundleName, Class clazz ) {
@@ -124,7 +124,7 @@ public final class RWT {
       ResourceBundle bundle = Utf8ResourceBundle.getBundle( bundleName, getLocale(), loader );
       return internalGet( bundle, clazz );
     }
-    
+
     private static Object internalGet( ResourceBundle bundle, Class clazz ) {
       Object result;
       synchronized( map ) {
@@ -136,7 +136,7 @@ public final class RWT {
             String fieldName = fields[ i ].getName();
             try {
               if(    String.class.isAssignableFrom( fields[ i ].getType() )
-                  && Modifier.isPublic( fields[ i ].getModifiers() ) 
+                  && Modifier.isPublic( fields[ i ].getModifiers() )
                   && !Modifier.isStatic( fields[ i ].getModifiers() ) )
               {
                 try {
@@ -200,7 +200,7 @@ public final class RWT {
    * } );
    * </pre></code>
    * </p>
-   * 
+   *
    * @see Display#setData(String,Object)
    * @see Display#addFilter(int, Listener)
    * @since 1.4
@@ -209,32 +209,32 @@ public final class RWT {
 
   /**
    * Returns the instance of the life cycle which is currently processed.
-   * 
+   *
    * @return instance of {@link ILifeCycle}
    */
   public static ILifeCycle getLifeCycle() {
     return RWTFactory.getLifeCycleFactory().getLifeCycle();
   }
-  
+
   /**
    * Returns the instance of the currently available
    * {@link IResourceManager}
-   * 
+   *
    * @return instance of {@link IResourceManager}
    */
   public static IResourceManager getResourceManager() {
     return RWTFactory.getResourceManager();
   }
-  
+
   /**
    * Returns a manager to add and remove {@link IServiceHandler}s.
-   * 
+   *
    * @return the {@link IServiceManager}
    */
   public static IServiceManager getServiceManager() {
     return RWTFactory.getServiceManager();
   }
-  
+
   /**
    * Returns the setting store instance for this session.
    * @return a {@link ISettingStore}; never <code>null</code>
@@ -243,11 +243,11 @@ public final class RWT {
   public static ISettingStore getSettingStore() {
     return RWTFactory.getSettingStoreManager().getStore();
   }
-  
+
   /**
    * Returns the {@link IServiceStore} that is mapped
    * to the currently processed request.
-   * 
+   *
    * @return {@link IServiceStore}
    */
   public static IServiceStore getServiceStore() {
@@ -258,17 +258,17 @@ public final class RWT {
   /**
    * Returns the <code>ISessionStore</code> of the <code>HttpSession</code>
    * to which the currently processed request belongs.
-   * 
+   *
    * @return instance of {@link ISessionStore}
    */
   public static ISessionStore getSessionStore() {
     return ContextProvider.getSession();
   }
-  
+
   /**
    * Returns the <code>IApplicationStore</code> instance that represents the web context's
    * global data storage area.
-   * 
+   *
    * @return instance of {@link IApplicationStore}
    * @since 1.4
    */
@@ -279,7 +279,7 @@ public final class RWT {
   /**
    * Returns the <code>HttpServletRequest</code> that is currently processed.
    * <p>
-   * Typical application code rarely needs to call this method. It is meant mainly for 
+   * Typical application code rarely needs to call this method. It is meant mainly for
    * service handlers obtain parameters of the request to process.
    * </p>
    * @return instance of {@link HttpServletRequest}
@@ -294,11 +294,11 @@ public final class RWT {
    * Returns the <code>HttpServletResponse</code> that is mapped
    * to the currently processed request.
    * <p>
-   * Typical application code <em>never</em> needs to call this method. It is meant only for 
+   * Typical application code <em>never</em> needs to call this method. It is meant only for
    * service handlers to be able to write output and control other aspects of the response.
-   * Calling this method from a UI request (e.g. in an  SWT event listener) is almost 
+   * Calling this method from a UI request (e.g. in an  SWT event listener) is almost
    * certainly an error.
-   * </p> 
+   * </p>
    * @return instance of {@link HttpServletResponse}
    * @see IServiceHandler
    */
@@ -309,15 +309,15 @@ public final class RWT {
 
   /**
    * Returns the preferred <code>Locale</code> that the client will accept
-   * content in. This is either the <code>Locale</code> that was set in 
+   * content in. This is either the <code>Locale</code> that was set in
    * session-scope using the {@link #setLocale(Locale)} method or the locale
-   * based on the <code>Accept-Language</code> HTTP header of the current 
-   * request. If neither the <code>Locale</code> was set programmatically, nor 
-   * the client request provides an <code>Accept-Language</code> header, this 
+   * based on the <code>Accept-Language</code> HTTP header of the current
+   * request. If neither the <code>Locale</code> was set programmatically, nor
+   * the client request provides an <code>Accept-Language</code> header, this
    * method returns the default locale for the server.
-   * 
+   *
    * @return the preferred <code>Locale</code> for the client.
-   * 
+   *
    * @see #setLocale(Locale)
    */
   public static Locale getLocale() {
@@ -331,12 +331,12 @@ public final class RWT {
     }
     return result;
   }
-  
+
   /**
    * Sets the preferred <code>Locale</code> that the client will accept
    * content in to current session. The value set can be retrieved with
    * the {@link #getLocale()} method.
-   * 
+   *
    * @see #getLocale()
    */
   public static void setLocale( Locale locale ) {
@@ -346,9 +346,9 @@ public final class RWT {
   }
 
   /**
-   * Returns an instance if <code>IBrowserHistory</code> that provides support 
+   * Returns an instance if <code>IBrowserHistory</code> that provides support
    * for the browser's history.
-   * 
+   *
    * @return the browser history support implementation
    * @see IBrowserHistory
    * @since 1.3
@@ -357,9 +357,9 @@ public final class RWT {
     Object instance = SessionSingletonBase.getInstance( BrowserHistory.class );
     return ( IBrowserHistory )instance;
   }
-  
+
   /**
-   * Executes the run method of the given <code>runnable</code> on the 
+   * Executes the run method of the given <code>runnable</code> on the
    * request thread. This method may only be called from the UI thread.
    * <p>
    * <strong>NOTE:</strong> This API is provisional and may change without
