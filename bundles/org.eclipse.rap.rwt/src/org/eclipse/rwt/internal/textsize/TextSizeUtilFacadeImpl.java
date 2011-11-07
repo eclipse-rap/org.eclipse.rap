@@ -70,10 +70,13 @@ public final class TextSizeUtilFacadeImpl extends TextSizeUtilFacade {
   }
 
   private static void callDisplayMethod( String method, String property, Object value ) {
-    IClientObject clientObject = ClientObjectFactory.getForDisplay( Display.getCurrent() );
-    Map<String, Object> args = new HashMap<String, Object>();
-    args.put( property, value );
-    clientObject.call( method, args );
+    Display display = Display.getCurrent();
+    if( display != null ) {
+      IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+      Map<String, Object> args = new HashMap<String, Object>();
+      args.put( property, value );
+      clientObject.call( method, args );
+    }
   }
 
   static Object createItemParamObject( MeasurementItem item ) {

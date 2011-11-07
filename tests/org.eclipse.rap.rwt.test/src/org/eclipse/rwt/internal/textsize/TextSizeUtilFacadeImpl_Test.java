@@ -26,8 +26,19 @@ public class TextSizeUtilFacadeImpl_Test extends TestCase {
   private static final String TEXT_TO_MEASURE = " text \"to\" measure ";
   private static final String DISPLAY_ID = "w1";
 
+  private Display display;
   private Font[] fonts;
   private TextSizeUtilFacadeImpl facade;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    facade = new TextSizeUtilFacadeImpl();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testCreateProbeParamObject() {
     Probe probe = createProbe();
@@ -61,14 +72,12 @@ public class TextSizeUtilFacadeImpl_Test extends TestCase {
     checkResponseContainsMeasurementCall();
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    new Display();
-    facade = new TextSizeUtilFacadeImpl();
-  }
+  public void testWriteStringMeasurementsInternalWithDisposedDisplay() {
+    prepareFontAndTextProbing();
+    display.dispose();
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+    // Ensures that no exception is thrown.
+    facade.writeStringMeasurementsInternal();
   }
 
   private void checkResponseContainsMeasurementCall() {
