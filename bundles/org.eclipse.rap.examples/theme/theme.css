@@ -30,6 +30,7 @@ Button[TOGGLE].sidebar {
   border-radius: 5px;
   border: none;
   padding: 5px 12px;
+  text-shadow: none;
 }
 
 Button[TOGGLE].sidebar:selected {
