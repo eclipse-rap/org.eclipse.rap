@@ -979,7 +979,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var dndHandler = qx.event.handler.DragAndDropHandler.getInstance()
       var leftButton = qx.event.type.MouseEvent.buttons.left;
-      testUtil.prepareTimerUse();
       testUtil.initRequestLog();
       var tree = this.createTreeTarget();
       var item0 = this.createTreeItem( 0, tree, tree );
@@ -999,9 +998,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       testUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton );
       testUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
       // drop
+      testUtil.prepareTimerUse();
       testUtil.initRequestLog();
       testUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton );
-      assertEquals( 1, testUtil.getRequestsSend() );
+      testUtil.forceTimerOnce();
+      assertEquals( 2, testUtil.getRequestsSend() );
       var request = testUtil.getRequestLog()[ 0 ];
       var expected = "dropAccept.item=null";
       assertTrue( request.search( expected ) != -1 );
@@ -1048,6 +1049,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       var request = testUtil.getRequestLog()[ 1 ];
       var expected = "dragLeave.item=null";
       assertTrue( request.search( expected ) != -1 );
+      testUtil.clearTimerOnceLog();
+      testUtil.clearRequestLog();
+      dndSupport.cancel();
+      dndSupport.deregisterDragSource( source );
+      dndSupport.deregisterDropTarget( tree );
       source.setParent( null );
       source.destroy();
       tree.destroy();
