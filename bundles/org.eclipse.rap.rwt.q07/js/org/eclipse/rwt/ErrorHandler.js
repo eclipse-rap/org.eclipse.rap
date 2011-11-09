@@ -59,9 +59,19 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
     },
 
     processJavaScriptError : function( error ) {
-      var content = "<p>Javascript error occurred:</p><pre>"  + error + "</pre>";
-      org.eclipse.rwt.ErrorHandler.showError( content );
-      throw error;
+      if( qx.core.Variant.isSet( "qx.debug", "on" ) ) {
+        var content = "<p>Javascript error occurred:</p><pre>"  + error + "</pre>";
+        org.eclipse.rwt.ErrorHandler.showError( content );
+        throw error;
+      } else {
+        if( typeof console === "object" ) {
+          if( typeof console.error === "function" ) {
+            console.error( error );
+          } else if( typeof console.log === "function" ) {
+            console.log( error );
+          }
+        }
+      }
     },
 
     _createOverlay : function() {
