@@ -13,7 +13,145 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DateTimeTimeTest", {
 
   members : {
 
-    testCreateDateTimeDate : function() {
+    testCreateDateTimeTimeByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.DateTime",
+        "properties" : {
+          "style" : [ "TIME", "MEDIUM" ],
+          "parent" : "w2"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget instanceof org.eclipse.swt.widgets.DateTimeTime );
+      assertIdentical( shell, widget.getParent() );
+      assertTrue( widget.getUserData( "isControl" ) );
+      assertEquals( "datetime-time", widget.getAppearance() );
+      assertTrue( widget._medium );
+      assertFalse( widget._short );
+      assertFalse( widget._long );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHoursByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.DateTime",
+        "properties" : {
+          "style" : [ "TIME", "MEDIUM" ],
+          "parent" : "w2",
+          "hours" : 3
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( 3, widget._hoursTextField.getText() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetMinutesByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.DateTime",
+        "properties" : {
+          "style" : [ "TIME", "MEDIUM" ],
+          "parent" : "w2",
+          "minutes" : 33
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( 33, widget._minutesTextField.getText() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetSecondsByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.DateTime",
+        "properties" : {
+          "style" : [ "TIME", "MEDIUM" ],
+          "parent" : "w2",
+          "seconds" : 22
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( 22, widget._secondsTextField.getText() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetSubWidgetsBoundsByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.DateTime",
+        "properties" : {
+          "style" : [ "TIME", "MEDIUM" ],
+          "parent" : "w2",
+          "subWidgetsBounds" : [ [ 8, 3, 5, 24, 18 ], [ 11, 27, 5, 6, 18 ] ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( 3, widget._hoursTextField.getLeft() );
+      assertEquals( 5, widget._hoursTextField.getTop() );
+      assertEquals( 24, widget._hoursTextField.getWidth() );
+      assertEquals( 18, widget._hoursTextField.getHeight() );
+      assertEquals( 27, widget._separator3.getLeft() );
+      assertEquals( 5, widget._separator3.getTop() );
+      assertEquals( 6, widget._separator3.getWidth() );
+      assertEquals( 18, widget._separator3.getHeight() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetHasSelectionListenerByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.DateTime",
+        "properties" : {
+          "style" : [ "TIME", "MEDIUM" ],
+          "parent" : "w2"
+        }
+      } );
+      testUtil.protocolListen( "w3", { "selection" : true } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget._hasSelectionListener );
+      shell.destroy();
+      widget.destroy();
+    },
+ 
+    testCreateDateTimeTime : function() {
       var dateTime = this._createDefaultDateTimeTime();
       assertTrue( dateTime instanceof org.eclipse.swt.widgets.DateTimeTime );
       assertEquals( "datetime-time", dateTime.getAppearance() );

@@ -1,19 +1,24 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.datetimekit;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
@@ -21,176 +26,70 @@ import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.widgets.IDateTimeAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+import org.json.JSONArray;
 
 public class DateTimeLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+  private DateTimeLCA lca;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
+    lca = new DateTimeLCA();
+    Fixture.fakeNewRequest( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testDateTimeDatePreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    DateTime dateTime = new DateTime( shell, SWT.DATE
-                                           | SWT.MEDIUM
-                                           | SWT.DROP_DOWN );
+    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM | SWT.DROP_DOWN );
     dateTime.setDay( 1 );
     dateTime.setMonth( 1 );
     dateTime.setYear( 2008 );
     Fixture.markInitialized( display );
-    // Test preserved day, month, year
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( dateTime );
-    Integer day = ( Integer )adapter.getPreserved( DateTimeDateLCA.PROP_DAY );
-    assertEquals( 1, day.intValue() );
-    Integer month = ( Integer )adapter.getPreserved( DateTimeDateLCA.PROP_MONTH );
-    assertEquals( 1, month.intValue() );
-    Integer year = ( Integer )adapter.getPreserved( DateTimeDateLCA.PROP_YEAR );
-    assertEquals( 2008, year.intValue() );
-    Fixture.clearPreserved();
     // Test preserved control properties
     testPreserveControlProperties( dateTime );
-    // Test preserved sub widgets bounds
-    IDateTimeAdapter dtAdapter
-      = DateTimeLCAUtil.getDateTimeAdapter( dateTime );
-    Fixture.preserveWidgets();
-    String propName = IDateTimeAdapter.WEEKDAY_TEXTFIELD + "_BOUNDS";
-    Rectangle bounds = ( Rectangle )adapter.getPreserved( propName );
-    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.WEEKDAY_TEXTFIELD ),
-                  bounds );
-    propName = IDateTimeAdapter.DAY_TEXTFIELD + "_BOUNDS";
-    bounds = ( Rectangle )adapter.getPreserved( propName );
-    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.DAY_TEXTFIELD ),
-                  bounds );
-    propName = IDateTimeAdapter.MONTH_TEXTFIELD + "_BOUNDS";
-    bounds = ( Rectangle )adapter.getPreserved( propName );
-    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.MONTH_TEXTFIELD ),
-                  bounds );
-    propName = IDateTimeAdapter.YEAR_TEXTFIELD + "_BOUNDS";
-    bounds = ( Rectangle )adapter.getPreserved( propName );
-    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.YEAR_TEXTFIELD ),
-                  bounds );
-    propName = IDateTimeAdapter.WEEKDAY_MONTH_SEPARATOR + "_BOUNDS";
-    bounds = ( Rectangle )adapter.getPreserved( propName );
-    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.WEEKDAY_MONTH_SEPARATOR ),
-                  bounds );
-    propName = IDateTimeAdapter.MONTH_DAY_SEPARATOR + "_BOUNDS";
-    bounds = ( Rectangle )adapter.getPreserved( propName );
-    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.MONTH_DAY_SEPARATOR ),
-                  bounds );
-    propName = IDateTimeAdapter.DAY_YEAR_SEPARATOR + "_BOUNDS";
-    bounds = ( Rectangle )adapter.getPreserved( propName );
-    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.DAY_YEAR_SEPARATOR ),
-                  bounds );
-    propName = IDateTimeAdapter.SPINNER + "_BOUNDS";
-    bounds = ( Rectangle )adapter.getPreserved( propName );
-    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.SPINNER ),
-                  bounds );
-    propName = IDateTimeAdapter.DROP_DOWN_BUTTON + "_BOUNDS";
-    bounds = ( Rectangle )adapter.getPreserved( propName );
-    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.DROP_DOWN_BUTTON ),
-                  bounds );
-    Fixture.clearPreserved();
-    // Test preserved selection listeners
-    testPreserveSelectionListener( dateTime );
   }
 
   public void testDateTimeTimePreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     DateTime dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
     dateTime.setHours( 1 );
     dateTime.setMinutes( 2 );
     dateTime.setSeconds( 3 );
     Fixture.markInitialized( display );
-    // Test preserved hours, minutes, seconds
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( dateTime );
-    Integer hours
-      = ( Integer )adapter.getPreserved( DateTimeTimeLCA.PROP_HOURS );
-    assertEquals( 1, hours.intValue() );
-    Integer minutes
-      = ( Integer )adapter.getPreserved( DateTimeTimeLCA.PROP_MINUTES );
-    assertEquals( 2, minutes.intValue() );
-    Integer seconds
-      = ( Integer )adapter.getPreserved( DateTimeTimeLCA.PROP_SECONDS );
-    assertEquals( 3, seconds.intValue() );
-    Fixture.clearPreserved();
     // Test preserved control properties
     testPreserveControlProperties( dateTime );
-    // Test preserved sub widgets bounds
-    IDateTimeAdapter dtAdapter = DateTimeLCAUtil.getDateTimeAdapter( dateTime );
-    Fixture.preserveWidgets();
-    String propName = IDateTimeAdapter.HOURS_TEXTFIELD + "_BOUNDS";
-    Rectangle bounds = ( Rectangle )adapter.getPreserved( propName );
-    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.HOURS_TEXTFIELD ),
-                  bounds );
-    propName = IDateTimeAdapter.MINUTES_TEXTFIELD + "_BOUNDS";
-    bounds = ( Rectangle )adapter.getPreserved( propName );
-    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.MINUTES_TEXTFIELD ),
-                  bounds );
-    propName = IDateTimeAdapter.SECONDS_TEXTFIELD + "_BOUNDS";
-    bounds = ( Rectangle )adapter.getPreserved( propName );
-    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.SECONDS_TEXTFIELD ),
-                  bounds );
-    propName = IDateTimeAdapter.HOURS_MINUTES_SEPARATOR + "_BOUNDS";
-    bounds = ( Rectangle )adapter.getPreserved( propName );
-    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.HOURS_MINUTES_SEPARATOR ),
-                  bounds );
-    propName = IDateTimeAdapter.MINUTES_SECONDS_SEPARATOR + "_BOUNDS";
-    bounds = ( Rectangle )adapter.getPreserved( propName );
-    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.MINUTES_SECONDS_SEPARATOR ),
-                  bounds );
-    propName = IDateTimeAdapter.SPINNER + "_BOUNDS";
-    bounds = ( Rectangle )adapter.getPreserved( propName );
-    assertEquals( dtAdapter.getBounds( IDateTimeAdapter.SPINNER ), bounds );
-    Fixture.clearPreserved();
-    // Test preserved selection listeners
-    testPreserveSelectionListener( dateTime );
   }
 
   public void testDateTimeCalendarPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
     dateTime.setDay( 1 );
     dateTime.setMonth( 1 );
     dateTime.setYear( 2008 );
     Fixture.markInitialized( display );
-    // Test preserved day, month, year
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( dateTime );
-    Integer day = ( Integer )adapter.getPreserved( DateTimeDateLCA.PROP_DAY );
-    assertEquals( 1, day.intValue() );
-    Integer month = ( Integer )adapter.getPreserved( DateTimeDateLCA.PROP_MONTH );
-    assertEquals( 1, month.intValue() );
-    Integer year = ( Integer )adapter.getPreserved( DateTimeDateLCA.PROP_YEAR );
-    assertEquals( 2008, year.intValue() );
-    Fixture.clearPreserved();
     // Test preserved control properties
     testPreserveControlProperties( dateTime );
-    // Test preserved selection listeners
-    testPreserveSelectionListener( dateTime );
   }
 
   public void testSelectionEvent() {
-    // Date
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
     testSelectionEvent( dateTime );
     // Time
     dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
     testSelectionEvent( dateTime );
   }
-  
+
   // 315950: [DateTime] method getDay() return wrong day in particular
   // circumstances
   public void testDateTimeDate_Bug315950() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    DateTime dateTime = new DateTime( shell, SWT.DATE
-                                           | SWT.MEDIUM
-                                           | SWT.DROP_DOWN );
+    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM | SWT.DROP_DOWN );
     dateTime.setDay( 15 );
     dateTime.setMonth( 5 );
     dateTime.setYear( 2010 );
@@ -259,23 +158,6 @@ public class DateTimeLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
-  private void testPreserveSelectionListener( final DateTime dateTime ) {
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( dateTime );
-    Boolean hasListeners
-      = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    SelectionListener selectionListener = new SelectionAdapter() {
-    };
-    dateTime.addSelectionListener( selectionListener );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( dateTime );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-  }
-
   private void testSelectionEvent( final DateTime dateTime ) {
     final StringBuffer log = new StringBuffer();
     SelectionListener selectionListener = new SelectionAdapter() {
@@ -299,11 +181,486 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( "widgetSelected", log.toString() );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
+  public void testRenderCreateDate() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.SHORT | SWT.DROP_DOWN );
+
+    lca.renderInitialization( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertEquals( "rwt.widgets.DateTime", operation.getType() );
+    java.util.List<Object> styles = Arrays.asList( operation.getStyles() );
+    assertTrue( styles.contains( "DATE" ) );
+    assertTrue( styles.contains( "SHORT" ) );
+    assertTrue( styles.contains( "DROP_DOWN" ) );
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testRenderCreateDate_InitalParameters() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+
+    lca.renderInitialization( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    java.util.List<String> propertyNames = operation.getPropertyNames();
+    assertTrue( propertyNames.indexOf( "cellSize" ) != -1 );
+    assertTrue( propertyNames.indexOf( "monthNames" ) != -1 );
+    assertTrue( propertyNames.indexOf( "weekdayNames" ) != -1 );
+    assertTrue( propertyNames.indexOf( "weekdayShortNames" ) != -1 );
+    assertTrue( propertyNames.indexOf( "dateSeparator" ) != -1 );
+    assertTrue( propertyNames.indexOf( "datePattern" ) != -1 );
+  }
+
+  public void testRenderCreateTime() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.TIME | SWT.MEDIUM );
+
+    lca.renderInitialization( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertEquals( "rwt.widgets.DateTime", operation.getType() );
+    java.util.List<Object> styles = Arrays.asList( operation.getStyles() );
+    assertTrue( styles.contains( "TIME" ) );
+    assertTrue( styles.contains( "MEDIUM" ) );
+  }
+
+  public void testRenderCreateCalendar() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.CALENDAR | SWT.LONG );
+
+    lca.renderInitialization( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertEquals( "rwt.widgets.DateTime", operation.getType() );
+    java.util.List<Object> styles = Arrays.asList( operation.getStyles() );
+    assertTrue( styles.contains( "CALENDAR" ) );
+    assertTrue( styles.contains( "LONG" ) );
+  }
+
+  public void testRenderCreateCalendar_InitalParameters() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
+
+    lca.renderInitialization( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    java.util.List<String> propertyNames = operation.getPropertyNames();
+    assertTrue( propertyNames.indexOf( "cellSize" ) != -1 );
+    assertTrue( propertyNames.indexOf( "monthNames" ) != -1 );
+    assertTrue( propertyNames.indexOf( "weekdayShortNames" ) != -1 );
+  }
+
+  public void testRenderParent() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
+
+    lca.renderInitialization( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertEquals( WidgetUtil.getId( dateTime.getParent() ), operation.getParent() );
+  }
+
+
+  public void testRenderAddSelectionListener() throws Exception {
+    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+    Fixture.preserveWidgets();
+
+    dateTime.addSelectionListener( new SelectionAdapter() { } );
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( dateTime, "selection" ) );
+  }
+
+  public void testRenderRemoveSelectionListener() throws Exception {
+    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
+    SelectionListener listener = new SelectionAdapter() { };
+    dateTime.addSelectionListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+    Fixture.preserveWidgets();
+
+    dateTime.removeSelectionListener( listener );
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( dateTime, "selection" ) );
+  }
+
+  public void testRenderSelectionListenerUnchanged() throws Exception {
+    DateTime dateTime = new DateTime( shell, SWT.DATE | SWT.MEDIUM );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+    Fixture.preserveWidgets();
+
+    dateTime.addSelectionListener( new SelectionAdapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( dateTime, "selection" ) );
+  }
+
+  public void testRenderInitialYear() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+
+    lca.render( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertTrue( operation.getPropertyNames().indexOf( "year" ) != -1 );
+  }
+
+  public void testRenderYear() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+
+    dateTime.setYear( 2000 );
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 2000 ), message.findSetProperty( dateTime, "year" ) );
+  }
+
+  public void testRenderYearUnchanged() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+
+    dateTime.setYear( 2000 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( dateTime, "year" ) );
+  }
+
+  public void testRenderInitialMonth() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+
+    lca.render( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertTrue( operation.getPropertyNames().indexOf( "month" ) != -1 );
+  }
+
+  public void testRenderMonth() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+
+    dateTime.setMonth( 3 );
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 3 ), message.findSetProperty( dateTime, "month" ) );
+  }
+
+  public void testRenderMonthUnchanged() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+
+    dateTime.setMonth( 3 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( dateTime, "month" ) );
+  }
+
+  public void testRenderInitialDay() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+
+    lca.render( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertTrue( operation.getPropertyNames().indexOf( "day" ) != -1 );
+  }
+
+  public void testRenderDay() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+
+    dateTime.setDay( 3 );
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 3 ), message.findSetProperty( dateTime, "day" ) );
+  }
+
+  public void testRenderDayUnchanged() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+
+    dateTime.setDay( 3 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( dateTime, "day" ) );
+  }
+
+  public void testRenderInitialSubWidgetsBounds_Date() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+
+    lca.render( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertTrue( operation.getPropertyNames().indexOf( "subWidgetsBounds" ) != -1 );
+  }
+
+  public void testRenderSubWidgetsBounds_Date() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( dateTime, "subWidgetsBounds" );
+    assertEquals( 9, actual.length() );
+  }
+
+  public void testRenderSubWidgetsBoundsUnchanged_Date() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.DATE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+
+    Fixture.preserveWidgets();
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( dateTime, "subWidgetsBounds" ) );
+  }
+
+  public void testRenderInitialHours() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.TIME );
+
+    lca.render( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertTrue( operation.getPropertyNames().indexOf( "hours" ) != -1 );
+  }
+
+  public void testRenderHours() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.TIME );
+
+    dateTime.setHours( 10 );
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 10 ), message.findSetProperty( dateTime, "hours" ) );
+  }
+
+  public void testRenderHoursUnchanged() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.TIME );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+
+    dateTime.setHours( 10 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( dateTime, "hours" ) );
+  }
+
+  public void testRenderInitialMinutes() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.TIME );
+
+    lca.render( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertTrue( operation.getPropertyNames().indexOf( "minutes" ) != -1 );
+  }
+
+  public void testRenderMinutes() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.TIME );
+
+    dateTime.setMinutes( 10 );
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 10 ), message.findSetProperty( dateTime, "minutes" ) );
+  }
+
+  public void testRenderMinutesUnchanged() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.TIME );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+
+    dateTime.setMinutes( 10 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( dateTime, "minutes" ) );
+  }
+
+  public void testRenderInitialSeconds() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.TIME );
+
+    lca.render( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertTrue( operation.getPropertyNames().indexOf( "seconds" ) != -1 );
+  }
+
+  public void testRenderSeconds() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.TIME );
+
+    dateTime.setSeconds( 10 );
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 10 ), message.findSetProperty( dateTime, "seconds" ) );
+  }
+
+  public void testRenderSecondsUnchanged() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.TIME );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+
+    dateTime.setSeconds( 10 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( dateTime, "seconds" ) );
+  }
+
+  public void testRenderInitialSubWidgetsBounds_Time() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.TIME );
+
+    lca.render( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertTrue( operation.getPropertyNames().indexOf( "subWidgetsBounds" ) != -1 );
+  }
+
+  public void testRenderSubWidgetsBounds_Time() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.TIME );
+
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( dateTime, "subWidgetsBounds" );
+    assertEquals( 6, actual.length() );
+  }
+
+  public void testRenderSubWidgetsBoundsUnchanged_Time() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.TIME );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+
+    Fixture.preserveWidgets();
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( dateTime, "subWidgetsBounds" ) );
+  }
+
+  public void testRenderInitialYear_Calendar() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
+
+    lca.render( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertTrue( operation.getPropertyNames().indexOf( "year" ) != -1 );
+  }
+
+  public void testRenderYear_Calendar() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
+
+    dateTime.setYear( 2000 );
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 2000 ), message.findSetProperty( dateTime, "year" ) );
+  }
+
+  public void testRenderYearUnchanged_Calendar() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+
+    dateTime.setYear( 2000 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( dateTime, "year" ) );
+  }
+
+  public void testRenderInitialMonth_Calendar() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
+
+    lca.render( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertTrue( operation.getPropertyNames().indexOf( "month" ) != -1 );
+  }
+
+  public void testRenderMonth_Calendar() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
+
+    dateTime.setMonth( 3 );
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 3 ), message.findSetProperty( dateTime, "month" ) );
+  }
+
+  public void testRenderMonthUnchanged_Calendar() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+
+    dateTime.setMonth( 3 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( dateTime, "month" ) );
+  }
+
+  public void testRenderInitialDay_Calendar() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
+
+    lca.render( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( dateTime );
+    assertTrue( operation.getPropertyNames().indexOf( "day" ) != -1 );
+  }
+
+  public void testRenderDay_Calendar() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
+
+    dateTime.setDay( 3 );
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( new Integer( 3 ), message.findSetProperty( dateTime, "day" ) );
+  }
+
+  public void testRenderDayUnchanged_Calendar() throws IOException {
+    DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( dateTime );
+
+    dateTime.setDay( 3 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( dateTime );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( dateTime, "day" ) );
   }
 }
