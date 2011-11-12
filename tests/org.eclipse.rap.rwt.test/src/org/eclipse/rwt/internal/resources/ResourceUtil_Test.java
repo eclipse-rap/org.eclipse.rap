@@ -66,27 +66,31 @@ public class ResourceUtil_Test extends TestCase {
 
   public void testConcatenationEmpty() {
     JSLibraryConcatenator jsConcatenator = new JSLibraryConcatenator();
+
     jsConcatenator.startJSConcatenation();
-    String result = jsConcatenator.getContent();
-    assertEquals( "", result );
+
+    byte[] result = jsConcatenator.readContent();
+    assertEquals( 0, result.length );
   }
 
   public void testConcatenation() throws IOException {
     JSLibraryConcatenator jsConcatenator = RWTFactory.getJSLibraryConcatenator();
+
     jsConcatenator.startJSConcatenation();
     File file = File.createTempFile( "test", ".js" );
     ResourceUtil.write( file, "foo".getBytes( "UTF-8" ) );
     ResourceUtil.write( file, "bar".getBytes( "UTF-8" ) );
-    String result = jsConcatenator.getContent();
-    assertEquals( "foo\nbar\n", result );
+
+    byte[] result = jsConcatenator.readContent();
+    assertEquals( "foo\nbar\n", new String( result ) );
   }
 
   public void testReadText() throws IOException {
     String input = createTestString( 10000 );
     InputStream inputStream = new ByteArrayInputStream( input.getBytes( "UTF-8" ) );
-    
+
     byte[] result = ResourceUtil.readText( inputStream, "UTF-8", false );
-    
+
     assertEquals( input, new String( result, "UTF-8" ) );
   }
 

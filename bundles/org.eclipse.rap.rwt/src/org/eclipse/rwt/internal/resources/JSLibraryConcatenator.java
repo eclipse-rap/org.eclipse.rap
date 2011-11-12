@@ -7,124 +7,61 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
-import java.io.*;
-import java.util.zip.GZIPOutputStream;
-
-import org.eclipse.rwt.internal.util.HTTP;
-import org.eclipse.rwt.internal.util.StreamUtil;
+import java.io.ByteArrayOutputStream;
 
 
 public class JSLibraryConcatenator {
   private ByteArrayOutputStream jsConcatenator;
+  private byte[] content;
   private String hashCode;
-  private byte[] compressed;
-  private byte[] uncompressed;
-  private String content;
-
-  public JSLibraryConcatenator() {
-    content = "";
-  }
-
-  public String getHashCode() {
-    return hashCode;
-  }
-
-  public byte[] getCompressed() {
-    return compressed;
-  }
-
-  public byte[] getUncompressed() {
-    return uncompressed;
-  }
-
-  public String getContent() {
-    if( jsConcatenator != null ) {
-      try {
-        content = jsConcatenator.toString( HTTP.CHARSET_UTF_8 );
-      } catch( UnsupportedEncodingException shouldNotHappen ) {
-        throw new RuntimeException( shouldNotHappen );
-      }
-      jsConcatenator = null;
-    }
-    return content;
-  }
 
   public void startJSConcatenation() {
     jsConcatenator = new ByteArrayOutputStream();
   }
 
   public void appendJSLibrary( byte[] content ) {
-    if( jsConcatenator != null ) {
-      for( int i = 0; i < content.length; i++ ) {
-        jsConcatenator.write( content[ i ] );
-        if( isLastCharacter( content, i ) ) {
-          writeNewLine();
-        }
-      }
+    if( jsConcatenator != null && content.length > 0 ) {
+      jsConcatenator.write( content, 0, content.length );
+      jsConcatenator.write( '\n' );
     }
+  }
+
+  public byte[] getContent() {
+    return content;
+  }
+
+  public String getHashCode() {
+    return hashCode;
   }
 
   public void activate() {
-    try {
-      initialize();
-    } catch( RuntimeException rte ) {
-      throw rte;
-    } catch( Exception shouldNotHappen ) {
-      throw new RuntimeException( shouldNotHappen );
-    }
-  }
-  
-  public void deactivate() {
-    jsConcatenator = null;
-    hashCode = null;
-    compressed = null;
-    uncompressed = null;
-    content = null;
-  }
-  
-  //////////////////
-  // helping methods
-
-  private void writeNewLine() {
-    jsConcatenator.write( '\n' );
-  }
-
-  private static boolean isLastCharacter( byte[] content, int position ) {
-    return position == content.length - 1;
-  }
-
-  private void initialize() throws UnsupportedEncodingException, IOException {
     synchronized( JSLibraryServiceHandler.class ) {
-      if( !isInitialized() ) {
-        initializeUncompressed();
-        initializeCompressed();
-        initializeHashCode();
+      if( content == null ) {
+        content = readContent();
+        hashCode = "H" + new String( content ).hashCode();
       }
     }
   }
 
-  private boolean isInitialized() {
-    return uncompressed != null;
+  public void deactivate() {
+    jsConcatenator = null;
+    content = null;
+    hashCode = null;
   }
 
-  private void initializeCompressed() throws IOException {
-    // Note [fappel]: We do not close all streams or writers, since this is
-    //                not so crucial here as we only do in-memory opperations.
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    GZIPOutputStream gzipStream = new GZIPOutputStream( baos );
-    StreamUtil.write( uncompressed, gzipStream );
-    gzipStream.close();
-    compressed = baos.toByteArray();
+  byte[] readContent() {
+    byte[] content;
+    if( jsConcatenator != null ) {
+      content = jsConcatenator.toByteArray();
+      jsConcatenator = null;
+    } else {
+      content = new byte[ 0 ];
+    }
+    return content;
   }
 
-  private void initializeHashCode() {
-    hashCode = "H" + getContent().hashCode();
-  }
-
-  private void initializeUncompressed() throws UnsupportedEncodingException {
-    uncompressed = getContent().getBytes( HTTP.CHARSET_UTF_8 );
-  }
 }

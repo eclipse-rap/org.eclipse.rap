@@ -10,55 +10,52 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
-
 import junit.framework.TestCase;
 
 
 public class JSLibraryConcatenator_Test extends TestCase {
   private static final char CHARACTER = 'a';
-  
+
   private JSLibraryConcatenator concatenator;
 
   public void testConcatenation() {
     appendAndActivate( new byte[] { ( byte )CHARACTER } );
 
-    assertEquals( concatenator.getUncompressed()[ 0 ], CHARACTER );
-    assertEquals( concatenator.getUncompressed()[ 1 ], '\n' );
-    assertEquals( 2, concatenator.getUncompressed().length );
+    assertEquals( concatenator.getContent()[ 0 ], CHARACTER );
+    assertEquals( concatenator.getContent()[ 1 ], '\n' );
+    assertEquals( 2, concatenator.getContent().length );
     assertNotNull( concatenator.getHashCode() );
-    assertNotNull( concatenator.getCompressed() );
   }
 
   public void testActivate() {
     appendAndActivate( new byte[] { ( byte )CHARACTER } );
     concatenator.deactivate();
-    
-    assertNull( concatenator.getUncompressed() );
+
+    assertNull( concatenator.getContent() );
     assertNull( concatenator.getHashCode() );
-    assertNull( concatenator.getCompressed() );
   }
 
   public void testIgnoreConcatenation() {
     concatenator.appendJSLibrary( new byte[] { CHARACTER } );
     concatenator.activate();
-    
-    assertEquals( 0, concatenator.getUncompressed().length );
+
+    assertEquals( 0, concatenator.getContent().length );
   }
-  
+
   public void testEmptyFileContent() {
     appendAndActivate( new byte[ 0 ] );
-    
-    assertEquals( 0, concatenator.getUncompressed().length );
+
+    assertEquals( 0, concatenator.getContent().length );
   }
-  
+
   public void testIgnoreAppendJSLibraryAfterFinishJSConcatenation() {
     concatenator.startJSConcatenation();
     concatenator.activate();
     concatenator.appendJSLibrary( new byte[] { 'a' } );
-    
-    assertEquals( 0, concatenator.getUncompressed().length );        
+
+    assertEquals( 0, concatenator.getContent().length );
   }
-  
+
   protected void setUp() {
     concatenator = new JSLibraryConcatenator();
   }
