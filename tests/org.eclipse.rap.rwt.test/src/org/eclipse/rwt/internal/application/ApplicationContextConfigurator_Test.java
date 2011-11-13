@@ -30,7 +30,6 @@ import org.eclipse.rwt.internal.AdapterManager;
 import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.engine.RWTConfigurationImpl;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
-import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.textsize.MeasurementListener;
 import org.eclipse.rwt.internal.theme.Theme;
@@ -51,7 +50,7 @@ import org.eclipse.swt.widgets.Composite;
 
 @SuppressWarnings("deprecation")
 public class ApplicationContextConfigurator_Test extends TestCase {
-  
+
   private static final Object ATTRIBUTE_VALUE = new Object();
   private static final String ATTRIBUTE_NAME = "name";
   private static final String THEME_ID = "TestTheme";
@@ -165,12 +164,12 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     checkThemeContributionHasBeenAdded();
     checkAttributeHasBeenSet();
   }
-  
+
   public void testConfigureWithDifferentResourceLocation() {
     File contextDirectory = createTmpFile();
 
     activateApplicationContext( createConfigurator(), contextDirectory );
-    
+
     checkContextDirectoryHasBeenSet( contextDirectory );
   }
 
@@ -216,7 +215,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     activateApplicationContext( configurator, null );
   }
 
-  private void activateApplicationContext( ApplicationConfigurator configurator, 
+  private void activateApplicationContext( ApplicationConfigurator configurator,
                                            File contextDirectory )
   {
     ServletContext servletContext = Fixture.createServletContext();
@@ -298,7 +297,6 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     ServiceManager serviceManager = applicationContext.getServiceManager();
     assertSame( testServiceHandler, serviceManager.getCustomHandler( testServiceHandlerId ) );
     assertNotNull( serviceManager.getCustomHandler( UICallBackServiceHandler.HANDLER_ID ) );
-    assertNotNull( serviceManager.getCustomHandler( JSLibraryServiceHandler.HANDLER_ID ) );
   }
 
   private void checkResourceHasBeenAdded() {

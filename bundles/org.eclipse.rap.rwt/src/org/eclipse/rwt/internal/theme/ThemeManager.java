@@ -29,7 +29,6 @@ import java.util.Set;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
-import org.eclipse.rwt.internal.resources.ResourceUtil;
 import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 import org.eclipse.rwt.internal.theme.css.CssElementHolder;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
@@ -451,7 +450,7 @@ public class ThemeManager {
         log( "-- REGISTERED THEME CODE FOR " + themeId + " ( " + themeCode.length() + " )--" );
         log( themeCode );
         log( "-- END REGISTERED THEME CODE --" );
-        String name = resolvePackageName( jsId ) + ".js";
+        String name = "rap-" + jsId + ".js";
         registerJsLibrary( name, themeCode, compress );
         registeredThemeFiles.add( themeId );
       }
@@ -548,7 +547,8 @@ public class ThemeManager {
     } else {
       resourceManager.register( name, CHARSET, option );
     }
-    ResourceUtil.useJsLibrary( name );
+    String location = resourceManager.getLocation( name );
+    RWTFactory.getStartupPage().getConfigurer().addJsLibrary( location );
   }
 
   private static IResourceManager getResourceManager() {

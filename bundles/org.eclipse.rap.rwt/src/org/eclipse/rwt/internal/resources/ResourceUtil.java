@@ -17,8 +17,8 @@ import java.net.URLConnection;
 
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.util.HTTP;
-import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.resources.IResourceManager;
+
 
 public final class ResourceUtil {
 
@@ -60,14 +60,11 @@ public final class ResourceUtil {
     } finally {
       fos.close();
     }
-    if( toWrite.getName().endsWith( "js" ) ) {
+    // TODO [rst] Explicitly register internal JavaScript files
+    String name = toWrite.getName();
+    if( name.endsWith( ".js" ) && !name.startsWith( "rap-" ) ) {
       RWTFactory.getJSLibraryConcatenator().appendJSLibrary( content );
     }
-  }
-
-  public static void useJsLibrary( String libraryName ) {
-    ParamCheck.notNull( libraryName, "libraryName" );
-    // TODO [rst] Add to concatenation buffer
   }
 
   private static byte[] readText( String name,
@@ -107,8 +104,8 @@ public final class ResourceUtil {
     return text.toString().getBytes( HTTP.CHARSET_UTF_8 );
   }
 
-  private static byte[] readBinary( String name, IResourceManager resourceManager ) 
-    throws IOException 
+  private static byte[] readBinary( String name, IResourceManager resourceManager )
+    throws IOException
   {
     byte[] result;
     InputStream is = openStream( name, resourceManager );
@@ -137,8 +134,8 @@ public final class ResourceUtil {
     return bufferedResult.toByteArray();
   }
 
-  private static InputStream openStream( String name, IResourceManager resourceManager ) 
-    throws IOException 
+  private static InputStream openStream( String name, IResourceManager resourceManager )
+    throws IOException
   {
     ClassLoader loader = ResourceManagerImpl.class.getClassLoader();
     URL resource = loader.getResource( name );

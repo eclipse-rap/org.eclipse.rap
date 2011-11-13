@@ -61,7 +61,7 @@ public class ApplicationContext {
   //                implementation with an optimized version for testing purpose. Think about
   //                a less intrusive solution.
   private ThemeManager themeManager;
-  private final RWTConfiguration configuration; 
+  private final RWTConfiguration configuration;
   private final ResourceManagerImpl resourceManager;
   private final BrandingManager brandingManager;
   private final PhaseListenerRegistry phaseListenerRegistry;
@@ -86,39 +86,39 @@ public class ApplicationContext {
   private final ServletContext servletContext;
   private final ApplicationContextConfigurator contextConfigurator;
   private boolean activated;
-  
+
   public ApplicationContext( ApplicationConfigurator configurator, ServletContext servletContext ) {
-    this.applicationStore = new ApplicationStoreImpl();
-    this.configuration = new RWTConfigurationImpl();
-    this.resourceManager = new ResourceManagerImpl( configuration );
-    this.phaseListenerRegistry = new PhaseListenerRegistry();
-    this.entryPointManager = new EntryPointManager();
-    this.lifeCycleFactory = new LifeCycleFactory( entryPointManager, phaseListenerRegistry );
-    this.themeManager = new ThemeManager();
-    this.brandingManager = new BrandingManager();
-    this.resourceFactory = new ResourceFactory();
-    this.imageFactory = new ImageFactory();
-    this.internalImageFactory = new InternalImageFactory();
-    this.imageDataFactory = new ImageDataFactory( resourceManager );
-    this.fontDataFactory = new FontDataFactory();
-    this.adapterManager = new AdapterManager();
-    this.lifeCycleAdapterFactory = new LifeCycleAdapterFactory();
-    this.settingStoreManager = new SettingStoreManager();
-    this.resourceRegistry = new ResourceRegistry();
-    this.startupPage = new StartupPage( resourceRegistry );
-    this.serviceManager = createServiceManager();
-    this.displaysHolder = new DisplaysHolder();
-    this.jsLibraryConcatenator = new JSLibraryConcatenator();
-    this.textSizeStorage = new TextSizeStorage();
-    this.probeStore = new ProbeStore( textSizeStorage );
+    applicationStore = new ApplicationStoreImpl();
+    configuration = new RWTConfigurationImpl();
+    resourceManager = new ResourceManagerImpl( configuration );
+    phaseListenerRegistry = new PhaseListenerRegistry();
+    entryPointManager = new EntryPointManager();
+    lifeCycleFactory = new LifeCycleFactory( entryPointManager, phaseListenerRegistry );
+    themeManager = new ThemeManager();
+    brandingManager = new BrandingManager();
+    resourceFactory = new ResourceFactory();
+    imageFactory = new ImageFactory();
+    internalImageFactory = new InternalImageFactory();
+    imageDataFactory = new ImageDataFactory( resourceManager );
+    fontDataFactory = new FontDataFactory();
+    adapterManager = new AdapterManager();
+    lifeCycleAdapterFactory = new LifeCycleAdapterFactory();
+    settingStoreManager = new SettingStoreManager();
+    resourceRegistry = new ResourceRegistry();
+    startupPage = new StartupPage( resourceRegistry );
+    serviceManager = createServiceManager();
+    displaysHolder = new DisplaysHolder();
+    jsLibraryConcatenator = new JSLibraryConcatenator( resourceManager );
+    textSizeStorage = new TextSizeStorage();
+    probeStore = new ProbeStore( textSizeStorage );
     this.servletContext = servletContext;
-    this.contextConfigurator = new ApplicationContextConfigurator( configurator, servletContext );
+    contextConfigurator = new ApplicationContextConfigurator( configurator, servletContext );
   }
-  
+
   public boolean isActivated() {
     return activated;
   }
-  
+
   public void activate() {
     checkIsActivated();
     activated = true;
@@ -138,19 +138,19 @@ public class ApplicationContext {
       activated = false;
     }
   }
-  
+
   public ServletContext getServletContext() {
     return servletContext;
   }
-  
+
   public RWTConfiguration getConfiguration() {
     return configuration;
   }
-  
+
   public IResourceManager getResourceManager() {
     return testResourceManager != null ? testResourceManager : resourceManager;
   }
-  
+
   public EntryPointManager getEntryPointManager() {
     return entryPointManager;
   }
@@ -158,7 +158,7 @@ public class ApplicationContext {
   public BrandingManager getBrandingManager() {
     return brandingManager;
   }
-  
+
   public SettingStoreManager getSettingStoreManager() {
     return settingStoreManager;
   }
@@ -170,7 +170,7 @@ public class ApplicationContext {
   public AdapterManager getAdapterManager() {
     return adapterManager;
   }
-  
+
   public LifeCycleAdapterFactory getLifeCycleAdapterFactory() {
     return lifeCycleAdapterFactory;
   }
@@ -178,7 +178,7 @@ public class ApplicationContext {
   public ResourceRegistry getResourceRegistry() {
     return resourceRegistry;
   }
-  
+
   public ServiceManager getServiceManager() {
     return serviceManager;
   }
@@ -202,39 +202,39 @@ public class ApplicationContext {
   public LifeCycleFactory getLifeCycleFactory() {
     return lifeCycleFactory;
   }
-  
+
   public IApplicationStore getApplicationStore() {
     return applicationStore;
   }
-  
+
   public ResourceFactory getResourceFactory() {
     return resourceFactory;
   }
-  
+
   public ImageFactory getImageFactory() {
     return imageFactory;
   }
-  
+
   public InternalImageFactory getInternalImageFactory() {
     return internalImageFactory;
   }
-  
+
   public ImageDataFactory getImageDataFactory() {
     return imageDataFactory;
   }
-  
+
   public FontDataFactory getFontDataFactory() {
     return fontDataFactory;
   }
-  
+
   public StartupPage getStartupPage() {
     return startupPage;
   }
-  
+
   public DisplaysHolder getDisplaysHolder() {
     return displaysHolder;
   }
-  
+
   public TextSizeStorage getTextSizeStorage() {
     return textSizeStorage;
   }
@@ -242,24 +242,24 @@ public class ApplicationContext {
   public ProbeStore getProbeStore() {
     return probeStore;
   }
-  
+
   private void checkIsNotActivated() {
     if( !activated ) {
       throw new IllegalStateException( "The ApplicationContext has not been activated." );
     }
   }
-  
+
   private void checkIsActivated() {
     if( activated ) {
       throw new IllegalStateException( "The ApplicationContext has already been activated." );
     }
   }
-  
+
   private void doActivate() {
     contextConfigurator.configure( this );
     activateInstances();
   }
-    
+
   private void activateInstances() {
     ApplicationContextUtil.runWith( this, new Runnable() {
       public void run() {
@@ -299,19 +299,19 @@ public class ApplicationContext {
     lifeCycleFactory.deactivate();
     serviceManager.clear();
     themeManager.deactivate();
-    
-    // TODO [fappel]: think of better solution. This maps directly to the 
-    //                default resource manager implementation while 
+
+    // TODO [fappel]: think of better solution. This maps directly to the
+    //                default resource manager implementation while
     //                the resource manager factory is configurable. Is
     //                the latter really necessary since the only other factory
     //                in use is for testing purpose (unfortunately API).
     if( !ignoreResoureDeletion ) {
       File resourcesDir = new File( configuration.getContextDirectory(),
                                     ResourceManagerImpl.RESOURCES );
-      ApplicationContextUtil.delete( resourcesDir ); 
+      ApplicationContextUtil.delete( resourcesDir );
     }
   }
-  
+
 
   private ServiceManager createServiceManager() {
     return new ServiceManager( new LifeCycleServiceHandler( lifeCycleFactory, startupPage ) );

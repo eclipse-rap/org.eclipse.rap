@@ -12,9 +12,16 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,16 +29,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
-import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
 import org.eclipse.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.HTTP;
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager;
 
@@ -52,6 +60,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
 
   private final List<AbstractBranding> registeredBrandings;
   private final ResourceRegistry resourceRegistry;
+  private final List<String> jsLibraries;
   // TODO [fappel]: think about clusters cache control variables
   private int probeCount;
   private long lastModified;
@@ -61,6 +70,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     this.resourceRegistry = resourceRegistry;
     lastModified = System.currentTimeMillis();
     registeredBrandings = new LinkedList<AbstractBranding>();
+    jsLibraries = new ArrayList<String>();
   }
 
   ////////////////////////////////////////////////////
@@ -108,6 +118,10 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     return result;
   }
 
+  public void addJsLibrary( String location ) {
+    ParamCheck.notNull( location, "resource" );
+    jsLibraries.add( location );
+  }
 
   ///////////////////////////////////////
   // Helping methods to load startup page
@@ -254,13 +268,17 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
 
   private String getJsLibraries() {
     StringBuilder buffer = new StringBuilder();
+    for( String location : jsLibraries ) {
+      writeScriptTag( buffer, location );
+    }
     IResource[] resources = resourceRegistry.get();
-    for( int i = 0; i < resources.length; i++ ) {
-      if( resources[ i ].isExternal() && resources[ i ].isJSLibrary() ) {
-        writeScriptTag( buffer, resources[ i ].getLocation() );
+    for( IResource resource : resources ) {
+      if( resource.isJSLibrary() && resource.isExternal() ) {
+        writeScriptTag( buffer, resource.getLocation() );
       }
     }
-    writeScriptTag( buffer, JSLibraryServiceHandler.getRequestURL() );
+    String location = RWTFactory.getJSLibraryConcatenator().getLocation();
+    writeScriptTag( buffer, location );
     return buffer.toString();
   }
 

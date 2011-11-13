@@ -17,6 +17,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.internal.application.RWTFactory;
+import org.eclipse.rwt.resources.IResourceManager;
 
 
 public class ResourceUtil_Test extends TestCase {
@@ -65,7 +66,8 @@ public class ResourceUtil_Test extends TestCase {
   }
 
   public void testConcatenationEmpty() {
-    JSLibraryConcatenator jsConcatenator = new JSLibraryConcatenator();
+    IResourceManager resourceManager = RWTFactory.getResourceManager();
+    JSLibraryConcatenator jsConcatenator = new JSLibraryConcatenator( resourceManager );
 
     jsConcatenator.startJSConcatenation();
 

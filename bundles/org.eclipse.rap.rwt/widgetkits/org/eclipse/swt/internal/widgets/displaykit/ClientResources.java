@@ -12,12 +12,14 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.resources.ResourceUtil;
+import org.eclipse.rwt.internal.resources.ContentBuffer;
 import org.eclipse.rwt.internal.util.HTTP;
-import org.eclipse.rwt.resources.*;
+import org.eclipse.rwt.resources.IResource;
+import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
@@ -311,7 +313,11 @@ public final class ClientResources {
       resourceManager.setContextLoader( getClass().getClassLoader() );
       // TODO [rst] Needed by client.js - can we get rid of it?
       resourceManager.register( "resource/static/html/blank.html", HTTP.CHARSET_UTF_8 );
-      registerJavascriptFiles();
+      try {
+        registerJavascriptFiles();
+      } catch( IOException e ) {
+        throw new RuntimeException( "Failed to register JavaScript library" );
+      }
       registerWidgetImages();
       registerContributions();
     } finally {
@@ -319,13 +325,24 @@ public final class ClientResources {
     }
   }
 
-  private void registerJavascriptFiles() {
+  private void registerJavascriptFiles() throws IOException {
+    ContentBuffer contentBuffer = new ContentBuffer();
     if( isDebug() ) {
       for( int i = 0; i < JAVASCRIPT_FILES.length; i++ ) {
-        registerJavascriptFile( JAVASCRIPT_FILES[ i ] );
+        append( contentBuffer, JAVASCRIPT_FILES[ i ] );
       }
     } else {
-      registerJavascriptFile( CLIENT_JS );
+      append( contentBuffer, CLIENT_JS );
+    }
+    registerJavascriptLibraryFile( contentBuffer, "rap-client.js" );
+  }
+
+  private void append( ContentBuffer contentBuffer, String location ) throws IOException {
+    InputStream inputStream = ClientResources.openResourceStream( location );
+    try {
+      contentBuffer.append( inputStream );
+    } finally {
+      inputStream.close();
     }
   }
 
@@ -352,24 +369,28 @@ public final class ClientResources {
         } else {
           resourceManager.register( location, charset, options );
         }
-        if( resources[ i ].isJSLibrary() ) {
-          ResourceUtil.useJsLibrary( location );
-        }
       }
     }
   }
 
-  private void registerJavascriptFile( String libraryName ) {
-    InputStream inputStream = openResourceStream( libraryName );
-    resourceManager.register( libraryName, inputStream, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
-    ResourceUtil.useJsLibrary( libraryName );
+  private void registerJavascriptLibraryFile( ContentBuffer buffer, String name )
+    throws IOException
+  {
+    InputStream inputStream = buffer.getContentAsStream();
+    try {
+      resourceManager.register( name, inputStream, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
+      String location = resourceManager.getLocation( name );
+      RWTFactory.getStartupPage().getConfigurer().addJsLibrary( location );
+    } finally {
+      inputStream.close();
+    }
   }
 
-  private InputStream openResourceStream( String name ) {
-    InputStream result = getClass().getClassLoader().getResourceAsStream( name );
+  static InputStream openResourceStream( String name ) {
+    InputStream result = ClientResources.class.getClassLoader().getResourceAsStream( name );
     if( result == null ) {
-      String mesg = "Resource not found: " + name;
-      throw new IllegalArgumentException( mesg );
+      String message = "Resource not found: " + name;
+      throw new IllegalArgumentException( message );
     }
     return result;
   }
@@ -378,4 +399,5 @@ public final class ClientResources {
     String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
     return DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
   }
+
 }

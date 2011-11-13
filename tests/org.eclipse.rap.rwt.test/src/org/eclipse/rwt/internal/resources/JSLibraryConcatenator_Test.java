@@ -10,59 +10,92 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.internal.application.RWTFactory;
+import org.eclipse.rwt.resources.IResourceManager;
+
 import junit.framework.TestCase;
 
 
 public class JSLibraryConcatenator_Test extends TestCase {
-  private static final char CHARACTER = 'a';
+  private static final byte[] CONTENT = new byte[] { ( byte )'a' };
 
-  private JSLibraryConcatenator concatenator;
+  private JSLibraryConcatenator jsConcatenator;
+  private IResourceManager resourceManager;
 
-  public void testConcatenation() {
-    appendAndActivate( new byte[] { ( byte )CHARACTER } );
+  protected void setUp() {
+    Fixture.setUp();
+    Fixture.useDefaultResourceManager();
+    resourceManager = RWTFactory.getResourceManager();
+    jsConcatenator = new JSLibraryConcatenator( resourceManager );
+  }
 
-    assertEquals( concatenator.getContent()[ 0 ], CHARACTER );
-    assertEquals( concatenator.getContent()[ 1 ], '\n' );
-    assertEquals( 2, concatenator.getContent().length );
-    assertNotNull( concatenator.getHashCode() );
+  @Override
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
+  public void testConcatenation() throws IOException {
+    jsConcatenator.startJSConcatenation();
+    jsConcatenator.appendJSLibrary( CONTENT );
+    jsConcatenator.activate();
+
+    String location = jsConcatenator.getLocation();
+    assertEquals( "rwt-resources/resources.js", location );
+    assertTrue( resourceManager.isRegistered( "resources.js" ) );
+    assertEquals( "a\n", getRegisteredContent( "resources.js" ) );
   }
 
   public void testActivate() {
-    appendAndActivate( new byte[] { ( byte )CHARACTER } );
-    concatenator.deactivate();
+    jsConcatenator.startJSConcatenation();
+    jsConcatenator.appendJSLibrary( CONTENT );
+    jsConcatenator.activate();
+    jsConcatenator.deactivate();
 
-    assertNull( concatenator.getContent() );
-    assertNull( concatenator.getHashCode() );
+    assertNull( jsConcatenator.getLocation() );
+    assertFalse( resourceManager.isRegistered( "resources.js" ) );
   }
 
   public void testIgnoreConcatenation() {
-    concatenator.appendJSLibrary( new byte[] { CHARACTER } );
-    concatenator.activate();
+    jsConcatenator.appendJSLibrary( CONTENT );
+    jsConcatenator.activate();
 
-    assertEquals( 0, concatenator.getContent().length );
+    assertNull( jsConcatenator.getLocation() );
+    assertFalse( resourceManager.isRegistered( "resources.js" ) );
   }
 
   public void testEmptyFileContent() {
-    appendAndActivate( new byte[ 0 ] );
+    jsConcatenator.startJSConcatenation();
+    jsConcatenator.appendJSLibrary( new byte[ 0 ] );
+    jsConcatenator.activate();
 
-    assertEquals( 0, concatenator.getContent().length );
+    assertNull( jsConcatenator.getLocation() );
+    assertFalse( resourceManager.isRegistered( "resources.js" ) );
   }
 
   public void testIgnoreAppendJSLibraryAfterFinishJSConcatenation() {
-    concatenator.startJSConcatenation();
-    concatenator.activate();
-    concatenator.appendJSLibrary( new byte[] { 'a' } );
+    jsConcatenator.startJSConcatenation();
+    jsConcatenator.activate();
+    jsConcatenator.appendJSLibrary( CONTENT );
 
-    assertEquals( 0, concatenator.getContent().length );
+    assertNull( jsConcatenator.getLocation() );
+    assertFalse( resourceManager.isRegistered( "resources.js" ) );
   }
 
-  protected void setUp() {
-    concatenator = new JSLibraryConcatenator();
+  String getRegisteredContent( String location ) throws IOException {
+    String result = null;
+    InputStream inputStream = resourceManager.getRegisteredContent( location );
+    if( inputStream != null ) {
+      try {
+        result = TestUtil.readContent( inputStream, "UTF-8" );
+      } finally {
+        inputStream.close();
+      }
+    }
+    return result;
   }
 
-  private void appendAndActivate( byte[] content ) {
-    concatenator.startJSConcatenation();
-    concatenator.appendJSLibrary( content );
-    concatenator.activate();
-  }
 }

@@ -16,7 +16,6 @@ import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.engine.RWTConfigurationImpl;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
-import org.eclipse.rwt.internal.resources.JSLibraryServiceHandler;
 import org.eclipse.rwt.internal.service.ApplicationStoreImpl;
 import org.eclipse.rwt.internal.service.ServiceManager;
 import org.eclipse.rwt.internal.textsize.MeasurementListener;
@@ -26,7 +25,7 @@ import org.eclipse.rwt.service.RWTFileSettingStoreFactory;
 
 
 class ApplicationContextConfigurator {
-  
+
   private final ApplicationConfigurator configurator;
   private final ServletContext servletContext;
 
@@ -57,14 +56,14 @@ class ApplicationContextConfigurator {
     addInternalServiceHandlers( applicationContext );
     setInternalSettingStoreFactory( applicationContext );
   }
-  
+
   private void setContextDirectory( ApplicationContext applicationContext ) {
     RWTConfiguration configurationInstance = applicationContext.getConfiguration();
     RWTConfigurationImpl configuration = ( RWTConfigurationImpl )configurationInstance;
-    String location 
+    String location
       = ( String )servletContext.getAttribute( ApplicationConfigurator.RESOURCE_ROOT_LOCATION );
     if( location != null ) {
-      configuration.configure( location ); 
+      configuration.configure( location );
     } else {
       configuration.configure( servletContext.getRealPath( "/" ) );
     }
@@ -91,18 +90,16 @@ class ApplicationContextConfigurator {
     RWTConfigurationImpl configuration = ( RWTConfigurationImpl )configurationInstance;
     configuration.reset();
   }
-  
+
   private void addInternalPhaseListeners( ApplicationContext applicationContext ) {
     applicationContext.getPhaseListenerRegistry().add( new CurrentPhase.Listener() );
     applicationContext.getPhaseListenerRegistry().add( new MeasurementListener() );
   }
-  
+
   private void addInternalServiceHandlers( ApplicationContext applicationContext ) {
     ServiceManager serviceManager = applicationContext.getServiceManager();
     String uiCallBackId = UICallBackServiceHandler.HANDLER_ID;
     serviceManager.registerServiceHandler( uiCallBackId, new UICallBackServiceHandler() );
-    String jsLibraryId = JSLibraryServiceHandler.HANDLER_ID;
-    serviceManager.registerServiceHandler( jsLibraryId, new JSLibraryServiceHandler() );
   }
 
   private void setInternalSettingStoreFactory( ApplicationContext applicationContext ) {

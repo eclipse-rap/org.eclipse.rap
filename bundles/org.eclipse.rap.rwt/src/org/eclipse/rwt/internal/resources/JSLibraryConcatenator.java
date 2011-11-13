@@ -11,57 +11,69 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
-import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
+import org.eclipse.rwt.internal.util.HTTP;
+import org.eclipse.rwt.resources.IResourceManager;
+import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
 public class JSLibraryConcatenator {
-  private ByteArrayOutputStream jsConcatenator;
-  private byte[] content;
-  private String hashCode;
+  private final IResourceManager resourceManager;
+  private ContentBuffer jsBuffer;
+  private String location;
+
+  public JSLibraryConcatenator( IResourceManager resourceManager ) {
+    this.resourceManager = resourceManager;
+  }
 
   public void startJSConcatenation() {
-    jsConcatenator = new ByteArrayOutputStream();
+    jsBuffer = new ContentBuffer();
   }
 
   public void appendJSLibrary( byte[] content ) {
-    if( jsConcatenator != null && content.length > 0 ) {
-      jsConcatenator.write( content, 0, content.length );
-      jsConcatenator.write( '\n' );
+    if( jsBuffer != null ) {
+      jsBuffer.append( content );
     }
   }
 
-  public byte[] getContent() {
-    return content;
-  }
-
-  public String getHashCode() {
-    return hashCode;
+  public String getLocation() {
+    return location;
   }
 
   public void activate() {
-    synchronized( JSLibraryServiceHandler.class ) {
-      if( content == null ) {
-        content = readContent();
-        hashCode = "H" + new String( content ).hashCode();
+    synchronized( JSLibraryConcatenator.class ) {
+      if( location == null ) {
+        byte[] content = readContent();
+        if( content.length > 0 ) {
+          location = register( content, "resources.js" );
+        }
       }
     }
   }
 
   public void deactivate() {
-    jsConcatenator = null;
-    content = null;
-    hashCode = null;
+    resourceManager.unregister( "resources.js" );
+    jsBuffer = null;
+    location = null;
   }
 
   byte[] readContent() {
     byte[] content;
-    if( jsConcatenator != null ) {
-      content = jsConcatenator.toByteArray();
-      jsConcatenator = null;
+    if( jsBuffer != null ) {
+      content = jsBuffer.getContent();
+      jsBuffer = null;
     } else {
       content = new byte[ 0 ];
     }
     return content;
+  }
+
+  private String register( byte[] content, String name ) {
+    InputStream inputStream = new ByteArrayInputStream( content );
+    resourceManager.register( name, inputStream, HTTP.CHARSET_UTF_8, RegisterOptions.VERSION );
+    return resourceManager.getLocation( name );
   }
 
 }

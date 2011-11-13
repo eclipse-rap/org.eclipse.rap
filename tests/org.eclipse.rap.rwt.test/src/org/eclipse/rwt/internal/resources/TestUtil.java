@@ -66,13 +66,27 @@ public class TestUtil {
       break;
     }
   }
-  
+
   public static void assertArrayEquals( Object[] expected, Object[] actual ) {
     if( !Arrays.equals( expected, actual ) ) {
-      TestCase.fail( "Expected:\n" 
-                     + Arrays.toString( expected ) 
-                     + "\n but was:\n" 
+      TestCase.fail( "Expected:\n"
+                     + Arrays.toString( expected )
+                     + "\n but was:\n"
                      + Arrays.toString( actual ) );
     }
   }
+
+  public static String readContent( InputStream inputStream, String encoding )
+    throws IOException, UnsupportedEncodingException
+  {
+    ByteArrayOutputStream bufferOutputStream = new ByteArrayOutputStream();
+    byte[] buffer = new byte[ 40960 ];
+    int read = inputStream.read( buffer );
+    while( read != -1 ) {
+      bufferOutputStream.write( buffer, 0, read );
+      read = inputStream.read( buffer );
+    }
+    return bufferOutputStream.toString( encoding );
+  }
+
 }

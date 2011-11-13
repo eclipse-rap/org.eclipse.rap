@@ -32,14 +32,15 @@ import org.eclipse.rwt.internal.util.*;
  */
 public final class StartupPage {
   private final IStartupPageConfigurer configurer;
-  
+
   public interface IStartupPageConfigurer {
     StartupPageTemplateHolder getTemplate() throws IOException;
     boolean isModifiedSince();
+    void addJsLibrary( String location );
   }
-  
+
   public StartupPage( ResourceRegistry resourceRegistry ) {
-    this.configurer = new StartupPageConfigurer( resourceRegistry );
+    configurer = new StartupPageConfigurer( resourceRegistry );
   }
 
   public IStartupPageConfigurer getConfigurer() {
