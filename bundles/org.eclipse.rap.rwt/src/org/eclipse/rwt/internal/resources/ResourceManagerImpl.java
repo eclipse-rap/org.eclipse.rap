@@ -69,8 +69,8 @@ public class ResourceManagerImpl implements IResourceManager {
   private final Map<String,String> repository;
   private final Map<String,Resource> cache;
   private final RWTConfiguration configuration;
+  private final ThreadLocal<ClassLoader> contextLoader;
   private ClassLoader loader;
-  private ThreadLocal<ClassLoader> contextLoader;
 
   private static final class Resource {
 
@@ -104,9 +104,9 @@ public class ResourceManagerImpl implements IResourceManager {
 
   public ResourceManagerImpl( RWTConfiguration configuration ) {
     this.configuration = configuration;
-    this.repository = new Hashtable<String,String>();
-    this.cache = new Hashtable<String,Resource>();
-    this.contextLoader = new ThreadLocal<ClassLoader>();
+    repository = new Hashtable<String,String>();
+    cache = new Hashtable<String,Resource>();
+    contextLoader = new ThreadLocal<ClassLoader>();
   }
 
   /**
@@ -407,7 +407,7 @@ public class ResourceManagerImpl implements IResourceManager {
   static String versionedResourceName( String name, Integer version ) {
     String result = name;
     if( version != null ) {
-      String versionString = String.valueOf( version.intValue() );
+      String versionString = Integer.toHexString( version.intValue() );
       int dotPos = name.lastIndexOf( '.' );
       // ensure that the dot was found in name part (not path)
       if( name.replace( '\\', '/' ).lastIndexOf( "/" ) > dotPos  ) {
@@ -415,10 +415,10 @@ public class ResourceManagerImpl implements IResourceManager {
       }
       if( dotPos == -1 ) {
         // append version number if not suffix
-        result = name + versionString;
+        result = name + '-' + versionString;
       } else {
         // insert version number between name and suffix
-        result = name.substring( 0, dotPos ) + versionString + name.substring( dotPos );
+        result = name.substring( 0, dotPos ) + '-' + versionString + name.substring( dotPos );
       }
     }
     return result;
@@ -429,7 +429,7 @@ public class ResourceManagerImpl implements IResourceManager {
                 || options == RegisterOptions.VERSION_AND_COMPRESS )
            && SystemProps.useVersionedJavaScript();
   }
-  
+
   private static boolean shouldCompress( RegisterOptions options ) {
     return    (    options == RegisterOptions.COMPRESS
                 || options == RegisterOptions.VERSION_AND_COMPRESS )
