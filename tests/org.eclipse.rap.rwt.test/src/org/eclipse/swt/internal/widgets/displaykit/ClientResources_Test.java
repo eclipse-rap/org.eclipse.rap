@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.internal.application.RWTFactory;
+import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.resources.TestUtil;
 import org.eclipse.rwt.resources.IResourceManager;
 
@@ -37,7 +38,6 @@ public class ClientResources_Test extends TestCase {
 
   protected void tearDown() {
     Fixture.tearDown();
-    disableDevelopmentMode();
   }
 
   public void testRegisterResources() {
@@ -48,7 +48,8 @@ public class ClientResources_Test extends TestCase {
   }
 
   public void testRegisterResourcesDebug() {
-    enableDevelopmentMode();
+    System.setProperty( SystemProps.CLIENT_LIBRARY_VARIANT,
+                        SystemProps.DEBUG_CLIENT_LIBRARY_VARIANT );
     clientResources.registerResources();
 
     assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
@@ -65,7 +66,8 @@ public class ClientResources_Test extends TestCase {
   }
 
   public void testRegisteredContentDebug() throws IOException {
-    enableDevelopmentMode();
+    System.setProperty( SystemProps.CLIENT_LIBRARY_VARIANT,
+                        SystemProps.DEBUG_CLIENT_LIBRARY_VARIANT );
     clientResources.registerResources();
     String clientJs = getRegisteredContent( "rap-client.js", "UTF-8" );
 
@@ -90,14 +92,6 @@ public class ClientResources_Test extends TestCase {
       inputStream.close();
     }
     return result;
-  }
-
-  private static void enableDevelopmentMode() {
-    System.setProperty( "org.eclipse.rwt.clientLibraryVariant", "DEBUG" );
-  }
-
-  private static void disableDevelopmentMode() {
-    System.getProperties().remove( "org.eclipse.rwt.clientLibraryVariant" );
   }
 
 }

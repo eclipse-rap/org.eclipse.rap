@@ -66,9 +66,6 @@ public class ThemeManager {
     = System.getProperty( ThemeManager.class.getName() + ".log" );
   private static final boolean DEBUG = "true".equals( LOG_SYSTEM_PROPERTY );
 
-  private static final String CLIENT_LIBRARY_VARIANT = "org.eclipse.rwt.clientLibraryVariant";
-  private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
-
   private static final String WIDGET_THEME_PATH = "resource/widget/rap";
 
   static final String IMAGE_DEST_PATH = "themes/images";
@@ -432,7 +429,6 @@ public class ThemeManager {
    * theme.
    */
   private void registerThemeFiles( Theme theme ) {
-    boolean compress = !isDebugVariant();
     synchronized( registeredThemeFiles ) {
       String themeId = theme.getId();
       if( !registeredThemeFiles.contains( themeId ) ) {
@@ -451,7 +447,7 @@ public class ThemeManager {
         log( themeCode );
         log( "-- END REGISTERED THEME CODE --" );
         String name = "rap-" + jsId + ".js";
-        registerJsLibrary( name, themeCode, compress );
+        registerJsLibrary( name, themeCode );
         registeredThemeFiles.add( themeId );
       }
     }
@@ -530,11 +526,9 @@ public class ThemeManager {
     }
   }
 
-  private static void registerJsLibrary( String name, String code, boolean compress ) {
+  private static void registerJsLibrary( String name, String code ) {
     IResourceManager resourceManager = getResourceManager();
-    RegisterOptions option =   compress
-                             ? RegisterOptions.VERSION_AND_COMPRESS
-                             : RegisterOptions.VERSION;
+    RegisterOptions option = RegisterOptions.VERSION_AND_COMPRESS;
     if( code != null ) {
       byte[] buffer;
       try {
@@ -587,11 +581,6 @@ public class ThemeManager {
       qxTheme.appendTheme( "appearance", jsId + "Appearances" );
     }
     return qxTheme.getJsCode();
-  }
-
-  private static boolean isDebugVariant() {
-    String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
-    return DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
   }
 
   private static void log( final String mesg ) {

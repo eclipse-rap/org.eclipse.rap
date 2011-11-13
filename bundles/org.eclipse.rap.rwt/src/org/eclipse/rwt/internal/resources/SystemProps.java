@@ -16,21 +16,27 @@ package org.eclipse.rwt.internal.resources;
  */
 // TODO [rh] only used by ResourceManager, move to its helper class ResourceUtil
 public final class SystemProps {
-  
+
   public static final String USE_VERSIONED_JAVA_SCRIPT = "org.eclipse.rap.useVersionedJavaScript";
   public static final String USE_COMPRESSED_JAVA_SCRIPT = "org.eclipse.rap.useCompressedJavaScript";
-    
+  public static final String CLIENT_LIBRARY_VARIANT = "org.eclipse.rwt.clientLibraryVariant";
+  public static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
 
   private SystemProps() {
     // prevent instantiation
   }
-  
+
   public static boolean useVersionedJavaScript() {
     return getBooleanProperty( USE_VERSIONED_JAVA_SCRIPT, true );
   }
-  
+
   public static boolean useCompressedJavaScript() {
     return getBooleanProperty( USE_COMPRESSED_JAVA_SCRIPT, true );
+  }
+
+  public static boolean isDevelopmentMode() {
+    String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
+    return DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
   }
 
   private static boolean getBooleanProperty( String key, boolean defaultValue ) {

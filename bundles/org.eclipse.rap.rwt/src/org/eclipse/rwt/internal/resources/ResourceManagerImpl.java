@@ -433,7 +433,8 @@ public class ResourceManagerImpl implements IResourceManager {
   private static boolean shouldCompress( RegisterOptions options ) {
     return    (    options == RegisterOptions.COMPRESS
                 || options == RegisterOptions.VERSION_AND_COMPRESS )
-           && SystemProps.useCompressedJavaScript();
+           && SystemProps.useCompressedJavaScript()
+           && !SystemProps.isDevelopmentMode();
   }
 
   private File getDiskLocation( String name, Integer version ) {

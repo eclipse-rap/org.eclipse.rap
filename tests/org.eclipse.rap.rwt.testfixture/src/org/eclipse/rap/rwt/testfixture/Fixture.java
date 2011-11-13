@@ -412,6 +412,7 @@ public final class Fixture {
 
   public static void unsetSystemProperties() {
     System.getProperties().remove( SystemProps.USE_VERSIONED_JAVA_SCRIPT );
+    System.getProperties().remove( SystemProps.CLIENT_LIBRARY_VARIANT );
   }
 
   public static void setSystemProperties() {

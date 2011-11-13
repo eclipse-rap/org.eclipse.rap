@@ -311,6 +311,22 @@ public class ResourceManagerImpl_Test extends TestCase {
     assertFalse( "file must not be written twice", resourceFile.exists() );
   }
 
+  public void testNotCompressedInDevelopmentMode() throws Exception {
+    System.setProperty( SystemProps.CLIENT_LIBRARY_VARIANT,
+                        SystemProps.DEBUG_CLIENT_LIBRARY_VARIANT );
+    IResourceManager manager = getResourceManager( DELIVER_FROM_DISK );
+    String resource = TEST_RESOURCE_1;
+
+    manager.register( resource, HTTP.CHARSET_UTF_8, RegisterOptions.COMPRESS );
+
+    File resourceFile = getResourceCopyFile( resource );
+    byte[] origin = read( openStream( resource ) );
+    byte[] copy = read( resourceFile );
+    assertTrue( "Resource not registered", manager.isRegistered( resource ) );
+    assertTrue( "Resource was not written to disk", resourceFile.exists() );
+    assertEquals( "Resource was compressed in development mode", origin.length, copy.length );
+  }
+
   public void testUnregisterNonExistingResource() {
     IResourceManager manager = getResourceManager( DELIVER_FROM_DISK );
 

@@ -17,6 +17,7 @@ import java.io.InputStream;
 
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.resources.ContentBuffer;
+import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager;
@@ -24,9 +25,6 @@ import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 
 
 public final class ClientResources {
-
-  private static final String CLIENT_LIBRARY_VARIANT = "org.eclipse.rwt.clientLibraryVariant";
-  private static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
 
   private static final String CLIENT_JS = "client.js";
 
@@ -327,7 +325,7 @@ public final class ClientResources {
 
   private void registerJavascriptFiles() throws IOException {
     ContentBuffer contentBuffer = new ContentBuffer();
-    if( isDebug() ) {
+    if( SystemProps.isDevelopmentMode() ) {
       for( int i = 0; i < JAVASCRIPT_FILES.length; i++ ) {
         append( contentBuffer, JAVASCRIPT_FILES[ i ] );
       }
@@ -393,11 +391,6 @@ public final class ClientResources {
       throw new IllegalArgumentException( message );
     }
     return result;
-  }
-
-  private static boolean isDebug() {
-    String libraryVariant = System.getProperty( CLIENT_LIBRARY_VARIANT );
-    return DEBUG_CLIENT_LIBRARY_VARIANT.equals( libraryVariant );
   }
 
 }
