@@ -51,10 +51,10 @@ public class List extends Scrollable {
   private static final int HORIZONTAL_ITEM_MARGIN = 5;
 
   private final ListModel model;
-  private int focusIndex = -1;
+  private int focusIndex;
   private transient IListAdapter listAdapter;
   private final ResizeListener resizeListener;
-  private int topIndex = 0;
+  private int topIndex;
   private boolean hasVScrollBar;
   private boolean hasHScrollBar;
 
@@ -90,6 +90,7 @@ public class List extends Scrollable {
   public List( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
     model = new ListModel( ( style & SWT.SINGLE ) != 0 );
+    focusIndex = -1;
     resizeListener = new ResizeListener();
     addControlListener( resizeListener );
   }

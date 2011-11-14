@@ -182,6 +182,16 @@ public abstract class Scrollable extends Control {
     checkWidget();
     return verticalBar;
   }
+  
+  void releaseChildren() {
+    super.releaseChildren();
+    if( verticalBar != null ) {
+      verticalBar.dispose();
+    }
+    if( horizontalBar != null ) {
+      horizontalBar.dispose();
+    }
+  }
 
   int getVScrollBarWidth() {
     // subclasses may override
