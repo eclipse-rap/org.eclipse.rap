@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.events;
 
@@ -14,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
+
 
 /**
  * Instances of this class are sent as a result of controls being shown.
@@ -33,15 +35,15 @@ public final class ShowEvent extends TypedEvent {
   private static final Class LISTENER = ShowListener.class;
 
 
-  public ShowEvent( final Control source, final int id ) {
+  public ShowEvent( Control source, int id ) {
     super( source, id );
   }
 
-  public ShowEvent( final Event event ) {
+  public ShowEvent( Event event ) {
     super( event );
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case SHOWN:
         ( ( ShowListener )listener ).controlShown( this );
@@ -62,23 +64,19 @@ public final class ShowEvent extends TypedEvent {
     return true;
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final ShowListener listener )
-  {
+  public static void addListener( Adaptable adaptable, ShowListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final ShowListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, ShowListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 }

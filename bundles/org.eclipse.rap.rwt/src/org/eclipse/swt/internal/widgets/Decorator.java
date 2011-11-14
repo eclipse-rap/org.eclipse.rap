@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
@@ -33,7 +34,7 @@ public class Decorator extends Widget {
   private Widget decoratedWidget;
   private DisposeListener disposeListener;
   
-  public Decorator( final Widget widget, final int style ) {
+  public Decorator( Widget widget, int style ) {
     super( widget, style );
     this.decoratedWidget = widget;
     registerDisposeListeners();
@@ -49,7 +50,7 @@ public class Decorator extends Widget {
 
   private void registerDisposeListeners() {
     disposeListener = new DisposeListener() {
-      public void widgetDisposed( final DisposeEvent event ) {
+      public void widgetDisposed( DisposeEvent event ) {
         release();
       }
     };

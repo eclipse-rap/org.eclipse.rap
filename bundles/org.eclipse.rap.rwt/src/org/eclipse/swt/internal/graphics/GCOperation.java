@@ -1,15 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.graphics;
 
 import org.eclipse.swt.graphics.*;
+
 
 public abstract class GCOperation {
 
@@ -26,17 +28,17 @@ public abstract class GCOperation {
     public final int id;
     public final Object value;
 
-    public SetProperty( final int id, final RGB value ) {
+    public SetProperty( int id, RGB value ) {
       this.id = id;
       this.value = value;
     }
     
-    public SetProperty( final FontData value ) {
+    public SetProperty( FontData value ) {
       this.id = FONT;
       this.value = value;
     }
 
-    public SetProperty( final int id, final int value ) {
+    public SetProperty( int id, int value ) {
       this.id = id;
       this.value = new Integer( value );
     }
@@ -49,7 +51,7 @@ public abstract class GCOperation {
     public final int x2;
     public final int y2;
 
-    public DrawLine( final int x1, final int y1, final int x2, final int y2 ) {
+    public DrawLine( int x1, int y1, int x2, int y2 ) {
       this.x1 = x1;
       this.y1 = y1;
       this.x2 = x2;
@@ -62,7 +64,7 @@ public abstract class GCOperation {
     public final int x;
     public final int y;
 
-    public DrawPoint( final int x, final int y ) {
+    public DrawPoint( int x, int y ) {
       this.x = x;
       this.y = y;
     }
@@ -76,7 +78,7 @@ public abstract class GCOperation {
     public final int height;
     public final boolean fill;
 
-    public DrawRectangle( final Rectangle bounds, final boolean fill ) {
+    public DrawRectangle( Rectangle bounds, boolean fill ) {
       this.x = bounds.x;
       this.y = bounds.y;
       this.width = bounds.width;
@@ -90,11 +92,7 @@ public abstract class GCOperation {
     public final int arcWidth;
     public final int arcHeight;
 
-    public DrawRoundRectangle( final Rectangle bounds,
-                               final int arcWidth,
-                               final int arcHeight,
-                               final boolean fill )
-    {
+    public DrawRoundRectangle( Rectangle bounds, int arcWidth, int arcHeight, boolean fill ) {
       super( bounds, fill );
       this.arcWidth = arcWidth;
       this.arcHeight = arcHeight;
@@ -105,9 +103,7 @@ public abstract class GCOperation {
 
     public final boolean vertical;
 
-    public FillGradientRectangle( final Rectangle bounds,
-                                  final boolean vertical )
-    {
+    public FillGradientRectangle( Rectangle bounds, boolean vertical ) {
       super( bounds, true );
       this.vertical = vertical;
     }
@@ -123,11 +119,7 @@ public abstract class GCOperation {
     public final int arcAngle;
     public final boolean fill;
 
-    public DrawArc( final Rectangle bounds,
-                    final int startAngle,
-                    final int arcAngle,
-                    final boolean fill )
-    {
+    public DrawArc( Rectangle bounds, int startAngle, int arcAngle, boolean fill ) {
       this.x = bounds.x;
       this.y = bounds.y;
       this.width = bounds.width;
@@ -144,10 +136,7 @@ public abstract class GCOperation {
     public final boolean close;
     public final boolean fill;
 
-    public DrawPolyline( final int[] points,
-                         final boolean close,
-                         final boolean fill )
-    {
+    public DrawPolyline( int[] points, boolean close, boolean fill ) {
       this.points = new int[ points.length ];
       System.arraycopy( points, 0, this.points, 0, points.length );
       this.close = close;
@@ -168,11 +157,7 @@ public abstract class GCOperation {
     public final int destHeight;
     public final boolean simple;
 
-    public DrawImage( final Image image,
-                      final Rectangle src,
-                      final Rectangle dest,
-                      final boolean simple )
-    {
+    public DrawImage( Image image, Rectangle src, Rectangle dest, boolean simple ) {
       this.image = image;
       this.srcX = src.x;
       this.srcY = src.y;
@@ -193,11 +178,7 @@ public abstract class GCOperation {
     public final int y;
     public final int flags;
 
-    public DrawText( final String text,
-                     final int x,
-                     final int y,
-                     final int flags )
-    {
+    public DrawText( String text, int x, int y, int flags ) {
       this.text = text;
       this.x = x;
       this.y = y;

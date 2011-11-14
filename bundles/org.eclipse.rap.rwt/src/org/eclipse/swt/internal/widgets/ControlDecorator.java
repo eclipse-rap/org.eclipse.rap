@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
@@ -14,6 +15,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+
 
 public final class ControlDecorator extends Decorator {
   
@@ -27,16 +29,14 @@ public final class ControlDecorator extends Decorator {
   private int marginWidth;
   private FocusListener focusListener;
 
-  public ControlDecorator( final Control control,
-                           final int style,
-                           final Composite composite )
+  public ControlDecorator( Control control, int style, Composite composite )
   {
     super( control, style );
     visible = true;
     showHover = true;
     parent = getParent( control, composite );
     addDisposeListener( new DisposeListener() {
-      public void widgetDisposed( final DisposeEvent event ) {
+      public void widgetDisposed( DisposeEvent event ) {
         removeFocusListener();
       }
     } );
@@ -47,7 +47,7 @@ public final class ControlDecorator extends Decorator {
     return image;
   }
 
-  public void setImage( final Image image ) {
+  public void setImage( Image image ) {
     checkWidget();
     this.image = image;
   }
@@ -57,7 +57,7 @@ public final class ControlDecorator extends Decorator {
     return text;
   }
 
-  public void setText( final String text ) {
+  public void setText( String text ) {
     checkWidget();
     this.text = text;
   }
@@ -67,7 +67,7 @@ public final class ControlDecorator extends Decorator {
     return showOnlyOnFocus;
   }
 
-  public void setShowOnlyOnFocus( final boolean showOnlyOnFocus ) {
+  public void setShowOnlyOnFocus( boolean showOnlyOnFocus ) {
     checkWidget();
     if( this.showOnlyOnFocus != showOnlyOnFocus ) {
       this.showOnlyOnFocus = showOnlyOnFocus;
@@ -84,7 +84,7 @@ public final class ControlDecorator extends Decorator {
     return showHover;
   }
 
-  public void setShowHover( final boolean showHover ) {
+  public void setShowHover( boolean showHover ) {
     checkWidget();
     this.showHover = showHover;
   }
@@ -94,7 +94,7 @@ public final class ControlDecorator extends Decorator {
     return marginWidth;
   }
 
-  public void setMarginWidth( final int marginWidth ) {
+  public void setMarginWidth( int marginWidth ) {
     checkWidget();
     this.marginWidth = marginWidth;
   }
@@ -177,12 +177,12 @@ public final class ControlDecorator extends Decorator {
     return parent;
   }
 
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
 
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
@@ -190,9 +190,7 @@ public final class ControlDecorator extends Decorator {
   //////////////////
   // Helping methods
 
-  private static Composite getParent( final Control control,
-                                      final Composite composite )
-  {
+  private static Composite getParent( Control control, Composite composite ) {
     Composite result = composite;
     if( composite == null ) {
       result = control.getParent();
@@ -203,10 +201,10 @@ public final class ControlDecorator extends Decorator {
   private void addFocusListener() {
     if( focusListener == null ) {
       focusListener = new FocusListener() {
-        public void focusGained( final FocusEvent event ) {
+        public void focusGained( FocusEvent event ) {
           hasFocus = true;
         }
-        public void focusLost( final FocusEvent event ) {
+        public void focusLost( FocusEvent event ) {
           hasFocus = false;
         }
       };

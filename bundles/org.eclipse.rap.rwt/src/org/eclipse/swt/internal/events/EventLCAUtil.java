@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.events;
 
@@ -14,9 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
 
+
 public final class EventLCAUtil {
 
-  public static int readStateMask( final String paramName ) {
+  public static int readStateMask( String paramName ) {
     int result = 0;
     String modifiers = readStringParam( paramName );
     if( modifiers != null ) {
@@ -25,13 +27,13 @@ public final class EventLCAUtil {
     return result;
   }
 
-  private static String readStringParam( final String paramName ) {
+  private static String readStringParam( String paramName ) {
     HttpServletRequest request = ContextProvider.getRequest();
     String value = request.getParameter( paramName );
     return value;
   }
 
-  static int translateModifier( final String value ) {
+  static int translateModifier( String value ) {
     String[] modifiers = value.split( "," );
     int result = 0;
     for( int i = 0; i < modifiers.length; i++ ) {
@@ -46,7 +48,7 @@ public final class EventLCAUtil {
     return result;
   }
 
-  public static int translateButton( final int value ) {
+  public static int translateButton( int value ) {
     int result = 0;
     switch( value ) {
       case 1:

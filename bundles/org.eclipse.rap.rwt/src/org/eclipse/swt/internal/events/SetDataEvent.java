@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.events;
 
@@ -15,7 +15,6 @@ import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.widgets.*;
-
 
 
 public final class SetDataEvent extends TypedEvent {
@@ -29,20 +28,19 @@ public final class SetDataEvent extends TypedEvent {
   public Widget item;
   public int index;
 
-  public SetDataEvent( final Widget source, final Widget item, final int index )
-  {
+  public SetDataEvent( Widget source, Widget item, int index ) {
     super( source, SET_DATA );
     this.item = item;
     this.index = index;
   }
 
-  public SetDataEvent( final Event event ) {
+  public SetDataEvent( Event event ) {
     super( event );
     this.item = event.item;
     this.index = event.index;
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case SET_DATA:
         ( ( SetDataListener )listener ).update( this );
@@ -60,23 +58,19 @@ public final class SetDataEvent extends TypedEvent {
     return true;
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final SetDataListener listener )
-  {
+  public static void addListener( Adaptable adaptable, SetDataListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final SetDataListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, SetDataListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 }

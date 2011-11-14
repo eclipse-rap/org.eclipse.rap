@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
@@ -60,190 +60,190 @@ public final class UntypedEventAdapter
 
   // XXXListener interface imlementations
 
-  public void controlMoved( final ControlEvent typedEvent ) {
+  public void controlMoved( ControlEvent typedEvent ) {
     Event event = createEvent( SWT.Move, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void controlResized( final ControlEvent typedEvent ) {
+  public void controlResized( ControlEvent typedEvent ) {
     Event event = createEvent( SWT.Resize, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void widgetDisposed( final DisposeEvent typedEvent ) {
+  public void widgetDisposed( DisposeEvent typedEvent ) {
     Event event = createEvent( SWT.Dispose, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void widgetDefaultSelected( final SelectionEvent typedEvent ) {
+  public void widgetDefaultSelected( SelectionEvent typedEvent ) {
     Event event = createEvent( SWT.DefaultSelection, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void widgetSelected( final SelectionEvent typedEvent ) {
+  public void widgetSelected( SelectionEvent typedEvent ) {
     Event event = createEvent( SWT.Selection, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void focusGained( final FocusEvent typedEvent ) {
+  public void focusGained( FocusEvent typedEvent ) {
     Event event = createEvent( SWT.FocusIn, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void focusLost( final FocusEvent typedEvent ) {
+  public void focusLost( FocusEvent typedEvent ) {
     Event event = createEvent( SWT.FocusOut, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void treeCollapsed( final TreeEvent typedEvent ) {
+  public void treeCollapsed( TreeEvent typedEvent ) {
     Event event = createEvent( SWT.Collapse, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void treeExpanded( final TreeEvent typedEvent ) {
+  public void treeExpanded( TreeEvent typedEvent ) {
     Event event = createEvent( SWT.Expand, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void shellActivated( final ShellEvent typedEvent ) {
+  public void shellActivated( ShellEvent typedEvent ) {
     Event event = createEvent( SWT.Activate, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void shellClosed( final ShellEvent typedEvent ) {
+  public void shellClosed( ShellEvent typedEvent ) {
     Event event = createEvent( SWT.Close, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
     typedEvent.doit = event.doit;
   }
 
-  public void shellDeactivated( final ShellEvent typedEvent ) {
+  public void shellDeactivated( ShellEvent typedEvent ) {
     Event event = createEvent( SWT.Deactivate, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void menuHidden( final MenuEvent typedEvent ) {
+  public void menuHidden( MenuEvent typedEvent ) {
     Event event = createEvent( SWT.Hide, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void menuShown( final MenuEvent typedEvent ) {
+  public void menuShown( MenuEvent typedEvent ) {
     Event event = createEvent( SWT.Show, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void modifyText( final ModifyEvent typedEvent ) {
+  public void modifyText( ModifyEvent typedEvent ) {
     Event event = createEvent( SWT.Modify, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void verifyText( final VerifyEvent typedEvent ) {
+  public void verifyText( VerifyEvent typedEvent ) {
     Event event = createEvent( SWT.Verify, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void update( final SetDataEvent typedEvent ) {
+  public void update( SetDataEvent typedEvent ) {
     Event event = createEvent( SWT.SetData, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void mouseDown( final MouseEvent typedEvent ) {
+  public void mouseDown( MouseEvent typedEvent ) {
     Event event = createEvent( SWT.MouseDown, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void mouseUp( final MouseEvent typedEvent ) {
+  public void mouseUp( MouseEvent typedEvent ) {
     Event event = createEvent( SWT.MouseUp, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void mouseDoubleClick( final MouseEvent typedEvent ) {
+  public void mouseDoubleClick( MouseEvent typedEvent ) {
     Event event = createEvent( SWT.MouseDoubleClick, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void keyPressed( final KeyEvent typedEvent ) {
+  public void keyPressed( KeyEvent typedEvent ) {
     Event event = createEvent( SWT.KeyDown, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
     typedEvent.doit = event.doit;
   }
 
-  public void keyReleased( final KeyEvent typedEvent ) {
+  public void keyReleased( KeyEvent typedEvent ) {
     Event event = createEvent( SWT.KeyUp, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void keyTraversed( final TraverseEvent typedEvent ) {
+  public void keyTraversed( TraverseEvent typedEvent ) {
     Event event = createEvent( SWT.Traverse, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
     typedEvent.doit = event.doit;
   }
 
-  public void controlShown( final ShowEvent typedEvent ) {
+  public void controlShown( ShowEvent typedEvent ) {
     Event event = createEvent( SWT.Show, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void controlHidden( final ShowEvent typedEvent ) {
+  public void controlHidden( ShowEvent typedEvent ) {
     Event event = createEvent( SWT.Hide, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void activated( final ActivateEvent typedEvent ) {
+  public void activated( ActivateEvent typedEvent ) {
     Event event = createEvent( SWT.Activate, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void deactivated( final ActivateEvent typedEvent ) {
+  public void deactivated( ActivateEvent typedEvent ) {
     Event event = createEvent( SWT.Deactivate, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void helpRequested( final HelpEvent typedEvent ) {
+  public void helpRequested( HelpEvent typedEvent ) {
     Event event = createEvent( SWT.Help, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void dragDetected( final DragDetectEvent typedEvent ) {
+  public void dragDetected( DragDetectEvent typedEvent ) {
     Event event = createEvent( SWT.DragDetect, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void menuDetected( final MenuDetectEvent typedEvent ) {
+  public void menuDetected( MenuDetectEvent typedEvent ) {
     Event event = createEvent( SWT.MenuDetect, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
   }
 
-  public void widgetArmed( final ArmEvent typedEvent ) {
+  public void widgetArmed( ArmEvent typedEvent ) {
     Event event = createEvent( SWT.Arm, typedEvent.getSource() );
     copyFields( typedEvent, event );
     dispatchEvent( event );
@@ -252,10 +252,7 @@ public final class UntypedEventAdapter
   //////////////////////
   // Listener management
 
-  public void addListener( final Widget widget,
-                           final int eventType,
-                           final Listener listener )
-  {
+  public void addListener( Widget widget, int eventType, Listener listener ) {
     boolean validEventType = true;
     switch( eventType ) {
       case SWT.Move:
@@ -343,14 +340,11 @@ public final class UntypedEventAdapter
     }
   }
 
-  void addListener( final int eventType, final Listener listener ) {
+  void addListener( int eventType, Listener listener ) {
     listeners.add( new Entry( eventType, listener ) );
   }
 
-  public void removeListener( final Widget widget,
-                              final int eventType,
-                              final Listener listener )
-  {
+  public void removeListener( Widget widget, int eventType, Listener listener ) {
     boolean validEventType = true;
     switch( eventType ) {
       case SWT.Move:
@@ -438,7 +432,7 @@ public final class UntypedEventAdapter
     }
   }
 
-  void removeListener( final int eventType, final Listener listener ) {
+  void removeListener( int eventType, Listener listener ) {
     Entry[] entries = getEntries();
     boolean found = false;
     for( int i = 0; !found && i < entries.length; i++ ) {
@@ -450,7 +444,7 @@ public final class UntypedEventAdapter
     }
   }
 
-  public Listener[] getListeners( final int eventType ) {
+  public Listener[] getListeners( int eventType ) {
     Entry[] entries = getEntries();
     java.util.List<Listener> result = new ArrayList<Listener>();
     for( int i = 0; i < entries.length; i++ ) {
@@ -462,7 +456,7 @@ public final class UntypedEventAdapter
     return result.toArray( new Listener[ result.size() ] );
   }
 
-  public boolean hasUntypedListener( final int eventType ) {
+  public boolean hasUntypedListener( int eventType ) {
     boolean result = false;
     Entry[] entries = getEntries();
     for( int i = 0; !result && i < entries.length; i++ ) {
@@ -474,7 +468,7 @@ public final class UntypedEventAdapter
     return result;
   }
 
-  public static boolean hasTypedListener( final Widget widget, final int eventType ) {
+  public static boolean hasTypedListener( Widget widget, int eventType ) {
     boolean result = false;
     switch( eventType ) {
       case SWT.Move:
@@ -552,7 +546,7 @@ public final class UntypedEventAdapter
     return result;
   }
 
-  public static void notifyListeners( final int eventType, final Event event ) {
+  public static void notifyListeners( int eventType, Event event ) {
     TypedEvent typedEvent = null;
     switch( eventType ) {
       case SWT.Move:
@@ -643,7 +637,7 @@ public final class UntypedEventAdapter
   //////////////////
   // helping methods
 
-  private void dispatchEvent( final Event event ) {
+  private void dispatchEvent( Event event ) {
     // [rh] protect against manipulating the event type in listener code
     int eventType = event.type;
     Entry[] entries = getEntries();
@@ -658,7 +652,7 @@ public final class UntypedEventAdapter
     return listeners.toArray( new Entry[ listeners.size() ] );
   }
 
-  private static Event createEvent( final int eventType, final Object source ) {
+  private static Event createEvent( int eventType, Object source ) {
     Widget widget = ( Widget )source;
     Event result = new Event();
     result.type = eventType;
@@ -667,13 +661,13 @@ public final class UntypedEventAdapter
     return result;
   }
 
-  private static void copyFields( final TypedEvent from, final Event to ) {
+  private static void copyFields( TypedEvent from, Event to ) {
     to.display = from.display;
     to.widget = from.widget;
     to.data = from.data;
   }
 
-  private static void copyFields( final SelectionEvent from, final Event to ) {
+  private static void copyFields( SelectionEvent from, Event to ) {
     copyFields( ( TypedEvent )from, to );
     to.detail = from.detail;
     to.doit = from.doit;
@@ -686,7 +680,7 @@ public final class UntypedEventAdapter
     to.stateMask = from.stateMask;
   }
 
-  private static void copyFields( final TreeEvent from, final Event to ) {
+  private static void copyFields( TreeEvent from, Event to ) {
     copyFields( ( TypedEvent )from, to );
     to.detail = from.detail;
     to.doit = from.doit;
@@ -698,7 +692,7 @@ public final class UntypedEventAdapter
     to.text = from.text;
   }
 
-  private static void copyFields( final VerifyEvent from, final Event to ) {
+  private static void copyFields( VerifyEvent from, Event to ) {
     copyFields( ( TypedEvent )from, to );
     to.start = from.start;
     to.end = from.end;
@@ -706,13 +700,13 @@ public final class UntypedEventAdapter
     to.text = from.text;
   }
 
-  private static void copyFields( final SetDataEvent from, final Event to ) {
+  private static void copyFields( SetDataEvent from, Event to ) {
     copyFields( ( TypedEvent )from, to );
     to.index = from.index;
     to.item = from.item;
   }
 
-  private static void copyFields( final MouseEvent from, final Event to ) {
+  private static void copyFields( MouseEvent from, Event to ) {
     copyFields( ( TypedEvent )from, to );
     to.button = from.button;
     to.time = from.time;
@@ -721,12 +715,12 @@ public final class UntypedEventAdapter
     to.stateMask = from.stateMask;
   }
 
-  private static void copyFields( final ShellEvent from, final Event to ) {
+  private static void copyFields( ShellEvent from, Event to ) {
     copyFields( ( TypedEvent )from, to );
     to.doit = from.doit;
   }
 
-  private static void copyFields( final KeyEvent from, final Event to ) {
+  private static void copyFields( KeyEvent from, Event to ) {
     copyFields( ( TypedEvent )from, to );
     to.character = from.character;
     to.keyCode = from.keyCode;
@@ -734,7 +728,7 @@ public final class UntypedEventAdapter
     to.doit = from.doit;
   }
 
-  private static void copyFields( final TraverseEvent from, final Event to ) {
+  private static void copyFields( TraverseEvent from, Event to ) {
     copyFields( ( TypedEvent )from, to );
     to.character = from.character;
     to.keyCode = from.keyCode;
@@ -743,7 +737,7 @@ public final class UntypedEventAdapter
     to.doit = from.doit;
   }
 
-  private static void copyFields( final MenuDetectEvent from, final Event to ) {
+  private static void copyFields( MenuDetectEvent from, Event to ) {
     copyFields( ( TypedEvent )from, to );
     to.x = from.x;
     to.y = from.y;

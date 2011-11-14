@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
@@ -17,29 +17,30 @@ import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Widget;
 
+
 public final class MenuHolder implements SerializableCompatibility {
 
   public static interface IMenuHolderAdapter {
     // marker interface
   }
 
-  public static boolean isMenuHolder( final Widget widget ) {
+  public static boolean isMenuHolder( Widget widget ) {
     return widget.getAdapter( IMenuHolderAdapter.class ) != null;
   }
 
-  public static void addMenu( final Widget widget, final Menu menu ) {
+  public static void addMenu( Widget widget, Menu menu ) {
     getMenuHolder( widget ).addMenu( menu );
   }
 
-  public static void removeMenu( final Widget widget, final Menu menu ) {
+  public static void removeMenu( Widget widget, Menu menu ) {
     getMenuHolder( widget ).removeMenu( menu );
   }
 
-  public static int getMenuCount( final Widget widget ) {
+  public static int getMenuCount( Widget widget ) {
     return getMenuHolder( widget ).getMenuCount();
   }
 
-  public static Menu[] getMenus( final Widget widget ) {
+  public static Menu[] getMenus( Widget widget ) {
     return getMenuHolder( widget ).getMenus();
   }
   
@@ -49,11 +50,11 @@ public final class MenuHolder implements SerializableCompatibility {
     menus = new SlimList<Menu>();
   }
 
-  private void addMenu( final Menu menu ) {
+  private void addMenu( Menu menu ) {
     menus.add( menu );
   }
 
-  private void removeMenu( final Menu menu ) {
+  private void removeMenu( Menu menu ) {
     menus.remove( menu );
   }
 
@@ -68,7 +69,7 @@ public final class MenuHolder implements SerializableCompatibility {
   ///////////////////
   // Helping methods
   
-  private static MenuHolder getMenuHolder( final Widget widget ) {
+  private static MenuHolder getMenuHolder( Widget widget ) {
     Object adapter = widget.getAdapter( IMenuHolderAdapter.class );
     return ( MenuHolder )adapter;
   }

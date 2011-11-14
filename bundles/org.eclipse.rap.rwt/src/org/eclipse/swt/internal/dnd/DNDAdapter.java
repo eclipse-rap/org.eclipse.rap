@@ -44,7 +44,7 @@ public final class DNDAdapter implements IDNDAdapter {
     return ContextProvider.getStateInfo().getAttribute( CANCEL ) != null;
   }
 
-  public void setDetailChanged( final Control control, final int detail ) {
+  public void setDetailChanged( Control control, int detail ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     stateInfo.setAttribute( DETAIL_CHANGED_VALUE, new Integer( detail ) );
     stateInfo.setAttribute( DETAIL_CHANGED_CONTROL, control );

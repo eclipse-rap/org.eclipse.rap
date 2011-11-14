@@ -1,19 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
- *     Rüdiger Herrmann - bug 335112
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Rüdiger Herrmann - bug 335112
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.widgets.*;
+
 
 /**
  * Utility class that provides a traversal through a widget-tree
@@ -26,11 +27,11 @@ public class WidgetTreeVisitor {
 
   public static abstract class AllWidgetTreeVisitor extends WidgetTreeVisitor {
     
-    public final boolean visit( final Widget widget ) {
+    public final boolean visit( Widget widget ) {
       return doVisit( widget );
     }
     
-    public final boolean visit( final Composite composite ) {
+    public final boolean visit( Composite composite ) {
       return doVisit( composite );
     }
 
@@ -40,9 +41,7 @@ public class WidgetTreeVisitor {
   // TODO [rh] all SWT Menu have shell as their parent
   //      we should visit the menus as part of visiting shell, not on each
   //      control -> could lead to visiting one menu multiple times      
-  public static void accept( final Widget root, 
-                             final WidgetTreeVisitor visitor ) 
-  {
+  public static void accept( Widget root, WidgetTreeVisitor visitor ) {
     if( root instanceof Composite ) {
       Composite composite = ( Composite )root;
       if( visitor.visit( composite ) ) {
@@ -70,20 +69,18 @@ public class WidgetTreeVisitor {
     }
   }
 
-  public boolean visit( final Widget widget ) {
+  public boolean visit( Widget widget ) {
     return true;
   }
 
-  public boolean visit( final Composite composite ) {
+  public boolean visit( Composite composite ) {
     return true;
   }
 
   ///////////////////////////////////////////////////
   // Helping methods to visit particular hierarchies
   
-  private static void handleDragDrop( final Widget widget,
-                                      final WidgetTreeVisitor visitor )
-  {
+  private static void handleDragDrop( Widget widget, WidgetTreeVisitor visitor ) {
     if( widget instanceof Control ) {
       Widget dragSource = ( Widget )widget.getData( DND.DRAG_SOURCE_KEY );
       if( dragSource != null ) {
@@ -96,9 +93,7 @@ public class WidgetTreeVisitor {
     }
   }
 
-  private static void handleMenus( final Composite composite,
-                                   final WidgetTreeVisitor visitor ) 
-  {
+  private static void handleMenus( Composite composite, WidgetTreeVisitor visitor ) {
     if( MenuHolder.isMenuHolder( composite ) ) {
       Menu[] menus = MenuHolder.getMenus( composite );
       for( int i = 0; i < menus.length; i++ ) {
@@ -107,7 +102,7 @@ public class WidgetTreeVisitor {
     }
   }
 
-  private static void handleItems( final Widget root, final WidgetTreeVisitor visitor ) {
+  private static void handleItems( Widget root, WidgetTreeVisitor visitor ) {
     if( ItemHolder.isItemHolder( root ) ) {
       Item[] items = ItemHolder.getItemHolder( root ).getItems();
       for( int i = 0; i < items.length; i++ ) {
@@ -116,7 +111,7 @@ public class WidgetTreeVisitor {
     }
   }
 
-  private static void handleDecorator( final Widget root, final WidgetTreeVisitor visitor ) {
+  private static void handleDecorator( Widget root, WidgetTreeVisitor visitor ) {
     Decorator[] decorators = Decorator.getDecorators( root );
     for( int i = 0; i < decorators.length; i++ ) {
       visitor.visit( decorators[ i ] );

@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets;
@@ -21,7 +22,7 @@ public final class EventUtil {
     // prevent instantiation
   }
 
-  public static boolean isAccessible( final Widget widget ) {
+  public static boolean isAccessible( Widget widget ) {
     boolean result = !widget.isDisposed();
     if( result ) {
       if( widget instanceof Control ) {
@@ -40,27 +41,27 @@ public final class EventUtil {
     return result;
   }
 
-  private static boolean isAccessible( final Control control ) {
+  private static boolean isAccessible( Control control ) {
     return    control.getEnabled() 
            && control.getVisible() 
            && isShellAccessible( control.getShell() );
   }
 
-  private static boolean isAccessible( final Menu menu ) {
+  private static boolean isAccessible( Menu menu ) {
     return menu.getEnabled() && isShellAccessible( menu.getShell() );
   }
 
-  private static boolean isAccessible( final MenuItem menuItem ) {
+  private static boolean isAccessible( MenuItem menuItem ) {
     Shell shell = menuItem.getParent().getShell();
     return menuItem.getEnabled() && isShellAccessible( shell );
   }
 
-  private static boolean isAccessible( final ToolItem toolItem ) {
+  private static boolean isAccessible( ToolItem toolItem ) {
     Shell shell = toolItem.getParent().getShell();
     return toolItem.getEnabled() && isShellAccessible( shell );
   }
 
-  private static boolean isShellAccessible( final Shell shell ) {
+  private static boolean isShellAccessible( Shell shell ) {
     Shell modalShell = null;
     Shell activeShell = shell.getDisplay().getActiveShell();
     if(    activeShell != null 

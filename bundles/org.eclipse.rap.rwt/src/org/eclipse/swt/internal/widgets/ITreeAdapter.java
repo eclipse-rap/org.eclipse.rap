@@ -15,25 +15,26 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 
+
 public interface ITreeAdapter {
 
-  void setScrollLeft( final int left );
+  void setScrollLeft( int left );
   int getScrollLeft();
 
-  void setTopItemIndex( final int topItemIndex );
+  void setTopItemIndex( int topItemIndex );
   int getTopItemIndex();
 
   boolean hasHScrollBar();
   boolean hasVScrollBar();
 
-  boolean isCached( final TreeItem item );
-  Point getItemImageSize( final int index );
-  int getCellLeft( final int index );
-  int getCellWidth( final int index );
-  int getTextOffset( final int index );
-  int getTextMaxWidth( final int index );
+  boolean isCached( TreeItem item );
+  Point getItemImageSize( int index );
+  int getCellLeft( int index );
+  int getCellWidth( int index );
+  int getTextOffset( int index );
+  int getTextMaxWidth( int index );
   int getCheckWidth();
-  int getImageOffset( final int index );
+  int getImageOffset( int index );
   int getIndentionWidth();
   int getCheckLeft();
   Rectangle getTextMargin();
