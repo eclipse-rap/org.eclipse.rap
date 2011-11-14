@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.coolbarkit;
 
@@ -22,7 +23,7 @@ public class CoolBarLCA extends AbstractWidgetLCA {
 
   public static final String PROP_LOCKED = "locked";
 
-  public void preserveValues( final Widget widget ) {
+  public void preserveValues( Widget widget ) {
     CoolBar coolBar = ( CoolBar )widget;
     ControlLCAUtil.preserveValues( coolBar );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( coolBar );
@@ -30,7 +31,7 @@ public class CoolBarLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveCustomVariant( coolBar );
   }
 
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
     Control coolBar = ( Control )widget;
     ControlLCAUtil.processMouseEvents( coolBar );
     ControlLCAUtil.processKeyEvents( coolBar );
@@ -38,7 +39,7 @@ public class CoolBarLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( coolBar );
   }
 
-  public void renderInitialization( final Widget widget ) throws IOException {
+  public void renderInitialization( Widget widget ) throws IOException {
     CoolBar coolBar = ( CoolBar )widget;
     JSWriter writer = JSWriter.getWriterFor( coolBar );
     writer.newWidget( "qx.ui.layout.CanvasLayout" );
@@ -49,13 +50,13 @@ public class CoolBarLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.writeStyleFlag( coolBar, SWT.FLAT, "FLAT" );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     CoolBar coolBar = ( CoolBar )widget;
     ControlLCAUtil.writeChanges( coolBar );
     WidgetLCAUtil.writeCustomVariant( coolBar );
 }
 
-  public void renderDispose( final Widget widget ) throws IOException {
+  public void renderDispose( Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }

@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.controlkit;
 
@@ -23,31 +23,27 @@ public class ControlThemeAdapter extends AbstractThemeAdapter
   implements IControlThemeAdapter
 {
 
-  protected void configureMatcher( final WidgetMatcher matcher ) {
+  protected void configureMatcher( WidgetMatcher matcher ) {
     matcher.addStyle( "BORDER", SWT.BORDER );
   }
 
-  public int getBorderWidth( final Control control ) {
+  public int getBorderWidth( Control control ) {
     return getCssBorderWidth( getPrimaryElement( control ), "border", control );
   }
 
-  public Rectangle getPadding( final Control control ) {
-    return getCssBoxDimensions( getPrimaryElement( control ),
-                                "padding",
-                                control );
+  public Rectangle getPadding( Control control ) {
+    return getCssBoxDimensions( getPrimaryElement( control ), "padding", control );
   }
 
-  public Color getForeground( final Control control ) {
+  public Color getForeground( Control control ) {
     return getCssColor( getPrimaryElement( control ), "color", control );
   }
 
-  public Color getBackground( final Control control ) {
-    return getCssColor( getPrimaryElement( control ),
-                        "background-color",
-                        control );
+  public Color getBackground( Control control ) {
+    return getCssColor( getPrimaryElement( control ), "background-color", control );
   }
 
-  public Font getFont( final Control control ) {
+  public Font getFont( Control control ) {
     return getCssFont( getPrimaryElement( control ), "font", control );
   }
 }

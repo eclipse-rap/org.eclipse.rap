@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.canvaskit;
 
@@ -19,6 +20,7 @@ import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.internal.graphics.GCOperation.*;
 import org.eclipse.swt.widgets.Control;
 
+
 final class GCOperationWriter {
 
   private static final JSVar GC_VAR = new JSVar( "gc" );
@@ -27,7 +29,7 @@ final class GCOperationWriter {
   private JSWriter writer;
   private boolean initialized;
 
-  GCOperationWriter( final Control control ) {
+  GCOperationWriter( Control control ) {
     this.control = control;
   }
 
@@ -48,7 +50,7 @@ final class GCOperationWriter {
     }
   }
 
-  void write( final GCOperation operation ) throws IOException {
+  void write( GCOperation operation ) throws IOException {
     initialize();
     if( operation instanceof DrawLine ) {
       drawLine( ( DrawLine )operation );
@@ -76,7 +78,7 @@ final class GCOperationWriter {
     }
   }
 
-  private void drawLine( final DrawLine operation ) throws IOException {
+  private void drawLine( DrawLine operation ) throws IOException {
     Integer[] args = new Integer[] {
       new Integer( operation.x1 ),
       new Integer( operation.y1 ),
@@ -86,7 +88,7 @@ final class GCOperationWriter {
     writer.call( GC_VAR, "drawLine", args );
   }
 
-  private void drawPoint( final DrawPoint operation ) throws IOException {
+  private void drawPoint( DrawPoint operation ) throws IOException {
     Integer[] args = new Integer[] {
       new Integer( operation.x ),
       new Integer( operation.y )
@@ -94,8 +96,7 @@ final class GCOperationWriter {
     writer.call( GC_VAR, "drawPoint", args );
   }
 
-  private void drawRectangle( final DrawRectangle operation ) throws IOException
-  {
+  private void drawRectangle( DrawRectangle operation ) throws IOException {
     Object[] args = new Object[] {
       new Integer( operation.x ),
       new Integer( operation.y ),
@@ -106,9 +107,7 @@ final class GCOperationWriter {
     writer.call( GC_VAR, "drawRectangle", args );
   }
 
-  private void fillGradientRectangle( final FillGradientRectangle operation )
-    throws IOException
-  {
+  private void fillGradientRectangle( FillGradientRectangle operation ) throws IOException {
     Object[] args = new Object[] {
       new Integer( operation.x ),
       new Integer( operation.y ),
@@ -119,9 +118,7 @@ final class GCOperationWriter {
     writer.call( GC_VAR, "fillGradientRectangle", args );
   }
 
-  private void drawRoundRectangle( final DrawRoundRectangle operation )
-    throws IOException
-  {
+  private void drawRoundRectangle( DrawRoundRectangle operation ) throws IOException {
     Object[] args = new Object[] {
       new Integer( operation.x ),
       new Integer( operation.y ),
@@ -134,7 +131,7 @@ final class GCOperationWriter {
     writer.call( GC_VAR, "drawRoundRectangle", args );
   }
 
-  private void drawArc( final DrawArc operation ) throws IOException {
+  private void drawArc( DrawArc operation ) throws IOException {
     Object[] args = new Object[] {
       new Integer( operation.x ),
       new Integer( operation.y ),
@@ -147,7 +144,7 @@ final class GCOperationWriter {
     writer.call( GC_VAR, "drawArc", args );
   }
 
-  private void drawPolyline( final DrawPolyline operation ) throws IOException {
+  private void drawPolyline( DrawPolyline operation ) throws IOException {
     Integer[] points = new Integer[ operation.points.length ];
     for( int i = 0; i < operation.points.length; i++ ) {
       points[ i ] = new Integer( operation.points[ i ] );
@@ -160,7 +157,7 @@ final class GCOperationWriter {
     writer.call( GC_VAR, "drawPolyline", args );
   }
 
-  private void drawImage( final DrawImage operation ) throws IOException {
+  private void drawImage( DrawImage operation ) throws IOException {
     Object[] args = new Object[] {
       ImageFactory.getImagePath( operation.image ),
       new Integer( operation.srcX ),
@@ -176,7 +173,7 @@ final class GCOperationWriter {
     writer.call( GC_VAR, "drawImage", args );
   }
 
-  private void drawText( final DrawText operation ) throws IOException {
+  private void drawText( DrawText operation ) throws IOException {
     Object[] args = new Object[] {
       processText( operation.text, operation.flags ),
       new Integer( operation.x ),
@@ -186,7 +183,7 @@ final class GCOperationWriter {
     writer.call( GC_VAR, "drawText", args );
   }
 
-  static String processText( final String text, final int flags ) {
+  static String processText( String text, int flags ) {
     boolean drawMnemonic = ( flags & SWT.DRAW_MNEMONIC ) != 0;
     String result = WidgetLCAUtil.escapeText( text, drawMnemonic );
     String replacement = "";
@@ -202,7 +199,7 @@ final class GCOperationWriter {
     return result;
   }
 
-  private void setProperty( final SetProperty operation ) throws IOException {
+  private void setProperty( SetProperty operation ) throws IOException {
     String name;
     Object value;
     switch( operation.id ) {
@@ -241,7 +238,7 @@ final class GCOperationWriter {
     writer.call( GC_VAR, "setProperty", new Object[] { name, value } );
   }
 
-  private static String toCSSFont( final FontData fontData ) {
+  private static String toCSSFont( FontData fontData ) {
     StringBuffer result = new StringBuffer();
     if( ( fontData.getStyle() & SWT.ITALIC ) != 0 ) {
       result.append( "italic " );

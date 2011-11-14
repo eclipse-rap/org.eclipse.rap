@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.coolitemkit;
 
@@ -36,7 +36,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
    * Unnecesary to call ItemLCAUtil.preserve, CoolItem does neither use text
    * nor image
    */
-  public void preserveValues( final Widget widget ) {
+  public void preserveValues( Widget widget ) {
     CoolItem coolItem = ( CoolItem )widget;
     IWidgetAdapter adapter = WidgetUtil.getAdapter( coolItem );
     adapter.preserve( PROP_CONTROL, coolItem.getControl() );
@@ -44,7 +44,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveCustomVariant( coolItem );
   }
 
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
     // TODO [rh] clean up this mess
     final CoolItem coolItem = ( CoolItem )widget;
     HttpServletRequest request = ContextProvider.getRequest();
@@ -60,7 +60,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  public void renderInitialization( final Widget widget ) throws IOException {
+  public void renderInitialization( Widget widget ) throws IOException {
     CoolItem coolItem = ( CoolItem )widget;
     JSWriter writer = JSWriter.getWriterFor( widget );
     Object[] args = new Object[] { jsOrientation( coolItem ) };
@@ -70,7 +70,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     writer.set( "minHeight", 0 );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     CoolItem coolItem = ( CoolItem )widget;
     writeBounds( coolItem );
     writeControl( coolItem );
@@ -78,7 +78,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.writeCustomVariant( coolItem );
   }
 
-  public void renderDispose( final Widget widget ) throws IOException {
+  public void renderDispose( Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
@@ -86,8 +86,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   //////////////////
   // Helping methods
 
-  private static void writeBounds( final CoolItem coolItem ) throws IOException
-  {
+  private static void writeBounds( CoolItem coolItem ) throws IOException {
     Rectangle bounds = coolItem.getBounds();
     WidgetLCAUtil.writeBounds( coolItem, coolItem.getParent(), bounds );
     if( WidgetLCAUtil.hasChanged( coolItem, Props.BOUNDS, bounds, null ) ) {
@@ -96,8 +95,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeLocked( final CoolItem coolItem ) throws IOException
-  {
+  private static void writeLocked( CoolItem coolItem ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( coolItem );
     CoolBar parent = coolItem.getParent();
     String prop = CoolBarLCA.PROP_LOCKED;
@@ -109,7 +107,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeControl( final CoolItem coolItem ) throws IOException {
+  private static void writeControl( CoolItem coolItem ) throws IOException {
     Control control = coolItem.getControl();
     if( WidgetLCAUtil.hasChanged( coolItem, PROP_CONTROL, control, null ) ) {
       final JSWriter writer = JSWriter.getWriterFor( coolItem );
@@ -129,7 +127,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static JSVar jsOrientation( final CoolItem coolItem ) {
+  private static JSVar jsOrientation( CoolItem coolItem ) {
     JSVar orientation;
     if( ( coolItem.getStyle() & SWT.VERTICAL ) != 0 ) {
       orientation = JSConst.QX_CONST_VERTICAL_ORIENTATION;
@@ -142,7 +140,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   ///////////////////////////////
   // Methods for item re-ordering
 
-  private static void moveItem( final CoolItem coolItem, final int newX ) {
+  private static void moveItem( CoolItem coolItem, int newX ) {
     CoolItem[] items = coolItem.getParent().getItems();
     boolean changed = false;
     int newOrder = -1;
@@ -182,9 +180,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static boolean changeOrder( final CoolItem coolItem,
-                                      final int newOrder )
-  {
+  private static boolean changeOrder( CoolItem coolItem, int newOrder ) {
     boolean result;
     CoolBar coolBar = coolItem.getParent();
     int itemIndex = coolBar.indexOf( coolItem );
