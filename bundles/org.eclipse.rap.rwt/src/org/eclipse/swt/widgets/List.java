@@ -55,8 +55,6 @@ public class List extends Scrollable {
   private transient IListAdapter listAdapter;
   private final ResizeListener resizeListener;
   private int topIndex = 0;
-  private ScrollBar verticalBar;
-  private ScrollBar horizontalBar;
   private boolean hasVScrollBar;
   private boolean hasHScrollBar;
 
@@ -89,10 +87,9 @@ public class List extends Scrollable {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public List( final Composite parent, final int style ) {
+  public List( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
     model = new ListModel( ( style & SWT.SINGLE ) != 0 );
-    createScrollBars();
     resizeListener = new ResizeListener();
     addControlListener( resizeListener );
   }
@@ -106,7 +103,7 @@ public class List extends Scrollable {
     if( adapter == IListAdapter.class ) {
       if( listAdapter == null ) {
         listAdapter = new IListAdapter() {
-          public void setFocusIndex( final int focusIndex ) {
+          public void setFocusIndex( int focusIndex ) {
             List.this.setFocusIndex( focusIndex );
           }
 
@@ -227,7 +224,7 @@ public class List extends Scrollable {
    * @see List#select(int)
    */
   // TODO [rh] selection is not scrolled into view (see List.js)
-  public void setSelection( final int selection ) {
+  public void setSelection( int selection ) {
     checkWidget();
     model.setSelection( selection );
     updateFocusIndexAfterSelectionChange();
@@ -254,7 +251,7 @@ public class List extends Scrollable {
    * @see List#deselectAll()
    * @see List#select(int[])
    */
-  public void setSelection( final int[] selection ) {
+  public void setSelection( int[] selection ) {
     checkWidget();
     model.setSelection( selection );
     updateFocusIndexAfterSelectionChange();
@@ -281,7 +278,7 @@ public class List extends Scrollable {
    * @see List#deselectAll()
    * @see List#select(int,int)
    */
-  public void setSelection( final int start, final int end ) {
+  public void setSelection( int start, int end ) {
     checkWidget();
     model.setSelection( start, end );
     updateFocusIndexAfterSelectionChange();
@@ -309,7 +306,7 @@ public class List extends Scrollable {
    * @see List#select(int[])
    * @see List#setSelection(int[])
    */
-  public void setSelection( final String[] selection ) {
+  public void setSelection( String[] selection ) {
     checkWidget();
     model.setSelection( selection );
     updateFocusIndexAfterSelectionChange();
@@ -327,7 +324,7 @@ public class List extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void select( final int index ) {
+  public void select( int index ) {
     checkWidget();
     if( ( style & SWT.SINGLE ) != 0 ) {
       if( index >= 0 && index < model.getItemCount() ) {
@@ -360,7 +357,7 @@ public class List extends Scrollable {
    *
    * @see List#setSelection(int[])
    */
-  public void select( final int[] indices ) {
+  public void select( int[] indices ) {
     checkWidget();
     if( indices == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -398,7 +395,7 @@ public class List extends Scrollable {
    *
    * @see List#setSelection(int,int)
    */
-  public void select( final int start, final int end ) {
+  public void select( int start, int end ) {
     checkWidget();
     if(    end >= 0
         && start <= end
@@ -463,7 +460,7 @@ public class List extends Scrollable {
    *
    * @since 1.3
    */
-  public void deselect( final int index ) {
+  public void deselect( int index ) {
     checkWidget();
     removeFromSelection( index );
   }
@@ -485,7 +482,7 @@ public class List extends Scrollable {
    *
    * @since 1.3
    */
-  public void deselect( final int start, final int end ) {
+  public void deselect( int start, int end ) {
     checkWidget();
     if( start == 0 && end == model.getItemCount() - 1 ) {
       deselectAll();
@@ -516,7 +513,7 @@ public class List extends Scrollable {
    *
    * @since 1.3
    */
-  public void deselect( final int [] indices ) {
+  public void deselect( int [] indices ) {
     checkWidget();
     if( indices == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -526,7 +523,7 @@ public class List extends Scrollable {
     }
   }
 
-  private void removeFromSelection( final int index ) {
+  private void removeFromSelection( int index ) {
     if( index >= 0 && index < model.getItemCount() ) {
       boolean found = false;
       int selection[] = model.getSelectionIndices();
@@ -559,7 +556,7 @@ public class List extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public boolean isSelected( final int index ) {
+  public boolean isSelected( int index ) {
     checkWidget();
     boolean result;
     if( ( style & SWT.SINGLE ) != 0 ) {
@@ -590,7 +587,7 @@ public class List extends Scrollable {
    *
    * @since 1.3
    */
-  public void setTopIndex( final int topIndex ) {
+  public void setTopIndex( int topIndex ) {
     checkWidget();
     int count = model.getItemCount();
     if( this.topIndex != topIndex && topIndex >= 0 && topIndex < count ) {
@@ -678,7 +675,7 @@ public class List extends Scrollable {
    *
    * @see #add(String,int)
    */
-  public void add( final String string ) {
+  public void add( String string ) {
     checkWidget();
     model.add( string );
     updateFocusIndexAfterItemChange();
@@ -708,7 +705,7 @@ public class List extends Scrollable {
    *
    * @see #add(String)
    */
-  public void add( final String string, final int index ) {
+  public void add( String string, int index ) {
     checkWidget();
     model.add( string, index );
     updateFocusIndexAfterItemChange();
@@ -729,7 +726,7 @@ public class List extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void remove( final int index ) {
+  public void remove( int index ) {
     checkWidget();
     model.remove( index );
     updateFocusIndexAfterItemChange();
@@ -753,7 +750,7 @@ public class List extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void remove( final int start, final int end ) {
+  public void remove( int start, int end ) {
     checkWidget();
     model.remove( start, end );
     updateFocusIndexAfterItemChange();
@@ -776,7 +773,7 @@ public class List extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void remove( final int[] indices ) {
+  public void remove( int[] indices ) {
     checkWidget();
     model.remove( indices );
     updateFocusIndexAfterItemChange();
@@ -800,7 +797,7 @@ public class List extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void remove( final String string ) {
+  public void remove( String string ) {
     checkWidget();
     model.remove( string );
     updateFocusIndexAfterItemChange();
@@ -842,7 +839,7 @@ public class List extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setItem( final int index, final String string ) {
+  public void setItem( int index, String string ) {
     checkWidget();
     model.setItem( index, string );
     updateScrollBars();
@@ -862,7 +859,7 @@ public class List extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setItems( final String[] items ) {
+  public void setItems( String[] items ) {
     checkWidget();
     model.setItems( items );
     updateScrollBars();
@@ -883,7 +880,7 @@ public class List extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public String getItem( final int index ) {
+  public String getItem( int index ) {
     checkWidget();
     return model.getItem( index );
   }
@@ -943,7 +940,7 @@ public class List extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int indexOf( final String string ) {
+  public int indexOf( String string ) {
     checkWidget();
     return indexOf( string, 0 );
   }
@@ -967,7 +964,7 @@ public class List extends Scrollable {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int indexOf( final String string, final int start ) {
+  public int indexOf( String string, int start ) {
     checkWidget();
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -1026,7 +1023,7 @@ public class List extends Scrollable {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -1048,12 +1045,12 @@ public class List extends Scrollable {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
 
-  public void setFont( final Font font ) {
+  public void setFont( Font font ) {
     super.setFont( font );
     updateScrollBars();
   }
@@ -1065,9 +1062,7 @@ public class List extends Scrollable {
   /////////////////////////////////////////
   // Widget dimensions
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed ) {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget ();
     int width = getMaxItemWidth();
     int height = getItemHeight() * getItemCount();
@@ -1087,10 +1082,10 @@ public class List extends Scrollable {
     width += border * 2;
     height += border * 2;
     if( ( style & SWT.V_SCROLL ) != 0 ) {
-      width += verticalBar.getSize().x;
+      width += getVerticalBar().getSize().x;
     }
     if( ( style & SWT.H_SCROLL ) != 0 ) {
-      height += horizontalBar.getSize().y;
+      height += getHorizontalBar().getSize().y;
     }
     return new Point( width, height );
   }
@@ -1098,7 +1093,7 @@ public class List extends Scrollable {
   /////////////////////////////////
   // Helping methods for focusIndex
 
-  private void setFocusIndex( final int focusIndex ) {
+  private void setFocusIndex( int focusIndex ) {
     int count = model.getItemCount();
     if( focusIndex == -1 || ( focusIndex >= 0 && focusIndex < count ) ) {
       this.focusIndex = focusIndex;
@@ -1127,11 +1122,11 @@ public class List extends Scrollable {
   //////////////////
   // Helping methods
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     return checkBits( style, SWT.SINGLE, SWT.MULTI, 0, 0, 0, 0 );
   }
 
-  private int getItemWidth( final String item ) {
+  private int getItemWidth( String item ) {
     int margin = HORIZONTAL_ITEM_MARGIN * 2;
     return Graphics.stringExtent( getFont(), item ).x + margin;
   }
@@ -1158,7 +1153,7 @@ public class List extends Scrollable {
   final int getVisibleItemCount() {
     int clientHeight = getBounds().height;
     if( ( style & SWT.H_SCROLL ) != 0 ) {
-      clientHeight -= horizontalBar.getSize().y;
+      clientHeight -= getHorizontalBar().getSize().y;
     }
     int result = 0;
     if( clientHeight >= 0 ) {
@@ -1181,16 +1176,6 @@ public class List extends Scrollable {
 
   ///////////////////////////////////////
   // Helping methods - dynamic scrollbars
-  
-  //TODO [if] move to Scrollable as in SWT
-  private void createScrollBars() {
-    if( ( style & SWT.H_SCROLL ) != 0 ) {
-      horizontalBar = new ScrollBar( this, SWT.H_SCROLL );
-    }
-    if( ( style & SWT.V_SCROLL ) != 0 ) {
-      verticalBar = new ScrollBar( this, SWT.V_SCROLL );
-    }
-  }
 
   boolean hasVScrollBar() {
     return ( style & SWT.V_SCROLL ) != 0 && hasVScrollBar;
@@ -1203,7 +1188,7 @@ public class List extends Scrollable {
   int getVScrollBarWidth() {
     int result = 0;
     if( hasVScrollBar() ) {
-      result = verticalBar.getSize().x;
+      result = getVerticalBar().getSize().x;
     }
     return result;
   }
@@ -1211,7 +1196,7 @@ public class List extends Scrollable {
   int getHScrollBarHeight() {
     int result = 0;
     if( hasHScrollBar() ) {
-      result = horizontalBar.getSize().y;
+      result = getHorizontalBar().getSize().y;
     }
     return result;
   }

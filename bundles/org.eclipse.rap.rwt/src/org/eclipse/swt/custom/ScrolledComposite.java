@@ -44,8 +44,6 @@ import org.eclipse.swt.widgets.*;
 public class ScrolledComposite extends Composite {
 
   private final ControlAdapter contentListener;
-  private ScrollBar horizontalBar;
-  private ScrollBar verticalBar;
   Control content;
   int minHeight = 0;
   int minWidth = 0;
@@ -84,7 +82,6 @@ public class ScrolledComposite extends Composite {
   public ScrolledComposite( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
     super.setLayout( new ScrolledCompositeLayout() );
-    createScrollBars( style );
     contentListener = new ControlAdapter() {
       public void controlResized( ControlEvent event ) {
         layout();
@@ -335,40 +332,6 @@ public class ScrolledComposite extends Composite {
       // layout( false );
       layout();
     }
-  }
-
-  /**
-   * Returns the receiver's horizontal scroll bar if it has
-   * one, and null if it does not.
-   *
-   * @return the horizontal scroll bar (or null)
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   */
-  // TODO [rh] move to Scrollable
-  public ScrollBar getHorizontalBar() {
-    checkWidget ();
-    return horizontalBar;
-  }
-
-  /**
-   * Returns the receiver's vertical scroll bar if it has
-   * one, and null if it does not.
-   *
-   * @return the vertical scroll bar (or null)
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   */
-  // TODO [rh] move to Scrollable
-  public ScrollBar getVerticalBar() {
-    checkWidget ();
-    return verticalBar;
   }
 
   ///////////////////////
@@ -652,9 +615,11 @@ public class ScrolledComposite extends Composite {
       if( content != null && !content.isDisposed() ) {
         content.removeControlListener( contentListener );
       }
+      ScrollBar horizontalBar = getHorizontalBar();
       if( horizontalBar != null ) {
         horizontalBar.dispose();
       }
+      ScrollBar verticalBar = getVerticalBar();
       if( verticalBar != null ) {
         verticalBar.dispose();
       }
@@ -709,18 +674,6 @@ public class ScrolledComposite extends Composite {
 
   // ////////////////
   // Helping methods
-
-  private void createScrollBars( int style ) {
-    // TODO [rh] move ScrollBar creation to Scrollable as in SWT
-    if( ( style & SWT.H_SCROLL ) != 0 ) {
-      horizontalBar = new ScrollBar( this, SWT.H_SCROLL );
-      horizontalBar.setVisible( false );
-    }
-    if( ( style & SWT.V_SCROLL ) != 0 ) {
-      verticalBar = new ScrollBar( this, SWT.V_SCROLL );
-      verticalBar.setVisible( false );
-    }
-  }
 
   private static int checkStyle( int style ) {
     int mask

@@ -32,7 +32,10 @@ import org.eclipse.swt.graphics.Rectangle;
  */
 public abstract class Scrollable extends Control {
 
-  Scrollable( final Composite parent ) {
+  private ScrollBar verticalBar;
+  private ScrollBar horizontalBar;
+
+  Scrollable( Composite parent ) {
     // prevent instantiation from outside this package
     super( parent );
   }
@@ -66,8 +69,20 @@ public abstract class Scrollable extends Control {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public Scrollable( final Composite parent, final int style ) {
+  public Scrollable( Composite parent, int style ) {
     super( parent, style );
+    createScrollBars();
+  }
+
+  private void createScrollBars() {
+    if( ( style & SWT.H_SCROLL ) != 0 ) {
+      horizontalBar = new ScrollBar( this, SWT.H_SCROLL );
+      horizontalBar.setVisible( false );
+    }
+    if( ( style & SWT.V_SCROLL ) != 0 ) {
+      verticalBar = new ScrollBar( this, SWT.V_SCROLL );
+      verticalBar.setVisible( false );
+    }
   }
 
   /**
@@ -131,7 +146,7 @@ public abstract class Scrollable extends Control {
     int newY = y - borderWidth - padding.y;
     return new Rectangle( newX, newY, newWidth, newHeight );
   }
-  
+
   /**
    * Returns the receiver's horizontal scroll bar if it has
    * one, and null if it does not.
@@ -142,13 +157,12 @@ public abstract class Scrollable extends Control {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.4
    */
   public ScrollBar getHorizontalBar() {
     checkWidget();
-    // subclasses may override
-    return null;
+    return horizontalBar;
   }
 
   /**
@@ -161,13 +175,12 @@ public abstract class Scrollable extends Control {
    *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
-   * 
+   *
    * @since 1.4
    */
   public ScrollBar getVerticalBar() {
     checkWidget();
-    // subclasses may override
-    return null;
+    return verticalBar;
   }
 
   int getVScrollBarWidth() {

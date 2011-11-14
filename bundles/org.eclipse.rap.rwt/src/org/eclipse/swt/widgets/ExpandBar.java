@@ -62,7 +62,7 @@ public class ExpandBar extends Composite {
   }
 
   private final class ResizeListener extends ControlAdapter {
-    public void controlResized( final ControlEvent event ) {
+    public void controlResized( ControlEvent event ) {
       layoutItems( 0, true );
     }
   }
@@ -74,7 +74,6 @@ public class ExpandBar extends Composite {
   private transient IExpandBarAdapter expandBarAdapter;
   private final ItemHolder<ExpandItem> itemHolder;
   private final ResizeListener resizeListener;
-  private ScrollBar verticalBar;
 
   /**
    * Constructs a new instance of this class given its parent and a style value
@@ -105,10 +104,9 @@ public class ExpandBar extends Composite {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public ExpandBar( final Composite parent, final int style ) {
+  public ExpandBar( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
     spacing = 4;
-    createScrollBars();
     resizeListener = new ResizeListener();
     addControlListener( resizeListener );
     itemHolder = new ItemHolder<ExpandItem>( ExpandItem.class );
@@ -133,7 +131,7 @@ public class ExpandBar extends Composite {
    * @see ExpandListener
    * @see #removeExpandListener
    */
-  public void addExpandListener( final ExpandListener listener ) {
+  public void addExpandListener( ExpandListener listener ) {
     checkWidget();
     ExpandEvent.addListener( this, listener );
   }
@@ -156,15 +154,12 @@ public class ExpandBar extends Composite {
    * @see ExpandListener
    * @see #addExpandListener
    */
-  public void removeExpandListener( final ExpandListener listener ) {
+  public void removeExpandListener( ExpandListener listener ) {
     checkWidget();
     ExpandEvent.removeListener( this, listener );
   }
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int height = 0, width = 0;
     int itemCount = getItemCount();
@@ -199,12 +194,12 @@ public class ExpandBar extends Composite {
     width += border * 2;
     height += border * 2;
     if( ( style & SWT.V_SCROLL ) != 0 ) {
-      width += verticalBar.getSize().x;
+      width += getVerticalBar().getSize().x;
     }
     return new Point( width, height );
   }
 
-  void createItem( final ExpandItem item, final int style, final int index ) {
+  void createItem( ExpandItem item, int style, int index ) {
     itemHolder.insert( item, index );
     if( focusItem == null ) {
       focusItem = item;
@@ -212,7 +207,7 @@ public class ExpandBar extends Composite {
     layoutItems( index, true );
   }
 
-  void destroyItem( final ExpandItem item ) {
+  void destroyItem( ExpandItem item ) {
     int index = 0;
     int itemCount = getItemCount();
     for( int i = 0; i < itemCount; i++ ) {
@@ -268,7 +263,7 @@ public class ExpandBar extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public ExpandItem getItem( final int index ) {
+  public ExpandItem getItem( int index ) {
     checkWidget();
     return itemHolder.getItem( index );
   }
@@ -345,7 +340,7 @@ public class ExpandBar extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public int indexOf( final ExpandItem item ) {
+  public int indexOf( ExpandItem item ) {
     checkWidget();
     if( item == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -356,7 +351,7 @@ public class ExpandBar extends Composite {
     return itemHolder.indexOf( item );
   }
 
-  void layoutItems( final int index, final boolean setScrollbar ) {
+  void layoutItems( int index, boolean setScrollbar ) {
     int itemCount = getItemCount();
     if( index < itemCount ) {
       int y = spacing;
@@ -412,7 +407,7 @@ public class ExpandBar extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    *                </ul>
    */
-  public void setFont( final Font font ) {
+  public void setFont( Font font ) {
     if( font != getFont() ) {
       super.setFont( font );
       charHeight = Graphics.getCharHeight( getFont() ) + 4;
@@ -430,7 +425,7 @@ public class ExpandBar extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setSpacing( final int spacing ) {
+  public void setSpacing( int spacing ) {
     checkWidget();
     if( spacing >= 0 ) {
       if( spacing != this.spacing ) {
@@ -440,7 +435,7 @@ public class ExpandBar extends Composite {
     }
   }
 
-  void showItem( final ExpandItem item ) {
+  void showItem( ExpandItem item ) {
     Control control = item.control;
     if( control != null && !control.isDisposed() ) {
       control.setVisible( item.expanded );
@@ -513,17 +508,10 @@ public class ExpandBar extends Composite {
   ////////////////////////////
   // Helping methods - various
 
-  //TODO [if] move to Scrollable as in SWT
-  private void createScrollBars() {    
-    if( ( style & SWT.V_SCROLL ) != 0 ) {
-      verticalBar = new ScrollBar( this, SWT.V_SCROLL );
-    }
-  }
-  
   int getVScrollBarWidth() {
     int result = 0;
     if( ( style & SWT.V_SCROLL ) != 0 ) {
-      result = verticalBar.getSize().x;
+      result = getVerticalBar().getSize().x;
     }
     return result;
   }
@@ -531,7 +519,7 @@ public class ExpandBar extends Composite {
   ///////////////////
   // Skinning support
 
-  void reskinChildren( final int flags ) {
+  void reskinChildren( int flags ) {
     ExpandItem[] items = getItems();
     if( items != null ) {
       for( int i = 0; i < items.length; i++ ) {

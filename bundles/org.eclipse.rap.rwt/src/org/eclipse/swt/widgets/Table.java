@@ -384,8 +384,6 @@ public class Table extends Composite {
   private boolean headerVisible;
   private boolean hasVScrollBar;
   private boolean hasHScrollBar;
-  private ScrollBar verticalBar;
-  private ScrollBar horizontalBar;
   private int topIndex;
   int leftOffset;
   private int focusIndex;
@@ -436,7 +434,6 @@ public class Table extends Composite {
     tableAdapter = new TableAdapter();
     columnHolder = new ItemHolder<TableColumn>( TableColumn.class );
     setTableEmpty();
-    createScrollBars();
     selection = EMPTY_SELECTION;
     predefinedItemHeight = -1;
     resizeListener = new ResizeListener();
@@ -2113,10 +2110,10 @@ public class Table extends Composite {
     width += border * 2;
     height += border * 2;
     if( ( style & SWT.V_SCROLL ) != 0 ) {
-      width += verticalBar.getSize().x;
+      width += getVerticalBar().getSize().x;
     }
     if( ( style & SWT.H_SCROLL ) != 0 ) {
-      height += horizontalBar.getSize().y;
+      height += getHorizontalBar().getSize().y;
     }
     return new Point( width, height );
   }
@@ -2478,59 +2475,6 @@ public class Table extends Composite {
     return bufferedCellSpacing;
   }
 
-  /////////////
-  // ScrollBars
-
-  // TODO [if] move to Scrollable as in SWT
-  private void createScrollBars() {
-    if( ( style & SWT.H_SCROLL ) != 0 ) {
-      horizontalBar = new ScrollBar( this, SWT.H_SCROLL );
-      horizontalBar.setVisible( false );
-    }
-    if( ( style & SWT.V_SCROLL ) != 0 ) {
-      verticalBar = new ScrollBar( this, SWT.V_SCROLL );
-      verticalBar.setVisible( false );
-    }
-  }
-
-  /**
-   * Returns the receiver's horizontal scroll bar if it has
-   * one, and null if it does not.
-   *
-   * @return the horizontal scroll bar (or null)
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   *
-   * @since 1.3
-   */
-  // TODO [if] move to Scrollable as in SWT
-  public ScrollBar getHorizontalBar() {
-    checkWidget();
-    return horizontalBar;
-  }
-
-  /**
-   * Returns the receiver's vertical scroll bar if it has
-   * one, and null if it does not.
-   *
-   * @return the vertical scroll bar (or null)
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   *
-   * @since 1.3
-   */
-  //  TODO [if] move to Scrollable as in SWT
-  public ScrollBar getVerticalBar() {
-    checkWidget();
-    return verticalBar;
-  }
-
   ///////////////////////////////////////
   // Helping methods - dynamic scrollbars
 
@@ -2545,7 +2489,7 @@ public class Table extends Composite {
   int getVScrollBarWidth() {
     int result = 0;
     if( hasVScrollBar() ) {
-      result = verticalBar.getSize().x;
+      result = getVerticalBar().getSize().x;
     }
     return result;
   }
@@ -2553,7 +2497,7 @@ public class Table extends Composite {
   int getHScrollBarHeight() {
     int result = 0;
     if( hasHScrollBar() ) {
-      result = horizontalBar.getSize().y;
+      result = getHorizontalBar().getSize().y;
     }
     return result;
   }
@@ -2566,8 +2510,8 @@ public class Table extends Composite {
         hasVScrollBar = true;
         hasHScrollBar = needsHScrollBar();
       }
-      horizontalBar.setVisible( hasHScrollBar );
-      verticalBar.setVisible( hasVScrollBar );
+      getHorizontalBar().setVisible( hasHScrollBar );
+      getVerticalBar().setVisible( hasVScrollBar );
     }
   }
 

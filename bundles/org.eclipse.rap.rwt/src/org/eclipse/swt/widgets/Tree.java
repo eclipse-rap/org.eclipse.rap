@@ -114,8 +114,6 @@ public class Tree extends Composite {
   private int topItemIndex;
   private boolean hasVScrollBar;
   private boolean hasHScrollBar;
-  private ScrollBar verticalBar;
-  private ScrollBar horizontalBar;
   private Point itemImageSize;
   LayoutCache layoutCache;
   boolean isFlatIndexValid;
@@ -158,7 +156,6 @@ public class Tree extends Composite {
     columnHolder = new ItemHolder<TreeColumn>( TreeColumn.class );
     treeAdapter = new InternalTreeAdapter();
     setTreeEmpty();
-    createScrollBars();
     sortDirection = SWT.NONE;
     selection = EMPTY_SELECTION;
     resizeListener = new ResizeListener();
@@ -1694,10 +1691,10 @@ public class Tree extends Composite {
     width += border * 2;
     height += border * 2;
     if( ( style & SWT.V_SCROLL ) != 0 ) {
-      width += verticalBar.getSize().x;
+      width += getVerticalBar().getSize().x;
     }
     if( ( style & SWT.H_SCROLL ) != 0 ) {
-      height += horizontalBar.getSize().y;
+      height += getHorizontalBar().getSize().y;
     }
     return new Point( width, height );
   }
@@ -2050,61 +2047,6 @@ public class Tree extends Composite {
     return layoutCache.cellSpacing;
   }
 
-  /////////////
-  // ScrollBars
-
-  // TODO [if] move to Scrollable as in SWT
-  private void createScrollBars() {
-    if( ( style & SWT.H_SCROLL ) != 0 ) {
-      horizontalBar = new ScrollBar( this, SWT.H_SCROLL );
-      horizontalBar.setVisible( false );
-    }
-    if( ( style & SWT.V_SCROLL ) != 0 ) {
-      verticalBar = new ScrollBar( this, SWT.V_SCROLL );
-      verticalBar.setVisible( false );
-    }
-  }
-
-  /**
-   * Returns the receiver's horizontal scroll bar if it has
-   * one, and null if it does not.
-   *
-   * @return the horizontal scroll bar (or null)
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   *
-   * @since 1.4
-   */
-  // TODO [if] move to Scrollable as in SWT
-  @Override
-  public ScrollBar getHorizontalBar() {
-    checkWidget();
-    return horizontalBar;
-  }
-
-  /**
-   * Returns the receiver's vertical scroll bar if it has
-   * one, and null if it does not.
-   *
-   * @return the vertical scroll bar (or null)
-   *
-   * @exception SWTException <ul>
-   *    <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
-   * </ul>
-   *
-   * @since 1.4
-   */
-  //  TODO [if] move to Scrollable as in SWT
-  @Override
-  public ScrollBar getVerticalBar() {
-    checkWidget();
-    return verticalBar;
-  }
-
   ///////////////////////////////////////
   // Helping methods - dynamic scrollbars
 
@@ -2120,7 +2062,7 @@ public class Tree extends Composite {
   int getVScrollBarWidth() {
     int result = 0;
     if( hasVScrollBar() ) {
-      result = verticalBar.getSize().x;
+      result = getVerticalBar().getSize().x;
     }
     return result;
   }
@@ -2129,7 +2071,7 @@ public class Tree extends Composite {
   int getHScrollBarHeight() {
     int result = 0;
     if( hasHScrollBar() ) {
-      result = horizontalBar.getSize().y;
+      result = getHorizontalBar().getSize().y;
     }
     return result;
   }
@@ -2184,8 +2126,8 @@ public class Tree extends Composite {
         hasVScrollBar = true;
         hasHScrollBar = needsHScrollBar();
       }
-      horizontalBar.setVisible( hasHScrollBar );
-      verticalBar.setVisible( hasVScrollBar );
+      getHorizontalBar().setVisible( hasHScrollBar );
+      getVerticalBar().setVisible( hasVScrollBar );
     }
   }
 

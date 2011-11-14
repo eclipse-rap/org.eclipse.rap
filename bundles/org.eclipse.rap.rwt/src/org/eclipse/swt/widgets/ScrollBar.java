@@ -134,9 +134,7 @@ public class ScrollBar extends Widget {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  // TODO [rh] make package-private as in SWT (not possible since currently
-  //      used by ScrolledComposite, see there)
-  public ScrollBar( final Scrollable parent, final int style ) {
+  ScrollBar( Scrollable parent, int style ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
   }
@@ -175,7 +173,7 @@ public class ScrollBar extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setVisible( final boolean visible ) {
+  public void setVisible( boolean visible ) {
     checkWidget();
     boolean isVisible = ( state & HIDDEN ) == 0;
     if( isVisible != visible ) {
@@ -240,7 +238,7 @@ public class ScrollBar extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setEnabled( final boolean enabled ) {
+  public void setEnabled( boolean enabled ) {
     checkWidget();
     if( enabled ) {
       state &= ~DISABLED;
@@ -344,7 +342,7 @@ public class ScrollBar extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setThumb( final int thumb ) {
+  public void setThumb( int thumb ) {
     checkWidget();
     this.thumb = thumb;
   }
@@ -377,7 +375,7 @@ public class ScrollBar extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setMaximum( final int maximum ) {
+  public void setMaximum( int maximum ) {
     checkWidget();
     this.maximum = maximum;
   }
@@ -410,7 +408,7 @@ public class ScrollBar extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setMinimum( final int minimum ) {
+  public void setMinimum( int minimum ) {
     checkWidget();
     this.minimum = minimum;
   }
@@ -427,7 +425,7 @@ public class ScrollBar extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelection( final int selection ) {
+  public void setSelection( int selection ) {
     checkWidget();
     if( this.selection != selection ) {
       this.selection = selection;
@@ -484,7 +482,7 @@ public class ScrollBar extends Widget {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -506,7 +504,7 @@ public class ScrollBar extends Widget {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
@@ -514,13 +512,12 @@ public class ScrollBar extends Widget {
   //////////////////
   // Helping methods
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     return checkBits( style, SWT.HORIZONTAL, SWT.VERTICAL, 0, 0, 0, 0 );
   }
 
   private int getScrollBarWidth() {
-    ScrollBarThemeAdapter themeAdapter
-      = ( ScrollBarThemeAdapter )getAdapter( IThemeAdapter.class );
+    ScrollBarThemeAdapter themeAdapter = ( ScrollBarThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getScrollBarWidth( this );
   }
 }
