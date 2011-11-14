@@ -123,15 +123,6 @@ public class JobManagerAdapter
       try {
         manager[ 0 ] = findProgressManager( event.getJob() );
         display = ( Display )jobs.get( event.getJob() );
-        if( display != null && !display.isDisposed() ) {
-          display.asyncExec( new Runnable() {
-            public void run() {
-              Job job = event.getJob();
-              String id = String.valueOf( job.hashCode() );
-              UICallBackManager.getInstance().deactivateUICallBacksFor( id );
-            }
-          } );
-        }
       } finally {
         jobs.remove( event.getJob() );
       }
@@ -139,6 +130,8 @@ public class JobManagerAdapter
     if( display != null && !display.isDisposed() ) {
       display.asyncExec( new Runnable() {
         public void run() {
+          String id = String.valueOf( event.getJob().hashCode() );
+          UICallBackManager.getInstance().deactivateUICallBacksFor( id );
           manager[ 0 ].changeListener.done( event );
         }
       } );
