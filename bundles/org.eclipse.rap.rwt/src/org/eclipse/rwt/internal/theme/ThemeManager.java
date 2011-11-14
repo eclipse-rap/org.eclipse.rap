@@ -62,10 +62,6 @@ public class ThemeManager {
   /** Expected character set of JS files. */
   private static final String CHARSET = "UTF-8";
 
-  private static final String LOG_SYSTEM_PROPERTY
-    = System.getProperty( ThemeManager.class.getName() + ".log" );
-  private static final boolean DEBUG = "true".equals( LOG_SYSTEM_PROPERTY );
-
   private static final String WIDGET_THEME_PATH = "resource/widget/rap";
 
   static final String IMAGE_DEST_PATH = "themes/images";
@@ -334,9 +330,6 @@ public class ThemeManager {
         found |= loadAppearanceJs( themeWidget, variants[ i ], className );
         found |= loadDefaultCss( themeWidget, variants[ i ], className );
       }
-      if( themeWidget.elements == null ) {
-        log( "WARNING: No elements defined for themeable widget: " + themeWidget.widget.getName() );
-      }
       if( themeWidget.defaultStyleSheet != null ) {
         defaultTheme.addStyleSheet( themeWidget.defaultStyleSheet );
       }
@@ -354,7 +347,6 @@ public class ThemeManager {
     String fileName = resPkgName + "/" + className + ".theme.xml";
     InputStream inStream = themeWidget.loader.getResourceAsStream( fileName );
     if( inStream != null ) {
-      log( "Found theme definition file: " +  fileName );
       result = true;
       try {
         ThemeDefinitionReader reader = new ThemeDefinitionReader( inStream, fileName );
@@ -390,7 +382,6 @@ public class ThemeManager {
     String fileName = resPkgName + "/" + className + ".appearances.js";
     InputStream inStream = themeWidget.loader.getResourceAsStream( fileName );
     if( inStream != null ) {
-      log( "Found appearance js file: " +  fileName );
       try {
         String content = AppearancesUtil.readAppearanceFile( inStream );
         customAppearances.add( content );
@@ -411,7 +402,6 @@ public class ThemeManager {
     ResourceLoader resLoader = themeWidget.loader;
     InputStream inStream = resLoader.getResourceAsStream( fileName );
     if( inStream != null ) {
-      log( "Found default css file: " +  fileName );
       try {
         // TODO [rst] Check for illegal element names in selector list
         themeWidget.defaultStyleSheet
@@ -443,9 +433,6 @@ public class ThemeManager {
         storeWriter.addTheme( theme, theme == defaultTheme );
         sb.append( storeWriter.createJs() );
         String themeCode = sb.toString();
-        log( "-- REGISTERED THEME CODE FOR " + themeId + " ( " + themeCode.length() + " )--" );
-        log( themeCode );
-        log( "-- END REGISTERED THEME CODE --" );
         String name = "rap-" + jsId + ".js";
         registerJsLibrary( name, themeCode );
         registeredThemeFiles.add( themeId );
@@ -498,7 +485,6 @@ public class ThemeManager {
           ThemePropertyAdapter adapter = registry.getPropertyAdapter( value.getClass() );
           String key = adapter.getKey( value );
           String path = cursor.value;
-          log( " register theme cursor " + key + ", path=" + path );
           InputStream inputStream;
           try {
             inputStream = cursor.loader.getResourceAsStream( path );
@@ -516,8 +502,6 @@ public class ThemeManager {
             String widgetDestPath = CURSOR_DEST_PATH;
             String registerPath = widgetDestPath + "/" + key;
             getResourceManager().register( registerPath, inputStream );
-            String location = getResourceManager().getLocation( registerPath );
-            log( " theme cursor registered @ " + location );
           } finally {
             StreamUtil.close( inputStream );
           }
@@ -583,9 +567,4 @@ public class ThemeManager {
     return qxTheme.getJsCode();
   }
 
-  private static void log( final String mesg ) {
-    if( DEBUG ) {
-      System.out.println( mesg );
-    }
-  }
 }
