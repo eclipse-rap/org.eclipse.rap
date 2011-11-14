@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.browser;
 
@@ -13,6 +14,7 @@ import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.events.TypedEvent;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Widget;
+
 
 /**
  * A <code>ProgressEvent</code> is sent by a {@link Browser} to
@@ -50,7 +52,7 @@ public class ProgressEvent extends TypedEvent {
    *
    * @param widget the widget that fired the event
    */
-  public ProgressEvent( final Widget widget ) {
+  public ProgressEvent( Widget widget ) {
     super( widget );
   }
 
@@ -62,11 +64,11 @@ public class ProgressEvent extends TypedEvent {
    * from application code.
    * </p>
    */
-  public ProgressEvent( final Widget source, final int id ) {
+  public ProgressEvent( Widget source, int id ) {
     super( source, id );
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case CHANGED:
         ( ( ProgressListener )listener ).changed( this );
@@ -87,23 +89,19 @@ public class ProgressEvent extends TypedEvent {
     return EventUtil.isAccessible( widget );
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final ProgressListener listener )
-  {
+  public static void addListener( Adaptable adaptable, ProgressListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final ProgressListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, ProgressListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 

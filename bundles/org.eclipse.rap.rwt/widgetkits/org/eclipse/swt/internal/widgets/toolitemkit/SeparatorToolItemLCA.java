@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.toolitemkit;
 
 import java.io.IOException;
@@ -22,7 +21,7 @@ final class SeparatorToolItemLCA extends ToolItemDelegateLCA {
     ToolItemLCAUtil.preserveValues( toolItem );
   }
 
-  void readData( final ToolItem toolItem ) {
+  void readData( ToolItem toolItem ) {
     // do nothing
   }
 

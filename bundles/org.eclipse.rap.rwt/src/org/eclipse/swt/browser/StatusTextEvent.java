@@ -32,7 +32,7 @@ public class StatusTextEvent extends TypedEvent {
    *
    * @param widget the widget that fired the event
    */
-  public StatusTextEvent( final Widget widget ) {
+  public StatusTextEvent( Widget widget ) {
     super( widget );
   }
 

@@ -25,7 +25,7 @@ final class RadioToolItemLCA extends ToolItemDelegateLCA {
 
   private static final String PARAM_SELECTION = "selection";
 
-  void preserveValues( final ToolItem toolItem ) {
+  void preserveValues( ToolItem toolItem ) {
     ToolItemLCAUtil.preserveValues( toolItem );
   }
 

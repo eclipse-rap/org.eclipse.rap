@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2009, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     EclipseSource - ongoing development
+ *    Innoopract - initial implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.dnd;
 
@@ -119,7 +120,7 @@ public class DropTargetEvent extends TypedEvent {
   // TODO [rh] in SWT, the field 'time' is declared in TypedEvent
   public int time;
   
-  public DropTargetEvent( final Widget widget, final int id ) {
+  public DropTargetEvent( Widget widget, int id ) {
     super( widget, id );
   }
 
@@ -153,7 +154,7 @@ public class DropTargetEvent extends TypedEvent {
     return sb.toString();
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case DRAG_ENTER:
         ( ( DropTargetListener )listener ).dragEnter( this );
@@ -186,23 +187,19 @@ public class DropTargetEvent extends TypedEvent {
     return LISTENER;
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final DropTargetListener listener )
-  {
+  public static void addListener( Adaptable adaptable, DropTargetListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final DropTargetListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, DropTargetListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 }

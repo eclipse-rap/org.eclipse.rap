@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,7 +96,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     writer.newWidget( "org.eclipse.swt.widgets.TableColumn", args );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     TableColumn column = ( TableColumn )widget;
     ItemLCAUtil.writeText( column, false, true );
     ItemLCAUtil.writeImage( column );
@@ -112,7 +112,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.writeCustomVariant( column );
   }
 
-  public void renderDispose( final Widget widget ) throws IOException {
+  public void renderDispose( Widget widget ) throws IOException {
     TableColumn column = ( TableColumn )widget;
     JSWriter writer = JSWriter.getWriterFor( column );
     writer.dispose();
@@ -151,7 +151,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     writer.set( PROP_MOVEABLE, "moveable", newValue, Boolean.FALSE );
   }
   
-  private static void writeFixed( final TableColumn column ) throws IOException {
+  private static void writeFixed( TableColumn column ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( column );
     Boolean newValue = Boolean.valueOf( isFixed( column ) );
     writer.set( PROP_FIXED, "fixed", newValue, Boolean.FALSE );
@@ -281,7 +281,7 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
     return tableAdapter.getLeftOffset();
   }
 
-  private static int arrayIndexOf( final int[] array, final int value ) {
+  private static int arrayIndexOf( int[] array, int value ) {
     int result = -1;
     for( int i = 0; result == -1 && i < array.length; i++ ) {
       if( array[ i ] == value ) {

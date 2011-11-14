@@ -87,11 +87,11 @@ public class CTabFolderEvent extends TypedEvent {
    * from application code.
    * </p>
    */
-  public CTabFolderEvent( final Object source, final int id ) {
+  public CTabFolderEvent( Object source, int id ) {
     super( source, id );
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case CLOSE:
         ( ( CTabFolder2Listener )listener ).close( this );
@@ -121,23 +121,19 @@ public class CTabFolderEvent extends TypedEvent {
     return EventUtil.isAccessible( widget );
   }
   
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
   
-  public static void addListener( final Adaptable adaptable,
-                                  final CTabFolder2Listener listener )
-  {
+  public static void addListener( Adaptable adaptable, CTabFolder2Listener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final CTabFolder2Listener listener )
-  {
+  public static void removeListener( Adaptable adaptable, CTabFolder2Listener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
   

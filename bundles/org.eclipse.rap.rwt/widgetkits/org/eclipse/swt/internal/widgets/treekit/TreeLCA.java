@@ -228,7 +228,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void readTopItemIndex( final Tree tree ) {
+  private static void readTopItemIndex( Tree tree ) {
     String topItemIndex = WidgetLCAUtil.readPropertyValue( tree, "topItemIndex" );
     if( topItemIndex != null ) {
       final ITreeAdapter treeAdapter = getTreeAdapter( tree );
@@ -239,7 +239,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static int parsePosition( final String position ) {
+  private static int parsePosition( String position ) {
     int result = 0;
     try {
       result = Integer.valueOf( position ).intValue();

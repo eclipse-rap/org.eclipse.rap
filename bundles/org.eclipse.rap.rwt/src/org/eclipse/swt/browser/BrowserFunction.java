@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.browser;
 
@@ -13,6 +14,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+
 
 /**
  * Instances of this class represent java-side "functions" that
@@ -63,14 +65,11 @@ public class BrowserFunction {
    *
    * @see #dispose()
    */
-  public BrowserFunction( final Browser browser, final String name ) {
+  public BrowserFunction( Browser browser, String name ) {
     this( browser, name, true );
   }
 
-  BrowserFunction( final Browser browser,
-                   final String name,
-                   final boolean create )
-  {
+  BrowserFunction( Browser browser, String name, boolean create ) {
     if( browser == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -83,7 +82,7 @@ public class BrowserFunction {
     browser.checkWidget();
     this.browser = browser;
     this.browser.addDisposeListener( new DisposeListener() {
-      public void widgetDisposed( final DisposeEvent event ) {
+      public void widgetDisposed( DisposeEvent event ) {
         dispose( false );
       }
     } );
@@ -105,7 +104,7 @@ public class BrowserFunction {
     dispose( true );
   }
 
-  void dispose( final boolean remove ) {
+  void dispose( boolean remove ) {
     if( !disposed ) {
       if( remove ) {
         browser.destroyFunction( this );
@@ -144,7 +143,7 @@ public class BrowserFunction {
    *    <li>ERROR_FUNCTION_DISPOSED when the BrowserFunction has been disposed</li>
    * </ul>
    */
-  public Object function( final Object[] arguments ) {
+  public Object function( Object[] arguments ) {
     if( disposed ) {
       SWT.error( SWT.ERROR_FUNCTION_DISPOSED );
     }

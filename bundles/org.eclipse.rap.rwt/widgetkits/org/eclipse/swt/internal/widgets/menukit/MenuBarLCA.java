@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.menukit;
 
 import java.io.IOException;
@@ -29,7 +28,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
   private static final String PROP_SHELL_MENU_BOUNDS
     = "menuBarShellClientArea";
 
-  void preserveValues( final Menu menu ) {
+  void preserveValues( Menu menu ) {
     Decorations parent = getParent( menu );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
     adapter.preserve( PROP_SHELL, parent );
@@ -39,17 +38,17 @@ final class MenuBarLCA extends MenuDelegateLCA {
     WidgetLCAUtil.preserveHelpListener( menu );
   }
 
-  void readData( final Menu menu ) {
+  void readData( Menu menu ) {
     MenuLCAUtil.readMenuEvent( menu );
     WidgetLCAUtil.processHelp( menu );
   }
 
-  void renderInitialization( final Menu menu ) throws IOException {
+  void renderInitialization( Menu menu ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menu );
     writer.newWidget( "org.eclipse.rwt.widgets.MenuBar" );
   }
 
-  void renderChanges( final Menu menu ) throws IOException {
+  void renderChanges( Menu menu ) throws IOException {
     writeParent( menu );
     writeBounds( menu );
     MenuLCAUtil.writeEnabled( menu );
@@ -65,7 +64,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
   //////////////////////////////////////////////////
   // Helping method to write properties for menu bar
 
-  private static Decorations getParent( final Menu menu ) {
+  private static Decorations getParent( Menu menu ) {
     Decorations result = null;
     if( menu.getParent().getMenuBar() == menu ) {
       result = menu.getParent();
@@ -73,7 +72,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
     return result;
   }
 
-  private static void writeParent( final Menu menu ) throws IOException {
+  private static void writeParent( Menu menu ) throws IOException {
     Decorations parent = getParent( menu );
     if( WidgetLCAUtil.hasChanged( menu, PROP_SHELL, parent, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( menu );
@@ -81,7 +80,7 @@ final class MenuBarLCA extends MenuDelegateLCA {
     }
   }
 
-  private static void writeBounds( final Menu menu ) throws IOException {
+  private static void writeBounds( Menu menu ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menu );
     Decorations parent = getParent( menu );
     if( parent != null ) {

@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tablekit;
 
@@ -34,12 +34,12 @@ public final class TableLCAUtil {
   ////////////////////////////
   // Column and Item alignment
 
-  public static void preserveAlignment( final TableColumn column ) {
+  public static void preserveAlignment( TableColumn column ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
     adapter.preserve( PROP_ALIGNMENT, new Integer( column.getAlignment() ) );
   }
 
-  public static boolean hasAlignmentChanged( final Table table ) {
+  public static boolean hasAlignmentChanged( Table table ) {
     boolean result = false;
     TableColumn[] columns = table.getColumns();
     for( int i = 0; !result && i < columns.length; i++ ) {
@@ -50,7 +50,7 @@ public final class TableLCAUtil {
     return result;
   }
 
-  public static boolean hasAlignmentChanged( final TableColumn column ) {
+  public static boolean hasAlignmentChanged( TableColumn column ) {
     return WidgetLCAUtil.hasChanged( column,
                                      PROP_ALIGNMENT,
                                      new Integer( column.getAlignment() ),
@@ -60,17 +60,17 @@ public final class TableLCAUtil {
   ///////////////
   // Item metrics
 
-  public static void preserveItemMetrics( final Table table ) {
+  public static void preserveItemMetrics( Table table ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( table );
     adapter.preserve( PROP_ITEM_METRICS, getItemMetrics( table ) );
   }
 
-  public static boolean hasItemMetricsChanged( final Table table ) {
+  public static boolean hasItemMetricsChanged( Table table ) {
     ItemMetrics[] itemMetrics = getItemMetrics( table );
     return hasItemMetricsChanged( table, itemMetrics );
   }
 
-  public static void writeItemMetrics( final Table table ) throws IOException {
+  public static void writeItemMetrics( Table table ) throws IOException {
     ItemMetrics[] itemMetrics = getItemMetrics( table );
     if( hasItemMetricsChanged( table, itemMetrics ) ) {
       JSWriter writer = JSWriter.getWriterFor( table );
@@ -174,7 +174,7 @@ public final class TableLCAUtil {
     int textLeft;
     int textWidth;
 
-    public boolean equals( final Object obj ) {
+    public boolean equals( Object obj ) {
       boolean result;
       if( obj == this ) {
         result = true;

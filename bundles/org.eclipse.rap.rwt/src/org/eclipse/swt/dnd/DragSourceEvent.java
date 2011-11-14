@@ -124,7 +124,7 @@ public class DragSourceEvent extends TypedEvent {
   // TODO [rh] in SWT, the field 'time' is declared in TypedEvent
   public int time;
   
-  public DragSourceEvent( final Widget widget, final int id ) {
+  public DragSourceEvent( Widget widget, int id ) {
     super( widget, id );
   }
 
@@ -140,7 +140,7 @@ public class DragSourceEvent extends TypedEvent {
            + "}";
   }
   
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case DRAG_START:
         ( ( DragSourceListener )listener ).dragStart( this );
@@ -164,23 +164,19 @@ public class DragSourceEvent extends TypedEvent {
     return LISTENER;
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final DragSourceListener listener )
-  {
+  public static void addListener( Adaptable adaptable, DragSourceListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final DragSourceListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, DragSourceListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 }

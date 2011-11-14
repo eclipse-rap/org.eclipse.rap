@@ -106,7 +106,7 @@ public class TextTransfer extends ByteArrayTransfer {
     return checkText( object );
   }
   
-  static byte[] stringToBytes( final String string ) {
+  static byte[] stringToBytes( String string ) {
     byte[] bytes = null;
     try {
       bytes = string.getBytes( "UTF-8" );

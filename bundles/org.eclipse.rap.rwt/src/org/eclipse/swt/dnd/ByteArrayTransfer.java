@@ -129,7 +129,7 @@ public abstract class ByteArrayTransfer extends Transfer {
     return data;
   }
 
-  public boolean isSupportedType( final TransferData transferData ) {
+  public boolean isSupportedType( TransferData transferData ) {
     boolean result = false;
     if( transferData != null ) {
       int[] types = getTypeIds();
@@ -151,9 +151,7 @@ public abstract class ByteArrayTransfer extends Transfer {
    *          filled in on return with the platform specific format of the data
    * @see Transfer#nativeToJava
    */
-  public void javaToNative( final Object object,
-                            final TransferData transferData ) 
-  {
+  public void javaToNative( Object object, TransferData transferData ) {
     if( !checkByteArray( object ) || !isSupportedType( transferData ) ) {
       DND.error( DND.ERROR_INVALID_DATA );
     }
@@ -173,7 +171,7 @@ public abstract class ByteArrayTransfer extends Transfer {
    *         conversion was successful; otherwise null
    * @see Transfer#javaToNative
    */
-  public Object nativeToJava( final TransferData transferData ) {
+  public Object nativeToJava( TransferData transferData ) {
     byte[] result = null;
     if(    isSupportedType( transferData ) 
         && ( transferData.data instanceof byte[] ) )
@@ -185,7 +183,7 @@ public abstract class ByteArrayTransfer extends Transfer {
     return result;
   }
 
-  private static boolean checkByteArray( final Object object ) {
+  private static boolean checkByteArray( Object object ) {
     return    object != null && object instanceof byte[] 
            && ( ( byte[] )object ).length > 0;
   }

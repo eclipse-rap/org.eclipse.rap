@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
@@ -175,7 +175,7 @@ public class CTabFolder extends Composite {
    * @see SWT#MULTI
    * @see #getStyle()
    */
-  public CTabFolder( final Composite parent, final int style ) {
+  public CTabFolder( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
     super.setLayout( new CTabFolderLayout() );
     onBottom = ( super.getStyle() & SWT.BOTTOM ) != 0;
@@ -189,7 +189,7 @@ public class CTabFolder extends Composite {
     highlight_margin = ( style & SWT.FLAT ) != 0 ? 0 : 2;
     updateTabHeight( false );
     resizeListener = new ControlAdapter() {
-      public void controlResized( final ControlEvent event ) {
+      public void controlResized( ControlEvent event ) {
         onResize();
       }
     };
@@ -230,7 +230,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
    * </ul>
    */
-  public CTabItem getItem( final int index ) {
+  public CTabItem getItem( int index ) {
     checkWidget();
     return itemHolder.getItem( index );
   }
@@ -247,7 +247,7 @@ public class CTabFolder extends Composite {
    *  </ul>
    * @since 1.2
    */
-  public CTabItem getItem( final Point pt ) {
+  public CTabItem getItem( Point pt ) {
     // checkWidget();
     CTabItem result = null;
     Point size = getSize();
@@ -297,7 +297,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
    * </ul>
    */
-  public int indexOf( final CTabItem item ) {
+  public int indexOf( CTabItem item ) {
     checkWidget();
     return itemHolder.indexOf( item );
   }
@@ -315,7 +315,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelection( final int index ) {
+  public void setSelection( int index ) {
     checkWidget();
     if( index >= 0 && index <= itemHolder.size() - 1 ) {
       if( selectedIndex != index ) {
@@ -371,7 +371,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
    * </ul>
    */
-  public void setSelection( final CTabItem item ) {
+  public void setSelection( CTabItem item ) {
     checkWidget();
     if( item == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -436,7 +436,7 @@ public class CTabFolder extends Composite {
    *
    * @see CTabFolder#showSelection()
    */
-  public void showItem( final CTabItem item ) {
+  public void showItem( CTabItem item ) {
     checkWidget();
     if( item == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -498,7 +498,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setMRUVisible( final boolean show ) {
+  public void setMRUVisible( boolean show ) {
     checkWidget();
     if( mru != show ) {
       mru = show;
@@ -563,7 +563,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setMaximizeVisible( final boolean maximizeVisible ) {
+  public void setMaximizeVisible( boolean maximizeVisible ) {
     checkWidget();
     if( this.showMax != maximizeVisible ) {
       this.showMax = maximizeVisible;
@@ -598,7 +598,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setMinimizeVisible( final boolean minimizeVisible ) {
+  public void setMinimizeVisible( boolean minimizeVisible ) {
     checkWidget();
     if( this.showMin != minimizeVisible ) {
       this.showMin = minimizeVisible;
@@ -633,7 +633,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setMinimized( final boolean minimized ) {
+  public void setMinimized( boolean minimized ) {
     checkWidget();
     if( this.minimized != minimized ) {
       if( minimized && this.maximized ) {
@@ -668,7 +668,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setMaximized( final boolean maximized ) {
+  public void setMaximized( boolean maximized ) {
     checkWidget();
     if( this.maximized != maximized ) {
       if( maximized && this.minimized ) {
@@ -712,7 +712,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setLayout( final Layout layout ) {
+  public void setLayout( Layout layout ) {
     checkWidget();
     // ignore - CTabFolder manages its own layout
   }
@@ -730,7 +730,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_INVALID_ARGUMENT - if called with a height of less than 0</li>
    * </ul>
    */
-  public void setTabHeight( final int height ) {
+  public void setTabHeight( int height ) {
     checkWidget();
     if( height < -1 ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
@@ -783,7 +783,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_INVALID_RANGE - if the count is less than zero</li>
    * </ul>
    */
-  public void setMinimumCharacters( final int minimumCharacters ) {
+  public void setMinimumCharacters( int minimumCharacters ) {
     checkWidget();
     if( minimumCharacters < 0 ) {
       SWT.error( SWT.ERROR_INVALID_RANGE );
@@ -828,7 +828,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSingle( final boolean single ) {
+  public void setSingle( boolean single ) {
     checkWidget();
     if( this.single != single ) {
       this.single = single;
@@ -863,7 +863,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_INVALID_ARGUMENT - if the position value is not either SWT.TOP or SWT.BOTTOM</li>
    * </ul>
    */
-  public void setTabPosition( final int position ) {
+  public void setTabPosition( int position ) {
     checkWidget();
     if( position != SWT.TOP && position != SWT.BOTTOM ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
@@ -903,7 +903,7 @@ public class CTabFolder extends Composite {
    * </ul>
    */
   // TODO [rh] not yet evaluated in LCA
-  public void setBorderVisible( final boolean show ) {
+  public void setBorderVisible( boolean show ) {
     checkWidget();
     if( ( borderLeft != 1 ) != !show ) {
       borderLeft = borderRight = show ? 1 : 0;
@@ -938,7 +938,7 @@ public class CTabFolder extends Composite {
    *
    * @since 1.3
    */
-  public void setUnselectedImageVisible( final boolean visible ) {
+  public void setUnselectedImageVisible( boolean visible ) {
     checkWidget();
     if( showUnselectedImage != visible ) {
       showUnselectedImage = visible;
@@ -968,7 +968,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setUnselectedCloseVisible( final boolean visible ) {
+  public void setUnselectedCloseVisible( boolean visible ) {
     checkWidget();
     if( showUnselectedClose != visible ) {
       showUnselectedClose = visible;
@@ -976,11 +976,7 @@ public class CTabFolder extends Composite {
     }
   }
 
-  public Rectangle computeTrim( final int x,
-                                final int y,
-                                final int width,
-                                final int height )
-  {
+  public Rectangle computeTrim( int x, int y, int width, int height ) {
     checkWidget();
     int trimX = x - marginWidth - highlight_margin - borderLeft;
     int trimWidth = width
@@ -1029,7 +1025,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelectionBackground( final Color color ) {
+  public void setSelectionBackground( Color color ) {
     checkWidget();
     if( null != color && color.isDisposed() )
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
@@ -1087,9 +1083,7 @@ public class CTabFolder extends Composite {
    *  </ul>
    *  @since 1.3
    */
-  public void setSelectionBackground( final Color[] colors,
-                                      final int[] percents )
-  {
+  public void setSelectionBackground( Color[] colors, int[] percents ) {
     setSelectionBackground( colors, percents, false );
   }
   /**
@@ -1123,10 +1117,7 @@ public class CTabFolder extends Composite {
    *
    * @since 1.3
    */
-  public void setSelectionBackground( final Color[] colors,
-                                      final int[] percents,
-                                      final boolean vertical )
-  {
+  public void setSelectionBackground( Color[] colors, int[] percents, boolean vertical ) {
     checkWidget();
     if( colors != null ) {
       for( int i = 0; i < colors.length; i++ ) {
@@ -1189,7 +1180,7 @@ public class CTabFolder extends Composite {
    * </ul>
    * @since 1.3
    */
-  public void setSelectionBackground( final Image image ) {
+  public void setSelectionBackground( Image image ) {
     checkWidget();
     selectionBgImage = image;
   }
@@ -1204,7 +1195,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelectionForeground( final Color color ) {
+  public void setSelectionForeground( Color color ) {
     checkWidget();
     selectionForeground = color;
   }
@@ -1252,7 +1243,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_INVALID_ARGUMENT - if the control is not a child of this CTabFolder</li>
    * </ul>
    */
-  public void setTopRight( final Control control ) {
+  public void setTopRight( Control control ) {
     checkWidget();
     setTopRight( control, SWT.RIGHT );
   }
@@ -1279,7 +1270,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_INVALID_ARGUMENT - if the control is not a child of this CTabFolder</li>
    * </ul>
    */
-  public void setTopRight( final Control control, final int alignment ) {
+  public void setTopRight( Control control, int alignment ) {
     checkWidget();
     if( alignment != SWT.RIGHT && alignment != SWT.FILL ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
@@ -1352,7 +1343,7 @@ public class CTabFolder extends Composite {
   ////////////////////
   // Control overrides
 
-  public void setFont( final Font font ) {
+  public void setFont( Font font ) {
     checkWidget();
     if( font != getFont() ) {
       super.setFont( font );
@@ -1411,7 +1402,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
    * </ul>
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -1430,7 +1421,7 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_WIDGET_DISPOSED when the widget has been disposed</li>
    * </ul>
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
@@ -1456,7 +1447,7 @@ public class CTabFolder extends Composite {
    * @see CTabFolder2Listener
    * @see #removeCTabFolder2Listener(CTabFolder2Listener)
    */
-  public void addCTabFolder2Listener( final CTabFolder2Listener listener ) {
+  public void addCTabFolder2Listener( CTabFolder2Listener listener ) {
     checkWidget();
     CTabFolderEvent.addListener( this, listener );
   }
@@ -1477,7 +1468,7 @@ public class CTabFolder extends Composite {
    *
    * @see #addCTabFolder2Listener(CTabFolder2Listener)
    */
-  public void removeCTabFolder2Listener( final CTabFolder2Listener listener ) {
+  public void removeCTabFolder2Listener( CTabFolder2Listener listener ) {
     checkWidget();
     CTabFolderEvent.removeListener( this, listener );
   }
@@ -2085,7 +2076,7 @@ CTabItem[] items = itemHolder.getItems();
   //////////////////
   // Helping methods
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     int mask
       = SWT.CLOSE
       | SWT.TOP
@@ -2109,7 +2100,7 @@ CTabItem[] items = itemHolder.getItems();
 
   private void registerDisposeListener() {
     addDisposeListener( new DisposeListener() {
-      public void widgetDisposed( final DisposeEvent event ) {
+      public void widgetDisposed( DisposeEvent event ) {
         onDispose();
         CTabFolder.this.removeDisposeListener( this );
       }
@@ -2119,10 +2110,10 @@ CTabItem[] items = itemHolder.getItems();
   private void registerFocusListener() {
     if( focusListener == null ) {
       focusListener = new FocusListener() {
-        public void focusGained( final FocusEvent event ) {
+        public void focusGained( FocusEvent event ) {
           onFocus();
         }
-        public void focusLost( final FocusEvent event ) {
+        public void focusLost( FocusEvent event ) {
           onFocus();
         }
       };
@@ -2167,7 +2158,7 @@ CTabItem[] items = itemHolder.getItems();
         item.setImage( tab.getImage() );
         item.setData( id, tab );
         item.addSelectionListener( new SelectionAdapter() {
-          public void widgetSelected( final SelectionEvent event ) {
+          public void widgetSelected( SelectionEvent event ) {
             MenuItem menuItem = ( MenuItem )event.getSource();
             int index = indexOf( ( CTabItem )menuItem.getData( id ) );
             setSelection( index, true );
@@ -2185,7 +2176,7 @@ CTabItem[] items = itemHolder.getItems();
     }
   }
 
-  private void setSelection( final int index, final boolean notify ) {
+  private void setSelection( int index, boolean notify ) {
     int oldSelectedIndex = selectedIndex;
     setSelection( index );
     if( notify && selectedIndex != oldSelectedIndex && selectedIndex != -1 ) {
@@ -2196,7 +2187,7 @@ CTabItem[] items = itemHolder.getItems();
     }
   }
 
-  void createItem( final CTabItem item, final int index ) {
+  void createItem( CTabItem item, int index ) {
     itemHolder.insert( item, index );
     if( selectedIndex >= index ) {
       selectedIndex++;
@@ -2227,7 +2218,7 @@ CTabItem[] items = itemHolder.getItems();
 
   }
 
-  void destroyItem( final CTabItem item ) {
+  void destroyItem( CTabItem item ) {
     int index = indexOf( item );
     if( !inDispose && index != -1  ) {
       CTabItem[] items = getItems();
@@ -2286,35 +2277,35 @@ CTabItem[] items = itemHolder.getItems();
     return result;
   }
 
-  private void setInternalSelectedItem( final CTabItem item ) {
+  private void setInternalSelectedItem( CTabItem item ) {
     internalSelectedIndex = itemHolder.indexOf( item );
   }
 
   //////////////////
   // Theming related
 
-  int getItemPaddingLeft( final boolean selected ) {
+  int getItemPaddingLeft( boolean selected ) {
     return getItemPadding( selected ).x;
   }
 
-  int getItemPaddingRight( final boolean selected ) {
+  int getItemPaddingRight( boolean selected ) {
     Rectangle padding = getItemPadding( selected );
     return padding.width - padding.x;
   }
 
-  Rectangle getItemPadding( final boolean selected ) {
+  Rectangle getItemPadding( boolean selected ) {
     CTabFolderThemeAdapter themeAdapter
       = ( CTabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getItemPadding( selected );
   }
 
-  int getItemSpacing( final boolean selected ) {
+  int getItemSpacing( boolean selected ) {
     CTabFolderThemeAdapter themeAdapter
       = ( CTabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getItemSpacing( selected );
   }
 
-  Font getItemFont( final boolean selected ) {
+  Font getItemFont( boolean selected ) {
     CTabFolderThemeAdapter themeAdapter
       = ( CTabFolderThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getItemFont( selected );
@@ -2323,7 +2314,7 @@ CTabItem[] items = itemHolder.getItems();
   ///////////////////
   // Skinning support
 
-  public void reskin( final int flags ) {
+  public void reskin( int flags ) {
     super.reskin( flags );
     CTabItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
@@ -2359,15 +2350,15 @@ CTabItem[] items = itemHolder.getItems();
       CTabFolder.this.showListMenu();
     }
 
-    public boolean showItemImage( final CTabItem item ) {
+    public boolean showItemImage( CTabItem item ) {
       return item.showImage();
     }
 
-    public boolean showItemClose( final CTabItem item ) {
+    public boolean showItemClose( CTabItem item ) {
       return item.parent.showClose || item.showClose;
     }
 
-    public String getShortenedItemText( final CTabItem item ) {
+    public String getShortenedItemText( CTabItem item ) {
       return item.getShortenedText( item.getParent().getSelection() == item );
     }
 
@@ -2391,7 +2382,7 @@ CTabItem[] items = itemHolder.getItems();
       return CTabFolder.this.getInternalSelectedItem();
     }
 
-    public void setInternalSelectedItem( final CTabItem item ) {
+    public void setInternalSelectedItem( CTabItem item ) {
       CTabFolder.this.setInternalSelectedItem( item );
     }
   }

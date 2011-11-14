@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -334,7 +334,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     writer.set( PROP_LINES_VISIBLE, "linesVisible", newValue, Boolean.FALSE );
   }
 
-  private static void writeFixedColumns( final Table table ) throws IOException {
+  private static void writeFixedColumns( Table table ) throws IOException {
     Integer newValue = ( Integer )table.getData( "fixedColumns" );
     if( WidgetLCAUtil.hasChanged( table, PROP_FIXED_COLUMNS, newValue, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( table );

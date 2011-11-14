@@ -37,7 +37,7 @@ public final class SashLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveCustomVariant( widget );
   }
 
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
     Sash sash = ( Sash )widget;
     processSelection( sash );
     ControlLCAUtil.processMouseEvents( sash );
@@ -54,13 +54,13 @@ public final class SashLCA extends AbstractWidgetLCA {
     clientObject.setProperty( "style", WidgetLCAUtil.getStyles( sash ) );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     Sash sash = ( Sash )widget;
     ControlLCAUtil.renderChanges( sash );
     WidgetLCAUtil.renderCustomVariant( sash );
   }
 
-  public void renderDispose( final Widget widget ) throws IOException {
+  public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getForWidget( widget ).destroy();
   }
 

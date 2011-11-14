@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ *    IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.swt.browser;
 
@@ -57,15 +57,12 @@ public class LocationEvent extends TypedEvent {
    */
   public boolean doit = true;
 
-  LocationEvent( final Object source, 
-                 final int id, 
-                 final String location ) 
-  {
+  LocationEvent( Object source, int id, String location ) {
     super( source, id );
     this.location = location;
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case CHANGING:
         ( ( LocationListener )listener ).changing( this );
@@ -88,23 +85,19 @@ public class LocationEvent extends TypedEvent {
     return true;
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
   
-  public static void addListener( final Adaptable adaptable,
-                                  final LocationListener listener )
-  {
+  public static void addListener( Adaptable adaptable, LocationListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final LocationListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, LocationListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 }

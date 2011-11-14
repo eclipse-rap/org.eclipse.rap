@@ -1,18 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.service;
 
 import java.util.EventObject;
 
 import org.eclipse.rwt.internal.util.ParamCheck;
+
 
 /**
  * A SettingStoreEvent holds information regarding the change
@@ -42,10 +44,7 @@ public final class SettingStoreEvent extends EventObject {
   private String oldValue;
   private String newValue;
 
-  public SettingStoreEvent( final ISettingStore source,
-                            final String attribute, 
-                            final String oldValue, 
-                            final String newValue )
+  public SettingStoreEvent( ISettingStore source, String attribute, String oldValue, String newValue )
   {
     super( source );
     ParamCheck.notNull( attribute, "attribute" );

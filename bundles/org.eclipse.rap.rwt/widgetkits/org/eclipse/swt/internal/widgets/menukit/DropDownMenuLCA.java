@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menukit;
 
@@ -31,15 +31,15 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
     WidgetLCAUtil.preserveCustomVariant( menu );
     WidgetLCAUtil.preserveHelpListener( menu );
   }
-  
+
   void readData( Menu menu ) {
     MenuLCAUtil.readMenuEvent( menu );
     WidgetLCAUtil.processHelp( menu );
   }
-  
+
   void renderInitialization( Menu menu ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( menu );
-    // TODO [rh] check whether it is allowed (in SWT and/or Qooxdoo) to 
+    // TODO [rh] check whether it is allowed (in SWT and/or Qooxdoo) to
     //      assign a Menu to more than one MenuItem
     //      [rst] It's allowed in SWT but not in qooxdoo - we have a problem here
     writer.newWidget( "org.eclipse.rwt.widgets.Menu" );
@@ -58,15 +58,15 @@ final class DropDownMenuLCA extends MenuDelegateLCA {
   }
 
   /**
-   * <p>Returns all <code>MenuItems</code> whose <code>getMenu()</code> returns 
-   * the given <code>menu</code>. An empty array is returned if no 
-   * <code>MenuItem</code>s refer to the given <code>menu</code>.</p> 
+   * <p>Returns all <code>MenuItems</code> whose <code>getMenu()</code> returns
+   * the given <code>menu</code>. An empty array is returned if no
+   * <code>MenuItem</code>s refer to the given <code>menu</code>.</p>
    */
   private static MenuItem[] findReferringMenuItems( final Menu menu ) {
     final List<MenuItem> menuItems = new ArrayList<MenuItem>();
     Decorations parent = menu.getParent();
     WidgetTreeVisitor.accept( parent, new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
+      public boolean doVisit( Widget widget ) {
         if( widget instanceof MenuItem ) {
           MenuItem menuItem = ( MenuItem )widget;
           if( menuItem.getMenu() == menu ) {

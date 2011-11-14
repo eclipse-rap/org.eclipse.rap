@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.widgets;
 
@@ -17,6 +17,7 @@ import org.eclipse.rwt.internal.widgets.JSExecutor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
+
 
 /**
  * Utility class to open and close an external browser window.
@@ -76,8 +77,7 @@ public final class ExternalBrowser {
    *      created the receiver</li>
    * </ul>
    */
-  public static void open( final String id, final String url, final int style )
-  {
+  public static void open( String id, String url, int style ) {
     checkWidget();
     if( id == null || url == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -103,7 +103,7 @@ public final class ExternalBrowser {
    *      created the receiver</li>
    * </ul>
    */
-  public static void close( final String id ) {
+  public static void close( String id ) {
     checkWidget();
     if( id == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -117,19 +117,16 @@ public final class ExternalBrowser {
   ///////////////////////////////
   // JavaScript code 'generation'
 
-  private static String getOpenJS( final String id,
-                                   final String url,
-                                   final int style )
-  {
+  private static String getOpenJS( String id, String url, int style ) {
     Object[] args = new String[] { escapeId( id ), url, getFeatures( style ) };
     return MessageFormat.format( OPEN, args );
   }
 
-  private static String getCloseJS( final String id ) {
+  private static String getCloseJS( String id ) {
     return MessageFormat.format( CLOSE, new Object[] { escapeId( id ) } );
   }
 
-  static String escapeId( final String id ) {
+  static String escapeId( String id ) {
     String result = id;
     result = result.replaceAll( "\\_", "\\_0" );
     // IE does not accept '-' in popup-window names
@@ -140,7 +137,7 @@ public final class ExternalBrowser {
     return result;
   }
 
-  private static String getFeatures( final int style ) {
+  private static String getFeatures( int style ) {
     StringBuffer result = new StringBuffer();
     appendFeature( result, "dependent", true );
     appendFeature( result, "scrollbars", true );
@@ -153,10 +150,7 @@ public final class ExternalBrowser {
     return result.toString();
   }
 
-  private static void appendFeature( final StringBuffer features,
-                                     final String feature,
-                                     final boolean enable )
-  {
+  private static void appendFeature( StringBuffer features, String feature, boolean enable ) {
     if( features.length() > 0 ) {
       features.append( "," );
     }

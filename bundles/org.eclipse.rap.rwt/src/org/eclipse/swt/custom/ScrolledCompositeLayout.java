@@ -27,11 +27,7 @@ final class ScrolledCompositeLayout extends Layout {
 
   private boolean inLayout = false;
 
-  protected Point computeSize( final Composite composite,
-                               final int wHint,
-                               final int hHint,
-                               final boolean flushCache )
-  {
+  protected Point computeSize( Composite composite, int wHint, int hHint, boolean flushCache ) {
     ScrolledComposite sc = ( ScrolledComposite )composite;
     Point size = new Point( DEFAULT_WIDTH, DEFAULT_HEIGHT );
     if( sc.content != null ) {
@@ -51,11 +47,11 @@ final class ScrolledCompositeLayout extends Layout {
     return size;
   }
 
-  protected boolean flushCache( final Control control ) {
+  protected boolean flushCache( Control control ) {
     return true;
   }
 
-  protected void layout( final Composite composite, final boolean flushCache ) {
+  protected void layout( Composite composite, boolean flushCache ) {
     if( inLayout ) {
       return;
     }
