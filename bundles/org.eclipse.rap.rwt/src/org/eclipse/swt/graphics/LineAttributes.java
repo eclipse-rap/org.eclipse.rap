@@ -57,7 +57,7 @@ public class LineAttributes {
    *
    * @param width the line width
    */
-  public LineAttributes( final float width ) {
+  public LineAttributes( float width ) {
   	this( width, SWT.CAP_FLAT, SWT.JOIN_MITER );
   }
 
@@ -68,7 +68,7 @@ public class LineAttributes {
    * @param cap the line cap style
    * @param join the line join style
    */
-  public LineAttributes( final float width, final int cap, final int join ) {
+  public LineAttributes( float width, int cap, int join ) {
     this.width = width;
     this.cap = cap;
     this.join = join;

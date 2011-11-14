@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2011 Rüdiger Herrmann and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011 Rüdiger Herrmann and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Rüdiger Herrmann - initial API and implementation
+ *    Rüdiger Herrmann - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
@@ -23,7 +24,7 @@ class DeviceGC extends GCDelegate {
   private int lineCap;
   private int lineJoin;
 
-  DeviceGC( final Device device ) {
+  DeviceGC( Device device ) {
     this.device = device;
     this.background = device.getSystemColor( SWT.COLOR_WHITE );
     this.foreground = device.getSystemColor( SWT.COLOR_BLACK );
@@ -34,7 +35,7 @@ class DeviceGC extends GCDelegate {
     this.lineJoin = SWT.JOIN_MITER;
   }
 
-  void setBackground( final Color color ) {
+  void setBackground( Color color ) {
     background = color;
   }
 
@@ -42,7 +43,7 @@ class DeviceGC extends GCDelegate {
     return background;
   }
 
-  void setForeground( final Color color ) {
+  void setForeground( Color color ) {
     foreground = color;
   }
 
@@ -50,7 +51,7 @@ class DeviceGC extends GCDelegate {
     return foreground;
   }
 
-  void setFont( final Font font ) {
+  void setFont( Font font ) {
     this.font = font;
   }
 
@@ -62,7 +63,7 @@ class DeviceGC extends GCDelegate {
     return device.getSystemFont();
   }
 
-  void setAlpha( final int alpha ) {
+  void setAlpha( int alpha ) {
     this.alpha = alpha;
   }
 
@@ -70,7 +71,7 @@ class DeviceGC extends GCDelegate {
     return alpha;
   }
 
-  void setLineWidth( final int lineWidth ) {
+  void setLineWidth( int lineWidth ) {
     this.lineWidth = lineWidth;
   }
 
@@ -78,7 +79,7 @@ class DeviceGC extends GCDelegate {
     return lineWidth;
   }
 
-  void setLineCap( final int lineCap ) {
+  void setLineCap( int lineCap ) {
     this.lineCap = lineCap;
   }
 
@@ -86,7 +87,7 @@ class DeviceGC extends GCDelegate {
     return lineCap;
   }
 
-  void setLineJoin( final int lineJoin ) {
+  void setLineJoin( int lineJoin ) {
     this.lineJoin = lineJoin;
   }
 
@@ -98,56 +99,38 @@ class DeviceGC extends GCDelegate {
     return device.getBounds();
   }
 
-  Point stringExtent( final String string ) {
+  Point stringExtent( String string ) {
     return Graphics.stringExtent( font, string );
   }
 
-  Point textExtent( final String string, final int wrapWidth ) {
+  Point textExtent( String string, int wrapWidth ) {
     return Graphics.textExtent( font, string, wrapWidth );
   }
 
-  void drawPoint( final int x, final int y ) {
+  void drawPoint( int x, int y ) {
   }
 
-  void drawLine( final int x1, final int y1, final int x2, final int y2 ) {
+  void drawLine( int x1, int y1, int x2, int y2 ) {
   }
 
-  void drawPolyline( final int[] pointArray,
-                     final boolean close,
-                     final boolean fill ) {
+  void drawPolyline( int[] pointArray, boolean close, boolean fill ) {
   }
 
-  void drawRectangle( final Rectangle bounds, final boolean fill ) {
+  void drawRectangle( Rectangle bounds, boolean fill ) {
   }
 
-  void drawRoundRectangle( final Rectangle bounds,
-                           final int arcWidth,
-                           final int arcHeight,
-                           final boolean fill )
-  {
+  void drawRoundRectangle( Rectangle bounds, int arcWidth, int arcHeight, boolean fill ) {
   }
 
-  void fillGradientRectangle( final Rectangle bounds, final boolean vertical ) {
+  void fillGradientRectangle( Rectangle bounds, boolean vertical ) {
   }
 
-  void drawArc( final Rectangle boundsx,
-                final int startAngle,
-                final int arcAngle,
-                final boolean fill )
-  {
+  void drawArc( Rectangle boundsx, int startAngle, int arcAngle, boolean fill ) {
   }
 
-  void drawImage( final Image image,
-                  final Rectangle src,
-                  final Rectangle dest,
-                  final boolean simple )
-  {
+  void drawImage( Image image, Rectangle src, Rectangle dest, boolean simple ) {
   }
 
-  void drawText( final String string,
-                 final int x,
-                 final int y,
-                 final int flags )
-  {
+  void drawText( String string, int x, int y, int flags ) {
   }
 }

@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
@@ -13,6 +14,7 @@ import java.io.*;
 
 import org.eclipse.swt.*;
 import org.eclipse.swt.widgets.Control;
+
 
 /**
  * Class <code>GC</code> is where all of the drawing capabilities that are
@@ -95,7 +97,7 @@ public class GC extends Resource {
    *    <li>ERROR_THREAD_INVALID_ACCESS if not called from the thread that created the drawable</li>
    * </ul>
    */
-  public GC( final Drawable drawable ) {
+  public GC( Drawable drawable ) {
     this( drawable, SWT.NONE );
   }
 
@@ -124,7 +126,7 @@ public class GC extends Resource {
    *    <li>ERROR_THREAD_INVALID_ACCESS if not called from the thread that created the drawable</li>
    * </ul>
    */
-  public GC( final Drawable drawable, final int style ) {
+  public GC( Drawable drawable, int style ) {
     super( determineDevice( drawable ) );
     if( drawable == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -149,7 +151,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void setFont( final Font font ) {
+  public void setFont( Font font ) {
     checkDisposed();
     if( font != null && font.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
@@ -192,7 +194,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public int getCharWidth( final char ch ) {
+  public int getCharWidth( char ch ) {
     checkDisposed();
     return delegate.stringExtent( Character.toString( ch ) ).x;
   }
@@ -216,7 +218,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public Point stringExtent( final String string ) {
+  public Point stringExtent( String string ) {
     checkDisposed();
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -243,7 +245,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public Point textExtent( final String string ) {
+  public Point textExtent( String string ) {
     checkDisposed();
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -282,7 +284,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void setBackground( final Color color ) {
+  public void setBackground( Color color ) {
     checkDisposed();
     if( color == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -323,7 +325,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void setForeground( final Color color ) {
+  public void setForeground( Color color ) {
     checkDisposed();
     if( color == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -382,7 +384,7 @@ public class GC extends Resource {
    *    <li>ERROR_NO_GRAPHICS_LIBRARY - if advanced graphics are not available</li>
    * </ul>
    */
-  public void setAlpha( final int alpha ) {
+  public void setAlpha( int alpha ) {
     checkDisposed();
     if( alpha >= 0 && alpha <= 255 && delegate.getAlpha() != alpha ) {
       delegate.setAlpha( alpha );
@@ -417,7 +419,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void setLineWidth( final int lineWidth ) {
+  public void setLineWidth( int lineWidth ) {
     checkDisposed();
     if( delegate.getLineWidth() != lineWidth ) {
       delegate.setLineWidth( lineWidth );
@@ -455,7 +457,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void setLineCap( final int lineCap ) {
+  public void setLineCap( int lineCap ) {
     checkDisposed();
     if( delegate.getLineCap() != lineCap ) {
       switch( lineCap ) {
@@ -500,7 +502,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void setLineJoin( final int lineJoin ) {
+  public void setLineJoin( int lineJoin ) {
     checkDisposed();
     if( delegate.getLineJoin() != lineJoin ) {
       switch( lineJoin ) {
@@ -551,7 +553,7 @@ public class GC extends Resource {
    *
    * @see LineAttributes
    */
-  public void setLineAttributes( final LineAttributes attributes ) {
+  public void setLineAttributes( LineAttributes attributes ) {
     checkDisposed();
     if( attributes == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -621,7 +623,7 @@ public class GC extends Resource {
 //  * @see #setForegroundPattern
 //  * @see #setBackgroundPattern
 //  * @see #setTransform
-  public void setAdvanced( final boolean advanced ) {
+  public void setAdvanced( boolean advanced ) {
     checkDisposed();
     this.advanced = advanced;
     if( !advanced ) {
@@ -786,7 +788,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawLine( final int x1, final int y1, final int x2, final int y2 )
+  public void drawLine( int x1, int y1, int x2, int y2 )
   {
     checkDisposed();
     delegate.drawLine( x1, y1, x2, y2 );
@@ -808,7 +810,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawRectangle( final Rectangle rect ) {
+  public void drawRectangle( Rectangle rect ) {
     if( rect == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -830,10 +832,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawRectangle( final int x,
-                             final int y,
-                             final int width,
-                             final int height )
+  public void drawRectangle( int x, int y, int width, int height )
   {
     checkDisposed();
     drawRectangle( x, y, width, height, 0, 0, false );
@@ -856,10 +855,7 @@ public class GC extends Resource {
    *
    * @see #drawRectangle(int, int, int, int)
    */
-  public void drawFocus( final int x,
-                         final int y,
-                         final int width,
-                         final int height )
+  public void drawFocus( int x, int y, int width, int height )
   {
     drawRectangle( x, y, width, height );
   }
@@ -879,7 +875,7 @@ public class GC extends Resource {
    *
    * @see #drawRectangle(int, int, int, int)
    */
-  public void fillRectangle( final Rectangle rect ) {
+  public void fillRectangle( Rectangle rect ) {
     if( rect == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -901,10 +897,7 @@ public class GC extends Resource {
    *
    * @see #drawRectangle(int, int, int, int)
    */
-  public void fillRectangle( final int x,
-                             final int y,
-                             final int width,
-                             final int height )
+  public void fillRectangle( int x, int y, int width, int height )
   {
     checkDisposed();
     drawRectangle( x, y, width, height, 0, 0, true );
@@ -930,11 +923,7 @@ public class GC extends Resource {
    *
    * @see #drawRectangle(int, int, int, int)
    */
-  public void fillGradientRectangle( final int x,
-                                     final int y,
-                                     final int width,
-                                     final int height,
-                                     final boolean vertical )
+  public void fillGradientRectangle( int x, int y, int width, int height, boolean vertical )
   {
     checkDisposed();
     if( width != 0 && height != 0 ) {
@@ -967,12 +956,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawRoundRectangle( final int x,
-                                  final int y,
-                                  final int width,
-                                  final int height,
-                                  final int arcWidth,
-                                  final int arcHeight )
+  public void drawRoundRectangle( int x, int y, int width, int height, int arcWidth, int arcHeight )
   {
     checkDisposed();
     drawRectangle( x, y, width, height, arcWidth, arcHeight, false );
@@ -995,12 +979,7 @@ public class GC extends Resource {
    *
    * @see #drawRoundRectangle
    */
-  public void fillRoundRectangle( final int x,
-                                  final int y,
-                                  final int width,
-                                  final int height,
-                                  final int arcWidth,
-                                  final int arcHeight )
+  public void fillRoundRectangle( int x, int y, int width, int height, int arcWidth, int arcHeight )
   {
     checkDisposed();
     drawRectangle( x, y, width, height, arcWidth, arcHeight, true );
@@ -1027,11 +1006,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawOval( final int x,
-                        final int y,
-                        final int width,
-                        final int height )
-  {
+  public void drawOval( int x, int y, int width, int height ) {
     checkDisposed();
     drawArc( x, y, width, height, 0, 360, false );
   }
@@ -1052,11 +1027,7 @@ public class GC extends Resource {
    *
    * @see #drawOval
    */
-  public void fillOval( final int x,
-                        final int y,
-                        final int width,
-                        final int height )
-  {
+  public void fillOval( int x, int y, int width, int height ) {
     checkDisposed();
     drawArc( x, y, width, height, 0, 360, true );
   }
@@ -1090,13 +1061,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawArc( final int x,
-                       final int y,
-                       final int width,
-                       final int height,
-                       final int startAngle,
-                       final int arcAngle )
-  {
+  public void drawArc( int x, int y, int width, int height, int startAngle, int arcAngle ) {
     checkDisposed();
     drawArc( x, y, width, height, startAngle, arcAngle, false );
   }
@@ -1133,13 +1098,7 @@ public class GC extends Resource {
    *
    * @see #drawArc
    */
-  public void fillArc( final int x,
-                       final int y,
-                       final int width,
-                       final int height,
-                       final int startAngle,
-                       final int arcAngle )
-  {
+  public void fillArc( int x, int y, int width, int height, int startAngle, int arcAngle ) {
     checkDisposed();
     drawArc( x, y, width, height, startAngle, arcAngle, true );
   }
@@ -1161,7 +1120,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawPolygon( final int[] pointArray ) {
+  public void drawPolygon( int[] pointArray ) {
     checkDisposed();
     if( pointArray == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -1188,7 +1147,7 @@ public class GC extends Resource {
    *
    * @see #drawPolygon
    */
-  public void fillPolygon( final int[] pointArray ) {
+  public void fillPolygon( int[] pointArray ) {
     checkDisposed();
     if( pointArray == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -1213,7 +1172,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawPolyline( final int[] pointArray ) {
+  public void drawPolyline( int[] pointArray ) {
     checkDisposed();
     if( pointArray == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -1236,7 +1195,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawPoint( final int x, final int y ) {
+  public void drawPoint( int x, int y ) {
     checkDisposed();
     delegate.drawPoint( x, y );
   }
@@ -1260,7 +1219,7 @@ public class GC extends Resource {
    *    <li>ERROR_NO_HANDLES - if no handles are available to perform the operation</li>
    * </ul>
    */
-  public void drawImage( final Image image, final int x, final int y) {
+  public void drawImage( Image image, int x, int y) {
     checkDisposed();
     if( image == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -1305,15 +1264,15 @@ public class GC extends Resource {
    *    <li>ERROR_NO_HANDLES - if no handles are available to perform the operation</li>
    * </ul>
    */
-  public void drawImage( final Image image,
-                         final int srcX,
-                         final int srcY,
-                         final int srcWidth,
-                         final int srcHeight,
-                         final int destX,
-                         final int destY,
-                         final int destWidth,
-                         final int destHeight )
+  public void drawImage( Image image,
+                         int srcX,
+                         int srcY,
+                         int srcWidth,
+                         int srcHeight,
+                         int destX,
+                         int destY,
+                         int destWidth,
+                         int destHeight )
   {
     checkDisposed();
     if( srcWidth != 0 && srcHeight != 0 && destWidth != 0 && destHeight != 0 ) {
@@ -1361,7 +1320,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawString( final String string, final int x, final int y ) {
+  public void drawString( String string, int x, int y ) {
     drawString( string, x, y, false );
   }
 
@@ -1385,10 +1344,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawString( final String string,
-                          final int x,
-                          final int y,
-                          final boolean isTransparent )
+  public void drawString( String string, int x, int y, boolean isTransparent )
   {
     int flags = isTransparent ? SWT.DRAW_TRANSPARENT : SWT.NONE;
     drawText( string, x, y, flags );
@@ -1412,7 +1368,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawText( final String string, final int x, final int y ) {
+  public void drawText( String string, int x, int y ) {
     drawText( string, x, y, SWT.DRAW_DELIMITER | SWT.DRAW_TAB );
   }
 
@@ -1436,11 +1392,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawText( final String string,
-                        final int x,
-                        final int y,
-                        final boolean isTransparent )
-  {
+  public void drawText( String string, int x, int y, boolean isTransparent ) {
     int flags = SWT.DRAW_DELIMITER | SWT.DRAW_TAB;
     if( isTransparent ) {
       flags |= SWT.DRAW_TRANSPARENT;
@@ -1482,11 +1434,7 @@ public class GC extends Resource {
    *    <li>ERROR_GRAPHIC_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void drawText( final String string,
-                        final int x,
-                        final int y,
-                        final int flags )
-  {
+  public void drawText( String string, int x, int y, int flags ) {
     checkDisposed();
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -1521,11 +1469,7 @@ public class GC extends Resource {
     return delegate;
   }
 
-  static Rectangle checkBounds( final int x,
-                                final int y,
-                                final int width,
-                                final int height )
-  {
+  static Rectangle checkBounds( int x, int y, int width, int height ) {
     Rectangle result = new Rectangle( x, y, width, height );
     if( width < 0 ) {
       result.x = x + width;
@@ -1544,13 +1488,13 @@ public class GC extends Resource {
     }
   }
 
-  private void drawArc( final int x,
-                        final int y,
-                        final int width,
-                        final int height,
-                        final int startAngle,
-                        final int arcAngle,
-                        final boolean fill )
+  private void drawArc( int x,
+                        int y,
+                        int width,
+                        int height,
+                        int startAngle,
+                        int arcAngle,
+                        boolean fill )
   {
     Rectangle bounds = checkBounds( x, y, width, height );
     if( bounds.width != 0 && bounds.height != 0 && arcAngle != 0 ) {
@@ -1558,13 +1502,13 @@ public class GC extends Resource {
     }
   }
 
-  private void drawRectangle( final int x,
-                              final int y,
-                              final int width,
-                              final int height,
-                              final int arcWidth,
-                              final int arcHeight,
-                              final boolean fill )
+  private void drawRectangle( int x,
+                              int y,
+                              int width,
+                              int height,
+                              int arcWidth,
+                              int arcHeight,
+                              boolean fill )
   {
     Rectangle bounds = checkBounds( x, y, width, height );
     if( bounds.width != 0 && bounds.height != 0 ) {
@@ -1578,17 +1522,12 @@ public class GC extends Resource {
     }
   }
 
-  private void fillGradientRect( final int x,
-                                 final int y,
-                                 final int width,
-                                 final int height,
-                                 final boolean vertical )
-  {
+  private void fillGradientRect( int x, int y, int width, int height, boolean vertical ) {
     Rectangle bounds = new Rectangle( x, y, width, height );
     delegate.fillGradientRectangle( bounds, vertical );
   }
 
-  private static GCDelegate determineDelegate( final Drawable drawable ) {
+  private static GCDelegate determineDelegate( Drawable drawable ) {
     GCDelegate result = null;
     // Assume that Drawable is either a Control or a Device
     if( drawable instanceof Control ) {
@@ -1599,7 +1538,7 @@ public class GC extends Resource {
     return result;
   }
 
-  private static Device determineDevice( final Drawable drawable ) {
+  private static Device determineDevice( Drawable drawable ) {
     Device result = null;
     if( drawable instanceof Control ) {
       result = ( ( Control )drawable ).getDisplay();

@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2011 Rüdiger Herrmann and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011 Rüdiger Herrmann and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Rüdiger Herrmann - initial API and implementation
+ *    Rüdiger Herrmann - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
@@ -35,7 +36,7 @@ class ControlGC extends GCDelegate {
   private int lineCap;
   private int lineJoin;
 
-  ControlGC( final Control control ) {
+  ControlGC( Control control ) {
     this.control = control;
     this.background = control.getBackground();
     this.foreground = control.getForeground();
@@ -46,7 +47,7 @@ class ControlGC extends GCDelegate {
     this.lineJoin = SWT.JOIN_MITER;
   }
 
-  void setBackground( final Color color ) {
+  void setBackground( Color color ) {
     background = color;
     GCOperation operation = new SetProperty( SetProperty.BACKGROUND, color.getRGB() );
     addGCOperation( operation );
@@ -56,7 +57,7 @@ class ControlGC extends GCDelegate {
     return background;
   }
 
-  void setForeground( final Color color ) {
+  void setForeground( Color color ) {
     foreground = color;
     GCOperation operation = new SetProperty( SetProperty.FOREGROUND, color.getRGB() );
     addGCOperation( operation );
@@ -66,7 +67,7 @@ class ControlGC extends GCDelegate {
     return foreground;
   }
 
-  void setFont( final Font font ) {
+  void setFont( Font font ) {
     this.font = font;
     GCOperation operation = new SetProperty( cloneFontData( FontUtil.getData( font ) ) );
     addGCOperation( operation );
@@ -80,7 +81,7 @@ class ControlGC extends GCDelegate {
     return control.getDisplay().getSystemFont();
   }
 
-  void setAlpha( final int alpha ) {
+  void setAlpha( int alpha ) {
     this.alpha = alpha;
     GCOperation operation = new SetProperty( SetProperty.ALPHA, alpha );
     addGCOperation( operation );
@@ -90,7 +91,7 @@ class ControlGC extends GCDelegate {
     return alpha;
   }
 
-  void setLineWidth( final int lineWidth ) {
+  void setLineWidth( int lineWidth ) {
     this.lineWidth = lineWidth;
     GCOperation operation
       = new SetProperty( SetProperty.LINE_WIDTH, lineWidth );
@@ -101,7 +102,7 @@ class ControlGC extends GCDelegate {
     return lineWidth;
   }
 
-  void setLineCap( final int lineCap ) {
+  void setLineCap( int lineCap ) {
     this.lineCap = lineCap;
     GCOperation operation = new SetProperty( SetProperty.LINE_CAP, lineCap );
     addGCOperation( operation );
@@ -111,7 +112,7 @@ class ControlGC extends GCDelegate {
     return lineCap;
   }
 
-  void setLineJoin( final int lineJoin ) {
+  void setLineJoin( int lineJoin ) {
     this.lineJoin = lineJoin;
     GCOperation operation = new SetProperty( SetProperty.LINE_JOIN, lineJoin );
     addGCOperation( operation );
@@ -133,12 +134,12 @@ class ControlGC extends GCDelegate {
     return Graphics.textExtent( font, string, wrapWidth );
   }
 
-  void drawPoint( final int x, final int y ) {
+  void drawPoint( int x, int y ) {
     GCOperation operation = new DrawPoint( x, y );
     addGCOperation( operation );
   }
 
-  void drawLine( final int x1, final int y1, final int x2, final int y2 ) {
+  void drawLine( int x1, int y1, int x2, int y2 ) {
     GCOperation operation = new DrawLine( x1, y1, x2, y2 );
     addGCOperation( operation );
   }
@@ -148,49 +149,33 @@ class ControlGC extends GCDelegate {
     addGCOperation( operation );
   }
 
-  void drawRectangle( final Rectangle bounds, final boolean fill ) {
+  void drawRectangle( Rectangle bounds, boolean fill ) {
     GCOperation operation = new DrawRectangle( bounds, fill );
     addGCOperation( operation );
   }
 
-  void drawRoundRectangle( final Rectangle bounds,
-                           final int arcWidth,
-                           final int arcHeight,
-                           final boolean fill )
-  {
+  void drawRoundRectangle( Rectangle bounds, int arcWidth, int arcHeight, boolean fill ) {
     GCOperation operation
       = new DrawRoundRectangle( bounds, arcWidth, arcHeight, fill );
     addGCOperation( operation );
   }
 
-  void fillGradientRectangle( final Rectangle bounds, final boolean vertical ) {
+  void fillGradientRectangle( Rectangle bounds, boolean vertical ) {
     GCOperation operation = new FillGradientRectangle( bounds, vertical );
     addGCOperation( operation );
   }
 
-  void drawArc( final Rectangle bounds,
-                final int startAngle,
-                final int arcAngle,
-                final boolean fill )
-  {
+  void drawArc( Rectangle bounds, int startAngle, int arcAngle, boolean fill ) {
     GCOperation operation = new DrawArc( bounds, startAngle, arcAngle, fill );
     addGCOperation( operation );
   }
 
-  void drawImage( final Image image,
-                  final Rectangle src,
-                  final Rectangle dest,
-                  final boolean simple )
-  {
+  void drawImage( Image image, Rectangle src, Rectangle dest, boolean simple ) {
     GCOperation operation = new DrawImage( image, src, dest, simple );
     addGCOperation( operation );
   }
 
-  void drawText( final String string,
-                 final int x,
-                 final int y,
-                 final int flags )
-  {
+  void drawText( String string, int x, int y, int flags ) {
     GCOperation operation = new DrawText( string, x, y, flags );
     addGCOperation( operation );
   }
@@ -199,7 +184,7 @@ class ControlGC extends GCDelegate {
     return ( GCAdapter )control.getAdapter( IGCAdapter.class );
   }
 
-  private void addGCOperation( final GCOperation operation ) {
+  private void addGCOperation( GCOperation operation ) {
     GCAdapter adapter = getGCAdapter();
     if( adapter != null ) {
       adapter.addGCOperation( operation );

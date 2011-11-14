@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
@@ -65,7 +65,7 @@ public abstract class Device implements Drawable, SerializableCompatibility {
    *
    * @see SWT
    */
-  public Color getSystemColor( final int id ) {
+  public Color getSystemColor( int id ) {
     checkDevice();
     ResourceFactory resourceFactory = RWTFactory.getResourceFactory();
     Color result;
@@ -168,8 +168,7 @@ public abstract class Device implements Drawable, SerializableCompatibility {
    *
    * @since 1.3
    */
-  public FontData[] getFontList( final String faceName,
-                                 final boolean scalable )
+  public FontData[] getFontList( String faceName, boolean scalable )
   {
     checkDevice();
     FontData[] result = new FontData[ 0 ];

@@ -1,17 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.graphics;
 
 import org.eclipse.swt.internal.SerializableCompatibility;
+
 
 /**
  * Instances of this class represent places on the (x, y)
@@ -56,7 +57,7 @@ public final class Point implements SerializableCompatibility {
 	 * @param x the x coordinate of the new point
 	 * @param y the y coordinate of the new point
 	 */
-  public Point( final int x, final int y ) {
+  public Point( int x, int y ) {
     this.x = x;
     this.y = y;
   }
@@ -71,7 +72,7 @@ public final class Point implements SerializableCompatibility {
    *
    * @see #hashCode()
    */
-  public boolean equals( final Object object ) {
+  public boolean equals( Object object ) {
     boolean result = object == this;
     if( !result && object instanceof Point ) {
       Point toCompare = ( Point )object;

@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
- *     Rüdiger Herrmann - bug 334511
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Rüdiger Herrmann - bug 334511
  ******************************************************************************/
 package org.eclipse.swt.graphics;
 
@@ -28,6 +28,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.internal.graphics.InternalImage;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
+
 
 /**
  * Instances of this class are graphics which have been prepared
@@ -252,7 +253,7 @@ public final class Image extends Resource {
    * </ul>
    * @since 1.3
    */
-  public Image( final Device device, final ImageData imageData ) {
+  public Image( Device device, ImageData imageData ) {
     super( checkDevice( device ) );
     if( imageData == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -291,7 +292,7 @@ public final class Image extends Resource {
    * </ul>
    * @since 1.4
    */
-  public Image( final Device device, final int width, final int height ) {
+  public Image( Device device, int width, int height ) {
     super( checkDevice( device ) );
     if( width <= 0 || height <= 0 ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
