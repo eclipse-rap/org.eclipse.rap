@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.lifecycle;
 
@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Widget;
  */
 public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
 
-  public final void render( final Widget widget ) throws IOException {
+  public final void render( Widget widget ) throws IOException {
     WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
     if( !adapter.isInitialized() ) {
       renderInitialization( widget );
@@ -47,9 +47,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * @param bounds the actual bounds of the enclosed widget
    * @return the adjusted bounds
    */
-  public Rectangle adjustCoordinates( final Widget widget,
-                                      final Rectangle bounds )
-  {
+  public Rectangle adjustCoordinates( Widget widget, Rectangle bounds ) {
     return bounds;
   }
 
@@ -103,9 +101,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * @deprecated As of 1.3, server-side widget pooling is no longer required.
    *             This method is not called anymore.
    */
-  public void createResetHandlerCalls( final String typePoolId )
-    throws IOException
-  {
+  public void createResetHandlerCalls( String typePoolId ) throws IOException {
   }
 
   /**
@@ -136,7 +132,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * @deprecated As of 1.3, server-side widget pooling is no longer required.
    *             This method is not called anymore.
    */
-  public String getTypePoolId( final Widget widget ) {
+  public String getTypePoolId( Widget widget ) {
     return null;
   }
 
@@ -155,6 +151,6 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * </p>
    * @param control the control on which redraw was called.
    */
-  public void doRedrawFake( final Control control ) {
+  public void doRedrawFake( Control control ) {
   }
 }

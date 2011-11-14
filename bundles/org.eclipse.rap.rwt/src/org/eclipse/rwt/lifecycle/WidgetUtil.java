@@ -47,7 +47,7 @@ public final class WidgetUtil {
    * A custom id can be assigned by using the <code>Widget#setData(String,
    * Object)</code> method and using this constant for the <code>key</code>
    * argument and a string that denotes the new id as the <code>data</code>
-   * argument. In addition the system property denoted by 
+   * argument. In addition the system property denoted by
    * <code>ENABLE_UI_TESTS</code> must be set to <code>true</code>.
    *
    * <p>The <code>id</code> must only contain characters that are valid according

@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rwt.lifecycle;
@@ -42,7 +43,7 @@ public final class JSVar {
    * @param name the variable name, must neither be <code>null</code> nor empty.
 
    */
-  public JSVar( final String name ) {
+  public JSVar( String name ) {
     ParamCheck.notNull( name, "name" );
     if( name.length() == 0 ) {
       String msg = "The argument 'name' must not be empty.";

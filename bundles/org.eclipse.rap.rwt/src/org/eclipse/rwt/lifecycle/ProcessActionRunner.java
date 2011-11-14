@@ -25,7 +25,7 @@ public class ProcessActionRunner {
     = ProcessActionRunner.class.getName();
 
   @SuppressWarnings("unchecked")
-  public static void add( final Runnable runnable ) {
+  public static void add( Runnable runnable ) {
     if( CurrentPhase.get() != null ) {
       if(    PhaseId.PREPARE_UI_ROOT.equals( CurrentPhase.get() ) 
           || PhaseId.PROCESS_ACTION.equals( CurrentPhase.get() ) ) 

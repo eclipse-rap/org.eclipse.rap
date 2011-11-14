@@ -6,13 +6,14 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.util;
 
+
 public final class NumberFormatUtil {
 
-  public static int parseInt( final String value ) {
+  public static int parseInt( String value ) {
     double result = Double.parseDouble( value );
     if( result != Math.floor( result ) ) {
       String msg = "Not a valid integer number: " + value;

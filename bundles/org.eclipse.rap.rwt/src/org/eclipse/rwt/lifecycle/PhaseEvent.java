@@ -34,7 +34,7 @@ public class PhaseEvent extends EventObject {
    * @param source the lifecycle which causes this event
    * @param phaseId the id of the phase that will be or was executed.
    */
-  public PhaseEvent( final ILifeCycle source, final PhaseId phaseId ) {
+  public PhaseEvent( ILifeCycle source, PhaseId phaseId ) {
     super( source );
     this.phaseId = phaseId;
   }

@@ -159,10 +159,10 @@ public class ControlLCAUtil {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( PROP_BACKGROUND_IMAGE, image );
   }
-  
+
   //////////////////
   // read properties
-  
+
   /**
    * Preserves whether the given <code>widget</code> has one or more
    * <code>MenuDetect</code>s attached.
@@ -290,7 +290,7 @@ public class ControlLCAUtil {
 
   ////////////////////
   // render properties
-  
+
   /**
      * Determines for all of the following properties of the specified control
      * whether the property has changed during the processing of the current
@@ -710,7 +710,6 @@ public class ControlLCAUtil {
     }
   }
 
-  
   /**
    * Determines whether the background image of the given control has changed
    * during the processing of the current request and if so, writes a protocol
@@ -726,17 +725,17 @@ public class ControlLCAUtil {
     if( WidgetLCAUtil.hasChanged( control, PROP_BACKGROUND_IMAGE, image, null ) ) {
       Object[] imageArray = null;
       if( image != null ) {
-        imageArray = new Object[]{ 
-          ImageFactory.getImagePath( image ), 
-          new Integer( image.getBounds().width ), 
-          new Integer( image.getBounds().height ) 
+        imageArray = new Object[]{
+          ImageFactory.getImagePath( image ),
+          new Integer( image.getBounds().width ),
+          new Integer( image.getBounds().height )
         };
       }
       IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-      clientObject.setProperty( "backgroundImage", imageArray );        
+      clientObject.setProperty( "backgroundImage", imageArray );
     }
   }
-  
+
   /**
    * Determines whether the property <code>font</code> of the given control
    * has changed during the processing of the current request and if so, writes
@@ -751,7 +750,7 @@ public class ControlLCAUtil {
     WidgetLCAUtil.writeFont( control, newValue );
   }
 
-  
+
   /**
    * Determines whether the property <code>font</code> of the given control
    * has changed during the processing of the current request and if so, writes
@@ -765,7 +764,7 @@ public class ControlLCAUtil {
     Font newValue = controlAdapter.getUserFont();
     WidgetLCAUtil.renderFont( control, newValue );
   }
-  
+
   static void writeCursor( Control control ) throws IOException {
     Cursor newValue = control.getCursor();
     if( WidgetLCAUtil.hasChanged( control, PROP_CURSOR, newValue, null ) ) {
@@ -778,7 +777,7 @@ public class ControlLCAUtil {
       }
     }
   }
-  
+
   static void renderCursor( Control control ) {
     Cursor newValue = control.getCursor();
     if( WidgetLCAUtil.hasChanged( control, PROP_CURSOR, newValue, null ) ) {
@@ -812,7 +811,7 @@ public class ControlLCAUtil {
       Boolean defValue = Boolean.FALSE;
       if( WidgetLCAUtil.hasChanged( control, PROP_ACTIVATE_LISTENER, newValue, defValue ) ) {
         IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-        // TODO [tb] : consider to introduce clientObject.setListen, makes this code much shorter 
+        // TODO [tb] : consider to introduce clientObject.setListen, makes this code much shorter
         if( newValue.booleanValue() ) {
           clientObject.addListener( "activate" );
         } else {
@@ -821,7 +820,7 @@ public class ControlLCAUtil {
       }
     }
   }
-  
+
   static void resetActivateListener( Control control ) throws IOException {
     // TODO [tb] : no longer neeed for widgets that are disposed via protocol
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
@@ -852,7 +851,7 @@ public class ControlLCAUtil {
       }
     }
   }
-  
+
   /**
    * Note that there is no corresponding readData method to fire the focus
    * events that are send by the client.
@@ -884,7 +883,7 @@ public class ControlLCAUtil {
       writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
     }
   }
-  
+
   static void renderListenMouse( Control control ) {
     Boolean hasListener = Boolean.valueOf( MouseEvent.hasListener( control ) );
     if( WidgetLCAUtil.hasChanged( control, PROP_MOUSE_LISTENER, hasListener, Boolean.FALSE ) ) {
@@ -970,7 +969,7 @@ public class ControlLCAUtil {
       writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
     }
   }
-  
+
   /**
    * Adds or removes client-side menu detect listeners for the the given
    * <code>control</code> as necessary.
@@ -1029,7 +1028,7 @@ public class ControlLCAUtil {
   }
 
   //////////////////////////
-  // event processing helper  
+  // event processing helper
 
   private static SelectionEvent createSelectionEvent( Widget widget,
                                                       Item item,
@@ -1046,7 +1045,7 @@ public class ControlLCAUtil {
     int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_WIDGET_SELECTED_MODIFIER );
     return new SelectionEvent( widget, item, type, bounds, stateMask, null, true, SWT.NONE );
   }
-  
+
   private static void initializeKeyEvent( KeyEvent evt, int keyCode, int charCode, int stateMask ) {
     if( charCode == 0 ) {
       evt.keyCode = translateKeyCode( keyCode );
@@ -1102,16 +1101,16 @@ public class ControlLCAUtil {
       event.processEvent();
     }
   }
-  
+
   //////////////
   // read helper
-  
+
   private static Point readXYParams( Control control, String paramNameX, String paramNameY ) {
     int x = readIntParam( paramNameX );
     int y = readIntParam( paramNameY );
     return control.getDisplay().map( null, control, x, y );
   }
-  
+
   private static int readIntParam( String paramName ) {
     String value = readStringParam( paramName );
     return NumberFormatUtil.parseInt( value );
@@ -1122,7 +1121,7 @@ public class ControlLCAUtil {
     String value = request.getParameter( paramName );
     return value;
   }
-  
+
   //////////////////////
   // widget value getter
 
@@ -1143,7 +1142,7 @@ public class ControlLCAUtil {
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     return max - controlAdapter.getZIndex();
   }
-  
+
   // [if] Fix for bug 263025, 297466, 223873 and more
   // some qooxdoo widget with size (0,0) are not invisible
   private static boolean getVisible( Control control ) {
@@ -1204,7 +1203,7 @@ public class ControlLCAUtil {
   }
 
   //////////////////
-  // value converter 
+  // value converter
 
   static int getTraverseKey( int keyCode, int stateMask ) {
     int result = SWT.TRAVERSE_NONE;
@@ -1315,7 +1314,7 @@ public class ControlLCAUtil {
     }
     return result;
   }
-  
+
   private static char translateCharacter( int keyCode ) {
     char result = ( char )0;
     if( Character.isDefined( ( char )keyCode ) ) {

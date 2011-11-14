@@ -1,26 +1,26 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.util;
 
 import java.text.MessageFormat;
 
 
-/** <p>Utility class for doing common method parameter checks.</p>
+/**
+ * <p>Utility class for doing common method parameter checks.</p>
  */
 public final class ParamCheck {
   
-  private static final String NOT_NULL_TEXT 
-    = "The parameter ''{0}'' must not be null.";
-  private static final String NOT_EMPTY_TEXT 
-    = "The parameter ''{0}'' must not be empty.";
+  private static final String NOT_NULL_TEXT = "The parameter ''{0}'' must not be null.";
+  private static final String NOT_EMPTY_TEXT = "The parameter ''{0}'' must not be empty.";
 
   private ParamCheck() {
     // prevent instantiation
@@ -33,7 +33,7 @@ public final class ParamCheck {
    *  @param param the object which must not be null.
    *  @param paramName the human-readable name of the <code>param</code>. 
    */
-  public static void notNull( final Object param, final String paramName ) {
+  public static void notNull( Object param, String paramName ) {
     if ( param == null ) {
       Object[] args = new Object[] { paramName };
       String msg = MessageFormat.format( NOT_NULL_TEXT, args );
@@ -51,8 +51,7 @@ public final class ParamCheck {
    * @throws IllegalArgumentException if param is empty or composed
    *         entirely of whitespace 
    */
-  public static void notNullOrEmpty( final String param, 
-                                     final String paramName ) {
+  public static void notNullOrEmpty( String param, String paramName ) {
     ParamCheck.notNull( param, paramName );
     if( param.trim().length() == 0 ) {
       Object[] args = new Object[] { paramName };

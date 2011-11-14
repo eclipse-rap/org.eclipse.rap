@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.lifecycle;
 
@@ -17,8 +17,7 @@ import java.util.*;
 public final class JSListenerType implements Comparable {
 
   public static final JSListenerType ACTION = new JSListenerType( "ACTION" );
-  public static final JSListenerType STATE_AND_ACTION
-    = new JSListenerType( "STATE_AND_ACTION" );
+  public static final JSListenerType STATE_AND_ACTION = new JSListenerType( "STATE_AND_ACTION" );
 
   private static int nextOrdinal;
   private final static JSListenerType[] values = new JSListenerType[] {
@@ -33,7 +32,7 @@ public final class JSListenerType implements Comparable {
   private final int ordinal;
 
   
-  public JSListenerType( final String name ) {
+  public JSListenerType( String name ) {
     this.name = name;
     this.ordinal = nextOrdinal++;
   }
@@ -42,7 +41,7 @@ public final class JSListenerType implements Comparable {
     return name;
   }
 
-  public int compareTo( final Object toCompare ) {
+  public int compareTo( Object toCompare ) {
     return this.ordinal - ( ( JSListenerType )toCompare ).ordinal;
   }
 

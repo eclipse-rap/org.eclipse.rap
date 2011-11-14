@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
- *   Ralf Zahn (ARS) - browser history support (Bug 283291)
+ *    EclipseSource - initial API and implementation
+ *    Ralf Zahn (ARS) - browser history support (Bug 283291)
  ******************************************************************************/
 package org.eclipse.rwt.internal.widgets;
 
@@ -27,6 +28,7 @@ import org.eclipse.rwt.service.SessionStoreEvent;
 import org.eclipse.rwt.service.SessionStoreListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+
 
 public final class BrowserHistory
   implements IBrowserHistory, PhaseListener, Adaptable, SessionStoreListener
@@ -51,7 +53,7 @@ public final class BrowserHistory
   //////////////////
   // IBrowserHistory
 
-  public void createEntry( final String id, final String text ) {
+  public void createEntry( String id, String text ) {
     if( null == id ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -67,14 +69,14 @@ public final class BrowserHistory
     JSExecutor.executeJS( MessageFormat.format( ADD_TO_HISTORY, args ) );
   }
 
-  public void addBrowserHistoryListener( final BrowserHistoryListener listener ) {
+  public void addBrowserHistoryListener( BrowserHistoryListener listener ) {
     if( null == listener ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     BrowserHistoryEvent.addListener( this, listener );
   }
 
-  public void removeBrowserHistoryListener( final BrowserHistoryListener lsnr ) {
+  public void removeBrowserHistoryListener( BrowserHistoryListener lsnr ) {
     if( null == lsnr ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -84,10 +86,10 @@ public final class BrowserHistory
   ////////////////
   // PhaseListener
 
-  public void afterPhase( final PhaseEvent event ) {
+  public void afterPhase( PhaseEvent event ) {
   }
 
-  public void beforePhase( final PhaseEvent event ) {
+  public void beforePhase( PhaseEvent event ) {
     if( display == LifeCycleUtil.getSessionDisplay() ) {
       HttpServletRequest request = ContextProvider.getRequest();
       String isEvent = request.getParameter( EVENT_HISTORY_NAVIGATED );
@@ -123,7 +125,7 @@ public final class BrowserHistory
   ///////////////////////
   // SessionStoreListener
   
-  public void beforeDestroy( final SessionStoreEvent event ) {
+  public void beforeDestroy( SessionStoreEvent event ) {
     RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
   }
 }

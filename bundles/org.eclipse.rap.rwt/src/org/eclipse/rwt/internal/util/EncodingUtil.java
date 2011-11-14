@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ public final class EncodingUtil {
    * @return a copy of the input string with all double quotes and backslashes
    *         replaced
    */
-  public static String escapeDoubleQuoted( final String input ) {
+  public static String escapeDoubleQuoted( String input ) {
     StringBuffer resultBuffer = new StringBuffer();
     int length = input.length();
     for( int i = 0; i < length; i++ ) {
@@ -54,7 +54,7 @@ public final class EncodingUtil {
    * @return a copy of the input string with all leading and trailing spaces
    * replaced
    */
-  public static String escapeLeadingTrailingSpaces( final String input ) {
+  public static String escapeLeadingTrailingSpaces( String input ) {
     StringBuffer buffer = new StringBuffer();
     int beginIndex = 0;
     int endIndex = input.length();
@@ -81,7 +81,7 @@ public final class EncodingUtil {
    * @param input the string to process
    * @return a copy of the input string with all newline characters replaced
    */
-  public static String replaceNewLines( final String input ) {
+  public static String replaceNewLines( String input ) {
     return replaceNewLines( input, UNIX_NEWLINE );
   }
 
@@ -94,9 +94,7 @@ public final class EncodingUtil {
    * @param replacement the string to replace line feeds with.
    * @return a copy of the input string with all newline characters replaced
    */
-  public static String replaceNewLines( final String input,
-                                        final String replacement )
-  {
+  public static String replaceNewLines( String input, String replacement ) {
     StringBuffer resultBuffer = new StringBuffer();
     int length = input.length();
     int i = 0;
@@ -130,7 +128,7 @@ public final class EncodingUtil {
    * @param input the string to process
    * @return a copy of the input string with white spaces replaced
    */
-  public static String replaceWhiteSpaces( final String input ) {
+  public static String replaceWhiteSpaces( String input ) {
     StringBuffer buffer = new StringBuffer();
     for( int i = 0; i < input.length(); i++ ) {
       if( input.charAt( i ) == ' ' ) {
@@ -151,7 +149,7 @@ public final class EncodingUtil {
     return buffer.toString();
   }
 
-  public static String[] splitNewLines( final String input ) {
+  public static String[] splitNewLines( String input ) {
     int length = input.length();
     List<String> resultList = new ArrayList<String>();
     int start = 0;
@@ -175,7 +173,7 @@ public final class EncodingUtil {
     return result;
   }
 
-  public static String encodeHTMLEntities( final String text ) {
+  public static String encodeHTMLEntities( String text ) {
     String result = Entities.HTML40.escape( text );
     // Encode double-hyphens because they are not allowed inside comments
     Matcher matcher = EncodingUtil.DOUBLE_HYPHEN_PATTERN.matcher( result );
@@ -184,7 +182,7 @@ public final class EncodingUtil {
   }
 
   // Escape unicode characters \u2028 and \u2029 - see bug 304364
-  public static String removeNonDisplayableChars( final String text ) {
+  public static String removeNonDisplayableChars( String text ) {
     StringBuffer buffer = new StringBuffer();
     for( int i = 0; i < text.length(); i++ ) {
       char ch = text.charAt( i );
@@ -195,7 +193,7 @@ public final class EncodingUtil {
     return buffer.toString();
   }
 
-  public static String truncateAtZero( final String text ) {
+  public static String truncateAtZero( String text ) {
     String result = text;
     int index = result.indexOf( 0 );
     if( index != -1 ) {
@@ -204,7 +202,7 @@ public final class EncodingUtil {
     return result;
   }
 
-  public static boolean isNonDisplayableChar( final char ch ) {
+  public static boolean isNonDisplayableChar( char ch ) {
     return ch == 0x2028 || ch == 0x2029;
   }
 

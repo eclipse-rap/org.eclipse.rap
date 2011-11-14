@@ -85,7 +85,7 @@ public final class JSWriter {
    * @return the corresponding {@link JSWriter}
    */
   @SuppressWarnings("unchecked")
-  public static JSWriter getWriterFor( final Widget widget ) {
+  public static JSWriter getWriterFor( Widget widget ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     JSWriter result;
     Map<Widget,JSWriter> map = ( Map<Widget,JSWriter> )stateInfo.getAttribute( WRITER_MAP );
@@ -114,7 +114,7 @@ public final class JSWriter {
     return new JSWriter( null );
   }
 
-  private JSWriter( final Widget widget ) {
+  private JSWriter( Widget widget ) {
     this.widget = widget;
   }
 
@@ -128,7 +128,7 @@ public final class JSWriter {
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA#renderInitialization
    */
-  public void newWidget( final String className ) throws IOException {
+  public void newWidget( String className ) throws IOException {
     newWidget( className, null );
   }
 
@@ -145,7 +145,7 @@ public final class JSWriter {
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA#renderInitialization
    */
-  public void newWidget( final String className, final Object[] args )
+  public void newWidget( String className, Object[] args )
     throws IOException
   {
     ensureWidgetManager();
@@ -173,7 +173,7 @@ public final class JSWriter {
    * @throws IOException if an I/O error occurs
    * @see WidgetUtil
    */
-  public void setParent( final String parentId ) throws IOException {
+  public void setParent( String parentId ) throws IOException {
     call( WIDGET_MANAGER_REF, "setParent", new Object[] { widget, parentId } );
   }
 
@@ -186,7 +186,7 @@ public final class JSWriter {
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
-  public void set( final String jsProperty, final String value )
+  public void set( String jsProperty, String value )
     throws IOException
   {
     call( getSetterName( jsProperty ), new Object[] { value } );
@@ -201,7 +201,7 @@ public final class JSWriter {
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
-  public void set( final String jsProperty, final int value )
+  public void set( String jsProperty, int value )
     throws IOException
   {
     set( jsProperty, new int[] { value } );
@@ -216,7 +216,7 @@ public final class JSWriter {
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
-  public void set( final String jsProperty, final float value )
+  public void set( String jsProperty, float value )
     throws IOException
   {
     set( jsProperty, new float[] { value } );
@@ -231,7 +231,7 @@ public final class JSWriter {
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
-  public void set( final String jsProperty, final boolean value )
+  public void set( String jsProperty, boolean value )
     throws IOException
   {
     set( jsProperty, new boolean[] { value } );
@@ -246,7 +246,7 @@ public final class JSWriter {
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
-  public void set( final String jsProperty, final int[] values )
+  public void set( String jsProperty, int[] values )
     throws IOException
   {
     String functionName = getSetterName( jsProperty );
@@ -266,7 +266,7 @@ public final class JSWriter {
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
-  public void set( final String jsProperty, final float[] values )
+  public void set( String jsProperty, float[] values )
     throws IOException
   {
     String functionName = getSetterName( jsProperty );
@@ -286,7 +286,7 @@ public final class JSWriter {
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
-  public void set( final String jsProperty, final boolean[] values )
+  public void set( String jsProperty, boolean[] values )
     throws IOException
   {
     ensureWidgetRef();
@@ -307,7 +307,7 @@ public final class JSWriter {
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
-  public void set( final String jsProperty, final Object value )
+  public void set( String jsProperty, Object value )
     throws IOException
   {
     set( jsProperty, new Object[] { value } );
@@ -322,7 +322,7 @@ public final class JSWriter {
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
-  public void set( final String jsProperty, final Object[] values )
+  public void set( String jsProperty, Object[] values )
     throws IOException
   {
     call( widget, getSetterName( jsProperty ), values );
@@ -338,7 +338,7 @@ public final class JSWriter {
    * @throws IOException if an I/O error occurs
    * @see AbstractWidgetLCA
    */
-  public void set( final String[] jsPropertyChain, final Object[] values )
+  public void set( String[] jsPropertyChain, Object[] values )
     throws IOException
   {
     call( widget, createPropertyChain( jsPropertyChain, false ), values );
@@ -361,9 +361,7 @@ public final class JSWriter {
    *
    * @see AbstractWidgetLCA#preserveValues(Widget)
    */
-  public boolean set( final String javaProperty,
-                      final String jsProperty,
-                      final Object newValue )
+  public boolean set( String javaProperty, String jsProperty, Object newValue )
     throws IOException
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
@@ -400,10 +398,7 @@ public final class JSWriter {
    *
    * @see AbstractWidgetLCA#preserveValues(Widget)
    */
-  public boolean set( final String javaProperty,
-                      final String jsProperty,
-                      final Object newValue,
-                      final Object defValue )
+  public boolean set( String javaProperty, String jsProperty, Object newValue, Object defValue )
     throws IOException
   {
     boolean changed
@@ -421,7 +416,7 @@ public final class JSWriter {
    *
    * @throws IOException if an I/O error occurs
    */
-  public void reset( final String jsProperty ) throws IOException {
+  public void reset( String jsProperty ) throws IOException {
     call( widget, getResetterName( jsProperty ), null );
   }
 
@@ -432,7 +427,7 @@ public final class JSWriter {
    *
    * @throws IOException if an I/O error occurs
    */
-  public void reset( final String[] jsPropertyChain ) throws IOException {
+  public void reset( String[] jsPropertyChain ) throws IOException {
     call( widget, createPropertyChain( jsPropertyChain, true ), null );
   }
 
@@ -447,9 +442,7 @@ public final class JSWriter {
    *
    * @throws IOException if an I/O error occurs
    */
-  public void addListener( final String property,
-                           final String eventType,
-                           final String listener )
+  public void addListener( String property, String eventType, String listener )
     throws IOException
   {
     ensureWidgetRef();
@@ -480,17 +473,14 @@ public final class JSWriter {
    *
    * @throws IOException if an I/O error occurs
    */
-  public void addListener( final String eventType, final String listener )
+  public void addListener( String eventType, String listener )
     throws IOException
   {
     addListener( null, eventType, listener );
   }
 
 
-  public void updateListener( final String property,
-                              final JSListenerInfo info,
-                              final String javaListener,
-                              final boolean hasListeners )
+  public void updateListener( String property, JSListenerInfo info, String javaListener, boolean hasListeners )
     throws IOException
   {
     if( info.getJSListenerType() == JSListenerType.ACTION ) {
@@ -503,9 +493,7 @@ public final class JSWriter {
     }
   }
 
-  public void updateListener( final JSListenerInfo info,
-                              final String javaListener,
-                              final boolean hasListeners )
+  public void updateListener( JSListenerInfo info, String javaListener, boolean hasListeners )
     throws IOException
   {
     updateListener( null, info, javaListener, hasListeners );
@@ -543,7 +531,7 @@ public final class JSWriter {
    *
    * @throws IOException if an I/O error occurs
    */
-  public void call( final String function, final Object[] args )
+  public void call( String function, Object[] args )
     throws IOException
   {
     call( widget, function, args );
@@ -559,9 +547,7 @@ public final class JSWriter {
    *
    * @throws IOException if an I/O error occurs
    */
-  public void call( final Widget target,
-                    final String function,
-                    final Object[] args )
+  public void call( Widget target, String function, Object[] args )
     throws IOException
   {
     ensureWidgetManager();
@@ -587,9 +573,7 @@ public final class JSWriter {
    *
    * @throws IOException if an I/O error occurs
    */
-  public void call( final JSVar target,
-                    final String function,
-                    final Object[] args )
+  public void call( JSVar target, String function, Object[] args )
     throws IOException
   {
     ensureWidgetManager();
@@ -617,7 +601,7 @@ public final class JSWriter {
    * @throws IOException if an I/O error occurs
    */
   // TODO [rh] should we name this method 'call' and make it a static method?
-  public void callStatic( final String function, final Object[] args )
+  public void callStatic( String function, Object[] args )
     throws IOException
   {
     ensureWidgetManager();
@@ -660,10 +644,7 @@ public final class JSWriter {
   ////////////////////////////////////////////////////////////////
   // helping methods for client side listener addition and removal
 
-  private void updateActionListener( final String property,
-                                     final JSListenerInfo info,
-                                     final String javaListener,
-                                     final boolean hasListeners )
+  private void updateActionListener( String property, JSListenerInfo info, String javaListener, boolean hasListeners )
     throws IOException
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
@@ -683,10 +664,7 @@ public final class JSWriter {
     }
   }
 
-  private void updateStateAndActionListener( final String property,
-                                             final JSListenerInfo info,
-                                             final String javaListener,
-                                             final boolean hasListeners )
+  private void updateStateAndActionListener( String property, JSListenerInfo info, String javaListener, boolean hasListeners )
     throws IOException
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
@@ -718,7 +696,7 @@ public final class JSWriter {
     }
   }
 
-  private String createJsActionListener( final JSListenerInfo info ) {
+  private String createJsActionListener( JSListenerInfo info ) {
     StringBuffer buffer = new StringBuffer();
     buffer.append( info.getJSListener() );
     buffer.append( "Action" );
@@ -730,7 +708,7 @@ public final class JSWriter {
   // Helping methods for JavaScript WidgetManager and Widget references
 
 
-  private String getJSParentId( final Widget widget ) {
+  private String getJSParentId( Widget widget ) {
     String result = "";
     if( !( widget instanceof Shell ) && widget instanceof Control ) {
       Control control = ( Control )widget;
@@ -776,7 +754,7 @@ public final class JSWriter {
     }
   }
 
-  private static void setCurrentWidgetRef( final Widget widget ) {
+  private static void setCurrentWidgetRef( Widget widget ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     stateInfo.setAttribute( CURRENT_WIDGET_REF, widget );
   }
@@ -786,11 +764,11 @@ public final class JSWriter {
     return ( Widget )stateInfo.getAttribute( CURRENT_WIDGET_REF );
   }
 
-  private static String createFindWidgetById( final Widget widget ) {
+  private static String createFindWidgetById( Widget widget ) {
     return createFindWidgetById( WidgetUtil.getId( widget ) );
   }
 
-  private static String createFindWidgetById( final String id ) {
+  private static String createFindWidgetById( String id ) {
     StringBuffer buffer = new StringBuffer();
     buffer.append( WIDGET_MANAGER_REF.toString() );
     buffer.append( ".findWidgetById( \"" );
@@ -802,14 +780,11 @@ public final class JSWriter {
   ///////////////////////////////////////////////
   // Helping methods to construct parameter lists
 
-  private static String createParamList( final Object[] args ) {
+  private static String createParamList( Object[] args ) {
     return createParamList( " ", args, " ", true );
   }
 
-  private static String createParamList( final String startList,
-                                         final Object[] args,
-                                         final String endList,
-                                         final boolean useCurrentWidgetRef )
+  private static String createParamList( String startList, Object[] args, String endList, boolean useCurrentWidgetRef )
   {
     StringBuffer params = new StringBuffer();
     if( args != null ) {
@@ -856,7 +831,7 @@ public final class JSWriter {
     return params.toString();
   }
 
-  private static String createArray( final Object[] array ) {
+  private static String createArray( Object[] array ) {
     StringBuffer buffer = new StringBuffer();
     buffer.append( '[' );
     for( int i = 0; i < array.length; i++ ) {
@@ -884,8 +859,7 @@ public final class JSWriter {
     return buffer.toString();
   }
 
-  private String createPropertyChain( final String[] jsPropertyChain,
-                                      final boolean forReset )
+  private String createPropertyChain( String[] jsPropertyChain, boolean forReset )
   {
     StringBuffer buffer = new StringBuffer();
     int last = jsPropertyChain.length - 1;
@@ -929,7 +903,7 @@ public final class JSWriter {
   ////////////////////////////////////////
   // Helping methods to manipulate strings
 
-  private static String capitalize( final String text ) {
+  private static String capitalize( String text ) {
     String result;
     if( Character.isUpperCase( text.charAt( 0 ) ) ) {
       result = text;
@@ -944,12 +918,12 @@ public final class JSWriter {
   }
 
   // TODO [rh] revise how to handle newline characters (\n)
-  private static String escapeString( final String input ) {
+  private static String escapeString( String input ) {
     String result = EncodingUtil.escapeDoubleQuoted( input );
     return EncodingUtil.replaceNewLines( result );
   }
 
-  private static String getSetterName( final String jsProperty ) {
+  private static String getSetterName( String jsProperty ) {
     synchronized( setterNames ) {
       String result = setterNames.get( jsProperty );
       if( result == null ) {
@@ -963,7 +937,7 @@ public final class JSWriter {
     }
   }
 
-  private static String getResetterName( final String jsProperty ) {
+  private static String getResetterName( String jsProperty ) {
     synchronized( resetterNames ) {
       String result = resetterNames.get( jsProperty );
       if( result == null ) {
@@ -977,7 +951,7 @@ public final class JSWriter {
     }
   }
 
-  private static String getGetterName( final String jsProperty ) {
+  private static String getGetterName( String jsProperty ) {
     synchronized( getterNames ) {
       String result = getterNames.get( jsProperty );
       if( result == null ) {
@@ -1015,8 +989,7 @@ public final class JSWriter {
     getWriter().write( buffer.toString() );
   }
 
-  private static String format( final String pattern,
-                                final Object[] arguments )
+  private static String format( String pattern, Object[] arguments )
   {
     return MessageFormat.format( pattern, arguments );
   }
