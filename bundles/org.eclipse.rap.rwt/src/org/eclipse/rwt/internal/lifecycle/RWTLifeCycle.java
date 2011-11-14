@@ -82,9 +82,9 @@ public class RWTLifeCycle extends LifeCycle {
   private final class UIThreadController implements Runnable {
     public void run() {
       IUIThreadHolder uiThread = ( IUIThreadHolder )Thread.currentThread();
-      // [rh] sync exception handling and switchThread (see bug 316676)
-      synchronized( uiThread.getLock() ) {
-        try {
+      try {
+        // [rh] sync exception handling and switchThread (see bug 316676)
+        synchronized( uiThread.getLock() ) {
           try {
             uiThread.updateServiceContext();
             UICallBackManager.getInstance().notifyUIThreadStart();
@@ -100,10 +100,10 @@ public class RWTLifeCycle extends LifeCycle {
           }
           // In any case: wait for the thread to be terminated by session timeout
           uiThread.switchThread();
-        } catch( UIThreadTerminatedError e ) {
-          // If we get here, the session is being invalidated, see UIThread#terminateThread()
-          ( ( ISessionShutdownAdapter )uiThread ).processShutdown();
         }
+      } catch( UIThreadTerminatedError e ) {
+        // If we get here, the session is being invalidated, see UIThread#terminateThread()
+        ( ( ISessionShutdownAdapter )uiThread ).processShutdown();
       }
     }
   }
