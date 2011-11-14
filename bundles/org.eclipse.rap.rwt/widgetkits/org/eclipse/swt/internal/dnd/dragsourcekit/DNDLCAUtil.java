@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.dnd.dragsourcekit;
 
@@ -21,7 +22,7 @@ public final class DNDLCAUtil {
     // prevent instantiation
   }
   
-  public static String[] convertTransferTypes( final Transfer[] transfer ) {
+  public static String[] convertTransferTypes( Transfer[] transfer ) {
     List<TransferData> allTypes = new ArrayList<TransferData>();
     for( int i = 0; i < transfer.length; i++ ) {
       TransferData[] supported = transfer[ i ].getSupportedTypes();
@@ -37,7 +38,7 @@ public final class DNDLCAUtil {
     return result;
   }
   
-  public static String[] convertOperations( final int operations ) {
+  public static String[] convertOperations( int operations ) {
     String[] result = new String[ 3 ];
     result[ 0 ] = ( operations & DND.DROP_COPY  ) != 0 ? "copy" : null;  
     result[ 1 ] = ( operations & DND.DROP_MOVE  ) != 0 ? "move" : null;  

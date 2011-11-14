@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.custom.ctabfolderkit;
 
@@ -19,29 +19,29 @@ import org.eclipse.swt.internal.widgets.controlkit.ControlThemeAdapter;
 
 public class CTabFolderThemeAdapter extends ControlThemeAdapter {
 
-  public Color getBackground( final CTabFolder folder ) {
+  public Color getBackground( CTabFolder folder ) {
     return getCssColor( "CTabItem", "background-color", folder );
   }
 
-  public Color getForeground( final CTabFolder folder ) {
+  public Color getForeground( CTabFolder folder ) {
     return getCssColor( "CTabItem", "color", folder );
   }
 
-  public Color getSelectedBackground( final CTabFolder folder ) {
+  public Color getSelectedBackground( CTabFolder folder ) {
     QxType cssValue = ThemeUtil.getCssValue( "CTabItem",
                                              "background-color",
                                              SimpleSelector.SELECTED );
     return QxColor.createColor( ( QxColor )cssValue );
   }
 
-  public Color getSelectedForeground( final CTabFolder folder ) {
+  public Color getSelectedForeground( CTabFolder folder ) {
     QxType cssValue = ThemeUtil.getCssValue( "CTabItem",
                                              "color",
                                              SimpleSelector.SELECTED );
     return QxColor.createColor( ( QxColor )cssValue );
   }
 
-  public Rectangle getItemPadding( final boolean selected ) {
+  public Rectangle getItemPadding( boolean selected ) {
     SimpleSelector selector = selected
                               ? SimpleSelector.SELECTED
                               : SimpleSelector.DEFAULT;
@@ -57,7 +57,7 @@ public class CTabFolderThemeAdapter extends ControlThemeAdapter {
     return ( ( QxDimension )cssValue ).value;
   }
 
-  public Font getItemFont( final boolean selected ) {
+  public Font getItemFont( boolean selected ) {
     SimpleSelector selector = selected
                               ? SimpleSelector.SELECTED
                               : SimpleSelector.DEFAULT;

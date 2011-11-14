@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Button;
 
 public final class ButtonThemeAdapter extends ControlThemeAdapter {
 
-  protected void configureMatcher( final WidgetMatcher matcher ) {
+  protected void configureMatcher( WidgetMatcher matcher ) {
     super.configureMatcher( matcher );
     matcher.addStyle( "FLAT", SWT.FLAT );
     matcher.addStyle( "PUSH", SWT.PUSH );
@@ -29,15 +29,15 @@ public final class ButtonThemeAdapter extends ControlThemeAdapter {
     matcher.addStyle( "RADIO", SWT.RADIO );
   }
 
-  public int getSpacing( final Button button ) {
+  public int getSpacing( Button button ) {
     return getCssDimension( "Button", "spacing", button );
   }
 
-  public int getCheckSpacing( final Button button ) {
+  public int getCheckSpacing( Button button ) {
     return getCssDimension( "Button", "spacing", button );
   }
 
-  public Point getCheckSize( final Button button ) {
+  public Point getCheckSize( Button button ) {
     Point result = null;
     if( ( button.getStyle() & SWT.RADIO ) != 0) {
       result = getCssImageDimension( "Button-RadioIcon",

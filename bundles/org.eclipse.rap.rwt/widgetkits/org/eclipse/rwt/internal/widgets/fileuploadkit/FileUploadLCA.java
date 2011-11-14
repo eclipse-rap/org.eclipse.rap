@@ -66,7 +66,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
   /////////
   // Helper  
 
-  private void readFileName( final FileUpload fileUpload ) {
+  private void readFileName( FileUpload fileUpload ) {
     IFileUploadAdapter adapter = fileUpload.getAdapter( IFileUploadAdapter.class );
     String fileName = WidgetLCAUtil.readPropertyValue( fileUpload, "fileName" );
     if( fileName != null ) {

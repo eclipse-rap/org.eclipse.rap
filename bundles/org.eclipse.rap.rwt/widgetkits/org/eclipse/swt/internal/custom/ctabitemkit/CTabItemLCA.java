@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.custom.ctabitemkit;
 
 import java.io.IOException;
@@ -27,8 +26,7 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class CTabItemLCA extends AbstractWidgetLCA {
 
-  public static final String EVENT_ITEM_CLOSED
-    = "org.eclipse.swt.events.ctabItemClosed";
+  public static final String EVENT_ITEM_CLOSED = "org.eclipse.swt.events.ctabItemClosed";
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
@@ -40,7 +38,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     = "unselectedCloseVisible";
   private static final String PROP_FIRST_ITEM = "firstItem";
 
-  public void preserveValues( final Widget widget ) {
+  public void preserveValues( Widget widget ) {
     CTabItem item = ( CTabItem )widget;
     CTabFolder parent = item.getParent();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
@@ -62,7 +60,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveCustomVariant( item );
   }
 
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
     final CTabItem item = ( CTabItem )widget;
     if( WidgetLCAUtil.wasEventSent( item, EVENT_ITEM_CLOSED ) ) {
       ProcessActionRunner.add( new Runnable() {
@@ -77,7 +75,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  public void renderInitialization( final Widget widget ) throws IOException {
+  public void renderInitialization( Widget widget ) throws IOException {
     CTabItem item = ( CTabItem )widget;
     CTabFolder parent = item.getParent();
     JSWriter writer = JSWriter.getWriterFor( item );
@@ -89,7 +87,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     writer.call( parent, "add", new Object[] { item } );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     CTabItem item = ( CTabItem )widget;
     WidgetLCAUtil.writeBounds( item, item.getParent(), item.getBounds() );
     writeText( item );
@@ -104,7 +102,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.writeCustomVariant( item );
   }
 
-  public void renderDispose( final Widget widget ) throws IOException {
+  public void renderDispose( Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
@@ -112,7 +110,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   ////////////////////////////////////////////
   // Helping methods to render JavaScript code
 
-  private static void writeText( final CTabItem item ) throws IOException {
+  private static void writeText( CTabItem item ) throws IOException {
     String text = getShortenedText( item );
     if( WidgetLCAUtil.hasChanged( item, Props.TEXT, text ) ) {
       text = WidgetLCAUtil.escapeText( text, true );
@@ -121,21 +119,21 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeImage( final CTabItem item ) throws IOException {
+  private static void writeImage( CTabItem item ) throws IOException {
     Image newValue = getImage( item );
     if( WidgetLCAUtil.hasChanged( item, PROP_IMAGE, newValue, null ) ) {
       WidgetLCAUtil.writeImage( item, JSConst.QX_FIELD_ICON, newValue );
     }
   }
 
-  private static void writeFont( final CTabItem item ) throws IOException {
+  private static void writeFont( CTabItem item ) throws IOException {
     Object adapter = item.getAdapter( IWidgetFontAdapter.class );
     IWidgetFontAdapter fontAdapter = ( IWidgetFontAdapter )adapter;
     Font font = fontAdapter.getUserFont();
     WidgetLCAUtil.writeFont( item, font );
   }
 
-  private static void writeSelection( final CTabItem item ) throws IOException {
+  private static void writeSelection( CTabItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );
     Boolean newValue = isItemSelected( item );
     Boolean defValue = Boolean.FALSE;
@@ -144,7 +142,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeFirstItem( final CTabItem item ) throws IOException {
+  private static void writeFirstItem( CTabItem item ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( item );
     boolean isFirst = item == item.getParent().getItem( 0 );
     Boolean newValue = Boolean.valueOf( isFirst );
@@ -159,7 +157,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeShowing( final CTabItem item ) throws IOException {
+  private static void writeShowing( CTabItem item ) throws IOException {
     Boolean newValue = Boolean.valueOf( item.isShowing() );
     if( WidgetLCAUtil.hasChanged( item, PROP_SHOWING, newValue, Boolean.TRUE ) )
     {
@@ -168,7 +166,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeShowClose( final CTabItem item ) throws IOException {
+  private static void writeShowClose( CTabItem item ) throws IOException {
     Boolean newValue = Boolean.valueOf( item.getShowClose() );
     String prop = PROP_SHOW_CLOSE;
     if( WidgetLCAUtil.hasChanged( item, prop, newValue, Boolean.FALSE ) ) {
@@ -177,9 +175,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeUnselectedCloseVisible( final CTabItem item )
-    throws IOException
-  {
+  private static void writeUnselectedCloseVisible( CTabItem item ) throws IOException {
     CTabFolder parent = item.getParent();
     Boolean newValue = Boolean.valueOf( parent.getUnselectedCloseVisible() );
     String prop = PROP_UNSELECTED_CLOSE_VISIBLE;
@@ -192,7 +188,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   ////////////////////////////////////////////
   // Helping methods to obtain item properties
 
-  private static Image getImage( final CTabItem item ) {
+  private static Image getImage( CTabItem item ) {
     Image result = item.getImage();
     if( result != null ) {
       Object adapter = item.getParent().getAdapter( ICTabFolderAdapter.class );
@@ -204,7 +200,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static String getShortenedText( final CTabItem item ) {
+  private static String getShortenedText( CTabItem item ) {
     CTabFolder folder = item.getParent();
     Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
     ICTabFolderAdapter folderAdapter = ( ( ICTabFolderAdapter )adapter );
@@ -220,7 +216,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   ///////////////
   // Event helper
 
-  private static CTabFolderEvent createCloseEvent( final CTabItem item ) {
+  private static CTabFolderEvent createCloseEvent( CTabItem item ) {
     CTabFolderEvent result
       = new CTabFolderEvent( item.getParent(), CTabFolderEvent.CLOSE );
     result.item = item;
@@ -231,14 +227,14 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
   //////////////////
   // Preserve helper
 
-  private static void preserveFont( final CTabItem item ) {
+  private static void preserveFont( CTabItem item ) {
     Object adapter = item.getAdapter( IWidgetFontAdapter.class );
     IWidgetFontAdapter fontAdapter = ( IWidgetFontAdapter )adapter;
     Font font = fontAdapter.getUserFont();
     WidgetLCAUtil.preserveFont( item, font );
   }
 
-  private static Boolean isItemSelected( final CTabItem item ) {
+  private static Boolean isItemSelected( CTabItem item ) {
     CTabFolder folder = item.getParent();
     Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
     ICTabFolderAdapter folderAdapter = ( ( ICTabFolderAdapter )adapter );

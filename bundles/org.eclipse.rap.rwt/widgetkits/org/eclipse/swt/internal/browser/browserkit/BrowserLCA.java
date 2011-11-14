@@ -34,8 +34,9 @@ import org.eclipse.swt.browser.*;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Widget;
 
+
 public final class BrowserLCA extends AbstractWidgetLCA {
-  
+
   private static final String TYPE = "rwt.widgets.Browser";
 
   static final String BLANK_HTML = "<html><script></script></html>";
@@ -93,7 +94,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     createBrowserFunctions( browser );
     renderEvaluate( browser );
     writeFunctionResult( browser );
-    renderListener( browser, PARAM_PROGRESS_LISTENER, ProgressEvent.hasListener( browser ), false );    
+    renderListener( browser, PARAM_PROGRESS_LISTENER, ProgressEvent.hasListener( browser ), false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
@@ -265,7 +266,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeFunctionResult( final Browser browser )
+  private static void writeFunctionResult( Browser browser )
     throws IOException
   {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
@@ -284,31 +285,25 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void setExecutedFunctionName( final Browser browser,
-                                               final String name )
-  {
+  private static void setExecutedFunctionName( Browser browser, String name ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     String id = WidgetUtil.getId( browser );
     stateInfo.setAttribute( EXECUTED_FUNCTION_NAME + id, name );
   }
 
-  private static void setExecutedFunctionResult( final Browser browser,
-                                                 final Object result )
-  {
+  private static void setExecutedFunctionResult( Browser browser, Object result ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     String id = WidgetUtil.getId( browser );
     stateInfo.setAttribute( EXECUTED_FUNCTION_RESULT + id, result );
   }
 
-  private static void setExecutedFunctionError( final Browser browser,
-                                                final String error )
-  {
+  private static void setExecutedFunctionError( Browser browser, String error ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     String id = WidgetUtil.getId( browser );
     stateInfo.setAttribute( EXECUTED_FUNCTION_ERROR + id, error );
   }
 
-  static Object[] parseArguments( final String arguments ) {
+  static Object[] parseArguments( String arguments ) {
     List<Object> result = new ArrayList<Object>();
     if( arguments.startsWith( "[" ) && arguments.endsWith( "]" ) ) {
       // remove [ ] brackets
@@ -357,7 +352,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     return result.toArray();
   }
 
-  static Object withType( final String argument ) {
+  static Object withType( String argument ) {
     Object result;
     if( argument.equals( "null" ) || argument.equals( "undefined" ) ) {
       result = null;
@@ -375,7 +370,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  static String toJson( final Object object, final boolean deleteLastChar ) {
+  static String toJson( Object object, boolean deleteLastChar ) {
     StringBuffer result = new StringBuffer();
     if( object == null ) {
       result.append( "null" );
