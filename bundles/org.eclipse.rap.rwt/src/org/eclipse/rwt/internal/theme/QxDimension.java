@@ -23,11 +23,11 @@ public class QxDimension implements QxType {
 
   public final int value;
 
-  private QxDimension( final int value ) {
+  private QxDimension( int value ) {
     this.value = value;
   }
 
-  public static QxDimension create( final int value ) {
+  public static QxDimension create( int value ) {
     QxDimension result;
     if( value == 0 ) {
       result = ZERO;
@@ -37,7 +37,7 @@ public class QxDimension implements QxType {
     return result;
   }
 
-  public static QxDimension valueOf( final String input ) {
+  public static QxDimension valueOf( String input ) {
     if( input == null ) {
       throw new NullPointerException( "null argument" );
     }
@@ -52,7 +52,7 @@ public class QxDimension implements QxType {
     return value + "px";
   }
 
-  public boolean equals( final Object object ) {
+  public boolean equals( Object object ) {
     boolean result = false;
     if( object == this ) {
       result = true;
@@ -82,7 +82,7 @@ public class QxDimension implements QxType {
    *             parameter that is a percentage value or has an unsupported
    *             unit.
    */
-  static Integer parseLength( final String input ) {
+  static Integer parseLength( String input ) {
     // TODO [rst] Also catch values with fractional digits
     Integer result = null;
     Matcher matcher = LENGTH_PATTERN.matcher( input );

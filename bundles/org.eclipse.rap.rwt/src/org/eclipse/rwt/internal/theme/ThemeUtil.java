@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
 import org.eclipse.rwt.internal.application.RWTFactory;
@@ -57,7 +56,7 @@ public final class ThemeUtil {
    * @throws IllegalArgumentException if no theme with the given id is
    *             registered
    */
-  public static void setCurrentThemeId( final String themeId ) {
+  public static void setCurrentThemeId( String themeId ) {
     if( !RWTFactory.getThemeManager().hasTheme( themeId ) ) {
       throw new IllegalArgumentException( "Illegal theme id: " + themeId );
     }
@@ -76,17 +75,15 @@ public final class ThemeUtil {
   //////////////////////////////////////
   // Methods for accessing themed values
 
-  public static QxType getCssValue( final String cssElement,
-                                    final String cssProperty,
-                                    final SimpleSelector selector )
+  public static QxType getCssValue( String cssElement, String cssProperty, SimpleSelector selector )
   {
     return getCssValue( cssElement, cssProperty, selector, null );
   }
 
-  public static QxType getCssValue( final String cssElement,
-                                    final String cssProperty,
-                                    final ValueSelector selector,
-                                    final Widget widget )
+  public static QxType getCssValue( String cssElement,
+                                    String cssProperty,
+                                    ValueSelector selector,
+                                    Widget widget )
   {
     Theme theme = getTheme();
     ThemeCssValuesMap valuesMap = theme.getValuesMap();

@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
@@ -48,12 +48,12 @@ public final class StartupPageTemplateHolder {
     private final static Map<String,Variable> NAMES = new HashMap<String,Variable>();
     private final String name;
 
-    private Variable( final String varName ) {
+    private Variable( String varName ) {
       this.name = varName;
       NAMES.put( varName, this );
     }
 
-    private static Variable lookup( final String name ) {
+    private static Variable lookup( String name ) {
       return NAMES.get( name );
     }
 
@@ -62,7 +62,7 @@ public final class StartupPageTemplateHolder {
     }
   }
 
-  public StartupPageTemplateHolder( final String template ) {
+  public StartupPageTemplateHolder( String template ) {
     ParamCheck.notNull( template, "template" );
     replacementIndices = new HashMap<Variable,List<Integer>>();
     StringTokenizer tokenizer = new StringTokenizer( template, "${}", true );
@@ -86,7 +86,7 @@ public final class StartupPageTemplateHolder {
     }
   }
 
-  private boolean isVariableToken( final String nextToken ) {
+  private boolean isVariableToken( String nextToken ) {
     return    nextToken.equals( TOKEN_BACKGROUND_IMAGE.toString() )
            || nextToken.equals( TOKEN_LIBRARIES.toString() )
            || nextToken.equals( TOKEN_APPSCRIPT.toString() )
@@ -99,7 +99,7 @@ public final class StartupPageTemplateHolder {
            || nextToken.equals( TOKEN_NO_SCRIPT_MESSAGE.toString() );
   }
 
-  private void addReplacementIndex( final Variable variable, final int index ) {
+  private void addReplacementIndex( Variable variable, int index ) {
     List<Integer> indices = replacementIndices.get( variable );
     if( indices == null ) {
       indices = new ArrayList<Integer>();
@@ -108,7 +108,7 @@ public final class StartupPageTemplateHolder {
     indices.add( new Integer( index ) );
   }
 
-  private int[] getReplacementIndices( final Variable variable ) {
+  private int[] getReplacementIndices( Variable variable ) {
     List<Integer> indices = replacementIndices.get( variable );
     int[] result = null;
     if( indices == null ) {
@@ -127,7 +127,7 @@ public final class StartupPageTemplateHolder {
     return tokens;
   }
 
-  public void replace( final Variable toReplace, final String replacement ) {
+  public void replace( Variable toReplace, String replacement ) {
     int[] indices = getReplacementIndices( toReplace );
     for( int i = 0; i < indices.length; i++ ) {
       tokens[ indices[ i ] ] = replacement;

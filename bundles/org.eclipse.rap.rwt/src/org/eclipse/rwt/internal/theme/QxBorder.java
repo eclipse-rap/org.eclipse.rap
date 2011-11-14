@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -39,16 +39,13 @@ public class QxBorder implements QxType {
   //            color theme. Check for valid colors.
   public final String color;
 
-  private QxBorder( final int width, final String style, final String color ) {
+  private QxBorder( int width, String style, String color ) {
     this.width = width;
     this.style = style;
     this.color = color;
   }
 
-  public static QxBorder create( final int width,
-                                 final String style,
-                                 final String color )
-  {
+  public static QxBorder create( int width, String style, String color ) {
     QxBorder result;
     if( width == 0 || "none".equals( style ) || "hidden".equals( style ) ) {
       result = NONE;
@@ -58,7 +55,7 @@ public class QxBorder implements QxType {
     return result;
   }
 
-  public static QxBorder valueOf( final String input ) {
+  public static QxBorder valueOf( String input ) {
     if( input == null ) {
       throw new NullPointerException( "null argument" );
     }
@@ -128,7 +125,7 @@ public class QxBorder implements QxType {
     return result;
   }
 
-  public boolean equals( final Object object ) {
+  public boolean equals( Object object ) {
     // TODO [rst] Adapt this method as soon as properties for left, right, etc. exist
     boolean result = false;
     if( object == this ) {
@@ -166,7 +163,7 @@ public class QxBorder implements QxType {
     return "QxBorder{ " + width + ", " + style + ", " + color + " }";
   }
 
-  private static String parseStyle( final String part ) {
+  private static String parseStyle( String part ) {
     String result = null;
     for( int j = 0; j < VALID_STYLES.length && result == null; j++ ) {
       if( VALID_STYLES[ j ].equalsIgnoreCase( part ) ) {

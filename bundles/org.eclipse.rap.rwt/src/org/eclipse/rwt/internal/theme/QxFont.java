@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rwt.internal.theme;
@@ -36,29 +37,21 @@ public class QxFont implements QxType {
 
   private String familyAsString;
 
-  private QxFont( final String[] family,
-                  final int size,
-                  final boolean bold,
-                  final boolean italic )
-  {
+  private QxFont( String[] family, int size, boolean bold, boolean italic ) {
     this.family = family;
     this.size = size;
     this.bold = bold;
     this.italic = italic;
   }
 
-  public static QxFont create( final String[] families,
-                               final int size,
-                               final boolean bold,
-                               final boolean italic )
-  {
+  public static QxFont create( String[] families, int size, boolean bold, boolean italic ) {
     if( size < 0 ) {
       throw new IllegalArgumentException( "Negative width: " + size );
     }
     return new QxFont( families, size, bold, italic );
   }
 
-  public static QxFont valueOf( final String input ) {
+  public static QxFont valueOf( String input ) {
     if( input == null ) {
       throw new NullPointerException( "null argument" );
     }
@@ -132,7 +125,7 @@ public class QxFont implements QxType {
     return result.toString();
   }
 
-  public boolean equals( final Object obj ) {
+  public boolean equals( Object obj ) {
     boolean result = false;
     if( obj == this ) {
       result = true;
@@ -173,7 +166,7 @@ public class QxFont implements QxType {
     return result.toString();
   }
 
-  public static Font createFont( final QxFont font ) {
+  public static Font createFont( QxFont font ) {
     String name = font.getFamilyAsString();
     int style = SWT.NORMAL;
     if( font.bold ) {

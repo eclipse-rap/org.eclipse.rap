@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -37,10 +38,7 @@ public class QxAnimation implements QxType {
     public final int duration;
     public final String timingFunction;
 
-    private Animation( final String name,
-                       final int duration,
-                       final String timingFunction )
-    {
+    private Animation( String name, int duration, String timingFunction ) {
       checkName( name );
       checkTimingFunction( timingFunction );
       this.name = name;
@@ -48,7 +46,7 @@ public class QxAnimation implements QxType {
       this.timingFunction = timingFunction;
     }
 
-    private void checkName( final String name ) {
+    private void checkName( String name ) {
       boolean result = false;
       if( name == null ) {
         throw new NullPointerException( "null argument" );
@@ -64,7 +62,7 @@ public class QxAnimation implements QxType {
       }
     }
 
-    private void checkTimingFunction( final String timingFunction ) {
+    private void checkTimingFunction( String timingFunction ) {
       boolean result = false;
       if( timingFunction == null ) {
         throw new NullPointerException( "null argument" );
@@ -81,7 +79,7 @@ public class QxAnimation implements QxType {
       }
     }
 
-    public boolean equals( final Object object ) {
+    public boolean equals( Object object ) {
       boolean result = false;
       if( object == this ) {
         result = true;
@@ -102,10 +100,7 @@ public class QxAnimation implements QxType {
     animations = new Animation[ 0 ];
   }
 
-  public void addAnimation( final String name,
-                            final int duration,
-                            final String timingFunction )
-  {
+  public void addAnimation( String name, int duration, String timingFunction ) {
     Animation animation = new Animation( name, duration, timingFunction );
     Animation[] newAnimations = new Animation[ animations.length + 1 ];
     System.arraycopy( animations, 0, newAnimations, 0, animations.length );
@@ -132,7 +127,7 @@ public class QxAnimation implements QxType {
     return "QxAnimation{ " + toDefaultString() + " }";
   }
 
-  public static String toCamelCaseString( final String string ) {
+  public static String toCamelCaseString( String string ) {
     StringBuffer result = new StringBuffer();
     boolean toUpperCase = false;
     for( int i = 0; i < string.length(); i++ ) {
@@ -159,7 +154,7 @@ public class QxAnimation implements QxType {
     return result;
   }
 
-  public boolean equals( final Object object ) {
+  public boolean equals( Object object ) {
     boolean result = false;
     if( object == this ) {
       result = true;

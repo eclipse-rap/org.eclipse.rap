@@ -36,11 +36,11 @@ class EnlargeScrolledCompositeContentVisitor extends AllWidgetTreeVisitor {
     content.setSize( width, height );
   }
 
-  private boolean hasContentControl( final Widget widget ) {
+  private boolean hasContentControl( Widget widget ) {
     return getContentControl( widget ) != null;
   }
 
-  private Control getContentControl( final Widget widget ) {
+  private Control getContentControl( Widget widget ) {
     return ( ( ScrolledComposite )widget ).getContent();
   }
 }

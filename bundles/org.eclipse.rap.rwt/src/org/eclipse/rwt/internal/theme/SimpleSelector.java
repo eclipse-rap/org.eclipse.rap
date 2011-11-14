@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others.
+ * Copyright (c) 2009, 2011 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -30,11 +30,11 @@ public final class SimpleSelector implements ValueSelector {
   public static final SimpleSelector INACTIVE
     = new SimpleSelector( new String[] { ":inactive" } );
 
-  public SimpleSelector( final String[] constraints ) {
+  public SimpleSelector( String[] constraints ) {
     this.requiredConstraints = constraints;
   }
 
-  public QxType select( final ConditionalValue[] values, final Widget widget ) {
+  public QxType select( ConditionalValue[] values, Widget widget ) {
     QxType result = null;
     for( int i = 0; i < values.length && result == null; i++ ) {
       ConditionalValue condValue = values[ i ];
@@ -46,7 +46,7 @@ public final class SimpleSelector implements ValueSelector {
     return result;
   }
 
-  private boolean matches( final String[] constraints ) {
+  private boolean matches( String[] constraints ) {
     boolean result = true;
     for( int i = 0; i < constraints.length && result; i++ ) {
       result = contains( requiredConstraints, constraints[ i ] );
@@ -54,7 +54,7 @@ public final class SimpleSelector implements ValueSelector {
     return result;
   }
 
-  private static boolean contains( final String[] array, final String string ) {
+  private static boolean contains( String[] array, String string ) {
     boolean result = false;
     for( int i = 0; i < array.length && !result; i++ ) {
       result = array[ i ].equals( string );

@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -43,7 +44,7 @@ public class QxCursor implements QxType {
   public final String value;
   public final ResourceLoader loader;
 
-  private QxCursor( final String value, final ResourceLoader loader ) {
+  private QxCursor( String value, ResourceLoader loader ) {
     this.value = value;
     this.loader = loader;
     if( isCustomCursor() ) {
@@ -63,9 +64,7 @@ public class QxCursor implements QxType {
     }
   }
 
-  public static QxCursor valueOf( final String input,
-                                  final ResourceLoader loader )
-  {
+  public static QxCursor valueOf( String input, ResourceLoader loader ) {
     if( input == null || loader == null ) {
       throw new NullPointerException( "null argument" );
     }
@@ -75,14 +74,14 @@ public class QxCursor implements QxType {
     return new QxCursor( input, loader );
   }
 
-  public static QxCursor valueOf( final String input ) {
+  public static QxCursor valueOf( String input ) {
     if( !isPredefinedCursor( input ) ) {
       throw new IllegalArgumentException( "Invalid value for cursor: " + input );
     }
     return new QxCursor( input, null );
   }
 
-  public static boolean isPredefinedCursor( final String value ) {
+  public static boolean isPredefinedCursor( String value ) {
     boolean result = false;
     for( int i = 0; i < PREDEFINED_CURSORS.length && !result; i++ ) {
       if( PREDEFINED_CURSORS[ i ].equalsIgnoreCase( value ) ) {
@@ -96,7 +95,7 @@ public class QxCursor implements QxType {
     return !isPredefinedCursor( value );
   }
 
-  public boolean equals( final Object object ) {
+  public boolean equals( Object object ) {
     boolean result = false;
     if( object == this ) {
       result = true;

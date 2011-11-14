@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
 
@@ -48,11 +47,7 @@ public final class QxTheme {
    * @param type the type of the theme
    * @param base the fully qualified name of the qx theme to extend
    */
-  public QxTheme( final String id,
-                  final String title,
-                  final int type,
-                  final String base )
-  {
+  public QxTheme( String id, String title, int type, String base ) {
     this.id = id;
     this.title = title;
     this.type = checkType( type );
@@ -69,7 +64,7 @@ public final class QxTheme {
    *
    * @param values Javascript code that adds the additional values
    */
-  public void appendValues( final String values ) {
+  public void appendValues( String values ) {
     beforeWriteValue();
     code.append( values );
     afterWriteValue();
@@ -81,7 +76,7 @@ public final class QxTheme {
    *
    * @param pathPrefix the prefix to map "widget/" or "icon/" to
    */
-  public void appendUri( final String pathPrefix ) {
+  public void appendUri( String pathPrefix ) {
     beforeWriteValue();
     code.append( "    uri : \"" );
     code.append( pathPrefix );
@@ -96,7 +91,7 @@ public final class QxTheme {
    * @param key the key to append
    * @param theme the value for the key
    */
-  public void appendTheme( final String key, final String theme ) {
+  public void appendTheme( String key, String theme ) {
     beforeWriteValue();
     code.append( "    \"" + key + "\" : " );
     code.append( theme );

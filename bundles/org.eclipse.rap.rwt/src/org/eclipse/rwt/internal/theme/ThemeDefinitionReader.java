@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -99,7 +99,7 @@ public final class ThemeDefinitionReader {
     return result;
   }
 
-  private void readElement( final Node node ) {
+  private void readElement( Node node ) {
     String name = getAttributeValue( node, ATTR_NAME );
     ThemeCssElement themeElement = new ThemeCssElement( name );
     cssElements.add( themeElement );
@@ -120,9 +120,7 @@ public final class ThemeDefinitionReader {
     }
   }
 
-  private Document parseThemeDefinition( final InputStream is )
-    throws SAXException, IOException
-  {
+  private Document parseThemeDefinition( InputStream is ) throws SAXException, IOException {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setNamespaceAware( true );
     ClassLoader loader = ThemeDefinitionReader.class.getClassLoader();
@@ -130,7 +128,7 @@ public final class ThemeDefinitionReader {
     factory.setValidating( schema != null );
     try {
       factory.setAttribute( JAXP_SCHEMA_LANGUAGE, W3C_XML_SCHEMA );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // XML-Processing does not support JAXP 1.2 or greater
       factory.setNamespaceAware( false );
       factory.setValidating( false );
@@ -138,12 +136,12 @@ public final class ThemeDefinitionReader {
     DocumentBuilder builder;
     try {
       builder = factory.newDocumentBuilder();
-    } catch( final ParserConfigurationException e ) {
+    } catch( ParserConfigurationException e ) {
       String message = "Failed to initialize parser for theme definition files";
       throw new RuntimeException( message, e );
     }
 //    builder.setEntityResolver( new EntityResolver() {
-//      public InputSource resolveEntity( final String publicID,
+//      public InputSource resolveEntity( String publicID,
 //                                        final String systemID )
 //        throws IOException, SAXException
 //      {
@@ -160,7 +158,7 @@ public final class ThemeDefinitionReader {
     return builder.parse( is );
   }
 
-  private static String getAttributeValue( final Node node, final String name )
+  private static String getAttributeValue( Node node, String name )
   {
     String result = null;
     NamedNodeMap attributes = node.getAttributes();
@@ -174,28 +172,28 @@ public final class ThemeDefinitionReader {
   }
 
   private class ThemeDefinitionErrorHandler implements ErrorHandler {
-    public void error( final SAXParseException spe ) throws SAXException {
+    public void error( SAXParseException spe ) throws SAXException {
       String msg
         = "Error parsing theme definition " + getPosition( spe ) + ":";
       ServletLog.log( msg, null );
       ServletLog.log( spe.getMessage(), null );
     }
 
-    public void fatalError( final SAXParseException spe ) throws SAXException {
+    public void fatalError( SAXParseException spe ) throws SAXException {
       String
         msg = "Fatal error parsing theme definition " + getPosition( spe ) + ":";
       ServletLog.log( msg, null );
       ServletLog.log( spe.getMessage(), null );
     }
 
-    public void warning( final SAXParseException spe ) throws SAXException {
+    public void warning( SAXParseException spe ) throws SAXException {
       String msg
         = "Warning parsing theme definition " + getPosition( spe ) + ":";
       ServletLog.log( msg, null );
       ServletLog.log( spe.getMessage(), null );
     }
 
-    private String getPosition( final SAXParseException spe ) {
+    private String getPosition( SAXParseException spe ) {
       String result
         = "in file '" 
         + fileName 

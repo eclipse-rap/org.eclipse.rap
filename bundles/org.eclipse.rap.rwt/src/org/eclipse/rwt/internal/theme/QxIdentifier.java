@@ -6,9 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.rwt.internal.theme;
 
 
@@ -16,7 +15,7 @@ public class QxIdentifier implements QxType {
 
   public final String value;
 
-  public QxIdentifier( final String value ) {
+  public QxIdentifier( String value ) {
     this.value = value;
   }
 
@@ -28,7 +27,7 @@ public class QxIdentifier implements QxType {
     return "QxIdentifier{ " + value + " }";
   }
 
-  public boolean equals( final Object obj ) {
+  public boolean equals( Object obj ) {
     boolean result = false;
     if( obj == this ) {
       result = true;

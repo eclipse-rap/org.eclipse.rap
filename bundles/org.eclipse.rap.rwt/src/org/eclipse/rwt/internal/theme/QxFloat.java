@@ -1,14 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
+
 
 public class QxFloat implements QxType {
 
@@ -27,7 +28,7 @@ public class QxFloat implements QxType {
     return result;
   }
   
-  public static QxFloat valueOf( final String input ) {
+  public static QxFloat valueOf( String input ) {
     if( input == null ) {
       throw new NullPointerException( "input" );
     }    
@@ -36,7 +37,7 @@ public class QxFloat implements QxType {
   
   public final float value;
 
-  private QxFloat( final float value ) {
+  private QxFloat( float value ) {
     this.value = value;
   }
 
@@ -44,7 +45,7 @@ public class QxFloat implements QxType {
     return String.valueOf( value );
   }
 
-  public boolean equals( final Object object ) {
+  public boolean equals( Object object ) {
     boolean result = false;
     if( object == this ) {
       result = true;
