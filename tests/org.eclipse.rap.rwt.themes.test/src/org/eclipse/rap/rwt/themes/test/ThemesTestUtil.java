@@ -49,7 +49,7 @@ public class ThemesTestUtil {
     addBundleToClassPath( "org.eclipse.rap.rwt.theme.classic" );
   }
 
-  private static void addBundleToClassPath( final String bundleId ) {
+  private static void addBundleToClassPath( String bundleId ) {
     ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
     if( systemClassLoader instanceof URLClassLoader ) {
       URLClassLoader classLoader = ( URLClassLoader ) systemClassLoader;
@@ -58,9 +58,7 @@ public class ThemesTestUtil {
     }
   }
 
-  private static String getBundlePath( final URLClassLoader classLoader,
-                                       final String bundleId )
-  {
+  private static String getBundlePath( URLClassLoader classLoader, String bundleId ) {
     URL[] urls = classLoader.getURLs();
     String path = null;
     for( int i = 0; i < urls.length && path == null; i++ ) {
@@ -78,9 +76,7 @@ public class ThemesTestUtil {
     return path;
   }
 
-  private static void addFolderToClassPath( final URLClassLoader classLoader,
-                                            final String path )
-  {
+  private static void addFolderToClassPath( URLClassLoader classLoader, String path ) {
     if( path != null ) {
       Class<?> clazz = URLClassLoader.class;
       try {
@@ -95,9 +91,7 @@ public class ThemesTestUtil {
     }
   }
 
-  public static void createAndActivateTheme( final String path,
-                                             final String themeId )
-  {
+  public static void createAndActivateTheme( String path, String themeId ) {
     StyleSheet styleSheet;
     try {
       styleSheet = CssFileReader.readStyleSheet( path, RESOURCE_LOADER );
@@ -110,6 +104,11 @@ public class ThemesTestUtil {
     themeManager.registerTheme( theme );
     themeManager.activate();
     ThemeUtil.setCurrentThemeId( themeId );
+  }
+
+  public static void cleanupThemes() {
+    ThemeManager themeManager = RWTFactory.getThemeManager();
+    themeManager.deactivate();
   }
 
   private static ResourceLoader getDefaultResourceLoader() {

@@ -34,6 +34,7 @@ public class AbstractThemeAdapter_Test extends TestCase {
   }
 
   protected void tearDown() throws Exception {
+    RWTFactory.getThemeManager().deactivate();
     Fixture.tearDown();
   }
 

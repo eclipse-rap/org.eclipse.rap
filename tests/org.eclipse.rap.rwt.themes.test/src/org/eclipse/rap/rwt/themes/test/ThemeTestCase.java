@@ -37,6 +37,7 @@ public abstract class ThemeTestCase extends TestCase {
   }
 
   protected void tearDown() {
+    ThemesTestUtil.cleanupThemes();
     Fixture.tearDown();
   }
 
