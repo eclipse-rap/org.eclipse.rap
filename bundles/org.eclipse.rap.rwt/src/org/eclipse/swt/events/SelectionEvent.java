@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.events;
 
 import org.eclipse.rwt.Adaptable;
@@ -17,7 +16,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.*;
-
 
 
 /**
@@ -125,7 +123,7 @@ public class SelectionEvent extends TypedEvent {
    *
    * @param e the untyped event containing the information
    */
-  public SelectionEvent( final Event e ) {
+  public SelectionEvent( Event e ) {
     super( e );
     this.item = e.item;
     this.x = e.x;
@@ -146,10 +144,7 @@ public class SelectionEvent extends TypedEvent {
    * from application code.
    * </p>
    */
-  public SelectionEvent( final Widget widget,
-                         final Widget item,
-                         final int id )
-  {
+  public SelectionEvent( Widget widget, Widget item, int id ) {
     this( widget,
           item,
           id,
@@ -168,14 +163,14 @@ public class SelectionEvent extends TypedEvent {
    * from application code.
    * </p>
    */
-  public SelectionEvent( final Widget widget,
-                         final Widget item,
-                         final int id,
-                         final Rectangle bounds,
-                         final int stateMask,
-                         final String text,
-                         final boolean doit,
-                         final int detail )
+  public SelectionEvent( Widget widget,
+                         Widget item,
+                         int id,
+                         Rectangle bounds,
+                         int stateMask,
+                         String text,
+                         boolean doit,
+                         int detail )
   {
     super( widget, id );
     this.widget = widget;
@@ -190,7 +185,7 @@ public class SelectionEvent extends TypedEvent {
     this.detail = detail;
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case WIDGET_SELECTED:
         ( ( SelectionListener )listener ).widgetSelected( this );
@@ -211,23 +206,19 @@ public class SelectionEvent extends TypedEvent {
     return EventUtil.isAccessible( widget );
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final SelectionListener listener )
-  {
+  public static void addListener( Adaptable adaptable, SelectionListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final SelectionListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, SelectionListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 

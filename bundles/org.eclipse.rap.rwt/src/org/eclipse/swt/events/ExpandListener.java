@@ -35,12 +35,12 @@ public interface ExpandListener extends SWTEventListener {
    *
    * @param e an event containing information about the operation
    */
-  public void itemCollapsed( final ExpandEvent e );
+  public void itemCollapsed( ExpandEvent e );
 
   /**
    * Sent when an item is expanded.
    *
    * @param e an event containing information about the operation
    */
-  public void itemExpanded( final ExpandEvent e );
+  public void itemExpanded( ExpandEvent e );
 }

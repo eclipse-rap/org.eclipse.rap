@@ -1,17 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.events;
-
 
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.SWT;
@@ -46,7 +44,7 @@ public final class TreeEvent extends SelectionEvent {
    *
    * @param event the untyped event containing the information
    */
-  public TreeEvent( final Event event ) {
+  public TreeEvent( Event event ) {
     super( event );
   }
 
@@ -58,14 +56,11 @@ public final class TreeEvent extends SelectionEvent {
    * from application code.
    * </p>
    */
-  public TreeEvent( final Widget widget,
-                    final Widget item,
-                    final int id )
-  {
+  public TreeEvent( Widget widget, Widget item, int id ) {
     super( widget, item, id );
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case TREE_EXPANDED:
         ( ( TreeListener )listener ).treeExpanded( this );
@@ -86,24 +81,19 @@ public final class TreeEvent extends SelectionEvent {
     return EventUtil.isAccessible( widget );
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final TreeListener listener )
-  {
+  public static void addListener( Adaptable adaptable, TreeListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final TreeListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, TreeListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 }
-

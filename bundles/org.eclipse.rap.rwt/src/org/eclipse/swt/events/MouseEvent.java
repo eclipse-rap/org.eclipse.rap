@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.events;
 
@@ -106,7 +106,7 @@ public class MouseEvent extends TypedEvent {
    *
    * @since 1.2
    */
-  public MouseEvent( final Event event ) {
+  public MouseEvent( Event event ) {
     super( event );
     this.x = event.x;
     this.y = event.y;
@@ -126,11 +126,11 @@ public class MouseEvent extends TypedEvent {
    *
    * @since 1.2
    */
-  public MouseEvent( final Widget source, final int id ) {
+  public MouseEvent( Widget source, int id ) {
     super( source, id );
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case MOUSE_UP:
         ( ( MouseListener )listener ).mouseUp( this );
@@ -176,23 +176,19 @@ public class MouseEvent extends TypedEvent {
            + "}";
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final MouseListener listener )
-  {
+  public static void addListener( Adaptable adaptable, MouseListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final MouseListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, MouseListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 }

@@ -28,7 +28,7 @@ public abstract class FocusAdapter implements FocusListener {
    * 
    * @param event an event containing information about the focus change
    */
-  public void focusGained( final FocusEvent event ) {
+  public void focusGained( FocusEvent event ) {
   }
 
   /**
@@ -36,6 +36,6 @@ public abstract class FocusAdapter implements FocusListener {
    * 
    * @param event an event containing information about the focus change
    */
-  public void focusLost( final FocusEvent event ) {
+  public void focusLost( FocusEvent event ) {
   }
 }

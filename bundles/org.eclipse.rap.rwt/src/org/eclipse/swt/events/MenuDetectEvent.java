@@ -1,20 +1,21 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.events;
-
 
 import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Widget;
+
 
 /**
  * Instances of this class are sent whenever the platform-
@@ -25,7 +26,6 @@ import org.eclipse.swt.widgets.Widget;
  *
  * @since 1.3
  */
-
 public final class MenuDetectEvent extends TypedEvent {
 
   private static final long serialVersionUID = -3061660596590828941L;
@@ -59,7 +59,7 @@ public final class MenuDetectEvent extends TypedEvent {
    *
    * @param event the untyped event containing the information
    */
-  public MenuDetectEvent( final Event event ) {
+  public MenuDetectEvent( Event event ) {
     super( event );
     this.x = event.x;
     this.y = event.y;
@@ -89,12 +89,12 @@ public final class MenuDetectEvent extends TypedEvent {
    * from application code.
    * </p>
    */
-  public MenuDetectEvent( final Widget source ) {
+  public MenuDetectEvent( Widget source ) {
     super( source, MENU_DETECT );
     doit = true;
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case MENU_DETECT:
         ( ( MenuDetectListener )listener ).menuDetected( this );
@@ -112,23 +112,19 @@ public final class MenuDetectEvent extends TypedEvent {
     return EventUtil.isAccessible( widget );
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final MenuDetectListener listener )
-  {
+  public static void addListener( Adaptable adaptable, MenuDetectListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final MenuDetectListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, MenuDetectListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 }

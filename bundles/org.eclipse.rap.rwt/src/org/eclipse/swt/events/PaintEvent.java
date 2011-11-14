@@ -69,7 +69,7 @@ public final class PaintEvent extends TypedEvent {
    *
    * @param event the untyped event containing the information
    */
-  public PaintEvent( final Event event ) {
+  public PaintEvent( Event event ) {
     super( event );
     this.gc = event.gc;
     this.x = event.x;
@@ -87,10 +87,7 @@ public final class PaintEvent extends TypedEvent {
    * from application code.
    * </p>
    */
-  public PaintEvent( final Widget widget,
-                     final GC gc,
-                     final Rectangle bounds )
-  {
+  public PaintEvent( Widget widget, GC gc, Rectangle bounds ) {
     super( widget, PAINT_CONTROL );
     this.gc = gc;
     this.x = bounds.x;
@@ -99,7 +96,7 @@ public final class PaintEvent extends TypedEvent {
     this.height = bounds.height;
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case PAINT_CONTROL:
         ( ( PaintListener )listener ).paintControl( this );
@@ -117,23 +114,19 @@ public final class PaintEvent extends TypedEvent {
     return true;
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final PaintListener listener )
-  {
+  public static void addListener( Adaptable adaptable, PaintListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final PaintListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, PaintListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 

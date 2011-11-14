@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.events;
 
@@ -15,6 +16,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
+
 
 /**
  * Instances of this class are sent as a result of widget traversal actions.
@@ -130,12 +132,12 @@ public final class TraverseEvent extends KeyEvent {
    * 
    * @param e the untyped event containing the information
    */
-  public TraverseEvent( final Event e ) {
+  public TraverseEvent( Event e ) {
     super( e );
     this.detail = e.detail;
   }
 
-  public TraverseEvent( final Control source ) {
+  public TraverseEvent( Control source ) {
     super( source, KEY_TRAVERSED );
   }
 
@@ -153,7 +155,7 @@ public final class TraverseEvent extends KeyEvent {
            + "}";
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case KEY_TRAVERSED:
         ( ( TraverseListener )listener ).keyTraversed( this );
@@ -171,19 +173,15 @@ public final class TraverseEvent extends KeyEvent {
     return EventUtil.isAccessible( widget );
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final TraverseListener listener )
-  {
+  public static void addListener( Adaptable adaptable, TraverseListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable, 
-                                     final TraverseListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, TraverseListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
   
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 }

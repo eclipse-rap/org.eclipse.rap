@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.events;
 
@@ -42,7 +43,7 @@ public final class HelpEvent extends TypedEvent {
    *
    * @param event the untyped event containing the information
    */
-  public HelpEvent( final Event event ) {
+  public HelpEvent( Event event ) {
     super( event );
   }
 
@@ -54,11 +55,11 @@ public final class HelpEvent extends TypedEvent {
    * from application code.
    * </p>
    */
-  public HelpEvent( final Widget source ) {
+  public HelpEvent( Widget source ) {
     super( source, HELP_REQUESTED );
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case HELP_REQUESTED:
         ( ( HelpListener )listener ).helpRequested( this );
@@ -76,23 +77,19 @@ public final class HelpEvent extends TypedEvent {
     return EventUtil.isAccessible( widget );
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final HelpListener listener )
-  {
+  public static void addListener( Adaptable adaptable, HelpListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final HelpListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, HelpListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 }

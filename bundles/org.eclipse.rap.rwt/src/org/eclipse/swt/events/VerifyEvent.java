@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.events;
 
 import org.eclipse.rwt.Adaptable;
@@ -57,7 +56,7 @@ public final class VerifyEvent extends KeyEvent {
    *
    * @param event the untyped event containing the information
    */
-  public VerifyEvent( final Event event ) {
+  public VerifyEvent( Event event ) {
     super( event );
     doit = true;
   }
@@ -70,12 +69,12 @@ public final class VerifyEvent extends KeyEvent {
    * from application code.
    * </p>
    */
-  public VerifyEvent( final Control source ) {
+  public VerifyEvent( Control source ) {
     super( source, VERIFY_TEXT );
     doit = true;
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case VERIFY_TEXT:
         ( ( VerifyListener )listener ).verifyText( this );
@@ -93,23 +92,19 @@ public final class VerifyEvent extends KeyEvent {
     return true;
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final VerifyListener listener )
-  {
+  public static void addListener( Adaptable adaptable, VerifyListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final VerifyListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, VerifyListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 

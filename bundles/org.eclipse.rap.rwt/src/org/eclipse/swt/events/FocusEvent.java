@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.events;
 
 import org.eclipse.rwt.Adaptable;
@@ -46,7 +45,7 @@ public final class FocusEvent extends TypedEvent {
    *
    * @param event the untyped event containing the information
    */
-  public FocusEvent( final Event event ) {
+  public FocusEvent( Event event ) {
     super( event );
   }
 
@@ -58,11 +57,11 @@ public final class FocusEvent extends TypedEvent {
    * from application code.
    * </p>
    */
-  public FocusEvent( final Control source, final int id ) {
+  public FocusEvent( Control source, int id ) {
     super( source, id );
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case FOCUS_GAINED:
         ( ( FocusListener )listener ).focusGained( this );
@@ -83,23 +82,19 @@ public final class FocusEvent extends TypedEvent {
     return EventUtil.isAccessible( widget );
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final FocusListener listener )
-  {
+  public static void addListener( Adaptable adaptable, FocusListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final FocusListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, FocusListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 }

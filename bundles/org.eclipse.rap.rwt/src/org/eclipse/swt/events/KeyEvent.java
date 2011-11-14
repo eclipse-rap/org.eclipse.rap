@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.events;
 
@@ -16,6 +16,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
+
 
 /**
  * Instances of this class are sent as a result of keys being pressed and
@@ -94,7 +95,7 @@ public class KeyEvent extends TypedEvent {
    *
    * @param event the untyped event containing the information
    */
-  public KeyEvent( final Event event ) {
+  public KeyEvent( Event event ) {
     super( event );
     this.character = event.character;
     this.keyCode = event.keyCode;
@@ -102,12 +103,12 @@ public class KeyEvent extends TypedEvent {
     this.doit = event.doit;
   }
 
-  public KeyEvent( final Control source, final int id ) {
+  public KeyEvent( Control source, int id ) {
     super( source, id );
     doit = true;
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case KEY_PRESSED:
         ( ( KeyListener )listener ).keyPressed( this );
@@ -149,19 +150,15 @@ public class KeyEvent extends TypedEvent {
            + "}";
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final KeyListener listener )
-  {
+  public static void addListener( Adaptable adaptable, KeyListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final KeyListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, KeyListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 }

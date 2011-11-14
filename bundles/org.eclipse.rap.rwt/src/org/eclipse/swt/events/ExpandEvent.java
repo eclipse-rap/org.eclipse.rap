@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.events;
 
@@ -15,6 +15,7 @@ import org.eclipse.rwt.Adaptable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.EventUtil;
 import org.eclipse.swt.widgets.*;
+
 
 /**
  * Instances of this class are sent as a result of expand item being expanded
@@ -44,7 +45,7 @@ public class ExpandEvent extends SelectionEvent {
    *
    * @param event the untyped event containing the information
    */
-  public ExpandEvent( final Event event ) {
+  public ExpandEvent( Event event ) {
     super( event );
   }
 
@@ -57,11 +58,11 @@ public class ExpandEvent extends SelectionEvent {
    * code.
    * </p>
    */
-  public ExpandEvent( final Widget widget, final Widget item, final int id ) {
+  public ExpandEvent( Widget widget, Widget item, int id ) {
     super( widget, item, id );
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case EXPAND:
         ( ( ExpandListener )listener ).itemExpanded( this );
@@ -82,23 +83,21 @@ public class ExpandEvent extends SelectionEvent {
     return EventUtil.isAccessible( widget );
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final ExpandListener listener )
+  public static void addListener( Adaptable adaptable, ExpandListener listener )
   {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final ExpandListener listener )
+  public static void removeListener( Adaptable adaptable, ExpandListener listener )
   {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 

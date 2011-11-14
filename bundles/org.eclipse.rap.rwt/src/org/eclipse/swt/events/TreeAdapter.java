@@ -1,15 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.events;
+
 
 /**
  * This adapter class provides default implementations for the methods described
@@ -30,7 +30,7 @@ public abstract class TreeAdapter implements TreeListener {
    * 
    * @param e an event containing information about the tree operation
    */
-  public void treeCollapsed( final TreeEvent e ) {
+  public void treeCollapsed( TreeEvent e ) {
   }
 
   /**
@@ -38,6 +38,6 @@ public abstract class TreeAdapter implements TreeListener {
    * 
    * @param e an event containing information about the tree operation
    */
-  public void treeExpanded( final TreeEvent e ) {
+  public void treeExpanded( TreeEvent e ) {
   }
 }
