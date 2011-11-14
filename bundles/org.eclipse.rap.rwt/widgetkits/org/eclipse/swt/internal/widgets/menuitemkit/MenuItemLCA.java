@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
@@ -30,36 +30,36 @@ public final class MenuItemLCA extends AbstractWidgetLCA {
   private static final RadioMenuItemLCA RADIO_MENU_ITEM_LCA = new RadioMenuItemLCA();
   private static final SeparatorMenuItemLCA SEPARATOR_MENU_ITEM_LCA = new SeparatorMenuItemLCA();
 
-  public void preserveValues( final Widget widget ) {
+  public void preserveValues( Widget widget ) {
     MenuItem menuItem = ( MenuItem )widget;
     getDelegateLCA( menuItem ).preserveValues( menuItem );
   }
   
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
     MenuItem menuItem = ( MenuItem )widget;
     getDelegateLCA( menuItem ).readData( menuItem );
   }
   
-  public void renderInitialization( final Widget widget ) throws IOException {
+  public void renderInitialization( Widget widget ) throws IOException {
     MenuItem menuItem = ( MenuItem )widget;
     getDelegateLCA( menuItem ).renderInitialization( menuItem );
   }
 
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     MenuItem menuItem = ( MenuItem )widget;
     getDelegateLCA( menuItem ).renderChanges( menuItem );
   }
 
-  public void renderDispose( final Widget widget ) throws IOException {
+  public void renderDispose( Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
   
-  private static boolean isTopLevelMenuBarItem( final MenuItem menuItem ) {
+  private static boolean isTopLevelMenuBarItem( MenuItem menuItem ) {
     return ( menuItem.getParent().getStyle() & SWT.BAR ) != 0;
   }
   
-  private static MenuItemDelegateLCA getDelegateLCA( final MenuItem menuItem ) 
+  private static MenuItemDelegateLCA getDelegateLCA( MenuItem menuItem ) 
   {
     MenuItemDelegateLCA result;
     if( isTopLevelMenuBarItem( menuItem ) ) {

@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.groupkit;
 
 import java.io.IOException;
@@ -29,7 +28,7 @@ public class GroupLCA extends AbstractWidgetLCA {
 
   private static final String PROP_TEXT = "text";
 
-  public void preserveValues( final Widget widget ) {
+  public void preserveValues( Widget widget ) {
     Group group = ( Group )widget;
     ControlLCAUtil.preserveValues( group );
     WidgetLCAUtil.preserveCustomVariant( group );

@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
@@ -24,31 +24,31 @@ final class BarMenuItemLCA extends MenuItemDelegateLCA {
 
   private static final String ITEM_TYPE_BAR = "bar";
   
-  void preserveValues( final MenuItem menuItem ) {
+  void preserveValues( MenuItem menuItem ) {
     ItemLCAUtil.preserve( menuItem );
     MenuItemLCAUtil.preserveEnabled( menuItem );
     WidgetLCAUtil.preserveCustomVariant( menuItem );
     WidgetLCAUtil.preserveHelpListener( menuItem );
   }
 
-  void readData( final MenuItem menuItem ) {
+  void readData( MenuItem menuItem ) {
     WidgetLCAUtil.processHelp( menuItem );
   }
 
-  void renderInitialization( final MenuItem menuItem ) throws IOException {
+  void renderInitialization( MenuItem menuItem ) throws IOException {
     MenuItemLCAUtil.newItem( menuItem, "org.eclipse.rwt.widgets.MenuItem", ITEM_TYPE_BAR );
   }
 
   // TODO [tb] the client-side menuItem supports images, but the menubar 
   //           ignores them in its layout, so it is currently not rendered  
-  void renderChanges( final MenuItem menuItem ) throws IOException {
+  void renderChanges( MenuItem menuItem ) throws IOException {
     writeText( menuItem );
     MenuItemLCAUtil.writeEnabled( menuItem );
     WidgetLCAUtil.writeCustomVariant( menuItem );
     WidgetLCAUtil.writeHelpListener( menuItem );
   }
 
-  private static void writeText( final MenuItem menuItem ) throws IOException {
+  private static void writeText( MenuItem menuItem ) throws IOException {
     String text = menuItem.getText();
     if( WidgetLCAUtil.hasChanged( menuItem, Props.TEXT, text ) ) {
       JSWriter writer = JSWriter.getWriterFor( menuItem );

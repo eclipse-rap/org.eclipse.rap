@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.listkit;
 
 import java.io.IOException;
@@ -21,6 +20,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.widgets.*;
+
 
 public class ListLCA extends AbstractWidgetLCA {
 
@@ -42,7 +42,7 @@ public class ListLCA extends AbstractWidgetLCA {
   private static final Integer DEFAULT_TOP_INDEX = new Integer( 0 );
   private static final Point DEFAULT_ITEM_DIMENSIONS = new Point( 0, 0 );
 
-  public void preserveValues( final Widget widget ) {
+  public void preserveValues( Widget widget ) {
     List list = ( List  )widget;
     ControlLCAUtil.preserveValues( list );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
@@ -58,7 +58,7 @@ public class ListLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.preserveCustomVariant( list );
   }
 
-  public void readData( final Widget widget ) {
+  public void readData( Widget widget ) {
     List list = ( List )widget;
     readTopIndex( list );
     readSelection( list );
@@ -70,7 +70,7 @@ public class ListLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.processHelp( list );
   }
 
-  public void renderInitialization( final Widget widget ) throws IOException {
+  public void renderInitialization( Widget widget ) throws IOException {
     List list = ( List )widget;
     JSWriter writer = JSWriter.getWriterFor( list );
     Boolean multiSelection = Boolean.valueOf( !isSingle( list ) );
@@ -79,7 +79,7 @@ public class ListLCA extends AbstractWidgetLCA {
   }
 
   // TODO [rh] keep scroll position, even when exchanging items
-  public void renderChanges( final Widget widget ) throws IOException {
+  public void renderChanges( Widget widget ) throws IOException {
     List list = ( List )widget;
     // order of writeChanges, writeItems, writeSelection, writeFocus is crucial
     ControlLCAUtil.writeChanges( list );
@@ -93,7 +93,7 @@ public class ListLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.writeCustomVariant( list );
   }
 
-  public void renderDispose( final Widget widget ) throws IOException {
+  public void renderDispose( Widget widget ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( widget );
     writer.dispose();
   }
@@ -101,7 +101,7 @@ public class ListLCA extends AbstractWidgetLCA {
   ////////////////////////////////////
   // Helping methods to preserve state
 
-  private static void preserveSelection( final List list ) {
+  private static void preserveSelection( List list ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( list );
     Object selection;
     if( isSingle( list ) ) {
@@ -115,7 +115,7 @@ public class ListLCA extends AbstractWidgetLCA {
   ///////////////////////////////////////////
   // Helping methods to write JavaScript code
 
-  private static void writeItems( final List list ) throws IOException {
+  private static void writeItems( List list ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( list );
     String[] items = list.getItems();
     if( WidgetLCAUtil.hasChanged( list, PROP_ITEMS, items, DEFAUT_ITEMS ) ) {
@@ -128,7 +128,7 @@ public class ListLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeSelection( final List list ) throws IOException {
+  private static void writeSelection( List list ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( list );
     String prop = PROP_SELECTION;
     if( isSingle( list ) ) {
@@ -155,7 +155,7 @@ public class ListLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeFocusIndex( final List list ) throws IOException {
+  private static void writeFocusIndex( List list ) throws IOException {
     String prop = PROP_FOCUS_INDEX;
     Integer newValue = new Integer( list.getFocusIndex() );
     if( WidgetLCAUtil.hasChanged( list, prop, newValue, DEFAULT_FOCUS_INDEX ) ) {
@@ -164,13 +164,13 @@ public class ListLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeTopIndex( final List list ) throws IOException {
+  private static void writeTopIndex( List list ) throws IOException {
     JSWriter writer = JSWriter.getWriterFor( list );
     Integer newValue = new Integer( list.getTopIndex() );
     writer.set( PROP_TOP_INDEX, "topIndex", newValue, DEFAULT_TOP_INDEX );
   }
 
-  private static void writeScrollBars( final List list )
+  private static void writeScrollBars( List list )
     throws IOException
   {
     boolean hasHBar = hasHScrollBar( list ).booleanValue();
@@ -189,9 +189,7 @@ public class ListLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void updateSelectionListeners( final List list )
-    throws IOException
-  {
+  private static void updateSelectionListeners( List list ) throws IOException {
     String prop = Props.SELECTION_LISTENERS;
     Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( list ) );
     Boolean defValue = Boolean.FALSE;
@@ -202,9 +200,7 @@ public class ListLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeItemDimensions( final List list )
-    throws IOException
-  {
+  private static void writeItemDimensions( List list ) throws IOException {
     String prop = PROP_ITEM_DIMENSIONS;
     Point newValue = getItemDimensions( list );
     Point defValue = DEFAULT_ITEM_DIMENSIONS;
@@ -221,7 +217,7 @@ public class ListLCA extends AbstractWidgetLCA {
   ////////////////////////////////////////////
   // Helping methods to read client-side state
 
-  private static void readSelection( final List list ) {
+  private static void readSelection( List list ) {
     String value = WidgetLCAUtil.readPropertyValue( list, "selection" );
     if( value != null ) {
       String[] indiceStrings;
@@ -238,14 +234,14 @@ public class ListLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void readTopIndex( final List list ) {
+  private static void readTopIndex( List list ) {
     String value = WidgetLCAUtil.readPropertyValue( list, "topIndex" );
     if( value != null ) {
       list.setTopIndex( NumberFormatUtil.parseInt( value ) );
     }
   }
 
-  private static void readFocusIndex( final List list ) {
+  private static void readFocusIndex( List list ) {
     String paramValue = WidgetLCAUtil.readPropertyValue( list, "focusIndex" );
     if( paramValue != null ) {
       int focusIndex = NumberFormatUtil.parseInt( paramValue );
@@ -258,23 +254,23 @@ public class ListLCA extends AbstractWidgetLCA {
   //////////////////
   // Helping methods
 
-  private static boolean isSingle( final List list ) {
+  private static boolean isSingle( List list ) {
     return ( list.getStyle() & SWT.SINGLE ) != 0;
   }
 
-  private static Boolean hasHScrollBar( final List list ) {
+  private static Boolean hasHScrollBar( List list ) {
     Object adapter = list.getAdapter( IListAdapter.class );
     IListAdapter listAdapter = ( IListAdapter )adapter;
     return Boolean.valueOf( listAdapter.hasHScrollBar() );
   }
 
-  private static Boolean hasVScrollBar( final List list ) {
+  private static Boolean hasVScrollBar( List list ) {
     Object adapter = list.getAdapter( IListAdapter.class );
     IListAdapter listAdapter = ( IListAdapter )adapter;
     return Boolean.valueOf( listAdapter.hasVScrollBar() );
   }
 
-  private static Point getItemDimensions( final List list ) {
+  private static Point getItemDimensions( List list ) {
     Object adapter = list.getAdapter( IListAdapter.class );
     IListAdapter listAdapter = ( IListAdapter )adapter;
     return listAdapter.getItemDimensions();
