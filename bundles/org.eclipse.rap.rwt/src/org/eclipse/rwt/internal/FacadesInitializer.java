@@ -15,7 +15,7 @@ import org.eclipse.rwt.internal.util.ClassUtil;
 
 public final class FacadesInitializer {
 
-  public static Object load( final Class facade ) {
+  public static Object load( Class facade ) {
     String name = facade.getName();
     return ClassUtil.newInstance( facade.getClassLoader(), name + "Impl" );
   }

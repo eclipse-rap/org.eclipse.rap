@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt;
 
@@ -43,7 +44,7 @@ final class Utf8ResourceBundle {
   private static class Utf8PropertyResourceBundle extends ResourceBundle {
     private PropertyResourceBundle bundle;
 
-    private Utf8PropertyResourceBundle( final PropertyResourceBundle bundle ) {
+    private Utf8PropertyResourceBundle( PropertyResourceBundle bundle ) {
       this.bundle = bundle;
     }
 
@@ -60,7 +61,7 @@ final class Utf8ResourceBundle {
         if( result != null ) {
           result = new String( result.getBytes( "ISO-8859-1" ), "UTF-8" );
         }
-      } catch( final UnsupportedEncodingException uee ) {
+      } catch( UnsupportedEncodingException uee ) {
         // ignore
       }
       return result;

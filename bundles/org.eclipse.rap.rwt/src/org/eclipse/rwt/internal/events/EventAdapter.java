@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,7 +101,7 @@ public class EventAdapter implements IEventAdapter, SerializableCompatibility {
     return result;
   }
 
-  public boolean hasListener( final Class listenerType ) {
+  public boolean hasListener( Class listenerType ) {
     ParamCheck.notNull( listenerType, "listenerType" );
     checkListenerType( listenerType );
     boolean result = false;
@@ -171,7 +171,7 @@ public class EventAdapter implements IEventAdapter, SerializableCompatibility {
     }
   }
 
-  private static void checkListenerType( final Class listenerType ) {
+  private static void checkListenerType( Class listenerType ) {
     if( !EventListener.class.isAssignableFrom( listenerType ) ) {
       String msg =   "Parameter 'listenerType' must implement '" 
                    + EventListener.class.getName() 

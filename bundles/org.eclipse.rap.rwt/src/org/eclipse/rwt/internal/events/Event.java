@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.events;
 
@@ -15,13 +15,15 @@ import java.util.EventObject;
 
 import org.eclipse.rwt.Adaptable;
 
+
 public abstract class Event extends EventObject {
+
   private static final long serialVersionUID = 1L;
   
   private final Object source;
   private final int id;
   
-  public Event( final Object source, final int id ) {
+  public Event( Object source, int id ) {
     super( source );
     this.source = source;
     this.id = id;
@@ -50,32 +52,28 @@ public abstract class Event extends EventObject {
     return ( Adaptable )source;
   }
 
-  protected abstract void dispatchToObserver( final Object listener );
+  protected abstract void dispatchToObserver( Object listener );
 
   protected abstract Class getListenerType();
 
-  protected static boolean hasListener( final Adaptable adaptable,
-                                        final Class listenerType )
-  {
+  protected static boolean hasListener( Adaptable adaptable, Class listenerType ) {
     return getEventAdapter( adaptable ).hasListener( listenerType );
   }
 
-  protected static Object[] getListener( final Adaptable adaptable, 
-                                         final Class listenerType )
-  {
+  protected static Object[] getListener( Adaptable adaptable, Class listenerType ) {
     return getEventAdapter( adaptable ).getListener( listenerType );
   }
 
-  protected static void addListener( final Adaptable adaptable, 
-                                     final Class listenerType, 
-                                     final EventListener listener )
+  protected static void addListener( Adaptable adaptable,
+                                     Class listenerType,
+                                     EventListener listener )
   {
     getEventAdapter( adaptable ).addListener( listenerType, listener );
   }
 
-  protected static void removeListener( final Adaptable adaptable, 
-                                        final Class listenerType,
-                                        final EventListener listener )
+  protected static void removeListener( Adaptable adaptable,
+                                        Class listenerType,
+                                        EventListener listener )
   {
     getEventAdapter( adaptable ).removeListener( listenerType, listener );
   }

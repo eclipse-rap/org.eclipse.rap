@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
@@ -14,7 +15,7 @@ import org.eclipse.rwt.internal.service.ServiceContext;
 
 public interface IUIThreadHolder {
 
-  void setServiceContext( final ServiceContext serviceContext );
+  void setServiceContext( ServiceContext serviceContext );
 
   void updateServiceContext();
 

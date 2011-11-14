@@ -28,7 +28,7 @@ public final class UITestUtil {
     enabled = Boolean.valueOf( property ).booleanValue();
   }
 
-  public static void writeId( final Widget widget ) throws IOException {
+  public static void writeId( Widget widget ) throws IOException {
     if( isEnabled() && !isInitialized( widget ) ) {
       String id = WidgetUtil.getId( widget );
       if( !isValidId( id ) ) {
@@ -48,12 +48,12 @@ public final class UITestUtil {
   //////////////////
   // helping methods
 
-  private static boolean isInitialized( final Widget widget ) {
+  private static boolean isInitialized( Widget widget ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     return adapter.isInitialized();
   }
 
-  static boolean isValidId( final String id ) {
+  static boolean isValidId( String id ) {
     // see http://www.w3.org/TR/html401/types.html#type-cdata (id and name)
     // for what characters are allowed
     boolean result
@@ -72,7 +72,7 @@ public final class UITestUtil {
     return result;
   }
 
-  private static boolean isNumber( final char ch ) {
+  private static boolean isNumber( char ch ) {
     return ( ch >= '0' && ch <= '9' );
   }
 

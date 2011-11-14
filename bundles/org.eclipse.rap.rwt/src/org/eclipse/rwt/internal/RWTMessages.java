@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal;
 
@@ -25,11 +26,11 @@ public final class RWTMessages {
     // prevent instantiation
   }
 
-  public static String getMessage( final String key ) {
+  public static String getMessage( String key ) {
     return getMessage( key, BUNDLE_NAME );
   }
 
-  public static String getMessage( final String key, final String bundleName ) {
+  public static String getMessage( String key, String bundleName ) {
     String result = key;
     ResourceBundle bundle = null;
     try {
@@ -46,12 +47,12 @@ public final class RWTMessages {
     return result;
   }
 
-  private static ResourceBundle getBundle( final String baseName ) {
+  private static ResourceBundle getBundle( String baseName ) {
     ResourceBundle result = null;
     try {
       ClassLoader loader = RWTMessages.class.getClassLoader();
       result = ResourceBundle.getBundle( baseName, RWT.getLocale(), loader );
-    } catch( final RuntimeException re ) {
+    } catch( RuntimeException re ) {
       String msg = "Warning: could not retrieve resource bundle "
                  + "- loading system default";
       ServletLog.log( msg, re );

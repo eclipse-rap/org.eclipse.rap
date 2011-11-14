@@ -55,7 +55,7 @@ public class SingletonManager implements SerializableCompatibility {
     }
   }
   
-  private Object getTypeLock( final Class type ) {
+  private Object getTypeLock( Class type ) {
     Object result = typeLocks.get( type, new IInstanceCreator<Object>() {
       public Object createInstance() {
         return new Object();

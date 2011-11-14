@@ -42,11 +42,11 @@ public final class DisplayUtil {
     return result;
   }
   
-  public static String getId( final Display display ) {
+  public static String getId( Display display ) {
     return getAdapter( display ).getId();
   }
   
-  private static void throwAdapterException( final Class clazz ) {
+  private static void throwAdapterException( Class clazz ) {
     String text =   "Could not retrieve an instance of ''{0}''. Probably the "
                   + "AdapterFactory was not properly registered.";
     Object[] param = new Object[]{ clazz.getName() };

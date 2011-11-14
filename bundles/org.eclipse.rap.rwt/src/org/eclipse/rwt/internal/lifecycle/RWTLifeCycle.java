@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
@@ -25,7 +25,9 @@ import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 
+
 public class RWTLifeCycle extends LifeCycle {
+
   private static final Integer ZERO = new Integer( 0 );
 
   private static final String CURRENT_PHASE
@@ -72,7 +74,7 @@ public class RWTLifeCycle extends LifeCycle {
   };
 
   private static final class PhaseExecutionError extends ThreadDeath {
-    public PhaseExecutionError( final Throwable cause ) {
+    public PhaseExecutionError( Throwable cause ) {
       initCause( cause );
     }
   }
@@ -134,11 +136,11 @@ public class RWTLifeCycle extends LifeCycle {
     } while( runnable != null );
   }
 
-  public void addPhaseListener( final PhaseListener listener ) {
+  public void addPhaseListener( PhaseListener listener ) {
     phaseListenerManager.addPhaseListener( listener );
   }
 
-  public void removePhaseListener( final PhaseListener listener ) {
+  public void removePhaseListener( PhaseListener listener ) {
     phaseListenerManager.removePhaseListener( listener );
   }
 
@@ -147,7 +149,7 @@ public class RWTLifeCycle extends LifeCycle {
     getUIThreadHolder().switchThread();
   }
 
-  private static void setRequestThreadRunnable( final Runnable runnable ) {
+  private static void setRequestThreadRunnable( Runnable runnable ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     stateInfo.setAttribute( REQUEST_THREAD_RUNNABLE, runnable );
   }
@@ -289,7 +291,7 @@ public class RWTLifeCycle extends LifeCycle {
     sessionStoreImpl.setShutdownAdapter( adapter );
   }
 
-  public void setPhaseOrder( final IPhase[] phaseOrder ) {
+  public void setPhaseOrder( IPhase[] phaseOrder ) {
     IServiceStateInfo stateInfo = ContextProvider.getContext().getStateInfo();
     stateInfo.setAttribute( PHASE_ORDER, phaseOrder );
   }

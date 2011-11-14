@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
@@ -30,7 +30,7 @@ final class UIThread extends Thread implements IUIThreadHolder, ISessionShutdown
   private Runnable shutdownCallback;
   private volatile boolean uiThreadTerminating;
 
-  public UIThread( final Runnable runnable ) {
+  public UIThread( Runnable runnable ) {
     super( runnable );
   }
 

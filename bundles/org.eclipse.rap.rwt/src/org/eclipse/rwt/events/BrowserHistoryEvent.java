@@ -1,17 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
- *   Ralf Zahn (ARS) - browser history support (Bug 283291)
+ *    EclipseSource - initial API and implementation
+ *    Ralf Zahn (ARS) - browser history support (Bug 283291)
  ******************************************************************************/
 package org.eclipse.rwt.events;
 
 import org.eclipse.rwt.*;
 import org.eclipse.rwt.internal.events.Event;
+
 
 /**
  * Instances of this class provide information about a browser history
@@ -33,12 +35,12 @@ public final class BrowserHistoryEvent extends Event {
    */
   public String entryId;
 
-  public BrowserHistoryEvent( final Object source, final String entryId ) {
+  public BrowserHistoryEvent( Object source, String entryId ) {
     super( source, NAVIGATED );
     this.entryId = entryId;
   }
 
-  protected void dispatchToObserver( final Object listener ) {
+  protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case NAVIGATED:
         ( ( BrowserHistoryListener )listener ).navigated( this );
@@ -52,23 +54,19 @@ public final class BrowserHistoryEvent extends Event {
     return LISTENER;
   }
 
-  public static void addListener( final Adaptable adaptable,
-                                  final BrowserHistoryListener listener )
-  {
+  public static void addListener( Adaptable adaptable, BrowserHistoryListener listener ) {
     addListener( adaptable, LISTENER, listener );
   }
 
-  public static void removeListener( final Adaptable adaptable,
-                                     final BrowserHistoryListener listener )
-  {
+  public static void removeListener( Adaptable adaptable, BrowserHistoryListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
 
-  public static boolean hasListener( final Adaptable adaptable ) {
+  public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }
 
-  public static Object[] getListeners( final Adaptable adaptable ) {
+  public static Object[] getListeners( Adaptable adaptable ) {
     return getListener( adaptable, LISTENER );
   }
 }
