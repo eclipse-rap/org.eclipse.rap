@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme.css;
 
@@ -36,7 +36,7 @@ public final class StyleSheet {
     return styleRules.clone();
   }
 
-  public ConditionalValue[] getValues( final String elementName, final String propertyName ) {
+  public ConditionalValue[] getValues( String elementName, String propertyName ) {
     List<ConditionalValue> buffer = new ArrayList<ConditionalValue>();
     for( int i = 0; i < selectorWrappers.length; i++ ) {
       SelectorWrapper selectorWrapper = selectorWrappers[ i ];
@@ -119,10 +119,7 @@ public final class StyleSheet {
     public final IStylePropertyMap propertyMap;
     public final int position;
 
-    public SelectorWrapper( final Selector selector,
-                            final IStylePropertyMap propertyMap,
-                            final int position )
-    {
+    public SelectorWrapper( Selector selector, IStylePropertyMap propertyMap, int position ) {
       this.selector = selector;
       this.propertyMap = propertyMap;
       this.position = position;

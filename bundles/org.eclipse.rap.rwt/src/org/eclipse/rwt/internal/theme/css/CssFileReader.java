@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme.css;
 
@@ -20,6 +21,7 @@ import org.eclipse.rwt.apache.batik.css.parser.ParseException;
 import org.eclipse.rwt.internal.theme.ThemeManagerException;
 import org.eclipse.rwt.resources.ResourceLoader;
 import org.w3c.css.sac.*;
+
 
 public class CssFileReader {
 
@@ -40,8 +42,7 @@ public class CssFileReader {
    * Reads a style sheet from a file. The loader is used to load the file and
    * resources referenced in the CSS.
    */
-  public static StyleSheet readStyleSheet( final String fileName,
-                                           final ResourceLoader loader )
+  public static StyleSheet readStyleSheet( String fileName, ResourceLoader loader )
     throws IOException
   {
     if( fileName == null ) {
@@ -58,10 +59,9 @@ public class CssFileReader {
    * Reads a style sheet from an input stream. The fileName is only used for
    * error messages. The loader is used to load resources referenced in the CSS.
    */
-  public static StyleSheet readStyleSheet( final InputStream inputStream,
-                                           final String fileName,
-                                           final ResourceLoader loader )
-    throws IOException
+  public static StyleSheet readStyleSheet( InputStream inputStream,
+                                           String fileName,
+                                           ResourceLoader loader ) throws IOException
   {
     if( inputStream == null ) {
       throw new NullPointerException( "inputStream" );
@@ -72,10 +72,9 @@ public class CssFileReader {
     return parseStyleSheet( inputStream, fileName, loader );
   }
 
-  private static StyleSheet parseStyleSheet( final InputStream inputStream,
-                                             final String fileName,
-                                             final ResourceLoader loader )
-    throws IOException
+  private static StyleSheet parseStyleSheet( InputStream inputStream,
+                                             String fileName,
+                                             ResourceLoader loader ) throws IOException
   {
     StyleSheet styleSheet;
     try {
@@ -89,9 +88,7 @@ public class CssFileReader {
     return styleSheet;
   }
 
-  StyleSheet parse( final InputStream inputStream,
-                    final String uri,
-                    final ResourceLoader loader )
+  StyleSheet parse( InputStream inputStream, String uri, ResourceLoader loader )
     throws CSSException, IOException
   {
     InputSource source = new InputSource();
@@ -118,7 +115,7 @@ public class CssFileReader {
     return result;
   }
 
-  void addProblem( final CSSException exception ) {
+  void addProblem( CSSException exception ) {
     // TODO [rst] Logging instead of sysout
     System.err.println( exception );
     problems.add( exception );
@@ -127,37 +124,31 @@ public class CssFileReader {
 
     private final List<CSSException> problems;
 
-    public ErrorHandlerImpl( final CssFileReader reader ) {
+    public ErrorHandlerImpl( CssFileReader reader ) {
       problems = reader.problems;
     }
 
     // TODO [rst] decent logging instead of sysout
-    public void warning( final CSSParseException exception )
-      throws CSSException
-    {
+    public void warning( CSSParseException exception ) throws CSSException {
       String problem = createProblemDescription( "WARNING: ", exception );
       System.err.println( problem );
       problems.add( exception );
     }
 
-    public void error( final CSSParseException exception ) throws CSSException {
+    public void error( CSSParseException exception ) throws CSSException {
       String problem = createProblemDescription( "ERROR: ", exception );
       System.err.println( problem );
       problems.add( exception );
     }
 
-    public void fatalError( final CSSParseException exception )
-      throws CSSException
-    {
+    public void fatalError( CSSParseException exception ) throws CSSException {
       String problem = createProblemDescription( "FATAL ERROR: ", exception );
       System.err.println( problem );
       problems.add( exception );
       throw exception;
     }
 
-    private static String createProblemDescription( final String type,
-                                                    final CSSParseException exception )
-    {
+    private static String createProblemDescription( String type, CSSParseException exception ) {
       String pattern = "{0}: {1} in {2} at pos [{3}:{4}]";
       Object[] arguments = new Object[]{
         type,
