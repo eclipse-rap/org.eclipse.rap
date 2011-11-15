@@ -19,7 +19,7 @@ class Probe implements SerializableCompatibility {
   
   final static String DEFAULT_PROBE_STRING;
   static {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     for( int i = 33; i < 122; i++ ) {
       if( i != 34 && i != 39 ) {
         result.append( ( char ) i );

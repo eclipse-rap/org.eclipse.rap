@@ -17,11 +17,11 @@ package org.eclipse.rwt.internal.theme;
  */
 public final class JsonObject extends JsonValue {
 
-  private final StringBuffer buffer;
+  private final StringBuilder buffer;
   private int count = 0;
 
   public JsonObject() {
-    buffer = new StringBuffer();
+    buffer = new StringBuilder();
     buffer.append( "{" );
   }
 

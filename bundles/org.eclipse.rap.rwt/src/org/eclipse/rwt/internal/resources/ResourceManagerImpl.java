@@ -321,14 +321,14 @@ public class ResourceManagerImpl implements IResourceManager {
     String result;
     String newFileName = fileName.replace( '\\', '/' );
     if( isDeliveryMode( DELIVER_FROM_DISK ) ) {
-      StringBuffer url = new StringBuffer();
+      StringBuilder url = new StringBuilder();
       url.append( RESOURCES );
       url.append( "/" );
       String escapedFilename = escapeFilename( newFileName );
       url.append( versionedResourceName( escapedFilename, version ) );
       result = url.toString();
     } else {
-      StringBuffer url = new StringBuffer();
+      StringBuilder url = new StringBuilder();
       url.append( URLHelper.getURLString() );
       URLHelper.appendFirstParam( url, RESOURCE, newFileName );
       if( version != null ) {
@@ -438,7 +438,7 @@ public class ResourceManagerImpl implements IResourceManager {
   }
 
   private File getDiskLocation( String name, Integer version ) {
-    StringBuffer filename = new StringBuffer();
+    StringBuilder filename = new StringBuilder();
     filename.append( configuration.getContextDirectory().toString() );
     filename.append( File.separator );
     filename.append( RESOURCES );
@@ -456,7 +456,7 @@ public class ResourceManagerImpl implements IResourceManager {
   }
 
   private static File getTempLocation( String name, Integer version ) {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     result.append( System.getProperty( "java.io.tmpdir" ) );
     result.append( File.separator );
     result.append( System.getProperty( "user.name" ) );

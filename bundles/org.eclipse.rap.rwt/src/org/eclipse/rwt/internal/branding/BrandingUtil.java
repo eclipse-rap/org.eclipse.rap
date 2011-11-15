@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,7 @@ public final class BrandingUtil {
 
   public static String headerMarkup( AbstractBranding branding ) {
     Header[] headers = branding.getHeaders();
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     appendFavIconMarkup( buffer, branding );
     if( headers != null ) {
       for( int i = 0; i < headers.length; i++ ) {
@@ -68,7 +68,7 @@ public final class BrandingUtil {
   //////////////////
   // Helping methods
   
-  private static void appendFavIconMarkup( StringBuffer buffer, AbstractBranding branding ) {
+  private static void appendFavIconMarkup( StringBuilder buffer, AbstractBranding branding ) {
     String favIcon = branding.getFavIcon();
     if( favIcon != null && !"".equals( favIcon ) ) {
       String[] names = new String[] { 
@@ -88,7 +88,7 @@ public final class BrandingUtil {
     }
   }
 
-  private static String appendHeaderMarkup( StringBuffer buffer, Header header ) {
+  private static String appendHeaderMarkup( StringBuilder buffer, Header header ) {
     buffer.append( "<" );
     buffer.append( header.getTagName() );
     buffer.append( " " );

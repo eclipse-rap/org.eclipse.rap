@@ -34,7 +34,7 @@ public final class QxTheme {
   private final String title;
   private final int type;
   private final String base;
-  private final StringBuffer code;
+  private final StringBuilder code;
   private boolean headWritten;
   private boolean tailWritten;
   private boolean valueWritten;
@@ -52,7 +52,7 @@ public final class QxTheme {
     this.title = title;
     this.type = checkType( type );
     this.base = base;
-    this.code = new StringBuffer();
+    this.code = new StringBuilder();
     headWritten = false;
     tailWritten = false;
     valueWritten = false;

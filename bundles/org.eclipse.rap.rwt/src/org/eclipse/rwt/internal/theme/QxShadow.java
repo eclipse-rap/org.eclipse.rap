@@ -99,7 +99,7 @@ public class QxShadow implements QxType {
   }
 
   public String toDefaultString() {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     if( color == null ) {
       buffer.append( "none" );
     } else {
@@ -129,7 +129,7 @@ public class QxShadow implements QxType {
   }
 
   public String toString() {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append( inset );
     buffer.append( ", " );
     buffer.append( offsetX );

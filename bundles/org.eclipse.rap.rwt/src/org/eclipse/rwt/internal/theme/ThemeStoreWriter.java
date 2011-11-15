@@ -34,7 +34,7 @@ public final class ThemeStoreWriter {
   public String createJs() {
     QxType[] allValues = getValuesFromAllThemes();
     Map valuesMap = createValuesMap( allValues );
-    StringBuffer jsCode = new StringBuffer();
+    StringBuilder jsCode = new StringBuilder();
     jsCode.append( "( function( ts ) {\n" );
     jsCode.append( "ts.defineValues( " );
     jsCode.append( createJsonFromValuesMap( valuesMap ) );

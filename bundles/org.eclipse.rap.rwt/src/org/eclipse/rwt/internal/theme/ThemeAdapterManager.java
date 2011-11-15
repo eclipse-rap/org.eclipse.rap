@@ -63,7 +63,7 @@ public final class ThemeAdapterManager {
     String className = LifeCycleAdapterUtil.getSimpleClassName( clazz );
     String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( clazz );
     for( int i = 0; result == null && i < variants.length; i++ ) {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append( variants[ i ] );
       buffer.append( "." );
       buffer.append( className );

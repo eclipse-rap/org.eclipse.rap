@@ -93,7 +93,7 @@ public class JSFile {
     }
   
     private String getMessage( String severity, String message ) {
-      StringBuffer result = new StringBuffer();
+      StringBuilder result = new StringBuilder();
       result.append( "\n[" );
       result.append( severity );
       result.append( "] " );

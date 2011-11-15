@@ -109,7 +109,7 @@ public class QxAnimation implements QxType {
   }
 
   public String toDefaultString() {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     for( int i = 0; i < animations.length; i++ ) {
       if( result.length() != 0 ) {
         result.append( ", " );
@@ -128,7 +128,7 @@ public class QxAnimation implements QxType {
   }
 
   public static String toCamelCaseString( String string ) {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     boolean toUpperCase = false;
     for( int i = 0; i < string.length(); i++ ) {
       char ch = string.charAt( i );

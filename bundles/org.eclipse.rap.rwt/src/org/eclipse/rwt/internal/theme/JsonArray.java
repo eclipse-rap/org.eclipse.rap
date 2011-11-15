@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,12 +17,12 @@ package org.eclipse.rwt.internal.theme;
  */
 public final class JsonArray extends JsonValue {
 
-  private final StringBuffer buffer;
+  private final StringBuilder buffer;
 
   private int count = 0;
 
   public JsonArray() {
-    buffer = new StringBuffer();
+    buffer = new StringBuilder();
     buffer.append( "[" );
   }
 

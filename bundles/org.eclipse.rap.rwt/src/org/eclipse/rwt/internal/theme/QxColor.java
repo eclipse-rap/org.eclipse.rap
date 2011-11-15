@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -209,7 +209,7 @@ public class QxColor implements QxType {
   }
 
   public static String toHtmlString( int red, int green, int blue ) {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append( "#" );
     sb.append( getHexStr( red ) );
     sb.append( getHexStr( green ) );
@@ -231,7 +231,7 @@ public class QxColor implements QxType {
   }
 
   private static String toRgbaString( int red, int green, int blue, float alpha ) {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append( "rgba(" );
     sb.append( red );
     sb.append( "," );

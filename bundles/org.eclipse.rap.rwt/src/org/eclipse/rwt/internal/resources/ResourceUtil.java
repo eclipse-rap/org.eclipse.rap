@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -85,7 +85,7 @@ public final class ResourceUtil {
   }
 
   static byte[] readText( InputStream is, String charset, boolean compress ) throws IOException {
-    StringBuffer text = new StringBuffer();
+    StringBuilder text = new StringBuilder();
     InputStreamReader reader = new InputStreamReader( is, charset );
     BufferedReader br = new BufferedReader( reader );
     char[] buffer = new char[ 8096 ];
@@ -150,7 +150,7 @@ public final class ResourceUtil {
     return con.getInputStream();
   }
 
-  static void compress( StringBuffer javaScript ) throws IOException {
+  static void compress( StringBuilder javaScript ) throws IOException {
     JSFile jsFile = new JSFile( javaScript.toString() );
     javaScript.setLength( 0 );
     javaScript.append( jsFile.compress() );

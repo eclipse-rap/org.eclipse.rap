@@ -92,7 +92,7 @@ public class QxFont implements QxType {
 
   public String getFamilyAsString() {
     if( familyAsString == null ) {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       for( int i = 0; i < family.length; i++ ) {
         if( i > 0 ) {
           buffer.append( ", " );
@@ -112,7 +112,7 @@ public class QxFont implements QxType {
   }
 
   public String toDefaultString() {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     if( bold ) {
       result.append( "bold " );
     }
@@ -151,7 +151,7 @@ public class QxFont implements QxType {
   }
 
   public String toString() {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     result.append( "QxFont{ " );
     if( bold ) {
       result.append( "bold " );

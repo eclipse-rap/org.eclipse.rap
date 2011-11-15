@@ -87,7 +87,7 @@ public class QxBoxDimensions implements QxType {
   }
 
   public String toDefaultString() {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append( top + "px" );
     if( right != top || bottom != top || left != top ) {
       buffer.append( " " + right + "px" );

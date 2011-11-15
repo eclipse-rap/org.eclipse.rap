@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,7 +55,7 @@ public class ThemeManager {
   //      optimized solution for tests. Think about a less intrusive solution.
   public static ResourceLoader STANDARD_RESOURCE_LOADER = new ResourceLoader() {
     ClassLoader classLoader = getClass().getClassLoader();
-    public InputStream getResourceAsStream( final String resourceName ) throws IOException {
+    public InputStream getResourceAsStream( String resourceName ) throws IOException {
       return classLoader.getResourceAsStream( resourceName );
     }
   };
@@ -116,7 +117,7 @@ public class ThemeManager {
     initialized = false;
     widgetsInitialized = false;
     themeableWidgets = new ThemeableWidgetHolder();
-    customAppearances = new HashSet<String>();
+    customAppearances = new LinkedHashSet<String>();
     registeredThemeFiles = new HashSet<String>();
     registeredCssElements = new CssElementHolder();
     themeAdapterManager = new ThemeAdapterManager();
@@ -320,7 +321,7 @@ public class ThemeManager {
   /**
    * Loads and processes all theme-relevant resources for a given widget.
    */
-  private void processThemeableWidget( final ThemeableWidget themeWidget ) {
+  private void processThemeableWidget( ThemeableWidget themeWidget ) {
     String className = LifeCycleAdapterUtil.getSimpleClassName( themeWidget.widget );
     String[] variants = LifeCycleAdapterUtil.getKitPackageVariants( themeWidget.widget );
     boolean found = false;
@@ -355,7 +356,7 @@ public class ThemeManager {
         for( int i = 0; i < themeWidget.elements.length; i++ ) {
           registeredCssElements.addElement( themeWidget.elements[ i ] );
         }
-      } catch( final Exception e ) {
+      } catch( Exception e ) {
         String message = "Failed to parse theme definition file " + fileName;
         throw new ThemeManagerException( message, e );
       } finally {
@@ -425,7 +426,7 @@ public class ThemeManager {
         String jsId = theme.getJsId();
         registerThemeableWidgetImages( theme );
         registerThemeableWidgetCursors( theme );
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append( createQxThemes( theme ) );
         // TODO [rst] Optimize: create only one ThemeStoreWriter for all themes
         IThemeCssElement[] elements = registeredCssElements.getAllElements();
@@ -517,7 +518,7 @@ public class ThemeManager {
       byte[] buffer;
       try {
         buffer = code.getBytes( CHARSET );
-      } catch( final UnsupportedEncodingException shouldNotHappen ) {
+      } catch( UnsupportedEncodingException shouldNotHappen ) {
         throw new RuntimeException( shouldNotHappen );
       }
       ByteArrayInputStream inputStream = new ByteArrayInputStream( buffer );
@@ -534,7 +535,7 @@ public class ThemeManager {
   }
 
   private String createQxThemes( Theme theme ) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append( createQxTheme( theme, QxTheme.ICON ) );
     buffer.append( createQxTheme( theme, QxTheme.WIDGET ) );
     buffer.append( createQxTheme( theme, QxTheme.APPEARANCE ) );

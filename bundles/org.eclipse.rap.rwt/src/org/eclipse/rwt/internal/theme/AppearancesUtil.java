@@ -27,10 +27,8 @@ public final class AppearancesUtil {
     // prevent instantiation
   }
 
-  public static String readAppearanceFile( InputStream inStream )
-    throws IOException
-  {
-    StringBuffer sb = new StringBuffer();
+  public static String readAppearanceFile( InputStream inStream ) throws IOException {
+    StringBuilder sb = new StringBuilder();
     InputStreamReader reader = new InputStreamReader( inStream, "UTF-8" );
     BufferedReader br = new BufferedReader( reader );
     for( int i = 0; i < 100; i++ ) {

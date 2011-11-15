@@ -112,7 +112,7 @@ public class QxBorder implements QxType {
     if( width == 0 ) {
       result = "none";
     } else {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append( width );
       buffer.append( "px " );
       buffer.append( style );
