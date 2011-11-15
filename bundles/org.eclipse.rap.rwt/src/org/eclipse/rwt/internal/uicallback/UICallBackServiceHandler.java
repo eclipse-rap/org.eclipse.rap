@@ -16,6 +16,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
+import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
@@ -23,10 +24,11 @@ import org.eclipse.rwt.service.ISessionStore;
 
 public class UICallBackServiceHandler implements IServiceHandler {
 
-  public final static String HANDLER_ID = UICallBackServiceHandler.class.getName();
+  private final static String UI_CALLBACK_ID = "uicb";
+  private final static String PROP_ACTIVE = "active";
+  private final static String METHOD_SEND_UI_REQUEST = "sendUIRequest";
 
-  private static final String JS_SEND_UI_REQUEST
-    = "org.eclipse.swt.Request.getInstance()._sendImmediate( true );";
+  public final static String HANDLER_ID = UICallBackServiceHandler.class.getName();
 
   private static final String ATTR_NEEDS_UICALLBACK
     = UICallBackServiceHandler.class.getName() + ".needsUICallback";
@@ -39,6 +41,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
       JavaScriptResponseWriter writer = new JavaScriptResponseWriter( response );
       writeUICallBackDeactivation( writer );
       writeUIRequestNeeded( writer );
+      writer.finish();
     }
   }
 
@@ -63,9 +66,8 @@ public class UICallBackServiceHandler implements IServiceHandler {
   }
 
   private static void writeUICallBackActivation( JavaScriptResponseWriter writer, boolean value ) {
-    writer.write(   "org.eclipse.swt.Request.getInstance().setUiCallBackActive( "
-                  + Boolean.toString( value )
-                  + " );" );
+    ProtocolMessageWriter protocolWriter = writer.getProtocolWriter();
+    protocolWriter.appendSet( UI_CALLBACK_ID, PROP_ACTIVE, value );
   }
 
   private static boolean getPreservedUICallBackActivation() {
@@ -80,7 +82,8 @@ public class UICallBackServiceHandler implements IServiceHandler {
 
   static void writeUIRequestNeeded( JavaScriptResponseWriter writer ) {
     if( UICallBackManager.getInstance().hasRunnables() ) {
-      writer.write( JS_SEND_UI_REQUEST );
+      ProtocolMessageWriter protocolWriter = writer.getProtocolWriter();
+      protocolWriter.appendCall( UI_CALLBACK_ID, METHOD_SEND_UI_REQUEST, null );
     }
   }
 }

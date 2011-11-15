@@ -39,6 +39,9 @@ qx.Class.define( "org.eclipse.rwt.System", {
       org.eclipse.rwt.widgets.Menu.getAllowContextMenu
     );
     eventHandler.setMenuManager( org.eclipse.rwt.MenuManager.getInstance() );
+    // Init UICallBack
+    var uiCallBack = org.eclipse.rwt.UICallBack.getInstance();
+    org.eclipse.rwt.protocol.ObjectManager.add( "uicb", uiCallBack, "rwt.UICallBack" );
   },
 
   events : {

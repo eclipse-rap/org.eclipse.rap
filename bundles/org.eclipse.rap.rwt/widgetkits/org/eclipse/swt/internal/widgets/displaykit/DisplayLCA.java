@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
+import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.service.RequestParams;
@@ -56,6 +57,7 @@ import org.eclipse.swt.widgets.Widget;
 
 public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
+  static final String PROP_REQUEST_COUNTER = "requestCounter";
   static final String PROP_FOCUS_CONTROL = "focusControl";
   static final String PROP_CURR_THEME = "currTheme";
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
@@ -195,9 +197,9 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   private static void renderRequestCounter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
-    RWTRequestVersionControl.getInstance().nextRequestId();
-    // Ensure that even empty message will be rendered
-    responseWriter.getProtocolWriter();
+    ProtocolMessageWriter protocolWriter = responseWriter.getProtocolWriter();
+    Integer requestId = RWTRequestVersionControl.getInstance().nextRequestId();
+    protocolWriter.appendMeta( PROP_REQUEST_COUNTER, requestId.intValue() );
   }
 
   private static void writeTheme( Display display ) {

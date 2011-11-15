@@ -21,27 +21,36 @@ import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_TYPE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_CONTENT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_TYPE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META_REQUEST_COUNTER;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATIONS;
 
 import java.util.Map;
 
-import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
 import org.eclipse.rwt.internal.theme.*;
 
 
 public final class ProtocolMessageWriter {
 
+  private final JsonObject meta;
   private final JsonArray operations;
   private Operation pendingOperation;
   private boolean alreadyCreated;
 
   public ProtocolMessageWriter() {
+    meta = new JsonObject();
     operations = new JsonArray();
   }
 
   public boolean hasOperations() {
     return pendingOperation != null;
+  }
+
+  public void appendMeta( String property, int value ) {
+    appendMeta( property, JsonValue.valueOf( value ) );
+  }
+
+  public void appendMeta( String property, JsonValue value ) {
+    ensureMessagePending();
+    meta.append( property, value );
   }
 
   public void appendCreate( String target, String type ) {
@@ -118,9 +127,6 @@ public final class ProtocolMessageWriter {
 
   private JsonObject createMessageObject() {
     JsonObject message = new JsonObject();
-    JsonObject meta = new JsonObject();
-    int requestCount = RWTRequestVersionControl.getInstance().getCurrentRequestId().intValue();
-    meta.append( META_REQUEST_COUNTER, requestCount );
     message.append( META, meta );
     appendPendingOperation();
     message.append( OPERATIONS, operations );

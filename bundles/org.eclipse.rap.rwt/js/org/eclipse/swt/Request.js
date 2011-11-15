@@ -38,9 +38,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
     // References the currently running request or null if no request is active
     this._currentRequest = null;
     this._timeoutPage = "";
-    this._uiCallBackRetryInterval = 0;
-    this._uiCallBackActive = false;
-    this._uiCallBackRunning = false;
   },
 
   destruct : function() {
@@ -114,63 +111,6 @@ qx.Class.define( "org.eclipse.swt.Request", {
      */
     addEvent : function( eventType, sourceId ) {
       this._parameters[ eventType ] = sourceId;
-    },
-
-    setUiCallBackActive : function( active ) {
-    	this._uiCallBackActive = active;
-    },
-
-    _sendUICallBack : function() {
-      if( !this._uiCallBackRunning ) {
-        this._uiCallBackRunning = true;
-        var request = new qx.io.remote.Request( this._url, "GET", "application/javascript" );
-        request.addEventListener( "completed", this._handleUICallBackFinished, this );
-        request.addEventListener( "failed", this._handleUICallBackFailed, this );
-        request.setParameter(
-          "custom_service_handler",
-          "org.eclipse.rwt.internal.uicallback.UICallBackServiceHandler" );
-        this._sendStandalone( request );
-      }
-    },
-    
-    _handleUICallBackFinished : function( event ) {
-      this._uiCallBackRunning = false;
-      if( event.getType() === "completed" ) {
-        // NOTE: this was originally done almost exactly like this in 
-        // XmlHttpTransport.getResponseContent, but is now done here for
-        // better overview
-        try {
-          var text = event.getContent();
-          if( text && text.length > 0 ) {
-            window.eval( text );
-          }
-        } catch( ex ) {
-          throw new Error( "Could not execute javascript: [" + text + "]", ex );
-        }
-        this._uiCallBackRetryInterval = 0;
-      }
-      // Transport is normally disposed of in RequestQueue but UICallBackReuests
-      // bypass the queue 
-      var transport = event.getTarget();
-      var request = transport.getRequest();
-      transport.dispose();
-      request.dispose();
-    },
-
-    _handleUICallBackFailed : function( event ) {
-      this._uiCallBackRunning = false;
-      if( this._isConnectionError( event.getStatusCode() ) ) {
-      	qx.client.Timer.once( this._sendUICallBack, this, this._uiCallBackRetryInterval );
-        this._increaseUICallBackRetryInterval();
-      }
-    },
-
-    _increaseUICallBackRetryInterval : function() {
-      if( this._uiCallBackRetryInterval == 0 ) {
-      	this._uiCallBackRetryInterval = 1000;
-      } else if( this._uiCallBackRetryInterval < 60 * 1000 ) {
-      	this._uiCallBackRetryInterval *= 2;
-      }
     },
 
     /**
@@ -331,9 +271,7 @@ qx.Class.define( "org.eclipse.swt.Request", {
             window.eval( text );
             org.eclipse.swt.EventUtil.setSuspended( false );
           }
-          if( this._uiCallBackActive && !this._uiCallBackRunning ) {
-            this._sendUICallBack();
-          }
+          org.eclipse.rwt.UICallBack.getInstance().sendUICallBackRequest();
         } catch( ex ) {
           org.eclipse.rwt.ErrorHandler.processJavaScriptErrorInResponse( text,
                                                                          ex,
