@@ -439,7 +439,7 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public Image getImage( final int index ) {
+  public Image getImage( int index ) {
     checkWidget();
     if( !parent.checkData( this, parent.indexOf( this ) ) ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
@@ -447,7 +447,7 @@ public class TableItem extends Item {
     return getImageInternal( index );
   }
 
-  Image getImageInternal( final int index ) {
+  Image getImageInternal( int index ) {
     Image result = null;
     if( hasData( index ) ) {
       result = data[ index ].image;
@@ -473,7 +473,7 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setBackground( final Color color ) {
+  public void setBackground( Color color ) {
     checkWidget();
     if( color != null && color.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -526,7 +526,7 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setBackground( final int index, final Color color ) {
+  public void setBackground( int index, Color color ) {
     checkWidget();
     if( color != null && color.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -553,7 +553,7 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public Color getBackground( final int index ) {
+  public Color getBackground( int index ) {
     checkWidget();
     if( !parent.checkData( this, parent.indexOf( this ) ) ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
@@ -583,7 +583,7 @@ public class TableItem extends Item {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setForeground( final Color color ) {
+  public void setForeground( Color color ) {
     checkWidget();
     if( color != null && color.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -635,7 +635,7 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setForeground( final int index, final Color color ) {
+  public void setForeground( int index, Color color ) {
     checkWidget();
     if( color != null && color.isDisposed() ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -663,7 +663,7 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public Color getForeground( final int index ) {
+  public Color getForeground( int index ) {
     checkWidget();
     if( !parent.checkData( this, parent.indexOf( this ) ) ) {
       error( SWT.ERROR_WIDGET_DISPOSED );
@@ -776,7 +776,7 @@ public class TableItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public Font getFont( final int index ) {
+  public Font getFont( int index ) {
     checkWidget();
     if( !parent.checkData( this, parent.indexOf( this ) ) ) {
       error( SWT.ERROR_WIDGET_DISPOSED );

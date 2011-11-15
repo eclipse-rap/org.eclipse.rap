@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
@@ -17,6 +16,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.ItemHolder;
+
 
 /**
  * Instances of this class represent a selectable user interface object
@@ -76,7 +76,7 @@ public class MenuItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public MenuItem( final Menu parent, final int style ) {
+  public MenuItem( Menu parent, int style ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
     ItemHolder.getItemHolder( parent ).add( this );
@@ -118,7 +118,7 @@ public class MenuItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public MenuItem( final Menu parent, final int style, final int index ) {
+  public MenuItem( Menu parent, int style, int index ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
     ItemHolder.getItemHolder( parent ).insert( this, index );
@@ -164,7 +164,7 @@ public class MenuItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setMenu( final Menu menu ) {
+  public void setMenu( Menu menu ) {
     checkWidget();
     if( this.menu != menu ) {
       if( ( style & SWT.CASCADE ) == 0 ) {
@@ -263,7 +263,7 @@ public class MenuItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setImage( final Image image ) {
+  public void setImage( Image image ) {
     checkWidget();
     if( ( style & SWT.SEPARATOR ) == 0 ) {
       super.setImage( image );
@@ -286,7 +286,7 @@ public class MenuItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setEnabled( final boolean enabled ) {
+  public void setEnabled( boolean enabled ) {
     checkWidget();
     state &= ~DISABLED;
     if( !enabled ) {
@@ -368,7 +368,7 @@ public class MenuItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelection( final boolean selection ) {
+  public void setSelection( boolean selection ) {
     checkWidget();
     if( ( style & ( SWT.CHECK | SWT.RADIO ) ) != 0 ) {
       this.selection = selection;
@@ -402,7 +402,7 @@ public class MenuItem extends Item {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -424,7 +424,7 @@ public class MenuItem extends Item {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
@@ -449,7 +449,7 @@ public class MenuItem extends Item {
    * @see #removeHelpListener
    * @since 1.3
    */
-  public void addHelpListener( final HelpListener listener ) {
+  public void addHelpListener( HelpListener listener ) {
     checkWidget();
     HelpEvent.addListener( this, listener );
   }
@@ -472,7 +472,7 @@ public class MenuItem extends Item {
    * @see #addHelpListener
    * @since 1.3
    */
-  public void removeHelpListener( final HelpListener listener ) {
+  public void removeHelpListener( HelpListener listener ) {
     checkWidget();
     HelpEvent.removeListener( this, listener );
   }
@@ -497,7 +497,7 @@ public class MenuItem extends Item {
    * @see #removeArmListener
    * @since 1.3
    */
-  public void addArmListener( final ArmListener listener ) {
+  public void addArmListener( ArmListener listener ) {
     checkWidget();
     ArmEvent.addListener( this, listener );
   }
@@ -520,7 +520,7 @@ public class MenuItem extends Item {
    * @see #addArmListener
    * @since 1.3
    */
-  public void removeArmListener( final ArmListener listener ) {
+  public void removeArmListener( ArmListener listener ) {
     checkWidget();
     ArmEvent.removeListener( this, listener );
   }
@@ -559,7 +559,7 @@ public class MenuItem extends Item {
       if( menuDisposeListener == null ) {
         menuDisposeListener = new DisposeListener() {
 
-          public void widgetDisposed( final DisposeEvent event ) {
+          public void widgetDisposed( DisposeEvent event ) {
             MenuItem.this.menu = null;
           }
         };
@@ -577,7 +577,7 @@ public class MenuItem extends Item {
   ///////////////////////////////////////
   // Helping methods to verify arguments
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     return checkBits( style,
                       SWT.PUSH,
                       SWT.CHECK,
@@ -590,7 +590,7 @@ public class MenuItem extends Item {
   ///////////////////
   // Skinning support
 
-  void reskinChildren( final int flags ) {
+  void reskinChildren( int flags ) {
     if( menu != null ) {
       menu.reskin( flags );
     }

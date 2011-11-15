@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -139,7 +139,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * @see #checkSubclass
    * @see #getStyle
    */
-  public Widget( final Widget parent, final int style ) {
+  public Widget( Widget parent, int style ) {
     checkSubclass();
     if( parent == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -244,7 +244,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    *
    * @see #getData()
    */
-  public void setData( final Object data ) {
+  public void setData( Object data ) {
     checkWidget();
     if( ( state & KEYED_DATA ) != 0 ) {
       ( ( Object[] )this.data )[ 0 ] = data;
@@ -277,7 +277,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    *
    * @see #setData(String, Object)
    */
-  public Object getData( final String key ) {
+  public Object getData( String key ) {
     // Must not call checkWidget() here to allow to obtain the custom id after
     // the widget has been disposed of (see WidgetUtil#getId). Only validate
     // thread.
@@ -323,7 +323,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    *
    * @see #getData(String)
    */
-  public void setData( final String key, final Object value ) {
+  public void setData( String key, Object value ) {
     checkWidget();
     if( key == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -445,7 +445,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * @see DisposeListener
    * @see #removeDisposeListener
    */
-  public void addDisposeListener( final DisposeListener listener ) {
+  public void addDisposeListener( DisposeListener listener ) {
     checkWidget();
     DisposeEvent.addListener( this, listener );
   }
@@ -467,7 +467,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * @see DisposeListener
    * @see #addDisposeListener
    */
-  public void removeDisposeListener( final DisposeListener listener ) {
+  public void removeDisposeListener( DisposeListener listener ) {
     checkWidget();
     DisposeEvent.removeListener( this, listener );
   }
@@ -499,7 +499,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * @see #removeListener
    * @see #notifyListeners
    */
-  public void addListener( final int eventType, final Listener listener ) {
+  public void addListener( int eventType, Listener listener ) {
     checkWidget();
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -533,7 +533,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * @see #addListener
    * @see #notifyListeners
    */
-  public void removeListener( final int eventType, final Listener listener ) {
+  public void removeListener( int eventType, Listener listener ) {
     checkWidget();
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -567,7 +567,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * @see #removeListener(int, Listener)
    * @since 1.2
    */
-  public void notifyListeners( final int eventType, final Event event ) {
+  public void notifyListeners( int eventType, Event event ) {
     checkWidget();
     Event newEvent = event == null ? new Event() : event;
     newEvent.widget = this;
@@ -593,7 +593,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * @see SWT
    * @since 1.3
    */
-  public boolean isListening( final int eventType ) {
+  public boolean isListening( int eventType ) {
     checkWidget();
     boolean result = false;
     if( untypedAdapter != null ) {
@@ -626,7 +626,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    *
    * @since 1.3
    */
-  public Listener[] getListeners( final int eventType ) {
+  public Listener[] getListeners( int eventType ) {
     checkWidget();
     Listener[] listeners;
     if( untypedAdapter == null ) {
@@ -668,7 +668,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
    * </ul>
    * @since 1.3
    */
-  public void reskin( final int flags ) {
+  public void reskin( int flags ) {
     checkWidget();
     reskinWidget();
     if( ( flags & SWT.ALL ) != 0 ) {
@@ -676,7 +676,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     }
   }
 
-  void reskinChildren( final int flags ) {
+  void reskinChildren( int flags ) {
   }
 
   void reskinWidget() {
@@ -907,14 +907,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
     return getDisplay().isValidThread();
   }
 
-  static int checkBits( final int style,
-                        final int int0,
-                        final int int1,
-                        final int int2,
-                        final int int3,
-                        final int int4,
-                        final int int5 )
-  {
+  static int checkBits( int style, int int0, int int1, int int2, int int3, int int4, int int5 ) {
     int mask = int0 | int1 | int2 | int3 | int4 | int5;
     int result = style;
     if( ( result & mask ) == 0 ) {
@@ -954,7 +947,7 @@ public abstract class Widget implements Adaptable, SerializableCompatibility {
   }
 
 
-  void error( final int code ) {
+  void error( int code ) {
     SWT.error( code );
   }
 }

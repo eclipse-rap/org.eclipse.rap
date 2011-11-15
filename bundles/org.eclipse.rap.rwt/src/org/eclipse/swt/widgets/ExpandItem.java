@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
- *     Tom Schindl<tom.schindl@bestsolution.at> - fix for issue 272674
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Tom Schindl<tom.schindl@bestsolution.at> - fix for issue 272674
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -80,7 +80,7 @@ public class ExpandItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public ExpandItem( final ExpandBar parent, final int style ) {
+  public ExpandItem( ExpandBar parent, int style ) {
     this( parent, style, checkNull( parent ).getItemCount() );
   }
 
@@ -117,14 +117,14 @@ public class ExpandItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public ExpandItem( final ExpandBar parent, final int style, final int index )
+  public ExpandItem( ExpandBar parent, int style, int index )
   {
     super( parent, style );
     this.parent = parent;
     parent.createItem( this, style, index );
   }
 
-  static ExpandBar checkNull( final ExpandBar control ) {
+  static ExpandBar checkNull( ExpandBar control ) {
     if( control == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -259,13 +259,7 @@ public class ExpandItem extends Item {
     return result;
   }
 
-  void setBounds( final int x,
-                  final int y,
-                  final int width,
-                  final int height,
-                  final boolean move,
-                  final boolean size )
-  {
+  void setBounds( int x, int y, int width, int height, boolean move, boolean size ) {
     int headerHeight = getHeaderHeight();
     int aX = x;
     int aY = y;
@@ -318,7 +312,7 @@ public class ExpandItem extends Item {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setControl( final Control control ) {
+  public void setControl( Control control ) {
     checkWidget();
     if( control != null ) {
       if( control.isDisposed() ) {
@@ -354,7 +348,7 @@ public class ExpandItem extends Item {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setExpanded( final boolean expanded ) {
+  public void setExpanded( boolean expanded ) {
     checkWidget();
     this.expanded = expanded;
     parent.showItem( this );
@@ -372,7 +366,7 @@ public class ExpandItem extends Item {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setHeight( final int height ) {
+  public void setHeight( int height ) {
     checkWidget();
     if( height >= 0 ) {
       setBounds( 0, 0, width, height, false, true );
@@ -382,7 +376,7 @@ public class ExpandItem extends Item {
     }
   }
 
-  public void setImage( final Image image ) {
+  public void setImage( Image image ) {
     checkWidget();
     if( image != getImage() ) {
       super.setImage( image );
@@ -401,7 +395,7 @@ public class ExpandItem extends Item {
     }
   }
 
-  public void setText( final String string ) {
+  public void setText( String string ) {
     checkWidget();
     if( string == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );

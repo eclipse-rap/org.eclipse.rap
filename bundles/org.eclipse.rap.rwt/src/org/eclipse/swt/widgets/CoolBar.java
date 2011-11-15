@@ -1390,7 +1390,7 @@ public class CoolBar extends Composite {
   ///////////////////
   // Skinning support
 
-  void reskinChildren( final int flags ) {
+  void reskinChildren( int flags ) {
     CoolItem[] items = getItems();
     if( items != null ) {
       for( int i = 0; i < items.length; i++ ) {

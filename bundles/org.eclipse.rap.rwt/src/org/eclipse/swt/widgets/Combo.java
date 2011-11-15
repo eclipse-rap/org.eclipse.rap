@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -20,6 +20,7 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontUtil;
 import org.eclipse.swt.internal.widgets.ListModel;
 import org.eclipse.swt.internal.widgets.combokit.ComboThemeAdapter;
+
 
 /**
  * Instances of this class are controls that allow the user
@@ -109,7 +110,7 @@ public class Combo extends Composite {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public Combo( final Composite parent, final int style ) {
+  public Combo( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
     text = "";
     visibleCount = 5;
@@ -154,7 +155,7 @@ public class Combo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void select( final int selectionIndex ) {
+  public void select( int selectionIndex ) {
     checkWidget();
     if( 0 <= selectionIndex && selectionIndex < getItemCount() ) {
       model.setSelection( selectionIndex );
@@ -174,7 +175,7 @@ public class Combo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void deselect( final int index ) {
+  public void deselect( int index ) {
     checkWidget();
     if( index == model.getSelectionIndex() ) {
       model.setSelection( -1 );
@@ -221,7 +222,7 @@ public class Combo extends Composite {
    *
    * @since 1.3
    */
-  public void setSelection( final Point selection ) {
+  public void setSelection( Point selection ) {
     checkWidget();
     if( selection == null ) {
       SWT.error ( SWT.ERROR_NULL_ARGUMENT );
@@ -310,7 +311,7 @@ public class Combo extends Composite {
    *
    * @see #add(String,int)
    */
-  public void add( final String string ) {
+  public void add( String string ) {
     checkWidget();
     model.add( string );
   }
@@ -338,7 +339,7 @@ public class Combo extends Composite {
    *
    * @see #add(String)
    */
-  public void add( final String string, final int index ) {
+  public void add( String string, int index ) {
     checkWidget();
     model.add( string, index );
   }
@@ -357,7 +358,7 @@ public class Combo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void remove( final int index ) {
+  public void remove( int index ) {
     checkWidget();
     int selectionIndex = getSelectionIndex();
     if( selectionIndex == index ) {
@@ -382,7 +383,7 @@ public class Combo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void remove( final int start, final int end ) {
+  public void remove( int start, int end ) {
     checkWidget();
     String[] items = model.getItems();
     int lastIndex = items.length - 1;
@@ -420,7 +421,7 @@ public class Combo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void remove( final String string ) {
+  public void remove( String string ) {
     checkWidget();
     int indexOfThisString = indexOf( string );
     int selectionIndex = getSelectionIndex();
@@ -463,7 +464,7 @@ public class Combo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setItem( final int index, final String string ) {
+  public void setItem( int index, String string ) {
     checkWidget();
     model.setItem( index, string );
   }
@@ -482,7 +483,7 @@ public class Combo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setItems( final String[] items ) {
+  public void setItems( String[] items ) {
     checkWidget();
     model.setItems( items );
   }
@@ -503,7 +504,7 @@ public class Combo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public String getItem( final int index ) {
+  public String getItem( int index ) {
     checkWidget();
     return model.getItem( index );
   }
@@ -579,7 +580,7 @@ public class Combo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setVisibleItemCount( final int count ) {
+  public void setVisibleItemCount( int count ) {
     checkWidget();
     if( count >= 0 ) {
       visibleCount = count;
@@ -624,7 +625,7 @@ public class Combo extends Composite {
    *
    * @since 1.3
    */
-  public void setListVisible( final boolean visible ) {
+  public void setListVisible( boolean visible ) {
     checkWidget();
     dropped = visible;
   }
@@ -670,7 +671,7 @@ public class Combo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int indexOf( final String string ) {
+  public int indexOf( String string ) {
     checkWidget();
     return indexOf( string, 0 );
   }
@@ -694,7 +695,7 @@ public class Combo extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int indexOf( final String string, final int start ) {
+  public int indexOf( String string, int start ) {
     checkWidget();
     if( string == null )
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -754,7 +755,7 @@ public class Combo extends Composite {
    *              thread that created the receiver</li>
    *              </ul>
    */
-  public void setText( final String string ) {
+  public void setText( String string ) {
     checkWidget();
     if( string == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -827,7 +828,7 @@ public class Combo extends Composite {
    * @see #LIMIT
    * @since 1.3
    */
-  public void setTextLimit( final int limit ) {
+  public void setTextLimit( int limit ) {
     checkWidget();
     if( limit == 0 ) {
       error( SWT.ERROR_CANNOT_BE_ZERO );
@@ -863,9 +864,7 @@ public class Combo extends Composite {
 
   // TODO [rst] Revise: In SWT, a width or height hint of 0 does not result in
   //      the DEFAULT_WIDTH/HEIGHT.
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
+  public Point computeSize( int wHint, int hHint, boolean changed )
   {
     checkWidget();
     int width = 0;
@@ -934,7 +933,7 @@ public class Combo extends Composite {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -956,7 +955,7 @@ public class Combo extends Composite {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
@@ -980,7 +979,7 @@ public class Combo extends Composite {
    * @see ModifyListener
    * @see #removeModifyListener
    */
-  public void addModifyListener( final ModifyListener listener ) {
+  public void addModifyListener( ModifyListener listener ) {
     checkWidget();
     ModifyEvent.addListener( this, listener );
   }
@@ -1002,7 +1001,7 @@ public class Combo extends Composite {
    * @see ModifyListener
    * @see #addModifyListener
    */
-  public void removeModifyListener( final ModifyListener listener ) {
+  public void removeModifyListener( ModifyListener listener ) {
     checkWidget();
     ModifyEvent.removeListener( this, listener );
   }
@@ -1026,7 +1025,7 @@ public class Combo extends Composite {
    * @see VerifyListener
    * @see #removeVerifyListener
    */
-  public void addVerifyListener( final VerifyListener verifyListener ) {
+  public void addVerifyListener( VerifyListener verifyListener ) {
     checkWidget();
     VerifyEvent.addListener( this, verifyListener );
   }
@@ -1048,7 +1047,7 @@ public class Combo extends Composite {
    * @see VerifyListener
    * @see #addVerifyListener
    */
-  public void removeVerifyListener( final VerifyListener verifyListener ) {
+  public void removeVerifyListener( VerifyListener verifyListener ) {
     checkWidget();
     VerifyEvent.removeListener( this, verifyListener );
   }
@@ -1065,7 +1064,7 @@ public class Combo extends Composite {
   //////////////////
   // Helping methods
 
-  private String verifyText( final String text, final int start, final int end )
+  private String verifyText( String text, int start, int end )
   {
     VerifyEvent event = new VerifyEvent( this );
     event.text = text;
@@ -1117,7 +1116,7 @@ public class Combo extends Composite {
     return adapter.getButtonWidth( this );
   }
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     int result = style;
     /*
      * Feature in Windows.  It is not possible to create

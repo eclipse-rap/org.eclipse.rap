@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -331,7 +331,7 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public Point map( final Control from, final Control to, final Point point ) {
+  public Point map( Control from, Control to, Point point ) {
     checkDevice();
     if( point == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -373,11 +373,7 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public Point map( final Control from,
-                    final Control to,
-                    final int x,
-                    final int y )
-  {
+  public Point map( Control from, Control to, int x, int y ) {
     checkDevice();
     Rectangle rectangle = map( from, to, x, y, 0, 0 );
     return new Point( rectangle.x, rectangle.y );
@@ -417,10 +413,7 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public Rectangle map( final Control from,
-                        final Control to,
-                        final Rectangle rectangle )
-  {
+  public Rectangle map( Control from, Control to, Rectangle rectangle ) {
     checkDevice();
     if( rectangle == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -469,13 +462,7 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public Rectangle map( final Control from,
-                        final Control to,
-                        final int x,
-                        final int y,
-                        final int width,
-                        final int height )
-  {
+  public Rectangle map( Control from, Control to, int x, int y, int width, int height ) {
     checkDevice();
     int newX = x;
     int newY = y;
@@ -496,7 +483,7 @@ public class Display extends Device implements Adaptable {
    * Returns the origin of the coordinate system of a given control in absolute
    * coordinates, i.e. relative to the display.
    */
-  private static Point getAbsoluteOrigin( final Control control ) {
+  private static Point getAbsoluteOrigin( Control control ) {
     Control currentControl = control;
     Point absolute = new Point( 0, 0 );
     while( currentControl != null ) {
@@ -516,7 +503,7 @@ public class Display extends Device implements Adaptable {
    * Returns the origin of the coordinate system of a given control, relative to
    * it's parent or, if it does not have a parent, relative to the display.
    */
-  private static Point getOrigin( final Control control ) {
+  private static Point getOrigin( Control control ) {
     Point result = control.getLocation();
     // Due the way that the qx client implementation works, the coordinate
     // system of composites starts at the inner edge of their border and thus
@@ -558,7 +545,7 @@ public class Display extends Device implements Adaptable {
    *
    * @since 1.3
    */
-  public void addListener( final int eventType, final Listener listener ) {
+  public void addListener( int eventType, Listener listener ) {
     checkDevice();
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -603,7 +590,7 @@ public class Display extends Device implements Adaptable {
    *
    * @since 1.3
    */
-  public void removeListener( final int eventType, final Listener listener ) {
+  public void removeListener( int eventType, Listener listener ) {
     checkDevice();
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -642,7 +629,7 @@ public class Display extends Device implements Adaptable {
    *    <li>ERROR_DEVICE_DISPOSED - if the receiver has been disposed</li>
    * </ul>
    */
-  public void disposeExec( final Runnable runnable ) {
+  public void disposeExec( Runnable runnable ) {
     checkDevice();
     if (disposeList == null) disposeList = new Runnable [4];
     for (int i=0; i<disposeList.length; i++) {
@@ -811,7 +798,7 @@ public class Display extends Device implements Adaptable {
     return activeShell;
   }
 
-  final void setActiveShell( final Shell activeShell ) {
+  final void setActiveShell( Shell activeShell ) {
     checkDevice();
     if( this.activeShell != activeShell ) {
       Shell lastActiveShell = this.activeShell;
@@ -839,11 +826,11 @@ public class Display extends Device implements Adaptable {
     }
   }
 
-  final void addShell( final Shell shell ) {
+  final void addShell( Shell shell ) {
     shells.add( shell );
   }
 
-  final void removeShell( final Shell shell ) {
+  final void removeShell( Shell shell ) {
     shells.remove( shell );
     if( shell == activeShell ) {
       if( shells.size() > 0 ) {
@@ -901,7 +888,7 @@ public class Display extends Device implements Adaptable {
    *
    * @since 1.3
    */
-  public static Display findDisplay( final Thread thread ) {
+  public static Display findDisplay( Thread thread ) {
     synchronized( Device.class ) {
       WeakReference[] displays = getDisplays();
       Display result = null;
@@ -1019,7 +1006,7 @@ public class Display extends Device implements Adaptable {
    *
    * @see #syncExec
    */
-  public void asyncExec( final Runnable runnable ) {
+  public void asyncExec( Runnable runnable ) {
     synchronized( deviceLock ) {
       if( isDisposed() ) {
         error( SWT.ERROR_DEVICE_DISPOSED );
@@ -1051,7 +1038,7 @@ public class Display extends Device implements Adaptable {
    *
    * @see #asyncExec
    */
-  public void syncExec( final Runnable runnable ) {
+  public void syncExec( Runnable runnable ) {
     Synchronizer synchronizer;
     synchronized( deviceLock ) {
       if( isDisposed() ) {
@@ -1238,7 +1225,7 @@ public class Display extends Device implements Adaptable {
     }
   }
 
-  boolean needsRedraw( final Control control ) {
+  boolean needsRedraw( Control control ) {
     return redrawControls != null && redrawControls.contains( control );
   }
 
@@ -1345,7 +1332,7 @@ public class Display extends Device implements Adaptable {
    *
    * @see SWT
    */
-  public Color getSystemColor( final int id ) {
+  public Color getSystemColor( int id ) {
     checkDevice();
     Color result = null;
     QxType value = null;
@@ -1480,7 +1467,7 @@ public class Display extends Device implements Adaptable {
    * @see SWT#ICON_WARNING
    * @see SWT#ICON_WORKING
    */
-  public Image getSystemImage( final int id ) {
+  public Image getSystemImage( int id ) {
     checkDevice();
     Image result = null;
     switch( id ) {
@@ -1503,7 +1490,7 @@ public class Display extends Device implements Adaptable {
     return result;
   }
 
-  private static Image createSystemImage( final String cssProperty ) {
+  private static Image createSystemImage( String cssProperty ) {
     Image result = null;
     QxType cssValue = ThemeUtil.getCssValue( "Display",
                                              cssProperty,
@@ -1511,7 +1498,7 @@ public class Display extends Device implements Adaptable {
     if( cssValue != null ) {
       try {
         result = QxImage.createSwtImage( ( QxImage )cssValue );
-      } catch( final IOException ioe ) {
+      } catch( IOException ioe ) {
         throw new RuntimeException( "Could not read system image", ioe );
       }
     }
@@ -1698,7 +1685,7 @@ public class Display extends Device implements Adaptable {
    * @see #removeFilter
    * @see #removeListener
    */
-  public void addFilter( final int eventType, final Listener listener ) {
+  public void addFilter( int eventType, Listener listener ) {
     checkDevice();
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -1731,7 +1718,7 @@ public class Display extends Device implements Adaptable {
    * @see #addFilter
    * @see #addListener
    */
-  public void removeFilter( final int eventType, final Listener listener ) {
+  public void removeFilter( int eventType, Listener listener ) {
     checkDevice();
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -1749,7 +1736,7 @@ public class Display extends Device implements Adaptable {
     }
   }
 
-  void addLayoutDeferred( final Composite comp ) {
+  void addLayoutDeferred( Composite comp ) {
     if( layoutDeferred == null ) {
       layoutDeferred = new Composite[ 64 ];
     }
@@ -1782,7 +1769,7 @@ public class Display extends Device implements Adaptable {
   ///////////////////
   // Skinning support
 
-  void addSkinnableWidget( final Widget widget ) {
+  void addSkinnableWidget( Widget widget ) {
     if( skinList == null ) {
       skinList = new Widget[ GROW_SIZE ];
     }
@@ -1814,7 +1801,7 @@ public class Display extends Device implements Adaptable {
     return result;
   }
 
-  private void sendSkinEvent( final Widget widget ) {
+  private void sendSkinEvent( Widget widget ) {
     Event event = new Event();
     event.widget = widget;
     event.display = this;
@@ -1889,7 +1876,7 @@ public class Display extends Device implements Adaptable {
    *
    * @since 1.2
    */
-  public void setData( final Object data ) {
+  public void setData( Object data ) {
     checkDevice();
     this.data = data;
   }
@@ -1923,7 +1910,7 @@ public class Display extends Device implements Adaptable {
    * @since 1.2
    */
   // [bm]: This is a verbatim copy of SWT, thus no reformatting was done.
-  public void setData( final String key, final Object value ) {
+  public void setData( String key, Object value ) {
     checkDevice ();
     if (key == null) {
       error (SWT.ERROR_NULL_ARGUMENT);
@@ -2008,7 +1995,7 @@ public class Display extends Device implements Adaptable {
    * @since 1.2
    */
   // [bm] This is a verbatim copy of SWT, thus no reformatting was done.
-  public Object getData( final String key ) {
+  public Object getData( String key ) {
     checkDevice ();
     if( key == null ) {
       error (SWT.ERROR_NULL_ARGUMENT);
@@ -2094,7 +2081,7 @@ public class Display extends Device implements Adaptable {
    *
    * @since 1.3
    */
-  public static void setAppName( final String name ) {
+  public static void setAppName( String name ) {
     ISessionStore session = ContextProvider.getSession();
     session.setAttribute( APP_NAME, name );
   }
@@ -2106,7 +2093,7 @@ public class Display extends Device implements Adaptable {
    *
    * @since 1.3
    */
-  public static void setAppVersion( final String version ) {
+  public static void setAppVersion( String version ) {
     ISessionStore session = ContextProvider.getSession();
     session.setAttribute( APP_VERSION, version );
   }
@@ -2174,7 +2161,7 @@ public class Display extends Device implements Adaptable {
     }
   }
 
-  private boolean canDisplayRefBeReplaced( final WeakReference displayRef ) {
+  private boolean canDisplayRefBeReplaced( WeakReference displayRef ) {
     boolean result = false;
     if( displayRef == null ) {
       result = true;
@@ -2210,7 +2197,7 @@ public class Display extends Device implements Adaptable {
   /////////////////////
   // Consistency checks
 
-  static boolean isValidClass( final Class clazz ) {
+  static boolean isValidClass( Class clazz ) {
 //    String name = clazz.getName();
 //    int index = name.lastIndexOf( '.' );
 //    return name.substring( 0, index + 1 ).equals( PACKAGE_PREFIX );
@@ -2240,7 +2227,7 @@ public class Display extends Device implements Adaptable {
    * @param code the descriptive error code
    * @see SWT#error(int)
    */
-  void error( final int code ) {
+  void error( int code ) {
     SWT.error( code );
   }
 
@@ -2259,7 +2246,7 @@ public class Display extends Device implements Adaptable {
     return new Rectangle( 0, 0, width, height );
   }
 
-  private void notifyFilters( final Event event ) {
+  private void notifyFilters( Event event ) {
     IFilterEntry[] filterEntries = getFilterEntries();
     for( int i = 0; i < filterEntries.length; i++ ) {
       if( filterEntries[ i ].getType() == event.type ) {
@@ -2316,7 +2303,7 @@ public class Display extends Device implements Adaptable {
     private final Set<Control> foundComponentInParent;
     private Control control;
 
-    ControlFinder( final Display display, final Point location ) {
+    ControlFinder( Display display, Point location ) {
       this.display = display;
       this.location = new Point( location.x, location.y );
       this.foundComponentInParent = new HashSet<Control>();
@@ -2342,7 +2329,7 @@ public class Display extends Device implements Adaptable {
       }
     }
 
-    private boolean visitControl( final Control control ) {
+    private boolean visitControl( Control control ) {
       Rectangle bounds = getAbsoluteBounds( control );
       boolean result = false;
       if( control.isVisible() && bounds.contains( location ) ) {
@@ -2358,7 +2345,7 @@ public class Display extends Device implements Adaptable {
       return result;
     }
 
-    private Rectangle getAbsoluteBounds( final Control control ) {
+    private Rectangle getAbsoluteBounds( Control control ) {
       Rectangle bounds = control.getBounds();
       Point origin = getAbsoluteOrigin( control );
       return new Rectangle( origin.x, origin.y, bounds.width, bounds.height );
@@ -2367,23 +2354,23 @@ public class Display extends Device implements Adaptable {
 
   private final class DisplayAdapter implements IDisplayAdapter {
 
-    public void setBounds( final Rectangle bounds ) {
+    public void setBounds( Rectangle bounds ) {
       Display.this.bounds.x = bounds.x;
       Display.this.bounds.y = bounds.y;
       Display.this.bounds.width = bounds.width;
       Display.this.bounds.height = bounds.height;
     }
 
-    public void setCursorLocation( final int x, final int y ) {
+    public void setCursorLocation( int x, int y ) {
       Display.this.cursorLocation.x = x;
       Display.this.cursorLocation.y = y;
     }
 
-    public void setActiveShell( final Shell activeShell ) {
+    public void setActiveShell( Shell activeShell ) {
       Display.this.setActiveShell( activeShell );
     }
 
-    public void setFocusControl( final Control focusControl ) {
+    public void setFocusControl( Control focusControl ) {
       Display.this.setFocusControl( focusControl );
     }
 

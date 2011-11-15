@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -16,6 +16,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.*;
+
 
 /**
  * Instances of this class are user interface objects that contain
@@ -64,7 +65,7 @@ public class Menu extends Widget {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public Menu( final Menu menu ) {
+  public Menu( Menu menu ) {
     this( checkNull( menu ).parent, SWT.DROP_DOWN );
   }
 
@@ -88,7 +89,7 @@ public class Menu extends Widget {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public Menu( final MenuItem parent ) {
+  public Menu( MenuItem parent ) {
     this( checkNull( parent ).getParent().getParent(), SWT.DROP_DOWN );
   }
 
@@ -111,7 +112,7 @@ public class Menu extends Widget {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public Menu( final Control parent ) {
+  public Menu( Control parent ) {
     this( checkNull( parent ).getShell(), SWT.POP_UP );
   }
 
@@ -147,7 +148,7 @@ public class Menu extends Widget {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public Menu( final Decorations parent, final int style ) {
+  public Menu( Decorations parent, int style ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
     this.itemHolder = new ItemHolder<MenuItem>( MenuItem.class );
@@ -246,7 +247,7 @@ public class Menu extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setLocation( final int x, final int y ) {
+  public void setLocation( int x, int y ) {
     checkWidget();
     if( ( style & ( SWT.BAR | SWT.DROP_DOWN ) ) == 0 ) {
       this.x = x;
@@ -278,7 +279,7 @@ public class Menu extends Widget {
    *
    * @since 1.0
    */
-  public void setLocation( final Point location ) {
+  public void setLocation( Point location ) {
     checkWidget();
     if( location == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -322,7 +323,7 @@ public class Menu extends Widget {
    * 
    * @since 1.4  
    */
-  public void setOrientation( final int orientation ) { 
+  public void setOrientation( int orientation ) { 
     checkWidget();
   }
   
@@ -366,7 +367,7 @@ public class Menu extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setVisible( final boolean visible ) {
+  public void setVisible( boolean visible ) {
     checkWidget();
     if( ( style & ( SWT.BAR | SWT.DROP_DOWN ) ) == 0 ) {
       if( this.visible != visible ) {
@@ -445,7 +446,7 @@ public class Menu extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setEnabled( final boolean enabled ) {
+  public void setEnabled( boolean enabled ) {
     checkWidget();
     state &= ~DISABLED;
     if( !enabled ) {
@@ -551,7 +552,7 @@ public class Menu extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public MenuItem getItem( final int index ) {
+  public MenuItem getItem( int index ) {
     checkWidget();
     return itemHolder.getItem( index );
   }
@@ -573,7 +574,7 @@ public class Menu extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int indexOf( final MenuItem menuItem ) {
+  public int indexOf( MenuItem menuItem ) {
     checkWidget();
     if( menuItem == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -600,7 +601,7 @@ public class Menu extends Widget {
    * 
    * @since 1.4
    */
-  public void setDefaultItem( final MenuItem item ) {
+  public void setDefaultItem( MenuItem item ) {
     checkWidget();
   }
 
@@ -675,7 +676,7 @@ public class Menu extends Widget {
    * @see MenuListener
    * @see #removeMenuListener
    */
-  public void addMenuListener( final MenuListener listener ) {
+  public void addMenuListener( MenuListener listener ) {
     checkWidget();
     MenuEvent.addListener( this, listener );
   }
@@ -697,7 +698,7 @@ public class Menu extends Widget {
    * @see MenuListener
    * @see #addMenuListener
    */
-  public void removeMenuListener( final MenuListener listener ) {
+  public void removeMenuListener( MenuListener listener ) {
     checkWidget();
     MenuEvent.removeListener( this, listener );
   }
@@ -722,7 +723,7 @@ public class Menu extends Widget {
    * @see #removeHelpListener
    * @since 1.3
    */
-  public void addHelpListener( final HelpListener listener ) {
+  public void addHelpListener( HelpListener listener ) {
     checkWidget();
     HelpEvent.addListener( this, listener );
   }
@@ -745,7 +746,7 @@ public class Menu extends Widget {
    * @see #addHelpListener
    * @since 1.3
    */
-  public void removeHelpListener( final HelpListener listener ) {
+  public void removeHelpListener( HelpListener listener ) {
     checkWidget();
     HelpEvent.removeListener( this, listener );
   }
@@ -753,35 +754,35 @@ public class Menu extends Widget {
   //////////////////
   // Helping methods
 
-  private static Control checkNull( final Control control ) {
+  private static Control checkNull( Control control ) {
     if( control == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     return control;
   }
 
-  private static Menu checkNull( final Menu menu ) {
+  private static Menu checkNull( Menu menu ) {
     if( menu == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     return menu;
   }
 
-  private static MenuItem checkNull( final MenuItem item ) {
+  private static MenuItem checkNull( MenuItem item ) {
     if( item == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     return item;
   }
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     return checkBits( style, SWT.POP_UP, SWT.BAR, SWT.DROP_DOWN, 0, 0, 0 );
   }
 
   ///////////////////
   // Skinning support
 
-  void reskinChildren( final int flags ) {
+  void reskinChildren( int flags ) {
     MenuItem[] items = getItems();
     for( int i = 0; i < items.length; i++ ) {
       MenuItem item = items[ i ];

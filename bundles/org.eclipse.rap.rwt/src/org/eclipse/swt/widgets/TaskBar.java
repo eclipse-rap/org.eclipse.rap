@@ -1,16 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-
 import org.eclipse.swt.*;
+
 
 /**
  * Instances of this class represent the system task bar.
@@ -46,7 +47,7 @@ public class TaskBar extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public TaskItem getItem( final int index ) {
+  public TaskItem getItem( int index ) {
     checkWidget();
     if( index < 0 || index >= getItemCount() ) {
       error( SWT.ERROR_INVALID_RANGE );
@@ -67,7 +68,7 @@ public class TaskBar extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public TaskItem getItem( final Shell shell ) {
+  public TaskItem getItem( Shell shell ) {
     checkWidget();
     return new TaskItem( this, SWT.NONE );
   }

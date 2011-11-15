@@ -1,17 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
+
 
 /**
  * Instances of this class represent icons that can be placed on the system tray
@@ -65,7 +67,7 @@ public class TrayItem extends Item {
    * @see Widget#getStyle
    * @since 1.4
    */
-  public TrayItem( final Tray parent, final int style ) {
+  public TrayItem( Tray parent, int style ) {
     super( parent, style );
     if( parent == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -116,7 +118,7 @@ public class TrayItem extends Item {
    * @see SelectionEvent
    * @since 1.4
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     if( listener == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -173,7 +175,7 @@ public class TrayItem extends Item {
    * @see #addSelectionListener
    * @since 1.4
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -192,7 +194,7 @@ public class TrayItem extends Item {
    *              </ul>
    * @since 1.4
    */
-  public void setToolTipText( final String value ) {
+  public void setToolTipText( String value ) {
     checkWidget();
   }
 
@@ -208,7 +210,7 @@ public class TrayItem extends Item {
    *              </ul>
    * @since 1.4
    */
-  public void setVisible( final boolean visible ) {
+  public void setVisible( boolean visible ) {
     checkWidget();
   }
   
@@ -233,7 +235,7 @@ public class TrayItem extends Item {
    *
    * @since 1.4
    */
-  public void addMenuDetectListener( final MenuDetectListener listener ) {
+  public void addMenuDetectListener( MenuDetectListener listener ) {
     checkWidget();
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -260,7 +262,7 @@ public class TrayItem extends Item {
    *
    * @since 1.4
    */
-  public void removeMenuDetectListener( final MenuDetectListener listener ) {
+  public void removeMenuDetectListener( MenuDetectListener listener ) {
     checkWidget();
     if( listener == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -280,7 +282,7 @@ public class TrayItem extends Item {
    * 
    * @since 1.4
    */
-  public void setToolTip( final ToolTip toolTip ) {
+  public void setToolTip( ToolTip toolTip ) {
     checkWidget();
   }
   

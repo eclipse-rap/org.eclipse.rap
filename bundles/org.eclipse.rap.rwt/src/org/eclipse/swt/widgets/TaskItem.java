@@ -1,17 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
+
 
 /**
  * Instances of this class represent a task item.
@@ -63,7 +64,7 @@ public class TaskItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  TaskItem( final TaskBar parent, final int style ) {
+  TaskItem( TaskBar parent, int style ) {
     super( parent, style );
     this.parent = parent;
   }
@@ -193,7 +194,7 @@ public class TaskItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setMenu( final Menu menu ) {
+  public void setMenu( Menu menu ) {
     checkWidget();
   }
   
@@ -224,7 +225,7 @@ public class TaskItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setOverlayImage( final Image overlayImage ) {
+  public void setOverlayImage( Image overlayImage ) {
     checkWidget();
   }
   
@@ -254,7 +255,7 @@ public class TaskItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setOverlayText( final String overlayText ) {
+  public void setOverlayText( String overlayText ) {
     checkWidget();
   }
   
@@ -283,7 +284,7 @@ public class TaskItem extends Item {
    * 
    * #see {@link #setProgressState(int)}
    */
-  public void setProgress( final int progress ) {
+  public void setProgress( int progress ) {
     checkWidget();
   }
   
@@ -322,7 +323,7 @@ public class TaskItem extends Item {
    * 
    * #see {@link #setProgress(int)}
    */
-  public void setProgressState( final int progressState ) {
+  public void setProgressState( int progressState ) {
     checkWidget();
   }
 

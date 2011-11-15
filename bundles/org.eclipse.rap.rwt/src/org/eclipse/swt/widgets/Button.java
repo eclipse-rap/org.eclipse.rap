@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,7 +91,7 @@ public class Button extends Control {
    * @see Widget#getStyle
    */
   // TODO [rst] Remove comments from javadoc when fully implemented
-  public Button( final Composite parent, final int style ) {
+  public Button( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
   }
 
@@ -133,7 +133,7 @@ public class Button extends Control {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setText( final String text ) {
+  public void setText( String text ) {
     checkWidget();
     if( text == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -202,7 +202,7 @@ public class Button extends Control {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelection( final boolean selected ) {
+  public void setSelection( boolean selected ) {
     checkWidget();
     if( ( style & ( SWT.CHECK | SWT.RADIO | SWT.TOGGLE ) ) != 0 ) {
       this.selected = selected;
@@ -246,7 +246,7 @@ public class Button extends Control {
    *
    * @since 1.2
    */
-  public void setGrayed( final boolean grayed ) {
+  public void setGrayed( boolean grayed ) {
     checkWidget();
     if( ( style & SWT.CHECK ) != 0 ) {
       this.grayed = grayed;
@@ -283,7 +283,7 @@ public class Button extends Control {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setImage( final Image image ) {
+  public void setImage( Image image ) {
     checkWidget();
     if( image != null && image.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
@@ -360,7 +360,7 @@ public class Button extends Control {
    * </ul>
    */
    // TODO [rst] Remove comments from javadoc when fully implemented
-  public void setAlignment( final int alignment ) {
+  public void setAlignment( int alignment ) {
     checkWidget();
     if( ( style & SWT.ARROW ) != 0 ) {
       if( ( style & ( SWT.UP | SWT.DOWN | SWT.LEFT | SWT.RIGHT ) ) != 0 ) {
@@ -373,10 +373,7 @@ public class Button extends Control {
     }
   }
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
     int height = 0;
@@ -456,7 +453,7 @@ public class Button extends Control {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -478,7 +475,7 @@ public class Button extends Control {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
@@ -486,7 +483,7 @@ public class Button extends Control {
   //////////////////////////
   // Default Button handling
 
-  void setDefault( final boolean isDefault ) {
+  void setDefault( boolean isDefault ) {
     this.isDefault = isDefault;
   }
 
@@ -508,7 +505,7 @@ public class Button extends Control {
   //////////////////
   // Helping methods
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     int result = checkBits( style,
                             SWT.PUSH,
                             SWT.ARROW,

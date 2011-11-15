@@ -74,7 +74,7 @@ public class Table extends Composite {
 
   // handle the fact that we have two item types to deal with
   private final class CompositeItemHolder implements IItemHolderAdapter {
-    public void add( final Item item ) {
+    public void add( Item item ) {
       if( item instanceof TableColumn ) {
         columnHolder.add( ( TableColumn )item );
       } else {
@@ -82,7 +82,7 @@ public class Table extends Composite {
         throw new IllegalArgumentException( msg );
       }
     }
-    public void insert( final Item item, final int index ) {
+    public void insert( Item item, int index ) {
       if( item instanceof TableColumn ) {
         columnHolder.insert( ( TableColumn )item, index );
       } else {
@@ -90,7 +90,7 @@ public class Table extends Composite {
         throw new IllegalArgumentException( msg );
       }
     }
-    public void remove( final Item item ) {
+    public void remove( Item item ) {
       if( item instanceof TableColumn ) {
         columnHolder.remove( ( TableColumn )item );
       } else {
@@ -128,7 +128,7 @@ public class Table extends Composite {
       return themeAdapter.getCheckBoxImageSize( Table.this ).x;
     }
 
-    public int getItemImageWidth( final int columnIndex ) {
+    public int getItemImageWidth( int columnIndex ) {
       int result = 0;
       if( Table.this.hasColumnImages( columnIndex ) ) {
         result = Table.this.getItemImageSize().x;
@@ -140,7 +140,7 @@ public class Table extends Composite {
       return Table.this.focusIndex;
     }
 
-    public void setFocusIndex( final int focusIndex ) {
+    public void setFocusIndex( int focusIndex ) {
       Table.this.setFocusIndex( focusIndex );
     }
 
@@ -157,7 +157,7 @@ public class Table extends Composite {
       return Table.this.getColumnLeftOffset( -1 );
     }
 
-    public void setLeftOffset( final int leftOffset ) {
+    public void setLeftOffset( int leftOffset ) {
       Table.this.leftOffset = leftOffset;
     }
 
@@ -193,15 +193,15 @@ public class Table extends Composite {
       return Table.this.isFixedColumn( Table.this.indexOf( column ) );
     }
 
-    public boolean isItemVisible( final TableItem item ) {
+    public boolean isItemVisible( TableItem item ) {
       int index = Table.this.indexOf( item );
       return index != -1 && Table.this.isItemVisible( index );
     }
 
-    public boolean isItemVirtual( final int index ) {
+    public boolean isItemVirtual( int index ) {
       boolean result = false;
       if( ( style & SWT.VIRTUAL ) != 0 ) {
-        TableItem item = Table.this.items[ index ];
+        TableItem item = items[ index ];
         result = item == null || !item.cached;
       }
       return result;
@@ -245,12 +245,12 @@ public class Table extends Composite {
   }
 
   private final class ResizeListener extends ControlAdapter {
-    public void controlResized( final ControlEvent event ) {
+    public void controlResized( ControlEvent event ) {
       if( ( Table.this.style & SWT.VIRTUAL ) != 0 ) {
         Table.this.checkData();
       }
-      Table.this.clearItemsTextWidths();
-      Table.this.updateScrollBars();
+      clearItemsTextWidths();
+      updateScrollBars();
     }
   }
 
@@ -575,7 +575,7 @@ public class Table extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public int indexOf( final TableColumn tableColumn ) {
+  public int indexOf( TableColumn tableColumn ) {
     checkWidget();
     if( tableColumn == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -1035,7 +1035,7 @@ public class Table extends Composite {
    * @see SWT#VIRTUAL
    * @see SWT#SetData
    */
-  public void clear( final int start, final int end ) {
+  public void clear( int start, int end ) {
     checkWidget();
     if( start <= end ) {
       if( !( 0 <= start && start <= end && end < itemCount ) ) {
@@ -1099,7 +1099,7 @@ public class Table extends Composite {
    * @see SWT#VIRTUAL
    * @see SWT#SetData
    */
-  public void clear( final int[] indices ) {
+  public void clear( int[] indices ) {
     checkWidget();
     if( indices == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -1167,7 +1167,7 @@ public class Table extends Composite {
    * @see Table#deselectAll()
    * @see Table#select(int)
    */
-  public void setSelection( final int index ) {
+  public void setSelection( int index ) {
     checkWidget();
     deselectAll();
     select( index );
@@ -1214,7 +1214,7 @@ public class Table extends Composite {
    * @see Table#deselectAll()
    * @see Table#select(int,int)
    */
-  public void setSelection( final int start, final int end ) {
+  public void setSelection( int start, int end ) {
     checkWidget();
     deselectAll();
     select( start, end );
@@ -1277,7 +1277,7 @@ public class Table extends Composite {
    * @see Table#deselectAll()
    * @see Table#select(int[])
    */
-  public void setSelection( final int[] indices ) {
+  public void setSelection( int[] indices ) {
     checkWidget();
     if( indices == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -1309,7 +1309,7 @@ public class Table extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setSelection( final TableItem item ) {
+  public void setSelection( TableItem item ) {
     checkWidget();
     if( item == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -1341,7 +1341,7 @@ public class Table extends Composite {
    * @see Table#select(int[])
    * @see Table#setSelection(int[])
    */
-  public void setSelection( final TableItem[] items ) {
+  public void setSelection( TableItem[] items ) {
     checkWidget();
     if( items == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -1393,7 +1393,7 @@ public class Table extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public boolean isSelected( final int index ) {
+  public boolean isSelected( int index ) {
     checkWidget();
     boolean result = false;
     if( index >= 0 && index < itemCount ) {
@@ -1416,7 +1416,7 @@ public class Table extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void select( final int index ) {
+  public void select( int index ) {
     checkWidget();
     if( index >= 0 && index < itemCount ) {
       if( ( style & SWT.SINGLE ) != 0 ) {
@@ -1456,7 +1456,7 @@ public class Table extends Composite {
    *
    * @see Table#setSelection(int,int)
    */
-  public void select( final int start, final int end ) {
+  public void select( int start, int end ) {
     checkWidget();
     if( end >= 0 && start <= end && ( ( style & SWT.SINGLE ) == 0 || start == end ) ) {
       if( itemCount != 0 && start < itemCount ) {
@@ -1496,7 +1496,7 @@ public class Table extends Composite {
    *
    * @see Table#setSelection(int[])
    */
-  public void select( final int[] indices ) {
+  public void select( int[] indices ) {
     checkWidget();
     if( indices == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -1541,7 +1541,7 @@ public class Table extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void deselect( final int index ) {
+  public void deselect( int index ) {
     checkWidget();
     removeFromSelection( index );
   }
@@ -1561,7 +1561,7 @@ public class Table extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void deselect( final int start, final int end ) {
+  public void deselect( int start, int end ) {
     checkWidget();
     if( start == 0 && end == itemCount - 1 ) {
       deselectAll();
@@ -1590,7 +1590,7 @@ public class Table extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void deselect( final int[] indices ) {
+  public void deselect( int[] indices ) {
     checkWidget();
     if( indices == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );

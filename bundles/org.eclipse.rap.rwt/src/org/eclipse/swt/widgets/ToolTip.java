@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2011 Rüdiger Herrmann and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011 Rüdiger Herrmann and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Rüdiger Herrmann - initial API and implementation
+ *    Rüdiger Herrmann - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -83,7 +84,7 @@ public class ToolTip extends Widget {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public ToolTip( final Shell parent, final int style ) {
+  public ToolTip( Shell parent, int style ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
     this.autoHide = true;
@@ -159,7 +160,7 @@ public class ToolTip extends Widget {
    * @see #getVisible
    * @see #setVisible
    */
-  public void setAutoHide( final boolean autoHide ) {
+  public void setAutoHide( boolean autoHide ) {
     checkWidget();
     this.autoHide = autoHide;
   }
@@ -224,7 +225,7 @@ public class ToolTip extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setVisible( final boolean visible ) {
+  public void setVisible( boolean visible ) {
     checkWidget();
     this.visible = visible;
   }
@@ -258,7 +259,7 @@ public class ToolTip extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setText( final String text ) {
+  public void setText( String text ) {
     checkWidget();
     if( text == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -295,7 +296,7 @@ public class ToolTip extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setMessage( final String message ) {
+  public void setMessage( String message ) {
     checkWidget();
     if( message == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -320,7 +321,7 @@ public class ToolTip extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setLocation( final int x, final int y ) {
+  public void setLocation( int x, int y ) {
     checkWidget();
     this.x = x;
     this.y = y;
@@ -348,7 +349,7 @@ public class ToolTip extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setLocation( final Point location ) {
+  public void setLocation( Point location ) {
     checkWidget();
     if( location == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -380,7 +381,7 @@ public class ToolTip extends Widget {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -402,7 +403,7 @@ public class ToolTip extends Widget {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
@@ -416,7 +417,7 @@ public class ToolTip extends Widget {
     parent.destroyToolTip( this );
   }
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     int result;
     int mask = SWT.ICON_INFORMATION | SWT.ICON_WARNING | SWT.ICON_ERROR;
     if( ( style & mask ) == 0 ) {

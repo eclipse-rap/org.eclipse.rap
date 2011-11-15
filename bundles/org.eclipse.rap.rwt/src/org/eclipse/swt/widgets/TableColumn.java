@@ -86,7 +86,7 @@ public class TableColumn extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public TableColumn( final Table parent, final int style ) {
+  public TableColumn( Table parent, int style ) {
     this( parent, checkStyle( style ), checkNull( parent ).getColumnCount() );
   }
 
@@ -124,7 +124,7 @@ public class TableColumn extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public TableColumn( final Table parent, final int style, final int index ) {
+  public TableColumn( Table parent, int style, int index ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
     resizable = true;
@@ -173,7 +173,7 @@ public class TableColumn extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setToolTipText( final String string ) {
+  public void setToolTipText( String string ) {
     checkWidget();
     toolTipText = string;
   }
@@ -206,7 +206,7 @@ public class TableColumn extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setAlignment( final int alignment ) {
+  public void setAlignment( int alignment ) {
     checkWidget();
     if( ( alignment & ( SWT.LEFT | SWT.RIGHT | SWT.CENTER ) ) != 0 ) {
       style &= ~( SWT.LEFT | SWT.RIGHT | SWT.CENTER );
@@ -298,7 +298,7 @@ public class TableColumn extends Item {
    * @see TableColumn#getMoveable()
    * @see SWT#Move
    */
-  public void setMoveable( final boolean moveable ) {
+  public void setMoveable( boolean moveable ) {
     checkWidget();
     this.moveable = moveable;
   }
@@ -340,7 +340,7 @@ public class TableColumn extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setResizable( final boolean resizable ) {
+  public void setResizable( boolean resizable ) {
     checkWidget();
     this.resizable = resizable;
   }
@@ -384,7 +384,7 @@ public class TableColumn extends Item {
    * @see ControlListener
    * @see #removeControlListener
    */
-  public void addControlListener( final ControlListener listener ) {
+  public void addControlListener( ControlListener listener ) {
     checkWidget();
     ControlEvent.addListener( this, listener );
   }
@@ -406,7 +406,7 @@ public class TableColumn extends Item {
    * @see ControlListener
    * @see #addControlListener
    */
-  public void removeControlListener( final ControlListener listener ) {
+  public void removeControlListener( ControlListener listener ) {
     checkWidget();
     ControlEvent.removeListener( this, listener );
   }
@@ -435,7 +435,7 @@ public class TableColumn extends Item {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -457,7 +457,7 @@ public class TableColumn extends Item {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }

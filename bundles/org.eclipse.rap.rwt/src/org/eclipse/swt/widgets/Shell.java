@@ -134,7 +134,7 @@ public class Shell extends Decorations {
       return Shell.this.lastActive;
     }
 
-    public void setActiveControl( final Control control ) {
+    public void setActiveControl( Control control ) {
       Shell.this.setActiveControl( control );
     }
 
@@ -142,7 +142,7 @@ public class Shell extends Decorations {
       return Shell.this.getMenuBounds();
     }
 
-    public void setBounds( final Rectangle bounds ) {
+    public void setBounds( Rectangle bounds ) {
       Shell.this.setBounds( bounds, false );
     }
 
@@ -165,11 +165,7 @@ public class Shell extends Decorations {
   private int minHeight;
   private ToolTip[] toolTips;
 
-  private Shell( final Display display,
-                 final Shell parent,
-                 final int style,
-                 final int handle )
-  {
+  private Shell( Display display, Shell parent, int style, int handle ) {
     super( checkParent( parent ) );
     if( display != null ) {
       this.display = display;
@@ -244,7 +240,7 @@ public class Shell extends Decorations {
    * <!--@see SWT#SYSTEM_MODAL-->
    * @see SWT#SHEET
    */
-  public Shell( final int style ) {
+  public Shell( int style ) {
     this( ( Display )null, style );
   }
 
@@ -267,7 +263,7 @@ public class Shell extends Decorations {
    *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
    * </ul>
    */
-  public Shell( final Display display ) {
+  public Shell( Display display ) {
     this( display, SWT.SHELL_TRIM );
   }
 
@@ -315,7 +311,7 @@ public class Shell extends Decorations {
    * @see SWT#SYSTEM_MODAL
    * @see SWT#SHEET
    */
-  public Shell( final Display display, final int style ) {
+  public Shell( Display display, int style ) {
     this( display, null, style, 0 );
   }
 
@@ -341,7 +337,7 @@ public class Shell extends Decorations {
    *    <li>ERROR_INVALID_SUBCLASS - if this class is not an allowed subclass</li>
    * </ul>
    */
-  public Shell( final Shell parent ) {
+  public Shell( Shell parent ) {
     this( parent, SWT.DIALOG_TRIM );
   }
 
@@ -393,7 +389,7 @@ public class Shell extends Decorations {
    * @see SWT#APPLICATION_MODAL
    * <!--@see SWT#SYSTEM_MODAL-->
    */
-  public Shell( final Shell parent, final int style ) {
+  public Shell( Shell parent, int style ) {
     this( parent != null ? parent.display : null, parent, style, 0 );
   }
 
@@ -516,11 +512,7 @@ public class Shell extends Decorations {
   }
 
   // TODO [rst] Move to class Decorations, as soon as it exists
-  public Rectangle computeTrim( final int x,
-                                final int y,
-                                final int width,
-                                final int height )
-  {
+  public Rectangle computeTrim( int x, int y, int width, int height ) {
     checkWidget();
     int hTopTrim;
     hTopTrim = getTitleBarMargin().height;
@@ -624,7 +616,7 @@ public class Shell extends Decorations {
   /////////////
   // Enablement
 
-  public void setEnabled( final boolean enabled ) {
+  public void setEnabled( boolean enabled ) {
     checkWidget();
     if( getEnabled() != enabled ) {
       super.setEnabled( enabled );
@@ -649,7 +641,7 @@ public class Shell extends Decorations {
     return getVisible();
   }
 
-  public void setVisible( final boolean visible ) {
+  public void setVisible( boolean visible ) {
     checkWidget();
     boolean wasVisible = getVisible();
     super.setVisible( visible );
@@ -742,7 +734,7 @@ public class Shell extends Decorations {
    * </ul>
    */
   // TODO [rh] move to Decorations
-  public void setText( final String text ) {
+  public void setText( String text ) {
     checkWidget();
     if( text == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -798,7 +790,7 @@ public class Shell extends Decorations {
    * </ul>
    */
   // TODO [rst] move to class Decorations as soon as it exists
-  public void setDefaultButton( final Button button ) {
+  public void setDefaultButton( Button button ) {
     checkWidget();
     if( button != null ) {
       if( button.isDisposed() ) {
@@ -895,7 +887,7 @@ public class Shell extends Decorations {
    *
    * @since 1.1
    */
-  public void setAlpha( final int alpha ) {
+  public void setAlpha( int alpha ) {
     checkWidget();
     this.alpha = alpha & 0xFF;
   }
@@ -930,7 +922,7 @@ public class Shell extends Decorations {
    *
    * @since 1.3
    */
-  public void setModified ( final boolean modified ) {
+  public void setModified ( boolean modified ) {
     checkWidget();
     this.modified = modified;
   }
@@ -966,7 +958,7 @@ public class Shell extends Decorations {
    *
    * @since 1.3
    */
-  public void setMinimumSize( final int width, final int height ) {
+  public void setMinimumSize( int width, int height ) {
     checkWidget();
     minWidth = Math.max( MIN_WIDTH_LIMIT, width );
     minHeight = Math.max( getMinHeightLimit(), height );
@@ -995,7 +987,7 @@ public class Shell extends Decorations {
    *
    * @since 1.3
    */
-  public void setMinimumSize( final Point size ) {
+  public void setMinimumSize( Point size ) {
     checkWidget();
     if( size == null ) {
       error( SWT.ERROR_NULL_ARGUMENT );
@@ -1023,7 +1015,7 @@ public class Shell extends Decorations {
     return new Point( minWidth,  minHeight );
   }
 
-  public void setBounds( final Rectangle bounds ) {
+  public void setBounds( Rectangle bounds ) {
     int newWidth = Math.max( bounds.width, minWidth );
     int newHeight = Math.max( bounds.height, minHeight );
     super.setBounds( new Rectangle( bounds.x, bounds.y, newWidth, newHeight ) );
@@ -1072,7 +1064,7 @@ public class Shell extends Decorations {
    * @see ShellListener
    * @see #removeShellListener
    */
-  public void addShellListener( final ShellListener listener ) {
+  public void addShellListener( ShellListener listener ) {
     checkWidget();
     ShellEvent.addListener( this, listener );
   }
@@ -1094,7 +1086,7 @@ public class Shell extends Decorations {
    * @see ShellListener
    * @see #addShellListener
    */
-  public void removeShellListener( final ShellListener listener ) {
+  public void removeShellListener( ShellListener listener ) {
     checkWidget();
     ShellEvent.removeListener( this, listener );
   }
@@ -1131,7 +1123,7 @@ public class Shell extends Decorations {
   ////////////////////////////////////////////////////////////
   // Methods to maintain activeControl and send ActivateEvents
 
-  void setActiveControl( final Control activateControl ) {
+  void setActiveControl( Control activateControl ) {
     Control control = activateControl;
     if( control != null && control.isDisposed() ) {
       control = null;
@@ -1176,7 +1168,7 @@ public class Shell extends Decorations {
   // Focus handling methods
 
   // TODO [rh] move to Decorations as soon as exists
-  final void setSavedFocus( final Control control ) {
+  final void setSavedFocus( Control control ) {
     savedFocus = control;
   }
 
@@ -1220,7 +1212,7 @@ public class Shell extends Decorations {
   ////////////////
   // Tab traversal
 
-  private boolean traverseGroup( final boolean next ) {
+  private boolean traverseGroup( boolean next ) {
     // TODO [rh] fake implementation
     boolean result = false;
     if( getChildren().length > 0 ) {
@@ -1258,7 +1250,7 @@ public class Shell extends Decorations {
    *
    * @see #setMaximized
    */
-  public void setMinimized( final boolean minimized ) {
+  public void setMinimized( boolean minimized ) {
     checkWidget();
     if( minimized ) {
       mode |= MODE_MINIMIZED;
@@ -1293,7 +1285,7 @@ public class Shell extends Decorations {
    *
    * @see #setMinimized
    */
-  public void setMaximized( final boolean maximized ) {
+  public void setMaximized( boolean maximized ) {
     checkWidget();
     if( ( mode & MODE_FULLSCREEN ) == 0 ) {
       if( maximized ) {
@@ -1376,7 +1368,7 @@ public class Shell extends Decorations {
    *
    * @since 1.3
    */
-  public void setFullScreen( final boolean fullScreen ) {
+  public void setFullScreen( boolean fullScreen ) {
     checkWidget();
     if( ( ( mode & MODE_FULLSCREEN ) != 0 ) != fullScreen ) {
       if( fullScreen ) {
@@ -1480,7 +1472,7 @@ public class Shell extends Decorations {
   // check... methods
 
   // TODO [rh] move to class Decorations as soon as it exists
-  static int Decorations_checkStyle( final int style ) {
+  static int Decorations_checkStyle( int style ) {
     int result = style;
     if( ( result & SWT.NO_TRIM ) != 0 ) {
       int trim = ( SWT.CLOSE
@@ -1500,11 +1492,11 @@ public class Shell extends Decorations {
     return result;
   }
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     return Decorations_checkStyle( style );
   }
 
-  private static Shell checkParent( final Shell parent ) {
+  private static Shell checkParent( Shell parent ) {
     if( parent != null && parent.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
@@ -1514,7 +1506,7 @@ public class Shell extends Decorations {
   ///////////////////
   // Skinning support
 
-  void reskinChildren( final int flags ) {
+  void reskinChildren( int flags ) {
     Shell[] shells = getShells();
     for( int i = 0; i < shells.length; i++ ) {
       Shell shell = shells[ i ];

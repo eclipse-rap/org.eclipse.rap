@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.SlimList;
+
 
 /*
  * Holds the child controls of Composites
@@ -34,7 +36,7 @@ final class ControlHolder implements IControlHolderAdapter, SerializableCompatib
     return controls.toArray( new Control[ controls.size() ] );
   }
 
-  public void add( final Control control ) {
+  public void add( Control control ) {
     add( control, controls.size() );
   }
   
@@ -48,7 +50,7 @@ final class ControlHolder implements IControlHolderAdapter, SerializableCompatib
     controls.add( index, control );
   }
 
-  public void remove( final Control control ) {
+  public void remove( Control control ) {
     if( control == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -59,7 +61,7 @@ final class ControlHolder implements IControlHolderAdapter, SerializableCompatib
     controls.remove( control );
   }
   
-  public int indexOf( final Control control ) {
+  public int indexOf( Control control ) {
     if( control == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -71,7 +73,7 @@ final class ControlHolder implements IControlHolderAdapter, SerializableCompatib
   }
   
 
-  boolean contains( final Control control ) {
+  boolean contains( Control control ) {
     if( control == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
@@ -82,32 +84,28 @@ final class ControlHolder implements IControlHolderAdapter, SerializableCompatib
     return getControlHolder( composite ).size();
   }
 
-  static void addControl( final Composite composite, final Control control ) {
+  static void addControl( Composite composite, Control control ) {
     if( control.getParent() != composite ) {
       throw new IllegalArgumentException( "The control has the wrong parent" );
     }
     getControlHolder( composite ).add( control );
   }
 
-  static void addControl( final Composite composite,
-                          final Control control,
-                          final int index )
-  {
+  static void addControl( Composite composite, Control control, int index ) {
     if( control.getParent() != composite ) {
       throw new IllegalArgumentException( "The control has the wrong parent" );
     }
     getControlHolder( composite ).add( control, index );
   }
   
-  static void removeControl( final Composite composite, final Control control )
-  {
+  static void removeControl( Composite composite, Control control ) {
     if( control.getParent() != composite ) {
       throw new IllegalArgumentException( "The control has the wrong parent" );
     }
     getControlHolder( composite ).remove( control );
   }
 
-  static int indexOf( final Composite composite, final Control control ) {
+  static int indexOf( Composite composite, Control control ) {
     if( control.getParent() != composite ) {
       throw new IllegalArgumentException( "The control has the wrong parent" );
     }

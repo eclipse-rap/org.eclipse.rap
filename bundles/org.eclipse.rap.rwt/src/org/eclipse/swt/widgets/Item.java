@@ -1,19 +1,20 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Image;
+
 
 /**
  * This class is the abstract superclass of all non-windowed
@@ -58,7 +59,7 @@ public abstract class Item extends Widget {
    * @see SWT
    * @see Widget#getStyle
    */
-  public Item( final Widget parent, final int style ) {
+  public Item( Widget parent, int style ) {
     super( parent, style );
     text = "";
   }
@@ -94,7 +95,7 @@ public abstract class Item extends Widget {
    * @see Widget#getStyle
    * @since 1.2
    */
-  public Item( final Widget parent, final int style, final int index ) {
+  public Item( Widget parent, int style, int index ) {
     this( parent, style );
   }
 
@@ -111,7 +112,7 @@ public abstract class Item extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setText( final String text ) {
+  public void setText( String text ) {
     checkWidget();
     if( text == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -149,7 +150,7 @@ public abstract class Item extends Widget {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setImage( final Image image ) {
+  public void setImage( Image image ) {
     checkWidget();
     if( image != null && image.isDisposed() ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );

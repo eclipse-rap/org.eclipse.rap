@@ -60,7 +60,7 @@ public class CoolItem extends Item {
 
 //  private static final class CoolItemOrderComparator implements Comparator {
 //
-//    public int compare( final Object object1, final Object object2 ) {
+//    public int compare( Object object1, Object object2 ) {
 //      int result;
 //      CoolItem item1 = (CoolItem) object1;
 //      CoolItem item2 = (CoolItem) object2;
@@ -802,7 +802,7 @@ public class CoolItem extends Item {
 //    return order;
 //  }
 //
-//  void setOrder( final int order ) {
+//  void setOrder( int order ) {
 //    this.order = order;
 //  }
 //

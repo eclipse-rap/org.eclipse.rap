@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -17,6 +17,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.labelkit.LabelThemeAdapter;
+
 
 /**
  * Instances of this class represent a non-selectable
@@ -97,7 +98,7 @@ public class Label extends Control {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public Label( final Composite parent, final int style ) {
+  public Label( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
   }
 
@@ -132,7 +133,7 @@ public class Label extends Control {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setText( final String text ) {
+  public void setText( String text ) {
     checkWidget();
     if( text == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -176,7 +177,7 @@ public class Label extends Control {
    */
   // TODO [rst] Clarify or remove this comment:
   // TODO: The LCA does not yet handle images. So, setting an image currently
-  public void setImage( final Image image ) {
+  public void setImage( Image image ) {
     checkWidget();
     if( ( style & SWT.SEPARATOR ) == 0 ) {
       this.image = image;
@@ -213,7 +214,7 @@ public class Label extends Control {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setAlignment( final int alignment ) {
+  public void setAlignment( int alignment ) {
     checkWidget();
     if(    ( style & SWT.SEPARATOR ) == 0
         && ( alignment & ( SWT.LEFT | SWT.RIGHT | SWT.CENTER ) ) != 0 )
@@ -254,10 +255,7 @@ public class Label extends Control {
     return result;
   }
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int width = 0;
     int height = 0;
@@ -304,7 +302,7 @@ public class Label extends Control {
   //////////////////
   // Helping methods
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     int result = style;
     result |= SWT.NO_FOCUS;
     if( ( style & SWT.SEPARATOR ) != 0 ) {

@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -80,7 +81,7 @@ public class Group extends Composite {
    * @see Widget#getStyle
    */
   // TODO: [bm] implement shadow styles for Group
-  public Group( final Composite parent, final int style ) {
+  public Group( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
   }
 
@@ -108,7 +109,7 @@ public class Group extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setText( final String text ) {
+  public void setText( String text ) {
     checkWidget();
     if( text == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
@@ -145,11 +146,7 @@ public class Group extends Composite {
     return new Rectangle( trimmings.x, trimmings.y, width, height );
   }
 
-  public Rectangle computeTrim( final int x,
-                                final int y,
-                                final int width,
-                                final int height )
-  {
+  public Rectangle computeTrim( int x, int y, int width, int height ) {
     GroupThemeAdapter themeAdapter
       = ( GroupThemeAdapter )getAdapter( IThemeAdapter.class );
     Rectangle trimmings = themeAdapter.getTrimmingSize( this );
@@ -160,10 +157,7 @@ public class Group extends Composite {
                               height + trimmings.height + 2 * border );
   }
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     Point result = super.computeSize( wHint, hHint, changed );
     int length = text.length();
@@ -186,7 +180,7 @@ public class Group extends Composite {
     return getText();
   }
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     int result = style | SWT.NO_FOCUS;
     /*
      * Even though it is legal to create this widget with scroll bars, they

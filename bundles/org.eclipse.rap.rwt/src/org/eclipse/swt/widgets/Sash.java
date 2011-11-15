@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -15,6 +16,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
+
 
 /**
  * Instances of the receiver represent a selectable user interface object
@@ -72,7 +74,7 @@ public class Sash extends Control {
 	 * @see Widget#checkSubclass
 	 * @see Widget#getStyle
 	 */
-  public Sash( final Composite parent, final int style ) {
+  public Sash( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
   }
 
@@ -80,10 +82,7 @@ public class Sash extends Control {
     state |= THEME_BACKGROUND;
   }
 
-  public Point computeSize( final int wHint,
-                            final int hHint,
-                            final boolean changed )
-  {
+  public Point computeSize( int wHint, int hHint, boolean changed ) {
     checkWidget();
     int border = getBorderWidth();
     int width = border * 2, height = border * 2;
@@ -129,7 +128,7 @@ public class Sash extends Control {
    * @see #removeSelectionListener
    * @see SelectionEvent
    */
-  public void addSelectionListener( final SelectionListener listener ) {
+  public void addSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.addListener( this, listener );
   }
@@ -151,7 +150,7 @@ public class Sash extends Control {
    * @see SelectionListener
    * @see #addSelectionListener
    */
-  public void removeSelectionListener( final SelectionListener listener ) {
+  public void removeSelectionListener( SelectionListener listener ) {
     checkWidget();
     SelectionEvent.removeListener( this, listener );
   }
@@ -159,7 +158,7 @@ public class Sash extends Control {
   //////////////////
   // Helping methods
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     int result = SWT.NONE;
     if( style > 0 ) {
       result = style;

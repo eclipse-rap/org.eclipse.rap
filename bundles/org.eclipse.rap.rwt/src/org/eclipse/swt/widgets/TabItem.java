@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.graphics.Graphics;
@@ -17,6 +16,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ItemHolder;
+
 
 /**
  * Instances of this class represent a selectable user interface object
@@ -111,7 +111,7 @@ public class TabItem extends Item {
    * @see Widget#checkSubclass
    * @see Widget#getStyle
    */
-  public TabItem( final TabFolder parent, final int style, final int index ) {
+  public TabItem( TabFolder parent, int style, int index ) {
     super( parent, checkStyle( style ) );
     this.parent = parent;
     parent.createItem( this, index );
@@ -164,7 +164,7 @@ public class TabItem extends Item {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setControl( final Control control ) {
+  public void setControl( Control control ) {
     checkWidget();
     if( control != null ) {
       if( control.isDisposed() ) {
@@ -265,7 +265,7 @@ public class TabItem extends Item {
     return ( parent.getStyle() & SWT.BOTTOM ) == 0;
   }
 
-  public void setImage( final Image image ) {
+  public void setImage( Image image ) {
     checkWidget();
     int index = parent.indexOf( this );
     if( index > -1 ) {
@@ -286,7 +286,7 @@ public class TabItem extends Item {
    *
    * @since 1.2
    */
-  public void setToolTipText( final String toolTip ) {
+  public void setToolTipText( String toolTip ) {
     checkWidget();
     toolTipText = toolTip;
   }
@@ -320,7 +320,7 @@ public class TabItem extends Item {
   //////////////////
   // Helping methods
 
-  private static int checkStyle( final int style ) {
+  private static int checkStyle( int style ) {
     int result = SWT.NONE;
     if( style > 0 ) {
       result = style;

@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -33,7 +33,7 @@ public class Decorations extends Canvas {
   private Image image;
   private Image[] images;
 
-  Decorations( final Composite parent ) {
+  Decorations( Composite parent ) {
     // prevent instantiation from outside this package
     super( parent );
     images = new Image[0];
@@ -79,7 +79,7 @@ public class Decorations extends Canvas {
    *
    * @since 1.3
    */
-  public void setImages( final Image[] images ) {
+  public void setImages( Image[] images ) {
     checkWidget();
     if( images == null ) {
       error( SWT.ERROR_INVALID_ARGUMENT );
@@ -142,7 +142,7 @@ public class Decorations extends Canvas {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setImage( final Image image ) {
+  public void setImage( Image image ) {
     checkWidget();
     this.image = image;
   }
@@ -191,7 +191,7 @@ public class Decorations extends Canvas {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  public void setMenuBar( final Menu menuBar ) {
+  public void setMenuBar( Menu menuBar ) {
     checkWidget();
     if( this.menuBar != menuBar ) {
       if( menuBar != null ) {
@@ -242,7 +242,7 @@ public class Decorations extends Canvas {
     if( menuBar != null ) {
       if( menuBarDisposeListener == null ) {
         menuBarDisposeListener = new DisposeListener() {
-          public void widgetDisposed( final DisposeEvent event ) {
+          public void widgetDisposed( DisposeEvent event ) {
             Decorations.this.menuBar = null;
           }
         };
@@ -260,7 +260,7 @@ public class Decorations extends Canvas {
   ///////////////////
   // Skinning support
 
-  void reskinChildren( final int flags ) {
+  void reskinChildren( int flags ) {
     if( menuBar != null ) {
       menuBar.reskin( flags );
     }
