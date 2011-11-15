@@ -23,7 +23,7 @@ import org.eclipse.rwt.resources.IResourceManager;
 public class ResourceUtil_Test extends TestCase {
 
   public void testCompress() {
-    StringBuffer javaScript = new StringBuffer(
+    StringBuilder javaScript = new StringBuilder(
         "/********************************************************\n"
       + "* Copyright (c) 2008 Innoopract Informationssysteme GmbH.\n"
       + "********************************************************/\n"
