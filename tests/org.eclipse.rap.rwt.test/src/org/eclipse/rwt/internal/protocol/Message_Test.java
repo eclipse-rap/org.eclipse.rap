@@ -90,7 +90,7 @@ public class Message_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
-    assertEquals( 1, getMessage().getRequestCounter() );
+    assertEquals( 1, Fixture.getProtocolMessage().getRequestCounter() );
   }
 
   public void testGetOperation() {

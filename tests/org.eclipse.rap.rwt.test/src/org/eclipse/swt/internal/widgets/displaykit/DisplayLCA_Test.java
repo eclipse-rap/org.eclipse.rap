@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,9 +44,9 @@ public class DisplayLCA_Test extends TestCase {
   private static final List<Widget> renderInitLog = new ArrayList<Widget>();
   private static final List<Widget> renderChangesLog = new ArrayList<Widget>();
   private static final List<Widget> renderDisposeLog = new ArrayList<Widget>();
-  
+
   private DisplayLCA displayLCA;
-  
+
   private static class TestWidgetLCA extends AbstractWidgetLCA {
     public void readData( Widget widget ) {
     }
@@ -61,38 +61,38 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   private static class LoggingWidgetLCA extends AbstractWidgetLCA {
-  
+
     public void preserveValues( Widget widget ) {
     }
-  
+
     public void readData( Widget widget ) {
       log.add( widget );
     }
-  
+
     public void renderInitialization( Widget widget ) throws IOException {
       renderInitLog.add( widget );
     }
-  
+
     public void renderChanges( Widget widget ) throws IOException {
       log.add( widget );
       renderChangesLog.add( widget );
     }
-  
+
     public void renderDispose( Widget widget ) throws IOException {
       renderDisposeLog.add( widget );
     }
   }
-  
+
   private static class CustomLCAWidget extends Composite {
     private static final long serialVersionUID = 1L;
-    
+
     private final AbstractWidgetLCA widgetLCA;
 
     CustomLCAWidget( Composite parent, AbstractWidgetLCA widgetLCA ) {
       super( parent, 0 );
       this.widgetLCA = widgetLCA;
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result;
@@ -107,14 +107,14 @@ public class DisplayLCA_Test extends TestCase {
 
   private static class CustomLCAShell extends Shell {
     private static final long serialVersionUID = 1L;
-    
+
     private final AbstractWidgetLCA widgetLCA;
-    
+
     CustomLCAShell( Display display, AbstractWidgetLCA widgetLCA ) {
       super( display );
       this.widgetLCA = widgetLCA;
     }
-    
+
     @SuppressWarnings("unchecked")
     public <T> T getAdapter( Class<T> adapter ) {
       Object result;
@@ -126,7 +126,7 @@ public class DisplayLCA_Test extends TestCase {
       return ( T )result;
     }
   }
-  
+
   public static final class TestRenderInitiallyDisposedEntryPoint implements IEntryPoint {
     public int createUI() {
       Display display = new Display();
@@ -156,9 +156,9 @@ public class DisplayLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     shell.setFocus();
     shell.open();
-    
+
     Fixture.preserveWidgets();
-    
+
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     assertEquals( shell, adapter.getPreserved( DisplayLCA.PROP_FOCUS_CONTROL ) );
     Object currentTheme = adapter.getPreserved( DisplayLCA.PROP_CURR_THEME );
@@ -171,7 +171,7 @@ public class DisplayLCA_Test extends TestCase {
     Display display = new Display();
 
     displayLCA.render( display );
-    
+
     String allMarkup = Fixture.getAllMarkup();
     assertEquals( "", allMarkup );
   }
@@ -185,16 +185,16 @@ public class DisplayLCA_Test extends TestCase {
     Widget button1 = new CustomLCAWidget( shell1, loggingWidgetLCA );
     Shell shell2 = new CustomLCAShell( display, loggingWidgetLCA );
     Widget button2 = new CustomLCAWidget( shell2, loggingWidgetLCA );
-    
+
     displayLCA.render( display );
-    
+
     assertEquals( 4, log.size() );
     assertSame( shell1, log.get( 0 ) );
     assertSame( button1, log.get( 1 ) );
     assertSame( shell2, log.get( 2 ) );
     assertSame( button2, log.get( 3 ) );
   }
-  
+
   public void testRenderWithIOException() {
     // fake request param to simulate second request
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
@@ -205,7 +205,7 @@ public class DisplayLCA_Test extends TestCase {
         throw new IOException();
       }
     } );
-    
+
     try {
       displayLCA.render( display );
       fail( "IOException of the renderer adapter in case of composite should be rethrown." );
@@ -221,9 +221,9 @@ public class DisplayLCA_Test extends TestCase {
     Composite shell = new CustomLCAShell( display, loggingWidgetLCA );
     Widget button = new CustomLCAWidget( shell, loggingWidgetLCA );
     Widget text = new CustomLCAWidget( shell, loggingWidgetLCA );
-    
+
     displayLCA.readData( display );
-    
+
     assertEquals( 3, log.size() );
     assertSame( shell, log.get( 0 ) );
     assertSame( button, log.get( 1 ) );
@@ -236,9 +236,9 @@ public class DisplayLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( displayId + ".bounds.width", "30" );
     Fixture.fakeRequestParam( displayId + ".bounds.height", "70" );
-    
+
     displayLCA.readData( display );
-    
+
     assertEquals( new Rectangle( 0, 0, 30, 70 ), display.getBounds() );
   }
 
@@ -254,7 +254,7 @@ public class DisplayLCA_Test extends TestCase {
     composite.dispose();
 
     displayLCA.render( display );
-    
+
     assertEquals( 0, renderInitLog.size() );
     assertFalse( renderChangesLog.contains( composite ) );
     assertTrue( renderDisposeLog.contains( composite ) );
@@ -281,12 +281,12 @@ public class DisplayLCA_Test extends TestCase {
     assertEquals( false, WidgetUtil.getAdapter( composite ).isInitialized() );
 
     displayLCA.render( display );
-    
+
     assertEquals( Boolean.TRUE, compositeInitState[ 0 ] );
   }
 
   public void testRenderInitiallyDisposed() throws Exception {
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, 
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT,
                                                 TestRenderInitiallyDisposedEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
@@ -299,7 +299,7 @@ public class DisplayLCA_Test extends TestCase {
   }
 
   public void testRenderDisposed() throws Exception {
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, 
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT,
                                                 TestRenderDisposedEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
@@ -321,7 +321,7 @@ public class DisplayLCA_Test extends TestCase {
       public void afterPhase( PhaseEvent event ) {
       }
     } );
-    
+
     lifeCycle.execute();
 
     Message message = Fixture.getProtocolMessage();
@@ -337,13 +337,13 @@ public class DisplayLCA_Test extends TestCase {
     widgetAdapter.setRenderRunnable( renderRunnable );
     Fixture.fakeNewRequest( display );
     IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
-    
+
     displayLCA.render( display );
 
     verify( renderRunnable ).afterRender();
     assertEquals( null, widgetAdapter.getRenderRunnable() );
   }
-  
+
 
   public void testFocusControl() {
     Display display = new Display();
@@ -383,7 +383,7 @@ public class DisplayLCA_Test extends TestCase {
     Fixture.fakeRequestParam( displayId + ".bounds.height", "500" );
 
     displayLCA.readData( display );
-    
+
     // shell1 is not resized although it has the same size as the display
     assertEquals( new Rectangle( 0, 0, 800, 600 ), shell1.getBounds() );
     // shell2 is resized because it's maximized
@@ -401,19 +401,20 @@ public class DisplayLCA_Test extends TestCase {
     Fixture.fakeRequestParam( displayId + ".cursorLocation.y", "2" );
 
     displayLCA.readData( display );
-    
+
     assertEquals( new Point( 1, 2 ), display.getCursorLocation() );
   }
 
   public void testUICallBackUpdated() throws IOException {
     Display display = new Display();
-    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-
     Fixture.fakeNewRequest( display );
+    Fixture.preserveWidgets();
+
+    UICallBackManager.getInstance().activateUICallBacksFor( "id" );
     displayLCA.render( display );
-    
-    String expected = "org.eclipse.swt.Request.getInstance().setUiCallBackActive";
-    assertTrue( Fixture.getAllMarkup().contains( expected ) );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( "uicb", "active" ) );
   }
 
   protected void setUp() throws Exception {
@@ -423,7 +424,7 @@ public class DisplayLCA_Test extends TestCase {
     Fixture.fakeResponseWriter();
     displayLCA = new DisplayLCA();
   }
-  
+
   protected void tearDown() throws Exception {
     Fixture.tearDown();
     clearLogs();

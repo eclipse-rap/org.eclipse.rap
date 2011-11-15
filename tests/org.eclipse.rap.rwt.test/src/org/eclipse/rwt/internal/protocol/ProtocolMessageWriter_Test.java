@@ -59,10 +59,15 @@ public class ProtocolMessageWriter_Test extends TestCase {
     String messageString = writer.createMessage();
     JSONObject message = new JSONObject( messageString );
     JSONObject meta = message.getJSONObject( "meta" );
-    int requestCount = RWTRequestVersionControl.getInstance().getCurrentRequestId().intValue();
-    assertEquals( requestCount, meta.getInt( "requestCounter" ) );
+    assertEquals( 0, meta.length() );
     JSONArray operations = message.getJSONArray( "operations" );
     assertEquals( 0, operations.length() );
+  }
+
+  public void testMessageWithRequestCounter() {
+    writer.appendMeta( ProtocolConstants.META_REQUEST_COUNTER, 1 );
+
+    assertEquals( 1, getMessage().getRequestCounter() );
   }
 
   public void testWriteMessageTwice() {
