@@ -206,7 +206,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     Object oldThemeId = adapter.getPreserved( PROP_CURR_THEME );
     if( !currThemeId.equals( oldThemeId ) ) {
       Theme theme = RWTFactory.getThemeManager().getTheme( currThemeId );
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append( "qx.theme.manager.Meta.getInstance().setTheme( " );
       buffer.append( theme.getJsId() );
       buffer.append( " );" );
@@ -315,7 +315,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         // TODO [rst] Added null check as a NPE occurred in some rare cases
         Control focusControl = display.getFocusControl();
         if( focusControl != null ) {
-          StringBuffer buffer = new StringBuffer();
+          StringBuilder buffer = new StringBuilder();
           buffer.append( "org.eclipse.swt.WidgetManager.getInstance()." );
           buffer.append( "focus( \"" );
           buffer.append( WidgetUtil.getId( display.getFocusControl() ) );
@@ -356,7 +356,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     // TODO [rh] revise this: traversing the widget tree once more only to find
     //      out which control is focused. Could that be optimized?
     HttpServletRequest request = ContextProvider.getRequest();
-    StringBuffer focusControlParam = new StringBuffer();
+    StringBuilder focusControlParam = new StringBuilder();
     focusControlParam.append( DisplayUtil.getId( display ) );
     focusControlParam.append( ".focusControl" );
     String id = request.getParameter( focusControlParam.toString() );
@@ -382,7 +382,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   private static String readPropertyValue( Display display, String propertyName ) {
     HttpServletRequest request = ContextProvider.getRequest();
-    StringBuffer key = new StringBuffer();
+    StringBuilder key = new StringBuilder();
     key.append( DisplayUtil.getId( display ) );
     key.append( "." );
     key.append( propertyName );

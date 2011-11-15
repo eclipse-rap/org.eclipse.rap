@@ -35,7 +35,7 @@ public final class EncodingUtil {
    *         replaced
    */
   public static String escapeDoubleQuoted( String input ) {
-    StringBuffer resultBuffer = new StringBuffer();
+    StringBuilder resultBuffer = new StringBuilder();
     int length = input.length();
     for( int i = 0; i < length; i++ ) {
       char ch = input.charAt( i );
@@ -55,7 +55,7 @@ public final class EncodingUtil {
    * replaced
    */
   public static String escapeLeadingTrailingSpaces( String input ) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     int beginIndex = 0;
     int endIndex = input.length();
     while( beginIndex < input.length() && input.charAt( beginIndex ) == ' ' ) {
@@ -95,7 +95,7 @@ public final class EncodingUtil {
    * @return a copy of the input string with all newline characters replaced
    */
   public static String replaceNewLines( String input, String replacement ) {
-    StringBuffer resultBuffer = new StringBuffer();
+    StringBuilder resultBuffer = new StringBuilder();
     int length = input.length();
     int i = 0;
     while( i < length ) {
@@ -129,7 +129,7 @@ public final class EncodingUtil {
    * @return a copy of the input string with white spaces replaced
    */
   public static String replaceWhiteSpaces( String input ) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     for( int i = 0; i < input.length(); i++ ) {
       if( input.charAt( i ) == ' ' ) {
         buffer.append( NBSP );
@@ -183,7 +183,7 @@ public final class EncodingUtil {
 
   // Escape unicode characters \u2028 and \u2029 - see bug 304364
   public static String removeNonDisplayableChars( String text ) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     for( int i = 0; i < text.length(); i++ ) {
       char ch = text.charAt( i );
       if( !isNonDisplayableChar( ch ) ) {

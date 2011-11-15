@@ -138,7 +138,7 @@ public final class ExternalBrowser {
   }
 
   private static String getFeatures( int style ) {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     appendFeature( result, "dependent", true );
     appendFeature( result, "scrollbars", true );
     appendFeature( result, "resizable", true );
@@ -150,7 +150,7 @@ public final class ExternalBrowser {
     return result.toString();
   }
 
-  private static void appendFeature( StringBuffer features, String feature, boolean enable ) {
+  private static void appendFeature( StringBuilder features, String feature, boolean enable ) {
     if( features.length() > 0 ) {
       features.append( "," );
     }

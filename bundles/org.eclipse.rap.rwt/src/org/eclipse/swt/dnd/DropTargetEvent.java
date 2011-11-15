@@ -126,7 +126,7 @@ public class DropTargetEvent extends TypedEvent {
 
   public String toString() {
     String string = super.toString();
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     sb.append( string.substring( 0, string.length() - 1 ) ); // remove trailing '}'
     sb.append( " x=" );
     sb.append( x );

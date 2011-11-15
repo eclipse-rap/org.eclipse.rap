@@ -149,7 +149,7 @@ public final class FontData implements SerializableCompatibility {
    * @return a string representation of the FontData
    */
   public String toString() {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append( "1|" ); //$NON-NLS-1$
     buffer.append( getName() );
     buffer.append( "|" ); //$NON-NLS-1$

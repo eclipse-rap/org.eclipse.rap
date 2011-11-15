@@ -343,7 +343,7 @@ public class Browser extends Composite {
     if( script == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
-    StringBuffer buffer = new StringBuffer( "(function(){" );
+    StringBuilder buffer = new StringBuilder( "(function(){" );
     buffer.append( script );
     buffer.append( "})();" );
     boolean success = execute( buffer.toString() );

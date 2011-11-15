@@ -467,7 +467,7 @@ public class Spinner extends Composite {
       int maxValue = Math.max( Math.abs( maximum ), Math.abs( minimum ) );
       String string = String.valueOf( maxValue );
       if( digits > 0 ) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append( string );
         buffer.append( "," );
         int count = digits - string.length();

@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.util;
 
@@ -39,7 +39,7 @@ public final class URLHelper {
    */
   public static String getURLString() {
     HttpServletRequest request = ContextProvider.getRequest();
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     result.append( getContextURLString() );
     result.append( request.getServletPath() );
     return result.toString();
@@ -50,7 +50,7 @@ public final class URLHelper {
    */
   public static String getContextURLString() {
     HttpServletRequest request = ContextProvider.getRequest();
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     result.append( getServerURL() );
     result.append( request.getContextPath() );
     return result.toString();
@@ -63,7 +63,7 @@ public final class URLHelper {
    * Appends the given <code>key</code> and <code>value</code> to the given buffer by prepending a
    * question mark and separating key and value with an equals sign.
    */
-  public static void appendFirstParam( StringBuffer buffer, String key, String value ) {
+  public static void appendFirstParam( StringBuilder buffer, String key, String value ) {
     buffer.append( QUESTION_MARK );
     buffer.append( key );
     buffer.append( EQUAL );
@@ -74,7 +74,7 @@ public final class URLHelper {
    * Appends the given <code>key</code> and <code>value</code> to the given buffer by prepending an
    * ampersand and separating key and value with an equals sign.
    */
-  public static void appendParam( StringBuffer buffer, String key, String value ) {
+  public static void appendParam( StringBuilder buffer, String key, String value ) {
     buffer.append( AMPERSAND );
     buffer.append( key );
     buffer.append( EQUAL );
@@ -89,7 +89,7 @@ public final class URLHelper {
     ///////////////////////////////////////////////////////////////////////
     // use the following workaround to keep servlet 2.2 spec. compatibility
     String port = URLHelper.createPortPattern( request );
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     String serverName = request.getServerName();
     result.append( request.getScheme() );
     result.append( "://" );
@@ -102,7 +102,7 @@ public final class URLHelper {
   private static String createPortPattern( HttpServletRequest request ) {
     String result = String.valueOf( request.getServerPort() );
     if( result != null && !result.equals( "" ) ) {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append( ":" );
       buffer.append( result );
       result = buffer.toString(); 

@@ -47,12 +47,12 @@ public final class JSExecutor {
   }
 
   private static class JSExecutorPhaseListener implements PhaseListener {
-    private final StringBuffer code;
+    private final StringBuilder code;
     private final Display display;
 
     JSExecutorPhaseListener() {
       this.display =  Display.getCurrent() ;
-      this.code = new StringBuffer();
+      this.code = new StringBuilder();
     }
 
     void append( String command ) {

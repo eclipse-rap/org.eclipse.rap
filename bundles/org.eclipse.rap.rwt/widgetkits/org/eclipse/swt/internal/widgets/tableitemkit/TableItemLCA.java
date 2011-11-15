@@ -322,7 +322,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   }
 
   private static String toCss( Font font ) {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     FontData fontData = FontUtil.getData( font );
     if( ( fontData.getStyle() & SWT.ITALIC ) != 0 ) {
       result.append( "italic " );

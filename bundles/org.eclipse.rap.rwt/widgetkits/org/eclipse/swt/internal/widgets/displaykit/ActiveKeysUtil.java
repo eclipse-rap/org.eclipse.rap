@@ -140,7 +140,7 @@ public final class ActiveKeysUtil {
   }
 
   private static void writeActiveKeys( String[] newValue ) {
-    StringBuffer jsCode = new StringBuffer();
+    StringBuilder jsCode = new StringBuilder();
     jsCode.append( JSFUNC_SET_ACTIVE_KEYS );
     jsCode.append( "(" );
     jsCode.append( toJson( newValue ) );
@@ -167,7 +167,7 @@ public final class ActiveKeysUtil {
   }
 
   private static String toJson( String[] activeKeys ) {
-    StringBuffer json = new StringBuffer();
+    StringBuilder json = new StringBuilder();
     json.append( "{" );
     if( activeKeys != null ) {
       for( int i = 0; i < activeKeys.length; i++ ) {
@@ -203,7 +203,7 @@ public final class ActiveKeysUtil {
   }
 
   private static String getModifierKeys( String modifier ) {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     // order modifiers
     if( modifier.indexOf( ALT ) != -1 ) {
       result.append( ALT );

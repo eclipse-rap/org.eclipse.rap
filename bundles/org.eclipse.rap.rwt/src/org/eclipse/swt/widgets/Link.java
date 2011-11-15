@@ -19,6 +19,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ILinkAdapter;
 
+
 /**
  * Instances of this class represent a selectable
  * user interface object that displays a text with
@@ -215,7 +216,7 @@ public class Link extends Control {
   }
 
   private static String escapeAmpersand( String string ) {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     for( int i = 0; i < string.length(); i++ ) {
       if( string.charAt( i ) == '&' ) {
         result.append( "&&" );

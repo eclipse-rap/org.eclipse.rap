@@ -194,7 +194,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   }
 
   private static String createUrlFromHtml( String html ) {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     result.append( "org.eclipse.swt.browser/text" );
     result.append( String.valueOf( html.hashCode() ) );
     result.append( ".html" );
@@ -311,7 +311,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
       int openQuotes = 0;
       int openBrackets = 0;
       String arg;
-      StringBuffer argBuff = new StringBuffer();
+      StringBuilder argBuff = new StringBuilder();
       char prevChar = ' ';
       for( int i = 0; i < args.length(); i++ ) {
         char ch = args.charAt( i );
@@ -371,7 +371,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   }
 
   static String toJson( Object object, boolean deleteLastChar ) {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     if( object == null ) {
       result.append( "null" );
       result.append( "," );

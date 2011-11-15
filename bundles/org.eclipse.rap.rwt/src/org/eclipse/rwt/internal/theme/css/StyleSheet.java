@@ -58,7 +58,7 @@ public final class StyleSheet {
   }
 
   public String toString() {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     StyleRule[] styleRules = getStyleRules();
     for( int i = 0; i < styleRules.length; i++ ) {
       StyleRule styleRule = styleRules[ i ];

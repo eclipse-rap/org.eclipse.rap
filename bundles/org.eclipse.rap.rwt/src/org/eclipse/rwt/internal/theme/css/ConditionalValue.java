@@ -27,7 +27,7 @@ public class ConditionalValue {
   }
 
   public String toString() {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append( "ConditionalValue{ constraints=(" );
     for( int j = 0; j < constraints.length; j++ ) {
       if( j > 0 ) {

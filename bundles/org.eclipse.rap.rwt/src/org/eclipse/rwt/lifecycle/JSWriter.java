@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -149,7 +149,7 @@ public final class JSWriter {
     throws IOException
   {
     ensureWidgetManager();
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     boolean isControl = widget instanceof Control;
     boolean isShell = widget instanceof Shell;
     buffer.append( "var w = new " + className );
@@ -606,7 +606,7 @@ public final class JSWriter {
   {
     ensureWidgetManager();
     String params = createParamList( args );
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append( function );
     buffer.append( '(' );
     buffer.append( params );
@@ -697,7 +697,7 @@ public final class JSWriter {
   }
 
   private String createJsActionListener( JSListenerInfo info ) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append( info.getJSListener() );
     buffer.append( "Action" );
     return buffer.toString();
@@ -769,7 +769,7 @@ public final class JSWriter {
   }
 
   private static String createFindWidgetById( String id ) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append( WIDGET_MANAGER_REF.toString() );
     buffer.append( ".findWidgetById( \"" );
     buffer.append( id );
@@ -784,9 +784,12 @@ public final class JSWriter {
     return createParamList( " ", args, " ", true );
   }
 
-  private static String createParamList( String startList, Object[] args, String endList, boolean useCurrentWidgetRef )
+  private static String createParamList( String startList,
+                                         Object[] args,
+                                         String endList,
+                                         boolean useCurrentWidgetRef )
   {
-    StringBuffer params = new StringBuffer();
+    StringBuilder params = new StringBuilder();
     if( args != null ) {
       for( int i = 0; i < args.length; i++ ) {
         if( i == 0 ) {
@@ -832,7 +835,7 @@ public final class JSWriter {
   }
 
   private static String createArray( Object[] array ) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append( '[' );
     for( int i = 0; i < array.length; i++ ) {
       if( i > 0 ) {
@@ -859,9 +862,8 @@ public final class JSWriter {
     return buffer.toString();
   }
 
-  private String createPropertyChain( String[] jsPropertyChain, boolean forReset )
-  {
-    StringBuffer buffer = new StringBuffer();
+  private String createPropertyChain( String[] jsPropertyChain, boolean forReset ) {
+    StringBuilder buffer = new StringBuilder();
     int last = jsPropertyChain.length - 1;
     for( int i = 0; i < last; i++ ) {
       buffer.append( getGetterName( jsPropertyChain[ i ] ) );
@@ -880,7 +882,7 @@ public final class JSWriter {
   }
 
   private static String getColorValue( RGB rgb ) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append( "#" );
     String red = Integer.toHexString( rgb.red );
     if( red.length() == 1  ) {
@@ -908,7 +910,7 @@ public final class JSWriter {
     if( Character.isUpperCase( text.charAt( 0 ) ) ) {
       result = text;
     } else {
-      StringBuffer buffer = new StringBuffer( text );
+      StringBuilder buffer = new StringBuilder( text );
       char firstLetter = buffer.charAt( 0 );
       firstLetter = Character.toUpperCase( firstLetter );
       buffer.setCharAt( 0, firstLetter );
@@ -927,7 +929,7 @@ public final class JSWriter {
     synchronized( setterNames ) {
       String result = setterNames.get( jsProperty );
       if( result == null ) {
-        StringBuffer functionName = new StringBuffer();
+        StringBuilder functionName = new StringBuilder();
         functionName.append( "set" );
         functionName.append( capitalize( jsProperty ) );
         result =  functionName.toString();
@@ -941,7 +943,7 @@ public final class JSWriter {
     synchronized( resetterNames ) {
       String result = resetterNames.get( jsProperty );
       if( result == null ) {
-        StringBuffer functionName = new StringBuffer();
+        StringBuilder functionName = new StringBuilder();
         functionName.append( "reset" );
         functionName.append( capitalize( jsProperty ) );
         result = functionName.toString();
@@ -955,7 +957,7 @@ public final class JSWriter {
     synchronized( getterNames ) {
       String result = getterNames.get( jsProperty );
       if( result == null ) {
-        StringBuffer functionName = new StringBuffer();
+        StringBuilder functionName = new StringBuilder();
         functionName.append( "get" );
         functionName.append( capitalize( jsProperty ) );
         result = functionName.toString();
@@ -969,7 +971,7 @@ public final class JSWriter {
   // Helping methods to write to the actual response writer
 
   private void writeCall( JSVar target, String function, String params ) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append( target.toString() );
     buffer.append( '.' );
     buffer.append( function );
@@ -980,7 +982,7 @@ public final class JSWriter {
   }
 
   private void writeVarAssignment( JSVar var, String value ) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append( "var " );
     buffer.append( var.toString() );
     buffer.append( " = " );

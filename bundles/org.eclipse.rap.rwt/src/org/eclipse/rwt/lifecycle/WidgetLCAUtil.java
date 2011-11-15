@@ -379,7 +379,7 @@ public final class WidgetLCAUtil {
   //                their own props.
   public static String readPropertyValue( Widget widget, String propertyName ) {
     HttpServletRequest request = ContextProvider.getRequest();
-    StringBuffer key = new StringBuffer();
+    StringBuilder key = new StringBuilder();
     key.append( WidgetUtil.getId( widget ) );
     key.append( "." );
     key.append( propertyName );
@@ -1054,7 +1054,7 @@ public final class WidgetLCAUtil {
   }
 
   private static String getColorValue( RGB rgb ) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     buffer.append( "#" );
     String red = Integer.toHexString( rgb.red );
     if( red.length() == 1  ) {
@@ -1565,7 +1565,7 @@ public final class WidgetLCAUtil {
 
   private static String readPropertyValue( String widgetId, String propertyName ) {
     HttpServletRequest request = ContextProvider.getRequest();
-    StringBuffer key = new StringBuffer();
+    StringBuilder key = new StringBuilder();
     key.append( widgetId );
     key.append( "." );
     key.append( propertyName );
@@ -1658,7 +1658,7 @@ public final class WidgetLCAUtil {
   //             we produce XHTML output.
   public static String escapeText( String text, boolean mnemonics ) {
     boolean insertAmp = false;
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     int textLength = text.length();
     for( int i = 0; i < textLength; i++ ) {
       char ch = text.charAt( i );

@@ -984,7 +984,7 @@ public final class PropertyResolver {
   }
 
   static String toString( LexicalUnit value ) {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
     short type = value.getLexicalUnitType();
     if( type == LexicalUnit.SAC_ATTR ) {
       buffer.append( "ATTR " + value.getStringValue() );
