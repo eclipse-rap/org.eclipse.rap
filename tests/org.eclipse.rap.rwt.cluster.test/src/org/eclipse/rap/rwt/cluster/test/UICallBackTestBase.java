@@ -33,9 +33,9 @@ public abstract class UICallBackTestBase extends TestCase {
 
   private IServletEngine servletEngine;
   private RWTClient client;
-  
+
   abstract IServletEngineFactory getServletEngineFactory();
-  
+
   public void testUICallbackRequestResponse() throws Exception {
     servletEngine.start( UICallbackEntryPoint.class );
     client.sendStartupRequest();
@@ -58,11 +58,11 @@ public abstract class UICallBackTestBase extends TestCase {
     } );
     thread.setDaemon( true );
     thread.start();
-    
+
     Response response = client.sendUICallBackRequest( 0 );
     thread.join();
 
-    String expected = "org.eclipse.swt.Request.getInstance()._sendImmediate( true );";
+    String expected = "\"target\": \"uicb\",\n\"action\": \"call\",\n\"method\": \"sendUIRequest\"";
     assertEquals( expected, response.getContentText().trim() );
   }
 
@@ -78,9 +78,9 @@ public abstract class UICallBackTestBase extends TestCase {
     } catch( IOException expected ) {
       assertEquals( "Read timed out", expected.getMessage() );
     }
-    
+
     Thread.sleep( 800 );
-    
+
     UICallBackManager uiCallBackManager = getUICallBackManager();
     assertFalse( uiCallBackManager.isCallBackRequestBlocked() );
   }
@@ -90,13 +90,13 @@ public abstract class UICallBackTestBase extends TestCase {
     client.sendStartupRequest();
     client.sendInitializationRequest();
     getUICallBackManager().setRequestCheckInterval( 100 );
-    
+
     asyncSendUICallBackRequest();
     Thread.sleep( SessionTimeoutEntryPoint.SESSION_SWEEP_INTERVAL );
-    
+
     assertTrue( SessionTimeoutEntryPoint.isSessionInvalidated() );
   }
-  
+
   public void testUICallBackRequestDoesNotPreventEngineShutdown() throws Exception {
     servletEngine.start( SessionTimeoutEntryPoint.class );
     client.sendStartupRequest();
@@ -108,7 +108,7 @@ public abstract class UICallBackTestBase extends TestCase {
     }
 
     servletEngine.stop( 2000 );
-    
+
     assertTrue( SessionTimeoutEntryPoint.isSessionInvalidated() );
   }
 
