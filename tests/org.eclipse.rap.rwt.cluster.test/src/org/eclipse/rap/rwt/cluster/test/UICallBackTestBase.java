@@ -63,7 +63,7 @@ public abstract class UICallBackTestBase extends TestCase {
     thread.join();
 
     String expected = "\"target\": \"uicb\",\n\"action\": \"call\",\n\"method\": \"sendUIRequest\"";
-    assertEquals( expected, response.getContentText().trim() );
+    assertTrue( response.getContentText().trim().indexOf( expected ) != -1 );
   }
 
   public void testAbortConnectionDuringUICallbackRequest() throws Exception {
