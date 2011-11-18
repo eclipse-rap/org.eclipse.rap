@@ -1589,11 +1589,11 @@ public class TreeItem extends Item {
       return parent.isDisposed();
     }
 
-    public Color getUserBackgound() {
+    public Color getUserBackground() {
       return background;
     }
 
-    public Color getUserForegound() {
+    public Color getUserForeground() {
       return foreground;
     }
 

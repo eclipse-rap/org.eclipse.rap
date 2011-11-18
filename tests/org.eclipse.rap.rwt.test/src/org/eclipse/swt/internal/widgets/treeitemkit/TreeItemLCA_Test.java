@@ -78,9 +78,9 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( image, images[ 0 ] );
     IWidgetColorAdapter colorAdapter = treeItem.getAdapter( IWidgetColorAdapter.class );
     Object background = adapter.getPreserved( TreeItemLCA.PROP_BACKGROUND );
-    assertEquals( colorAdapter.getUserBackgound(), background );
+    assertEquals( colorAdapter.getUserBackground(), background );
     Object foreground = adapter.getPreserved( TreeItemLCA.PROP_FOREGROUND );
-    assertEquals( colorAdapter.getUserForegound(), foreground );
+    assertEquals( colorAdapter.getUserForeground(), foreground );
     Font[] fonts = ( Font[] )adapter.getPreserved( TreeItemLCA.PROP_FONT );
     assertNull( fonts );
     Color[] backgrounds = ( Color[] )adapter.getPreserved( TreeItemLCA.PROP_CELL_BACKGROUNDS );
