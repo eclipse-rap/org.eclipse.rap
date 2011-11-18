@@ -719,20 +719,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       assertEquals( 3, req.getRequestCounter() );
     },
 
-    testProcessMetaIgnoreNegativeRequestCounter : function() {
-      var req = org.eclipse.swt.Request.getInstance();
-      req.setRequestCounter( null );
-      var processor = org.eclipse.rwt.protocol.Processor;
-      var message = {
-        "meta": {
-          "requestCounter": -1
-        },
-        "operations" : []
-      };
-      processor.processMessage( message );
-      assertNull( req.getRequestCounter() );
-    },
-
   // TODO : how to test adapters? 
   // construct + (all setter once => no crash) + specific cases?
 
