@@ -281,6 +281,16 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       widget.destroy();
     },
 
+    testSetAlwaysHideSelectionByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      testUtil.protocolSet( "w3", { "alwaysHideSelection" : true } );
+      assertTrue( widget.getRenderConfig().alwaysHideSelection );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testSetEnableCellToolTipByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = testUtil.createShellByProtocol( "w2" );

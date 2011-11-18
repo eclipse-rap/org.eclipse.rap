@@ -54,6 +54,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Tree", {
     "sortDirection",
     "sortColumn",
     "scrollBarsVisible",
+    "alwaysHideSelection",
     "enableCellToolTip",
     "cellToolTipText"
   ] ),
