@@ -249,29 +249,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  ///////////////////////////////////////////////////
-  // Helping methods to render the changed properties
-
-  private static void renderItemMetrics( Tree tree ) {
-    ItemMetrics[] itemMetrics = getItemMetrics( tree );
-    if( WidgetLCAUtil.hasChanged( tree, PROP_ITEM_METRICS, itemMetrics ) ) {
-      int[][] metrics = new int[ itemMetrics.length ][ 7 ];
-      for( int i = 0; i < itemMetrics.length; i++ ) {
-        metrics[ i ] = new int[] {
-          i,
-          itemMetrics[ i ].left,
-          itemMetrics[ i ].width,
-          itemMetrics[ i ].imageLeft,
-          itemMetrics[ i ].imageWidth,
-          itemMetrics[ i ].textLeft,
-          itemMetrics[ i ].textWidth
-        };
-      }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( tree );
-      clientObject.setProperty( PROP_ITEM_METRICS, metrics );
-    }
-  }
-
   ////////////////
   // Cell tooltips
 
@@ -398,8 +375,46 @@ public final class TreeLCA extends AbstractWidgetLCA {
     return item;
   }
 
-  /////////////////
-  // Item Metrics:
+  ///////////////
+  // Item Metrics
+
+  private static void renderItemMetrics( Tree tree ) {
+    ItemMetrics[] itemMetrics = getItemMetrics( tree );
+    if( WidgetLCAUtil.hasChanged( tree, PROP_ITEM_METRICS, itemMetrics ) ) {
+      int[][] metrics = new int[ itemMetrics.length ][ 7 ];
+      for( int i = 0; i < itemMetrics.length; i++ ) {
+        metrics[ i ] = new int[] {
+          i,
+          itemMetrics[ i ].left,
+          itemMetrics[ i ].width,
+          itemMetrics[ i ].imageLeft,
+          itemMetrics[ i ].imageWidth,
+          itemMetrics[ i ].textLeft,
+          itemMetrics[ i ].textWidth
+        };
+      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( tree );
+      clientObject.setProperty( PROP_ITEM_METRICS, metrics );
+    }
+  }
+
+  static ItemMetrics[] getItemMetrics( Tree tree ) {
+    int columnCount = Math.max( 1, tree.getColumnCount() );
+    ItemMetrics[] result = new ItemMetrics[ columnCount ];
+    for( int i = 0; i < columnCount; i++ ) {
+      result[ i ] = new ItemMetrics();
+    }
+    ITreeAdapter adapter = getTreeAdapter( tree );
+    for( int i = 0; i < columnCount; i++ ) {
+      result[ i ].left = adapter.getCellLeft( i );
+      result[ i ].width = adapter.getCellWidth( i );
+      result[ i ].imageLeft = result[ i ].left + adapter.getImageOffset( i );
+      result[ i ].imageWidth = adapter.getItemImageSize( i ).x;
+      result[ i ].textLeft = result[ i ].left + adapter.getTextOffset( i );
+      result[ i ].textWidth = adapter.getTextMaxWidth( i );
+    }
+    return result;
+  }
 
   // TODO: merge with Table:
   static final class ItemMetrics {
@@ -432,23 +447,5 @@ public final class TreeLCA extends AbstractWidgetLCA {
       String msg = "ItemMetrics#hashCode() not implemented";
       throw new UnsupportedOperationException( msg );
     }
-  }
-
-  static ItemMetrics[] getItemMetrics( Tree tree ) {
-    int columnCount = Math.max( 1, tree.getColumnCount() );
-    ItemMetrics[] result = new ItemMetrics[ columnCount ];
-    for( int i = 0; i < columnCount; i++ ) {
-      result[ i ] = new ItemMetrics();
-    }
-    ITreeAdapter adapter = getTreeAdapter( tree );
-    for( int i = 0; i < columnCount; i++ ) {
-      result[ i ].left = adapter.getCellLeft( i );
-      result[ i ].width = adapter.getCellWidth( i );
-      result[ i ].imageLeft = result[ i ].left + adapter.getImageOffset( i );
-      result[ i ].imageWidth = adapter.getItemImageSize( i ).x;
-      result[ i ].textLeft = result[ i ].left + adapter.getTextOffset( i );
-      result[ i ].textWidth = adapter.getTextMaxWidth( i );
-    }
-    return result;
   }
 }
