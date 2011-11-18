@@ -314,11 +314,6 @@ public final class TreeLCA extends AbstractWidgetLCA {
     return result;
   }
 
-  private static ITreeAdapter getTreeAdapter( Tree tree ) {
-    Object adapter = tree.getAdapter( ITreeAdapter.class );
-    return ( ITreeAdapter )adapter;
-  }
-
   private static boolean[] getScrollBarsVisible( Tree tree ) {
     return new boolean[] { hasHScrollBar( tree ), hasVScrollBar( tree ) };
   }
@@ -373,6 +368,11 @@ public final class TreeLCA extends AbstractWidgetLCA {
       item = ( TreeItem )WidgetUtil.find( tree, itemId );
     }
     return item;
+  }
+
+  private static ITreeAdapter getTreeAdapter( Tree tree ) {
+    Object adapter = tree.getAdapter( ITreeAdapter.class );
+    return ( ITreeAdapter )adapter;
   }
 
   ///////////////
