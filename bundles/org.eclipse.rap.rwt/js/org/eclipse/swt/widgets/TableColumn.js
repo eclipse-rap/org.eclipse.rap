@@ -140,10 +140,8 @@ qx.Class.define( "org.eclipse.swt.widgets.TableColumn", {
       }
     },
 
-    // TODO: Remove index parameter when TableColumnLCA is switched to the protocol.
-    // Use _index field instead.
-    setAlignment : function( index, value ) {
-      this._table.setAlignment( index, value );
+    setAlignment : function( value ) {
+      this._table.setAlignment( this._index, value );
       this.getLabelObject().setTextAlign( value );
       this.setHorizontalChildrenAlign( value );
     },

@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2010, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
@@ -49,13 +49,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
     if( this._parent != null ) {
       this._parent._remove( this );
     }
-    // TODO: Remove this line when TableItem is migrated to the protocol
-    org.eclipse.swt.WidgetManager.getInstance().remove( this );
   },
 
   statics : {
 
-    createItem : function( parent, index, id ) {
+    createItem : function( parent, index ) {
       var parentItem = this._getItem( parent );
       var result;
       if( parentItem.isChildCreated( index ) && !parentItem.isChildCached( index ) ) {
@@ -63,10 +61,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeItem", {
         result.markCached();
       } else {
         result = new org.eclipse.rwt.widgets.TreeItem( parentItem, index, false );
-      }
-      if( id ) {
-        // TODO: Remove this line and id parameter when TableItem is migrated to the protocol
-        org.eclipse.swt.WidgetManager.getInstance().add( result, id, false );
       }
       return result;
     },

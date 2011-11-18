@@ -11,16 +11,16 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tableitemkit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.util.EncodingUtil;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.graphics.FontUtil;
-import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil;
 import org.eclipse.swt.widgets.*;
 
 
@@ -30,48 +30,38 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     void run() throws IOException;
   }
 
+  private static final String TYPE = "rwt.widgets.TreeItem";
+
   static final String PROP_TEXTS = "texts";
   static final String PROP_IMAGES = "images";
-  static final String PROP_CHECKED = "checked";
-  static final String PROP_GRAYED = "grayed";
-  static final String PROP_INDEX = "index";
-  static final String PROP_SELECTED = "selected";
   static final String PROP_BACKGROUND = "background";
   static final String PROP_FOREGROUND = "foreground";
   static final String PROP_FONT = "font";
   static final String PROP_CELL_BACKGROUNDS = "cellBackgrounds";
   static final String PROP_CELL_FOREGROUNDS = "cellForegrounds";
   static final String PROP_CELL_FONTS = "cellFonts";
+  static final String PROP_CHECKED = "checked";
+  static final String PROP_GRAYED = "grayed";
   static final String PROP_CACHED = "cached";
   static final String PROP_VARIANT = "variant";
 
+  @Override
   public void preserveValues( Widget widget ) {
     TableItem item = ( TableItem )widget;
-    Table table = item.getParent();
-    int index = item.getParent().indexOf( item );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( item );
-    // don't resolve items unintentionally
-    if( isCached( table, index ) ) {
-      ItemLCAUtil.preserve( item );
-      if( ( table.getStyle() & SWT.CHECK ) != 0 ) {
-        adapter.preserve( PROP_CHECKED, Boolean.valueOf( item.getChecked() ) );
-        adapter.preserve( PROP_GRAYED, Boolean.valueOf( item.getGrayed() ) );
-      }
-      adapter.preserve( PROP_TEXTS, getTexts( item ) );
-      adapter.preserve( PROP_IMAGES, getImages( item ) );
-      adapter.preserve( PROP_INDEX, new Integer( index ) );
-      adapter.preserve( PROP_SELECTED, Boolean.valueOf( isSelected( table, index ) ) );
-      Object itemAdapter = item.getAdapter( ITableItemAdapter.class );
-      ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )itemAdapter;
-      adapter.preserve( PROP_BACKGROUND, tableItemAdapter.getUserBackground() );
-      adapter.preserve( PROP_FOREGROUND, tableItemAdapter.getUserForeground() );
-      adapter.preserve( PROP_FONT, tableItemAdapter.getUserFont() );
-      adapter.preserve( PROP_CELL_BACKGROUNDS, tableItemAdapter.getCellBackgrounds() );
-      adapter.preserve( PROP_CELL_FOREGROUNDS, tableItemAdapter.getCellForegrounds() );
-      adapter.preserve( PROP_CELL_FONTS, tableItemAdapter.getCellFonts() );
-      adapter.preserve( PROP_VARIANT, WidgetUtil.getVariant( widget ) );
+    if( isCached( item ) ) {
+      preserveProperty( item, PROP_TEXTS, getTexts( item ) );
+      preserveProperty( item, PROP_IMAGES, getImages( item ) );
+      WidgetLCAUtil.preserveBackground( item, getUserBackground( item ) );
+      WidgetLCAUtil.preserveForeground( item, getUserForeground( item ) );
+      WidgetLCAUtil.preserveFont( item, getUserFont( item ) );
+      preserveProperty( item, PROP_CELL_BACKGROUNDS, getCellBackgrounds( item ) );
+      preserveProperty( item, PROP_CELL_FOREGROUNDS, getCellForegrounds( item ) );
+      preserveProperty( item, PROP_CELL_FONTS, getCellFonts( item ) );
+      preserveProperty( item, PROP_CHECKED, item.getChecked() );
+      preserveProperty( item, PROP_GRAYED, item.getGrayed() );
+      preserveProperty( item, PROP_VARIANT, getVariant( item ) );
     }
-    adapter.preserve( PROP_CACHED, Boolean.valueOf( isCached( table, index ) ) );
+    preserveProperty( item, PROP_CACHED, isCached( item ) );
   }
 
   public void readData( Widget widget ) {
@@ -79,23 +69,24 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     readChecked( item );
   }
 
+  @Override
   public void renderInitialization( Widget widget ) throws IOException {
-    TableItem tableItem = ( TableItem )widget;
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    Table parent = tableItem.getParent();
-    Integer index  = new Integer( tableItem.getParent().indexOf( tableItem ) );
-    Object[] args = new Object[] { parent, index, WidgetUtil.getId( widget ) };
-    writer.callStatic( "org.eclipse.rwt.widgets.TreeItem.createItem", args );
+    TableItem item = ( TableItem )widget;
+    Table parent = item.getParent();
+    int index = parent.indexOf( item );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( item );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( parent ) );
+    clientObject.setProperty( "index", index );
   }
 
+  @Override
   public void renderChanges( Widget widget ) throws IOException {
     final TableItem item = ( TableItem )widget;
     if( wasCleared( item ) ) {
-      writeClear( item );
-      writeSelection( item );
+      renderClear( item );
     } else {
-      Table table = item.getParent();
-      if( isCached( table, table.indexOf( item ) ) ) {
+      if( isCached( item ) ) {
         preservingInitialized( item, new IRenderRunnable() {
           public void run() throws IOException {
             // items that were uncached and are now cached (materialized) are
@@ -103,22 +94,19 @@ public final class TableItemLCA extends AbstractWidgetLCA {
             if( !wasCached( item ) ) {
               setInitialized( item, false );
             }
-            writeChanges( item );
+            renderProperties( item );
           }
         } );
       }
     }
   }
 
-  /* (intentionally not JavaDoc'ed)
-   * The client-side representation of a TableItem is not a qooxdoo widget.
-   * Therefore the standard mechanism for dispoing of a widget is not used.
-   */
+  @Override
   public void renderDispose( Widget widget ) throws IOException {
     TableItem item = ( TableItem )widget;
     if( !isParentDisposed( item ) ) {
-      JSWriter writer = JSWriter.getWriterFor( item );
-      writer.call( "dispose", null );
+      // The tree disposes the items itself on the client (faster)
+      ClientObjectFactory.getForWidget( widget ).destroy();
     }
   }
 
@@ -135,222 +123,56 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   ///////////////////////
   // RenderChanges helper
 
-  private static void writeChanges( TableItem item ) throws IOException {
-    writeTexts( item );
-    writeImages( item );
-    writeBackground( item );
-    writeForeground( item );
-    writeFont( item );
-    writeCellBackgrounds( item );
-    writeCellForegrounds( item );
-    writeCellFonts( item );
-    writeChecked( item );
-    writeGrayed( item );
-    writeSelection( item );
-    writeVariant( item );
-    if( isVisible( item ) ) {
-      Table table = item.getParent();
-      TableLCAUtil.hasAlignmentChanged( table );
-      hasIndexChanged( item );
-    }
-    writeFocused( item );
+  private static void renderProperties( TableItem item ) throws IOException {
+    renderProperty( item, PROP_TEXTS, getTexts( item ), getDefaultTexts( item ) );
+    renderProperty( item, PROP_IMAGES, getImages( item ), new Image[ getColumnCount( item ) ] );
+    WidgetLCAUtil.renderBackground( item, getUserBackground( item ) );
+    WidgetLCAUtil.renderForeground( item, getUserForeground( item ) );
+    WidgetLCAUtil.renderFont( item, getUserFont( item ) );
+    renderProperty( item,
+                    PROP_CELL_BACKGROUNDS,
+                    getCellBackgrounds( item ),
+                    new Color[ getColumnCount( item ) ] );
+    renderProperty( item,
+                    PROP_CELL_FOREGROUNDS,
+                    getCellForegrounds( item ),
+                    new Color[ getColumnCount( item ) ] );
+    renderProperty( item,
+                    PROP_CELL_FONTS,
+                    getCellFonts( item ),
+                    new Font[ getColumnCount( item ) ] );
+    renderProperty( item, PROP_CHECKED, item.getChecked(), false );
+    renderProperty( item, PROP_GRAYED, item.getGrayed(), false );
+    renderProperty( item, PROP_VARIANT, getVariant( item ), null );
   }
 
-  private static void writeClear( TableItem item ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( item );
-    writer.call( "clear", null );
+  private static void renderClear( TableItem item ) {
+    IClientObject clientObject = ClientObjectFactory.getForWidget( item );
+    clientObject.call( "clear", null );
   }
 
-  private static boolean writeTexts( TableItem item ) throws IOException {
-    String[] texts = getTexts( item );
-    boolean result = WidgetLCAUtil.hasChanged( item, PROP_TEXTS, texts );
-    if( result ) {
-      transformTexts( item, texts );
-      JSWriter writer = JSWriter.getWriterFor( item );
-      writer.set( "texts", new Object[] { texts } );
-    }
-    return result;
-  }
+  //////////////////
+  // Helping methods
 
-  private static void transformTexts( TableItem item, String[] texts ) {
-    for( int i = 0; i < texts.length; i++ ) {
-      if( isRichTextEnabled( item ) && RichTextParser.isRichText( texts[ i ] ) ) {
-        RichTextToHtmlTransformer transformer = new RichTextToHtmlTransformer( item );
-        RichTextParser richTextParser = new RichTextParser( transformer );
-        richTextParser.parse( texts[ i ] );
-        texts[ i ] = transformer.getHtml();
-      } else {
-        texts[ i ] = WidgetLCAUtil.escapeText( item.getText( i ), false );
-        texts[ i ] = EncodingUtil.replaceWhiteSpaces( texts[ i ] );
-      }
-    }
+  private static boolean isCached( TableItem item ) {
+    Table table = item.getParent();
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
+    return !adapter.isItemVirtual( table.indexOf( item ) );
   }
-  
-  private static boolean writeImages( TableItem item ) throws IOException {
-    Image[] images = getImages( item );
-    Image[] defValue = new Image[ images.length ];
-    boolean result = WidgetLCAUtil.hasChanged( item, PROP_IMAGES, images, defValue );
-    if( result ) {
-      JSWriter writer = JSWriter.getWriterFor( item );
-      String[] imagePaths = new String[ images.length ];
-      for( int i = 0; i < imagePaths.length; i++ ) {
-        imagePaths[ i ] = ImageFactory.getImagePath( images[ i ] );
-      }
-      writer.set( "images", new Object[] { imagePaths } );
-    }
-    return result;
-  }
-
-  private static boolean writeBackground( TableItem item ) throws IOException {
-    ITableItemAdapter adapter = item.getAdapter( ITableItemAdapter.class );
-    Color background = adapter.getUserBackground();
-    JSWriter writer = JSWriter.getWriterFor( item );
-    return writer.set( PROP_BACKGROUND, "background", background, null );
-  }
-
-  private static boolean writeForeground( TableItem item ) throws IOException {
-    Object adapter = item.getAdapter( ITableItemAdapter.class );
-    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
-    Color foreground = tableItemAdapter.getUserForeground();
-    JSWriter writer = JSWriter.getWriterFor( item );
-    return writer.set( PROP_FOREGROUND, "foreground", foreground, null );
-  }
-
-  private static boolean writeFont( TableItem item ) throws IOException {
-    Object adapter = item.getAdapter( ITableItemAdapter.class );
-    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
-    Font font = tableItemAdapter.getUserFont();
-    boolean result = WidgetLCAUtil.hasChanged( item, PROP_FONT, font, null );
-    if( result ) {
-      JSWriter writer = JSWriter.getWriterFor( item );
-      String fontCss = font != null ? toCss( font ) : null;
-      writer.set( "font", fontCss );
-    }
-    return result;
-  }
-
-  private static boolean writeCellBackgrounds( TableItem item ) throws IOException {
-    ITableItemAdapter adapter = item.getAdapter( ITableItemAdapter.class );
-    Color[] backgrounds = adapter.getCellBackgrounds();
-    // default values are null
-    Color[] defValue = new Color[ getColumnCount( item ) ];
-    JSWriter writer = JSWriter.getWriterFor( item );
-    return writer.set( PROP_CELL_BACKGROUNDS, "cellBackgrounds", backgrounds, defValue );
-  }
-
-  private static boolean writeCellForegrounds( TableItem item ) throws IOException {
-    ITableItemAdapter adapter = item.getAdapter( ITableItemAdapter.class );
-    Color[] foregrounds = adapter.getCellForegrounds();
-    // default values are null
-    Color[] defValue = new Color[ getColumnCount( item ) ];
-    JSWriter writer = JSWriter.getWriterFor( item );
-    return writer.set( PROP_CELL_FOREGROUNDS, "cellForegrounds", foregrounds, defValue );
-  }
-
-  private static boolean writeCellFonts( TableItem item ) throws IOException {
-    Object adapter = item.getAdapter( ITableItemAdapter.class );
-    ITableItemAdapter tableItemAdapter = ( ITableItemAdapter )adapter;
-    Font[] fonts = tableItemAdapter.getCellFonts();
-    // default values are null
-    Font[] defValue = new Font[ fonts.length ];
-    boolean result = WidgetLCAUtil.hasChanged( item, PROP_CELL_FONTS, fonts, defValue );
-    if( result ) {
-      String[] css = new String[ fonts.length ];
-      for( int i = 0; i < fonts.length; i++ ) {
-        css[ i ] = fonts[ i ] != null ? toCss( fonts[ i ] ) : null;
-      }
-      JSWriter writer = JSWriter.getWriterFor( item );
-      writer.set( "cellFonts", new Object[] { css } );
-    }
-    return result;
-  }
-
-  private static boolean writeChecked( TableItem item ) throws IOException {
-    boolean result;
-    if( ( item.getParent().getStyle() & SWT.CHECK ) != 0 ) {
-      JSWriter writer = JSWriter.getWriterFor( item );
-      Boolean newValue = Boolean.valueOf( item.getChecked() );
-      result = writer.set( PROP_CHECKED, "checked", newValue, Boolean.FALSE );
-    } else {
-      result = false;
-    }
-    return result;
-  }
-
-  private static boolean writeGrayed( TableItem item ) throws IOException {
-    boolean result;
-    if( ( item.getParent().getStyle() & SWT.CHECK ) != 0 ) {
-      JSWriter writer = JSWriter.getWriterFor( item );
-      Boolean newValue = Boolean.valueOf( item.getGrayed() );
-      result = writer.set( PROP_GRAYED, "grayed", newValue, Boolean.FALSE );
-    } else {
-      result = false;
-    }
-    return result;
-  }
-
-  private static boolean writeSelection( TableItem item ) throws IOException {
-    Boolean newValue = Boolean.valueOf( isSelected( item ) );
-    Boolean defValue = Boolean.FALSE;
-    boolean result = WidgetLCAUtil.hasChanged( item, PROP_SELECTED, newValue, defValue );
-    if( result ) {
-      JSWriter writer = JSWriter.getWriterFor( item.getParent() );
-      String jsFunction = isSelected( item ) ? "selectItem" : "deselectItem";
-      writer.call( jsFunction, new Object[]{ item } );
-    }
-    return result;
-  }
-
-  // TODO [rh] check if necessary to honor focusIndex == -1, would mean to
-  //      call jsTable.setFocusIndex( -1 ) in TableLCA
-  private static void writeFocused( TableItem item ) throws IOException {
-    if( TableLCAUtil.hasFocusIndexChanged( item.getParent() ) && isFocused( item ) ) {
-      JSWriter writer = JSWriter.getWriterFor( item.getParent() );
-      writer.set( "focusItem", new Object[]{ item } );
-    }
-  }
-
-  private static boolean writeVariant( TableItem item ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( item );
-    String variant = WidgetUtil.getVariant( item );
-    boolean result = WidgetLCAUtil.hasChanged( item, PROP_VARIANT, variant, null );
-    if( result ) {
-      Object[] args = new Object[] { "variant_" + variant };
-      writer.set( "variant", args );
-    }
-    return result;
-  }
-
-  private static String toCss( Font font ) {
-    StringBuilder result = new StringBuilder();
-    FontData fontData = FontUtil.getData( font );
-    if( ( fontData.getStyle() & SWT.ITALIC ) != 0 ) {
-      result.append( "italic " );
-    }
-    if( ( fontData.getStyle() & SWT.BOLD ) != 0 ) {
-      result.append( "bold " );
-    }
-    result.append( fontData.getHeight() );
-    result.append( "px " );
-    // TODO [rh] preliminary: low budget font-name-escaping
-    String escapedName = fontData.getName().replaceAll( "\"", "" );
-    result.append( escapedName );
-    return result.toString();
-  }
-
-  private static boolean hasIndexChanged( TableItem item ) {
-    int index = item.getParent().indexOf( item );
-    return WidgetLCAUtil.hasChanged( item, PROP_INDEX, new Integer( index ) );
-  }
-
-  //////////////////////
-  // Item data accessors
 
   static String[] getTexts( TableItem item ) {
     int columnCount = getColumnCount( item );
     String[] result = new String[ columnCount ];
     for( int i = 0; i < columnCount; i++ ) {
       result[ i ] = item.getText( i );
+    }
+    return result;
+  }
+
+  private static String[] getDefaultTexts( TableItem item ) {
+    String[] result = new String[ getColumnCount( item ) ];
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = "";
     }
     return result;
   }
@@ -364,39 +186,52 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return result;
   }
 
+  private static Color getUserBackground( TableItem item ) {
+    IWidgetColorAdapter colorAdapter = item.getAdapter( IWidgetColorAdapter.class );
+    return colorAdapter.getUserBackground();
+  }
+
+  private static Color getUserForeground( TableItem item ) {
+    IWidgetColorAdapter colorAdapter = item.getAdapter( IWidgetColorAdapter.class );
+    return colorAdapter.getUserForeground();
+  }
+
+  private static Font getUserFont( TableItem item ) {
+    IWidgetFontAdapter fontAdapter = item.getAdapter( IWidgetFontAdapter.class );
+    return fontAdapter.getUserFont();
+  }
+
+  private static Color[] getCellBackgrounds( TableItem item ) {
+    ITableItemAdapter itemAdapter = item.getAdapter( ITableItemAdapter.class );
+    return itemAdapter.getCellBackgrounds();
+  }
+
+  private static Color[] getCellForegrounds( TableItem item ) {
+    ITableItemAdapter itemAdapter = item.getAdapter( ITableItemAdapter.class );
+    return itemAdapter.getCellForegrounds();
+  }
+
+  private static Font[] getCellFonts( TableItem item ) {
+    ITableItemAdapter itemAdapter = item.getAdapter( ITableItemAdapter.class );
+    return itemAdapter.getCellFonts();
+  }
+
+  private static String getVariant( TableItem item ) {
+    String result = WidgetUtil.getVariant( item );
+    if( result != null ) {
+      result = "variant_" + result;
+    }
+    return result;
+  }
+
   private static int getColumnCount( TableItem item ) {
     return Math.max( 1, item.getParent().getColumnCount() );
   }
 
-  private static boolean isSelected( TableItem item ) {
-    Table table = item.getParent();
-    int index = table.indexOf( item );
-    return isSelected( table, index );
-  }
-
-  private static boolean isSelected( Table table, int itemIndex ) {
-    return itemIndex != -1 && table.isSelected( itemIndex );
-  }
-
-  private static boolean isFocused( TableItem item ) {
-    int focusIndex = getTableAdapter( item ).getFocusIndex();
-    return focusIndex != -1 && item == item.getParent().getItem( focusIndex );
-  }
-
-  private static boolean isVisible( TableItem item ) {
-    return getTableAdapter( item ).isItemVisible( item );
-  }
-
   private static boolean wasCleared( TableItem item ) {
-    Table table = item.getParent();
-    boolean cached = isCached( table, table.indexOf( item ) );
+    boolean cached = isCached( item );
     boolean wasCached = wasCached( item );
     return !cached && wasCached;
-  }
-
-  private static boolean isCached( Table table, int index ) {
-    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
-    return !adapter.isItemVirtual( index );
   }
 
   private static boolean wasCached( TableItem item ) {
@@ -411,13 +246,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     return wasCached;
   }
 
-  //////////////////
-  // helping methods
-
-  private static ITableAdapter getTableAdapter( TableItem item ) {
-    return item.getParent().getAdapter( ITableAdapter.class );
-  }
-
   private static void preservingInitialized( TableItem item, IRenderRunnable runnable )
     throws IOException
   {
@@ -429,11 +257,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   private static void setInitialized( TableItem item, boolean initialized ) {
     WidgetAdapter adapter = ( WidgetAdapter )item.getAdapter( IWidgetAdapter.class );
     adapter.setInitialized( initialized );
-  }
-
-  private static boolean isRichTextEnabled( TableItem item ) {
-    ITableItemAdapter adapter = item.getAdapter( ITableItemAdapter.class );
-    return adapter.isRichTextEnabled();
   }
 
   private boolean isParentDisposed( TableItem item ) {

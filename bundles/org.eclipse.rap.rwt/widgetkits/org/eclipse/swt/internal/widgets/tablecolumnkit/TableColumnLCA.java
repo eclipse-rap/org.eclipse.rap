@@ -12,48 +12,54 @@
 
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil;
 import org.eclipse.swt.widgets.*;
 
 
 public final class TableColumnLCA extends AbstractWidgetLCA {
 
-  // Property names to preserve values
+  private static final String TYPE = "rwt.widgets.TableColumn";
+
+  static final String PROP_INDEX = "index";
   static final String PROP_LEFT = "left";
   static final String PROP_WIDTH = "width";
-  static final String PROP_SORT_DIRECTION = "sortDirection";
   static final String PROP_RESIZABLE = "resizable";
   static final String PROP_MOVEABLE = "moveable";
+  static final String PROP_ALIGNMENT = "alignment";
   static final String PROP_FIXED = "fixed";
-  private static final String PROP_SELECTION_LISTENERS = "selectionListeners";
+  static final String PROP_SELECTION_LISTENER = "selection";
 
-  private static final Integer DEFAULT_LEFT = new Integer( 0 );
+  private static final int ZERO = 0;
+  private static final String DEFAULT_ALIGNMENT = "left";
 
   public void preserveValues( Widget widget ) {
     TableColumn column = ( TableColumn )widget;
-    ItemLCAUtil.preserve( column );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
     WidgetLCAUtil.preserveToolTipText( column, column.getToolTipText() );
-    TableLCAUtil.preserveAlignment( column );
-    adapter.preserve( PROP_LEFT, new Integer( getLeft( column ) ) );
-    adapter.preserve( PROP_WIDTH, new Integer( column.getWidth() ) );
-    adapter.preserve( PROP_SORT_DIRECTION, getSortDirection( column ) );
-    adapter.preserve( PROP_RESIZABLE, Boolean.valueOf( column.getResizable() ) );
-    adapter.preserve( PROP_MOVEABLE, Boolean.valueOf( column.getMoveable() ) );
-    adapter.preserve( PROP_FIXED, Boolean.valueOf( isFixed( column ) ) );
-    adapter.preserve( PROP_SELECTION_LISTENERS,
-                      Boolean.valueOf( SelectionEvent.hasListener( column ) ) );
     WidgetLCAUtil.preserveCustomVariant( column );
+    ItemLCAUtil.preserve( column );
+    preserveProperty( column, PROP_INDEX, getIndex( column ) );
+    preserveProperty( column, PROP_LEFT, getLeft( column ) );
+    preserveProperty( column, PROP_WIDTH, column.getWidth() );
+    preserveProperty( column, PROP_RESIZABLE, column.getResizable() );
+    preserveProperty( column, PROP_MOVEABLE, column.getMoveable() );
+    preserveProperty( column, PROP_ALIGNMENT, getAlignment( column ) );
+    preserveProperty( column, PROP_FIXED, isFixed( column ) );
+    preserveListener( column, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( column ) );
   }
 
   public void readData( Widget widget ) {
@@ -91,120 +97,57 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     TableColumn column = ( TableColumn )widget;
-    JSWriter writer = JSWriter.getWriterFor( column );
-    Object[] args = new Object[] { column.getParent() };
-    writer.newWidget( "org.eclipse.swt.widgets.TableColumn", args );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( column );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( column.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( column ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
     TableColumn column = ( TableColumn )widget;
-    ItemLCAUtil.writeText( column, false, true );
-    ItemLCAUtil.writeImage( column );
-    writeLeft( column );
-    writeWidth( column );
-    WidgetLCAUtil.writeToolTip( column, column.getToolTipText() );
-    writeSortDirection( column );
-    writeResizable( column );
-    writeMoveable( column );
-    writeFixed( column );
-    writeAlignment( column );
-    writeSelectionListener( column );
-    WidgetLCAUtil.writeCustomVariant( column );
+    WidgetLCAUtil.renderToolTip( column, column.getToolTipText() );
+    WidgetLCAUtil.renderCustomVariant( column );
+    ItemLCAUtil.renderChanges( column );
+    renderProperty( column, PROP_INDEX, getIndex( column ), ZERO );
+    renderProperty( column, PROP_LEFT, getLeft( column ), ZERO );
+    renderProperty( column, PROP_WIDTH, column.getWidth(), ZERO );
+    renderProperty( column, PROP_RESIZABLE, column.getResizable(), true );
+    renderProperty( column, PROP_MOVEABLE, column.getMoveable(), false );
+    renderProperty( column, PROP_ALIGNMENT, getAlignment( column ), DEFAULT_ALIGNMENT );
+    renderProperty( column, PROP_FIXED, isFixed( column ), false );
+    renderListener( column, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( column ), false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    TableColumn column = ( TableColumn )widget;
-    JSWriter writer = JSWriter.getWriterFor( column );
-    writer.dispose();
-  }
-
-  //////////////////////////////////////////
-  // Helping method to write JavaScript code
-
-  private static void writeLeft( TableColumn column ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( column );
-    Integer newValue = new Integer( getLeft( column ) );
-    writer.set( PROP_LEFT, "left", newValue, DEFAULT_LEFT );
-  }
-
-  private static void writeWidth( TableColumn column ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( column );
-    Integer newValue = new Integer( column.getWidth() );
-    writer.set( PROP_WIDTH, "width", newValue, null );
-  }
-
-  private static void writeSortDirection( TableColumn column ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( column );
-    String newValue = getSortDirection( column );
-    writer.set( PROP_SORT_DIRECTION, "sortDirection", newValue, null );
-  }
-
-  private static void writeResizable( TableColumn column ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( column );
-    Boolean newValue = Boolean.valueOf( column.getResizable() );
-    writer.set( PROP_RESIZABLE, "resizable", newValue, Boolean.TRUE );
-  }
-
-  private static void writeMoveable( TableColumn column ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( column );
-    Boolean newValue = Boolean.valueOf( column.getMoveable() );
-    writer.set( PROP_MOVEABLE, "moveable", newValue, Boolean.FALSE );
-  }
-  
-  private static void writeFixed( TableColumn column ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( column );
-    Boolean newValue = Boolean.valueOf( isFixed( column ) );
-    writer.set( PROP_FIXED, "fixed", newValue, Boolean.FALSE );
-  }
-
-  private static void writeAlignment( TableColumn column ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( column );
-    if( TableLCAUtil.hasAlignmentChanged( column ) ) {
-      Integer newValue = new Integer( column.getAlignment() );
-      JSVar alignment = JSConst.QX_CONST_ALIGN_LEFT;
-      if( newValue.intValue() == SWT.CENTER ) {
-        alignment = JSConst.QX_CONST_ALIGN_CENTER;
-      } else if( newValue.intValue() == SWT.RIGHT ) {
-        alignment = JSConst.QX_CONST_ALIGN_RIGHT;
-      }
-      Integer index = new Integer( column.getParent().indexOf( column ) );
-      writer.set( "alignment", new Object[] { index, alignment } );
-    }
-  }
-
-  // TODO [rh] selection event is also fired when resizing columns!
-  private static void writeSelectionListener( TableColumn column ) throws IOException {
-    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( column ) );
-    JSWriter writer = JSWriter.getWriterFor( column );
-    writer.set( PROP_SELECTION_LISTENERS, "hasSelectionListener", newValue, Boolean.FALSE );
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
   //////////////////////////////////////////////////
   // Helping methods to obtain calculated properties
 
-  static int getLeft( TableColumn column ) {
-    Object adapter = column.getParent().getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    return tableAdapter.getColumnLeft( column );
+  private static int getIndex( TableColumn column ) {
+    return column.getParent().indexOf( column );
   }
 
-  static boolean isFixed( TableColumn column ) {
-    Object adapter = column.getParent().getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    return tableAdapter.isFixedColumn( column );
+  private static int getLeft( TableColumn column ) {
+    ITableAdapter adapter = column.getParent().getAdapter( ITableAdapter.class );
+    return adapter.getColumnLeft( column );
   }
 
-  static String getSortDirection( TableColumn column ) {
-    String result = null;
-    Table table = column.getParent();
-    if( table.getSortColumn() == column ) {
-      if( table.getSortDirection() == SWT.UP ) {
-        result = "up";
-      } else if( table.getSortDirection() == SWT.DOWN ) {
-        result = "down";
-      }
+  private static String getAlignment( TableColumn column ) {
+    int alignment = column.getAlignment();
+    String result = "left";
+    if( ( alignment & SWT.CENTER ) != 0 ) {
+      result = "center";
+    } else if( ( alignment & SWT.RIGHT ) != 0 ) {
+      result = "right";
     }
     return result;
+  }
+
+  private static boolean isFixed( TableColumn column ) {
+    ITableAdapter adapter = column.getParent().getAdapter( ITableAdapter.class );
+    return adapter.isFixedColumn( column );
   }
 
   /////////////////////////////////
@@ -275,10 +218,8 @@ public final class TableColumnLCA extends AbstractWidgetLCA {
   }
 
   private static int getLeftOffset( TableColumn column ) {
-    Table table = column.getParent();
-    Object adapter = table.getAdapter( ITableAdapter.class );
-    ITableAdapter tableAdapter = ( ITableAdapter )adapter;
-    return tableAdapter.getLeftOffset();
+    ITableAdapter adapter = column.getParent().getAdapter( ITableAdapter.class );
+    return adapter.getLeftOffset();
   }
 
   private static int arrayIndexOf( int[] array, int value ) {

@@ -39,6 +39,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( widget.getUserData( "isControl") );
       assertEquals( "tree", widget.getAppearance() );
       assertFalse( widget.getRenderConfig().fullSelection );
+      assertFalse( widget.getRenderConfig().hideSelection );
       assertFalse( widget.getRenderConfig().hasCheckBoxes );
       assertFalse( widget._isVirtual );
       assertFalse( widget._hasMultiSelection );
@@ -54,9 +55,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
     testCreateTreeWithStylesByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = testUtil.createShellByProtocol( "w2" );
-      var styles = [ "FULL_SELECTION", "NO_SCROLL", "CHECK", "VIRTUAL", "MULTI" ];
+      var styles = [ "FULL_SELECTION", "HIDE_SELECTION", "NO_SCROLL", "CHECK", "VIRTUAL", "MULTI" ];
       var widget = this._createDefaultTreeByProtocol( "w3", "w2", styles );
       assertTrue( widget.getRenderConfig().fullSelection );
+      assertTrue( widget.getRenderConfig().hideSelection );
       assertTrue( widget.getRenderConfig().hasCheckBoxes );
       assertTrue( widget._isVirtual );
       assertTrue( widget._hasMultiSelection );
@@ -131,6 +133,32 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       widget.destroy();
     },
 
+    testSetFixedColumnsByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Tree",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2",
+          "appearance": "tree",
+          "selectionPadding" : [ 2, 4 ],
+          "indentionWidth" : 16,
+          "checkBoxMetrics" : [ 5, 16 ],
+          "splitContainer" : true
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      testUtil.protocolSet( "w3", { "fixedColumns" : 3 } );
+      assertTrue( widget.getRowContainer() instanceof org.eclipse.rwt.TreeRowContainerWrapper );
+      assertEquals( 3, widget.getRowContainer()._fixedColumns );
+      shell.destroy();
+      widget.destroy();
+    },
+
     testSetHeaderHeightByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = testUtil.createShellByProtocol( "w2" );
@@ -170,6 +198,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       testUtil.flush();
       testUtil.protocolSet( "w3", { "topItemIndex" : 3 } );
       assertEquals( 60, widget._vertScrollBar.getValue() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetFocusItemByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createDefaultTreeByProtocol( "w3", "w2", [] );
+      var item1 = this._createTreeItemByProtocol( "w4", "w3", 0 );
+      var item2 = this._createTreeItemByProtocol( "w5", "w3", 1 );
+      testUtil.protocolSet( "w3", { "focusItem" : "w5" } );
+      assertIdentical( item2, widget._focusItem );
       shell.destroy();
       widget.destroy();
     },
@@ -2382,11 +2422,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       var tree = new org.eclipse.rwt.widgets.Tree( { "appearance": "tree" } );
       tree.setHeaderVisible( true );
       var column1 = new org.eclipse.swt.widgets.TableColumn( tree );
+      column1.setIndex( 0 );
       var column2 = new org.eclipse.swt.widgets.TableColumn( tree );
+      column2.setIndex( 1 );
       var column3 = new org.eclipse.swt.widgets.TableColumn( tree );
-      column1.setAlignment( 0, "left" );
-      column2.setAlignment( 1, "center" );
-      column3.setAlignment( 2, "right" );
+      column3.setIndex( 2 );
+      column1.setAlignment( "left" );
+      column2.setAlignment( "center" );
+      column3.setAlignment( "right" );
       assertEquals( "left", tree.getRenderConfig().alignment[ 0 ] );
       assertEquals( "center", tree.getRenderConfig().alignment[ 1 ] );
       assertEquals( "right", tree.getRenderConfig().alignment[ 2 ] );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,30 +13,42 @@
 package org.eclipse.swt.internal.widgets.tablecolumnkit;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.internal.widgets.tablekit.TableLCAUtil;
 import org.eclipse.swt.widgets.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class TableColumnLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private Table table;
+  private TableColumnLCA lca;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
     shell = new Shell( display );
+    table = new Table( shell, SWT.NONE );
+    lca = new TableColumnLCA();
+    Fixture.fakeNewRequest( display );
   }
 
   protected void tearDown() throws Exception {
@@ -78,38 +90,15 @@ public class TableColumnLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( column );
     assertEquals( "some text", column.getToolTipText() );
     Fixture.clearPreserved();
-    //alignment
-    column.setAlignment( SWT.LEFT );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( column );
-    Integer alignment = ( Integer )adapter.getPreserved( TableLCAUtil.PROP_ALIGNMENT );
-    assertEquals( SWT.LEFT, alignment.intValue() );
-    Fixture.clearPreserved();
-    column.setAlignment( SWT.RIGHT );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( column );
-    alignment = ( Integer )adapter.getPreserved( TableLCAUtil.PROP_ALIGNMENT );
-    assertEquals( SWT.RIGHT, alignment.intValue() );
-    Fixture.clearPreserved();
-    column.setAlignment( SWT.CENTER );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( column );
-    alignment = ( Integer )adapter.getPreserved( TableLCAUtil.PROP_ALIGNMENT );
-    assertEquals( SWT.CENTER, alignment.intValue() );
-    Fixture.clearPreserved();
     // left,sortimage,resizable,moveable,selection_listeners,width
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     Object left = adapter.getPreserved( TableColumnLCA.PROP_LEFT );
-    assertEquals( new Integer( TableColumnLCA.getLeft( column ) ), left );
-    Object sortDir = adapter.getPreserved( TableColumnLCA.PROP_SORT_DIRECTION );
-    assertEquals( TableColumnLCA.getSortDirection( column ), sortDir );
+    assertEquals( new Integer( getColumnLeft( column ) ), left );
     Object resizable = adapter.getPreserved( TableColumnLCA.PROP_RESIZABLE );
     assertEquals( Boolean.TRUE, resizable );
     Object moveable = adapter.getPreserved( TableColumnLCA.PROP_MOVEABLE );
     assertEquals( Boolean.FALSE, moveable );
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
     column.setMoveable( true );
     column.setResizable( false );
@@ -120,15 +109,11 @@ public class TableColumnLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( column );
     left = adapter.getPreserved( TableColumnLCA.PROP_LEFT );
-    assertEquals( new Integer( TableColumnLCA.getLeft( column ) ), left );
-    sortDir = adapter.getPreserved( TableColumnLCA.PROP_SORT_DIRECTION );
-    assertEquals( TableColumnLCA.getSortDirection( column ), sortDir );
+    assertEquals( new Integer( getColumnLeft( column ) ), left );
     resizable = adapter.getPreserved( TableColumnLCA.PROP_RESIZABLE );
     assertEquals( Boolean.FALSE, resizable );
     moveable = adapter.getPreserved( TableColumnLCA.PROP_MOVEABLE );
     assertEquals( Boolean.TRUE, moveable );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
     Object width = adapter.getPreserved( TableColumnLCA.PROP_WIDTH );
     assertEquals( new Integer( 30 ), width );
   }
@@ -162,8 +147,8 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( newWidth, column.getWidth() );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( column );
     assertTrue( adapter.isInitialized() );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setWidth( " + newWidth + " )" ) != -1 );
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( newWidth ), message.findSetProperty( column, "width" ) );
   }
 
   public void testGetLeft() {
@@ -175,16 +160,16 @@ public class TableColumnLCA_Test extends TestCase {
     TableColumn column2 = new TableColumn( table, SWT.NONE );
     column2.setWidth( 10 );
     // Test with natural column order
-    assertEquals( 0, TableColumnLCA.getLeft( column0 ) );
-    assertEquals( 10, TableColumnLCA.getLeft( column1 ) );
-    assertEquals( 20, TableColumnLCA.getLeft( column2 ) );
+    assertEquals( 0, getColumnLeft( column0 ) );
+    assertEquals( 10, getColumnLeft( column1 ) );
+    assertEquals( 20, getColumnLeft( column2 ) );
     // Test with reverted column order
     table.setColumnOrder( new int[]{
       2, 1, 0
     } );
-    assertEquals( 0, TableColumnLCA.getLeft( column2 ) );
-    assertEquals( 10, TableColumnLCA.getLeft( column1 ) );
-    assertEquals( 20, TableColumnLCA.getLeft( column0 ) );
+    assertEquals( 0, getColumnLeft( column2 ) );
+    assertEquals( 10, getColumnLeft( column1 ) );
+    assertEquals( 20, getColumnLeft( column0 ) );
   }
 
   public void testMoveColumn() {
@@ -328,26 +313,8 @@ public class TableColumnLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( column1Id + ".left", String.valueOf( 35 ) );
     Fixture.executeLifeCycleFromServerThread( );
-    String markup = Fixture.getAllMarkup();
-    String expected = "var w = wm.findWidgetById( \"" + column1Id + "\" );w.setLeft( 10 );";
-    assertTrue( markup.indexOf( expected ) != -1 );
-  }
-
-  public void testWriteSelectionListener() throws IOException {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
-    Fixture.fakeResponseWriter();
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( column );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-
-    column.addSelectionListener( new SelectionAdapter() {} );
-    TableColumnLCA lca = new TableColumnLCA();
-    lca.renderChanges( column );
-
-    String expected = "w.setHasSelectionListener( true )";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 10 ), message.findSetProperty( column1, "left" ) );
   }
 
   public void testMoveColumnFixedColumnTarget() {
@@ -390,68 +357,466 @@ public class TableColumnLCA_Test extends TestCase {
     assertEquals( 3, columnOrder[ 3 ] );
   }
 
-  public void testRenderAlignment() throws IOException {
-    Fixture.fakeResponseWriter();
-    Fixture.markInitialized( display );
-    Shell shell = new Shell( display, SWT.NONE );
-    Table table = new Table( shell, SWT.NONE );
-    new TableColumn( table, SWT.NONE );
+  public void testRenderCreate() throws IOException {
     TableColumn column = new TableColumn( table, SWT.NONE );
-    shell.open();
+
+    lca.renderInitialization( column );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( column );
+    assertEquals( "rwt.widgets.TableColumn", operation.getType() );
+  }
+
+  public void testRenderCreateWithAligment() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.RIGHT );
+
+    lca.renderInitialization( column );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( column );
+    assertEquals( "rwt.widgets.TableColumn", operation.getType() );
+    Object[] styles = operation.getStyles();
+    assertTrue( Arrays.asList( styles ).contains( "RIGHT" ) );
+  }
+
+  public void testRenderParent() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    lca.renderInitialization( column );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( column );
+    assertEquals( WidgetUtil.getId( column.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderInitialIndex() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    lca.render( column );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( column );
+    assertTrue( operation.getPropertyNames().indexOf( "index" ) == -1 );
+  }
+
+  public void testRenderIndex() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    new TableColumn( table, SWT.NONE, 0 );
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 1 ), message.findSetProperty( column, "index" ) );
+  }
+
+  public void testRenderIndexUnchanged() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
-    Fixture.markInitialized( shell );
-    Fixture.markInitialized( table );
     Fixture.markInitialized( column );
-    Fixture.clearPreserved();
+
+    new TableColumn( table, SWT.NONE, 0 );
     Fixture.preserveWidgets();
-    TableColumnLCA lca = new TableColumnLCA();
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( column, "index" ) );
+  }
+
+  public void testRenderInitialToolTip() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    lca.render( column );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( column );
+    assertTrue( operation.getPropertyNames().indexOf( "toolTip" ) == -1 );
+  }
+
+  public void testRenderToolTip() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    column.setToolTipText( "foo" );
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "foo", message.findSetProperty( column, "toolTip" ) );
+  }
+
+  public void testRenderToolTipUnchanged() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+
+    column.setToolTipText( "foo" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( column, "toolTip" ) );
+  }
+
+  public void testRenderInitialCustomVariant() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    lca.render( column );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( column );
+    assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
+  }
+
+  public void testRenderCustomVariant() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    column.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "variant_blue", message.findSetProperty( column, "customVariant" ) );
+  }
+
+  public void testRenderCustomVariantUnchanged() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+
+    column.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( column, "customVariant" ) );
+  }
+
+  public void testRenderInitialText() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    lca.render( column );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( column );
+    assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
+  }
+
+  public void testRenderText() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    column.setText( "foo" );
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "foo", message.findSetProperty( column, "text" ) );
+  }
+
+  public void testRenderTextUnchanged() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+
+    column.setText( "foo" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( column, "text" ) );
+  }
+
+  public void testRenderInitialImage() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( column, "image" ) );
+  }
+
+  public void testRenderImage() throws IOException, JSONException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+
+    column.setImage( image );
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    String imageLocation = ImageFactory.getImagePath( image );
+    String expected = "[\"" + imageLocation + "\", 100, 50 ]";
+    JSONArray actual = ( JSONArray )message.findSetProperty( column, "image" );
+    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+  }
+
+  public void testRenderImageUnchanged() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+
+    column.setImage( image );
+    Fixture.preserveWidgets();
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( column, "image" ) );
+  }
+
+  public void testRenderImageReset() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    column.setImage( image );
+
+    Fixture.preserveWidgets();
+    column.setImage( null );
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( column, "image" ) );
+  }
+
+  public void testRenderInitialLeft() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    lca.render( column );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( column );
+    assertTrue( operation.getPropertyNames().indexOf( "left" ) == -1 );
+  }
+
+  public void testRenderLeft() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    TableColumn col2 = new TableColumn( table, SWT.NONE, 0 );
+    col2.setWidth( 50 );
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 50 ), message.findSetProperty( column, "left" ) );
+  }
+
+  public void testRenderLeftUnchanged() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+
+    TableColumn col2 = new TableColumn( table, SWT.NONE, 0 );
+    col2.setWidth( 50 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( column, "left" ) );
+  }
+
+  public void testRenderInitialWidth() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    lca.render( column );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( column );
+    assertTrue( operation.getPropertyNames().indexOf( "width" ) == -1 );
+  }
+
+  public void testRenderWidth() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    column.setWidth( 50 );
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 50 ), message.findSetProperty( column, "width" ) );
+  }
+
+  public void testRenderWidthUnchanged() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+
+    column.setWidth( 50 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( column, "width" ) );
+  }
+
+  public void testRenderInitialResizable() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    lca.render( column );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( column );
+    assertTrue( operation.getPropertyNames().indexOf( "resizable" ) == -1 );
+  }
+
+  public void testRenderResizable() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    column.setResizable( false );
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findSetProperty( column, "resizable" ) );
+  }
+
+  public void testRenderResizableUnchanged() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+
+    column.setResizable( false );
+    Fixture.preserveWidgets();
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( column, "resizable" ) );
+  }
+
+  public void testRenderInitialMoveable() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    lca.render( column );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( column );
+    assertTrue( operation.getPropertyNames().indexOf( "moveable" ) == -1 );
+  }
+
+  public void testRenderMoveable() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    column.setMoveable( true );
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( column, "moveable" ) );
+  }
+
+  public void testRenderMoveableUnchanged() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+
+    column.setMoveable( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( column, "moveable" ) );
+  }
+
+  public void testRenderInitialAlignment() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    lca.render( column );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( column );
+    assertTrue( operation.getPropertyNames().indexOf( "alignment" ) == -1 );
+  }
+
+  public void testRenderAlignment() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
     column.setAlignment( SWT.RIGHT );
     lca.renderChanges( column );
-    String expected = "w.setAlignment( 1, qx.constant.Layout.ALIGN_RIGHT )";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "right", message.findSetProperty( column, "alignment" ) );
+  }
+
+  public void testRenderAlignmentUnchanged() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+
+    column.setAlignment( SWT.RIGHT );
+    Fixture.preserveWidgets();
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( column, "alignment" ) );
+  }
+
+  public void testRenderInitialFixed() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+
+    lca.render( column );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( column );
+    assertTrue( operation.getPropertyNames().indexOf( "fixed" ) == -1 );
   }
 
   public void testRenderFixed() throws IOException {
-    Fixture.fakeResponseWriter();
-    Fixture.markInitialized( display );
-    Table table = createFixedColumnsTable( shell );
-    TableColumn column = table.getColumn( 0 );
-    Fixture.markInitialized( column );
-    TableColumnLCA lca = new TableColumnLCA();
-    lca.renderChanges( column );
-    String expected = "w.setFixed( true )";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    TableColumn column = new TableColumn( table, SWT.NONE );
 
-    Fixture.fakeNewRequest( display );
+    table.setData( "fixedColumns", Integer.valueOf( 1 ) );
     lca.renderChanges( column );
-    assertFalse( Fixture.getAllMarkup().indexOf( expected ) == -1 );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( column, "fixed" ) );
   }
 
-  public void testWriteTextMultiLine() throws IOException {
-    Fixture.fakeResponseWriter();
-    Table table = createMultiLineHeaderTable();
-    TableColumn column = table.getColumn( 1 );
+  public void testRenderFixedUnchanged() throws IOException {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+
+    table.setData( "fixedColumns", Integer.valueOf( 1 ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( column, "fixed" ) );
+  }
+
+  public void testRenderAddSelectionListener() throws Exception {
+    TableColumn column = new TableColumn( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( column );
     Fixture.preserveWidgets();
 
-    column.setText( "Multi line\nHeader" );
-    TableColumnLCA lca = new TableColumnLCA();
+    column.addSelectionListener( new SelectionAdapter() { } );
     lca.renderChanges( column );
 
-    String expected = "w.setLabel( \"Multi line<br/>Header\" )";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( column, "selection" ) );
   }
 
-  private Table createMultiLineHeaderTable() {
-    Table table = new Table( shell, SWT.NONE );
-    for( int i = 0; i < 3; i++ ) {
-      TableColumn column = new TableColumn( table, SWT.NONE );
-      column.setWidth( 50 );
-      column.setText( "Column " + i );
-    }
-    table.setData( "multiLineHeader", Boolean.TRUE );
-    return table;
+  public void testRenderRemoveSelectionListener() throws Exception {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    SelectionListener listener = new SelectionAdapter() { };
+    column.addSelectionListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+    Fixture.preserveWidgets();
+
+    column.removeSelectionListener( listener );
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( column, "selection" ) );
+  }
+
+  public void testRenderSelectionListenerUnchanged() throws Exception {
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( column );
+    Fixture.preserveWidgets();
+
+    column.addSelectionListener( new SelectionAdapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( column );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( column, "selection" ) );
+  }
+
+  private static int getColumnLeft( TableColumn column ) {
+    return column.getParent().getAdapter( ITableAdapter.class ).getColumnLeft( column );
   }
 
   private Table createFixedColumnsTable( Shell shell ) {

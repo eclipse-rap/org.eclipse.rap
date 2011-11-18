@@ -33,6 +33,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.TableColumn", {
     "resizable",
     "moveable",
     "alignment",
+    "fixed",
     "customVariant"
   ],
 
@@ -40,6 +41,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.TableColumn", {
     "text" : function( widget, value ) {
       var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
       var text = encodingUtil.escapeText( value, false );
+      text = encodingUtil.replaceNewLines( text, "<br/>" );
       widget.setLabel( text );
     },
     "image" : function( widget, value ) {
@@ -48,9 +50,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.TableColumn", {
       } else {
         widget.setIcon( value[ 0 ] );
       }
-    },
-    "alignment" : function( widget, value ) {
-      widget.setAlignment( widget.getIndex(), value );
     },
     "toolTip" : org.eclipse.rwt.protocol.AdapterUtil.getControlPropertyHandler( "toolTip" )
   },

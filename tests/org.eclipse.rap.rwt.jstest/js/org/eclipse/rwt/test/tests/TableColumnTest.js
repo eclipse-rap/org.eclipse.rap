@@ -136,7 +136,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableColumnTest", {
       tree.destroy();
     },
 
-    testSetCustomAlignmentByProtocol : function() {
+    testSetAlignmentByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = testUtil.createShellByProtocol( "w2" );
       var tree = this._createTreeByProtocol( "w3", "w2", [] );
@@ -145,6 +145,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TableColumnTest", {
       assertEquals( "right", column.getLabelObject().getTextAlign() );
       assertEquals( "right", column.getHorizontalChildrenAlign() );
       assertEquals( "right", tree.getRenderConfig().alignment[ 0 ] );
+      shell.destroy();
+      column.destroy();
+      tree.destroy();
+    },
+
+    testSetFixedByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var tree = this._createTreeByProtocol( "w3", "w2", [] );
+      var column = this._createColumnByProtocol( "w4", "w3", [] );
+      testUtil.protocolSet( "w4", { "fixed" : true } );
+      assertTrue( "right", column.isFixed() );
       shell.destroy();
       column.destroy();
       tree.destroy();

@@ -19,10 +19,13 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Tree", {
       noScroll : styleMap.NO_SCROLL,
       multiSelection : styleMap.MULTI,
       check : styleMap.CHECK,
-      fullSelection : styleMap.FULL_SELECTION,
+      // TODO: Remove this check when bug 355408: [Table] Always uses FULL_SELECTION is fixed
+      fullSelection : properties.appearance === "table" ? true : styleMap.FULL_SELECTION,
+      hideSelection : styleMap.HIDE_SELECTION,
       checkBoxMetrics : properties.checkBoxMetrics,
       selectionPadding : properties.selectionPadding,
-      indentionWidth : properties.indentionWidth
+      indentionWidth : properties.indentionWidth,
+      splitContainer : properties.splitContainer
     };  
     var result = new org.eclipse.rwt.widgets.Tree( configMap );
     org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
@@ -40,10 +43,12 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Tree", {
     // NOTE : Client currently requires itemMetrics before columnCount
     "columnCount",
     "treeColumn",
+    "fixedColumns",
     "headerHeight",
     "headerVisible",
     "linesVisible",
     "topItemIndex",
+    "focusItem",
     "scrollLeft",
     "selection",
     "sortDirection",
@@ -56,14 +61,16 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Tree", {
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
     "itemMetrics" : function( widget, value ) {
       for( var i = 0; i < value.length; i++ ) {
-        widget.setItemMetrics( value[ i ][ 0 ],
-                               value[ i ][ 1 ],
-                               value[ i ][ 2 ],
-                               value[ i ][ 3 ],
-                               value[ i ][ 4 ],
-                               value[ i ][ 5 ],
-                               value[ i ][ 6 ] );
+        widget.setItemMetrics.apply( widget, value[ i ] );
       }
+    },
+    "fixedColumns" : function( widget, value ) {
+      org.eclipse.rwt.TreeUtil.setFixedColumns( widget, value );
+    },
+    "focusItem" : function( widget, value ) {
+      org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( item ) {
+        widget.setFocusItem( item );
+      } );
     },
     "selection" : function( widget, value ) {
       widget.deselectAll();

@@ -249,11 +249,6 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       this._scheduleItemUpdate( item );
     },
 
-    deselectAll : function() {
-      this._selection = [];
-      this._scheduleUpdate();
-    },
-
     setFocusItem : function( item ) {
       this._focusItem = item;
       this._sendItemFocusChange()
@@ -961,7 +956,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     _exclusiveSelectItem : function( item ) {
-      this._deselectAll();
+      this.deselectAll();
       this._leadItem = null;
       this._selectItem( item, true );
       this._sendSelectionChange( item );
@@ -979,7 +974,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     },
 
     _shiftSelectItem : function( item ) {
-      this._deselectAll();
+      this.deselectAll();
       var currentItem = this._leadItem != null ? this._leadItem : this._focusItem;
       this._leadItem = currentItem;
       var targetItem = item;
@@ -1017,7 +1012,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
       }
     },
 
-    _deselectAll : function() {
+    deselectAll : function() {
       var oldSelection = this._selection;
       this._selection = [];
       for( var i = 0; i < oldSelection.length; i++ ) {

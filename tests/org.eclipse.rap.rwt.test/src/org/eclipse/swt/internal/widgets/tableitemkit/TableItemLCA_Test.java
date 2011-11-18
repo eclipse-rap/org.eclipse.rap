@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tableitemkit;
 
@@ -16,27 +16,37 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class TableItemLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private Table table;
+  private TableItemLCA lca;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.fakePhase( PhaseId.RENDER );
     display = new Display();
     shell = new Shell( display );
+    table = new Table( shell, SWT.NONE );
+    lca = new TableItemLCA();
+    Fixture.fakeNewRequest( display );
   }
 
   protected void tearDown() throws Exception {
@@ -49,20 +59,9 @@ public class TableItemLCA_Test extends TestCase {
     new TableColumn( table, SWT.CENTER );
     new TableColumn( table, SWT.CENTER );
     TableItem item1 = new TableItem( table, SWT.NONE );
-    TableItem item2 = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( item1 );
-//    Object top = adapter.getPreserved( TableItemLCA.PROP_TOP );
-//    assertEquals( new Integer( item1.getBounds().y ), top );
-    Object checked = adapter.getPreserved( TableItemLCA.PROP_CHECKED );
-    assertNull( checked );
-    Object grayed = adapter.getPreserved( TableItemLCA.PROP_GRAYED );
-    assertNull( grayed );
-    Object index = adapter.getPreserved( TableItemLCA.PROP_INDEX );
-    assertEquals( new Integer( 0 ), index );
-    Object selected = adapter.getPreserved( TableItemLCA.PROP_SELECTED );
-    assertEquals( Boolean.FALSE, selected );
     String[] texts1 = TableItemLCA.getTexts( item1 );
     String[] texts2 = ( String[] )adapter.getPreserved( TableItemLCA.PROP_TEXTS );
     assertEquals( texts1[ 0 ], texts2[ 0 ] );
@@ -123,15 +122,6 @@ public class TableItemLCA_Test extends TestCase {
     tableAdapter.setFocusIndex( 0 );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( item1 );
-//    top = adapter.getPreserved( TableItemLCA.PROP_TOP );
-    checked = adapter.getPreserved( TableItemLCA.PROP_CHECKED );
-    grayed = adapter.getPreserved( TableItemLCA.PROP_GRAYED );
-    index = adapter.getPreserved( TableItemLCA.PROP_INDEX );
-    selected = adapter.getPreserved( TableItemLCA.PROP_SELECTED );
-    assertNull( checked );
-    assertNull( grayed );
-    assertEquals( Boolean.TRUE, selected );
-    assertEquals( new Integer( 0 ), index );
     texts2 = ( String[] )adapter.getPreserved( TableItemLCA.PROP_TEXTS );
     assertEquals( "item11", texts2[ 0 ] );
     assertEquals( "item12", texts2[ 1 ] );
@@ -155,43 +145,6 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( foreground2, preservedCellForegrounds[ 1 ] );
     assertEquals( foreground3, preservedCellForegrounds[ 2 ] );
     Fixture.clearPreserved();
-    // text
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( item2 );
-    assertEquals( "", adapter.getPreserved( Props.TEXT ) );
-    Fixture.clearPreserved();
-    item2.setText( "some text" );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( item2 );
-    assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
-    Fixture.clearPreserved();
-    // image
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( item2 );
-    assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
-    Fixture.clearPreserved();
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
-    item2.setImage( image );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( item2 );
-    assertSame( image, adapter.getPreserved( Props.IMAGE ) );
-    Fixture.clearPreserved();
-    display.dispose();
-  }
-
-  public void testFontIsEffectivelyPreserved() throws IOException {
-    Table table = new Table( shell, SWT.BORDER );
-    TableItem item = new TableItem( table, SWT.NONE );
-    Fixture.markInitialized( item );
-    Fixture.fakeResponseWriter();
-    item.setFont( new Font( display, "Times", 12, SWT.BOLD ) );
-    TableItemLCA lca = new TableItemLCA();
-    lca.preserveValues( item );
-    lca.renderChanges( item );
-    String expected = "w.setFont(";
-    String markup = Fixture.getAllMarkup();
-    assertFalse( markup.indexOf( expected ) != -1 );
-    display.dispose();
   }
 
   public void testCheckPreserveValues() {
@@ -214,11 +167,9 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, checked );
     assertEquals( Boolean.TRUE, grayed );
     Fixture.clearPreserved();
-    display.dispose();
   }
 
-  public void testItemTextWithoutColumn() throws IOException {
-    Table table = new Table( shell, SWT.NONE );
+  public void testItemTextWithoutColumn() throws IOException, JSONException {
     TableItem item = new TableItem( table, SWT.NONE );
     // Ensure that even though there are no columns, the first text of an item
     // will be rendered
@@ -228,8 +179,9 @@ public class TableItemLCA_Test extends TestCase {
     tableItemLCA.preserveValues( item );
     item.setText( "newText" );
     tableItemLCA.renderChanges( item );
-    String expected = "w.setTexts( [ \"newText\" ] )";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "texts" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[\"newText\"]", actual ) );
   }
 
   public void testDisposeSelected() {
@@ -266,10 +218,8 @@ public class TableItemLCA_Test extends TestCase {
     AbstractWidgetLCA lca = WidgetUtil.getLCA( itemWithTableDisposed );
     Fixture.fakeResponseWriter();
     lca.renderDispose( itemOnlyDisposed );
-    String expected = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
-                      + "var w = wm.findWidgetById( \"w3\" );"
-                      + "w.dispose();";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    Message message = Fixture.getProtocolMessage();
+    assertTrue( message.getOperation( 0 ) instanceof DestroyOperation );
     // Test that when the whole Tables is dipsosed of, the TableItems dispose
     // function is *not* called
     table.dispose();
@@ -304,64 +254,7 @@ public class TableItemLCA_Test extends TestCase {
     assertEquals( "", Fixture.getAllMarkup() );
   }
 
-  public void testCheckAndGrayedAccess() throws IOException {
-    final String[] lcaMethod = { "" };
-    Table table = new Table( shell, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE ) {
-      private static final long serialVersionUID = 1L;
-      public boolean getChecked() {
-        fail( lcaMethod[ 0 ] + ": Must not call getChecked() from LCA when no CHECK style" );
-        return false;
-      }
-      public boolean getGrayed() {
-        fail( lcaMethod[ 0 ] + ": Must not call getGrayed() from LCA when no CHECK style" );
-        return false;
-      }
-    };
-    Fixture.fakeResponseWriter();
-    TableItemLCA lca = new TableItemLCA();
-    lcaMethod[ 0 ] = "preserveValues";
-    lca.preserveValues( item );
-    lcaMethod[ 0 ] = "readData";
-    lca.readData( item );
-    lcaMethod[ 0 ] = "renderInitialization";
-    lca.renderInitialization( item );
-    lcaMethod[ 0 ] = "renderChanges";
-    lca.renderChanges( item );
-    lcaMethod[ 0 ] = "renderDispose";
-    lca.renderDispose( item );
-  }
-
-  public void testEscape() throws IOException {
-    Table table = new Table( shell, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
-    Fixture.fakeResponseWriter();
-    TableItemLCA tableItemLCA = new TableItemLCA();
-    Fixture.markInitialized( item );
-    tableItemLCA.preserveValues( item );
-    item.setText( "char test: &<>.,'\"&lt;" );
-    tableItemLCA.renderChanges( item );
-    String expected = "w.setTexts( [ \"char test: &amp;&lt;&gt;.,'&quot;&amp;lt;\" ] )";
-    String result = Fixture.getAllMarkup();
-    assertTrue( result.indexOf( expected ) != -1 );
-  }
-
-  public void testEscapeNonDisplayableChars() throws IOException {
-    Table table = new Table( shell, SWT.NONE );
-    TableItem item = new TableItem( table, SWT.NONE );
-    Fixture.fakeResponseWriter();
-    TableItemLCA tableItemLCA = new TableItemLCA();
-    Fixture.markInitialized( item );
-    tableItemLCA.preserveValues( item );
-    item.setText( "abc\u2028abc\u2029abc" );
-    tableItemLCA.renderChanges( item );
-    String expected = "w.setTexts( [ \"abc&#8232;abc&#8233;abc\" ] )";
-    String result = Fixture.getAllMarkup();
-    assertTrue( result.indexOf( expected ) != -1 );
-  }
-
   public void testDynamicColumns() {
-    Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setBackground( 0, display.getSystemColor( SWT.COLOR_BLACK ) );
@@ -371,68 +264,459 @@ public class TableItemLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
   }
-  
-  public void testSelectItem() throws IOException {
-    Table table = new Table( shell, SWT.BORDER );
-    TableItem item = new TableItem( table, SWT.NONE, 0 );
-    item.setText( "Item 0" );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( item );
-    Fixture.fakeResponseWriter();
-    TableItemLCA tableItemLCA = new TableItemLCA();
-    tableItemLCA.preserveValues( item );
-    table.select( 0 );
-    tableItemLCA.renderChanges( item );
-    String tableId = WidgetUtil.getId( table );
-    String itemId = WidgetUtil.getId( item );
-    String expected = "var w = wm.findWidgetById( \"" + tableId + "\" );";
-    expected += "w.selectItem( wm.findWidgetById( \"" + itemId + "\" ) );";
-    String result = Fixture.getAllMarkup();
-    assertTrue( result.indexOf( expected ) != -1 );
-  }
-  
-  public void testDeselectItem() throws IOException {
-    Table table = new Table( shell, SWT.BORDER );
-    TableItem item = new TableItem( table, SWT.NONE, 0 );
-    item.setText( "Item 0" );
-    table.select( 0 );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( item );
-    Fixture.fakeResponseWriter();
-    TableItemLCA tableItemLCA = new TableItemLCA();
-    tableItemLCA.preserveValues( item );
-    table.deselect( 0 );
-    tableItemLCA.renderChanges( item );
-    String tableId = WidgetUtil.getId( table );
-    String itemId = WidgetUtil.getId( item );
-    String expected = "var w = wm.findWidgetById( \"" + tableId + "\" );";
-    expected += "w.deselectItem( wm.findWidgetById( \"" + itemId + "\" ) );";
-    String result = Fixture.getAllMarkup();
-    assertTrue( result.indexOf( expected ) != -1 );
-  }
-  
-  // see bug 338696
-  public void testDeselectAfterClear() throws IOException {
-    Table table = new Table( shell, SWT.VIRTUAL );
-    table.setItemCount( 10 );
-    // materialize item 0
-    TableItem item = table.getItem( 0 );
-    item.setText( "Item 0" );
-    table.select( 0 );
-    Fixture.markInitialized( display );
-    Fixture.markInitialized( item );
-    Fixture.fakeResponseWriter();
-    TableItemLCA tableItemLCA = new TableItemLCA();
-    tableItemLCA.preserveValues( item );
-    table.clear( 0 );
-    table.deselectAll();
-    tableItemLCA.renderChanges( item );
-    String tableId = WidgetUtil.getId( table );
-    String itemId = WidgetUtil.getId( item );
-    String expected = "w.clear();var w = wm.findWidgetById( \"" + tableId + "\" );";
-    expected += "w.deselectItem( wm.findWidgetById( \"" + itemId + "\" ) );";    
-    String result = Fixture.getAllMarkup();
-    assertTrue( result.indexOf( expected ) != -1 );
+
+  public void testRenderCreate() throws IOException {
+    new TableItem( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    lca.renderInitialization( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertEquals( "rwt.widgets.TreeItem", operation.getType() );
+    assertEquals( Integer.valueOf( 1 ), operation.getProperty( "index" ) );
   }
 
+  public void testRenderParent() throws IOException {
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    lca.renderInitialization( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertEquals( WidgetUtil.getId( item.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderInitialTexts() throws IOException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "texts" ) == -1 );
+  }
+
+  public void testRenderTexts() throws IOException, JSONException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    item.setText( new String[] { "item 0.0", "item 0.1" } );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "texts" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[\"item 0.0\",\"item 0.1\"]", actual ) );
+  }
+
+  public void testRenderTextsUnchanged() throws IOException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setText( new String[] { "item 0.0", "item 0.1" } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "texts" ) );
+  }
+
+  public void testRenderInitialImages() throws IOException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "images" ) == -1 );
+  }
+
+  public void testRenderImages() throws IOException, JSONException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
+
+    item.setImage( new Image[] { null, image } );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "images" );
+    String expected = "[\"rwt-resources/generated/90fb0bfe\",58,12]";
+    assertEquals( JSONObject.NULL, actual.get( 0 ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual.getJSONArray( 1 ) ) );
+  }
+
+  public void testRenderImagesUnchanged() throws IOException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
+
+    item.setImage( new Image[] { null, image } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "images" ) );
+  }
+
+  public void testRenderInitialBackground() throws IOException {
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "background" ) == -1 );
+  }
+
+  public void testRenderBackground() throws IOException, JSONException {
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    item.setBackground( display.getSystemColor( SWT.COLOR_GREEN ) );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "background" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", actual ) );
+  }
+
+  public void testRenderBackgroundUnchanged() throws IOException {
+    TableItem item = new TableItem( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setBackground( display.getSystemColor( SWT.COLOR_GREEN ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "background" ) );
+  }
+
+  public void testRenderInitialForeground() throws IOException {
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "foreground" ) == -1 );
+  }
+
+  public void testRenderForeground() throws IOException, JSONException {
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    item.setForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "foreground" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", actual ) );
+  }
+
+  public void testRenderForegroundUnchanged() throws IOException {
+    TableItem item = new TableItem( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setForeground( display.getSystemColor( SWT.COLOR_GREEN ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "foreground" ) );
+  }
+
+  public void testRenderInitialFont() throws IOException {
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "font" ) == -1 );
+  }
+
+  public void testRenderFont() throws IOException, JSONException {
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    item.setFont( Graphics.getFont( "Arial", 20, SWT.BOLD ) );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "font" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[\"Arial\"]", actual.getJSONArray( 0 ) ) );
+    assertEquals( Integer.valueOf( 20 ), actual.get( 1 ) );
+    assertEquals( Boolean.TRUE, actual.get( 2 ) );
+    assertEquals( Boolean.FALSE, actual.get( 3 ) );
+  }
+
+  public void testRenderFontUnchanged() throws IOException {
+    TableItem item = new TableItem( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setFont( Graphics.getFont( "Arial", 20, SWT.BOLD ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "font" ) );
+  }
+
+  public void testRenderInitialCellBackgrounds() throws IOException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "cellBackgrounds" ) == -1 );
+  }
+
+  public void testRenderCellBackgrounds() throws IOException, JSONException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    item.setBackground( 1, display.getSystemColor( SWT.COLOR_GREEN ) );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "cellBackgrounds" );
+    assertEquals( JSONObject.NULL, actual.get( 0 ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", actual.getJSONArray( 1 ) ) );
+  }
+
+  public void testRenderCellBackgroundsUnchanged() throws IOException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setBackground( 1, display.getSystemColor( SWT.COLOR_GREEN ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "cellBackgrounds" ) );
+  }
+
+  public void testRenderInitialCellForegrounds() throws IOException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "cellForegrounds" ) == -1 );
+  }
+
+  public void testRenderCellForegrounds() throws IOException, JSONException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    item.setForeground( 1, display.getSystemColor( SWT.COLOR_GREEN ) );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "cellForegrounds" );
+    assertEquals( JSONObject.NULL, actual.get( 0 ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,255,0,255]", actual.getJSONArray( 1 ) ) );
+  }
+
+  public void testRenderCellForegroundsUnchanged() throws IOException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setForeground( 1, display.getSystemColor( SWT.COLOR_GREEN ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "cellForegrounds" ) );
+  }
+
+  public void testRenderInitialCellFonts() throws IOException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "cellFonts" ) == -1 );
+  }
+
+  public void testRenderCellFonts() throws IOException, JSONException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    item.setFont( 1, Graphics.getFont( "Arial", 20, SWT.BOLD ) );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "cellFonts" );
+    assertEquals( JSONObject.NULL, actual.get( 0 ) );
+    JSONArray cellFont = actual.getJSONArray( 1 );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[\"Arial\"]", cellFont.getJSONArray( 0 ) ) );
+    assertEquals( Integer.valueOf( 20 ), cellFont.get( 1 ) );
+    assertEquals( Boolean.TRUE, cellFont.get( 2 ) );
+    assertEquals( Boolean.FALSE, cellFont.get( 3 ) );
+  }
+
+  public void testRenderCellFontsUnchanged() throws IOException {
+    new TableColumn( table, SWT.NONE );
+    new TableColumn( table, SWT.NONE );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setFont( 1, Graphics.getFont( "Arial", 20, SWT.BOLD ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "cellFonts" ) );
+  }
+
+  public void testRenderInitialChecked() throws IOException {
+    table = new Table( shell, SWT.CHECK );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "checked" ) == -1 );
+  }
+
+  public void testRenderChecked() throws IOException {
+    table = new Table( shell, SWT.CHECK );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    item.setChecked( true );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( item, "checked" ) );
+  }
+
+  public void testRenderCheckedUnchanged() throws IOException {
+    table = new Table( shell, SWT.CHECK );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setChecked( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "checked" ) );
+  }
+
+  public void testRenderInitialGrayed() throws IOException {
+    table = new Table( shell, SWT.CHECK );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "grayed" ) == -1 );
+  }
+
+  public void testRenderGrayed() throws IOException {
+    table = new Table( shell, SWT.CHECK );
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    item.setGrayed( true );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( item, "grayed" ) );
+  }
+
+  public void testRenderGrayedUnchanged() throws IOException {
+    table = new Table( shell, SWT.CHECK );
+    TableItem item = new TableItem( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setGrayed( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "grayed" ) );
+  }
+
+  public void testRenderInitialVariant() throws IOException {
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "variant" ) == -1 );
+  }
+
+  public void testRenderVariant() throws IOException {
+    TableItem item = new TableItem( table, SWT.NONE );
+
+    item.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "variant_blue", message.findSetProperty( item, "variant" ) );
+  }
+
+  public void testRenderVariantUnchanged() throws IOException {
+    TableItem item = new TableItem( table, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "variant" ) );
+  }
+
+  public void testRenderClear() throws IOException {
+    table = new Table( shell, SWT.VIRTUAL );
+    table.setItemCount( 1 );
+    TableItem item = table.getItem( 0 );
+
+    table.clear( 0 );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCallOperation( item, "clear" ) );
+  }
 }

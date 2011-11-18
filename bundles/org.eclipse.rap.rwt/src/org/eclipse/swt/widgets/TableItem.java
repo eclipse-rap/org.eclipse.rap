@@ -39,7 +39,9 @@ import org.eclipse.swt.internal.widgets.RichTextUtil.IImageSizeProvider;
  */
 public class TableItem extends Item {
 
-  private class TableItemAdapter implements ITableItemAdapter {
+  private class TableItemAdapter
+    implements ITableItemAdapter, IWidgetFontAdapter, IWidgetColorAdapter
+  {
 
     public Color getUserBackground() {
       return background;
