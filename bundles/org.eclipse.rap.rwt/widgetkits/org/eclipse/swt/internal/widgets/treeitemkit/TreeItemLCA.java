@@ -53,8 +53,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       preserveProperty( item, PROP_ITEM_COUNT, item.getItemCount() );
       preserveProperty( item, PROP_TEXTS, getTexts( item ) );
       preserveProperty( item, PROP_IMAGES, getImages( item ) );
-      WidgetLCAUtil.preserveBackground( item, getUserBackgound( item ) );
-      WidgetLCAUtil.preserveForeground( item, getUserForegound( item ) );
+      WidgetLCAUtil.preserveBackground( item, getUserBackground( item ) );
+      WidgetLCAUtil.preserveForeground( item, getUserForeground( item ) );
       WidgetLCAUtil.preserveFont( item, getUserFont( item ) );
       preserveProperty( item, PROP_CELL_BACKGROUNDS, getCellBackgrounds( item ) );
       preserveProperty( item, PROP_CELL_FOREGROUNDS, getCellForegrounds( item ) );
@@ -116,8 +116,8 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       renderProperty( item, PROP_ITEM_COUNT, item.getItemCount(), DEFAULT_ITEM_COUNT );
       renderProperty( item, PROP_TEXTS, getTexts( item ), getDefaultTexts( item ) );
       renderProperty( item, PROP_IMAGES, getImages( item ), new Image[ getColumnCount( item ) ] );
-      WidgetLCAUtil.renderBackground( item, getUserBackgound( item ) );
-      WidgetLCAUtil.renderForeground( item, getUserForegound( item ) );
+      WidgetLCAUtil.renderBackground( item, getUserBackground( item ) );
+      WidgetLCAUtil.renderForeground( item, getUserForeground( item ) );
       WidgetLCAUtil.renderFont( item, getUserFont( item ) );
       renderProperty( item,
                       PROP_CELL_BACKGROUNDS,
@@ -183,14 +183,14 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
     return images;
   }
 
-  private static Color getUserBackgound( TreeItem item ) {
+  private static Color getUserBackground( TreeItem item ) {
     IWidgetColorAdapter colorAdapter = item.getAdapter( IWidgetColorAdapter.class );
-    return colorAdapter.getUserBackgound();
+    return colorAdapter.getUserBackground();
   }
 
-  private static Color getUserForegound( TreeItem item ) {
+  private static Color getUserForeground( TreeItem item ) {
     IWidgetColorAdapter colorAdapter = item.getAdapter( IWidgetColorAdapter.class );
-    return colorAdapter.getUserForegound();
+    return colorAdapter.getUserForeground();
   }
 
   private static Font getUserFont( TreeItem item ) {
