@@ -6,7 +6,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -18,11 +18,11 @@ qx.Class.define( "org.eclipse.rwt.System", {
   extend : qx.core.Target,
 
   construct : function() {
-    this.base (arguments );
+    this.base( arguments );
     this._startupTime = new Date().getTime();
     // Attach load/unload events
-    this._onloadWrapped = qx.lang.Function.bind(this._onload, this);
-    this._onbeforeunloadWrapped = qx.lang.Function.bind(this._onbeforeunload, this );
+    this._onloadWrapped = qx.lang.Function.bind( this._onload, this );
+    this._onbeforeunloadWrapped = qx.lang.Function.bind( this._onbeforeunload, this );
     this._onunloadWrapped = qx.lang.Function.bind( this._onunload, this );
     qx.html.EventRegistration.addEventListener( window, "load", this._onloadWrapped );
     qx.html.EventRegistration.addEventListener( window, "beforeunload", this._onbeforeunloadWrapped );
@@ -30,14 +30,12 @@ qx.Class.define( "org.eclipse.rwt.System", {
     // Overwrite the default mapping for internal images. This is necessary
     // if the application is deployed under a root different from "/".
     qx.io.Alias.getInstance().add( "static", "./rwt-resources/resource/static" );
-    qx.io.Alias.getInstance().add( "org.eclipse.swt", "./rwt-resources/resource" );
+    qx.io.Alias.getInstance().add( "widget", "./rwt-resources/resource/widget/rap" );
     this._applyPatches();
     org.eclipse.rwt.MobileWebkitSupport.init();
     org.eclipse.rwt.GraphicsUtil.init();
     var eventHandler = org.eclipse.rwt.EventHandler;
-    eventHandler.setAllowContextMenu(
-      org.eclipse.rwt.widgets.Menu.getAllowContextMenu
-    );
+    eventHandler.setAllowContextMenu( org.eclipse.rwt.widgets.Menu.getAllowContextMenu );
     eventHandler.setMenuManager( org.eclipse.rwt.MenuManager.getInstance() );
     // Init UICallBack
     var uiCallBack = org.eclipse.rwt.UICallBack.getInstance();
@@ -110,7 +108,8 @@ qx.Class.define( "org.eclipse.rwt.System", {
     },
 
     _postload : function() {
-      this.__postloader = new qx.io.image.PreloaderSystem( qx.io.image.Manager.getInstance().getHiddenImages(), this._postloaderDone, this );
+      var hiddenImages = qx.io.image.Manager.getInstance().getHiddenImages();
+      this.__postloader = new qx.io.image.PreloaderSystem( hiddenImages, this._postloaderDone, this );
       this.__postloader.start();
     },
 

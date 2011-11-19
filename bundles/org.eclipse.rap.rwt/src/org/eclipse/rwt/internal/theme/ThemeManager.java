@@ -29,7 +29,6 @@ import java.util.Set;
 
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
-import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 import org.eclipse.rwt.internal.theme.css.CssElementHolder;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
@@ -62,8 +61,6 @@ public class ThemeManager {
 
   /** Expected character set of JS files. */
   private static final String CHARSET = "UTF-8";
-
-  private static final String WIDGET_THEME_PATH = "resource/widget/rap";
 
   static final String IMAGE_DEST_PATH = "themes/images";
   private static final String CURSOR_DEST_PATH = "themes/cursors";
@@ -433,8 +430,8 @@ public class ThemeManager {
         ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
         storeWriter.addTheme( theme, theme == defaultTheme );
         sb.append( storeWriter.createJs() );
-        String themeCode = sb.toString();
         String name = "rap-" + jsId + ".js";
+        String themeCode = sb.toString();
         registerJsLibrary( name, themeCode );
         registeredThemeFiles.add( themeId );
       }
@@ -513,19 +510,14 @@ public class ThemeManager {
 
   private static void registerJsLibrary( String name, String code ) {
     IResourceManager resourceManager = getResourceManager();
-    RegisterOptions option = RegisterOptions.VERSION_AND_COMPRESS;
-    if( code != null ) {
-      byte[] buffer;
-      try {
-        buffer = code.getBytes( CHARSET );
-      } catch( UnsupportedEncodingException shouldNotHappen ) {
-        throw new RuntimeException( shouldNotHappen );
-      }
-      ByteArrayInputStream inputStream = new ByteArrayInputStream( buffer );
-      resourceManager.register( name, inputStream, CHARSET, option );
-    } else {
-      resourceManager.register( name, CHARSET, option );
+    byte[] buffer;
+    try {
+      buffer = code.getBytes( CHARSET );
+    } catch( UnsupportedEncodingException shouldNotHappen ) {
+      throw new RuntimeException( shouldNotHappen );
     }
+    ByteArrayInputStream inputStream = new ByteArrayInputStream( buffer );
+    resourceManager.register( name, inputStream, CHARSET, RegisterOptions.VERSION_AND_COMPRESS );
     String location = resourceManager.getLocation( name );
     RWTFactory.getStartupPage().getConfigurer().addJsLibrary( location );
   }
@@ -536,8 +528,6 @@ public class ThemeManager {
 
   private String createQxThemes( Theme theme ) {
     StringBuilder buffer = new StringBuilder();
-    buffer.append( createQxTheme( theme, QxTheme.ICON ) );
-    buffer.append( createQxTheme( theme, QxTheme.WIDGET ) );
     buffer.append( createQxTheme( theme, QxTheme.APPEARANCE ) );
     buffer.append( createQxTheme( theme, QxTheme.META ) );
     return buffer.toString();
@@ -550,19 +540,13 @@ public class ThemeManager {
       base = "org.eclipse.swt.theme.AppearancesBase";
     }
     QxTheme qxTheme = new QxTheme( jsId, theme.getName(), type, base );
-    if( type == QxTheme.WIDGET || type == QxTheme.ICON ) {
-      // TODO [rh] remove hard-coded resource-manager-path-prefix
-      String uri = ResourceManagerImpl.RESOURCES + "/" + WIDGET_THEME_PATH;
-      qxTheme.appendUri( uri );
-    } else if( type == QxTheme.APPEARANCE ) {
+    if( type == QxTheme.APPEARANCE ) {
       Iterator iterator = customAppearances.iterator();
       while( iterator.hasNext() ) {
         String appearance = ( String )iterator.next();
         qxTheme.appendValues( appearance );
       }
     } else if( type == QxTheme.META ) {
-      qxTheme.appendTheme( "icon", jsId + "Icons" );
-      qxTheme.appendTheme( "widget", jsId + "Widgets" );
       qxTheme.appendTheme( "appearance", jsId + "Appearances" );
     }
     return qxTheme.getJsCode();

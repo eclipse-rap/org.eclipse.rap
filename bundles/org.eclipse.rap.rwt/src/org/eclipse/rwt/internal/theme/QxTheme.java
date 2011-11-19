@@ -21,12 +21,6 @@ public final class QxTheme {
   /** Type for qooxdoo meta themes */
   public static final int META = 1;
 
-  /** Type for qooxdoo icon themes */
-  public static final int ICON = 2;
-
-  /** Type for qooxdoo widget themes */
-  public static final int WIDGET = 3;
-
   /** Type for qooxdoo apearance themes */
   public static final int APPEARANCE = 4;
 
@@ -52,7 +46,7 @@ public final class QxTheme {
     this.title = title;
     this.type = checkType( type );
     this.base = base;
-    this.code = new StringBuilder();
+    code = new StringBuilder();
     headWritten = false;
     tailWritten = false;
     valueWritten = false;
@@ -67,20 +61,6 @@ public final class QxTheme {
   public void appendValues( String values ) {
     beforeWriteValue();
     code.append( values );
-    afterWriteValue();
-  }
-
-  /**
-   * Appends the single uri entry to the generated widget or icon theme. Only
-   * applicable for instances with type WIDGET or ICON.
-   *
-   * @param pathPrefix the prefix to map "widget/" or "icon/" to
-   */
-  public void appendUri( String pathPrefix ) {
-    beforeWriteValue();
-    code.append( "    uri : \"" );
-    code.append( pathPrefix );
-    code.append( "\"" );
     afterWriteValue();
   }
 
@@ -151,8 +131,6 @@ public final class QxTheme {
 
   private static int checkType( int type ) {
     if(    type != META
-        && type != ICON
-        && type != WIDGET
         && type != APPEARANCE )
     {
       throw new IllegalArgumentException( "illegal type" );
@@ -162,11 +140,7 @@ public final class QxTheme {
 
   private String getNameSuffix() {
     String result = "";
-    if( type == ICON ) {
-      result = "Icons";
-    } else if( type == WIDGET ) {
-      result = "Widgets";
-    } else if( type == APPEARANCE ) {
+    if( type == APPEARANCE ) {
       result = "Appearances";
     }
     return result;
@@ -176,10 +150,6 @@ public final class QxTheme {
     String result = null;
     if( type == META ) {
       result = "meta";
-    } else if( type == ICON ) {
-      result = "icons";
-    } else if( type == WIDGET ) {
-      result = "widgets";
     } else if( type == APPEARANCE ) {
       result = "appearances";
     }

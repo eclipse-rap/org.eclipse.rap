@@ -16,18 +16,6 @@ import junit.framework.TestCase;
 
 public class QxTheme_Test extends TestCase {
 
-  public void testAppendUri() {
-    QxTheme theme;
-    theme = new QxTheme( "theme.Foo", "Foo Widgets", QxTheme.WIDGET, null );
-    theme.appendUri( "some.uri" );
-    String code = theme.getJsCode();
-    String defStr = "qx.Theme.define( \"theme.FooWidgets\",";
-    assertContains( defStr, code );
-    assertContains( "title : \"Foo Widgets\"", code );
-    assertContains( "uri : \"some.uri\"", code );
-    assertTrue( code.endsWith( "} );\n" ) );
-  }
-
   public void testNoValues() {
     QxTheme theme;
     theme = new QxTheme( "my.theme.Default", "", QxTheme.APPEARANCE, null );
@@ -39,12 +27,12 @@ public class QxTheme_Test extends TestCase {
 
   public void testTailAlreadyWritten() {
     QxTheme theme;
-    theme = new QxTheme( "my.theme.Foo", "Foo Theme", QxTheme.ICON, null );
-    theme.appendUri( "foo" );
+    theme = new QxTheme( "my.theme.Foo", "Foo Theme", QxTheme.APPEARANCE, null );
+    theme.appendValues( "foo" );
     theme.getJsCode();
     theme.getJsCode(); // calling getJsCode twice is ok
     try {
-      theme.appendUri( "bar" );
+      theme.appendValues( "bar" );
       fail( "ISE expected" );
     } catch( final IllegalStateException e ) {
       // expected

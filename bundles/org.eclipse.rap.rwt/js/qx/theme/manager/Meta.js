@@ -6,32 +6,22 @@
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
 
-qx.Class.define("qx.theme.manager.Meta",
-{
+qx.Class.define( "qx.theme.manager.Meta", {
+
   type : "singleton",
   extend : qx.core.Target,
 
-
-
-  /*
-  *****************************************************************************
-     PROPERTIES
-  *****************************************************************************
-  */
-
-  properties :
-  {
+  properties : {
     /**
-     * Meta theme. Applies the defined color, border, widget, ... themes to
+     * Meta theme. Applies the defined color, ... themes to
      * the corresponding managers.
      */
-    theme :
-    {
+    theme : {
       check : "Theme",
       nullable : true,
       apply : "_applyTheme",
@@ -41,78 +31,46 @@ qx.Class.define("qx.theme.manager.Meta",
     /**
      * Controls whether sync is done automatically
      */
-    autoSync :
-    {
+    autoSync : {
       check : "Boolean",
       init : true,
       apply : "_applyAutoSync"
     }
   },
 
+  members : {
 
-
-
-  /*
-  *****************************************************************************
-     MEMBERS
-  *****************************************************************************
-  */
-
-  members :
-  {
-    _applyTheme : function(value, old)
-    {
+    _applyTheme : function( value, old ) {
       var color = null;
-      var border = null;
       var font = null;
-      var widget = null;
-      var icon = null;
       var appearance = null;
 
-      if (value)
-      {
+      if( value ) {
         color = value.meta.color || null;
-        border = value.meta.border || null;
         font = value.meta.font || null;
-        widget = value.meta.widget || null;
-        icon = value.meta.icon || null;
         appearance = value.meta.appearance || null;
       }
 
-      if (old) {
-        this.setAutoSync(false);
+      if( old ) {
+        this.setAutoSync( false );
       }
 
-      var colorMgr = qx.theme.manager.Color.getInstance();
-      var fontMgr = qx.theme.manager.Font.getInstance();
-      var iconMgr = qx.theme.manager.Icon.getInstance();
-      var widgetMgr = qx.theme.manager.Widget.getInstance();
-      var appearanceMgr = qx.theme.manager.Appearance.getInstance();
+      qx.theme.manager.Color.getInstance().setColorTheme( color );
+      qx.theme.manager.Font.getInstance().setFontTheme( font );
+      qx.theme.manager.Appearance.getInstance().setAppearanceTheme( appearance );
 
-      colorMgr.setColorTheme(color);
-      fontMgr.setFontTheme(font);
-      widgetMgr.setWidgetTheme(widget);
-      iconMgr.setIconTheme(icon);
-      appearanceMgr.setAppearanceTheme(appearance);
-
-      if (old) {
-        this.setAutoSync(true);
+      if( old ) {
+        this.setAutoSync( true );
       }
     },
 
-
-    _applyAutoSync : function(value, old)
-    {
-      if (value)
-      {
+    _applyAutoSync : function( value, old ) {
+      if( value ) {
         qx.theme.manager.Appearance.getInstance().syncAppearanceTheme();
-        qx.theme.manager.Icon.getInstance().syncIconTheme();
-        qx.theme.manager.Widget.getInstance().syncWidgetTheme();
         qx.theme.manager.Font.getInstance().syncFontTheme();
         qx.theme.manager.Color.getInstance().syncColorTheme();
       }
     },
-
 
     /**
      * Initialize the themes which were selected using the settings. Should only
@@ -120,14 +78,12 @@ qx.Class.define("qx.theme.manager.Meta",
      *
      * @type static
      */
-    initialize : function()
-    {
+    initialize : function() {
       var setting = qx.core.Setting;
       var theme, obj;
 
       theme = setting.get("qx.theme");
-      if (theme)
-      {
+      if (theme) {
         obj = qx.Theme.getByName(theme);
         if (!obj) {
           throw new Error("The meta theme to use is not available: " + theme);
@@ -137,57 +93,29 @@ qx.Class.define("qx.theme.manager.Meta",
       }
 
       theme = setting.get("qx.colorTheme");
-      if (theme)
-      {
+      if (theme) {
         obj = qx.Theme.getByName(theme);
         if (!obj) {
           throw new Error("The color theme to use is not available: " + theme);
         }
-
         qx.theme.manager.Color.getInstance().setColorTheme(obj);
       }
 
       theme = setting.get("qx.fontTheme");
-      if (theme)
-      {
+      if (theme) {
         obj = qx.Theme.getByName(theme);
         if (!obj) {
           throw new Error("The font theme to use is not available: " + theme);
         }
-
         qx.theme.manager.Font.getInstance().setFontTheme(obj);
       }
 
-      theme = setting.get("qx.widgetTheme");
-      if (theme)
-      {
-        obj = qx.Theme.getByName(theme);
-        if (!obj) {
-          throw new Error("The widget theme to use is not available: " + theme);
-        }
-
-        qx.theme.manager.Widget.getInstance().setWidgetTheme(obj);
-      }
-
-      theme = setting.get("qx.iconTheme");
-      if (theme)
-      {
-        obj = qx.Theme.getByName(theme);
-        if (!obj) {
-          throw new Error("The icon theme to use is not available: " + theme);
-        }
-
-        qx.theme.manager.Icon.getInstance().setIconTheme(obj);
-      }
-
       theme = setting.get("qx.appearanceTheme");
-      if (theme)
-      {
+      if (theme) {
         obj = qx.Theme.getByName(theme);
         if (!obj) {
           throw new Error("The appearance theme to use is not available: " + theme);
         }
-
         qx.theme.manager.Appearance.getInstance().setAppearanceTheme(obj);
       }
     },
@@ -198,23 +126,18 @@ qx.Class.define("qx.theme.manager.Meta",
      * @param key {String} the key to look for
      * @return {Theme[]} list of matching themes
      */
-    __queryThemes : function(key)
-    {
+    __queryThemes : function( key ) {
       var reg = qx.Theme.getAll();
       var theme;
       var list = [];
-
-      for (var name in reg)
-      {
-        theme = reg[name];
-        if (theme[key]) {
-          list.push(theme);
+      for( var name in reg ) {
+        theme = reg[ name ];
+        if( theme[ key ] ) {
+          list.push( theme );
         }
       }
-
       return list;
     },
-
 
     /**
      * Returns a list of all registered meta themes
@@ -226,7 +149,6 @@ qx.Class.define("qx.theme.manager.Meta",
       return this.__queryThemes("meta");
     },
 
-
     /**
      * Returns a list of all registered color themes
      *
@@ -237,18 +159,6 @@ qx.Class.define("qx.theme.manager.Meta",
       return this.__queryThemes("colors");
     },
 
-
-    /**
-     * Returns a list of all registered border themes
-     *
-     * @type static
-     * @return {Theme[]} list of border themes
-     */
-    getBorderThemes : function() {
-      return this.__queryThemes("borders");
-    },
-
-
     /**
      * Returns a list of all registered font themes
      *
@@ -258,29 +168,6 @@ qx.Class.define("qx.theme.manager.Meta",
     getFontThemes : function() {
       return this.__queryThemes("fonts");
     },
-
-
-    /**
-     * Returns a list of all registered widget themes
-     *
-     * @type static
-     * @return {Theme[]} list of widget themes
-     */
-    getWidgetThemes : function() {
-      return this.__queryThemes("widgets");
-    },
-
-
-    /**
-     * Returns a list of all registered icon themes
-     *
-     * @type static
-     * @return {Theme[]} list of icon themes
-     */
-    getIconThemes : function() {
-      return this.__queryThemes("icons");
-    },
-
 
     /**
      * Returns a list of all registered appearance themes
@@ -293,23 +180,11 @@ qx.Class.define("qx.theme.manager.Meta",
     }
   },
 
-
-
-
-  /*
-  *****************************************************************************
-     SETTINGS
-  *****************************************************************************
-  */
-
-  settings :
-  {
-    "qx.theme"           : "qx.theme.ClassicRoyale",
-    "qx.colorTheme"      : null,
-    "qx.borderTheme"     : null,
-    "qx.fontTheme"       : null,
-    "qx.widgetTheme"     : null,
-    "qx.appearanceTheme" : null,
-    "qx.iconTheme"       : null
+  settings : {
+    "qx.theme" : "org.eclipse.swt.theme.Default",
+    "qx.colorTheme" : null,
+    "qx.fontTheme" : null,
+    "qx.appearanceTheme" : null
   }
-});
+
+} );
