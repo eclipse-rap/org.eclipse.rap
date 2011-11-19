@@ -209,7 +209,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     if( !currThemeId.equals( oldThemeId ) ) {
       Theme theme = RWTFactory.getThemeManager().getTheme( currThemeId );
       StringBuilder buffer = new StringBuilder();
-      buffer.append( "qx.theme.manager.Meta.getInstance().setTheme( " );
+      buffer.append( "qx.theme.manager.Appearance.getInstance().setCurrentTheme( " );
       buffer.append( theme.getJsId() );
       buffer.append( " );" );
       IServiceStateInfo stateInfo = ContextProvider.getStateInfo();

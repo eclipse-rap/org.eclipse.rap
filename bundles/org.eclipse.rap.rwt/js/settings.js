@@ -10,7 +10,6 @@
 
 if( typeof qxsettings === "undefined" ) {
   qxsettings = {};
-  qxsettings[ "qx.theme" ] = "org.eclipse.swt.theme.Default";
   qxvariants = {};
   qxvariants[ "qx.debug" ] = "off";
 }

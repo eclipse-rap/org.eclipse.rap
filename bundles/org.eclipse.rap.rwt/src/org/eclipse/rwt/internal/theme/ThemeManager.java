@@ -424,7 +424,7 @@ public class ThemeManager {
         registerThemeableWidgetImages( theme );
         registerThemeableWidgetCursors( theme );
         StringBuilder sb = new StringBuilder();
-        sb.append( createQxThemes( theme ) );
+        sb.append( createQxTheme( theme ) );
         // TODO [rst] Optimize: create only one ThemeStoreWriter for all themes
         IThemeCssElement[] elements = registeredCssElements.getAllElements();
         ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
@@ -508,6 +508,16 @@ public class ThemeManager {
     }
   }
 
+  private String createQxTheme( Theme theme ) {
+    String jsId = theme.getJsId();
+    String base = "org.eclipse.swt.theme.AppearancesBase";
+    QxTheme qxTheme = new QxTheme( jsId, theme.getName(), base );
+    for( String appearance : customAppearances ) {
+      qxTheme.appendAppearances( appearance );
+    }
+    return qxTheme.getJsCode();
+  }
+
   private static void registerJsLibrary( String name, String code ) {
     IResourceManager resourceManager = getResourceManager();
     byte[] buffer;
@@ -524,32 +534,6 @@ public class ThemeManager {
 
   private static IResourceManager getResourceManager() {
     return RWTFactory.getResourceManager();
-  }
-
-  private String createQxThemes( Theme theme ) {
-    StringBuilder buffer = new StringBuilder();
-    buffer.append( createQxTheme( theme, QxTheme.APPEARANCE ) );
-    buffer.append( createQxTheme( theme, QxTheme.META ) );
-    return buffer.toString();
-  }
-
-  private String createQxTheme( Theme theme, int type ) {
-    String jsId = theme.getJsId();
-    String base = null;
-    if( type == QxTheme.APPEARANCE ) {
-      base = "org.eclipse.swt.theme.AppearancesBase";
-    }
-    QxTheme qxTheme = new QxTheme( jsId, theme.getName(), type, base );
-    if( type == QxTheme.APPEARANCE ) {
-      Iterator iterator = customAppearances.iterator();
-      while( iterator.hasNext() ) {
-        String appearance = ( String )iterator.next();
-        qxTheme.appendValues( appearance );
-      }
-    } else if( type == QxTheme.META ) {
-      qxTheme.appendTheme( "appearance", jsId + "Appearances" );
-    }
-    return qxTheme.getJsCode();
   }
 
 }

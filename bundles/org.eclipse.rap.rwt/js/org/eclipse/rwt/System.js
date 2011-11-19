@@ -1,6 +1,6 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
@@ -87,13 +87,14 @@ qx.Class.define( "org.eclipse.rwt.System", {
         return;
       }
       this._onloadDone = true;
-      qx.theme.manager.Meta.getInstance().initialize();
+      qx.theme.manager.Appearance.getInstance().setCurrentTheme( org.eclipse.swt.theme.Default );
       qx.ui.core.ClientDocument.getInstance();
       qx.client.Timer.once(this._preload, this, 0);
     },
 
     _preload : function() {
-      this.__preloader = new qx.io.image.PreloaderSystem(qx.io.image.Manager.getInstance().getVisibleImages(), this._preloaderDone, this);
+      var visibleImages = qx.io.image.Manager.getInstance().getVisibleImages();
+      this.__preloader = new qx.io.image.PreloaderSystem( visibleImages, this._preloaderDone, this );
       this.__preloader.start();
     },
 

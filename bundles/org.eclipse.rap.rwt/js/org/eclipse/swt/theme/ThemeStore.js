@@ -289,7 +289,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
     _getCssValue : function( element, states, property, theme ) {
       var result;
       if( theme == null ) {
-        theme = qx.theme.manager.Meta.getInstance().getTheme().name;
+        theme = qx.theme.manager.Appearance.getInstance().getCurrentTheme().name;
       }
       if(    this._cssValues[ theme ] !== undefined
           && this._cssValues[ theme ][ element ] !== undefined

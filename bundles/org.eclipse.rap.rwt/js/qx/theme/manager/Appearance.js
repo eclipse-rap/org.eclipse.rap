@@ -24,7 +24,7 @@ qx.Class.define( "qx.theme.manager.Appearance", {
   },
 
   properties : {
-    appearanceTheme : {
+    currentTheme : {
       check : "Theme",
       nullable : true,
       apply : "_applyAppearanceTheme",
@@ -36,9 +36,7 @@ qx.Class.define( "qx.theme.manager.Appearance", {
     _applyAppearanceTheme : function( value, old ) {
       this._currentTheme = value;
       this._oldTheme = old;
-      if( qx.theme.manager.Meta.getInstance().getAutoSync() ) {
-        this.syncAppearanceTheme();
-      }
+      this.syncAppearanceTheme();
     },
 
     syncAppearanceTheme : function() {
@@ -49,7 +47,8 @@ qx.Class.define( "qx.theme.manager.Appearance", {
         this.__cache[this._currentTheme.name] = {};
       }
       if( org.eclipse.rwt.System.getInstance().getUiReady() ) {
-        qx.ui.core.ClientDocument.getInstance()._recursiveAppearanceThemeUpdate(this._currentTheme, this._oldTheme);
+        qx.ui.core.ClientDocument.getInstance()._recursiveAppearanceThemeUpdate( this._currentTheme,
+                                                                                 this._oldTheme );
       }
       if( this._oldTheme ) {
         delete this.__cache[this._oldTheme.name];
@@ -59,11 +58,11 @@ qx.Class.define( "qx.theme.manager.Appearance", {
     },
 
     styleFrom : function( id, states ) {
-      var theme = this.getAppearanceTheme();
+      var theme = this.getCurrentTheme();
       if( !theme ) {
         return;
       }
-      return this.styleFromTheme(theme, id, states);
+      return this.styleFromTheme( theme, id, states );
     },
 
     styleFromTheme : function( theme, id, states ) {
@@ -78,7 +77,7 @@ qx.Class.define( "qx.theme.manager.Appearance", {
       // Fast fallback to super entry
       if( !entry.style ) {
         if( entry.include ) {
-          return this.styleFromTheme(theme, entry.include, states);
+          return this.styleFromTheme( theme, entry.include, states );
         } else {
           return null;
         }
@@ -93,9 +92,7 @@ qx.Class.define( "qx.theme.manager.Appearance", {
         }
         helper[map[state]] = true;
       }
-
       var unique = helper.join();
-
       // Using cache if available
       var cache = this.__cache[theme.name];
       if( cache && cache[unique] !== undefined ) {
@@ -116,7 +113,7 @@ qx.Class.define( "qx.theme.manager.Appearance", {
 
         // Gather included data
         var incl;
-        if (entry.include) {
+        if( entry.include ) {
           incl = this.styleFromTheme(theme, entry.include, states);
         }
 
