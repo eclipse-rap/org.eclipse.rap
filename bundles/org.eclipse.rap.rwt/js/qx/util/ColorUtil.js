@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -118,18 +118,6 @@ qx.Class.define("qx.util.ColorUtil",
       return this.SYSTEM[value] !== undefined;
     },
 
-
-    /**
-     * Whether the incoming value is a themed color.
-     *
-     * @param value {String} the color value to test
-     * @return {Boolean} true if the color is a themed color
-     */
-    isThemedColor : function(value) {
-      return qx.theme.manager.Color.getInstance().isDynamic(value);
-    },
-
-
     /**
      * Try to convert a incoming string to an RGB array.
      * Supports themed, named and system colors, but also RGB strings,
@@ -142,10 +130,6 @@ qx.Class.define("qx.util.ColorUtil",
      */
     stringToRgb : function(str)
     {
-      if (this.isThemedColor(str)) {
-        var str = qx.theme.manager.Color.getInstance().resolveDynamic(str);
-      }
-
       if (this.isNamedColor(str))
       {
         return this.NAMED[str];
@@ -259,7 +243,7 @@ qx.Class.define("qx.util.ColorUtil",
      * @return {Boolean} true when the incoming value is a valid qooxdoo color
      */
     isValid : function(str) {
-      return this.isThemedColor(str) || this.isCssString(str);
+      return this.isCssString(str);
     },
 
 

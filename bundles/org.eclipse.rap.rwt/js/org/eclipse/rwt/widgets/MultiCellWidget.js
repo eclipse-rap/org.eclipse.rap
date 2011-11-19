@@ -746,11 +746,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.MultiCellWidget",  {
     },
     
     _applyFont : function( value, old ) {
-      qx.theme.manager.Font.getInstance().connect(
-        this._styleFont,
-        this,
-        value
-      );
+      this._styleFont( value );
     },
 
     _styleFont : function( font ) {
