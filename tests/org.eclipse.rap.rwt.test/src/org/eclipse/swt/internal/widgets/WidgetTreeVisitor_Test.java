@@ -11,13 +11,34 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.internal.widgets.WidgetTreeVisitor.AllWidgetTreeVisitor;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.ToolTip;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.swt.widgets.Widget;
+
 
 public class WidgetTreeVisitor_Test extends TestCase {
 
@@ -204,7 +225,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     } );
     assertEquals( 6, count[ 0 ] );
   }
-  
+
   public void testTreeVisitorWithDragSource() {
     DragSource compositeDragSource = new DragSource( shell, SWT.NONE );
     Text text = new Text( shell, SWT.NONE );
@@ -222,7 +243,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     } );
     assertEquals( 4, count[ 0 ] );
   }
-  
+
   public void testTreeVisitorWithToolTip() {
     Control control = new Label( shell, SWT.NONE );
     ToolTip toolTip = new ToolTip( shell, SWT.NONE );
@@ -237,8 +258,30 @@ public class WidgetTreeVisitor_Test extends TestCase {
         return true;
       }
     } );
+
     assertEquals( 3, count[ 0 ] );
-    
+  }
+
+  public void testWithCustomWidget() {
+    // Custom widgets may override getChildren, see bug 363844
+    Composite customWidget = new Composite( shell, SWT.NONE ) {
+      @Override
+      public Control[] getChildren() {
+        return new Control[ 0 ];
+      }
+    };
+    Control innerLabel = new Label( customWidget, SWT.NONE );
+
+    final List<Widget> log = new ArrayList<Widget>();
+    WidgetTreeVisitor.accept( customWidget, new AllWidgetTreeVisitor() {
+      public boolean doVisit( final Widget widget ) {
+        log.add( widget );
+        return true;
+      }
+    } );
+
+    assertTrue( log.contains( customWidget ) );
+    assertTrue( log.contains( innerLabel ) );
   }
 
   protected void setUp() throws Exception {

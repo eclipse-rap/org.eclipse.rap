@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -17,7 +17,9 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.SerializableCompatibility;
+import org.eclipse.swt.internal.widgets.ControlHolder;
 import org.eclipse.swt.internal.widgets.ICompositeAdapter;
+import org.eclipse.swt.internal.widgets.IControlHolderAdapter;
 
 /**
  * Instances of this class are controls which are capable
@@ -603,7 +605,7 @@ public class Composite extends Scrollable {
       }
       if( !ancestor )
         error( SWT.ERROR_INVALID_PARENT );
-    }
+      }
     for( int i = 0; i < changed.length; i++ ) {
       Control child = changed[ i ];
       Composite composite = child.parent;

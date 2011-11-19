@@ -8,13 +8,18 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.widgets;
+package org.eclipse.swt.internal.widgets;
 
-interface IControlHolderAdapter {
+import org.eclipse.swt.widgets.Control;
+
+
+public interface IControlHolderAdapter {
+
   void add( Control control );
   void add( Control control, int index );
   void remove( Control control );
   Control[] getControls();
   int size();
   int indexOf( Control control );
+
 }

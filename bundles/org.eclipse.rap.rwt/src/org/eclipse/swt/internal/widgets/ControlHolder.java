@@ -9,22 +9,24 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.swt.widgets;
+package org.eclipse.swt.internal.widgets;
 
 import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.SlimList;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 
 /*
  * Holds the child controls of Composites
  */
-final class ControlHolder implements IControlHolderAdapter, SerializableCompatibility {
+public final class ControlHolder implements IControlHolderAdapter, SerializableCompatibility {
 
   private final List<Control> controls;
-  
-  ControlHolder() {
+
+  public ControlHolder() {
     controls = new SlimList<Control>();
   }
 
@@ -39,13 +41,14 @@ final class ControlHolder implements IControlHolderAdapter, SerializableCompatib
   public void add( Control control ) {
     add( control, controls.size() );
   }
-  
+
   public void add( Control control, int index ) {
     if( control == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( controls.contains( control ) ) {
-      throw new IllegalArgumentException( "The control was already added." );
+      String message = "The control is already contained in this control holder.";
+      throw new IllegalArgumentException( message );
     }
     controls.add( index, control );
   }
@@ -55,66 +58,64 @@ final class ControlHolder implements IControlHolderAdapter, SerializableCompatib
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( !controls.contains( control ) ) {
-      String msg = "The control was not added to this control holder.";
-      throw new IllegalArgumentException( msg );
+      throw new IllegalArgumentException( "The control is not contained in this control holder." );
     }
     controls.remove( control );
   }
-  
+
   public int indexOf( Control control ) {
     if( control == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( !controls.contains( control ) ) {
-      String msg = "The control was not added to this control holder.";
-      throw new IllegalArgumentException( msg );
+      throw new IllegalArgumentException( "The control is not contained in this control holder." );
     }
     return controls.indexOf( control );
   }
-  
 
-  boolean contains( Control control ) {
+
+  public boolean contains( Control control ) {
     if( control == null ) {
       SWT.error( SWT.ERROR_NULL_ARGUMENT );
     }
     return controls.contains( control );
   }
-  
-  static int size( Composite composite ) {
+
+  public static int size( Composite composite ) {
     return getControlHolder( composite ).size();
   }
 
-  static void addControl( Composite composite, Control control ) {
+  public static void addControl( Composite composite, Control control ) {
     if( control.getParent() != composite ) {
       throw new IllegalArgumentException( "The control has the wrong parent" );
     }
     getControlHolder( composite ).add( control );
   }
 
-  static void addControl( Composite composite, Control control, int index ) {
+  public static void addControl( Composite composite, Control control, int index ) {
     if( control.getParent() != composite ) {
       throw new IllegalArgumentException( "The control has the wrong parent" );
     }
     getControlHolder( composite ).add( control, index );
   }
-  
-  static void removeControl( Composite composite, Control control ) {
+
+  public static void removeControl( Composite composite, Control control ) {
     if( control.getParent() != composite ) {
       throw new IllegalArgumentException( "The control has the wrong parent" );
     }
     getControlHolder( composite ).remove( control );
   }
 
-  static int indexOf( Composite composite, Control control ) {
+  public static int indexOf( Composite composite, Control control ) {
     if( control.getParent() != composite ) {
       throw new IllegalArgumentException( "The control has the wrong parent" );
     }
     return getControlHolder( composite ).indexOf( control );
   }
-  
+
   // ////////////////
   // helping methods
-  
+
   private static IControlHolderAdapter getControlHolder( Composite composite ) {
     return composite.getAdapter( IControlHolderAdapter.class );
   }

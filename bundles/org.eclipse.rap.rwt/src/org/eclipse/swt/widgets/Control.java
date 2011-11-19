@@ -19,6 +19,7 @@ import org.eclipse.swt.accessibility.Accessible;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.ShowEvent;
+import org.eclipse.swt.internal.widgets.ControlHolder;
 import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 
@@ -119,8 +120,8 @@ public abstract class Control extends Widget implements Drawable {
     // prevent instantiation from outside this package; only called by Shell
     // and its super-classes
     this.parent = parent;
-    this.bounds = new Rectangle( 0, 0, 0, 0 );
-    this.tabIndex = -1;
+    bounds = new Rectangle( 0, 0, 0, 0 );
+    tabIndex = -1;
   }
 
   /**
@@ -154,9 +155,9 @@ public abstract class Control extends Widget implements Drawable {
   public Control( Composite parent, int style ) {
     super( parent, style );
     this.parent = parent;
-    this.controlAdapter = new ControlAdapter();
-    this.bounds = new Rectangle( 0, 0, 0, 0 );
-    this.tabIndex = -1;
+    controlAdapter = new ControlAdapter();
+    bounds = new Rectangle( 0, 0, 0, 0 );
+    tabIndex = -1;
     ControlHolder.addControl( parent, this );
     createWidget();
   }
@@ -2424,7 +2425,7 @@ public abstract class Control extends Widget implements Drawable {
       if( menuDisposeListener == null ) {
         menuDisposeListener = new DisposeListener() {
           public void widgetDisposed( DisposeEvent event ) {
-            Control.this.menu = null;
+            menu = null;
           }
         };
       }
