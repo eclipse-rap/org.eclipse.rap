@@ -86,6 +86,10 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
 
   members : {
 
+    setCurrentTheme : function( themeId ) {
+    	this._currentTheme = themeId;
+    },
+
     /////////////
     // Server API
 
@@ -289,7 +293,7 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
     _getCssValue : function( element, states, property, theme ) {
       var result;
       if( theme == null ) {
-        theme = qx.theme.manager.Appearance.getInstance().getCurrentTheme().name;
+      	theme = this._currentTheme;
       }
       if(    this._cssValues[ theme ] !== undefined
           && this._cssValues[ theme ][ element ] !== undefined

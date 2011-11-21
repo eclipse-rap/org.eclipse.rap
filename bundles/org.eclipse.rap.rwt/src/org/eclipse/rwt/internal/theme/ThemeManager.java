@@ -19,14 +19,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
@@ -99,9 +97,8 @@ public class ThemeManager {
     org.eclipse.swt.widgets.ScrollBar.class
   };
 
-  private final Set<String> customAppearances;
+  private final List<String> customAppearances;
   private final Map<String, Theme> themes;
-  private final Set<String> registeredThemeFiles;
   private final ThemeableWidgetHolder themeableWidgets;
   private final CssElementHolder registeredCssElements;
   private final ThemeAdapterManager themeAdapterManager;
@@ -114,8 +111,7 @@ public class ThemeManager {
     initialized = false;
     widgetsInitialized = false;
     themeableWidgets = new ThemeableWidgetHolder();
-    customAppearances = new LinkedHashSet<String>();
-    registeredThemeFiles = new HashSet<String>();
+    customAppearances = new ArrayList<String>();
     registeredCssElements = new CssElementHolder();
     themeAdapterManager = new ThemeAdapterManager();
     themes = new HashMap<String, Theme>();
@@ -133,7 +129,6 @@ public class ThemeManager {
     themes.clear();
     themeAdapterManager.reset();
     registeredCssElements.clear();
-    registeredThemeFiles.clear();
     customAppearances.clear();
     themeableWidgets.reset();
     widgetsInitialized = false;
@@ -417,25 +412,20 @@ public class ThemeManager {
    * theme.
    */
   private void registerThemeFiles( Theme theme ) {
-    synchronized( registeredThemeFiles ) {
-      String themeId = theme.getId();
-      if( !registeredThemeFiles.contains( themeId ) ) {
-        String jsId = theme.getJsId();
-        registerThemeableWidgetImages( theme );
-        registerThemeableWidgetCursors( theme );
-        StringBuilder sb = new StringBuilder();
-        sb.append( createQxTheme( theme ) );
-        // TODO [rst] Optimize: create only one ThemeStoreWriter for all themes
-        IThemeCssElement[] elements = registeredCssElements.getAllElements();
-        ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-        storeWriter.addTheme( theme, theme == defaultTheme );
-        sb.append( storeWriter.createJs() );
-        String name = "rap-" + jsId + ".js";
-        String themeCode = sb.toString();
-        registerJsLibrary( name, themeCode );
-        registeredThemeFiles.add( themeId );
-      }
+    String jsId = theme.getJsId();
+    registerThemeableWidgetImages( theme );
+    registerThemeableWidgetCursors( theme );
+    StringBuilder sb = new StringBuilder();
+    if( theme == defaultTheme ) {
+      sb.append( createQxAppearanceTheme() );
     }
+    // TODO [rst] Optimize: create only one ThemeStoreWriter for all themes
+    IThemeCssElement[] elements = registeredCssElements.getAllElements();
+    ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
+    storeWriter.addTheme( theme, theme == defaultTheme );
+    sb.append( storeWriter.createJs() );
+    String name = "rap-" + jsId + ".js";
+    registerJsLibrary( name, sb.toString() );
   }
 
   private void registerThemeableWidgetImages( Theme theme ) {
@@ -508,10 +498,10 @@ public class ThemeManager {
     }
   }
 
-  private String createQxTheme( Theme theme ) {
-    String jsId = theme.getJsId();
+  private String createQxAppearanceTheme() {
     String base = "org.eclipse.swt.theme.AppearancesBase";
-    QxTheme qxTheme = new QxTheme( jsId, theme.getName(), base );
+    String jsId = defaultTheme.getJsId();
+    QxTheme qxTheme = new QxTheme( jsId, defaultTheme.getName(), base );
     for( String appearance : customAppearances ) {
       qxTheme.appendAppearances( appearance );
     }
