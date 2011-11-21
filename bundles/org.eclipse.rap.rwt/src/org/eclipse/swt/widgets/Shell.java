@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
- *     Rüdiger Herrmann - bug 335112
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
+ *    Rüdiger Herrmann - bug 335112
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -563,8 +563,7 @@ public class Shell extends Decorations {
   private int getTitleBarHeight() {
     int result = 0;
     if( !getFullScreen() ) {
-      ShellThemeAdapter themeAdapter
-        = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
+      ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
       result = themeAdapter.getTitleBarHeight( this );
     }
     return result;
@@ -573,16 +572,14 @@ public class Shell extends Decorations {
   private Rectangle getTitleBarMargin() {
     Rectangle result = new Rectangle( 0, 0, 0, 0 );
     if( !getFullScreen() ) {
-      ShellThemeAdapter themeAdapter
-        = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
+      ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
       result = themeAdapter.getTitleBarMargin( this );
     }
     return result;
   }
 
   private int getMenuBarHeight() {
-    ShellThemeAdapter themeAdapter
-      = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
+    ShellThemeAdapter themeAdapter = ( ShellThemeAdapter )getAdapter( IThemeAdapter.class );
     return themeAdapter.getMenuBarHeight( this );
   }
 
