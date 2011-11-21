@@ -17,7 +17,7 @@ appearances = {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         textColor : tv.getCssColor( "Table", "color" ),
-        font : tv.getCssFont( "*", "font" ),
+        font : tv.getCssFont( "Table", "font" ),
         border : tv.getCssBorder( "Table", "border" ),
         backgroundColor : tv.getCssColor( "Table", "background-color" ),
         backgroundImage : tv.getCssImage( "Table", "background-image" ),

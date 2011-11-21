@@ -15,6 +15,9 @@
 
   <element name="Table">
 
+    <property name="font"
+        description="Font for tables." />
+
     <property name="color"
         description="Text color for tables." />
 
