@@ -16,7 +16,7 @@ appearances = {
     style : function( states ) {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
-        font : tv.getCssFont( "*", "font" ),
+        font : tv.getCssFont( "ToolBar", "font" ),
         overflow : "hidden",
         border : tv.getCssBorder( "ToolBar", "border" ),
         textColor : tv.getCssColor( "ToolBar", "color" ),

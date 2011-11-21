@@ -1028,6 +1028,7 @@ Text-Message {
 /* ToolBar Classic theme */
 
 ToolBar {
+  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
   color: black;
   padding: 0px;
   spacing: 0px;

@@ -13,12 +13,14 @@
 /* ToolBar default theme */
 
 ToolBar {
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
   padding: 0;
   spacing: 0;
   background-color: #f0f0f0;
   background-image: none;
-  border: #bdbdbd;
+  border: none;
+  border-radius: 0;
   opacity: 1;
 }
 

@@ -11,7 +11,15 @@
 /* Test values for Business theme */
 
 ToolBar {
+  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: #ffffff;
+  border: none;
+  border-radius: 0;
+}
+
+ToolBar[BORDER] {
+  border: 1px solid #a4a4a4;
+  border-radius: 2px;
 }
 
 ToolItem {
