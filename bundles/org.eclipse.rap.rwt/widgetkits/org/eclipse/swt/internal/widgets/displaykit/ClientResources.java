@@ -17,7 +17,10 @@ import java.io.InputStream;
 
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.resources.ContentBuffer;
+import org.eclipse.rwt.internal.resources.JSFile;
 import org.eclipse.rwt.internal.resources.SystemProps;
+import org.eclipse.rwt.internal.theme.Theme;
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.resources.IResource;
 import org.eclipse.rwt.resources.IResourceManager;
@@ -297,9 +300,11 @@ public final class ClientResources {
   };
 
   private final IResourceManager resourceManager;
+  private final ThemeManager themeManager;
 
-  public ClientResources( IResourceManager resourceManager ) {
+  public ClientResources( IResourceManager resourceManager, ThemeManager themeManager ) {
     this.resourceManager = resourceManager;
+    this.themeManager = themeManager;
   }
 
   public void registerResources() {
@@ -313,6 +318,7 @@ public final class ClientResources {
       } catch( IOException e ) {
         throw new RuntimeException( "Failed to register JavaScript library" );
       }
+      registerThemeResources();
       registerWidgetImages();
       registerContributions();
     } finally {
@@ -322,13 +328,17 @@ public final class ClientResources {
 
   private void registerJavascriptFiles() throws IOException {
     ContentBuffer contentBuffer = new ContentBuffer();
+    String appearanceCode = themeManager.createQxAppearanceTheme();
     if( SystemProps.isDevelopmentMode() ) {
       for( int i = 0; i < JAVASCRIPT_FILES.length; i++ ) {
         append( contentBuffer, JAVASCRIPT_FILES[ i ] );
       }
     } else {
       append( contentBuffer, CLIENT_JS );
+      JSFile jsFile = new JSFile( appearanceCode );
+      appearanceCode = jsFile.compress();
     }
+    contentBuffer.append( appearanceCode.getBytes( HTTP.CHARSET_UTF_8 ) );
     registerJavascriptLibraryFile( contentBuffer, "rap-client.js" );
   }
 
@@ -338,6 +348,18 @@ public final class ClientResources {
       contentBuffer.append( inputStream );
     } finally {
       inputStream.close();
+    }
+  }
+
+  private void registerThemeResources() {
+    String[] themeIds = themeManager.getRegisteredThemeIds();
+    // default theme must be rendered first
+    themeManager.registerThemeFiles( themeManager.getTheme( ThemeManager.DEFAULT_THEME_ID ) );
+    for( String themeId : themeIds ) {
+      if( !ThemeManager.DEFAULT_THEME_ID.equals( themeId ) ) {
+        Theme theme = themeManager.getTheme( themeId );
+        themeManager.registerThemeFiles( theme );
+      }
     }
   }
 
@@ -384,8 +406,7 @@ public final class ClientResources {
   static InputStream openResourceStream( String name ) {
     InputStream result = ClientResources.class.getClassLoader().getResourceAsStream( name );
     if( result == null ) {
-      String message = "Resource not found: " + name;
-      throw new IllegalArgumentException( message );
+      throw new IllegalArgumentException( "Resource not found: " + name );
     }
     return result;
   }

@@ -273,10 +273,10 @@ public class ApplicationContext {
     lifeCycleFactory.activate();
     // Note: order is crucial here
     jsLibraryConcatenator.startJSConcatenation();
-    if( !ignoreResoureRegistration ) {
-      new ClientResources( getResourceManager() ).registerResources();
-    }
     themeManager.activate();
+    if( !ignoreResoureRegistration ) {
+      new ClientResources( getResourceManager(), themeManager ).registerResources();
+    }
     jsLibraryConcatenator.activate();
   }
 

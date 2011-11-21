@@ -1,20 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH amd others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *   Innoopract Informationssysteme GmbH - initial API and implementation
+ *   EclipseSource - ongoing implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
-/**
- * <p>Utility class that allows reading of the corresponding system
- * property.</p>
- */
-// TODO [rh] only used by ResourceManager, move to its helper class ResourceUtil
+
 public final class SystemProps {
 
   public static final String USE_VERSIONED_JAVA_SCRIPT = "org.eclipse.rap.useVersionedJavaScript";

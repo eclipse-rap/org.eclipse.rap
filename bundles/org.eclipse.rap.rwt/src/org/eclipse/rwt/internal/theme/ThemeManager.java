@@ -121,7 +121,6 @@ public class ThemeManager {
 
   public void activate() {
     initialize();
-    registerResources();
   }
 
   public void deactivate() {
@@ -272,13 +271,12 @@ public class ThemeManager {
    */
   public void registerResources() {
     checkInitialized();
-    Iterator iterator = themes.keySet().iterator();
+    String[] themeIds = getRegisteredThemeIds();
     // default theme must be rendered first
-    registerThemeFiles( defaultTheme );
-    while( iterator.hasNext() ) {
-      String key = ( String )iterator.next();
-      Theme theme = themes.get( key );
-      if( theme != defaultTheme ) {
+    registerThemeFiles( getTheme( DEFAULT_THEME_ID ) );
+    for( String themeId : themeIds ) {
+      if( !DEFAULT_THEME_ID.equals( themeId ) ) {
+        Theme theme = getTheme( themeId );
         registerThemeFiles( theme );
       }
     }
@@ -411,24 +409,20 @@ public class ThemeManager {
    * Creates and registers all JavaScript theme files and images for a given
    * theme.
    */
-  private void registerThemeFiles( Theme theme ) {
-    String jsId = theme.getJsId();
+  public void registerThemeFiles( Theme theme ) {
     registerThemeableWidgetImages( theme );
     registerThemeableWidgetCursors( theme );
     StringBuilder sb = new StringBuilder();
-    if( theme == defaultTheme ) {
-      sb.append( createQxAppearanceTheme() );
-    }
     // TODO [rst] Optimize: create only one ThemeStoreWriter for all themes
     IThemeCssElement[] elements = registeredCssElements.getAllElements();
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
     storeWriter.addTheme( theme, theme == defaultTheme );
     sb.append( storeWriter.createJs() );
-    String name = "rap-" + jsId + ".js";
+    String name = "rap-" + theme.getJsId() + ".js";
     registerJsLibrary( name, sb.toString() );
   }
 
-  private void registerThemeableWidgetImages( Theme theme ) {
+  private static void registerThemeableWidgetImages( Theme theme ) {
     QxType[] values = theme.getValuesMap().getAllValues();
     for( int i = 0; i < values.length; i++ ) {
       QxType value = values[ i ];
@@ -462,7 +456,7 @@ public class ThemeManager {
     }
   }
 
-  private void registerThemeableWidgetCursors( Theme theme ) {
+  private static void registerThemeableWidgetCursors( Theme theme ) {
     QxType[] values = theme.getValuesMap().getAllValues();
     for( int i = 0; i < values.length; i++ ) {
       QxType value = values[ i ];
@@ -498,7 +492,7 @@ public class ThemeManager {
     }
   }
 
-  private String createQxAppearanceTheme() {
+  public String createQxAppearanceTheme() {
     String base = "org.eclipse.swt.theme.AppearancesBase";
     String jsId = defaultTheme.getJsId();
     QxTheme qxTheme = new QxTheme( jsId, defaultTheme.getName(), base );
