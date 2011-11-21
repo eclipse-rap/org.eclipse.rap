@@ -902,6 +902,7 @@ TabItem:hover {
 /* Table Classic theme */
 
 Table {
+  font: 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
   color: black;
   background-color: white;
   background-image: none;
