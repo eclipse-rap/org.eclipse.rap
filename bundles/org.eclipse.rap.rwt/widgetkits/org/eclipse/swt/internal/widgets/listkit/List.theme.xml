@@ -49,6 +49,9 @@
       <property name="text-shadow"
           description="Shadow for items text." />
 
+      <property name="padding"
+          description="Padding for the list items." />
+
       <state name="selected"
           description="Applies to selected items." />
 

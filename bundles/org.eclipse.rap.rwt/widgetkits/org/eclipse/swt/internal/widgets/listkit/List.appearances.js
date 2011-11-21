@@ -34,7 +34,6 @@ appearances = {
         horizontalChildrenAlign : "left",
         verticalChildrenAlign : "middle",
         spacing : 4,
-        padding : [ 3, 5 ],
         minWidth : "auto"
       };
       result.textColor = tv.getCssColor( "List-Item", "color" );
@@ -42,6 +41,7 @@ appearances = {
       result.backgroundImage = tv.getCssImage( "List-Item", "background-image" );
       result.backgroundGradient = tv.getCssGradient( "List-Item", "background-image" );
       result.textShadow = tv.getCssShadow( "List-Item", "text-shadow" );
+      result.padding = tv.getCssBoxDimensions( "List-Item", "padding" );
       return result;
     }
   }

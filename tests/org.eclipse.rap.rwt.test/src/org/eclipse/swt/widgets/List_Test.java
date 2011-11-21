@@ -1,22 +1,24 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -27,6 +29,17 @@ import org.eclipse.swt.graphics.Point;
 public class List_Test extends TestCase {
 
   private Shell shell;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Display display = new Display();
+    shell = new Shell( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testGetItemsAndGetItemCount() {
     List list = new List( shell, SWT.NONE );
@@ -1085,7 +1098,8 @@ public class List_Test extends TestCase {
     assertTrue( list.isDisposed() );
   }
 
-  public void testComputeSize() {
+  public void testComputeSize() throws IOException {
+    fakeTheme();
     List list = new List( shell, SWT.NONE );
     Point expected = new Point( 64, 64 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -1135,7 +1149,8 @@ public class List_Test extends TestCase {
     list.showSelection();
   }
 
-  public void testShowSelectionBottom() {
+  public void testShowSelectionBottom() throws IOException {
+    fakeTheme();
     List list = new List( shell, SWT.NONE );
     list.setSize( 100, 20 );
     list.add( "1" );
@@ -1211,7 +1226,8 @@ public class List_Test extends TestCase {
     assertEquals( 0, noScrollList.getHScrollBarHeight() );
   }
 
-  public void testUpdateScrollBarOnItemsChange() {
+  public void testUpdateScrollBarOnItemsChange() throws IOException {
+    fakeTheme();
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.setSize( 200, 20 );
     assertFalse( list.hasVScrollBar() );
@@ -1228,7 +1244,8 @@ public class List_Test extends TestCase {
     assertTrue( list.hasVScrollBar() );
   }
 
-  public void testUpdateScrollBarOnResize() {
+  public void testUpdateScrollBarOnResize() throws IOException {
+    fakeTheme();
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.setSize( 20, 20 );
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
@@ -1273,7 +1290,8 @@ public class List_Test extends TestCase {
     assertTrue( list.hasVScrollBar() );
   }
 
-  public void testUpdateScrollBarWithInterDependencyVFirst() {
+  public void testUpdateScrollBarWithInterDependencyVFirst() throws IOException {
+    fakeTheme();
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.add( "123" );
     list.setSize( 30, 30 );
@@ -1286,7 +1304,8 @@ public class List_Test extends TestCase {
     assertTrue( list.hasVScrollBar() );
   }
 
-  public void testItemDimensions() {
+  public void testItemDimensions() throws IOException {
+    fakeTheme();
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     assertEquals( new Point( 0, 0 ), list.getItemDimensions() );
     list.add( "123" );
@@ -1300,25 +1319,22 @@ public class List_Test extends TestCase {
     list.add( "Very long list item" );
     assertEquals( new Point( 138, 20 ), list.getItemDimensions() );
   }
-  
+
   public void testIsSerialized() throws Exception {
     String listItem = "listItem";
     List list = new List( shell, SWT.NONE  );
     list.add( listItem );
-    
+
     List deserializedList = Fixture.serializeAndDeserialize( list );
-    
+
     assertEquals( listItem, deserializedList.getItem( 0 ) );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    shell = new Shell( display );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  private void fakeTheme() throws IOException {
+    StringBuilder buffer = new StringBuilder();
+    buffer.append( "List-Item {\n" );
+    buffer.append( "padding: 3px 5px;\n" );
+    buffer.append( "}\n" );
+    ThemeTestUtil.setCustomTheme( buffer.toString() );
   }
 }

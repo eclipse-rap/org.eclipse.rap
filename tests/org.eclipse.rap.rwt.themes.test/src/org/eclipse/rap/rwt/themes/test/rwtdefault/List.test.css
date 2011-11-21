@@ -23,6 +23,7 @@ List[BORDER] {
 }
 
 List-Item {
+  padding: 10px 3px 10px 3px;
 	font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: #ffffff;
   color: #4a4a4a;

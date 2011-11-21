@@ -12,12 +12,15 @@
 package org.eclipse.swt.widgets;
 
 import org.eclipse.rwt.graphics.Graphics;
+import org.eclipse.rwt.internal.theme.IThemeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.listkit.ListThemeAdapter;
 
 
 /**
@@ -46,10 +49,6 @@ public class List extends Scrollable {
     }
   }
 
-  // This values must be kept in sync with appearance of list items
-  private static final int VERTICAL_ITEM_MARGIN = 3;
-  private static final int HORIZONTAL_ITEM_MARGIN = 5;
-
   private final ListModel model;
   private int focusIndex;
   private transient IListAdapter listAdapter;
@@ -57,6 +56,7 @@ public class List extends Scrollable {
   private int topIndex;
   private boolean hasVScrollBar;
   private boolean hasHScrollBar;
+  private Rectangle bufferedItemPadding;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -993,7 +993,7 @@ public class List extends Scrollable {
    */
   public int getItemHeight() {
     checkWidget();
-    int margin = VERTICAL_ITEM_MARGIN * 2;
+    int margin = getItemPadding().height;
     return Graphics.getCharHeight( getFont() ) + margin;
   }
 
@@ -1128,7 +1128,7 @@ public class List extends Scrollable {
   }
 
   private int getItemWidth( String item ) {
-    int margin = HORIZONTAL_ITEM_MARGIN * 2;
+    int margin = getItemPadding().width;
     return Graphics.stringExtent( getFont(), item ).x + margin;
   }
 
@@ -1173,6 +1173,14 @@ public class List extends Scrollable {
       height = getItemHeight();
     }
     return new Point( width, height );
+  }
+
+  private Rectangle getItemPadding() {
+    if( bufferedItemPadding == null ) {
+      ListThemeAdapter themeAdapter = ( ListThemeAdapter )getAdapter( IThemeAdapter.class );
+      bufferedItemPadding = themeAdapter.getItemPadding( this );
+    }
+    return bufferedItemPadding;
   }
 
   ///////////////////////////////////////
