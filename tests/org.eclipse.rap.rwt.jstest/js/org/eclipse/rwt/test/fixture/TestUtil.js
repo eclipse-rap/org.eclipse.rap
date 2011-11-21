@@ -740,8 +740,8 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     // assumes that the set appearance-theme does never change during tests     
     fakeAppearance : function( appearanceId, value ) {
       var manager = qx.theme.manager.Appearance.getInstance();
-      var themeName = manager.getAppearanceTheme().name;
-      var base = manager.getAppearanceTheme().appearances;
+      var themeName = manager.getCurrentTheme().name;
+      var base = manager.getCurrentTheme().appearances;
       if( typeof this._appearanceBackups[ appearanceId ] == "undefined" ) {
         if( base[ appearanceId ] ) {
           this._appearanceBackups[ appearanceId ] = base[ appearanceId ];
@@ -755,7 +755,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     
     restoreAppearance : function() {
       var manager = qx.theme.manager.Appearance.getInstance();
-      var base = manager.getAppearanceTheme().appearances;
+      var base = manager.getCurrentTheme().appearances;
       for( var appearanceId in this._appearanceBackups ) {
         var value = this._appearanceBackups[ appearanceId ];
         if( value === false ) {
@@ -772,7 +772,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     
     _clearAppearanceCache : function() {
       var manager = qx.theme.manager.Appearance.getInstance()
-      manager.__cache[ manager.getAppearanceTheme().name ] = {};
+      manager.__cache[ manager.getCurrentTheme().name ] = {};
     },
     
     ////////

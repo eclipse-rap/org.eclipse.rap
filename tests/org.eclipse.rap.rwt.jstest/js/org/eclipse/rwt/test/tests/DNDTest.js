@@ -816,7 +816,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       // drop
       testUtil.fakeMouseEventDOM( targetNode, "mouseup", leftButton );
       assertTrue( tree._rowContainer._children[ 1 ]._getTargetNode().lastChild.style.display == "none" );
-      assertEquals( "#dae9f7", tree._rowContainer._children[ 1 ].getBackgroundColor() );
+      assertEquals( "#b5b5b5", tree._rowContainer._children[ 1 ].getBackgroundColor() );
       testUtil.clearTimerOnceLog();
       testUtil.clearRequestLog();
       dndSupport.cancel();
