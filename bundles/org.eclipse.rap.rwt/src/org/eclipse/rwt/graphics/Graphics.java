@@ -137,19 +137,24 @@ public final class Graphics {
    *
    * @param path the path to the image
    * @return the image
-   *
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_NULL_ARGUMENT - if the path is null</li>
-   *    <li>ERROR_ILLEGAL_ARGUMENT - if the path is invalid</li>
-   * </ul>
+   *              <li>ERROR_NULL_ARGUMENT - if the path is null</li>
+   *              <li>ERROR_ILLEGAL_ARGUMENT - if the path is invalid</li>
+   *              </ul>
    * @exception IllegalArgumentException <ul>
-   *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the current display's UI thread</li>
-   * </ul>
+   *              <li>ERROR_THREAD_INVALID_ACCESS - if not called from the
+   *              current display's UI thread</li>
+   *              </ul>
    * @exception SWTException <ul>
-   *    <li>ERROR_IO - if an IO error occurs while reading from the stream</li>
-   *    <li>ERROR_INVALID_IMAGE - if the image stream contains invalid data</li>
-   *    <li>ERROR_UNSUPPORTED_FORMAT - if the image stream contains an unrecognized format</li>
-   * </ul>
+   *              <li>ERROR_IO - if an IO error occurs while reading from the
+   *              stream</li>
+   *              <li>ERROR_INVALID_IMAGE - if the image stream contains invalid
+   *              data</li>
+   *              <li>ERROR_UNSUPPORTED_FORMAT - if the image stream contains an
+   *              unrecognized format</li>
+   *              </ul>
+   * @deprecated Use {@link #getImage(String, ClassLoader)} or
+   *             {@link #getImage(String, InputStream)} instead.
    */
   public static Image getImage( String path ) {
     checkThread();
@@ -237,7 +242,7 @@ public final class Graphics {
    *
    * @param style the style of the cursor to create
    * @return the cursor
-   * 
+   *
    * @exception IllegalArgumentException <ul>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the current display's UI thread</li>
    * </ul>

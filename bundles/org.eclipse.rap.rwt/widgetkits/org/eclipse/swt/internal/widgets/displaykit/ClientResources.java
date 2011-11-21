@@ -308,21 +308,14 @@ public final class ClientResources {
   }
 
   public void registerResources() {
-    ClassLoader bufferedLoader = resourceManager.getContextLoader();
     try {
-      resourceManager.setContextLoader( getClass().getClassLoader() );
-      // TODO [rst] Needed by client.js - can we get rid of it?
-      resourceManager.register( "resource/static/html/blank.html", HTTP.CHARSET_UTF_8 );
-      try {
-        registerJavascriptFiles();
-      } catch( IOException e ) {
-        throw new RuntimeException( "Failed to register JavaScript library" );
-      }
+      registerTextResource( "resource/static/html/blank.html" );
+      registerJavascriptFiles();
       registerThemeResources();
       registerWidgetImages();
       registerContributions();
-    } finally {
-      resourceManager.setContextLoader( bufferedLoader );
+    } catch( IOException ioe ) {
+      throw new RuntimeException( "Failed to register resource.", ioe );
     }
   }
 
@@ -339,7 +332,7 @@ public final class ClientResources {
       appearanceCode = jsFile.compress();
     }
     contentBuffer.append( appearanceCode.getBytes( HTTP.CHARSET_UTF_8 ) );
-    registerJavascriptLibraryFile( contentBuffer, "rap-client.js" );
+    registerJavascriptResource( contentBuffer, "rap-client.js" );
   }
 
   private void append( ContentBuffer contentBuffer, String location ) throws IOException {
@@ -371,26 +364,38 @@ public final class ClientResources {
     }
   }
 
-  private void registerContributions() {
+  private void registerContributions() throws IOException {
     IResource[] resources = RWTFactory.getResourceRegistry().get();
     for( int i = 0; i < resources.length; i++ ) {
-      if( !resources[ i ].isExternal() ) {
-        resourceManager.setContextLoader( resources[ i ].getLoader() );
-        String charset = resources[ i ].getCharset();
-        RegisterOptions options = resources[ i ].getOptions();
-        String location = resources[ i ].getLocation();
-        if( charset == null && options == null ) {
-          resourceManager.register( location );
-        } else if( options == null ) {
-          resourceManager.register( location, charset );
-        } else {
-          resourceManager.register( location, charset, options );
+      IResource resource = resources[ i ];
+      if( !resource.isExternal() ) {
+        String charset = resource.getCharset();
+        RegisterOptions options = resource.getOptions();
+        if( options == null ) {
+          options = RegisterOptions.NONE;
         }
+        String location = resource.getLocation();
+        InputStream inputStream = resource.getLoader().getResourceAsStream( location );
+        if( charset == null ) {
+          resourceManager.register( location, inputStream );
+        } else {
+          resourceManager.register( location, inputStream, charset, options );
+        }
+        inputStream.close();
       }
     }
   }
 
-  private void registerJavascriptLibraryFile( ContentBuffer buffer, String name )
+  private void registerTextResource( String name ) throws IOException {
+    InputStream inputStream = getClass().getClassLoader().getResourceAsStream( name );
+    try {
+      resourceManager.register( name, inputStream, HTTP.CHARSET_UTF_8, RegisterOptions.NONE );
+    } finally {
+      inputStream.close();
+    }
+  }
+
+  private void registerJavascriptResource( ContentBuffer buffer, String name )
     throws IOException
   {
     InputStream inputStream = buffer.getContentAsStream();

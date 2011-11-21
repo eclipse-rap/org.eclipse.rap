@@ -18,74 +18,39 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
 public class RWTConfigurationImpl_Test extends TestCase {
-  
+
   private RWTConfigurationImpl configuration;
 
   public void testConfigure() {
     configure();
 
     assertTrue( configuration.getContextDirectory().exists() );
-    assertTrue( configuration.getClassDirectory().exists() );
-    assertTrue( configuration.getLibraryDirectory().exists() );
   }
-  
+
   public void testConfigureParamPathNotNull() {
     try {
       configuration.configure( null );
     } catch( NullPointerException expected ) {
     }
   }
-  
+
   public void testUnconfigured() {
     try {
       configuration.getContextDirectory();
       fail();
     } catch( IllegalStateException expected ) {
     }
-    try {
-      configuration.getClassDirectory();
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
-    try {
-      configuration.getLibraryDirectory();
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
-    try {
-      configuration.getResourcesDeliveryMode();
-      fail();
-    } catch( IllegalStateException expected ) {
-    }
   }
 
-  public void testConfigurationDefaultForGetResources() {
-    configure();
-    String resources = configuration.getResourcesDeliveryMode();
-    
-    assertEquals( RWTConfiguration.RESOURCES_DELIVER_FROM_DISK, resources );
-  }
-
-  public void testGetResources() {
-    configure();
-    System.setProperty( RWTConfiguration.PARAM_RESOURCES,
-                        RWTConfiguration.RESOURCES_DELIVER_BY_SERVLET );
-    
-    String resources = configuration.getResourcesDeliveryMode();
-    
-    assertEquals( RWTConfiguration.RESOURCES_DELIVER_BY_SERVLET, resources );
-  }
-  
   protected void setUp() {
     Fixture.createWebContextDirectories();
     configuration = new RWTConfigurationImpl();
   }
-  
+
   protected void tearDown() {
     Fixture.deleteWebContextDirectories();
-    System.getProperties().remove( RWTConfiguration.PARAM_RESOURCES );
   }
-  
+
   private void configure() {
     String path = Fixture.WEB_CONTEXT_DIR.getPath();
     configuration.configure( path );

@@ -263,7 +263,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
         configuration.addThemableWidget( TestWidget.class );
         configuration.setAttribute( ATTRIBUTE_NAME, ATTRIBUTE_VALUE );
 
-        // Only supported for Workbench API backward compatibilty
+        // Only supported for Workbench API backward compatibility
         ( ( ApplicationConfigurationImpl )configuration )
           .addAdapterFactory( TestAdaptable.class, testAdapterFactory );
       }

@@ -17,57 +17,26 @@ import org.eclipse.rwt.internal.util.ParamCheck;
 
 
 public class RWTConfigurationImpl implements RWTConfiguration {
-  private static final String PATH_PREFIX = "WEB-INF" + File.separator;
-  private static final String CLASSES_PATH = PATH_PREFIX + "classes";
-  private static final String LIB_PATH = PATH_PREFIX + "lib";
-
   private File contextDirectory;
-  private String resourcesDeliveryMode;
 
-  public void configure( String realPath ) {
-    ParamCheck.notNull( realPath, "realPath" );
-    contextDirectory = new File( realPath );
+  public void configure( String contextDirectory ) {
+    ParamCheck.notNull( contextDirectory, "contextDirectory" );
+    this.contextDirectory = new File( contextDirectory );
   }
-  
+
   public void reset() {
     contextDirectory = null;
   }
-  
+
   public File getContextDirectory() {
     checkConfigured();
     return contextDirectory;
   }
 
-  public File getLibraryDirectory() {
-    checkConfigured();
-    return new File( contextDirectory, LIB_PATH );
-  }
-
-  public File getClassDirectory() {
-    checkConfigured();
-    return new File( contextDirectory, CLASSES_PATH );
-  }
-
-  public String getResourcesDeliveryMode() {
-    checkConfigured();
-    if( resourcesDeliveryMode == null ) {
-     resourcesDeliveryMode = getConfigValue( PARAM_RESOURCES, RESOURCES_DELIVER_FROM_DISK );
-    }
-    return resourcesDeliveryMode;
-  }
-  
   public boolean isConfigured() {
     return contextDirectory != null;
   }
-  
-  private String getConfigValue( String tagName, String defaultValue ) {
-    String result = System.getProperty( tagName );
-    if( result == null ) {
-      result = defaultValue;
-    }
-    return result;
-  }
-  
+
   private void checkConfigured() {
     if( !isConfigured() ) {
       throw new IllegalStateException( "RWTConfigurationImpl has not been configured." );

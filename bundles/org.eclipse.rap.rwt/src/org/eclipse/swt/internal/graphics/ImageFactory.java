@@ -19,15 +19,14 @@ import org.eclipse.rwt.internal.util.ClassUtil;
 import org.eclipse.rwt.internal.util.SharedInstanceBuffer;
 import org.eclipse.rwt.internal.util.SharedInstanceBuffer.IInstanceCreator;
 import org.eclipse.rwt.internal.util.StreamUtil;
-import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 
 
 public class ImageFactory {
-  
+
   private final SharedInstanceBuffer<String,Image> cache;
-  
+
   public static String getImagePath( Image image ) {
     String result = null;
     if( image != null ) {
@@ -42,7 +41,7 @@ public class ImageFactory {
   }
 
   public Image findImage( String path ) {
-    return findImage( path, RWT.getResourceManager().getContextLoader() );
+    return findImage( path, ImageFactory.class.getClassLoader() );
   }
 
   public Image findImage( final String path, final ClassLoader imageLoader ) {
@@ -68,7 +67,7 @@ public class ImageFactory {
   }
 
   private Image createImage( String path, ClassLoader imageLoader ) {
-    InputStream inputStream = getInputStream( path, imageLoader );
+    InputStream inputStream = imageLoader.getResourceAsStream( path );
     Image result = createImage( null, path, inputStream );
     StreamUtil.close( inputStream );
     return result;
@@ -78,20 +77,5 @@ public class ImageFactory {
     Class[] paramTypes = new Class[] { Device.class, InternalImage.class };
     Object[] paramValues = new Object[] { device, internalImage };
     return ( Image )ClassUtil.newInstance( Image.class, paramTypes, paramValues );
-  }
-
-  private static InputStream getInputStream( String path, ClassLoader imageLoader ) {
-    IResourceManager manager = RWT.getResourceManager();
-    ClassLoader bufferedContextLoader = manager.getContextLoader();
-    if( imageLoader != null ) {
-      manager.setContextLoader( imageLoader );
-    }
-    InputStream result;
-    try {
-      result = manager.getResourceAsStream( path );
-    } finally {
-      manager.setContextLoader( bufferedContextLoader );
-    }
-    return result;
   }
 }

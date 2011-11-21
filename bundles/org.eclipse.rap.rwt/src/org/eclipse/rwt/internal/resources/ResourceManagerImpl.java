@@ -18,9 +18,7 @@ import java.text.MessageFormat;
 import java.util.*;
 
 import org.eclipse.rwt.internal.engine.RWTConfiguration;
-import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.ParamCheck;
-import org.eclipse.rwt.internal.util.URLHelper;
 import org.eclipse.rwt.resources.IResourceManager;
 
 
@@ -39,62 +37,25 @@ import org.eclipse.rwt.resources.IResourceManager;
  */
 public class ResourceManagerImpl implements IResourceManager {
 
-  /**
-   * <p>denotes a mode in which resources are delivered: resources
-   *  are written to disk and delivered as static files.</p>
-   */
-  public static final String DELIVER_FROM_DISK  = "deliverFromDisk";
-  /**
-   * <p>denotes a mode in which resources are delivered: resources
-   * libraries delivered by the Delegates servlet dynamically.</p>
-   */
-  public static final String DELIVER_BY_SERVLET = "deliverByServlet";
-  /**
-   * <p>denotes a mode in which resources are delivered: resources
-   * libraries delivered by the Delegates servlet dynamically, but
-   * user defined resources will be copied to the temporary directory
-   * given by the system property value of 'java.io.tmpdir' plus
-   * '/w4toolkit/&lt;username&gt;', where <em>username<em> is the
-   * value of the system property 'user.name'.</p>
-   *
-   * <p>For internal use only</p>
-   */
-  public static final String DELIVER_BY_SERVLET_AND_TEMP_DIR = "deliverByServletAndTempDir";
-
   public static final String RESOURCES = "rwt-resources";
-
-  final static String RESOURCE = "w4t_resource";
-  final static String RESOURCE_VERSION = "w4t_res_version";
 
   private final Map<String,String> repository;
   private final Map<String,Resource> cache;
   private final RWTConfiguration configuration;
   private final ThreadLocal<ClassLoader> contextLoader;
-  private ClassLoader loader;
 
   private static final class Resource {
 
-    /** the 'raw' content of the resource. In case of a text resource (charset
-     * was given) the content is UTF-8 encoded. */
-    private final byte[] content;
-    /** the charset in which the resource was encoded before read or null for
-     * binary resources. */
     private final String charset;
-    /** the resource's version or null for 'no version' */
     private final Integer version;
 
-    public Resource( byte[] content, String charset, Integer version ) {
+    public Resource( String charset, Integer version ) {
       this.charset = charset;
-      this.content = content;
       this.version = version;
     }
 
     public String getCharset() {
       return charset;
-    }
-
-    public byte[] getContent() {
-      return content;
     }
 
     public Integer getVersion() {
@@ -107,30 +68,6 @@ public class ResourceManagerImpl implements IResourceManager {
     repository = new Hashtable<String,String>();
     cache = new Hashtable<String,Resource>();
     contextLoader = new ThreadLocal<ClassLoader>();
-  }
-
-  /**
-   * Returns the content of the resource denoted by <code>name</code>.
-   *
-   * @param name the name of the resource to find, must not be <code>null</code>
-   * @param version the version (can be obtained by
-   *          <code>findVersion(String)</code>) of the resource or
-   *          <code>null</code> if the resource is unversioned.
-   * @return the content of the resource or <code>null</code> if no resource
-   *         with the given <code>name</code> and <code>version</code> exists.
-   */
-  public byte[] findResource( String name, Integer version ) {
-    ParamCheck.notNull( name, "name" );
-    byte[] result = null;
-    Resource resource = cache.get( createKey( name ) );
-    if( resource != null ) {
-      if(    ( version == null && resource.getVersion() == null )
-          || ( version != null && version.equals( resource.getVersion() ) ) )
-      {
-        result = resource.getContent();
-      }
-    }
-    return result;
   }
 
   /**
@@ -151,12 +88,6 @@ public class ResourceManagerImpl implements IResourceManager {
       result = resource.getVersion();
     }
     return result;
-  }
-
-  /** <p>returns whether the application runs in the mode specified by the
-    * passed String.</p> */
-  public boolean isDeliveryMode( String deliveryMode ) {
-    return configuration.getResourcesDeliveryMode().equals( deliveryMode );
   }
 
   /////////////////////////////
@@ -299,16 +230,11 @@ public class ResourceManagerImpl implements IResourceManager {
   // helping methods
 
   private ClassLoader getLoader() {
-    ClassLoader result = loader;
-    if(    getContextLoader() != null
-        && getContextLoader() != ResourceManagerImpl.class.getClassLoader() )
-    {
+    ClassLoader result;
+    if( getContextLoader() != null ) {
       result = getContextLoader();
-    } else if( loader == null ) {
-      URL[] urls = new ContextURLs( configuration ).get();
-      ClassLoader parent = getClass().getClassLoader();
-      loader = new URLClassLoader( urls, parent );
-      result = loader;
+    } else {
+      result = getClass().getClassLoader();
     }
     return result;
   }
@@ -318,25 +244,13 @@ public class ResourceManagerImpl implements IResourceManager {
   }
 
   private String createRequestURL( String fileName, Integer version ) {
-    String result;
     String newFileName = fileName.replace( '\\', '/' );
-    if( isDeliveryMode( DELIVER_FROM_DISK ) ) {
-      StringBuilder url = new StringBuilder();
-      url.append( RESOURCES );
-      url.append( "/" );
-      String escapedFilename = escapeFilename( newFileName );
-      url.append( versionedResourceName( escapedFilename, version ) );
-      result = url.toString();
-    } else {
-      StringBuilder url = new StringBuilder();
-      url.append( URLHelper.getURLString() );
-      URLHelper.appendFirstParam( url, RESOURCE, newFileName );
-      if( version != null ) {
-        URLHelper.appendParam( url, RESOURCE_VERSION, String.valueOf( version.intValue() ) );
-      }
-      result = ContextProvider.getResponse().encodeURL( url.toString() );
-    }
-    return result;
+    StringBuilder url = new StringBuilder();
+    url.append( RESOURCES );
+    url.append( "/" );
+    String escapedFilename = escapeFilename( newFileName );
+    url.append( versionedResourceName( escapedFilename, version ) );
+    return url.toString();
   }
 
   private void doRegister( String name, String charset, RegisterOptions options ) {
@@ -365,19 +279,10 @@ public class ResourceManagerImpl implements IResourceManager {
     throws IOException
   {
     Integer version = computeVersion( content, options );
-    if( isDeliveryMode( DELIVER_FROM_DISK ) ) {
-      File location = getDiskLocation( name, version );
-      createFile( location );
-      ResourceUtil.write( location, content );
-      cache.put( key, new Resource( null, charset, version ) );
-    } else if( isDeliveryMode( DELIVER_BY_SERVLET ) ) {
-      cache.put( key, new Resource( content, charset, version ) );
-    } else if( isDeliveryMode( DELIVER_BY_SERVLET_AND_TEMP_DIR ) ) {
-      File location = getTempLocation( name, version );
-      createFile( location );
-      ResourceUtil.write( location, content );
-      cache.put( key, new Resource( content, charset, version ) );
-    }
+    File location = getDiskLocation( name, version );
+    createFile( location );
+    ResourceUtil.write( location, content );
+    cache.put( key, new Resource( charset, version ) );
   }
 
   private static void createFile( File fileToWrite ) throws IOException {
@@ -455,15 +360,4 @@ public class ResourceManagerImpl implements IResourceManager {
     return result;
   }
 
-  private static File getTempLocation( String name, Integer version ) {
-    StringBuilder result = new StringBuilder();
-    result.append( System.getProperty( "java.io.tmpdir" ) );
-    result.append( File.separator );
-    result.append( System.getProperty( "user.name" ) );
-    result.append( File.separator );
-    result.append( "w4toolkit" );
-    result.append( File.separator );
-    result.append( versionedResourceName ( name, version ) );
-    return new File( result.toString() );
-  }
 }

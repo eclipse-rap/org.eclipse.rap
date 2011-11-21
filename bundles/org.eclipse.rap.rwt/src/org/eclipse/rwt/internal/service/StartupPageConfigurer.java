@@ -16,7 +16,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -26,7 +25,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.application.RWTFactory;
@@ -41,7 +39,6 @@ import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.resources.IResource;
-import org.eclipse.rwt.resources.IResourceManager;
 
 
 final class StartupPageConfigurer implements IStartupPageConfigurer {
@@ -147,20 +144,10 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
   }
 
   private static InputStream loadTemplateFile() throws IOException {
-    InputStream result = null;
-    IResourceManager resourceManager = RWT.getResourceManager();
-    ClassLoader buffer = resourceManager.getContextLoader();
-    resourceManager.setContextLoader( StartupPageConfigurer.class.getClassLoader() );
-    try {
-      result = resourceManager.getResourceAsStream( INDEX_TEMPLATE );
-      if ( result == null ) {
-        String text = "Failed to load Browser Survey HTML Page. Resource {0} could not be found.";
-        Object[] param = new Object[]{ INDEX_TEMPLATE };
-        String msg = MessageFormat.format( text, param );
-        throw new IOException( msg );
-      }
-    } finally {
-      resourceManager.setContextLoader( buffer );
+    ClassLoader classLoader = StartupPageConfigurer.class.getClassLoader();
+    InputStream result = classLoader.getResourceAsStream( INDEX_TEMPLATE );
+    if ( result == null ) {
+      throw new IOException( "Failed to startup page: " + INDEX_TEMPLATE );
     }
     return result;
   }
