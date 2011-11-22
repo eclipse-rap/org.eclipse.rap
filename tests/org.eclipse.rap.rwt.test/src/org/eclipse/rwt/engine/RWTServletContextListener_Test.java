@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ public class RWTServletContextListener_Test extends TestCase {
   }
 
   public static class TestPhaseListener implements PhaseListener {
-    
+
     private static final long serialVersionUID = 1L;
 
     public void beforePhase( final PhaseEvent event ) {
@@ -57,27 +57,27 @@ public class RWTServletContextListener_Test extends TestCase {
   }
 
   public static class TestResource implements IResource {
-    
+
     public String getCharset() {
       return null;
     }
-    
+
     public ClassLoader getLoader() {
       return null;
     }
-    
+
     public String getLocation() {
       return null;
     }
-    
+
     public RegisterOptions getOptions() {
       return null;
     }
-    
+
     public boolean isExternal() {
-      return false;
+      return true;
     }
-    
+
     public boolean isJSLibrary() {
       return false;
     }
@@ -103,7 +103,7 @@ public class RWTServletContextListener_Test extends TestCase {
 
   public void testEntryPointInitialization() {
     setEntryPointInitParameter();
-    
+
     triggerServletContextInitialized();
 
     checkEntryPointHasBeenRegistered();
@@ -111,7 +111,7 @@ public class RWTServletContextListener_Test extends TestCase {
 
   public void testEntryPointInitializationWithNonExistingClassName() {
     Fixture.setInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM, "does.not.Exist" );
-    
+
     try {
       triggerServletContextInitialized();
       fail();
@@ -122,7 +122,7 @@ public class RWTServletContextListener_Test extends TestCase {
 
   public void testConfigurator() {
     setConfiguratorInitParameter();
-    
+
     triggerServletContextInitialized();
 
     checkEntryPointHasBeenRegistered();

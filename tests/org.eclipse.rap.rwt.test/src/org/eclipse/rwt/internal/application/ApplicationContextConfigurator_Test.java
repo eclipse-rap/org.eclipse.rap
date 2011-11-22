@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Frank Appel - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.application;
 
@@ -131,7 +132,7 @@ public class ApplicationContextConfigurator_Test extends TestCase {
     }
 
     public boolean isExternal() {
-      return false;
+      return true;
     }
   }
 
