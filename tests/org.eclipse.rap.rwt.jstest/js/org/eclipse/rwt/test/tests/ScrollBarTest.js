@@ -373,6 +373,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScrollBarTest", {
       bar.destroy();
     },
 
+    testMaxValueEqualsSize : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bar = this._createScrollBar( false, false );
+      bar.setMaximum( 21 );
+      bar.setHeight( 21 );
+      testUtil.flush();
+      bar.setValue( 0 ); // Order is relevant (flush first)
+      var minSize = 8;
+      assertEquals( 0, bar.getValue() );
+      assertEquals( minSize, bar._thumb.getHeight() );
+      
+      bar.destroy();
+    },
+
     testMinThumbSizeBySliderSize : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var bar = this._createScrollBar( false, false );
