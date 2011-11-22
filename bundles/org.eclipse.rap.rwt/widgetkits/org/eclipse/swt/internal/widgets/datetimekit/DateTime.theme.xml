@@ -121,6 +121,9 @@
       <property name="background-color"
           description="Background color" />
 
+      <property name="background-image"
+          description="Calendar navigation bar background image or gradient" />
+
       <property name="font">
         <description>
           Text font for the Calendar navigation bar.

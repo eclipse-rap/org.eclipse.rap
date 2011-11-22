@@ -340,6 +340,7 @@ DateTime-Calendar-Navbar {
   background-color: #0080c0;
   color: white;
   font: bold 11px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode', sans-serif;
+  background-image: none;
 }
 
 DateTime-Calendar-PreviousMonthButton {

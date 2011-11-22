@@ -1339,6 +1339,7 @@ DateTime-Calendar-Navbar {
   color: white;
   font: bold 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   text-shadow: none;
+  background-image: none;
 }
 
 DateTime-Calendar-PreviousMonthButton {

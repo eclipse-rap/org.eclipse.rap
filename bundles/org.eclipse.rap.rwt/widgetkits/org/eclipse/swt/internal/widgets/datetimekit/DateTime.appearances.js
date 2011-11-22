@@ -165,6 +165,8 @@ appearances = {
       return {
         border : tv.getCssBorder( "DateTime-Calendar-Navbar", "border" ),
         backgroundColor : tv.getCssColor( "DateTime-Calendar-Navbar", "background-color" ),
+        backgroundImage : tv.getCssImage( "DateTime-Calendar-Navbar", "background-image" ),
+        backgroundGradient : tv.getCssGradient( "DateTime-Calendar-Navbar", "background-image" ),
         padding : [ 4, 4, 4, 4 ]
       };
     }
