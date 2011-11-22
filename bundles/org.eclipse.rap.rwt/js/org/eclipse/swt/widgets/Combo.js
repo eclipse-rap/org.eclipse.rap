@@ -248,6 +248,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
                         : "Combo-FocusIndicator"
         focusIndicator.show( this, cssSelector, null );
       }
+      this.addState( "focused" );
     },
     
     // Override of the _ontabfocus method from qx.ui.core.Widget
@@ -267,6 +268,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         var focusIndicator = org.eclipse.rwt.FocusIndicator.getInstance();
         focusIndicator.hide( this );
       }
+      this.removeState( "focused" );
     },
     
     // On "blur" or "windowblur" event: closes the list, if it is seeable

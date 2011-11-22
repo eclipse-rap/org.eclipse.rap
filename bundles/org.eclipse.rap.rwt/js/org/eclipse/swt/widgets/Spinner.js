@@ -103,12 +103,14 @@ qx.Class.define( "org.eclipse.swt.widgets.Spinner", {
       if( this._textfield.isCreated() ) {
         this._textfield.selectAll();
       }
+      this.addState( "focused" );
     },
 
     _visualizeBlur : function() {
       // setSelectionLength( 0 ) for TextField - needed for IE
       this._textfield.setSelectionLength( 0 );
       this._textfield._visualizeBlur();
+      this.removeState( "focused" );
     },
 
     // [if] Override original qooxdoo Spinner method. Fix for bug 209476
