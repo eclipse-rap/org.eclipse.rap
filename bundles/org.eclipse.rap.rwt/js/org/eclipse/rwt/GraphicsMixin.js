@@ -64,7 +64,11 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     _applyShadow : qx.core.Variant.select( "qx.client", {
       "default" : function( value, oldValue ) {
         if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {
-          this.setGfxProperty( "shadow", value );
+          if( value != null && value[ 0 ] ) {
+            this.setGfxProperty( "shadow", null );
+          } else {
+            this.setGfxProperty( "shadow", value );
+          }
           this.setGfxProperty( "shadowLayouted", null );
           this._handleGfxShadow();
         }

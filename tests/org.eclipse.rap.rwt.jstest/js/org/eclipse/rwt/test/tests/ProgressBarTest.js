@@ -294,6 +294,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       shell.setShadow( null );
       shell.addToDocument();
       shell.setBackgroundColor( null );
+      shell.setBorder( null );
       shell.open();
       var log = [];      
       var bar = new org.eclipse.swt.widgets.ProgressBar();
@@ -306,14 +307,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProgressBarTest", {
       assertEquals( 1, log.length );
       if( !org.eclipse.rwt.Client.supportsCss3() ) {
         shell.setBackgroundColor( "green" );
-        shell.setBorder( new org.eclipse.rwt.Border( 1, "rounded", "black", 0 ) );
+        shell.setBorder( new org.eclipse.rwt.Border( 1, "rounded", "black", 2 ) );
         testUtil.flush();
         assertEquals( 2, log.length );
       }
       shell.destroy();
       testUtil.flush();
     },
-    
+
     testRoundedBorderIndicatorMinLength : function() {
       var gfxUtil = org.eclipse.rwt.GraphicsUtil;
       var bar = new org.eclipse.swt.widgets.ProgressBar();

@@ -48,10 +48,6 @@ public class QxShadow implements QxType {
                                  QxColor color )
   {
     String msg;
-    if( inset ) {
-      msg = "Shadow \"inset\" keyword is not supported";
-      throw new IllegalArgumentException( msg );
-    }
     if( blur < 0 ) {
       msg = "Shadow blur distance can't be negative";
       throw new IllegalArgumentException( msg );

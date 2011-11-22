@@ -46,6 +46,9 @@
     <property name="text-shadow"
         description="Shadow for text." />
 
+    <property name="box-shadow" 
+        description="A shadow effect for spinner text field." />
+
     <style name="BORDER"
         description="Style constant for bordered behavior." />
 

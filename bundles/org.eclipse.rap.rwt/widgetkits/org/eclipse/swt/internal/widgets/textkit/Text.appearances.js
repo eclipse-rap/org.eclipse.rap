@@ -27,6 +27,7 @@ appearances = {
       result.paddingRight = cssPadding[ 1 ];
       result.paddingLeft = cssPadding[ 3 ];
       result.textShadow = tv.getCssShadow( "Text", "text-shadow" );
+      result.shadow = tv.getCssShadow( "Text", "box-shadow" );
       return result;
     }
   },

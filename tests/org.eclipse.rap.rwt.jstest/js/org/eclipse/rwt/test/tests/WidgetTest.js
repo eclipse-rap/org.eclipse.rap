@@ -480,17 +480,20 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
     },
     
+    testRenderBoxShadowInset : function() {
+      if( org.eclipse.rwt.Client.supportsCss3() ) {
+        var shadow = [ true, 3, 5, 1, 0, "#090807", 0.4 ];
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var widget = this._createWidget();
+        widget.setShadow( shadow );
+        testUtil.flush();
+        var result = this._getCssShadow( widget.getElement() );
+        assertTrue( result.indexOf( "inset" ) !== -1 );
+        widget.destroy();
+      }
+    },
+    
     testRemoveBoxShadow : function() {
-//      Syntax for shadow:
-//      [
-//         inset, //boolean, currently not supported
-//         offsetX, // positive or negative number
-//         offsetY, // positive or negative number
-//         blurRadius, // positive number or zero
-//         spread, // positive or negative number, currently not supported
-//         color, // string
-//         opacity, // number between 0 and 1
-//      ]
       if( org.eclipse.rwt.Client.supportsCss3() ) {
         var shadow = [ false, 3, 5, 1, 0, "#090807", 0.4 ];
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;

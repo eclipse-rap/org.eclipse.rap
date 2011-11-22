@@ -14,15 +14,6 @@ import junit.framework.TestCase;
 
 public class QxShadow_Test extends TestCase {
   
-  public void testIllegalArguments_Inset() {
-    try {
-      QxShadow.create( true, 10, 10, 0, 0, QxColor.BLACK );
-      fail( "Exception expected" );
-    } catch( IllegalArgumentException e ) {
-      // expected
-    }
-  }
-
   public void testIllegalArguments_NegativeBlur() {
     try {
       QxShadow.create( false, 10, 10, -10, 0, QxColor.BLACK );

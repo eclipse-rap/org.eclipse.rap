@@ -548,6 +548,22 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GraphicsMixinTest", {
       }
     },
     
+    testIgnoreInsetShadow : function() {
+      if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {
+        var gfxUtil = org.eclipse.rwt.GraphicsUtil;
+        var widget = this._createWidget();
+        widget.setBackgroundGradient( this.gradient );
+        widget.setBorder( this.gfxBorder );
+        widget.setShadow( [ false, 10, 10, 10, 3, "#ff00ff", 1 ] );
+        var canvas = this._getCanvasGroupNode( widget._gfxCanvas );
+        var shape = widget._gfxData.shadowShape.node;
+        assertTrue( shape.parentNode === canvas );
+        widget.setShadow( [ true, 10, 10, 10, 3, "#ff00ff", 1 ] );
+        assertTrue( shape.parentNode !== canvas );
+        widget.destroy();
+      }
+    },
+
     testSetShadowEnablesOverflow : function() {
       if( org.eclipse.rwt.GraphicsMixin.getSupportsShadows() ) {
         var gfxUtil = org.eclipse.rwt.GraphicsUtil;

@@ -21,6 +21,7 @@ appearances = {
       result.backgroundColor = tv.getCssColor( "Spinner", "background-color" );
       result.border = tv.getCssBorder( "Spinner", "border" );
       result.backgroundGradient = tv.getCssGradient( "Spinner", "background-image" );
+      result.shadow = tv.getCssShadow( "Spinner", "box-shadow" );
       return result;
     }
   },

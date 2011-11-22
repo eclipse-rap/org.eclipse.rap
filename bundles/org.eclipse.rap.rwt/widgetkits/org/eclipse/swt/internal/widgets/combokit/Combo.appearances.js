@@ -21,6 +21,7 @@ appearances = {
       result.backgroundGradient = tv.getCssGradient( "Combo", "background-image" );
       result.textColor = tv.getCssColor( "Combo", "color" );
       result.font = tv.getCssFont( "Combo", "font" );
+      result.shadow = tv.getCssShadow( "Combo", "box-shadow" );
       return result;
     }
   },

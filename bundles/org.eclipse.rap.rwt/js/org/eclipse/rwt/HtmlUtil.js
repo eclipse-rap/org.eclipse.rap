@@ -127,7 +127,8 @@ qx.Class.define( "org.eclipse.rwt.HtmlUtil", {
       }
       if( shadowObject ) {
         // NOTE: older webkit dont accept spread, therefor only use parameters 1-3  
-        var string = shadowObject.slice( 1, 4 ).join( "px " ) + "px";
+        var string = shadowObject[ 0 ] ? "inset " : "";
+        string += shadowObject.slice( 1, 4 ).join( "px " ) + "px";
         var rgba = qx.util.ColorUtil.stringToRgb( shadowObject[ 5 ] );
         rgba.push( shadowObject[ 6 ] );
         string += " rgba(" + rgba.join() + ")";
