@@ -12,10 +12,16 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.resources;
 
-import java.io.*;
-import java.net.*;
-import java.text.MessageFormat;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Map;
 
 import org.eclipse.rwt.internal.engine.RWTConfiguration;
 import org.eclipse.rwt.internal.util.ParamCheck;
@@ -39,13 +45,11 @@ public class ResourceManagerImpl implements IResourceManager {
 
   public static final String RESOURCES = "rwt-resources";
 
-  private final Map<String,String> repository;
-  private final Map<String,Resource> cache;
   private final RWTConfiguration configuration;
+  private final Map<String,Resource> resources;
   private final ThreadLocal<ClassLoader> contextLoader;
 
   private static final class Resource {
-
     private final String charset;
     private final Integer version;
 
@@ -65,9 +69,8 @@ public class ResourceManagerImpl implements IResourceManager {
 
   public ResourceManagerImpl( RWTConfiguration configuration ) {
     this.configuration = configuration;
-    repository = new Hashtable<String,String>();
-    cache = new Hashtable<String,Resource>();
-    contextLoader = new ThreadLocal<ClassLoader>();
+    this.resources = new Hashtable<String,Resource>();
+    this.contextLoader = new ThreadLocal<ClassLoader>();
   }
 
   /**
@@ -83,7 +86,7 @@ public class ResourceManagerImpl implements IResourceManager {
   public Integer findVersion( String name ) {
     ParamCheck.notNull( name, "name" );
     Integer result = null;
-    Resource resource = cache.get( createKey( name ) );
+    Resource resource = resources.get( name );
     if( resource != null ) {
       result = resource.getVersion();
     }
@@ -95,35 +98,26 @@ public class ResourceManagerImpl implements IResourceManager {
 
   public void register( String name ) {
     ParamCheck.notNull( name, "name" );
-    doRegister( name, null, RegisterOptions.NONE );
+    internalRegister( name, null, RegisterOptions.NONE );
   }
 
   public void register( String name, String charset ) {
     ParamCheck.notNull( name, "name" );
     ParamCheck.notNull( charset, "charset" );
-    doRegister( name, charset, RegisterOptions.NONE );
+    internalRegister( name, charset, RegisterOptions.NONE );
   }
 
   public void register( String name, String charset, RegisterOptions options ) {
     ParamCheck.notNull( name, "name" );
     ParamCheck.notNull( charset, "charset" );
     ParamCheck.notNull( options, "options" );
-    doRegister( name, charset, options );
+    internalRegister( name, charset, options );
   }
 
   public void register( String name, InputStream is ) {
     ParamCheck.notNull( name, "name" );
     ParamCheck.notNull( is, "is" );
-    String key = createKey( name );
-    try {
-      byte[] content = ResourceUtil.readBinary( is );
-      doRegister( name, null, RegisterOptions.NONE, key, content );
-    } catch ( IOException e ) {
-      String text = "Failed to register resource ''{0}''.";
-      String msg = MessageFormat.format( text, new Object[] { name } );
-      throw new ResourceRegistrationException( msg, e ) ;
-    }
-    repository.put( key, name );
+    internalRegister( name, is, null, RegisterOptions.NONE );
   }
 
   public void register( String name, InputStream is, String charset, RegisterOptions options ) {
@@ -131,51 +125,39 @@ public class ResourceManagerImpl implements IResourceManager {
     ParamCheck.notNull( is, "is" );
     ParamCheck.notNull( charset, "charset" );
     ParamCheck.notNull( options, "options" );
-    boolean compress = shouldCompress( options );
-    String key = createKey( name );
-    try {
-      byte[] content = ResourceUtil.read( is, charset, compress );
-      doRegister( name, charset, options, key, content );
-    } catch ( IOException ioe ) {
-      String msg = "Failed to register resource: " + name;
-      throw new ResourceRegistrationException( msg, ioe ) ;
-    }
-    repository.put( key, name );
+    internalRegister( name, is, charset, options );
   }
-
+  
   public boolean unregister( String name ) {
     ParamCheck.notNull( name, "name" );
     boolean result = false;
-    String key = createKey( name );
-    String fileName = repository.remove( key );
-    if( fileName != null ) {
+    Resource resource = resources.remove( name );
+    if( resource != null ) {
       result = true;
-      Integer version = findVersion( name );
+      Integer version = resource.getVersion();
       File file = getDiskLocation( name, version );
       file.delete();
-      cache.remove( key );
     }
     return result;
   }
 
   public String getCharset( String name ) {
     ParamCheck.notNull( name, "name" );
-    Resource resource = cache.get( createKey( name ) );
+    Resource resource = resources.get( name );
     return resource.getCharset();
   }
 
   public boolean isRegistered( String name ) {
     ParamCheck.notNull( name, "name" );
-    String key = createKey( name );
-    String fileName = repository.get( key );
-    return fileName != null;
+    return resources.containsKey( name );
   }
 
   public String getLocation( String name ) {
     ParamCheck.notNull( name, "name" );
-    String key = createKey( name );
-    String fileName = repository.get( key );
-    return createRequestURL( fileName, findVersion( name ) );
+    if( !resources.containsKey( name ) ) {
+      throw new IllegalArgumentException( "Resource does not exist: " + name );
+    }
+    return createRequestURL( name, findVersion( name ) );
   }
 
   public URL getResource( String name ) {
@@ -210,17 +192,15 @@ public class ResourceManagerImpl implements IResourceManager {
   }
 
   public InputStream getRegisteredContent( String name ) {
+    ParamCheck.notNull( name, "name" );
     InputStream result = null;
-    String key = createKey( name );
-    String fileName = repository.get( key );
-    if( fileName != null ) {
+    if( resources.containsKey( name ) ) {
       // TODO [rst] Works only for non-versioned content for now
       File file = getDiskLocation( name, null );
       try {
         result = new FileInputStream( file );
-      } catch( FileNotFoundException e ) {
-        // should not happen
-        throw new RuntimeException( e );
+      } catch( FileNotFoundException fnfe ) {
+        throw new RuntimeException( fnfe );
       }
     }
     return result;
@@ -239,10 +219,6 @@ public class ResourceManagerImpl implements IResourceManager {
     return result;
   }
 
-  private static String createKey( String name ) {
-    return String.valueOf( name.hashCode() );
-  }
-
   private String createRequestURL( String fileName, Integer version ) {
     String newFileName = fileName.replace( '\\', '/' );
     StringBuilder url = new StringBuilder();
@@ -253,36 +229,44 @@ public class ResourceManagerImpl implements IResourceManager {
     return url.toString();
   }
 
-  private void doRegister( String name, String charset, RegisterOptions options ) {
-    String key = createKey( name );
-    // TODO [rh] should throw exception if contains key but has different
-    //      charset or options
-    if( !repository.containsKey( key ) ) {
-      boolean compress = shouldCompress( options );
-      try {
-        byte[] content = ResourceUtil.read( name, charset, compress, this );
-        doRegister( name, charset, options, key, content );
-      } catch ( IOException e ) {
-        String text = "Failed to register resource ''{0}''.";
-        String msg = MessageFormat.format( text, new Object[] { name } );
-        throw new ResourceRegistrationException( msg, e ) ;
-      }
-      repository.put( key, name );
+  private void internalRegister( String name, 
+                                 InputStream is, 
+                                 String charset, 
+                                 RegisterOptions options ) 
+  {
+    boolean compress = shouldCompress( options );
+    try {
+      byte[] content = ResourceUtil.read( is, charset, compress );
+      registerContent( name, charset, options, content );
+    } catch ( IOException ioe ) {
+      throw new ResourceRegistrationException( "Failed to register resource: " + name, ioe ) ;
     }
   }
 
-  private void doRegister( String name,
-                           String charset,
-                           RegisterOptions options,
-                           String key,
-                           byte[] content )
+  private void internalRegister( String name, String charset, RegisterOptions options ) {
+    // TODO [rh] should throw exception if contains key but has different charset or options
+    if( !resources.containsKey( name ) ) {
+      boolean compress = shouldCompress( options );
+      try {
+        byte[] content = ResourceUtil.read( name, charset, compress, this );
+        registerContent( name, charset, options, content );
+      } catch ( IOException ioe ) {
+        throw new ResourceRegistrationException( "Failed to register resource: " + name, ioe ) ;
+      }
+    }
+  }
+
+  private void registerContent( String name,
+                                String charset,
+                                RegisterOptions options,
+                                byte[] content )
     throws IOException
   {
     Integer version = computeVersion( content, options );
     File location = getDiskLocation( name, version );
     createFile( location );
     ResourceUtil.write( location, content );
-    cache.put( key, new Resource( charset, version ) );
+    resources.put( name, new Resource( charset, version ) );
   }
 
   private static void createFile( File fileToWrite ) throws IOException {

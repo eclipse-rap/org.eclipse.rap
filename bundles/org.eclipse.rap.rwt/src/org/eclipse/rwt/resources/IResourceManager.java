@@ -219,19 +219,7 @@ public interface IResourceManager {
    *  Returns a location within the web-applications context where the
    *  resource will be available for the browser to download.
    *
-   *  <!--
-   *  <p>If the
-   *  application runs in the DELIVER_FROM_DISK mode (see the configuration
-   *  file W4T.xml), the library will provide a copy of the specified resource
-   *  on the appropriate path. Otherwise this returns a path which requests the
-   *  resource directly from the w4toolkit servlet.</p>
-   *  -->
-   *
-   *  @param name filename which identifies the registered resource. The
-   *              filename must be relative to a classpath root, e.g. a gif
-   *              'my.gif' located within the package 'org.eclipse.rap' is identified
-   *              as 'org/eclipse/rap/my.gif'. Must not be <code>null</code>.
-   *
+   *  @param name name which identifies the registered resource.
    *  @return the location where the resource will be available for the browser
    */
   String getLocation( String name );
@@ -347,7 +335,7 @@ public interface IResourceManager {
   /**
    * Returns the content of the registered resource with the given name.
    *
-   * @param name the name of the resource
+   * @param name the name of the resource. Must not be <code>null</code>.
    * @return an input stream to the contents of the resource, or
    *         <code>null</code> if no such resource exists
    * @since 1.1

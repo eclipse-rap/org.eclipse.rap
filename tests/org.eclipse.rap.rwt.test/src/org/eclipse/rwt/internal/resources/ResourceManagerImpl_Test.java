@@ -42,11 +42,11 @@ public class ResourceManagerImpl_Test extends TestCase {
   private final static String UTF_8_RESOURCE
     = "org/eclipse/rwt/internal/resources/utf-8-resource.js";
   private static final String TEST_LOCATION_DISK
-    =   "rwt-resources/"
-      + TEST_RESOURCE_1;
+    = "rwt-resources/"
+    + TEST_RESOURCE_1;
   private static final String TEST_LOCATION_VERSIONED_DISK
-    =   "rwt-resources/"
-      + TEST_RESOURCE_1_VERSIONED;
+    = "rwt-resources/"
+    + TEST_RESOURCE_1_VERSIONED;
 
   private static class CloseableInputStream extends ByteArrayInputStream {
 
@@ -334,10 +334,10 @@ public class ResourceManagerImpl_Test extends TestCase {
 
   public void testGetRegisteredContent() throws Exception {
     IResourceManager manager = getResourceManager( );
-    InputStream is = openStream( TEST_RESOURCE_2 );
+    InputStream inputStream = openStream( TEST_RESOURCE_2 );
     String resourcename = "myfile";
-    manager.register( resourcename, is );
-    is.close();
+    manager.register( resourcename, inputStream );
+    inputStream.close();
 
     InputStream content = manager.getRegisteredContent( resourcename );
 
