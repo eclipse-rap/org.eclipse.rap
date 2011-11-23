@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.jstest.internal;
 
-import javax.servlet.ServletException;
-
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
@@ -22,7 +20,6 @@ import org.osgi.util.tracker.ServiceTracker;
 public class HttpServiceTracker extends ServiceTracker<HttpService, HttpService> {
 
   private static final String TEST_RESOURCES_PATH = "/test-resources";
-  private static final String RWT_SERVLET_PATH = "/rwt-resources";
 
   public HttpServiceTracker( BundleContext context ) {
     super( context, HttpService.class.getName(), null );
@@ -46,8 +43,7 @@ public class HttpServiceTracker extends ServiceTracker<HttpService, HttpService>
     unregister( service );
   }
 
-  private void register( HttpService httpService ) throws NamespaceException, ServletException {
-    httpService.registerServlet( RWT_SERVLET_PATH, new RwtResourcesServlet(), null, null );
+  private void register( HttpService httpService ) throws NamespaceException {
     httpService.registerResources( TEST_RESOURCES_PATH, "/js", null );
     httpService.registerResources( "/", "/htdocs", null );
   }
@@ -55,7 +51,6 @@ public class HttpServiceTracker extends ServiceTracker<HttpService, HttpService>
   private void unregister( HttpService service ) {
     service.unregister( "/" );
     service.unregister( TEST_RESOURCES_PATH );
-    service.unregister( RWT_SERVLET_PATH );
   }
 
   private void printUrl( String port ) {

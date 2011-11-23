@@ -19,8 +19,7 @@
     "org/eclipse/rwt/test/TestRunner.js",
     "org/eclipse/rwt/test/fixture/TestUtil.js",
     "org/eclipse/rwt/test/Asserts.js",
-    "org/eclipse/rwt/test/Startup.js",
-    "resource/RAPThemeSupport.js"
+    "org/eclipse/rwt/test/Startup.js"
   ];
 
   var include = function( src ) {

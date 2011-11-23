@@ -31,7 +31,6 @@
   qxsettings[ "qx.version" ] = "0.7.4 ";
   qxsettings[ "qx.isSource"] = true;
   qxsettings[ "qx.resourceUri" ] = "./rwt-resources/";
-  qxsettings[ "qx.theme" ] = "org.eclipse.swt.theme.Default";
   qxvariants = {};
   qxvariants[ "qx.compatibility" ] = "off";
   qxvariants[ "qx.aspects" ] = "off";
