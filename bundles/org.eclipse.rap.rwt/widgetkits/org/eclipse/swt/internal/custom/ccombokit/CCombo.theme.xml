@@ -62,6 +62,9 @@
       </description>
     </property>
 
+    <property name="box-shadow" 
+        description="A shadow effect for ccombo text field." />
+
     <state name="disabled"
         description="Applies to disabled CCombos." />
 

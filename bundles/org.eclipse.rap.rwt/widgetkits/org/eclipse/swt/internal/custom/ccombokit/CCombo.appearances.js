@@ -21,6 +21,7 @@ appearances = {
       result.backgroundGradient = tv.getCssGradient( "CCombo", "background-image" );
       result.textColor = tv.getCssColor( "CCombo", "color" );
       result.font = tv.getCssFont( "CCombo", "font" );
+      result.shadow = tv.getCssShadow( "CCombo", "box-shadow" );
       return result;
     }
   },
