@@ -7,3 +7,6 @@ RWT Client Tests
 
 * To change the port, edit the VM parameter '-Dorg.osgi.service.http.port' in
   the launch configuration.
+
+* To include the client library in production mode, change the VM parameter
+  '-Dorg.eclipse.rwt.clientLibraryVariant' from "DEBUG" to "STANDARD"
