@@ -12,7 +12,7 @@
 package org.eclipse.rwt.internal.theme;
 
 
-public final class QxTheme {
+public final class QxAppearanceTheme {
 
   private final String id;
   private final String title;
@@ -22,7 +22,7 @@ public final class QxTheme {
   private boolean tailWritten;
   private boolean valueWritten;
 
-  public QxTheme( String id, String title, String base ) {
+  public QxAppearanceTheme( String id, String title, String base ) {
     this.id = id;
     this.title = title;
     this.base = base;

@@ -1,20 +1,24 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
+import static org.eclipse.rwt.internal.theme.ThemeTestUtil.RESOURCE_LOADER;
 import junit.framework.TestCase;
 
+import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
+import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.widgets.Button;
 
 
@@ -109,11 +113,35 @@ public class Theme_Test extends TestCase {
     assertFalse( theme2.getJsId().equals( theme1.getJsId() ) );
   }
 
+  public void testRegisterResources() throws Exception {
+    Fixture.setUp();
+    try {
+      String css = "Button {"
+                   + "  background-image: url( " + Fixture.IMAGE1 + ");\n"
+                   + "  cursor: url( " + Fixture.IMAGE2 + " );\n"
+                   + "}";
+      StyleSheet styleSheet = ThemeTestUtil.createStyleSheet( css, RESOURCE_LOADER );
+      Theme defaultTheme = new Theme( "custom.theme.id", "Custom", styleSheet );
+      ThemeableWidget[] widgets = new ThemeableWidget[] { createSimpleButtonWidget() };
+      defaultTheme.initialize( widgets );
+
+      IResourceManager resourceManager = RWTFactory.getResourceManager();
+      defaultTheme.registerResources( resourceManager );
+
+      assertTrue( resourceManager.isRegistered( "themes/images/9e78c44e" ) );
+      assertTrue( resourceManager.isRegistered( "themes/cursors/ccb7e1a" ) );
+    } finally {
+      Fixture.tearDown();
+    }
+  }
+
   private static ThemeableWidget createSimpleButtonWidget() {
     ThemeableWidget buttonWidget = new ThemeableWidget( Button.class, null );
     ThemeCssElement buttonElement = new ThemeCssElement( "Button" );
     buttonElement.addProperty( "color" );
+    buttonElement.addProperty( "cursor" );
     buttonElement.addProperty( "background-color" );
+    buttonElement.addProperty( "background-image" );
     buttonWidget.elements = new IThemeCssElement[] { buttonElement };
     return buttonWidget;
   }

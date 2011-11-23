@@ -12,15 +12,14 @@ package org.eclipse.swt.internal.widgets.displaykit;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLClassLoader;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.resources.TestUtil;
+import org.eclipse.rwt.internal.theme.Theme;
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.resources.IResourceManager;
 
 
@@ -43,8 +42,10 @@ public class ClientResources_Test extends TestCase {
   public void testRegisterResources() {
     clientResources.registerResources();
 
-    assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
     assertFalse( resourceManager.isRegistered( "qx/lang/Core.js" ) );
+    assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
+    Theme defaultTheme = RWTFactory.getThemeManager().getTheme( ThemeManager.DEFAULT_THEME_ID );
+    assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".js" ) );
   }
 
   public void testRegisterResourcesDebug() {
@@ -54,6 +55,8 @@ public class ClientResources_Test extends TestCase {
 
     assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
     assertFalse( resourceManager.isRegistered( "qx/lang/Core.js" ) );
+    Theme defaultTheme = RWTFactory.getThemeManager().getTheme( ThemeManager.DEFAULT_THEME_ID );
+    assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".js" ) );
   }
 
   public void testRegisteredContent() throws IOException {
@@ -76,13 +79,6 @@ public class ClientResources_Test extends TestCase {
     assertTrue( clientJs.contains( "qx.Theme.define( \"" ) );
     assertTrue( clientJs.contains( "/****" ) );
     assertTrue( clientJs.contains( "Copyright" ) );
-  }
-
-  public void testRegisterResourcesWithCustomContextLoader() {
-    URLClassLoader contextLoader = new URLClassLoader( new URL[ 0 ] );
-    resourceManager.setContextLoader( contextLoader );
-    clientResources.registerResources();
-    assertSame( contextLoader, resourceManager.getContextLoader() );
   }
 
   private String getRegisteredContent( String name, String encoding ) throws IOException {

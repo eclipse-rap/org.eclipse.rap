@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme.css;
 
@@ -20,20 +20,17 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.apache.batik.css.parser.Parser;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.theme.QxAnimation.Animation;
-import org.eclipse.rwt.resources.ResourceLoader;
 import org.w3c.css.sac.*;
+
+import static org.eclipse.rwt.internal.theme.ThemeTestUtil.*;
 
 
 public class PropertyResolver_Test extends TestCase {
 
   private static Parser parser = new Parser();
 
-  private static ResourceLoader RESOURCE_LOADER
-    = ThemeTestUtil.createResourceLoader( Fixture.class );
-
   public void testColor() throws Exception {
-    QxColor transparent
-      = PropertyResolver.readColor( parseProperty( "transparent" ) );
+    QxColor transparent = PropertyResolver.readColor( parseProperty( "transparent" ) );
     assertEquals( QxColor.TRANSPARENT, transparent );
     QxColor white = PropertyResolver.readColor( parseProperty( "white" ) );
     assertEquals( QxColor.WHITE, white );
@@ -45,17 +42,13 @@ public class PropertyResolver_Test extends TestCase {
     QxColor ffbb00 = PropertyResolver.readColor( parseProperty( "#ffbb00" ) );
     assertEquals( fb0, ffbb00 );
     assertEquals( QxColor.create( 255, 187, 0 ), ffbb00 );
-    QxColor color1
-      = PropertyResolver.readColor( parseProperty( "rgb( 0, 127, 255 )" ) );
+    QxColor color1 = PropertyResolver.readColor( parseProperty( "rgb( 0, 127, 255 )" ) );
     assertEquals( QxColor.create( 0, 127, 255 ), color1 );
-    QxColor color2
-      = PropertyResolver.readColor( parseProperty( "rgb( -10, 127, 300 )" ) );
+    QxColor color2 = PropertyResolver.readColor( parseProperty( "rgb( -10, 127, 300 )" ) );
     assertEquals( color1, color2 );
-    QxColor colorP1
-      = PropertyResolver.readColor( parseProperty( "rgb( 0%, 50%, 100% )" ) );
+    QxColor colorP1 = PropertyResolver.readColor( parseProperty( "rgb( 0%, 50%, 100% )" ) );
     assertEquals( color1, colorP1 );
-    QxColor colorP2
-      = PropertyResolver.readColor( parseProperty( "rgb( -10%, 50%, 110% )" ) );
+    QxColor colorP2 = PropertyResolver.readColor( parseProperty( "rgb( -10%, 50%, 110% )" ) );
     assertEquals( colorP1, colorP2 );
     QxColor inherit = PropertyResolver.readColor( parseProperty( "inherit" ) );
     assertEquals( QxColor.TRANSPARENT, inherit );
@@ -80,8 +73,7 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testColorWithAlpha() throws Exception {
     String input = "rgba( 1, 2, 3, 0.25 )";
-    QxColor result
-      = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
     assertNotNull( result );
     assertEquals( 1, result.red );
     assertEquals( 2, result.green );
@@ -91,8 +83,7 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testColorWithAlpha_Percents() throws Exception {
     String input = "rgba( 0%, 50%, 100%, 0.25 )";
-    QxColor result
-      = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
     assertNotNull( result );
     assertEquals( 0, result.red );
     assertEquals( 127, result.green );
@@ -102,15 +93,13 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testColorWithAlpha_NoTransparency() throws Exception {
     String input = "rgba( 0, 0, 0, 1 )";
-    QxColor result
-      = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
     assertSame( QxColor.BLACK, result );
   }
 
   public void testColorWithAlpha_NormalizeNegativeAlpha() throws Exception {
     String input = "rgba( 1, 2, 3, -0.1 )";
-    QxColor result
-      = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
     assertNotNull( result );
     assertEquals( 1, result.red );
     assertEquals( 2, result.green );
@@ -120,8 +109,7 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testColorWithAlpha_NormalizePositiveAlpha() throws Exception {
     String input = "rgba( 1, 2, 3, 1.1 )";
-    QxColor result
-      = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
     assertNotNull( result );
     assertEquals( 1, result.red );
     assertEquals( 2, result.green );
@@ -131,8 +119,7 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testColorWithAlpha_NormalizeColorValue() throws Exception {
     String input = "rgba( -10, 127, 300, 0.25 )";
-    QxColor result
-      = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
+    QxColor result = PropertyResolver.readColorWithAlpha( parseProperty( input ) );
     assertNotNull( result );
     assertEquals( 0, result.red );
     assertEquals( 127, result.green );
@@ -218,8 +205,7 @@ public class PropertyResolver_Test extends TestCase {
   }
 
   public void testBoxDimension_ZeroWithoutUnit() throws Exception {
-    QxBoxDimensions zero
-      = PropertyResolver.readBoxDimensions( parseProperty( "0" ) );
+    QxBoxDimensions zero = PropertyResolver.readBoxDimensions( parseProperty( "0" ) );
     assertNotNull( zero );
     assertEquals( QxBoxDimensions.ZERO, zero );
 
@@ -295,11 +281,9 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testFontStyle() throws Exception {
     String normal = "normal";
-    assertEquals( normal,
-                  PropertyResolver.readFontStyle( parseProperty( normal ) ) );
+    assertEquals( normal, PropertyResolver.readFontStyle( parseProperty( normal ) ) );
     String italic = "italic";
-    assertEquals( italic,
-                  PropertyResolver.readFontStyle( parseProperty( italic ) ) );
+    assertEquals( italic, PropertyResolver.readFontStyle( parseProperty( italic ) ) );
     String oblique = "oblique";
     assertNull( PropertyResolver.readFontStyle( parseProperty( oblique ) ) );
     String inherit = "inherit";
@@ -308,11 +292,9 @@ public class PropertyResolver_Test extends TestCase {
 
   public void testFontWeight() throws Exception {
     String normal = "normal";
-    assertEquals( normal,
-                  PropertyResolver.readFontWeight( parseProperty( normal ) ) );
+    assertEquals( normal, PropertyResolver.readFontWeight( parseProperty( normal ) ) );
     String bold = "bold";
-    assertEquals( bold,
-                  PropertyResolver.readFontWeight( parseProperty( bold ) ) );
+    assertEquals( bold, PropertyResolver.readFontWeight( parseProperty( bold ) ) );
     String bolder = "bolder";
     assertNull( PropertyResolver.readFontWeight( parseProperty( bolder ) ) );
     String inherit = "inherit";
@@ -439,8 +421,7 @@ public class PropertyResolver_Test extends TestCase {
                   + "from( #0000FF ), "
                   + "color-stop( 50%, #00FF00 ), "
                   + "to( #0000FF ) )";
-    QxImage res1 = PropertyResolver.readBackgroundImage( parseProperty( input1 ),
-                                                         RESOURCE_LOADER );
+    QxImage res1 = PropertyResolver.readBackgroundImage( parseProperty( input1 ), RESOURCE_LOADER );
     assertNotNull( res1 );
     assertTrue( res1.none );
     assertNull( res1.path );
@@ -460,8 +441,7 @@ public class PropertyResolver_Test extends TestCase {
                   + "color-stop( 0%, #0000FF ), "
                   + "color-stop( 50%, #00FF00 ), "
                   + "color-stop( 100%, #0000FF ) )";
-    QxImage res2 = PropertyResolver.readBackgroundImage( parseProperty( input2 ),
-                                                         RESOURCE_LOADER );
+    QxImage res2 = PropertyResolver.readBackgroundImage( parseProperty( input2 ), RESOURCE_LOADER );
     assertNotNull( res2 );
     assertTrue( res2.none );
     assertNull( res2.path );
@@ -479,8 +459,7 @@ public class PropertyResolver_Test extends TestCase {
     assertTrue( res2.vertical );
     String input3 = "gradient( linear, left top, left bottom, "
                   + "color-stop( 50%, #00FF00 ) )";
-    QxImage res3 = PropertyResolver.readBackgroundImage( parseProperty( input3 ),
-                                                         RESOURCE_LOADER );
+    QxImage res3 = PropertyResolver.readBackgroundImage( parseProperty( input3 ), RESOURCE_LOADER );
     assertNotNull( res3 );
     assertTrue( res3.none );
     assertNull( res3.path );
@@ -499,8 +478,7 @@ public class PropertyResolver_Test extends TestCase {
     String input4 = "gradient( linear, left top, left bottom, "
                   + "from( #0000FF ), "
                   + "to( #00FF00 ) )";
-    QxImage res4 = PropertyResolver.readBackgroundImage( parseProperty( input4 ),
-                                                         RESOURCE_LOADER );
+    QxImage res4 = PropertyResolver.readBackgroundImage( parseProperty( input4 ), RESOURCE_LOADER );
     assertNotNull( res4 );
     assertTrue( res4.none );
     assertNull( res4.path );
@@ -521,8 +499,7 @@ public class PropertyResolver_Test extends TestCase {
                   + "from( #0000FF ), "
                   + "color-stop( 50%, #00FF00 ), "
                   + "to( #0000FF ) )";
-    QxImage res = PropertyResolver.readBackgroundImage( parseProperty( input ),
-                                                        RESOURCE_LOADER );
+    QxImage res = PropertyResolver.readBackgroundImage( parseProperty( input ), RESOURCE_LOADER );
     assertNotNull( res );
     assertTrue( res.none );
     assertNull( res.path );
@@ -545,8 +522,7 @@ public class PropertyResolver_Test extends TestCase {
                  + "from( #0000FF ), "
                  + "to( #00FF00 ) )";
     try {
-      PropertyResolver.readBackgroundImage( parseProperty( input ),
-                                            RESOURCE_LOADER );
+      PropertyResolver.readBackgroundImage( parseProperty( input ), RESOURCE_LOADER );
       fail( "Must throw IAE" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -555,8 +531,7 @@ public class PropertyResolver_Test extends TestCase {
           + "from( #0000FF ), "
           + "to( #00FF00 ) )";
     try {
-      PropertyResolver.readBackgroundImage( parseProperty( input ),
-                                            RESOURCE_LOADER );
+      PropertyResolver.readBackgroundImage( parseProperty( input ), RESOURCE_LOADER );
       fail( "Must throw IAE" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -565,16 +540,14 @@ public class PropertyResolver_Test extends TestCase {
           + "from( #0000FF ), "
           + "to( #00FF00 ) )";
     try {
-      PropertyResolver.readBackgroundImage( parseProperty( input ),
-                                            RESOURCE_LOADER );
+      PropertyResolver.readBackgroundImage( parseProperty( input ), RESOURCE_LOADER );
       fail( "Must throw IAE" );
     } catch( IllegalArgumentException e ) {
       // expected
     }
     input = "gradient( linear, left top, left bottom )";
     try {
-      PropertyResolver.readBackgroundImage( parseProperty( input ),
-                                            RESOURCE_LOADER );
+      PropertyResolver.readBackgroundImage( parseProperty( input ), RESOURCE_LOADER );
       fail( "Must throw IAE" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -583,8 +556,7 @@ public class PropertyResolver_Test extends TestCase {
           + "from( blue ), "
           + "to( white ) )";
     try {
-      PropertyResolver.readBackgroundImage( parseProperty( input ),
-                                            RESOURCE_LOADER );
+      PropertyResolver.readBackgroundImage( parseProperty( input ), RESOURCE_LOADER );
       fail( "Must throw IAE" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -626,50 +598,42 @@ public class PropertyResolver_Test extends TestCase {
   public void testCursor() throws Exception {
     // Test predefined cursor
     String input = "default";
-    QxCursor res1 = PropertyResolver.readCursor( parseProperty( input ),
-                                                 RESOURCE_LOADER );
+    QxCursor res1 = PropertyResolver.readCursor( parseProperty( input ), RESOURCE_LOADER );
     assertNotNull( res1 );
     assertEquals( input, res1.value );
 
     input = "pointer";
-    res1 = PropertyResolver.readCursor( parseProperty( input ),
-                                        RESOURCE_LOADER );
+    res1 = PropertyResolver.readCursor( parseProperty( input ), RESOURCE_LOADER );
     assertNotNull( res1 );
     assertEquals( input, res1.value );
 
     input = "wait";
-    res1 = PropertyResolver.readCursor( parseProperty( input ),
-                                        RESOURCE_LOADER );
+    res1 = PropertyResolver.readCursor( parseProperty( input ), RESOURCE_LOADER );
     assertNotNull( res1 );
     assertEquals( input, res1.value );
 
     input = "crosshair";
-    res1 = PropertyResolver.readCursor( parseProperty( input ),
-                                        RESOURCE_LOADER );
+    res1 = PropertyResolver.readCursor( parseProperty( input ), RESOURCE_LOADER );
     assertNotNull( res1 );
     assertEquals( input, res1.value );
 
     // Test custom cursor
-    QxCursor expected = QxCursor.valueOf( Fixture.IMAGE_50x100,
-                                          RESOURCE_LOADER );
+    QxCursor expected = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
     // cursor: url( "path" );
     input = "url( \"" + Fixture.IMAGE_50x100 + "\" )";
-    QxCursor res2 = PropertyResolver.readCursor( parseProperty( input ),
-                                                 RESOURCE_LOADER );
+    QxCursor res2 = PropertyResolver.readCursor( parseProperty( input ), RESOURCE_LOADER );
     assertNotNull( res2 );
     assertEquals( expected, res2 );
     // cursor: url( path );
     input = "url( " + Fixture.IMAGE_50x100 + " )";
-    QxCursor res3 = PropertyResolver.readCursor( parseProperty( input ),
-                                                 RESOURCE_LOADER );
+    QxCursor res3 = PropertyResolver.readCursor( parseProperty( input ), RESOURCE_LOADER );
     assertNotNull( res3 );
     assertEquals( expected, res3 );
   }
 
   public void testAnimation() throws Exception {
     String input = "slideIn 2s ease-in";
-    QxAnimation result
-      = PropertyResolver.readAnimation( parseProperty( input ) );
+    QxAnimation result = PropertyResolver.readAnimation( parseProperty( input ) );
     assertNotNull( result );
     assertEquals( 1, result.animations.length );
     Animation animation = result.animations[ 0 ];
@@ -904,7 +868,7 @@ public class PropertyResolver_Test extends TestCase {
     }
   }
 
-  private static LexicalUnit parseProperty( final String input )
+  private static LexicalUnit parseProperty( String input )
     throws CSSException, IOException
   {
     InputSource inputSource = new InputSource();

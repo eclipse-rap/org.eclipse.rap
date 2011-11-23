@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -32,14 +32,6 @@ public class ThemeManager_Test extends TestCase {
     Theme defaultTheme = manager.getTheme( ThemeManager.DEFAULT_THEME_ID );
     assertNotNull( defaultTheme );
     assertEquals( "RAP Default Theme", defaultTheme.getName() );
-  }
-
-  public void testRegisterResources() {
-    manager.activate();
-    manager.registerResources();
-    String[] themeIds = manager.getRegisteredThemeIds();
-    assertNotNull( themeIds );
-    assertTrue( themeIds.length > 0 );
   }
 
   public void testRegisterTheme() {
@@ -92,19 +84,19 @@ public class ThemeManager_Test extends TestCase {
     assertNotNull( customTheme.getValuesMap() );
     assertTrue( customTheme.getValuesMap().getAllValues().length > 0 );
   }
-  
+
   public void testActivateAndDeactivate() {
     int beforeActivate = getDefaultTheme().getStyleSheet().getStyleRules().length;
     manager.activate();
     int afterActivate = getDefaultTheme().getValuesMap().getAllValues().length;
     manager.deactivate();
     int afterDeactivate = getDefaultTheme().getStyleSheet().getStyleRules().length;
-    
+
     assertEquals( 0, beforeActivate );
     assertTrue( 0 < afterActivate );
     assertEquals( 0, afterDeactivate );
   }
-  
+
   protected void setUp() {
     manager = new ThemeManager();
     Fixture.setUp();

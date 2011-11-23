@@ -35,6 +35,8 @@ import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
 import org.eclipse.rwt.internal.textsize.MeasurementUtil;
+import org.eclipse.rwt.internal.theme.Theme;
+import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.internal.util.ParamCheck;
@@ -42,8 +44,7 @@ import org.eclipse.rwt.resources.IResource;
 
 
 final class StartupPageConfigurer implements IStartupPageConfigurer {
-  private static final String PACKAGE_NAME
-    = StartupPageConfigurer.class.getPackage().getName();
+  private static final String PACKAGE_NAME = StartupPageConfigurer.class.getPackage().getName();
   private final static String FOLDER = PACKAGE_NAME.replace( '.', '/' );
   private final static String INDEX_TEMPLATE = FOLDER + "/rwt-index.html";
 
@@ -58,6 +59,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
   private final List<AbstractBranding> registeredBrandings;
   private final ResourceRegistry resourceRegistry;
   private final List<String> jsLibraries;
+  private final List<String> themeDefinitions;
   // TODO [fappel]: think about clusters cache control variables
   private int probeCount;
   private long lastModified;
@@ -68,6 +70,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     lastModified = System.currentTimeMillis();
     registeredBrandings = new LinkedList<AbstractBranding>();
     jsLibraries = new ArrayList<String>();
+    themeDefinitions = new ArrayList<String>();
   }
 
   ////////////////////////////////////////////////////
@@ -75,10 +78,11 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
 
   public StartupPageTemplateHolder getTemplate() throws IOException {
     readContent();
+    applyBranding();
+    addThemeDefinitions();
     template.reset();
     template.replace( StartupPageTemplateHolder.VAR_LIBRARIES, getJsLibraries() );
     template.replace( StartupPageTemplateHolder.VAR_APPSCRIPT, getAppScript() );
-    applyBranding();
     return template;
   }
 
@@ -230,6 +234,17 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
                                      noScriptWarning );
   }
 
+  private void addThemeDefinitions() {
+    themeDefinitions.clear();
+    ThemeManager themeManager = RWTFactory.getThemeManager();
+    Theme defaultTheme = themeManager.getTheme( ThemeManager.DEFAULT_THEME_ID );
+    themeDefinitions.add( defaultTheme.getRegisteredLocation() );
+    Theme theme = ThemeUtil.getCurrentTheme();
+    if( !theme.getId().equals( ThemeManager.DEFAULT_THEME_ID ) ) {
+      themeDefinitions.add( theme.getRegisteredLocation() );
+    }
+  }
+
   // TODO [tb] : merge with LifeCycleUtil.getEntryPoint(), StartupPage.getEntryPoint() ?
   private static String getEntryPoint() {
     AbstractBranding branding = BrandingUtil.determineBranding();
@@ -258,6 +273,9 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     for( String location : jsLibraries ) {
       writeScriptTag( buffer, location );
     }
+    for( String location : themeDefinitions ) {
+      writeScriptTag( buffer, location );
+    }
     IResource[] resources = resourceRegistry.get();
     for( IResource resource : resources ) {
       if( resource.isJSLibrary() && resource.isExternal() ) {
@@ -274,6 +292,6 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     buffer.append( library );
     buffer.append( "\" charset=\"" );
     buffer.append( HTTP.CHARSET_UTF_8 );
-    buffer.append( "\"></script>" );
+    buffer.append( "\"></script>\n" );
   }
 }

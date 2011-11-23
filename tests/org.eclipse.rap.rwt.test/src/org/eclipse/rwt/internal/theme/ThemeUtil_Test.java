@@ -24,16 +24,6 @@ import org.eclipse.rwt.internal.theme.css.StyleSheet;
 public class ThemeUtil_Test extends TestCase {
   private static final String CUSTOM_THEME_ID = "customThemeId";
 
-  public void testCurrentThemeChanges() throws Exception {
-    checkDefaultTheme();
-    registerTheme();
-    checkDefaultTheme();
-    checkUnknownTheme();
-    ThemeUtil.setCurrentThemeId( CUSTOM_THEME_ID );
-    checkCurrentTheme();
-    checkCssValue();
-  }
-
   protected void setUp() throws Exception {
     Fixture.setUp();
   }
@@ -42,41 +32,47 @@ public class ThemeUtil_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  private Theme createTheme( String themeId ) throws IOException {
-    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
-    return new Theme( themeId, "Custom Theme", styleSheet );
+  public void testDefaultTheme() throws Exception {
+    assertNotNull( ThemeUtil.getDefaultTheme() );
+    assertSame( ThemeUtil.getDefaultTheme(), ThemeUtil.getCurrentTheme() );
   }
 
-  private void checkCssValue() {
-    SimpleSelector selector = new SimpleSelector( new String[] { ".special" } );
-    QxType cssValue = ThemeUtil.getCssValue( "Button", "color", selector );
-    assertEquals( "#ff0000", ( ( QxColor )cssValue ).toDefaultString() );
+  public void testRegisterThemeDoesNotChangeCurrentTheme() throws Exception {
+    Theme theme = createTheme( CUSTOM_THEME_ID );
+    registerTheme( theme );
+
+    assertNotNull( ThemeUtil.getDefaultTheme() );
+    assertSame( ThemeUtil.getDefaultTheme(), ThemeUtil.getCurrentTheme() );
   }
 
-  private void checkCurrentTheme() {
+  public void testSetCurrentTheme() throws Exception {
+    Theme theme = createTheme( CUSTOM_THEME_ID );
+    registerTheme( theme );
+    ThemeUtil.setCurrentThemeId( CUSTOM_THEME_ID );
+
     assertEquals( CUSTOM_THEME_ID, ThemeUtil.getCurrentThemeId() );
-    assertNotSame( ThemeUtil.getDefaultTheme(), ThemeUtil.getTheme() );
-    assertSame( RWTFactory.getThemeManager().getTheme( CUSTOM_THEME_ID ), ThemeUtil.getTheme() );
+    assertSame( RWTFactory.getThemeManager().getTheme( CUSTOM_THEME_ID ),
+                ThemeUtil.getCurrentTheme() );
   }
 
-  private void registerTheme() throws IOException {
-    ThemeManagerHelper.resetThemeManager();
-    ThemeManager manager = RWTFactory.getThemeManager();
-    manager.registerTheme( createTheme( CUSTOM_THEME_ID ) );
-    manager.activate();
-  }
-
-  private void checkUnknownTheme() {
+  public void testSetCurrentThemeToUnknownId() throws Exception {
     try {
-      ThemeUtil.setCurrentThemeId( "woo.doo.schick.schnack" );
+      ThemeUtil.setCurrentThemeId( "unknown.theme" );
       fail( "should throw IAE for invalid theme ids" );
     } catch( IllegalArgumentException expected ) {
     }
   }
 
-  private void checkDefaultTheme() {
-    assertNotNull( ThemeUtil.getDefaultTheme() );
-    assertNotNull( ThemeUtil.getTheme() );
-    assertSame( ThemeUtil.getDefaultTheme(), ThemeUtil.getTheme() );
+  private static Theme createTheme( String themeId ) throws IOException {
+    StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
+    return new Theme( themeId, "Custom Theme", styleSheet );
   }
+
+  private static void registerTheme( Theme theme ) {
+    ThemeManagerHelper.resetThemeManager();
+    ThemeManager manager = RWTFactory.getThemeManager();
+    manager.registerTheme( theme );
+    manager.activate();
+  }
+
 }

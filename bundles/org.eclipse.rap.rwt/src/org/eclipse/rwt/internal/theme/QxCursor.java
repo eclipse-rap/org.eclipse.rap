@@ -13,10 +13,13 @@ package org.eclipse.rwt.internal.theme;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.eclipse.rwt.internal.theme.ThemePropertyAdapterRegistry.ThemePropertyAdapter;
 import org.eclipse.rwt.resources.ResourceLoader;
 
 
-public class QxCursor implements QxType {
+public class QxCursor implements QxType, ThemeResource {
+
+  private static final String CURSOR_DEST_PATH = "themes/cursors";
 
   private static final String[] PREDEFINED_CURSORS = new String[] {
     "default",
@@ -93,6 +96,25 @@ public class QxCursor implements QxType {
 
   public boolean isCustomCursor() {
     return !isPredefinedCursor( value );
+  }
+
+  public String getResourcePath() {
+    String result = null;
+    if( isCustomCursor() ) {
+      ThemePropertyAdapterRegistry registry = ThemePropertyAdapterRegistry.getInstance();
+      ThemePropertyAdapter adapter = registry.getPropertyAdapter( QxImage.class );
+      String cssKey = adapter.getKey( this );
+      result = CURSOR_DEST_PATH + "/" + cssKey;
+    }
+    return result;
+  }
+
+  public InputStream getResourceAsStream() throws IOException {
+    InputStream inputStream = null;
+    if( isCustomCursor() ) {
+      inputStream = loader.getResourceAsStream( value );
+    }
+    return inputStream;
   }
 
   public boolean equals( Object object ) {

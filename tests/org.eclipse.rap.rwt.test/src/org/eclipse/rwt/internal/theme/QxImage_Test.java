@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,20 +11,19 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
+import static org.eclipse.rwt.internal.theme.ThemeTestUtil.RESOURCE_LOADER;
+
 import java.io.IOException;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.resources.ResourceLoader;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
 
 public class QxImage_Test extends TestCase {
-
-  private static final ResourceLoader RESOURCE_LOADER
-    = ThemeTestUtil.createResourceLoader( Fixture.class );
 
   public void testIllegalArguments() {
     try {
@@ -162,9 +161,9 @@ public class QxImage_Test extends TestCase {
 
   public void testGetResourceName() {
     QxImage image = QxImage.NONE;
-    assertNull( image.getResourceName() );
+    assertNull( image.getResourcePath() );
     image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
-    assertEquals( "themes/images/ba873d77", image.getResourceName() );
+    assertEquals( "themes/images/ba873d77", image.getResourcePath() );
   }
 
   public void testCreateSWTImageFromNone() throws IOException {
@@ -201,4 +200,48 @@ public class QxImage_Test extends TestCase {
       Fixture.tearDown();
     }
   }
+
+  public void testGetResourcePath() {
+    QxImage image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+
+    assertTrue( image.getResourcePath().startsWith( "themes/images/" ) );
+  }
+
+  public void testResourcePathsDiffer() {
+    QxImage image1 = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    QxImage image2 = QxImage.valueOf( Fixture.IMAGE_100x50, RESOURCE_LOADER );
+
+    assertFalse( image1.getResourcePath().equals( image2.getResourcePath() ) );
+  }
+
+  public void testGetResourcePathWithNone() {
+    assertNull( QxImage.NONE.getResourcePath() );
+  }
+
+  public void testGetResourcePathWithGradient() {
+    assertNull( createGradient().getResourcePath() );
+  }
+
+  public void testGetResourceAsStream() throws IOException {
+    QxImage image = QxImage.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    InputStream inputStream = image.getResourceAsStream();
+
+    assertTrue( inputStream.available() > 0 );
+    inputStream.close();
+  }
+
+  public void testGetResourceAsStreamWithNone() throws IOException {
+    assertNull( QxImage.NONE.getResourceAsStream() );
+  }
+
+  public void testGetResourceAsStreamWithGradient() throws IOException {
+    assertNull( createGradient().getResourceAsStream() );
+  }
+
+  private static QxImage createGradient() {
+    String[] gradientColors = new String[] { "#FF0000", "#0000FF" };
+    float[] gradientPercents = new float[] { 0f, 100f };
+    return QxImage.createGradient( gradientColors, gradientPercents, false );
+  }
+
 }

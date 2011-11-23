@@ -346,13 +346,9 @@ public final class ClientResources {
 
   private void registerThemeResources() {
     String[] themeIds = themeManager.getRegisteredThemeIds();
-    // default theme must be rendered first
-    themeManager.registerThemeFiles( themeManager.getTheme( ThemeManager.DEFAULT_THEME_ID ) );
     for( String themeId : themeIds ) {
-      if( !ThemeManager.DEFAULT_THEME_ID.equals( themeId ) ) {
-        Theme theme = themeManager.getTheme( themeId );
-        themeManager.registerThemeFiles( theme );
-      }
+      Theme theme = themeManager.getTheme( themeId );
+      theme.registerResources( resourceManager );
     }
   }
 

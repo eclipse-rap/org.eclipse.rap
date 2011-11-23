@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.resources.ResourceLoader;
 
 
 public class ThemeStoreWriter_Test extends TestCase {
@@ -263,9 +262,8 @@ public class ThemeStoreWriter_Test extends TestCase {
   }
 
   private void registerTheme( String themeId, String cssCode ) throws IOException {
-    ResourceLoader loader = ThemeTestUtil.createResourceLoader( Fixture.class );
-    Theme theme = ThemeTestUtil.createTheme( themeId, cssCode, loader );
-    theme.initialize( RWTFactory.getThemeManager().getAllThemeableWidget() );
+    Theme theme = ThemeTestUtil.createTheme( themeId, cssCode, ThemeTestUtil.RESOURCE_LOADER );
+    theme.initialize( RWTFactory.getThemeManager().getAllThemeableWidgets() );
     themes.put( themeId, theme );
   }
 

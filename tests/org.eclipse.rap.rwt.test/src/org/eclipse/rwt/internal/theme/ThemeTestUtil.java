@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.rwt.internal.theme;
 
 import java.io.*;
 
+import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.engine.ThemeManagerHelper;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
@@ -22,6 +23,8 @@ import org.w3c.css.sac.CSSException;
 
 
 public final class ThemeTestUtil {
+
+  public static final ResourceLoader RESOURCE_LOADER = createResourceLoader( Fixture.class );
 
   private ThemeTestUtil() {
     // prevent instantiation
@@ -51,11 +54,17 @@ public final class ThemeTestUtil {
   }
 
   public static StyleSheet createStyleSheet( String css ) throws CSSException, IOException {
+    return createStyleSheet( css, RESOURCE_LOADER );
+  }
+
+  public static StyleSheet createStyleSheet( String css, ResourceLoader loader )
+    throws CSSException, IOException
+  {
     StyleSheet result = null;
     byte[] bytes = css.getBytes( "UTF-8" );
     InputStream inStream = new ByteArrayInputStream( bytes );
     try {
-      result = CssFileReader.readStyleSheet( inStream, "css", null );
+      result = CssFileReader.readStyleSheet( inStream, "css", loader );
     } finally {
       inStream.close();
     }

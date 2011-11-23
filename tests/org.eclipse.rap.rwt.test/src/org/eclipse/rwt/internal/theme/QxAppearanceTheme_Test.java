@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,10 @@ package org.eclipse.rwt.internal.theme;
 import junit.framework.TestCase;
 
 
-public class QxTheme_Test extends TestCase {
+public class QxAppearanceTheme_Test extends TestCase {
 
   public void testNoValues() {
-    QxTheme theme = new QxTheme( "my.theme.Default", "", null );
+    QxAppearanceTheme theme = new QxAppearanceTheme( "my.theme.Default", "", null );
     String code = theme.getJsCode();
 
     assertTrue( code.contains( "qx.Theme.define( \"my.theme.Default\", {\n" ) );
@@ -25,7 +25,7 @@ public class QxTheme_Test extends TestCase {
   }
 
   public void testTailAlreadyWritten() {
-    QxTheme theme = new QxTheme( "my.theme.Foo", "Foo Theme", null );
+    QxAppearanceTheme theme = new QxAppearanceTheme( "my.theme.Foo", "Foo Theme", null );
     theme.appendAppearances( "foo" );
     theme.getJsCode();
     theme.getJsCode(); // calling getJsCode twice is ok

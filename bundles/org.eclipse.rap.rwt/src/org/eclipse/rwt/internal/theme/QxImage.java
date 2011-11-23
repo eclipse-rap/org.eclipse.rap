@@ -23,7 +23,9 @@ import org.eclipse.rwt.resources.ResourceLoader;
 import org.eclipse.swt.graphics.*;
 
 
-public final class QxImage implements QxType {
+public final class QxImage implements QxType, ThemeResource {
+
+  private static final String IMAGE_DEST_PATH = "themes/images";
 
   private static final String NONE_INPUT = "none";
 
@@ -111,15 +113,23 @@ public final class QxImage implements QxType {
     return gradientColors != null && gradientPercents != null;
   }
 
-  public String getResourceName() {
+  public String getResourcePath() {
     String result = null;
-    if( path != null ) {
+    if( !none && path != null ) {
       ThemePropertyAdapterRegistry registry = ThemePropertyAdapterRegistry.getInstance();
       ThemePropertyAdapter adapter = registry.getPropertyAdapter( QxImage.class );
       String cssKey = adapter.getKey( this );
-      result = ThemeManager.IMAGE_DEST_PATH + "/" + cssKey;
+      result = IMAGE_DEST_PATH + "/" + cssKey;
     }
     return result;
+  }
+
+  public InputStream getResourceAsStream() throws IOException {
+    InputStream inputStream = null;
+    if( !none && path != null ) {
+      inputStream = loader.getResourceAsStream( path );
+    }
+    return inputStream;
   }
 
   public String toDefaultString() {

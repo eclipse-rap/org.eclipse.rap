@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,6 @@ public final class StartupPage {
 
   void send() throws IOException {
     if( configurer.isModifiedSince() ) {
-      // send out the survey
       render();
     } else {
       AbstractBranding branding = BrandingUtil.determineBranding();
@@ -88,7 +87,7 @@ public final class StartupPage {
     if( cssValue instanceof QxImage ) {
       QxImage image = ( QxImage )cssValue;
       // path is null if non-existing image was specified in css file
-      String resourceName = image.getResourceName();
+      String resourceName = image.getResourcePath();
       if( resourceName != null ) {
         result = RWT.getResourceManager().getLocation( resourceName );
       }
@@ -108,4 +107,5 @@ public final class StartupPage {
   private static JavaScriptResponseWriter getResponseWriter() {
     return ContextProvider.getStateInfo().getResponseWriter();
   }
+
 }

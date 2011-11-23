@@ -1,24 +1,26 @@
 /*******************************************************************************
- * Copyright (c) 2009 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
+
+import static org.eclipse.rwt.internal.theme.ThemeTestUtil.RESOURCE_LOADER;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.resources.ResourceLoader;
 
 
 public class QxCursor_Test extends TestCase {
-
-  private static final ResourceLoader RESOURCE_LOADER
-    = ThemeTestUtil.createResourceLoader( Fixture.class );
 
   public void testIllegalArguments() {
     try {
@@ -92,4 +94,34 @@ public class QxCursor_Test extends TestCase {
     assertEquals( cursor1, cursor2 );
     assertEquals( cursor1.hashCode(), cursor2.hashCode() );
   }
+
+  public void testGetResourcePath() {
+    QxCursor image = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+
+    assertTrue( image.getResourcePath().startsWith( "themes/cursors/" ) );
+  }
+
+  public void testResourcePathsDiffer() {
+    QxCursor image1 = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    QxCursor image2 = QxCursor.valueOf( Fixture.IMAGE_100x50, RESOURCE_LOADER );
+
+    assertFalse( image1.getResourcePath().equals( image2.getResourcePath() ) );
+  }
+
+  public void testGetResourcePathWithPredefined() {
+    assertNull( QxCursor.valueOf( "crosshair" ).getResourcePath() );
+  }
+
+  public void testGetResourceAsStream() throws IOException {
+    QxCursor image = QxCursor.valueOf( Fixture.IMAGE_50x100, RESOURCE_LOADER );
+    InputStream inputStream = image.getResourceAsStream();
+
+    assertTrue( inputStream.available() > 0 );
+    inputStream.close();
+  }
+
+  public void testGetResourceAsStreamWithPredefined() throws IOException {
+    assertNull( QxCursor.valueOf( "crosshair" ).getResourceAsStream() );
+  }
+
 }
