@@ -98,6 +98,7 @@ public class ThemeManager {
     resolvedPackageNames = new HashMap<String, String>();
     initialized = false;
     createAndAddDefaultTheme();
+    addDefaultThemableWidgets();
   }
 
   public void activate() {
@@ -120,6 +121,7 @@ public class ThemeManager {
     resolvedPackageNames.clear();
     initialized = false;
     createAndAddDefaultTheme();
+    addDefaultThemableWidgets();
   }
 
   /**
@@ -213,13 +215,11 @@ public class ThemeManager {
   }
 
   public String createQxAppearanceTheme() {
-    String base = "org.eclipse.swt.theme.AppearancesBase";
-    String jsId = defaultTheme.getJsId();
-    QxAppearanceTheme qxAppearanceTheme = new QxAppearanceTheme( jsId, DEFAULT_THEME_NAME, base );
+    QxAppearanceWriter qxAppearanceWriter = new QxAppearanceWriter();
     for( String appearance : customAppearances ) {
-      qxAppearanceTheme.appendAppearances( appearance );
+      qxAppearanceWriter.appendAppearances( appearance );
     }
-    return qxAppearanceTheme.getJsCode();
+    return qxAppearanceWriter.getJsCode();
   }
 
   ThemeableWidget[] getAllThemeableWidgets() {
@@ -239,7 +239,6 @@ public class ThemeManager {
 
   private void initializeThemeableWidgets() {
     StyleSheet defaultThemeContributionsBuffer = defaultTheme.getStyleSheet();
-    addDefaultThemableWidgets();
     ThemeableWidget[] widgets = themeableWidgets.getAll();
     for( ThemeableWidget widget : widgets ) {
       loadThemeableWidgetResources( widget );

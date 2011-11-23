@@ -23,38 +23,27 @@ qx.Class.define( "qx.theme.manager.Appearance", {
     this.__stateMapLength = 1;
   },
 
-  properties : {
-    currentTheme : {
-      check : "Theme",
-      nullable : true,
-      apply : "_applyAppearanceTheme",
-      event : "changeAppearanceTheme"
-    }
-  },
-
   members : {
-    _applyAppearanceTheme : function( value, old ) {
-      this._currentTheme = value;
-      this._oldTheme = old;
+
+    setCurrentTheme : function( appearance ) {
+      this._currentTheme = appearance;
       this.syncAppearanceTheme();
     },
 
+    getCurrentTheme : function() {
+      return this._currentTheme;
+    },
+
     syncAppearanceTheme : function() {
-      if( !this._currentTheme && !this._oldTheme ) {
+      if( !this._currentTheme ) {
         return;
       }
       if( this._currentTheme ) {
         this.__cache[this._currentTheme.name] = {};
       }
       if( org.eclipse.rwt.System.getInstance().getUiReady() ) {
-        qx.ui.core.ClientDocument.getInstance()._recursiveAppearanceThemeUpdate( this._currentTheme,
-                                                                                 this._oldTheme );
+        qx.ui.core.ClientDocument.getInstance()._recursiveAppearanceThemeUpdate( this._currentTheme );
       }
-      if( this._oldTheme ) {
-        delete this.__cache[this._oldTheme.name];
-      }
-      delete this._currentTheme;
-      delete this._oldTheme;
     },
 
     styleFrom : function( id, states ) {

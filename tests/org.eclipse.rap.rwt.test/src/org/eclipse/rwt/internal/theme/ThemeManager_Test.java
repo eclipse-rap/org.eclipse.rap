@@ -20,16 +20,32 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.internal.theme.css.StyleRule;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class ThemeManager_Test extends TestCase {
 
   private ThemeManager manager;
 
-  public void testCreate() {
-    assertEquals( "org.eclipse.rap.rwt.theme.Default", ThemeManager.DEFAULT_THEME_ID );
-    manager.activate();
+  protected void setUp() {
+    manager = new ThemeManager();
+    Fixture.setUp();
+  }
+
+  protected void tearDown() {
+    Fixture.tearDown();
+  }
+
+  public void testDefaultThemeableWidgetsBeforeActivation() {
+    ThemeableWidget[] allThemeableWidgets = manager.getAllThemeableWidgets();
+
+    assertTrue( allThemeableWidgets.length > 1 );
+    assertEquals( Widget.class, allThemeableWidgets[ 0 ].widget );
+  }
+
+  public void testDefaultThemeBeforeActivation() {
     Theme defaultTheme = manager.getTheme( ThemeManager.DEFAULT_THEME_ID );
+
     assertNotNull( defaultTheme );
     assertEquals( "RAP Default Theme", defaultTheme.getName() );
   }
@@ -95,15 +111,6 @@ public class ThemeManager_Test extends TestCase {
     assertEquals( 0, beforeActivate );
     assertTrue( 0 < afterActivate );
     assertEquals( 0, afterDeactivate );
-  }
-
-  protected void setUp() {
-    manager = new ThemeManager();
-    Fixture.setUp();
-  }
-
-  protected void tearDown() {
-    Fixture.tearDown();
   }
 
   private Theme getDefaultTheme() {

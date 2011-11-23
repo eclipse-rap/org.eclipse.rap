@@ -87,9 +87,8 @@ qx.Class.define( "org.eclipse.rwt.System", {
         return;
       }
       this._onloadDone = true;
-      qx.theme.manager.Appearance.getInstance().setCurrentTheme( org.eclipse.swt.theme.Default );
       qx.ui.core.ClientDocument.getInstance();
-      qx.client.Timer.once(this._preload, this, 0);
+      qx.client.Timer.once( this._preload, this, 0 );
     },
 
     _preload : function() {

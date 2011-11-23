@@ -17,15 +17,14 @@ import junit.framework.TestCase;
 public class QxAppearanceTheme_Test extends TestCase {
 
   public void testNoValues() {
-    QxAppearanceTheme theme = new QxAppearanceTheme( "my.theme.Default", "", null );
+    QxAppearanceWriter theme = new QxAppearanceWriter();
     String code = theme.getJsCode();
-
-    assertTrue( code.contains( "qx.Theme.define( \"my.theme.Default\", {\n" ) );
+    assertTrue( code.contains( "qx.theme.manager.Appearance.getInstance().setCurrentTheme( {\n" ) );
     assertTrue( code.endsWith( "} );\n" ) );
   }
 
   public void testTailAlreadyWritten() {
-    QxAppearanceTheme theme = new QxAppearanceTheme( "my.theme.Foo", "Foo Theme", null );
+    QxAppearanceWriter theme = new QxAppearanceWriter();
     theme.appendAppearances( "foo" );
     theme.getJsCode();
     theme.getJsCode(); // calling getJsCode twice is ok
