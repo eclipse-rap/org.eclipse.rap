@@ -195,7 +195,7 @@ public class TableColumn_Test extends TestCase {
 
     column.setText( "Multi\nLineText" );
 
-    assertEquals( 58, column.getPreferredWidth() );
+    assertEquals( 60, column.getPreferredWidth() );
   }
 
   public void testPackWithVirtual() {

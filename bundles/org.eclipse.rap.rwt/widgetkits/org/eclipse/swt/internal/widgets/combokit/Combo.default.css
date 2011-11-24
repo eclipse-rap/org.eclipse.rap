@@ -15,16 +15,21 @@
 Combo {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
-  background-color: #f0f0f0;
-  border: 1px solid #bdbdbd;
+  background-color: #f6f6f6;
+  border: 1px solid #aaaaaa;
   border-radius: 0 2px 2px 0;
   background-image: none;
   text-shadow: none;
-  box-shadow: none;
+  box-shadow: inset 0 0 2px #bdbdbd;
+}
+
+Combo:focused {
+  border: 1px solid #4f7cb1;
+  box-shadow: 0 0 5px #4f7cb1;
 }
 
 Combo[BORDER] {
-  border: 1px solid #bdbdbd;
+  border: 1px solid #aaaaaa;
   border-radius: 0 2px 2px 0;
 }
 
@@ -44,25 +49,25 @@ Combo-Button {
 
 Combo-Button-Icon {
   background-image: url( resource/widget/rap/combo/down.png );
-}	
+}  
 
 Combo-Button-Icon:hover {
   background-image: url( resource/widget/rap/combo/down-hover.png );
 }
 
 Combo-List {
-  border: 1px solid #bdbdbd;
+  border: 1px solid #4f7cb1;
+  box-shadow: 0 0 5px #4f7cb1;
   border-radius: 2px;
-  box-shadow:  0 0 3px #bdbdbd;
 }
 
 Combo-Field {
-  padding: 5px 3px;
+  padding: 5px 10px 5px 10px;
 }
 
 Combo-FocusIndicator {
   background-color: transparent; 
-  border: 1px dotted #b8b8b8;
-  margin: 1px 19px 1px 1px;
-  opacity: 1;
+  border: none;
+  margin: 0;
+  opacity: 0;
 }

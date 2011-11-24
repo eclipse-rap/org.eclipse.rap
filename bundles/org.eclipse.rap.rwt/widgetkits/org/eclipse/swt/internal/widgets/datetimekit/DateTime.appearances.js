@@ -65,7 +65,7 @@ appearances = {
         result.textColor = tv.getCssColor( "DateTime-Field", "color" );
         result.backgroundColor = tv.getCssColor( "DateTime-Field", "background-color" );
       } else {
-      	result.textColor = tv.getCssColor( "*", "color" );
+        result.textColor = tv.getCssColor( "*", "color" );
         result.backgroundColor = "undefined";
       }
       result.textShadow = tv.getCssShadow( "DateTime-Field", "text-shadow" );

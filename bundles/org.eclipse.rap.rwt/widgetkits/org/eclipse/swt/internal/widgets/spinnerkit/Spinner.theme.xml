@@ -20,12 +20,12 @@
 
     <property name="background-color"
         description="Spinner background color" />
-		
-		<property name="background-image">
-		  <description>
-		    Background gradient for spinner.
-		  </description>
-		</property>
+
+    <property name="background-image">
+      <description>
+        Background gradient for spinner.
+      </description>
+    </property>
 
     <property name="font"
         description="Text font" />
@@ -54,13 +54,13 @@
 
     <state name="disabled"
         description="Applies to disabled Spinner controls." />
- 
+
     <state name="focused"
         description="Applies to focused Spinners" />
         
     <element name="Spinner-Field"
         description="The spinner text field">
-      
+
       <property name="padding"
         description="Padding for spinner text fields." />
             
@@ -90,7 +90,7 @@
           like "inset" or "outset" is used.
         </description>
       </property>
-      
+
       <property name="cursor"
           description="Spinner up button cursor." />
 
@@ -107,24 +107,24 @@
           description="Applies to disabled spinner up button." />
 
     </element>
-    
+
     <element name="Spinner-UpButton-Icon"
         description="The spinner up button icon">
 
       <property name="background-image"
           description="The icon for spinner up button." />
-          
+
       <state name="hover"
           description="Applies while the user hovers over the button." />
 
       <state name="pressed"
           description="Applies while a button is pressed." />
-          
+
       <state name="disabled"
           description="Applies to disabled spinner up button." />
 
     </element>
-    
+
     <element name="Spinner-DownButton"
         description="The spinner down button">
 
@@ -149,7 +149,7 @@
           like "inset" or "outset" is used.
         </description>
       </property>
-      
+
       <property name="cursor"
           description="Spinner down button cursor." />
 
@@ -166,7 +166,7 @@
           description="Applies to disabled spinner down button." />
 
     </element>
-    
+
     <element name="Spinner-DownButton-Icon"
         description="The spinner down button icon">
 

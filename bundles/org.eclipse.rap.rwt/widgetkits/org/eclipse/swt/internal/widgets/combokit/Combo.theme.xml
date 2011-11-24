@@ -151,7 +151,7 @@
 
       <property name="padding">
         <description>
-      	  Padding (inner distance) for combo text field.
+          Padding (inner distance) for combo text field.
         </description>
       </property>
 

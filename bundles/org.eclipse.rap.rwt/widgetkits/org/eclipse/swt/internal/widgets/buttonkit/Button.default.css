@@ -46,6 +46,17 @@ Button[TOGGLE][FLAT] {
   text-shadow: 0 1px 0 #ffffff;
 }
 
+Button[PUSH]:default,
+Button[TOGGLE]:default {
+  background-color: #416693;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #e2eefc ),
+    to( #d4d4d4 )
+  );
+  border: 1px solid #a0b3ca;
+}
+
 Button[PUSH]:disabled, 
 Button[TOGGLE]:disabled {
   cursor: default;
@@ -97,7 +108,7 @@ Button[RADIO] {
 
 Button[CHECK][BORDER], 
 Button[RADIO][BORDER] {
-	cursor: default;
+  cursor: default;
   background-image: none;
   border: 1px solid #bdbdbd;
   border-radius: 2px;

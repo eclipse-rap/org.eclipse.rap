@@ -12,32 +12,36 @@
 /* Menu default theme */
 
 Menu {
-  background-image: url( resource/widget/rap/menu/menu-background.png );
-  padding: 10px 15px;
+  background-image: gradient(
+    linear, left top, left bottom,
+    from( #f4f4f4 ),
+    to( #ffffff )
+  );
+  padding: 0;
   opacity: 1;
   animation: none;
   color: #0059a5;
-  background-color: #f0f0f0;
-  border: 1px solid #bdbdbd;
+  background-color: #f9f9f9;
+  border: 1px solid #a0b3ca;
   border-radius: 2px;
-  box-shadow: none;
+  box-shadow: 0 0 4px #ababab;
 }
 
 MenuItem {
-	color: #4a4a4a;
-	background-color: transparent;
+  color: #4a4a4a;
+  background-color: transparent;
   background-image: none;
   opacity: 1;
   text-shadow: none;
 }
 
 MenuItem:hover {
+  color: #ffffff;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #818181 ),
-    to( #b5b5b5 )
+    from( #5882b5 ),
+    to( #416693 )
   );
-  color: #ffffff;
 }
 
 /*TODO delete MenuItem[BAR] test, because BAR style flag does not exist in Menu.theme.xml? [nimu]*/

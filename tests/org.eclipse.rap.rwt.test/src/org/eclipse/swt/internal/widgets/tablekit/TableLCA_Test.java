@@ -1118,7 +1118,7 @@ public class TableLCA_Test extends TestCase {
     lca.renderChanges( table );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 36 ), message.findSetProperty( table, "headerHeight" ) );
+    assertEquals( Integer.valueOf( 31 ), message.findSetProperty( table, "headerHeight" ) );
   }
 
   public void testRenderHeaderHeightUnchanged() throws IOException {

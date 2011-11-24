@@ -31,15 +31,16 @@ DateTime[BORDER] {
   border-radius: 0 2px 2px 0;
 }
 
-DateTime-Field:selected, DateTime-Calendar-Day:selected {
-  background-color: #D2D2D2;
-  color: #4a4a4a;
+DateTime-Field:selected, 
+DateTime-Calendar-Day:selected {
+  background-color: #5882b5;
+  color: #ffffff;
   text-shadow: none;
 }
 
 DateTime-Calendar-Day:selected:hover {
-  background-color: #00569c;
-  color: white;
+  background-color: #5882b5;
+  color: #ffffff;
   text-shadow: none;
 }
 
@@ -55,7 +56,7 @@ DateTime-Calendar-Day:otherMonth {
 }
 
 DateTime-Calendar-Day:hover {
-  background-color: #d9e3f3;
+  background-color: #b5b5b5;
   text-shadow: none;
 }
 
@@ -65,7 +66,10 @@ DateTime-Calendar-Navbar {
   color: white;
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   text-shadow: none;
-  background-image: none;
+  background-image: gradient( 
+    linear, left top, left bottom, 
+    from( #416693 ), to( #5882b5 ) 
+  );
 }
 
 DateTime-Calendar-PreviousMonthButton {

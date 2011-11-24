@@ -101,8 +101,8 @@ public class TextSizeRecalculation_Test extends TestCase {
 
   private void checkRePackTookPlace() {
     assertEquals( new Point( 100, 22 ), packedControl.getSize() );
-    assertEquals( 104, packedTableColumn.getWidth() );
-    assertEquals( 104, packedTreeColumn.getWidth() );
+    assertEquals( 106, packedTableColumn.getWidth() );
+    assertEquals( 116, packedTreeColumn.getWidth() );
   }
 
   private Rectangle getInitialCompositeBounds() {

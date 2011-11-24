@@ -925,8 +925,8 @@ public class Tree_Test extends TestCase {
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     tree.setHeaderVisible( true );
-    assertEquals( 37, tree.getHeaderHeight() );
-    expected = new Point( 147, 346 );
+    assertEquals( 31, tree.getHeaderHeight() );
+    expected = new Point( 147, 340 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
@@ -935,19 +935,19 @@ public class Tree_Test extends TestCase {
     col2.setText( "Column 2" );
     TreeColumn col3 = new TreeColumn( tree, SWT.NONE );
     col3.setText( "Wider Column" );
-    expected = new Point( 76, 346 );
+    expected = new Point( 76, 340 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.pack();
     col2.pack();
     col3.pack();
-    expected = new Point( 306, 346 );
+    expected = new Point( 330, 340 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.setWidth( 10 );
     col2.setWidth( 10 );
-    assertEquals( 85, col3.getWidth() );
-    expected = new Point( 117, 346 );
+    assertEquals( 97, col3.getWidth() );
+    expected = new Point( 129, 340 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     tree = new Tree( composite, SWT.CHECK );
@@ -1274,8 +1274,8 @@ public class Tree_Test extends TestCase {
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     tree.setHeaderVisible( true );
-    assertEquals( 37, tree.getHeaderHeight() );
-    expected = new Point( 76, 319 );
+    assertEquals( 31, tree.getHeaderHeight() );
+    expected = new Point( 76, 313 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     TreeColumn col1 = new TreeColumn( tree, SWT.NONE );
@@ -1284,19 +1284,19 @@ public class Tree_Test extends TestCase {
     col2.setText( "Column 2" );
     TreeColumn col3 = new TreeColumn( tree, SWT.NONE );
     col3.setText( "Wider Column" );
-    expected = new Point( 76, 319 );
+    expected = new Point( 76, 313 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.pack();
     col2.pack();
     col3.pack();
-    expected = new Point( 193, 319 );
+    expected = new Point( 229, 313 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     col1.setWidth( 10 );
     col2.setWidth( 10 );
-    assertEquals( 85, col3.getWidth() );
-    expected = new Point( 117, 319 );
+    assertEquals( 97, col3.getWidth() );
+    expected = new Point( 129, 313 );
     assertEquals( expected, tree.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     expected = new Point( 312, 312 );
     assertEquals( expected, tree.computeSize( 300, 300 ) );

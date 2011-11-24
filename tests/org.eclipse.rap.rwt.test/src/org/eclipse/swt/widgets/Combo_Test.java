@@ -678,7 +678,7 @@ public class Combo_Test extends TestCase {
     combo.add( "1" );
     combo.add( "22" );
     combo.add( "333" );
-    expected = new Point( 68, 28 );
+    expected = new Point( 82, 28 );
     assertEquals( expected, combo.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     expected = new Point( 102, 102 );

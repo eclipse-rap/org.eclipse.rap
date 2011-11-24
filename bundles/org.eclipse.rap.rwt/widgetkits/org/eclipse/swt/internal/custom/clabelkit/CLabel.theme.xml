@@ -50,7 +50,7 @@
         description="Space between text and image." />
 
     <property name="opacity" 
-	      description="The opacity of the CLabel. A value between 0 and 1." />
+        description="The opacity of the CLabel. A value between 0 and 1." />
 
     <property name="text-shadow"
         description="Shadow for text." />

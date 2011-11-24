@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Ruediger Herrmann and others. All rights reserved.
+ * Copyright (c) 2011 Ruediger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,16 +14,20 @@
 
 ToolTip {
   cursor: default;
-  border: 1px solid #bdbdbd;
+  border: 1px solid #a0b3ca;
   border-radius: 2px;
   padding: 8px;
   opacity: 1;
   color: #4a4a4a;
-  background-image : url( resource/widget/rap/scrollbar/scrollbar-background.png );
+  background-image : gradient(
+    linear, left top, right top,
+    from( #f8f9ff ),
+    to( #f4f4f4 )
+  );
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: #fcfcfc;
   animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
-  box-shadow: none;
+  box-shadow: 0 0 4px #adadad;
 }
 
 ToolTip-Image[ICON_ERROR] {

@@ -19,10 +19,10 @@ Button[PUSH][BORDER],
 Button[TOGGLE][BORDER],
 Button[PUSH][FLAT], 
 Button[TOGGLE][FLAT] {
-	font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-	color: #4a4a4a;
-	background-color: #ffffff;
-	background-image: gradient(
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #4a4a4a;
+  background-color: #ffffff;
+  background-image: gradient(
     linear, left top, left bottom,
     from( #f9f9f9 ),
     to( #e4e4e4 )

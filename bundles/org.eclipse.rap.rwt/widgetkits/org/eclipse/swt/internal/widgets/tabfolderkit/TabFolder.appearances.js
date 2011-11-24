@@ -44,17 +44,17 @@ appearances = {
   },
 
   "tab-view-page" : {
-//		      style : function( states ) {
-//		        return {
+//          style : function( states ) {
+//            return {
 // TODO [rst] disappeared in qx 0.7
-//		          top : 0,
-//		          right : 0,
-//		          bottom : 0,
-//		          left : 0
-//		        };
-//		      }
+//              top : 0,
+//              right : 0,
+//              bottom : 0,
+//              left : 0
+//            };
+//          }
   },
-  
+
   "tab-view-button" : {
     include : "atom",
 

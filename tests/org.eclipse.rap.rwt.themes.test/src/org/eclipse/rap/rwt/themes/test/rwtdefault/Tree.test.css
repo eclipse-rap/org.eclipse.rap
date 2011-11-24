@@ -30,22 +30,22 @@ TreeItem {
 }
 
 TreeItem:hover {
-  color: #ffffff;
+  color: #4a4a4a;
   background-color: #b5b5b5;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #818181 ),
-    to( #b5b5b5 )
+    from( #ebebeb ),
+    to( #d5d5d5 )
   );
 }
 
 TreeItem:selected {
-  color: #ffffff;
+ color: #ffffff;
   background-color: #5882b5;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #416693 ),
-    to( #5882b5 )
+    from( #5882b5 ),
+    to( #416693 )
   );
 }
 
@@ -54,8 +54,8 @@ TreeItem:selected:unfocused {
   background-color: #b5b5b5;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #818181 ),
-    to( #b5b5b5 )
+    from( #b5b5b5 ),
+    to( #818181 )
   );
 }
 
@@ -69,7 +69,7 @@ TreeColumn {
   color: #4a4a4a;
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border-bottom: 1px solid #bdbdbd;
-  padding: 11px 2px 11px 2px;
+  padding: 8px 10px 8px 6px;
   text-shadow: none;
 }
 

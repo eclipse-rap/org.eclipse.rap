@@ -12,7 +12,7 @@
 /* List default theme */
 
 List {
-	font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: #ffffff;
   border: none;
   color: #4a4a4a;
@@ -23,21 +23,21 @@ List[BORDER] {
 }
 
 List-Item {
-  padding: 10px 3px 10px 3px;
+  padding: 6px 10px 6px 10px;
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: #ffffff;
-  color: inherit;
+  color: #4a4a4a;
   background-image: none;
   text-shadow: none;
 }
 
 List-Item:hover {
-  color: #ffffff;
+  color: #4a4a4a;
   background-color: #dae9f7;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #818181 ),
-    to( #b5b5b5 )
+    from( #ebebeb ),
+    to( #d5d5d5 )
   );
 }
 
@@ -46,8 +46,8 @@ List-Item:selected {
   background-color: #00589f;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #416693 ),
-    to( #5882b5 )
+    from( #5882b5 ),
+    to( #416693 )
   );
 }
 
@@ -56,8 +56,8 @@ List-Item:selected:unfocused {
   color: #ffffff;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #818181 ),
-    to( #b5b5b5 )
+    from( #b5b5b5 ),
+    to( #818181 )
   );
 }
 
@@ -66,11 +66,12 @@ List-Item:even {
 }
 
 List-Item:even:hover {
+  color: #4a4a4a;
   background-color: #818181;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #818181 ),
-    to( #b5b5b5 )
+    from( #ebebeb ),
+    to( #d5d5d5 )
   );
 }
 
@@ -79,8 +80,8 @@ List-Item:even:selected {
   background-color: #818181;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #416693 ),
-    to( #5882b5 )
+    from( #5882b5 ),
+    to( #416693 )
   );
 }
 
@@ -89,7 +90,7 @@ List-Item:even:selected:unfocused {
   color: #ffffff;
   background-image: gradient(
     linear, left top, left bottom,
-    from( #818181 ),
-    to( #b5b5b5 )
+    from( #b5b5b5 ),
+    to( #818181 )
   );
 }

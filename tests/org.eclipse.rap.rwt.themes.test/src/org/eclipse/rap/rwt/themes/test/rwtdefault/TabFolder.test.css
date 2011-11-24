@@ -38,7 +38,7 @@ TabItem {
 }
 
 TabItem:selected {
- background-image: gradient(
+  background-image: gradient(
     linear, left top, left bottom,
     from( #d5d5d5 ),
     to( #eaeaea )

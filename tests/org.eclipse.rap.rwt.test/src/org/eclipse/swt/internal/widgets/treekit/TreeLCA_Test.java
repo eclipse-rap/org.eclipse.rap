@@ -875,7 +875,7 @@ public class TreeLCA_Test extends TestCase {
     lca.renderChanges( tree );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( Integer.valueOf( 37 ), message.findSetProperty( tree, "headerHeight" ) );
+    assertEquals( Integer.valueOf( 31 ), message.findSetProperty( tree, "headerHeight" ) );
   }
 
   public void testRenderHeaderHeightUnchanged() throws IOException {

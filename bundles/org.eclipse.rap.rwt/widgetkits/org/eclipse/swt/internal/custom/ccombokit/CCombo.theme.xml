@@ -160,7 +160,7 @@
 
       <property name="padding">
         <description>
-      	  Padding (inner distance) for ccombo text field.
+          Padding (inner distance) for ccombo text field.
         </description>
       </property>
 
