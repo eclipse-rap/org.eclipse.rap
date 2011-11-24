@@ -21,6 +21,7 @@ appearances = {
         textColor : tv.getCssColor( "Menu", "color" ),
         backgroundColor : tv.getCssColor( "Menu", "background-color" ),
         backgroundImage : tv.getCssImage( "Menu", "background-image" ),
+        backgroundGradient : tv.getCssGradient( "Menu", "background-image" ),
         animation : tv.getCssAnimation( "Menu", "animation" ),
         font : tv.getCssFont( "Menu", "font" ),
         overflow : "hidden",

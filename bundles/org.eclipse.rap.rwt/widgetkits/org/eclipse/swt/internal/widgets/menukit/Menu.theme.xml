@@ -23,7 +23,7 @@
         description="Background color" />
 
     <property name="background-image"
-        description="Background image" />
+        description="Background image or gradient" />
 
     <property name="font"
         description="Menu font" />
