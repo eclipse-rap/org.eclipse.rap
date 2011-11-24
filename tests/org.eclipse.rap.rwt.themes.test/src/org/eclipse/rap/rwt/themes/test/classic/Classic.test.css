@@ -526,6 +526,7 @@ List-Item {
   background-color: transparent;
   color: black;
   background-image: none;
+  padding: 3px 5px;
 }
 
 List-Item:selected {
