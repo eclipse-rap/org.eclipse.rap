@@ -64,6 +64,7 @@ public class ClientResources_Test extends TestCase {
     String clientJs = getRegisteredContent( "rap-client.js", "UTF-8" );
 
     assertTrue( clientJs.contains( "qx.Class.define(\"qx.lang.Core\");" ) );
+    assertTrue( clientJs.contains( "Appearance.getInstance().setCurrentTheme({" ) );
     assertFalse( clientJs.contains( "/****" ) );
     assertFalse( clientJs.contains( "Copyright" ) );
   }
@@ -75,6 +76,7 @@ public class ClientResources_Test extends TestCase {
     String clientJs = getRegisteredContent( "rap-client.js", "UTF-8" );
 
     assertTrue( clientJs.contains( "qx.Class.define(\"qx.lang.Core\");" ) );
+    assertTrue( clientJs.contains( "Appearance.getInstance().setCurrentTheme( {" ) );
     assertTrue( clientJs.contains( "/****" ) );
     assertTrue( clientJs.contains( "Copyright" ) );
   }
