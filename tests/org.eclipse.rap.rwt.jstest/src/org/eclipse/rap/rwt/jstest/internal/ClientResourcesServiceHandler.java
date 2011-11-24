@@ -38,8 +38,7 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
 
   private String getClientLibraryLocation() {
     IResourceManager resourceManager = RWTFactory.getResourceManager();
-    String location = resourceManager.getLocation( "rap-client.js" );
-    return location;
+    return resourceManager.getLocation( "rap-client.js" );
   }
 
   private String getThemeLocation() {
@@ -55,5 +54,4 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     writer.write( Long.toString( System.currentTimeMillis() ) );
     writer.write( " type=\"text/javascript\"></script>' );\n" );
   }
-
 }
