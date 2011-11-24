@@ -244,6 +244,7 @@ public final class ClientResources {
     "org/eclipse/swt/widgets/SashAdapter.js",
     "org/eclipse/swt/widgets/Canvas.js",
     "org/eclipse/swt/widgets/List.js",
+    "org/eclipse/swt/widgets/ListAdapter.js",
     "org/eclipse/swt/TabUtil.js",
     "org/eclipse/swt/widgets/TabFolderAdapter.js",
     "org/eclipse/swt/widgets/TabItemAdapter.js",

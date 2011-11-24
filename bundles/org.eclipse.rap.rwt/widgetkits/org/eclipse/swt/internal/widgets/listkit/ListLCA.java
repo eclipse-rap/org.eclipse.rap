@@ -11,11 +11,17 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.listkit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.*;
@@ -24,38 +30,34 @@ import org.eclipse.swt.widgets.*;
 
 public class ListLCA extends AbstractWidgetLCA {
 
-  private static final String QX_TYPE = "org.eclipse.swt.widgets.List";
+  private static final String TYPE = "rwt.widgets.List";
 
-  // Property names, used when preserving values
-  static final String PROP_SELECTION = "selection";
-  static final String PROP_ITEMS = "items";
-  static final String PROP_FOCUS_INDEX = "focusIndex";
-  static final String PROP_TOP_INDEX = "topIndex";
-  static final String PROP_HAS_H_SCROLL_BAR = "hasHScrollBar";
-  static final String PROP_HAS_V_SCROLL_BAR = "hasVScrollBar";
-  static final String PROP_ITEM_DIMENSIONS = "itemDimensions";
+  private static final String PROP_ITEMS = "items";
+  private static final String PROP_SELECTION_INDICES = "selectionIndices";
+  private static final String PROP_TOP_INDEX = "topIndex";
+  private static final String PROP_FOCUS_INDEX = "focusIndex";
+  private static final String PROP_SCROLLBARS_VISIBLE = "scrollBarsVisible";
+  private static final String PROP_ITEM_DIMENSIONS = "itemDimensions";
+  private static final String PROP_SELECTION_LISTENER = "selection";
 
-  private static final Integer DEFAULT_SINGLE_SELECTION = new Integer( -1 );
-  private static final int[] DEFAULT_MULTI_SELECTION = new int[ 0 ];
   private static final String[] DEFAUT_ITEMS = new String[ 0 ];
-  private static final Integer DEFAULT_FOCUS_INDEX = new Integer( -1 );
-  private static final Integer DEFAULT_TOP_INDEX = new Integer( 0 );
+  private static final int[] DEFAUT_SELECTION_INDICES = new int[ 0 ];
+  private static final int DEFAULT_TOP_INDEX = 0;
+  private static final int DEFAULT_FOCUS_INDEX = -1;
+  private static final boolean[] DEFAULT_SCROLLBARS_VISIBLE = new boolean[] { true, true };
   private static final Point DEFAULT_ITEM_DIMENSIONS = new Point( 0, 0 );
 
   public void preserveValues( Widget widget ) {
     List list = ( List  )widget;
     ControlLCAUtil.preserveValues( list );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( Props.SELECTION_LISTENERS,
-                      Boolean.valueOf( SelectionEvent.hasListener( list ) ) );
-    adapter.preserve( PROP_ITEMS, list.getItems() );
-    adapter.preserve( PROP_TOP_INDEX, new Integer( list.getTopIndex() ) );
-    adapter.preserve( PROP_FOCUS_INDEX, new Integer( list.getFocusIndex() ) );
-    adapter.preserve( PROP_HAS_H_SCROLL_BAR, hasHScrollBar( list ) );
-    adapter.preserve( PROP_HAS_V_SCROLL_BAR, hasVScrollBar( list ) );
-    preserveSelection( list );
-    adapter.preserve( PROP_ITEM_DIMENSIONS, getItemDimensions( list ) );
     WidgetLCAUtil.preserveCustomVariant( list );
+    preserveProperty( list, PROP_ITEMS, list.getItems() );
+    preserveProperty( list, PROP_SELECTION_INDICES, list.getSelectionIndices() );
+    preserveProperty( list, PROP_TOP_INDEX, list.getTopIndex() );
+    preserveProperty( list, PROP_FOCUS_INDEX, list.getFocusIndex() );
+    preserveProperty( list, PROP_SCROLLBARS_VISIBLE, getScrollBarsVisible( list ) );
+    preserveProperty( list, PROP_ITEM_DIMENSIONS, getItemDimensions( list ) );
+    preserveListener( list, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( list ) );
   }
 
   public void readData( Widget widget ) {
@@ -72,146 +74,36 @@ public class ListLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     List list = ( List )widget;
-    JSWriter writer = JSWriter.getWriterFor( list );
-    Boolean multiSelection = Boolean.valueOf( !isSingle( list ) );
-    writer.newWidget( QX_TYPE, new Object[] { multiSelection } );
-    ControlLCAUtil.writeStyleFlags( list );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( list );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( list.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( list ) );
   }
 
-  // TODO [rh] keep scroll position, even when exchanging items
   public void renderChanges( Widget widget ) throws IOException {
     List list = ( List )widget;
-    // order of writeChanges, writeItems, writeSelection, writeFocus is crucial
-    ControlLCAUtil.writeChanges( list );
-    writeItems( list );
-    writeSelection( list );
-    writeTopIndex( list );
-    writeFocusIndex( list );
-    writeScrollBars( list );
-    updateSelectionListeners( list );
-    writeItemDimensions( list );
-    WidgetLCAUtil.writeCustomVariant( list );
+    ControlLCAUtil.renderChanges( list );
+    WidgetLCAUtil.renderCustomVariant( list );
+    renderProperty( list, PROP_ITEMS, list.getItems(), DEFAUT_ITEMS );
+    renderProperty( list,
+                    PROP_SELECTION_INDICES,
+                    list.getSelectionIndices(),
+                    DEFAUT_SELECTION_INDICES );
+    renderProperty( list, PROP_TOP_INDEX, list.getTopIndex(), DEFAULT_TOP_INDEX );
+    renderProperty( list, PROP_FOCUS_INDEX, list.getFocusIndex(), DEFAULT_FOCUS_INDEX );
+    renderProperty( list,
+                    PROP_SCROLLBARS_VISIBLE,
+                    getScrollBarsVisible( list ),
+                    DEFAULT_SCROLLBARS_VISIBLE );
+    renderListener( list, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( list ), false );
+    renderProperty( list,
+                    PROP_ITEM_DIMENSIONS,
+                    getItemDimensions( list ),
+                    DEFAULT_ITEM_DIMENSIONS );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
-  }
-
-  ////////////////////////////////////
-  // Helping methods to preserve state
-
-  private static void preserveSelection( List list ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( list );
-    Object selection;
-    if( isSingle( list ) ) {
-      selection = new Integer( list.getSelectionIndex() );
-    } else {
-      selection = list.getSelectionIndices();
-    }
-    adapter.preserve( PROP_SELECTION, selection );
-  }
-
-  ///////////////////////////////////////////
-  // Helping methods to write JavaScript code
-
-  private static void writeItems( List list ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( list );
-    String[] items = list.getItems();
-    if( WidgetLCAUtil.hasChanged( list, PROP_ITEMS, items, DEFAUT_ITEMS ) ) {
-      // Convert newlines into whitespaces
-      for( int i = 0; i < items.length; i++ ) {
-        items[ i ] = WidgetLCAUtil.replaceNewLines( items[ i ], " " );
-        items[ i ] = WidgetLCAUtil.escapeText( items[ i ], false );
-      }
-      writer.set( "items", new Object[]{ items } );
-    }
-  }
-
-  private static void writeSelection( List list ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( list );
-    String prop = PROP_SELECTION;
-    if( isSingle( list ) ) {
-      Integer newValue = new Integer( list.getSelectionIndex() );
-      Integer defValue = DEFAULT_SINGLE_SELECTION;
-      if( WidgetLCAUtil.hasChanged( list, prop, newValue, defValue )) {
-        writer.call( "selectItem", new Object[] { newValue } );
-      }
-    } else {
-      int[] newValue = list.getSelectionIndices();
-      int[] defValue = DEFAULT_MULTI_SELECTION;
-      if( WidgetLCAUtil.hasChanged( list, prop, newValue, defValue ) ) {
-        if( list.getSelectionCount() == list.getItemCount() ) {
-          writer.call( "selectAll", null );
-        } else {
-          int[] selection = list.getSelectionIndices();
-          Integer[] newSelection = new Integer[ selection.length ];
-          for( int i = 0; i < newSelection.length; i++ ) {
-            newSelection[ i ] = new Integer( selection[ i ] );
-          }
-          writer.call( "selectItems", new Object[] { newSelection } );
-        }
-      }
-    }
-  }
-
-  private static void writeFocusIndex( List list ) throws IOException {
-    String prop = PROP_FOCUS_INDEX;
-    Integer newValue = new Integer( list.getFocusIndex() );
-    if( WidgetLCAUtil.hasChanged( list, prop, newValue, DEFAULT_FOCUS_INDEX ) ) {
-      JSWriter writer = JSWriter.getWriterFor( list );
-      writer.call( "focusItem", new Object[] { newValue} );
-    }
-  }
-
-  private static void writeTopIndex( List list ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( list );
-    Integer newValue = new Integer( list.getTopIndex() );
-    writer.set( PROP_TOP_INDEX, "topIndex", newValue, DEFAULT_TOP_INDEX );
-  }
-
-  private static void writeScrollBars( List list )
-    throws IOException
-  {
-    boolean hasHBar = hasHScrollBar( list ).booleanValue();
-    boolean hasVBar = hasVScrollBar( list ).booleanValue();
-    boolean hasHChanged = WidgetLCAUtil.hasChanged( list,
-                                                    PROP_HAS_H_SCROLL_BAR,
-                                                    Boolean.valueOf( hasHBar ),
-                                                    Boolean.TRUE );
-    boolean hasVChanged = WidgetLCAUtil.hasChanged( list,
-                                                    PROP_HAS_V_SCROLL_BAR,
-                                                    Boolean.valueOf( hasVBar ),
-                                                    Boolean.TRUE );
-    if( hasHChanged || hasVChanged ) {
-      JSWriter writer = JSWriter.getWriterFor( list );
-      writer.set( "scrollBarsVisible", new boolean[]{ hasHBar, hasVBar } );
-    }
-  }
-
-  private static void updateSelectionListeners( List list ) throws IOException {
-    String prop = Props.SELECTION_LISTENERS;
-    Boolean newValue = Boolean.valueOf( SelectionEvent.hasListener( list ) );
-    Boolean defValue = Boolean.FALSE;
-    if( WidgetLCAUtil.hasChanged( list, prop, newValue, defValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( list );
-      String value = newValue.booleanValue() ? "action" : "state";
-      writer.set( "changeSelectionNotification", value );
-    }
-  }
-
-  private static void writeItemDimensions( List list ) throws IOException {
-    String prop = PROP_ITEM_DIMENSIONS;
-    Point newValue = getItemDimensions( list );
-    Point defValue = DEFAULT_ITEM_DIMENSIONS;
-    if( WidgetLCAUtil.hasChanged( list, prop, newValue, defValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( list );
-      Object[] args = new Object[] {
-        new Integer( newValue.x ),
-        new Integer( newValue.y )
-      };
-      writer.call( "setItemDimensions", args );
-    }
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
   ////////////////////////////////////////////
@@ -235,44 +127,40 @@ public class ListLCA extends AbstractWidgetLCA {
   }
 
   private static void readTopIndex( List list ) {
-    String value = WidgetLCAUtil.readPropertyValue( list, "topIndex" );
+    String value = WidgetLCAUtil.readPropertyValue( list, PROP_TOP_INDEX );
     if( value != null ) {
       list.setTopIndex( NumberFormatUtil.parseInt( value ) );
     }
   }
 
   private static void readFocusIndex( List list ) {
-    String paramValue = WidgetLCAUtil.readPropertyValue( list, "focusIndex" );
+    String paramValue = WidgetLCAUtil.readPropertyValue( list, PROP_FOCUS_INDEX );
     if( paramValue != null ) {
       int focusIndex = NumberFormatUtil.parseInt( paramValue );
-      Object adapter = list.getAdapter( IListAdapter.class );
-      IListAdapter listAdapter = ( IListAdapter )adapter;
-      listAdapter.setFocusIndex( focusIndex );
+      getAdapter( list ).setFocusIndex( focusIndex );
     }
   }
 
   //////////////////
   // Helping methods
 
-  private static boolean isSingle( List list ) {
-    return ( list.getStyle() & SWT.SINGLE ) != 0;
+  private static boolean[] getScrollBarsVisible( List list ) {
+    return new boolean[] { hasHScrollBar( list ), hasVScrollBar( list ) };
   }
 
-  private static Boolean hasHScrollBar( List list ) {
-    Object adapter = list.getAdapter( IListAdapter.class );
-    IListAdapter listAdapter = ( IListAdapter )adapter;
-    return Boolean.valueOf( listAdapter.hasHScrollBar() );
+  private static boolean hasHScrollBar( List list ) {
+    return getAdapter( list ).hasHScrollBar();
   }
 
-  private static Boolean hasVScrollBar( List list ) {
-    Object adapter = list.getAdapter( IListAdapter.class );
-    IListAdapter listAdapter = ( IListAdapter )adapter;
-    return Boolean.valueOf( listAdapter.hasVScrollBar() );
+  private static boolean hasVScrollBar( List list ) {
+    return getAdapter( list ).hasVScrollBar();
   }
 
   private static Point getItemDimensions( List list ) {
-    Object adapter = list.getAdapter( IListAdapter.class );
-    IListAdapter listAdapter = ( IListAdapter )adapter;
-    return listAdapter.getItemDimensions();
+    return getAdapter( list ).getItemDimensions();
+  }
+
+  private static IListAdapter getAdapter( List list ) {
+    return list.getAdapter( IListAdapter.class );
   }
 }

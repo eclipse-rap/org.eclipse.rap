@@ -110,13 +110,13 @@ public class WidgetLCAUtil_Test extends TestCase {
     list.setItems( new String[] { "a", "b", "c" } );
     list.setSelection( new int[] { 0, 1, 2 } );
     Fixture.preserveWidgets();
-    hasChanged = WidgetLCAUtil.hasChanged( list, "selection", new int[] { 0, 1, 4 } );
+    hasChanged = WidgetLCAUtil.hasChanged( list, "selectionIndices", new int[] { 0, 1, 4 } );
     assertEquals( true, hasChanged );
 
     list.setItems( new String[] { "a", "b", "c" } );
     list.setSelection( new int[] { 0, 1, 2 } );
     Fixture.preserveWidgets();
-    hasChanged = WidgetLCAUtil.hasChanged( list, "selection", new int[] { 0, 1, 2 } );
+    hasChanged = WidgetLCAUtil.hasChanged( list, "selectionIndices", new int[] { 0, 1, 2 } );
     assertEquals( false, hasChanged );
   }
 

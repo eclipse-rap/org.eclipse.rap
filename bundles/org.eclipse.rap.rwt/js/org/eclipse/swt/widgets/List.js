@@ -14,9 +14,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
   construct : function( multiSelection ) {
     this.base( arguments, multiSelection );
     this._topIndex = 0;
-    // Should changeSelection events passed to the server-side?
-    // state == no, action == yes
-    this._changeSelectionNotification = "state";
+    this._hasSelectionListener = false;
     // Listen to send event of request to report topIndex
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "send", this._onSendRequest, this );
@@ -77,8 +75,8 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
       this._applyTopIndex( this._topIndex );
     },
 
-    setChangeSelectionNotification : function( value ) {
-      this._changeSelectionNotification = value;
+    setHasSelectionListener : function( value ) {
+      this._hasSelectionListener = value;
     },
 
     _onChangeLeadItem : function( evt ) {
@@ -97,7 +95,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
         var id = wm.findIdByWidget( this );
         var req = org.eclipse.swt.Request.getInstance();
         req.addParameter( id + ".selection", this._getSelectionIndices() );
-        if( this._changeSelectionNotification == "action" ) {
+        if( this._hasSelectionListener ) {
           req.addEvent( "org.eclipse.swt.events.widgetSelected", id );
           org.eclipse.swt.EventUtil.addWidgetSelectedModifier();
           req.send();
@@ -119,7 +117,7 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
 
     _onDblClick : function( evt ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
-        if( this._changeSelectionNotification == "action" ) {
+        if( this._hasSelectionListener ) {
           var wm = org.eclipse.swt.WidgetManager.getInstance();
           var id = wm.findIdByWidget( this );
           var req = org.eclipse.swt.Request.getInstance();
