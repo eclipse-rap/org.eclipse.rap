@@ -313,7 +313,7 @@ public final class ClientResources {
       registerWidgetImages();
       registerContributions();
     } catch( IOException ioe ) {
-      throw new RuntimeException( "Failed to register resource.", ioe );
+      throw new RuntimeException( "Failed to register resources.", ioe );
     }
   }
 
@@ -350,11 +350,12 @@ public final class ClientResources {
     }
   }
 
-  private void registerWidgetImages() {
+  private void registerWidgetImages() throws IOException {
     for( int i = 0; i < WIDGET_IMAGES.length; i++ ) {
       String resourcePath = WIDGET_IMAGES[ i ];
       InputStream inputStream = openResourceStream( resourcePath );
       resourceManager.register( resourcePath, inputStream );
+      inputStream.close();
     }
   }
 
@@ -402,12 +403,11 @@ public final class ClientResources {
     }
   }
 
-  static InputStream openResourceStream( String name ) {
+  private static InputStream openResourceStream( String name ) {
     InputStream result = ClientResources.class.getClassLoader().getResourceAsStream( name );
     if( result == null ) {
       throw new IllegalArgumentException( "Resource not found: " + name );
     }
     return result;
   }
-
 }
