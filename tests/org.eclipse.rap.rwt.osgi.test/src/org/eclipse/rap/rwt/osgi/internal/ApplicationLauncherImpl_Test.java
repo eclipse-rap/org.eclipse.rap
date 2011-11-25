@@ -267,7 +267,7 @@ public class ApplicationLauncherImpl_Test extends TestCase {
   }
 
   protected void setUp() {
-    Fixture.deleteWebContextDirectories();
+    Fixture.deleteWebContextDirectory();
     Fixture.setIgnoreResourceDeletion( false );
     Fixture.useTestResourceManager();
     mockConfigurator();

@@ -147,7 +147,7 @@ public final class Fixture {
 
   public static void createApplicationContext() {
     ensureServletContext();
-    createWebContextDirectories();
+    createWebContextDirectory();
     triggerServletContextInitialized();
   }
 
@@ -159,7 +159,7 @@ public final class Fixture {
     //      with it, so I introduced a flag that can be switch on for fast tests on local machines
     //      and switched of for the integration build tests. Think about a less intrusive solution.
     if( !usePerformanceOptimizations() ) {
-      deleteWebContextDirectories();
+      deleteWebContextDirectory();
     }
   }
 
@@ -203,19 +203,11 @@ public final class Fixture {
   /////////////////////////////////////////////////////////////////////
   // Methods to control web context directories and resource management
 
-  public static void createWebContextDirectories() {
+  public static void createWebContextDirectory() {
     WEB_CONTEXT_DIR.mkdirs();
-    File webInf = new File( WEB_CONTEXT_DIR, "WEB-INF" );
-    webInf.mkdirs();
-    File conf = new File( webInf, "conf" );
-    conf.mkdirs();
-    File classes = new File( webInf, "classes" );
-    classes.mkdirs();
-    File libDir = new File( webInf, "lib" );
-    libDir.mkdirs();
   }
 
-  public static void deleteWebContextDirectories() {
+  public static void deleteWebContextDirectory() {
     if( WEB_CONTEXT_DIR.exists() ) {
       delete( WEB_CONTEXT_DIR );
     }

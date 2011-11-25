@@ -43,12 +43,12 @@ public class RWTConfigurationImpl_Test extends TestCase {
   }
 
   protected void setUp() {
-    Fixture.createWebContextDirectories();
+    Fixture.createWebContextDirectory();
     configuration = new RWTConfigurationImpl();
   }
 
   protected void tearDown() {
-    Fixture.deleteWebContextDirectories();
+    Fixture.deleteWebContextDirectory();
   }
 
   private void configure() {
