@@ -331,6 +331,21 @@ public class UICallBackManager_Test extends TestCase {
     assertFalse( manager.hasRunnables() );
     verifyZeroInteractions( runnable );
   }
+  
+  public void testTimerExecActivatesUICallback() {
+    display.timerExec( TIMER_EXEC_DELAY, mock( Runnable.class ) );
+    
+    assertTrue( UICallBackManager.getInstance().isUICallBackActive() );
+  }
+  
+  public void testDispatchingTimerExecRunnableDeactivatesUICallback() throws Exception {
+    Runnable runnable = mock( Runnable.class );
+    display.timerExec( TIMER_EXEC_DELAY, runnable );
+
+    Thread.sleep( TIMER_EXEC_DELAY + 50 );
+    
+    assertFalse( UICallBackManager.getInstance().isUICallBackActive() );
+  }
 
   // This test ensures that addSync doesn't cause deadlocks
   public void testSyncExecBlock() throws Exception {

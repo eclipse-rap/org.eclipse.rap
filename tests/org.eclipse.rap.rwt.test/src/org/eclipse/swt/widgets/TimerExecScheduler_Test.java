@@ -14,6 +14,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
+import org.eclipse.rwt.internal.uicallback.UICallBackManager;
 
 
 public class TimerExecScheduler_Test extends TestCase {
@@ -44,7 +45,7 @@ public class TimerExecScheduler_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     display = new Display();
-    scheduler = new TimerExecScheduler( display );
+    scheduler = new TimerExecScheduler( display, UICallBackManager.getInstance() );
   }
   
   @Override

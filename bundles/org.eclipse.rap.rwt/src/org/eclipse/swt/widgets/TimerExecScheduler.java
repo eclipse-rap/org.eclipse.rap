@@ -22,6 +22,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.eclipse.rwt.internal.engine.PostDeserialization;
+import org.eclipse.rwt.internal.uicallback.UICallBackManager;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.SerializableCompatibility;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
@@ -30,30 +31,29 @@ import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 final class TimerExecScheduler implements SerializableCompatibility {
 
   private final Display display;
+  private final UICallBackManager uiCallBackManager;
   private final Collection<TimerExecTask> tasks;
   private transient Timer timer;
 
-  TimerExecScheduler( Display display ) {
+  TimerExecScheduler( Display display, UICallBackManager uiCallBackManager ) {
     this.display = display;
+    this.uiCallBackManager = uiCallBackManager;
     this.tasks = new LinkedList<TimerExecTask>();
   }
 
   void schedule( int milliseconds, Runnable runnable ) {
+    TimerExecTask task = new TimerExecTask( runnable, milliseconds );
     synchronized( display.getDeviceLock() ) {
       initializeTimer();
-      TimerExecTask task = new TimerExecTask( runnable, milliseconds );
       tasks.add( task );
       timer.schedule( task, milliseconds );
     }
   }
 
   void cancel( Runnable runnable ) {
-    synchronized( display.getDeviceLock() ) {
-      TimerExecTask task = findTask( runnable );
-      if( task != null ) {
-        removeTask( task );
-        task.cancel();
-      }
+    TimerExecTask task = removeTask( runnable );
+    if( task != null ) {
+      task.cancel();
     }
   }
 
@@ -64,18 +64,6 @@ final class TimerExecScheduler implements SerializableCompatibility {
       }
       tasks.clear();
     }
-  }
-
-  private TimerExecTask findTask( Runnable runnable ) {
-    Iterator<TimerExecTask> iter = tasks.iterator();
-    TimerExecTask result = null;
-    while( result == null && iter.hasNext() ) {
-      TimerExecTask task = iter.next();
-      if( task.getRunnable() == runnable ) {
-        result = task;
-      }
-    }
-    return result;
   }
 
   private void initializeTimer() {
@@ -93,6 +81,21 @@ final class TimerExecScheduler implements SerializableCompatibility {
         }
       }
     }
+  }
+
+  private TimerExecTask removeTask( Runnable runnable ) {
+    TimerExecTask result = null;
+    synchronized( display.getDeviceLock() ) {
+      Iterator<TimerExecTask> iter = tasks.iterator();
+      while( result == null && iter.hasNext() ) {
+        TimerExecTask task = iter.next();
+        if( task.getRunnable() == runnable ) {
+          removeTask( result );
+          result = task;
+        }
+      }
+    }
+    return result;
   }
 
   private void removeTask( TimerTask task ) {
@@ -122,6 +125,7 @@ final class TimerExecScheduler implements SerializableCompatibility {
     TimerExecTask( Runnable runnable, long milliseconds ) {
       this.runnable = runnable;
       this.time = new Date( System.currentTimeMillis() + milliseconds );
+      uiCallBackManager.activateUICallBacksFor( getUICallBackId() );
     }
 
     public void run() {
@@ -131,6 +135,12 @@ final class TimerExecScheduler implements SerializableCompatibility {
           display.asyncExec( runnable );
         }
       }
+      uiCallBackManager.deactivateUICallBacksFor( getUICallBackId() );
+    }
+    
+    public boolean cancel() {
+      uiCallBackManager.deactivateUICallBacksFor( getUICallBackId() );
+      return super.cancel();  
     }
 
     Runnable getRunnable() {
@@ -139,6 +149,10 @@ final class TimerExecScheduler implements SerializableCompatibility {
 
     Date getTime() {
       return time;
+    }
+
+    private String getUICallBackId() {
+      return getClass().getName() + "-" + System.identityHashCode( this );
     }
   }
 

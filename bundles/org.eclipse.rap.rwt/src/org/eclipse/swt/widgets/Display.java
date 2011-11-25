@@ -1081,7 +1081,7 @@ public class Display extends Device implements Adaptable {
       error( SWT.ERROR_NULL_ARGUMENT );
     }
     if( scheduler == null ) {
-      scheduler = new TimerExecScheduler( this );
+      scheduler = new TimerExecScheduler( this, UICallBackManager.getInstance() );
     }
     if( milliseconds < 0 ) {
       scheduler.cancel( runnable );
