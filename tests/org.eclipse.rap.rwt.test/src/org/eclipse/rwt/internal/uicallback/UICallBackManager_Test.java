@@ -12,6 +12,8 @@
 package org.eclipse.rwt.internal.uicallback;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -52,7 +54,6 @@ public class UICallBackManager_Test extends TestCase {
   private static final String ID_1 = "id_1";
   private static final String ID_2 = "id_2";
   private static final String RUN_ASYNC_EXEC = "run async exec|";
-  private static final String RUN_TIMER_EXEC = "timerExecCode|";
   private static final Runnable EMPTY_RUNNABLE = new NoOpRunnable();
 
   static {
@@ -303,68 +304,32 @@ public class UICallBackManager_Test extends TestCase {
 
   public void testTimerExec() throws Exception {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Runnable runnable = new Runnable() {
-      public void run() {
-        log += RUN_TIMER_EXEC;
-      }
-    };
+    Runnable runnable = mock( Runnable.class );
     display.timerExec( TIMER_EXEC_DELAY, runnable );
-    assertFalse( display.readAndDispatch() );
-    assertEquals( "", log.toString() );
     Thread.sleep( TIMER_EXEC_DELAY + 50 );
+
     display.readAndDispatch();
-    assertEquals( RUN_TIMER_EXEC, log.toString() );
-  }
-
-  public void testTimerExecWithIllegalArgument() {
-    try {
-      display.timerExec( 1, null );
-      fail( "timerExec: runnable must not be null" );
-    } catch( IllegalArgumentException expected ) {
-    }
-  }
-
-  public void testTimerExecFromBackgroundThread() throws Exception {
-    Runnable runnable = new Runnable() {
-      public void run() {
-        display.timerExec( TIMER_EXEC_DELAY, EMPTY_RUNNABLE );
-      }
-    };
-
-    Throwable exceptionInTimerExec = null;
-    try {
-      Fixture.runInThread( runnable );
-    } catch( Throwable thr ) {
-      exceptionInTimerExec = thr;
-    }
     
-    assertTrue( exceptionInTimerExec instanceof SWTException );
-    SWTException swtException = ( SWTException )exceptionInTimerExec;
-    assertEquals( swtException.code, SWT.ERROR_THREAD_INVALID_ACCESS );
+    verify( runnable ).run();
   }
 
-  // Ensure that runnables that were added via addTimer but should be executed
+  // Ensure that runnables that were added via timerExec but should be executed
   // in the future are *not* executed on session shutdown
   public void testNoTimerExecAfterSessionShutdown() throws Exception {
-    Runnable runnable = new TimerExecRunnable();
+    Runnable runnable = mock( Runnable.class );
     display.timerExec( TIMER_EXEC_DELAY, runnable );
     display.dispose();
     Thread.sleep( SLEEP_TIME );
-    assertEquals( "", log.toString() );
+    verifyZeroInteractions( runnable );
   }
 
   public void testRemoveAddedTimerExec() throws Exception {
-    Runnable runnable = new TimerExecRunnable();
+    Runnable runnable = mock( Runnable.class );
     display.timerExec( TIMER_EXEC_DELAY, runnable );
     display.timerExec( -1, runnable );
     Thread.sleep( SLEEP_TIME );
     assertFalse( manager.hasRunnables() );
-    assertEquals( "", log );
-  }
-
-  public void testRemoveNonExistingTimerExec() {
-    display.timerExec( -1, EMPTY_RUNNABLE );
-    // must not cause any exception
+    verifyZeroInteractions( runnable );
   }
 
   // This test ensures that addSync doesn't cause deadlocks
@@ -610,12 +575,6 @@ public class UICallBackManager_Test extends TestCase {
     result.setStateInfo( stateInfo );
     stateInfo.setResponseWriter( new JavaScriptResponseWriter( response ) );
     return result;
-  }
-
-  private class TimerExecRunnable implements Runnable {
-    public void run() {
-      log += RUN_TIMER_EXEC;
-    }
   }
 
   private class AsyncExecRunnable implements Runnable {

@@ -902,7 +902,7 @@ public class Display_Test extends TestCase {
     }
   }
 
-  public void testTimerExec() {
+  public void testTimerExecWithNullArgument() {
     // Ensure that parameters are checked properly
     final Display display = new Display();
     try {
@@ -928,6 +928,12 @@ public class Display_Test extends TestCase {
     } catch( SWTException expected ) {
       assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, expected.code );
     }
+  }
+
+  public void testRemoveNonExistingTimerExec() {
+    Display display = new Display();
+    display.timerExec( -1, new NoOpRunnable() );
+    // must not cause any exception
   }
 
   public void testGetMonitors() {
