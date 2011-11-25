@@ -17,6 +17,7 @@ import java.io.Serializable;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.accessibility.ACC;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Point;
@@ -230,8 +231,7 @@ abstract class SWTFocusCellManager implements Serializable {
 		
 		this.cellHighlighter.focusCellChanged(focusCell,oldCell);
 
-// RAP [rh] accessibility		
-//		getViewer().getControl().getAccessible().setFocus(ACC.CHILDID_SELF);
+		getViewer().getControl().getAccessible().setFocus(ACC.CHILDID_SELF);
 	}
 
 	ColumnViewer getViewer() {
