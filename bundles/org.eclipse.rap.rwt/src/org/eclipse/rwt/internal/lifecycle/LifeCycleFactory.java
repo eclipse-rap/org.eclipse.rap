@@ -49,14 +49,14 @@ public class LifeCycleFactory {
     }
   }
 
+  public void deactivate() {
+    lifeCycleClass = DEFAULT_LIFE_CYCLE_CLASS;
+    lifeCycle = null;
+  }
+
   private LifeCycle newLifeCycle() {
     Class[] paramTypes = new Class[] { EntryPointManager.class };
     Object[] paramValues = new Object[] { entryPointManager };
     return ( LifeCycle )ClassUtil.newInstance( lifeCycleClass, paramTypes, paramValues );
-  }
-
-  public void deactivate() {
-    lifeCycleClass = DEFAULT_LIFE_CYCLE_CLASS;
-    lifeCycle = null;
   }
 }
