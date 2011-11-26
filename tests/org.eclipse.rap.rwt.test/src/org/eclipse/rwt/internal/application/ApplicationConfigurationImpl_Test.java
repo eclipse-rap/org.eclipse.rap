@@ -39,6 +39,14 @@ public class ApplicationConfigurationImpl_Test extends TestCase {
     ILifeCycle lifeCycle = applicationContext.getLifeCycleFactory().getLifeCycle();
     assertSame( SimpleLifeCycle.class, lifeCycle.getClass() );
   }
+  
+  public void testSetOperationModeWithNullArgument() {
+    try {
+      applicationConfiguration.setOperationMode( null );
+      fail();
+    } catch( NullPointerException expected ) {
+    }
+  }
 
   public void testSetOperationModeToSWTCompatibility() {
     applicationConfiguration.setOperationMode( OperationMode.SWT_COMPATIBILITY );

@@ -61,6 +61,7 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
   }
   
   public void setOperationMode( OperationMode operationMode ) {
+    ParamCheck.notNull( operationMode, "operationMode" );
     switch( operationMode ) {
       case JEE_COMPATIBILITY:
         break;
