@@ -26,12 +26,13 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 
 
+@SuppressWarnings("deprecation")
 public class Button_Test extends TestCase {
 
-  public void testImage() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
+  private Display display;
+  private Composite shell;
 
+  public void testImage() {
     Button button = new Button( shell, SWT.NONE );
     button.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     assertSame( Graphics.getImage( Fixture.IMAGE1 ), button.getImage() );
@@ -47,6 +48,11 @@ public class Button_Test extends TestCase {
     arrowButton.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     assertEquals( null, arrowButton.getImage() );
 
+  }
+  
+  public void testSetImageWithDisposedImage() {
+    Button button = new Button( shell, SWT.NONE );
+    
     ClassLoader loader = Fixture.class.getClassLoader();
     InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
     Image image = new Image( display, stream );
@@ -54,28 +60,23 @@ public class Button_Test extends TestCase {
     try {
       button.setImage( image );
       fail( "Must not allow disposed image" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
-  public void testText() {
-  	Display display = new Display();
-  	Composite shell = new Shell( display, SWT.NONE );
-
+  public void testSetText() {
   	Button button = new Button( shell, SWT.NONE );
   	button.setText( "Click me!" );
   	assertSame( "Click me!", button.getText() );
-
-  	Button arrowButton = new Button( shell, SWT.ARROW );
-  	arrowButton.setText( "Click me!" );
-  	assertTrue( arrowButton.getText().length() == 0 );
+  }
+  
+  public void testSetTextForArrowButton() {
+    Button arrowButton = new Button( shell, SWT.ARROW );
+    arrowButton.setText( "Click me!" );
+    assertTrue( arrowButton.getText().length() == 0 );
   }
 
   public void testAlignment() {
-  	Display display = new Display();
-  	Composite shell = new Shell( display, SWT.NONE );
-
   	Button button = new Button( shell, SWT.NONE );
   	button.setAlignment( SWT.LEFT );
   	assertEquals( SWT.LEFT, button.getAlignment() );
@@ -118,9 +119,6 @@ public class Button_Test extends TestCase {
   }
 
   public void testSelection() {
-  	Display display = new Display();
-  	Composite shell = new Shell( display, SWT.NONE );
-
   	Button button = new Button( shell, SWT.NONE );
     assertFalse( button.getSelection() );
   	button.setSelection( true );
@@ -149,8 +147,6 @@ public class Button_Test extends TestCase {
   }
 
   public void testGrayed() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.CHECK );
     assertFalse( button.getGrayed() );
     button.setGrayed( true );
@@ -168,9 +164,6 @@ public class Button_Test extends TestCase {
   }
 
   public void testComputeSize() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-
     // Text and image to use
     String text = "Click me!";
     Point extent = Graphics.stringExtent( shell.getFont(), text );
@@ -268,9 +261,6 @@ public class Button_Test extends TestCase {
   }
 
   public void testComputeSizeWithCustomTheme() throws IOException {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-
     String css = "Button {\nspacing: 10px;\n}";
     ThemeTestUtil.registerCustomTheme( "custom", css, null );
     ThemeUtil.setCurrentThemeId( "custom" );
@@ -299,8 +289,6 @@ public class Button_Test extends TestCase {
   }
 
   public void testComputeSizeWithWrap() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     String text = "Click me!";
     String textWithBreak = "Click\nme!";    
     Button buttonNoWrap = new Button( shell, SWT.NONE );
@@ -322,6 +310,8 @@ public class Button_Test extends TestCase {
   
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
   }
 
   protected void tearDown() throws Exception {

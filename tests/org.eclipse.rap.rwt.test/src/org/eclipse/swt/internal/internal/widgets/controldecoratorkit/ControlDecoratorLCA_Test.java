@@ -42,6 +42,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     Fixture.tearDown();
   }
 
+  @SuppressWarnings("deprecation")
   public void testPreserveValues() {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );

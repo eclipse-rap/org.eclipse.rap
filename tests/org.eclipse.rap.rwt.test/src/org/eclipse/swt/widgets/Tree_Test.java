@@ -26,6 +26,7 @@ import org.eclipse.swt.internal.widgets.ITreeAdapter;
 import org.eclipse.swt.internal.widgets.ItemHolder;
 
 
+@SuppressWarnings("deprecation")
 public class Tree_Test extends TestCase {
 
   private Display display;

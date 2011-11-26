@@ -11,10 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -23,6 +25,7 @@ import org.eclipse.swt.graphics.Point;
 
 public class Label_Test extends TestCase {
 
+  private Display display;
   private Shell shell;
 
   public void testInitialValues() {
@@ -88,18 +91,18 @@ public class Label_Test extends TestCase {
     assertEquals( SWT.CENTER, label.getAlignment() );
   }
 
-  public void testSeparatorLabel() {
+  public void testSeparatorLabel() throws IOException {
     Label label = new Label( shell, SWT.SEPARATOR );
     label.setText( "bla" );
     assertEquals( "", label.getText() );
-    label.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
-    assertEquals( null, label.getImage() );
+    label.setImage( createImage() );
+    assertNull( label.getImage() );
   }
 
-  public void testImageAndText() {
+  public void testImageAndText() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     label.setText( "bla" );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage();
     label.setImage( image );
     assertSame( image, label.getImage() );
     assertEquals( "", label.getText() );
@@ -131,7 +134,7 @@ public class Label_Test extends TestCase {
     assertTrue( extentWrap.y > 0 );
   }
 
-  public void testComputeSize() {
+  public void testComputeSize() throws IOException {
     Label label = new Label( shell, SWT.NONE );
     Point expected = new Point( 0, 14 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -140,12 +143,13 @@ public class Label_Test extends TestCase {
     expected = new Point( 67, 20 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
-    label.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
-    expected = new Point( 100, 50 );
+    Image image = createImage();
+    label.setImage( image );
+    expected = new Point( image.getBounds().width, image.getBounds().height );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     label = new Label( shell, SWT.BORDER );
-    label.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    label.setImage( image );
     expected = new Point( 102, 52 );
     assertEquals( expected, label.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
@@ -174,11 +178,18 @@ public class Label_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
+    display = new Display();
     shell = new Shell( display , SWT.NONE );
   }
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  private Image createImage() throws IOException {
+    InputStream stream = Fixture.class.getClassLoader().getResourceAsStream( Fixture.IMAGE_100x50 );
+    Image result = new Image( display, stream );
+    stream.close();
+    return result;
   }
 }

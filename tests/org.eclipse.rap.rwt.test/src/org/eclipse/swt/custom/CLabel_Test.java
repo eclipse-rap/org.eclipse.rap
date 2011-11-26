@@ -64,6 +64,7 @@ public class CLabel_Test extends TestCase {
     assertEquals( label.getText(), "bar" );
   }
 
+  @SuppressWarnings("deprecation")
   public void testComputeSize() {
     CLabel label = new CLabel( shell, SWT.RIGHT );
     Point expected = new Point( 12, 26 );

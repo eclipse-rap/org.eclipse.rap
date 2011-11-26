@@ -37,6 +37,7 @@ import org.json.*;
 
 
 // TODO [rst] Split into different test classes for button types
+@SuppressWarnings("deprecation")
 public class ButtonLCA_Test extends TestCase {
 
   private static final String PROP_SELECTION_LISTENER = "listener_selection";

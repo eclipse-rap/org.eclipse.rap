@@ -474,6 +474,7 @@ public class CTabFolder_Test extends TestCase {
     assertEquals( 0, gfxPercents[ 1 ] );
   }
 
+  @SuppressWarnings("deprecation")
   public void testSelectionBackgroundImage() {
     CTabFolder folder = new CTabFolder( shell, SWT.MULTI );
     Object adapter = folder.getAdapter( ICTabFolderAdapter.class );

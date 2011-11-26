@@ -38,6 +38,7 @@ import org.eclipse.swt.widgets.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+@SuppressWarnings("deprecation")
 public class TreeLCA_Test extends TestCase {
 
   private Display display;

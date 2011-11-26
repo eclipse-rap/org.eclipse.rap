@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.json.*;
 
 
+@SuppressWarnings("deprecation")
 public class CLabelLCA_Test extends TestCase {
 
   private Display display;

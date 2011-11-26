@@ -189,6 +189,7 @@ public class CTabItem_Test extends TestCase {
     assertFalse( item.getShowClose() );
   }
 
+  @SuppressWarnings("deprecation")
   public void testShowImage() {
     CTabItem item1, item2;
     Display display = new Display();

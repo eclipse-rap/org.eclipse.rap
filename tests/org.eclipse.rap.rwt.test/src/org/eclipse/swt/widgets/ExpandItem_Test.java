@@ -22,6 +22,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 
 
+@SuppressWarnings("deprecation")
 public class ExpandItem_Test extends TestCase {
 
   private Display display;

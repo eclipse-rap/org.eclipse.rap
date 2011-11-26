@@ -130,6 +130,7 @@ public class MenuItem_Test extends TestCase {
     assertEquals( true, radioItem2.getSelection() );
   }
 
+  @SuppressWarnings("deprecation")
   public void testImage() {
     Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );

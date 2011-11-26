@@ -20,6 +20,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 
+@SuppressWarnings("deprecation")
 public class Decorator_Test extends TestCase {
 
   private Shell shell;

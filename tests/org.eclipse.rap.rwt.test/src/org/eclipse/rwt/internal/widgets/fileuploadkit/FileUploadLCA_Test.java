@@ -60,6 +60,7 @@ public class FileUploadLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
+  @SuppressWarnings("deprecation")
   public void testRenderTextAndImage() throws Exception {
     FileUpload upload = new FileUpload( shell, SWT.NONE );
     upload.setText( "Test" );

@@ -119,7 +119,8 @@ public class ExpandBarLCA_Test extends TestCase {
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
   }
 
-  private ExpandItem createExpandItems( final ExpandBar expandBar ) {
+  @SuppressWarnings("deprecation")
+  private ExpandItem createExpandItems( ExpandBar expandBar ) {
     Display display = expandBar.getDisplay();
     // First item
     Composite composite = new Composite( expandBar, SWT.NONE );

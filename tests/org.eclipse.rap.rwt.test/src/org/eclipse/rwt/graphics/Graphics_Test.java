@@ -31,6 +31,7 @@ import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Display;
 
 
+@SuppressWarnings("deprecation")
 public class Graphics_Test extends TestCase {
 
   private Display display;
@@ -97,7 +98,6 @@ public class Graphics_Test extends TestCase {
     }
   }
   
-  @SuppressWarnings("deprecation")
   public void testGetCursor() {
     Cursor cursor = Graphics.getCursor( SWT.CURSOR_ARROW );
     assertSame( display.getSystemCursor( SWT.CURSOR_ARROW ), cursor );

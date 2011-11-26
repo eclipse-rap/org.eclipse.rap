@@ -9,7 +9,9 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-package org.eclipse.swt.widgets;import java.util.LinkedList;
+package org.eclipse.swt.widgets;import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedList;
 
 import junit.framework.TestCase;
 
@@ -27,16 +29,6 @@ public class Table_Test extends TestCase {
 
   private Display display;
   private Shell shell;
-
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    display = new Display();
-    shell = new Shell( display );
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 
   public void testInitialValues() {
     Table table = new Table( shell, SWT.NONE );
@@ -1081,20 +1073,20 @@ public class Table_Test extends TestCase {
     assertTrue( tableAdapter.isItemVirtual( 900 ) );
   }
 
-  public void testClearNonVirtual() {
+  public void testClearNonVirtual() throws IOException {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.CHECK );
     new TableColumn( table, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
-    ITableAdapter tableAdapter
-      = table.getAdapter( ITableAdapter.class );
-
+    ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
     table.setSelection( item );
     item.setText( "abc" );
-    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+    item.setImage( createImage50x100() );
     item.setChecked( true );
     item.setGrayed( true );
+
     table.clear( table.indexOf( item ) );
+    
     assertEquals( "", item.getText() );
     assertEquals( null, item.getImage() );
     assertEquals( false, item.getChecked() );
@@ -1102,12 +1094,15 @@ public class Table_Test extends TestCase {
     assertFalse( tableAdapter.isItemVirtual( table.indexOf( item ) ) );
     assertSame( item, table.getSelection()[ 0 ] );
 
-    // Test clear with illegal arguments
+  }
+  
+  public void testClearWithIllegalArgument() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    Table table = new Table( shell, SWT.CHECK );
     try {
       table.clear( 2 );
       fail( "Must throw exception when attempting to clear non-existing item" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -1128,61 +1123,65 @@ public class Table_Test extends TestCase {
     assertEquals( 0, table.getSelectionIndex() );
   }
 
-  public void testClearRange() {
+  public void testClearRange() throws IOException {
+    Image image = createImage50x100();
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem[] items = new TableItem[ 10 ];
     for( int i = 0; i < 10; i++ ) {
       items[ i ] = new TableItem( table, SWT.NONE );
       items[ i ].setText( "abc" );
-      items[ i ].setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+      items[ i ].setImage( image );
     }
     table.clear( 2, 5 );
-    Image img = Graphics.getImage( Fixture.IMAGE1 );
     for( int i = 0; i < 10; i++ ) {
       if( i >= 2 && i <= 5 ) {
         assertEquals( "", items[ i ].getText() );
-        assertEquals( null, items[ i ].getImage() );
+        assertNull( items[ i ].getImage() );
       } else {
         assertEquals( "abc", items[ i ].getText() );
-        assertEquals( img, items[ i ].getImage() );
+        assertSame( image, items[ i ].getImage() );
       }
     }
-    // Test clear with illegal arguments (end > items)
+  }
+  
+  public void testClearRangeWithIllegalArgument() {
+    Table table = new Table( shell, SWT.NONE );
     try {
       table.clear( 1, 11 );
       fail( "Must throw exception when attempting to clear non-existing items" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
-  public void testClearIndices() {
+  public void testClearIndices() throws IOException {
     Table table = new Table( shell, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     TableItem[] items = new TableItem[ 10 ];
+    Image image = createImage50x100();
     for( int i = 0; i < 10; i++ ) {
       items[ i ] = new TableItem( table, SWT.NONE );
       items[ i ].setText( "abc" );
-      items[ i ].setImage( Graphics.getImage( Fixture.IMAGE1 ) );
+      items[ i ].setImage( image );
     }
     table.clear( new int[] { 1, 3, 5 } );
-    Image img = Graphics.getImage( Fixture.IMAGE1 );
     for( int i = 0; i < 10; i++ ) {
       if( i == 1 || i == 3 || i == 5 ) {
         assertEquals( "", items[ i ].getText() );
-        assertEquals( null, items[ i ].getImage() );
+        assertNull( items[ i ].getImage() );
       } else {
         assertEquals( "abc", items[ i ].getText() );
-        assertEquals( img, items[ i ].getImage() );
+        assertSame( image, items[ i ].getImage() );
       }
     }
-    // Test clear with illegal arguments
+  }
+  
+  public void testClearIndicesWithIllegalArgument() {
+    Table table = new Table( shell, SWT.NONE );
     try {
       table.clear( new int[] { 2, 4, 15 } );
       fail( "Must throw exception when attempting to clear non-existing items" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
@@ -1552,18 +1551,18 @@ public class Table_Test extends TestCase {
   }
 
   // bug 303473
-  public void testItemImageSizeAfterClear() {
+  public void testItemImageSizeAfterClear() throws IOException {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
-    item.setImage( Graphics.getImage( Fixture.IMAGE_50x100 ) );
+    item.setImage( createImage50x100() );
     table.clearAll();
     assertEquals( new Point( 0, 0 ), table.getItemImageSize() );
   }
 
-  public void testItemImageSizeAfterRemovingAllItems() {
+  public void testItemImageSizeAfterRemovingAllItems() throws IOException {
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
-    item.setImage( Graphics.getImage( Fixture.IMAGE_50x100 ) );
+    item.setImage( createImage50x100() );
     item.dispose();
     assertEquals( new Point( 0, 0 ), table.getItemImageSize() );
   }
@@ -1599,7 +1598,7 @@ public class Table_Test extends TestCase {
     assertEquals( 1, ItemHolder.getItemHolder( table ).getItems().length );
   }
 
-  public void testItemImageSize() {
+  public void testItemImageSize() throws IOException {
     Table table = new Table( shell, SWT.NONE );
 
     // Test initial itemImageSize
@@ -1611,11 +1610,11 @@ public class Table_Test extends TestCase {
     assertEquals( new Point( 0, 0 ), table.getItemImageSize() );
 
     // Setting the first image also sets the itemImageSize for always and ever
-    item.setImage( Graphics.getImage( Fixture.IMAGE_50x100 ) );
+    item.setImage( createImage50x100() );
     assertEquals( new Point( 50, 100 ), table.getItemImageSize() );
 
     // Ensure that the itemImageSize - once detemined - does not change anymore
-    item.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    item.setImage( createImage100x50() );
     assertEquals( new Point( 50, 100 ), table.getItemImageSize() );
 
     // Ensure that the method returns the actual image size, not clipped by the
@@ -1625,7 +1624,7 @@ public class Table_Test extends TestCase {
     assertEquals( new Point( 50, 100 ), table.getItemImageSize() );
   }
 
-  public void testHasColumnImages() {
+  public void testHasColumnImages() throws IOException {
     Table table = new Table( shell, SWT.NONE );
     TableItem item0 = new TableItem( table, SWT.NONE );
 
@@ -1633,17 +1632,18 @@ public class Table_Test extends TestCase {
     assertFalse( table.hasColumnImages( 0 ) );
     item0.setImage( ( Image )null );
     assertFalse( table.hasColumnImages( 0 ) );
-    item0.setImage( Graphics.getImage( Fixture.IMAGE_50x100 ) );
+    item0.setImage( createImage50x100() );
     assertTrue( table.hasColumnImages( 0 ) );
     item0.setImage( ( Image )null );
     assertFalse( table.hasColumnImages( 0 ) );
-    item0.setImage( Graphics.getImage( Fixture.IMAGE_50x100 ) );
+    item0.setImage( createImage50x100() );
     item0.dispose();
     assertFalse( table.hasColumnImages( 0 ) );
+    
     item0 = new TableItem( table, SWT.NONE );
-    item0.setImage( Graphics.getImage( Fixture.IMAGE_50x100 ) );
+    item0.setImage( createImage50x100() );
     TableItem item1 = new TableItem( table, SWT.NONE );
-    item1.setImage( Graphics.getImage( Fixture.IMAGE_50x100 ) );
+    item1.setImage( createImage50x100() );
     assertTrue( table.hasColumnImages( 0 ) );
     item1.setImage( ( Image )null );
     assertTrue( table.hasColumnImages( 0 ) );
@@ -1653,12 +1653,12 @@ public class Table_Test extends TestCase {
     TableColumn column0 = new TableColumn( table, SWT.NONE );
     new TableColumn( table, SWT.NONE );
     item0 = new TableItem( table, SWT.NONE );
-    item0.setImage( 1, Graphics.getImage( Fixture.IMAGE_50x100 ) );
+    item0.setImage( 1, createImage50x100() );
     assertFalse( table.hasColumnImages( 0 ) );
     assertTrue( table.hasColumnImages( 1 ) );
     column0.dispose();
     assertTrue( table.hasColumnImages( 0 ) );
-    item0.setImage( 0, Graphics.getImage( Fixture.IMAGE_50x100 ) );
+    item0.setImage( 0, createImage50x100() );
     assertTrue( table.hasColumnImages( 0 ) );
     item0.setImage( 0, null );
     assertFalse( table.hasColumnImages( 0 ) );
@@ -1883,14 +1883,14 @@ public class Table_Test extends TestCase {
     assertEquals( 6, table.getVisibleItemCount( true ) );
   }
 
-  public void testGetItemHeight() {
+  public void testGetItemHeight() throws IOException {
     Table table = new Table( shell, SWT.NONE );
     TableItem item1 = new TableItem( table, SWT.NONE );
     item1.setText( "Item 1" );
     // default font size (11) + hardcoded minimal vertical padding (4)
     assertEquals( 26, table.getItemHeight() );
     TableItem item2 = new TableItem( table, SWT.NONE );
-    item2.setImage( Graphics.getImage( Fixture.IMAGE_100x50 ) );
+    item2.setImage( createImage100x50() );
     // vertical padding defaults to 0
     assertEquals( 62, table.getItemHeight() );
   }
@@ -1999,7 +1999,7 @@ public class Table_Test extends TestCase {
     assertFalse( table.hasHScrollBar() );
   }
 
-  public void testUpdateScrollBarOnItemWidthChange() {
+  public void testUpdateScrollBarOnItemWidthChange() throws IOException {
     Table table = new Table( shell, SWT.NONE );
     table.setSize( 60, 60 );
     TableItem item = new TableItem( table, SWT.NONE );
@@ -2008,7 +2008,7 @@ public class Table_Test extends TestCase {
     assertTrue( table.hasHScrollBar() );
     item.setText( "" );
     assertFalse( table.hasHScrollBar() );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+    Image image = createImage100x50();
     item.setImage( image );
     assertTrue( table.hasHScrollBar() );
     item.setImage( ( Image )null );
@@ -2054,7 +2054,7 @@ public class Table_Test extends TestCase {
     assertTrue( table.hasVScrollBar() );
   }
 
-  public void testUpdateScrollBarItemWidthChangeWithColumn() {
+  public void testUpdateScrollBarItemWidthChangeWithColumn() throws IOException {
     Table table = new Table( shell, SWT.NONE );
     table.setSize( 20, 100 );
     TableColumn column = new TableColumn( table, SWT.LEFT );
@@ -2063,8 +2063,7 @@ public class Table_Test extends TestCase {
     assertFalse( table.hasHScrollBar() );
     item.setText( "Very long long long long long long long long text" );
     assertFalse( table.hasHScrollBar() );
-    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
-    item.setImage( image );
+    item.setImage( createImage100x50() );
     assertFalse( table.hasHScrollBar() );
   }
 
@@ -2275,12 +2274,12 @@ public class Table_Test extends TestCase {
   // 288634: [Table] TableItem images are not displayed if columns are created
   // after setInput
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=288634
-  public void testUpdateColumnImageCount() {
+  public void testUpdateColumnImageCount() throws IOException {
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.NONE );
     TableItem item = new TableItem( table, SWT.NONE );
     item.setText( new String[] { "col 1", "col 2", "col 3" } );
-    Image image = Graphics.getImage( Fixture.IMAGE1 );
+    Image image = createImage50x100();
     item.setImage( new Image[] { image, null, image } );
     assertTrue( table.hasColumnImages( 0 ) );
     TableColumn col1 = new TableColumn( table, SWT.NONE );
@@ -2429,7 +2428,31 @@ public class Table_Test extends TestCase {
     }
   }
   
-  private static boolean find( final int element, final int[] array ) {
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
+  private Image createImage50x100() throws IOException {
+    InputStream stream = Fixture.class.getClassLoader().getResourceAsStream( Fixture.IMAGE_50x100 );
+    Image result = new Image( display, stream );
+    stream.close();
+    return result;
+  }
+
+  private Image createImage100x50() throws IOException {
+    InputStream stream = Fixture.class.getClassLoader().getResourceAsStream( Fixture.IMAGE_100x50 );
+    Image result = new Image( display, stream );
+    stream.close();
+    return result;
+  }
+  
+  private static boolean find( int element, int[] array ) {
     boolean result = false;
     for( int i = 0; i < array.length; i++ ) {
       if( element == array[ i ] ) {

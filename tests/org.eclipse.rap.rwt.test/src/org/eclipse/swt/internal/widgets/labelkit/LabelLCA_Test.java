@@ -34,6 +34,7 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 import org.json.*;
 
+@SuppressWarnings("deprecation")
 public class LabelLCA_Test extends TestCase {
 
   private Display display;

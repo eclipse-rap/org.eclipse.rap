@@ -32,6 +32,7 @@ import org.eclipse.swt.internal.widgets.IControlAdapter;
 import org.eclipse.swt.layout.FillLayout;
 
 
+@SuppressWarnings("deprecation")
 public class Control_Test extends TestCase {
 
   private static class RedrawLogginShell extends Shell {

@@ -101,6 +101,7 @@ public class Composite_Test extends TestCase {
     assertTrue( adapter.getBackgroundTransparency() );
   }
 
+  @SuppressWarnings("deprecation")
   public void testComputeSize() {
     Composite composite = new Composite( shell, SWT.BORDER );
     assertEquals( 1, composite.getBorderWidth() );

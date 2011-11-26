@@ -26,6 +26,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITreeItemAdapter;
 
+@SuppressWarnings("deprecation")
 public class TreeItem_Test extends TestCase {
 
   private Display display;

@@ -40,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 
+@SuppressWarnings("deprecation")
 public class TableLCA_Test extends TestCase {
 
   private Display display;

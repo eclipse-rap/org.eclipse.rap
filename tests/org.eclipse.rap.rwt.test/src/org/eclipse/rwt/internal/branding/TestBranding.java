@@ -72,6 +72,7 @@ public class TestBranding extends AbstractBranding {
     return headers;
   }
 
+  @SuppressWarnings("deprecation")
   public void registerResources() throws IOException {
     registerResourcesCallCount++;
     if( favIcon != null && !"".equals( favIcon ) ) {

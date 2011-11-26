@@ -23,6 +23,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
 
 
+@SuppressWarnings("deprecation")
 public class Image_Test extends TestCase {
 
   //////////////////////////

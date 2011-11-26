@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.*;
 import org.json.JSONObject;
 
 
+@SuppressWarnings("deprecation")
 public class ShellLCA_Test extends TestCase {
 
   private Display display;

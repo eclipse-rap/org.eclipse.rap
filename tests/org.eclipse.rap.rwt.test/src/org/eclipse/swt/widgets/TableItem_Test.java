@@ -30,6 +30,7 @@ import org.eclipse.swt.internal.widgets.ITableItemAdapter;
 import org.eclipse.swt.layout.FillLayout;
 
 
+@SuppressWarnings("deprecation")
 public class TableItem_Test extends TestCase {
 
   private Display display;

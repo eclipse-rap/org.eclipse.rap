@@ -505,6 +505,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 
+  @SuppressWarnings("deprecation")
   public void testWriteSelectionBackgroundImage() throws IOException {
     Display display = new Display();
     Shell shell = new Shell( display , SWT.NONE );

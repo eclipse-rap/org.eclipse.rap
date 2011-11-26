@@ -76,6 +76,7 @@ public class ImageDataCache_Test extends TestCase {
     Fixture.disposeOfApplicationContext();
   }
 
+  @SuppressWarnings("deprecation")
   private static ImageData getImageData( String resource ) {
     InputStream inputStream = RWT.getResourceManager().getResourceAsStream( resource );
     return new ImageData( inputStream );

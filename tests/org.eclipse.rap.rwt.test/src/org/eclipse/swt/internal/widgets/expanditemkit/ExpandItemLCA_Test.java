@@ -24,6 +24,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 
+@SuppressWarnings("deprecation")
 public class ExpandItemLCA_Test extends TestCase {
 
   protected void setUp() throws Exception {

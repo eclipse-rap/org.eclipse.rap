@@ -22,6 +22,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 
 
+@SuppressWarnings("deprecation")
 public class ToolBar_Test extends TestCase {
 
   private Display display;
@@ -63,7 +64,7 @@ public class ToolBar_Test extends TestCase {
     // search operation indexOf
     ToolItem item1 = new ToolItem( toolBar, SWT.PUSH );
     ToolItem item2 = new ToolItem( toolBar, SWT.RADIO );
-    item2.setImage(Graphics.getImage( Fixture.IMAGE1 ) );
+    item2.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
     assertSame( Graphics.getImage( Fixture.IMAGE1 ), item2.getImage() );
     assertEquals( 3, toolBar.getItemCount() );
     assertEquals( 3, toolBar.getItems().length );

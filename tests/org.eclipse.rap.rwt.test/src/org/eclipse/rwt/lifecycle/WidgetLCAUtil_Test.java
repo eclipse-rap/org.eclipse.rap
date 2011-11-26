@@ -291,6 +291,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertEquals( expected, Fixture.getAllMarkup() );
   }
 
+  @SuppressWarnings("deprecation")
   public void testWriteImage() throws IOException {
     Label item = new Label( shell, SWT.NONE );
 

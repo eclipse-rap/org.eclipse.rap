@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.*;
 import org.json.*;
 
 
+@SuppressWarnings("deprecation")
 public class ControlLCAUtil_Test extends TestCase {
 
   private static final String WIDGET_DEFAULT_SELECTED = "widgetDefaultSelected";

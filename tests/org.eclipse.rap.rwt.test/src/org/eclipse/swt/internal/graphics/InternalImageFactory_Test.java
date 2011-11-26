@@ -81,6 +81,7 @@ public class InternalImageFactory_Test extends TestCase {
     assertSame( internalImage1, internalImage2 );
   }
 
+  @SuppressWarnings("deprecation")
   public void testInternalImagesFromImageDataAreCached() {
     new Display();
     Fixture.useDefaultResourceManager();

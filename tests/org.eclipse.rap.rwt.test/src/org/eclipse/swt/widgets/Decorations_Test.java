@@ -17,6 +17,7 @@ import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.graphics.Image;
 
+@SuppressWarnings("deprecation")
 public class Decorations_Test extends TestCase {
 
   public void testSetImages() {

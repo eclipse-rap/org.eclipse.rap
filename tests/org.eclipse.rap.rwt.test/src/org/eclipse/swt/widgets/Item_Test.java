@@ -11,16 +11,19 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 
 public class Item_Test extends TestCase {
+
+  private Display display;
+  private Composite shell;
 
   private static class TestItem extends Item {
     private TestItem( Widget parent, int style ) {
@@ -29,8 +32,6 @@ public class Item_Test extends TestCase {
   }
 
   public void testText() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     Item item = new TestItem( shell, SWT.NONE );
     assertEquals( "", item.getText() );
     item.setText( "x" );
@@ -38,48 +39,50 @@ public class Item_Test extends TestCase {
     try {
       item.setText( null );
       fail( "Must not allow to set null text" );
-    } catch( IllegalArgumentException iae ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
-  public void testImage() {
-    Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
+  public void testSetImage() throws IOException {
     Item item = new TestItem( shell, SWT.NONE );
-    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
-    assertSame( Graphics.getImage( Fixture.IMAGE1 ), item.getImage() );
+    Image image = createImage();
+    item.setImage( image );
+    assertSame( image, item.getImage() );
     item.setImage( null );
-    assertEquals( null, item.getImage() );
-    Item item2 = new TestItem( shell, SWT.NONE );
-    item2.setImage( Graphics.getImage( Fixture.IMAGE2 ) );
-    assertSame( Graphics.getImage( Fixture.IMAGE2 ), item2.getImage() );
-    // Test for a disposed Image as argument
-    ClassLoader loader = Fixture.class.getClassLoader();
-    InputStream stream = loader.getResourceAsStream( Fixture.IMAGE1 );
-    Image image2 = new Image( display, stream );
-    image2.dispose();
+    assertNull( item.getImage() );
+  }
+  
+  public void testSetImageWithDisposedImage() throws IOException {
+    Image image = createImage();
+    image.dispose();
+    Item item = new TestItem( shell, SWT.NONE );
     try {
-      item.setImage( image2 );
+      item.setImage( image );
       fail( "No exception thrown for a disposed image" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
   }
 
   public void testDispose() {
-    final Display display = new Display();
-    Composite shell = new Shell( display , SWT.NONE );
     Item item = new TestItem( shell, SWT.NONE );
     item.dispose();
-    assertEquals( true, item.isDisposed() );
+    assertTrue( item.isDisposed() );
   }
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display , SWT.NONE );
   }
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  private Image createImage() throws IOException {
+    InputStream stream = Fixture.class.getClassLoader().getResourceAsStream( Fixture.IMAGE1 );
+    Image result = new Image( display, stream );
+    stream.close();
+    return result;
   }
 }

@@ -33,6 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@SuppressWarnings("deprecation")
 public class TreeColumnLCA_Test extends TestCase {
 
   private Display display;

@@ -209,14 +209,12 @@ public class TabFolderAndItem_Test extends TestCase {
     assertTrue( alternativeControl1.getVisible() );
   }
 
+  @SuppressWarnings("deprecation")
   public void testImages() {
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     TabItem item0 = new TabItem( folder, SWT.NONE );
     item0.setImage(Graphics.getImage( Fixture.IMAGE1 ) );
     assertSame( Graphics.getImage( Fixture.IMAGE1 ), item0.getImage() );
-    TabItem item1 = new TabItem( folder, SWT.NONE );
-    item1.setImage(Graphics.getImage( Fixture.IMAGE2 ) );
-    assertSame( Graphics.getImage( Fixture.IMAGE2 ), item1.getImage() );
   }
 
   public void testHierarchy() {
