@@ -47,7 +47,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
 
   statics : {
     // TODO [rh] move to a central place, e.g. qx.constant.Style or similar
-    DRAG_CURSOR : "w-resize",
+    DRAG_CURSOR : "col-resize",
     CONTROL_OFFSET : 6
   },
 

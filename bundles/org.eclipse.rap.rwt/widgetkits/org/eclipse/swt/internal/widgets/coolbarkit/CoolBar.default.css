@@ -17,6 +17,6 @@ CoolBar {
 }
 
 CoolItem-Handle {
-  border: 2px solid #bdbdbd;
-  width: 4px;
+  border: 1px solid #bdbdbd;
+  width: 2px;
 }

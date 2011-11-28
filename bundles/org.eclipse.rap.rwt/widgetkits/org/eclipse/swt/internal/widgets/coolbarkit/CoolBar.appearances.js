@@ -43,7 +43,7 @@ appearances = {
       }
       result.border = tv.getCssBorder( "CoolItem-Handle", "border" );
       result.margin = [ 1, 2, 1, 0 ];
-      result.cursor = "w-resize";
+      result.cursor = "col-resize";
       return result;
     }
   }
