@@ -54,6 +54,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._config = this._rowContainer.getRenderConfig();
     this.setCursor( "default" );
     this.setOverflow( "hidden" );
+    // Disable scrolling (see bugs 279460 and 364739)
+    qx.ui.core.Widget.disableScrolling( this );
     this._configureAreas();
     this._configureScrollBars();
     this._registerListeners();
