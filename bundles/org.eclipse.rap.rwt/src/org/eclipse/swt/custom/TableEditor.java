@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.swt.custom;
 
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.lifecycle.PhaseEvent;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
@@ -76,7 +80,7 @@ public class TableEditor extends ControlEditor {
 	TableItem item;
 	int column = -1;
 	ControlListener columnListener;
-	Runnable timer;
+//	Runnable timer;
 	static final int TIMEOUT = 1500;
 /**
 * Creates a TableEditor for the specified Table.
@@ -96,11 +100,11 @@ public TableEditor (Table table) {
 			layout ();
 		}
 	};
-	timer = new SerializableRunnable () {
-		public void run() {
-			layout ();
-		}
-	};
+//	timer = new Runnable () {
+//		public void run() {
+//			layout ();
+//		}
+//	};
 
 	// To be consistent with older versions of SWT, grabVertical defaults to true
 	grabVertical = true;
@@ -164,7 +168,7 @@ public void dispose () {
 	table = null;
 	item = null;
 	column = -1;
-	timer = null;
+//	timer = null;
 	super.dispose();
 }
 /**
@@ -185,17 +189,33 @@ public TableItem getItem () {
 }
 void resize () {
 	layout();
-//	/*
-//	 * On some platforms, the table scrolls when an item that
-//	 * is partially visible at the bottom of the table is
-//	 * selected.  Ensure that the correct row is edited by
-//	 * laying out one more time in a timerExec().
-//	 */
+	/*
+	 * On some platforms, the table scrolls when an item that
+	 * is partially visible at the bottom of the table is
+	 * selected.  Ensure that the correct row is edited by
+	 * laying out one more time in a timerExec().
+	 */
 //	if (table != null) {
 //		Display display = table.getDisplay();
 //		display.timerExec(-1, timer);
 //		display.timerExec(TIMEOUT, timer);
 //	}
+	// [rh] Adaption of the above code for RWT (see bug 364802)
+	RWT.getLifeCycle().addPhaseListener( new PhaseListener() {
+    public void beforePhase( PhaseEvent event ) {
+    }
+    
+    public void afterPhase( PhaseEvent event ) {
+      RWT.getLifeCycle().removePhaseListener( this );
+      if( table != null && table.getDisplay() == Display.getCurrent() ) {
+        layout();
+      }
+    }
+
+    public PhaseId getPhaseId() {
+      return PhaseId.PROCESS_ACTION;
+    }
+  } );
 }
 /**
 * Sets the zero based index of the column of the cell being tracked by this editor.
