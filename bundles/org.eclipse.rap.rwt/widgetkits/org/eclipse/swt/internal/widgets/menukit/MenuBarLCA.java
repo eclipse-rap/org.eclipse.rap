@@ -11,6 +11,8 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menukit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
@@ -22,20 +24,11 @@ import org.eclipse.swt.widgets.Menu;
 
 final class MenuBarLCA extends MenuDelegateLCA {
 
-  // pseudo-property that denotes the shell which uses a menu for its menu bar
-  static final String PROP_SHELL = "menuBarShell";
-  private static final String PROP_SHELL_MENU = "menuBar";
-  private static final String PROP_SHELL_MENU_BOUNDS
-    = "menuBarShellClientArea";
+  private static final String PROP_PARENT = "parent";
 
   void preserveValues( Menu menu ) {
-    Decorations parent = getParent( menu );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
-    adapter.preserve( PROP_SHELL, parent );
-    MenuLCAUtil.preserveEnabled( menu );
-    MenuLCAUtil.preserveMenuListener( menu );
-    WidgetLCAUtil.preserveCustomVariant( menu );
-    WidgetLCAUtil.preserveHelpListener( menu );
+    MenuLCAUtil.preserveValues( menu );
+    preserveProperty( menu, PROP_PARENT, getParent( menu ) );
   }
 
   void readData( Menu menu ) {
@@ -44,25 +37,25 @@ final class MenuBarLCA extends MenuDelegateLCA {
   }
 
   void renderInitialization( Menu menu ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( menu );
-    writer.newWidget( "org.eclipse.rwt.widgets.MenuBar" );
+    MenuLCAUtil.renderInitialization( menu );
   }
 
   void renderChanges( Menu menu ) throws IOException {
-    writeParent( menu );
-    writeBounds( menu );
-    MenuLCAUtil.writeEnabled( menu );
-    // TODO [rst] Disable menu listener on Menubars? In SWT/Win, only the
-    //      SWT.HIDE is sent but this behavior seems to be undocumented.
-    //      Check out other platforms.
-    MenuLCAUtil.writeMenuListener( menu );
-    MenuLCAUtil.writeUnhideMenu( menu );
-    WidgetLCAUtil.writeCustomVariant( menu );
-    WidgetLCAUtil.writeHelpListener( menu );
+    MenuLCAUtil.renderChanges( menu );
+    renderProperty( menu, PROP_PARENT, getParent( menu ), null );
+    renderBounds( menu );
   }
 
-  //////////////////////////////////////////////////
-  // Helping method to write properties for menu bar
+  private static void renderBounds( Menu menu ) throws IOException {
+    Decorations parent = getParent( menu );
+    if( parent != null ) {
+      // Bounds are preserved in ShellLCA#preserveMenuBounds
+      WidgetLCAUtil.renderBounds( menu, parent, getBounds( menu ) );
+    }
+  }
+
+  //////////////////
+  // Helping methods
 
   private static Decorations getParent( Menu menu ) {
     Decorations result = null;
@@ -72,34 +65,13 @@ final class MenuBarLCA extends MenuDelegateLCA {
     return result;
   }
 
-  private static void writeParent( Menu menu ) throws IOException {
-    Decorations parent = getParent( menu );
-    if( WidgetLCAUtil.hasChanged( menu, PROP_SHELL, parent, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( menu );
-      writer.set( "parent", parent );
-    }
-  }
-
-  private static void writeBounds( Menu menu ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( menu );
+  private static Rectangle getBounds( Menu menu ) {
+    Rectangle result = new Rectangle( 0, 0, 0, 0 );
     Decorations parent = getParent( menu );
     if( parent != null ) {
       IShellAdapter shellAdapter = parent.getAdapter( IShellAdapter.class );
-      Rectangle menuBounds = shellAdapter.getMenuBounds();
-      String prop = PROP_SHELL_MENU_BOUNDS;
-      // [if] MenuBar and its bounds are preserved in ShellLCA.
-      if(    WidgetLCAUtil.hasChanged( parent, prop, menuBounds, null )
-          || WidgetLCAUtil.hasChanged( parent, PROP_SHELL_MENU, menu, null ) )
-      {
-        // parameter order of setSpace: x, width, y, height
-        Object[] args = new Object[] {
-          new Integer( menuBounds.x ),
-          new Integer( menuBounds.width ),
-          new Integer( menuBounds.y ),
-          new Integer( menuBounds.height )
-        };
-        writer.set( "space", args );
-      }
+      result = shellAdapter.getMenuBounds();
     }
+    return result;
   }
 }

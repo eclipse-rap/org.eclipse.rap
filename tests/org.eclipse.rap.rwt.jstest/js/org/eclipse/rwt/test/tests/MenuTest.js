@@ -28,6 +28,257 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     menuBar : null,
     menuBarItem : null,
 
+    testCreateMenuBarByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Menu",
+        "properties" : {
+          "style" : [ "BAR" ],
+          "parent" : "w2"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget instanceof org.eclipse.rwt.widgets.MenuBar );
+      assertIdentical( shell, widget.getParent() );
+      assertNull( widget.getUserData( "isControl") );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testCreatePopUpMenuByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Menu",
+        "properties" : {
+          "style" : [ "POP_UP" ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget instanceof org.eclipse.rwt.widgets.Menu );
+      assertIdentical( qx.ui.core.ClientDocument.getInstance(), widget.getParent() );
+      assertNull( widget.getUserData( "isControl") );
+      widget.destroy();
+    },
+
+    testSetMenuBarBoundsByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Menu",
+        "properties" : {
+          "style" : [ "BAR" ],
+          "parent" : "w2",
+          "bounds" : [ 1, 2, 3, 4 ]
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertEquals( 1, widget.getLeft() );
+      assertEquals( 2, widget.getTop() );
+      assertEquals( 3, widget.getWidth() );
+      assertEquals( 4, widget.getHeight() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetEnabledByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Menu",
+        "properties" : {
+          "style" : [ "BAR" ],
+          "parent" : "w2",
+          "enabled" : false
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertFalse( widget.getEnabled() );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetCustomVariantByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Menu",
+        "properties" : {
+          "style" : [ "BAR" ],
+          "parent" : "w2",
+          "customVariant" : "variant_blue"
+        }
+      } );
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var widget = objectManager.getObject( "w3" );
+      assertTrue( widget.hasState( "variant_blue" ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testCallShowMenuByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = this._createPopUpMenuByProtocol( "w3" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "call",
+        "method" : "showMenu",
+        "properties" : {
+          "x" : 10,
+          "y" : 20
+        }
+      } );
+      assertTrue( widget.getVisibility() );
+      assertEquals( 10, widget.getLeft() );
+      assertEquals( 20, widget.getTop() );
+      widget.destroy();
+    },
+
+    testCallUnhideItemsByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = this._createPopUpMenuByProtocol( "w3" );
+      widget.setHasMenuListener( true );
+      widget._menuShown();
+      assertTrue( widget._itemsHiddenFlag );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "call",
+        "method" : "unhideItems",
+        "properties" : {
+          "reveal" : true
+        }
+      } );
+      assertFalse( widget._itemsHiddenFlag );
+      widget.destroy();
+    },
+
+    testCreateMenuItemByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var menu = this._createPopUpMenuByProtocol( "w3" );
+      var widget = this._createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
+      assertTrue( widget instanceof org.eclipse.rwt.widgets.MenuItem );
+      assertIdentical( menu._layout, widget.getParent() );
+      assertNull( widget.getUserData( "isControl") );
+      menu.destroy();
+      widget.destroy();
+    },
+
+    testCreateMenuItemSeparatorByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var menu = this._createPopUpMenuByProtocol( "w3" );
+      var widget = this._createMenuItemByProtocol( "w4", "w3", [ "SEPARATOR" ] );
+      assertTrue( widget instanceof qx.ui.menu.Separator );
+      assertIdentical( menu._layout, widget.getParent() );
+      assertNull( widget.getUserData( "isControl") );
+      menu.destroy();
+      widget.destroy();
+    },
+
+    testSetMenuItemIndexByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var menu = this._createPopUpMenuByProtocol( "w3" );
+      this._createMenuItemByProtocol( "w4", "w3", [ "PUSH" ] );
+      var widget = this._createMenuItemByProtocol( "w5", "w3", [ "PUSH" ] );
+      assertIdentical( menu._layout.getChildren()[ 0 ], widget );
+      menu.destroy();
+      widget.destroy();
+    },
+
+    testSetMeniItemNoRadioGroupByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var menu = this._createPopUpMenuByProtocol( "w3" );
+      menu.addState( "rwt_NO_RADIO_GROUP" );
+      var widget = this._createMenuItemByProtocol( "w4", "w3", [ "RADIO" ] );
+      assertTrue( widget._noRadioGroup );
+      menu.destroy();
+      widget.destroy();
+    },
+
+    testSetMenuItemSubMenuByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var menu = this._createPopUpMenuByProtocol( "w3" );
+      var submenu = this._createPopUpMenuByProtocol( "w5" );
+      var widget = this._createMenuItemByProtocol( "w4", "w3", [ "CASCADE" ] );
+      testUtil.protocolSet( "w4", { "menu" : "w5" } )
+      assertIdentical( submenu, widget.getMenu() );
+      menu.destroy();
+      submenu.destroy();
+      widget.destroy();
+    },
+
+    testSetMenuItemEnabledByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var menu = this._createPopUpMenuByProtocol( "w3" );
+      var widget = this._createMenuItemByProtocol( "w4", "w3", [ "CASCADE" ] );
+      testUtil.protocolSet( "w4", { "enabled" : false } )
+      assertFalse( widget.getEnabled() );
+      menu.destroy();
+      widget.destroy();
+    },
+
+    testSetMenuItemTextByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var menu = this._createPopUpMenuByProtocol( "w3" );
+      var widget = this._createMenuItemByProtocol( "w4", "w3", [ "RADIO" ] );
+      testUtil.protocolSet( "w4", { "text" : "foo >\t Ctrl+1" } )
+      assertEquals( "foo &gt;", widget.getCellContent( 2 ) );
+      menu.destroy();
+      widget.destroy();
+    },
+
+    testSetMenuItemImageByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var menu = this._createPopUpMenuByProtocol( "w3" );
+      var widget = this._createMenuItemByProtocol( "w4", "w3", [ "RADIO" ] );
+      testUtil.protocolSet( "w4", { "image" : [ "image.gif", 10, 20 ] } )
+      assertEquals( "image.gif", widget.getCellContent( 1 ) );
+      assertEquals( 10, widget.getPreferredCellWidth( 1 ) );
+      assertEquals( 20, widget.getCellHeight( 1 ) );
+      menu.destroy();
+      widget.destroy();
+    },
+
+    testSetMenuItemSelectionByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var menu = this._createPopUpMenuByProtocol( "w3" );
+      var widget = this._createMenuItemByProtocol( "w4", "w3", [ "CHECK" ] );
+      testUtil.protocolSet( "w4", { "selection" : true } )
+      assertTrue( widget._selected );
+      menu.destroy();
+      widget.destroy();
+    },
+
+    testSetMenuItemSelectionListenerByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var menu = this._createPopUpMenuByProtocol( "w3" );
+      var widget = this._createMenuItemByProtocol( "w4", "w3", [ "CHECK" ] );
+      testUtil.protocolListen( "w4", { "selection" : true } )
+      assertTrue( widget._hasSelectionListener );
+      menu.destroy();
+      widget.destroy();
+    },
+
     testTextOnly : function() {
       this.createSimpleMenu( "push" );      
       this.menuItem.setText( "Hello World!" );
@@ -953,6 +1204,45 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
     },
 
     /************************* Helper *****************************/
+
+    _createMenuBarByProtocol : function( id, parentId ) {
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : id,
+        "action" : "create",
+        "type" : "rwt.widgets.Menu",
+        "properties" : {
+          "style" : [ "BAR" ],
+          "parent" : parentId
+        }
+      } );
+      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+    },
+
+    _createPopUpMenuByProtocol : function( id ) {
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : id,
+        "action" : "create",
+        "type" : "rwt.widgets.Menu",
+        "properties" : {
+          "style" : [ "POP_UP" ]
+        }
+      } );
+      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+    },
+
+    _createMenuItemByProtocol : function( id, parentId, style ) {
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : id,
+        "action" : "create",
+        "type" : "rwt.widgets.MenuItem",
+        "properties" : {
+          "style" : style,
+          "parent" : parentId,
+          "index" : 0
+        }
+      } );
+      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+    },
 
     createSimpleMenu : function( type ) {
       this.menu = new this._menuClass(); 

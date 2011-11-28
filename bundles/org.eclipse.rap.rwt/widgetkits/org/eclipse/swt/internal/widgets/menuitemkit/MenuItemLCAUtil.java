@@ -1,105 +1,76 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menuitemkit;
+
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
 import java.io.IOException;
 
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.ArmEvent;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.ItemLCAUtil;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
 final class MenuItemLCAUtil {
 
-  static final String PROP_ENABLED = "enabled";
-  static final String PROP_SELECTION_LISTENERS = "selectionListeners";
-  static final String PROP_SELECTION = "selection";
-  static final String JS_PROP_SELECTION = "selection";
+  private static final String TYPE = "rwt.widgets.MenuItem";
 
-  static void newItem( MenuItem menuItem, String jsClass, String type ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( menuItem );
-    writer.newWidget( jsClass, new String[]{ type } );
-    int index = menuItem.getParent().indexOf( menuItem );
-    writer.call( menuItem.getParent(),
-                 "addMenuItemAt",
-                 new Object[]{ menuItem, new Integer( index ) } );
+  private static final String PROP_MENU = "menu";
+  private static final String PROP_ENABLED = "enabled";
+  private static final String PROP_SELECTION = "selection";
+  private static final String PROP_SELECTION_LISTENER = "selection";
+
+  static void preserveValues( MenuItem item ) {
+    WidgetLCAUtil.preserveCustomVariant( item );
+    ItemLCAUtil.preserve( item );
+    preserveProperty( item, PROP_MENU, item.getMenu() );
+    preserveProperty( item, PROP_ENABLED, item.getEnabled() );
+    preserveProperty( item, PROP_SELECTION, item.getSelection() );
+    preserveListener( item, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( item ) );
+    WidgetLCAUtil.preserveHelpListener( item );
   }
 
-  static void preserveEnabled( MenuItem menuItem ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
-    adapter.preserve( Props.ENABLED, Boolean.valueOf( menuItem.getEnabled() ) );
+  static void renderInitialization( MenuItem item ) {
+    IClientObject clientObject = ClientObjectFactory.getForWidget( item );
+    clientObject.create( TYPE );
+    Menu parent = item.getParent();
+    clientObject.setProperty( "parent", WidgetUtil.getId( parent ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( item ) );
+    clientObject.setProperty( "index", parent.indexOf( item ) );
   }
 
-  static void writeEnabled( MenuItem menuItem ) throws IOException {
-    Boolean newValue = Boolean.valueOf( menuItem.getEnabled() );
-    JSWriter writer = JSWriter.getWriterFor( menuItem );
-    writer.set( PROP_ENABLED, JSConst.QX_FIELD_ENABLED, newValue, Boolean.TRUE );
+  static void renderChanges( MenuItem item ) throws IOException {
+    WidgetLCAUtil.renderCustomVariant( item );
+    ItemLCAUtil.renderChanges( item );
+    WidgetLCAUtil.renderMenu( item, item.getMenu() );
+    renderProperty( item, PROP_ENABLED, item.getEnabled(), true );
+    renderProperty( item, PROP_SELECTION, item.getSelection(), false );
+    renderListener( item, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( item ), false );
+    WidgetLCAUtil.renderListenHelp( item );
   }
 
-  static void writeImageAndText( MenuItem menuItem ) throws IOException {
-    String text = menuItem.getText();
-    if( WidgetLCAUtil.hasChanged( menuItem, Props.TEXT, text ) ) {
-      JSWriter writer = JSWriter.getWriterFor( menuItem );
-      // Strip accelerator text
-      int index = text.indexOf( "\t" );
-      if( index != -1 ) {
-        text = text.substring( 0, index );
-      }
-      text = WidgetLCAUtil.escapeText( text, true );
-      writer.set( "text", text.equals( "" ) ? null : text );
-    }
-    writeImage( menuItem );
-  }
-
-  static void writeImage( MenuItem item ) throws IOException {
-    Image image = item.getImage();
-    if( WidgetLCAUtil.hasChanged( item, Props.IMAGE, image, null ) ) {
-      String imagePath = ImageFactory.getImagePath( image );
-      JSWriter writer = JSWriter.getWriterFor( item );
-      Rectangle bounds = image != null ? image.getBounds() : null;
-      Object[] args = new Object[]{
-        imagePath,
-        new Integer( bounds != null ? bounds.width : 0 ),
-        new Integer( bounds != null ? bounds.height : 0 )
-      };
-      writer.set( "image", args );
-    }
-  }
-
-  static void writeSelectionListener( MenuItem menuItem ) throws IOException {
-    boolean hasListener = SelectionEvent.hasListener( menuItem );
-    Boolean newValue = Boolean.valueOf( hasListener );
-    JSWriter writer = JSWriter.getWriterFor( menuItem );
-    writer.set( PROP_SELECTION_LISTENERS, "hasSelectionListener", newValue, Boolean.FALSE );
-  }
-
-  static void writeSelection( MenuItem menuItem ) throws IOException {
-    Boolean newValue = Boolean.valueOf( menuItem.getSelection() );
-    JSWriter writer = JSWriter.getWriterFor( menuItem );
-    writer.set( PROP_SELECTION, JS_PROP_SELECTION, newValue, Boolean.FALSE );
-  }
-
-  static void processArmEvent( MenuItem menuItem ) {
-    Menu menu = menuItem.getParent();
-    String eventId = JSConst.EVENT_MENU_SHOWN;
-    if( WidgetLCAUtil.wasEventSent( menu, eventId ) ) {
-      if( ArmEvent.hasListener( menuItem ) ) {
-        ArmEvent event = new ArmEvent( menuItem );
+  static void processArmEvent( MenuItem item ) {
+    Menu menu = item.getParent();
+    if( WidgetLCAUtil.wasEventSent( menu, JSConst.EVENT_MENU_SHOWN ) ) {
+      if( ArmEvent.hasListener( item ) ) {
+        ArmEvent event = new ArmEvent( item );
         event.processEvent();
       }
     }

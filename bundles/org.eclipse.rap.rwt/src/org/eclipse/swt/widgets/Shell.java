@@ -542,7 +542,9 @@ public class Shell extends Decorations {
 
   private Rectangle getMenuBounds() {
     Rectangle result = null;
-    if( getMenuBar() != null ) {
+    if( getMenuBar() == null ) {
+      result = new Rectangle( 0, 0, 0, 0 );
+    } else {
       Rectangle bounds = getBounds();
       int hTop = ( style & SWT.TITLE ) != 0 ? 1 : 0;
       hTop += getTitleBarHeight();

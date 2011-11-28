@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,25 +13,24 @@ package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.widgets.MenuItem;
 
 
 final class SeparatorMenuItemLCA extends MenuItemDelegateLCA {
 
-  void preserveValues( MenuItem menuItem ) {
-    WidgetLCAUtil.preserveCustomVariant( menuItem );
+  void preserveValues( MenuItem item ) {
+    MenuItemLCAUtil.preserveValues( item );
   }
 
-  void readData( MenuItem menuItem ) {
+  void readData( MenuItem item ) {
     // do nothing
   }
-  
-  void renderInitialization( MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, "qx.ui.menu.Separator", null );    
+
+  void renderInitialization( MenuItem item ) throws IOException {
+    MenuItemLCAUtil.renderInitialization( item );
   }
 
-  void renderChanges( MenuItem menuItem ) throws IOException {
-    WidgetLCAUtil.writeCustomVariant( menuItem );
+  void renderChanges( MenuItem item ) throws IOException {
+    MenuItemLCAUtil.renderChanges( item );
   }
 }

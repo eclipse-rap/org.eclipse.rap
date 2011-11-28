@@ -1,43 +1,60 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
+import org.eclipse.rap.rwt.testfixture.Message.Operation;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+import org.json.JSONArray;
+import org.json.JSONException;
 
+@SuppressWarnings("deprecation")
 public class MenuItemLCA_Test extends TestCase {
 
   private Display display;
   private Shell shell;
+  private Menu menuBar;
+  private Menu menu;
+  private MenuItemLCA lca;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.fakeResponseWriter();
     display = new Display();
     shell = new Shell( display );
+    menuBar = new Menu( shell, SWT.BAR );
+    menu = new Menu( shell, SWT.POP_UP );
+    lca = new MenuItemLCA();
+    Fixture.fakeNewRequest( display );
   }
 
   protected void tearDown() throws Exception {
@@ -45,71 +62,26 @@ public class MenuItemLCA_Test extends TestCase {
   }
 
   public void testBarPreserveValues() {
-    Menu menu = new Menu( shell, SWT.BAR );
-    shell.setMenuBar( menu );
-    final MenuItem menuItem = new MenuItem( menu, SWT.BAR );
+    shell.setMenuBar( menuBar );
+    final MenuItem menuItem = new MenuItem( menuBar, SWT.BAR );
     Fixture.markInitialized( display );
     testPreserveEnabled( menuItem );
     testPreserveText( menuItem );
   }
 
   public void testPushPreserveValues() {
-    Menu menu = new Menu( shell, SWT.BAR );
-    MenuItem fileItem = new MenuItem( menu, SWT.CASCADE );
+    MenuItem fileItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu fileMenu = new Menu( shell, SWT.DROP_DOWN );
     fileItem.setMenu( fileMenu );
-    shell.setMenuBar( menu );
+    shell.setMenuBar( menuBar );
     final MenuItem menuItem = new MenuItem( fileMenu, SWT.PUSH );
     Fixture.markInitialized( display );
-    // Selection_Listener
-    testPreserveSelectionListener( menuItem );
     testPreserveEnabled( menuItem );
     testPreserveText( menuItem );
-  }
-
-  public void testRadioPreserveValues() {
-    Menu menu = new Menu( shell, SWT.BAR );
-    MenuItem fileItem = new MenuItem( menu, SWT.CASCADE );
-    Menu fileMenu = new Menu( shell, SWT.DROP_DOWN );
-    fileItem.setMenu( fileMenu );
-    shell.setMenuBar( menu );
-    final MenuItem menuItem = new MenuItem( fileMenu, SWT.RADIO );
-    Fixture.markInitialized( display );
-    // Selection_Listener
-    testPreserveSelectionListener( menuItem );
-    testPreserveEnabled( menuItem );
-    testPreserveText( menuItem );
-    //selection
-    menuItem.setSelection( true );
-    menuItem.setText( "menu item" );
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
-    assertEquals( Boolean.TRUE, Boolean.valueOf( menuItem.getSelection() ) );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( MenuItemLCAUtil.PROP_SELECTION ) );
-  }
-
-  public void testCheckPreserveValues() {
-    Menu menu = new Menu( shell, SWT.BAR );
-    MenuItem fileItem = new MenuItem( menu, SWT.CASCADE );
-    Menu fileMenu = new Menu( shell, SWT.DROP_DOWN );
-    fileItem.setMenu( fileMenu );
-    shell.setMenuBar( menu );
-    final MenuItem menuItem = new MenuItem( fileMenu, SWT.CHECK );
-    Fixture.markInitialized( display );
-    // Selection_Listener
-    testPreserveSelectionListener( menuItem );
-    testPreserveEnabled( menuItem );
-    testPreserveText( menuItem );
-    //selection
-    menuItem.setSelection( true );
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
-    assertEquals( Boolean.TRUE, adapter.getPreserved( MenuItemLCAUtil.PROP_SELECTION ) );
   }
 
   public void testWidgetSelected() {
     final boolean[] wasEventFired = { false };
-    Menu menu = new Menu( shell, SWT.POP_UP );
     shell.setMenu( menu );
     final MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
     menuItem.addSelectionListener( new SelectionAdapter() {
@@ -134,7 +106,6 @@ public class MenuItemLCA_Test extends TestCase {
 
   public void testCheckItemSelected() {
     final boolean[] wasEventFired = { false };
-    Menu menuBar = new Menu( shell, SWT.BAR );
     shell.setMenuBar( menuBar );
     Menu menu = new Menu( menuBar );
     final MenuItem menuItem = new MenuItem( menu, SWT.CHECK );
@@ -162,7 +133,6 @@ public class MenuItemLCA_Test extends TestCase {
 
   public void testRadioSelectionEvent() {
     final java.util.List<SelectionEvent> log = new ArrayList<SelectionEvent>();
-    Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
     menuBarItem.setMenu( menu );
@@ -204,7 +174,6 @@ public class MenuItemLCA_Test extends TestCase {
 
   public void testRadioTypedSelectionEventOrder() {
     final java.util.List<SelectionEvent> log = new ArrayList<SelectionEvent>();
-    Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
     menuBarItem.setMenu( menu );
@@ -235,7 +204,6 @@ public class MenuItemLCA_Test extends TestCase {
 
   public void testRadioUntypedSelectionEventOrder() {
     final java.util.List<Event> log = new ArrayList<Event>();
-    Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
     menuBarItem.setMenu( menu );
@@ -264,22 +232,8 @@ public class MenuItemLCA_Test extends TestCase {
     assertSame( radioItem1, event.widget );
   }
 
-  public void testRemoveKeyShortcutText() throws IOException {
-    String shortcut = "Some shortcut";
-    Menu menuBar = new Menu( shell, SWT.BAR );
-    MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
-    Menu menu = new Menu( menuBarItem );
-    menuBarItem.setMenu( menu );
-    MenuItem menuItem = new MenuItem( menu, SWT.NONE );
-    menuItem.setText( "Some item\t" + shortcut );
-    MenuItemLCA lca = new MenuItemLCA();
-    lca.renderChanges( menuItem );
-    assertEquals( -1, Fixture.getAllMarkup().indexOf( shortcut ) );
-  }
-
   public void testArmEvent() {
     final java.util.List<Widget> log = new ArrayList<Widget>();
-    Menu menuBar = new Menu( shell, SWT.BAR );
     MenuItem menuBarItem = new MenuItem( menuBar, SWT.CASCADE );
     Menu menu = new Menu( menuBarItem );
     menuBarItem.setMenu( menu );
@@ -308,27 +262,6 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( log.contains( radioItem2 ) );
     assertTrue( log.contains( radioItem3 ) );
     assertTrue( log.contains( checkItem ) );
-  }
-
-  public void testRenderNoRadioGroupForRadioItem() throws Exception {
-    Menu menu = new Menu( shell, SWT.POP_UP | SWT.NO_RADIO_GROUP );
-    MenuItem radioItem = new MenuItem( menu, SWT.RADIO );
-    Fixture.fakeResponseWriter();
-    RadioMenuItemLCA radioLCA = new RadioMenuItemLCA();
-    radioLCA.renderInitialization( radioItem );
-    String allMarkup = Fixture.getAllMarkup();
-    assertTrue( allMarkup.indexOf( "w.setNoRadioGroup( true );" ) != -1 );
-  }
-
-  private void testPreserveSelectionListener( final MenuItem menuItem ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
-    Fixture.preserveWidgets();
-    assertEquals( Boolean.FALSE, adapter.getPreserved( Props.SELECTION_LISTENERS ) );
-    Fixture.clearPreserved();
-    menuItem.addSelectionListener( new SelectionAdapter() {} );
-    Fixture.preserveWidgets();
-    assertEquals( Boolean.TRUE, adapter.getPreserved( Props.SELECTION_LISTENERS ) );
-    Fixture.clearPreserved();
   }
 
   private void testPreserveText( final MenuItem menuItem ) {
@@ -360,21 +293,374 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
-  public void testWriteSelectionListener() throws IOException {
-    Menu menu = new Menu( shell, SWT.POP_UP );
-    MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
-    shell.setMenu( menu );
-    Fixture.fakeResponseWriter();
+  public void testRenderCreatePush() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.PUSH );
+
+    lca.renderInitialization( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertEquals( "rwt.widgets.MenuItem", operation.getType() );
+    assertTrue( Arrays.asList( operation.getStyles() ).contains( "PUSH" ) );
+  }
+
+  public void testRenderCreateCheck() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+
+    lca.renderInitialization( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertEquals( "rwt.widgets.MenuItem", operation.getType() );
+    assertTrue( Arrays.asList( operation.getStyles() ).contains( "CHECK" ) );
+  }
+
+  public void testRenderCreateRadio() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.RADIO );
+
+    lca.renderInitialization( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertEquals( "rwt.widgets.MenuItem", operation.getType() );
+    assertTrue( Arrays.asList( operation.getStyles() ).contains( "RADIO" ) );
+  }
+
+  public void testRenderCreateCascade() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CASCADE );
+
+    lca.renderInitialization( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertEquals( "rwt.widgets.MenuItem", operation.getType() );
+    assertTrue( Arrays.asList( operation.getStyles() ).contains( "CASCADE" ) );
+  }
+
+  public void testRenderParent() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.PUSH );
+
+    lca.renderInitialization( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertEquals( WidgetUtil.getId( item.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderIndex() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.PUSH );
+
+    lca.renderInitialization( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 0 ), message.findCreateProperty( item, "index" ) );
+  }
+
+  public void testRenderDispose() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.PUSH );
+
+    lca.renderDispose( item );
+
+    Message message = Fixture.getProtocolMessage();
+    Operation operation = message.getOperation( 0 );
+    assertTrue( operation instanceof DestroyOperation );
+    assertEquals( WidgetUtil.getId( item ), operation.getTarget() );
+  }
+
+  public void testRenderInitialMenu() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CASCADE );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "menu" ) == -1 );
+  }
+
+  public void testRenderMenu() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CASCADE );
+    Menu subMenu = new Menu( item );
+
+    item.setMenu( subMenu );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( WidgetUtil.getId( subMenu ), message.findSetProperty( item, "menu" ) );
+  }
+
+  public void testRenderMenuUnchanged() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CASCADE );
+    Menu subMenu = new Menu( item );
     Fixture.markInitialized( display );
-    Fixture.markInitialized( menuItem );
-    Fixture.clearPreserved();
+    Fixture.markInitialized( item );
+
+    item.setMenu( subMenu );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "menu" ) );
+  }
+
+  public void testRenderInitialEnabled() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.PUSH );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "enabled" ) == -1 );
+  }
+
+  public void testRenderEnabled() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.PUSH );
+
+    item.setEnabled( false );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findSetProperty( item, "enabled" ) );
+  }
+
+  public void testRenderEnabledUnchanged() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.PUSH );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setEnabled( false );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "enabled" ) );
+  }
+
+  public void testRenderInitialSelection() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
+  }
+
+  public void testRenderSelection() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+
+    item.setSelection( true );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( item, "selection" ) );
+  }
+
+  public void testRenderSelectionUnchanged() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setSelection( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "selection" ) );
+  }
+
+  public void testRenderInitialCustomVariant() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
+  }
+
+  public void testRenderCustomVariant() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+
+    item.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "variant_blue", message.findSetProperty( item, "customVariant" ) );
+  }
+
+  public void testRenderCustomVariantUnchanged() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "customVariant" ) );
+  }
+
+  public void testRenderInitialTexts() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "text" ) == -1 );
+  }
+
+  public void testRenderTexts() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+
+    item.setText( "foo" );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "foo", message.findSetProperty( item, "text" ) );
+  }
+
+  public void testRenderTextsUnchanged() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+
+    item.setText( "foo" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "text" ) );
+  }
+
+  public void testRenderInitialImages() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+
+    lca.render( item );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( item );
+    assertTrue( operation.getPropertyNames().indexOf( "image" ) == -1 );
+  }
+
+  public void testRenderImages() throws IOException, JSONException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
+
+    item.setImage( image );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( item, "image" );
+    String expected = "[\"rwt-resources/generated/90fb0bfe\",58,12]";
+    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
+  }
+
+  public void testRenderImagesUnchanged() throws IOException {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    Image image = Graphics.getImage( Fixture.IMAGE1 );
+
+    item.setImage( image );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( item, "image" ) );
+  }
+
+  public void testRenderAddSelectionListener() throws Exception {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
     Fixture.preserveWidgets();
 
-    menuItem.addSelectionListener( new SelectionAdapter() {} );
-    PushMenuItemLCA lca = new PushMenuItemLCA();
-    lca.renderChanges( menuItem );
+    item.addSelectionListener( new SelectionAdapter() { } );
+    lca.renderChanges( item );
 
-    String expected = "w.setHasSelectionListener( true )";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( item, "selection" ) );
+  }
+
+  public void testRenderRemoveSelectionListener() throws Exception {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+    SelectionListener listener = new SelectionAdapter() { };
+    item.addSelectionListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    Fixture.preserveWidgets();
+
+    item.removeSelectionListener( listener );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( item, "selection" ) );
+  }
+
+  public void testRenderSelectionListenerUnchanged() throws Exception {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    Fixture.preserveWidgets();
+
+    item.addSelectionListener( new SelectionAdapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( item, "selection" ) );
+  }
+
+  public void testRenderAddHelpListener() throws Exception {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    Fixture.preserveWidgets();
+
+    item.addHelpListener( new HelpListener() {
+      public void helpRequested( HelpEvent e ) {
+      }
+    } );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( item, "help" ) );
+  }
+
+  public void testRenderRemoveHelpListener() throws Exception {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+    HelpListener listener = new HelpListener() {
+      public void helpRequested( HelpEvent e ) {
+      }
+    };
+    item.addHelpListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    Fixture.preserveWidgets();
+
+    item.removeHelpListener( listener );
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( item, "help" ) );
+  }
+
+  public void testRenderHelpListenerUnchanged() throws Exception {
+    MenuItem item = new MenuItem( menu, SWT.CHECK );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( item );
+    Fixture.preserveWidgets();
+
+    item.addHelpListener( new HelpListener() {
+      public void helpRequested( HelpEvent e ) {
+      }
+    } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( item );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( item, "help" ) );
   }
 }

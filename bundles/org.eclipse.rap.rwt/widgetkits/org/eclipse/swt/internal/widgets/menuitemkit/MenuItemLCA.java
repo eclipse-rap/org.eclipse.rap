@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,15 +13,13 @@ package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rwt.lifecycle.JSWriter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Widget;
 
 
-// TODO [rh] empty menu items (no text) should have the same height as non-
-//      empty ones. Currently they are drawn with a very small height.
 public final class MenuItemLCA extends AbstractWidgetLCA {
 
   private static final BarMenuItemLCA BAR_MENU_ITEM_LCA = new BarMenuItemLCA();
@@ -31,46 +29,44 @@ public final class MenuItemLCA extends AbstractWidgetLCA {
   private static final SeparatorMenuItemLCA SEPARATOR_MENU_ITEM_LCA = new SeparatorMenuItemLCA();
 
   public void preserveValues( Widget widget ) {
-    MenuItem menuItem = ( MenuItem )widget;
-    getDelegateLCA( menuItem ).preserveValues( menuItem );
+    MenuItem item = ( MenuItem )widget;
+    getDelegateLCA( item ).preserveValues( item );
   }
-  
+
   public void readData( Widget widget ) {
-    MenuItem menuItem = ( MenuItem )widget;
-    getDelegateLCA( menuItem ).readData( menuItem );
+    MenuItem item = ( MenuItem )widget;
+    getDelegateLCA( item ).readData( item );
   }
-  
+
   public void renderInitialization( Widget widget ) throws IOException {
-    MenuItem menuItem = ( MenuItem )widget;
-    getDelegateLCA( menuItem ).renderInitialization( menuItem );
+    MenuItem item = ( MenuItem )widget;
+    getDelegateLCA( item ).renderInitialization( item );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
-    MenuItem menuItem = ( MenuItem )widget;
-    getDelegateLCA( menuItem ).renderChanges( menuItem );
+    MenuItem item = ( MenuItem )widget;
+    getDelegateLCA( item ).renderChanges( item );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
-  
-  private static boolean isTopLevelMenuBarItem( MenuItem menuItem ) {
-    return ( menuItem.getParent().getStyle() & SWT.BAR ) != 0;
+
+  private static boolean isTopLevelMenuBarItem( MenuItem item ) {
+    return ( item.getParent().getStyle() & SWT.BAR ) != 0;
   }
-  
-  private static MenuItemDelegateLCA getDelegateLCA( MenuItem menuItem ) 
-  {
+
+  private static MenuItemDelegateLCA getDelegateLCA( MenuItem item ) {
     MenuItemDelegateLCA result;
-    if( isTopLevelMenuBarItem( menuItem ) ) {
+    if( isTopLevelMenuBarItem( item ) ) {
       result = BAR_MENU_ITEM_LCA;
-    } else if( ( menuItem.getStyle() & ( SWT.PUSH | SWT.CASCADE ) ) != 0 ) { 
+    } else if( ( item.getStyle() & ( SWT.PUSH | SWT.CASCADE ) ) != 0 ) {
       result = PUSH_MENU_ITEM_LCA;
-    } else if( ( menuItem.getStyle() & SWT.CHECK ) != 0 ) {
+    } else if( ( item.getStyle() & SWT.CHECK ) != 0 ) {
       result = CHECK_MENU_ITEM_LCA;
-    } else if( ( menuItem.getStyle() & SWT.RADIO ) != 0 ) {
+    } else if( ( item.getStyle() & SWT.RADIO ) != 0 ) {
       result = RADIO_MENU_ITEM_LCA;
-    } else if( ( menuItem.getStyle() & SWT.SEPARATOR ) != 0 ) {
+    } else if( ( item.getStyle() & SWT.SEPARATOR ) != 0 ) {
       result = SEPARATOR_MENU_ITEM_LCA;
     } else {
       throw new IllegalStateException( "Unknown menu item type." );

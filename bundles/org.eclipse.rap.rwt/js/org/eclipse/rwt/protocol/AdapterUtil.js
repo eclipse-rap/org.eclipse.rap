@@ -276,6 +276,10 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     return this._controlPropertyHandler[ property ];
   },
 
+  getControlListenerHandler : function( handler ) {
+    return this._controlListenerHandler[ handler ];
+  },
+
   /////////////////////
   // Helper for handler
 

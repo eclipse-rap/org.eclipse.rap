@@ -11,58 +11,51 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.menukit;
 
-import java.io.IOException;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
-import org.eclipse.rwt.graphics.Graphics;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.events.ArmEvent;
 import org.eclipse.swt.events.MenuEvent;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
 
 final class MenuLCAUtil {
 
-  private static final int MENU_PADDING = 1;
-  private static final int MENU_BORDER = 1;
-  private static final int ITEM_LEFT_PADDING = 2;
-  private static final int ITEM_RIGHT_PADDING = 4;
-  private static final int ITEM_SPACING = 2;
-  private static final int ITEM_IMAGE = 16;
+  private static final String TYPE = "rwt.widgets.Menu";
 
-  static final String PROP_ENABLED = "enabled";
-  static final String PROP_WIDTH = "width";
-  static final String PROP_MENU_LISTENER = "menuListener";
+  private static final String PROP_ENABLED = "enabled";
+  private static final String PROP_MENU_LISTENER = "menu";
+  private static final String METHOD_UNHIDE_ITEMS = "unhideItems";
 
-  public static void preserveEnabled( Menu menu ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
-    adapter.preserve( PROP_ENABLED, Boolean.valueOf( menu.getEnabled() ) );
+  static void preserveValues( Menu menu ) {
+    WidgetLCAUtil.preserveCustomVariant( menu );
+    preserveProperty( menu, PROP_ENABLED, menu.getEnabled() );
+    preserveListener( menu, PROP_MENU_LISTENER, hasMenuListener( menu) );
+    WidgetLCAUtil.preserveHelpListener( menu );
   }
 
-  public static void writeEnabled( Menu menu ) throws IOException {
-    Boolean newValue = Boolean.valueOf( menu.getEnabled() );
-    Boolean defValue = Boolean.TRUE;
-    JSWriter writer = JSWriter.getWriterFor( menu );
-    writer.set( PROP_ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
+  static void renderInitialization( Menu menu ) {
+    IClientObject clientObject = ClientObjectFactory.getForWidget( menu );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( menu ) );
   }
 
-  public static void preserveMenuListener( Menu menu ) {
-    Boolean hasListener = Boolean.valueOf( hasListener( menu ) );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
-    adapter.preserve( PROP_MENU_LISTENER, hasListener );
-  }
-
-  public static void writeMenuListener( Menu menu ) throws IOException {
-    String prop = PROP_MENU_LISTENER;
-    Boolean newValue = Boolean.valueOf( hasListener( menu ) );
-    Boolean defValue = Boolean.FALSE;
-    if( WidgetLCAUtil.hasChanged( menu, prop, newValue, defValue ) ) {
-      JSWriter writer = JSWriter.getWriterFor( menu );
-      Object[] args = new Object[]{ newValue };
-      writer.call( "setHasMenuListener", args );
-    }
+  static void renderChanges( Menu menu ) throws IOException {
+    WidgetLCAUtil.renderCustomVariant( menu );
+    renderProperty( menu, PROP_ENABLED, menu.getEnabled(), true );
+    renderListener( menu, PROP_MENU_LISTENER, hasMenuListener( menu ), false );
+    WidgetLCAUtil.renderListenHelp( menu );
   }
 
   public static void readMenuEvent( Menu menu ) {
@@ -80,52 +73,20 @@ final class MenuLCAUtil {
    * Activates the menu if a menu event was received (in this case, only a
    * preliminary menu is displayed).
    */
-  public static void writeUnhideMenu( Menu menu ) throws IOException {
-    String eventId = JSConst.EVENT_MENU_SHOWN;
-    if( WidgetLCAUtil.wasEventSent( menu, eventId ) ) {
-      JSWriter writer = JSWriter.getWriterFor( menu );
+  static void renderUnhideItems( Menu menu ) {
+    if( WidgetLCAUtil.wasEventSent( menu, JSConst.EVENT_MENU_SHOWN ) ) {
       Boolean reveal = Boolean.valueOf( menu.getItemCount() > 0 );
-      Object[] args = new Object[]{ reveal };
-      writer.call( "unhideItems", args );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( menu );
+      Map<String, Object> args = new HashMap<String, Object>();
+      args.put( "reveal", reveal );
+      clientObject.call( METHOD_UNHIDE_ITEMS, args );
     }
   }
 
-  static void preserveWidth( Menu menu ) {
-    int width = computeWidth( menu );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( menu );
-    adapter.preserve( PROP_WIDTH, new Integer( width ) );
-  }
+  //////////////////
+  // Helping methods
 
-  static void writeWidth( Menu menu ) throws IOException {
-    int width = computeWidth( menu );
-    JSWriter writer = JSWriter.getWriterFor( menu );
-    writer.set( PROP_WIDTH, "width", new Integer( width ), null );
-  }
-
-  static int computeWidth( Menu menu ) {
-    int maxItemWidth = 0;
-    MenuItem[] items = menu.getItems();
-    for( int i = 0; i < items.length; i++ ) {
-      int width = MenuLCAUtil.getMenuItemWidth( items [ i ] );
-      maxItemWidth = Math.max( width, maxItemWidth );
-    }
-    return maxItemWidth + MENU_PADDING * 2 + MENU_BORDER * 2;
-  }
-
-  private static int getMenuItemWidth( MenuItem menuItem ) {
-    Font systemFont = menuItem.getDisplay().getSystemFont();
-    int result
-      = ITEM_LEFT_PADDING
-      + ITEM_IMAGE
-      + ITEM_SPACING
-      + Graphics.stringExtent( systemFont, menuItem.getText() ).x
-      + ITEM_SPACING
-      + ITEM_IMAGE
-      + ITEM_RIGHT_PADDING;
-    return result;
-  }
-
-  private static boolean hasListener( Menu menu ) {
+  private static boolean hasMenuListener( Menu menu ) {
     boolean result = MenuEvent.hasListener( menu );
     if( !result ) {
       MenuItem[] items = menu.getItems();

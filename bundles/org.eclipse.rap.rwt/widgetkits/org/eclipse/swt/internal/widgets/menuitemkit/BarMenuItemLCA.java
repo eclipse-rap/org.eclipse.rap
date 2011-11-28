@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,47 +13,25 @@ package org.eclipse.swt.internal.widgets.menuitemkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.lifecycle.JSWriter;
 import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
-import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.MenuItem;
 
 
 final class BarMenuItemLCA extends MenuItemDelegateLCA {
 
-  private static final String ITEM_TYPE_BAR = "bar";
-  
-  void preserveValues( MenuItem menuItem ) {
-    ItemLCAUtil.preserve( menuItem );
-    MenuItemLCAUtil.preserveEnabled( menuItem );
-    WidgetLCAUtil.preserveCustomVariant( menuItem );
-    WidgetLCAUtil.preserveHelpListener( menuItem );
+  void preserveValues( MenuItem item ) {
+    MenuItemLCAUtil.preserveValues( item );
   }
 
-  void readData( MenuItem menuItem ) {
-    WidgetLCAUtil.processHelp( menuItem );
+  void readData( MenuItem item ) {
+    WidgetLCAUtil.processHelp( item );
   }
 
-  void renderInitialization( MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, "org.eclipse.rwt.widgets.MenuItem", ITEM_TYPE_BAR );
+  void renderInitialization( MenuItem item ) throws IOException {
+    MenuItemLCAUtil.renderInitialization( item );
   }
 
-  // TODO [tb] the client-side menuItem supports images, but the menubar 
-  //           ignores them in its layout, so it is currently not rendered  
-  void renderChanges( MenuItem menuItem ) throws IOException {
-    writeText( menuItem );
-    MenuItemLCAUtil.writeEnabled( menuItem );
-    WidgetLCAUtil.writeCustomVariant( menuItem );
-    WidgetLCAUtil.writeHelpListener( menuItem );
-  }
-
-  private static void writeText( MenuItem menuItem ) throws IOException {
-    String text = menuItem.getText();
-    if( WidgetLCAUtil.hasChanged( menuItem, Props.TEXT, text ) ) {
-      JSWriter writer = JSWriter.getWriterFor( menuItem );
-      text = WidgetLCAUtil.escapeText( text, true );
-      writer.set( "text", text );
-    }
+  void renderChanges( MenuItem item ) throws IOException {
+    MenuItemLCAUtil.renderChanges( item );
   }
 }

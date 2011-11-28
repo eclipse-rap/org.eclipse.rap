@@ -12,8 +12,11 @@
 package org.eclipse.swt.internal.widgets.menukit;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.eclipse.rwt.lifecycle.JSWriter;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IMenuAdapter;
@@ -22,12 +25,10 @@ import org.eclipse.swt.widgets.Menu;
 
 final class PopupMenuLCA extends MenuDelegateLCA {
 
+  private static final String METHOD_SHOW_MENU = "showMenu";
+
   void preserveValues( Menu menu ) {
-    MenuLCAUtil.preserveEnabled( menu );
-    MenuLCAUtil.preserveMenuListener( menu );
-    MenuLCAUtil.preserveWidth( menu );
-    WidgetLCAUtil.preserveCustomVariant( menu );
-    WidgetLCAUtil.preserveHelpListener( menu );
+    MenuLCAUtil.preserveValues( menu );
   }
 
   void readData( Menu menu ) {
@@ -36,30 +37,24 @@ final class PopupMenuLCA extends MenuDelegateLCA {
   }
 
   void renderInitialization( Menu menu ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( menu );
-    writer.newWidget( "org.eclipse.rwt.widgets.Menu" );
+    MenuLCAUtil.renderInitialization( menu );
   }
 
   void renderChanges( Menu menu ) throws IOException {
-    WidgetLCAUtil.writeCustomVariant( menu );
-    writeShow( menu );
-    MenuLCAUtil.writeEnabled( menu );
-    MenuLCAUtil.writeMenuListener( menu );
-    MenuLCAUtil.writeUnhideMenu( menu );
-    WidgetLCAUtil.writeHelpListener( menu );
+    MenuLCAUtil.renderChanges( menu );
+    renderShow( menu );
+    MenuLCAUtil.renderUnhideItems( menu );
   }
 
-  private static void writeShow( Menu menu ) throws IOException {
+  private static void renderShow( Menu menu ) {
     if( menu.isVisible() ) {
-      JSWriter writer = JSWriter.getWriterFor( menu );
       IMenuAdapter adapter = menu.getAdapter( IMenuAdapter.class );
       Point location = adapter.getLocation();
-      Object[] args = new Object[] {
-        menu,
-        new Integer( location.x ),
-        new Integer( location.y )
-      };
-      writer.call( "showMenu", args );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( menu );
+      Map<String, Object> args = new HashMap<String, Object>();
+      args.put( "x", Integer.valueOf( location.x ) );
+      args.put( "y", Integer.valueOf( location.y ) );
+      clientObject.call( METHOD_SHOW_MENU, args );
       menu.setVisible( false );
     }
   }

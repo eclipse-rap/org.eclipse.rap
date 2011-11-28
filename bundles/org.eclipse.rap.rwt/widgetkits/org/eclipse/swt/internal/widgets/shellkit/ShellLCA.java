@@ -44,8 +44,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
   static final String PROP_FULLSCREEN = "fullScreen";
   static final String PROP_MINIMUM_SIZE = "minimumSize";
   static final String PROP_SHELL_LISTENER = "shell";
-  private static final String PROP_SHELL_MENU  = "menuBar";
-  private static final String PROP_SHELL_MENU_BOUNDS = "menuBarShellClientArea";
   private static final String PROP_DEFAULT_BUTTON = "defaultButton";
 
   @Override
@@ -60,7 +58,6 @@ public final class ShellLCA extends AbstractWidgetLCA {
     preserveProperty( shell, PROP_ALPHA, new Integer( shell.getAlpha() ) );
     preserveProperty( shell, PROP_MODE, getMode( shell ) );
     preserveProperty( shell, PROP_FULLSCREEN, Boolean.valueOf( shell.getFullScreen() ) );
-    preserveProperty( shell, PROP_SHELL_MENU, shell.getMenuBar() );
     preserveProperty( shell, PROP_MINIMUM_SIZE, shell.getMinimumSize() );
     preserveProperty( shell, PROP_DEFAULT_BUTTON, shell.getDefaultButton() );
     preserveListener( shell, PROP_SHELL_LISTENER, ShellEvent.hasListener( shell ) );
@@ -277,10 +274,10 @@ public final class ShellLCA extends AbstractWidgetLCA {
 
   private static void renderListenShell( Shell shell ) {
     // Note that "shell" events include "activate", "deactivate" and "close" events.
-    // "shellActivated" is sent the client in any case, event without listener. 
+    // "shellActivated" is sent the client in any case, event without listener.
     // "Shell_close" events are also always being sent, but with a listener the shell is not closed
     // by the client itself but by the server. Also, the "shellActivated" events are different from #
-    // the "activeControl" property and "controlActivated" event (also sent by the shell and 
+    // the "activeControl" property and "controlActivated" event (also sent by the shell and
     // processed in ShellLCA#processActivate).
     // The listener property for this event is rendered by ControlLCAUtil#renderActivateListener
     boolean newValue = ShellEvent.hasListener( shell );
@@ -300,11 +297,13 @@ public final class ShellLCA extends AbstractWidgetLCA {
   }
 
   private static void preserveMenuBounds( Shell shell ) {
-    Object adapter = shell.getAdapter( IShellAdapter.class );
-    IShellAdapter shellAdapter = ( IShellAdapter )adapter;
-    Rectangle menuBounds = shellAdapter.getMenuBounds();
-    IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( shell );
-    widgetAdapter.preserve( PROP_SHELL_MENU_BOUNDS, menuBounds );
+    Menu menuBar = shell.getMenuBar();
+    if( menuBar != null ) {
+      IShellAdapter shellAdapter = shell.getAdapter( IShellAdapter.class );
+      Rectangle menuBounds = shellAdapter.getMenuBounds();
+      IWidgetAdapter widgetAdapter = WidgetUtil.getAdapter( menuBar );
+      widgetAdapter.preserve( Props.BOUNDS, menuBounds );
+    }
   }
 
 }

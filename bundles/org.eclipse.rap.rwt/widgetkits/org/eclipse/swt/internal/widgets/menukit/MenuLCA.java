@@ -13,8 +13,8 @@ package org.eclipse.swt.internal.widgets.menukit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
-import org.eclipse.rwt.lifecycle.JSWriter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Widget;
@@ -22,21 +22,18 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class MenuLCA extends AbstractWidgetLCA {
 
-  private static final MenuBarLCA MENU_BAR_LCA 
-    = new MenuBarLCA();
-  private static final PopupMenuLCA POPUP_MENU_LCA 
-    = new PopupMenuLCA();
-  private static final DropDownMenuLCA DROP_DOWN_MENU_LCA 
-    = new DropDownMenuLCA();
+  private static final MenuBarLCA MENU_BAR_LCA = new MenuBarLCA();
+  private static final PopupMenuLCA POPUP_MENU_LCA = new PopupMenuLCA();
+  private static final DropDownMenuLCA DROP_DOWN_MENU_LCA = new DropDownMenuLCA();
 
   public void preserveValues( Widget widget ) {
     getDelegateLCA( widget ).preserveValues( ( Menu )widget );
   }
-  
+
   public void readData( Widget widget ) {
     getDelegateLCA( widget ).readData( ( Menu )widget );
   }
-  
+
   public void renderInitialization( Widget widget ) throws IOException {
     getDelegateLCA( widget ).renderInitialization( ( Menu )widget );
   }
@@ -46,8 +43,7 @@ public final class MenuLCA extends AbstractWidgetLCA {
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
   private static MenuDelegateLCA getDelegateLCA( Widget widget ) {

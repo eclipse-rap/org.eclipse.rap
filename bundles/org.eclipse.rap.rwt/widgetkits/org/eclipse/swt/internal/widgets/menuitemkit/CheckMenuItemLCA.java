@@ -14,47 +14,30 @@ package org.eclipse.swt.internal.widgets.menuitemkit;
 import java.io.IOException;
 
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.internal.widgets.ItemLCAUtil;
-import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.MenuItem;
 
 
 final class CheckMenuItemLCA extends MenuItemDelegateLCA {
 
-  private static final String ITEM_TYPE_CHECK = "check";
-
-  void preserveValues( MenuItem menuItem ) {
-    ItemLCAUtil.preserve( menuItem );
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
-    boolean hasListener = SelectionEvent.hasListener( menuItem );
-    adapter.preserve( Props.SELECTION_LISTENERS, Boolean.valueOf( hasListener ) );
-    adapter.preserve( MenuItemLCAUtil.PROP_SELECTION, Boolean.valueOf( menuItem.getSelection() ) );
-    MenuItemLCAUtil.preserveEnabled( menuItem );
-    WidgetLCAUtil.preserveCustomVariant( menuItem );
-    WidgetLCAUtil.preserveHelpListener( menuItem );
+  void preserveValues( MenuItem item ) {
+    MenuItemLCAUtil.preserveValues( item );
   }
 
-  void readData( MenuItem menuItem ) {
-    String value = WidgetLCAUtil.readPropertyValue( menuItem, "selection" );
+  void readData( MenuItem item ) {
+    String value = WidgetLCAUtil.readPropertyValue( item, "selection" );
     if( value != null ) {
-      menuItem.setSelection( Boolean.valueOf( value ).booleanValue() );
+      item.setSelection( Boolean.valueOf( value ).booleanValue() );
     }
-    ControlLCAUtil.processSelection( menuItem, null, false );
-    WidgetLCAUtil.processHelp( menuItem );
-    MenuItemLCAUtil.processArmEvent( menuItem );
+    ControlLCAUtil.processSelection( item, null, false );
+    WidgetLCAUtil.processHelp( item );
+    MenuItemLCAUtil.processArmEvent( item );
   }
 
-  void renderInitialization( MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.newItem( menuItem, "org.eclipse.rwt.widgets.MenuItem", ITEM_TYPE_CHECK );
+  void renderInitialization( MenuItem item ) throws IOException {
+    MenuItemLCAUtil.renderInitialization( item );
   }
 
-  void renderChanges( MenuItem menuItem ) throws IOException {
-    MenuItemLCAUtil.writeImageAndText( menuItem );
-    MenuItemLCAUtil.writeSelectionListener( menuItem );
-    MenuItemLCAUtil.writeSelection( menuItem );
-    MenuItemLCAUtil.writeEnabled( menuItem );
-    WidgetLCAUtil.writeCustomVariant( menuItem );
-    WidgetLCAUtil.writeHelpListener( menuItem );
+  void renderChanges( MenuItem item ) throws IOException {
+    MenuItemLCAUtil.renderChanges( item );
   }
 }
