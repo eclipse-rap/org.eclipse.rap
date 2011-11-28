@@ -19,28 +19,27 @@ Spinner {
   background-color: #ffffff;
   background-image: none;
   text-shadow: none;
-  box-shadow: inset 0 0 3px #333333;
+  box-shadow: none;
 }
 
-Spinner:focused {
+Spinner[BORDER] {
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  color: #464a4e;
+  background-color: #ffffff;
+  background-image: none;
+  text-shadow: none;
+  border: 1px solid #aaaaaa;
+  border-radius: 0 2px 2px 0;
+  box-shadow: inset 0 0 3px #bdbdbd;
+}
+
+Spinner[BORDER]:focused {
   border: 1px solid #4f7cb1;
   box-shadow: 0 0 5px #4f7cb1;
 }
 
 Spinner-Field {
   padding: 6px 10px 6px 10px;
-}
-
-Spinner[BORDER] {
-  border: 1px solid #aaaaaa;
-  border-radius: 0 2px 2px 0;
-  box-shadow: inset 0 0 3px #bdbdbd;
-}
-
-Spinner:focused,
-Spinner[BORDER]:focused {
-  border: 1px solid #4f7cb1;
-  box-shadow: 0 0 5px #4f7cb1;
 }
 
 Spinner-UpButton {

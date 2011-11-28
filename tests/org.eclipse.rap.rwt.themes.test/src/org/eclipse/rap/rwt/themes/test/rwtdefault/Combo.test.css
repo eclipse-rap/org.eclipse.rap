@@ -11,7 +11,9 @@
 
 /* Combo default theme */
 
-Combo {
+Combo,
+Combo[BORDER],
+CCombo[BORDER] {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
   background-color: #ffffff;
@@ -19,10 +21,10 @@ Combo {
   border: 1px solid #aaaaaa;
   border-radius: 0 2px 2px 0;
   text-shadow: none;
+  box-shadow: inset 0 0 3px #bdbdbd;
 }
 
 Combo:focused,
-CCombo:focused,
 Combo[BORDER]:focused,
 CCombo[BORDER]:focused {
   border: 1px solid #4f7cb1;
@@ -37,14 +39,7 @@ CCombo {
   border-radius: 0 2px 2px 0;
   background-image: none;
   text-shadow: none;
-  box-shadow: inset 0 0 3px #333333;
-}
-
-Combo[BORDER],
-CCombo[BORDER] {
-  border: 1px solid #aaaaaa;
-  border-radius: 0 2px 2px 0;
-  box-shadow: inset 0 0 3px #bdbdbd;
+  box-shadow: none;
 }
 
 Combo-Button, 
