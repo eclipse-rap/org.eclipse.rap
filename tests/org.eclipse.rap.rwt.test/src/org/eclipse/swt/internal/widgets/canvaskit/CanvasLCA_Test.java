@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.canvaskit;
 
@@ -27,7 +28,6 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawLine;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
-import org.eclipse.swt.internal.widgets.buttonkit.ButtonLCA;
 import org.eclipse.swt.widgets.*;
 
 public class CanvasLCA_Test extends TestCase {
@@ -65,9 +65,9 @@ public class CanvasLCA_Test extends TestCase {
 
   public void testRenderDestroy() throws IOException {
     Canvas canvas = new Canvas( shell, SWT.NONE );
-    
+
     lca.renderDispose( canvas );
-    
+
     Message message = Fixture.getProtocolMessage();
     DestroyOperation canvasDestroy = ( DestroyOperation )message.getOperation( 0 );
     DestroyOperation gcDestroy = ( DestroyOperation )message.getOperation( 1 );
@@ -75,7 +75,7 @@ public class CanvasLCA_Test extends TestCase {
     assertEquals( canvasId, canvasDestroy.getTarget() );
     assertEquals( canvasId + "#gc", gcDestroy.getTarget() );
   }
-  
+
   public void testWriqteSingleGCOperation() throws IOException {
     Fixture.fakeResponseWriter();
     Canvas canvas = new Canvas( shell, SWT.NONE );
