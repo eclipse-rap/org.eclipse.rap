@@ -28,8 +28,7 @@ public class StyleSheetBuilder {
 
   public void addStyleSheet( StyleSheet styleSheet ) {
     StyleRule[] styleRules = styleSheet.getStyleRules();
-    for( int i = 0; i < styleRules.length; i++ ) {
-      StyleRule styleRule = styleRules[ i ];
+    for( StyleRule styleRule : styleRules ) {
       addStyleRule( styleRule );
     }
   }
