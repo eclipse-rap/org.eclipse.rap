@@ -86,7 +86,26 @@ public class ClientObjectFactory_Test extends TestCase {
 
     assertNotNull( clientObject );
   }
+
+  public void testGetClientObjectForGC() {
+    IClientObject clientObject = ClientObjectFactory.getForGC( shell );
+    
+    assertNotNull( clientObject );
+  }  
+
+  public void testGetClientObjectForGCSameInstance() {
+    IClientObject clientObject = ClientObjectFactory.getForGC( shell );
+    
+    assertNotNull( clientObject );
+  }  
   
+  public void testGetClientObjectForGCDisposed() {
+    shell.dispose();
+    IClientObject clientObject = ClientObjectFactory.getForGC( shell );
+    
+    assertSame( clientObject, ClientObjectFactory.getForGC( shell ) );
+  }  
+
   public void testCreateFromNonUIThreadFails() throws InterruptedException {
     final List<Exception> log = new ArrayList<Exception>();
     Thread backgroundThread = new Thread() {

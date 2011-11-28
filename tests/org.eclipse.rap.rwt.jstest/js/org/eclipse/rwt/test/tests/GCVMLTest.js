@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -19,11 +19,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
     testStrokeProperties : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var VML = org.eclipse.rwt.VML;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       var vmlCanvas = gc._context._canvas;
       assertEquals( 0, vmlCanvas.node.childNodes.length );
@@ -53,11 +53,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
     testFillProperties : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var VML = org.eclipse.rwt.VML;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       var vmlCanvas = gc._context._canvas;
       assertEquals( 0, vmlCanvas.node.childNodes.length );
@@ -78,11 +78,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
     
     testInit : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       var vmlCanvas = gc._context._canvas;
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawLine( 10, 10, 20, 10 );
@@ -95,11 +95,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testDrawLine : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawLine( 10, 10, 20, 10 );
       assertEquals( "m100,100 l200,100 e", this._getLastPath( gc ) );
@@ -109,11 +109,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testDrawPoint : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       context = gc._context;
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawPoint( 40, 30 );
@@ -128,11 +128,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
     
     testDrawRectangle : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       context = gc._context;
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawRectangle( 10, 20, 30, 40 );      
@@ -144,11 +144,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testDrawRoundRectangle : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       context = gc._context;
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawRoundRectangle( 2, 4, 20, 30, 4, 10, true  );      
@@ -160,11 +160,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testFillGradientRectangle : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       context = gc._context;
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.fillGradientRectangle( 40, 60, -30, -40, false );      
@@ -180,11 +180,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
     
     testDrawArc : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawArc( 100, 100, 60, 30, 180, 180, true );
       var expected = "m995,1145 ae1295,1145,300,150,11796300,11796300 e";
@@ -195,11 +195,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testDrawPolyline : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawPolyline( [ 10, 10, 100, 70, 70, 100 ], true, true );      
       var expected = "m95,95 l995,695,695,995,95,95 e";
@@ -211,11 +211,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
     testDrawImage : function() {
       // NOTE: drawImage can not be tested directly, test "setImageData" instead
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       var vmlCanvas = gc._context._canvas;
       var shape = org.eclipse.rwt.VML.createShape( "image" );
@@ -242,11 +242,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testRestoreColorsOnDomInsert : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       var vmlCanvas = gc._context._canvas;
       gc._initFields( "10px Arial", "#657890", "#a1a2a3" );
       gc.drawRectangle( 10, 10, 20, 20, true )
@@ -264,11 +264,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCVMLTest", {
 
     testRestoreStrokeWeightOnDomInsert : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       var vmlCanvas = gc._context._canvas;
       gc._initFields( "10px Arial", "#657890", "#a1a2a3" );
       gc.setProperty( "lineWidth", 4 ); 

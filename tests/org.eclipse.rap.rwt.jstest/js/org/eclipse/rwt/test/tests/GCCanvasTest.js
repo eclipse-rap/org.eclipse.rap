@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -19,11 +19,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
 
     testInit : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawLine( 10, 10, 20, 10 );
       gc.init( 400, 500, "10px Arial", "#ffffff", "#000000" );
@@ -44,11 +44,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
 
     testDrawLine : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawLine( 10, 10, 20, 10 );
       var context = gc._context;
@@ -64,11 +64,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
 
     testDrawPoint : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawPoint( 40, 30 );      
       var context = gc._context;
@@ -85,11 +85,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
 
     testDrawRectangle : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawRectangle( 10, 20, 30, 40 );      
       var context = gc._context;
@@ -106,11 +106,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
 
     testDrawRoundRectangle : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawRoundRectangle( 2, 4, 20, 30, 4, 10, true  );      
       var context = gc._context;
@@ -136,11 +136,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
     
     testFillGradientRectangle : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.fillGradientRectangle( 40, 60, -30, -40, false );      
       var context = gc._context;
@@ -157,11 +157,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
     
     testDrawArc : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawArc( 100, 100, 60, 30, 180, 180, true );      
       var context = gc._context;
@@ -183,11 +183,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
     testDrawArcSizeZero : function() {
       // Test passes by not crashing
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawArc( 100, 100, 0, 0, 180, 180, true );
       canvas.destroy();
@@ -196,11 +196,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
     
     testDrawPolyline : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Canvas();
+      var canvas = new org.eclipse.swt.widgets.Composite();
       canvas.setDimension( 300, 300 );
       canvas.addToDocument();
       testUtil.flush();
-      var gc = canvas.getGC();
+      var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
       gc.drawPolyline( [ 10, 10, 100, 70, 70, 100 ], true, true );      
       var context = gc._context;

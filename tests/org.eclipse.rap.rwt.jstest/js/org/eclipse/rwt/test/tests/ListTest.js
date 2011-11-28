@@ -279,7 +279,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
         "type" : "rwt.widgets.List",
         "properties" : {
           "style" : [ "MULTI" ],
-          "parent" : "w2",
+          "parent" : "w2"
         }
       } );
       testUtil.protocolListen( "w3", { "selection" : true } );

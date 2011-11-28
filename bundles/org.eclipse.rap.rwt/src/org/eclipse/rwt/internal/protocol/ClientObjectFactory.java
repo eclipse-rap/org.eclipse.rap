@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class ClientObjectFactory {
 
+  private static final String GC_SUFFIX = "#gc";
   private static final String CLIENT_OBJECT_MAP_KEY = "synchronizerMapKey";
 
   /**
@@ -53,6 +54,23 @@ public final class ClientObjectFactory {
     return getForId( WidgetUtil.getId( widget ) );
   }
 
+  /**
+   * Creates a {@link IClientObject} for the GC for a specific Widget. The returned instance
+   * is unique for the time a Request exists. The relationship between these two is a 1:1
+   * relationship.
+   *
+   * @param widget The server side {@link Widget} instance.
+   *
+   * @return a request specific {@link IClientObject} instance for the GC of the passed
+   * {@link Widget}.
+   */
+  public static IClientObject getForGC( Widget widget ) {
+    if( !isValidThread( widget ) ) {
+      throw new IllegalStateException( "Illegal thread access" );
+    }
+    return getForId( WidgetUtil.getId( widget ) + GC_SUFFIX );
+  }
+  
   /**
    * Creates a {@link IClientObject} for a specific Display. The returned instance
    * is unique for the time a Request exists. The relationship between these two is a 1:1

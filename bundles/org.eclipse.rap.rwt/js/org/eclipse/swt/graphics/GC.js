@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -24,6 +24,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       this._vmlCanvas = org.eclipse.rwt.VML.createCanvas();
       this._canvas = org.eclipse.rwt.VML.getCanvasNode( this._vmlCanvas );
       this._context = new org.eclipse.rwt.VMLCanvas( this._vmlCanvas );
+      this._control.addEventListener( "insertDom", this._onCanvasAppear, this );
     } else {
       this._canvas = document.createElement( "canvas" );
       this._context = this._canvas.getContext( "2d" );
@@ -40,6 +41,12 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
 
   destruct : function() {
     this._control.removeEventListener( "create", this._onControlCreate, this );
+    if( qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
+      this._control.removeEventListener( "insertDom", this._onCanvasAppear, this );
+    }
+    if( this._control.isCreated() && !this._control.isDisposed() ) {
+      this._removeCanvasFromDOM();
+    }
     this._control = null;
     this._canvas = null;
     if( this._context.dispose ) {
@@ -55,6 +62,11 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       this._addCanvasToDOM();
     },
 
+    _onCanvasAppear : function() {
+      var graphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      graphicsUtil.handleAppear( this._vmlCanvas );
+    },
+
     _addCanvasToDOM  : function() {
       var controlElement = this._control._getTargetNode();
       var firstChild = controlElement.firstChild;
@@ -65,6 +77,12 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
         controlElement.appendChild( this._canvas );
         controlElement.appendChild( this._textCanvas );
       }
+    },
+
+    _removeCanvasFromDOM : function() {
+      var controlElement = this._control._getTargetNode();
+      this._canvas.parentNode.removeChild( this._canvas );
+      this._textCanvas.parentNode.removeChild( this._textCanvas );
     },
 
     init : qx.core.Variant.select( "qx.client", {

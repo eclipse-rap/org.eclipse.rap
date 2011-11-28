@@ -36,7 +36,8 @@ final class GCOperationWriter {
   void initialize() throws IOException {
     if( !initialized ) {
       writer = JSWriter.getWriterFor( control );
-      writer.varAssignment( GC_VAR, "getGC" );
+      String gcId = WidgetUtil.getId( control ) + "#gc";
+      writer.callStatic( "var " + GC_VAR + " = org.eclipse.rwt.protocol.ObjectManager.getObject", new Object[] { gcId } );
       Point size = control.getSize();
       Object[] args = new Object[] {
         new Integer( size.x ),

@@ -12,12 +12,17 @@ package org.eclipse.swt.internal.widgets.canvaskit;
 
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.internal.graphics.*;
 import org.eclipse.swt.widgets.*;
 
 
 public final class CanvasLCA extends AbstractWidgetLCA {
+  
+  private static final String TYPE = "rwt.widgets.Canvas";
+  private static final String TYPE_GC = "rwt.GC";
 
   public void preserveValues( Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
@@ -34,22 +39,26 @@ public final class CanvasLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     Canvas canvas = ( Canvas )widget;
-    JSWriter writer = JSWriter.getWriterFor( canvas );
-    writer.newWidget( "org.eclipse.swt.widgets.Canvas" );
-    ControlLCAUtil.writeStyleFlags( canvas );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( canvas );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( canvas.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( canvas ) );
+    IClientObject clientObjectGC = ClientObjectFactory.getForGC( canvas );
+    clientObjectGC.create( TYPE_GC );
+    clientObjectGC.setProperty( "parent", WidgetUtil.getId( canvas ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
-    ControlLCAUtil.writeChanges( ( Control )widget );
-    WidgetLCAUtil.writeBackgroundGradient( widget );
-    WidgetLCAUtil.writeRoundedBorder( widget );
-    WidgetLCAUtil.writeCustomVariant( widget );
+    ControlLCAUtil.renderChanges( ( Control )widget );
+    WidgetLCAUtil.renderBackgroundGradient( widget );
+    WidgetLCAUtil.renderRoundedBorder( widget );
+    WidgetLCAUtil.renderCustomVariant( widget );
     writeGCOperations( ( Canvas )widget );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
+    ClientObjectFactory.getForWidget( widget ).destroy();
+    ClientObjectFactory.getForGC( widget ).destroy();
   }
 
   private static void writeGCOperations( Canvas canvas ) throws IOException {
