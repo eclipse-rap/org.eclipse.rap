@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.swt.custom;
 
-import org.eclipse.swt.*;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.rwt.RWT;
+import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 
 /**
@@ -196,6 +199,23 @@ void resize () {
 //		display.timerExec(-1, timer);
 //		display.timerExec(TIMEOUT, timer);
 //	}
+    // [rh] Adaption of the above code for RWT (see bug 364802)
+  RWT.getLifeCycle().addPhaseListener( new PhaseListener() {
+    private static final long serialVersionUID = 1L;
+    public void beforePhase( PhaseEvent event ) {
+    }
+    
+    public void afterPhase( PhaseEvent event ) {
+      RWT.getLifeCycle().removePhaseListener( this );
+      if( table != null && table.getDisplay() == Display.getCurrent() ) {
+        layout();
+      }
+    }
+
+    public PhaseId getPhaseId() {
+      return PhaseId.PROCESS_ACTION;
+    }
+  } );
 }
 /**
 * Sets the zero based index of the column of the cell being tracked by this editor.
