@@ -18,6 +18,7 @@ package org.eclipse.rwt.service;
  * @see IServiceHandler
  * 
  * @since 1.0
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IServiceManager {
   

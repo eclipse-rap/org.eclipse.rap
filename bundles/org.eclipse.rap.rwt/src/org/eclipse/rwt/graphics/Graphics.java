@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Display;
  * in order to have a much smaller memory footprint.
  *
  * @since 1.0
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public final class Graphics {
 

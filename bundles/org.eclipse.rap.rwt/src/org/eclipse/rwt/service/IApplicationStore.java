@@ -23,6 +23,7 @@ package org.eclipse.rwt.service;
  * 
  * @see org.eclipse.rwt.RWT
  * @since 1.4
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IApplicationStore {
 

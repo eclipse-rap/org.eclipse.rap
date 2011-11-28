@@ -38,6 +38,7 @@ import org.eclipse.swt.widgets.*;
  * @see WidgetLCAUtil
  * 
  * @since 1.0
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public final class JSWriter {
 

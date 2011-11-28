@@ -41,11 +41,10 @@ import org.eclipse.swt.widgets.*;
  * <dt><b>Styles:</b></dt>
  * <dd>(none)</dd>
  * </dl>
- *
- * </p><p>
- * IMPORTANT: This class is <em>not</em> intended to be subclassed.
  * </p>
+ * 
  * @since 1.4
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class FileUpload extends Canvas {
 

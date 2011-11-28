@@ -21,6 +21,7 @@ import java.util.EventObject;
  * <p>This class is not intended to be instantiated by clients.</p>
  * 
  * @since 1.0
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class PhaseEvent extends EventObject {
   

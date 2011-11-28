@@ -16,6 +16,7 @@ package org.eclipse.rwt.service;
  * normally. 
  * 
  * @since 1.1 
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class SettingStoreException extends Exception {
 

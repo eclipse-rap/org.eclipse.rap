@@ -35,6 +35,7 @@ import org.eclipse.rwt.internal.util.ParamCheck;
  * changed attribute is of interest to them.
  * <p>
  * @since 1.1
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public final class SettingStoreEvent extends EventObject {
 

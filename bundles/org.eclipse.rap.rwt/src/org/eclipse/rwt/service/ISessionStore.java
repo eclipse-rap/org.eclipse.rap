@@ -25,9 +25,8 @@ import javax.servlet.http.HttpSession;
  * don't work with RAP). This gives the possibility to cleanup on session 
  * shutdown with the session singleton infrastructure intact.
  *
- * <p>This interface is not intended to be implemented by clients.</p>
- *
  * @since 1.0
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface ISessionStore {
 

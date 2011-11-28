@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rwt.lifecycle;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
@@ -22,6 +21,7 @@ import org.eclipse.rwt.internal.util.ParamCheck;
  * Strings, JSVars are not enclosed in double quotes in the response.
  * 
  * @since 1.0
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public final class JSVar {
   

@@ -18,6 +18,7 @@ import java.util.EventObject;
  * used to get notifications before the session store is destroyed.
  * 
  * @since 1.0
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class SessionStoreEvent extends EventObject {
   private static final long serialVersionUID = 1L;

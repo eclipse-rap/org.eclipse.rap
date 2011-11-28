@@ -19,6 +19,7 @@ import java.util.*;
  * {@link PhaseListener}.
  * 
  * @since 1.0
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class PhaseId implements Comparable {
 

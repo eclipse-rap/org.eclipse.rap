@@ -21,6 +21,7 @@ import org.eclipse.rwt.internal.util.ParamCheck;
  * 
  * @see AbstractBranding
  * @since 1.0.1
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public final class Header {
 

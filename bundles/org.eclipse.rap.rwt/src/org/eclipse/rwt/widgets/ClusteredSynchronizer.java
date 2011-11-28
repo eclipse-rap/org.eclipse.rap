@@ -31,10 +31,11 @@ import org.eclipse.swt.widgets.Synchronizer;
  * </p>
  * 
  * @see Synchronizer
- * @see Display#setSynchronizer
- * @see Display#syncExec(Runnable)
- * @see Display#asyncExec(Runnable)
+ * @see org.eclipse.swt.widgets.Display#setSynchronizer
+ * @see org.eclipse.swt.widgets.Display#syncExec(Runnable)
+ * @see org.eclipse.swt.widgets.Display#asyncExec(Runnable)
  * @since 1.5
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class ClusteredSynchronizer extends Synchronizer {
   private final String requestUrl;

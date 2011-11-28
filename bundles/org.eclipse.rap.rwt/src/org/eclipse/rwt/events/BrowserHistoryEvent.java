@@ -20,8 +20,9 @@ import org.eclipse.rwt.internal.events.Event;
  * navigation event.
  *
  * @see BrowserHistoryListener
- * @see IBrowserHistory
+ * @see org.eclipse.rwt.IBrowserHistory
  * @since 1.3
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public final class BrowserHistoryEvent extends Event {
 

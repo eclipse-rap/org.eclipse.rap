@@ -19,7 +19,9 @@ package org.eclipse.rwt.service;
  * meaning that all information stored here will be lost at the end of a 
  * request.</p>
  * 
+ * @since 1.0
  * @see org.eclipse.rwt.RWT
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IServiceStore {
   
