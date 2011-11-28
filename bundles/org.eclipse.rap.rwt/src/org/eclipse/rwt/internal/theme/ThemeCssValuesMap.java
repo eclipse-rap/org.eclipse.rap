@@ -84,12 +84,13 @@ public final class ThemeCssValuesMap {
   private void reportMissingProperty( String elementName, String propertyName ) {
     if( SystemProps.isDevelopmentMode() && SystemProps.enableThemeDebugOutput() ) {
       StringBuilder stringBuilder = new StringBuilder();
-      stringBuilder.append( "Missing value for element " );
+      stringBuilder.append( "Missing value for element: '" );
       stringBuilder.append( elementName );
-      stringBuilder.append( ", property " );
+      stringBuilder.append( "' property: '" );
       stringBuilder.append( propertyName );
-      stringBuilder.append( " in theme " );
+      stringBuilder.append( "' in theme: '" );
       stringBuilder.append( theme.getId() );
+      stringBuilder.append( "'" );
       System.err.println( stringBuilder.toString() );
     }
   }
