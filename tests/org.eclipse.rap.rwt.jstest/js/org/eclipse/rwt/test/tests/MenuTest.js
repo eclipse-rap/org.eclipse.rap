@@ -279,6 +279,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       widget.destroy();
     },
 
+    testSetMenuListenerByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var menu = this._createPopUpMenuByProtocol( "w3" );
+      testUtil.protocolListen( "w3", { "menu" : true } )
+      assertTrue( menu._hasListener );
+      menu.destroy();
+    },
+
     testTextOnly : function() {
       this.createSimpleMenu( "push" );      
       this.menuItem.setText( "Hello World!" );
