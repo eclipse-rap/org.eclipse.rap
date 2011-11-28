@@ -56,6 +56,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Tree", {
     this._configureScrollBars();
     this._registerListeners();
     this._parseArgsMap( argsMap );
+    // Disable scrolling (see bugs 279460 and 364739)
+    qx.ui.core.Widget.disableScrolling( this );
   },
   
   destruct : function() {
