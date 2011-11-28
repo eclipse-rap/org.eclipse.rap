@@ -10,35 +10,95 @@
  ******************************************************************************/
 package org.eclipse.rap.rwt.jstest.internal;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeManager;
-import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.rwt.service.IServiceHandler;
+import org.eclipse.swt.internal.widgets.displaykit.ClientResourcesAdapter;
 
 
 @SuppressWarnings( "restriction" )
 public class ClientResourcesServiceHandler implements IServiceHandler {
 
+  private static final String APPEARANCE_NAME = "rap-appearance.js";
+  public static final String ID = "clientResources";
+
   public void service() throws IOException, ServletException {
+    HttpServletRequest request = RWT.getRequest();
+    String file = request.getParameter( "file" );
+    if( file != null ) {
+      if( APPEARANCE_NAME.equals( file ) ) {
+        deliverAppearance();
+      } else {
+        deliverResource( file );
+      }
+    } else {
+      deliverFilesList();
+    }
+  }
+
+  private void deliverFilesList() throws IOException {
     HttpServletResponse response = RWT.getResponse();
     response.setContentType( "text/javascript" );
     PrintWriter writer = response.getWriter();
     writer.write( "( function() {\n" );
-    writeIncludeResource( writer, getClientLibraryLocation() );
-    writeIncludeResource( writer, getThemeLocation() );
+    String[] clientResources = ClientResourcesAdapter.getRegisteredClientResources();
+    for( String resource : clientResources ) {
+      writeIncludeResource( writer, getResourceLocation( resource ), true );
+    }
+    writeIncludeResource( writer, getResourceLocation( APPEARANCE_NAME ), false );
+    writeIncludeResource( writer, getThemeLocation(), false );
     writer.write( "} )();\n" );
   }
 
-  private String getClientLibraryLocation() {
-    IResourceManager resourceManager = RWTFactory.getResourceManager();
-    return resourceManager.getLocation( "rap-client.js" );
+  private void deliverResource( String resourceName ) throws IOException {
+    HttpServletResponse response = RWT.getResponse();
+    response.setContentType( "text/javascript" );
+    InputStream inputStream = ClientResourcesAdapter.getResourceAsStream( resourceName );
+    if( inputStream != null ) {
+      try {
+        PrintWriter writer = response.getWriter();
+        copyContents( inputStream, writer );
+      } finally {
+        inputStream.close();
+      }
+    } else {
+      writeError( response, HttpServletResponse.SC_NOT_FOUND, "Resource not found" );
+    }
+  }
+
+  private void deliverAppearance() throws IOException {
+    HttpServletResponse response = RWT.getResponse();
+    response.setContentType( "text/javascript" );
+    ThemeManager themeManager = RWTFactory.getThemeManager();
+    String appearanceCode = themeManager.createQxAppearanceTheme();
+    PrintWriter writer = response.getWriter();
+    writer.write( appearanceCode );
+  }
+
+  private String getResourceLocation( String resource ) {
+     StringBuilder url = new StringBuilder();
+     url.append( RWT.getRequest().getContextPath() );
+     url.append( RWT.getRequest().getServletPath() );
+     url.append( '?' );
+     url.append( REQUEST_PARAM );
+     url.append( '=' );
+     url.append( ID );
+     url.append( "&file=" );
+     url.append( resource );
+     return RWT.getResponse().encodeURL( url.toString() );
   }
 
   private String getThemeLocation() {
@@ -47,11 +107,40 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     return defaultTheme.getRegisteredLocation();
   }
 
-  private static void writeIncludeResource( PrintWriter writer, String resource ) {
+  private void writeError( HttpServletResponse response, int statusCode, String message )
+    throws IOException
+  {
+    response.setContentType( "text/html" );
+    response.setStatus( statusCode );
+    PrintWriter writer = response.getWriter();
+    writer.write( "<html><h1>HTTP " + statusCode + "</h1><p>" + message + "</p></html>" );
+  }
+
+  private static void writeIncludeResource( PrintWriter writer, String resource, boolean nocache ) {
     writer.write( "document.write( '<script src=\"" );
     writer.write( resource );
-    writer.write( "?nocache=" );
-    writer.write( Long.toString( System.currentTimeMillis() ) );
-    writer.write( " type=\"text/javascript\"></script>' );\n" );
+    if( nocache ) {
+      writer.write( resource.contains( "?" ) ? "&" : "?" );
+      writer.write( "nocache=" );
+      writer.write( Long.toString( System.currentTimeMillis() ) );
+    }
+    writer.write( "\" type=\"text/javascript\"></script>' );\n" );
   }
+
+  private static void copyContents( InputStream inputStream, PrintWriter writer )
+    throws IOException
+  {
+    try {
+      BufferedReader reader = new BufferedReader( new InputStreamReader( inputStream, "UTF-8" ) );
+      char[] buffer = new char[ 8192 ];
+      int count = reader.read( buffer );
+      while( count != -1 ) {
+        writer.write( buffer, 0, count );
+        count = reader.read( buffer );
+      }
+    } catch( UnsupportedEncodingException unexpected ) {
+      throw new RuntimeException( unexpected );
+    }
+  }
+
 }

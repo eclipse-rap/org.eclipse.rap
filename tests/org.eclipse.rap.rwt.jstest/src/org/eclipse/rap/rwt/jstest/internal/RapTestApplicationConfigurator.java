@@ -20,7 +20,7 @@ public class RapTestApplicationConfigurator implements ApplicationConfigurator {
 
   public void configure( ApplicationConfiguration configuration ) {
     IServiceHandler serviceHandler = new ClientResourcesServiceHandler();
-    configuration.addServiceHandler( "includeClientResources", serviceHandler );
+    configuration.addServiceHandler( ClientResourcesServiceHandler.ID, serviceHandler );
     configuration.addBranding( new AbstractBranding() {
       @Override
       public String getServletName() {
