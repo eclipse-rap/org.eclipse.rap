@@ -27,6 +27,7 @@ import org.eclipse.rwt.events.BrowserHistoryListener;
  * </p>
  *
  * @since 1.3
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface IBrowserHistory {
 

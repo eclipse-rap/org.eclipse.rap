@@ -24,6 +24,8 @@ import org.eclipse.rwt.internal.service.*;
 
 /**
  * TODO JavDoc
+ * @since 1.5
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class RWTServlet extends HttpServlet {
 

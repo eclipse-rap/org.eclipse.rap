@@ -26,6 +26,8 @@ import org.eclipse.rwt.lifecycle.IEntryPoint;
 
 /**
  * TODO JavaDoc
+ * @since 1.5
+ * @noextend This class is not intended to be subclassed by clients.
  */
 public class RWTServletContextListener implements ServletContextListener {
   public static final String ENTRY_POINTS_PARAM = "org.eclipse.rwt.entryPoints";
