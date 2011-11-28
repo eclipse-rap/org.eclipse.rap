@@ -142,14 +142,12 @@ public class ApplicationConfigurationImpl implements ApplicationConfiguration {
     
     StyleSheet styleSheet = readStyleSheet( styleSheetLocation, resourceLoader );
     ThemeManager themeManager = applicationContext.getThemeManager();
-    
     Theme theme = themeManager.getTheme( themeId );
     if( theme != null ) {
       theme.addStyleSheet( styleSheet );
     } else {
       themeManager.registerTheme( new Theme( themeId, "unknown", styleSheet ) );
     }
-    
   }
 
   public void addThemableWidget( Class<? extends Widget> widget ) {
