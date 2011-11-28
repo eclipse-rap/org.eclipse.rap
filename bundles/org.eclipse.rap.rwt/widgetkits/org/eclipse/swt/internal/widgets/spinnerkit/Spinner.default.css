@@ -17,7 +17,7 @@ Spinner {
   border: none;
   border-radius: 0 2px 2px 0;
   color: #464a4e;
-  background-color: #f6f6f6;
+  background-color: #ffffff;
   background-image: none;
   text-shadow: none;
   box-shadow: inset 0 0 3px #333333;
@@ -30,7 +30,7 @@ Spinner-Field {
 Spinner[BORDER] {
   border: 1px solid #aaaaaa;
   border-radius: 0 2px 2px 0;
-  box-shadow: inset 0 0 2px #bdbdbd;
+  box-shadow: inset 0 0 3px #bdbdbd;
 }
 
 Spinner-UpButton {
