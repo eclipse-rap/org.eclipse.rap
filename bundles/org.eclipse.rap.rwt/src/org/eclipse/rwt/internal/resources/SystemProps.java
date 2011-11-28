@@ -18,6 +18,7 @@ public final class SystemProps {
   public static final String USE_COMPRESSED_JAVA_SCRIPT = "org.eclipse.rap.useCompressedJavaScript";
   public static final String CLIENT_LIBRARY_VARIANT = "org.eclipse.rwt.clientLibraryVariant";
   public static final String DEBUG_CLIENT_LIBRARY_VARIANT = "DEBUG";
+  public static final String ENABLE_THEME_WARNINGS = "org.eclipse.rap.enableThemeWarnings";
 
   private SystemProps() {
     // prevent instantiation
@@ -29,6 +30,11 @@ public final class SystemProps {
 
   public static boolean useCompressedJavaScript() {
     return getBooleanProperty( USE_COMPRESSED_JAVA_SCRIPT, true );
+  }
+
+  // TODO [rst] Temporary system property, see bug 254478
+  public static boolean enableThemeDebugOutput() {
+    return getBooleanProperty( ENABLE_THEME_WARNINGS, false );
   }
 
   public static boolean isDevelopmentMode() {

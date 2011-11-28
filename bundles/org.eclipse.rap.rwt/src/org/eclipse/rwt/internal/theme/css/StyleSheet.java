@@ -38,15 +38,12 @@ public final class StyleSheet {
 
   public ConditionalValue[] getValues( String elementName, String propertyName ) {
     List<ConditionalValue> buffer = new ArrayList<ConditionalValue>();
-    for( int i = 0; i < selectorWrappers.length; i++ ) {
-      SelectorWrapper selectorWrapper = selectorWrappers[ i ];
-      String selectorElement
-        = ( ( SelectorExt )selectorWrapper.selector ).getElementName();
+    for( SelectorWrapper selectorWrapper : selectorWrappers ) {
+      String selectorElement = ( ( SelectorExt )selectorWrapper.selector ).getElementName();
       if( selectorElement == null || selectorElement.equals( elementName ) ) {
         QxType value = selectorWrapper.propertyMap.getValue( propertyName );
         if( value != null ) {
-          String[] constraints
-            = ( ( SelectorExt )selectorWrapper.selector ).getConstraints();
+          String[] constraints = ( ( SelectorExt )selectorWrapper.selector ).getConstraints();
           Arrays.sort( constraints );
           if( !containsConstraintsAlready( buffer, constraints ) ) {
             buffer.add( new ConditionalValue( constraints, value ) );
@@ -130,10 +127,8 @@ public final class StyleSheet {
 
     public int compare( SelectorWrapper selectorWrapper1, SelectorWrapper selectorWrapper2 ) {
       int result = 0;
-      int specificity1
-        = ( ( Specific )selectorWrapper1.selector ).getSpecificity();
-      int specificity2
-        = ( ( Specific )selectorWrapper2.selector ).getSpecificity();
+      int specificity1 = ( ( Specific )selectorWrapper1.selector ).getSpecificity();
+      int specificity2 = ( ( Specific )selectorWrapper2.selector ).getSpecificity();
       if( specificity1 > specificity2 ) {
         result = 1;
       } else if( specificity1 < specificity2 ) {

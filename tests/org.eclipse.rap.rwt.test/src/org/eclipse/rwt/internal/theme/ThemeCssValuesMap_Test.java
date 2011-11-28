@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
@@ -24,6 +25,15 @@ import org.eclipse.swt.widgets.Button;
 
 public class ThemeCssValuesMap_Test extends TestCase {
 
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    Fixture.fakeNewRequest();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testGetValues_Font() throws Exception {
     ThemeCssValuesMap map = getValuesMap();
     ConditionalValue[] fontValues = map .getValues( "Button", "font" );
@@ -32,8 +42,7 @@ public class ThemeCssValuesMap_Test extends TestCase {
     // [ [TOGGLE ] -> 11px 'Segoe UI', Tahoma, 'Lucida Sans Unicode'
     // [ [PUSH ]   -> 11px 'Segoe UI', Tahoma, 'Lucida Sans Unicode'
     // []          -> bold 12px Arial, Helvetica, sans-serif
-    QxFont font1
-      = QxFont.valueOf( "11px 'Segoe UI', Tahoma, 'Lucida Sans Unicode'" );
+    QxFont font1 = QxFont.valueOf( "11px 'Segoe UI', Tahoma, 'Lucida Sans Unicode'" );
     QxFont font2 = QxFont.valueOf( "bold 12px Arial, Helvetica, sans-serif" );
     assertEquals( 3, fontValues.length );
     // 1
@@ -82,8 +91,7 @@ public class ThemeCssValuesMap_Test extends TestCase {
     assertEquals( 2, backgroundValues[ 0 ].constraints.length );
     assertEquals( ":pressed", backgroundValues[ 0 ].constraints[ 0 ] );
     assertEquals( "[TOGGLE", backgroundValues[ 0 ].constraints[ 1 ] );
-    assertEquals( QxColor.valueOf( "227, 221, 158" ),
-                  backgroundValues[ 0 ].value );
+    assertEquals( QxColor.valueOf( "227, 221, 158" ), backgroundValues[ 0 ].value );
   }
 
   public void testGetAllValues() throws Exception {
@@ -96,21 +104,13 @@ public class ThemeCssValuesMap_Test extends TestCase {
     assertFalse( Arrays.asList( values ).contains( notExpected ) );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    Fixture.fakeNewRequest();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
-
   private static ThemeCssValuesMap getValuesMap() throws IOException {
     ThemeManager manager = RWTFactory.getThemeManager();
     manager.activate();
     ThemeableWidget buttonWidget = manager.getThemeableWidget( Button.class );
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     ThemeableWidget[] themeableWidgets = new ThemeableWidget[] { buttonWidget };
-    return new ThemeCssValuesMap( styleSheet, themeableWidgets );
+    Theme theme = new Theme( "test.theme", "Test THeme", styleSheet );
+    return new ThemeCssValuesMap( theme, styleSheet, themeableWidgets );
   }
 }

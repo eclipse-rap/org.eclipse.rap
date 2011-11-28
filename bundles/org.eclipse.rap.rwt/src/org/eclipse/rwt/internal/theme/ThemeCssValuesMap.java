@@ -13,6 +13,7 @@ package org.eclipse.rwt.internal.theme;
 
 import java.util.*;
 
+import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.theme.css.ConditionalValue;
 import org.eclipse.rwt.internal.theme.css.StyleSheet;
 
@@ -24,8 +25,11 @@ import org.eclipse.rwt.internal.theme.css.StyleSheet;
 public final class ThemeCssValuesMap {
 
   private final Map<PropertyKey,ConditionalValue[]> valuesMap;
+  private final Theme theme;
 
-  public ThemeCssValuesMap( StyleSheet styleSheet, ThemeableWidget[] themeableWidgets ) {
+  public ThemeCssValuesMap( Theme theme, StyleSheet styleSheet, ThemeableWidget[] themeableWidgets )
+  {
+    this.theme = theme;
     valuesMap = new LinkedHashMap<PropertyKey,ConditionalValue[]>();
     extractValues( styleSheet, themeableWidgets );
   }
@@ -44,11 +48,9 @@ public final class ThemeCssValuesMap {
 
   public QxType[] getAllValues() {
     Set<QxType> resultSet = new LinkedHashSet<QxType>();
-    Iterator iterator = valuesMap.values().iterator();
-    while( iterator.hasNext() ) {
-      ConditionalValue[] condValues = ( ConditionalValue[] )iterator.next();
-      for( int i = 0; i < condValues.length; i++ ) {
-        ConditionalValue condValue = condValues[ i ];
+    Collection<ConditionalValue[]> values = valuesMap.values();
+    for( ConditionalValue[] condValues : values ) {
+      for( ConditionalValue condValue : condValues ) {
         resultSet.add( condValue.value );
       }
     }
@@ -56,27 +58,39 @@ public final class ThemeCssValuesMap {
   }
 
   private void extractValues( StyleSheet styleSheet, ThemeableWidget[] themeableWidgets ) {
-    for( int i = 0; i < themeableWidgets.length; i++ ) {
-      ThemeableWidget themeableWidget = themeableWidgets[ i ];
+    for( ThemeableWidget themeableWidget : themeableWidgets ) {
       extractValuesForWidget( styleSheet, themeableWidget );
     }
   }
 
   private void extractValuesForWidget( StyleSheet styleSheet, ThemeableWidget themeableWidget ) {
-    IThemeCssElement[] elements = themeableWidget.elements;
-    if( elements != null ) {
-      for( int i = 0; i < elements.length; i++ ) {
-        IThemeCssElement element = elements[ i ];
+    if( themeableWidget.elements != null ) {
+      for( IThemeCssElement element : themeableWidget.elements ) {
         String elementName = element.getName();
         String[] properties = element.getProperties();
-        for( int j = 0; j < properties.length; j++ ) {
-          String propertyName = properties[ j ];
+        for( String propertyName : properties ) {
           PropertyKey key = new PropertyKey( elementName, propertyName );
           ConditionalValue[] values = styleSheet.getValues( elementName, propertyName );
+          if( values.length == 0 ) {
+            reportMissingProperty( elementName, propertyName );
+          }
           ConditionalValue[] filteredValues = filterValues( values, element );
           valuesMap.put( key, filteredValues );
         }
       }
+    }
+  }
+
+  private void reportMissingProperty( String elementName, String propertyName ) {
+    if( SystemProps.isDevelopmentMode() && SystemProps.enableThemeDebugOutput() ) {
+      StringBuilder stringBuilder = new StringBuilder();
+      stringBuilder.append( "Missing value for element " );
+      stringBuilder.append( elementName );
+      stringBuilder.append( ", property " );
+      stringBuilder.append( propertyName );
+      stringBuilder.append( " in theme " );
+      stringBuilder.append( theme.getId() );
+      System.err.println( stringBuilder.toString() );
     }
   }
 
