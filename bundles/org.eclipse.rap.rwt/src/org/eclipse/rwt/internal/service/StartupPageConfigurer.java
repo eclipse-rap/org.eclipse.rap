@@ -78,9 +78,9 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
 
   public StartupPageTemplateHolder getTemplate() throws IOException {
     readContent();
+    template.reset();
     applyBranding();
     addThemeDefinitions();
-    template.reset();
     template.replace( StartupPageTemplateHolder.VAR_LIBRARIES, getJsLibraries() );
     template.replace( StartupPageTemplateHolder.VAR_APPSCRIPT, getAppScript() );
     return template;
