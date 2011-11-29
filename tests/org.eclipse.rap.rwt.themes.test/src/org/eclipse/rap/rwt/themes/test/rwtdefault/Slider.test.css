@@ -12,6 +12,7 @@
 Slider {
   border: none;
   background-color: #f0f0f0;
+  border-radius: 2px;
 }
 
 Slider-Thumb[HORIZONTAL],
@@ -20,7 +21,7 @@ Slider-Thumb[VERTICAL],
 Slider-Thumb[VERTICAL]:pressed {
   background-color: #e4e4e4;
   border: 1px solid #bdbdbd;
-  border-radius: 2px 2px 2px 2px;
+  border-radius: 2px;
 }
 
 /* Buttons */

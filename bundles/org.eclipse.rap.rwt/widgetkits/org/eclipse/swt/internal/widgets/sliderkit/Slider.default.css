@@ -15,6 +15,7 @@
 Slider {
   border: none;
   background-color: #f0f0f0;
+  border-radius: 2px;
 }
 
 /* Thumb */
@@ -24,7 +25,7 @@ Slider-Thumb[VERTICAL] {
   background-color: #e4e4e4;
   background-image: url( resource/widget/rap/slider/slider-background.png );
   border: 1px solid #bdbdbd;
-  border-radius: 2px 2px 2px 2px;
+  border-radius: 2px;
 }
 
 /* Buttons */

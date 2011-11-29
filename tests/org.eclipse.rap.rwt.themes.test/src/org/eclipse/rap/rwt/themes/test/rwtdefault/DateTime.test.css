@@ -62,6 +62,7 @@ DateTime-Calendar-Day:hover {
 
 DateTime-Calendar-Navbar {
   border: none;
+  border-radius: 0;
   background-color: #00569c;
   color: white;
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;

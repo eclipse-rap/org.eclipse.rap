@@ -66,6 +66,7 @@ DateTime-Calendar-Day:hover {
 
 DateTime-Calendar-Navbar {
   border: none;
+  border-radius: 0;
   background-color: #00569c;
   background-image: gradient( 
     linear, left top, left bottom, 

@@ -26,6 +26,7 @@ ExpandItem {
 
 ExpandItem-Header {
   border: none;
+  border-radius: 0;
   cursor: pointer;
   background-image: gradient(
     linear, left top, left bottom,

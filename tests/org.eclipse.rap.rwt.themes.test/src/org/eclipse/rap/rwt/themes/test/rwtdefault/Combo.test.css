@@ -85,7 +85,8 @@ CCombo-Field {
   padding: 5px 10px 5px 10px;
 }
 
-Combo-FocusIndicator {
+Combo-FocusIndicator,
+CCombo-FocusIndicator {
   background-color: transparent; 
   border: none;
   margin: 0;
