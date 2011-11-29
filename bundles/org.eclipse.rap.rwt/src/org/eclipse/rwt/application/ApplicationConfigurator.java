@@ -69,7 +69,7 @@ public interface ApplicationConfigurator {
   public static final String RESOURCE_ROOT_LOCATION = "resource_root_location";
 
   /**
-   * Callback method that allows to configure the given application configuration. See 
+   * Callback method that allows to configure the given application configuration. See the
    * <code>{@link ApplicationConfigurator}</code> class documentation for more details.
    * 
    * @param configuration Object that allows to apply various configuration settings to 

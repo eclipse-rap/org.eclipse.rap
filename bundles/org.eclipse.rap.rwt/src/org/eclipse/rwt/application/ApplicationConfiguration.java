@@ -21,9 +21,15 @@ import org.eclipse.rwt.service.ISettingStoreFactory;
 import org.eclipse.swt.widgets.Widget;
 
 /**
- * <strong>Note:</strong> This API is <em>provisional</em>. It is likely to change before the final
- * release.
+ * This interface allows to configure various aspects of an <code>Application</code> before it is 
+ * started.
+ * 
+ * <p><strong>Note:</strong> This API is <em>provisional</em>. It is likely to change before the final
+ * release.</p>
  *
+ * @see Application
+ * @see ApplicationConfigurator
+ * @noimplement This interface is not intended to be implemented by clients.
  * @since 1.5
  */
 public interface ApplicationConfiguration {
@@ -34,6 +40,12 @@ public interface ApplicationConfiguration {
     SESSION_FAILOVER
   }
 
+  /**
+   * The operation mode in wich the application will be running. The default operation mode is 
+   * <code>JEE_COMPATIBILITY</code>.
+   * @param operationMode the operation mode to be used. Must not be <code>null</code>.
+   * @see OperationMode
+   */
   void setOperationMode( OperationMode operationMode );
   
   void addEntryPoint( String entryPointName, Class<? extends IEntryPoint> entryPointType );
