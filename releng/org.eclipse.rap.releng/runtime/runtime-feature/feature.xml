@@ -50,13 +50,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.rap.rwt.theme.classic"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.rap.demo"
          download-size="0"
          install-size="0"
