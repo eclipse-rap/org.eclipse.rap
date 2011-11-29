@@ -16,6 +16,7 @@ package org.eclipse.rap.rwt.osgi;
  * release.
  *
  * @since 1.5
+ * @noimplement This interface is not intended to be implemented by clients.
  */
 public interface ApplicationReference {
 
