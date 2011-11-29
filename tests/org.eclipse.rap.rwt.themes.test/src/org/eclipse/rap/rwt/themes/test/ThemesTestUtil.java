@@ -46,7 +46,6 @@ public class ThemesTestUtil {
    */
   static {
     addBundleToClassPath( "org.eclipse.rap.design.example" );
-    addBundleToClassPath( "org.eclipse.rap.rwt.theme.classic" );
   }
 
   private static void addBundleToClassPath( String bundleId ) {
