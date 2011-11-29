@@ -377,6 +377,7 @@ Group-Label {
   font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-color: transparent;
   border: none;
+  border-radius: 0;
   color: #464a4e;
   margin: 1px 10px;
   text-shadow: none;
@@ -1315,6 +1316,7 @@ Tree-Indent:first:last:expanded:hover {
 
 Scale {
   background-color: white;
+  border-radius: 0;
 }
 
 Scale-Thumb {
@@ -1384,6 +1386,7 @@ DateTime-Calendar-Day:hover {
 
 DateTime-Calendar-Navbar {
   border: none;
+  border-radius: 0;
   background-color: #00569c;
   color: white;
   font: bold 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
@@ -1527,14 +1530,17 @@ ExpandBar {
 
 ExpandBar[BORDER] {
   border: 1px solid #C1C1C1;
+  border-radius: 0;
 }
 
 ExpandItem {
   border: 1px solid #c1c1c1;
+  border-radius: 0;
 }
 
 ExpandItem-Header {
   border: none;
+  border-radius: 0;
   cursor: pointer;
   background-image: gradient(
     linear, left top, left bottom,
@@ -1589,6 +1595,7 @@ Sash-Handle {
 
 Slider {
   border: none;
+  border-radius: 0;
   background-color: #f3f3f4;
 }
 
