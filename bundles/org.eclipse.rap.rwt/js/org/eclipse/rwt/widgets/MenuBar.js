@@ -34,7 +34,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.MenuBar", {
   members : {
 
     addMenuItemAt : function( menuItem, index ) {
-      menuItem.setParentMenu( this );
+      // seperator does not have this function:
+      if( menuItem.setParentMenu ) {
+        // it is essential that this happens before the menuItem is added
+        menuItem.setParentMenu( this );
+      }
       this.addAt( menuItem, index );
     },
 
