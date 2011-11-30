@@ -20,14 +20,14 @@ final class Operation {
 
   private final String action;
   private final String target;
-  private Map<String, Object> details;
-  private Map<String, Object> properties;
+  private final Map<String, Object> details;
+  private final Map<String, JsonValue> properties;
 
   Operation( String target, String action ) {
     this.target = target;
     this.action = action;
     details = new LinkedHashMap<String, Object>();
-    properties = new LinkedHashMap<String, Object>();
+    properties = new LinkedHashMap<String, JsonValue>();
   }
 
   String getTarget() {
@@ -44,7 +44,7 @@ final class Operation {
     }
     properties.put( key, value );
   }
-  
+
   void appendProperties( Map<String, Object> properties ) {
     if( properties != null && !properties.isEmpty() ) {
       Set<String> keySet = properties.keySet();
@@ -53,11 +53,19 @@ final class Operation {
       }
     }
   }
-  
-  void appendDetail( String key, JsonValue value ) {
+
+  Object getDetail( String key ) {
+    return details.get( key );
+  }
+
+  void appendDetail( String key, Object value ) {
     if( details.containsKey( key ) ) {
       throw new IllegalArgumentException( "Duplicate detail " + key );
     }
+    replaceDetail( key, value );
+  }
+
+  void replaceDetail( String key, Object value ) {
     details.put( key, value );
   }
 

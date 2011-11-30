@@ -293,6 +293,7 @@ public final class Fixture {
   }
 
   public static String getAllMarkup() {
+    ContextProvider.getStateInfo().getResponseWriter().finish();
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     return response.getContent();
   }

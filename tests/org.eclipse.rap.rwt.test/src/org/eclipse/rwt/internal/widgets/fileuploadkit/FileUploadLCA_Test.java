@@ -70,12 +70,14 @@ public class FileUploadLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     Fixture.fakeResponseWriter();
     FileUploadLCA lca = new FileUploadLCA();
+
     lca.renderChanges( upload );
     String allMarkup = Fixture.getAllMarkup();
-    assertTrue( allMarkup.indexOf( "w.setText( \"Test\" );" ) != -1 );
+    assertTrue( allMarkup.indexOf( "w.setText( \\\"Test\\\" );" ) != -1 );
     String imageLocation = ImageFactory.getImagePath( image );
-    String expected = "w.setImage( \"" + imageLocation + "\", 58, 12 );";
+    String expected = "w.setImage( \\\"" + imageLocation + "\\\", 58, 12 );";
     assertTrue( allMarkup.indexOf( expected ) != -1 );
+
     Fixture.fakeResponseWriter();
     lca.preserveValues( upload );
     lca.renderChanges( upload );
@@ -155,7 +157,7 @@ public class FileUploadLCA_Test extends TestCase {
     Fixture.fakeResponseWriter();
     lca.renderChanges( upload );
     allMarkup = Fixture.getAllMarkup();
-    assertTrue( allMarkup.indexOf( "w.submit( \"foo\" )" ) != -1 );    
+    assertTrue( allMarkup.indexOf( "w.submit( \\\"foo\\\" )" ) != -1 );
     Fixture.fakeResponseWriter();
     lca.preserveValues( upload );
     lca.renderChanges( upload );

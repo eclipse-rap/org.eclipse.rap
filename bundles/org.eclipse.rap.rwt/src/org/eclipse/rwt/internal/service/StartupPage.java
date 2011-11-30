@@ -13,6 +13,7 @@
 package org.eclipse.rwt.internal.service;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +22,6 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
-import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.util.*;
@@ -71,10 +71,10 @@ public final class StartupPage {
     template.replace( StartupPageTemplateHolder.VAR_ENTRY_POINT,
                       EncodingUtil.encodeHTMLEntities( getEntryPoint() ) );
     String[] tokens = template.getTokens();
-    JavaScriptResponseWriter responseWriter = getResponseWriter();
+    PrintWriter writer = response.getWriter();
     for( int i = 0; i < tokens.length; i++ ) {
       if( tokens[ i ] != null ) {
-        responseWriter.write( tokens[ i ] );
+        writer.write( tokens[ i ] );
       }
     }
   }
@@ -102,10 +102,6 @@ public final class StartupPage {
       result = EntryPointManager.DEFAULT;
     }
     return result;
-  }
-
-  private static JavaScriptResponseWriter getResponseWriter() {
-    return ContextProvider.getStateInfo().getResponseWriter();
   }
 
 }

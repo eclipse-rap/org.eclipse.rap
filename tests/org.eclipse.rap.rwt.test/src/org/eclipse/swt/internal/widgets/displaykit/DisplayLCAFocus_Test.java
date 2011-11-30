@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.internal.widgets.displaykit;
 
 import junit.framework.TestCase;
@@ -25,10 +25,18 @@ import org.eclipse.swt.widgets.*;
 
 
 /*
- * Put in separate class becase this test does not share the same setUp/tearDown 
- * as the tests in DisplayLCA_Test. 
+ * Put in separate class because this test does not share the same setUp/tearDown
+ * as the tests in DisplayLCA_Test.
  */
 public class DisplayLCAFocus_Test extends TestCase {
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testUnchangedFocus() {
     Display display = new Display();
@@ -38,22 +46,22 @@ public class DisplayLCAFocus_Test extends TestCase {
     shell.setLayout( new FillLayout() );
     shell.layout();
     shell.open();
-    
+
     String button1Id = WidgetUtil.getId( button1 );
 
     // Simulate initial request that constructs UI
     Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
-    
+
     // Simulate request that is sent when button was pressed
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( DisplayUtil.getId( display ) + ".focusControl", button1Id );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, button1Id );
     Fixture.executeLifeCycleFromServerThread();
-    
+
     assertEquals( -1, Fixture.getAllMarkup().indexOf( "focus" ) );
   }
-  
+
   /* Test case for https://bugs.eclipse.org/bugs/show_bug.cgi?id=196911 */
   public void testSetFocusToClientSideFocusedControl() {
     final Shell[] childShell = { null };
@@ -72,34 +80,27 @@ public class DisplayLCAFocus_Test extends TestCase {
     shell.setLayout( new FillLayout() );
     shell.layout();
     shell.open();
-    
+
     String buttonId = WidgetUtil.getId( button );
 
     // Simulate initial request that constructs UI
     Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread( );
-    
+
     // Simulate request that is sent when button was pressed
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( DisplayUtil.getId( display ) + ".focusControl", buttonId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.executeLifeCycleFromServerThread( );
-    
+
     // ensure that widgetSelected was called
     assertNotNull( childShell[ 0 ] );
     String markup = Fixture.getAllMarkup();
-    String expected 
-      = "org.eclipse.swt.WidgetManager.getInstance().focus( \"" 
+    String expected
+      = "org.eclipse.swt.WidgetManager.getInstance().focus( \\\""
       + buttonId
-      + "\" );";
+      + "\\\" );";
     assertTrue( markup.indexOf( expected ) != -1 );
   }
-  
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

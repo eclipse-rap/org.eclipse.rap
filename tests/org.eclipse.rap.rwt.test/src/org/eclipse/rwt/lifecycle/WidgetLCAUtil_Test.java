@@ -227,7 +227,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( display );
     WidgetLCAUtil.writeFont( label, label.getFont() );
-    assertTrue( Fixture.getAllMarkup().endsWith( ", false, false );" ) );
+    assertTrue( Fixture.getAllMarkup().contains( ", false, false );" ) );
 
     Font oldFont = label.getFont();
     FontData fontData = FontUtil.getData( oldFont );
@@ -236,7 +236,7 @@ public class WidgetLCAUtil_Test extends TestCase {
                                      SWT.BOLD );
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.writeFont( label, newFont );
-    assertTrue( Fixture.getAllMarkup().endsWith( ", true, false );" ) );
+    assertTrue( Fixture.getAllMarkup().contains( ", true, false );" ) );
   }
 
   public void testFontItalic() throws IOException {
@@ -245,7 +245,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( display );
     WidgetLCAUtil.writeFont( label, label.getFont() );
-    assertTrue( Fixture.getAllMarkup().endsWith( ", false, false );" ) );
+    assertTrue( Fixture.getAllMarkup().contains( ", false, false );" ) );
 
     Font oldFont = label.getFont();
     FontData fontData = FontUtil.getData( oldFont );
@@ -254,7 +254,7 @@ public class WidgetLCAUtil_Test extends TestCase {
                                      SWT.ITALIC );
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.writeFont( label, newFont );
-    assertTrue( Fixture.getAllMarkup().endsWith( ", false, true );" ) );
+    assertTrue( Fixture.getAllMarkup().contains( ", false, true );" ) );
   }
 
   public void testFontSize() throws IOException {
@@ -266,7 +266,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Font newFont = Graphics.getFont( fontData.getName(), 42, SWT.NORMAL );
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.writeFont( label, newFont );
-    assertTrue( Fixture.getAllMarkup().endsWith( ", 42, false, false );" ) );
+    assertTrue( Fixture.getAllMarkup().contains( ", 42, false, false );" ) );
   }
 
   public void testFontReset() throws IOException {
@@ -276,8 +276,9 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.markInitialized( label );
     WidgetLCAUtil.preserveFont( label, font );
     WidgetLCAUtil.writeFont( label, null );
-    String expected = "var w = wm.findWidgetById( \"w2\" );w.resetFont();";
-    assertEquals( expected, Fixture.getAllMarkup() );
+
+    String expected = "var w = wm.findWidgetById( \\\"w2\\\" );w.resetFont();";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testForegroundReset() throws IOException {
@@ -287,8 +288,9 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.markInitialized( label );
     WidgetLCAUtil.preserveForeground( label, red );
     WidgetLCAUtil.writeForeground( label, null );
-    String expected = "var w = wm.findWidgetById( \"w2\" );w.resetTextColor();";
-    assertEquals( expected, Fixture.getAllMarkup() );
+
+    String expected = "var w = wm.findWidgetById( \\\"w2\\\" );w.resetTextColor();";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   @SuppressWarnings("deprecation")
@@ -311,10 +313,10 @@ public class WidgetLCAUtil_Test extends TestCase {
                               Props.IMAGE,
                               JSConst.QX_FIELD_ICON,
                               item.getImage() );
-    String expected = "w.setIcon( \""
+    String expected = "w.setIcon( \\\""
                     + ImageFactory.getImagePath( item.getImage() )
-                    + "\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+                    + "\\\" );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
 
     // for an initialized control with change image: render it
     Fixture.markInitialized( item );
@@ -322,7 +324,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     item.setImage( null );
     WidgetLCAUtil.writeImage( item, Props.IMAGE, JSConst.QX_FIELD_ICON, item.getImage() );
-    assertTrue( Fixture.getAllMarkup().indexOf( "w.setIcon( null );" ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( "w.setIcon( null );" ) );
   }
 
   public void testWriteVariant() throws IOException {
@@ -336,8 +338,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     label.setData( WidgetUtil.CUSTOM_VARIANT, "my_variant" );
     WidgetLCAUtil.writeCustomVariant( label );
-    String expected = "w.addState( \"variant_my_variant\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    String expected = "w.addState( \\\"variant_my_variant\\\" );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteCustomVariant() throws IOException {
@@ -351,25 +353,25 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     control.setData( WidgetUtil.CUSTOM_VARIANT, "my_variant" );
     WidgetLCAUtil.writeCustomVariant( control );
-    String expected = "w.addState( \"variant_my_variant\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    String expected = "w.addState( \\\"variant_my_variant\\\" );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
 
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveCustomVariant( control );
     control.setData( WidgetUtil.CUSTOM_VARIANT, "new_variant" );
     WidgetLCAUtil.writeCustomVariant( control );
     expected
-      =   "w.removeState( \"variant_my_variant\" );w.addState( "
-        + "\"variant_new_variant\" );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+      =   "w.removeState( \\\"variant_my_variant\\\" );w.addState( "
+        + "\\\"variant_new_variant\\\" );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
 
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveCustomVariant( control );
     Fixture.markInitialized( control );
     control.setData( WidgetUtil.CUSTOM_VARIANT, null );
     WidgetLCAUtil.writeCustomVariant( control );
-    expected = "w.removeState( \"variant_new_variant\" );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    expected = "w.removeState( \\\"variant_new_variant\\\" );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteBackground() throws Exception {
@@ -386,7 +388,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.preserveBackground( control, null, false );
     WidgetLCAUtil.writeBackground( control, null, true );
     String expected = "w.setBackgroundColor( null );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
 
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveBackground( control, null, true );
@@ -396,14 +398,14 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveBackground( control, red, true );
     WidgetLCAUtil.writeBackground( control, red, false );
-    expected = "w.setBackgroundColor( \"#ff0000\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    expected = "w.setBackgroundColor( \\\"#ff0000\\\" );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
 
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveBackground( control, red, false );
     WidgetLCAUtil.writeBackground( control, null, false );
     expected = "w.resetBackgroundColor();";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
 
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveBackground( control, red, false );
@@ -413,8 +415,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveBackground( control, null );
     WidgetLCAUtil.writeBackground( control, red );
-    expected = "w.setBackgroundColor( \"#ff0000\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    expected = "w.setBackgroundColor( \\\"#ff0000\\\" );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
 
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveBackground( control, red );
@@ -431,7 +433,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeBackground( control, null, true );
 
     String expected = "w.setBackgroundGradient( null );w.setBackgroundColor( null );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteBackground_ResetBackgroundGradient() throws IOException {
@@ -444,7 +446,7 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeBackground( control, null, false );
 
     String expected = "w.resetBackgroundGradient();w.resetBackgroundColor();";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteBackground_RemoveBackgroundGradient() throws IOException {
@@ -456,8 +458,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.preserveBackground( control, null, false );
     WidgetLCAUtil.writeBackground( control, red );
 
-    String expected = "w.setBackgroundGradient( null );w.setBackgroundColor( \"#ff0000\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    String expected = "w.setBackgroundGradient( null );w.setBackgroundColor( \\\"#ff0000\\\" );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteMenu() throws IOException {
@@ -474,8 +476,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     label.setMenu( new Menu( label ) );
     WidgetLCAUtil.writeMenu( label, label.getMenu() );
     String expected
-      = "wm.setContextMenu( wm.findWidgetById( \"w2\" ), wm.findWidgetById( \"w3\" ) );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+      = "wm.setContextMenu( wm.findWidgetById( \\\"w2\\\" ), wm.findWidgetById( \\\"w3\\\" ) );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
 
     // for an initialized control with change menu: render it
     Fixture.markInitialized( label );
@@ -483,8 +485,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     label.setMenu( null );
     WidgetLCAUtil.writeMenu( label, label.getMenu() );
-    expected = "wm.setContextMenu( wm.findWidgetById( \"w2\" ), null );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    expected = "wm.setContextMenu( wm.findWidgetById( \\\"w2\\\" ), null );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteStyleFlag() throws IOException {
@@ -497,8 +499,8 @@ public class WidgetLCAUtil_Test extends TestCase {
 
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.writeStyleFlag( borderControl, SWT.BORDER, "BORDER" );
-    String expected = "w.addState( \"rwt_BORDER\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    String expected = "w.addState( \\\"rwt_BORDER\\\" );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteBackgroundGradient() throws IOException {
@@ -518,9 +520,9 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeBackgroundGradient( control );
     String expected
       = "wm.setBackgroundGradient"
-      + "( wm.findWidgetById( \"w2\" ), [\"#00ff00\",\"#0000ff\" ], "
+      + "( wm.findWidgetById( \\\"w2\\\" ), [\\\"#00ff00\\\",\\\"#0000ff\\\" ], "
       + "[0,100 ], true );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
 
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveBackgroundGradient( control );
@@ -534,9 +536,9 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeBackgroundGradient( control );
     expected
       = "wm.setBackgroundGradient"
-      + "( wm.findWidgetById( \"w2\" ), [\"#ff0000\",\"#00ff00\",\"#0000ff\" ],"
+      + "( wm.findWidgetById( \\\"w2\\\" ), [\\\"#ff0000\\\",\\\"#00ff00\\\",\\\"#0000ff\\\" ],"
       + " [0,50,100 ], true );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
 
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveBackgroundGradient( control );
@@ -547,10 +549,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.preserveBackgroundGradient( control );
     gfxAdapter.setBackgroundGradient( null, null, true );
     WidgetLCAUtil.writeBackgroundGradient( control );
-    expected
-      = "wm.setBackgroundGradient"
-      + "( wm.findWidgetById( \"w2\" ), null, null, true );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    expected = "wm.setBackgroundGradient( wm.findWidgetById( \\\"w2\\\" ), null, null, true );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteBackgroundGradient_Horizontal() throws IOException {
@@ -570,9 +570,9 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeBackgroundGradient( control );
     String expected
       = "wm.setBackgroundGradient"
-      + "( wm.findWidgetById( \"w2\" ), [\"#00ff00\",\"#0000ff\" ], "
+      + "( wm.findWidgetById( \\\"w2\\\" ), [\\\"#00ff00\\\",\\\"#0000ff\\\" ], "
       + "[0,100 ], false );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteRoundedBorder() throws IOException {
@@ -588,8 +588,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeRoundedBorder( widget );
     String expected
       = "wm.setRoundedBorder"
-      + "( wm.findWidgetById( \"w2\" ), 2, \"#00ff00\", 5, 6, 7, 8 );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+      + "( wm.findWidgetById( \\\"w2\\\" ), 2, \\\"#00ff00\\\", 5, 6, 7, 8 );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
 
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveRoundedBorder( widget );
@@ -602,8 +602,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeRoundedBorder( widget );
     expected
       = "wm.setRoundedBorder"
-      + "( wm.findWidgetById( \"w2\" ), 4, \"#00ff00\", 5, 6, 7, 8 );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+      + "( wm.findWidgetById( \\\"w2\\\" ), 4, \\\"#00ff00\\\", 5, 6, 7, 8 );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
 
     Fixture.fakeResponseWriter();
     WidgetLCAUtil.preserveRoundedBorder( widget );
@@ -611,8 +611,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     WidgetLCAUtil.writeRoundedBorder( widget );
     expected
       = "wm.setRoundedBorder"
-      + "( wm.findWidgetById( \"w2\" ), 4, \"#00ff00\", 5, 4, 7, 8 );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+      + "( wm.findWidgetById( \\\"w2\\\" ), 4, \\\"#00ff00\\\", 5, 4, 7, 8 );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteHelpListener() throws IOException {
@@ -625,8 +625,8 @@ public class WidgetLCAUtil_Test extends TestCase {
     } );
     WidgetLCAUtil.writeHelpListener( widget );
 
-    String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"help\", true );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    String expected = "wm.setHasListener( wm.findWidgetById( \\\"w2\\\" ), \\\"help\\\", true );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   //////////////////////////////////////////////

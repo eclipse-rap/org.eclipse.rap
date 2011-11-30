@@ -103,9 +103,9 @@ public class ActiveKeysUtil_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "32" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "ctrl,alt" );
-    
+
     Fixture.readDataAndProcessAction( display );
-    
+
     assertEquals( 1, log.size() );
     Event event = log.get( 0 );
     assertEquals( SWT.KeyDown, event.type );
@@ -155,14 +155,14 @@ public class ActiveKeysUtil_Test extends TestCase {
 
     String expected
       =   "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings({"
-        + "\"ALT+222\":true,"
-        + "\"CTRL+45\":true,"
-        + "\"CTRL+69\":true,"
-        + "\"ALT+CTRL+SHIFT+49\":true,"
-        + "\"ALT+CTRL+190\":true,"
-        + "\"112\":true"
+        + "\\\"ALT+222\\\":true,"
+        + "\\\"CTRL+45\\\":true,"
+        + "\\\"CTRL+69\\\":true,"
+        + "\\\"ALT+CTRL+SHIFT+49\\\":true,"
+        + "\\\"ALT+CTRL+190\\\":true,"
+        + "\\\"112\\\":true"
         + "});";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteKeyBindings_UnrecognizedKey() {
@@ -170,7 +170,7 @@ public class ActiveKeysUtil_Test extends TestCase {
 
     String[] keyBindings = new String[] { "ALT+ABC" };
     display.setData( RWT.ACTIVE_KEYS, keyBindings );
-    
+
     try {
       ActiveKeysUtil.writeActiveKeys( display );
       fail( "Should throw IllegalArgumentException" );
@@ -183,7 +183,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     Fixture.fakeNewRequest();
 
     display.setData( RWT.ACTIVE_KEYS, new String[] { "ALT+CONTROL+A" } );
-    
+
     try {
       ActiveKeysUtil.writeActiveKeys( display );
       fail( "Should throw IllegalArgumentException" );
@@ -251,7 +251,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     ActiveKeysUtil.writeActiveKeys( display );
 
     String expected = "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings({});";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteKeyBindings_EmptyKeyBindingList() {
@@ -264,7 +264,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     ActiveKeysUtil.writeActiveKeys( display );
 
     String expected = "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings({});";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
 }

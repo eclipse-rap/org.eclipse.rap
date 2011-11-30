@@ -79,10 +79,10 @@ public class DNDSupport_Test extends TestCase {
     Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
     dragSource.setTransfer( types );
     String dndSupport = "org.eclipse.rwt.DNDSupport.getInstance()";
-    String wRef = "wm.findWidgetById( \"w3\" )";
-    String register = dndSupport + ".registerDragSource( " + wRef + ", [null, \"move\",null ]";
+    String wRef = "wm.findWidgetById( \\\"w3\\\" )";
+    String register = dndSupport + ".registerDragSource( " + wRef + ", [null, \\\"move\\\",null ]";
     int dataType = TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
-    String transferType = dndSupport + ".setDragSourceTransferTypes( " + wRef + ", [ \"" + dataType;
+    String transferType = dndSupport + ".setDragSourceTransferTypes( " + wRef + ", [ \\\"" + dataType;
     Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( register ) != -1 );
@@ -96,10 +96,10 @@ public class DNDSupport_Test extends TestCase {
     Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
     dropTarget.setTransfer( types );
     String dndSupport = "org.eclipse.rwt.DNDSupport.getInstance()";
-    String wRef = "wm.findWidgetById( \"w3\" )";
-    String register = dndSupport + ".registerDropTarget( " + wRef + ", [ \"copy\",null,null ]";
+    String wRef = "wm.findWidgetById( \\\"w3\\\" )";
+    String register = dndSupport + ".registerDropTarget( " + wRef + ", [ \\\"copy\\\",null,null ]";
     int dataType = TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
-    String transferType = dndSupport + ".setDropTargetTransferTypes( " + wRef + ", [ \"" + dataType;
+    String transferType = dndSupport + ".setDropTargetTransferTypes( " + wRef + ", [ \\\"" + dataType;
     Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( register ) != -1 );
@@ -741,10 +741,10 @@ public class DNDSupport_Test extends TestCase {
     String expected
       = "org.eclipse.rwt.DNDSupport.getInstance()"
       + ".setOperationOverwrite( "
-      + ( "wm.findWidgetById( \""
+      + ( "wm.findWidgetById( \\\""
       + WidgetUtil.getId( dropTargetControl )
-      + "\" )" )
-      + ", \"link";
+      + "\\\" )" )
+      + ", \\\"link";
     assertTrue( markup.indexOf( expected ) != -1 );
   }
 
@@ -788,10 +788,10 @@ public class DNDSupport_Test extends TestCase {
     String expected
       = "org.eclipse.rwt.DNDSupport.getInstance()"
       + ".setOperationOverwrite( "
-      + ( "wm.findWidgetById( \""
+      + ( "wm.findWidgetById( \\\""
       + WidgetUtil.getId( dropTargetControl )
-      + "\" )" )
-      + ", \"link";
+      + "\\\" )" )
+      + ", \\\"link";
     assertTrue( markup.indexOf( expected ) != -1 );
   }
 
@@ -905,10 +905,10 @@ public class DNDSupport_Test extends TestCase {
     String expected
       = "org.eclipse.rwt.DNDSupport.getInstance()"
       + ".setFeedback( "
-      + ( "wm.findWidgetById( \""
+      + ( "wm.findWidgetById( \\\""
       + WidgetUtil.getId( dropTargetControl )
-      + "\" )" )
-      + ", [ \"select\" ], "
+      + "\\\" )" )
+      + ", [ \\\"select\\\" ], "
       + DND.FEEDBACK_SELECT;
     assertTrue( markup.indexOf( expected ) != -1 );
   }
@@ -944,10 +944,10 @@ public class DNDSupport_Test extends TestCase {
     String expected
       = "org.eclipse.rwt.DNDSupport.getInstance()"
       + ".setFeedback( "
-      + ( "wm.findWidgetById( \""
+      + ( "wm.findWidgetById( \\\""
       + WidgetUtil.getId( dropTargetControl )
-      + "\" )" )
-      + ", [ \"expand\", \"scroll\" ], "
+      + "\\\" )" )
+      + ", [ \\\"expand\\\", \\\"scroll\\\" ], "
       + ( DND.FEEDBACK_EXPAND | DND.FEEDBACK_SCROLL );
     assertTrue( markup.indexOf( expected ) != -1 );
   }
@@ -977,9 +977,9 @@ public class DNDSupport_Test extends TestCase {
     String expected
     = "org.eclipse.rwt.DNDSupport.getInstance()"
       + ".setDataType( "
-      + ( "wm.findWidgetById( \""
+      + ( "wm.findWidgetById( \\\""
           + WidgetUtil.getId( dropTargetControl )
-          + "\" ), " );
+          + "\\\" ), " );
     assertTrue( markup.indexOf( expected ) != -1 );
   }
 
@@ -1023,9 +1023,9 @@ public class DNDSupport_Test extends TestCase {
     String expected
     = "org.eclipse.rwt.DNDSupport.getInstance()"
       + ".setDataType( "
-      + ( "wm.findWidgetById( \""
+      + ( "wm.findWidgetById( \\\""
           + WidgetUtil.getId( dropTargetControl )
-          + "\" ), "
+          + "\\\" ), "
           + RTFTransfer.getInstance().getSupportedTypes()[ 0 ].type );
     assertTrue( markup.indexOf( expected ) != -1 );
   }
@@ -1070,9 +1070,9 @@ public class DNDSupport_Test extends TestCase {
     String expected
     = "org.eclipse.rwt.DNDSupport.getInstance()"
       + ".setDataType( "
-      + ( "wm.findWidgetById( \""
+      + ( "wm.findWidgetById( \\\""
           + WidgetUtil.getId( dropTargetControl )
-          + "\" ), "
+          + "\\\" ), "
           + RTFTransfer.getInstance().getSupportedTypes()[ 0 ].type );
     assertTrue( markup.indexOf( expected ) != -1 );
   }
@@ -1101,13 +1101,11 @@ public class DNDSupport_Test extends TestCase {
     createDropTargetEvent( dropTargetControl, dragSourceControl, "dragOver", 1 );
     Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
-    String expected
-      = "org.eclipse.rwt.DNDSupport.getInstance()"
-      + ".setDataType( "
-      + ( "wm.findWidgetById( \""
-      + WidgetUtil.getId( dropTargetControl )
-      + "\" ), "
-      + TextTransfer.getInstance().getSupportedTypes()[ 0 ].type );
+    String expected = "org.eclipse.rwt.DNDSupport.getInstance()"
+                      + ".setDataType( "
+                      + ( "wm.findWidgetById( \\\""
+                          + WidgetUtil.getId( dropTargetControl )
+                          + "\\\" ), " + TextTransfer.getInstance().getSupportedTypes()[ 0 ].type );
     assertTrue( markup.indexOf( expected ) != -1 );
   }
 

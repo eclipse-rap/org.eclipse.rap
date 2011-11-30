@@ -76,7 +76,7 @@ public class CanvasLCA_Test extends TestCase {
     assertEquals( canvasId + "#gc", gcDestroy.getTarget() );
   }
 
-  public void testWriqteSingleGCOperation() throws IOException {
+  public void testWriteSingleGCOperation() throws IOException {
     Fixture.fakeResponseWriter();
     Canvas canvas = new Canvas( shell, SWT.NONE );
     canvas.setSize( 50, 50 );
@@ -88,10 +88,10 @@ public class CanvasLCA_Test extends TestCase {
     adapter.addGCOperation( new DrawLine( 1, 2, 3, 4 ) );
     new CanvasLCA().renderChanges( canvas );
     String expected
-      = "var gc = org.eclipse.rwt.protocol.ObjectManager.getObject( \"w2#gc\" );"
-      + "gc.init( 50, 50, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );"
+      = "var gc = org.eclipse.rwt.protocol.ObjectManager.getObject( \\\"w2#gc\\\" );"
+      + "gc.init( 50, 50, \\\"11px Arial\\\", \\\"#ffffff\\\", \\\"#4a4a4a\\\" );"
       + "gc.drawLine( 1, 2, 3, 4 );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteMultipleGCOperations() throws IOException {
@@ -107,11 +107,11 @@ public class CanvasLCA_Test extends TestCase {
     adapter.addGCOperation( new DrawLine( 5, 6, 7, 8 ) );
     new CanvasLCA().renderChanges( canvas );
     String expected
-      = "var gc = org.eclipse.rwt.protocol.ObjectManager.getObject( \"w2#gc\" );"
-      + "gc.init( 50, 50, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );"
+      = "var gc = org.eclipse.rwt.protocol.ObjectManager.getObject( \\\"w2#gc\\\" );"
+      + "gc.init( 50, 50, \\\"11px Arial\\\", \\\"#ffffff\\\", \\\"#4a4a4a\\\" );"
       + "gc.drawLine( 1, 2, 3, 4 );"
       + "gc.drawLine( 5, 6, 7, 8 );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   // see bug 323080
@@ -153,11 +153,11 @@ public class CanvasLCA_Test extends TestCase {
     adapter.addGCOperation( operation );
     new CanvasLCA().renderChanges( canvas );
     String expected
-      = "var gc = org.eclipse.rwt.protocol.ObjectManager.getObject( \"w2#gc\" );"
-      + "gc.init( 50, 50, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );"
+      = "var gc = org.eclipse.rwt.protocol.ObjectManager.getObject( \\\"w2#gc\\\" );"
+      + "gc.init( 50, 50, \\\"11px Arial\\\", \\\"#ffffff\\\", \\\"#4a4a4a\\\" );"
       + "gc.drawLine( 1, 2, 3, 4 );"
       + "gc.drawLine( 5, 6, 7, 8 );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
     assertEquals( 0, adapter.getGCOperations().length );
   }
 
@@ -199,11 +199,11 @@ public class CanvasLCA_Test extends TestCase {
     canvas.setSize( 150, 150 );
     new CanvasLCA().renderChanges( canvas );
     String expected
-      = "var gc = org.eclipse.rwt.protocol.ObjectManager.getObject( \"w2#gc\" );"
-      + "gc.init( 150, 150, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );"
+      = "var gc = org.eclipse.rwt.protocol.ObjectManager.getObject( \\\"w2#gc\\\" );"
+      + "gc.init( 150, 150, \\\"11px Arial\\\", \\\"#ffffff\\\", \\\"#4a4a4a\\\" );"
       + "gc.drawLine( 1, 2, 3, 4 );"
       + "gc.drawLine( 5, 6, 7, 8 );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testRenderOperations_Redraw() throws IOException {
@@ -226,11 +226,11 @@ public class CanvasLCA_Test extends TestCase {
     canvas.redraw();
     new CanvasLCA().renderChanges( canvas );
     String expected
-      = "var gc = org.eclipse.rwt.protocol.ObjectManager.getObject( \"w2#gc\" );"
-      + "gc.init( 50, 50, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );"
+      = "var gc = org.eclipse.rwt.protocol.ObjectManager.getObject( \\\"w2#gc\\\" );"
+      + "gc.init( 50, 50, \\\"11px Arial\\\", \\\"#ffffff\\\", \\\"#4a4a4a\\\" );"
       + "gc.drawLine( 1, 2, 3, 4 );"
       + "gc.drawLine( 5, 6, 7, 8 );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testClearDrawing() throws IOException {
@@ -250,9 +250,9 @@ public class CanvasLCA_Test extends TestCase {
     canvas.redraw();
     new CanvasLCA().renderChanges( canvas );
     String expected
-      = "var gc = org.eclipse.rwt.protocol.ObjectManager.getObject( \"w2#gc\" );"
-      + "gc.init( 50, 50, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+      = "var gc = org.eclipse.rwt.protocol.ObjectManager.getObject( \\\"w2#gc\\\" );"
+      + "gc.init( 50, 50, \\\"11px Arial\\\", \\\"#ffffff\\\", \\\"#4a4a4a\\\" );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testRenderOperations_DisposedFont() throws IOException {
@@ -275,10 +275,10 @@ public class CanvasLCA_Test extends TestCase {
     canvas.redraw();
     new CanvasLCA().renderChanges( canvas );
     String expected
-      = "var gc = org.eclipse.rwt.protocol.ObjectManager.getObject( \"w2#gc\" );"
-      + "gc.init( 50, 50, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );"
-      + "gc.setProperty( \"font\", \"bold 18px Verdana\" );"
+      = "var gc = org.eclipse.rwt.protocol.ObjectManager.getObject( \\\"w2#gc\\\" );"
+      + "gc.init( 50, 50, \\\"11px Arial\\\", \\\"#ffffff\\\", \\\"#4a4a4a\\\" );"
+      + "gc.setProperty( \\\"font\\\", \\\"bold 18px Verdana\\\" );"
       + "gc.drawLine( 1, 2, 3, 4 );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 }

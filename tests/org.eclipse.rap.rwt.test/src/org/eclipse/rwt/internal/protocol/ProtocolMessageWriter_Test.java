@@ -19,6 +19,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.ExecuteScriptOperation;
 import org.eclipse.rap.rwt.testfixture.Message.*;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -426,6 +427,16 @@ public class ProtocolMessageWriter_Test extends TestCase {
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
     assertEquals( 2, ( ( JSONArray )operation.getProperty( "key" ) ).length() );
     assertEquals( "Hello", ( ( JSONArray )operation.getProperty( "key" ) ).get( 1 ) );
+  }
+
+  public void testAppendsToExistingExecuteOperation() {
+    writer.appendExecuteScript( "jsex", "text/javascript", "var x = foo();" );
+    writer.appendExecuteScript( "jsex", "text/javascript", "x.foo();" );
+
+    Message message = getMessage();
+    assertEquals( 1, message.getOperationCount() );
+    ExecuteScriptOperation operation = ( ExecuteScriptOperation )message.getOperation( 0 );
+    assertEquals( "var x = foo();x.foo();", operation.getScript() );
   }
 
   private Message getMessage() {

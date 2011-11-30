@@ -25,10 +25,18 @@ import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATIONS;
 
 import java.util.Map;
 
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.lifecycle.JSWriter;
 
 
 public final class ProtocolMessageWriter {
+
+  // TODO [rst] Copy of JSWriter constant, remove when JSWriter is gone
+  private static final String HAS_WIDGET_MANAGER = JSWriter.class.getName() + "#hasWidgetManager";
+  // TODO [rst] Copy of JSWriter constant, remove when JSWriter is gone
+  private static final String CURRENT_WIDGET_REF = JSWriter.class.getName() + "#currentWidgetRef";
 
   private final JsonObject meta;
   private final JsonArray operations;
@@ -96,8 +104,20 @@ public final class ProtocolMessageWriter {
 
   public void appendExecuteScript( String target, String scriptType, String code ) {
     prepareOperation( target, ACTION_EXECUTE_SCRIPT );
-    pendingOperation.appendDetail( EXECUTE_SCRIPT_TYPE, JsonValue.valueOf( scriptType ) );
-    pendingOperation.appendDetail( EXECUTE_SCRIPT_CONTENT, JsonValue.valueOf( code ) );
+    Object pendingScriptType = pendingOperation.getDetail( EXECUTE_SCRIPT_TYPE );
+    if( pendingScriptType != null ) {
+      if( !pendingScriptType.equals( scriptType ) ) {
+        throw new IllegalStateException( "Cannot mix different script types" );
+      }
+    } else {
+      pendingOperation.appendDetail( EXECUTE_SCRIPT_TYPE, scriptType );
+    }
+    String pendingScript = ( String )pendingOperation.getDetail( EXECUTE_SCRIPT_CONTENT );
+    if( pendingScript != null ) {
+      pendingOperation.replaceDetail( EXECUTE_SCRIPT_CONTENT, pendingScript + code );
+    } else {
+      pendingOperation.appendDetail( EXECUTE_SCRIPT_CONTENT, code );
+    }
   }
 
   public void appendDestroy( String target ) {
@@ -109,7 +129,15 @@ public final class ProtocolMessageWriter {
     if( !canAppendToCurrentOperation( target, type ) ) {
       appendPendingOperation();
       pendingOperation = new Operation( target, type );
+      invalidateJsWriterState();
     }
+  }
+
+  // TODO [rst] Needed to invalidate JavaScript context of JSWriter, remove when JSWriter is gone
+  private static void invalidateJsWriterState() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    stateInfo.removeAttribute( HAS_WIDGET_MANAGER );
+    stateInfo.removeAttribute( CURRENT_WIDGET_REF );
   }
 
   public String createMessage() {
@@ -117,6 +145,12 @@ public final class ProtocolMessageWriter {
     alreadyCreated = true;
     JsonObject message = createMessageObject();
     return message.toString();
+  }
+
+  public boolean hasPendingExecuteOperation( String target ) {
+    return pendingOperation != null
+           && ACTION_EXECUTE_SCRIPT.equals( pendingOperation.getAction() )
+           && pendingOperation.getTarget().equals( target );
   }
 
   private void ensureMessagePending() {
@@ -139,6 +173,8 @@ public final class ProtocolMessageWriter {
       String pendingAction = pendingOperation.getAction();
       if( ACTION_LISTEN.equals( action ) ) {
         result = pendingAction.equals( ACTION_LISTEN );
+      } else if( ACTION_EXECUTE_SCRIPT.equals( action ) ) {
+        result = pendingAction.equals( ACTION_EXECUTE_SCRIPT );
       } else if( ACTION_SET.equals( action ) ) {
         result = pendingAction.equals( ACTION_CREATE ) || pendingAction.equals( ACTION_SET );
       }

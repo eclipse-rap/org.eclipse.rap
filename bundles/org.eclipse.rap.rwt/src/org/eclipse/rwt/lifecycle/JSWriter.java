@@ -17,18 +17,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
-import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
+import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Widget;
 
 
 /**
- * This class provides helper methods to generate Javascript used to update the 
+ * This class provides helper methods to generate Javascript used to update the
  * client-side state of widgets.
  * <p>Note that the Javascript code that is rendered relies on the client-side
  * <code>org.eclipse.swt.WidgetManager</code> to be present.</p>
@@ -36,7 +38,7 @@ import org.eclipse.swt.widgets.*;
  * @see AbstractWidgetLCA
  * @see ControlLCAUtil
  * @see WidgetLCAUtil
- * 
+ *
  * @since 1.0
  * @noextend This class is not intended to be subclassed by clients.
  */
@@ -106,7 +108,7 @@ public final class JSWriter {
   /**
    * Returns the {@link JSWriter} instance used to reset a widgets attributes in
    * order to take part in the pooling mechanism.
-   * 
+   *
    * @return the {@link JSWriter} instance
    * @deprecated As of 1.3, server-side widget pooling is no longer required.
    *             This method should not be used anymore.
@@ -155,10 +157,10 @@ public final class JSWriter {
     boolean isShell = widget instanceof Shell;
     buffer.append( "var w = new " + className );
     buffer.append( "(" + createParamList( " ", args, " ", false ) + ");" );
-    buffer.append( "wm.add( w, " ); 
+    buffer.append( "wm.add( w, " );
     buffer.append( "\"" + WidgetUtil.getId( widget ) + "\", " );
     buffer.append( isControl + " );" );
-    getWriter().write( buffer.toString() );
+    write( buffer.toString() );
     setCurrentWidgetRef( widget );
     if( isControl && !isShell ) {
       setParent( getJSParentId( widget ) );
@@ -548,9 +550,7 @@ public final class JSWriter {
    *
    * @throws IOException if an I/O error occurs
    */
-  public void call( Widget target, String function, Object[] args )
-    throws IOException
-  {
+  public void call( Widget target, String function, Object[] args ) throws IOException {
     ensureWidgetManager();
     JSVar refVariable;
     if( target == widget ) {
@@ -574,9 +574,7 @@ public final class JSWriter {
    *
    * @throws IOException if an I/O error occurs
    */
-  public void call( JSVar target, String function, Object[] args )
-    throws IOException
-  {
+  public void call( JSVar target, String function, Object[] args ) throws IOException {
     ensureWidgetManager();
     String params = createParamList( args );
     writeCall( target, function, params );
@@ -589,8 +587,8 @@ public final class JSWriter {
   }
 
   public void endCall( Object[] args ) {
-    getWriter().write( createParamList( "", args, "", false )  );
-    getWriter().write( " );" );
+    write( createParamList( "", args, "", false )  );
+    write( " );" );
   }
 
   /**
@@ -602,9 +600,7 @@ public final class JSWriter {
    * @throws IOException if an I/O error occurs
    */
   // TODO [rh] should we name this method 'call' and make it a static method?
-  public void callStatic( String function, Object[] args )
-    throws IOException
-  {
+  public void callStatic( String function, Object[] args ) throws IOException {
     ensureWidgetManager();
     String params = createParamList( args );
     StringBuilder buffer = new StringBuilder();
@@ -612,13 +608,13 @@ public final class JSWriter {
     buffer.append( '(' );
     buffer.append( params );
     buffer.append( ");" );
-    getWriter().write( buffer.toString() );
+    write( buffer.toString() );
   }
 
   public void callFieldAssignment( JSVar target, String field, String value ) {
     write( "{0}.{1} = {2};", target, field, value );
   }
-  
+
   public void varAssignment( JSVar var, String method ) {
     ensureWidgetManager();
     ensureWidgetRef();
@@ -641,12 +637,13 @@ public final class JSWriter {
     call( WIDGET_MANAGER_REF, "dispose", new Object[] { widgetId } );
   }
 
-
   ////////////////////////////////////////////////////////////////
   // helping methods for client side listener addition and removal
 
-  private void updateActionListener( String property, JSListenerInfo info, String javaListener, boolean hasListeners )
-    throws IOException
+  private void updateActionListener( String property,
+                                     JSListenerInfo info,
+                                     String javaListener,
+                                     boolean hasListeners ) throws IOException
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     if( adapter.isInitialized() ) {
@@ -665,8 +662,10 @@ public final class JSWriter {
     }
   }
 
-  private void updateStateAndActionListener( String property, JSListenerInfo info, String javaListener, boolean hasListeners )
-    throws IOException
+  private void updateStateAndActionListener( String property,
+                                             JSListenerInfo info,
+                                             String javaListener,
+                                             boolean hasListeners ) throws IOException
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     if( adapter.isInitialized() ) {
@@ -704,10 +703,8 @@ public final class JSWriter {
     return buffer.toString();
   }
 
-
   /////////////////////////////////////////////////////////////////////
   // Helping methods for JavaScript WidgetManager and Widget references
-
 
   private String getJSParentId( Widget widget ) {
     String result = "";
@@ -729,8 +726,7 @@ public final class JSWriter {
         && widget != null
         && stateInfo.getAttribute( HAS_WIDGET_MANAGER ) == null )
     {
-      writeVarAssignment( WIDGET_MANAGER_REF,
-                          "org.eclipse.swt.WidgetManager.getInstance()" );
+      writeVarAssignment( WIDGET_MANAGER_REF, "org.eclipse.swt.WidgetManager.getInstance()" );
       stateInfo.setAttribute( HAS_WIDGET_MANAGER, Boolean.TRUE );
     }
   }
@@ -902,7 +898,7 @@ public final class JSWriter {
     buffer.append( blue );
     return buffer.toString();
   }
-  
+
   ////////////////////////////////////////
   // Helping methods to manipulate strings
 
@@ -979,7 +975,7 @@ public final class JSWriter {
     buffer.append( '(' );
     buffer.append( params );
     buffer.append( ");" );
-    getWriter().write( buffer.toString() );
+    write( buffer.toString() );
   }
 
   private void writeVarAssignment( JSVar var, String value ) {
@@ -989,25 +985,42 @@ public final class JSWriter {
     buffer.append( " = " );
     buffer.append( value );
     buffer.append( ';' );
-    getWriter().write( buffer.toString() );
+    write( buffer.toString() );
   }
 
-  private static String format( String pattern, Object[] arguments )
-  {
+  private static String format( String pattern, Object[] arguments ) {
     return MessageFormat.format( pattern, arguments );
   }
 
   private static void write( String pattern, Object arg1, Object arg2 ) {
     Object[] args = new Object[] { arg1, arg2 };
-    getWriter().write( format( pattern, args ) );
+    write( format( pattern, args ) );
   }
 
   private static void write( String pattern, Object arg1, Object arg2, Object arg3 ) {
     Object[] args = new Object[] { arg1, arg2, arg3 };
-    getWriter().write( format( pattern, args ) );
+    write( format( pattern, args ) );
   }
 
-  private static JavaScriptResponseWriter getWriter() {
-    return ContextProvider.getStateInfo().getResponseWriter();
+  private static void write( String code ) {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    ProtocolMessageWriter protocolWriter = stateInfo.getResponseWriter().getProtocolWriter();
+    // HACK [rst] ProtocolMessageWriter clears these state info attributes
+    // whenever a new operation is created. But this also happens when we call
+    // ProtocolMessageWriter#appendExecuteScript() here, immediately resetting
+    // the values set in the ensureXxx() methods above.
+    // Thus we buffer the values here ...
+    Object bufferHasWidgetManager = stateInfo.getAttribute( HAS_WIDGET_MANAGER );
+    Object bufferCurrentWidgetRef = stateInfo.getAttribute( CURRENT_WIDGET_REF );
+    // ... append the execute operation ...
+    protocolWriter.appendExecuteScript( "jsex", "text/javascript", code.trim() );
+    // ... and re-install them afterwards.
+    if( bufferHasWidgetManager != null ) {
+      stateInfo.setAttribute( HAS_WIDGET_MANAGER, bufferHasWidgetManager );
+    }
+    if( bufferCurrentWidgetRef != null ) {
+      stateInfo.setAttribute( CURRENT_WIDGET_REF, bufferCurrentWidgetRef );
+    }
   }
+
 }

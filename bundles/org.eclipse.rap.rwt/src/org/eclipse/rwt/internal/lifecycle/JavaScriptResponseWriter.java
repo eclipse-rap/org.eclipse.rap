@@ -33,8 +33,8 @@ public class JavaScriptResponseWriter {
   }
 
   public void write( String content ) {
-    writePendingProtocolMessage();
-    writer.write( content );
+    getProtocolWriter();
+    protocolWriter.appendExecuteScript( "jsex", "text/javascript", content.trim() );
   }
 
   public boolean checkError() {
@@ -42,7 +42,12 @@ public class JavaScriptResponseWriter {
   }
 
   public void finish() {
-    writePendingProtocolMessage();
+    if( protocolWriter != null ) {
+      writer.write( PROCESS_MESSAGE + "( " );
+      writer.write( protocolWriter.createMessage() );
+      writer.write( " );/*EOM*/" );
+    }
+    protocolWriter = null;
   }
 
   public ProtocolMessageWriter getProtocolWriter() {
@@ -50,15 +55,6 @@ public class JavaScriptResponseWriter {
       protocolWriter = new ProtocolMessageWriter();
     }
     return protocolWriter;
-  }
-
-  private void writePendingProtocolMessage() {
-    if( protocolWriter != null ) {
-      writer.write( PROCESS_MESSAGE + "( " );
-      writer.write( protocolWriter.createMessage() );
-      writer.write( " );/*EOM*/" );
-    }
-    protocolWriter = null;
   }
 
   private static void configureResponseContentEncoding( ServletResponse response ) {

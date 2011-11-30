@@ -158,24 +158,6 @@ public final class Message {
     return ( SetOperation )findOperation( SetOperation.class , target, property );
   }
 
-  private Operation findOperation( Class opClass, String target ) {
-    return findOperation( opClass, target, null );
-  }
-
-  private Operation findOperation( Class opClass, String target, String property ) {
-    Operation result = null;
-    for( int i = 0; i < getOperationCount(); i++ ) {
-      Operation operation = getOperation( i );
-      if(    operation.getTarget().equals( target )
-          && opClass.isInstance( operation )
-          && ( property == null || operation.getPropertyNames().contains( property ) ) )
-      {
-        result = operation;
-      }
-    }
-    return result;
-  }
-
   public CallOperation findCallOperation( Widget widget, String method ) {
     String target = WidgetUtil.getId( widget );
     return findCallOperation( target, method );
@@ -183,12 +165,38 @@ public final class Message {
 
   public CallOperation findCallOperation( String target, String method ) {
     CallOperation result = null;
-    for( int i = 0; i < getOperationCount(); i++ ) {
-      Operation operation = getOperation( i );
+    List<Operation> operations = getOperations();
+    for( Operation operation : operations ) {
       if( operation.getTarget().equals( target ) && operation instanceof CallOperation ) {
         if( method.equals( ( ( CallOperation )operation ).getMethodName() ) ) {
           result = ( CallOperation )operation;
         }
+      }
+    }
+    return result;
+  }
+
+  private List<Operation> getOperations() {
+    List<Operation> result = new ArrayList<Operation>();
+    for( int i = 0; i < getOperationCount(); i++ ) {
+      result.add( getOperation( i ) );
+    }
+    return result;
+  }
+
+  private Operation findOperation( Class opClass, String target ) {
+    return findOperation( opClass, target, null );
+  }
+
+  private Operation findOperation( Class opClass, String target, String property ) {
+    Operation result = null;
+    List<Operation> operations = getOperations();
+    for( Operation operation : operations ) {
+      if(    operation.getTarget().equals( target )
+          && opClass.isInstance( operation )
+          && ( property == null || operation.getPropertyNames().contains( property ) ) )
+      {
+        result = operation;
       }
     }
     return result;

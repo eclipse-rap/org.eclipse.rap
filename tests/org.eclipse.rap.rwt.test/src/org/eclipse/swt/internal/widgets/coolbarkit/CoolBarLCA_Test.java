@@ -27,7 +27,16 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.*;
 
+
 public final class CoolBarLCA_Test extends TestCase {
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testPreserveValues() {
     Display display = new Display();
@@ -308,17 +317,8 @@ public final class CoolBarLCA_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( 0, bar.getItemOrder()[ 0 ] );
     assertEquals( 1, bar.getItemOrder()[ 1 ] );
-    String expected
-      = "var w = wm.findWidgetById( \"" + item0Id + "\" );"
-      + "w.setSpace(";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    String expected = "var w = wm.findWidgetById( \\\"" + item0Id + "\\\" );w.setSpace(";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-  }
 }

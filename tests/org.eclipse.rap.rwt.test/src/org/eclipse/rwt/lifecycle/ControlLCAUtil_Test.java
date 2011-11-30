@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.ExecuteScriptOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
@@ -73,7 +74,7 @@ public class ControlLCAUtil_Test extends TestCase {
     //String expected
     //  = w.setSpace( 0, 0, 0, 0 );w.setMinWidth( 0 );w.setMinHeight( 0 );";
     String expected = "w.setSpace( 0, 0, 0, 0 );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
     // Ensure that unchanged bound do not lead to markup
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( composite );
@@ -86,7 +87,7 @@ public class ControlLCAUtil_Test extends TestCase {
     composite.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     ControlLCAUtil.writeBounds( composite );
     expected = "w.setSpace( 1, 3, 2, 4 );";
-    assertTrue( Fixture.getAllMarkup().endsWith( expected ) );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteToolTip() throws IOException {
@@ -136,8 +137,8 @@ public class ControlLCAUtil_Test extends TestCase {
     writer.newWidget( "Window" );
     Fixture.fakeResponseWriter();
     ControlLCAUtil.writeToolTip( shell );
-    String expected = "wm.setToolTip( w, \"anotherTooltip\" );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    String expected = "wm.setToolTip( w, \\\"anotherTooltip\\\" );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteActivateListener() throws IOException {
@@ -261,8 +262,8 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.preserveWidgets();
     control.setCursor( cursor );
     ControlLCAUtil.writeCursor( control );
-    String expected = "w.setCursor( \"pointer\" );";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    String expected = "w.setCursor( \\\"pointer\\\" );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
 
     Fixture.fakeResponseWriter();
     controlLCA.preserveValues( control );
@@ -288,9 +289,9 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     ControlLCAUtil.writeKeyListener( shell );
     String expected
-      = "var w = wm.findWidgetById( \"w2\" );"
-      + "w.setUserData( \"keyListener\", true );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+      = "var w = wm.findWidgetById( \\\"w2\\\" );"
+      + "w.setUserData( \\\"keyListener\\\", true );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteTraverseEvents() throws IOException {
@@ -307,9 +308,9 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     ControlLCAUtil.writeTraverseListener( shell );
     String expected
-      = "var w = wm.findWidgetById( \"w2\" );"
-      + "w.setUserData( \"traverseListener\", true );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+      = "var w = wm.findWidgetById( \\\"w2\\\" );"
+      + "w.setUserData( \\\"traverseListener\\\", true );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testProcessKeyEvents() {
@@ -527,27 +528,33 @@ public class ControlLCAUtil_Test extends TestCase {
 
   public void testWriteBackgroundImage() throws IOException {
     Control control = new Button( shell, SWT.PUSH );
-    Fixture.fakeResponseWriter();
     ControlLCAUtil.preserveBackgroundImage( control );
     Fixture.markInitialized( control );
     Image image = Graphics.getImage( Fixture.IMAGE1 );
     control.setBackgroundImage( image );
     ControlLCAUtil.writeBackgroundImage( control );
     String imageLocation = ImageFactory.getImagePath( image );
-    String expected =   "var w = wm.findWidgetById( \"w2\" );"
+
+    Message message1 = Fixture.getProtocolMessage();
+    ExecuteScriptOperation operation1 = ( ExecuteScriptOperation )message1.getOperation( 0 );
+    String expected = "var w = wm.findWidgetById( \"w2\" );"
                       + "w.setUserData( \"backgroundImageSize\", [58,12 ] );"
                       + "w.setBackgroundImage( \""
                       + imageLocation
                       + "\" );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    assertEquals( expected, operation1.getScript() );
 
     Fixture.fakeResponseWriter();
     ControlLCAUtil.preserveBackgroundImage( control );
     control.setBackgroundImage( null );
     ControlLCAUtil.writeBackgroundImage( control );
-    expected =   "w.setUserData( \"backgroundImageSize\", null );"
-               + "w.resetBackgroundImage();";
-    assertEquals( expected, Fixture.getAllMarkup() );
+
+    Message message2 = Fixture.getProtocolMessage();
+    assertEquals( 1, message2.getOperationCount() );
+    ExecuteScriptOperation operation2 = ( ExecuteScriptOperation )message2.getOperation( 0 );
+    String expected2 = "w.setUserData( \"backgroundImageSize\", null );"
+                       + "w.resetBackgroundImage();";
+    assertEquals( expected2, operation2.getScript() );
   }
 
   public void testProcessHelpEvent() {
@@ -576,8 +583,8 @@ public class ControlLCAUtil_Test extends TestCase {
     control.addMouseListener( new MouseAdapter() {} );
     ControlLCAUtil.writeChanges( control );
 
-    String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"mouse\", true );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    String expected = "wm.setHasListener( wm.findWidgetById( \\\"w2\\\" ), \\\"mouse\\\", true );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteFocusListener_FocusableControl() throws IOException {
@@ -590,8 +597,8 @@ public class ControlLCAUtil_Test extends TestCase {
     control.addFocusListener( new FocusAdapter() {} );
     ControlLCAUtil.writeChanges( control );
 
-    String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"focus\", true );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    String expected = "wm.setHasListener( wm.findWidgetById( \\\"w2\\\" ), \\\"focus\\\", true );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testWriteFocusListener_NotFocusableControl() throws IOException {
@@ -620,8 +627,8 @@ public class ControlLCAUtil_Test extends TestCase {
     } );
     ControlLCAUtil.writeChanges( control );
 
-    String expected = "wm.setHasListener( wm.findWidgetById( \"w2\" ), \"menuDetect\", true );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    String expected = "wm.setHasListener( wm.findWidgetById( \\\"w2\\\" ), \\\"menuDetect\\\", true );";
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   //////////////////////////////////////////////

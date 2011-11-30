@@ -34,6 +34,14 @@ import org.eclipse.swt.widgets.*;
 
 public class ControlLCA_Test extends TestCase {
 
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
+
   public void testPreserveValues() {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
@@ -183,7 +191,7 @@ public class ControlLCA_Test extends TestCase {
     control.setBounds( 1, 2, 100, 200 );
     WidgetLCAUtil.writeBounds( control, parent, control.getBounds() );
     String expected = "w.setSpace( 1, 100, 2, 200 );";
-    assertEquals( expected, Fixture.getAllMarkup() );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 
   public void testMenuDetectListener() {
@@ -260,14 +268,6 @@ public class ControlLCA_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( "renderDispose", log.toString() );
-  }
-
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
-
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
   }
 
 }
