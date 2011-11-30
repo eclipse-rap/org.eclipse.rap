@@ -29,10 +29,6 @@ TableItem {
   text-decoration: none;
 }
 
-TableItem:hover {
-  background-color: #dae9f7;
-}
-
 TableItem:selected {
   color: white;
   background-color: #00589f;
@@ -45,10 +41,6 @@ TableItem:selected:unfocused {
 
 TableItem:linesvisible:even {
   background-color: #f3f3f4;
-}
-
-TableItem:linesvisible:even:hover {
-  background-color: #dae9f7;
 }
 
 TableItem:linesvisible:even:selected {

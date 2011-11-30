@@ -151,15 +151,16 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var hasItemBackground = item !== null && item.getBackground() !== null;
       var result =    !hasItemBackground 
                    || renderFullSelection 
-                   || this._hasHoverBackground() 
+                   || this._hasHoverBackground( config ) 
                    || config.enabled === false; 
       return result;
     },
     
-    _hasHoverBackground : function() {
+    _hasHoverBackground : function( config ) {
+      var isTable = config.treeColumn === -1;
       // TODO [tb] : This detection is not prefect; Should the item be hovered,
       // but a hover-independent theming-background be set, this returns true.
-      return this.hasState( "over" ) && this._styleMap.itemBackground !== "undefined";
+      return !isTable && this.hasState( "over" ) && this._styleMap.itemBackground !== "undefined";
     },
 
     _renderIndention : function( item, config, hoverElement ) {
@@ -361,7 +362,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
       var result;
       if(    this.hasState( "selected" ) 
           || config.enabled === false 
-          || this._hasHoverBackground() 
+          || this._hasHoverBackground( config ) 
       ) {
         result = "undefined";
       } else {
@@ -376,7 +377,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
           || result === "" 
           || config.enabled === false 
           || this.hasState( "selected" ) 
-          || this._hasHoverBackground()
+          || this._hasHoverBackground( config )
       ) {
         result = this._styleMap.itemForeground;
         if( result === "undefined" ) { 
