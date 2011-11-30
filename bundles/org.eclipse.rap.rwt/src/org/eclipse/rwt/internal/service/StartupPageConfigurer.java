@@ -212,7 +212,6 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
 
   private void applyBranding() throws IOException {
     AbstractBranding branding = BrandingUtil.determineBranding();
-    registerBrandingResources( branding );
     // TODO: [bm][rh] move into util
     registerBrandingResources( branding );
     if( branding.getThemeId() != null ) {
