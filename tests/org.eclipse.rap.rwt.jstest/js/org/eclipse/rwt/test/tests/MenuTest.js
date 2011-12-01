@@ -1211,6 +1211,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.disposeMenu();            
     },
 
+    testAddSeparatorInManuBar : function() {
+      this.menuBar = new this._menuBarClass();
+      var separator = new qx.ui.menu.Separator();
+      this.menuBar.addMenuItemAt( separator, 0 );
+    },
+
     /************************* Helper *****************************/
 
     _createMenuBarByProtocol : function( id, parentId ) {
