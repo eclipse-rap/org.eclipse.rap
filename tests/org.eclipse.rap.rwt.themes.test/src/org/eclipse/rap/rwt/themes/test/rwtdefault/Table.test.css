@@ -28,7 +28,7 @@ TableItem {
 }
 
 TableItem:hover {
-  background-color: #dae9f7;
+  background-color: transparent;
   text-decoration: none;
 }
 
