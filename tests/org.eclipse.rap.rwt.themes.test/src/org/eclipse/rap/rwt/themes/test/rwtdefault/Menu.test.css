@@ -33,6 +33,7 @@ MenuItem {
   background-image: none;
   opacity: 1;
   text-shadow: none;
+  padding: 2px 4px;
 }
 
 MenuItem:hover {
@@ -42,15 +43,12 @@ MenuItem:hover {
     from( #5882b5 ),
     to( #416693 )
   );
+  padding: 2px 4px;
 }
 
-/*TODO delete MenuItem[BAR] test, because BAR style flag does not exist in Menu.theme.xml? [nimu]*/
-
-/* MenuItem[BAR]:pressed {
-  background-color: #00589f;
-  color: white;
-  text-shadow: none;
-} */
+MenuItem:onMenuBar {
+  padding: 2px 4px;
+}
 
 MenuItem-CheckIcon {
   background-image: url( resource/widget/rap/menu/checkbox.gif );
