@@ -12,12 +12,12 @@
 package org.eclipse.rwt.internal.uicallback;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rwt.SessionSingletonBase;
-import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.SerializableLock;
@@ -208,9 +208,9 @@ public final class UICallBackManager implements SerializableCompatibility {
   private static boolean isConnectionAlive( HttpServletResponse response ) {
     boolean result;
     try {
-      JavaScriptResponseWriter responseWriter = new JavaScriptResponseWriter( response );
-      responseWriter.write( " " );
-      result = !responseWriter.checkError();
+      PrintWriter writer = response.getWriter();
+      writer.write( " " );
+      result = !writer.checkError();
     } catch( IOException ioe ) {
       result = false;
     }
