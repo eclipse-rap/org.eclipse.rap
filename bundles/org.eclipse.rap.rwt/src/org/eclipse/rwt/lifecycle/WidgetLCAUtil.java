@@ -1124,15 +1124,16 @@ public final class WidgetLCAUtil {
     return buffer.toString();
   }
 
+  // TODO [tb] : merge with GCOperationWriter#getColorValueAsArray?
   private static int[] getColorValueAsArray( Color color, boolean transparent ) {
     int[] result = null;
     if( color != null ) {
       RGB rgb = color.getRGB();
       result = new int[ 4 ];
-      result[ 0 ] = rgb.red;
-      result[ 1 ] = rgb.green;
-      result[ 2 ] = rgb.blue;
-      result[ 3 ] = transparent ? 0 : 255;
+    result[ 0 ] = rgb.red;
+    result[ 1 ] = rgb.green;
+    result[ 2 ] = rgb.blue;
+    result[ 3 ] = transparent ? 0 : 255;
     } else if( transparent ) {
       result = new int[] { 0, 0, 0, 0 };
     }

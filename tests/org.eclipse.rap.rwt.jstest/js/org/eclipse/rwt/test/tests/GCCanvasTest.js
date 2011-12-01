@@ -26,7 +26,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       testUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
-      gc.drawLine( 10, 10, 20, 10 );
+      gc.draw( [ [ "beginPath" ], [ "moveTo", 10, 10 ], [ "lineTo", 20, 10 ], [ "stroke" ] ] );
       gc.init( 400, 500, "10px Arial", "#ffffff", "#000000" );
       assertEquals( 400, parseInt( gc._canvas.width ) );
       assertEquals( 400, parseInt( gc._canvas.style.width ) );
@@ -51,7 +51,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       testUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
-      gc.drawLine( 10, 10, 20, 10 );
+      gc.draw( [ [ "beginPath" ], [ "moveTo", 10.5, 10.5 ], [ "lineTo", 20.5, 10.5 ], [ "stroke" ] ] );
       var context = gc._context;
       context.lineTo( 15, 15 );
       assertFalse( context.isPointInPath( 10, 10 ) );
@@ -63,99 +63,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       testUtil.flush();
     },
 
-    testDrawPoint : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
-      canvas.setDimension( 300, 300 );
-      canvas.addToDocument();
-      testUtil.flush();
-      var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
-      gc.drawPoint( 40, 30 );      
-      var context = gc._context;
-      assertTrue( context.isPointInPath( 40.1, 30.1 ) );
-      assertTrue( context.isPointInPath( 41, 30 ) );
-      assertTrue( context.isPointInPath( 40, 31 ) );
-      assertTrue( context.isPointInPath( 41, 31 ) );
-      assertFalse( context.isPointInPath( 41.1, 30 ) );
-      assertFalse( context.isPointInPath( 40, 31.1 ) );
-      assertFalse( context.isPointInPath( 41.1, 31.1 ) );
-      canvas.destroy();
-      testUtil.flush();
-    },
-
-    testDrawRectangle : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
-      canvas.setDimension( 300, 300 );
-      canvas.addToDocument();
-      testUtil.flush();
-      var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
-      gc.drawRectangle( 10, 20, 30, 40 );      
-      var context = gc._context;
-      assertTrue( context.isPointInPath( 11, 21 ) );
-      assertTrue( context.isPointInPath( 40.5, 30.5 ) );
-      assertTrue( context.isPointInPath( 11, 60 ) );
-      assertTrue( context.isPointInPath( 40, 60 ) );
-      assertFalse( context.isPointInPath( 40.6, 30 ) );
-      assertFalse( context.isPointInPath( 10, 60.6 ) );
-      assertFalse( context.isPointInPath( 40.6, 60.6 ) );
-      canvas.destroy();
-      testUtil.flush();
-    },
-
-    testDrawRoundRectangle : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
-      canvas.setDimension( 300, 300 );
-      canvas.addToDocument();
-      testUtil.flush();
-      var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
-      gc.drawRoundRectangle( 2, 4, 20, 30, 4, 10, true  );      
-      var context = gc._context;
-      assertTrue( context.isPointInPath( 2, 14 ) );
-      assertTrue( context.isPointInPath( 6, 4.1 ) );
-      assertTrue( context.isPointInPath( 18, 4 ) );
-      assertTrue( context.isPointInPath( 22, 14 ) );
-      assertTrue( context.isPointInPath( 22, 24 ) );
-      assertTrue( context.isPointInPath( 18, 34 ) );
-      assertTrue( context.isPointInPath( 6, 34 ) );
-      assertTrue( context.isPointInPath( 2, 24 ) );
-      assertFalse( context.isPointInPath( 1, 13 ) );
-      assertFalse( context.isPointInPath( 5, 3 ) );
-      assertFalse( context.isPointInPath( 19, 3 ) );
-      assertFalse( context.isPointInPath( 24, 15 ) );
-      assertFalse( context.isPointInPath( 23, 25 ) );
-      assertFalse( context.isPointInPath( 19, 35 ) );
-      assertFalse( context.isPointInPath( 5, 35 ) );
-      assertFalse( context.isPointInPath( 1, 25 ) );
-      canvas.destroy();
-      testUtil.flush();
-    },
-    
-    testFillGradientRectangle : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
-      canvas.setDimension( 300, 300 );
-      canvas.addToDocument();
-      testUtil.flush();
-      var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
-      gc.fillGradientRectangle( 40, 60, -30, -40, false );      
-      var context = gc._context;
-      assertTrue( context.isPointInPath( 10.1, 20.1 ) );
-      assertTrue( context.isPointInPath( 40, 30 ) );
-      assertTrue( context.isPointInPath( 10, 60 ) );
-      assertTrue( context.isPointInPath( 40, 60 ) );
-      assertFalse( context.isPointInPath( 40.1, 30 ) );
-      assertFalse( context.isPointInPath( 10, 60.1 ) );
-      assertFalse( context.isPointInPath( 40.1, 60.1 ) );
-      canvas.destroy();
-      testUtil.flush();
-    },
-    
     testDrawArc : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var canvas = new org.eclipse.swt.widgets.Composite();
@@ -164,7 +71,23 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       testUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
       gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
-      gc.drawArc( 100, 100, 60, 30, 180, 180, true );      
+
+      //gc.drawArc( 100, 100, 60, 30, 180, 180, true );
+
+      var x = 100;
+      var y = 100;
+      var width = 60;
+      var height = 30;
+      var startAngle = 180 * Math.PI / 180;
+      var arcAngle = 180 * Math.PI / 180;
+      var radiusX = width / 2;
+      var radiusY = height / 2;
+      gc.draw( [
+        [ "beginPath" ],
+        [ "arc", x + radiusX, y + radiusY, radiusX, radiusY, -1 * startAngle, -1 * ( startAngle + arcAngle ), true ],
+        [ "fill" ]
+      ] );
+            
       var context = gc._context;
       assertTrue( context.isPointInPath( 101, 115 ) );
       assertTrue( context.isPointInPath( 159, 115 ) );
@@ -178,42 +101,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCCanvasTest", {
       assertFalse( context.isPointInPath( 130, 131 ) );
       canvas.destroy();
       testUtil.flush();
-    },
-    
-    
-    testDrawArcSizeZero : function() {
-      // Test passes by not crashing
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
-      canvas.setDimension( 300, 300 );
-      canvas.addToDocument();
-      testUtil.flush();
-      var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
-      gc.drawArc( 100, 100, 0, 0, 180, 180, true );
-      canvas.destroy();
-      testUtil.flush();
-    },
-    
-    testDrawPolyline : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var canvas = new org.eclipse.swt.widgets.Composite();
-      canvas.setDimension( 300, 300 );
-      canvas.addToDocument();
-      testUtil.flush();
-      var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", "#FF0000", "#0000FF" );
-      gc.drawPolyline( [ 10, 10, 100, 70, 70, 100 ], true, true );      
-      var context = gc._context;
-      assertTrue( context.isPointInPath( 11, 11 ) );
-      assertTrue( context.isPointInPath( 100, 70 ) );
-      assertTrue( context.isPointInPath( 70, 100 ) );
-      assertFalse( context.isPointInPath( 10, 9 ) );
-      assertFalse( context.isPointInPath( 101, 70 ) );
-      assertFalse( context.isPointInPath( 70, 101 ) );
-      canvas.destroy();
-      testUtil.flush();
     }
+    
 
   }
   

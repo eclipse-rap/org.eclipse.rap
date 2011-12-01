@@ -9,11 +9,8 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-/**
- * This class provides the client-side counterpart for
- * org.eclipse.swt.graphics.GC
- */
 qx.Class.define( "org.eclipse.swt.graphics.GC", {
+
   extend : qx.core.Object,
 
   construct : function( control ) {
@@ -38,6 +35,7 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     if( this._control.isCreated() ) {
       this._addCanvasToDOM();
     }
+    this._linearGradient = null;
   },
 
   destruct : function() {
@@ -58,33 +56,6 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
   },
 
   members : {
-
-    _onControlCreate : function() {
-      this._addCanvasToDOM();
-    },
-
-    _onCanvasAppear : function() {
-      var graphicsUtil = org.eclipse.rwt.GraphicsUtil;
-      graphicsUtil.handleAppear( this._vmlCanvas );
-    },
-
-    _addCanvasToDOM  : function() {
-      var controlElement = this._control._getTargetNode();
-      var firstChild = controlElement.firstChild;
-      if( firstChild ) {
-        controlElement.insertBefore( this._canvas, firstChild );
-        controlElement.insertBefore( this._textCanvas, firstChild );
-      } else {
-        controlElement.appendChild( this._canvas );
-        controlElement.appendChild( this._textCanvas );
-      }
-    },
-
-    _removeCanvasFromDOM : function() {
-      var controlElement = this._control._getTargetNode();
-      this._canvas.parentNode.removeChild( this._canvas );
-      this._textCanvas.parentNode.removeChild( this._textCanvas );
-    },
 
     init : qx.core.Variant.select( "qx.client", {
       "mshtml" : function( width, height, font, background, foreground ) {
@@ -107,6 +78,84 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       }
     } ),
 
+
+    /**
+     * Executes drawing operations using the HTML5-Canvas 2D-Context syntax.
+     * Only a subset is supported on all browser, espcially IE is limited.
+     * Each operation is an array starting with the name of the function to call, followed
+     * by its parameters. Properties are treated the same way, i.e. [ "propertyName", "value" ].
+     * Other differences from official HTML5-Canvas API: 
+     *  - Colors are to be given as array ( [ red, green blue ] )
+     *  - "addColorStop" will automatically applied to the last created gradient.
+     *  - To assign the last created linear gradient as a style, use "linearGradient" as the value.
+     *  - strokeText behaves like fillText and fillText draws a rectangular background
+     *  - "arc" is differing from the HTML5-Canvas implementation in that it takes two radii (x,y).
+     *    This might be fixed if transformations are supported in IE (like exCanvas does).
+     */    
+    draw : function( operations ) {
+      for( var i = 0; i < operations.length; i++ ) {
+        try {
+          var op = operations[ i ][ 0 ];
+          switch( op ) {
+            case "fillStyle":
+            case "strokeStyle": 
+            case "globalAlpha": 
+            case "lineWidth": 
+            case "lineCap": 
+            case "lineJoin": 
+            case "font": 
+              this._setProperty( operations[ i ] );
+            break;
+            case "createLinearGradient": 
+            case "addColorStop": 
+            case "fillText": 
+            case "strokeText": 
+            case "arc":
+            case "drawImage":
+              this[ "_" + op ]( operations[ i ] );
+            break;
+            default:
+              this._context[ op ].apply( this._context, operations[ i ].slice( 1 ) );
+            break;
+          }
+        } catch( ex ) {
+          var opArrStr = "[ " + operations[ i ].join( ", " ) + " ]"; 
+          throw new Error( "Drawing operation failed: " + opArrStr + " :" + ex.message );
+        }
+      }
+    },
+    
+    ////////////
+    // Internals
+
+    _onControlCreate : function() {
+      this._addCanvasToDOM();
+    },
+
+    _onCanvasAppear : function() {
+      var graphicsUtil = org.eclipse.rwt.GraphicsUtil;
+      graphicsUtil.handleAppear( this._vmlCanvas );
+    },
+
+    _addCanvasToDOM  : function() {
+      // TODO [tb] : append textCanvas onDemand
+      var controlElement = this._control._getTargetNode();
+      var firstChild = controlElement.firstChild;
+      if( firstChild ) {
+        controlElement.insertBefore( this._canvas, firstChild );
+        controlElement.insertBefore( this._textCanvas, firstChild );
+      } else {
+        controlElement.appendChild( this._canvas );
+        controlElement.appendChild( this._textCanvas );
+      }
+    },
+
+    _removeCanvasFromDOM : function() {
+      var controlElement = this._control._getTargetNode();
+      this._canvas.parentNode.removeChild( this._canvas );
+      this._textCanvas.parentNode.removeChild( this._textCanvas );
+    },
+
     _initTextCanvas : function( width, height ) {
       this._textCanvas.width = width;
       this._textCanvas.style.width = width + "px";
@@ -116,8 +165,8 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
     },
 
     _initFields : function( font, background, foreground ) {
-      this._context.strokeStyle = foreground;
-      this._context.fillStyle = background;
+      this._context.strokeStyle = qx.util.ColorUtil.rgbToRgbString( foreground );
+      this._context.fillStyle = qx.util.ColorUtil.rgbToRgbString( background );
       this._context.globalAlpha = 1.0;
       this._context.lineWidth = 1;
       this._context.lineCap = "butt";
@@ -125,198 +174,49 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       this._context.font = font;
     },
 
-    setProperty : function( name, value ) {
-      switch( name ) {
-        case "foreground":
-          this._context.strokeStyle = value;
-        break;
-        case "background":
-          this._context.fillStyle = value;
-        break;
-        case "alpha":
-          this._context.globalAlpha = value / 255;
-        break;
-        case "lineWidth":
-          this._context.lineWidth = value > 1 ? value : 1;
-        break;
-        case "lineCap":
-          switch( value ) {
-            case 1:
-              this._context.lineCap = "butt";
-            break;
-            case 2:
-              this._context.lineCap = "round";
-            break;
-            case 3:
-              this._context.lineCap = "square";
-            break;
-          }
-        break;
-        case "lineJoin":
-          switch( value ) {
-            case 1:
-              this._context.lineJoin = "miter";
-            break;
-            case 2:
-              this._context.lineJoin = "round";
-            break;
-            case 3:
-              this._context.lineJoin = "bevel";
-            break;
-          }
-        break;
-        case "font":
-          this._context.font = value;
-        break;
-      }
-    },
-
-    drawLine : function( x1, y1, x2, y2 ) {
-      var offset = this._getOffset( false );
-      this._context.beginPath();
-      this._context.moveTo( x1 + offset, y1 + offset );
-      this._context.lineTo( x2 + offset, y2 + offset );
-      this._stroke( false );
-    },
-
-    drawPoint : function( x, y ) {
-      this._context.save();
-      this._context.fillStyle = this._context.strokeStyle;
-      this._context.beginPath();
-      this._context.lineWidth = 1;
-      this._context.rect( x, y, 1, 1 );
-      this._stroke( true );
-      this._context.restore();
-    },
-
-    drawRectangle : function( x, y, width, height, fill ) {
-      // TODO [tb] : IE differs from other browser and SWT in that it does not apply the lineJoin 
-      // attribute to a rectangle. Apparently due to VMLCanvas "closepath" call in "rect()". 
-      var offset = this._getOffset( fill );
-      this._context.beginPath();
-      this._context.rect( x + offset, y + offset, width, height );
-      this._stroke( fill );
-    },
-
-    drawRoundRectangle : function( targetX,
-                                   targetY,
-                                   width,
-                                   height,
-                                   arcWidth,
-                                   arcHeight,
-                                   fill )
-    {
-      var offset = this._getOffset( fill );
-      var x = targetX + offset;
-      var y = targetY + offset;
-      // NOTE: the added "+1" in arcSize is the result of a visual comparison of RAP to SWT/Win.  
-      var arcWidthHalf = arcWidth / 2 + 1;
-      var arcHeightHalf = arcHeight / 2 + 1;
-      this._context.beginPath();
-      this._context.moveTo( x, y + arcHeightHalf );
-      this._context.lineTo( x, y + height - arcHeightHalf );
-      this._context.quadraticCurveTo( x, y + height, x + arcWidthHalf, y + height );
-      this._context.lineTo( x + width - arcWidthHalf, y + height );
-      this._context.quadraticCurveTo( x + width,
-                                      y + height,
-                                      x + width,
-                                      y + height - arcHeightHalf );
-      this._context.lineTo( x + width, y + arcHeightHalf );
-      this._context.quadraticCurveTo( x + width, y, x + width - arcWidthHalf, y );
-      this._context.lineTo( x + arcWidthHalf, y );
-      this._context.quadraticCurveTo( x, y, x, y + arcHeightHalf );
-      this._stroke( fill );
-    },
-
-    fillGradientRectangle : function( x, y, width, height, vertical ) {
-      var x1 = x;
-      var y1 = y;
-      var swapColors = false;
-      if( width < 0 ) {
-        x1 += width;
-        if( !vertical ) {
-          swapColors = true;
-        }
-      }
-      if( height < 0 ) {
-        y1 += height;
-        if( vertical ) {
-          swapColors = true;
-        }
-      }
-      var x2 = vertical ? x1 : x1 + Math.abs( width );
-      var y2 = vertical ? y1 + Math.abs( height ) : y1;
-      var startColor = swapColors
-                     ? this._context.fillStyle
-                     : this._context.strokeStyle;
-      var endColor = swapColors
-                   ? this._context.strokeStyle
-                   : this._context.fillStyle;
-      var gradient = this._context.createLinearGradient( x1, y1, x2, y2 );
-      gradient.addColorStop( 0, startColor );
-      gradient.addColorStop( 1, endColor );
-      this._context.save();
-      this._context.fillStyle = gradient;
-      this.drawRectangle( x, y, width, height, true );
-      this._context.restore();
-    },
-
-    drawArc : qx.core.Variant.select( "qx.client", {
-      "mshtml" : function( x, y, width, height, startAngle, arcAngle, fill ) {
-        var radiusX = width / 2;
-        var radiusY = height / 2;
-        var offset = this._getOffset( fill );
-        this._context.save();
-        this._context.beginPath();
-        this._context.arc( x + radiusX + offset,
-                           y + radiusY + offset,
-                           radiusX,
-                           radiusY,
-                           - startAngle * Math.PI / 180,
-                           - ( startAngle + arcAngle ) * Math.PI / 180,
-                           true );
-        this._stroke( fill );
-        this._context.restore();
+    _arc : qx.core.Variant.select( "qx.client", {
+      "mshtml" : function( operation ) {
+        this._context[ operation[ 0 ] ].apply( this._context, operation.slice( 1 ) );
       }, 
-      "default" : function( x, y, width, height, startAngle, arcAngle, fill ) {
-        if( width > 0 && height > 0 ) {
-          var halfWidth = width / 2;
-          var halfHeight = height / 2;
-          var offset = this._getOffset( fill );
+      "default" : function( operation ) {
+        var cx = operation[ 1 ];
+        var cy = operation[ 2 ];
+        var rx = operation[ 3 ];
+        var ry = operation[ 4 ];
+        var startAngle = operation[ 5 ];
+        var endAngle = operation[ 6 ];
+        var dir = operation[ 7 ];
+        if( rx > 0 && ry > 0 ) {
           this._context.save();
-          this._context.beginPath();
-          this._context.translate( x + halfWidth + offset, y + halfHeight + offset);
+          this._context.translate( cx, cy );
           // TODO [tb] : using scale here changes the stroke-width also, looks wrong
-          this._context.scale( 1, height / width );
-          this._context.arc( 0,
-                             0,
-                             halfWidth,
-                             - startAngle * Math.PI / 180,
-                             - ( startAngle + arcAngle ) * Math.PI / 180,
-                             true );
-          this._stroke( fill );
+          this._context.scale( 1, ry / rx );
+          this._context.arc( 0, 0, rx, startAngle, endAngle, dir );
           this._context.restore();
         }
       }
     } ),
-
-    drawPolyline : function( points, close, fill ) {
-      var offset = this._getOffset( fill );
-      this._context.beginPath();
-      for( var i = 1; i < points.length; i += 2 ) {
-        if( i == 1 ) {
-          this._context.moveTo( points[ i - 1 ] + offset, points[ i ] + offset );
-        } else {
-          this._context.lineTo( points[ i - 1 ] + offset, points[ i ] + offset );
-        }
+    
+    _setProperty : function( operation ) {
+      var property = operation[ 0 ];
+      var value = operation[ 1 ];
+      if( value === "linearGradient" ) {
+        value = this._linearGradient;
+      } else if( value instanceof Array ) {
+        value = qx.util.ColorUtil.rgbToRgbString( value );
       }
-      if( points.length > 1 && close ) {
-        this._context.lineTo( points[ 0 ] + offset, points[ 1 ] + offset );
-      }
-      this._stroke( fill && close );
+       this._context[ property ] = value;
     },
 
-    drawText : function( text, x, y, fill ) {
+    _strokeText : function( operation ) {
+      this._fillText( operation );
+    },
+
+    _fillText : function( operation ) {
+      var fill = operation[ 0 ] === "fillText";
+      var text = operation[ 1 ];
+      var x = operation[ 2 ];
+      var y = operation[ 3 ];
       var textElement = document.createElement( "div" );
       var style = textElement.style;
       style.position = "absolute";
@@ -333,75 +233,38 @@ qx.Class.define( "org.eclipse.swt.graphics.GC", {
       this._textCanvas.appendChild( textElement );
     },
 
-    drawImage : function( imageSrc,
-                          srcX,
-                          srcY,
-                          srcWidth,
-                          srcHeight,
-                          destX,
-                          destY,
-                          destWidth,
-                          destHeight,
-                          simple )
-    {
-      var context = this._context;
+    _drawImage : function( operation ) {
+      var args = operation.slice( 1 );
+      var simple = args.length === 3;
       var image = new Image();
-      image.src = imageSrc;
+      image.src = args[ 0 ];
+      args[ 0 ] = image;
       // On (native) canvas, only loaded images can be drawn: 
       if( image.complete || qx.core.Variant.isSet( "qx.client", "mshtml" ) ) {
-        if( simple ) {
-          context.drawImage( image, destX, destY );
-        } else {
-          context.drawImage( image,
-                             srcX,
-                             srcY,
-                             srcWidth,
-                             srcHeight,
-                             destX,
-                             destY,
-                             destWidth,
-                             destHeight );
-        }
+        this._context.drawImage.apply( this._context, args );
       } else {
-        var alpha = context.globalAlpha;
+        var alpha = this._context.globalAlpha;
+        var context = this._context;
         image.onload = function() {
           // TODO [tb] : The z-order will be wrong in this case.
-          // [if] As drawImage is delayed by the onload event, we have to draw
-          // it with correct context parameters (alpha). 
           context.save();
           context.globalAlpha = alpha;
-          if( simple ) {
-            context.drawImage( image, destX, destY );
-          } else {
-            context.drawImage( image,
-                               srcX,
-                               srcY,
-                               srcWidth,
-                               srcHeight,
-                               destX,
-                               destY,
-                               destWidth,
-                               destHeight );
-          }
+          context.drawImage.apply( context, args );
           context.restore();
         };
       }
     },
 
-    _stroke : function( fill ) {
-      if( fill ) {
-        this._context.fill();
-      } else {
-        this._context.stroke();
-      }
+    _createLinearGradient : function( operation ) {
+      var func = this._context.createLinearGradient;
+      this._linearGradient = func.apply( this._context, operation.slice( 1 ) );
     },
     
-    _getOffset : function( fill ) {
-      var result = 0;
-      if( !fill && this._context.lineWidth % 2 !== 0 ) {
-        result = 0.5
-      }
-      return result;
+    _addColorStop : function( operation ) {
+      this._linearGradient.addColorStop( 
+        operation[ 1 ],
+        qx.util.ColorUtil.rgbToRgbString( operation[ 2 ] ) 
+      );
     }
 
   }

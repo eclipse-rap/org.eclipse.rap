@@ -28,7 +28,22 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.GC", {
 
   listenerHandler : {},
 
-  methods : []
+  methods : [ "init", "draw" ],
+  
+  methodHandler : {
+    "init" : function( gc, properties ) {
+      gc.init(
+        properties.width,
+        properties.height,
+        properties.font,
+        properties.fillStyle,
+        properties.strokeStyle
+      );
+    },
+    "draw" : function( gc, properties ) {
+      gc.draw( properties.operations );
+    }
+  }
 
 
 } );

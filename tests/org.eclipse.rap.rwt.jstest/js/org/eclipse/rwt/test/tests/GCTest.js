@@ -158,24 +158,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       canvas.addToDocument();
       testUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.setProperty( "foreground", "#a1a2a3" );
-      gc.setProperty( "background", "#657890" );
-      gc.setProperty( "alpha", 128 );
-      gc.setProperty( "lineWidth", 4 );
-      gc.setProperty( "lineCap", 2 ); // "round"
-      gc.setProperty( "lineJoin", 3 ); // "bevel"
-      gc.setProperty( "font", "italic bold 16px Arial" );
-      assertEquals( "#a1a2a3", gc._context.strokeStyle.toLowerCase() );
-      assertEquals( "#657890", gc._context.fillStyle.toLowerCase() );
-      assertEquals( 5, Math.round( gc._context.globalAlpha * 10 ) );
+      this._setProperty( gc, "strokeStyle", [ 1, 2, 3 ] );
+      this._setProperty( gc, "fillStyle", [ 4, 5, 6 ] );
+      this._setProperty( gc, "globalAlpha", 0.128 );
+      this._setProperty( gc, "lineWidth", 4 );
+      this._setProperty( gc, "lineCap", "round" ); 
+      this._setProperty( gc, "lineJoin", "bevel" );
+      this._setProperty( gc, "font", "italic bold 16px Arial" );
+      assertEquals( [ 1, 2, 3 ], qx.util.ColorUtil.stringToRgb( gc._context.strokeStyle ) );
+      assertEquals( [ 4, 5, 6 ], qx.util.ColorUtil.stringToRgb( gc._context.fillStyle ) );
+      assertEquals( 128, Math.round( gc._context.globalAlpha * 1000 ) );
       assertEquals( 4, gc._context.lineWidth );
       assertEquals( "round", gc._context.lineCap );
       assertEquals( "bevel", gc._context.lineJoin );
       assertTrue(    gc._context.font === "italic bold 16px Arial" 
                   || gc._context.font === "bold italic 16px Arial" );
-      gc.init( 300, 300, "10px Arial", "#ffffff", "#000000" );
-      assertEquals( "#000000", gc._context.strokeStyle );
-      assertEquals( "#ffffff", gc._context.fillStyle.toLowerCase() );
+      gc.init( 300, 300, "10px Arial", [ 255, 255, 255 ], [ 0, 0, 0 ] );
+      assertEquals( [ 0, 0, 0 ], qx.util.ColorUtil.stringToRgb( gc._context.strokeStyle ) );
+      assertEquals( [ 255, 255, 255 ], qx.util.ColorUtil.stringToRgb( gc._context.fillStyle ) );
       assertEquals( 1, gc._context.globalAlpha );
       assertEquals( 1, gc._context.lineWidth );
       assertEquals( "butt", gc._context.lineCap );
@@ -192,28 +192,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       canvas.addToDocument();
       testUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.setProperty( "foreground", "#a1a2a3" );
-      gc.setProperty( "background", "#657890" );
-      gc.setProperty( "alpha", 128 );
-      gc.setProperty( "lineWidth", 4 );
-      gc.setProperty( "lineCap", 2 ); // "round"
-      gc.setProperty( "lineJoin", 3 ); // "bevel"
-      gc.setProperty( "font", "italic bold 16px Arial" );
+      this._setProperty( gc, "strokeStyle", [ 1,2,3 ] );
+      this._setProperty( gc, "fillStyle", [ 4, 5, 6 ] );
+      this._setProperty( gc, "globalAlpha", 0.128 );
+      this._setProperty( gc, "lineWidth", 4 );
+      this._setProperty( gc, "lineCap", "round" ); // "round"
+      this._setProperty( gc, "lineJoin", "bevel" ); // "bevel"
+      this._setProperty( gc, "font", "italic bold 16px Arial" );
       gc._context.save();
       // Do not use "init" as setting the dimension clears the stack
       gc._context.clearRect( 0,0,300,300 );
-      gc._initFields( "10px Arial", "#ffffff", "#000000" );
-      assertEquals( "#000000", gc._context.strokeStyle );
-      assertEquals( "#ffffff", gc._context.fillStyle.toLowerCase() );
+      gc._initFields( "10px Arial", [ 255, 255, 255 ], [ 0, 0, 0 ] );
+      assertEquals( [ 0, 0, 0 ], qx.util.ColorUtil.stringToRgb( gc._context.strokeStyle ) );
+      assertEquals( [ 255, 255, 255 ], qx.util.ColorUtil.stringToRgb( gc._context.fillStyle ) );
       assertEquals( 1, gc._context.globalAlpha );
       assertEquals( 1, gc._context.lineWidth );
       assertEquals( "butt", gc._context.lineCap );
       assertEquals( "miter", gc._context.lineJoin );
       assertEquals( "10px Arial", gc._context.font );
       gc._context.restore();
-      assertEquals( "#a1a2a3", gc._context.strokeStyle.toLowerCase() );
-      assertEquals( "#657890", gc._context.fillStyle.toLowerCase() );
-      assertEquals( 5, Math.round( gc._context.globalAlpha * 10 ) );
+      assertEquals( [ 1, 2, 3 ], qx.util.ColorUtil.stringToRgb( gc._context.strokeStyle ) );
+      assertEquals( [ 4, 5, 6 ], qx.util.ColorUtil.stringToRgb( gc._context.fillStyle ) );
+      assertEquals( 128, Math.round( gc._context.globalAlpha * 1000 ) );
       assertEquals( 4, gc._context.lineWidth );
       assertEquals( "round", gc._context.lineCap );
       assertEquals( "bevel", gc._context.lineJoin );
@@ -230,20 +230,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
       canvas.addToDocument();
       testUtil.flush();
       var gc = new org.eclipse.swt.graphics.GC( canvas );
-      gc.init( 300, 300, "10px Arial", "#ffffff", "#000000" );
+      gc.init( 300, 300, "10px Arial", [ 255, 255, 255 ], [ 0, 0, 0 ] );
       assertEquals( 0, gc._textCanvas.childNodes.length );
-      gc.drawText( "Hello World", 40, 50, true );
+      gc.draw( [ [ "fillText", "Hello World", 40, 50 ] ]);
       assertEquals( 1, gc._textCanvas.childNodes.length );
       var textNode = gc._textCanvas.firstChild;
       assertEquals( "Hello World", textNode.innerHTML );
       assertEquals( 40, parseInt( textNode.style.left ) );
       assertEquals( 50, parseInt( textNode.style.top ) );
       assertTrue( textNode.style.font.indexOf( "Arial" ) != -1 );
-      var color = textNode.style.backgroundColor;
-      assertTrue( color == "rgb(255, 255, 255)" || color == "#ffffff" );
-      color = textNode.style.color;
-      assertTrue( color == "rgb(0, 0, 0)" || color == "#000000" );
-      gc.init( 300, 300, "10px Arial", "#ffffff", "#000000" );
+      assertEquals( [ 0, 0, 0 ], qx.util.ColorUtil.stringToRgb( textNode.style.color ) );
+      assertEquals( [ 255, 255, 255 ], qx.util.ColorUtil.stringToRgb( textNode.style.backgroundColor ) );
+      gc.init( 300, 300, "10px Arial", [ 255, 255, 255 ], [ 0, 0, 0 ] );
       assertEquals( 0, gc._textCanvas.childNodes.length );
       canvas.destroy();
       testUtil.flush();
@@ -272,6 +270,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.GCTest", {
          "parent" : "w3"
         }
       } );
+    },
+    
+    _setProperty : function( gc, property, value ) {
+      gc.draw( [ [ property, value ] ] );
     }
 
   }

@@ -61,7 +61,7 @@ public final class CanvasLCA extends AbstractWidgetLCA {
     ClientObjectFactory.getForGC( widget ).destroy();
   }
 
-  private static void writeGCOperations( Canvas canvas ) throws IOException {
+  private static void writeGCOperations( Canvas canvas ) {
     IGCAdapter adapter = canvas.getAdapter( IGCAdapter.class );
     GCOperation[] operations = adapter.getTrimmedGCOperations();
     if( operations.length > 0 || adapter.getForceRedraw() ) {
@@ -70,6 +70,7 @@ public final class CanvasLCA extends AbstractWidgetLCA {
       for( int i = 0; i < operations.length; i++ ) {
         operationWriter.write( operations[ i ] );
       }
+      operationWriter.render();
     }
     adapter.clearGCOperations();
     adapter.setForceRedraw( false );

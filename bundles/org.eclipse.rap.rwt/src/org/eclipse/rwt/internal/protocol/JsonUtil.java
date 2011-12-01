@@ -57,6 +57,8 @@ final class JsonUtil {
       result = JsonObject.valueOf( ( ( Integer )value ).intValue() );
     } else if( value instanceof Double ) {
       result = JsonObject.valueOf( ( ( Double )value ).doubleValue() );
+    } else if( value instanceof Float ) {
+      result = JsonObject.valueOf( ( ( Float )value ).floatValue() );
     } else if( value instanceof Boolean ) {
       result = JsonObject.valueOf( ( ( Boolean )value ).booleanValue() );
     } else if( value instanceof int[] ) {
