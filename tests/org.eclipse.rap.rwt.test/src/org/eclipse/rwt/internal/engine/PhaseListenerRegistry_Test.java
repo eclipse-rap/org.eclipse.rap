@@ -64,6 +64,7 @@ public class PhaseListenerRegistry_Test extends TestCase {
   public void testRemoveWithNullArgument() {
     try {
       phaseListenerRegistry.remove( null );
+      fail();
     } catch( NullPointerException expected ) {
     }
   }
