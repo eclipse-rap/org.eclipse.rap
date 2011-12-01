@@ -38,11 +38,11 @@ appearances = {
       var tv = new org.eclipse.swt.theme.ThemeValues( states );
       var result = {
         spacing : 2,
-        padding : [ 2, 4 ],
+        padding : tv.getCssBoxDimensions( "MenuItem", "padding" ),
         backgroundImage : tv.getCssImage( "MenuItem", "background-image" ),
         backgroundGradient : tv.getCssGradient( "MenuItem", "background-image" ),
         backgroundColor : tv.getCssColor( "MenuItem", "background-color" ),
-        height : states.bar ? "100%" : "auto",
+        height : states.onMenuBar ? "100%" : "auto",
         opacity : tv.getCssFloat( "MenuItem", "opacity" ),
         textShadow : tv.getCssShadow( "MenuItem", "text-shadow" )
       };

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,8 +61,15 @@ public final class ShellThemeAdapter extends ControlThemeAdapter {
     if( shell.getMenuBar() != null ) {
       Font font = getCssFont( "Shell", "font", shell );
       int fontHeight = Graphics.getCharHeight( font );
-      result = Math.max( MENU_BAR_MIN_HEIGHT, fontHeight );
+      Rectangle padding = getMenuBarItemPadding();
+      result = Math.max( MENU_BAR_MIN_HEIGHT, fontHeight + padding.height );
     }
     return result;
+  }
+
+  private static Rectangle getMenuBarItemPadding() {
+    SimpleSelector selector = new SimpleSelector( new String[] { ":onMenuBar" } );
+    QxType cssValue = ThemeUtil.getCssValue( "MenuItem", "padding", selector );
+    return QxBoxDimensions.createRectangle( ( QxBoxDimensions )cssValue );
   }
 }

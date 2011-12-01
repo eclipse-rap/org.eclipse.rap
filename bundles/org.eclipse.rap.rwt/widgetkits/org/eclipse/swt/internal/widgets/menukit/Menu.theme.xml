@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
- Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License v1.0
  which accompanies this distribution, and is available at
  http://www.eclipse.org/legal/epl-v10.html
 
  Contributors:
-     Innoopract Informationssysteme GmbH - initial API and implementation
-     EclipseSource - ongoing development
+    Innoopract Informationssysteme GmbH - initial API and implementation
+    EclipseSource - ongoing development
  -->
 
 <theme>
@@ -74,6 +74,9 @@
       <property name="text-shadow"
           description="Shadow for text." />
 
+      <property name="padding"
+          description="Padding (inner distance) for menu items." />
+
       <style name="PUSH"
           description="Style constant for push menu item behavior." />
 
@@ -97,6 +100,9 @@
 
       <state name="disabled"
           description="Applies to disabled menu items." />
+
+      <state name="onMenuBar"
+          description="Applies to menu items in the menu bar." />
 
     </element>
 

@@ -16,14 +16,14 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.MenuItem", {
     org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( properties.parent, function( menu ) {
       var styleMap = org.eclipse.rwt.protocol.AdapterUtil.createStyleMap( properties.style );
       var menuItemType = "push";
-      if( styleMap.CASCADE ) {
+      if( menu.hasState( "rwt_BAR" ) ) {
+        menuItemType = "bar";
+      } else if( styleMap.CASCADE ) {
         menuItemType = "cascade";
       } else if( styleMap.CHECK ) {
         menuItemType = "check";
       } else if( styleMap.RADIO ) {
         menuItemType = "radio";
-      } else if( menu.hasState( "rwt_BAR" ) ) {
-        menuItemType = "bar";
       }
       if( styleMap.SEPARATOR ) {
         result = new qx.ui.menu.Separator();
