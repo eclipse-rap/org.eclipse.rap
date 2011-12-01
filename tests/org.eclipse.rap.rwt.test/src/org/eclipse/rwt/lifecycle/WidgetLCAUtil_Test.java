@@ -649,6 +649,18 @@ public class WidgetLCAUtil_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( "[0,16,255,255]", actual ) );
   }
 
+  public void testRenderBackgroundNull() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( widget );
+    widget.setBackground( new Color( display, 0, 16, 255 ) );
+
+    Fixture.preserveWidgets();
+    WidgetLCAUtil.renderBackground( widget, null, false );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( JSONObject.NULL, message.findSetProperty( widget, "background" ) );
+  }
+
   public void testRenderBackgroundUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( widget );

@@ -579,6 +579,29 @@ public final class WidgetLCAUtil {
    */
   public static void renderProperty( Widget widget,
                                      String property,
+                                     Color newValue,
+                                     Color defaultValue )
+  {
+    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( property, getColorValueAsArray( newValue, false ) );
+    }
+  }
+
+  /**
+   * Determines whether the property of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side property of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param property the property name
+   * @param newValue the new value of the property
+   * @param defaultValue the default value of the property
+   *
+   * @since 1.5
+   */
+  public static void renderProperty( Widget widget,
+                                     String property,
                                      Color[] newValue,
                                      Color[] defaultValue )
   {
@@ -644,6 +667,33 @@ public final class WidgetLCAUtil {
       int[] args = null;
       if( newValue != null ) {
         args = new int[] { newValue.x, newValue.y };
+      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( property, args );
+    }
+  }
+
+  /**
+   * Determines whether the property of the given widget has changed during the processing of the
+   * current request and if so, writes a protocol message to the response that updates the
+   * client-side property of the specified widget.
+   *
+   * @param widget the widget whose property to set
+   * @param property the property name
+   * @param newValue the new value of the property
+   * @param defaultValue the default value of the property
+   *
+   * @since 1.5
+   */
+  public static void renderProperty( Widget widget,
+                                     String property,
+                                     Rectangle newValue,
+                                     Rectangle defaultValue )
+  {
+    if( WidgetLCAUtil.hasChanged( widget, property, newValue, defaultValue ) ) {
+      int[] args = null;
+      if( newValue != null ) {
+        args = new int[] { newValue.x, newValue.y, newValue.width, newValue.height };
       }
       IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
       clientObject.setProperty( property, args );
@@ -1053,7 +1103,7 @@ public final class WidgetLCAUtil {
     }
   }
 
-  private static String getColorValue( RGB rgb ) {
+  public static String getColorValue( RGB rgb ) {
     StringBuilder buffer = new StringBuilder();
     buffer.append( "#" );
     String red = Integer.toHexString( rgb.red );
@@ -1075,12 +1125,17 @@ public final class WidgetLCAUtil {
   }
 
   private static int[] getColorValueAsArray( Color color, boolean transparent ) {
-    int[] result = new int[ 4 ];
-    RGB rgb = color == null ? new RGB( 0, 0, 0 ) : color.getRGB();
-    result[ 0 ] = rgb.red;
-    result[ 1 ] = rgb.green;
-    result[ 2 ] = rgb.blue;
-    result[ 3 ] = transparent ? 0 : 255;
+    int[] result = null;
+    if( color != null ) {
+      RGB rgb = color.getRGB();
+      result = new int[ 4 ];
+      result[ 0 ] = rgb.red;
+      result[ 1 ] = rgb.green;
+      result[ 2 ] = rgb.blue;
+      result[ 3 ] = transparent ? 0 : 255;
+    } else if( transparent ) {
+      result = new int[] { 0, 0, 0, 0 };
+    }
     return result;
   }
 
@@ -1267,12 +1322,10 @@ public final class WidgetLCAUtil {
   }
 
   private static boolean hasBackgroundGradientChanged( Widget widget ) {
-    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
-    IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
+    IWidgetGraphicsAdapter graphicsAdapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
     Color[] bgGradientColors = graphicsAdapter.getBackgroundGradientColors();
     int[] bgGradientPercents = graphicsAdapter.getBackgroundGradientPercents();
-    boolean bgGradientVertical
-      = graphicsAdapter.isBackgroundGradientVertical();
+    boolean bgGradientVertical = graphicsAdapter.isBackgroundGradientVertical();
     return    WidgetLCAUtil.hasChanged( widget,
                                         PROP_BACKGROUND_GRADIENT_COLORS,
                                         bgGradientColors,
@@ -1283,7 +1336,7 @@ public final class WidgetLCAUtil {
                                         null )
            || WidgetLCAUtil.hasChanged( widget,
                                         PROP_BACKGROUND_GRADIENT_VERTICAL,
-                                        new Boolean( bgGradientVertical ),
+                                        Boolean.valueOf( bgGradientVertical ),
                                         Boolean.FALSE );
   }
 
