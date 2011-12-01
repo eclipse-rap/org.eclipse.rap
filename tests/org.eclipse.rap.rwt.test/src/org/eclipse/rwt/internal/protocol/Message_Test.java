@@ -23,8 +23,6 @@ import org.eclipse.swt.widgets.Display;
 
 public class Message_Test extends TestCase {
 
-  private static final String SUFFIX = " );";
-  private static final String PREFIX = "org.eclipse.rwt.protocol.Processor.processMessage( ";
   private ProtocolMessageWriter writer;
 
   @Override
@@ -48,7 +46,7 @@ public class Message_Test extends TestCase {
 
   public void testConstructWithInvalidJson() {
     try {
-      new Message( PREFIX + "{" + SUFFIX );
+      new Message( "{" );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Could not parse json" ) );
@@ -57,7 +55,7 @@ public class Message_Test extends TestCase {
 
   public void testConstructWithoutOperations() {
     try {
-      new Message( PREFIX + "{ \"foo\": 23 }" + SUFFIX );
+      new Message( "{ \"foo\": 23 }" );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Missing operations array" ) );
@@ -66,7 +64,7 @@ public class Message_Test extends TestCase {
 
   public void testConstructWithInvalidOperations() {
     try {
-      new Message( PREFIX + "{ \"operations\": 23 }" + SUFFIX );
+      new Message( "{ \"operations\": 23 }" );
       fail();
     } catch( IllegalArgumentException expected ) {
       assertTrue( expected.getMessage().contains( "Missing operations array" ) );
@@ -136,9 +134,7 @@ public class Message_Test extends TestCase {
   }
 
   public void testGetOperationWithUnknownType() {
-    Message message = new Message( PREFIX
-                                   + "{ \"operations\" : [ { \"action\" : \"foo\" } ] }"
-                                   + SUFFIX );
+    Message message = new Message( "{ \"operations\" : [ { \"action\" : \"foo\" } ] }" );
     try {
       message.getOperation( 0 );
       fail();
@@ -410,7 +406,7 @@ public class Message_Test extends TestCase {
   }
 
   private Message getMessage() {
-    return new Message( PREFIX + writer.createMessage() + SUFFIX );
+    return new Message( writer.createMessage() );
   }
 
 }

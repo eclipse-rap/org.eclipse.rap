@@ -12,30 +12,25 @@ package org.eclipse.rap.rwt.testfixture;
 
 import java.util.*;
 
-import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Widget;
 import org.json.*;
 
 
 /**
- * <p>
  * <strong>IMPORTANT:</strong> This class is <em>not</em> part the public RAP
  * API. It may change or disappear without further notice. Use this class at
  * your own risk.
- * </p>
  */
 public final class Message {
 
   private JSONObject message;
   private JSONArray operations;
 
-  public Message( String javaScript ) {
-    String prefix = JavaScriptResponseWriter.PROCESS_MESSAGE + "(";
-    int index = javaScript.indexOf( prefix );
-    String json = "{ meta: { \"requestCounter\": 0 }, operations: [] }";
-    if( index != -1 ) {
-      json = javaScript.substring( index + prefix.length() );
+  public Message( String string ) {
+    String json = string.trim();
+    if( json.length() == 0 ) {
+      json = "{ meta: { \"requestCounter\": 0 }, operations: [] }";
     }
     try {
       message = new JSONObject( json );

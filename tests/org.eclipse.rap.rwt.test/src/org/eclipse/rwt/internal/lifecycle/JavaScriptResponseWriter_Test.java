@@ -12,8 +12,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import static org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter.PROCESS_MESSAGE;
-
 import java.util.Locale;
 
 import junit.framework.TestCase;
@@ -66,8 +64,7 @@ public class JavaScriptResponseWriter_Test extends TestCase {
   }
 
   public void testContentType() {
-    // obsolete, but IE <= 8 does not recognize application/javascript correctly
-    assertEquals( "text/javascript", response.getContentType() );
+    assertEquals( "application/json", response.getContentType() );
   }
 
   public void testJavascriptJson() {
@@ -157,25 +154,12 @@ public class JavaScriptResponseWriter_Test extends TestCase {
   }
 
   private void assertSingleJson() {
-    String json = extractJson( getMessage() );
+    String json = getMessage();
     assertTrue( json.startsWith( "{" ) );
     assertTrue( json.endsWith( "}" ) );
   }
 
   private String getMessage() {
     return response.getContent();
-  }
-
-  private static String extractJson( String message ) {
-    String head = PROCESS_MESSAGE + "(";
-    String tail = ");/*EOM*/";
-    if( !message.startsWith( head ) || !message.endsWith( tail ) ) {
-      throw new IllegalArgumentException( "Message is not enclosed in processMessage(): " + message );
-    }
-    String json = message.substring( head.length(), message.length() - tail.length() ).trim();
-    if( json.contains( PROCESS_MESSAGE ) ) {
-      throw new IllegalArgumentException( "Duplicate processMessage() in message: " + message );
-    }
-    return json;
   }
 }

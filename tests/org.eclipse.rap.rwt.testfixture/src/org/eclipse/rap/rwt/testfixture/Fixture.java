@@ -299,7 +299,6 @@ public final class Fixture {
   }
 
   public static Message getProtocolMessage() {
-    ContextProvider.getStateInfo().getResponseWriter().finish();
     return new Message( getAllMarkup() );
   }
 

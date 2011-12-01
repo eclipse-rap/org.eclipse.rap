@@ -49,7 +49,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
   public void testResponseContentType() {
     UICallBackServiceHandler.writeUIRequestNeeded( getResponseWriter() );
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
-    assertEquals( "text/javascript; charset=UTF-8", response.getHeader( "Content-Type" ) );
+    assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }
 
   public void testWriteUICallBackActivate() throws Exception {

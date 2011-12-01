@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.Request", {
@@ -268,7 +268,8 @@ qx.Class.define( "org.eclipse.swt.Request", {
         try {
           if( text && text.length > 0 ) {
             org.eclipse.swt.EventUtil.setSuspended( true );
-            window.eval( text );
+            var messageObject = JSON.parse( text );
+            org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
             org.eclipse.swt.EventUtil.setSuspended( false );
           }
           org.eclipse.rwt.UICallBack.getInstance().sendUICallBackRequest();

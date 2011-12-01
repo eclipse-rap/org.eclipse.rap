@@ -22,8 +22,6 @@ import org.eclipse.rwt.internal.util.HTTP;
 
 public class JavaScriptResponseWriter {
 
-  public static final String PROCESS_MESSAGE = "org.eclipse.rwt.protocol.Processor.processMessage";
-
   private final PrintWriter writer;
   private ProtocolMessageWriter protocolWriter;
 
@@ -43,9 +41,7 @@ public class JavaScriptResponseWriter {
 
   public void finish() {
     if( protocolWriter != null ) {
-      writer.write( PROCESS_MESSAGE + "( " );
       writer.write( protocolWriter.createMessage() );
-      writer.write( " );/*EOM*/" );
     }
     protocolWriter = null;
   }
@@ -58,7 +54,7 @@ public class JavaScriptResponseWriter {
   }
 
   private static void configureResponseContentEncoding( ServletResponse response ) {
-    response.setContentType( HTTP.CONTENT_TYPE_JAVASCRIPT );
+    response.setContentType( HTTP.CONTENT_TYPE_JSON );
     response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
   }
 }

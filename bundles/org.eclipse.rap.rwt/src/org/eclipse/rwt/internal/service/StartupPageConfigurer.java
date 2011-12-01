@@ -30,7 +30,6 @@ import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
-import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
@@ -161,8 +160,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
 
   private static String getAppScript() {
     StringBuilder code = new StringBuilder();
-    code.append( JavaScriptResponseWriter.PROCESS_MESSAGE );
-    code.append( "( " );
+    code.append( "org.eclipse.rwt.protocol.Processor.processMessage( " );
     code.append( getStartupProtocolMessage( "w1" ) );
     code.append( " );/*EOM*/" );
     return code.toString();

@@ -441,7 +441,6 @@ public class ProtocolMessageWriter_Test extends TestCase {
 
   private Message getMessage() {
     String message = writer.createMessage();
-    String javaScript = JavaScriptResponseWriter.PROCESS_MESSAGE + "( " + message + " );";
-    return new Message( javaScript );
+    return new Message( message );
   }
 }

@@ -33,6 +33,7 @@ import org.eclipse.swt.internal.widgets.displaykit.ClientResourcesAdapter;
 public class ClientResourcesServiceHandler implements IServiceHandler {
 
   private static final String APPEARANCE_NAME = "rap-appearance.js";
+  private static final String JSON_PARSER_NAME = "rap-json2.js";
   public static final String ID = "clientResources";
 
   public void service() throws IOException, ServletException {
@@ -41,6 +42,8 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     if( file != null ) {
       if( APPEARANCE_NAME.equals( file ) ) {
         deliverAppearance();
+      } else if( JSON_PARSER_NAME.equals( file ) ) {
+        deliverResource( "json2.js" );
       } else {
         deliverResource( file );
       }
@@ -59,6 +62,7 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
       writeIncludeResource( writer, getResourceLocation( resource ), true );
     }
     writeIncludeResource( writer, getResourceLocation( APPEARANCE_NAME ), false );
+    writeIncludeResource( writer, getResourceLocation( JSON_PARSER_NAME ), false );
     writeIncludeResource( writer, getThemeLocation(), false );
     writer.write( "} )();\n" );
   }

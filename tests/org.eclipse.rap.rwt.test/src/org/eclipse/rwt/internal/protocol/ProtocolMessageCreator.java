@@ -62,10 +62,7 @@ public class ProtocolMessageCreator {
 
   private String getMessage() {
     closeProtocolWriter();
-    String markup = Fixture.getAllMarkup();
-    markup = markup.replaceAll( "^" + JavaScriptResponseWriter.PROCESS_MESSAGE + "\\(", "" );
-    markup = markup.replaceAll( "\\);$", "" );
-    return markup;
+    return Fixture.getAllMarkup();
   }
 
   private void closeProtocolWriter() {

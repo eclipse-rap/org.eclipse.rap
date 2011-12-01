@@ -12,9 +12,9 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.resources.ContentBuffer;
 import org.eclipse.rwt.internal.resources.JSFile;
@@ -30,6 +30,7 @@ import org.eclipse.rwt.resources.IResourceManager.RegisterOptions;
 public final class ClientResources {
 
   private static final String CLIENT_JS = "client.js";
+  private static final String JSON_JS = "json2.js";
 
   private static final String[] JAVASCRIPT_FILES = new String[] {
     "debug-settings.js",
@@ -324,21 +325,23 @@ public final class ClientResources {
   private void registerJavascriptFiles() throws IOException {
     ContentBuffer contentBuffer = new ContentBuffer();
     String appearanceCode = themeManager.createQxAppearanceTheme();
+    String json2Code = readResourceContent( JSON_JS );
     if( SystemProps.isDevelopmentMode() ) {
       for( int i = 0; i < JAVASCRIPT_FILES.length; i++ ) {
         append( contentBuffer, JAVASCRIPT_FILES[ i ] );
       }
     } else {
       append( contentBuffer, CLIENT_JS );
-      JSFile jsFile = new JSFile( appearanceCode );
-      appearanceCode = jsFile.compress();
+      json2Code = compress( json2Code );
+      appearanceCode = compress( appearanceCode );
     }
+    contentBuffer.append( json2Code.getBytes( HTTP.CHARSET_UTF_8 ) );
     contentBuffer.append( appearanceCode.getBytes( HTTP.CHARSET_UTF_8 ) );
     registerJavascriptResource( contentBuffer, "rap-client.js" );
   }
 
   private void append( ContentBuffer contentBuffer, String location ) throws IOException {
-    InputStream inputStream = ClientResources.openResourceStream( location );
+    InputStream inputStream = openResourceStream( location );
     try {
       contentBuffer.append( inputStream );
     } finally {
@@ -405,6 +408,27 @@ public final class ClientResources {
     } finally {
       inputStream.close();
     }
+  }
+
+  private static String compress( String code ) throws IOException {
+    JSFile jsFile = new JSFile( code );
+    return jsFile.compress();
+  }
+
+  private static String readResourceContent( String location ) throws IOException {
+    byte[] buffer = new byte[ 40960 ];
+    InputStream inputStream = openResourceStream( location );
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    try {
+      int read = inputStream.read( buffer );
+      while( read != -1 ) {
+        outputStream.write( buffer, 0, read );
+        read = inputStream.read( buffer );
+      }
+    } finally {
+      inputStream.close();
+    }
+    return outputStream.toString( HTTP.CHARSET_UTF_8 );
   }
 
   private static InputStream openResourceStream( String name ) {

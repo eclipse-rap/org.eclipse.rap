@@ -185,9 +185,6 @@ public class ClientObject_Test extends TestCase {
   private Message getMessage() {
     closeProtocolWriter();
     String markup = Fixture.getAllMarkup();
-    if( !markup.contains( JavaScriptResponseWriter.PROCESS_MESSAGE ) ) {
-      throw new RuntimeException( "Seems that message is not wrapped anymore - cleanup NOW!" );
-    }
     return new Message( markup );
   }
 

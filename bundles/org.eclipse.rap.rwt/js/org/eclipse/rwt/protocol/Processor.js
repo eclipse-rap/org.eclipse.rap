@@ -14,7 +14,6 @@ namespace( "org.eclipse.rwt.protocol" );
 org.eclipse.rwt.protocol.Processor = {
 
   processMessage : function( messageObject ) {
-    // NOTE : Temporary implementation, as this function should parse json-text directly later
     this.processMeta( messageObject.meta );
     var operations = messageObject.operations;
     for( var i = 0; i < operations.length; i++ ) {

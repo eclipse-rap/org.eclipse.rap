@@ -67,6 +67,7 @@ public class ClientResources_Test extends TestCase {
     assertTrue( clientJs.contains( "Appearance.getInstance().setCurrentTheme({" ) );
     assertFalse( clientJs.contains( "/****" ) );
     assertFalse( clientJs.contains( "Copyright" ) );
+    assertTrue( clientJs.contains( "{this.JSON={}}" ) );
   }
 
   public void testRegisteredContentDebug() throws IOException {
@@ -79,6 +80,7 @@ public class ClientResources_Test extends TestCase {
     assertTrue( clientJs.contains( "Appearance.getInstance().setCurrentTheme( {" ) );
     assertTrue( clientJs.contains( "/****" ) );
     assertTrue( clientJs.contains( "Copyright" ) );
+    assertTrue( clientJs.contains( "this.JSON = {};" ) );
   }
 
   private String getRegisteredContent( String name, String encoding ) throws IOException {

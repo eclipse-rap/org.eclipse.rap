@@ -62,7 +62,8 @@ org.eclipse.rwt.UICallBack.prototype = {
       try {
         var text = event.getContent();
         if( text && text.length > 0 ) {
-          window.eval( text );
+          var messageObject = JSON.parse( text );
+          org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
         }
       } catch( ex ) {
         throw new Error( "Could not execute javascript: [" + text + "]", ex );
