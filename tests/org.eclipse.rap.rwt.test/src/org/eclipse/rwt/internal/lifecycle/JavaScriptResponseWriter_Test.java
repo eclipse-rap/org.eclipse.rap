@@ -66,7 +66,8 @@ public class JavaScriptResponseWriter_Test extends TestCase {
   }
 
   public void testContentType() {
-    assertEquals( HTTP.CONTENT_TEXT_JAVASCRIPT, response.getContentType() );
+    // obsolete, but IE <= 8 does not recognize application/javascript correctly
+    assertEquals( "text/javascript", response.getContentType() );
   }
 
   public void testJavascriptJson() {

@@ -60,7 +60,7 @@ public final class StartupPage {
 
   private void render() throws IOException {
     HttpServletResponse response = ContextProvider.getResponse();
-    response.setContentType( HTTP.CONTENT_TEXT_HTML );
+    response.setContentType( HTTP.CONTENT_TYPE_HTML );
     response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
     StartupPageTemplateHolder template = configurer.getTemplate();
     template.replace( StartupPageTemplateHolder.VAR_BACKGROUND_IMAGE, getBgImage() );

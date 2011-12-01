@@ -34,7 +34,7 @@ public class JavaScriptResponseWriter {
 
   public void write( String content ) {
     getProtocolWriter();
-    protocolWriter.appendExecuteScript( "jsex", "text/javascript", content.trim() );
+    protocolWriter.appendExecuteScript( "jsex", HTTP.CONTENT_TYPE_JAVASCRIPT, content.trim() );
   }
 
   public boolean checkError() {
@@ -58,7 +58,7 @@ public class JavaScriptResponseWriter {
   }
 
   private static void configureResponseContentEncoding( ServletResponse response ) {
-    response.setContentType( HTTP.CONTENT_TEXT_JAVASCRIPT );
+    response.setContentType( HTTP.CONTENT_TYPE_JAVASCRIPT );
     response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
   }
 }
