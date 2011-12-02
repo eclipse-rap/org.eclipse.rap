@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,27 +11,51 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.coolbarkit;
 
+import java.io.IOException;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.lifecycle.*;
-import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.ICoolBarAdapter;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.CoolBar;
+import org.eclipse.swt.widgets.CoolItem;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolBar;
 
 
 public final class CoolBarLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+  private CoolBar bar;
+  private CoolBarLCA lca;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display, SWT.NONE );
+    bar = new CoolBar( shell, SWT.FLAT );
+    lca = new CoolBarLCA();
+    Fixture.fakeNewRequest( display );    
   }
 
   protected void tearDown() throws Exception {
@@ -39,9 +63,6 @@ public final class CoolBarLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    CoolBar bar = new CoolBar( shell, SWT.FLAT );
     Boolean hasListeners;
     Fixture.markInitialized( bar );
     AbstractWidgetLCA lca = WidgetUtil.getLCA( bar );
@@ -150,27 +171,24 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, hasListeners );
   }
 
-  public void testRenderControl() throws Exception {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    CoolBar bar = new CoolBar( shell, SWT.FLAT );
-    CoolItem item = new CoolItem( bar, SWT.NONE );
-    Button button = new Button( bar, SWT.NONE );
-    Fixture.markInitialized( item );
-    item.setControl( button );
-    Fixture.fakeResponseWriter();
-    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
-    IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
-    displayLCA.render( display );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setControl" ) != -1);
+  public void testRenderCreate() throws IOException {
+    lca.renderInitialization( bar );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( bar );
+    assertEquals( "rwt.widgets.CoolBar", operation.getType() );
+  }
+
+  public void testRenderParent() throws IOException {
+    lca.renderInitialization( bar );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( bar );
+    assertEquals( WidgetUtil.getId( bar.getParent() ), operation.getParent() );
   }
 
   public void testItemReordering1() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
-    CoolBar bar = new CoolBar( shell, SWT.FLAT );
     bar.setSize( 100, 10 );
     CoolItem item0 = new CoolItem( bar, SWT.NONE );
     item0.setSize( 10, 10 );
@@ -232,10 +250,7 @@ public final class CoolBarLCA_Test extends TestCase {
   }
 
   public void testItemReordering2() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     shell.setLayout( new RowLayout() );
-    CoolBar bar = new CoolBar( shell, SWT.FLAT );
     bar.setSize(400, 25 );
     CoolItem item0 = new CoolItem( bar, SWT.NONE );
     item0.setControl( new ToolBar( bar, SWT.NONE ) );
@@ -281,8 +296,6 @@ public final class CoolBarLCA_Test extends TestCase {
   }
 
   public void testSnapBackItemMoved() {
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     shell.setLayout( new RowLayout() );
     CoolBar bar = new CoolBar( shell, SWT.FLAT );
     CoolItem item0 = new CoolItem( bar, SWT.NONE );

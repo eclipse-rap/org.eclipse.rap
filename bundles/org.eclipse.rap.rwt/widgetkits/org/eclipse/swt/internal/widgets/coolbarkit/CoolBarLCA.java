@@ -13,15 +13,22 @@ package org.eclipse.swt.internal.widgets.coolbarkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
+import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.CoolBar;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class CoolBarLCA extends AbstractWidgetLCA {
 
   public static final String PROP_LOCKED = "locked";
+  public static final String TYPE = "rwt.widgets.CoolBar";
 
   public void preserveValues( Widget widget ) {
     CoolBar coolBar = ( CoolBar )widget;
@@ -40,14 +47,11 @@ public class CoolBarLCA extends AbstractWidgetLCA {
   }
 
   public void renderInitialization( Widget widget ) throws IOException {
-    CoolBar coolBar = ( CoolBar )widget;
-    JSWriter writer = JSWriter.getWriterFor( coolBar );
-    writer.newWidget( "qx.ui.layout.CanvasLayout" );
-    // TODO [rh] use constant from qx.constant.Style.js
-    writer.set( "overflow", "hidden" );
-    writer.set( JSConst.QX_FIELD_APPEARANCE, "coolbar" );
-    ControlLCAUtil.writeStyleFlags( coolBar );
-    WidgetLCAUtil.writeStyleFlag( coolBar, SWT.FLAT, "FLAT" );
+    CoolBar coolbar = ( CoolBar )widget;
+    IClientObject clientObject = ClientObjectFactory.getForWidget( coolbar );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( coolbar.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( coolbar ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
@@ -57,7 +61,6 @@ public class CoolBarLCA extends AbstractWidgetLCA {
 }
 
   public void renderDispose( Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
 }

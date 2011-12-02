@@ -84,6 +84,7 @@ public final class ClientResources {
     "qx/util/manager/Object.js",
     "qx/ui/embed/IframeManager.js",
     "qx/ui/layout/CanvasLayout.js",
+    "org/eclipse/swt/widgets/CoolbarAdapter.js",
     "qx/ui/layout/impl/LayoutImpl.js",
     "qx/lang/Number.js",
     "qx/ui/layout/impl/CanvasLayoutImpl.js",
