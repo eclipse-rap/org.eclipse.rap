@@ -31,8 +31,7 @@ public class CTabFolderTab extends ExampleTab {
   protected static final int MAX_ITEMS = 3;
 
   private static final String PROP_CONTEXT_MENU = "contextMenu";
-  private static final String CTAB_IMAGE_PATH
-    = "resources/newfolder_wiz.gif";
+  private static final String CTAB_IMAGE_PATH = "resources/newfolder_wiz.gif";
 
   private Image ctabImage;
 
@@ -422,12 +421,9 @@ public class CTabFolderTab extends ExampleTab {
       Menu folderMenu = new Menu( folder );
       MenuItem folderMenuItem = new MenuItem( folderMenu, SWT.PUSH );
       folderMenuItem.addSelectionListener( new SelectionAdapter() {
-
         public void widgetSelected( SelectionEvent event ) {
           String message = "You requested a context menu for the CTabFolder";
-          MessageDialog.openInformation( folder.getShell(),
-                                         "Information",
-                                         message );
+          MessageDialog.openInformation( folder.getShell(), "Information", message );
         }
       } );
       folderMenuItem.setText( "CTabFolder context menu item" );
