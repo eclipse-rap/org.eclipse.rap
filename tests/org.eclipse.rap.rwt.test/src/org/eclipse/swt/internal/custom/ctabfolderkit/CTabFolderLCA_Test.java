@@ -13,12 +13,19 @@ package org.eclipse.swt.internal.custom.ctabfolderkit;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
+import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.*;
@@ -31,56 +38,23 @@ import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 
+@SuppressWarnings("deprecation")
 public class CTabFolderLCA_Test extends TestCase {
 
-  private static final class CTabItemControl extends Composite {
-    private static final long serialVersionUID = 1L;
-
-    public final StringBuffer markup = new StringBuffer();
-
-    public CTabItemControl( final Composite parent, final int style ) {
-      super( parent, style );
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T getAdapter( Class<T> adapter ) {
-      Object result;
-      if( adapter == ILifeCycleAdapter.class ) {
-        result = new AbstractWidgetLCA() {
-          public void preserveValues( final Widget widget ) {
-            Control control = ( Control )widget;
-            IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-            Boolean visible = Boolean.valueOf( control.isVisible() );
-            adapter.preserve( "visible", visible );
-          }
-          public void renderChanges( final Widget widget ) throws IOException {
-            markup.setLength( 0 );
-            Control control = ( Control )widget;
-            Boolean visible = Boolean.valueOf( control.isVisible() );
-            if( WidgetLCAUtil.hasChanged( widget, "visible", visible ) ) {
-              markup.append( "visible=" + visible );
-            }
-          }
-          public void renderDispose( final Widget widget ) throws IOException {
-          }
-          public void renderInitialization( final Widget widget )
-            throws IOException
-          {
-          }
-          public void readData( final Widget widget ) {
-          }
-        };
-      } else {
-        result = super.getAdapter( adapter );
-      }
-      return ( T )result;
-    }
-  }
+  private Display display;
+  private Shell shell;
+  private CTabFolderLCA lca;
 
   protected void setUp() throws Exception {
     Fixture.setUp();
+    display = new Display();
+    shell = new Shell( display );
+    lca = new CTabFolderLCA();
+    Fixture.fakeNewRequest( display );
   }
 
   protected void tearDown() throws Exception {
@@ -88,8 +62,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testLCA() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     CTabItem item = new CTabItem( folder, SWT.NONE );
 
@@ -100,137 +72,16 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    SelectionListener selectionListener = new SelectionAdapter() {
-
-      public void widgetSelected( final SelectionEvent event ) {
-      }
-    };
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     Label label = new Label( folder, SWT.NONE );
     folder.setTopRight( label, SWT.FILL );
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( folder );
-    Boolean hasListeners;
-    hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Object selectionIndex
-     = adapter.getPreserved( CTabFolderLCA.PROP_SELECTION_INDEX );
-    assertEquals( new Integer( folder.getSelectionIndex() ), selectionIndex );
-    Object width = adapter.getPreserved( "width" );
-    assertEquals( new Integer( folder.getBounds().width ), width );
-    Object minVisible = adapter.getPreserved( CTabFolderLCA.PROP_MINIMIZE_VISIBLE );
-    assertEquals( Boolean.valueOf( folder.getMinimizeVisible() ), minVisible );
-    Object maxVisible = adapter.getPreserved( CTabFolderLCA.PROP_MAXIMIZE_VISIBLE );
-    assertEquals( Boolean.valueOf( folder.getMaximizeVisible() ), maxVisible );
-    Object tabHeight = adapter.getPreserved( CTabFolderLCA.PROP_TAB_HEIGHT );
-    assertEquals( new Integer( folder.getTabHeight() ), tabHeight );
-    Object minimized = adapter.getPreserved( CTabFolderLCA.PROP_MINIMIZED );
-    assertEquals( Boolean.valueOf( folder.getMinimized() ), minimized );
-    Object maximized = adapter.getPreserved( CTabFolderLCA.PROP_MAXIMIZED );
-    assertEquals( Boolean.valueOf( folder.getMaximized() ), maximized );
-    hasListeners
-     = ( Boolean )adapter.getPreserved( CTabFolderLCA.PROP_FOLDER_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    ICTabFolderAdapter folderAdapter
-     = folder.getAdapter( ICTabFolderAdapter.class );
-    Object minimizerect = adapter.getPreserved( CTabFolderLCA.PROP_MINIMIZE_RECT );
-    assertEquals( folderAdapter.getMinimizeRect(), minimizerect );
-    Object maximizerect = adapter.getPreserved( CTabFolderLCA.PROP_MAXIMIZE_RECT );
-    assertEquals( folderAdapter.getMaximizeRect(), maximizerect );
-    Object tabPosition = adapter.getPreserved( CTabFolderLCA.PROP_TAB_POSITION );
-    assertEquals( new Integer( folder.getTabPosition() ), tabPosition );
-    Object selectionBg = adapter.getPreserved( CTabFolderLCA.PROP_SELECTION_BG );
-    assertEquals( folderAdapter.getUserSelectionBackground(), selectionBg );
-    Object selectionFg = adapter.getPreserved( CTabFolderLCA.PROP_SELECTION_FG );
-    assertEquals( folderAdapter.getUserSelectionForeground(), selectionFg );
-    Object chevronVisible
-     = adapter.getPreserved( CTabFolderLCA.PROP_CHEVRON_VISIBLE );
-    assertEquals( Boolean.valueOf( folderAdapter.getChevronVisible() ),
-                  chevronVisible );
-    Object chevronRect = adapter.getPreserved( CTabFolderLCA.PROP_CHEVRON_RECT );
-    assertEquals( folderAdapter.getChevronRect(), chevronRect );
-    Fixture.clearPreserved();
-    folder.addSelectionListener( selectionListener );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.SELECTION_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    folder.addCTabFolder2Listener( new CTabFolder2Listener() {
-
-      public void close( final CTabFolderEvent event ) {
-      }
-
-      public void maximize( final CTabFolderEvent event ) {
-      }
-
-      public void minimize( final CTabFolderEvent event ) {
-      }
-
-      public void restore( final CTabFolderEvent event ) {
-      }
-
-      public void showList( final CTabFolderEvent event ) {
-      }
-    } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
-    hasListeners
-     = ( Boolean )adapter.getPreserved( CTabFolderLCA.PROP_FOLDER_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    CTabItem item1 = new CTabItem( folder, SWT.NULL );
-    item1.setText( "item1" );
-    CTabItem item2 = new CTabItem( folder, SWT.NULL );
-    item2.setText( "item2" );
-    CTabItem item3 = new CTabItem( folder, SWT.NULL );
-    item3.setText( "item3" );
-    folder.setSelection( 2 );
-    folder.setBounds( 20, 30, 40, 30 );
-    folder.setMinimizeVisible( true );
-    folder.setMaximizeVisible( true );
-    folder.setMaximized( true );
-    folder.setMinimized( true );
-    folder.setTabHeight( 40 );
-    folder.setTabPosition( 1024 );
-    Color background = Graphics.getColor( 122, 233, 188 );
-    folder.setSelectionBackground( background );
-    Color foreground = Graphics.getColor( 233, 122, 199 );
-    folder.setSelectionForeground( foreground );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
-    selectionIndex = adapter.getPreserved( CTabFolderLCA.PROP_SELECTION_INDEX );
-    assertEquals( new Integer( 2 ), selectionIndex );
-    width = adapter.getPreserved( "width" );
-    assertEquals( new Integer( 40 ), width );
-    minVisible = adapter.getPreserved( CTabFolderLCA.PROP_MINIMIZE_VISIBLE );
-    assertEquals( Boolean.TRUE, minVisible );
-    maxVisible = adapter.getPreserved( CTabFolderLCA.PROP_MAXIMIZE_VISIBLE );
-    assertEquals( Boolean.TRUE, maxVisible );
-    minimized = adapter.getPreserved( CTabFolderLCA.PROP_MINIMIZED );
-    assertEquals( Boolean.TRUE, minimized );
-    maximized = adapter.getPreserved( CTabFolderLCA.PROP_MINIMIZED );
-    assertEquals( Boolean.TRUE, maximized );
-    tabHeight = adapter.getPreserved( CTabFolderLCA.PROP_TAB_HEIGHT );
-    assertEquals( new Integer( 40 ), tabHeight );
-    tabPosition = adapter.getPreserved( CTabFolderLCA.PROP_TAB_POSITION );
-    assertEquals( new Integer( 1024 ), tabPosition );
-    selectionBg = adapter.getPreserved( CTabFolderLCA.PROP_SELECTION_BG );
-    assertEquals( background, selectionBg );
-    selectionFg = adapter.getPreserved( CTabFolderLCA.PROP_SELECTION_FG );
-    assertEquals( foreground, selectionFg );
-    assertNotNull( adapter.getPreserved( CTabFolderLCA.PROP_MINIMIZE_RECT ) );
-    assertNotNull( adapter.getPreserved( CTabFolderLCA.PROP_MAXIMIZE_RECT ) );
-    assertNotNull( adapter.getPreserved( CTabFolderLCA.PROP_CHEVRON_RECT ) );
-    assertNotNull( adapter.getPreserved( CTabFolderLCA.PROP_CHEVRON_VISIBLE ) );
-    chevronVisible = adapter.getPreserved( CTabFolderLCA.PROP_CHEVRON_VISIBLE );
-    assertTrue( chevronVisible instanceof Boolean );
     // bound
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     folder.setBounds( rectangle );
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( folder );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
     // z-index
@@ -272,17 +123,10 @@ public class CTabFolderLCA_Test extends TestCase {
     Fixture.clearPreserved();
     folder.setEnabled( true );
     // control_listeners
-    folder.addControlListener( new ControlListener() {
-
-      public void controlMoved( final ControlEvent e ) {
-      }
-
-      public void controlResized( final ControlEvent e ) {
-      }
-    } );
+    folder.addControlListener( new ControlAdapter() {} );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( folder );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
+    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
     assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
     // foreground background font
@@ -314,14 +158,7 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( "some text", folder.getToolTipText() );
     Fixture.clearPreserved();
     // activate_listeners Focus_listeners
-    folder.addFocusListener( new FocusListener() {
-
-      public void focusGained( final FocusEvent event ) {
-      }
-
-      public void focusLost( final FocusEvent event ) {
-      }
-    } );
+    folder.addFocusListener( new FocusAdapter() {} );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( folder );
     hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
@@ -332,8 +169,7 @@ public class CTabFolderLCA_Test extends TestCase {
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
     assertEquals( Boolean.FALSE, hasListeners );
     Fixture.clearPreserved();
-    ActivateEvent.addListener( folder, new ActivateAdapter() {
-    } );
+    ActivateEvent.addListener( folder, new ActivateAdapter() {} );
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( folder );
     hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
@@ -341,8 +177,6 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testChangeSelection() {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.MULTI );
     CTabFolder folder = new CTabFolder( shell, SWT.MULTI );
     folder.setSize( 100, 100 );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
@@ -378,8 +212,6 @@ public class CTabFolderLCA_Test extends TestCase {
         log.append( "widgetSelected|" );
       }
     };
-    Display display = new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     CTabFolder folder = new CTabFolder( shell, SWT.MULTI );
     folder.addSelectionListener( listener );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
@@ -400,8 +232,6 @@ public class CTabFolderLCA_Test extends TestCase {
 
   public void testShowListEvent() {
     // Widgets for test
-    Display display= new Display();
-    Shell shell = new Shell( display, SWT.NONE );
     final CTabFolder folder = new CTabFolder( shell, SWT.SINGLE );
     folder.setSize( 30, 130 );
     CTabItem item1 = new CTabItem( folder, SWT.NONE );
@@ -455,73 +285,652 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( 1, menu.getItemCount() );
   }
 
-  public void testWriteSelectionBackgroundGradient_Vertical() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    CTabFolder folder = new CTabFolder( shell, SWT.SINGLE );
+  public void testRenderCreate() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
 
-    Fixture.fakeResponseWriter();
-    CTabFolderLCA lca = new CTabFolderLCA();
-    lca.preserveValues( folder );
-    Fixture.markInitialized( folder );
-    Color[] gradientColors = new Color[] {
-      Graphics.getColor( 0, 255, 0 ),
-      Graphics.getColor( 0, 0, 255 )
-    };
-    int[] percents = new int[] { 100 };
-    folder.setSelectionBackground( gradientColors, percents, true );
-    lca.renderChanges( folder );
-    String expected
-      = "var w = wm.findWidgetById( \\\"w2\\\" );"
-      + "w.setSelectionBackground( \\\"#0000ff\\\" );"
-      + "w.setSelectionBackgroundGradient( [\\\"#00ff00\\\",\\\"#0000ff\\\" ], "
-      + "[0,100 ], true );";
-    assertTrue( Fixture.getAllMarkup().contains( expected ) );
+    lca.renderInitialization( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertEquals( "rwt.widgets.CTabFolder", operation.getType() );
+    List<Object> styles = Arrays.asList( operation.getStyles() );
+    assertTrue( styles.contains( "TOP" ) );
+    assertTrue( styles.contains( "MULTI" ) );
   }
 
-  public void testWriteSelectionBackgroundGradient_Horizontal()
-    throws IOException
-  {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    CTabFolder folder = new CTabFolder( shell, SWT.SINGLE );
+  public void testRenderCreateOnBottom() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.BOTTOM );
 
-    Fixture.fakeResponseWriter();
-    CTabFolderLCA lca = new CTabFolderLCA();
-    lca.preserveValues( folder );
-    Fixture.markInitialized( folder );
-    Color[] gradientColors = new Color[] {
-      Graphics.getColor( 0, 255, 0 ),
-      Graphics.getColor( 0, 0, 255 )
-    };
-    int[] percents = new int[] { 100 };
-    folder.setSelectionBackground( gradientColors, percents );
-    lca.renderChanges( folder );
-    String expected
-      = "var w = wm.findWidgetById( \\\"w2\\\" );"
-      + "w.setSelectionBackground( \\\"#0000ff\\\" );"
-      + "w.setSelectionBackgroundGradient( [\\\"#00ff00\\\",\\\"#0000ff\\\" ], "
-      + "[0,100 ], false );";
-    assertTrue( Fixture.getAllMarkup().contains( expected ) );
+    lca.renderInitialization( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertEquals( "rwt.widgets.CTabFolder", operation.getType() );
+    List<Object> styles = Arrays.asList( operation.getStyles() );
+    assertTrue( styles.contains( "BOTTOM" ) );
+    assertTrue( styles.contains( "MULTI" ) );
   }
 
-  @SuppressWarnings("deprecation")
-  public void testWriteSelectionBackgroundImage() throws IOException {
-    Display display = new Display();
-    Shell shell = new Shell( display , SWT.NONE );
-    CTabFolder folder = new CTabFolder( shell, SWT.SINGLE );
-    Fixture.fakeResponseWriter();
-    CTabFolderLCA lca = new CTabFolderLCA();
-    lca.preserveValues( folder );
-    Image image = Graphics.getImage( Fixture.IMAGE_50x100 );
+  public void testRenderSingleFlatAndClose() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.SINGLE | SWT.FLAT | SWT.CLOSE );
+
+    lca.renderInitialization( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    List<Object> styles = Arrays.asList( operation.getStyles() );
+    assertTrue( styles.contains( "SINGLE" ) );
+    assertTrue( styles.contains( "FLAT" ) );
+    assertTrue( styles.contains( "CLOSE" ) );
+  }
+
+  public void testRenderParent() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    lca.renderInitialization( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertEquals( WidgetUtil.getId( folder.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderToolTipTexts() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    lca.renderInitialization( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray texts = ( JSONArray )message.findCreateProperty( folder, "toolTipTexts" );
+    assertEquals( 5, texts.length() );
+  }
+
+  public void testRenderDispose() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    lca.renderDispose( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    Operation operation = message.getOperation( 0 );
+    assertTrue( operation instanceof DestroyOperation );
+    assertEquals( WidgetUtil.getId( folder ), operation.getTarget() );
+  }
+
+  public void testRenderInitialTabPosition() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    lca.render( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertTrue( operation.getPropertyNames().indexOf( "tabPosition" ) == -1 );
+  }
+
+  public void testRenderTabPosition() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    folder.setTabPosition( SWT.BOTTOM );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "bottom", message.findSetProperty( folder, "tabPosition" ) );
+  }
+
+  public void testRenderTabPositionUnchanged() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+
+    folder.setTabPosition( SWT.BOTTOM );
+    Fixture.preserveWidgets();
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( folder, "tabPosition" ) );
+  }
+
+  public void testRenderInitialTabHeight() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    lca.render( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertTrue( operation.getPropertyNames().indexOf( "tabHeight" ) != -1 );
+  }
+
+  public void testRenderTabHeight() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    folder.setTabHeight( 20 );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Integer.valueOf( 20 ), message.findSetProperty( folder, "tabHeight" ) );
+  }
+
+  public void testRenderTabHeightUnchanged() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+
+    folder.setTabHeight( 20 );
+    Fixture.preserveWidgets();
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( folder, "tabHeight" ) );
+  }
+
+  public void testRenderInitialMinMaxState() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    lca.render( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertTrue( operation.getPropertyNames().indexOf( "minMaxState" ) == -1 );
+  }
+
+  public void testRenderMinMaxState_Max() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    folder.setMaximized( true );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "max", message.findSetProperty( folder, "minMaxState" ) );
+  }
+
+  public void testRenderMinMaxState_Min() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    folder.setMinimized( true );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( "min", message.findSetProperty( folder, "minMaxState" ) );
+  }
+
+  public void testRenderMinMaxStateUnchanged() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+
+    folder.setMaximized( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( folder, "minMaxState" ) );
+  }
+
+  public void testRenderInitialMinimizeBoundsAndVisible() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    folder.setSize( 150, 150 );
+
+    lca.render( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertTrue( operation.getPropertyNames().indexOf( "minimizeBounds" ) == -1 );
+    assertTrue( operation.getPropertyNames().indexOf( "minimizeVisible" ) == -1 );
+  }
+
+  public void testRenderMinimizeBoundsAndVisible() throws IOException, JSONException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    folder.setSize( 150, 150 );
+
+    folder.setMinimizeVisible( true );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( folder, "minimizeBounds" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[129,4,18,18]", actual )  );
+    assertEquals( Boolean.TRUE, message.findSetProperty( folder, "minimizeVisible" ) );
+  }
+
+  public void testRenderMinimizeBoundsAndVisibleUnchanged() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    folder.setSize( 150, 150 );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+
+    folder.setMinimizeVisible( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( folder, "minimizeBounds" ) );
+    assertNull( message.findSetOperation( folder, "minimizeVisible" ) );
+  }
+
+  public void testRenderInitialMaximizeBoundsAndVisible() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    folder.setSize( 150, 150 );
+
+    lca.render( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertTrue( operation.getPropertyNames().indexOf( "maximizeBounds" ) == -1 );
+    assertTrue( operation.getPropertyNames().indexOf( "maximizeVisible" ) == -1 );
+  }
+
+  public void testRenderMaximizeBoundsAndVisible() throws IOException, JSONException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    folder.setSize( 150, 150 );
+
+    folder.setMaximizeVisible( true );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( folder, "maximizeBounds" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[129,4,18,18]", actual )  );
+    assertEquals( Boolean.TRUE, message.findSetProperty( folder, "maximizeVisible" ) );
+  }
+
+  public void testRenderMaximizeBoundsAndVisibleUnchanged() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    folder.setSize( 150, 150 );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+
+    folder.setMaximizeVisible( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( folder, "maximizeBounds" ) );
+    assertNull( message.findSetOperation( folder, "maximizeVisible" ) );
+  }
+
+  public void testRenderInitialChevronBoundsAndVisible() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    folder.setSize( 150, 150 );
+
+    lca.render( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertTrue( operation.getPropertyNames().indexOf( "chevronBounds" ) == -1 );
+    assertTrue( operation.getPropertyNames().indexOf( "chevronVisible" ) == -1 );
+  }
+
+  public void testRenderChevronBoundsAndVisible() throws IOException, JSONException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    CTabItem item = new CTabItem( folder, SWT.NONE );
+    new CTabItem( folder, SWT.NONE );
+    folder.setSize( 150, 150 );
+
+    item.setText( "foo bar foo bar" );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( folder, "chevronBounds" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[120,6,27,18]", actual )  );
+    assertEquals( Boolean.TRUE, message.findSetProperty( folder, "chevronVisible" ) );
+  }
+
+  public void testRenderChevronBoundsAndVisibleUnchanged() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    CTabItem item = new CTabItem( folder, SWT.NONE );
+    new CTabItem( folder, SWT.NONE );
+    folder.setSize( 150, 150 );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+
+    item.setText( "foo bar foo bar" );
+    Fixture.preserveWidgets();
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( folder, "chevronBounds" ) );
+    assertNull( message.findSetOperation( folder, "chevronVisible" ) );
+  }
+
+  public void testRenderInitialUnselectedCloseVisible() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    lca.render( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertTrue( operation.getPropertyNames().indexOf( "unselectedCloseVisible" ) == -1 );
+  }
+
+  public void testRenderUnselectedCloseVisible() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    folder.setUnselectedCloseVisible( false );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findSetProperty( folder, "unselectedCloseVisible" ) );
+  }
+
+  public void testRenderUnselectedCloseVisibleUnchanged() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+
+    folder.setUnselectedCloseVisible( false );
+    Fixture.preserveWidgets();
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( folder, "unselectedCloseVisible" ) );
+  }
+
+  public void testRenderInitialSelection() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    lca.render( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
+  }
+
+  public void testRenderSelection() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    CTabItem item = new CTabItem( folder, SWT.NONE );
+
+    folder.setSelection( item );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( WidgetUtil.getId( item ), message.findSetProperty( folder, "selection" ) );
+  }
+
+  public void testRenderSelectionUnchanged() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    CTabItem item = new CTabItem( folder, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+
+    folder.setSelection( item );
+    Fixture.preserveWidgets();
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( folder, "selection" ) );
+  }
+
+  public void testRenderInitialSelectionBackground() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    lca.render( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertTrue( operation.getPropertyNames().indexOf( "selectionBackground" ) == -1 );
+  }
+
+  public void testRenderSelectionBackground() throws IOException, JSONException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    folder.setSelectionBackground( display.getSystemColor( SWT.COLOR_BLUE ) );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( folder, "selectionBackground" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,255,255]", actual ) );
+  }
+
+  public void testRenderSelectionBackgroundUnchanged() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+
+    folder.setSelectionBackground( display.getSystemColor( SWT.COLOR_BLUE ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( folder, "selectionBackground" ) );
+  }
+
+  public void testRenderInitialSelectionForeground() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    lca.render( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertTrue( operation.getPropertyNames().indexOf( "selectionForeground" ) == -1 );
+  }
+
+  public void testRenderSelectionForeground() throws IOException, JSONException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    folder.setSelectionForeground( display.getSystemColor( SWT.COLOR_BLUE ) );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual = ( JSONArray )message.findSetProperty( folder, "selectionForeground" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[0,0,255,255]", actual ) );
+  }
+
+  public void testRenderSelectionForegroundUnchanged() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+
+    folder.setSelectionForeground( display.getSystemColor( SWT.COLOR_BLUE ) );
+    Fixture.preserveWidgets();
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( folder, "selectionForeground" ) );
+  }
+
+  public void testRenderInitialSelectionBackgroundImage() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    lca.render( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertTrue( operation.getPropertyNames().indexOf( "selectionBackgroundImage" ) == -1 );
+  }
+
+  public void testRenderSelectionBackgroundImage() throws IOException, JSONException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+
     folder.setSelectionBackground( image );
     lca.renderChanges( folder );
-    String imagePath = ImageFactory.getImagePath( image );
-    String expected = "w.setSelectionBackgroundImage( [ \\\"" + imagePath + "\\\",50,100 ] );";
-    assertTrue( Fixture.getAllMarkup().contains( expected ) );
+
+    Message message = Fixture.getProtocolMessage();
+    String imageLocation = ImageFactory.getImagePath( image );
+    String expected = "[\"" + imageLocation + "\", 100, 50 ]";
+    JSONArray actual = ( JSONArray )message.findSetProperty( folder, "selectionBackgroundImage" );
+    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
-  private static Menu getShowListMenu( final CTabFolder folder ) {
+  public void testRenderSelectionBackgroundImageUnchanged() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+    Image image = Graphics.getImage( Fixture.IMAGE_100x50 );
+
+    folder.setSelectionBackground( image );
+    Fixture.preserveWidgets();
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( folder, "selectionBackgroundImage" ) );
+  }
+
+  public void testRenderInitialSelectionBackgroundGradient() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    lca.render( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertTrue( operation.getPropertyNames().indexOf( "selectionBackgroundGradient" ) == -1 );
+  }
+
+  public void testRenderSelectionBackgroundGradient() throws IOException, JSONException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    Color[] gradientColors = new Color[] {
+      display.getSystemColor( SWT.COLOR_RED ),
+      display.getSystemColor( SWT.COLOR_GREEN )
+    };
+    int[] percents = new int[] { 50 };
+    folder.setSelectionBackground( gradientColors , percents );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray gradient
+      = ( JSONArray )message.findSetProperty( folder, "selectionBackgroundGradient" );
+    JSONArray colors = ( JSONArray )gradient.get( 0 );
+    JSONArray stops = ( JSONArray )gradient.get( 1 );
+    assertEquals( "#ff0000", colors.get( 0 ) );
+    assertEquals( "#00ff00", colors.get( 1 ) );
+    assertEquals( Integer.valueOf( 0 ), stops.get( 0 ) );
+    assertEquals( Integer.valueOf( 50 ), stops.get( 1 ) );
+    assertEquals( Boolean.FALSE, gradient.get( 2 ) );
+  }
+
+  public void testRenderSelectionBackgroundGradientUnchanged() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+
+    Color[] colors = new Color[] {
+      display.getSystemColor( SWT.COLOR_RED ),
+      display.getSystemColor( SWT.COLOR_GREEN )
+    };
+    int[] percents = new int[] { 50 };
+    folder.setSelectionBackground( colors , percents );
+    Fixture.preserveWidgets();
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( folder, "selectionBackgroundGradient" ) );
+  }
+
+  public void testRenderInitialBorderVisible() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    lca.render( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( folder );
+    assertTrue( operation.getPropertyNames().indexOf( "borderVisible" ) == -1 );
+  }
+
+  public void testRenderBorderVisible() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+
+    folder.setBorderVisible( true );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( folder, "borderVisible" ) );
+  }
+
+  public void testRenderBorderVisibleUnchanged() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+
+    folder.setBorderVisible( true );
+    Fixture.preserveWidgets();
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( folder, "borderVisible" ) );
+  }
+
+  public void testRenderAddSelectionListener() throws Exception {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+    Fixture.preserveWidgets();
+
+    folder.addSelectionListener( new SelectionAdapter() { } );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( folder, "selection" ) );
+  }
+
+  public void testRenderRemoveSelectionListener() throws Exception {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    SelectionListener listener = new SelectionAdapter() { };
+    folder.addSelectionListener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+    Fixture.preserveWidgets();
+
+    folder.removeSelectionListener( listener );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( folder, "selection" ) );
+  }
+
+  public void testRenderSelectionListenerUnchanged() throws Exception {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+    Fixture.preserveWidgets();
+
+    folder.addSelectionListener( new SelectionAdapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( folder, "selection" ) );
+  }
+
+  public void testRenderAddFolderListener() throws Exception {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+    Fixture.preserveWidgets();
+
+    folder.addCTabFolder2Listener( new CTabFolder2Adapter() { } );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findListenProperty( folder, "folder" ) );
+  }
+
+  public void testRenderRemoveFolderListener() throws Exception {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    CTabFolder2Adapter listener = new CTabFolder2Adapter() { };
+    folder.addCTabFolder2Listener( listener );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+    Fixture.preserveWidgets();
+
+    folder.removeCTabFolder2Listener( listener );
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.FALSE, message.findListenProperty( folder, "folder" ) );
+  }
+
+  public void testRenderFolderListenerUnchanged() throws Exception {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( folder );
+    Fixture.preserveWidgets();
+
+    folder.addCTabFolder2Listener( new CTabFolder2Adapter() { } );
+    Fixture.preserveWidgets();
+    lca.renderChanges( folder );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findListenOperation( folder, "folder" ) );
+  }
+
+  private static Menu getShowListMenu( CTabFolder folder ) {
     Menu result = null;
     try {
       Field field = CTabFolder.class.getDeclaredField( "showMenu" );
@@ -531,5 +940,49 @@ public class CTabFolderLCA_Test extends TestCase {
       e.printStackTrace();
     }
     return result;
+  }
+
+  private static final class CTabItemControl extends Composite {
+    private static final long serialVersionUID = 1L;
+
+    public final StringBuffer markup = new StringBuffer();
+
+    public CTabItemControl( Composite parent, int style ) {
+      super( parent, style );
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getAdapter( Class<T> adapter ) {
+      Object result;
+      if( adapter == ILifeCycleAdapter.class ) {
+        result = new AbstractWidgetLCA() {
+          public void preserveValues( Widget widget ) {
+            Control control = ( Control )widget;
+            IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+            Boolean visible = Boolean.valueOf( control.isVisible() );
+            adapter.preserve( "visible", visible );
+          }
+          public void renderChanges( Widget widget ) throws IOException {
+            markup.setLength( 0 );
+            Control control = ( Control )widget;
+            Boolean visible = Boolean.valueOf( control.isVisible() );
+            if( WidgetLCAUtil.hasChanged( widget, "visible", visible ) ) {
+              markup.append( "visible=" + visible );
+            }
+          }
+          public void renderDispose( Widget widget ) throws IOException {
+          }
+          public void renderInitialization( Widget widget )
+            throws IOException
+          {
+          }
+          public void readData( Widget widget ) {
+          }
+        };
+      } else {
+        result = super.getAdapter( adapter );
+      }
+      return ( T )result;
+    }
   }
 }

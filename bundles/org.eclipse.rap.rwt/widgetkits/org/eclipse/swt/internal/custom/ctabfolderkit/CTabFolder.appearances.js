@@ -128,8 +128,7 @@ appearances = {
       if( states.selected ) {
         result.backgroundColor = tv.getCssColor( "CTabItem", "background-color" );
         result.backgroundImage = tv.getCssImage( "CTabItem", "background-image" );
-        result.backgroundGradient = tv.getCssGradient( "CTabItem",
-                                                       "background-image" );
+        result.backgroundGradient = tv.getCssGradient( "CTabItem", "background-image" );
       } else {
         result.backgroundColor = "undefined";
         result.backgroundImage = null;

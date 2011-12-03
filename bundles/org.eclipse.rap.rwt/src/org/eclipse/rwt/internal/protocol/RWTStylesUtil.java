@@ -12,6 +12,8 @@ package org.eclipse.rwt.internal.protocol;
 
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.*;
 
 
@@ -50,6 +52,8 @@ public final class RWTStylesUtil {
     SLIDER( Slider.class.getName(), new String[] { "HORIZONTAL", "VERTICAL", "BORDER", "LEFT_TO_RIGHT" } ),
     SPINNER( Spinner.class.getName(), new String[] { "READ_ONLY", "WRAP", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     TAB_FOLDER( TabFolder.class.getName(), new String[] { "TOP", "BOTTOM", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
+    CTAB_FOLDER( CTabFolder.class.getName(), new String[] { "TOP", "BOTTOM", "CLOSE", "FLAT", "SINGLE", "MULTI", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
+    CTAB_ITEM( CTabItem.class.getName(), new String[] { "CLOSE" } ),
     TABLE( Table.class.getName(), new String[] { "SINGLE", "MULTI", "CHECK", "FULL_SELECTION", "HIDE_SELECTION", "VIRTUAL", "NO_SCROLL", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     TABLE_COLUMN( TableColumn.class.getName(), new String[] { "LEFT", "RIGHT", "CENTER" } ),
     TEXT( Text.class.getName(), new String[] { "CENTER", "LEFT", "MULTI", "PASSWORD", "SEARCH", "SINGLE", "RIGHT", "READ_ONLY", "WRAP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),

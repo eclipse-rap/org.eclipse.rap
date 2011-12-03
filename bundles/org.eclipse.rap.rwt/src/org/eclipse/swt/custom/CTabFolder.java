@@ -97,9 +97,6 @@ public class CTabFolder extends Composite {
   private FocusListener focusListener;
   private Menu showMenu;
   int selectedIndex = -1;
-  // [if] This field is used by CTabFolderLCA and CTabItemLCA only for preserving
-  // the selected tab item. Must be kept in sync with selectedIndex.
-  private int internalSelectedIndex = -1;
   private int firstIndex = -1; // index of the left most visible tab
   private boolean mru;
   private int[] priority = new int[ 0 ];
@@ -321,7 +318,6 @@ public class CTabFolder extends Composite {
       if( selectedIndex != index ) {
         int oldSelectionIndex = selectedIndex;
         selectedIndex = index;
-        internalSelectedIndex = index;
         getItem( selectedIndex ).showing = false;
         Control control = getItem( selectedIndex ).getControl();
         // Adjust bounds of selected control and make it visible (if any)
@@ -902,7 +898,6 @@ public class CTabFolder extends Composite {
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
    * </ul>
    */
-  // TODO [rh] not yet evaluated in LCA
   public void setBorderVisible( boolean show ) {
     checkWidget();
     if( ( borderLeft != 1 ) != !show ) {
@@ -2008,8 +2003,7 @@ CTabItem[] items = itemHolder.getItems();
     updateItems();
     Rectangle rectAfter = getClientArea();
     if( !rectBefore.equals( rectAfter ) ) {
-      ControlEvent event
-        = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
+      ControlEvent event = new ControlEvent( this, ControlEvent.CONTROL_RESIZED );
       event.processEvent();
     }
   }
@@ -2191,7 +2185,6 @@ CTabItem[] items = itemHolder.getItems();
     itemHolder.insert( item, index );
     if( selectedIndex >= index ) {
       selectedIndex++;
-      internalSelectedIndex++;
     }
     int[] newPriority = new int[ priority.length + 1 ];
     int next = 0, priorityIndex = priority.length;
@@ -2227,7 +2220,6 @@ CTabItem[] items = itemHolder.getItems();
         priority = new int[ 0 ];
         firstIndex = -1;
         selectedIndex = -1;
-        internalSelectedIndex = -1;
         Control control = item.getControl();
         if( control != null && !control.isDisposed() ) {
           control.setVisible( false );
@@ -2251,7 +2243,6 @@ CTabItem[] items = itemHolder.getItems();
         if( selectedIndex == index ) {
           Control control = item.getControl();
           selectedIndex = -1;
-          internalSelectedIndex = -1;
           int nextSelection = mru ? priority[ 0 ] : Math.max( 0, index - 1 );
           setSelection( nextSelection, true );
           if( control != null && !control.isDisposed() ) {
@@ -2259,7 +2250,6 @@ CTabItem[] items = itemHolder.getItems();
           }
         } else if( selectedIndex > index ) {
           selectedIndex--;
-          internalSelectedIndex--;
         }
       }
       updateItems();
@@ -2267,18 +2257,6 @@ CTabItem[] items = itemHolder.getItems();
         unregisterFocusListener();
       }
     }
-  }
-
-  private CTabItem getInternalSelectedItem() {
-    CTabItem result = null;
-    if( internalSelectedIndex != -1 ) {
-      result = itemHolder.getItem( internalSelectedIndex );
-    }
-    return result;
-  }
-
-  private void setInternalSelectedItem( CTabItem item ) {
-    internalSelectedIndex = itemHolder.indexOf( item );
   }
 
   //////////////////
@@ -2376,14 +2354,6 @@ CTabItem[] items = itemHolder.getItems();
 
     public IWidgetGraphicsAdapter getUserSelectionBackgroundGradient() {
       return selectionGraphicsAdapter;
-    }
-
-    public CTabItem getInternalSelectedItem() {
-      return CTabFolder.this.getInternalSelectedItem();
-    }
-
-    public void setInternalSelectedItem( CTabItem item ) {
-      CTabFolder.this.setInternalSelectedItem( item );
     }
   }
 }

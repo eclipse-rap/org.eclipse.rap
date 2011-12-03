@@ -28,11 +28,15 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     this._selectionBackgroundImage = null;
     this._selectionBackgroundGradient = null;
     this._chevron = null;
+    this._chevronBounds = [ 0, 0, 0, 0 ];
     this._chevronMenu = null;
+    this._unselectedCloseVisible = true;
     // Minimize/maximize buttons, initially non-existing
     this._minMaxState = "normal";  // valid states: min, max, normal
     this._maxButton = null;
+    this._maxButtonBounds = [ 0, 0, 0, 0 ];
     this._minButton = null;
+    this._minButtonBounds = [ 0, 0, 0, 0 ];
     this._body = new qx.ui.layout.CanvasLayout();
     this._body.addState( "barTop" );
     this._body.setAppearance( "ctabfolder-body" );
@@ -89,8 +93,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
 
     addState : function( state ) {
       this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_" || state.substr( 0, 4 ) == "rwt_" )
-      {
+      if( state.substr( 0, 8 ) == "variant_" || state.substr( 0, 4 ) == "rwt_" ) {
         this._body.addState( state );
         this._frame.addState( state );
         this._mapItems( function( item ) {
@@ -101,8 +104,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
 
     removeState : function( state ) {
       this.base( arguments, state );
-      if( state.substr( 0, 8 ) == "variant_" || state.substr( 0, 4 ) == "rwt_" )
-      {
+      if( state.substr( 0, 8 ) == "variant_" || state.substr( 0, 4 ) == "rwt_" ) {
         this._body.removeState( state );
         this._frame.removeState( state );
         this._mapItems( function( item ) {
@@ -201,6 +203,13 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
         item.updateBackgroundGradient();
       } );
     },
+    
+    setUnselectedCloseVisible : function( value ) {
+      this._unselectedCloseVisible = value;
+      this._mapItems( function( item ) {
+        item.updateCloseButton();
+      } );
+    },
 
     setBorderVisible : function( visible ) {
       if( visible ) {
@@ -227,6 +236,10 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       return this._selectionBackgroundGradient;
     },
 
+    getUnselectedCloseVisible : function() {
+      return this._unselectedCloseVisible;
+    },
+
     _mapItems : function( func ) {
       var children = this.getChildren();
       for( var i = 0; i < children.length; i++ ) {
@@ -240,7 +253,14 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       return ( this._tabHeight / 2 ) - ( org.eclipse.swt.custom.CTabFolder.BUTTON_SIZE / 2 );
     },
 
-    showChevron : function( left, top, width, height ) {
+    setChevronBounds : function( left, top, width, height ) {
+      this._chevronBounds = [ left, top, width, height ];
+      if( this._chevron != null ) {
+        this._chevron.setSpace( left, width, top, height );
+      }
+    },
+
+    showChevron : function() {
       if( this._chevron == null ) {
         // Create chevron button
         this._chevron = new qx.ui.form.Button();
@@ -248,14 +268,13 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
         this._chevron.setShow( qx.constant.Style.BUTTON_SHOW_ICON );
         this._chevron.addEventListener( "execute", this._onChevronExecute, this );
         var wm = org.eclipse.swt.WidgetManager.getInstance();
-        wm.setToolTip( this._chevron, 
-                       org.eclipse.swt.custom.CTabFolder.CHEVRON_TOOLTIP );
+        wm.setToolTip( this._chevron, org.eclipse.swt.custom.CTabFolder.CHEVRON_TOOLTIP );
         this.add( this._chevron );
       }
-      this._chevron.setTop( top );
-      this._chevron.setLeft( left );
-      this._chevron.setWidth( width );
-      this._chevron.setHeight( height );
+      this._chevron.setLeft( this._chevronBounds[ 0 ] );
+      this._chevron.setTop( this._chevronBounds[ 1 ] );
+      this._chevron.setWidth( this._chevronBounds[ 2 ] );
+      this._chevron.setHeight( this._chevronBounds[ 3 ] );
     },
 
     hideChevron : function() {
@@ -306,7 +325,14 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       }
     },
 
-    showMaxButton : function( left, top, width, height ) {
+    setMaxButtonBounds : function( left, top, width, height ) {
+      this._maxButtonBounds = [ left, top, width, height ];
+      if( this._maxButton != null ) {
+        this._maxButton.setSpace( left, width, top, height );
+      }
+    },
+
+    showMaxButton : function() {
       if( this._maxButton == null ) {
         this._maxButton = new qx.ui.form.Button();
         this._maxButton.setAppearance( "ctabfolder-button" );
@@ -316,10 +342,10 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
         this._maxButton.addEventListener( "mousedown", this._onMinMaxExecute, this );
         this.add( this._maxButton );
       }
-      this._maxButton.setTop( top );
-      this._maxButton.setLeft( left );
-      this._maxButton.setWidth( width );
-      this._maxButton.setHeight( height );
+      this._maxButton.setLeft( this._maxButtonBounds[ 0 ] );
+      this._maxButton.setTop( this._maxButtonBounds[ 1 ] );
+      this._maxButton.setWidth( this._maxButtonBounds[ 2 ] );
+      this._maxButton.setHeight( this._maxButtonBounds[ 3 ] );
     },
 
     hideMaxButton : function() {
@@ -335,7 +361,14 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
       }
     },
 
-    showMinButton : function( left, top, width, height ) {
+    setMinButtonBounds : function( left, top, width, height ) {
+      this._minButtonBounds = [ left, top, width, height ];
+      if( this._minButton != null ) {
+        this._minButton.setSpace( left, width, top, height );
+      }
+    },
+
+    showMinButton : function() {
       if( this._minButton == null ) {
         this._minButton = new qx.ui.form.Button();
         this._minButton.setAppearance( "ctabfolder-button" );
@@ -345,10 +378,10 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
         this._minButton.addEventListener( "mousedown", this._onMinMaxExecute, this );
         this.add( this._minButton );
       }
-      this._minButton.setTop( top );
-      this._minButton.setLeft( left );
-      this._minButton.setWidth( width );
-      this._minButton.setHeight( height );
+      this._minButton.setLeft( this._minButtonBounds[ 0 ] );
+      this._minButton.setTop( this._minButtonBounds[ 1 ] );
+      this._minButton.setWidth( this._minButtonBounds[ 2 ] );
+      this._minButton.setHeight( this._minButtonBounds[ 3 ] );
     },
 
     hideMinButton : function( left ) {
@@ -370,6 +403,12 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
 
     setHasSelectionListener : function( value ) {
       this._hasSelectionListener = value;
+    },
+
+    deselectAll : function() {
+      this._mapItems( function( item ) {
+        item.setSelected( false );
+      } );
     },
 
     _updateLayout : function() {
@@ -475,10 +514,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabFolder", {
     _notifyItemClick : function( item ) {
       if( !org.eclipse.swt.EventUtil.getSuspended() ) {
         if( !item.isSelected() ) {
-          // deselect any previous selected CTabItem
-          this._mapItems( function( item ) {
-            item.setSelected( false );
-          } );
+          this.deselectAll();
           item.setSelected( true );
           var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
           var req = org.eclipse.swt.Request.getInstance();

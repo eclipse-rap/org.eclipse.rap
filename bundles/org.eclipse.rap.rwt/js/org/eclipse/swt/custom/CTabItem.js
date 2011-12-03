@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
@@ -32,7 +32,6 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     this._selected = false;
     this._showClose = false;
     this._canClose = canClose;
-    this._unselectedCloseVisible = true;
     this.updateForeground();
     this.updateBackground();
     this.updateBackgroundImage();
@@ -45,25 +44,26 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     this._closeButton = new qx.ui.basic.Image();
     this._closeButton.setAppearance( "ctab-close-button" );
     this._closeButton.setWidth( 20 );
-    // TODO [rh] center image vertically in tab item
-    this._closeButton.setHeight( "80%" );
     this._closeButton.addEventListener( "click", this._onClose, this );
     var wm = org.eclipse.swt.WidgetManager.getInstance();
-    wm.setToolTip( this._closeButton,
-                   org.eclipse.swt.custom.CTabFolder.CLOSE_TOOLTIP );
+    wm.setToolTip( this._closeButton, org.eclipse.swt.custom.CTabFolder.CLOSE_TOOLTIP );
     this.add( this._closeButton );
-    this._updateCloseButton();
+    this.updateCloseButton();
     this.addEventListener( "mouseover", this._onMouseOver, this );
     this.addEventListener( "mouseout", this._onMouseOut, this );
     this.addEventListener( "click", this._onClick, this );
     this.addEventListener( "dblclick", this._onDblClick, this );
+    this.addEventListener( "changeParent", this._onChangeParent, this );
+    this.addEventListener( "changeLeft", this._onChangeLeft, this );
   },
 
   destruct : function() {
     this.removeEventListener( "mouseover", this._onMouseOver, this );
     this.removeEventListener( "mouseout", this._onMouseOut, this );
     this.removeEventListener( "click", this._onClick, this );
-    this.removeEventListener( "dblclick", this._onDblClick, this );    
+    this.removeEventListener( "dblclick", this._onDblClick, this );
+    this.removeEventListener( "changeParent", this._onChangeParent, this );
+    this.removeEventListener( "changeLeft", this._onChangeLeft, this );
     this._closeButton.removeEventListener( "click", this._onClose, this );
     var wm = org.eclipse.swt.WidgetManager.getInstance();
     wm.setToolTip( this._closeButton, null );
@@ -90,36 +90,39 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     },
 
     setSelected : function( selected ) {
-      this._selected = selected;
-      var prevItem = this._getPrevItem();
-      if( prevItem != null ) {
+      if( this._selected !== selected ) {
+        this._selected = selected;
         if( selected ) {
-          prevItem.addState( "nextSelected" );
+          this.addState( org.eclipse.swt.custom.CTabItem.STATE_SELECTED );
         } else {
-          prevItem.removeState( "nextSelected" );
+          this.removeState( org.eclipse.swt.custom.CTabItem.STATE_SELECTED );
         }
+        this._updateNextSelected();
+        this.updateForeground();
+        this.updateBackground();
+        this.updateBackgroundImage();
+        this.updateBackgroundGradient();
+        this.updateCloseButton();
       }
-      if( selected ) {
-        this.addState( org.eclipse.swt.custom.CTabItem.STATE_SELECTED );
-      } else {
-        this.removeState( org.eclipse.swt.custom.CTabItem.STATE_SELECTED );
-      }
-      this.updateForeground();
-      this.updateBackground();
-      this.updateBackgroundImage();
-      this.updateBackgroundGradient();
-      this._updateCloseButton();
     },
 
-    _getPrevItem : function() {
-      var result = null;
+    _updateNextSelected : function() {
+      var prevItem = null;
+      var findSelected = false;
       var children = this._parent.getChildren();
-      for( var i = 0; i < children.length && children[ i ] != this; i++ ) {
+      for( var i = 0; i < children.length && !findSelected; i++ ) {
         if( children[ i ].classname === "org.eclipse.swt.custom.CTabItem" ) {
-          result = children[ i ];
+          findSelected = children[ i ].isSelected();
+          if( prevItem != null ) {
+            if( findSelected ) {
+              prevItem.addState( "nextSelected" );
+            } else {
+              prevItem.removeState( "nextSelected" );
+            }
+          }
+          prevItem = children[ i ];
         }
       }
-      return result;
     },
 
     isSelected : function() {
@@ -128,18 +131,13 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     
     setShowClose : function( value ) {
       this._showClose = value;
-      this._updateCloseButton();
-    },
-
-    setUnselectedCloseVisible : function( value ) {
-      this._unselectedCloseVisible = value;
-      this._updateCloseButton();
+      this.updateCloseButton();
     },
 
     updateForeground : function() {
       var color = this.isSelected()
-                  ? this._parent.getSelectionForeground()
-                  : this._parent.getTextColor();
+                ? this._parent.getSelectionForeground()
+                : this._parent.getTextColor();
       if( color != null ) {
         this.setTextColor( color );
       } else {
@@ -148,9 +146,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
     },
 
     updateBackground : function() {
-      var color = this.isSelected()
-                  ? this._parent.getSelectionBackground()
-                  : null;
+      var color = this.isSelected() ? this._parent.getSelectionBackground() : null;
       if( color != null ) {
         this.setBackgroundColor( color );
       } else {
@@ -185,12 +181,12 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       widgetManager.setBackgroundGradient( this, colors, percents, vertical );
     },
 
-    _updateCloseButton : function() {
+    updateCloseButton : function() {
       var visible = false;
       if( this._canClose || this._showClose ) {
         visible
           =  this.isSelected()
-          || ( this._unselectedCloseVisible
+          || ( this._parent.getUnselectedCloseVisible()
                && this.hasState( org.eclipse.swt.custom.CTabItem.STATE_OVER ) );
       }
       this._closeButton.setVisibility( visible );
@@ -201,7 +197,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       if( evt.getTarget() == this._closeButton ) {
         this._closeButton.addState( org.eclipse.swt.custom.CTabItem.STATE_OVER );
       }
-      this._updateCloseButton();
+      this.updateCloseButton();
     },
 
     _onMouseOut : function( evt ) {
@@ -209,7 +205,7 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       if( evt.getTarget() == this._closeButton ) {
         this._closeButton.removeState( org.eclipse.swt.custom.CTabItem.STATE_OVER );
       }
-      this._updateCloseButton();
+      this.updateCloseButton();
     },
 
     _onClick : function( evt ) {
@@ -234,6 +230,20 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
         req.addEvent( "org.eclipse.swt.events.ctabItemClosed", id );
         req.send();
       }
-    }
+    },
+
+    _onChangeParent : function( evt ) {
+      if( !this._parent._isInGlobalDisposeQueue ) {
+        this._updateNextSelected();
+      }
+    },
+
+    _onChangeLeft : function( evt ) {
+      if( this.getLeft() === 0 ) {
+        this.addState( "firstItem" );
+      } else {
+        this.removeState( "firstItem" );
+      }
+    },
   }
 } );

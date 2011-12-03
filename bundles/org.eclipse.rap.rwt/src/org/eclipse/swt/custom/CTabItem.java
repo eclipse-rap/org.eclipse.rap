@@ -345,7 +345,7 @@ public class CTabItem extends Item {
    */
   public void setShowClose( boolean close ) {
     checkWidget();
-    if( ( parent.getStyle() & SWT.CLOSE )  == 0 && showClose != close ) {
+    if( ( parent.getStyle() & SWT.CLOSE ) == 0 && showClose != close ) {
       showClose = close;
       parent.updateItems();
     }
