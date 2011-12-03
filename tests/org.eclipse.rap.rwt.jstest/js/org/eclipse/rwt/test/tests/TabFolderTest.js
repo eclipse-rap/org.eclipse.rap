@@ -35,7 +35,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       assertTrue( widget.getUserData( "isControl") );
       assertTrue( widget.getHideFocus() );
       assertTrue( widget.getPlaceBarOnTop() );
-      assertEquals( -1,  widget.getUserData( "selectionIndex" ) );
       shell.destroy();
       widget.destroy();
     },
@@ -60,12 +59,11 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
       assertTrue( widget.getUserData( "isControl") );
       assertTrue( widget.getHideFocus() );
       assertFalse( widget.getPlaceBarOnTop() );
-      assertEquals( -1,  widget.getUserData( "selectionIndex" ) );
       shell.destroy();
       widget.destroy();
     },
 
-    testSetSelectionIndexWithoutItemsByProtocol : function() {
+    testSetSelectionByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = testUtil.createShellByProtocol( "w2" );
       var processor = org.eclipse.rwt.protocol.Processor;
@@ -75,37 +73,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TabFolderTest", {
         "type" : "rwt.widgets.TabFolder",
         "properties" : {
           "style" : [ "TOP" ],
-          "parent" : "w2",
-          "selectionIndex" : 1
-        }
-      } );
-      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
-      var widget = objectManager.getObject( "w3" );
-      assertEquals( 1, widget.getUserData( "selectionIndex" ) );
-      shell.destroy();
-      widget.destroy();
-    },
-
-    testSetSelectionIndexWithItemsByProtocol : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var shell = testUtil.createShellByProtocol( "w2" );
-      var processor = org.eclipse.rwt.protocol.Processor;
-      processor.processOperation( {
-        "target" : "w3",
-        "action" : "create",
-        "type" : "rwt.widgets.TabFolder",
-        "properties" : {
-          "style" : [ "TOP" ],
-          "parent" : "w2",
-          "selectionIndex" : 1
+          "parent" : "w2"
         }
       } );
       var item1 = this._createTabItemByProtocol( "w4", "w3" );
       var item2 = this._createTabItemByProtocol( "w5", "w3" );
       var item3 = this._createTabItemByProtocol( "w6", "w3" );
+      testUtil.protocolSet( "w3", { "selection" : "w5" } );
       var objectManager = org.eclipse.rwt.protocol.ObjectManager;
       var widget = objectManager.getObject( "w3" );
-      assertEquals( 1, widget.getUserData( "selectionIndex" ) );
       assertFalse( item1.getChecked() );
       assertTrue( item2.getChecked() );
       assertFalse( item3.getChecked() );

@@ -29,7 +29,6 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
       var tabViewPage = new qx.ui.pageview.tabview.Page( tabItem );
       tabFolder.getPane().add( tabViewPage );
       widgetManager.add( tabViewPage, id + "pg" );
-      this.applySelectionIndex( tabFolder );
       return tabItem;
     },
     
@@ -42,7 +41,6 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
       var itemId = widgetManager.findIdByWidget( tabItem );
       widgetManager.dispose( itemId + "pg" );
       widgetManager.dispose( itemId );
-      this.applySelectionIndex( tabFolder );
     },
 
     _onTabItemChangeFocus : function( evt ) {
@@ -109,20 +107,6 @@ qx.Class.define( "org.eclipse.swt.TabUtil", {
       // add state to the selected item if the tabFolder is focused
       if( item != null && folder.getFocused() ) {
         item.addState( "focused" );
-      }
-    },
-
-    applySelectionIndex : function( folder ) {
-      if( folder != null && folder.getParent() != null ) {
-        var selectionIndex = folder.getUserData( "selectionIndex" );
-        var items = folder.getBar().getChildren();
-        for( var index = 0; index < items.length; index++ ) {
-          if( index === selectionIndex ) {
-            items[ index ].setChecked( true );
-          } else if( items[ index ].getChecked() ) {
-            items[ index ].setChecked( false );
-          }
-        }
       }
     }
   }

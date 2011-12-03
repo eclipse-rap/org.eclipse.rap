@@ -28,15 +28,13 @@ public class TabFolderLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.TabFolder";
 
-  private static final String PROP_SELECTION_INDEX = "selectionIndex";
-
-  private static final int DEFAULT_SELECTION_INDEX = -1;
+  private static final String PROP_SELECTION = "selection";
 
   public void preserveValues( Widget widget ) {
-    TabFolder tabFolder = ( TabFolder )widget;
-    ControlLCAUtil.preserveValues( tabFolder );
-    WidgetLCAUtil.preserveCustomVariant( tabFolder );
-    preserveProperty( tabFolder, PROP_SELECTION_INDEX, tabFolder.getSelectionIndex() );
+    TabFolder folder = ( TabFolder )widget;
+    ControlLCAUtil.preserveValues( folder );
+    WidgetLCAUtil.preserveCustomVariant( folder );
+    preserveProperty( folder, PROP_SELECTION, getSelection( folder ) );
   }
 
   public void readData( Widget widget ) {
@@ -47,25 +45,34 @@ public class TabFolderLCA extends AbstractWidgetLCA {
   }
 
   public void renderInitialization( Widget widget ) throws IOException {
-    TabFolder tabFolder = ( TabFolder )widget;
-    IClientObject clientObject = ClientObjectFactory.getForWidget( tabFolder );
+    TabFolder folder = ( TabFolder )widget;
+    IClientObject clientObject = ClientObjectFactory.getForWidget( folder );
     clientObject.create( TYPE );
-    clientObject.setProperty( "parent", WidgetUtil.getId( tabFolder.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( tabFolder ) );
+    clientObject.setProperty( "parent", WidgetUtil.getId( folder.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( folder ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
-    TabFolder tabFolder = ( TabFolder )widget;
-    ControlLCAUtil.renderChanges( tabFolder );
-    WidgetLCAUtil.renderCustomVariant( tabFolder );
-    renderProperty( tabFolder,
-                    PROP_SELECTION_INDEX,
-                    tabFolder.getSelectionIndex(),
-                    DEFAULT_SELECTION_INDEX );
+    TabFolder folder = ( TabFolder )widget;
+    ControlLCAUtil.renderChanges( folder );
+    WidgetLCAUtil.renderCustomVariant( folder );
+    renderProperty( folder, PROP_SELECTION, getSelection( folder ), null );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
     ClientObjectFactory.getForWidget( widget ).destroy();
+  }
+
+  //////////////////
+  // Helping methods
+
+  private static String getSelection( TabFolder folder ) {
+    String selection = null;
+    int selectionIndex = folder.getSelectionIndex();
+    if( selectionIndex != -1 ) {
+      selection = WidgetUtil.getId( folder.getItem( selectionIndex ) );
+    }
+    return selection;
   }
 
   // TODO: Remove when all widgets are migrated to the protocol

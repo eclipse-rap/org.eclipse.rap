@@ -18,20 +18,27 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.TabFolder", {
     org.eclipse.rwt.protocol.AdapterUtil.setParent( result, properties.parent );
     result.setHideFocus( true );
     result.setPlaceBarOnTop( properties.style.indexOf( "BOTTOM" ) === -1 );
-    result.setUserData( "selectionIndex", -1 );
     return result;
   },
 
   destructor : org.eclipse.rwt.protocol.AdapterUtil.getControlDestructor(),
 
   properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
-    "selectionIndex"
+    "selection"
   ] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
-    "selectionIndex" : function( widget, value ) {
-      widget.setUserData( "selectionIndex", value );
-      org.eclipse.swt.TabUtil.applySelectionIndex( widget );
+    "selection" : function( widget, value ) {
+      org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( item ) {
+        var items = widget.getBar().getChildren();
+        for( var index = 0; index < items.length; index++ ) {
+          if( items[ index ] === item ) {
+            items[ index ].setChecked( true );
+          } else if( items[ index ].getChecked() ) {
+            items[ index ].setChecked( false );
+          }
+        }
+      } );
     }
   } ),
 

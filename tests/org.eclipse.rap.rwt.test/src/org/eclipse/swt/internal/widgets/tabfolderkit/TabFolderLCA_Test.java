@@ -273,19 +273,19 @@ public class TabFolderLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( folder.getParent() ), operation.getParent() );
   }
 
-  public void testRenderInitialSelectionIndexWithoutItems() throws IOException {
+  public void testRenderInitialSelectionWithoutItems() throws IOException {
     TabFolder folder = new TabFolder( shell, SWT.NONE );
 
     lca.render( folder );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
-    assertTrue( operation.getPropertyNames().indexOf( "selectionIndex" ) == -1 );
+    assertTrue( operation.getPropertyNames().indexOf( "selection" ) == -1 );
   }
 
-  public void testRenderInitialSelectionIndexWithItems() throws IOException {
+  public void testRenderInitialSelectionWithItems() throws IOException {
     TabFolder folder = new TabFolder( shell, SWT.NONE );
-    new TabItem( folder, SWT.NONE );
+    TabItem item = new TabItem( folder, SWT.NONE );
     new TabItem( folder, SWT.NONE );
     new TabItem( folder, SWT.NONE );
 
@@ -293,23 +293,23 @@ public class TabFolderLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
-    assertEquals( Integer.valueOf( 0 ), operation.getProperty( "selectionIndex" ) );
+    assertEquals( WidgetUtil.getId( item ), operation.getProperty( "selection" ) );
   }
 
-  public void testRenderSelectionIndex() throws IOException {
+  public void testRenderSelection() throws IOException {
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     new TabItem( folder, SWT.NONE );
-    new TabItem( folder, SWT.NONE );
+    TabItem item = new TabItem( folder, SWT.NONE );
     new TabItem( folder, SWT.NONE );
 
     folder.setSelection( 1 );
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 1 ), message.findSetProperty( folder, "selectionIndex" ) );
+    assertEquals( WidgetUtil.getId( item ), message.findSetProperty( folder, "selection" ) );
   }
 
-  public void testRenderSelectionIndexUnchanged() throws IOException {
+  public void testRenderSelectionUnchanged() throws IOException {
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     new TabItem( folder, SWT.NONE );
     new TabItem( folder, SWT.NONE );
@@ -322,6 +322,6 @@ public class TabFolderLCA_Test extends TestCase {
     lca.renderChanges( folder );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( folder, "selectionIndex" ) );
+    assertNull( message.findSetOperation( folder, "selection" ) );
   }
 }

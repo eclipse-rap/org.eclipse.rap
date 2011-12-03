@@ -76,7 +76,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.CTabFolder", {
     "selection" : function( widget, value ) {
       widget.deselectAll();
       org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value, function( item ) {
-        item.setSelected( true );
+        if( item != null ) {
+          item.setSelected( true );
+        }
       } );
     },
     "selectionBackground" : function( widget, value ) {
