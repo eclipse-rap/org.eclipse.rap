@@ -38,9 +38,10 @@ public class TabFolderLCA extends AbstractWidgetLCA {
   }
 
   public void readData( Widget widget ) {
-    ControlLCAUtil.processMouseEvents( ( TabFolder )widget );
-    ControlLCAUtil.processKeyEvents( ( TabFolder )widget );
-    ControlLCAUtil.processMenuDetect( ( TabFolder )widget );
+    TabFolder folder = ( TabFolder )widget;
+    ControlLCAUtil.processMouseEvents( folder );
+    ControlLCAUtil.processKeyEvents( folder );
+    ControlLCAUtil.processMenuDetect( folder );
     WidgetLCAUtil.processHelp( widget );
   }
 
