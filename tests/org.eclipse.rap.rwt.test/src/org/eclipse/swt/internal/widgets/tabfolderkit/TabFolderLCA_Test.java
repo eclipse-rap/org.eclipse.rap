@@ -309,7 +309,7 @@ public class TabFolderLCA_Test extends TestCase {
     assertEquals( new Integer( 1 ), message.findSetProperty( folder, "selectionIndex" ) );
   }
 
-  public void testRenderMinimumUnchanged() throws IOException {
+  public void testRenderSelectionUnchanged() throws IOException {
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     new TabItem( folder, SWT.NONE );
     new TabItem( folder, SWT.NONE );
