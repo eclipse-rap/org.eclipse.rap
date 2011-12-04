@@ -280,6 +280,7 @@ public final class ClientResources {
     "org/eclipse/rwt/widgets/ControlDecorator.js",
     "org/eclipse/rwt/MobileWebkitSupport.js",
     "org/eclipse/swt/widgets/ToolTip.js",
+    "org/eclipse/swt/widgets/ToolTipAdapter.js",
     "org/eclipse/swt/WidgetManager.js",
     "org/eclipse/rwt/protocol/Processor.js",
     "org/eclipse/rwt/UICallBack.js",

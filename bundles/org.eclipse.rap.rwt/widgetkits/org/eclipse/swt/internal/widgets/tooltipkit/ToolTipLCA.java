@@ -7,13 +7,20 @@
  *
  * Contributors:
  *    Rüdiger Herrmann - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.tooltipkit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveProperty;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+
 import java.io.IOException;
 
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.IToolTipAdapter;
@@ -22,145 +29,73 @@ import org.eclipse.swt.widgets.Widget;
 
 
 public final class ToolTipLCA extends AbstractWidgetLCA {
-  static final String PROP_VISIBLE = "visible";
-  static final String PROP_AUTO_HIDE = "autoHide";
-  static final String PROP_TEXT = "text";
-  static final String PROP_MESSAGE = "message";
-  static final String PROP_LOCATION = "location";
-  static final String PROP_SELECTION_LISTENER = "selectionListener";
+
+  private static final String TYPE = "rwt.widgets.ToolTip";
+
+  private static final String PROP_AUTO_HIDE = "autoHide";
+  private static final String PROP_TEXT = "text";
+  private static final String PROP_MESSAGE = "message";
+  private static final String PROP_LOCATION = "location";
+  private static final String PROP_VISIBLE = "visible";
+  private static final String PROP_SELECTION_LISTENER = "selection";
+
+  private static final Point DEFAULT_LOCATION = new Point( 0, 0 );
 
   public void preserveValues( Widget widget ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     ToolTip toolTip = ( ToolTip )widget;
-    adapter.preserve( PROP_VISIBLE, Boolean.valueOf( toolTip.isVisible() ) );
-    adapter.preserve( PROP_AUTO_HIDE,
-                      Boolean.valueOf( toolTip.getAutoHide() ) );
-    adapter.preserve( PROP_TEXT, toolTip.getText() );
-    adapter.preserve( PROP_MESSAGE, toolTip.getMessage() );
-    adapter.preserve( PROP_LOCATION, getLocation( toolTip ) );
-    Boolean hasListener = hasSelectionListener( toolTip );
-    adapter.preserve( PROP_SELECTION_LISTENER, hasListener );
-    WidgetLCAUtil.preserveBackgroundGradient( widget );
-    WidgetLCAUtil.preserveRoundedBorder( widget );
     WidgetLCAUtil.preserveCustomVariant( widget );
+    WidgetLCAUtil.preserveRoundedBorder( widget );
+    WidgetLCAUtil.preserveBackgroundGradient( widget );
+    preserveProperty( toolTip, PROP_AUTO_HIDE, toolTip.getAutoHide() );
+    preserveProperty( toolTip, PROP_TEXT, toolTip.getText() );
+    preserveProperty( toolTip, PROP_MESSAGE, toolTip.getMessage() );
+    preserveProperty( toolTip, PROP_LOCATION, getLocation( toolTip ) );
+    preserveProperty( toolTip, PROP_VISIBLE, toolTip.isVisible() );
+    preserveListener( toolTip, PROP_SELECTION_LISTENER, SelectionEvent.hasListener( toolTip ) );
   }
 
   public void readData( Widget widget ) {
-    ControlLCAUtil.processSelection( widget, null, false );
     ToolTip toolTip = ( ToolTip )widget;
+    ControlLCAUtil.processSelection( toolTip, null, false );
     readVisible( toolTip );
   }
 
   public void renderInitialization( Widget widget ) throws IOException {
     ToolTip toolTip = ( ToolTip )widget;
-    JSWriter writer = JSWriter.getWriterFor( toolTip );
-    Object[] args = new Object[] { getImage( toolTip )};
-    writer.newWidget( "org.eclipse.swt.widgets.ToolTip", args );
-    WidgetLCAUtil.writeStyleFlag( toolTip, SWT.BALLOON, "BAlLOON" );
-    WidgetLCAUtil.writeStyleFlag( toolTip, SWT.ICON_ERROR, "ICON_ERROR" );
-    WidgetLCAUtil.writeStyleFlag( toolTip, SWT.ICON_WARNING, "ICON_WARNING" );
-    WidgetLCAUtil.writeStyleFlag( toolTip, 
-                                  SWT.ICON_INFORMATION, 
-                                  "ICON_INFORMATION" );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( toolTip );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( toolTip.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( toolTip ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
     ToolTip toolTip = ( ToolTip )widget;
-    WidgetLCAUtil.writeBackgroundGradient( widget );
-    WidgetLCAUtil.writeRoundedBorder( widget );
-    WidgetLCAUtil.writeCustomVariant( widget );
-    writeText( toolTip );
-    writeMessage( toolTip );
-    writeLocation( toolTip );
-    writeAutoHide( toolTip );
-    writeSelectionListener( toolTip );
-    // Order is relevant here: writeVisible must be called after all other
-    // properties are set
-    writeVisible( toolTip );
+    WidgetLCAUtil.renderCustomVariant( widget );
+    WidgetLCAUtil.renderRoundedBorder( widget );
+    WidgetLCAUtil.renderBackgroundGradient( widget );
+    renderProperty( toolTip, PROP_AUTO_HIDE, toolTip.getAutoHide(), false );
+    renderProperty( toolTip, PROP_TEXT, toolTip.getText(), "" );
+    renderProperty( toolTip, PROP_MESSAGE, toolTip.getMessage(), "" );
+    renderProperty( toolTip, PROP_LOCATION, getLocation( toolTip ), DEFAULT_LOCATION );
+    renderProperty( toolTip, PROP_VISIBLE, toolTip.isVisible(), false );
+    renderListener( toolTip,
+                    PROP_SELECTION_LISTENER,
+                    SelectionEvent.hasListener( toolTip ),
+                    false );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
   private static void readVisible( ToolTip toolTip ) {
-    String value = WidgetLCAUtil.readPropertyValue( toolTip, "visible" );
+    String value = WidgetLCAUtil.readPropertyValue( toolTip, PROP_VISIBLE );
     if( value != null ) {
       toolTip.setVisible( new Boolean( value ).booleanValue() );
     }
   }
 
-  static void writeText( ToolTip toolTip ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( toolTip );
-    String text = WidgetLCAUtil.escapeText( toolTip.getText(), false );
-    writer.set( PROP_TEXT, "text", text, "" );
-  }
-  
-  static void writeMessage( ToolTip toolTip ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( toolTip );
-    String message = WidgetLCAUtil.escapeText( toolTip.getMessage(), false );
-    message = WidgetLCAUtil.replaceNewLines( message, "<br/>" );
-    writer.set( PROP_MESSAGE, "message", message, "" );
-  }
-  
-  private static void writeVisible( ToolTip toolTip ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( toolTip );
-    Boolean visible = Boolean.valueOf( toolTip.isVisible() );
-    writer.set( PROP_VISIBLE, "visible", visible, Boolean.FALSE );
-  }
-
-  private static void writeLocation( ToolTip toolTip )
-    throws IOException
-  {
-    JSWriter writer = JSWriter.getWriterFor( toolTip );
-    Point location = getLocation( toolTip );
-    if( WidgetLCAUtil.hasChanged( toolTip, PROP_LOCATION, location ) ) {
-      Object[] args = new Object[] {
-        new Integer( location.x ),
-        new Integer( location.y )
-      };
-      writer.call( "setLocation", args );
-    }
-  }
-
-  private static void writeAutoHide( ToolTip toolTip ) throws IOException 
-  {
-    JSWriter writer = JSWriter.getWriterFor( toolTip );
-    Boolean autoHide = Boolean.valueOf( toolTip.getAutoHide() );
-    writer.set( PROP_AUTO_HIDE, "hideAfterTimeout", autoHide, Boolean.FALSE );
-  }
-
-  private static void writeSelectionListener( ToolTip toolTip ) 
-    throws IOException 
-  {
-    JSWriter writer = JSWriter.getWriterFor( toolTip );
-    Boolean hasListener = hasSelectionListener( toolTip );
-    writer.set( PROP_SELECTION_LISTENER, 
-                "hasSelectionListener", 
-                hasListener, 
-                Boolean.FALSE );
-  }
-
-  private static Boolean hasSelectionListener( ToolTip toolTip ) {
-    return Boolean.valueOf( SelectionEvent.hasListener( toolTip ) );
-  }
-
   private static Point getLocation( ToolTip toolTip ) {
-    Object adapter = toolTip.getAdapter( IToolTipAdapter.class );
-    IToolTipAdapter toolTipAdapter = ( IToolTipAdapter )adapter;
-    return toolTipAdapter.getLocation();
-  }
-
-  static String getImage( ToolTip toolTip ) {
-    String result = null;
-    if( ( toolTip.getStyle() & SWT.ICON_ERROR ) != 0 ) {
-      result = "error";
-    } if( ( toolTip.getStyle() & SWT.ICON_WARNING ) != 0 ) {
-      result = "warning";
-    } if( ( toolTip.getStyle() & SWT.ICON_INFORMATION ) != 0 ) {
-      result = "information";
-    }
-    return result;
+    return toolTip.getAdapter( IToolTipAdapter.class ).getLocation();
   }
 }
