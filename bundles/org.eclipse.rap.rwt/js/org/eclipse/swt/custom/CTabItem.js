@@ -244,6 +244,6 @@ qx.Class.define( "org.eclipse.swt.custom.CTabItem", {
       } else {
         this.removeState( "firstItem" );
       }
-    },
+    }
   }
 } );
