@@ -462,7 +462,7 @@ public class SessionStoreImpl_Test extends TestCase {
   public void testServiceContextAvailableInBeforeDestroyEvent() {
     final boolean[] hasContext = { false };
     session.addSessionStoreListener( new SessionStoreListener() {
-      public void beforeDestroy( final SessionStoreEvent event ) {
+      public void beforeDestroy( SessionStoreEvent event ) {
         hasContext[ 0 ] = ContextProvider.hasContext();
       }
     } );
@@ -492,14 +492,14 @@ public class SessionStoreImpl_Test extends TestCase {
     final Runnable[] shutdownCallback = { null };
     final boolean[] listenerWasCalled = { false };
     session.addSessionStoreListener( new SessionStoreListener() {
-      public void beforeDestroy( final SessionStoreEvent event ) {
+      public void beforeDestroy( SessionStoreEvent event ) {
         listenerWasCalled[ 0 ] = true;
       }
     } );
     session.setShutdownAdapter( new ISessionShutdownAdapter() {
-      public void setSessionStore( final ISessionStore sessionStore ) {
+      public void setSessionStore( ISessionStore sessionStore ) {
       }
-      public void setShutdownCallback( final Runnable callback ) {
+      public void setShutdownCallback( Runnable callback ) {
         shutdownCallback[ 0 ] = callback;
       }
       public void interceptShutdown() {

@@ -1023,7 +1023,7 @@ public class JSWriter_Test extends TestCase {
     final Text text;
     final Combo combo;
 
-    public TestShell( final Display display ) {
+    public TestShell( Display display ) {
       super( display ,SWT.NONE );
       button = new Button( this, SWT.PUSH );
       text = new Text( this, SWT.SINGLE );

@@ -85,14 +85,14 @@ public class ContextProvider_Test extends TestCase {
     try {
       new ServiceContext( null, response );
       fail( "Request parameter must not be null." );
-    } catch( final NullPointerException npe ) {
+    } catch( NullPointerException npe ) {
     }
     
     try {
       TestRequest request = new TestRequest();
       new ServiceContext( request, null );
       fail( "Response parameter must not be null." );
-    } catch( final NullPointerException npe ) {
+    } catch( NullPointerException npe ) {
     }
   }
   

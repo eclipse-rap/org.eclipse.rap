@@ -199,7 +199,7 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuilder log = new StringBuilder();
     SelectionListener listener = new SelectionListener() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         log.append( WIDGET_SELECTED );
       }
       public void widgetDefaultSelected( SelectionEvent e ) {
@@ -282,7 +282,7 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.writeKeyListener( shell );
     assertEquals( "", Fixture.getAllMarkup() );
     shell.addListener( SWT.KeyDown, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         eventLog.add( event );
       }
     } );
@@ -301,7 +301,7 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.writeTraverseListener( shell );
     assertEquals( "", Fixture.getAllMarkup() );
     shell.addListener( SWT.Traverse, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         eventLog.add( event );
       }
     } );
@@ -317,7 +317,7 @@ public class ControlLCAUtil_Test extends TestCase {
     final java.util.List<Event> eventLog = new ArrayList<Event>();
     shell.open();
     shell.addListener( SWT.KeyDown, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         eventLog.add( event );
       }
     } );
@@ -356,18 +356,18 @@ public class ControlLCAUtil_Test extends TestCase {
   public void testProcessKeyEventsWithDoItFlag() {
     final java.util.List<Event> eventLog = new ArrayList<Event>();
     Listener doitTrueListener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         eventLog.add( event );
       }
     };
     Listener doitFalseListener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         eventLog.add( event );
         event.doit = false;
       }
     };
     Listener keyUpListener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         eventLog.add( event );
       }
     };
@@ -414,12 +414,12 @@ public class ControlLCAUtil_Test extends TestCase {
   public void testProcessTraverseEventsWithDoItFlag() {
     final java.util.List<Event> eventLog = new ArrayList<Event>();
     Listener doitTrueListener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         eventLog.add( event );
       }
     };
     Listener doitFalseListener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         eventLog.add( event );
         event.doit = false;
       }
@@ -468,7 +468,7 @@ public class ControlLCAUtil_Test extends TestCase {
     // Ensure that if a key event that notifies about a traversal key is
     // canceled (doit=false) the following traverse event isn't fired at all
     Listener listener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         eventLog.add( event );
       }
     };
@@ -561,7 +561,7 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final java.util.List<HelpEvent> log = new ArrayList<HelpEvent>();
     shell.addHelpListener( new HelpListener() {
-      public void helpRequested( final HelpEvent event ) {
+      public void helpRequested( HelpEvent event ) {
         log.add( event );
       }
     } );

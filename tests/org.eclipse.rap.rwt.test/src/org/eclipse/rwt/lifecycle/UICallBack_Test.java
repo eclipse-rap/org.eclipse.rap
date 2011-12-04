@@ -145,7 +145,7 @@ public class UICallBack_Test extends TestCase {
     assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swtException.code );
   }
 
-  private static Throwable runInThread( final Runnable runnable ) {
+  private static Throwable runInThread( Runnable runnable ) {
     Throwable result = null;
     try {
       Fixture.runInThread( runnable );

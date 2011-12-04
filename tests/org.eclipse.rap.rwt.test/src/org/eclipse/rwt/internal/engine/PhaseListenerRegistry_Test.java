@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,9 +23,9 @@ import org.eclipse.rwt.lifecycle.*;
 public class PhaseListenerRegistry_Test extends TestCase {
 
   private static class TestPhaseListener implements PhaseListener {
-    public void afterPhase( final PhaseEvent event ) {
+    public void afterPhase( PhaseEvent event ) {
     }
-    public void beforePhase( final PhaseEvent event ) {
+    public void beforePhase( PhaseEvent event ) {
     }
     public PhaseId getPhaseId() {
       return null;

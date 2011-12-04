@@ -37,7 +37,7 @@ public class BrandingUtil_Test extends TestCase {
     assertEquals( "", getTemplateContent( template ).toString() );
   }
 
-  private StringBuilder getTemplateContent( final StartupPageTemplateHolder template ) {
+  private StringBuilder getTemplateContent( StartupPageTemplateHolder template ) {
     String[] tokens = template.getTokens();
     StringBuilder result = new StringBuilder();
     for( int i = 0; i < tokens.length; i++ ) {

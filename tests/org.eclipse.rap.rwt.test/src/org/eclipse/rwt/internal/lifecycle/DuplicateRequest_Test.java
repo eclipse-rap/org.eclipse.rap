@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.rwt.internal.lifecycle;
@@ -33,7 +34,7 @@ public class DuplicateRequest_Test extends TestCase {
     shell.setLayout( new FillLayout() );
     final Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         events.add( event );
         button.setEnabled( false );
       }
@@ -66,7 +67,7 @@ public class DuplicateRequest_Test extends TestCase {
     shell.setLayout( new FillLayout() );
     final Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         events.add( event );
         button.setVisible( false );
       }
@@ -99,7 +100,7 @@ public class DuplicateRequest_Test extends TestCase {
     shell.setLayout( new FillLayout() );
     final Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         events.add( event );
         button.dispose();
       }
@@ -132,7 +133,7 @@ public class DuplicateRequest_Test extends TestCase {
     shell.setLayout( new FillLayout() );
     final Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         events.add( event );
         Shell dialog = new Shell( shell, SWT.APPLICATION_MODAL );
         dialog.setSize( 100, 100 );
@@ -167,7 +168,7 @@ public class DuplicateRequest_Test extends TestCase {
     shell.setLayout( new FillLayout() );
     final Text text = new Text( shell, SWT.NONE );
     text.addFocusListener( new FocusAdapter() {
-      public void focusLost( final FocusEvent event ) {
+      public void focusLost( FocusEvent event ) {
         events.add( event );
         Shell dialog = new Shell( shell, SWT.APPLICATION_MODAL );
         dialog.setSize( 100, 100 );
@@ -176,7 +177,7 @@ public class DuplicateRequest_Test extends TestCase {
     } );
     final Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         events.add( event );
       }
     } );
@@ -205,7 +206,7 @@ public class DuplicateRequest_Test extends TestCase {
     final Shell shell = new Shell( display, SWT.SHELL_TRIM );
     shell.setSize( 100, 100 );
     shell.addShellListener( new ShellAdapter() {
-      public void shellClosed( final ShellEvent event ) {
+      public void shellClosed( ShellEvent event ) {
         events.add( event );
       }
     } );
@@ -242,7 +243,7 @@ public class DuplicateRequest_Test extends TestCase {
     shell2.setSize( 100, 100 );
     Button button = new Button( shell2, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         events.add( event );
       }
     } );

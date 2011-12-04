@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,7 +48,7 @@ public class EventAdapter_Test extends TestCase {
     try {
       eventAdapter.hasListener( Object.class );
       fail();
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
     }
     
     Object[] listener = eventAdapter.getListener( SelectionListener.class );
@@ -69,19 +69,19 @@ public class EventAdapter_Test extends TestCase {
     try {
       eventAdapter.addListener( SelectionListener.class, new SWTEventListener() { } );
       fail();
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
     }
     try {
       eventAdapter.addListener( SelectionListener.class, null );
       fail();
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
     }
     try {
       SelectionListener validListener = new SelectionAdapter() {
       }; 
       eventAdapter.addListener( null, validListener );
       fail();
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
     }
     Object[] listeners = eventAdapter.getListener( SelectionListener.class );
     assertEquals( 0, listeners.length );

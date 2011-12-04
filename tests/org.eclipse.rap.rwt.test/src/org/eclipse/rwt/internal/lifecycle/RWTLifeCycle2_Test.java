@@ -93,7 +93,7 @@ public class RWTLifeCycle2_Test extends TestCase {
       Display display = new Display();
       try {
         display.addListener( SWT.Dispose, new Listener() {
-          public void handleEvent( final Event event ) {
+          public void handleEvent( Event event ) {
             eventLog.add( event );
           }
         } );
@@ -132,13 +132,13 @@ public class RWTLifeCycle2_Test extends TestCase {
         Display display = new Display();
         final Shell shell = new Shell( display );
         shell.addDisposeListener( new DisposeListener() {
-          public void widgetDisposed( final DisposeEvent event ) {
+          public void widgetDisposed( DisposeEvent event ) {
             eventLog.add(  event );
           }
         } );
         ISessionStore sessionStore = RWT.getSessionStore();
         sessionStore.addSessionStoreListener( new SessionStoreListener() {
-          public void beforeDestroy( final SessionStoreEvent event ) {
+          public void beforeDestroy( SessionStoreEvent event ) {
             shell.dispose();
           }
         } );
@@ -342,7 +342,7 @@ public class RWTLifeCycle2_Test extends TestCase {
     TestServletContext servletContextImpl
       = ( TestServletContext )servletContext;
     servletContextImpl.setLogger( new TestLogger() {
-      public void log( final String message, final Throwable throwable ) {
+      public void log( String message, Throwable throwable ) {
         if( throwable != null ) {
           throwable.printStackTrace();
         }

@@ -107,7 +107,7 @@ public class UICallBackManager_Test extends TestCase {
     manager.setHasRunnables( true );
     manager.wakeClient();
     thread.join();
-    
+
     assertFalse( manager.isCallBackRequestBlocked() );
     assertFalse( thread.isAlive() );
   }
@@ -115,7 +115,7 @@ public class UICallBackManager_Test extends TestCase {
   public void testWaitOnUIThread() throws Exception {
     CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator();
     callBackRequestSimulator.sendRequest();
-    
+
     display.wake();
 
     assertTrue( manager.isCallBackRequestBlocked() );
@@ -130,7 +130,7 @@ public class UICallBackManager_Test extends TestCase {
 
     callDisplayWake();
     callBackRequestSimulator.waitForRequest();
-    
+
     assertFalse( manager.isCallBackRequestBlocked() );
     assertFalse( callBackRequestSimulator.exceptionOccured() );
   }
@@ -140,13 +140,13 @@ public class UICallBackManager_Test extends TestCase {
     CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator();
     callBackRequestSimulator.sendRequest();
     assertTrue( manager.isCallBackRequestBlocked() );
-    
+
     // assume that UIThread is currently running the life cycle
     manager.notifyUIThreadStart();
     callDisplayWake();
     manager.notifyUIThreadEnd();
     callBackRequestSimulator.waitForRequest();
-    
+
     assertFalse( callBackRequestSimulator.exceptionOccured() );
     assertFalse( manager.isCallBackRequestBlocked() );
   }
@@ -186,10 +186,10 @@ public class UICallBackManager_Test extends TestCase {
     ServiceContext context = ContextProvider.getContext();
     CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator( context );
     callBackRequestSimulator.sendRequest();
-    
+
     simulateBackgroundAddition( context );
     callBackRequestSimulator.waitForRequest();
-    
+
     assertFalse( manager.isCallBackRequestBlocked() );
     assertFalse( callBackRequestSimulator.isRequestRunning() );
     assertEquals( "", log );
@@ -199,7 +199,7 @@ public class UICallBackManager_Test extends TestCase {
     ServiceContext context = ContextProvider.getContext();
     CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator( context );
     callBackRequestSimulator.sendRequest();
-    
+
     context.getSessionStore().getHttpSession().invalidate();
     callBackRequestSimulator.waitForRequest();
 
@@ -230,7 +230,7 @@ public class UICallBackManager_Test extends TestCase {
     callBackRequestSimulator1.sendRequest();
     ServiceContext context2 = createServiceContext( new TestResponse() );
     CallBackRequestSimulator callBackRequestSimulator2 = new CallBackRequestSimulator( context2 );
-    
+
     callBackRequestSimulator2.sendRequest();
     callBackRequestSimulator1.waitForRequest();
 
@@ -255,7 +255,7 @@ public class UICallBackManager_Test extends TestCase {
     ServiceContext context2 = createServiceContext( response );
     CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator( context2 );
     callBackRequestSimulator.sendRequest();
-    
+
     Thread.sleep( SLEEP_TIME );
 
     assertFalse( manager.isCallBackRequestBlocked() );
@@ -269,7 +269,7 @@ public class UICallBackManager_Test extends TestCase {
     // test runnables addition while no uiCallBack thread is not blocked
     CallBackRequestSimulator callBackRequestSimulator = new CallBackRequestSimulator( context );
     callBackRequestSimulator.sendRequest();
-    
+
     manager.notifyUIThreadEnd();
     simulateBackgroundAddition( context );
     fakeRequestParam();
@@ -309,7 +309,7 @@ public class UICallBackManager_Test extends TestCase {
     Thread.sleep( TIMER_EXEC_DELAY + 50 );
 
     display.readAndDispatch();
-    
+
     verify( runnable ).run();
   }
 
@@ -331,19 +331,19 @@ public class UICallBackManager_Test extends TestCase {
     assertFalse( manager.hasRunnables() );
     verifyZeroInteractions( runnable );
   }
-  
+
   public void testTimerExecActivatesUICallback() {
     display.timerExec( TIMER_EXEC_DELAY, mock( Runnable.class ) );
-    
+
     assertTrue( UICallBackManager.getInstance().isUICallBackActive() );
   }
-  
+
   public void testDispatchingTimerExecRunnableDeactivatesUICallback() throws Exception {
     Runnable runnable = mock( Runnable.class );
     display.timerExec( TIMER_EXEC_DELAY, runnable );
 
     Thread.sleep( TIMER_EXEC_DELAY + 50 );
-    
+
     assertFalse( UICallBackManager.getInstance().isUICallBackActive() );
   }
 
@@ -432,7 +432,7 @@ public class UICallBackManager_Test extends TestCase {
     manager.activateUICallBacksFor( "foo" );
     assertTrue( manager.mustBlockCallBackRequest() );
   }
-  
+
   public void testMustBlockCallBackRequestWhenActiveAndRunnablesPending() {
     manager.activateUICallBacksFor( "foo" );
     manager.setHasRunnables( true );
@@ -443,7 +443,7 @@ public class UICallBackManager_Test extends TestCase {
     manager.setHasRunnables( true );
     assertFalse( manager.mustBlockCallBackRequest() );
   }
-  
+
   public void testNeedActivationFromDifferentSession() throws Throwable {
     // test that on/off switching is managed in session scope
     manager.activateUICallBacksFor( ID_1 );
@@ -536,7 +536,7 @@ public class UICallBackManager_Test extends TestCase {
       fail();
     }
   }
-  
+
   private void simulateBackgroundAddition( final ServiceContext serviceContext ) throws Throwable {
     Runnable runnable = new Runnable() {
       public void run() {
@@ -602,15 +602,15 @@ public class UICallBackManager_Test extends TestCase {
     private final ServiceContext serviceContext;
     private volatile Thread requestThread;
     private volatile Throwable exception;
-    
+
     CallBackRequestSimulator() {
-      this.serviceContext = ContextProvider.getContext();
+      serviceContext = ContextProvider.getContext();
     }
-    
+
     CallBackRequestSimulator( ServiceContext serviceContext ) {
       this.serviceContext = serviceContext;
     }
-    
+
     void sendRequest() throws InterruptedException {
       requestThread = new Thread( new Runnable() {
         public void run() {
@@ -627,15 +627,15 @@ public class UICallBackManager_Test extends TestCase {
       requestThread.start();
       Thread.sleep( SLEEP_TIME );
     }
-    
+
     void waitForRequest() throws InterruptedException {
       requestThread.join();
     }
-    
+
     boolean isRequestRunning() {
       return requestThread.isAlive();
     }
-    
+
     boolean exceptionOccured() {
       return exception != null;
     }

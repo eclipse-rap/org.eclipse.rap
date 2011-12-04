@@ -35,7 +35,7 @@ public class TextSizeStorageUtil_Test extends TestCase {
     try {
       TextSizeStorageUtil.store( FONT_DATA, TEST_STRING, SWT.DEFAULT, new Point( 1, 1 ) );
       fail( "No probe available." );
-    } catch( final IllegalStateException ise ) {
+    } catch( IllegalStateException ise ) {
     }
   }
   

@@ -76,7 +76,7 @@ public class ReadDispose_Test extends TestCase {
       }
       Button button = new Button( shell, SWT.PUSH );
       button.addSelectionListener( new SelectionAdapter() {
-        public void widgetSelected( final SelectionEvent event ) {
+        public void widgetSelected( SelectionEvent event ) {
           text.dispose();
           tree.dispose();
         }

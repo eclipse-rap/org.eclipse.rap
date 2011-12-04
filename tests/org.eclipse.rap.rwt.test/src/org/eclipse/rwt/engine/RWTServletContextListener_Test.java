@@ -45,10 +45,10 @@ public class RWTServletContextListener_Test extends TestCase {
 
     private static final long serialVersionUID = 1L;
 
-    public void beforePhase( final PhaseEvent event ) {
+    public void beforePhase( PhaseEvent event ) {
     }
 
-    public void afterPhase( final PhaseEvent event ) {
+    public void afterPhase( PhaseEvent event ) {
     }
 
     public PhaseId getPhaseId() {

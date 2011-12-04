@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,12 +96,12 @@ public class Browser_Test extends TestCase {
     final String[] expectedLocation = new String[ 1 ];
     final Browser browser = new Browser( shell, SWT.NONE );
     LocationListener listener = new LocationListener() {
-      public void changing( final LocationEvent event ) {
+      public void changing( LocationEvent event ) {
         log.append( "changing" + event.location + "|" );
         assertEquals( expectedLocation[ 0 ], event.location );
         assertFalse( event.top );
       }
-      public void changed( final LocationEvent event ) {
+      public void changed( LocationEvent event ) {
         log.append( "changed" + event.location );
         assertSame( browser, event.getSource() );
         assertEquals( true, event.doit );
@@ -110,11 +110,11 @@ public class Browser_Test extends TestCase {
       }
     };
     LocationListener vetoListener = new LocationListener() {
-      public void changing( final LocationEvent event ) {
+      public void changing( LocationEvent event ) {
         log.append( "changing" + event.location + "|" );
         event.doit = false;
       }
-      public void changed( final LocationEvent event ) {
+      public void changed( LocationEvent event ) {
         log.append( "changed" + event.location );
       }
     };
@@ -176,10 +176,10 @@ public class Browser_Test extends TestCase {
     final ArrayList<String> log = new ArrayList<String>();
     final Browser browser = new Browser( shell, SWT.NONE );
     browser.addProgressListener( new ProgressListener() {
-      public void changed( final ProgressEvent event ) {
+      public void changed( ProgressEvent event ) {
         log.add( "changed" );
       }
-      public void completed( final ProgressEvent event ) {
+      public void completed( ProgressEvent event ) {
         log.add( "completed" );
       }
     } );
@@ -192,17 +192,17 @@ public class Browser_Test extends TestCase {
     final ArrayList<String> log = new ArrayList<String>();
     final Browser browser = new Browser( shell, SWT.NONE );
     browser.addLocationListener( new LocationListener() {
-      public void changing( final LocationEvent event ) {
+      public void changing( LocationEvent event ) {
         event.doit = false;
       }
-      public void changed( final LocationEvent event ) {
+      public void changed( LocationEvent event ) {
       }
     } );
     browser.addProgressListener( new ProgressListener() {
-      public void changed( final ProgressEvent event ) {
+      public void changed( ProgressEvent event ) {
         log.add( "changed" );
       }
-      public void completed( final ProgressEvent event ) {
+      public void completed( ProgressEvent event ) {
         log.add( "completed" );
       }
     } );
@@ -214,10 +214,10 @@ public class Browser_Test extends TestCase {
     final ArrayList<String> log = new ArrayList<String>();
     final Browser browser = new Browser( shell, SWT.NONE );
     browser.addProgressListener( new ProgressListener() {
-      public void changed( final ProgressEvent event ) {
+      public void changed( ProgressEvent event ) {
         log.add( "changed" );
       }
-      public void completed( final ProgressEvent event ) {
+      public void completed( ProgressEvent event ) {
         log.add( "completed" );
       }
     } );
@@ -230,17 +230,17 @@ public class Browser_Test extends TestCase {
     final ArrayList<String> log = new ArrayList<String>();
     final Browser browser = new Browser( shell, SWT.NONE );
     browser.addLocationListener( new LocationListener() {
-      public void changing( final LocationEvent event ) {
+      public void changing( LocationEvent event ) {
         event.doit = false;
       }
-      public void changed( final LocationEvent event ) {
+      public void changed( LocationEvent event ) {
       }
     } );
     browser.addProgressListener( new ProgressListener() {
-      public void changed( final ProgressEvent event ) {
+      public void changed( ProgressEvent event ) {
         log.add( "changed" );
       }
-      public void completed( final ProgressEvent event ) {
+      public void completed( ProgressEvent event ) {
         log.add( "completed" );
       }
     } );
@@ -262,7 +262,7 @@ public class Browser_Test extends TestCase {
     assertEquals( browser.getUrl(), deserializedBrowser.getUrl() );
   }
 
-  private static String getText( final Browser browser ) {
+  private static String getText( Browser browser ) {
     Object adapter = browser.getAdapter( IBrowserAdapter.class );
     IBrowserAdapter browserAdapter = ( IBrowserAdapter )adapter;
     return browserAdapter.getText();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,7 +99,7 @@ public class StyleSheet_Test extends TestCase {
     assertEquals( QxColor.create( 192, 192, 192 ), values[ 5 ].value );
   }
 
-  private static String join( final String[] array ) {
+  private static String join( String[] array ) {
     StringBuilder result = new StringBuilder();
     for( int i = 0; i < array.length; i++ ) {
       if( i > 0 ) {

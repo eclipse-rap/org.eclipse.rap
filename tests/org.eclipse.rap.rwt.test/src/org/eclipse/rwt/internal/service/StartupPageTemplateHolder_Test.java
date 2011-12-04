@@ -87,7 +87,7 @@ public class StartupPageTemplateHolder_Test extends TestCase {
     
   }
 
-  private String getContent( final StartupPageTemplateHolder template ) {
+  private String getContent( StartupPageTemplateHolder template ) {
     String[] tokens = template.getTokens();
     StringBuilder result = new StringBuilder();
     for( int i = 0; i < tokens.length; i++ ) {

@@ -32,7 +32,7 @@ public class QxAppearanceTheme_Test extends TestCase {
     try {
       theme.appendAppearances( "bar" );
       fail( "ISE expected" );
-    } catch( final IllegalStateException e ) {
+    } catch( IllegalStateException e ) {
       // expected
     }
   }

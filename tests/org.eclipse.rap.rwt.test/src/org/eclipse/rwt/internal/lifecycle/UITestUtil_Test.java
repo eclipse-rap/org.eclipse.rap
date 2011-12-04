@@ -78,7 +78,7 @@ public class UITestUtil_Test extends TestCase {
     try {
       lca.render( label );
       fail( "widget id contains illegal characters" );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
     }
   }
   

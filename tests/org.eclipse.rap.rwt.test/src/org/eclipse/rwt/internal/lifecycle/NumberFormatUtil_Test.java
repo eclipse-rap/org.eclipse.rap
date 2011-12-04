@@ -14,6 +14,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 
+
 public class NumberFormatUtil_Test extends TestCase {
 
   public void testParseInt_IntValues() {
@@ -29,7 +30,7 @@ public class NumberFormatUtil_Test extends TestCase {
     try {
       NumberFormatUtil.parseInt( input );
       fail( "Should throw NumberFormatException" );
-    } catch( final NumberFormatException e ) {
+    } catch( NumberFormatException e ) {
       // expected
     }
   }
@@ -39,7 +40,7 @@ public class NumberFormatUtil_Test extends TestCase {
     try {
       NumberFormatUtil.parseInt( input );
       fail( "Should throw NumberFormatException" );
-    } catch( final NumberFormatException e ) {
+    } catch( NumberFormatException e ) {
       // expected
     }
   }
@@ -49,7 +50,7 @@ public class NumberFormatUtil_Test extends TestCase {
     try {
       NumberFormatUtil.parseInt( input );
       fail( "Should throw IllegalArgumentException" );
-    } catch( final IllegalArgumentException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
   }
@@ -59,7 +60,7 @@ public class NumberFormatUtil_Test extends TestCase {
     try {
       NumberFormatUtil.parseInt( input );
       fail( "Should throw IllegalArgumentException" );
-    } catch( final IllegalArgumentException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
   }
@@ -69,7 +70,7 @@ public class NumberFormatUtil_Test extends TestCase {
     try {
       NumberFormatUtil.parseInt( input );
       fail( "Should throw IllegalArgumentException" );
-    } catch( final IllegalArgumentException e ) {
+    } catch( IllegalArgumentException e ) {
       // expected
     }
   }

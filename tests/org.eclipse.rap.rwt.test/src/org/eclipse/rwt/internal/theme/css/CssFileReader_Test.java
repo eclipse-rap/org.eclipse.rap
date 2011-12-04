@@ -87,13 +87,13 @@ public class CssFileReader_Test extends TestCase {
     assertTrue( containsProblem( problems, "property padding" ) );
   }
 
-  private static InputStream getInputStream( final String fileName ) {
+  private static InputStream getInputStream( String fileName ) {
     ClassLoader classLoader = CssFileReader_Test.class.getClassLoader();
     InputStream inStream = classLoader.getResourceAsStream( PACKAGE + fileName );
     return inStream;
   }
 
-  private boolean containsProblem( final Object[] array, final String part ) {
+  private boolean containsProblem( Object[] array, String part ) {
     boolean result = false;
     for( int i = 0; i < array.length && !result; i++ ) {
       result |= array[ i ].toString().contains( part );
