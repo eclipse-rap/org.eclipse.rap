@@ -163,7 +163,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       writeErrorPages( display );
       renderExitConfirmation( display );
       renderShells( display );
-      writeFocus( display );
+      renderFocus( display );
       writeUICallBackActivation( display );
       markInitialized( display );
       ActiveKeysUtil.writeActiveKeys( display );
@@ -305,7 +305,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     }
   }
 
-  private static void writeFocus( Display display ) {
+  private static void renderFocus( Display display ) {
     if( !display.isDisposed() ) {
       IDisplayAdapter displayAdapter = getDisplayAdapter( display );
       IWidgetAdapter widgetAdapter = DisplayUtil.getAdapter( display );
