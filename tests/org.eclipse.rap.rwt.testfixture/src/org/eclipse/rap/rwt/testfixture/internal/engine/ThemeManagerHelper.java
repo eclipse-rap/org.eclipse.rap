@@ -68,7 +68,7 @@ public class ThemeManagerHelper {
     private ClassLoader classLoader = ThemeManager.class.getClassLoader();
     private Map<String,StreamBuffer> resourceStreams = new HashMap<String,StreamBuffer>();
 
-    public InputStream getResourceAsStream( final String name )
+    public InputStream getResourceAsStream( String name )
       throws IOException
     {
       StreamBuffer result = resourceStreams.get( name );
@@ -80,7 +80,7 @@ public class ThemeManagerHelper {
       return result;
     }
 
-    private StreamBuffer bufferStream( final String name ) {
+    private StreamBuffer bufferStream( String name ) {
       StreamBuffer result = null;
       InputStream in = classLoader.getResourceAsStream( name );
       if( in != null ) {

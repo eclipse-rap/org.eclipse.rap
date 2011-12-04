@@ -30,7 +30,7 @@ public class TestResourceManager implements IResourceManager {
     registeredResources = new HashSet<String>();
   }
 
-  public String getCharset( final String name ) {
+  public String getCharset( String name ) {
     return null;
   }
 
@@ -38,11 +38,11 @@ public class TestResourceManager implements IResourceManager {
     return loader;
   }
 
-  public String getLocation( final String name ) {
+  public String getLocation( String name ) {
     return ResourceManagerImpl.RESOURCES + "/" + name;
   }
 
-  public URL getResource( final String name ) {
+  public URL getResource( String name ) {
     URL result = null;
     if( loader != null ) {
       result = loader.getResource( name );
@@ -50,7 +50,7 @@ public class TestResourceManager implements IResourceManager {
     return result;
   }
 
-  public InputStream getResourceAsStream( final String name ) {
+  public InputStream getResourceAsStream( String name ) {
     InputStream result = null;
     if( loader != null ) {
       result = loader.getResourceAsStream( name );
@@ -58,7 +58,7 @@ public class TestResourceManager implements IResourceManager {
     return result;
   }
 
-  public Enumeration getResources( final String name ) throws IOException {
+  public Enumeration getResources( String name ) throws IOException {
     Enumeration result = null;
     if( loader != null ) {
       result = loader.getResources( name );
@@ -99,11 +99,11 @@ public class TestResourceManager implements IResourceManager {
     return registeredResources.remove( name );
   }
 
-  public void setContextLoader( final ClassLoader contextLoader ) {
+  public void setContextLoader( ClassLoader contextLoader ) {
     loader = contextLoader;
   }
 
-  public InputStream getRegisteredContent( final String name ) {
+  public InputStream getRegisteredContent( String name ) {
     return null;
   }
 

@@ -26,8 +26,8 @@ public class TestServletOutputStream extends ServletOutputStream {
 
   private final ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
-  public void write( final int b ) throws IOException {
-    stream.write( b );
+  public void write( int bytes ) throws IOException {
+    stream.write( bytes );
   }
 
   public ByteArrayOutputStream getContent() {

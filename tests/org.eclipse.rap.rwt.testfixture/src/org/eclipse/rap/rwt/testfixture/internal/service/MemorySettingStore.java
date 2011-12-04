@@ -41,7 +41,7 @@ public final class MemorySettingStore implements ISettingStore {
    * @throws IllegalArgumentException if id is empty or composed
    *         entirely of whitespace
    */
-  public MemorySettingStore( final String id ) {
+  public MemorySettingStore( String id ) {
     ParamCheck.notNullOrEmpty( id, "id" );
     this.id = id;
   }
@@ -54,14 +54,14 @@ public final class MemorySettingStore implements ISettingStore {
     return id;
   }
   
-  public synchronized void loadById( final String id ) {
+  public synchronized void loadById( String id ) {
     ParamCheck.notNullOrEmpty( id, "id" );
     fakeRemoval();
     this.id = id;
     loadAttributes();
   }
   
-  public synchronized String getAttribute( final String name ) {
+  public synchronized String getAttribute( String name ) {
     ParamCheck.notNull( name, "name" );
     String key = id + name;
     return VALUES.get( key );
@@ -88,7 +88,7 @@ public final class MemorySettingStore implements ISettingStore {
     };
   }
 
-  public synchronized void removeAttribute( final String name ) {
+  public synchronized void removeAttribute( String name ) {
     ParamCheck.notNull( name, "name" );
     String key = id + name;
     String oldValue = VALUES.remove( key );
@@ -97,8 +97,7 @@ public final class MemorySettingStore implements ISettingStore {
     }
   }
 
-  public synchronized void setAttribute( final String name, 
-                                         final String value ) 
+  public synchronized void setAttribute( String name, String value ) 
   {
     ParamCheck.notNull( name, "name" );
     if( value == null ) {
@@ -113,15 +112,13 @@ public final class MemorySettingStore implements ISettingStore {
     }
   }
 
-  public synchronized void addSettingStoreListener( 
-    final SettingStoreListener listener ) 
+  public synchronized void addSettingStoreListener( SettingStoreListener listener ) 
   {
     ParamCheck.notNull( listener, "listener" );
     LISTENERS.add( listener );
   }
 
-  public synchronized void removeSettingStoreListener( 
-    final SettingStoreListener listener ) 
+  public synchronized void removeSettingStoreListener( SettingStoreListener listener ) 
   {
     ParamCheck.notNull( listener, "listener" );
     LISTENERS.remove( listener );
@@ -151,13 +148,11 @@ public final class MemorySettingStore implements ISettingStore {
     }
   }
   
-  private void log( final String msg, final Throwable throwable ) {
+  private void log( String msg, Throwable throwable ) {
     RWT.getRequest().getSession().getServletContext().log( msg, throwable );
   }
   
-  private synchronized void notifyListeners( final String attribute,
-                                             final String oldValue, 
-                                             final String newValue ) {
+  private synchronized void notifyListeners( String attribute, String oldValue, String newValue ) {
     SettingStoreEvent event 
       = new SettingStoreEvent( this, attribute, oldValue, newValue );
     Iterator iter = LISTENERS.iterator();

@@ -67,7 +67,7 @@ public class TestSession implements HttpSession {
     this.servletContext = servletContext;
   }
 
-  public void setMaxInactiveInterval( final int maxInactiveInterval ) {
+  public void setMaxInactiveInterval( int maxInactiveInterval ) {
     this.maxInactiveInterval = maxInactiveInterval;
   }
 
@@ -82,11 +82,11 @@ public class TestSession implements HttpSession {
     return null;
   }
 
-  public Object getAttribute( final String arg0 ) {
+  public Object getAttribute( String arg0 ) {
     return attributes.get( arg0 );
   }
 
-  public Object getValue( final String arg0 ) {
+  public Object getValue( String arg0 ) {
     return null;
   }
 
@@ -106,7 +106,7 @@ public class TestSession implements HttpSession {
     return null;
   }
 
-  public void setAttribute( final String arg0, final Object arg1 ) {
+  public void setAttribute( String arg0, Object arg1 ) {
     if( arg1 instanceof HttpSessionBindingListener ) {
       HttpSessionBindingListener listener
         = ( HttpSessionBindingListener )arg1;
@@ -115,10 +115,10 @@ public class TestSession implements HttpSession {
     attributes.put( arg0, arg1 );
   }
 
-  public void putValue( final String arg0, final Object arg1 ) {
+  public void putValue( String arg0, Object arg1 ) {
   }
 
-  public void removeAttribute( final String arg0 ) {
+  public void removeAttribute( String arg0 ) {
     Object removed = attributes.remove( arg0 );
     if( removed instanceof HttpSessionBindingListener ) {
       HttpSessionBindingListener listener
@@ -129,7 +129,7 @@ public class TestSession implements HttpSession {
     }
   }
 
-  public void removeValue( final String arg0 ) {
+  public void removeValue( String arg0 ) {
   }
 
   public void invalidate() {

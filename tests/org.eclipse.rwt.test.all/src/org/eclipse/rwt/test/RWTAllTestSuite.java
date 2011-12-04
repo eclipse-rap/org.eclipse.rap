@@ -1,12 +1,12 @@
-/******************************************************************************* 
+/*******************************************************************************
 * Copyright (c) 2009, 2011 EclipseSource and others.
-* All rights reserved.
-* This program and the accompanying materials are made available under the
-* terms of the Eclipse Public License v1.0 which accompanies this distribution,
-* and is available at http://www.eclipse.org/legal/epl-v10.html
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
 *
 * Contributors:
-*   EclipseSource - initial API and implementation
+*    EclipseSource - initial API and implementation
 *******************************************************************************/
 package org.eclipse.rwt.test;
 
@@ -18,7 +18,6 @@ import java.util.jar.JarInputStream;
 
 import junit.framework.*;
 
-
 import org.eclipse.rap.rwt.testfixture.Fixture;
 
 
@@ -29,7 +28,7 @@ public class RWTAllTestSuite {
   public static Test suite() {
     return new RWTAllTestSuite().createSuite();
   }
-  
+
   private final URLClassLoader classLoader;
   private final List<Thread> threads;
   private final List<Throwable> problems;
@@ -41,7 +40,7 @@ public class RWTAllTestSuite {
     problems = new Vector<Throwable>();
     tests = new Vector<Class<? extends TestCase>>();
   }
-  
+
   Test createSuite() {
     initializeFixture();
     try {
@@ -88,7 +87,7 @@ public class RWTAllTestSuite {
       File file = new File( URLDecoder.decode( urls[ i ].getFile(), "UTF-8" ) );
       if( file.exists() && isInInclusionList( file ) ) {
         runScan( file );
-      }  
+      }
     }
     waitForScan();
   }
@@ -141,8 +140,8 @@ public class RWTAllTestSuite {
     thread.setDaemon( true );
     thread.start();
   }
-  
-  private void scan( final File file ) throws IOException {
+
+  private void scan( File file ) throws IOException {
     if( file.getName().endsWith( JAR_EXTENSION ) ) {
       scanJar( file );
     } else {
@@ -189,7 +188,7 @@ public class RWTAllTestSuite {
     return result;
   }
 
-  @SuppressWarnings("unchecked") 
+  @SuppressWarnings("unchecked")
   private void addToSuite( String className ) {
     if( className.endsWith( "_Test" ) ) {
       try {
@@ -210,7 +209,7 @@ public class RWTAllTestSuite {
     String result = removeClassExtension( file.getName() );
     if( packageName.length() > 0 ) {
       result = packageName + "." + result;
-    } 
+    }
     return result;
   }
 

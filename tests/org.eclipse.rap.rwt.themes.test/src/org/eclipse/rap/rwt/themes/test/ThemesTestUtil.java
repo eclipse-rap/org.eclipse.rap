@@ -84,7 +84,7 @@ public class ThemesTestUtil {
         method.setAccessible( true );
         Object[] url = new Object[] { new URL( path ) };
         method.invoke( classLoader, url );
-      } catch( final Throwable e ) {
+      } catch( Throwable e ) {
         e.printStackTrace();
       }
     }
@@ -94,7 +94,7 @@ public class ThemesTestUtil {
     StyleSheet styleSheet;
     try {
       styleSheet = CssFileReader.readStyleSheet( path, RESOURCE_LOADER );
-    } catch( final IOException e ) {
+    } catch( IOException e ) {
       throw new RuntimeException( "Failed to read stylesheet from " + path, e );
     }
     Theme theme = new Theme( themeId, "Test Theme", styleSheet );
