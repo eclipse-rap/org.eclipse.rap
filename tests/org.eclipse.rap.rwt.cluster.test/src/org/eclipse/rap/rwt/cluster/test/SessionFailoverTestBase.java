@@ -51,7 +51,7 @@ import org.eclipse.swt.widgets.Shell;
 
 @SuppressWarnings("restriction")
 public abstract class SessionFailoverTestBase extends TestCase {
-  
+
   public interface SerializableRunnable extends Runnable, Serializable {
   }
 
@@ -59,9 +59,9 @@ public abstract class SessionFailoverTestBase extends TestCase {
   private IServletEngine primary;
   private IServletEngine secondary;
   private RWTClient client;
-  
+
   abstract IServletEngineFactory getServletEngineFactory();
-  
+
   public void testButtonEntryPoint() throws Exception {
     initializeClient( ButtonEntryPoint.class );
     // Click center button four times on primary
@@ -87,7 +87,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
 
   public void testResourcesEntryPoint() throws Exception {
     initializeClient( ResourcesEntryPoint.class );
-    
+
     client.changeServletEngine( secondary );
     client.sendDisplayResizeRequest( 400, 600 );
 
@@ -101,14 +101,14 @@ public abstract class SessionFailoverTestBase extends TestCase {
     assertSame( primaryShell.getDisplay(), primaryFont.getDevice() );
     assertSame( secondaryShell.getDisplay(), secondaryFont.getDevice() );
   }
-  
+
   public void testImageEntryPoint() throws Exception {
     initializeClient( ImageEntryPoint.class );
     client.sendResourceRequest( ImageEntryPoint.imagePath );
-    
+
     client.changeServletEngine( secondary );
     client.sendDisplayResizeRequest( 400, 600 );
-    
+
     prepareExamination();
     Shell primaryShell = getFirstShell( primary );
     Shell secondaryShell = getFirstShell( secondary );
@@ -119,15 +119,15 @@ public abstract class SessionFailoverTestBase extends TestCase {
     assertSame( primaryShell.getDisplay(), primaryImage.getDevice() );
     assertSame( secondaryShell.getDisplay(), secondaryImage.getDevice() );
   }
-  
+
   public void testAsyncExecEntryPoint() throws Exception {
     initializeClient( AsyncExecEntryPoint.class );
     AsyncExecEntryPoint.scheduleAsyncRunnable( getFirstDisplay( primary ) );
-    
+
     cluster.removeServletEngine( primary );
     client.changeServletEngine( secondary );
     client.sendDisplayResizeRequest( 100, 100 );
-    
+
     prepareExamination();
     ISessionStore secondarySessionStore = ClusterTestHelper.getFirstSessionStore( secondary );
     assertTrue( AsyncExecEntryPoint.wasRunnableExecuted( secondarySessionStore ) );
@@ -136,16 +136,16 @@ public abstract class SessionFailoverTestBase extends TestCase {
   public void testSyncExecEntryPoint() throws Exception {
     initializeClient( AsyncExecEntryPoint.class );
     AsyncExecEntryPoint.scheduleSyncRunnable( getFirstDisplay( primary ) );
-    
+
     cluster.removeServletEngine( primary );
     client.changeServletEngine( secondary );
     client.sendDisplayResizeRequest( 100, 100 );
-    
+
     prepareExamination();
     ISessionStore secondarySessionStore = ClusterTestHelper.getFirstSessionStore( secondary );
     assertTrue( AsyncExecEntryPoint.wasRunnableExecuted( secondarySessionStore ) );
   }
-  
+
   public void testTimerExecEntryPoint() throws Exception {
     initializeClient( TimerExecEntryPoint.class );
 
@@ -155,7 +155,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
     client.changeServletEngine( secondary );
     Thread.sleep( TimerExecEntryPoint.TIMER_DELAY * 2 );
     client.sendDisplayResizeRequest( 100, 100 );
-    
+
     prepareExamination( secondary );
     ISessionStore primarySessionStore = ClusterTestHelper.getFirstSessionStore( primary );
     ISessionStore secondarySessionStore = ClusterTestHelper.getFirstSessionStore( secondary );
@@ -166,10 +166,10 @@ public abstract class SessionFailoverTestBase extends TestCase {
   public void testDNDEntryPoint() throws Exception {
     initializeClient( DNDEntryPoint.class );
     client.sendDragStartRequest( DNDEntryPoint.ID_SOURCE_LABEL );
-    
+
     cluster.removeServletEngine( primary );
     client.changeServletEngine( secondary );
-    
+
     client.sendDragFinishedRequest( DNDEntryPoint.ID_SOURCE_LABEL, DNDEntryPoint.ID_TARGET_LABEL );
 
     prepareExamination( secondary );
@@ -177,7 +177,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
     assertTrue( DNDEntryPoint.isDragFinished( secondarySessionStore ) );
     assertTrue( DNDEntryPoint.isDropFinished( secondarySessionStore ) );
   }
-  
+
   public void testDialogEntryPoint() throws Exception {
     initializeClient( DialogEntryPoint.class );
     cluster.removeServletEngine( primary );
@@ -220,10 +220,10 @@ public abstract class SessionFailoverTestBase extends TestCase {
       assertEquals( expectedBytes[ i ], actualBytes[ i ] );
     }
   }
-  
+
   private static byte[] getImageBytes( ImageData imageData ) {
     ImageLoader imageLoader = new ImageLoader();
-    imageLoader.data = new ImageData[] { imageData }; 
+    imageLoader.data = new ImageData[] { imageData };
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     imageLoader.save( outputStream, SWT.IMAGE_PNG );
     return outputStream.toByteArray();
@@ -233,12 +233,12 @@ public abstract class SessionFailoverTestBase extends TestCase {
     prepareExamination( primary );
     prepareExamination( secondary );
   }
-  
+
   private static void prepareExamination( IServletEngine servletEngine ) {
     attachApplicationContextToSession( servletEngine );
     attachCurrentThreadToDisplay( servletEngine );
   }
-  
+
   private static void disposeDisplay( final Display display ) {
     if( display != null ) {
       UICallBack.runNonUIThreadWithFakeContext( display, new Runnable() {
@@ -294,7 +294,7 @@ public abstract class SessionFailoverTestBase extends TestCase {
   private void clickCenterButton( int start, int end ) throws IOException {
     for( int i = start; i <= end; i++ ) {
       Response response = client.sendWidgetSelectedRequest( "w5" );
-      assertTrue( response.isValidJavascript() );
+      assertTrue( response.isValidJsonResponse() );
       String expectedLabelPart = "relocated " + i + "/1";
       String msg = "label update mismatch, missing part: '" + expectedLabelPart + "'";
       assertTrue( msg, response.getContentText().contains( expectedLabelPart ) );

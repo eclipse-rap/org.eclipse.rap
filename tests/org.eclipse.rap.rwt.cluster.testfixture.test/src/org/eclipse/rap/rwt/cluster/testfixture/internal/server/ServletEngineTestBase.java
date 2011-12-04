@@ -36,15 +36,15 @@ public abstract class ServletEngineTestBase extends TestCase {
   private PrintStream bufferedSystemErr;
   private ByteArrayOutputStream redirectedSystemErr;
 
-  protected abstract IServletEngineFactory getServletEngineFactory(); 
-  
+  protected abstract IServletEngineFactory getServletEngineFactory();
+
   public void testPortsAreUnique() throws Exception {
     IServletEngine engine1 = startServletEngine( TestEntryPoint.class );
     IServletEngine engine2 = startServletEngine( TestEntryPoint.class );
-  
+
     assertFalse( engine1.getPort() == engine2.getPort() );
   }
-  
+
   public void testSpecifyPort() throws Exception {
     int freePort = SocketUtil.getFreePort();
     IServletEngine engine = getServletEngineFactory().createServletEngine( freePort );
@@ -54,16 +54,16 @@ public abstract class ServletEngineTestBase extends TestCase {
 
     assertEquals( freePort, engine.getPort() );
   }
-  
+
   public void testEntryPoint() throws Exception {
     IServletEngine engine = startServletEngine( TestEntryPoint.class );
     RWTClient client = new RWTClient( engine );
     client.sendStartupRequest();
     client.sendInitializationRequest();
-    
+
     assertTrue( TestEntryPoint.wasCreateUIInvoked() );
   }
-  
+
   public void testExceptionDuringRequest() throws Exception {
     IServletEngine engine = startServletEngine( TestEntryPoint.class );
     TestEntryPoint.setRunnable( new Runnable() {
@@ -73,7 +73,7 @@ public abstract class ServletEngineTestBase extends TestCase {
     } );
     RWTClient client = new RWTClient( engine );
     client.sendStartupRequest();
-    
+
     try {
       client.sendInitializationRequest();
     } catch( IOException ioe ) {
@@ -90,24 +90,24 @@ public abstract class ServletEngineTestBase extends TestCase {
     assertTrue( client.getSessionId().length() > 0 );
 
     Response initialJavascript = client.sendInitializationRequest();
-    assertTrue( initialJavascript.isValidJavascript() );
-    
+    assertTrue( initialJavascript.isValidJsonResponse() );
+
     Response subsequentRequest = client.sendDisplayResizeRequest( 300, 300 );
-    assertTrue( subsequentRequest.isValidJavascript() );
-    
+    assertTrue( subsequentRequest.isValidJsonResponse() );
+
     HttpSession[] sessions = servletEngine.getSessions();
     assertEquals( 1, sessions.length );
     assertNotNull( ClusterTestHelper.getSessionDisplay( sessions[ 0 ] ) );
   }
 
-  
+
   public void testServletEngineIsolation() throws Exception {
     IServletEngine engine1 = startServletEngine( TestEntryPoint.class );
     IServletEngine engine2 = startServletEngine( TestEntryPoint.class );
 
     sendStartupRequest( engine1 );
     sendStartupRequest( engine2 );
-    
+
     assertEquals( 1, engine1.getSessions().length );
     assertEquals( 1, engine2.getSessions().length );
     HttpSession session1 = engine1.getSessions()[ 0 ];
@@ -118,19 +118,19 @@ public abstract class ServletEngineTestBase extends TestCase {
     assertFalse( sessionId1.equals( sessionId2 ) );
     assertNotSame( session1.getServletContext(), session2.getServletContext() );
   }
-  
+
   public void testSessionAttributeNeedNotBeSerializable() throws Exception {
     IServletEngine engine = startServletEngine( TestEntryPoint.class );
     sendStartupRequest( engine );
     HttpSession session = engine.getSessions()[ 0 ];
-    
+
     String name = "name";
     Object nonSerializable = new Object();
     session.setAttribute( name, nonSerializable );
-    
+
     assertSame( nonSerializable, session.getAttribute( name ) );
   }
-  
+
   protected void setUp() throws Exception {
     TestEntryPoint.reset();
     startedEngines = new LinkedList<IServletEngine>();
@@ -153,7 +153,7 @@ public abstract class ServletEngineTestBase extends TestCase {
     }
   }
 
-  private IServletEngine startServletEngine( Class<? extends IEntryPoint> entryPoint ) 
+  private IServletEngine startServletEngine( Class<? extends IEntryPoint> entryPoint )
     throws Exception
   {
     IServletEngine result = getServletEngineFactory().createServletEngine();

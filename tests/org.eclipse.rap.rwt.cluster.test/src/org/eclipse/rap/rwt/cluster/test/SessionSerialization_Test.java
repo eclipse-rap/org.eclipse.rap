@@ -34,11 +34,11 @@ public class SessionSerialization_Test extends TestCase {
   public void testWidgetsAreSerializable() throws Exception {
     Response response = sendRequestToPrimary();
     assertEquals( HttpURLConnection.HTTP_OK, response.getResponseCode() );
-    assertTrue( response.isValidJavascript() );
-    
+    assertTrue( response.isValidJsonResponse() );
+
     response = switchToSecondary();
     assertEquals( HttpURLConnection.HTTP_OK, response.getResponseCode() );
-    assertTrue( response.isValidJavascript() );
+    assertTrue( response.isValidJsonResponse() );
   }
 
   protected void setUp() throws Exception {

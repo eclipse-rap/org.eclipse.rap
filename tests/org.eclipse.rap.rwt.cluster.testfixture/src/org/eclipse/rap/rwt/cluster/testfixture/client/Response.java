@@ -20,25 +20,25 @@ import java.net.URLConnection;
 
 public class Response {
   private static final String HTML_PROLOGUE = "<!DOCTYPE HTML";
-  private static final String JAVASCRIPT_PROLOGUE
-    = "org.eclipse.rwt.protocol.Processor.processMessage";
-  
+
   private final int responseCode;
+  private final String contentType;
   private final byte[] content;
 
   Response( HttpURLConnection connection ) throws IOException {
-    this.responseCode = connection.getResponseCode();
-    this.content = readResponseContent( connection );
+    responseCode = connection.getResponseCode();
+    contentType = connection.getContentType();
+    content = readResponseContent( connection );
   }
-  
+
   public int getResponseCode() {
     return responseCode;
   }
-  
+
   public byte[] getContent() {
     return content.clone();
   }
-  
+
   public String getContentText() {
     String result;
     try {
@@ -49,12 +49,16 @@ public class Response {
     return result;
   }
 
-  public boolean isValidJavascript() {
-    return responseCode == 200 && getContentText().startsWith( JAVASCRIPT_PROLOGUE );
+  public boolean isValidJsonResponse() {
+    return responseCode == 200
+           && "application/json;charset=UTF-8".equals( contentType )
+           && getContentText().trim().startsWith( "{" );
   }
 
   public boolean isValidStartupPage() {
-    return responseCode == 200 && getContentText().startsWith( HTML_PROLOGUE );
+    return responseCode == 200
+           && "text/html;charset=UTF-8".equals( contentType )
+           && getContentText().startsWith( HTML_PROLOGUE );
   }
 
   private static byte[] readResponseContent( URLConnection connection ) throws IOException {
