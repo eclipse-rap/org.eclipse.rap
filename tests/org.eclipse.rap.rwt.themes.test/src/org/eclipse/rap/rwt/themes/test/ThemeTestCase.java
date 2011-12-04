@@ -78,7 +78,7 @@ public abstract class ThemeTestCase extends TestCase {
   }
 
   private static String createSelectorString( SelectorExt item ) {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     String elementName = item.getElementName();
     result.append( elementName );
     String[] constraints = item.getConstraints();

@@ -58,7 +58,7 @@ public class RWTClusterSupport_Test extends TestCase {
   }
 
   public void testSessionIsMarkedAsChanged() throws Exception {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     HttpSession session = new TestSession() {
       public void setAttribute( String name, Object value ) {
         super.setAttribute( name, value );

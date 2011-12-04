@@ -711,11 +711,11 @@ public class TableLCA_Test extends TestCase {
   public void testCellTooltipRequestForMissingCells() {
     Table table = new Table( shell, SWT.NONE );
     createTableItems( table, 3 );
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     ICellToolTipAdapter tableAdapter = table.getAdapter( ICellToolTipAdapter.class );
     tableAdapter.setCellToolTipProvider( new ICellToolTipProvider() {
       public void getToolTipText( Item item, int columnIndex ) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append( "[" );
         buffer.append( WidgetUtil.getId( item ) );
         buffer.append( "," );
@@ -970,7 +970,7 @@ public class TableLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( table );
-    assertTrue( operation.getPropertyNames().indexOf( "itemHeight" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "itemHeight" ) );
   }
 
   public void testRenderItemHeight() throws IOException {
@@ -1005,7 +1005,7 @@ public class TableLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( table );
-    assertTrue( operation.getPropertyNames().indexOf( "itemMetrics" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "itemMetrics" ) );
   }
 
   public void testRenderItemMetrics() throws IOException, JSONException {
@@ -1670,7 +1670,7 @@ public class TableLCA_Test extends TestCase {
     final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( table );
     adapter.setCellToolTipProvider( new ICellToolTipProvider() {
       public void getToolTipText( Item item, int columnIndex ) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append( "[" );
         buffer.append( WidgetUtil.getId( item ) );
         buffer.append( "," );

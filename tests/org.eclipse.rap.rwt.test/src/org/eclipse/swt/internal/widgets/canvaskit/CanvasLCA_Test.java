@@ -281,7 +281,7 @@ public class CanvasLCA_Test extends TestCase {
 //      + "gc.init( 50, 50, \"11px Arial\", \"#ffffff\", \"#4a4a4a\" );"
 //      + "gc.setProperty( \"font\", \"bold 18px Verdana\" );"
 //      + "gc.drawLine( 1, 2, 3, 4 );";
-//    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+//    assertTrue( Fixture.getAllMarkup().contains( expected ) );
 //  }
 
   private static CallOperation getGCOperation( Canvas canvas, String method ) {

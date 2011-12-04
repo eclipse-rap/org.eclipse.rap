@@ -112,7 +112,7 @@ public class TextSizeUtilFacadeImpl_Test extends TestCase {
   }
 
   private boolean contains( String allMarkup, String snippet ) {
-    return allMarkup.indexOf( snippet ) != -1;
+    return allMarkup.contains( snippet );
   }
 
   private void checkItemObject( Object itemObject, MeasurementItem item ) {

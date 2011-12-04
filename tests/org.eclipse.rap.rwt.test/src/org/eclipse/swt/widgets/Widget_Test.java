@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -212,7 +212,7 @@ public class Widget_Test extends TestCase {
   }
 
   public void testNotifyListeners() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     shell.addListener( SWT.Resize, new Listener() {
       public void handleEvent( final Event event ) {
         log.append( "untyped" );
@@ -223,7 +223,7 @@ public class Widget_Test extends TestCase {
   }
 
   public void testNotifyListenersTyped() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     shell.addControlListener( new ControlAdapter() {
       public void controlResized( final ControlEvent e ) {
         log.append( "typed" );
@@ -234,7 +234,7 @@ public class Widget_Test extends TestCase {
   }
 
   public void testNotifyListenersDisplayFilter() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     display.addFilter( SWT.Resize, new Listener() {
       public void handleEvent( final Event event ) {
         log.append( "filter" );
@@ -246,7 +246,7 @@ public class Widget_Test extends TestCase {
 
   // SWT always overrides e.type, e.display and e.widget
   public void testNotifyListenersEventFields() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     display.addFilter( SWT.Resize, new Listener() {
       public void handleEvent( final Event event ) {
         assertEquals( SWT.Resize, event.type );
@@ -282,7 +282,7 @@ public class Widget_Test extends TestCase {
   }
 
   public void testNotifyListenersSetData() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     shell.addListener( SWT.SetData, new Listener(){
       public void handleEvent( final Event event ) {
         assertSame( shell, event.widget );
@@ -300,7 +300,7 @@ public class Widget_Test extends TestCase {
   }
 
   public void testNotifyListenersNullEvent() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     shell.addControlListener( new ControlAdapter() {
       public void controlResized( final ControlEvent event ) {
         assertSame( shell, event.widget );

@@ -41,20 +41,20 @@ public class ThemeStoreWriter_Test extends TestCase {
     storeWriter.addTheme( getTheme( THEME_SET_CURRENT_THEME_ID ), true );
     String output = storeWriter.createJs();
     // register colors
-    assertTrue( output.indexOf( "\"#000000\"" ) != -1 );
-    assertTrue( output.indexOf( "\"#ff0000\"" ) != -1 );
+    assertTrue( output.contains( "\"#000000\"" ) );
+    assertTrue( output.contains( "\"#ff0000\"" ) );
     // register images, with sizes
     String expected;
     expected = "\"ba873d77\": [ 50, 100 ]";
-    assertTrue( output.indexOf( expected ) != -1 );
+    assertTrue( output.contains( expected ) );
     // conditional colors
     expected =   "\"color\": [ [ [ \"[BORDER\" ], "
                + "\"400339c0\" ], [ [], \"3fe41900\" ] ]";
-    assertTrue( output.indexOf( expected ) != -1 );
+    assertTrue( output.contains( expected ) );
     // conditional background-images
     expected =   "\"background-image\": "
                + "[ [ [ \"[BORDER\" ], \"ba873d77\" ], [ [], \"a505df1b\" ] ]";
-    assertTrue( output.indexOf( expected ) != -1 );
+    assertTrue( output.contains( expected ) );
   }
 
   public void testWriteAnimations() throws Exception {
@@ -70,11 +70,11 @@ public class ThemeStoreWriter_Test extends TestCase {
                       + "\"slideOut\": [ 2000, \"easeOut\" ]\n"
                       + "}\n"
                       + "}";
-    assertTrue( output.indexOf( expected ) != -1 );
+    assertTrue( output.contains( expected ) );
     expected =   "\"Menu\": {\n"
                + "\"animation\": [ [ [], \"2e5f3d63\" ] ]\n"
                + "}";
-    assertTrue( output.indexOf( expected ) != -1 );
+    assertTrue( output.contains( expected ) );
   }
 
   public void testWriteVerticalGradient() throws Exception {
@@ -91,11 +91,11 @@ public class ThemeStoreWriter_Test extends TestCase {
                       + "\"vertical\": true\n"
                       + "}\n"
                       + "}";
-    assertTrue( output.indexOf( expected ) != -1 );
+    assertTrue( output.contains( expected ) );
     expected =   "\"Button\": {\n"
                + "\"background-image\": [ [ [], \"2eb911d6\" ] ]\n"
                + "}";
-    assertTrue( output.indexOf( expected ) != -1 );
+    assertTrue( output.contains( expected ) );
   }
 
   public void testWriteHorizontalGradient() throws Exception {
@@ -112,11 +112,11 @@ public class ThemeStoreWriter_Test extends TestCase {
                       + "\"vertical\": false\n"
                       + "}\n"
                       + "}";
-    assertTrue( output.indexOf( expected ) != -1 );
+    assertTrue( output.contains( expected ) );
     expected =   "\"Button\": {\n"
                + "\"background-image\": [ [ [], \"2762759\" ] ]\n"
                + "}";
-    assertTrue( output.indexOf( expected ) != -1 );
+    assertTrue( output.contains( expected ) );
   }
 
   public void testWriteShadow() throws Exception {
@@ -129,11 +129,11 @@ public class ThemeStoreWriter_Test extends TestCase {
     String expected =   "\"shadows\": {\n"
                       + "\"2aedfabd\": [ false, 10, 10, 3, 0, \"#000000\", 0.5 ]\n"
                       + "}\n";
-    assertTrue( output.indexOf( expected ) != -1 );
+    assertTrue( output.contains( expected ) );
     expected =   "\"Shell\": {\n"
                + "\"box-shadow\": [ [ [], \"2aedfabd\" ] ]\n"
                + "}";
-    assertTrue( output.indexOf( expected ) != -1 );
+    assertTrue( output.contains( expected ) );
   }
 
   public void testWriteColors() throws Exception {
@@ -149,12 +149,12 @@ public class ThemeStoreWriter_Test extends TestCase {
                       + "\"400339c0\": \"#ff0000\",\n"
                       + "\"3ffe9078\": \"#cecece\"\n"
                       + "}";
-    assertTrue( output.indexOf( expected ) != -1 );
+    assertTrue( output.contains( expected ) );
     expected =   "\"Button\": {\n"
                + "\"color\": [ [ [ \".special\" ], \"ffffffff\" ], [ [], \"400339c0\" ] ],\n"
                + "\"background-color\": [ [ [ \".special\" ], \"3ffe9078\" ], [ [], \"ffffffff\" ] ]\n"
                + "}";
-    assertTrue( output.indexOf( expected ) != -1 );
+    assertTrue( output.contains( expected ) );
   }
 
   public void testWriteImages() throws Exception {
@@ -167,18 +167,18 @@ public class ThemeStoreWriter_Test extends TestCase {
     String expectedImages =   "\"images\": {\n"
                             + "\"c84ae54c\": [ 100, 50 ]\n"
                             + "}";
-    assertTrue( output.indexOf( expectedImages ) != -1 );
+    assertTrue( output.contains( expectedImages ) );
     String expectedGradients =   "\"gradients\": {\n"
                                + "\"154e1724\": {\n"
                                + "\"percents\": [ 0.0, 100.0 ],\n"
                                + "\"colors\": [ \"#000000\", \"#ffffff\" ],\n"
                                + "\"vertical\": true\n"
                                + "}";
-    assertTrue( output.indexOf( expectedGradients ) != -1 );
+    assertTrue( output.contains( expectedGradients ) );
     String expected =   "\"Button\": {\n"
                       + "\"background-image\": [ [ [ \".special\" ], \"154e1724\" ], [ [], \"c84ae54c\" ] ]\n"
                       + "}";
-    assertTrue( output.indexOf( expected ) != -1 );
+    assertTrue( output.contains( expected ) );
   }
 
   protected void setUp() throws Exception {

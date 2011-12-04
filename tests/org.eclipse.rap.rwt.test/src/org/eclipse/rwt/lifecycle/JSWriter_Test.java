@@ -944,7 +944,7 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     writer1.set( "visible", false );
     String findWidget = "findWidgetById";
-    assertTrue( getExecuteScript().indexOf( findWidget ) != -1 );
+    assertTrue( getExecuteScript().contains( findWidget ) );
 
     Fixture.fakeResponseWriter();
     writer1.set( "visible", true );
@@ -952,7 +952,7 @@ public class JSWriter_Test extends TestCase {
 
     Fixture.fakeResponseWriter();
     writer2.set( "visible", true );
-    assertTrue( getExecuteScript().indexOf( findWidget ) != -1 );
+    assertTrue( getExecuteScript().contains( findWidget ) );
 
     Fixture.fakeResponseWriter();
     writer2.set( "visible", true );
@@ -960,7 +960,7 @@ public class JSWriter_Test extends TestCase {
 
     Fixture.fakeResponseWriter();
     writer1.set( "visible", true );
-    assertTrue( getExecuteScript().indexOf( findWidget ) != -1 );
+    assertTrue( getExecuteScript().contains( findWidget ) );
   }
 
   public void testVarAssignment() {

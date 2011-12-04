@@ -100,7 +100,7 @@ public class DisplayLCAFocus_Test extends TestCase {
       = "org.eclipse.swt.WidgetManager.getInstance().focus( \\\""
       + buttonId
       + "\\\" );";
-    assertTrue( markup.indexOf( expected ) != -1 );
+    assertTrue( markup.contains( expected ) );
   }
 
 }

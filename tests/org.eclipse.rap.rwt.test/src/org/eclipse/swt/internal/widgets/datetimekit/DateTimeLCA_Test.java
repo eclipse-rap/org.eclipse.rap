@@ -159,7 +159,7 @@ public class DateTimeLCA_Test extends TestCase {
   }
 
   private void testSelectionEvent( final DateTime dateTime ) {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     SelectionListener selectionListener = new SelectionAdapter() {
 
       public void widgetSelected( final SelectionEvent event ) {
@@ -203,12 +203,12 @@ public class DateTimeLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     java.util.List<String> propertyNames = operation.getPropertyNames();
-    assertTrue( propertyNames.indexOf( "cellSize" ) != -1 );
-    assertTrue( propertyNames.indexOf( "monthNames" ) != -1 );
-    assertTrue( propertyNames.indexOf( "weekdayNames" ) != -1 );
-    assertTrue( propertyNames.indexOf( "weekdayShortNames" ) != -1 );
-    assertTrue( propertyNames.indexOf( "dateSeparator" ) != -1 );
-    assertTrue( propertyNames.indexOf( "datePattern" ) != -1 );
+    assertTrue( propertyNames.contains( "cellSize" ) );
+    assertTrue( propertyNames.contains( "monthNames" ) );
+    assertTrue( propertyNames.contains( "weekdayNames" ) );
+    assertTrue( propertyNames.contains( "weekdayShortNames" ) );
+    assertTrue( propertyNames.contains( "dateSeparator" ) );
+    assertTrue( propertyNames.contains( "datePattern" ) );
   }
 
   public void testRenderCreateTime() throws IOException {
@@ -245,9 +245,9 @@ public class DateTimeLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
     java.util.List<String> propertyNames = operation.getPropertyNames();
-    assertTrue( propertyNames.indexOf( "cellSize" ) != -1 );
-    assertTrue( propertyNames.indexOf( "monthNames" ) != -1 );
-    assertTrue( propertyNames.indexOf( "weekdayShortNames" ) != -1 );
+    assertTrue( propertyNames.contains( "cellSize" ) );
+    assertTrue( propertyNames.contains( "monthNames" ) );
+    assertTrue( propertyNames.contains( "weekdayShortNames" ) );
   }
 
   public void testRenderParent() throws IOException {
@@ -310,7 +310,7 @@ public class DateTimeLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().indexOf( "year" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "year" ) );
   }
 
   public void testRenderYear() throws IOException {
@@ -343,7 +343,7 @@ public class DateTimeLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().indexOf( "month" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "month" ) );
   }
 
   public void testRenderMonth() throws IOException {
@@ -376,7 +376,7 @@ public class DateTimeLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().indexOf( "day" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "day" ) );
   }
 
   public void testRenderDay() throws IOException {
@@ -409,7 +409,7 @@ public class DateTimeLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().indexOf( "subWidgetsBounds" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "subWidgetsBounds" ) );
   }
 
   public void testRenderSubWidgetsBounds_Date() throws IOException {
@@ -441,7 +441,7 @@ public class DateTimeLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().indexOf( "hours" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "hours" ) );
   }
 
   public void testRenderHours() throws IOException {
@@ -474,7 +474,7 @@ public class DateTimeLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().indexOf( "minutes" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "minutes" ) );
   }
 
   public void testRenderMinutes() throws IOException {
@@ -507,7 +507,7 @@ public class DateTimeLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().indexOf( "seconds" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "seconds" ) );
   }
 
   public void testRenderSeconds() throws IOException {
@@ -540,7 +540,7 @@ public class DateTimeLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().indexOf( "subWidgetsBounds" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "subWidgetsBounds" ) );
   }
 
   public void testRenderSubWidgetsBounds_Time() throws IOException {
@@ -572,7 +572,7 @@ public class DateTimeLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().indexOf( "year" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "year" ) );
   }
 
   public void testRenderYear_Calendar() throws IOException {
@@ -605,7 +605,7 @@ public class DateTimeLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().indexOf( "month" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "month" ) );
   }
 
   public void testRenderMonth_Calendar() throws IOException {
@@ -638,7 +638,7 @@ public class DateTimeLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( dateTime );
-    assertTrue( operation.getPropertyNames().indexOf( "day" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "day" ) );
   }
 
   public void testRenderDay_Calendar() throws IOException {

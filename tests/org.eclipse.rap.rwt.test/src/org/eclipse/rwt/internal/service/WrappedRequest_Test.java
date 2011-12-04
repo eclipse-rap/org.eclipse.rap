@@ -104,7 +104,7 @@ public class WrappedRequest_Test extends TestCase {
     String allMarkup = Fixture.getAllMarkup();
     StartupPage startupPage = RWTFactory.getStartupPage();
     String title = startupPage.getConfigurer().getTemplate().getTokens() [ TOKEN_INDEX_TITLE ];
-    assertTrue( allMarkup.indexOf( title ) != -1 );
+    assertTrue( allMarkup.contains( title ) );
     
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, DefaultEntryPoint.class );
     Fixture.fakeRequestParam( p1, null );

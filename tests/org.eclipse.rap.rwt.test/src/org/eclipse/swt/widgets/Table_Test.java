@@ -1329,7 +1329,7 @@ public class Table_Test extends TestCase {
 
   public void testSetColumnOrder() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     ControlAdapter controlAdapter = new ControlAdapter() {
       public void controlMoved( final ControlEvent event ) {
         TableColumn column = ( TableColumn )event.widget;

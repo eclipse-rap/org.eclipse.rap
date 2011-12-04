@@ -120,7 +120,7 @@ public class Composite_Test extends TestCase {
     shell.setVisible( true );
     Composite composite = new Composite( shell, SWT.BORDER );
     Text text = new Text( composite, SWT.SINGLE );
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     text.addFocusListener( new FocusAdapter() {
       public void focusGained( FocusEvent event ) {
         log.append( "focusGained" );

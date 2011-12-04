@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -107,7 +107,7 @@ public class ExpandBar_Test extends TestCase {
 
   public void testExpandListener() {
     ExpandBar expandBar = new ExpandBar( shell, SWT.NONE );
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     ExpandListener expandListener = new ExpandListener() {
       public void itemCollapsed( ExpandEvent e ) {
         log.append( "collapsed" );

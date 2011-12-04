@@ -109,7 +109,7 @@ public class ResourceUtil_Test extends TestCase {
   }
 
   private static String createTestString( int length ) {
-    StringBuffer buffer = new StringBuffer( length );
+    StringBuilder buffer = new StringBuilder( length );
     buffer.append( 'Ü' );
     for( int i = 1; i < length; i++ ) {
       buffer.append( ( char )( 32 + ( i % 32 ) ) );

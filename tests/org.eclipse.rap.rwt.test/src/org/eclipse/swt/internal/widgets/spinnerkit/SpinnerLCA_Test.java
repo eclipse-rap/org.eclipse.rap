@@ -231,7 +231,7 @@ public class SpinnerLCA_Test extends TestCase {
   }
 
   public void testModifyAndSelectionEvent() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     final Spinner spinner = new Spinner( shell, SWT.NONE );
     shell.open();
     String spinnerId = WidgetUtil.getId( spinner );

@@ -62,7 +62,7 @@ public class ThemesTestUtil {
     String path = null;
     for( int i = 0; i < urls.length && path == null; i++ ) {
       String tempPath = urls[ i ].getPath();
-      if( tempPath.indexOf( bundleId ) != -1
+      if( tempPath.contains( bundleId )
           && tempPath.indexOf( BUNDLE_ID ) == -1 )
       {
         int indexOfBin = tempPath.indexOf( "bin" );

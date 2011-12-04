@@ -168,7 +168,7 @@ public class SashLCA_Test extends TestCase {
 
   public void testSelectionEvent() {
     final Sash sash = new Sash( shell, SWT.NONE );
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     SelectionListener selectionListener = new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
         assertEquals( sash, event.getSource() );

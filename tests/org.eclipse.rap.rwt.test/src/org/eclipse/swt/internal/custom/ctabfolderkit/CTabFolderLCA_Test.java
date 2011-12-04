@@ -206,7 +206,7 @@ public class CTabFolderLCA_Test extends TestCase {
   }
 
   public void testSelectionEvent() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     SelectionListener listener = new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         log.append( "widgetSelected|" );
@@ -239,7 +239,7 @@ public class CTabFolderLCA_Test extends TestCase {
     //
     Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
     final ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     CTabFolder2Listener listener = new CTabFolder2Adapter() {
       public void showList( final CTabFolderEvent event ) {
         assertEquals( true, event.doit );
@@ -395,7 +395,7 @@ public class CTabFolderLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
-    assertTrue( operation.getPropertyNames().indexOf( "tabHeight" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "tabHeight" ) );
   }
 
   public void testRenderTabHeight() throws IOException {
@@ -945,7 +945,7 @@ public class CTabFolderLCA_Test extends TestCase {
   private static final class CTabItemControl extends Composite {
     private static final long serialVersionUID = 1L;
 
-    public final StringBuffer markup = new StringBuffer();
+    public final StringBuilder markup = new StringBuilder();
 
     public CTabItemControl( Composite parent, int style ) {
       super( parent, style );

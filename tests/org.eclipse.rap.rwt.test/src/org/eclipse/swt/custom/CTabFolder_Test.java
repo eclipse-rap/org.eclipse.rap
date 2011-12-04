@@ -74,7 +74,7 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testDispose() {
-    final StringBuffer  log = new StringBuffer();
+    final StringBuilder  log = new StringBuilder();
     CTabFolder folder1 = new CTabFolder( shell, SWT.NONE );
     folder1.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
@@ -200,7 +200,7 @@ public class CTabFolder_Test extends TestCase {
   }
 
   public void testSelectionWithEvent() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     final CTabFolder folder = new CTabFolder( shell, SWT.NONE );
     final CTabItem item1 = new CTabItem( folder, SWT.NONE );
     CTabItem item2 = new CTabItem( folder, SWT.NONE );

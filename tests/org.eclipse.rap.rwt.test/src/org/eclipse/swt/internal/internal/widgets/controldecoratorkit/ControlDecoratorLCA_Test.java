@@ -80,7 +80,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     Composite composite = new Composite( shell, SWT.NONE );
     Control control = new Button( composite, SWT.PUSH );
     final ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     SelectionListener selectionListener = new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         assertEquals( decoration, event.getSource() );
@@ -129,6 +129,6 @@ public class ControlDecoratorLCA_Test extends TestCase {
     lca.renderChanges( decoration );
 
     String expected = "w.setHasSelectionListener( true )";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( expected ) );
   }
 }

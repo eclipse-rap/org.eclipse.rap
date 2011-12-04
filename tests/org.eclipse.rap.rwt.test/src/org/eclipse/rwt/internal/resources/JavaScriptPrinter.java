@@ -25,13 +25,13 @@ public class JavaScriptPrinter {
   private static final String INDENT = "  ";
   private static final String NEWLINE = "\n";
 
-  private final StringBuffer code;
+  private final StringBuilder code;
 
   private String indent;
   private String nextPrefix;
 
   public JavaScriptPrinter() {
-    code = new StringBuffer();
+    code = new StringBuilder();
     indent = "";
     nextPrefix = "";
   }
@@ -91,7 +91,7 @@ public class JavaScriptPrinter {
   }
 
   public static String escapeString( String value ) {
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     int length = value.length();
     for( int i = 0; i < length; i++ ) {
       char ch = value.charAt( i );

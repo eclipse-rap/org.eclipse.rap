@@ -129,7 +129,7 @@ public class SliderLCA_Test extends TestCase {
   }
 
   private void testSelectionEvent( final Slider slider ) {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     SelectionListener selectionListener = new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
         assertEquals( slider, event.getSource() );

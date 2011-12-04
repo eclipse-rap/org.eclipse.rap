@@ -52,7 +52,7 @@ public class BrowserLCA_Test extends TestCase {
 
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     String expected = String.valueOf( BrowserLCA.BLANK_HTML.hashCode() );
-    assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
+    assertTrue( BrowserLCA.getUrl( browser ).contains( expected ) );
 
     Fixture.markInitialized( browser );
     Fixture.preserveWidgets();
@@ -62,25 +62,25 @@ public class BrowserLCA_Test extends TestCase {
     browser.setText( "Hello" );
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     expected = String.valueOf( "Hello".hashCode() );
-    assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
+    assertTrue( BrowserLCA.getUrl( browser ).contains( expected ) );
 
     Fixture.markInitialized( browser );
     Fixture.preserveWidgets();
     browser.setText( "GoodBye" );
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     expected = String.valueOf( "GoodBye".hashCode() );
-    assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
+    assertTrue( BrowserLCA.getUrl( browser ).contains( expected ) );
     Fixture.preserveWidgets();
     browser.setText( "GoodBye" );
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     expected = String.valueOf( "GoodBye".hashCode() );
-    assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
+    assertTrue( BrowserLCA.getUrl( browser ).contains( expected ) );
 
     browser = new Browser( shell, SWT.NONE );
     browser.setText( "" );
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     expected = String.valueOf( BrowserLCA.BLANK_HTML.hashCode() );
-    assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
+    assertTrue( BrowserLCA.getUrl( browser ).contains( expected ) );
   }
 
   public void testUrlChanged() throws IOException {
@@ -89,7 +89,7 @@ public class BrowserLCA_Test extends TestCase {
 
     assertTrue( BrowserLCA.hasUrlChanged( browser ) );
     String expected = String.valueOf( BrowserLCA.BLANK_HTML.hashCode() );
-    assertTrue( BrowserLCA.getUrl( browser ).indexOf( expected ) != -1 );
+    assertTrue( BrowserLCA.getUrl( browser ).contains( expected ) );
 
     Fixture.markInitialized( browser );
     Fixture.preserveWidgets();
@@ -138,7 +138,7 @@ public class BrowserLCA_Test extends TestCase {
 
   public void testExecuteFunction() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     Browser browser = new Browser( shell, SWT.NONE );
     new BrowserFunction( browser, "func" ) {
       public Object function( final Object[] arguments ) {
@@ -156,8 +156,8 @@ public class BrowserLCA_Test extends TestCase {
     param = browserId + "." + BrowserLCA.PARAM_EXECUTE_ARGUMENTS;
     Fixture.fakeRequestParam( param, "[\"eclipse\",3.6]" );
     Fixture.readDataAndProcessAction( browser );
-    assertTrue( log.indexOf( "eclipse" ) != -1 );
-    assertTrue( log.indexOf( "3.6" ) != -1 );
+    assertTrue( log.toString().contains( "eclipse" ) );
+    assertTrue( log.toString().contains( "3.6" ) );
   }
 
   public void testParseArguments() {
@@ -409,7 +409,7 @@ public class BrowserLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( browser, "progress" ) );
   }
-  
+
   public void testRenderInitialUrl() throws IOException {
     Browser browser = new Browser( shell, SWT.NONE );
 
@@ -417,7 +417,7 @@ public class BrowserLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( browser );
-    assertTrue( operation.getPropertyNames().indexOf( "url" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "url" ) );
   }
 
   public void testRenderUrl() throws IOException {
@@ -443,20 +443,20 @@ public class BrowserLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( browser, "url" ) );
   }
-  
+
   public void testCallEvaluate() {
     Browser browser = new Browser( shell, SWT.NONE ) {
-      public boolean execute( String script ) {        
-        executeScript = script;  
+      public boolean execute( String script ) {
+        executeScript = script;
         return true;
       }
     };
     Fixture.markInitialized( display );
     Fixture.markInitialized( browser );
-    
+
     browser.execute( "alert('33');" );
     Fixture.executeLifeCycleFromServerThread();
-    
+
     Message message = Fixture.getProtocolMessage();
     CallOperation callOperation = message.findCallOperation( browser, "evaluate" );
     assertEquals( "alert('33');", callOperation.getProperty( "script" ) );

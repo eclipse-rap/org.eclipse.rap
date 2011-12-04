@@ -857,14 +857,14 @@ public class PropertyResolver_Test extends TestCase {
       PropertyResolver.resolveProperty( "xy", unit, null );
       fail();
     } catch( IllegalArgumentException e ) {
-      assertTrue( e.getMessage().indexOf( "property xy" ) != -1 );
+      assertTrue( e.getMessage().contains( "property xy" ) );
     }
     try {
       LexicalUnit unit2 = parseProperty( "darkslategray" );
       PropertyResolver.resolveProperty( "color", unit2 , null );
       fail();
     } catch( IllegalArgumentException e ) {
-      assertTrue( e.getMessage().indexOf( "color darkslategray" ) != -1 );
+      assertTrue( e.getMessage().contains( "color darkslategray" ) );
     }
   }
 

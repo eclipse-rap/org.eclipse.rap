@@ -120,7 +120,7 @@ public class TableColumnLCA_Test extends TestCase {
   }
 
   public void testResizeEvent() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     Table table = new Table( shell, SWT.NONE );
     final TableColumn column = new TableColumn( table, SWT.NONE );
     column.setWidth( 20 );

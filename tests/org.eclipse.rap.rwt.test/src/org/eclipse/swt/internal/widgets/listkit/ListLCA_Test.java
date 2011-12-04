@@ -221,7 +221,7 @@ public class ListLCA_Test extends TestCase {
   }
 
   public void testSelectionEvent() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     final List list = new List( shell, SWT.SINGLE );
     list.add( "item1" );
     list.add( "item2" );
@@ -528,7 +528,7 @@ public class ListLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( list );
-    assertTrue( operation.getPropertyNames().indexOf( "itemDimensions" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "itemDimensions" ) );
   }
 
   public void testRenderItemDimensions() throws IOException, JSONException {

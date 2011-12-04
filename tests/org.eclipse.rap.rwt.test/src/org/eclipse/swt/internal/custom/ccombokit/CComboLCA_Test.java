@@ -186,7 +186,7 @@ public class CComboLCA_Test extends TestCase {
     WidgetUtil.getLCA( ccombo ).readData( ccombo );
     assertEquals( 1, ccombo.getSelectionIndex() );
     // read changed selection and ensure that SelectionListener gets called
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     ccombo.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {
         assertSame( ccombo, event.getSource() );
@@ -230,7 +230,7 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( -1, markup.indexOf( "w.setValue(" ) );
     assertEquals( "some text", ccombo.getText() );
     // test with verify listener
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     ccombo.addVerifyListener( new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
         assertEquals( ccombo, event.widget );
@@ -392,7 +392,7 @@ public class CComboLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( ccombo );
-    assertTrue( operation.getPropertyNames().indexOf( "itemHeight" ) != -1 );
+    assertTrue( operation.getPropertyNames().contains( "itemHeight" ) );
   }
 
   public void testRenderItemHeight() throws IOException {

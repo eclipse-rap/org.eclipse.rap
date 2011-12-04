@@ -102,7 +102,7 @@ public class Spinner_Test extends TestCase {
 
   public void testModifyAndSelectionEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     final Spinner spinner = new Spinner( shell, SWT.NONE );

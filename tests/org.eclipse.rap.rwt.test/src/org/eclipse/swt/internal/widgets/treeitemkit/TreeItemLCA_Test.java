@@ -191,7 +191,7 @@ public class TreeItemLCA_Test extends TestCase {
     tree.setBounds( new Rectangle( 1, 2, 3, 4 ) );
     final TreeItem treeItem = new TreeItem( tree, SWT.NONE );
     new TreeItem( treeItem, SWT.NONE );
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     TreeListener listener = new TreeListener() {
       public void treeCollapsed( final TreeEvent event ) {
         assertEquals( tree, event.getSource() );

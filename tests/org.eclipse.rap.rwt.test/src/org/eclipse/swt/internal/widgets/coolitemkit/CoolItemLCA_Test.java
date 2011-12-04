@@ -74,7 +74,7 @@ public class CoolItemLCA_Test extends TestCase {
     IDisplayLifeCycleAdapter displayLCA = DisplayUtil.getLCA( display );
     displayLCA.render( display );
     String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setControl" ) != -1);
+    assertTrue( markup.contains( "setControl" ));
   }
 
 }

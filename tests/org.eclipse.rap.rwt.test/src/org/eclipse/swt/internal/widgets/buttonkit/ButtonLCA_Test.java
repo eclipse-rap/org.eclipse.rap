@@ -233,7 +233,7 @@ public class ButtonLCA_Test extends TestCase {
   }
 
   public void testDisabledButtonSelection() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Button button = new Button( shell, SWT.NONE );
     Label label = new Label( shell, SWT.NONE );
@@ -260,7 +260,7 @@ public class ButtonLCA_Test extends TestCase {
   }
 
   public void testSelectionEvent() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     final Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
@@ -282,7 +282,7 @@ public class ButtonLCA_Test extends TestCase {
 
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=224872
   public void testRadioSelectionEvent() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     final Button button1 = new Button( shell, SWT.RADIO );
     button1.setText( "1" );
     final Button button2 = new Button( shell, SWT.RADIO );
@@ -306,9 +306,9 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( button1Id + ".selection", "true" );
     Fixture.readDataAndProcessAction( display );
-    assertTrue( log.indexOf( "1:true" ) != -1 );
-    assertTrue( log.indexOf( "2:" ) == -1 );
-    assertTrue( log.indexOf( "3:" ) == -1 );
+    assertTrue( log.toString().contains( "1:true" ) );
+    assertTrue( log.toString().indexOf( "2:" ) == -1 );
+    assertTrue( log.toString().indexOf( "3:" ) == -1 );
 
     log.delete( 0, log.length() );
 
@@ -316,8 +316,8 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.fakeRequestParam( button1Id + ".selection", "false" );
     Fixture.fakeRequestParam( button2Id + ".selection", "true" );
     Fixture.readDataAndProcessAction( display );
-    assertTrue( log.indexOf( "1:false" ) != -1 );
-    assertTrue( log.indexOf( "2:true" ) != -1 );
+    assertTrue( log.toString().contains( "1:false" ) );
+    assertTrue( log.toString().contains( "2:true" ) );
     assertTrue( log.indexOf( "3:" ) == -1 );
   }
 

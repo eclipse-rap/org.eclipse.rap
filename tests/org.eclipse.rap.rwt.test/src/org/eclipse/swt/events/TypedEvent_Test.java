@@ -83,7 +83,7 @@ public class TypedEvent_Test extends TestCase {
   }
 
   public void testPhase() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
       public void widgetSelected( final SelectionEvent event ) {

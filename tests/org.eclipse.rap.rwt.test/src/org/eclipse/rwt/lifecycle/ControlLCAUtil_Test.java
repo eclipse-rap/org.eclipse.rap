@@ -102,7 +102,7 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.fakeResponseWriter();
     shell.setToolTipText( "abc" );
     ControlLCAUtil.writeToolTip( shell );
-    assertTrue( Fixture.getAllMarkup().indexOf( "abc" ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( "abc" ) );
     // on an initialized control: change tooltip from non-empty to empty
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( shell );
@@ -110,7 +110,7 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.preserveWidgets();
     shell.setToolTipText( null );
     ControlLCAUtil.writeToolTip( shell );
-    assertTrue( Fixture.getAllMarkup().indexOf( "setToolTip" ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( "setToolTip" ) );
     // on an initialized control: change tooltip from non-empty to empty
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( shell );
@@ -119,8 +119,8 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.preserveWidgets();
     shell.setToolTipText( "newTooltip" );
     ControlLCAUtil.writeToolTip( shell );
-    assertTrue( Fixture.getAllMarkup().indexOf( "setToolTip" ) != -1 );
-    assertTrue( Fixture.getAllMarkup().indexOf( "newTooltip" ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( "setToolTip" ) );
+    assertTrue( Fixture.getAllMarkup().contains( "newTooltip" ) );
     // on an initialized control: change non-empty tooltip text
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( shell );
@@ -129,8 +129,8 @@ public class ControlLCAUtil_Test extends TestCase {
     Fixture.preserveWidgets();
     shell.setToolTipText( "anotherTooltip" );
     ControlLCAUtil.writeToolTip( shell );
-    assertTrue( Fixture.getAllMarkup().indexOf( "setToolTip" ) != -1 );
-    assertTrue( Fixture.getAllMarkup().indexOf( "anotherTooltip" ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( "setToolTip" ) );
+    assertTrue( Fixture.getAllMarkup().contains( "anotherTooltip" ) );
     // test actual markup - the next two lines fake situation that there is
     // already a widget reference (w)
     JSWriter writer = JSWriter.getWriterFor( shell );
@@ -162,7 +162,7 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.writeActivateListener( label );
     markup = Fixture.getAllMarkup();
     assertEquals( false, WidgetUtil.getAdapter( label ).isInitialized() );
-    assertTrue( markup.indexOf( "addActivateListenerWidget" ) != -1 );
+    assertTrue( markup.contains( "addActivateListenerWidget" ) );
 
     // An initialized widget with unchanged activateListeners must not render
     // JavaScript code for adding activateListeners
@@ -182,7 +182,7 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.writeActivateListener( label );
     markup = Fixture.getAllMarkup();
     assertTrue( markup.indexOf( "addActivateListenerWidget" ) == -1 );
-    assertTrue( markup.indexOf( "removeActivateListenerWidget" ) != -1 );
+    assertTrue( markup.contains( "removeActivateListenerWidget" ) );
 
     // When the shell is disposed of, no removeActivateListener must be rendered
     // Important when disposing of a shell with ShellListener#shellClosed
@@ -197,7 +197,7 @@ public class ControlLCAUtil_Test extends TestCase {
 
   public void testProcessSelection() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     SelectionListener listener = new SelectionListener() {
       public void widgetSelected( final SelectionEvent event ) {
         log.append( WIDGET_SELECTED );
@@ -272,7 +272,7 @@ public class ControlLCAUtil_Test extends TestCase {
 
     control.setCursor( null );
     ControlLCAUtil.writeCursor( control );
-    assertTrue( Fixture.getAllMarkup().indexOf( "w.resetCursor();" ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( "w.resetCursor();" ) );
   }
 
   public void testWriteKeyEvents() throws IOException {

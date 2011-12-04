@@ -82,7 +82,7 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testModifyEvent() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     final Text text = new Text( shell, SWT.NONE );
     text.addModifyListener( new ModifyListener() {
 
@@ -101,7 +101,7 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testVerifyEvent() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     final Text text = new Text( shell, SWT.NONE );
     text.addVerifyListener( new VerifyListener() {
       public void verifyText( VerifyEvent event ) {

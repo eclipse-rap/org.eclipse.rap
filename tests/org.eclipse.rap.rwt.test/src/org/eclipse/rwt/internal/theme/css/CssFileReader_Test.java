@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme.css;
 
@@ -95,7 +96,7 @@ public class CssFileReader_Test extends TestCase {
   private boolean containsProblem( final Object[] array, final String part ) {
     boolean result = false;
     for( int i = 0; i < array.length && !result; i++ ) {
-      result |= array[ i ].toString().indexOf( part ) != -1;
+      result |= array[ i ].toString().contains( part );
     }
     return result ;
   }

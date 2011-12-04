@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2011 Rüdiger Herrmann and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2011 Rüdiger Herrmann and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   Rüdiger Herrmann - initial API and implementation
+ *    Rüdiger Herrmann - initial API and implementation
  ******************************************************************************/
 package org.eclipse.rwt.internal.widgets;
 
@@ -33,14 +34,14 @@ public class JSExecutor_Test extends TestCase {
   public void testExecuteJSOnce() {
     JSExecutor.executeJS( EXECUTE_1 );
     Fixture.executeLifeCycleFromServerThread();
-    assertTrue( Fixture.getAllMarkup().indexOf( EXECUTE_1 ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( EXECUTE_1 ) );
   }
 
   public void testExecuteJSTwice() {
     JSExecutor.executeJS( EXECUTE_1 );
     JSExecutor.executeJS( EXECUTE_2 );
     Fixture.executeLifeCycleFromServerThread();
-    assertTrue( Fixture.getAllMarkup().indexOf( EXECUTE_1 + EXECUTE_2 ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( EXECUTE_1 + EXECUTE_2 ) );
   }
   
   public void testExecuteJSIsClearedAfterRender() {

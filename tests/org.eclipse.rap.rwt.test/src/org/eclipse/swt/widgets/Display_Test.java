@@ -1118,7 +1118,7 @@ public class Display_Test extends TestCase {
 
   public void testCloseEventFilter() {
     Display display = new Display();
-    final StringBuffer order = new StringBuffer();
+    final StringBuilder order = new StringBuilder();
     final java.util.List<Event> events = new ArrayList<Event>();
     display.addFilter( SWT.Close, new Listener() {
       public void handleEvent( final Event event ) {
@@ -1146,7 +1146,7 @@ public class Display_Test extends TestCase {
 
   public void testDisposeEventFilter() {
     Display display = new Display();
-    final StringBuffer order = new StringBuffer();
+    final StringBuilder order = new StringBuilder();
     final java.util.List<Event> events = new ArrayList<Event>();
     display.addFilter( SWT.Dispose, new Listener() {
       public void handleEvent( final Event event ) {

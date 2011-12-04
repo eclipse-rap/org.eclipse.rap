@@ -133,7 +133,7 @@ public class Text_Test extends TestCase {
 
   public void testModifyEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     Display display = new Display();
     Shell shell = new Shell( display );
     final Text text = new Text( shell, SWT.NONE );

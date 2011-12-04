@@ -540,7 +540,7 @@ public class GCOperationWriter_Test extends TestCase {
     writeGCOperations( canvas );
     
     JSONArray ops = getGCOperations( canvas );
-    assertTrue( getOperation( 0, ops ).indexOf( "drawImage" ) != -1 );
+    assertTrue( getOperation( 0, ops ).contains( "drawImage" ) );
   }
 
   private static JSONArray getGCOperations( Canvas canvas ) {

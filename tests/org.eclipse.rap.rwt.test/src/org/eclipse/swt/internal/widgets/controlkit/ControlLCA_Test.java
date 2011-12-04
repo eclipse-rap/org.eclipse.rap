@@ -173,7 +173,7 @@ public class ControlLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     button.setVisible( false );
     ControlLCAUtil.writeChanges( button );
-    assertTrue( Fixture.getAllMarkup().indexOf( "setVisibility" ) != -1 );
+    assertTrue( Fixture.getAllMarkup().contains( "setVisibility" ) );
   }
 
   public void testWriteBounds() throws IOException {
@@ -218,7 +218,7 @@ public class ControlLCA_Test extends TestCase {
   }
 
   public void testRedrawAndDispose() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     // Set up test scenario
     Display display = new Display();
     Shell shell = new Shell( display );

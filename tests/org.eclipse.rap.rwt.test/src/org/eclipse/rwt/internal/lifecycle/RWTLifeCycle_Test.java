@@ -58,7 +58,7 @@ public class RWTLifeCycle_Test extends TestCase {
   private static final String DISPLAY_CREATED = "display created";
   private static final String EXCEPTION_IN_RENDER = "Exception in render";
 
-  private static StringBuffer log = new StringBuffer();
+  private static StringBuilder log = new StringBuilder();
 
   private static class LoggingPhaseListener implements PhaseListener {
     private static final long serialVersionUID = 1L;

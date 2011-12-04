@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.browser;
 
@@ -92,7 +92,7 @@ public class Browser_Test extends TestCase {
   }
 
   public void testLocationEvent() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     final String[] expectedLocation = new String[ 1 ];
     final Browser browser = new Browser( shell, SWT.NONE );
     LocationListener listener = new LocationListener() {

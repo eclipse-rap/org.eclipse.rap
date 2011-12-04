@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.branding;
 
@@ -19,39 +20,6 @@ import org.eclipse.rwt.internal.service.StartupPageTemplateHolder;
 
 
 public class BrandingUtil_Test extends TestCase {
-
-//  private static class TestBranding extends AbstractBranding {
-//    String favIcon;
-//    Header[] headers;
-//    String exitConfMessage;
-//    boolean showExitConf;
-//    public String getBody() {
-//      return null;
-//    }
-//    public boolean showExitConfirmation() {
-//      return showExitConf;
-//    }
-//    public String getExitConfirmationText() {
-//      return exitConfMessage;
-//    }
-//    public String getFavIcon() {
-//      return favIcon;
-//    }
-//    public Header[] getHeaders() {
-//      return headers;
-//    }
-//    public String getServletName() {
-//      return "rap";
-//    }
-//    public String getId() {
-//      return TestBranding.class.getName();
-//    }
-//    public void registerResources() throws IOException {
-//      if( favIcon != null && !"".equals( favIcon ) ) {
-//        ResourceManager.getInstance().register( favIcon );
-//      }
-//    }
-//  }
 
   public void testReplacePlaceholder() {
     String templateString = StartupPageTemplateHolder.VAR_ENTRY_POINT.toString();
@@ -69,9 +37,9 @@ public class BrandingUtil_Test extends TestCase {
     assertEquals( "", getTemplateContent( template ).toString() );
   }
 
-  private StringBuffer getTemplateContent( final StartupPageTemplateHolder template ) {
+  private StringBuilder getTemplateContent( final StartupPageTemplateHolder template ) {
     String[] tokens = template.getTokens();
-    StringBuffer result = new StringBuffer();
+    StringBuilder result = new StringBuilder();
     for( int i = 0; i < tokens.length; i++ ) {
       result.append( tokens[ i ] );
     }

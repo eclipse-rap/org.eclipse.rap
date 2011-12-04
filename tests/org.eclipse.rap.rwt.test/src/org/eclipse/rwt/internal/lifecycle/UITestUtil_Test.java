@@ -62,7 +62,7 @@ public class UITestUtil_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread( );
     String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setHtmlId" ) != -1 );
+    assertTrue( markup.contains( "setHtmlId" ) );
     
     // Request with already initialized widgets
     Fixture.fakeNewRequest( display );

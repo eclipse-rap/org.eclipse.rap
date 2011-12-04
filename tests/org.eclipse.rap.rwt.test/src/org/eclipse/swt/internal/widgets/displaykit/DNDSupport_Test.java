@@ -85,8 +85,8 @@ public class DNDSupport_Test extends TestCase {
     String transferType = dndSupport + ".setDragSourceTransferTypes( " + wRef + ", [ \\\"" + dataType;
     Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( register ) != -1 );
-    assertTrue( markup.indexOf( transferType ) != -1 );
+    assertTrue( markup.contains( register ) );
+    assertTrue( markup.contains( transferType ) );
   }
 
   public void testRegisterAndDisposeDropTarget() {
@@ -102,8 +102,8 @@ public class DNDSupport_Test extends TestCase {
     String transferType = dndSupport + ".setDropTargetTransferTypes( " + wRef + ", [ \\\"" + dataType;
     Fixture.executeLifeCycleFromServerThread();
     String markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( register ) != -1 );
-    assertTrue( markup.indexOf( transferType ) != -1 );
+    assertTrue( markup.contains( register ) );
+    assertTrue( markup.contains( transferType ) );
   }
 
   public void testCancelAfterDragDetectAndStartEvent() {
@@ -141,7 +141,7 @@ public class DNDSupport_Test extends TestCase {
     assertSame( dragSource, dragStart.widget );
     String markup = Fixture.getAllMarkup();
     String expected = "org.eclipse.rwt.DNDSupport.getInstance().cancel";
-    assertTrue( markup.indexOf( expected ) != -1 );
+    assertTrue( markup.contains( expected ) );
   }
 
   public void testLeaveBeforeEnter() {
@@ -745,7 +745,7 @@ public class DNDSupport_Test extends TestCase {
       + WidgetUtil.getId( dropTargetControl )
       + "\\\" )" )
       + ", \\\"link";
-    assertTrue( markup.indexOf( expected ) != -1 );
+    assertTrue( markup.contains( expected ) );
   }
 
   public void testResponseDetailChangedOnOver() {
@@ -792,7 +792,7 @@ public class DNDSupport_Test extends TestCase {
       + WidgetUtil.getId( dropTargetControl )
       + "\\\" )" )
       + ", \\\"link";
-    assertTrue( markup.indexOf( expected ) != -1 );
+    assertTrue( markup.contains( expected ) );
   }
 
   public void testDropAcceptWithDetailChangedOnEnter() {
@@ -910,7 +910,7 @@ public class DNDSupport_Test extends TestCase {
       + "\\\" )" )
       + ", [ \\\"select\\\" ], "
       + DND.FEEDBACK_SELECT;
-    assertTrue( markup.indexOf( expected ) != -1 );
+    assertTrue( markup.contains( expected ) );
   }
 
   public void testResponseFeedbackChangedOnOver() {
@@ -949,7 +949,7 @@ public class DNDSupport_Test extends TestCase {
       + "\\\" )" )
       + ", [ \\\"expand\\\", \\\"scroll\\\" ], "
       + ( DND.FEEDBACK_EXPAND | DND.FEEDBACK_SCROLL );
-    assertTrue( markup.indexOf( expected ) != -1 );
+    assertTrue( markup.contains( expected ) );
   }
 
   public void testResponseInitDataType() {
@@ -980,7 +980,7 @@ public class DNDSupport_Test extends TestCase {
       + ( "wm.findWidgetById( \\\""
           + WidgetUtil.getId( dropTargetControl )
           + "\\\" ), " );
-    assertTrue( markup.indexOf( expected ) != -1 );
+    assertTrue( markup.contains( expected ) );
   }
 
   public void testResponseChangeDataTypeOnOver() {
@@ -1027,7 +1027,7 @@ public class DNDSupport_Test extends TestCase {
           + WidgetUtil.getId( dropTargetControl )
           + "\\\" ), "
           + RTFTransfer.getInstance().getSupportedTypes()[ 0 ].type );
-    assertTrue( markup.indexOf( expected ) != -1 );
+    assertTrue( markup.contains( expected ) );
   }
 
   public void testResponseChangeDataTypeOnEnter() {
@@ -1074,7 +1074,7 @@ public class DNDSupport_Test extends TestCase {
           + WidgetUtil.getId( dropTargetControl )
           + "\\\" ), "
           + RTFTransfer.getInstance().getSupportedTypes()[ 0 ].type );
-    assertTrue( markup.indexOf( expected ) != -1 );
+    assertTrue( markup.contains( expected ) );
   }
 
   public void testResponseChangeDataTypeInvalid() {
@@ -1106,7 +1106,7 @@ public class DNDSupport_Test extends TestCase {
                       + ( "wm.findWidgetById( \\\""
                           + WidgetUtil.getId( dropTargetControl )
                           + "\\\" ), " + TextTransfer.getInstance().getSupportedTypes()[ 0 ].type );
-    assertTrue( markup.indexOf( expected ) != -1 );
+    assertTrue( markup.contains( expected ) );
   }
 
   public void testOperationChangedEvent() {

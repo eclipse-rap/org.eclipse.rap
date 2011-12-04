@@ -52,7 +52,7 @@ public class TextSizeStorageUtil_Test extends TestCase {
 
   public void testGetKey() {
     Set<Integer> takenKeys = new HashSet<Integer>();
-    StringBuffer generatedText = new StringBuffer();
+    StringBuilder generatedText = new StringBuilder();
     for( int i = 0; i < 100; i++ ) {
       generatedText.append( "a" );
       String text = generatedText.toString();

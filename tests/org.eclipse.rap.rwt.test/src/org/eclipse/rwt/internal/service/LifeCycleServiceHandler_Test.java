@@ -39,7 +39,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   private static final String ENTER = "enter|";
   private static final String EXIT = "exit|";
 
-  private StringBuffer log = new StringBuffer();
+  private StringBuilder log = new StringBuilder();
 
   private class TestHandler extends LifeCycleServiceHandler {
     

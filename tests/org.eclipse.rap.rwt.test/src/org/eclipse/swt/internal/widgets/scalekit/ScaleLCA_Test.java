@@ -133,7 +133,7 @@ public class ScaleLCA_Test extends TestCase {
   }
 
   private void testSelectionEvent( final Scale scale ) {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     SelectionListener selectionListener = new SelectionAdapter() {
       public void widgetSelected( SelectionEvent event ) {
         assertEquals( scale, event.getSource() );

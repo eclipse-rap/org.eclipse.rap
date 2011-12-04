@@ -237,7 +237,7 @@ public class Tree_Test extends TestCase {
   }
 
   public void testExpandCollapse() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     Tree tree = new Tree( composite, SWT.NONE );
     tree.addTreeListener( new TreeListener() {
       public void treeCollapsed( final TreeEvent e ) {

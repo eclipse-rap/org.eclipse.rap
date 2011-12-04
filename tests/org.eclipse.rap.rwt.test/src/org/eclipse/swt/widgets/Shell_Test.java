@@ -189,7 +189,7 @@ public class Shell_Test extends TestCase {
   public void testLayoutOnSetVisible() {
     // ensure that layout is trigered while opening a shell, more specifically
     // during setVisible( true )
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     shell.setLayout( new Layout() {
       protected Point computeSize( Composite composite, int hint, int hint2, boolean flushCache ) {
         return null;
@@ -478,7 +478,7 @@ public class Shell_Test extends TestCase {
   }
 
   public void testNoDeactivateEventOnDispose() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     shell.addShellListener( new ShellAdapter() {
       public void shellActivated( final ShellEvent event ) {
         log.append( "shell activated" );

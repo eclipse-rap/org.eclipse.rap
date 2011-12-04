@@ -43,10 +43,10 @@ public class PreserveWidgets_Test extends TestCase {
   }
 
   private static class LoggingWidgetLCA extends AbstractWidgetLCA {
-    private final StringBuffer log;
+    private final StringBuilder log;
     
     LoggingWidgetLCA() {
-      log= new StringBuffer();
+      log= new StringBuilder();
     }
     
     public void preserveValues( Widget widget ) {
@@ -128,7 +128,7 @@ public class PreserveWidgets_Test extends TestCase {
     text.setText( "hello" );
     Fixture.markInitialized( display );
     ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
       public void beforePhase( PhaseEvent event ) {
@@ -165,7 +165,7 @@ public class PreserveWidgets_Test extends TestCase {
   }
 
   public void testPreserveValuesWhenDisplayIsUninitialized() {
-    StringBuffer log = new StringBuffer();
+    StringBuilder log = new StringBuilder();
     Display display = new Display();
     LoggingWidgetLCA loggingWidgetLCA = new LoggingWidgetLCA();
     Composite shell = new CustomLCAShell( display, loggingWidgetLCA );

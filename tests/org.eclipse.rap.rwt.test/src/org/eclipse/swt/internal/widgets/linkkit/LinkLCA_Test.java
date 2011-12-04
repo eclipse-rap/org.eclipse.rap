@@ -175,7 +175,7 @@ public class LinkLCA_Test extends TestCase {
   }
 
   public void testSelectionEvent() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     final Link link = new Link( shell, SWT.NONE );
     link.setText( "Big <a>Bang</a>" );
     link.addSelectionListener( new SelectionAdapter() {

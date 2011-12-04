@@ -188,7 +188,7 @@ public class ShellLCA_Test extends TestCase {
   }
 
   public void testReadDataForClosed() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     shell.open();
     shell.addShellListener( new ShellAdapter() {
       @Override
@@ -289,7 +289,7 @@ public class ShellLCA_Test extends TestCase {
   }
 
   public void testShellActivate() {
-    final StringBuffer activateEventLog = new StringBuffer();
+    final StringBuilder activateEventLog = new StringBuilder();
     ActivateListener activateListener = new ActivateListener() {
       public void activated( ActivateEvent event ) {
         Shell shell = ( Shell )event.getSource();
@@ -300,7 +300,7 @@ public class ShellLCA_Test extends TestCase {
         activateEventLog.append( "deactivated:" + shell.getData() + "|" );
       }
     };
-    final StringBuffer shellEventLog = new StringBuffer();
+    final StringBuilder shellEventLog = new StringBuilder();
     ShellListener shellListener = new ShellAdapter() {
       @Override
       public void shellActivated( ShellEvent event ) {

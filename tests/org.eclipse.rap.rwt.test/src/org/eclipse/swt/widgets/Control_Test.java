@@ -565,7 +565,7 @@ public class Control_Test extends TestCase {
   public void testFocusOnClosedShell() {
     Control control1 = new Button( shell, SWT.PUSH );
     final Control control2 = new Button( shell, SWT.PUSH );
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     FocusListener focusListener = new FocusListener() {
       public void focusGained( final FocusEvent event ) {
         if( event.getSource() == shell ) {
@@ -638,7 +638,7 @@ public class Control_Test extends TestCase {
 
   // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=265634
   public void testNoFocusOutOnDispose() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     Control control = new Button( shell, SWT.PUSH );
     control.addFocusListener( new FocusAdapter() {
       public void focusLost( FocusEvent event ) {
@@ -687,7 +687,7 @@ public class Control_Test extends TestCase {
   }
 
   public void testFocusEventsForForceFocus() {
-    final StringBuffer log = new StringBuffer();
+    final StringBuilder log = new StringBuilder();
     final Control control1 = new Button( shell, SWT.PUSH );
     control1.addFocusListener( new FocusAdapter() {
       public void focusGained( final FocusEvent event ) {

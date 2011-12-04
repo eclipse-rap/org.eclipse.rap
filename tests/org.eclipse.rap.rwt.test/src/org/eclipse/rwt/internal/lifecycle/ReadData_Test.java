@@ -22,8 +22,8 @@ import org.eclipse.swt.widgets.*;
 public class ReadData_Test extends TestCase {
 
   private final class TestWidget extends Shell {
-    private final StringBuffer log;
-    private TestWidget( Display display, StringBuffer log ) {
+    private final StringBuilder log;
+    private TestWidget( Display display, StringBuilder log ) {
       super( display );
       this.log = log;
     }
@@ -45,8 +45,8 @@ public class ReadData_Test extends TestCase {
     private static final String RENDER_INITIALIZATION = "renderInitialization";
     private static final String RENDER_CHANGES = "renderChanges";
     private static final String RENDER_DISPOSE = "renderDispose";
-    private StringBuffer log;
-    LoggingWidgetLCA( StringBuffer log ) {
+    private StringBuilder log;
+    LoggingWidgetLCA( StringBuilder log ) {
       this.log = log;
     }
     public void readData( Widget widget ) {
@@ -73,7 +73,7 @@ public class ReadData_Test extends TestCase {
   }
   
   public void testExecute() {
-    StringBuffer log = new StringBuffer();
+    StringBuilder log = new StringBuilder();
     Display display = new Display();
     new TestWidget( display, log );
     PhaseId phaseId = readData.execute( display );
