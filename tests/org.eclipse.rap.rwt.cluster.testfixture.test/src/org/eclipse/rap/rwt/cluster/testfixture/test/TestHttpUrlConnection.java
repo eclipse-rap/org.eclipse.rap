@@ -22,20 +22,28 @@ public class TestHttpUrlConnection extends HttpURLConnection {
 
   private final String responseContent;
   private String cookie;
+  private final String contentType;
 
-  
+
   public TestHttpUrlConnection( String responseContent ) {
-    this( -1, responseContent );
+    this( -1, null, responseContent );
   }
-  
-  public TestHttpUrlConnection( int responseCode, String responseContent ) {
+
+  public TestHttpUrlConnection( int responseCode, String contentType, String responseContent ) {
     super( getUrl() );
-    this.responseContent = responseContent;
     this.responseCode = responseCode;
+    this.contentType = contentType;
+    this.responseContent = responseContent;
   }
-  
+
+  @Override
   public int getResponseCode() throws IOException {
     return responseCode;
+  }
+
+  @Override
+  public String getContentType() {
+    return contentType;
   }
 
   public void setCookie( String cookie ) {
@@ -51,7 +59,7 @@ public class TestHttpUrlConnection extends HttpURLConnection {
 
   public void connect() throws IOException {
   }
-  
+
   public String getHeaderField( String name ) {
     String result = null;
     if( name.equals( "Set-Cookie" ) ) {
@@ -59,7 +67,7 @@ public class TestHttpUrlConnection extends HttpURLConnection {
     }
     return result;
   }
-  
+
   public InputStream getInputStream() throws IOException {
     return new ByteArrayInputStream( responseContent.getBytes( "utf-8" ) );
   }

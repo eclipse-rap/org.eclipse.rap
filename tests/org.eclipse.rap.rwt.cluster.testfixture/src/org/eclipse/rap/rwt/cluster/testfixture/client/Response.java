@@ -35,6 +35,10 @@ public class Response {
     return responseCode;
   }
 
+  public String getContentType() {
+    return contentType;
+  }
+
   public byte[] getContent() {
     return content.clone();
   }
