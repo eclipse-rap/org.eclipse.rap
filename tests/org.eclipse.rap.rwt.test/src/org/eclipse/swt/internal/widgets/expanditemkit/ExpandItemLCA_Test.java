@@ -81,7 +81,7 @@ public class ExpandItemLCA_Test extends TestCase {
     final ExpandItem expandItem = createExpandItems( expandBar );
     final StringBuilder log = new StringBuilder();
     ExpandListener listener = new ExpandListener() {
-      public void itemCollapsed( final ExpandEvent event ) {
+      public void itemCollapsed( ExpandEvent event ) {
         assertEquals( expandBar, event.getSource() );
         assertEquals( expandItem, event.item );
         assertEquals( SWT.NONE, event.detail );
@@ -93,7 +93,7 @@ public class ExpandItemLCA_Test extends TestCase {
         log.append( "collapsed" );
       }
 
-      public void itemExpanded( final ExpandEvent event ) {
+      public void itemExpanded( ExpandEvent event ) {
         assertEquals( expandBar, event.getSource() );
         assertEquals( expandItem, event.item );
         assertEquals( SWT.NONE, event.detail );
@@ -131,7 +131,7 @@ public class ExpandItemLCA_Test extends TestCase {
     assertEquals( false, expandItem.getExpanded() );
   }
 
-  private ExpandItem createExpandItems( final ExpandBar expandBar ) {
+  private ExpandItem createExpandItems( ExpandBar expandBar ) {
     Display display = expandBar.getDisplay();
     // First item
     Composite composite = new Composite( expandBar, SWT.NONE );

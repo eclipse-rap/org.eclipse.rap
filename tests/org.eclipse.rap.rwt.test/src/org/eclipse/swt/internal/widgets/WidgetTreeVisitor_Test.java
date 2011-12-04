@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,12 +69,12 @@ public class WidgetTreeVisitor_Test extends TestCase {
     };
     final int[] count = { 0 };
     WidgetTreeVisitor.accept( shell, new WidgetTreeVisitor() {
-      public boolean visit( final Widget widget ) {
+      public boolean visit( Widget widget ) {
         assertSame( widget, elements[ count[ 0 ] ] );
         count[ 0 ]++;
         return true;
       }
-      public boolean visit( final Composite composite ) {
+      public boolean visit( Composite composite ) {
         assertSame( composite, elements[ count[ 0 ] ] );
         count[ 0 ]++;
         return true;
@@ -83,7 +83,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 10, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new WidgetTreeVisitor() {
-      public boolean visit( final Composite composite ) {
+      public boolean visit( Composite composite ) {
         count[ 0 ]++;
         return false;
       }
@@ -91,7 +91,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 1, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
+      public boolean doVisit( Widget widget ) {
         assertSame( widget, elements[ count[ 0 ] ] );
         count[ 0 ]++;
         return true;
@@ -100,7 +100,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 10, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
+      public boolean doVisit( Widget widget ) {
         count[ 0 ]++;
         return widget != treeItem1;
       }
@@ -120,7 +120,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
       shell, table, column1, column2, item1, item2, tableControl
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
+      public boolean doVisit( Widget widget ) {
         assertSame( elements[ count[ 0 ] ], widget );
         count[ 0 ]++;
         return widget != shell;
@@ -131,7 +131,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     // Ensure that table item are visited in this order: first TableColumn,
     // then TableItem; regardless in which order they were constructed
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
+      public boolean doVisit( Widget widget ) {
         assertSame( elements[ count[ 0 ] ], widget );
         count[ 0 ]++;
         return true;
@@ -150,7 +150,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
       shell, toolBar, toolItem
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
+      public boolean doVisit( Widget widget ) {
         assertSame( widget, elements[ count[ 0 ] ] );
         count[ 0 ]++;
         return widget != shell;
@@ -159,7 +159,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 1, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
+      public boolean doVisit( Widget widget ) {
         assertSame( elements[ count[ 0 ] ], widget );
         count[ 0 ]++;
         return true;
@@ -179,7 +179,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
       shell, menuBar, shellMenu, textMenu, text
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
+      public boolean doVisit( Widget widget ) {
         assertSame( widget, elements[ count[ 0 ] ] );
         count[ 0 ]++;
         return widget != shell;
@@ -188,7 +188,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 1, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
+      public boolean doVisit( Widget widget ) {
         assertSame( elements[ count[ 0 ] ], widget );
         count[ 0 ]++;
         return true;
@@ -208,7 +208,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
       shell, control1, decoration1, composite, control2, decoration2
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
+      public boolean doVisit( Widget widget ) {
         assertSame( widget, elements[ count[ 0 ] ] );
         count[ 0 ]++;
         return widget != shell;
@@ -217,7 +217,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
     assertEquals( 1, count[ 0 ] );
     count[ 0 ] = 0;
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
+      public boolean doVisit( Widget widget ) {
         assertSame( widget, elements[ count[ 0 ] ] );
         count[ 0 ]++;
         return true;
@@ -235,7 +235,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
       shell, compositeDragSource, text, controlDragSource
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
+      public boolean doVisit( Widget widget ) {
         assertSame( elements[ count[ 0 ] ], widget );
         count[ 0 ]++;
         return true;
@@ -252,7 +252,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
       shell, control, toolTip
     };
     WidgetTreeVisitor.accept( shell, new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
+      public boolean doVisit( Widget widget ) {
         assertSame( elements[ count[ 0 ] ], widget );
         count[ 0 ]++;
         return true;
@@ -274,7 +274,7 @@ public class WidgetTreeVisitor_Test extends TestCase {
 
     final List<Widget> log = new ArrayList<Widget>();
     WidgetTreeVisitor.accept( customWidget, new AllWidgetTreeVisitor() {
-      public boolean doVisit( final Widget widget ) {
+      public boolean doVisit( Widget widget ) {
         log.add( widget );
         return true;
       }

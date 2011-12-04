@@ -28,6 +28,7 @@ import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+
 public class BrowserLCA_Test extends TestCase {
 
   private Display display;
@@ -141,7 +142,7 @@ public class BrowserLCA_Test extends TestCase {
     final StringBuilder log = new StringBuilder();
     Browser browser = new Browser( shell, SWT.NONE );
     new BrowserFunction( browser, "func" ) {
-      public Object function( final Object[] arguments ) {
+      public Object function( Object[] arguments ) {
         for( int i = 0; i < arguments.length; i++ ) {
           log.append( arguments[ i ].toString() );
           log.append( "|" );
@@ -318,10 +319,10 @@ public class BrowserLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Browser browser = new Browser( shell, SWT.NONE );
     browser.addProgressListener( new ProgressListener() {
-      public void changed( final ProgressEvent event ) {
+      public void changed( ProgressEvent event ) {
         log.add( "changed" );
       }
-      public void completed( final ProgressEvent event ) {
+      public void completed( ProgressEvent event ) {
         log.add( "completed" );
       }
     } );

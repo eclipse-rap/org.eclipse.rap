@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.events;
 
@@ -42,13 +42,13 @@ public class MouseEvent_Test extends TestCase {
     private LoggingMouseListener( List<Object> events ) {
       this.events = events;
     }
-    public void mouseDoubleClick( final MouseEvent event ) {
+    public void mouseDoubleClick( MouseEvent event ) {
       events.add( event );
     }
-    public void mouseDown( final MouseEvent event ) {
+    public void mouseDown( MouseEvent event ) {
       events.add( event );
     }
-    public void mouseUp( final MouseEvent event ) {
+    public void mouseUp( MouseEvent event ) {
       events.add( event );
     }
   }

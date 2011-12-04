@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets;
 
@@ -54,7 +54,7 @@ public class UntypedEventAdapter_Test extends TestCase {
   public void testListenerTypes() {
     UntypedEventAdapter adapter = new UntypedEventAdapter();
     Listener listener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         eventType = event.type;
       }
     };
@@ -133,7 +133,7 @@ public class UntypedEventAdapter_Test extends TestCase {
     UntypedEventAdapter adapter = new UntypedEventAdapter();
     final Set<Event> eventBuffer = new HashSet<Event>();
     Listener listener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         eventType = event.type;
         log += EVENT_FIRED;
         eventBuffer.add( event );
@@ -169,12 +169,12 @@ public class UntypedEventAdapter_Test extends TestCase {
     Control widget = new Shell( display );
     UntypedEventAdapter adapter = new UntypedEventAdapter();
     Listener listener1 = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log += "L1|";
       }
     };
     Listener listener2 = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log += "L2|";
       }
     };
@@ -187,7 +187,7 @@ public class UntypedEventAdapter_Test extends TestCase {
   public void testEventFields() {
     final Event[] eventLog = { null };
     Listener listener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         eventLog[ 0 ] = event;
       }
     };
@@ -253,7 +253,7 @@ public class UntypedEventAdapter_Test extends TestCase {
   public void testInvalidEventType() {
     final Event[] eventLog = { null };
     Listener listener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         eventLog[ 0 ] = event;
       }
     };

@@ -6,9 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.custom;
 
 import java.util.ArrayList;
@@ -22,6 +21,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.*;
+
 
 /*
  * Note:
@@ -401,7 +401,7 @@ public class CCombo_Test extends TestCase {
     CCombo combo = new CCombo( shell, SWT.NONE );
     combo.setItems (new String [] {"A-1", "B-1", "C-1"});
     ModifyListener listener = new ModifyListener() {
-      public void modifyText( final ModifyEvent event ) {
+      public void modifyText( ModifyEvent event ) {
         listenerCalled = true;
       }
     };
@@ -467,7 +467,7 @@ public class CCombo_Test extends TestCase {
     CCombo combo = new CCombo( shell, SWT.READ_ONLY );
     combo.setItems (new String [] {"A-1", "B-1", "C-1"});
     ModifyListener listener = new ModifyListener() {
-      public void modifyText( final ModifyEvent event ) {
+      public void modifyText( ModifyEvent event ) {
         listenerCalled = true;
       }
     };
@@ -531,12 +531,12 @@ public class CCombo_Test extends TestCase {
     final java.util.List<TypedEvent> log = new ArrayList<TypedEvent>();
     final CCombo combo = new CCombo( shell, SWT.NONE );
     combo.addModifyListener( new ModifyListener() {
-      public void modifyText( final ModifyEvent event ) {
+      public void modifyText( ModifyEvent event ) {
         log.add( event );
       }
     } );
     combo.addVerifyListener( new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         log.add( event );
       }
     } );
@@ -552,7 +552,7 @@ public class CCombo_Test extends TestCase {
     combo.setText( "" );
     log.clear();
     verifyListener = new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         event.doit = false;
       }
     };
@@ -567,7 +567,7 @@ public class CCombo_Test extends TestCase {
     combo.setText( "" );
     log.clear();
     verifyListener = new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         event.text = "manipulated";
       }
     };

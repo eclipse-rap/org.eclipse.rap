@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.events;
 
@@ -34,11 +35,11 @@ public class TreeEvent_Test extends TestCase {
   public void testAddRemoveClosedListener() {
     TreeListener listener = new TreeListener() {
 
-      public void treeCollapsed( final TreeEvent e ) {
+      public void treeCollapsed( TreeEvent e ) {
         log += TREE_COLLAPSED;
       }
 
-      public void treeExpanded( final TreeEvent e ) {
+      public void treeExpanded( TreeEvent e ) {
         log += TREE_EXPANDED;
       }
     };

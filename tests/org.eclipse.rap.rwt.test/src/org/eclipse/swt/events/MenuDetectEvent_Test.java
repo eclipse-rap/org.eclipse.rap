@@ -1,12 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource
+ * Copyright (c) 2010, 2011 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.events;
 
@@ -41,7 +41,7 @@ public class MenuDetectEvent_Test extends TestCase {
     final List<MenuDetectEvent> log = new ArrayList<MenuDetectEvent>();
     Button button = new Button( shell, SWT.PUSH );
     button.addMenuDetectListener( new MenuDetectListener() {
-      public void menuDetected( final MenuDetectEvent event ) {
+      public void menuDetected( MenuDetectEvent event ) {
         log.add( event );
       }
     } );

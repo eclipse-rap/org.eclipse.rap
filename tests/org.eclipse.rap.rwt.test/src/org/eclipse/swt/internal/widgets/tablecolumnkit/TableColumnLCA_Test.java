@@ -125,11 +125,11 @@ public class TableColumnLCA_Test extends TestCase {
     final TableColumn column = new TableColumn( table, SWT.NONE );
     column.setWidth( 20 );
     column.addControlListener( new ControlListener() {
-      public void controlMoved( final ControlEvent e ) {
+      public void controlMoved( ControlEvent e ) {
         fail( "unexpected event: controlMoved" );
       }
 
-      public void controlResized( final ControlEvent e ) {
+      public void controlResized( ControlEvent e ) {
         assertSame( column, e.getSource() );
         log.append( "controlResized" );
       }

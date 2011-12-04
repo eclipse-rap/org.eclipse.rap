@@ -6,9 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
-
 package org.eclipse.swt.internal.custom.ccombokit;
 
 import java.io.IOException;
@@ -33,6 +32,7 @@ import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 import org.json.*;
+
 
 public class CComboLCA_Test extends TestCase {
 
@@ -188,7 +188,7 @@ public class CComboLCA_Test extends TestCase {
     // read changed selection and ensure that SelectionListener gets called
     final StringBuilder log = new StringBuilder();
     ccombo.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         assertSame( ccombo, event.getSource() );
         assertEquals( 0, event.detail );
         assertEquals( null, event.item );

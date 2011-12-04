@@ -203,7 +203,7 @@ public class LinkLCA_Test extends TestCase {
     Link link = new Link( shell, SWT.NONE );
     link.setText( "No Link" );
     link.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         fail( "Should not be fired" );
       }
     } );

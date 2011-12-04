@@ -192,7 +192,7 @@ public class ShellLCA_Test extends TestCase {
     shell.open();
     shell.addShellListener( new ShellAdapter() {
       @Override
-      public void shellClosed( final ShellEvent event ) {
+      public void shellClosed( ShellEvent event ) {
         log.append( "closed" );
       }
     } );

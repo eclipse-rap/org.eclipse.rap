@@ -70,7 +70,7 @@ public class DisplayLCAFocus_Test extends TestCase {
     shell.setSize( 400, 400 );
     final Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         childShell[ 0 ] = new Shell( shell, SWT.NONE );
         childShell[ 0 ].setBounds( 0, 0, 100, 100 );
         childShell[ 0 ].open();

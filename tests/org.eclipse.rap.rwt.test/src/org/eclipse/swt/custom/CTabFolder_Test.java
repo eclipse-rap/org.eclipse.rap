@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.custom;
 
@@ -68,7 +68,7 @@ public class CTabFolder_Test extends TestCase {
     try {
       item.setControl( shell );
       fail( "Wrong parent." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
   }
@@ -77,7 +77,7 @@ public class CTabFolder_Test extends TestCase {
     final StringBuilder  log = new StringBuilder();
     CTabFolder folder1 = new CTabFolder( shell, SWT.NONE );
     folder1.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         log.append( "selectionEvent" );
       }
     } );
@@ -205,7 +205,7 @@ public class CTabFolder_Test extends TestCase {
     final CTabItem item1 = new CTabItem( folder, SWT.NONE );
     CTabItem item2 = new CTabItem( folder, SWT.NONE );
     folder.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         assertSame( folder, event.getSource() );
         assertSame( item1, event.item );
         assertEquals( 0, event.detail );
@@ -409,35 +409,35 @@ public class CTabFolder_Test extends TestCase {
     try {
       folder.setSelectionBackground( colors, percents );
       fail( "Wrong gradient arrays length." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     percents = new int[] { -50, 100 };
     try {
       folder.setSelectionBackground( colors, percents );
       fail( "Wrong gradient percents value." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     percents = new int[] { 100, 50 };
     try {
       folder.setSelectionBackground( colors, percents );
       fail( "Wrong gradient percents value." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     percents = new int[] { 50, 150 };
     try {
       folder.setSelectionBackground( colors, percents );
       fail( "Wrong gradient percents value." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     colors[ 1 ] = null;
     try {
       folder.setSelectionBackground( colors, percents );
       fail( "Wrong gradient colors value." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
   }
@@ -458,7 +458,7 @@ public class CTabFolder_Test extends TestCase {
     int[] percents = new int[] { 0 };
     try {
       folder.setSelectionBackground( colors, percents );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       fail( "Should not throw IAE when percents.lenght == colors.lenght - 2." );
     }
     IWidgetGraphicsAdapter gfxAdapter
@@ -708,13 +708,13 @@ public class CTabFolder_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  private static Rectangle getChevronRect( final CTabFolder folder ) {
+  private static Rectangle getChevronRect( CTabFolder folder ) {
     Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
     ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
     return folderAdapter.getChevronRect();
   }
 
-  private static boolean getChevronVisible( final CTabFolder folder ) {
+  private static boolean getChevronVisible( CTabFolder folder ) {
     Object adapter = folder.getAdapter( ICTabFolderAdapter.class );
     ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
     return folderAdapter.getChevronVisible();

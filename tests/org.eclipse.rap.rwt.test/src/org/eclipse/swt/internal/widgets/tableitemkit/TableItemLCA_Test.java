@@ -194,7 +194,7 @@ public class TableItemLCA_Test extends TestCase {
     table.setSelection( 2 );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         table.remove( 1, 2 );
         executed[ 0 ] = true;
       }

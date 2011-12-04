@@ -76,7 +76,7 @@ public class ActiveKeysUtil_Test extends TestCase {
   public void testNoKeyEventsForIllegalWidgetId() {
     final ArrayList<Event> log = new ArrayList<Event>();
     display.addFilter( SWT.KeyDown, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.add( event );
       }
     } );
@@ -94,7 +94,7 @@ public class ActiveKeysUtil_Test extends TestCase {
   public void testReadKeyBindingEvents_CtrlAltSpace() {
     final ArrayList<Event> log = new ArrayList<Event>();
     display.addFilter( SWT.KeyDown, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.add( event );
       }
     } );
@@ -118,7 +118,7 @@ public class ActiveKeysUtil_Test extends TestCase {
   public void testReadKeyBindingEvents_AltShiftF5() {
     final java.util.List<Event> log = new ArrayList<Event>();
     display.addFilter( SWT.KeyDown, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.add( event );
       }
     } );

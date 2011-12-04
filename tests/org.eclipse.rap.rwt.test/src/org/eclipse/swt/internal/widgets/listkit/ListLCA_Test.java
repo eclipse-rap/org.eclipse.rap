@@ -147,10 +147,10 @@ public class ListLCA_Test extends TestCase {
     Fixture.clearPreserved();
     list.addFocusListener( new FocusListener() {
 
-      public void focusGained( final FocusEvent event ) {
+      public void focusGained( FocusEvent event ) {
       }
 
-      public void focusLost( final FocusEvent event ) {
+      public void focusLost( FocusEvent event ) {
       }
     } );
     Fixture.preserveWidgets();
@@ -228,7 +228,7 @@ public class ListLCA_Test extends TestCase {
     list.setSelection( -1 );
     list.addSelectionListener( new SelectionAdapter() {
 
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         log.append( "selectionEvent" );
         assertSame( list, event.getSource() );
         assertEquals( 0, event.detail );

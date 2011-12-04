@@ -193,7 +193,7 @@ public class TreeItemLCA_Test extends TestCase {
     new TreeItem( treeItem, SWT.NONE );
     final StringBuilder log = new StringBuilder();
     TreeListener listener = new TreeListener() {
-      public void treeCollapsed( final TreeEvent event ) {
+      public void treeCollapsed( TreeEvent event ) {
         assertEquals( tree, event.getSource() );
         assertEquals( treeItem, event.item );
         assertEquals( SWT.NONE, event.detail );
@@ -205,7 +205,7 @@ public class TreeItemLCA_Test extends TestCase {
         log.append( "collapsed" );
       }
 
-      public void treeExpanded( final TreeEvent event ) {
+      public void treeExpanded( TreeEvent event ) {
         assertEquals( tree, event.getSource() );
         assertEquals( treeItem, event.item );
         assertEquals( SWT.NONE, event.detail );

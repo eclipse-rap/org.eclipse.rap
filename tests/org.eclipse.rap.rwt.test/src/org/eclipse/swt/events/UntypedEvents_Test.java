@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.events;
 
@@ -47,7 +47,7 @@ public class UntypedEvents_Test extends TestCase {
 
   public void testUntypedEventInvocation() {
     Listener listener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         assertSame( widget, event.widget );
         assertNull( event.item );
         assertEquals( 10, event.x );
@@ -74,7 +74,7 @@ public class UntypedEvents_Test extends TestCase {
 
     log = "";
     listener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         assertSame( widget, event.widget );
         assertNull( event.item );
         assertEquals( 10, event.x );
@@ -103,7 +103,7 @@ public class UntypedEvents_Test extends TestCase {
   public void testFilter() {
     final boolean[] executed = new boolean[ 1 ];
     display.addFilter( SWT.Selection, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         event.type = SWT.None;
         executed[ 0 ] = true;
       }

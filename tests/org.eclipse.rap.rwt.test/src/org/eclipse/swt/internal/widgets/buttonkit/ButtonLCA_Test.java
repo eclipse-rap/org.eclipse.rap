@@ -90,7 +90,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( Boolean.TRUE, adapter.getPreserved( ButtonLCAUtil.PROP_SELECTION ) );
   }
 
-  private void testPreserveValues( final Display display, final Button button ) {
+  private void testPreserveValues( Display display, Button button ) {
     Boolean hasListeners;
     // Text,Image
     IWidgetAdapter adapter = WidgetUtil.getAdapter( button );
@@ -353,7 +353,7 @@ public class ButtonLCA_Test extends TestCase {
     Button button2 = new Button( shell, SWT.RADIO );
     button2.setText( "2" );
     Listener listener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.add( event );
       }
     };

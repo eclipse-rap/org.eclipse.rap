@@ -107,7 +107,7 @@ public class DateTimeLCA_Test extends TestCase {
     assertEquals( 2010, dateTime.getYear() );
   }
 
-  private void testPreserveControlProperties( final DateTime dateTime ) {
+  private void testPreserveControlProperties( DateTime dateTime ) {
     // control: enabled
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( dateTime );
@@ -162,7 +162,7 @@ public class DateTimeLCA_Test extends TestCase {
     final StringBuilder log = new StringBuilder();
     SelectionListener selectionListener = new SelectionAdapter() {
 
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         assertEquals( dateTime, event.getSource() );
         assertEquals( null, event.item );
         assertEquals( SWT.NONE, event.detail );

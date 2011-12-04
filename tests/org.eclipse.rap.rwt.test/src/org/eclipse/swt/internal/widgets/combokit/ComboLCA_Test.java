@@ -188,7 +188,7 @@ public class ComboLCA_Test extends TestCase {
     // read changed selection and ensure that SelectionListener gets called
     final StringBuilder log = new StringBuilder();
     combo.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         assertSame( combo, event.getSource() );
         assertEquals( 0, event.detail );
         assertEquals( null, event.item );

@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2010 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.events;
 
 import junit.framework.TestCase;
@@ -19,6 +18,7 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
+
 
 public class SelectionEvent_Test extends TestCase {
 
@@ -39,7 +39,7 @@ public class SelectionEvent_Test extends TestCase {
     Composite shell = new Shell( display , SWT.NONE );
     final Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         assertSame( button, event.getSource() );
         assertSame( display, event.display );
         assertNull( event.item );
@@ -98,7 +98,7 @@ public class SelectionEvent_Test extends TestCase {
     Composite shell = new Shell( display , SWT.NONE );
     final Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         assertSame( button, event.getSource() );
         assertSame( display, event.display );
         assertNull( event.item );

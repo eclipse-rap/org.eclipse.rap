@@ -1,8 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
  *    EclipseSource - initial API and implementation
@@ -34,6 +35,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
+
 
 public class CanvasLCA_Test extends TestCase {
 
@@ -189,7 +191,7 @@ public class CanvasLCA_Test extends TestCase {
     Fixture.markInitialized( canvas );
     Fixture.preserveWidgets();
     canvas.addPaintListener( new PaintListener() {
-      public void paintControl( final PaintEvent event ) {
+      public void paintControl( PaintEvent event ) {
         event.gc.drawLine( 1, 2, 3, 4 );
         event.gc.drawLine( 5, 6, 7, 8 );
       }
@@ -217,7 +219,7 @@ public class CanvasLCA_Test extends TestCase {
     Fixture.markInitialized( canvas );
     Fixture.preserveWidgets();
     canvas.addPaintListener( new PaintListener() {
-      public void paintControl( final PaintEvent event ) {
+      public void paintControl( PaintEvent event ) {
         event.gc.drawLine( 1, 2, 3, 4 );
         event.gc.drawLine( 5, 6, 7, 8 );
       }
@@ -243,7 +245,7 @@ public class CanvasLCA_Test extends TestCase {
     Fixture.markInitialized( canvas );
     Fixture.preserveWidgets();
     canvas.addPaintListener( new PaintListener() {
-      public void paintControl( final PaintEvent event ) {
+      public void paintControl( PaintEvent event ) {
       }
     } );
     Fixture.fakeResponseWriter();
@@ -265,7 +267,7 @@ public class CanvasLCA_Test extends TestCase {
 //    Fixture.preserveWidgets();
 //
 //    canvas.addPaintListener( new PaintListener() {
-//      public void paintControl( final PaintEvent event ) {
+//      public void paintControl( PaintEvent event ) {
 //        Font font = new Font( display, "Verdana", 18, SWT.BOLD );
 //        event.gc.setFont( font );
 //        event.gc.drawLine( 1, 2, 3, 4 );

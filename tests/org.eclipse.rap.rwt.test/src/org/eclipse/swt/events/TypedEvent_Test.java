@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.events;
 
@@ -65,7 +65,7 @@ public class TypedEvent_Test extends TestCase {
     final List<HelpEvent> log = new ArrayList<HelpEvent>();
     Button button = new Button( shell, SWT.PUSH );
     button.addHelpListener( new HelpListener() {
-      public void helpRequested( final HelpEvent event ) {
+      public void helpRequested( HelpEvent event ) {
         log.add( event );
       }
     } );
@@ -86,7 +86,7 @@ public class TypedEvent_Test extends TestCase {
     final StringBuilder log = new StringBuilder();
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         log.append( EVENT_FIRED );
       }
     } );
@@ -96,10 +96,10 @@ public class TypedEvent_Test extends TestCase {
     ILifeCycle lifeCycle = RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.addPhaseListener( new PhaseListener() {
       private static final long serialVersionUID = 1L;
-      public void beforePhase( final PhaseEvent event ) {
+      public void beforePhase( PhaseEvent event ) {
         log.append( "before" + event.getPhaseId() + "|" );
       }
-      public void afterPhase( final PhaseEvent event ) {
+      public void afterPhase( PhaseEvent event ) {
         log.append( "after" + event.getPhaseId() + "|" );
       }
       public PhaseId getPhaseId() {
@@ -127,7 +127,7 @@ public class TypedEvent_Test extends TestCase {
     Shell shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
     button.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         eventLog.add( event );
       }
     } );
@@ -152,12 +152,12 @@ public class TypedEvent_Test extends TestCase {
     eventLog.clear();
     button = new Button( shell, SWT.PUSH );
     button.addMouseListener( new MouseAdapter() {
-      public void mouseDown( final MouseEvent event ) {
+      public void mouseDown( MouseEvent event ) {
         eventLog.add( event );
       }
     } );
     button.addFocusListener( new FocusAdapter() {
-      public void focusGained( final FocusEvent event ) {
+      public void focusGained( FocusEvent event ) {
         eventLog.add( event );
       }
     } );

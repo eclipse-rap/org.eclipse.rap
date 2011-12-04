@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2008 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 package org.eclipse.swt.events;
@@ -38,7 +39,7 @@ public class ControlEvent_Test extends TestCase {
   public void testResize() {
     final Control[] source = new Control[ 1 ];
     control.addControlListener( new ControlAdapter() {
-      public void controlResized( final ControlEvent event ) {
+      public void controlResized( ControlEvent event ) {
         source[ 0 ] = ( Control )event.getSource();
       }
     } );
@@ -60,7 +61,7 @@ public class ControlEvent_Test extends TestCase {
   public void testMoved() {
     final Control[] source = new Control[ 1 ];
     control.addControlListener( new ControlAdapter() {
-      public void controlMoved( final ControlEvent event ) {
+      public void controlMoved( ControlEvent event ) {
         source[ 0 ] = ( Control )event.getSource();
       }
     } );

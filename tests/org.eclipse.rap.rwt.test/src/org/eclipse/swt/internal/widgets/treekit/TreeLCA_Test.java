@@ -487,7 +487,7 @@ public class TreeLCA_Test extends TestCase {
     final StringBuilder log = new StringBuilder();
     final ICellToolTipAdapter adapter = CellToolTipUtil.getAdapter( tree );
     adapter.setCellToolTipProvider( new ICellToolTipProvider() {
-      public void getToolTipText( final Item item, final int columnIndex ) {
+      public void getToolTipText( Item item, int columnIndex ) {
         StringBuilder buffer = new StringBuilder();
         buffer.append( "[" );
         buffer.append( WidgetUtil.getId( item ) );

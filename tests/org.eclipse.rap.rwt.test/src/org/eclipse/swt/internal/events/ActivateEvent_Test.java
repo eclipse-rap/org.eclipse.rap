@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.events;
 
@@ -50,11 +50,11 @@ public class ActivateEvent_Test extends TestCase {
     final int[] deactivatedCount = { 0 };
     Label label = new Label( shell, SWT.NONE );
     ActivateEvent.addListener( label, new ActivateListener() {
-      public void activated( final ActivateEvent event ) {
+      public void activated( ActivateEvent event ) {
         activated[ activatedCount[ 0 ] ] = ( Widget )event.getSource();
         activatedCount[ 0 ]++;
       }
-      public void deactivated( final ActivateEvent event ) {
+      public void deactivated( ActivateEvent event ) {
         deactivated[ deactivatedCount[ 0 ] ] = ( Widget )event.getSource();
         deactivatedCount[ 0 ]++;
       }
@@ -72,11 +72,11 @@ public class ActivateEvent_Test extends TestCase {
     final Widget[] deactivated = new Widget[ 10 ];
     final int[] deactivatedCount = { 0 };
     ActivateListener listener = new ActivateListener() {
-      public void activated( final ActivateEvent event ) {
+      public void activated( ActivateEvent event ) {
         activated[ activatedCount[ 0 ] ] = ( Widget )event.getSource();
         activatedCount[ 0 ]++;
       }
-      public void deactivated( final ActivateEvent event ) {
+      public void deactivated( ActivateEvent event ) {
         deactivated[ deactivatedCount[ 0 ] ] = ( Widget )event.getSource();
         deactivatedCount[ 0 ]++;
       }
@@ -112,10 +112,10 @@ public class ActivateEvent_Test extends TestCase {
     
     final java.util.List<ActivateEvent> log = new ArrayList<ActivateEvent>();
     ActivateEvent.addListener( labelToActivate, new ActivateListener() {
-      public void activated( final ActivateEvent event ) {
+      public void activated( ActivateEvent event ) {
         log.add( event );
       }
-      public void deactivated( final ActivateEvent event ) {
+      public void deactivated( ActivateEvent event ) {
         log.add( event );
       }
     } );
@@ -129,7 +129,7 @@ public class ActivateEvent_Test extends TestCase {
   public void testUntypedListener() {
     final List<Event> log = new ArrayList<Event>(); 
     Listener listener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.add( event );
       }
     };
@@ -165,12 +165,12 @@ public class ActivateEvent_Test extends TestCase {
     final Event[] untypedEvent = { null };
     final ShellEvent[] typedEvent = { null };
     shell.addListener( SWT.Activate, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         untypedEvent[ 0 ] = event;
       }
     } );
     shell.addShellListener( new ShellAdapter() {
-      public void shellActivated( final ShellEvent event ) {
+      public void shellActivated( ShellEvent event ) {
         typedEvent[ 0 ] = event;
       }
     } );

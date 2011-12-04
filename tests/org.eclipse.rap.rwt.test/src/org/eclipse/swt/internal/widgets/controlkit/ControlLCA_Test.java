@@ -229,24 +229,24 @@ public class ControlLCA_Test extends TestCase {
         Object result;
         if( adapter == ILifeCycleAdapter.class ) {
           result = new AbstractWidgetLCA() {
-            public void preserveValues( final Widget widget ) {
+            public void preserveValues( Widget widget ) {
             }
-            public void renderChanges( final Widget widget )
+            public void renderChanges( Widget widget )
               throws IOException
             {
             }
-            public void renderDispose( final Widget widget )
+            public void renderDispose( Widget widget )
               throws IOException
             {
               log.append( "renderDispose" );
             }
-            public void renderInitialization( final Widget widget )
+            public void renderInitialization( Widget widget )
               throws IOException
             {
             }
-            public void readData( final Widget widget ) {
+            public void readData( Widget widget ) {
             }
-            public void doRedrawFake( final Control control ) {
+            public void doRedrawFake( Control control ) {
               log.append( "FAILED: doRedrawFake was called" );
             }
           };

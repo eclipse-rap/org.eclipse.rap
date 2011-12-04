@@ -85,7 +85,7 @@ public class MenuItemLCA_Test extends TestCase {
     shell.setMenu( menu );
     final MenuItem menuItem = new MenuItem( menu, SWT.PUSH );
     menuItem.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         wasEventFired[ 0 ] = true;
         assertEquals( null, event.item );
         assertSame( menuItem, event.getSource() );
@@ -142,7 +142,7 @@ public class MenuItemLCA_Test extends TestCase {
     final MenuItem radioItem3 = new MenuItem( menu, SWT.RADIO );
     new MenuItem( menu, SWT.CHECK );
     SelectionAdapter listener = new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         log.add( event );
       }
     };
@@ -182,7 +182,7 @@ public class MenuItemLCA_Test extends TestCase {
     final MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
     radioItem2.setText( "2" );
     SelectionAdapter listener = new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         log.add( event );
       }
     };
@@ -212,7 +212,7 @@ public class MenuItemLCA_Test extends TestCase {
     final MenuItem radioItem2 = new MenuItem( menu, SWT.RADIO );
     radioItem2.setText( "2" );
     Listener listener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.add( event );
       }
     };
@@ -243,7 +243,7 @@ public class MenuItemLCA_Test extends TestCase {
     final MenuItem radioItem3 = new MenuItem( menu, SWT.RADIO );
     final MenuItem checkItem = new MenuItem( menu, SWT.CHECK );
     ArmListener listener = new ArmListener() {
-      public void widgetArmed( final ArmEvent event ) {
+      public void widgetArmed( ArmEvent event ) {
         log.add( event.widget );
       }
     };
@@ -264,7 +264,7 @@ public class MenuItemLCA_Test extends TestCase {
     assertTrue( log.contains( checkItem ) );
   }
 
-  private void testPreserveText( final MenuItem menuItem ) {
+  private void testPreserveText( MenuItem menuItem ) {
     IWidgetAdapter adapter;
     adapter = WidgetUtil.getAdapter( menuItem );
     Fixture.preserveWidgets();
@@ -276,7 +276,7 @@ public class MenuItemLCA_Test extends TestCase {
     Fixture.clearPreserved();
   }
 
-  private void testPreserveEnabled( final MenuItem menuItem ) {
+  private void testPreserveEnabled( MenuItem menuItem ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( menuItem );
     Fixture.preserveWidgets();
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );

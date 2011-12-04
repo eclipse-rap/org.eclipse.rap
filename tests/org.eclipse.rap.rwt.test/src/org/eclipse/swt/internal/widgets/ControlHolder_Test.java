@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,7 +69,7 @@ public class ControlHolder_Test extends TestCase {
     try {
       controlHolder.add( control );
       fail( "The same control must not be added twice." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
   }
@@ -81,7 +81,7 @@ public class ControlHolder_Test extends TestCase {
       controlHolder.remove( control );
       String msg = "Only controls that are contained in the item list can be removed.";
       fail( msg );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
   }
@@ -90,7 +90,7 @@ public class ControlHolder_Test extends TestCase {
     try {
       controlHolder.add( null );
       fail( "Parameter item must not be null" );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
   }
@@ -99,7 +99,7 @@ public class ControlHolder_Test extends TestCase {
     try {
       controlHolder.remove( null );
       fail( "Parameter item must not be null" );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
   }
@@ -127,7 +127,7 @@ public class ControlHolder_Test extends TestCase {
     try {
       ControlHolder.addControl( shell, button );
       fail( "Control has wrong parent." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
   }

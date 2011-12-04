@@ -27,6 +27,7 @@ import org.eclipse.swt.internal.widgets.ControlDecorator;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 
+
 public class ControlDecoratorLCA_Test extends TestCase {
 
   private Display display;
@@ -82,7 +83,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
     final ControlDecorator decoration = new ControlDecorator( control, SWT.RIGHT, null );
     final StringBuilder log = new StringBuilder();
     SelectionListener selectionListener = new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         assertEquals( decoration, event.getSource() );
         assertEquals( null, event.item );
         assertEquals( SWT.NONE, event.detail );
@@ -93,7 +94,7 @@ public class ControlDecoratorLCA_Test extends TestCase {
         assertEquals( true, event.doit );
         log.append( "widgetSelected" );
       }
-      public void widgetDefaultSelected( final SelectionEvent event ) {
+      public void widgetDefaultSelected( SelectionEvent event ) {
         assertEquals( decoration, event.getSource() );
         assertEquals( null, event.item );
         assertEquals( SWT.NONE, event.detail );

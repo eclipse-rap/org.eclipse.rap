@@ -208,7 +208,7 @@ public class CTabFolderLCA_Test extends TestCase {
   public void testSelectionEvent() {
     final StringBuilder log = new StringBuilder();
     SelectionListener listener = new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         log.append( "widgetSelected|" );
       }
     };
@@ -241,13 +241,13 @@ public class CTabFolderLCA_Test extends TestCase {
     final ICTabFolderAdapter folderAdapter = ( ICTabFolderAdapter )adapter;
     final StringBuilder log = new StringBuilder();
     CTabFolder2Listener listener = new CTabFolder2Adapter() {
-      public void showList( final CTabFolderEvent event ) {
+      public void showList( CTabFolderEvent event ) {
         assertEquals( true, event.doit );
         log.append( "showList|" );
       }
     };
     CTabFolder2Listener vetoListener = new CTabFolder2Adapter() {
-      public void showList( final CTabFolderEvent event ) {
+      public void showList( CTabFolderEvent event ) {
         Rectangle chevronRect = folderAdapter.getChevronRect();
         Rectangle eventRet
           = new Rectangle( event.x, event.y, event.width, event.height);

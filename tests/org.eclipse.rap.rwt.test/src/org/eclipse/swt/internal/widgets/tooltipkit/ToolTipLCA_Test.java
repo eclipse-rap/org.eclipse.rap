@@ -72,7 +72,7 @@ public class ToolTipLCA_Test extends TestCase {
   public void testSelectionEvent() {
     final SelectionEvent[] eventLog = { null };
     toolTip.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         eventLog[ 0 ] = event;
       }
     } );

@@ -100,7 +100,7 @@ public class LabelLCA_Test extends TestCase {
     assertEquals( "left", alignment );
   }
 
-  private void testPreserveValues( final Display display, final Label label ) {
+  private void testPreserveValues( Display display, Label label ) {
     // bound
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
     label.setBounds( rectangle );

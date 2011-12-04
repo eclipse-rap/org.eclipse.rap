@@ -141,11 +141,11 @@ public class TreeColumnLCA_Test extends TestCase {
     column.setWidth( 20 );
     column.addControlListener( new ControlListener() {
 
-      public void controlMoved( final ControlEvent e ) {
+      public void controlMoved( ControlEvent e ) {
         fail( "unexpected event: controlMoved" );
       }
 
-      public void controlResized( final ControlEvent e ) {
+      public void controlResized( ControlEvent e ) {
         assertSame( column, e.getSource() );
         log.append( "controlResized" );
       }

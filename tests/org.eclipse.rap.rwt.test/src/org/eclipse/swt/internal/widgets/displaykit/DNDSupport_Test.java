@@ -114,13 +114,13 @@ public class DNDSupport_Test extends TestCase {
     Control dropTargetControl = new Label( shell, SWT.NONE );
     new DropTarget( dropTargetControl, DND.DROP_MOVE );
     dragSource.addDragListener( new DragSourceAdapter() {
-      public void dragStart( final DragSourceEvent event ) {
+      public void dragStart( DragSourceEvent event ) {
         events.add( event );
         event.doit = false;
       }
     } );
     dragSourceControl.addDragDetectListener(  new DragDetectListener() {
-      public void dragDetected( final DragDetectEvent event ) {
+      public void dragDetected( DragDetectEvent event ) {
         events.add(  event );
       }
     } );
@@ -423,7 +423,7 @@ public class DNDSupport_Test extends TestCase {
     Control dragSourceControl = new Label( shell, SWT.NONE );
     DragSource dragSource = new DragSource( dragSourceControl, DND.DROP_MOVE );
     dragSource.addDragListener( new DragSourceAdapter() {
-      public void dragFinished( final DragSourceEvent event ) {
+      public void dragFinished( DragSourceEvent event ) {
         events.add( event );
       }
     } );
@@ -726,7 +726,7 @@ public class DNDSupport_Test extends TestCase {
     DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
     dropTarget.setTransfer( types );
     dropTarget.addDropListener( new DropTargetAdapter() {
-      public void dragEnter( final DropTargetEvent event ) {
+      public void dragEnter( DropTargetEvent event ) {
         event.detail = DND.DROP_LINK;
       }
     } );
@@ -800,7 +800,7 @@ public class DNDSupport_Test extends TestCase {
     Control dragSourceControl = new Label( shell, SWT.NONE );
     DragSource dragSource = new DragSource( dragSourceControl, operations );
     dragSource.addDragListener( new DragSourceAdapter() {
-      public void dragSetData( final DragSourceEvent event ) {
+      public void dragSetData( DragSourceEvent event ) {
         event.data = "some data";
       }
     } );
@@ -1155,7 +1155,7 @@ public class DNDSupport_Test extends TestCase {
     DragSource dragSource = new DragSource( dragSourceCont, operations );
     dragSource.setTransfer( types );
     dragSource.addDragListener( new DragSourceAdapter(){
-      public void dragSetData( final DragSourceEvent event ) {
+      public void dragSetData( DragSourceEvent event ) {
         event.data = "text";
       }
     } );
