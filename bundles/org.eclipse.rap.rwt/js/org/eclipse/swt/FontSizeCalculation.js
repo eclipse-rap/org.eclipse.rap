@@ -43,7 +43,7 @@ qx.Class.define( "org.eclipse.swt.FontSizeCalculation", {
         "fontFamily" : item[ 2 ],
         "fontSize" : item[ 3 ] + "px",
         "fontWeight" : item[ 4 ] ? "bold" : "normal",
-        "fontStyle" : item[ 5 ] ? "italc" : "normal"
+        "fontStyle" : item[ 5 ] ? "italic" : "normal"
       };
       var width = item[ 6 ] > 0 ? item[ 6 ] : null;
       return this.computeTextDimensions( text, fontProps, width );
