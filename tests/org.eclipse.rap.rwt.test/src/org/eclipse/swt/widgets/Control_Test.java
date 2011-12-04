@@ -137,7 +137,7 @@ public class Control_Test extends TestCase {
     try {
       control.setBounds( null );
       fail( "Rectangle parameter must not be null." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     control.setBounds( 0, 0, -1, -1 );
@@ -160,7 +160,7 @@ public class Control_Test extends TestCase {
     try {
       control.setLocation( null );
       fail( "Point parameter must not be null." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
   }
@@ -181,7 +181,7 @@ public class Control_Test extends TestCase {
     try {
       control.setSize( null );
       fail( "Point parameter must not be null." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     control.setSize( -2, -2 );
@@ -567,7 +567,7 @@ public class Control_Test extends TestCase {
     final Control control2 = new Button( shell, SWT.PUSH );
     final StringBuilder log = new StringBuilder();
     FocusListener focusListener = new FocusListener() {
-      public void focusGained( final FocusEvent event ) {
+      public void focusGained( FocusEvent event ) {
         if( event.getSource() == shell ) {
           log.append( "shell.focusGained|" );
         } else if( event.getSource() == control2 ) {
@@ -576,7 +576,7 @@ public class Control_Test extends TestCase {
           fail( "Unexpected event: focusGained" );
         }
       }
-      public void focusLost( final FocusEvent event ) {
+      public void focusLost( FocusEvent event ) {
         if( event.getSource() == shell ) {
           log.append( "shell.focusLost|" );
         } else if( event.getSource() == control2 ) {
@@ -690,11 +690,11 @@ public class Control_Test extends TestCase {
     final StringBuilder log = new StringBuilder();
     final Control control1 = new Button( shell, SWT.PUSH );
     control1.addFocusListener( new FocusAdapter() {
-      public void focusGained( final FocusEvent event ) {
+      public void focusGained( FocusEvent event ) {
         assertSame( control1, event.getSource() );
         log.append( "focusGained" );
       }
-      public void focusLost( final FocusEvent event ) {
+      public void focusLost( FocusEvent event ) {
         log.append( "focusLost" );
       }
     } );
@@ -766,7 +766,7 @@ public class Control_Test extends TestCase {
   public void testShowEvent() {
     final java.util.List<Event> log = new ArrayList<Event>();
     Listener showListener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.add( event );
       }
     };
@@ -794,7 +794,7 @@ public class Control_Test extends TestCase {
 
   public void testShowEventDetails() {
     Listener ensureInvisible = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         assertFalse( ( ( Control )event.widget ).getVisible() );
       }
     };
@@ -805,7 +805,7 @@ public class Control_Test extends TestCase {
   public void testHideEvent() {
     final java.util.List<Event> log = new ArrayList<Event>();
     Listener showListener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.add( event );
       }
     };
@@ -855,7 +855,7 @@ public class Control_Test extends TestCase {
   public void testUntypedHelpListener() {
     final Event[] untypedHelpEvent = { null };
     shell.addListener( SWT.Help, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         untypedHelpEvent[ 0 ] = event;
       }
     } );

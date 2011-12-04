@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
@@ -22,6 +21,7 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
+
 
 /*
  * Note:
@@ -575,12 +575,12 @@ public class Combo_Test extends TestCase {
     Shell shell = new Shell( display );
     final Combo combo = new Combo( shell, SWT.NONE );
     combo.addModifyListener( new ModifyListener() {
-      public void modifyText( final ModifyEvent event ) {
+      public void modifyText( ModifyEvent event ) {
         log.add( event );
       }
     } );
     combo.addVerifyListener( new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         log.add( event );
       }
     } );
@@ -596,7 +596,7 @@ public class Combo_Test extends TestCase {
     combo.setText( "" );
     log.clear();
     verifyListener = new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         event.doit = false;
       }
     };
@@ -611,7 +611,7 @@ public class Combo_Test extends TestCase {
     combo.setText( "" );
     log.clear();
     verifyListener = new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         event.text = "manipulated";
       }
     };

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,7 @@ public class Composition_Test extends TestCase {
     try {
       new Button( null, SWT.PUSH );
       fail( "Parent composite must not be null." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
   }
@@ -56,7 +56,7 @@ public class Composition_Test extends TestCase {
   public void testDispose() {
     final List<Object> disposedWidgets = new ArrayList<Object>();
     DisposeListener disposeListener = new DisposeListener() {
-      public void widgetDisposed( final DisposeEvent evt ) {
+      public void widgetDisposed( DisposeEvent evt ) {
         disposedWidgets.add( evt.getSource() );
       }
     };
@@ -102,7 +102,7 @@ public class Composition_Test extends TestCase {
     assertSame( display, button.getDisplay() );
   }
 
-  private static boolean find( final Widget[] children, final Widget widget ) {
+  private static boolean find( Widget[] children, Widget widget ) {
     boolean found = false;
     for( int i = 0; i < children.length; i++ ) {
       if( children[ i ] == widget ) {

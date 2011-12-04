@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,6 @@
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
@@ -23,7 +22,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
-
 
 
 public class TableColumn_Test extends TestCase {
@@ -201,12 +199,12 @@ public class TableColumn_Test extends TestCase {
   public void testPackWithVirtual() {
     final java.util.List<Widget> log = new ArrayList<Widget>();
     Listener setDataListener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.add( event.item );
       }
     };
     ControlListener resizeListener = new ControlAdapter() {
-      public void controlResized( final ControlEvent event ) {
+      public void controlResized( ControlEvent event ) {
         log.add( event.widget );
       }
     };
@@ -238,10 +236,10 @@ public class TableColumn_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     final TableColumn column = new TableColumn( table, SWT.NONE );
     column.addControlListener( new ControlListener() {
-      public void controlMoved( final ControlEvent event ) {
+      public void controlMoved( ControlEvent event ) {
         fail( "unexpected event: controlMoved" );
       }
-      public void controlResized( final ControlEvent event ) {
+      public void controlResized( ControlEvent event ) {
         log.add( event );
       }
     } );
@@ -266,19 +264,19 @@ public class TableColumn_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     final TableColumn column = new TableColumn( table, SWT.NONE );
     column.addControlListener( new ControlListener() {
-      public void controlMoved( final ControlEvent event ) {
+      public void controlMoved( ControlEvent event ) {
         fail( "unexpected event: controlMoved" );
       }
-      public void controlResized( final ControlEvent event ) {
+      public void controlResized( ControlEvent event ) {
         log.add( event );
       }
     } );
     final TableColumn column1 = new TableColumn( table, SWT.NONE );
     column1.addControlListener( new ControlListener() {
-      public void controlMoved( final ControlEvent event ) {
+      public void controlMoved( ControlEvent event ) {
         log.add( event );
       }
-      public void controlResized( final ControlEvent event ) {
+      public void controlResized( ControlEvent event ) {
         fail( "unexpected event: controlResized" );
       }
     } );

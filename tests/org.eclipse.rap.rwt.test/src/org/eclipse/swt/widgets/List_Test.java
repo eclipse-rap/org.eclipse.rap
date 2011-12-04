@@ -494,7 +494,7 @@ public class List_Test extends TestCase {
     list.add( "item1" );
     list.add( "item2" );
     SelectionListener listener = new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         String msg
           = "SelectionEvent must not be fired when selecting programmatically";
         fail( msg );

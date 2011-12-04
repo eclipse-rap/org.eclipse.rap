@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -16,6 +16,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.widgets.ItemHolder;
+
 
 public class ItemHolder_Test extends TestCase {
 
@@ -47,26 +48,26 @@ public class ItemHolder_Test extends TestCase {
     try {
       itemHolder.add( item );
       fail( "The same item must not be added twice." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     try {
       itemHolder.add( null );
       fail( "Parameter item must not be null." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     itemHolder.remove( item );
     try {
       itemHolder.remove( item );
       fail( "Only items that are contained in the item list must be removed." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     try {
       itemHolder.remove( null );
       fail( "Parameter item must not be null" );
-    } catch( final IllegalArgumentException npe ) {
+    } catch( IllegalArgumentException npe ) {
       // expected
     }
   }
@@ -78,7 +79,7 @@ public class ItemHolder_Test extends TestCase {
     try {
       ItemHolder.getItemHolder( shell ).getItems();
       fail( "Shell is not an item holder widget" );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     Item[] items = ItemHolder.getItemHolder( tree ).getItems();

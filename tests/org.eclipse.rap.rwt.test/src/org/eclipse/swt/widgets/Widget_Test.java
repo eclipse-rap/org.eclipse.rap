@@ -108,12 +108,12 @@ public class Widget_Test extends TestCase {
     ToolBar toolbar = new ToolBar( composite, SWT.NONE );
     final ToolItem[] item = { null };
     toolbar.addDisposeListener( new DisposeListener() {
-      public void widgetDisposed( final DisposeEvent event ) {
+      public void widgetDisposed( DisposeEvent event ) {
         item[ 0 ].dispose();
       }
     } );
     toolbar.addDisposeListener( new DisposeListener() {
-      public void widgetDisposed( final DisposeEvent event ) {
+      public void widgetDisposed( DisposeEvent event ) {
         composite.dispose();
       }
     } );
@@ -124,7 +124,7 @@ public class Widget_Test extends TestCase {
 
   public void testDisposeSelfWhileInDispose() {
     shell.addDisposeListener( new DisposeListener() {
-      public void widgetDisposed( final DisposeEvent event ) {
+      public void widgetDisposed( DisposeEvent event ) {
         shell.dispose();
       }
     } );
@@ -135,7 +135,7 @@ public class Widget_Test extends TestCase {
   public void testDisposeSelfWhileInDispose_RenderOnce() {
     Fixture.markInitialized( shell );
     shell.addDisposeListener( new DisposeListener() {
-      public void widgetDisposed( final DisposeEvent event ) {
+      public void widgetDisposed( DisposeEvent event ) {
         shell.dispose();
       }
     } );
@@ -188,7 +188,7 @@ public class Widget_Test extends TestCase {
   
   public void testDisposeWithException() {
     shell.addDisposeListener( new DisposeListener() {
-      public void widgetDisposed( final DisposeEvent event ) {
+      public void widgetDisposed( DisposeEvent event ) {
         throw new RuntimeException();
       }
     } );
@@ -206,7 +206,7 @@ public class Widget_Test extends TestCase {
     // Ensure that removing a listener that was never added is ignored
     // silently see https://bugs.eclipse.org/251816
     shell.removeListener( SWT.Activate, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
       }
     } );
   }
@@ -214,7 +214,7 @@ public class Widget_Test extends TestCase {
   public void testNotifyListeners() {
     final StringBuilder log = new StringBuilder();
     shell.addListener( SWT.Resize, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.append( "untyped" );
       }
     } );
@@ -225,7 +225,7 @@ public class Widget_Test extends TestCase {
   public void testNotifyListenersTyped() {
     final StringBuilder log = new StringBuilder();
     shell.addControlListener( new ControlAdapter() {
-      public void controlResized( final ControlEvent e ) {
+      public void controlResized( ControlEvent e ) {
         log.append( "typed" );
       }
     } );
@@ -236,7 +236,7 @@ public class Widget_Test extends TestCase {
   public void testNotifyListenersDisplayFilter() {
     final StringBuilder log = new StringBuilder();
     display.addFilter( SWT.Resize, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.append( "filter" );
       }
     });
@@ -248,7 +248,7 @@ public class Widget_Test extends TestCase {
   public void testNotifyListenersEventFields() {
     final StringBuilder log = new StringBuilder();
     display.addFilter( SWT.Resize, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         assertEquals( SWT.Resize, event.type );
         assertEquals( shell, event.widget );
         log.append( "filter" );
@@ -284,7 +284,7 @@ public class Widget_Test extends TestCase {
   public void testNotifyListenersSetData() {
     final StringBuilder log = new StringBuilder();
     shell.addListener( SWT.SetData, new Listener(){
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         assertSame( shell, event.widget );
         assertSame( shell, event.item );
         assertEquals( 3, event.index );
@@ -302,7 +302,7 @@ public class Widget_Test extends TestCase {
   public void testNotifyListenersNullEvent() {
     final StringBuilder log = new StringBuilder();
     shell.addControlListener( new ControlAdapter() {
-      public void controlResized( final ControlEvent event ) {
+      public void controlResized( ControlEvent event ) {
         assertSame( shell, event.widget );
         assertSame( display, event.display );
         log.append( "typed" );
@@ -323,11 +323,11 @@ public class Widget_Test extends TestCase {
     assertNotNull( listeners );
     assertEquals( 0, listeners.length );
     Listener dummyListener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
       }
     };
     Listener dummyListener2 = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
       }
     };
     shell.addListener( SWT.Resize, dummyListener );
@@ -340,7 +340,7 @@ public class Widget_Test extends TestCase {
 
   public void testIsListening() {
     final Listener dummyListener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
       }
     };
     assertFalse( shell.isListening( SWT.Resize ) );
@@ -352,7 +352,7 @@ public class Widget_Test extends TestCase {
 
   public void testIsListeningForTypedEvent() {
     shell.addHelpListener( new HelpListener() {
-      public void helpRequested( final HelpEvent event ) {
+      public void helpRequested( HelpEvent event ) {
       }
     } );
     assertTrue( shell.isListening( SWT.Help ) );
@@ -377,7 +377,7 @@ public class Widget_Test extends TestCase {
   public void testReskin() {
     final java.util.List<Widget> log = new ArrayList<Widget>();
     Listener listener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         if( event.type == SWT.Skin ) {
           log.add( event.widget );
         }

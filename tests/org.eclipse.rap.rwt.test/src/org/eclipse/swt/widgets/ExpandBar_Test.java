@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -19,6 +19,7 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Font;
+
 
 public class ExpandBar_Test extends TestCase {
 
@@ -57,7 +58,7 @@ public class ExpandBar_Test extends TestCase {
     try {
       expandBar.getItem( 4 );
       fail( "Index out of bounds" );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     assertSame( display, item.getDisplay() );

@@ -240,10 +240,10 @@ public class Tree_Test extends TestCase {
     final StringBuilder log = new StringBuilder();
     Tree tree = new Tree( composite, SWT.NONE );
     tree.addTreeListener( new TreeListener() {
-      public void treeCollapsed( final TreeEvent e ) {
+      public void treeCollapsed( TreeEvent e ) {
         log.append( "collapsed" );
       }
-      public void treeExpanded( final TreeEvent e ) {
+      public void treeExpanded( TreeEvent e ) {
         log.append( "expanded" );
       }
     } );
@@ -1130,7 +1130,7 @@ public class Tree_Test extends TestCase {
     Tree tree = new Tree( composite, SWT.VIRTUAL );
     final List<Widget> log = new ArrayList<Widget>();
     tree.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.add( event.item );
       }
     } );
@@ -1158,7 +1158,7 @@ public class Tree_Test extends TestCase {
     final Tree tree = new Tree( composite, SWT.VIRTUAL );
     final List<Event> log = new ArrayList<Event>();
     tree.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.add( event );
       }
     } );
@@ -1263,7 +1263,7 @@ public class Tree_Test extends TestCase {
     tree.setItemCount( 10 );
     tree.addListener( SWT.SetData, new Listener() {
 
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         TreeItem item = ( TreeItem )event.item;
         int treeIndex = item.getParent().indexOf( item );
         item.setText( "Item " + treeIndex );

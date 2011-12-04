@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -138,7 +138,7 @@ public class Text_Test extends TestCase {
     Shell shell = new Shell( display );
     final Text text = new Text( shell, SWT.NONE );
     text.addModifyListener( new ModifyListener() {
-      public void modifyText( final ModifyEvent event ) {
+      public void modifyText( ModifyEvent event ) {
         log.append( "modifyEvent|" );
         assertSame( text, event.getSource() );
       }
@@ -160,12 +160,12 @@ public class Text_Test extends TestCase {
     Shell shell = new Shell( display );
     final Text text = new Text( shell, SWT.NONE );
     text.addModifyListener( new ModifyListener() {
-      public void modifyText( final ModifyEvent event ) {
+      public void modifyText( ModifyEvent event ) {
         log.add( event );
       }
     } );
     text.addVerifyListener( new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         assertEquals( '\0', event.character );
         assertEquals( 0, event.keyCode );
         log.add( event );
@@ -183,7 +183,7 @@ public class Text_Test extends TestCase {
     text.setText( "" );
     log.clear();
     verifyListener = new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         event.doit = false;
       }
     };
@@ -198,7 +198,7 @@ public class Text_Test extends TestCase {
     text.setText( "" );
     log.clear();
     verifyListener = new VerifyListener() {
-      public void verifyText( final VerifyEvent event ) {
+      public void verifyText( VerifyEvent event ) {
         event.text = "manipulated";
       }
     };
@@ -337,7 +337,7 @@ public class Text_Test extends TestCase {
     Text text = new Text( shell, SWT.SINGLE );
     text.setBounds( 0, 0, 100, 20 );
     text.addModifyListener( new ModifyListener() {
-      public void modifyText( final ModifyEvent event ) {
+      public void modifyText( ModifyEvent event ) {
         log.add( event );
       }
     } );

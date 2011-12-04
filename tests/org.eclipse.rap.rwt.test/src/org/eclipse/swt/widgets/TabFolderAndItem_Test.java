@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -44,7 +44,7 @@ public class TabFolderAndItem_Test extends TestCase {
     TabFolder folder = new TabFolder( shell, SWT.NONE );
     folder.setSize( 100, 100 );
     SelectionListener selectionListener = new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         log.add( e );
       }
     };
@@ -128,7 +128,7 @@ public class TabFolderAndItem_Test extends TestCase {
     try {
       folder.setSelection( ( TabItem[] )null );
       fail( "Parameter items must not be null." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
 
@@ -159,7 +159,7 @@ public class TabFolderAndItem_Test extends TestCase {
     // Ensure that no event is fired when selection is changed programmatically
     final boolean[] eventOccured = new boolean[] { false };
     SelectionListener listener = new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent e ) {
+      public void widgetSelected( SelectionEvent e ) {
         eventOccured[ 0 ] = true;
       }
     };
@@ -228,7 +228,7 @@ public class TabFolderAndItem_Test extends TestCase {
     try {
       item.setControl( shell );
       fail( "Wrong parent." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
   }
@@ -318,7 +318,7 @@ public class TabFolderAndItem_Test extends TestCase {
     try {
       folder.getItem( null );
       fail( "Null argument" );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
   }

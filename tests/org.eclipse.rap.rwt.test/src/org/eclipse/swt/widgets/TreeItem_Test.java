@@ -26,6 +26,7 @@ import org.eclipse.swt.SWTException;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.ITreeItemAdapter;
 
+
 @SuppressWarnings("deprecation")
 public class TreeItem_Test extends TestCase {
 
@@ -1341,7 +1342,7 @@ public class TreeItem_Test extends TestCase {
     final Tree tree = new Tree( shell, SWT.VIRTUAL );
     final List<Event> log = new ArrayList<Event>();
     tree.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.add( event );
       }
     } );

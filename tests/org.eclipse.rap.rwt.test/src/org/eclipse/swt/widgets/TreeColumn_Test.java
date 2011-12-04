@@ -1,15 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.swt.widgets;
 
 import java.util.ArrayList;
@@ -210,13 +209,13 @@ public class TreeColumn_Test extends TestCase {
     final java.util.List<Widget> log = new ArrayList<Widget>();
     Listener setDataListener = new Listener() {
 
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.add( event.item );
       }
     };
     ControlListener resizeListener = new ControlAdapter() {
 
-      public void controlResized( final ControlEvent event ) {
+      public void controlResized( ControlEvent event ) {
         log.add( event.widget );
       }
     };
@@ -248,11 +247,11 @@ public class TreeColumn_Test extends TestCase {
     final TreeColumn column = new TreeColumn( tree, SWT.NONE );
     column.addControlListener( new ControlListener() {
 
-      public void controlMoved( final ControlEvent event ) {
+      public void controlMoved( ControlEvent event ) {
         fail( "unexpected event: controlMoved" );
       }
 
-      public void controlResized( final ControlEvent event ) {
+      public void controlResized( ControlEvent event ) {
         log.add( event );
       }
     } );

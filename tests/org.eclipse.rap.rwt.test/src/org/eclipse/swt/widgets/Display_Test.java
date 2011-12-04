@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -818,7 +818,7 @@ public class Display_Test extends TestCase {
     final int DISPOSE_CALLBACK = 1;
     final boolean[] callbackReceived = new boolean[]{ false, false };
     Listener listener = new Listener() {
-      public void handleEvent( final Event e ) {
+      public void handleEvent( Event e ) {
         if( e.type == SWT.Close ) {
           callbackReceived[ CLOSE_CALLBACK ] = true;
         } else if( e.type == SWT.Dispose ) {
@@ -985,7 +985,7 @@ public class Display_Test extends TestCase {
       }
     } );
     display.addListener( SWT.Dispose, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.add( event );
       }
     } );
@@ -1015,7 +1015,7 @@ public class Display_Test extends TestCase {
       }
     } );
     display.addListener( SWT.Dispose, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         throw new RuntimeException();
       }
     } );
@@ -1051,7 +1051,7 @@ public class Display_Test extends TestCase {
     final java.util.List<Event> log = new ArrayList<Event>();
     Display display = new Display();
     display.addListener( SWT.Close, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.add( event );
       }
     } );
@@ -1066,7 +1066,7 @@ public class Display_Test extends TestCase {
     final String exceptionMessage = "exception in close event";
     Display display = new Display();
     display.addListener( SWT.Close, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         throw new RuntimeException( exceptionMessage );
       }
     } );
@@ -1086,7 +1086,7 @@ public class Display_Test extends TestCase {
   public void testCloseWithVetoingListener() {
     Display display = new Display();
     display.addListener( SWT.Close, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         event.doit = false;
       }
     } );
@@ -1121,13 +1121,13 @@ public class Display_Test extends TestCase {
     final StringBuilder order = new StringBuilder();
     final java.util.List<Event> events = new ArrayList<Event>();
     display.addFilter( SWT.Close, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         events.add( event );
         order.append( "filter, " );
       }
     } );
     display.addListener( SWT.Close, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         events.add( event );
         event.doit = false;
         order.append( "listener" );
@@ -1149,13 +1149,13 @@ public class Display_Test extends TestCase {
     final StringBuilder order = new StringBuilder();
     final java.util.List<Event> events = new ArrayList<Event>();
     display.addFilter( SWT.Dispose, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         events.add( event );
         order.append( "filter, " );
       }
     } );
     display.addListener( SWT.Dispose, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         events.add( event );
         order.append( "listener" );
       }

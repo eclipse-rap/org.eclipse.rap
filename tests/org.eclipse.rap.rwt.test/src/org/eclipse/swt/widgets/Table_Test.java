@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.*;
 import org.eclipse.swt.layout.FillLayout;
+
 
 public class Table_Test extends TestCase {
 
@@ -76,7 +77,7 @@ public class Table_Test extends TestCase {
     try {
       table.getItem( 4 );
       fail( "Index out of bounds" );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     assertSame( display, item0.getDisplay() );
@@ -95,7 +96,7 @@ public class Table_Test extends TestCase {
     try {
       table.getColumn( 4 );
       fail( "Index out of bounds" );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
     assertSame( display, column0.getDisplay() );
@@ -154,7 +155,7 @@ public class Table_Test extends TestCase {
     try {
       item.setText( 0, null );
       fail( "Parameter index must not be null." );
-    } catch( final IllegalArgumentException iae ) {
+    } catch( IllegalArgumentException iae ) {
       // expected
     }
 
@@ -315,7 +316,7 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 100 );
     table.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         event.item.dispose();
       }
     } );
@@ -382,7 +383,7 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
     new TableColumn( table, SWT.NONE );
     table.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
         item.setText( "Item " + event.index );
       }
@@ -505,7 +506,7 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
     new TableColumn( table, SWT.NONE );
     table.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
         item.setText( "Item " + event.index );
       }
@@ -547,7 +548,7 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
     new TableColumn( table, SWT.NONE );
     table.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
         item.setText( "Item " + event.index );
       }
@@ -591,7 +592,7 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
     new TableColumn( table, SWT.NONE );
     table.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
         item.setText( "Item " + event.index );
       }
@@ -611,7 +612,7 @@ public class Table_Test extends TestCase {
       new TableItem( table, SWT.NONE );
     }
     table.addSelectionListener( new SelectionAdapter() {
-      public void widgetSelected( final SelectionEvent event ) {
+      public void widgetSelected( SelectionEvent event ) {
         eventFired[ 0 ] = true;
       }
     } );
@@ -1331,7 +1332,7 @@ public class Table_Test extends TestCase {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuilder log = new StringBuilder();
     ControlAdapter controlAdapter = new ControlAdapter() {
-      public void controlMoved( final ControlEvent event ) {
+      public void controlMoved( ControlEvent event ) {
         TableColumn column = ( TableColumn )event.widget;
         log.append( column.getText() + " moved|" );
       }
@@ -1574,7 +1575,7 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 90, 90 );
     table.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         fail( "SetItemCount must not fire SetData events" );
       }
     } );
@@ -1818,7 +1819,7 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.BORDER | SWT.VIRTUAL );
     table.setItemCount( 10 );
     table.addListener( SWT.SetData, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         TableItem item = ( TableItem )event.item;
         int tableIndex = item.getParent().indexOf( item );
         item.setText( "Item " + tableIndex );
@@ -2105,7 +2106,7 @@ public class Table_Test extends TestCase {
       data[ i ] = "";
     }
     Listener setDataListener = new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         TableItem item = ( TableItem )event.item;
         int index = item.getParent().indexOf( item );
         item.setText( data[ index ] );
@@ -2462,7 +2463,7 @@ public class Table_Test extends TestCase {
     return result;
   }
 
-  private static int countResolvedItems( final Table table ) {
+  private static int countResolvedItems( Table table ) {
     ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
     int result = 0;
     TableItem[] createdItems = tableAdapter.getCreatedItems();
@@ -2475,7 +2476,7 @@ public class Table_Test extends TestCase {
     return result;
   }
 
-  private static void clearColumns( final Table table ) {
+  private static void clearColumns( Table table ) {
     while( table.getColumnCount() > 0 ) {
       table.getColumn( 0 ).dispose();
     }

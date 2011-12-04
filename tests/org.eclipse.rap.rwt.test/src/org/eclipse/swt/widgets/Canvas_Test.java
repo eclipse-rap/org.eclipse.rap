@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -41,7 +42,7 @@ public class Canvas_Test extends TestCase {
 
   public void testPaintEvent() {
     canvas.addPaintListener( new PaintListener() {
-      public void paintControl( final PaintEvent event ) {
+      public void paintControl( PaintEvent event ) {
         paintEventLog.add( event );
       }
     } );
@@ -55,7 +56,7 @@ public class Canvas_Test extends TestCase {
   
   public void testRemovePaintListener() {
     PaintListener listener = new PaintListener() {
-      public void paintControl( final PaintEvent event ) {
+      public void paintControl( PaintEvent event ) {
         paintEventLog.add( event );
       }
     };
@@ -67,7 +68,7 @@ public class Canvas_Test extends TestCase {
   
   public void testResize() {
     canvas.addPaintListener( new PaintListener() {
-      public void paintControl( final PaintEvent event ) {
+      public void paintControl( PaintEvent event ) {
         paintEventLog.add( event );
       }
     } );
@@ -78,7 +79,7 @@ public class Canvas_Test extends TestCase {
   
   public void testMultiplePaintEvents() {
     canvas.addPaintListener( new PaintListener() {
-      public void paintControl( final PaintEvent event ) {
+      public void paintControl( PaintEvent event ) {
         paintEventLog.add( event );
         event.gc.drawLine( 1, 2, 3, 4 );
       }

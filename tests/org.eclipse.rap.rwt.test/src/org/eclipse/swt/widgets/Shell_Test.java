@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
@@ -402,10 +402,10 @@ public class Shell_Test extends TestCase {
     shell.open();
     assertSame( shell, display.getActiveShell() );
     shell.addShellListener( new ShellAdapter() {
-      public void shellActivated( final ShellEvent event ) {
+      public void shellActivated( ShellEvent event ) {
         log .add( event );
       }
-      public void shellDeactivated( final ShellEvent event ) {
+      public void shellDeactivated( ShellEvent event ) {
         log .add( event );
       }
     } );
@@ -421,18 +421,18 @@ public class Shell_Test extends TestCase {
     secondShell.open();
     assertSame( secondShell, display.getActiveShell() );
     shell.addShellListener( new ShellAdapter() {
-      public void shellActivated( final ShellEvent event ) {
+      public void shellActivated( ShellEvent event ) {
         log.add( "shellActivated" );
       }
     } );
     Button button = new Button( shell, SWT.PUSH );
     button.addFocusListener( new FocusAdapter() {
-      public void focusGained( final FocusEvent event ) {
+      public void focusGained( FocusEvent event ) {
         log.add( "buttonFocusGained" );
       }
     } );
     button.addListener( SWT.Activate, new Listener() {
-      public void handleEvent( final Event event ) {
+      public void handleEvent( Event event ) {
         log.add( "buttonActivated" );
       }
     } );
@@ -450,7 +450,7 @@ public class Shell_Test extends TestCase {
    */
   public void testCloseOnDeactivateWithSingleShell() {
     shell.addShellListener( new ShellAdapter() {
-      public void shellDeactivated( final ShellEvent event ) {
+      public void shellDeactivated( ShellEvent event ) {
         shell.close();
       }
     } );
@@ -468,7 +468,7 @@ public class Shell_Test extends TestCase {
     final Shell dialog = new Shell( shell );
     dialog.setLayout( new FillLayout() );
     dialog.addShellListener( new ShellAdapter() {
-      public void shellDeactivated( final ShellEvent event ) {
+      public void shellDeactivated( ShellEvent event ) {
         dialog.close();
       }
     } );
@@ -480,10 +480,10 @@ public class Shell_Test extends TestCase {
   public void testNoDeactivateEventOnDispose() {
     final StringBuilder log = new StringBuilder();
     shell.addShellListener( new ShellAdapter() {
-      public void shellActivated( final ShellEvent event ) {
+      public void shellActivated( ShellEvent event ) {
         log.append( "shell activated" );
       }
-      public void shellDeactivated( final ShellEvent event ) {
+      public void shellDeactivated( ShellEvent event ) {
         log.append( "shell deactivated" );
       }
     } );
@@ -528,7 +528,7 @@ public class Shell_Test extends TestCase {
     };
     shell.setBounds( 1, 2, 3, 4 );
     shell.addControlListener( new ControlAdapter() {
-      public void controlResized( final ControlEvent event ) {
+      public void controlResized( ControlEvent event ) {
         maximized[ 0 ] = shell.getMaximized();
       }
     } );
@@ -542,7 +542,7 @@ public class Shell_Test extends TestCase {
     shell.setBounds( 1, 2, 3, 4 );
     shell.setMaximized( true );
     shell.addControlListener( new ControlAdapter() {
-      public void controlResized( final ControlEvent event ) {
+      public void controlResized( ControlEvent event ) {
         log.add( event );
       }
     } );
@@ -574,7 +574,7 @@ public class Shell_Test extends TestCase {
   public void testMinimumSize() {
     final java.util.List<ControlEvent> log = new ArrayList<ControlEvent>();
     shell.addControlListener( new ControlAdapter() {
-      public void controlResized( final ControlEvent event ) {
+      public void controlResized( ControlEvent event ) {
         log.add( event );
       }
     } );
@@ -610,10 +610,10 @@ public class Shell_Test extends TestCase {
     Rectangle shellBounds = new Rectangle( 10, 10, 100, 100 );
     shell.setBounds( shellBounds );
     shell.addControlListener( new ControlListener() {
-      public void controlMoved( final ControlEvent event ) {
+      public void controlMoved( ControlEvent event ) {
         log.add( "controlMoved" );
       }
-      public void controlResized( final ControlEvent event ) {
+      public void controlResized( ControlEvent event ) {
         log.add( "controlResized" );
       }
     } );
@@ -757,7 +757,7 @@ public class Shell_Test extends TestCase {
     assertNull( shell.getToolBar() );
   }
 
-  private static IDisplayAdapter getDisplayAdapter( final Display display ) {
+  private static IDisplayAdapter getDisplayAdapter( Display display ) {
     Object adapter = display.getAdapter( IDisplayAdapter.class );
     return ( IDisplayAdapter )adapter;
   }
