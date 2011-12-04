@@ -18,7 +18,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.Display", {
   destructor : null, // destroy is currently not called for display
 
   properties : [
-    "exitConfirmation"
+    "exitConfirmation",
+    "focusControl"
   ],
 
   listeners : [],

@@ -60,6 +60,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       assertTrue( log[ 0 ].indexOf( "-1114032847=" ) != -1 );
       assertTrue( log[ 1 ].indexOf( "1767849485=" ) != -1 );
       var expected = "&nbsp;&nbsp;Push &amp;<br/> Button&nbsp;";
+    },
+
+    testSetFocusControlByProtocol : function() {
+      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      org.eclipse.swt.WidgetManager.getInstance().add( button, "btn1" );
+      button.addToDocument();
+      testUtil.flush();
+      assertFalse( button.getFocused() );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w1",
+        "action" : "set",
+        "properties" : {
+          "focusControl" : "btn1"
+        }
+      } );
+      assertTrue( button.getFocused() );
+      button.destroy();
     }
 
   }

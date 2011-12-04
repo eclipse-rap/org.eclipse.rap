@@ -73,6 +73,10 @@ org.eclipse.rwt.Display.prototype = {
     this._exitConfirmation = message;
   },
 
+  setFocusControl : function( widgetId ) {
+    org.eclipse.swt.WidgetManager.getInstance().focus( widgetId );
+  },
+
   ////////////////////////
   // Global Event handling
   

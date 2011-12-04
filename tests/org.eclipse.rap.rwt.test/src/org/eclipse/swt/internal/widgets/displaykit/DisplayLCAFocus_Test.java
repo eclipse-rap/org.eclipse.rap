@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.widgets.displaykit;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -59,7 +60,8 @@ public class DisplayLCAFocus_Test extends TestCase {
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, button1Id );
     Fixture.executeLifeCycleFromServerThread();
 
-    assertEquals( -1, Fixture.getAllMarkup().indexOf( "focus" ) );
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( DisplayUtil.getId( display ), "focusControl" ) );
   }
 
   /* Test case for https://bugs.eclipse.org/bugs/show_bug.cgi?id=196911 */
@@ -95,12 +97,9 @@ public class DisplayLCAFocus_Test extends TestCase {
 
     // ensure that widgetSelected was called
     assertNotNull( childShell[ 0 ] );
-    String markup = Fixture.getAllMarkup();
-    String expected
-      = "org.eclipse.swt.WidgetManager.getInstance().focus( \\\""
-      + buttonId
-      + "\\\" );";
-    assertTrue( markup.contains( expected ) );
+    Message message = Fixture.getProtocolMessage();
+    String displayId = DisplayUtil.getId( display );
+    assertEquals( buttonId, message.findSetProperty( displayId, "focusControl" ) );
   }
 
 }

@@ -317,14 +317,9 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
         // TODO [rst] Added null check as a NPE occurred in some rare cases
         Control focusControl = display.getFocusControl();
         if( focusControl != null ) {
-          StringBuilder buffer = new StringBuilder();
-          buffer.append( "org.eclipse.swt.WidgetManager.getInstance()." );
-          buffer.append( "focus( \"" );
-          buffer.append( WidgetUtil.getId( display.getFocusControl() ) );
-          buffer.append( "\" );" );
-          IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-          JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
-          responseWriter.write( buffer.toString() );
+          IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+          clientObject.setProperty( PROP_FOCUS_CONTROL,
+                                    WidgetUtil.getId( display.getFocusControl() ) );
         }
       }
     }
