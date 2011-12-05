@@ -10,6 +10,10 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -21,24 +25,26 @@ public class TimerExecScheduler_Test extends TestCase {
   
   private TimerExecScheduler scheduler;
   private Display display;
-  private volatile Throwable exception;
+  private Collection<Throwable> exceptions;
 
-  public void testSerializationIsThreadSafe() throws InterruptedException {
+  public void testSerializationIsThreadSafe() throws Exception {
     Runnable runnable = new Runnable() {
       public void run() {
         try {
           scheduler.schedule( 1, new NoOpRunnable() );
-          Fixture.serialize( scheduler );
         } catch( Throwable thr ) {
-          exception = thr;
+          exceptions.add( thr );
         }
       }
     };
     
     Thread[] threads = Fixture.startThreads( 10, runnable );
+    for( int i = 0; i < 5; i++ ) {
+      Fixture.serialize( scheduler );
+    }
     Fixture.joinThreads( threads );
     
-    assertNull( exception );
+    assertEquals( 0, exceptions.size() );
   }
 
   @Override
@@ -46,6 +52,7 @@ public class TimerExecScheduler_Test extends TestCase {
     Fixture.setUp();
     display = new Display();
     scheduler = new TimerExecScheduler( display, UICallBackManager.getInstance() );
+    exceptions = Collections.synchronizedList( new LinkedList<Throwable>() );
   }
   
   @Override
