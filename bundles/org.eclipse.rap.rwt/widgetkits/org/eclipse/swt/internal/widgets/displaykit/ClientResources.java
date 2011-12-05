@@ -258,6 +258,7 @@ public final class ClientResources {
     "org/eclipse/rwt/widgets/Button.js",
     "org/eclipse/rwt/widgets/ButtonAdapter.js",
     "org/eclipse/rwt/widgets/FileUpload.js",
+    "org/eclipse/rwt/widgets/FileUploadAdapter.js",
     "org/eclipse/swt/widgets/Slider.js",
     "org/eclipse/swt/widgets/SliderAdapter.js",
     "org/eclipse/swt/widgets/Spinner.js",

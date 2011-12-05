@@ -10,6 +10,7 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.protocol;
 
+import org.eclipse.rwt.widgets.FileUpload;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.CTabFolder;
@@ -63,6 +64,7 @@ public final class RWTStylesUtil {
     TREE( Tree.class.getName(), new String[] { "SINGLE", "MULTI", "CHECK", "FULL_SELECTION", "VIRTUAL", "NO_SCROLL", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     TREE_COLUMN( TreeColumn.class.getName(), new String[] { "LEFT", "RIGHT", "CENTER" } ),
     CANVAS( Canvas.class.getName(), new String[] { "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
+    FILE_UPLOAD( FileUpload.class.getName(), new String[] { "NO_FOCUS", "BORDER", "LEFT_TO_RIGHT" } ),
     WIDGET( Widget.class.getName(), new String[] {} );
 
     private String[] styles;

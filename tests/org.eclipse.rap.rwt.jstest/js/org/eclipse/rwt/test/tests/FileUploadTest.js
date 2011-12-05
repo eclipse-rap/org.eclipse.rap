@@ -16,7 +16,99 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
   members : {
 
     BLANK : "../rwt-resources/resource/static/html/blank.html",
-        
+
+    testCreateFileUploadByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createFileUploadByProtocol( "w3", "w2" );
+      assertTrue( widget instanceof org.eclipse.rwt.widgets.FileUpload );
+      assertIdentical( shell, widget.getParent() );
+      assertTrue( widget.getUserData( "isControl") );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testDisposeFileUploadByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createFileUploadByProtocol( "w3", "w2" );
+      var iframe = widget._iframe;
+       org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : "w3",
+        "action" : "destroy"
+      } );
+      testUtil.flush();
+      assertTrue( widget.isDisposed() );
+      assertNull( widget._formElement );
+      assertNull( widget._inputElement );
+      var isMshtml = qx.core.Variant.isSet( "qx.client", "mshtml" );
+      if( isMshtml ) {
+        // IE disposes with delay
+        assertEquals( "javascript:false;", iframe.getSource() );       
+      } else {        
+        assertTrue( iframe.isDisposed() );      
+      }
+      shell.destroy();
+    },
+
+    testsetTextByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createFileUploadByProtocol( "w3", "w2" );
+      testUtil.protocolSet( "w3", { "text" : "text\n && \"text" } );
+      assertEquals( "text\n &amp; &quot;text", widget.getCellContent( 2 ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSetImageByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createFileUploadByProtocol( "w3", "w2" );
+      testUtil.protocolSet( "w3", { "image" : [ "image.png", 10, 20 ] } );
+      assertEquals( "image.png", widget.getCellContent( 1 ) );
+      assertEquals( [ 10, 20 ], widget.getCellDimension( 1 ) );
+      shell.destroy();
+      widget.destroy();
+    },
+
+    testSubmitProtocol : [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var shell = testUtil.createShellByProtocol( "w2" );
+        var widget = this._createFileUploadByProtocol( "w3", "w2" );
+        this._setFileName( widget, "foo" );
+        org.eclipse.rwt.protocol.Processor.processOperation( {
+          "target" : "w3",
+          "action" : "call",
+          "method" : "submit",
+          "properties" : {
+            "url" : this.BLANK
+          }
+        } );
+        testUtil.delayTest( 600 );
+        testUtil.store( shell );
+        testUtil.store( widget );
+      },
+      function( widget ) {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var iframe = widget._iframe;
+        assertTrue( iframe.isLoaded() );
+        assertTrue( iframe.queryCurrentUrl().indexOf( "blank.html" ) != -1 );
+        shell.destroy();
+        widget.destroy();
+      }
+    ],
+
+    testSubmitProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var widget = this._createFileUploadByProtocol( "w3", "w2" );
+      
+      shell.destroy();
+      widget.destroy();
+    },
+
     testCreate : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var upload = this._createFileUpload();
@@ -360,6 +452,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
 
     /////////
     // Helper
+
+    _createFileUploadByProtocol : function( id, parentId ) {
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : id,
+        "action" : "create",
+        "type" : "rwt.widgets.FileUpload",
+        "properties" : {
+          "style" : [],
+          "parent" : parentId
+        }
+      } );
+      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+    },
 
     _createFileUpload : function( noFlush ) {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
