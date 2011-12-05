@@ -23,6 +23,7 @@ import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.Widget;
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 
 
 public class CoolBarLCA extends AbstractWidgetLCA {
@@ -56,8 +57,9 @@ public class CoolBarLCA extends AbstractWidgetLCA {
 
   public void renderChanges( Widget widget ) throws IOException {
     CoolBar coolBar = ( CoolBar )widget;
-    ControlLCAUtil.writeChanges( coolBar );
-    WidgetLCAUtil.writeCustomVariant( coolBar );
+    ControlLCAUtil.renderChanges( coolBar );
+    renderProperty( coolBar, PROP_LOCKED ,coolBar.getLocked(), false ); 
+    WidgetLCAUtil.renderCustomVariant( coolBar );
 }
 
   public void renderDispose( Widget widget ) throws IOException {

@@ -18,8 +18,10 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.theme.JsonValue;
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
@@ -68,8 +70,7 @@ public final class CoolBarLCA_Test extends TestCase {
     AbstractWidgetLCA lca = WidgetUtil.getLCA( bar );
     lca.preserveValues( bar );
     IWidgetAdapter adapter = WidgetUtil.getAdapter( bar );
-    assertEquals( Boolean.FALSE,
-                  adapter.getPreserved( CoolBarLCA.PROP_LOCKED ) );
+    assertEquals( Boolean.FALSE, adapter.getPreserved( CoolBarLCA.PROP_LOCKED ) );
     Fixture.clearPreserved();
     bar.setLocked( true );
     lca.preserveValues( bar );
@@ -187,6 +188,16 @@ public final class CoolBarLCA_Test extends TestCase {
     assertEquals( WidgetUtil.getId( bar.getParent() ), operation.getParent() );
   }
 
+  public void testRenderLocked() throws IOException {
+    lca.preserveValues( bar );
+    bar.setLocked( true );
+    lca.renderChanges( bar );
+    
+    Message message = Fixture.getProtocolMessage();
+    SetOperation operation = message.findSetOperation( bar, "locked" );
+    assertEquals( Boolean.TRUE, operation.getProperty( "locked" ) );
+  }
+  
   public void testItemReordering1() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     bar.setSize( 100, 10 );
@@ -330,8 +341,9 @@ public final class CoolBarLCA_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( 0, bar.getItemOrder()[ 0 ] );
     assertEquals( 1, bar.getItemOrder()[ 1 ] );
-    String expected = "var w = wm.findWidgetById( \\\"" + item0Id + "\\\" );w.setSpace(";
-    assertTrue( Fixture.getAllMarkup().contains( expected ) );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findSetOperation( item0, "bounds" ) );
   }
 
 }

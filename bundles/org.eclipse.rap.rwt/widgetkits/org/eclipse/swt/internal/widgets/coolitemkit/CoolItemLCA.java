@@ -11,25 +11,33 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.coolitemkit;
 
+import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
+
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.rwt.internal.lifecycle.IRenderRunnable;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.SWT;
+import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.widgets.*;
-import org.eclipse.swt.internal.widgets.coolbarkit.CoolBarLCA;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.internal.widgets.ICoolBarAdapter;
+import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.widgets.CoolBar;
+import org.eclipse.swt.widgets.CoolItem;
+import org.eclipse.swt.widgets.Widget;
 
 
 public class CoolItemLCA extends AbstractWidgetLCA {
 
-  private static final String SET_CONTROL = "setControl";
+  private static final String TYPE = "rwt.widgets.CoolItem";
   static final String PROP_CONTROL = "control";
   
   /* (intentionally not JavaDoc'ed)
@@ -61,80 +69,22 @@ public class CoolItemLCA extends AbstractWidgetLCA {
   }
 
   public void renderInitialization( Widget widget ) throws IOException {
-    CoolItem coolItem = ( CoolItem )widget;
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    Object[] args = new Object[] { jsOrientation( coolItem ) };
-    writer.newWidget( "org.eclipse.swt.widgets.CoolItem", args );
-    writer.setParent( WidgetUtil.getId( coolItem.getParent() ) );
-    writer.set( "minWidth", 0 );
-    writer.set( "minHeight", 0 );
+    CoolItem item = ( CoolItem )widget;
+    IClientObject clientObject = ClientObjectFactory.getForWidget( item );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "parent", WidgetUtil.getId( item.getParent() ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( item ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
-    CoolItem coolItem = ( CoolItem )widget;
-    writeBounds( coolItem );
-    writeControl( coolItem );
-    writeLocked( coolItem );
-    WidgetLCAUtil.writeCustomVariant( coolItem );
+    CoolItem item = ( CoolItem )widget;
+    WidgetLCAUtil.renderBounds( item, item.getParent(), item.getBounds() );
+    renderProperty( item, PROP_CONTROL, item.getControl(), null );
+    WidgetLCAUtil.renderCustomVariant( item );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( widget );
-    writer.dispose();
-  }
-
-  //////////////////
-  // Helping methods
-
-  private static void writeBounds( CoolItem coolItem ) throws IOException {
-    Rectangle bounds = coolItem.getBounds();
-    WidgetLCAUtil.writeBounds( coolItem, coolItem.getParent(), bounds );
-    if( WidgetLCAUtil.hasChanged( coolItem, Props.BOUNDS, bounds, null ) ) {
-      JSWriter writer = JSWriter.getWriterFor( coolItem );
-      writer.call( "updateHandleBounds", null );
-    }
-  }
-
-  private static void writeLocked( CoolItem coolItem ) throws IOException {
-    JSWriter writer = JSWriter.getWriterFor( coolItem );
-    CoolBar parent = coolItem.getParent();
-    String prop = CoolBarLCA.PROP_LOCKED;
-    Boolean oldValue = Boolean.valueOf( parent.getLocked() );
-    Boolean defValue = Boolean.FALSE;
-    if( WidgetLCAUtil.hasChanged( parent, prop, oldValue, defValue ) )
-    {
-      writer.set( "locked", parent.getLocked() );
-    }
-  }
-
-  private static void writeControl( CoolItem coolItem ) throws IOException {
-    Control control = coolItem.getControl();
-    if( WidgetLCAUtil.hasChanged( coolItem, PROP_CONTROL, control, null ) ) {
-      final JSWriter writer = JSWriter.getWriterFor( coolItem );
-      final Object[] args = new Object[] { control };
-      if( control != null ) {
-        // defer call since controls are rendered after items
-        WidgetAdapter adapter 
-          = ( WidgetAdapter )WidgetUtil.getAdapter( control );
-        adapter.setRenderRunnable( new IRenderRunnable() {
-          public void afterRender() throws IOException {
-            writer.call( SET_CONTROL, args );
-          }
-        } );
-      } else {
-        writer.call( SET_CONTROL, args );
-      }
-    }
-  }
-
-  private static JSVar jsOrientation( CoolItem coolItem ) {
-    JSVar orientation;
-    if( ( coolItem.getStyle() & SWT.VERTICAL ) != 0 ) {
-      orientation = JSConst.QX_CONST_VERTICAL_ORIENTATION;
-    } else {
-      orientation = JSConst.QX_CONST_HORIZONTAL_ORIENTATION;
-    }
-    return orientation;
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
   ///////////////////////////////

@@ -12,7 +12,7 @@
 org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.CoolBar", {
 
   factory : function( properties ) {
-    var result = new qx.ui.layout.CanvasLayout();
+    var result = new org.eclipse.swt.widgets.CoolBar();
     org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
     result.setUserData( "isControl", true );
     org.eclipse.rwt.protocol.AdapterUtil.setParent( result, properties.parent );
@@ -23,7 +23,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.CoolBar", {
 
   destructor : org.eclipse.rwt.protocol.AdapterUtil.getControlDestructor(),
 
-  properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [] ),
+  properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [ "locked"] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {} ),     
 

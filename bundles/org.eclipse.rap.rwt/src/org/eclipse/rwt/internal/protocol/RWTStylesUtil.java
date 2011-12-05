@@ -30,7 +30,7 @@ public final class RWTStylesUtil {
     COMPOSITE( Composite.class.getName(), new String[] { "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     CONTROL( Control.class.getName(), new String[] { "BORDER", "LEFT_TO_RIGHT" } ),
     COOL_BAR( CoolBar.class.getName(), new String[] { "FLAT", "HORIZONTAL", "VERTICAL", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
-    COOL_ITEM( CoolItem.class.getName(), new String[] { "DROP_DOWN" } ),
+    COOL_ITEM( CoolItem.class.getName(), new String[] { "DROP_DOWN", "VERTICAL" } ),
     DATE_TIME( DateTime.class.getName(), new String[] { "DATE", "TIME", "CALENDAR", "SHORT", "MEDIUM", "LONG", "DROP_DOWN", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     DECORATIONS( Decorations.class.getName(), new String[] { "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     DIALOG( Dialog.class.getName(), new String[] { "APPLICATION_MODAL", "PRIMARY_MODAL", "SYSTEM_MODAL" } ),

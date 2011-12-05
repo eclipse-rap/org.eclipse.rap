@@ -52,6 +52,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
   },
 
   members : {
+
     setLocked : function( value )  {
       this._handle.setDisplay( !value );
     },
@@ -76,6 +77,11 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
       } else {
         this._handle.setHeight( this.getHeight() );
       }
+    },
+    
+    _applyParent : function( value, oldValue ) {
+      this.base( arguments, value, oldValue );
+      this.setLocked( value.getLocked() );
     },
 
     _onHandleMouseDown : function( evt ) {
