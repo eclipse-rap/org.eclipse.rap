@@ -78,6 +78,30 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       } );
       assertTrue( button.getFocused() );
       button.destroy();
+    },
+
+    testSetCurrentThemeByProtocol : function() {
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w1",
+        "action" : "set",
+        "properties" : {
+          "currentTheme" : "myTheme"
+        }
+      } );
+      assertEquals( "myTheme", org.eclipse.swt.theme.ThemeStore.getInstance()._currentTheme );
+    },
+
+    testSetTimeoutPageByProtocol : function() {
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w1",
+        "action" : "set",
+        "properties" : {
+          "timeoutPage" : "Timeout occur!!!"
+        }
+      } );
+      assertEquals( "Timeout occur!!!", org.eclipse.swt.Request.getInstance()._timeoutPage );
     }
 
   }

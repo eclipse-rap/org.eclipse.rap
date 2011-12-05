@@ -91,22 +91,23 @@ public class WidgetAdapter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     DisplayUtil.getLCA( display ).render( display );
     assertEquals( false, adapter.isInitialized() );
-    Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
+    Fixture.fakeNewRequest( display );
     DisplayUtil.getLCA( display ).render( display );
     assertEquals( true, adapter.isInitialized() );
+    Fixture.fakeNewRequest( display );
     DisplayUtil.getLCA( display ).render( display );
     assertEquals( true, adapter.isInitialized() );
   }
-  
+
   public void testRenderRunnable() {
     WidgetAdapter adapter = new WidgetAdapter();
     IRenderRunnable runnable = mock( IRenderRunnable.class );
-    
+
     adapter.setRenderRunnable( runnable );
-    
+
     assertSame( runnable, adapter.getRenderRunnable() );
   }
-  
+
   public void testSetRenderRunnableTwice() {
     WidgetAdapter adapter = new WidgetAdapter();
     adapter.setRenderRunnable( mock( IRenderRunnable.class ) );
@@ -118,11 +119,11 @@ public class WidgetAdapter_Test extends TestCase {
     } catch( IllegalStateException expected ) {
     }
   }
-  
+
   public void testMarkDisposed() {
     Fixture.fakeResponseWriter();
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
-    
+
     // dispose un-initialized widget: must not occur in list of disposed widgets
     Widget widget = new Shell( display );
     widget.dispose();
@@ -137,14 +138,14 @@ public class WidgetAdapter_Test extends TestCase {
     assertTrue( widget.isDisposed() );
     assertEquals( 1, DisposedWidgets.getAll().length );
   }
-  
+
   public void testSerializableFields() throws Exception {
     WidgetAdapter adapter = new WidgetAdapter();
     adapter.setJSParent( "jsParent" );
     adapter.setInitialized( true );
-    
+
     WidgetAdapter deserializedAdapter = Fixture.serializeAndDeserialize( adapter );
-    
+
     assertEquals( adapter.getId(), deserializedAdapter.getId() );
     assertEquals( adapter.getJSParent(), deserializedAdapter.getJSParent() );
     assertEquals( adapter.isInitialized(), deserializedAdapter.isInitialized() );
@@ -156,9 +157,9 @@ public class WidgetAdapter_Test extends TestCase {
     adapter.setCachedVariant( "cachedVariant" );
     adapter.setRenderRunnable( mock( IRenderRunnable.class ) );
     adapter.preserve( property, "bar" );
-    
+
     WidgetAdapter deserializedAdapter = Fixture.serializeAndDeserialize( adapter );
-    
+
     assertNull( deserializedAdapter.getCachedVariant() );
     assertNull( deserializedAdapter.getRenderRunnable() );
     assertNull( deserializedAdapter.getPreserved( property ) );

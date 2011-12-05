@@ -161,7 +161,7 @@ public class DisplayLCA_Test extends TestCase {
 
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     assertEquals( shell, adapter.getPreserved( DisplayLCA.PROP_FOCUS_CONTROL ) );
-    Object currentTheme = adapter.getPreserved( DisplayLCA.PROP_CURR_THEME );
+    Object currentTheme = adapter.getPreserved( DisplayLCA.PROP_CURRENT_THEME );
     assertEquals( ThemeUtil.getCurrentThemeId(), currentTheme );
     Object exitConfirmation = adapter.getPreserved( DisplayLCA.PROP_EXIT_CONFIRMATION );
     assertNull( exitConfirmation );
@@ -415,6 +415,30 @@ public class DisplayLCA_Test extends TestCase {
 
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findSetProperty( "uicb", "active" ) );
+  }
+
+  public void testRenderCurrentTheme() throws IOException {
+    Display display = new Display();
+    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeNewRequest( display );
+
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    String expected = "org.eclipse.swt.theme.Default";
+    assertEquals( expected, message.findSetProperty( displayId, "currentTheme" ) );
+  }
+
+  public void testRenderTimeoutPage() throws IOException {
+    Display display = new Display();
+    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeNewRequest( display );
+
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    String actual = ( String )message.findSetProperty( displayId, "timeoutPage" );
+    assertTrue( actual.startsWith( "<html><head><title>" ) );
   }
 
   protected void setUp() throws Exception {

@@ -19,7 +19,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.Display", {
 
   properties : [
     "exitConfirmation",
-    "focusControl"
+    "focusControl",
+    "currentTheme",
+    "timeoutPage"
   ],
 
   listeners : [],

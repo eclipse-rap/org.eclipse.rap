@@ -59,7 +59,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
 
   static final String PROP_REQUEST_COUNTER = "requestCounter";
   static final String PROP_FOCUS_CONTROL = "focusControl";
-  static final String PROP_CURR_THEME = "currTheme";
+  static final String PROP_CURRENT_THEME = "currentTheme";
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
   static final String PROP_TIMEOUT_PAGE = "timeoutPage";
 
@@ -134,7 +134,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   public void preserveValues( Display display ) {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_FOCUS_CONTROL, display.getFocusControl() );
-    adapter.preserve( PROP_CURR_THEME, ThemeUtil.getCurrentThemeId() );
+    adapter.preserve( PROP_CURRENT_THEME, ThemeUtil.getCurrentThemeId() );
     adapter.preserve( PROP_TIMEOUT_PAGE, getTimeoutPage() );
     adapter.preserve( PROP_EXIT_CONFIRMATION, getExitConfirmation() );
     ActiveKeysUtil.preserveActiveKeys( display );
@@ -159,8 +159,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     if( request.getParameter( RequestParams.UIROOT ) != null ) {
       disposeWidgets();
       renderRequestCounter();
-      writeTheme( display );
-      writeErrorPages( display );
+      renderTheme( display );
+      renderErrorPages( display );
       renderExitConfirmation( display );
       renderShells( display );
       renderFocus( display );
@@ -202,33 +202,24 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     protocolWriter.appendMeta( PROP_REQUEST_COUNTER, requestId.intValue() );
   }
 
-  private static void writeTheme( Display display ) {
+  private static void renderTheme( Display display ) {
     String currThemeId = ThemeUtil.getCurrentThemeId();
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
-    Object oldThemeId = adapter.getPreserved( PROP_CURR_THEME );
+    Object oldThemeId = adapter.getPreserved( PROP_CURRENT_THEME );
     if( !currThemeId.equals( oldThemeId ) ) {
       Theme theme = RWTFactory.getThemeManager().getTheme( currThemeId );
-      StringBuilder buffer = new StringBuilder();
-      buffer.append( "org.eclipse.swt.theme.ThemeStore.getInstance().setCurrentTheme( \"" );
-      buffer.append( theme.getJsId() );
-      buffer.append( "\" );" );
-      IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
-      responseWriter.write( buffer.toString() );
+      IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+      clientObject.setProperty( PROP_CURRENT_THEME, theme.getJsId() );
     }
   }
 
-  private static void writeErrorPages( Display display ) {
+  private static void renderErrorPages( Display display ) {
     String timeoutPage = getTimeoutPage();
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     Object oldTimeoutPage = adapter.getPreserved( PROP_TIMEOUT_PAGE );
     if( !timeoutPage.equals( oldTimeoutPage ) ) {
-      String pattern = "org.eclipse.swt.Request.getInstance().setTimeoutPage( \"{0}\" );";
-      Object[] param = new Object[] { timeoutPage };
-      String jsCode = MessageFormat.format( pattern, param );
-      IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
-      responseWriter.write( jsCode );
+      IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+      clientObject.setProperty( PROP_TIMEOUT_PAGE, timeoutPage );
     }
   }
 

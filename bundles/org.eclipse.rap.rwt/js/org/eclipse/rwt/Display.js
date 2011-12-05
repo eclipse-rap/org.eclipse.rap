@@ -77,6 +77,14 @@ org.eclipse.rwt.Display.prototype = {
     org.eclipse.swt.WidgetManager.getInstance().focus( widgetId );
   },
 
+  setCurrentTheme : function( themeId ) {
+    org.eclipse.swt.theme.ThemeStore.getInstance().setCurrentTheme( themeId );
+  },
+
+  setTimeoutPage : function( content ) {
+    org.eclipse.swt.Request.getInstance().setTimeoutPage( content );
+  },
+
   ////////////////////////
   // Global Event handling
   
