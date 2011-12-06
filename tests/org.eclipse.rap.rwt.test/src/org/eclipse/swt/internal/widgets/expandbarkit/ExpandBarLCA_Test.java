@@ -1,32 +1,51 @@
 /*******************************************************************************
- * Copyright (c) 2008 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.expandbarkit;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
+import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class ExpandBarLCA_Test extends TestCase {
 
+  private Display display;
+  private Shell shell;
+  private ExpandBar expandBar;
+  private ExpandBarLCA lca;
+
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.fakeResponseWriter();
+    display = new Display();
+    shell = new Shell( display );
+    expandBar = new ExpandBar( shell, SWT.NONE );
+    lca = new ExpandBarLCA();
+    Fixture.fakeNewRequest( display );
   }
 
   protected void tearDown() throws Exception {
@@ -34,46 +53,11 @@ public class ExpandBarLCA_Test extends TestCase {
   }
 
   public void testPreserveValues() {
-    Display display = new Display();
-    Composite shell = new Shell( display, SWT.NONE );
-    ExpandBar expandBar = new ExpandBar( shell, SWT.V_SCROLL );
-    ExpandItem expandItem = createExpandItems( expandBar );
     expandBar.setSize( expandBar.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
     Fixture.markInitialized( display );
-    // Show Vertical Scrollbar
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( expandBar );
-    Boolean showVScrollbar
-      = ( Boolean )adapter.getPreserved( ExpandBarLCA.PROP_SHOW_VSCROLLBAR );
-    assertEquals( Boolean.FALSE, showVScrollbar );
-    Fixture.clearPreserved();
-    expandItem.setExpanded( true );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( expandBar );
-    showVScrollbar = ( Boolean )adapter.getPreserved( ExpandBarLCA.PROP_SHOW_VSCROLLBAR );
-    assertEquals( Boolean.TRUE, showVScrollbar );
-    Fixture.clearPreserved();
-    // Bottom Spacing Bounds
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( expandBar );
-    Rectangle bottomSpacingBounds = ( Rectangle )adapter.getPreserved( ExpandBarLCA.PROP_BOTTOM_SPACING_BOUNDS );
-    assertEquals( new Rectangle( 4, 209, 10, 4 ), bottomSpacingBounds );
-    Fixture.clearPreserved();
-    expandItem.setExpanded( false );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( expandBar );
-    bottomSpacingBounds = ( Rectangle )adapter.getPreserved( ExpandBarLCA.PROP_BOTTOM_SPACING_BOUNDS );
-    assertEquals( new Rectangle( 4, 56, 10, 4 ), bottomSpacingBounds );
-    Fixture.clearPreserved();
-    expandBar.setSpacing( 8 );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( expandBar );
-    bottomSpacingBounds = ( Rectangle )adapter.getPreserved( ExpandBarLCA.PROP_BOTTOM_SPACING_BOUNDS );
-    assertEquals( new Rectangle( 8, 64, 10, 8 ), bottomSpacingBounds );
-    Fixture.clearPreserved();
     // control: enabled
     Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( expandBar );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( expandBar );
     assertEquals( Boolean.TRUE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     expandBar.setEnabled( false );
@@ -119,43 +103,147 @@ public class ExpandBarLCA_Test extends TestCase {
     assertEquals( font, adapter.getPreserved( Props.FONT ) );
   }
 
-  @SuppressWarnings("deprecation")
-  private ExpandItem createExpandItems( ExpandBar expandBar ) {
-    Display display = expandBar.getDisplay();
-    // First item
-    Composite composite = new Composite( expandBar, SWT.NONE );
-    composite.setLayout( new GridLayout() );
-    new Button( composite, SWT.PUSH ).setText( "SWT.PUSH" );
-    new Button( composite, SWT.RADIO ).setText( "SWT.RADIO" );
-    new Button( composite, SWT.CHECK ).setText( "SWT.CHECK" );
-    new Button( composite, SWT.TOGGLE ).setText( "SWT.TOGGLE" );
-    ExpandItem item = new ExpandItem( expandBar, SWT.NONE, 0 );
-    item.setText( "What is your favorite button?" );
-    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
-    item.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
-    item.setControl( composite );
-    item.setExpanded( false );
-    // Second item
-    composite = new Composite( expandBar, SWT.NONE );
-    composite.setLayout( new GridLayout( 2, false ) );
-    Image img = display.getSystemImage( SWT.ICON_ERROR );
-    new Label( composite, SWT.NONE ).setImage( img );
-    new Label( composite, SWT.NONE ).setText( "SWT.ICON_ERROR" );
-    img = display.getSystemImage( SWT.ICON_INFORMATION );
-    new Label( composite, SWT.NONE ).setImage( img );
-    new Label( composite, SWT.NONE ).setText( "SWT.ICON_INFORMATION" );
-    img = display.getSystemImage( SWT.ICON_WARNING );
-    new Label( composite, SWT.NONE ).setImage( img );
-    new Label( composite, SWT.NONE ).setText( "SWT.ICON_WARNING" );
-    img = display.getSystemImage( SWT.ICON_QUESTION );
-    new Label( composite, SWT.NONE ).setImage( img );
-    new Label( composite, SWT.NONE ).setText( "SWT.ICON_QUESTION" );
-    item = new ExpandItem( expandBar, SWT.NONE, 1 );
-    item.setText( "What is your favorite icon?" );
-    item.setImage( Graphics.getImage( Fixture.IMAGE1 ) );
-    item.setHeight( composite.computeSize( SWT.DEFAULT, SWT.DEFAULT ).y );
-    item.setControl( composite );
-    item.setExpanded( false );
-    return item;
+  public void testRenderCreate() throws IOException {
+    lca.renderInitialization( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( expandBar );
+    assertEquals( "rwt.widgets.ExpandBar", operation.getType() );
+  }
+
+  public void testRenderCreateWithVScroll() throws IOException {
+    expandBar = new ExpandBar( shell, SWT.V_SCROLL );
+
+    lca.renderInitialization( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( expandBar );
+    assertEquals( "rwt.widgets.ExpandBar", operation.getType() );
+    List<Object> styles = Arrays.asList( operation.getStyles() );
+    assertTrue( styles.contains( "V_SCROLL" ) );
+  }
+
+  public void testRenderParent() throws IOException {
+    lca.renderInitialization( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( expandBar );
+    assertEquals( WidgetUtil.getId( expandBar.getParent() ), operation.getParent() );
+  }
+
+  public void testRenderDispose() throws IOException {
+    lca.renderDispose( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    Operation operation = message.getOperation( 0 );
+    assertTrue( operation instanceof DestroyOperation );
+    assertEquals( WidgetUtil.getId( expandBar ), operation.getTarget() );
+  }
+
+  public void testRenderInitialBottomSpacingBounds() throws IOException, JSONException {
+    lca.render( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray bounds = ( JSONArray )message.findCreateProperty( expandBar, "bottomSpacingBounds" );
+    assertTrue( bounds.getInt( 2 ) > 0 );
+    assertTrue( bounds.getInt( 3 ) > 0 );
+  }
+
+  public void testRenderBottomSpacingBounds() throws IOException, JSONException {
+    lca.renderChanges( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray bounds = ( JSONArray )message.findSetProperty( expandBar, "bottomSpacingBounds" );
+    assertTrue( bounds.getInt( 2 ) > 0 );
+    assertTrue( bounds.getInt( 3 ) > 0 );
+  }
+
+  public void testRenderBottomSpacingBoundsUnchanged() throws IOException {
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( expandBar );
+
+    Fixture.preserveWidgets();
+    lca.renderChanges( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( expandBar, "boubottomSpacingBoundsnds" ) );
+  }
+
+  public void testRenderInitialVScrollBarVisible() throws IOException {
+    expandBar = new ExpandBar( shell, SWT.V_SCROLL );
+    expandBar.setSize( 100, 40 );
+    new ExpandItem( expandBar, SWT.NONE );
+
+    lca.render( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( expandBar );
+    assertTrue( operation.getPropertyNames().indexOf( "vScrollBarVisible" ) == -1 );
+  }
+
+  public void testRenderVScrollBarVisible() throws IOException {
+    expandBar = new ExpandBar( shell, SWT.V_SCROLL );
+    expandBar.setSize( 100, 40 );
+    new ExpandItem( expandBar, SWT.NONE );
+
+    new ExpandItem( expandBar, SWT.NONE );
+    lca.renderChanges( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( Boolean.TRUE, message.findSetProperty( expandBar, "vScrollBarVisible" ) );
+  }
+
+  public void testRenderVScrollBarVisibleUnchanged() throws IOException {
+    expandBar = new ExpandBar( shell, SWT.V_SCROLL );
+    expandBar.setSize( 100, 40 );
+    new ExpandItem( expandBar, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( expandBar );
+
+    new ExpandItem( expandBar, SWT.NONE );
+    Fixture.preserveWidgets();
+    lca.renderChanges( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( expandBar, "vScrollBarVisible" ) );
+  }
+
+  public void testRenderInitialVScrollBarMax() throws IOException {
+    expandBar = new ExpandBar( shell, SWT.NONE );
+    expandBar.setSize( 100, 40 );
+    new ExpandItem( expandBar, SWT.NONE );
+
+    lca.render( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( expandBar );
+    assertTrue( operation.getPropertyNames().indexOf( "vScrollBarMax" ) == -1 );
+  }
+
+  public void testRenderVScrollBarMax() throws IOException {
+    expandBar = new ExpandBar( shell, SWT.V_SCROLL );
+    expandBar.setSize( 100, 40 );
+    new ExpandItem( expandBar, SWT.NONE );
+
+    new ExpandItem( expandBar, SWT.NONE );
+    lca.renderChanges( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findSetProperty( expandBar, "vScrollBarMax" ) );
+  }
+
+  public void testRenderVScrollBarMaxUnchanged() throws IOException {
+    expandBar = new ExpandBar( shell, SWT.V_SCROLL );
+    expandBar.setSize( 100, 40 );
+    new ExpandItem( expandBar, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( expandBar );
+
+    new ExpandItem( expandBar, SWT.NONE );
+    Fixture.preserveWidgets();
+    lca.renderChanges( expandBar );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( expandBar, "vScrollBarMax" ) );
   }
 }

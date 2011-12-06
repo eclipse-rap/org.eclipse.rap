@@ -19,7 +19,6 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
       throw new Error( "illegal parent, must be a ExpandBar" );
     } 
     this.setAppearance( "expand-item" );    
-    this._expandBar = parent; 
     this._headerHeight = 24; // Chevron size with top/bottom insets
     this._expanded = false;
     this._image = null;
@@ -31,18 +30,16 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
     this._header.addEventListener( "click", this._onClick, this );  
     this._header.addEventListener( "mouseover", this._onHandleMouseOver, this );
     this._header.addEventListener( "mouseout", this._onHandleMouseOut, this );  
-    this._header.addEventListener( "contextmenu", this._onContextMenu, this );
     this._header.setHeight( this._headerHeight ); 
     this._header.setLabel( this._text );      
     this.add( this._header );    
     // Chevron image
-    this._chevron = new qx.ui.basic.Image;
+    this._chevron = new qx.ui.basic.Image();
     this._chevron.setAppearance( "expand-item-chevron-button" );    
     this._chevron.setTop( ( this._headerHeight - this._chevron.getHeight() ) / 2 );
     this._chevron.addEventListener( "click", this._onClick, this ); 
     this._chevron.addEventListener( "mouseover", this._onHandleMouseOver, this );
     this._chevron.addEventListener( "mouseout", this._onHandleMouseOut, this );  
-    this._chevron.addEventListener( "contextmenu", this._onContextMenu, this );   
     this.add( this._chevron );
   },
 
@@ -50,11 +47,9 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
     this._header.removeEventListener( "click", this._onClick, this );
     this._header.removeEventListener( "mouseover", this._onHandleMouseOver, this );
     this._header.removeEventListener( "mouseout", this._onHandleMouseOut, this ); 
-    this._header.removeEventListener( "contextmenu", this._onContextMenu, this ); 
     this._chevron.removeEventListener( "click", this._onClick, this );
     this._chevron.removeEventListener( "mouseover", this._onHandleMouseOver, this );
     this._chevron.removeEventListener( "mouseout", this._onHandleMouseOut, this ); 
-    this._chevron.removeEventListener( "contextmenu", this._onContextMenu, this );   
     this._disposeObjects( "_header", "_chevron" );     
   },
 
@@ -63,7 +58,8 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
     STATE_OVER : "over"
   },
 
-  members : {      
+  members : {
+
     addState : function( state ) {
       this.base( arguments, state );
       if( state.substr( 0, 8 ) == "variant_" ) {
@@ -118,16 +114,6 @@ qx.Class.define( "org.eclipse.swt.widgets.ExpandItem", {
           req.addEvent( "org.eclipse.swt.events.expandItemExpanded", id );
         }
         req.send();
-      }
-    },
-    
-    _onContextMenu : function( evt ) {      
-      var menu = this._expandBar.getContextMenu();      
-      if( menu != null ) {
-        menu.setLocation( evt.getPageX(), evt.getPageY() );
-        menu.setOpener( this._expandBar );
-        menu.show();
-        evt.stopPropagation();
       }
     },
     

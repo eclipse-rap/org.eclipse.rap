@@ -34,7 +34,7 @@ public final class RWTStylesUtil {
     DATE_TIME( DateTime.class.getName(), new String[] { "DATE", "TIME", "CALENDAR", "SHORT", "MEDIUM", "LONG", "DROP_DOWN", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     DECORATIONS( Decorations.class.getName(), new String[] { "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     DIALOG( Dialog.class.getName(), new String[] { "APPLICATION_MODAL", "PRIMARY_MODAL", "SYSTEM_MODAL" } ),
-    EXPAND_BAR( ExpandBar.class.getName(), new String[] { "V_SCROLL", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
+    EXPAND_BAR( ExpandBar.class.getName(), new String[] { "V_SCROLL", "NO_FOCUS", "NO_RADIO_GROUP", "BORDER", "LEFT_TO_RIGHT" } ),
     FONT_DIALOG( FontDialog.class.getName(), new String[] { "APPLICATION_MODAL", "PRIMARY_MODAL", "SYSTEM_MODAL" } ),
     GROUP( Group.class.getName(), new String[] { "SHADOW_ETCHED_IN", "SHADOW_ETCHED_OUT", "SHADOW_IN", "SHADOW_OUT", "SHADOW_NONE", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     LABEL( Label.class.getName(), new String[] { "SEPARATOR", "HORIZONTAL", "VERTICAL", "SHADOW_IN", "SHADOW_OUT", "SHADOW_NONE", "CENTER", "LEFT", "RIGHT", "WRAP", "BORDER", "LEFT_TO_RIGHT" } ),
