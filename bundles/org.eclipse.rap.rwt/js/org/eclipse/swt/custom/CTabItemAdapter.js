@@ -12,6 +12,7 @@
 org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.CTabItem", {
 
   factory : function( properties ) {
+    var result;
     org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( properties.parent, function( parent ) {
       result = new org.eclipse.swt.custom.CTabItem( parent, parent.hasState( "rwt_CLOSE" ) );
       parent.addAt( result, properties.index );
