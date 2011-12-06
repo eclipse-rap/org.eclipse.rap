@@ -212,6 +212,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
       cont.destroy();
     },
 
+    testZIndex : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree( true );
+      tree.setLinesVisible( true );
+      testUtil.flush();
+      var row = tree._rowContainer._children[ 0 ];
+      assertEquals( 0, row.getZIndex() );
+      assertEquals( 1, tree._rowContainer._vertGridLines[ 0 ].style.zIndex );
+      tree.destroy();
+    },
+
     /////////
     // Helper
     
