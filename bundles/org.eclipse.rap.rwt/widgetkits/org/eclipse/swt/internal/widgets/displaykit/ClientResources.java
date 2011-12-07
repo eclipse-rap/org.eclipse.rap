@@ -214,6 +214,7 @@ public final class ClientResources {
     "org/eclipse/swt/browser/Browser.js",
     "org/eclipse/swt/browser/BrowserAdapter.js",
     "org/eclipse/rwt/widgets/ExternalBrowser.js",
+    "org/eclipse/rwt/widgets/ExternalBrowserAdapter.js",
     "org/eclipse/swt/FontSizeCalculation.js",
     "org/eclipse/rwt/widgets/BasicButton.js",
     "org/eclipse/rwt/widgets/ToolItem.js",

@@ -74,34 +74,13 @@ public class ExternalBrowser_Test extends TestCase {
     }
   }
 
-  public void testEscapeId() {
-    String escapedId = ExternalBrowser.escapeId( "my.id" );
-    assertEquals( -1, escapedId.indexOf( "." ) );
-    escapedId = ExternalBrowser.escapeId( "my id" );
-    assertEquals( -1, escapedId.indexOf( " " ) );
-    escapedId = ExternalBrowser.escapeId( "my-id" );
-    assertEquals( -1, escapedId.indexOf( "-" ) );
-
-    String escapedId1 = ExternalBrowser.escapeId( "my_id" );
-    String escapedId2 = ExternalBrowser.escapeId( "my.id" );
-    assertFalse( escapedId1.equals( escapedId2 ) );
-
-    escapedId1 = ExternalBrowser.escapeId( "my_id_0" );
-    escapedId2 = ExternalBrowser.escapeId( "my.id_0" );
-    assertFalse( escapedId1.equals( escapedId2 ) );
-
-    escapedId1 = ExternalBrowser.escapeId( "1" );
-    assertEquals( "1", escapedId1 );
-    escapedId2 = ExternalBrowser.escapeId( "2" );
-    assertEquals( "2", escapedId2 );
-  }
-
   /* (intentionally non-JavaDoc'ed)
-   * Ensure that the order in which the JavaScript commands are rendered
+   * Ensure that the order in which the protocol messages are rendered
    * matches the order of the ExternalBrowser#open/close calls
    */
-  public void testJavaScriptExecutionOrder() throws IOException {
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestJavaScriptExecutionOrderEntryPoint.class );
+  public void testExecutionOrder() throws IOException {
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT,
+                                                TestExecutionOrderEntryPoint.class );
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
     // run life cycle
@@ -109,10 +88,10 @@ public class ExternalBrowser_Test extends TestCase {
     lifeCycle.execute();
     // assert conditions
     String markup = Fixture.getAllMarkup();
-    int open1Index = markup.indexOf( "ExternalBrowser.open( \\\"1" );
-    int close1Index = markup.indexOf( "ExternalBrowser.close( \\\"1" );
-    int open2Index = markup.indexOf( "ExternalBrowser.open( \\\"2" );
-    int close2Index = markup.indexOf( "ExternalBrowser.close( \\\"2" );
+    int open1Index = markup.indexOf( createOpenMarkup( "1" ) );
+    int close1Index = markup.indexOf( createCloseMarkup( "1" ) );
+    int open2Index = markup.indexOf( createOpenMarkup( "2" ) );
+    int close2Index = markup.indexOf( createCloseMarkup( "2" ) );
     assertTrue( open1Index != -1 && close1Index != -1 );
     assertTrue( open2Index != -1 && close2Index != -1 );
     assertTrue( open1Index < close1Index );
@@ -120,14 +99,44 @@ public class ExternalBrowser_Test extends TestCase {
     assertTrue( open1Index < open2Index );
   }
 
-  public static final class TestJavaScriptExecutionOrderEntryPoint implements IEntryPoint {
+  private static String createOpenMarkup( String id ) {
+    StringBuilder builder = new StringBuilder();
+    builder.append( "\"target\": \"eb\",\n" );
+    builder.append( "\"action\": \"call\",\n" );
+    builder.append( "\"method\": \"open\",\n" );
+    builder.append( "\"properties\": {\n" );
+    builder.append( "\"id\": \"" );
+    builder.append( id );
+    builder.append( "\",\n" );
+    builder.append( "\"url\": \"http://eclipse.org\",\n" );
+    builder.append( "\"style\": [ \"STATUS\", \"LOCATION_BAR\" ]" );
+    return builder.toString();
+  }
+
+  private static String createCloseMarkup( String id ) {
+    StringBuilder builder = new StringBuilder();
+    builder.append( "\"target\": \"eb\",\n" );
+    builder.append( "\"action\": \"call\",\n" );
+    builder.append( "\"method\": \"close\",\n" );
+    builder.append( "\"properties\": {\n" );
+    builder.append( "\"id\": \"" );
+    builder.append( id );
+    builder.append( "\"" );
+    return builder.toString();
+  }
+
+  public static final class TestExecutionOrderEntryPoint implements IEntryPoint {
 
     public int createUI() {
       new Display();
       // execute a row open/close method calls
-      ExternalBrowser.open( "1", "http://eclipse.org", 0 );
+      ExternalBrowser.open( "1",
+                            "http://eclipse.org",
+                            ExternalBrowser.STATUS | ExternalBrowser.LOCATION_BAR );
       ExternalBrowser.close( "1" );
-      ExternalBrowser.open( "2", "http://eclipse.org", 0 );
+      ExternalBrowser.open( "2",
+                            "http://eclipse.org",
+                            ExternalBrowser.STATUS | ExternalBrowser.LOCATION_BAR );
       ExternalBrowser.close( "2" );
       return 0;
     }

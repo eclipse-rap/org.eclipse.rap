@@ -11,9 +11,16 @@
  ******************************************************************************/
 package org.eclipse.rwt.widgets;
 
-import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.eclipse.rwt.internal.widgets.JSExecutor;
+import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
+import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
@@ -50,11 +57,12 @@ public final class ExternalBrowser {
    */
   public static final int STATUS = 1 << 3;
 
-  private static final String OPEN
-    = "org.eclipse.rwt.widgets.ExternalBrowser."
-    + "open( \"{0}\", \"{1}\", \"{2}\" );";
-  private static final String CLOSE
-    = "org.eclipse.rwt.widgets.ExternalBrowser.close( \"{0}\" );";
+  private static final String EXTERNAL_BROWSER_ID = "eb";
+  private static final String METHOD_OPEN = "open";
+  private static final String METHOD_CLOSE = "close";
+  private static final String PROPERTY_ID = "id";
+  private static final String PROPERTY_URL = "url";
+  private static final String PROPERTY_STYLE = "style";
 
   /**
    * Opens the given <code>url</code> in an external browser.
@@ -85,7 +93,7 @@ public final class ExternalBrowser {
     if( id.length() == 0 ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    JSExecutor.executeJS( getOpenJS( id, url, style ) );
+    renderOpen( id, url, style );
   }
 
   /**
@@ -111,56 +119,47 @@ public final class ExternalBrowser {
     if( id.length() == 0 ) {
       SWT.error( SWT.ERROR_INVALID_ARGUMENT );
     }
-    JSExecutor.executeJS( getCloseJS( id ) );
-  }
-
-  ///////////////////////////////
-  // JavaScript code 'generation'
-
-  private static String getOpenJS( String id, String url, int style ) {
-    Object[] args = new String[] { escapeId( id ), url, getFeatures( style ) };
-    return MessageFormat.format( OPEN, args );
-  }
-
-  private static String getCloseJS( String id ) {
-    return MessageFormat.format( CLOSE, new Object[] { escapeId( id ) } );
-  }
-
-  static String escapeId( String id ) {
-    String result = id;
-    result = result.replaceAll( "\\_", "\\_0" );
-    // IE does not accept '-' in popup-window names
-    result = result.replaceAll( "\\-", "\\_1" );
-    result = result.replaceAll( "\\.", "\\_" );
-    // IE does not accept blanks in popup-window names
-    result = result.replaceAll( " ", "\\__" );
-    return result;
-  }
-
-  private static String getFeatures( int style ) {
-    StringBuilder result = new StringBuilder();
-    appendFeature( result, "dependent", true );
-    appendFeature( result, "scrollbars", true );
-    appendFeature( result, "resizable", true );
-    appendFeature( result, "status", ( style & STATUS ) != 0 );
-    appendFeature( result, "location", ( style & LOCATION_BAR ) != 0 );
-    boolean navigation = ( style & NAVIGATION_BAR ) != 0;
-    appendFeature( result, "toolbar", navigation );
-    appendFeature( result, "menubar", navigation );
-    return result.toString();
-  }
-
-  private static void appendFeature( StringBuilder features, String feature, boolean enable ) {
-    if( features.length() > 0 ) {
-      features.append( "," );
-    }
-    features.append( feature );
-    features.append( "=" );
-    features.append( enable ? 1 : 0 );
+    renderClose( id );
   }
 
   //////////////////
   // Helping methods
+
+  private static void renderOpen( String id, String url, int style ) {
+    ProtocolMessageWriter protocolWriter = getProtocolWriter();
+    Map<String, Object> args = new LinkedHashMap<String, Object>();
+    args.put( PROPERTY_ID, id );
+    args.put( PROPERTY_URL, url );
+    args.put( PROPERTY_STYLE, getFeatures( style ) );
+    protocolWriter.appendCall( EXTERNAL_BROWSER_ID, METHOD_OPEN, args );
+  }
+
+  private static void renderClose( String id ) {
+    ProtocolMessageWriter protocolWriter = getProtocolWriter();
+    Map<String, Object> args = new HashMap<String, Object>();
+    args.put( PROPERTY_ID, id );
+    protocolWriter.appendCall( EXTERNAL_BROWSER_ID, METHOD_CLOSE, args );
+  }
+
+  private static String[] getFeatures( int style ) {
+    List<String> features = new ArrayList<String>();
+    if( ( style & STATUS ) != 0 ) {
+      features.add( "STATUS" );
+    }
+    if( ( style & LOCATION_BAR ) != 0 ) {
+      features.add( "LOCATION_BAR" );
+    }
+    if( ( style & NAVIGATION_BAR ) != 0 ) {
+      features.add( "NAVIGATION_BAR" );
+    }
+    return features.toArray( new String[ 0 ] );
+  }
+
+  private static ProtocolMessageWriter getProtocolWriter() {
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
+    return responseWriter.getProtocolWriter();
+  }
 
   private static void checkWidget() {
     if( Display.getCurrent().getThread() != Thread.currentThread() ) {

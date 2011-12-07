@@ -37,9 +37,7 @@ qx.Class.define( "org.eclipse.rwt.System", {
     var eventHandler = org.eclipse.rwt.EventHandler;
     eventHandler.setAllowContextMenu( org.eclipse.rwt.widgets.Menu.getAllowContextMenu );
     eventHandler.setMenuManager( org.eclipse.rwt.MenuManager.getInstance() );
-    // Init UICallBack
-    var uiCallBack = org.eclipse.rwt.UICallBack.getInstance();
-    org.eclipse.rwt.protocol.ObjectManager.add( "uicb", uiCallBack, "rwt.UICallBack" );
+    this._registerSingletons();
   },
 
   events : {
@@ -76,6 +74,13 @@ qx.Class.define( "org.eclipse.rwt.System", {
       }
       qx.Class.patch( qx.ui.core.ClientDocumentBlocker, org.eclipse.rwt.FadeAnimationMixin );
       qx.Class.patch( qx.event.type.DomEvent, org.eclipse.rwt.DomEventPatch );
+    },
+
+    _registerSingletons : function() {
+      var uiCallBack = org.eclipse.rwt.UICallBack.getInstance();
+      org.eclipse.rwt.protocol.ObjectManager.add( "uicb", uiCallBack, "rwt.UICallBack" );
+      var browser = org.eclipse.rwt.widgets.ExternalBrowser.getInstance();
+      org.eclipse.rwt.protocol.ObjectManager.add( "eb", browser, "rwt.widgets.ExternalBrowser" );
     },
 
     getStartupTime : function() {
