@@ -283,6 +283,7 @@ public final class ClientResources {
     "org/eclipse/swt/widgets/Separator.js",
     "org/eclipse/swt/widgets/SeparatorAdapter.js",
     "org/eclipse/rwt/widgets/ControlDecorator.js",
+    "org/eclipse/rwt/widgets/ControlDecoratorAdapter.js",
     "org/eclipse/rwt/MobileWebkitSupport.js",
     "org/eclipse/swt/widgets/ToolTip.js",
     "org/eclipse/swt/widgets/ToolTipAdapter.js",

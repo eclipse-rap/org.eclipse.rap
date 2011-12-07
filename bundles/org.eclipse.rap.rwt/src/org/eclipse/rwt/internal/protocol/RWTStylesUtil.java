@@ -15,6 +15,7 @@ import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.internal.widgets.ControlDecorator;
 import org.eclipse.swt.widgets.*;
 
 
@@ -65,6 +66,7 @@ public final class RWTStylesUtil {
     TREE_COLUMN( TreeColumn.class.getName(), new String[] { "LEFT", "RIGHT", "CENTER" } ),
     CANVAS( Canvas.class.getName(), new String[] { "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER", "LEFT_TO_RIGHT" } ),
     FILE_UPLOAD( FileUpload.class.getName(), new String[] { "NO_FOCUS", "BORDER", "LEFT_TO_RIGHT" } ),
+    CONTROL_DECORATOR( ControlDecorator.class.getName(), new String[] { "TOP", "BOTTOM", "LEFT", "RIGHT", "CENTER" } ),
     WIDGET( Widget.class.getName(), new String[] {} );
 
     private String[] styles;

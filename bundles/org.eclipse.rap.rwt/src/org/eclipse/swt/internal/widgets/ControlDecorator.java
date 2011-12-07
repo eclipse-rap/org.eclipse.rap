@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Control;
 
 
 public final class ControlDecorator extends Decorator {
-  
+
   private final Composite parent;
   private Image image;
   private String text;
@@ -29,9 +29,9 @@ public final class ControlDecorator extends Decorator {
   private int marginWidth;
   private FocusListener focusListener;
 
-  public ControlDecorator( Control control, int style, Composite composite )
-  {
-    super( control, style );
+  public ControlDecorator( Control control, int style, Composite composite ) {
+    super( control, checkStyle( style ) );
+    text = "";
     visible = true;
     showHover = true;
     parent = getParent( control, composite );
@@ -59,7 +59,11 @@ public final class ControlDecorator extends Decorator {
 
   public void setText( String text ) {
     checkWidget();
-    this.text = text;
+    if( text == null ) {
+      this.text = "";
+    } else {
+      this.text = text;
+    }
   }
 
   public boolean getShowOnlyOnFocus() {
@@ -150,7 +154,7 @@ public final class ControlDecorator extends Decorator {
         top = controlBounds.y + controlBounds.height - imageBounds.height;
       } else {
         // default is center
-        top 
+        top
           = controlBounds.y
           + ( controlBounds.height - imageBounds.height ) / 2;
       }
@@ -189,6 +193,23 @@ public final class ControlDecorator extends Decorator {
 
   //////////////////
   // Helping methods
+
+  private static int checkStyle( int style ) {
+    int result = SWT.NONE;
+    if( ( style & SWT.RIGHT ) != 0 ) {
+      result |= SWT.RIGHT;
+    } else {
+      result |= SWT.LEFT;
+    }
+    if( ( style & SWT.TOP ) != 0 ) {
+      result |= SWT.TOP;
+    } else if( ( style & SWT.BOTTOM ) != 0 ) {
+      result |= SWT.BOTTOM;
+    } else {
+      result |= SWT.CENTER;
+    }
+    return result;
+  }
 
   private static Composite getParent( Control control, Composite composite ) {
     Composite result = composite;

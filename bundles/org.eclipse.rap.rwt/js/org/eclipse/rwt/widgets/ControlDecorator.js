@@ -12,10 +12,10 @@
 qx.Class.define( "org.eclipse.rwt.widgets.ControlDecorator", {
   extend : qx.ui.basic.Image,
 
-  construct : function( parent ) {
+  construct : function() {
     this.base( arguments );
-    this.setParent( parent );
     this.setZIndex( 1000 );
+    this.setVisibility( false );
     this._showHover = true;
     this._text = null;
   },
