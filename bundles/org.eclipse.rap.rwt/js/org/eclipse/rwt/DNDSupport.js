@@ -319,7 +319,21 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     _operationsToActions : function( operations ) {
       var result = {};
       for( var i = 0; i < operations.length; i++ ) {
-        var action = operations[ i ] == "link" ? "alias" : operations[ i ];
+        var action;
+        switch( operations[ i ] ) {
+          case "DROP_MOVE":
+            var action = "move";
+          break;
+          case "DROP_COPY":
+            var action = "copy";
+          break;
+          case "DROP_LINK":
+            var action = "alias";
+          break;
+          default:
+            action = operations[ i ] == "link" ? "alias" : operations[ i ]; // TODO [tb] : remove when ready
+          break;
+        }
         result[ action ] = action != null;
       }
       return result;

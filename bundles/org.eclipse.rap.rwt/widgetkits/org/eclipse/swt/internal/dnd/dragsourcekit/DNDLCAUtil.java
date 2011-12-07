@@ -39,11 +39,17 @@ public final class DNDLCAUtil {
   }
   
   public static String[] convertOperations( int operations ) {
-    String[] result = new String[ 3 ];
-    result[ 0 ] = ( operations & DND.DROP_COPY  ) != 0 ? "copy" : null;  
-    result[ 1 ] = ( operations & DND.DROP_MOVE  ) != 0 ? "move" : null;  
-    result[ 2 ] = ( operations & DND.DROP_LINK  ) != 0 ? "link" : null;  
-    return result;
+    List<String> result = new ArrayList<String>();
+    if( ( operations & DND.DROP_COPY ) != 0  ) {
+      result.add( "DROP_COPY" );
+    }
+    if( ( operations & DND.DROP_MOVE ) != 0  ) {
+      result.add( "DROP_MOVE" );
+    }
+    if( ( operations & DND.DROP_LINK ) != 0  ) {
+      result.add( "DROP_LINK" );
+    }
+    return result.toArray( new String[ result.size() ] );
   }
 
 }

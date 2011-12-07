@@ -200,6 +200,7 @@ public final class ClientResources {
     "org/eclipse/rwt/RadioButtonUtil.js",
     "org/eclipse/rwt/widgets/MenuBar.js",
     "org/eclipse/rwt/DNDSupport.js",
+    "org/eclipse/rwt/DragSourceAdapter.js",
     "org/eclipse/swt/theme/ThemeValues.js",
     "org/eclipse/rwt/widgets/Tree.js",
     "org/eclipse/rwt/widgets/TreeAdapter.js",

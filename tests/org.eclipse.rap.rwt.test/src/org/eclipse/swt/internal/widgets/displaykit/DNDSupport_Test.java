@@ -72,23 +72,6 @@ public class DNDSupport_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testRegisterAndDisposeDragSource() {
-    Fixture.fakeNewRequest( display );
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, DND.DROP_MOVE );
-    Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
-    dragSource.setTransfer( types );
-    String dndSupport = "org.eclipse.rwt.DNDSupport.getInstance()";
-    String wRef = "wm.findWidgetById( \\\"w3\\\" )";
-    String register = dndSupport + ".registerDragSource( " + wRef + ", [null, \\\"move\\\",null ]";
-    int dataType = TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
-    String transferType = dndSupport + ".setDragSourceTransferTypes( " + wRef + ", [ \\\"" + dataType;
-    Fixture.executeLifeCycleFromServerThread();
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.contains( register ) );
-    assertTrue( markup.contains( transferType ) );
-  }
-
   public void testRegisterAndDisposeDropTarget() {
     Fixture.fakeNewRequest( display );
     Control dropTargetControl = new Label( shell, SWT.NONE );
@@ -97,7 +80,7 @@ public class DNDSupport_Test extends TestCase {
     dropTarget.setTransfer( types );
     String dndSupport = "org.eclipse.rwt.DNDSupport.getInstance()";
     String wRef = "wm.findWidgetById( \\\"w3\\\" )";
-    String register = dndSupport + ".registerDropTarget( " + wRef + ", [ \\\"copy\\\",null,null ]";
+    String register = dndSupport + ".registerDropTarget( " + wRef + ", [ \\\"DROP_COPY\\\" ]";
     int dataType = TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
     String transferType = dndSupport + ".setDropTargetTransferTypes( " + wRef + ", [ \\\"" + dataType;
     Fixture.executeLifeCycleFromServerThread();

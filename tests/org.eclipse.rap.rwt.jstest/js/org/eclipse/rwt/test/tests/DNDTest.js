@@ -17,6 +17,117 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
   
   members : {
 
+    testCreateDragSourceByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "parent" : "w2",
+          "style" : [ "PUSH" ]
+        }
+      } );
+
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.DragSource",
+        "properties" : {
+          "control" : "w3",
+          "style" : [ "DROP_COPY", "DROP_MOVE" ]
+        }
+      } );
+
+      var button = objectManager.getObject( "w3" );      
+      assertTrue( dndSupport.isDragSource( button ) );
+      var actions = dndSupport._dragSources[ button.toHashCode() ].actions;
+      var expected = {
+        "copy" : true,
+        "move" : true
+      };
+      assertEquals( expected, actions );
+      button.destroy();
+    },
+
+
+    testDisposeDragSourceByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "parent" : "w2",
+          "style" : [ "PUSH" ]
+        }
+      } );
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.DragSource",
+        "properties" : {
+          "control" : "w3",
+          "style" : [ "DROP_COPY", "DROP_MOVE" ]
+        }
+      } );
+
+      var button = objectManager.getObject( "w3" );      
+      assertTrue( dndSupport.isDragSource( button ) );
+
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "destroy"
+      } );
+      assertFalse( dndSupport.isDragSource( button ) );
+      button.destroy();
+    },
+
+    testSetTransferByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "parent" : "w2",
+          "style" : [ "PUSH" ]
+        }
+      } );
+
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.DragSource",
+        "properties" : {
+          "control" : "w3",
+          "style" : [ "DROP_COPY", "DROP_MOVE" ],
+          "transfer" : [ "my", "transfer" ]
+        }
+      } );
+
+      var button = objectManager.getObject( "w3" );      
+      assertTrue( dndSupport.isDragSource( button ) );
+      var types = dndSupport._dragSources[ button.toHashCode() ].dataTypes;
+      var expected = [ "my", "transfer" ];
+      assertEquals( expected, types );
+      button.destroy();
+    },
+
+
+
     testEventListener : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
@@ -874,6 +985,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       tree.destroy();
     },
 
+    // NOTE [tb] : this tests can fail if when its DNDTest is executed on its own. Reason unkown.
     testTreeFeedbackScroll : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();

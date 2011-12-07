@@ -13,8 +13,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.dnd.*;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
+import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.JSWriter;
+import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSource;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.internal.dnd.IDNDAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Widget;
@@ -22,12 +31,8 @@ import org.eclipse.swt.widgets.Widget;
 
 public final class DragSourceLCA extends AbstractWidgetLCA {
 
-  private static final String JSFUNC_REGISTER
-    = "org.eclipse.rwt.DNDSupport.getInstance().registerDragSource";
   private static final String JSFUNC_DEREGISTER
     = "org.eclipse.rwt.DNDSupport.getInstance().deregisterDragSource";
-  private static final String JSFUNC_SET_TRANSFER_TYPES
-    = "org.eclipse.rwt.DNDSupport.getInstance().setDragSourceTransferTypes";
   private static final String JSFUNC_SET_OPERATION_OVERWRITE
     = "org.eclipse.rwt.DNDSupport.getInstance().setOperationOverwrite";
   private static final String JSFUNC_SET_FEEDBACK
@@ -41,6 +46,7 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
 
   private static final String PROP_CONTROL = "control";
   private static final String PROP_TRANSFER = "transfer";
+  private static final String TYPE = "rwt.widgets.DragSource";
 
   public void preserveValues( Widget widget ) {
     DragSource dragSource = ( DragSource )widget;
@@ -54,16 +60,18 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     DragSource dragSource = ( DragSource )widget;
-    JSWriter writer = JSWriter.getWriterFor( dragSource );
-    String[] operations = DNDLCAUtil.convertOperations( dragSource.getStyle() );
-    Object[] args = new Object[]{ dragSource.getControl(), operations };
-    writer.callStatic( JSFUNC_REGISTER, args );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( dragSource );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "control", WidgetUtil.getId( dragSource.getControl() ) );
+    clientObject.setProperty( "style", DNDLCAUtil.convertOperations( dragSource.getStyle() ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
     DragSource dragSource = ( DragSource )widget;
-    writeTransfer( dragSource );
-    writeDetail( dragSource );
+    renderTransfer( dragSource );
+    // TODO [tb] : These "properties" are (incorrectly) rendered for every source. 
+    //             Also possibly not the right place to render them.
+    writeDetail( dragSource ); 
     writeFeedback( dragSource );
     writeDataType( dragSource );
     writeCancel( dragSource );
@@ -77,15 +85,11 @@ public final class DragSourceLCA extends AbstractWidgetLCA {
     writer.callStatic( JSFUNC_DEREGISTER, new Object[]{ control } );
   }
 
-  private static void writeTransfer( DragSource dragSource ) throws IOException {
+  private static void renderTransfer( DragSource dragSource ) {
     Transfer[] newValue = dragSource.getTransfer();
     if( WidgetLCAUtil.hasChanged( dragSource, PROP_TRANSFER, newValue, DEFAULT_TRANSFER ) ) {
-        JSWriter writer = JSWriter.getWriterFor( dragSource );
-        Object[] args = new Object[]{
-          dragSource.getControl(),
-          DNDLCAUtil.convertTransferTypes( newValue )
-        };
-        writer.callStatic( JSFUNC_SET_TRANSFER_TYPES, args );
+      String[] renderValue = DNDLCAUtil.convertTransferTypes( newValue );
+      ClientObjectFactory.getForWidget( dragSource ).setProperty( "transfer", renderValue );
     }
   }
 

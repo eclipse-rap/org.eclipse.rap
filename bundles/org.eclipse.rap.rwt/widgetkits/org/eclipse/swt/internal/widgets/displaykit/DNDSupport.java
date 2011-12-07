@@ -31,30 +31,18 @@ public final class DNDSupport {
 
   private static final String PACKAGE_PREFIX = "org.eclipse.swt.dnd";
 
-  private static final String EVENT_DRAG_START
-    = PACKAGE_PREFIX + ".dragStart";
-  private static final String EVENT_DRAG_START_X
-    = PACKAGE_PREFIX + ".dragStart.x";
-  private static final String EVENT_DRAG_START_Y
-    = PACKAGE_PREFIX + ".dragStart.y";
-  private static final String EVENT_DRAG_START_TIME
-    = PACKAGE_PREFIX + ".dragStart.time";
-  private static final String EVENT_DRAG_ENTER
-    = PACKAGE_PREFIX + ".dragEnter";
-  private static final String EVENT_DRAG_ENTER_OPERATION
-    = PACKAGE_PREFIX + ".dragEnter.operation";
-  private static final String EVENT_DRAG_ENTER_X
-    = PACKAGE_PREFIX + ".dragEnter.x";
-  private static final String EVENT_DRAG_ENTER_Y
-    = PACKAGE_PREFIX + ".dragEnter.y";
-  private static final String EVENT_DRAG_ENTER_ITEM
-  = PACKAGE_PREFIX + ".dragEnter.item";
-  private static final String EVENT_DRAG_ENTER_TIME
-    = PACKAGE_PREFIX + ".dragEnter.time";
-  private static final String EVENT_DRAG_ENTER_SOURCE
-    = PACKAGE_PREFIX + ".dragEnter.source";
-  private static final String EVENT_DRAG_ENTER_FEEDBACK
-    = PACKAGE_PREFIX + ".dragEnter.feedback";
+  private static final String EVENT_DRAG_START = PACKAGE_PREFIX + ".dragStart";
+  private static final String EVENT_DRAG_START_X = PACKAGE_PREFIX + ".dragStart.x";
+  private static final String EVENT_DRAG_START_Y = PACKAGE_PREFIX + ".dragStart.y";
+  private static final String EVENT_DRAG_START_TIME = PACKAGE_PREFIX + ".dragStart.time";
+  private static final String EVENT_DRAG_ENTER = PACKAGE_PREFIX + ".dragEnter";
+  private static final String EVENT_DRAG_ENTER_OPERATION = PACKAGE_PREFIX + ".dragEnter.operation";
+  private static final String EVENT_DRAG_ENTER_X = PACKAGE_PREFIX + ".dragEnter.x";
+  private static final String EVENT_DRAG_ENTER_Y = PACKAGE_PREFIX + ".dragEnter.y";
+  private static final String EVENT_DRAG_ENTER_ITEM = PACKAGE_PREFIX + ".dragEnter.item";
+  private static final String EVENT_DRAG_ENTER_TIME = PACKAGE_PREFIX + ".dragEnter.time";
+  private static final String EVENT_DRAG_ENTER_SOURCE = PACKAGE_PREFIX + ".dragEnter.source";
+  private static final String EVENT_DRAG_ENTER_FEEDBACK = PACKAGE_PREFIX + ".dragEnter.feedback";
   private static final String EVENT_DRAG_OPERATION_CHANGED
     = PACKAGE_PREFIX + ".dragOperationChanged";
   private static final String EVENT_DRAG_OPERATION_CHANGED_OPERATION
@@ -73,58 +61,32 @@ public final class DNDSupport {
     = PACKAGE_PREFIX + ".dragOperationChanged.time";
   private static final String EVENT_DRAG_OPERATION_CHANGED_DATATYPE
     = PACKAGE_PREFIX + ".dragOperationChanged.dataType";
-  private static final String EVENT_DRAG_OVER
-    = PACKAGE_PREFIX + ".dragOver";
-  private static final String EVENT_DRAG_OVER_OPERATION
-    = PACKAGE_PREFIX + ".dragOver.operation";
-  private static final String EVENT_DRAG_OVER_FEEDBACK
-    = PACKAGE_PREFIX + ".dragOver.feedback";
-  private static final String EVENT_DRAG_OVER_X
-    = PACKAGE_PREFIX + ".dragOver.x";
-  private static final String EVENT_DRAG_OVER_Y
-    = PACKAGE_PREFIX + ".dragOver.y";
-  private static final String EVENT_DRAG_OVER_ITEM
-    = PACKAGE_PREFIX + ".dragOver.item";
-  private static final String EVENT_DRAG_OVER_SOURCE
-    = PACKAGE_PREFIX + ".dragOver.source";
-  private static final String EVENT_DRAG_OVER_TIME
-    = PACKAGE_PREFIX + ".dragOver.time";
-  private static final String EVENT_DRAG_OVER_DATATYPE
-    = PACKAGE_PREFIX + ".dragOver.dataType";
-  private static final String EVENT_DRAG_LEAVE
-    = PACKAGE_PREFIX + ".dragLeave";
-  private static final String EVENT_DRAG_LEAVE_OPERATION
-    = PACKAGE_PREFIX + ".dragLeave.operation";
-  private static final String EVENT_DRAG_LEAVE_X
-    = PACKAGE_PREFIX + ".dragLeave.x";
-  private static final String EVENT_DRAG_LEAVE_Y
-    = PACKAGE_PREFIX + ".dragLeave.y";
-  private static final String EVENT_DRAG_LEAVE_TIME
-    = PACKAGE_PREFIX + ".dragLeave.time";
-  private static final String EVENT_DROP_ACCEPT
-    = PACKAGE_PREFIX + ".dropAccept";
-  private static final String EVENT_DROP_ACCEPT_OPERATION
-    = PACKAGE_PREFIX + ".dropAccept.operation";
-  private static final String EVENT_DROP_ACCEPT_X
-    = PACKAGE_PREFIX + ".dropAccept.x";
-  private static final String EVENT_DROP_ACCEPT_Y
-    = PACKAGE_PREFIX + ".dropAccept.y";
-  private static final String EVENT_DROP_ACCEPT_ITEM
-    = PACKAGE_PREFIX + ".dropAccept.item";
-  private static final String EVENT_DROP_ACCEPT_SOURCE
-    = PACKAGE_PREFIX + ".dropAccept.source";
-  private static final String EVENT_DROP_ACCEPT_TIME
-    = PACKAGE_PREFIX + ".dropAccept.time";
-  private static final String EVENT_DROP_ACCEPT_DATATYPE
-    = PACKAGE_PREFIX + ".dropAccept.dataType";
-  private static final String EVENT_DRAG_FINISHED
-    = PACKAGE_PREFIX + ".dragFinished";
-  private static final String EVENT_DRAG_FINISHED_X
-    = PACKAGE_PREFIX + ".dragFinished.x";
-  private static final String EVENT_DRAG_FINISHED_Y
-    = PACKAGE_PREFIX + ".dragFinished.y";
-  private static final String EVENT_DRAG_FINISHED_TIME
-    = PACKAGE_PREFIX + ".dragFinished.time";
+  private static final String EVENT_DRAG_OVER = PACKAGE_PREFIX + ".dragOver";
+  private static final String EVENT_DRAG_OVER_OPERATION = PACKAGE_PREFIX + ".dragOver.operation";
+  private static final String EVENT_DRAG_OVER_FEEDBACK = PACKAGE_PREFIX + ".dragOver.feedback";
+  private static final String EVENT_DRAG_OVER_X = PACKAGE_PREFIX + ".dragOver.x";
+  private static final String EVENT_DRAG_OVER_Y = PACKAGE_PREFIX + ".dragOver.y";
+  private static final String EVENT_DRAG_OVER_ITEM = PACKAGE_PREFIX + ".dragOver.item";
+  private static final String EVENT_DRAG_OVER_SOURCE = PACKAGE_PREFIX + ".dragOver.source";
+  private static final String EVENT_DRAG_OVER_TIME = PACKAGE_PREFIX + ".dragOver.time";
+  private static final String EVENT_DRAG_OVER_DATATYPE = PACKAGE_PREFIX + ".dragOver.dataType";
+  private static final String EVENT_DRAG_LEAVE = PACKAGE_PREFIX + ".dragLeave";
+  private static final String EVENT_DRAG_LEAVE_OPERATION = PACKAGE_PREFIX + ".dragLeave.operation";
+  private static final String EVENT_DRAG_LEAVE_X = PACKAGE_PREFIX + ".dragLeave.x";
+  private static final String EVENT_DRAG_LEAVE_Y = PACKAGE_PREFIX + ".dragLeave.y";
+  private static final String EVENT_DRAG_LEAVE_TIME = PACKAGE_PREFIX + ".dragLeave.time";
+  private static final String EVENT_DROP_ACCEPT = PACKAGE_PREFIX + ".dropAccept";
+  private static final String EVENT_DROP_ACCEPT_OPERATION = PACKAGE_PREFIX + ".dropAccept.operation";
+  private static final String EVENT_DROP_ACCEPT_X = PACKAGE_PREFIX + ".dropAccept.x";
+  private static final String EVENT_DROP_ACCEPT_Y = PACKAGE_PREFIX + ".dropAccept.y";
+  private static final String EVENT_DROP_ACCEPT_ITEM = PACKAGE_PREFIX + ".dropAccept.item";
+  private static final String EVENT_DROP_ACCEPT_SOURCE = PACKAGE_PREFIX + ".dropAccept.source";
+  private static final String EVENT_DROP_ACCEPT_TIME = PACKAGE_PREFIX + ".dropAccept.time";
+  private static final String EVENT_DROP_ACCEPT_DATATYPE = PACKAGE_PREFIX + ".dropAccept.dataType";
+  private static final String EVENT_DRAG_FINISHED = PACKAGE_PREFIX + ".dragFinished";
+  private static final String EVENT_DRAG_FINISHED_X = PACKAGE_PREFIX + ".dragFinished.x";
+  private static final String EVENT_DRAG_FINISHED_Y = PACKAGE_PREFIX + ".dragFinished.y";
+  private static final String EVENT_DRAG_FINISHED_TIME = PACKAGE_PREFIX + ".dragFinished.time";
 
 
   private DNDSupport() {

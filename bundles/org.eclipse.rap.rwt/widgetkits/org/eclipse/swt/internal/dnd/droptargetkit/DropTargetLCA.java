@@ -46,7 +46,7 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
   public void renderInitialization( Widget widget ) throws IOException {
     DropTarget dropTarget = ( DropTarget )widget;
     JSWriter writer = JSWriter.getWriterFor( dropTarget );
-    String[] operations = DNDLCAUtil.convertOperations( dropTarget.getStyle() );
+    Object[] operations = DNDLCAUtil.convertOperations( dropTarget.getStyle() );
     Object[] args = new Object[]{ dropTarget.getControl(), operations };
     writer.callStatic( JSFUNC_REGISTER, args );
   }
