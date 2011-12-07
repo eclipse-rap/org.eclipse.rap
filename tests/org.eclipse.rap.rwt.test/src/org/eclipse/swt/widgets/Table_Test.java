@@ -118,8 +118,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testHeaderHeight() {
-    Table table = new Table( shell, SWT.NONE );
-    new TableColumn( table, SWT.NONE );
+    Table table = createTable( SWT.NONE, 1 );
     assertEquals( 0, table.getHeaderHeight() );
     table.setHeaderVisible( true );
     assertTrue( table.getHeaderHeight() > 0 );
@@ -263,18 +262,17 @@ public class Table_Test extends TestCase {
   }
 
   public void testDispose() {
-    Table table = new Table( shell, SWT.SINGLE );
-    TableColumn column = new TableColumn( table, SWT.NONE );
+    Table table = createTable( SWT.SINGLE, 1 );
+    TableColumn column = table.getColumn( 0 );
     TableItem item = new TableItem( table, SWT.NONE );
     table.dispose();
     assertTrue( table.isDisposed() );
     assertTrue( column.isDisposed() );
     assertTrue( item.isDisposed() );
   }
-
+  
   public void testDisposeSingleSelectedItem() {
-    Table table = new Table( shell, SWT.SINGLE );
-    new TableColumn( table, SWT.NONE );
+    Table table = createTable( SWT.SINGLE, 1 );
     TableItem item = new TableItem( table, SWT.NONE );
 
     table.setSelection( new TableItem[] { item } );
@@ -286,8 +284,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testDisposeMultiSelectedItem() {
-    Table table = new Table( shell, SWT.MULTI );
-    new TableColumn( table, SWT.NONE );
+    Table table = createTable( SWT.MULTI, 1 );
     TableItem item0 = new TableItem( table, SWT.NONE );
     TableItem item1 = new TableItem( table, SWT.NONE );
     new TableItem( table, SWT.NONE );
@@ -312,7 +309,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testDisposeInSetData() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 100 );
     table.addListener( SWT.SetData, new Listener() {
@@ -351,10 +347,8 @@ public class Table_Test extends TestCase {
 
   public void testReduceSetItemCountWithSelection() {
     // Create a table that is populated with setItemCount with all selected
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setLayout( new FillLayout() );
-    Table table = new Table( shell, SWT.MULTI );
-    new TableColumn( table, SWT.NONE );
+    Table table = createTable( SWT.MULTI, 1 );
     shell.layout();
     shell.open();
     table.setItemCount( 4 );
@@ -377,11 +371,9 @@ public class Table_Test extends TestCase {
 
   public void testReduceSetItemCountWithSelectionVirtual() {
     // Create a table that is populated with setItemCount with all selected
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setSize( 800, 800 );
     shell.setLayout( new FillLayout() );
-    Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
-    new TableColumn( table, SWT.NONE );
+    Table table = createTable( SWT.MULTI | SWT.VIRTUAL, 1 );
     table.addListener( SWT.SetData, new Listener() {
       public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
@@ -467,7 +459,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testFocusIndexVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 500, 500 );
     Object adapter = table.getAdapter( ITableAdapter.class );
@@ -482,8 +473,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testRemoveAll() {
-    Table table = new Table( shell, SWT.NONE );
-    new TableColumn( table, SWT.NONE );
+    Table table = createTable( SWT.NONE, 1 );
     TableItem preDisposedItem = new TableItem( table, SWT.NONE );
     TableItem item0 = new TableItem( table, SWT.NONE );
     TableItem item1 = new TableItem( table, SWT.NONE );
@@ -500,11 +490,9 @@ public class Table_Test extends TestCase {
   }
 
   public void testRemoveAllVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setSize( 100, 100 );
     shell.setLayout( new FillLayout() );
-    Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
-    new TableColumn( table, SWT.NONE );
+    Table table = createTable( SWT.MULTI | SWT.VIRTUAL, 1 ); 
     table.addListener( SWT.SetData, new Listener() {
       public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
@@ -521,32 +509,28 @@ public class Table_Test extends TestCase {
   public void testRemoveRange() {
     Table table = new Table( shell, SWT.NONE );
     int number = 5;
-    TableItem[] items = new TableItem[ number ];
-    for( int i = 0; i < number; i++ ) {
-      items[ i ] = new TableItem( table, 0 );
-    }
-    try {
-      table.remove( -number, number + 100 );
-      fail( "No exception thrown for illegal index range" );
-    } catch( IllegalArgumentException e ) {
-    }
-    table = new Table( shell, SWT.NONE );
-    items = new TableItem[ number ];
-    for( int i = 0; i < number; i++ ) {
-      items[ i ] = new TableItem( table, 0 );
-    }
+    TableItem[] items = createTableItems( table, number );
+
     table.remove( 2, 3 );
+    
     assertTrue( items[ 2 ].isDisposed() );
     assertTrue( items[ 3 ].isDisposed() );
     assertEquals( table.getItemCount(), 3 );
   }
 
+  public void testRemoveRangeWithInvalidRange() {
+    Table table = new Table( shell, SWT.NONE );
+    try {
+      table.remove( -1, 1 );
+      fail( "No exception thrown for illegal index range" );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+
   public void testRemoveRangeVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setSize( 100, 100 );
     shell.setLayout( new FillLayout() );
-    Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
-    new TableColumn( table, SWT.NONE );
+    Table table = createTable( SWT.MULTI | SWT.VIRTUAL, 1 ); 
     table.addListener( SWT.SetData, new Listener() {
       public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
@@ -563,17 +547,13 @@ public class Table_Test extends TestCase {
   public void testRemove() {
     Table table = new Table( shell, SWT.NONE );
     int number = 5;
-    TableItem[] items = new TableItem[ number ];
-    for( int i = 0; i < number; i++ ) {
-      items[ i ] = new TableItem( table, 0 );
-    }
+    TableItem[] items = createTableItems( table, number );
     table.remove( 1 );
     assertTrue( items[ 1 ].isDisposed() );
     assertEquals( table.getItemCount(), 4 );
   }
 
   public void testRemoveVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
     table.setSize( 100, 100 );
     table.setItemCount( 10 );
@@ -586,11 +566,9 @@ public class Table_Test extends TestCase {
   }
 
   public void testRemoveArrayVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setSize( 100, 100 );
     shell.setLayout( new FillLayout() );
-    Table table = new Table( shell, SWT.MULTI | SWT.VIRTUAL );
-    new TableColumn( table, SWT.NONE );
+    Table table = createTable( SWT.MULTI | SWT.VIRTUAL, 1 ); 
     table.addListener( SWT.SetData, new Listener() {
       public void handleEvent( Event event ) {
         Item item = ( Item )event.item;
@@ -624,29 +602,21 @@ public class Table_Test extends TestCase {
   public void testRemoveArray() {
     Table table = new Table( shell, SWT.NONE );
     int number = 15;
-    TableItem[] items = new TableItem[ number ];
-    for( int i = 0; i < number; i++ ) {
-      items[ i ] = new TableItem( table, 0 );
-    }
+    TableItem[] items = createTableItems( table, number );
     try {
       table.remove( null );
       fail( "No exception thrown for tableItems == null" );
-    } catch( IllegalArgumentException iae ) {
-    	// expected
+    } catch( IllegalArgumentException expected ) {
     }
     try {
-      table.remove( new int[]{
-        2, 1, 0, -100, 5, 5, 2, 1, 0, 0, 0
-      } );
+      table.remove( new int[]{ 2, 1, 0, -100, 5, 5, 2, 1, 0, 0, 0 } );
       fail( "No exception thrown for illegal index arguments" );
-    } catch( IllegalArgumentException e ) {
+    } catch( IllegalArgumentException expected ) {
     }
     try {
-      table.remove( new int[]{
-        2, 1, 0, number, 5, 5, 2, 1, 0, 0, 0
-      } );
+      table.remove( new int[]{ 2, 1, 0, number, 5, 5, 2, 1, 0, 0, 0 } );
       fail( "No exception thrown for illegal index arguments" );
-    } catch( IllegalArgumentException e ) {
+    } catch( IllegalArgumentException expected ) {
     }
     table.remove( new int[]{} );
     table = new Table( shell, SWT.NONE );
@@ -959,73 +929,88 @@ public class Table_Test extends TestCase {
     assertEquals( 1, multiTable.getSelectionIndex() );
   }
 
-  public void testSelectAll() {
-    // SWT.SINGLE
-    Table singleTable = new Table( shell, SWT.SINGLE );
-    new TableColumn( singleTable, SWT.NONE );
-    new TableItem( singleTable, SWT.NONE );
-    new TableItem( singleTable, SWT.NONE );
-    singleTable.deselectAll();
-    singleTable.selectAll();
-    assertEquals( 0, singleTable.getSelectionCount() );
-    singleTable.setSelection( 1 );
-    assertEquals( 1, singleTable.getSelectionCount() );
-
-    // SWT.MULTI
-    Table multiTable = new Table( shell, SWT.MULTI );
-    new TableColumn( multiTable, SWT.NONE );
-    new TableItem( multiTable, SWT.NONE );
-    new TableItem( multiTable, SWT.NONE );
-    multiTable.selectAll();
-    assertEquals( multiTable.getItemCount(), multiTable.getSelectionCount() );
+  public void testSelectAll_SINGLE() {
+    Table table = createTable( SWT.SINGLE, 1 );
+    createTableItems( table, 2 );
+    table.deselectAll();
+    table.selectAll();
+    assertEquals( 0, table.getSelectionCount() );
+    table.setSelection( 1 );
+    assertEquals( 1, table.getSelectionCount() );
+  }
+  
+  public void testSelectAll_MULTI() {
+    Table table = createTable( SWT.MULTI, 1 );
+    createTableItems( table, 2 );
+    table.selectAll();
+    assertEquals( table.getItemCount(), table.getSelectionCount() );
   }
 
   public void testDeselect() {
-    Table table = new Table( shell, SWT.SINGLE );
-    new TableColumn( table, SWT.NONE );
-    new TableItem( table, SWT.NONE );
-    new TableItem( table, SWT.NONE );
+    Table table = createTable( SWT.SINGLE, 1 );
+    createTableItems( table, 2 );
 
-    // deselect(int)
     table.setSelection( 0 );
     table.deselect( 0 );
     assertEquals( 0, table.getSelectionCount() );
-
-    // deselect(int,int)
-    table.setSelection( 1 );
-    table.deselect( 0, 777 );
-    assertEquals( 0, table.getSelectionCount() );
-    table.setSelection( 1 );
-    table.deselect( 4, 777 );
-    assertEquals( 1, table.getSelectionCount() );
-    assertEquals( true, table.isSelected( 1 ) );
-
-    // deselect(int[])
-    table.setSelection( 1 );
-    table.deselect( new int[ 0 ] );
-    assertEquals( 1, table.getSelectionCount() );
-    assertEquals( true, table.isSelected( 1 ) );
-
-    table.setSelection( 1 );
-    table.deselect( new int[] { 1, 777 } );
-    assertEquals( 0, table.getSelectionCount() );
-
-    table = new Table( shell, SWT.MULTI );
-    new TableColumn( table, SWT.NONE );
-    new TableItem( table, SWT.NONE );
-    new TableItem( table, SWT.NONE );
-
+  }
+  
+  public void testDeselectMulti() {
+    Table table = createTable( SWT.MULTI, 1 );
+    createTableItems( table, 2 );
     table.selectAll();
+
     table.deselect( new int[] { 0, 2 } );
+    
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 1 ) );
+  }
+  
+  public void testDeselectArray() {
+    Table table = createTable( SWT.SINGLE, 1 );
+    createTableItems( table, 2 );
+    table.setSelection( 1 );
+
+    table.deselect( new int[ 0 ] );
+
+    assertEquals( 1, table.getSelectionCount() );
+    assertEquals( true, table.isSelected( 1 ) );
+  }
+  
+  public void testDeselectArrayWithWithIndicesOutsideSelection() {
+    Table table = createTable( SWT.SINGLE, 1 );
+    createTableItems( table, 2 );
+    table.setSelection( 1 );
+
+    table.deselect( new int[] { 1, 777 } );
+    
+    assertEquals( 0, table.getSelectionCount() );
+  }
+  
+  public void testDeselectRangeWithSelectionWithinRange() {
+    Table table = createTable( SWT.SINGLE, 1 );
+    createTableItems( table, 2 );
+    table.setSelection( 1 );
+    
+    table.deselect( 0, 777 );
+    
+    assertEquals( 0, table.getSelectionCount() );
+  }
+  
+  public void testDeselectRangeWithSelectionOutsideRange() {
+    Table table = createTable( SWT.SINGLE, 1 );
+    createTableItems( table, 2 );
+    table.setSelection( 1 );
+
+    table.deselect( 4, 777 );
+    
     assertEquals( 1, table.getSelectionCount() );
     assertEquals( true, table.isSelected( 1 ) );
   }
 
   public void testDeselectAll() {
-    Table table = new Table( shell, SWT.NONE );
-    new TableColumn( table, SWT.NONE );
-    new TableItem( table, SWT.NONE );
-    new TableItem( table, SWT.NONE );
+    Table table = createTable( SWT.SINGLE, 1 );
+    createTableItems( table, 2 );
 
     table.setSelection( 1 );
     table.deselectAll();
@@ -1033,10 +1018,8 @@ public class Table_Test extends TestCase {
   }
 
   public void testIsSelectedNonVirtual() {
-    Table table = new Table( shell, SWT.NONE );
-    new TableColumn( table, SWT.NONE );
-    new TableItem( table, SWT.NONE );
-    new TableItem( table, SWT.NONE );
+    Table table = createTable( SWT.NONE, 1 );
+    createTableItems( table, 2 );
 
     // initial state: no selection, isSelected returns alway false
     assertFalse( table.isSelected( 0 ) );
@@ -1050,10 +1033,8 @@ public class Table_Test extends TestCase {
   }
 
   public void testIsSelectedVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setLayout( new FillLayout() );
-    Table table = new Table( shell, SWT.VIRTUAL );
-    new TableColumn( table, SWT.NONE );
+    Table table = createTable( SWT.VIRTUAL, 1 );
     table.setItemCount( 1000 );
     shell.open();
 
@@ -1075,9 +1056,7 @@ public class Table_Test extends TestCase {
   }
 
   public void testClearNonVirtual() throws IOException {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Table table = new Table( shell, SWT.CHECK );
-    new TableColumn( table, SWT.NONE );
+    Table table = createTable( SWT.CHECK, 1 );
     TableItem item = new TableItem( table, SWT.NONE );
     ITableAdapter tableAdapter = table.getAdapter( ITableAdapter.class );
     table.setSelection( item );
@@ -1098,7 +1077,6 @@ public class Table_Test extends TestCase {
   }
   
   public void testClearWithIllegalArgument() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.CHECK );
     try {
       table.clear( 2 );
@@ -1108,10 +1086,8 @@ public class Table_Test extends TestCase {
   }
 
   public void testClearVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setLayout( new FillLayout() );
-    Table table = new Table( shell, SWT.VIRTUAL | SWT.CHECK );
-    new TableColumn( table, SWT.NONE );
+    Table table = createTable( SWT.VIRTUAL | SWT.CHECK, 1 );
     table.setItemCount( 100 );
     shell.layout();
     shell.open();
@@ -1126,8 +1102,7 @@ public class Table_Test extends TestCase {
 
   public void testClearRange() throws IOException {
     Image image = createImage50x100();
-    Table table = new Table( shell, SWT.NONE );
-    new TableColumn( table, SWT.NONE );
+    Table table = createTable( SWT.NONE, 1 );
     TableItem[] items = new TableItem[ 10 ];
     for( int i = 0; i < 10; i++ ) {
       items[ i ] = new TableItem( table, SWT.NONE );
@@ -1187,11 +1162,9 @@ public class Table_Test extends TestCase {
   }
 
   public void testShowItem() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    Table table = new Table( shell, SWT.NONE );
+    Table table = createTable( SWT.NONE, 1 );
     table.setLinesVisible( false );
     table.setHeaderVisible( false );
-    new TableColumn( table, SWT.NONE );
     int itemCount = 300;
     for( int i = 0; i < itemCount; i++ ) {
       new TableItem( table, SWT.NONE );
@@ -1223,7 +1196,6 @@ public class Table_Test extends TestCase {
   public void testSetSelectionBeforeSetSize() {
     // Calling setSelection() before setSize() should not change top index
     // See bug 272714, https://bugs.eclipse.org/bugs/show_bug.cgi?id=272714
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.NONE );
     for( int i = 0; i < 10; i++ ) {
       new TableItem( table, SWT.NONE );
@@ -1251,30 +1223,38 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.NONE );
 
-    // Simple case set == get
     table.setSortColumn( column );
     assertSame( column, table.getSortColumn() );
     table.setSortColumn( null );
     assertNull( table.getSortColumn() );
 
-    // Dispose sortColumn
+  }
+  
+  public void testDisposeCurrentSortColumn() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
     table.setSortColumn( column );
     table.setSortDirection( SWT.UP );
+
     column.dispose();
+    
     assertNull( table.getSortColumn() );
     assertEquals( SWT.UP, table.getSortDirection() );
-
-    // Try to set a disposed of column
+  }
+  
+  public void testSetSortWolumnWithDisposedColumn() {
+    Table table = new Table( shell, SWT.NONE );
     TableColumn disposedColumn = new TableColumn( table, SWT.NONE );
     disposedColumn.dispose();
     try {
       table.setSortColumn( disposedColumn );
       fail( "Must not allow to set disposed of sort column" );
-    } catch( IllegalArgumentException e ) {
-      // expected
+    } catch( IllegalArgumentException expected ) {
     }
-
-    // Test sortDirection
+  }
+  
+  public void testSetSortDirection() {
+    Table table = new Table( shell, SWT.NONE );
     table.setSortDirection( SWT.NONE );
     assertEquals( SWT.NONE, table.getSortDirection() );
     table.setSortDirection( SWT.UP );
@@ -1284,6 +1264,7 @@ public class Table_Test extends TestCase {
     table.setSortDirection( SWT.NONE );
     table.setSortDirection( 4711 );
     assertEquals( SWT.NONE, table.getSortDirection() );
+    
   }
 
   public void testGetColumnOrder() {
@@ -1329,7 +1310,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testSetColumnOrder() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final StringBuilder log = new StringBuilder();
     ControlAdapter controlAdapter = new ControlAdapter() {
       public void controlMoved( ControlEvent event ) {
@@ -1398,7 +1378,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testDisposeWithFontDisposeInDisposeListener() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.NONE );
     new TableItem( table, SWT.NONE );
     new TableItem( table, SWT.NONE );
@@ -1414,7 +1393,6 @@ public class Table_Test extends TestCase {
 
   // ensures that there is no endless loop in Table#setItemCount (see bug 346576)
   public void testSetItemCountInDisposeListener() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 10 );
     table.addDisposeListener( new DisposeListener() {
@@ -1426,7 +1404,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testDisposeItemsWithSetItemCountInDisposeListener() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final Table table = new Table( shell, SWT.VIRTUAL );
     TableItem item1 = new TableItem( table, SWT.NONE );
     TableItem item2 = new TableItem( table, SWT.NONE );
@@ -1444,7 +1421,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testRedrawAfterDisposeVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 100, 100 );
     table.setItemCount( 150 );
@@ -1531,7 +1507,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testClearAllAndSetItemCountWithSelection() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setSize( 100, 100 );
     shell.open();
     Table table = new Table( shell, SWT.VIRTUAL | SWT.SINGLE );
@@ -1569,7 +1544,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testSetItemCountWithSetDataListener() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setSize( 100, 100 );
     shell.open();
     Table table = new Table( shell, SWT.VIRTUAL );
@@ -1585,7 +1559,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testResizeWithVirtualItems() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setSize( 0, 0 );
     table.setItemCount( 1 );
@@ -1666,9 +1639,8 @@ public class Table_Test extends TestCase {
   }
 
   public void testHasColumnImagesAfterColumnDispose() {
-    Table table = new Table( shell, SWT.NONE );
-    TableColumn column = new TableColumn( table, SWT.LEFT );
-    column.dispose();
+    Table table = createTable( SWT.NONE, 1 );
+    table.getColumn( 0 ).dispose();
     // No assertion here,
     // call hasColumnImages() to make sure the internal structures are OK
     table.hasColumnImages( 0 );
@@ -1742,7 +1714,6 @@ public class Table_Test extends TestCase {
    *     https://bugs.eclipse.org/bugs/show_bug.cgi?id=235368
    */
   public void testCheckDataWithInvalidIndex() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 10 );
     ITableAdapter adapter
@@ -1753,8 +1724,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testComputeSizeNonVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-
     // Test non virtual table
     Table table = new Table( shell, SWT.NONE );
     Point expected = new Point( 22, 74 );
@@ -1814,8 +1783,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testComputeSizeVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-
     Table table = new Table( shell, SWT.BORDER | SWT.VIRTUAL );
     table.setItemCount( 10 );
     table.addListener( SWT.SetData, new Listener() {
@@ -1869,17 +1836,19 @@ public class Table_Test extends TestCase {
   }
 
   public void testGetVisibleItemCount() {
-    Table table = new Table( shell, SWT.NONE );
-    for( int i = 0; i < 10; i++ ) {
-      new TableItem( table, SWT.NONE ).setText( "Item " + i );
-    }
+    Table table = new Table( shell, SWT.NO_SCROLL );
+    createTableItems( table, 10 );
     int itemHeight = table.getItemHeight();
-    int scrollBarHeight = 15;
-    table.setSize( 100, 5 * itemHeight + scrollBarHeight );
-    assertEquals( 6, table.getVisibleItemCount( true ) );
+    table.setSize( 100, 5 * itemHeight );
+    assertEquals( 5, table.getVisibleItemCount( true ) );
     assertEquals( 5, table.getVisibleItemCount( false ) );
-    // check that partially visible item is included in visible item count
-    table.setSize( 100, 5 * itemHeight + scrollBarHeight + itemHeight / 2 );
+  }
+  
+  public void testGetVisibleItemCountWithPartiallyVisibleItem() {
+    Table table = new Table( shell, SWT.NO_SCROLL );
+    createTableItems( table, 10 );
+    int itemHeight = table.getItemHeight();
+    table.setSize( 100, ( 5 * itemHeight ) + ( itemHeight / 2 ) );
     assertEquals( 5, table.getVisibleItemCount( false ) );
     assertEquals( 6, table.getVisibleItemCount( true ) );
   }
@@ -1908,9 +1877,7 @@ public class Table_Test extends TestCase {
     item.setText( "Very very very very very long item text " );
     assertTrue( table.needsHScrollBar() );
     assertFalse( table.needsVScrollBar() );
-    for( int i = 0; i < 100; i++ ) {
-      new TableItem( table, SWT.NONE );
-    }
+    createTableItems( table, 100 );
     assertTrue( table.needsHScrollBar() );
     assertTrue( table.needsVScrollBar() );
     item.setText( "Item" );
@@ -1920,8 +1887,8 @@ public class Table_Test extends TestCase {
 
   public void testNeedsScrollBarWithColumn() {
     Table table = new Table( shell, SWT.NONE );
-    table.setSize( 200, 200 );
     TableColumn column = new TableColumn( table, SWT.LEFT );
+    table.setSize( 200, 200 );
     column.setWidth( 10 );
     assertFalse( table.needsHScrollBar() );
     assertFalse( table.needsVScrollBar() );
@@ -1951,9 +1918,7 @@ public class Table_Test extends TestCase {
     table.setSize( 10, 10 );
     TableColumn column = new TableColumn( table, SWT.LEFT );
     column.setWidth( 20 );
-    for( int i = 0; i < 10; i++ ) {
-      new TableItem( table, SWT.NONE );
-    }
+    createTableItems( table, 10 );
     assertTrue( table.getVScrollBarWidth() > 0 );
     assertTrue( table.getHScrollBarHeight() > 0 );
     Table noScrollTable = new Table( shell, SWT.NO_SCROLL );
@@ -1981,16 +1946,13 @@ public class Table_Test extends TestCase {
     Table table = new Table( shell, SWT.NONE );
     table.setSize( 20, 20 );
     assertFalse( table.hasVScrollBar() );
-    for( int i = 0; i < 20; i++ ) {
-      new TableItem( table, SWT.NONE );
-    }
+    createTableItems( table, 20 );
     assertTrue( table.hasVScrollBar() );
     table.removeAll();
     assertFalse( table.hasVScrollBar() );
   }
 
   public void testUpdateScrollBarOnResize() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.NONE );
     table.setSize( 20, 20 );
     TableColumn column = new TableColumn( table, SWT.LEFT );
@@ -2031,13 +1993,9 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnHeaderVisibleChange() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.NONE );
     int itemCount = 5;
-    for( int i = 0; i < itemCount ; i++ ) {
-      TableItem item = new TableItem( table, SWT.NONE );
-      item.setText( "Item" );
-    }
+    createTableItems( table, itemCount );
     table.setSize( 100, itemCount * table.getItemHeight() + 4 );
     assertFalse( table.hasVScrollBar() );
     table.setHeaderVisible( true );
@@ -2045,7 +2003,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarOnVirtualItemCountChange() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.VIRTUAL );
     int itemCount = 5;
     table.setSize( 100, itemCount * table.getItemHeight() + 4 );
@@ -2069,7 +2026,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarWithInterDependencyHFirst() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.LEFT );
     column.setWidth( 20 );
@@ -2085,22 +2041,18 @@ public class Table_Test extends TestCase {
   }
 
   public void testUpdateScrollBarWithInterDependencyVFirst() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = new Table( shell, SWT.NONE );
     TableColumn column = new TableColumn( table, SWT.LEFT );
     column.setWidth( 26 );
     table.setSize( 30, 30 );
     assertFalse( table.hasHScrollBar() );
     assertFalse( table.hasVScrollBar() );
-    for( int i = 0; i < 10; i++ ) {
-      new TableItem( table, SWT.NONE );
-    }
+    createTableItems( table, 10 );
     assertTrue( table.hasHScrollBar() );
     assertTrue( table.hasVScrollBar() );
   }
 
   public void testGetMeasureItemWithoutColumnsVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     final String[] data = new String[ 1000 ];
     for( int i = 0; i < data.length; i++ ) {
       data[ i ] = "";
@@ -2139,7 +2091,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testIndexOf() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.NONE );
     TableItem item1 = new TableItem( table, SWT.NONE );
@@ -2167,7 +2118,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testIndexOfVirtual() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setSize( 100, 100 );
     Table table = new Table( shell, SWT.VIRTUAL );
     table.setItemCount( 10 );
@@ -2196,31 +2146,67 @@ public class Table_Test extends TestCase {
     assertEquals( 50, adapter.getLeftOffset() );
     table.showColumn( table.getColumn( 3 ) );
     assertEquals( 50, adapter.getLeftOffset() );
-    try {
-      table.showColumn( null );
-      fail( "Null argument not allowed" );
-    } catch( IllegalArgumentException e ) {
-    }
-    TableColumn column = table.getColumn( 3 );
-    column.dispose();
-    try {
-      table.showColumn( column );
-      fail( "Disposed column not allowed as argument" );
-    } catch( IllegalArgumentException e ) {
-    }
-    Table table1 = new Table( shell, SWT.NONE );
-    column = new TableColumn( table1, SWT.NONE );
-    table.showColumn( column );
-    assertEquals( 50, adapter.getLeftOffset() );
+
+    table.getColumn( 3 ).dispose();
     table.setColumnOrder( new int[] { 8, 7, 0, 1, 2, 3, 6, 5, 4 } );
     table.showColumn( table.getColumn( 8 ) );
     assertEquals( 0, adapter.getLeftOffset() );
     table.showColumn( table.getColumn( 5 ) );
     assertEquals( 125, adapter.getLeftOffset() );
   }
+  
+  public void testShowColumnWithReorderedColumns() {
+    Table table = new Table( shell, SWT.NONE );
+    table.setSize( 325, 100 );
+    for( int i = 0; i < 9; i++ ) {
+      TableColumn column = new TableColumn( table, SWT.NONE );
+      column.setWidth( 50 );
+    }
+    
+    table.setColumnOrder( new int[] { 8, 7, 0, 1, 2, 3, 6, 5, 4 } );
+    table.showColumn( table.getColumn( 8 ) );
+
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
+    assertEquals( 0, adapter.getLeftOffset() );
+
+    table.showColumn( table.getColumn( 5 ) );
+    assertEquals( 125, adapter.getLeftOffset() );
+  }
+  
+  public void testShowColumnWithNullArgument() {
+    Table table = new Table( shell, SWT.NONE );
+    try {
+      table.showColumn( null );
+      fail( "Null argument not allowed" );
+    } catch( IllegalArgumentException expected ) {
+    }
+  }
+  
+  public void testShowColumnWithDisposedColumn() {
+    Table table = new Table( shell, SWT.NONE );
+    TableColumn column = new TableColumn( table, SWT.NONE );
+    column.dispose();
+    try {
+      table.showColumn( column );
+      fail( "Disposed column not allowed as argument" );
+    } catch( IllegalArgumentException expeted ) {
+    }
+  }
+  
+  public void testShowColumnWithForeignColumn() {
+    int initialLeftOffset = 123456;
+    Table table = createTable( SWT.NONE, 1 );
+    table.leftOffset = initialLeftOffset;
+    Table otherTable = new Table( shell, SWT.NONE );
+    TableColumn otherColumn = new TableColumn( otherTable, SWT.NONE );
+    
+    table.showColumn( otherColumn );
+    
+    ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
+    assertEquals( initialLeftOffset, adapter.getLeftOffset() );
+  }
 
   public void testShowFixedColumn() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     shell.setSize( 800, 600 );
     Table table = createFixedColumnsTable();
     table.setSize( 300, 100 );
@@ -2228,9 +2214,7 @@ public class Table_Test extends TestCase {
       TableColumn column = new TableColumn( table, SWT.NONE );
       column.setWidth( 50 );
     }
-    for( int i = 0; i < 10; i++ ) {
-      new TableItem( table, SWT.NONE );
-    }
+    createTableItems( table, 10 );
     ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
 
     adapter.setLeftOffset( 100 );
@@ -2240,7 +2224,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testShowColumnWithFixedColumns_ScrolledToLeft() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Table table = createFixedColumnsTable();
     int numColumns = 4;
     int columnWidth = 100;
@@ -2258,7 +2241,6 @@ public class Table_Test extends TestCase {
   }
 
   public void testShowColumnWithFixedColumns_ScrolledToRight() {
-    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     int numColumns = 4;
     int columnWidth = 100;
     Table table = createFixedColumnsTable();
@@ -2274,15 +2256,18 @@ public class Table_Test extends TestCase {
     assertEquals( 100, adapter.getLeftOffset() );
   }
 
-  public void testScrollBars() {
+  public void testScrollBars_NONE() {
     Table table = new Table( shell, SWT.NONE );
     assertNotNull( table.getHorizontalBar() );
     assertNotNull( table.getVerticalBar() );
-    table = new Table( shell, SWT.NO_SCROLL );
+  }
+
+  public void testScrollBars_NO_SCROLL() {
+    Table table = new Table( shell, SWT.NO_SCROLL );
     assertNull( table.getHorizontalBar() );
     assertNull( table.getVerticalBar() );
   }
-
+  
   // 288634: [Table] TableItem images are not displayed if columns are created
   // after setInput
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=288634
@@ -2311,28 +2296,21 @@ public class Table_Test extends TestCase {
   // 239024: {TableViewer] Missing text due to TableViewerColumn
   // https://bugs.eclipse.org/bugs/show_bug.cgi?id=239024
   public void testGetItemsPreferredWidth() {
-    shell.setSize( 100, 100 );
-    Table table = new Table( shell, SWT.NONE );
-    new TableColumn( table, SWT.NONE );
-    new TableColumn( table, SWT.NONE );
+    Table table = createTable( SWT.NONE, 2 );
     assertEquals( 12, table.getItemsPreferredWidth( 0 ) );
     assertEquals( 12, table.getItemsPreferredWidth( 1 ) );
+  }
 
-    table = new Table( shell, SWT.CHECK );
-    new TableColumn( table, SWT.NONE );
-    new TableColumn( table, SWT.NONE );
+  public void testGetItemsPreferredWidth_CHECK() {
+    Table table = createTable( SWT.CHECK, 2 );
     // 33 = 21 ( check width ) + 12
     assertEquals( 37, table.getItemsPreferredWidth( 0 ) );
     assertEquals( 12, table.getItemsPreferredWidth( 1 ) );
   }
-
+  
   public void testRemoveArrayDuplicates() {
     Table table = new Table( shell, SWT.NONE );
-    int number = 5;
-    TableItem[] items = new TableItem[ number ];
-    for( int i = 0; i < number; i++ ) {
-      items[ i ] = new TableItem( table, 0 );
-    }
+    createTableItems( table, 5 );
     assertEquals( 5, table.getItemCount() );
     table.remove( new int[]{ 1, 1 } );
     assertEquals( 4, table.getItemCount() );
@@ -2359,9 +2337,8 @@ public class Table_Test extends TestCase {
   }
 
   public void testIsSerializable() throws Exception {
-    Table table = new Table( shell, SWT.VIRTUAL );
+    Table table = createTable( SWT.VIRTUAL, 1 );
     new TableItem( table, 0 );
-    new TableColumn( table, SWT.NONE );
     
     Table deserializedTable = Fixture.serializeAndDeserialize( table );
     
@@ -2440,13 +2417,14 @@ public class Table_Test extends TestCase {
     }
   }
   
-  protected void setUp() throws Exception {
+  protected void setUp() {
     Fixture.setUp();
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
     shell = new Shell( display );
   }
 
-  protected void tearDown() throws Exception {
+  protected void tearDown() {
     Fixture.tearDown();
   }
 
@@ -2461,6 +2439,22 @@ public class Table_Test extends TestCase {
     InputStream stream = Fixture.class.getClassLoader().getResourceAsStream( Fixture.IMAGE_100x50 );
     Image result = new Image( display, stream );
     stream.close();
+    return result;
+  }
+  
+  private Table createTable( int style, int columnCount ) {
+    Table result = new Table( shell, style );
+    for( int i = 0; i < columnCount; i++ ) {
+      new TableColumn( result, SWT.NONE );
+    }
+    return result;
+  }
+
+  private static TableItem[] createTableItems( Table table, int number ) {
+    TableItem[] result = new TableItem[ number ];
+    for( int i = 0; i < number; i++ ) {
+      result[ i ] = new TableItem( table, 0 );
+    }
     return result;
   }
   
