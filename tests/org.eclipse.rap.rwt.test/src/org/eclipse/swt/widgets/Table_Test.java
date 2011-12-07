@@ -2183,21 +2183,16 @@ public class Table_Test extends TestCase {
 
   public void testShowColumn() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    shell.setSize( 800, 600 );
     Table table = new Table( shell, SWT.NONE );
-    table.setSize( 300, 100 );
+    table.setSize( 325, 100 );
     for( int i = 0; i < 10; i++ ) {
       TableColumn column = new TableColumn( table, SWT.NONE );
       column.setWidth( 50 );
     }
-    for( int i = 0; i < 10; i++ ) {
-      new TableItem( table, SWT.NONE );
-    }
-    ITableAdapter adapter
-      = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     assertEquals( 0, adapter.getLeftOffset() );
     table.showColumn( table.getColumn( 8 ) );
-    assertEquals( 165, adapter.getLeftOffset() );
+    assertEquals( 175, adapter.getLeftOffset() );
     table.showColumn( table.getColumn( 1 ) );
     assertEquals( 50, adapter.getLeftOffset() );
     table.showColumn( table.getColumn( 3 ) );
@@ -2222,7 +2217,7 @@ public class Table_Test extends TestCase {
     table.showColumn( table.getColumn( 8 ) );
     assertEquals( 0, adapter.getLeftOffset() );
     table.showColumn( table.getColumn( 5 ) );
-    assertEquals( 115, adapter.getLeftOffset() );
+    assertEquals( 125, adapter.getLeftOffset() );
   }
 
   public void testShowFixedColumn() {
@@ -2243,22 +2238,39 @@ public class Table_Test extends TestCase {
     assertEquals( 100, adapter.getLeftOffset() );
   }
 
-  public void testShowColumnBehindFixedColumn() {
+  public void testShowColumnWithFixedColumns_ScrolledToLeft() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    shell.setSize( 800, 600 );
     Table table = createFixedColumnsTable();
-    table.setSize( 300, 100 );
-    for( int i = 0; i < 10; i++ ) {
+    int numColumns = 4;
+    int columnWidth = 100;
+    table.setSize( columnWidth  * ( numColumns - 1 ), 100 );
+    for( int i = 0; i < numColumns; i++ ) {
       TableColumn column = new TableColumn( table, SWT.NONE );
-      column.setWidth( 50 );
-    }
-    for( int i = 0; i < 10; i++ ) {
-      new TableItem( table, SWT.NONE );
+      column.setWidth( columnWidth );
     }
     ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
     adapter.setLeftOffset( 100 );
-    table.showColumn( table.getColumn( 1 ) );
+
+    table.showColumn( table.getColumn( 2 ) );
+
     assertEquals( 0, adapter.getLeftOffset() );
+  }
+
+  public void testShowColumnWithFixedColumns_ScrolledToRight() {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    int numColumns = 4;
+    int columnWidth = 100;
+    Table table = createFixedColumnsTable();
+    table.setSize( columnWidth  * ( numColumns - 1 ), 100 );
+    for( int i = 0; i < numColumns; i++ ) {
+      TableColumn column = new TableColumn( table, SWT.NONE );
+      column.setWidth( columnWidth );
+    }
+
+    table.showColumn( table.getColumn( 3 ) );
+
+    ITableAdapter adapter = ( ITableAdapter )table.getAdapter( ITableAdapter.class );
+    assertEquals( 100, adapter.getLeftOffset() );
   }
 
   public void testScrollBars() {
@@ -2382,7 +2394,7 @@ public class Table_Test extends TestCase {
 
   private Table createFixedColumnsTable() {
     Table table = new Table( shell, SWT.NONE );
-    table.setData( "fixedColumns", new Integer( 1 ) );
+    table.setData( "fixedColumns", new Integer( 2 ) );
     return table;
   }
 
