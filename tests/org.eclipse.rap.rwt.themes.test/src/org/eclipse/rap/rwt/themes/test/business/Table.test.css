@@ -58,10 +58,6 @@ TableItem:linesvisible:even {
   background-color: #f3f3f4;
 }
 
-TableItem:linesvisible:even:hover {
-  background-color: #dae9f7;
-}
-
 TableItem:linesvisible:even:selected {
   background-color: #00589f;
   color: white;
