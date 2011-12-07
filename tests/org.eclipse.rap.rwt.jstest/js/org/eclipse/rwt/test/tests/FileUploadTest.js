@@ -51,7 +51,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
       shell.destroy();
     },
 
-    testsetTextByProtocol : function() {
+    testSetTextByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var shell = testUtil.createShellByProtocol( "w2" );
       var widget = this._createFileUploadByProtocol( "w3", "w2" );
@@ -463,6 +463,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.FileUploadTest", {
           "parent" : parentId
         }
       } );
+      testUtil.flush();
       return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
     },
 
