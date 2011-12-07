@@ -49,7 +49,7 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.ControlDecorator", {
     },
     "visible" : function( widget, value ) {
       widget.setVisibility( value );
-    },
+    }
   },
 
   listeners : [
