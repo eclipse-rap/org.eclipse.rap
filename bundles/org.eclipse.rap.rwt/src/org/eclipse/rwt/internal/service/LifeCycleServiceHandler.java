@@ -115,7 +115,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "message", RWTMessages.getMessage( "RWT_MultipleInstancesError" ) );
-    ProtocolMessageWriter writer = stateInfo.getResponseWriter().getProtocolWriter();
+    ProtocolMessageWriter writer = stateInfo.getProtocolWriter();
     // TODO [tb] : do not assume "w1" as id for display
     writer.appendCall( "w1", "reload", properties );
   }

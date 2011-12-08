@@ -10,14 +10,18 @@
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.displaykit;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.RWT;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
+import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
@@ -145,9 +149,8 @@ public final class ActiveKeysUtil {
     jsCode.append( "(" );
     jsCode.append( toJson( newValue ) );
     jsCode.append( ");" );
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
-    responseWriter.write( jsCode.toString() );
+    ProtocolMessageWriter protocolWriter = ContextProvider.getStateInfo().getProtocolWriter();
+    protocolWriter.appendExecuteScript( "jsex", HTTP.CONTENT_TYPE_JAVASCRIPT, jsCode.toString() );
   }
 
   private static String[] getActiveKeys( Display display ) {

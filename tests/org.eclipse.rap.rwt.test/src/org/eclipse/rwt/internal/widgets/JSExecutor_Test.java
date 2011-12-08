@@ -17,46 +17,54 @@ import org.eclipse.swt.widgets.Display;
 
 
 public class JSExecutor_Test extends TestCase {
-  
+
   private static final String EXECUTE_1 = "execute_1";
   private static final String EXECUTE_2 = "execute_2";
-  
+
   protected void setUp() throws Exception {
     Fixture.setUp();
     Fixture.fakeResponseWriter();
     new Display();
   }
-  
+
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
-  
+
   public void testExecuteJSOnce() {
     JSExecutor.executeJS( EXECUTE_1 );
+
     Fixture.executeLifeCycleFromServerThread();
+
     assertTrue( Fixture.getAllMarkup().contains( EXECUTE_1 ) );
   }
 
   public void testExecuteJSTwice() {
     JSExecutor.executeJS( EXECUTE_1 );
     JSExecutor.executeJS( EXECUTE_2 );
+
     Fixture.executeLifeCycleFromServerThread();
+
     assertTrue( Fixture.getAllMarkup().contains( EXECUTE_1 + EXECUTE_2 ) );
   }
-  
+
   public void testExecuteJSIsClearedAfterRender() {
     JSExecutor.executeJS( EXECUTE_1 );
+
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeResponseWriter();
     Fixture.executeLifeCycleFromServerThread();
-    assertTrue( Fixture.getAllMarkup().indexOf( EXECUTE_1 ) == -1 );
+
+    assertFalse( Fixture.getAllMarkup().contains( EXECUTE_1 ) );
   }
 
   public void testExecuteJSWithDifferentDisplay() {
     JSExecutor.executeJS( EXECUTE_1 );
+
     simulateDifferentDisplay();
     Fixture.executeLifeCycleFromServerThread();
-    assertTrue( Fixture.getAllMarkup().indexOf( EXECUTE_1 ) == -1 );
+
+    assertFalse( Fixture.getAllMarkup().contains( EXECUTE_1 ) );
   }
 
   private static void simulateDifferentDisplay() {

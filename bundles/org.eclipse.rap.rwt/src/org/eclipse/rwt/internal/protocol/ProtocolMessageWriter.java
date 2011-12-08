@@ -27,7 +27,10 @@ import java.util.Map;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
-import org.eclipse.rwt.internal.theme.*;
+import org.eclipse.rwt.internal.theme.JsonArray;
+import org.eclipse.rwt.internal.theme.JsonObject;
+import org.eclipse.rwt.internal.theme.JsonValue;
+import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.lifecycle.JSWriter;
 
 

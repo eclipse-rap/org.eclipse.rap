@@ -17,7 +17,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
@@ -157,8 +156,7 @@ public final class ExternalBrowser {
 
   private static ProtocolMessageWriter getProtocolWriter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
-    return responseWriter.getProtocolWriter();
+    return stateInfo.getProtocolWriter();
   }
 
   private static void checkWidget() {

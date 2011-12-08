@@ -45,7 +45,7 @@ public final class ClientObject implements IClientObject {
   public void setProperty( String name, String value ) {
     getWriter().appendSet( targetId, name, value );
   }
-  
+
   public void setProperty( String name, int[] value ) {
     getWriter().appendSet( targetId, name, value );
   }
@@ -71,7 +71,7 @@ public final class ClientObject implements IClientObject {
   }
 
   private static ProtocolMessageWriter getWriter() {
-    return ContextProvider.getStateInfo().getResponseWriter().getProtocolWriter();
+    return ContextProvider.getStateInfo().getProtocolWriter();
   }
 
 }

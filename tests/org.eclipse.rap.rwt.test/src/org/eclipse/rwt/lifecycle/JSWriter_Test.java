@@ -986,8 +986,7 @@ public class JSWriter_Test extends TestCase {
   }
 
   public void testSubsequentCallsWithIntermediateOperation() throws IOException {
-    ProtocolMessageWriter protocolWriter
-      = ContextProvider.getStateInfo().getResponseWriter().getProtocolWriter();
+    ProtocolMessageWriter protocolWriter = ContextProvider.getStateInfo().getProtocolWriter();
     JSWriter writer = JSWriter.getWriterFor( shell );
     writer.call( "foo", null );
     protocolWriter.appendSet( "xy", "text", "" );

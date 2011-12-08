@@ -30,15 +30,6 @@ public class JavaScriptResponseWriter {
     writer = response.getWriter();
   }
 
-  public void write( String content ) {
-    getProtocolWriter();
-    protocolWriter.appendExecuteScript( "jsex", HTTP.CONTENT_TYPE_JAVASCRIPT, content.trim() );
-  }
-
-  public boolean checkError() {
-    return writer.checkError();
-  }
-
   public void finish() {
     if( protocolWriter != null ) {
       writer.write( protocolWriter.createMessage() );

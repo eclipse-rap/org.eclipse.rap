@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
+import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.util.ParamCheck;
 
 
@@ -26,23 +27,21 @@ public final class ServiceStateInfo implements IServiceStateInfo {
 
   private JavaScriptResponseWriter responseWriter;
   private final Map<String,Object> attributes;
-  
+
   public ServiceStateInfo() {
     attributes = new HashMap<String,Object>();
   }
-  
-  /**
-   * Sets the given <code>responseWriter</code> for the current request.
-   */
+
   public void setResponseWriter( JavaScriptResponseWriter responseWriter ) {
     this.responseWriter = responseWriter;
   }
 
-  /**
-   * Returns the currently set responseWriter.
-   */
   public JavaScriptResponseWriter getResponseWriter() {
     return responseWriter;
+  }
+
+  public ProtocolMessageWriter getProtocolWriter() {
+    return responseWriter.getProtocolWriter();
   }
 
   public Object getAttribute( String name ) {
@@ -54,9 +53,10 @@ public final class ServiceStateInfo implements IServiceStateInfo {
     ParamCheck.notNull( name, "name" );
     attributes.put( name, value );
   }
-  
+
   public void removeAttribute( String name ) {
     ParamCheck.notNull( name, "name" );
     attributes.remove( name );
   }
+
 }

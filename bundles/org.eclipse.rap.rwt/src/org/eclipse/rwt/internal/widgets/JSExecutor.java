@@ -12,8 +12,10 @@ package org.eclipse.rwt.internal.widgets;
 
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.widgets.Display;
 
@@ -51,8 +53,8 @@ public final class JSExecutor {
     private final Display display;
 
     JSExecutorPhaseListener() {
-      this.display =  Display.getCurrent() ;
-      this.code = new StringBuilder();
+      display =  Display.getCurrent() ;
+      code = new StringBuilder();
     }
 
     void append( String command ) {
@@ -66,9 +68,10 @@ public final class JSExecutor {
     public void afterPhase( PhaseEvent event ) {
       if( display == LifeCycleUtil.getSessionDisplay() ) {
         IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-        JavaScriptResponseWriter writer = stateInfo.getResponseWriter();
+        ProtocolMessageWriter protocolWriter = stateInfo.getProtocolWriter();
         try {
-          writer.write( code.toString() );
+          String content = code.toString().trim();
+          protocolWriter.appendExecuteScript( "jsex", HTTP.CONTENT_TYPE_JAVASCRIPT, content );
         } finally {
           RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
         }
