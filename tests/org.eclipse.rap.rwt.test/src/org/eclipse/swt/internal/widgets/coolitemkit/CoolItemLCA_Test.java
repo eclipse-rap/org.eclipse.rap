@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2011 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.swt.internal.widgets.coolitemkit;
 
@@ -19,10 +20,6 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
-import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
-import org.eclipse.rwt.internal.service.RequestParams;
-import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -95,7 +92,7 @@ public class CoolItemLCA_Test extends TestCase {
   public void testRenderVertical() throws IOException {
     item = new CoolItem( bar, SWT.VERTICAL );
     lca.renderInitialization( item );
-    
+
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
     assertArrayEquals( new String[] { "VERTICAL" }, operation.getStyles() );
@@ -115,10 +112,10 @@ public class CoolItemLCA_Test extends TestCase {
   public void testRenderControl() throws Exception {
     Button button = new Button( bar, SWT.NONE );
     Fixture.markInitialized( item );
-    
+
     item.setControl( button );
     lca.renderChanges( item );
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( item, "control" );
     assertEquals( WidgetUtil.getId( button ), operation.getProperty( "control" ) );
