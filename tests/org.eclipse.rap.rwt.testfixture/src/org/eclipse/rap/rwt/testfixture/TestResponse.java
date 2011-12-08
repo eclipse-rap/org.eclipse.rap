@@ -144,7 +144,7 @@ public class TestResponse implements HttpServletResponse {
   }
 
   public String getContentType() {
-    return contentType;
+    return getHeader( "Content-Type" );
   }
 
   public void setCharacterEncoding( String charset ) {
@@ -184,13 +184,15 @@ public class TestResponse implements HttpServletResponse {
   }
 
   public String getContent() {
-    String result;
-    printWriter.flush();
-    ByteArrayOutputStream content = outStream.getContent();
-    try {
-      result = content.toString( characterEncoding );
-    } catch( UnsupportedEncodingException exception ) {
-      throw new RuntimeException( exception );
+    String result = "";
+    if( printWriter != null ) {
+      printWriter.flush();
+      ByteArrayOutputStream content = outStream.getContent();
+      try {
+        result = content.toString( characterEncoding );
+      } catch( UnsupportedEncodingException exception ) {
+        throw new RuntimeException( exception );
+      }
     }
     return result;
   }

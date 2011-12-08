@@ -44,9 +44,9 @@ import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rwt.internal.lifecycle.IUIThreadHolder;
-import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
+import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.service.ContextProvider;
@@ -293,9 +293,21 @@ public final class Fixture {
   }
 
   public static String getAllMarkup() {
-    ContextProvider.getStateInfo().getResponseWriter().finish();
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    finishResponse( response );
     return response.getContent();
+  }
+
+  private static void finishResponse( TestResponse response ) {
+    ServiceStateInfo stateInfo = ( ServiceStateInfo )ContextProvider.getStateInfo();
+    ProtocolMessageWriter protocolWriter = stateInfo.resetProtocolWriter();
+    if( protocolWriter != null ) {
+      try {
+        response.getWriter().write( protocolWriter.createMessage() );
+      } catch( IOException exception ) {
+        throw new IllegalStateException( "Failed to get response writer", exception );
+      }
+    }
   }
 
   public static Message getProtocolMessage() {
@@ -329,12 +341,8 @@ public final class Fixture {
     TestResponse testResponse;
     testResponse = ( TestResponse )ContextProvider.getResponse();
     testResponse.clearContent();
-    try {
-      IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-      stateInfo.setResponseWriter( new JavaScriptResponseWriter( testResponse ) );
-    } catch( IOException exception ) {
-      throw new RuntimeException( exception );
-    }
+    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    stateInfo.resetProtocolWriter();
   }
 
   public static void fakePhase( PhaseId phase ) {

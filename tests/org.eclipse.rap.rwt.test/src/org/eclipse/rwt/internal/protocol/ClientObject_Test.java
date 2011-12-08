@@ -19,7 +19,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rap.rwt.testfixture.Message.*;
-import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -165,14 +164,8 @@ public class ClientObject_Test extends TestCase {
   }
 
   private Message getMessage() {
-    closeProtocolWriter();
-    String markup = Fixture.getAllMarkup();
-    return new Message( markup );
-  }
-
-  private void closeProtocolWriter() {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    JavaScriptResponseWriter writer = stateInfo.getResponseWriter();
-    writer.finish();
+    ProtocolMessageWriter writer = stateInfo.getProtocolWriter();
+    return new Message( writer.createMessage() );
   }
 }

@@ -22,7 +22,6 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.SingletonManager;
-import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
@@ -52,7 +51,6 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   }
 
   void synchronizedService() throws IOException {
-    initializeJavaScriptResponseWriter();
     setJsonResponseHeaders( ContextProvider.getResponse() );
     if(    RWTRequestVersionControl.getInstance().isValid()
         || isSessionRestart()
@@ -62,7 +60,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     } else {
       handleInvalidRequestCounter();
     }
-    finishJavaScriptResponseWriter();
+    writeProtocolMessage();
   }
 
   public static void initializeSession() {
@@ -100,18 +98,14 @@ public class LifeCycleServiceHandler implements IServiceHandler {
            || startup && isSessionInitialized();
   }
 
-  private static void initializeJavaScriptResponseWriter() throws IOException {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    if( stateInfo.getResponseWriter() == null ) {
-      HttpServletResponse response = ContextProvider.getResponse();
-      stateInfo.setResponseWriter( new JavaScriptResponseWriter( response ) );
+  private static void writeProtocolMessage() throws IOException {
+    HttpServletResponse response = ContextProvider.getResponse();
+    // TODO [rst] Find a clean way to skip the protocol message when initial page has been rendered
+    if( response.getContentType().startsWith( HTTP.CONTENT_TYPE_JSON ) ) {
+      ProtocolMessageWriter protocolWriter = ContextProvider.getStateInfo().getProtocolWriter();
+      String message = protocolWriter.createMessage();
+      response.getWriter().write( message );
     }
-  }
-
-  private static void finishJavaScriptResponseWriter() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    JavaScriptResponseWriter responseWriter = stateInfo.getResponseWriter();
-    responseWriter.finish();
   }
 
   private static void handleInvalidRequestCounter() {

@@ -12,7 +12,6 @@
 package org.eclipse.rwt.internal.service;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -84,7 +83,10 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     HttpSession httpSession = sessionStore.getHttpSession();
     Object httpSessionAttribute = new Object();
     httpSession.setAttribute( HTTP_SESSION_ATTRIBUTE, httpSessionAttribute );
-    simulateSessionRestart();
+
+    simulateInitialUiRequest();
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+
     assertNull( sessionStore.getAttribute( SESSION_STORE_ATTRIBUTE ) );
     assertSame( httpSessionAttribute, httpSession.getAttribute( HTTP_SESSION_ATTRIBUTE ) );
   }
@@ -92,7 +94,8 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   public void testRequestCounterAfterSessionRestart() throws Exception {
     RWTRequestVersionControl.getInstance().nextRequestId();
     Integer version = RWTRequestVersionControl.getInstance().nextRequestId();
-    simulateSessionRestart();
+    simulateInitialUiRequest();
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
     Integer versionAfterRestart = RWTRequestVersionControl.getInstance().getCurrentRequestId();
 
     assertEquals( version.intValue(), versionAfterRestart.intValue() );
@@ -103,13 +106,22 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     assertFalse( versionAfterRestart.equals( versionForNextRequest ) );
   }
 
-  public void testFinishesJavaScriptResponseWriter() throws IOException {
-    JavaScriptResponseWriter fakeWriter = mock( JavaScriptResponseWriter.class );
-    ContextProvider.getStateInfo().setResponseWriter( fakeWriter  );
+  public void testFinishesProtocolWriter() throws IOException {
+    simulateUiRequest();
 
-    simulateSessionRestart();
+    new LifeCycleServiceHandler( mockLifeCycleFactory(), getStartupPage() ).service();
 
-    verify( fakeWriter ).finish();
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    assertTrue( response.getContent().contains( "\"meta\":" ) );
+  }
+
+  public void testNoJsonAppendedToStartupPage() throws IOException {
+    simulateInitialUiRequest();
+
+    new LifeCycleServiceHandler( mockLifeCycleFactory(), getStartupPage() ).service();
+
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    assertTrue( response.getContent().trim().endsWith( "</html>" ) );
   }
 
   public void testContentType() throws IOException {
@@ -131,12 +143,18 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   }
 
   public void testContentTypeForStartupPage() throws IOException {
-    Fixture.fakeNewRequest();
+    simulateInitialUiRequest();
 
     new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
 
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertEquals( "text/html; charset=UTF-8", response.getHeader( "Content-Type" ) );
+  }
+
+  private void simulateInitialUiRequest() {
+    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
+    ISessionStore session = ContextProvider.getSession();
+    session.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED, Boolean.TRUE );
   }
 
   private void simulateUiRequest() {
@@ -150,13 +168,6 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     Fixture.fakeRequestParam( "requestCounter", "23" );
     ISessionStore session = ContextProvider.getSession();
     session.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED, Boolean.TRUE );
-  }
-
-  private void simulateSessionRestart() throws IOException {
-    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
-    ISessionStore session = ContextProvider.getSession();
-    session.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED, Boolean.TRUE );
-    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
   }
 
   private LifeCycleFactory mockLifeCycleFactory() {

@@ -14,7 +14,6 @@ package org.eclipse.rwt.internal.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.util.ParamCheck;
 
@@ -25,23 +24,24 @@ import org.eclipse.rwt.internal.util.ParamCheck;
  */
 public final class ServiceStateInfo implements IServiceStateInfo {
 
-  private JavaScriptResponseWriter responseWriter;
+  private ProtocolMessageWriter protocolWriter;
   private final Map<String,Object> attributes;
 
   public ServiceStateInfo() {
     attributes = new HashMap<String,Object>();
   }
 
-  public void setResponseWriter( JavaScriptResponseWriter responseWriter ) {
-    this.responseWriter = responseWriter;
-  }
-
-  public JavaScriptResponseWriter getResponseWriter() {
-    return responseWriter;
-  }
-
   public ProtocolMessageWriter getProtocolWriter() {
-    return responseWriter.getProtocolWriter();
+    if( protocolWriter == null ) {
+      protocolWriter = new ProtocolMessageWriter();
+    }
+    return protocolWriter;
+  }
+
+  public ProtocolMessageWriter resetProtocolWriter() {
+    ProtocolMessageWriter result = protocolWriter;
+    protocolWriter = null;
+    return result;
   }
 
   public Object getAttribute( String name ) {

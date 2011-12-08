@@ -32,7 +32,6 @@ import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.service.ServiceContext;
@@ -581,14 +580,13 @@ public class UICallBackManager_Test extends TestCase {
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
   }
 
-  private static ServiceContext createServiceContext( TestResponse response ) throws IOException {
+  private static ServiceContext createServiceContext( TestResponse response ) {
     HttpSession httpSession = ContextProvider.getContext().getSessionStore().getHttpSession();
     TestRequest request = new TestRequest();
     request.setSession( httpSession );
     ServiceContext result = new ServiceContext( request, response );
     ServiceStateInfo stateInfo = new ServiceStateInfo();
     result.setStateInfo( stateInfo );
-    stateInfo.setResponseWriter( new JavaScriptResponseWriter( response ) );
     return result;
   }
 
