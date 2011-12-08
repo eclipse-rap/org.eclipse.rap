@@ -161,8 +161,7 @@ public final class PropertyResolver {
           result = QxColor.create( red, green, blue );
         }
       }
-    } else if(    type == LexicalUnit.SAC_FUNCTION
-               && "rgb".equals( unit.getFunctionName() ) )
+    } else if( type == LexicalUnit.SAC_FUNCTION && "rgb".equals( unit.getFunctionName() ) )
     {
       throw new IllegalArgumentException( "Failed to parse rgb() function" );
     } else if( type == LexicalUnit.SAC_IDENT ) {
@@ -178,8 +177,7 @@ public final class PropertyResolver {
       result = QxColor.TRANSPARENT;
     }
     if( result == null ) {
-      throw new IllegalArgumentException( "Failed to parse color "
-                                          + toString( unit ) );
+      throw new IllegalArgumentException( "Failed to parse color " + toString( unit ) );
     }
     return result;
   }
@@ -189,9 +187,7 @@ public final class PropertyResolver {
     int[] values = new int[ 3 ];
     float alpha = 1f;
     short type = unit.getLexicalUnitType();
-    if(    type == LexicalUnit.SAC_FUNCTION
-        && "rgba".equals( unit.getFunctionName() )  )
-    {
+    if( type == LexicalUnit.SAC_FUNCTION && "rgba".equals( unit.getFunctionName() )  ) {
       LexicalUnit nextUnit = unit.getParameters();
       boolean ok = nextUnit != null;
       boolean mixedTypes = false;
@@ -253,8 +249,7 @@ public final class PropertyResolver {
       result = QxDimension.create( length.intValue() );
     }
     if( result == null ) {
-      throw new IllegalArgumentException( "Failed to parse dimension "
-                                          + toString( unit ) );
+      throw new IllegalArgumentException( "Failed to parse dimension " + toString( unit ) );
     }
     return result;
   }
@@ -295,8 +290,7 @@ public final class PropertyResolver {
                                 color != null ? color.toDefaultString() : null );
     }
     if( result == null ) {
-      throw new IllegalArgumentException( "Failed to parse border "
-                                          + toString( unit ) );
+      throw new IllegalArgumentException( "Failed to parse border " + toString( unit ) );
     }
     return result;
   }
@@ -337,8 +331,7 @@ public final class PropertyResolver {
       }
     }
     if( result == null ) {
-      String msg = "Failed to parse box dimensions " + toString( unit );
-      throw new IllegalArgumentException( msg );
+      throw new IllegalArgumentException( "Failed to parse box dimensions " + toString( unit ) );
     }
     return result;
   }
@@ -428,8 +421,7 @@ public final class PropertyResolver {
       result = QxFont.create( family, size, bold, italic );
     }
     if( result == null ) {
-      throw new IllegalArgumentException( "Failed to parse font "
-                                          + toString( unit ) );
+      throw new IllegalArgumentException( "Failed to parse font " + toString( unit ) );
     }
     return result;
   }
@@ -481,9 +473,7 @@ public final class PropertyResolver {
     String buffer = "";
     while( nextUnit != null && ok ) {
       short type = nextUnit.getLexicalUnitType();
-      if(    type == LexicalUnit.SAC_STRING_VALUE
-          || type == LexicalUnit.SAC_IDENT )
-      {
+      if( type == LexicalUnit.SAC_STRING_VALUE || type == LexicalUnit.SAC_IDENT ) {
         if( buffer.length() > 0 ) {
           buffer += " ";
         }
@@ -529,8 +519,7 @@ public final class PropertyResolver {
       }
     }
     if( result == null ) {
-      throw new IllegalArgumentException( "Failed to parse image "
-                                          + toString( unit ) );
+      throw new IllegalArgumentException( "Failed to parse image " + toString( unit ) );
     }
     return result;
   }
@@ -541,20 +530,16 @@ public final class PropertyResolver {
     LexicalUnit nextUnit = unit.getParameters();
     String gradientType = readGradientType( nextUnit );
     if( !"linear".equals( gradientType ) ) {
-      String msg = "Invalid value for background-image gradient type: "
-                 + gradientType;
+      String msg = "Invalid value for background-image gradient type: " + gradientType;
       throw new IllegalArgumentException( msg );
     }
     nextUnit = nextUnit.getNextLexicalUnit();
     if( !checkComma( nextUnit) ) {
-      String msg = "Failed to parse background-image gradient.";
-      throw new IllegalArgumentException( msg );
+      throw new IllegalArgumentException( "Failed to parse background-image gradient." );
     }
     nextUnit = nextUnit.getNextLexicalUnit();
     String[] startPoint = readGradientPoint( nextUnit );
-    if( !(    "left".equals( startPoint[ 0 ] )
-           && "top".equals( startPoint[ 1 ] ) ) )
-    {
+    if( !( "left".equals( startPoint[ 0 ] ) && "top".equals( startPoint[ 1 ] ) ) ) {
       String msg = "Invalid value for background-image gradient start point: "
                    + startPoint[ 0 ]
                    + " "
@@ -564,23 +549,19 @@ public final class PropertyResolver {
     nextUnit = nextUnit.getNextLexicalUnit();
     nextUnit = nextUnit.getNextLexicalUnit();
     if( !checkComma( nextUnit) ) {
-      String msg = "Failed to parse background-image gradient.";
-      throw new IllegalArgumentException( msg );
+      throw new IllegalArgumentException( "Failed to parse background-image gradient." );
     }
     nextUnit = nextUnit.getNextLexicalUnit();
     String[] endPoint = readGradientPoint( nextUnit );
-    if(    "left".equals( endPoint[ 0 ] )
-        && "bottom".equals( endPoint[ 1 ] ) )
-    {
+    if( "left".equals( endPoint[ 0 ] ) && "bottom".equals( endPoint[ 1 ] ) ) {
       vertical = true;
-    } else if(    "right".equals( endPoint[ 0 ] )
-               && "top".equals( endPoint[ 1 ] )) {
+    } else if( "right".equals( endPoint[ 0 ] ) && "top".equals( endPoint[ 1 ] ) ) {
       vertical = false;
     } else {
       String msg = "Invalid value for background-image gradient end point: "
-                   + endPoint[ 0 ]
-                   + " "
-                   + endPoint[ 1 ];
+                 + endPoint[ 0 ]
+                 + " "
+                 + endPoint[ 1 ];
       throw new IllegalArgumentException( msg );
     }
     nextUnit = nextUnit.getNextLexicalUnit();
@@ -590,8 +571,7 @@ public final class PropertyResolver {
       gradient = normalizeGradientValue( gradient );
       String[] gradientColors = getGradientColors( gradient );
       float[] gradientPercents = getGradientPercents( gradient );
-      result
-        = QxImage.createGradient( gradientColors, gradientPercents, vertical );
+      result = QxImage.createGradient( gradientColors, gradientPercents, vertical );
     }
     return result;
   }
@@ -617,9 +597,7 @@ public final class PropertyResolver {
       if( xType == LexicalUnit.SAC_IDENT && yType == LexicalUnit.SAC_IDENT ) {
         result[ 0 ] = x.getStringValue();
         result[ 1 ] = y.getStringValue();
-      } else if(    xType == LexicalUnit.SAC_INTEGER
-                 && yType == LexicalUnit.SAC_INTEGER )
-      {
+      } else if( xType == LexicalUnit.SAC_INTEGER && yType == LexicalUnit.SAC_INTEGER ) {
         result[ 0 ] = Integer.toString( x.getIntegerValue() );
         result[ 1 ] = Integer.toString( y.getIntegerValue() );
       }
@@ -653,8 +631,7 @@ public final class PropertyResolver {
             = percentUnit.getNextLexicalUnit().getNextLexicalUnit();
           color = readGradientColor( colorUnit );
         } else {
-          String msg = "Invalid value for background-image gradient: "
-                       + function;
+          String msg = "Invalid value for background-image gradient: " + function;
           throw new IllegalArgumentException( msg );
         }
         nextUnit = nextUnit.getNextLexicalUnit();
@@ -698,13 +675,11 @@ public final class PropertyResolver {
       {
         result = new QxIdentifier( value );
       } else {
-        String msg = "Invalid value for text-decoration: " + value;
-        throw new IllegalArgumentException( msg );
+        throw new IllegalArgumentException( "Invalid value for text-decoration: " + value );
       }
     }
     if( result == null ) {
-      throw new IllegalArgumentException( "Failed to parse text-decoration "
-                                          + toString( unit ) );
+      throw new IllegalArgumentException( "Failed to parse text-decoration " + toString( unit ) );
     }
     return result;
   }
