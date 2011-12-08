@@ -23,7 +23,6 @@ import org.eclipse.rwt.internal.branding.BrandingUtil;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
-import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
@@ -316,8 +315,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static void writeUICallBackActivation( Display display ) {
-    JavaScriptResponseWriter responseWriter = ContextProvider.getStateInfo().getResponseWriter();
-    UICallBackServiceHandler.writeUICallBackActivation( responseWriter );
+    ProtocolMessageWriter protocolWriter = ContextProvider.getStateInfo().getProtocolWriter();
+    UICallBackServiceHandler.writeUICallBackActivation( protocolWriter );
   }
 
   private static void markInitialized( Display display ) {

@@ -22,7 +22,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
-import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
+import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.swt.internal.widgets.displaykit.DisplayLCA;
@@ -38,7 +38,6 @@ public class UICallBackServiceHandler_Test extends TestCase {
   @Override
   protected void setUp() throws Exception {
     Fixture.setUp();
-    Fixture.fakeResponseWriter();
   }
 
   @Override
@@ -46,51 +45,57 @@ public class UICallBackServiceHandler_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testResponseContentType() {
-    UICallBackServiceHandler.writeUIRequestNeeded( getResponseWriter() );
+  public void testResponseContentType() throws IOException {
+    Fixture.fakeNewRequest();
+
+    new UICallBackServiceHandler().service();
+
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }
 
-  public void testWriteUICallBackActivate() throws Exception {
+  public void testWriteUICallBackActivation() throws Exception {
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
+    ProtocolMessageWriter protocolWriter = new ProtocolMessageWriter();
 
-    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( protocolWriter );
 
-    Message message = Fixture.getProtocolMessage();
+    Message message = new Message( protocolWriter.createMessage() );
     assertEquals( Boolean.TRUE, message.findSetProperty( UI_CALLBACK_ID, PROP_ACTIVE ) );
   }
 
   public void testWriteUICallBackDeactivate() throws Exception {
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( new ProtocolMessageWriter() );
+    ProtocolMessageWriter secondRequestWriter = new ProtocolMessageWriter();
 
     Fixture.fakeNewRequest();
     UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackDeactivation( getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackDeactivation( secondRequestWriter );
 
-    Message message = Fixture.getProtocolMessage();
+    Message message = new Message( secondRequestWriter.createMessage() );
     assertEquals( Boolean.FALSE, message.findSetProperty( UI_CALLBACK_ID, PROP_ACTIVE ) );
   }
 
   public void testWriteUICallBackDeactivateWithDisposedDisplay() throws Exception {
     Display display = new Display();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( new ProtocolMessageWriter() );
+    ProtocolMessageWriter secondRequestWriter = new ProtocolMessageWriter();
 
     Fixture.fakeNewRequest();
     display.dispose();
     UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackDeactivation( getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackDeactivation( secondRequestWriter );
 
-    Message message = Fixture.getProtocolMessage();
+    Message message = new Message( secondRequestWriter.createMessage() );
     assertEquals( Boolean.FALSE, message.findSetProperty( UI_CALLBACK_ID, PROP_ACTIVE ) );
   }
 
   public void testWriteUICallBackDeactivateIsNotSentFromUIRequest() throws Exception {
     Display display = new Display();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( new ProtocolMessageWriter() );
 
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
@@ -103,7 +108,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
 
   public void testWriteUICallBackDeactivateIsSentFromServiceHandler() throws Exception {
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( new ProtocolMessageWriter() );
 
     Fixture.fakeNewRequest();
     UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
@@ -115,31 +120,38 @@ public class UICallBackServiceHandler_Test extends TestCase {
 
   public void testWriteUICallBackActivateTwice() throws Exception {
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( new ProtocolMessageWriter() );
 
     Fixture.fakeNewRequest();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( new ProtocolMessageWriter() );
 
-    assertEquals( "", Fixture.getAllMarkup() );
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
   }
 
   public void testNoUICallBackByDefault() throws Exception {
-    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    ProtocolMessageWriter protocolWriter = new ProtocolMessageWriter();
 
-    assertEquals( "", Fixture.getAllMarkup() );
+    UICallBackServiceHandler.writeUICallBackActivation( protocolWriter );
+
+    Message message = new Message( protocolWriter.createMessage() );
+    assertEquals( 0, message.getOperationCount() );
   }
 
   public void testWriteUICallBackActivationWithoutDisplay() throws Exception {
-    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    ProtocolMessageWriter protocolWriter = new ProtocolMessageWriter();
 
-    assertEquals( "", Fixture.getAllMarkup() );
+    UICallBackServiceHandler.writeUICallBackActivation( protocolWriter );
+
+    Message message = new Message( protocolWriter.createMessage() );
+    assertEquals( 0, message.getOperationCount() );
   }
 
   public void testWriteUiRequestNeeded() throws IOException {
     Display display = new Display();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( new ProtocolMessageWriter() );
     Fixture.fakeNewRequest();
 
     display.asyncExec( new NoOpRunnable() );
@@ -151,7 +163,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
 
   public void testWriteUiRequestNeededAfterDeactivate() throws IOException {
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( new ProtocolMessageWriter() );
     Fixture.fakeNewRequest();
 
     UICallBackManager.getInstance().deactivateUICallBacksFor( "id" );
@@ -164,7 +176,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
   public void testWriteUiRequestNeededAfterDeactivateWithRunnable() throws IOException {
     Display display = new Display();
     UICallBackManager.getInstance().activateUICallBacksFor( "id" );
-    UICallBackServiceHandler.writeUICallBackActivation( getResponseWriter() );
+    UICallBackServiceHandler.writeUICallBackActivation( new ProtocolMessageWriter() );
     Fixture.fakeNewRequest();
 
     display.asyncExec( new NoOpRunnable() );
@@ -195,15 +207,11 @@ public class UICallBackServiceHandler_Test extends TestCase {
   public void testWriteUICallBackActivateWithoutStateInfo() throws Exception {
     Fixture.replaceStateInfo( null );
 
-    JavaScriptResponseWriter responseWriter = mock( JavaScriptResponseWriter.class );
+    ProtocolMessageWriter protocolWriter = mock( ProtocolMessageWriter.class );
     try {
-      UICallBackServiceHandler.writeUICallBackActivation( responseWriter );
+      UICallBackServiceHandler.writeUICallBackActivation( protocolWriter );
     } catch( NullPointerException notExpected ) {
       fail();
     }
-  }
-
-  private static JavaScriptResponseWriter getResponseWriter() {
-    return ContextProvider.getStateInfo().getResponseWriter();
   }
 }

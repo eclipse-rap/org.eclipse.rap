@@ -30,11 +30,10 @@ import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.theme.JsonArray;
 import org.eclipse.rwt.internal.theme.JsonObject;
 import org.eclipse.rwt.internal.theme.JsonValue;
-import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.lifecycle.JSWriter;
 
 
-public final class ProtocolMessageWriter {
+public class ProtocolMessageWriter {
 
   // TODO [rst] Copy of JSWriter constant, remove when JSWriter is gone
   private static final String HAS_WIDGET_MANAGER = JSWriter.class.getName() + "#hasWidgetManager";

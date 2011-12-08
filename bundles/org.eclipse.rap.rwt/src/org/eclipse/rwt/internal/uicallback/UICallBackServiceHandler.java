@@ -13,11 +13,12 @@ package org.eclipse.rwt.internal.uicallback;
 
 import java.io.IOException;
 
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.rwt.internal.lifecycle.JavaScriptResponseWriter;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -38,14 +39,16 @@ public class UICallBackServiceHandler implements IServiceHandler {
     ISessionStore sessionStore = ContextProvider.getSession();
     boolean success = UICallBackManager.getInstance().processRequest( response );
     if( success && sessionStore.isBound() ) {
-      JavaScriptResponseWriter writer = new JavaScriptResponseWriter( response );
+      ProtocolMessageWriter writer = new ProtocolMessageWriter();
       writeUICallBackDeactivation( writer );
       writeUIRequestNeeded( writer );
-      writer.finish();
+      configureResponseContentEncoding( response );
+      String message = writer.createMessage();
+      response.getWriter().write( message );
     }
   }
 
-  public static void writeUICallBackActivation( JavaScriptResponseWriter writer ) {
+  public static void writeUICallBackActivation( ProtocolMessageWriter writer ) {
     boolean actual = UICallBackManager.getInstance().needsActivation();
     boolean preserved = getPreservedUICallBackActivation();
     if( preserved != actual && actual ) {
@@ -55,7 +58,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
     }
   }
 
-  public static void writeUICallBackDeactivation( JavaScriptResponseWriter writer ) {
+  public static void writeUICallBackDeactivation( ProtocolMessageWriter writer ) {
     boolean actual = UICallBackManager.getInstance().needsActivation();
     boolean preserved = getPreservedUICallBackActivation();
     if( preserved != actual && !actual ) {
@@ -65,9 +68,8 @@ public class UICallBackServiceHandler implements IServiceHandler {
     }
   }
 
-  private static void writeUICallBackActivation( JavaScriptResponseWriter writer, boolean value ) {
-    ProtocolMessageWriter protocolWriter = writer.getProtocolWriter();
-    protocolWriter.appendSet( UI_CALLBACK_ID, PROP_ACTIVE, value );
+  private static void writeUICallBackActivation( ProtocolMessageWriter writer, boolean value ) {
+    writer.appendSet( UI_CALLBACK_ID, PROP_ACTIVE, value );
   }
 
   private static boolean getPreservedUICallBackActivation() {
@@ -80,10 +82,14 @@ public class UICallBackServiceHandler implements IServiceHandler {
     return result;
   }
 
-  static void writeUIRequestNeeded( JavaScriptResponseWriter writer ) {
+  private static void configureResponseContentEncoding( ServletResponse response ) {
+    response.setContentType( HTTP.CONTENT_TYPE_JSON );
+    response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
+  }
+
+  static void writeUIRequestNeeded( ProtocolMessageWriter writer ) {
     if( UICallBackManager.getInstance().hasRunnables() ) {
-      ProtocolMessageWriter protocolWriter = writer.getProtocolWriter();
-      protocolWriter.appendCall( UI_CALLBACK_ID, METHOD_SEND_UI_REQUEST, null );
+      writer.appendCall( UI_CALLBACK_ID, METHOD_SEND_UI_REQUEST, null );
     }
   }
 }
