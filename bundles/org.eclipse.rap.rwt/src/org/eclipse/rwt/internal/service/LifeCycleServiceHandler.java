@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -26,6 +27,7 @@ import org.eclipse.rwt.internal.lifecycle.LifeCycle;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleFactory;
 import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
+import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
 
@@ -51,6 +53,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
 
   void synchronizedService() throws IOException {
     initializeJavaScriptResponseWriter();
+    setJsonResponseHeaders( ContextProvider.getResponse() );
     if(    RWTRequestVersionControl.getInstance().isValid()
         || isSessionRestart()
         || ContextProvider.getRequest().getSession().isNew() )
@@ -142,5 +145,10 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     //      merge both code passages
     SingletonManager.install( sessionStore );
     RWTRequestVersionControl.getInstance().setCurrentRequestId( version );
+  }
+
+  private static void setJsonResponseHeaders( ServletResponse response ) {
+    response.setContentType( HTTP.CONTENT_TYPE_JSON );
+    response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
   }
 }

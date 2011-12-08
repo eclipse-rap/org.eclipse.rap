@@ -6,13 +6,14 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,14 +25,17 @@ import javax.servlet.http.HttpSession;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.service.IServiceHandler;
 import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.swt.widgets.Display;
 
 
 public class LifeCycleServiceHandler_Test extends TestCase {
-  
+
   private static final String SESSION_STORE_ATTRIBUTE = "session-store-attribute";
   private static final String HTTP_SESSION_ATTRIBUTE = "http-session-attribute";
 
@@ -39,48 +43,16 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   private static final String ENTER = "enter|";
   private static final String EXIT = "exit|";
 
-  private StringBuilder log = new StringBuilder();
+  private final StringBuilder log = new StringBuilder();
 
-  private class TestHandler extends LifeCycleServiceHandler {
-    
-    public TestHandler( LifeCycleFactory lifeCycleFactory, StartupPage startupPage ) {
-      super( lifeCycleFactory, startupPage );
-    }
-
-    void synchronizedService() {
-      log.append( ENTER );
-      try {
-        Thread.sleep( 2 );
-      } catch( InterruptedException e ) {
-        // ignore
-      }
-      log.append( EXIT );
-    }
+  protected void setUp() {
+    Fixture.setUp();
   }
-  
-  private static class Worker implements Runnable {
-    private final ServiceContext context;
-    private final IServiceHandler serviceHandler;
 
-    private Worker( ServiceContext context, IServiceHandler serviceHandler ) {
-      this.context = context;
-      this.serviceHandler = serviceHandler;
-    }
-
-    public void run() {
-      ContextProvider.setContext( context );
-      try {
-        serviceHandler.service();
-      } catch( ServletException e ) {
-        throw new RuntimeException( e );
-      } catch( IOException e ) {
-        throw new RuntimeException( e );
-      } finally {
-        ContextProvider.releaseContextHolder();
-      }
-    }
+  protected void tearDown() {
+    Fixture.tearDown();
   }
-  
+
   public void testRequestSynchronization() throws InterruptedException {
     List<Thread> threads = new ArrayList<Thread>();
     // initialize session, see bug 344549
@@ -104,7 +76,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     }
     assertEquals( expected, log.toString() );
   }
-  
+
   public void testSessionRestart() throws Exception {
     ISessionStore sessionStore = ContextProvider.getSession();
     // set up session-store and http-session
@@ -116,7 +88,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     assertNull( sessionStore.getAttribute( SESSION_STORE_ATTRIBUTE ) );
     assertSame( httpSessionAttribute, httpSession.getAttribute( HTTP_SESSION_ATTRIBUTE ) );
   }
-  
+
   public void testRequestCounterAfterSessionRestart() throws Exception {
     RWTRequestVersionControl.getInstance().nextRequestId();
     Integer version = RWTRequestVersionControl.getInstance().nextRequestId();
@@ -124,28 +96,60 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     Integer versionAfterRestart = RWTRequestVersionControl.getInstance().getCurrentRequestId();
 
     assertEquals( version.intValue(), versionAfterRestart.intValue() );
-    
+
     Fixture.fakeNewRequest();
     Integer versionForNextRequest = RWTRequestVersionControl.getInstance().nextRequestId();
-    
+
     assertFalse( versionAfterRestart.equals( versionForNextRequest ) );
   }
-  
+
   public void testFinishesJavaScriptResponseWriter() throws IOException {
     JavaScriptResponseWriter fakeWriter = mock( JavaScriptResponseWriter.class );
     ContextProvider.getStateInfo().setResponseWriter( fakeWriter  );
-    
+
     simulateSessionRestart();
-    
+
     verify( fakeWriter ).finish();
   }
 
-  protected void setUp() {
-    Fixture.setUp();
+  public void testContentType() throws IOException {
+    simulateUiRequest();
+
+    new LifeCycleServiceHandler( mockLifeCycleFactory(), getStartupPage() ).service();
+
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
   }
-  
-  protected void tearDown() {
-    Fixture.tearDown();
+
+  public void testContentTypeForIllegalRequestCounter() throws IOException {
+    simulateUiRequestWithIllegalCounter();
+
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    assertEquals( "application/json; charset=UTF-8", response.getHeader( "Content-Type" ) );
+  }
+
+  public void testContentTypeForStartupPage() throws IOException {
+    Fixture.fakeNewRequest();
+
+    new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
+
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    assertEquals( "text/html; charset=UTF-8", response.getHeader( "Content-Type" ) );
+  }
+
+  private void simulateUiRequest() {
+    Fixture.fakeNewRequest( new Display() );
+    ISessionStore session = ContextProvider.getSession();
+    session.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED, Boolean.TRUE );
+  }
+
+  private void simulateUiRequestWithIllegalCounter() {
+    Fixture.fakeNewRequest( new Display() );
+    Fixture.fakeRequestParam( "requestCounter", "23" );
+    ISessionStore session = ContextProvider.getSession();
+    session.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED, Boolean.TRUE );
   }
 
   private void simulateSessionRestart() throws IOException {
@@ -155,11 +159,58 @@ public class LifeCycleServiceHandler_Test extends TestCase {
     new LifeCycleServiceHandler( getLifeCycleFactory(), getStartupPage() ).service();
   }
 
+  private LifeCycleFactory mockLifeCycleFactory() {
+    ILifeCycle lifecycle = mock( LifeCycle.class );
+    LifeCycleFactory lifeCycleFactory = mock( LifeCycleFactory.class );
+    when( lifeCycleFactory.getLifeCycle() ).thenReturn( lifecycle );
+    return lifeCycleFactory;
+  }
+
   private StartupPage getStartupPage() {
     return RWTFactory.getStartupPage();
   }
 
   private LifeCycleFactory getLifeCycleFactory() {
     return RWTFactory.getLifeCycleFactory();
+  }
+
+  private class TestHandler extends LifeCycleServiceHandler {
+
+    public TestHandler( LifeCycleFactory lifeCycleFactory, StartupPage startupPage ) {
+      super( lifeCycleFactory, startupPage );
+    }
+
+    void synchronizedService() {
+      log.append( ENTER );
+      try {
+        Thread.sleep( 2 );
+      } catch( InterruptedException e ) {
+        // ignore
+      }
+      log.append( EXIT );
+    }
+  }
+
+  private static class Worker implements Runnable {
+    private final ServiceContext context;
+    private final IServiceHandler serviceHandler;
+
+    private Worker( ServiceContext context, IServiceHandler serviceHandler ) {
+      this.context = context;
+      this.serviceHandler = serviceHandler;
+    }
+
+    public void run() {
+      ContextProvider.setContext( context );
+      try {
+        serviceHandler.service();
+      } catch( ServletException e ) {
+        throw new RuntimeException( e );
+      } catch( IOException e ) {
+        throw new RuntimeException( e );
+      } finally {
+        ContextProvider.releaseContextHolder();
+      }
+    }
   }
 }

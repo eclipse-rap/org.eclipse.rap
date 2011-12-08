@@ -17,7 +17,6 @@ import java.io.PrintWriter;
 import javax.servlet.ServletResponse;
 
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
-import org.eclipse.rwt.internal.util.HTTP;
 
 
 public class JavaScriptResponseWriter {
@@ -26,7 +25,6 @@ public class JavaScriptResponseWriter {
   private ProtocolMessageWriter protocolWriter;
 
   public JavaScriptResponseWriter( ServletResponse response ) throws IOException {
-    configureResponseContentEncoding( response );
     writer = response.getWriter();
   }
 
@@ -42,10 +40,5 @@ public class JavaScriptResponseWriter {
       protocolWriter = new ProtocolMessageWriter();
     }
     return protocolWriter;
-  }
-
-  private static void configureResponseContentEncoding( ServletResponse response ) {
-    response.setContentType( HTTP.CONTENT_TYPE_JSON );
-    response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
   }
 }
