@@ -280,6 +280,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicButton", {
         case "PageDown":
         case "End":
         case "Home":
+        case "Enter":
+        case "Space":
           event.preventDefault();
           event.stopPropagation();
       }
