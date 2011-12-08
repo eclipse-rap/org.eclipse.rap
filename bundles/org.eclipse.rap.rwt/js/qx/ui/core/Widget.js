@@ -2899,18 +2899,12 @@ qx.Class.define( "qx.ui.core.Widget", {
      * @return {Object} this instance.
      * @throws an error if the incoming data field is not a map.
      */
-    _styleFromMap : function(data) {
+    _styleFromMap : function( data ) {
+      this._prepareStyleMap( data );
       var styler = qx.core.Property.$$method.style;
       var unstyler = qx.core.Property.$$method.unstyle;
       var value;
-      if (qx.core.Variant.isSet("qx.debug", "on")) {
-        for (var prop in data) {
-          if (!this[styler[prop]]) {
-            throw new Error(this.classname + ' has no themeable property "' + prop + '"');
-          }
-        }
-      }
-      for (var prop in data) {
+      for( var prop in data ) {
         value = data[prop];
         value === "undefined" ? this[unstyler[prop]]() : this[styler[prop]](value);
       }
@@ -2929,6 +2923,20 @@ qx.Class.define( "qx.ui.core.Widget", {
         this[unstyler[data[i]]]();
       }
     },
+    
+    _prepareStyleMap : qx.core.Variant.select("qx.client", {
+      "mshtml" : function( map ) {
+        if( map.shadow && map.border && map.border.getStyle() !== "rounded" ) {
+          var width = map.border.getWidthTop();
+          var color = map.border.getColorTop();
+          var radii = [ 0, 0, 0, 0 ];
+          map.border = new org.eclipse.rwt.Border( width, "rounded", color, radii );
+        }
+      },
+      "default" : function( map ) {
+        return map;
+      }
+    } ),
 
     _renderAppearance : function() {
       if (!this.__states) {

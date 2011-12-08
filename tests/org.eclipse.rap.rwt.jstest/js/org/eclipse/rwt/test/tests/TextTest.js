@@ -731,6 +731,31 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
         assertEquals( "", text._inputElement.value );          
         text.destroy();
       }
+    } ),
+
+    testBoxShadowAndNonRoundedBorder : qx.core.Variant.select( "qx.client", {
+      "default" : function() {},
+      "mshtml" : function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        testUtil.fakeAppearance( "text-field", {
+          "style" : function( states ) {
+            return {
+              "shadow" : [ false, 0, 0, 0, 0, "red", 0 ],
+              "border" : new org.eclipse.rwt.Border( 3, "solid", "green" )
+            };
+          }
+        } );
+        var text = new org.eclipse.rwt.widgets.Text( true );
+        text.addToDocument();
+        testUtil.flush();
+        var border = text.getBorder();
+        assertEquals( 3, border.getWidthTop() );
+        assertEquals( "rounded", border.getStyle() );
+        assertEquals( "green", border.getColor() );
+        assertEquals( [ 0, 0, 0, 0 ], border.getRadii() );
+        testUtil.restoreAppearance();
+        text.destroy();
+      }
     } )
 
   }
