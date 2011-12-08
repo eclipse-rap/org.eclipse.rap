@@ -77,12 +77,12 @@ appearances = {
 
   "menu-separator" : {
     style : function( states ) {
+      var tv = new org.eclipse.swt.theme.ThemeValues( states );
       return {
         height : "auto",
         marginTop : 3,
         marginBottom : 2,
-        paddingLeft : 3,
-        paddingRight : 3
+        padding : tv.getCssBoxDimensions( "MenuItem", "padding" )
       };
     }
   },

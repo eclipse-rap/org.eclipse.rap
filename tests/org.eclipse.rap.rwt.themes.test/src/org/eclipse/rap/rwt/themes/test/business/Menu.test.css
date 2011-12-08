@@ -23,6 +23,10 @@ MenuItem {
   padding: 2px 4px;
 }
 
+MenuItem[SEPARATOR] {
+  padding: 0px 3px;
+}
+
 MenuItem:hover {
   color: #4a4a4a;
   background-color: #dae9f7;

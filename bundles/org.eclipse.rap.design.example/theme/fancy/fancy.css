@@ -518,6 +518,10 @@ MenuItem {
   padding: 2px 4px;
 }
 
+MenuItem[SEPARATOR] {
+  padding: 0px 3px;
+}
+
 MenuItem:hover {
   background-color: #dae9f7;
   color: #4a4a4a;

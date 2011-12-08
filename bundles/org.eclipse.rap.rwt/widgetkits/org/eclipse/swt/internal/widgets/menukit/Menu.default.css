@@ -34,11 +34,11 @@ MenuItem {
   background-image: none;
   opacity: 1;
   text-shadow: none;
-  padding: 2px 4px;
+  padding: 4px 10px 4px 10px;
 }
 
-MenuItem:onMenuBar {
-  padding: 2px 4px;
+MenuItem[SEPARATOR] {
+  padding: 0px 10px;
 }
 
 MenuItem:hover {
@@ -63,6 +63,11 @@ MenuItem:disabled {
   color: #bdbdbd;
   text-shadow: none;
 }
+
+MenuItem:onMenuBar {
+  padding: 4px 6px;
+}
+
 
 MenuItem-CheckIcon {
   background-image: url( resource/widget/rap/menu/checkbox.gif );
