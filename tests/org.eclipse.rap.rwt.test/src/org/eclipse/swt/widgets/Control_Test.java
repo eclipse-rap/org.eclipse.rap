@@ -616,6 +616,16 @@ public class Control_Test extends TestCase {
     assertTrue( noFocusControl.isFocusControl() );
   }
 
+  public void testDisableOfFocused() {
+    Control control = new Button( shell, SWT.PUSH );
+    shell.open();
+    control.setFocus();
+
+    control.setEnabled( false );
+
+    assertSame( shell, display.getFocusControl() );
+  }
+
   public void testDisposeOfFocused() {
     Control control1 = new Button( shell, SWT.PUSH );
     Composite composite = new Composite( shell, SWT.NONE );

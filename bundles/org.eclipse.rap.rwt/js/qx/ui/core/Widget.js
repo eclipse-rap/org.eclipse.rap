@@ -3201,6 +3201,9 @@ qx.Class.define( "qx.ui.core.Widget", {
           this.removeState("abandoned");
           this.removeState("pressed");
         }
+        if( this.getFocused() ) {
+          this.setFocused( false );
+        }
       } else {
         this.removeState("disabled");
       }

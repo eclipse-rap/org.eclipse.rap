@@ -524,6 +524,15 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       }
     } ),
 
+    testDisableOfFocused : function() {
+      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      button.addToDocument();
+      button.setFocused( true );
+      assertTrue( button.getFocused() );
+      button.setEnabled( false );
+      assertFalse( button.getFocused() );
+    },
+
     /////////
     // Helper
     

@@ -329,17 +329,25 @@ public abstract class Control extends Widget implements Drawable {
   public void setEnabled( boolean enabled ) {
     checkWidget();
     /*
-     * TODO [rst] handle focus
      * Feature in Windows.  If the receiver has focus, disabling
      * the receiver causes no window to have focus.  The fix is
      * to assign focus to the first ancestor window that takes
      * focus.  If no window will take focus, set focus to the
      * desktop.
      */
+    Control control = null;
+    boolean fixFocus = false;
+    if( !enabled ) {
+      control = display.getFocusControl();
+      fixFocus = isFocusAncestor( control );
+    }
     if( enabled ) {
       state &= ~DISABLED;
     } else {
       state |= DISABLED;
+    }
+    if( fixFocus ) {
+      fixFocus( control );
     }
   }
 
