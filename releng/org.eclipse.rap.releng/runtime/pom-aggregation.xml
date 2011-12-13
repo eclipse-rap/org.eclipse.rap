@@ -57,6 +57,15 @@
       <layout>p2</layout>
       <url>http://build.eclipse.org/rt/rap/base-platforms/extra-dependencies</url>
     </repository>
+    <!--
+      TODO [rst]: Because of bug 366375 (icu.base.source bundle missing in 4.2 milestone repositories)
+                  we need to include the runtime base repository too.
+      -->
+    <repository>
+      <id>base-platform-repository</id>
+      <layout>p2</layout>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/1.5M4/runtime-base</url>
+    </repository>
   </repositories>
 
   <build>
