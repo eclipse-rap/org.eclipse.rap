@@ -12,19 +12,19 @@
  ******************************************************************************/
 package org.eclipse.rwt.engine;
 
+import static org.mockito.Mockito.mock;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 
 import junit.framework.TestCase;
 
-import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.internal.TestResourceManager;
-import org.eclipse.rwt.RWT;
+import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.eclipse.rwt.application.ApplicationConfiguration;
 import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.branding.AbstractBranding;
-import org.eclipse.rwt.engine.RWTServletContextListener;
-import org.eclipse.rwt.internal.application.RWTFactory;
+import org.eclipse.rwt.internal.application.ApplicationContext;
+import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rwt.lifecycle.PhaseId;
@@ -83,102 +83,95 @@ public class RWTServletContextListener_Test extends TestCase {
     }
   }
 
-  public static class TestBranding extends AbstractBranding {
+  private static class TestBranding extends AbstractBranding {
   }
 
-  public static class TestConfigurator implements ApplicationConfigurator {
+  private static class TestConfigurator implements ApplicationConfigurator {
     public void configure( ApplicationConfiguration configuration ) {
       configuration.addEntryPoint( "ep", TestEntryPoint.class );
-      configuration.addPhaseListener( new TestPhaseListener() );
+      configuration.addPhaseListener( mock( PhaseListener.class ) );
       configuration.addResource( new TestResource() );
       configuration.addBranding( new TestBranding() );
     }
   }
 
-  public void testResourceManagerInitialization() {
-    Fixture.triggerServletContextInitialized();
+  private RWTServletContextListener rwtServletContextListener;
+  private ServletContext servletContext;
+  private ServletContextEvent contextInitializedEvent;
 
-    checkTestResourceManagerHasBeenRegistered();
+  public void testResourceManagerIsInitialized() {
+    String className = TestConfigurator.class.getName();
+    servletContext.setInitParameter( ApplicationConfigurator.CONFIGURATOR_PARAM, className );
+    
+    rwtServletContextListener.contextInitialized( contextInitializedEvent );
+    
+    assertResourceManagerIsRegistered();
   }
 
   public void testEntryPointInitialization() {
-    setEntryPointInitParameter();
+    String className = TestEntryPoint.class.getName();
+    servletContext.setInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM, className );
 
-    triggerServletContextInitialized();
+    rwtServletContextListener.contextInitialized( contextInitializedEvent );
 
-    checkEntryPointHasBeenRegistered();
+    assertEntryPointIsRegistered();
   }
 
   public void testEntryPointInitializationWithNonExistingClassName() {
-    Fixture.setInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM, "does.not.Exist" );
+    String className = "does.not.Exist";
+    servletContext.setInitParameter( RWTServletContextListener.ENTRY_POINTS_PARAM, className );
 
     try {
-      triggerServletContextInitialized();
+      rwtServletContextListener.contextInitialized( contextInitializedEvent );
       fail();
     } catch( IllegalArgumentException expected ) {
     }
-    Fixture.createServiceContext();
   }
 
   public void testConfigurator() {
-    setConfiguratorInitParameter();
+    String className = TestConfigurator.class.getName();
+    servletContext.setInitParameter( ApplicationConfigurator.CONFIGURATOR_PARAM, className );
 
-    triggerServletContextInitialized();
+    rwtServletContextListener.contextInitialized( contextInitializedEvent );
 
-    checkEntryPointHasBeenRegistered();
-    checkPhaseListenersHaveBeenRegistered();
-    checkResourceHasBeenRegistered();
-    checkBrandingHasBeenRegistered();
+    assertEntryPointIsRegistered();
+    assertPhaseListenersAreRegistered();
+    assertResourceIsRegistered();
+    assertBrandingIsRegistered();
   }
 
-  protected void tearDown() {
-    if( Fixture.getServletContext() != null ) {
-      Fixture.triggerServletContextDestroyed();
-      Fixture.disposeOfServiceContext();
-      Fixture.disposeOfServletContext();
-    }
+  protected void setUp() throws Exception {
+    rwtServletContextListener = new RWTServletContextListener();
+    servletContext = new TestServletContext();
+    contextInitializedEvent = new ServletContextEvent( servletContext );
   }
 
-  private void triggerServletContextInitialized() {
-    ServletContext servletContext = Fixture.getServletContext();
-    ServletContextEvent event = new ServletContextEvent( servletContext );
-    new RWTServletContextListener().contextInitialized( event );
+  private void assertResourceManagerIsRegistered() {
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    assertNotNull( applicationContext.getResourceManager() );
   }
 
-  private void checkTestResourceManagerHasBeenRegistered() {
-    Fixture.createServiceContext();
-    assertTrue( RWT.getResourceManager() instanceof TestResourceManager );
+  private void assertEntryPointIsRegistered() {
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    assertEquals( 1, applicationContext.getEntryPointManager().getEntryPoints().length );
+  }
+  
+  private void assertPhaseListenersAreRegistered() {
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    assertEquals( 3, applicationContext.getPhaseListenerRegistry().getAll().length );
   }
 
-  private void checkEntryPointHasBeenRegistered() {
-    Fixture.createServiceContext();
-    assertEquals( 1, RWTFactory.getEntryPointManager().getEntryPoints().length );
+  private void assertResourceIsRegistered() {
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    IResource[] resources = applicationContext.getResourceRegistry().get();
+    assertEquals( 1, resources.length );
+    assertEquals( TestResource.class, resources[ 0 ].getClass() );
   }
 
-  private void checkResourceHasBeenRegistered() {
-    assertTrue( RWTFactory.getResourceRegistry().get()[ 0 ] instanceof TestResource );
-    assertEquals( 1, RWTFactory.getResourceRegistry().get().length );
-  }
-
-  private void checkBrandingHasBeenRegistered() {
-    AbstractBranding[] allBrandings = RWTFactory.getBrandingManager().getAll();
+  private void assertBrandingIsRegistered() {
+    ApplicationContext applicationContext = ApplicationContextUtil.get( servletContext );
+    AbstractBranding[] allBrandings = applicationContext.getBrandingManager().getAll();
     assertEquals( 1, allBrandings.length );
     assertEquals( TestBranding.class, allBrandings[ 0 ].getClass() );
-  }
-
-  private void checkPhaseListenersHaveBeenRegistered() {
-    assertEquals( 3, RWTFactory.getPhaseListenerRegistry().getAll().length );
-  }
-
-  private void setEntryPointInitParameter() {
-    String name = RWTServletContextListener.ENTRY_POINTS_PARAM;
-    String value = TestEntryPoint.class.getName();
-    Fixture.setInitParameter( name, value );
-  }
-
-  private void setConfiguratorInitParameter() {
-    String name = ApplicationConfigurator.CONFIGURATOR_PARAM;
-    String value = TestConfigurator.class.getName();
-    Fixture.setInitParameter( name, value );
   }
 }
