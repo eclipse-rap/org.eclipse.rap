@@ -64,7 +64,7 @@
     <repository>
       <id>runtime-base-repository</id>
       <layout>p2</layout>
-      <url>http://build.eclipse.org/rt/rap/base-platforms/1.5M4/runtime-base</url>
+      <url>http://build.eclipse.org/rt/rap/base-platforms/1.5M4/missing-pieces</url>
     </repository>
   </repositories>
 
