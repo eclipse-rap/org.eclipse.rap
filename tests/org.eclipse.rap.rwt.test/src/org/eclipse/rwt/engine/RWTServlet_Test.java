@@ -10,8 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.engine;
 
-import static org.mockito.Mockito.mock;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +22,11 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
-import org.eclipse.rap.rwt.testfixture.TestServletContext;
 import org.eclipse.rap.rwt.testfixture.TestSession;
-import org.eclipse.rwt.application.ApplicationConfigurator;
+import org.eclipse.rwt.engine.RWTServlet;
 import org.eclipse.rwt.internal.application.ApplicationContext;
 import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.service.IServiceHandler;
 
 
@@ -76,8 +72,8 @@ public class RWTServlet_Test extends TestCase {
   }
 
   public void testServiceHandlerHasStateInfo() throws ServletException, IOException {
-    final List<IServiceStateInfo> log = new ArrayList<IServiceStateInfo>();
-    ApplicationContext applicationContext = createApplicationContext();
+    final List<Object> log = new ArrayList<Object>();
+    ApplicationContext applicationContext = new ApplicationContext( null, null );
     TestRequest request = createTestRequest( applicationContext );
     request.setParameter( IServiceHandler.REQUEST_PARAM, "foo" );
     applicationContext.getServiceManager().registerServiceHandler( "foo", new IServiceHandler() {
@@ -92,19 +88,11 @@ public class RWTServlet_Test extends TestCase {
     assertNotNull( log.get( 0 ) );
   }
 
-  private static ApplicationContext createApplicationContext() {
-    ServletContext servletContext = new TestServletContext();
-    ApplicationConfigurator configurator = mock( ApplicationConfigurator.class );
-    ApplicationContext result = new ApplicationContext( configurator, servletContext );
-    result.activate();
-    ApplicationContextUtil.set( result.getServletContext(), result );
-    return result;
-  }
-
-  private static TestRequest createTestRequest( ApplicationContext applicationContext ) {
+  private TestRequest createTestRequest( ApplicationContext applicationContext ) {
     TestSession session = new TestSession();
-    session.setServletContext( applicationContext.getServletContext() );
     TestRequest result = new TestRequest();
+    ServletContext servletContext = session.getServletContext();
+    ApplicationContextUtil.set( servletContext, applicationContext );
     result.setSession( session );
     return result;
   }
