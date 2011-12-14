@@ -48,9 +48,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Tree", {
     "headerVisible",
     "linesVisible",
     "topItemIndex",
-    "focusItem",
     "scrollLeft",
     "selection",
+    "focusItem",
     "sortDirection",
     "sortColumn",
     "scrollBarsVisible",
@@ -78,9 +78,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Tree", {
       for( var i = 0; i < value.length; i++ ) {
         org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( value[ i ], function( item ) {
           widget.selectItem( item );
-          if( i === 0 ) {
-            widget.setFocusItem( item );
-          }
         } );
       }
     },
