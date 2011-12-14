@@ -124,7 +124,7 @@ final class GCOperationWriter {
     float x = operation.x;
     float y = operation.y;
     addClientOperation( "save" );
-    addClientOperation( "fillStyle", getColorValueAsArray( foreground ) );
+    addToOperations( "fillStyle", getColorValueAsArray( foreground ) );
     addClientOperation( "lineWidth", 1 );
     addClientOperation( "beginPath" );
     addClientOperation( "rect", x, y, 1, 1 );
@@ -168,8 +168,8 @@ final class GCOperationWriter {
     float y2 = vertical ? y1 + Math.abs( height ) : y1;
     addClientOperation( "save" );
     addClientOperation( "createLinearGradient", x1, y1, x2, y2 );
-    addClientOperation( "addColorStop", new Integer( 0 ), getColorValueAsArray( startColor ) );
-    addClientOperation( "addColorStop", new Integer( 1 ), getColorValueAsArray( endColor ) );
+    addToOperations( "addColorStop", new Integer( 0 ), getColorValueAsArray( startColor ) );
+    addToOperations( "addColorStop", new Integer( 1 ), getColorValueAsArray( endColor ) );
     addClientOperation( "fillStyle", "linearGradient" );
     addClientOperation( "beginPath" );
     addClientOperation( "rect", x1, y1, width, height );
@@ -209,7 +209,7 @@ final class GCOperationWriter {
     float startAngle = round( operation.startAngle * factor * -1, 4 );
     float arcAngle = round( operation.arcAngle * factor * -1, 4 );
     addClientOperation( "beginPath" );
-    addClientOperation( 
+    addToOperations( 
       "arc",
       new Float( x + width / 2 ),
       new Float( y + height / 2 ),
@@ -352,10 +352,10 @@ final class GCOperationWriter {
         String msg = "Unsupported operation id: " + operation.id;
         throw new RuntimeException( msg );
     }
-    addClientOperation( name, value );
+    addToOperations( name, value );
   }
-  
-  private void addClientOperation( Object... args ) {
+
+  private void addToOperations( Object... args ) {
     operations.add( args );
   }
 
@@ -363,8 +363,8 @@ final class GCOperationWriter {
     addClientOperation( new Object[]{ name }, args );
   }
   
-  private void addClientOperation( String name, String text, float... args ) {
-    addClientOperation( new Object[]{ name, text }, args );
+  private void addClientOperation( String name, String argText, float... args ) {
+    addClientOperation( new Object[]{ name, argText }, args );
   }
   
   private void addClientOperation( Object[] objects, float[] numbers ) {
