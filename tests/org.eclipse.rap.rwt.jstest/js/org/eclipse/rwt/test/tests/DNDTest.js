@@ -91,7 +91,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       button.destroy();
     },
 
-    testSetTransferByProtocol : function() {
+    testSetDragSourceTransferByProtocol : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
       var objectManager = org.eclipse.rwt.protocol.ObjectManager;
@@ -126,6 +126,114 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       button.destroy();
     },
 
+    testCreateDropTargetByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "parent" : "w2",
+          "style" : [ "PUSH" ]
+        }
+      } );
+
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.DropTarget",
+        "properties" : {
+          "control" : "w3",
+          "style" : [ "DROP_COPY", "DROP_MOVE" ]
+        }
+      } );
+
+      var button = objectManager.getObject( "w3" );      
+      assertTrue( dndSupport.isDropTarget( button ) );
+      var actions = dndSupport._dropTargets[ button.toHashCode() ].actions;
+      var expected = {
+        "copy" : true,
+        "move" : true
+      };
+      assertEquals( expected, actions );
+      button.destroy();
+    },
+
+
+    testDisposeDropTargetByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "parent" : "w2",
+          "style" : [ "PUSH" ]
+        }
+      } );
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.DropTarget",
+        "properties" : {
+          "control" : "w3",
+          "style" : [ "DROP_COPY", "DROP_MOVE" ]
+        }
+      } );
+
+      var button = objectManager.getObject( "w3" );      
+      assertTrue( dndSupport.isDropTarget( button ) );
+
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "destroy"
+      } );
+      assertFalse( dndSupport.isDropTarget( button ) );
+      button.destroy();
+    },
+
+    testSetDropTargetTransferByProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var dndSupport = org.eclipse.rwt.DNDSupport.getInstance();
+      var objectManager = org.eclipse.rwt.protocol.ObjectManager;
+      var shell = testUtil.createShellByProtocol( "w2" );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.Button",
+        "properties" : {
+          "parent" : "w2",
+          "style" : [ "PUSH" ]
+        }
+      } );
+
+      processor.processOperation( {
+        "target" : "w4",
+        "action" : "create",
+        "type" : "rwt.widgets.DropTarget",
+        "properties" : {
+          "control" : "w3",
+          "style" : [ "DROP_COPY", "DROP_MOVE" ],
+          "transfer" : [ "my", "transfer" ]
+        }
+      } );
+
+      var button = objectManager.getObject( "w3" );      
+      assertTrue( dndSupport.isDropTarget( button ) );
+      var types = button.getDropDataTypes();
+      var expected = [ "my", "transfer" ];
+      assertEquals( expected, types );
+      button.destroy();
+    },
 
 
     testEventListener : function() {
@@ -804,7 +912,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       testUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton );
       testUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
       assertNull( dndSupport._dropFeedbackRenderer );
-      dndSupport.setFeedback( tree, [ "after" ] );
+      dndSupport.setFeedback( tree, [ "FEEDBACK_INSERT_AFTER" ] );
       assertNotNull( dndSupport._dropFeedbackRenderer );
       testUtil.flush();
       var indicator = dndSupport._dropFeedbackRenderer._insertIndicator;
@@ -861,7 +969,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       testUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton );
       testUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
       assertNull( dndSupport._dropFeedbackRenderer );
-      dndSupport.setFeedback( tree, [ "before" ] );
+      dndSupport.setFeedback( tree, [ "FEEDBACK_INSERT_BEFORE" ] );
       assertNotNull( dndSupport._dropFeedbackRenderer );
       testUtil.flush();
       var indicator = dndSupport._dropFeedbackRenderer._insertIndicator;
@@ -918,7 +1026,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       testUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton );
       testUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
       assertNull( dndSupport._dropFeedbackRenderer );
-      dndSupport.setFeedback( tree, [ "select" ] );
+      dndSupport.setFeedback( tree, [ "FEEDBACK_SELECT" ] );
       assertNotNull( dndSupport._dropFeedbackRenderer );
       testUtil.flush();
       assertTrue( tree._rowContainer._children[ 1 ].hasState( "dnd_selected") );
@@ -967,7 +1075,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       testUtil.fakeMouseEventDOM( targetNode, "mouseover", leftButton );
       testUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
       assertNull( dndSupport._dropFeedbackRenderer );
-      dndSupport.setFeedback( tree, [ "expand" ] );
+      dndSupport.setFeedback( tree, [ "FEEDBACK_EXPAND" ] );
       assertNotNull( dndSupport._dropFeedbackRenderer );
       assertNotNull( dndSupport._dropFeedbackRenderer._expandTimer );
       testUtil.clearTimerOnceLog();
@@ -1018,7 +1126,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DNDTest", {
       testUtil.fakeMouseEventDOM( targetNode, "mousemove", leftButton );
       assertIdentical( tree._rowContainer._children[ 1 ], dndSupport._getCurrentFeedbackTarget() );
       assertNull( dndSupport._dropFeedbackRenderer );
-      dndSupport.setFeedback( tree, [ "scroll" ] );
+      dndSupport.setFeedback( tree, [ "FEEDBACK_SCROLL" ] );
       // setting feedback
       var feedback = dndSupport._dropFeedbackRenderer;
       assertNotNull( feedback );

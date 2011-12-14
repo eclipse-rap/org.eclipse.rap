@@ -68,22 +68,22 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
 
     _renderFeedback : function( row, value ) {
       if( this._feedback != null && row != null ) {
-        if( this._feedback[ "select" ] ) {
+        if( this._feedback[ "FEEDBACK_SELECT" ] ) {
           this._renderFeedbackSelect( row, value );
-        } else if( this._feedback[ "before" ] ) {
+        } else if( this._feedback[ "FEEDBACK_INSERT_BEFORE" ] ) {
           this._renderFeedbackBefore( row, value );
-        } else if( this._feedback[ "after" ] ) {
+        } else if( this._feedback[ "FEEDBACK_INSERT_AFTER" ] ) {
           this._renderFeedbackAfter( row, value );
         }
-        if( this._feedback[ "expand" ] ) {
+        if( this._feedback[ "FEEDBACK_EXPAND" ] ) {
           this._renderFeedbackExpand( row, value );
         }
-        if( this._feedback[ "scroll" ] ) {
+        if( this._feedback[ "FEEDBACK_SCROLL" ] ) {
           this._renderFeedbackScroll( row, value );
         }
       }
     },
-    
+
     _renderFeedbackSelect : function( row, value ) {
       row.setState( "dnd_selected", value );
       var item = this._tree._rowContainer.findItemByRow( row );

@@ -63,6 +63,11 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
       return typeof this._dragSources[ hash ] != "undefined";       
     },
 
+    isDropTarget : function( widget ) {
+      var hash = widget.toHashCode();
+      return typeof this._dropTargets[ hash ] != "undefined";       
+    },
+
     _dragStartHandler : function( event ) {
       var wm = org.eclipse.swt.WidgetManager.getInstance();
       var target = event.getCurrentTarget();
@@ -319,22 +324,27 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
     _operationsToActions : function( operations ) {
       var result = {};
       for( var i = 0; i < operations.length; i++ ) {
-        var action;
-        switch( operations[ i ] ) {
-          case "DROP_MOVE":
-            var action = "move";
-          break;
-          case "DROP_COPY":
-            var action = "copy";
-          break;
-          case "DROP_LINK":
-            var action = "alias";
-          break;
-          default:
-            action = operations[ i ] == "link" ? "alias" : operations[ i ]; // TODO [tb] : remove when ready
-          break;
-        }
+        var action = this._toAction( operations[ i ] );
         result[ action ] = action != null;
+      }
+      return result;
+    },
+    
+    _toAction : function( operation ) {
+      var result;
+      switch( operation ) {
+        case "DROP_MOVE":
+          result = "move";
+        break;
+        case "DROP_COPY":
+          result = "copy";
+        break;
+        case "DROP_LINK":
+          result = "alias";
+        break;
+        default:
+          result = operation;
+        break;
       }
       return result;
     },
@@ -497,8 +507,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
         this.cancel();
       } else if( this._currentDropTarget != null ) {
         var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
-        var action 
-          = this._computeCurrentAction( event, this._currentDropTarget );
+        var action = this._computeCurrentAction( event, this._currentDropTarget );
         this._setAction( action, event );
         dndHandler._renderCursor();
       }
@@ -543,7 +552,7 @@ qx.Class.define( "org.eclipse.rwt.DNDSupport", {
 
     setOperationOverwrite : function( widget, operation ) {
       if( widget == this._currentDropTarget ) {
-        var action = operation == "link" ? "alias" : operation;
+        var action = this._toAction( operation );
         var dndHandler = qx.event.handler.DragAndDropHandler.getInstance();
         this._actionOverwrite = action;
         this._setAction( action, null );

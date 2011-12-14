@@ -12,26 +12,25 @@ package org.eclipse.swt.internal.dnd.droptargetkit;
 
 import java.io.IOException;
 
-import org.eclipse.rwt.lifecycle.*;
-import org.eclipse.swt.dnd.*;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
+import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.internal.dnd.dragsourcekit.DNDLCAUtil;
 import org.eclipse.swt.widgets.Widget;
-import org.eclipse.swt.internal.dnd.dragsourcekit.*;
 
 
 public final class DropTargetLCA extends AbstractWidgetLCA {
-
-  private static final String JSFUNC_REGISTER
-    = "org.eclipse.rwt.DNDSupport.getInstance().registerDropTarget";
-  private static final String JSFUNC_DEREGISTER
-    = "org.eclipse.rwt.DNDSupport.getInstance().deregisterDropTarget";
-  private static final String JSFUNC_SET_TRANSFER_TYPES
-    = "org.eclipse.rwt.DNDSupport.getInstance().setDropTargetTransferTypes";
 
   private static final Transfer[] DEFAULT_TRANSFER = new Transfer[ 0 ];
 
   private static final String PROP_CONTROL = "control";
   private static final String PROP_TRANSFER = "transfer";
+  private static final String TYPE = "rwt.widgets.DropTarget";
 
   public void preserveValues( Widget widget ) {
     DropTarget dropTarget = ( DropTarget )widget;
@@ -45,34 +44,26 @@ public final class DropTargetLCA extends AbstractWidgetLCA {
 
   public void renderInitialization( Widget widget ) throws IOException {
     DropTarget dropTarget = ( DropTarget )widget;
-    JSWriter writer = JSWriter.getWriterFor( dropTarget );
-    Object[] operations = DNDLCAUtil.convertOperations( dropTarget.getStyle() );
-    Object[] args = new Object[]{ dropTarget.getControl(), operations };
-    writer.callStatic( JSFUNC_REGISTER, args );
+    IClientObject clientObject = ClientObjectFactory.getForWidget( dropTarget );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "control", WidgetUtil.getId( dropTarget.getControl() ) );
+    clientObject.setProperty( "style", DNDLCAUtil.convertOperations( dropTarget.getStyle() ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
     DropTarget dropTarget = ( DropTarget )widget;
-    writeTransfer( dropTarget );
+    renderTransfer( dropTarget );
   }
 
   public void renderDispose( Widget widget ) throws IOException {
-    DropTarget dropTarget = ( DropTarget )widget;
-    IWidgetAdapter adapter = dropTarget.getAdapter( IWidgetAdapter.class );
-    JSWriter writer = JSWriter.getWriterFor( dropTarget );
-    Control control = ( Control )adapter.getPreserved( PROP_CONTROL );
-    writer.callStatic( JSFUNC_DEREGISTER, new Object[]{ control } );
+    ClientObjectFactory.getForWidget( widget ).destroy();
   }
 
-  private static void writeTransfer( DropTarget dropTarget ) throws IOException {
+  private static void renderTransfer( DropTarget dropTarget ) {
     Transfer[] newValue = dropTarget.getTransfer();
     if( WidgetLCAUtil.hasChanged( dropTarget, PROP_TRANSFER, newValue, DEFAULT_TRANSFER ) ) {
-      JSWriter writer = JSWriter.getWriterFor( dropTarget );
-      Object[] args = new Object[]{
-        dropTarget.getControl(),
-        DNDLCAUtil.convertTransferTypes( newValue )
-      };
-      writer.callStatic( JSFUNC_SET_TRANSFER_TYPES, args );
+      String[] renderValue = DNDLCAUtil.convertTransferTypes( newValue );
+      ClientObjectFactory.getForWidget( dropTarget ).setProperty( "transfer", renderValue );
     }
   }
 

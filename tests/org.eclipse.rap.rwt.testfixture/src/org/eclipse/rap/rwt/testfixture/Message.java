@@ -149,6 +149,11 @@ public final class Message {
     return ( CreateOperation )findOperation( CreateOperation.class, target );
   }
 
+  public DestroyOperation findDestroyOperation( Widget widget ) {
+    String target = WidgetUtil.getId( widget );
+    return ( DestroyOperation )findOperation( DestroyOperation.class, target );
+  }
+  
   public SetOperation findSetOperation( String target, String property ) {
     return ( SetOperation )findOperation( SetOperation.class , target, property );
   }

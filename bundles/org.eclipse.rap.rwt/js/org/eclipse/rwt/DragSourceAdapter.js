@@ -31,10 +31,28 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.DragSource", {
     }
   },
 
-  listeners : [],
-
-  listenerHandler : {},
-
-  methods : []
+  methods : [ "changeFeedback", "changeDetail", "changeDataType" ],
+  
+  methodHandler : {
+    "changeFeedback" : function( source, properties ) {
+      var dnd = org.eclipse.rwt.DNDSupport.getInstance();
+      var control = org.eclipse.rwt.protocol.ObjectManager.getObject( properties.control );
+      var feedback = properties.feedback;
+      var flags = properties.flags;
+      dnd.setFeedback( control, feedback, flags );
+    },
+    "changeDetail" : function( source, properties ) {
+      var dnd = org.eclipse.rwt.DNDSupport.getInstance();
+      var control = org.eclipse.rwt.protocol.ObjectManager.getObject( properties.control );
+      var detail = properties.detail;
+      dnd.setOperationOverwrite( control, detail );
+    },
+    "changeDataType" : function( source, properties ) {
+      var dnd = org.eclipse.rwt.DNDSupport.getInstance();
+      var control = org.eclipse.rwt.protocol.ObjectManager.getObject( properties.control );
+      var dataType = properties.dataType;
+      dnd.setDataType( control, dataType );
+    }
+  }
 
 } );

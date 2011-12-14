@@ -16,6 +16,8 @@ import java.util.Date;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
@@ -24,6 +26,8 @@ import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.events.DragDetectEvent;
 import org.eclipse.swt.events.DragDetectListener;
 import org.eclipse.swt.widgets.*;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 
 public class DNDSupport_Test extends TestCase {
@@ -72,23 +76,6 @@ public class DNDSupport_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testRegisterAndDisposeDropTarget() {
-    Fixture.fakeNewRequest( display );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, DND.DROP_COPY );
-    Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
-    dropTarget.setTransfer( types );
-    String dndSupport = "org.eclipse.rwt.DNDSupport.getInstance()";
-    String wRef = "wm.findWidgetById( \\\"w3\\\" )";
-    String register = dndSupport + ".registerDropTarget( " + wRef + ", [ \\\"DROP_COPY\\\" ]";
-    int dataType = TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
-    String transferType = dndSupport + ".setDropTargetTransferTypes( " + wRef + ", [ \\\"" + dataType;
-    Fixture.executeLifeCycleFromServerThread();
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.contains( register ) );
-    assertTrue( markup.contains( transferType ) );
-  }
-
   public void testCancelAfterDragDetectAndStartEvent() {
     shell.setLocation( 5, 5 );
     Control dragSourceControl = new Label( shell, SWT.NONE );
@@ -122,9 +109,7 @@ public class DNDSupport_Test extends TestCase {
     DragSourceEvent dragStart = ( DragSourceEvent )events.get( 1 );
     assertEquals( DragSourceEvent.DRAG_START, dragStart.getID() );
     assertSame( dragSource, dragStart.widget );
-    String markup = Fixture.getAllMarkup();
-    String expected = "org.eclipse.rwt.DNDSupport.getInstance().cancel";
-    assertTrue( markup.contains( expected ) );
+    assertNotNull( Fixture.getProtocolMessage().findCallOperation( dragSource, "cancel" ) );
   }
 
   public void testLeaveBeforeEnter() {
@@ -720,15 +705,11 @@ public class DNDSupport_Test extends TestCase {
     createDropTargetEvent( dropTargetControl, dragSourceControl, "dragEnter", 1 );
     createDropTargetEvent( dropTargetControl, dragSourceControl, "dragOver", 2 );
     Fixture.executeLifeCycleFromServerThread();
-    String markup = Fixture.getAllMarkup();
-    String expected
-      = "org.eclipse.rwt.DNDSupport.getInstance()"
-      + ".setOperationOverwrite( "
-      + ( "wm.findWidgetById( \\\""
-      + WidgetUtil.getId( dropTargetControl )
-      + "\\\" )" )
-      + ", \\\"link";
-    assertTrue( markup.contains( expected ) );
+    
+    Message message = Fixture.getProtocolMessage();
+    CallOperation call = message.findCallOperation( dragSource, "changeDetail" );
+    assertEquals( WidgetUtil.getId( dropTargetControl ), call.getProperty( "control" ) );
+    assertEquals( "DROP_LINK", call.getProperty( "detail" ) );
   }
 
   public void testResponseDetailChangedOnOver() {
@@ -767,15 +748,10 @@ public class DNDSupport_Test extends TestCase {
                            typeId,
                            2 );
     Fixture.executeLifeCycleFromServerThread();
-    String markup = Fixture.getAllMarkup();
-    String expected
-      = "org.eclipse.rwt.DNDSupport.getInstance()"
-      + ".setOperationOverwrite( "
-      + ( "wm.findWidgetById( \\\""
-      + WidgetUtil.getId( dropTargetControl )
-      + "\\\" )" )
-      + ", \\\"link";
-    assertTrue( markup.contains( expected ) );
+    Message message = Fixture.getProtocolMessage();
+    CallOperation call = message.findCallOperation( dragSource, "changeDetail" );
+    assertEquals( WidgetUtil.getId( dropTargetControl ), call.getProperty( "control" ) );
+    assertEquals( "DROP_LINK", call.getProperty( "detail" ) );
   }
 
   public void testDropAcceptWithDetailChangedOnEnter() {
@@ -857,7 +833,7 @@ public class DNDSupport_Test extends TestCase {
     assertTrue( HTMLTransfer.getInstance().isSupportedType( dataTypes[ 0 ] ) );
   }
 
-  public void testResponseFeedbackChangedOnEnter() {
+  public void testResponseFeedbackChangedOnEnter() throws JSONException {
     int operations = DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY;
     Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
     Control dragSourceControl = new Label( shell, SWT.NONE );
@@ -884,19 +860,15 @@ public class DNDSupport_Test extends TestCase {
                            "dragOver",
                            2 );
     Fixture.executeLifeCycleFromServerThread();
-    String markup = Fixture.getAllMarkup();
-    String expected
-      = "org.eclipse.rwt.DNDSupport.getInstance()"
-      + ".setFeedback( "
-      + ( "wm.findWidgetById( \\\""
-      + WidgetUtil.getId( dropTargetControl )
-      + "\\\" )" )
-      + ", [ \\\"select\\\" ], "
-      + DND.FEEDBACK_SELECT;
-    assertTrue( markup.contains( expected ) );
+    Message message = Fixture.getProtocolMessage();
+    CallOperation call = message.findCallOperation( dragSource, "changeFeedback" );
+    assertEquals( WidgetUtil.getId( dropTargetControl ), call.getProperty( "control" ) );
+    assertEquals( new Integer( DND.FEEDBACK_SELECT ), call.getProperty( "flags" ) );
+    JSONArray feedbackArr = ( JSONArray )call.getProperty( "feedback" );
+    assertEquals( "\"FEEDBACK_SELECT\"", feedbackArr.join( "," ) );
   }
 
-  public void testResponseFeedbackChangedOnOver() {
+  public void testResponseFeedbackChangedOnOver() throws JSONException {
     int operations = DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY;
     Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
     Control dragSourceControl = new Label( shell, SWT.NONE );
@@ -923,16 +895,13 @@ public class DNDSupport_Test extends TestCase {
                            "dragOver",
                            2 );
     Fixture.executeLifeCycleFromServerThread();
-    String markup = Fixture.getAllMarkup();
-    String expected
-      = "org.eclipse.rwt.DNDSupport.getInstance()"
-      + ".setFeedback( "
-      + ( "wm.findWidgetById( \\\""
-      + WidgetUtil.getId( dropTargetControl )
-      + "\\\" )" )
-      + ", [ \\\"expand\\\", \\\"scroll\\\" ], "
-      + ( DND.FEEDBACK_EXPAND | DND.FEEDBACK_SCROLL );
-    assertTrue( markup.contains( expected ) );
+    Message message = Fixture.getProtocolMessage();
+    CallOperation call = message.findCallOperation( dragSource, "changeFeedback" );
+    assertEquals( WidgetUtil.getId( dropTargetControl ), call.getProperty( "control" ) );
+    Integer expectedFlags = new Integer( DND.FEEDBACK_SCROLL | DND.FEEDBACK_EXPAND );
+    assertEquals( expectedFlags, call.getProperty( "flags" ) );
+    JSONArray feedbackArr = ( JSONArray )call.getProperty( "feedback" );
+    assertEquals( "\"FEEDBACK_EXPAND\",\"FEEDBACK_SCROLL\"", feedbackArr.join( "," ) );
   }
 
   public void testResponseInitDataType() {
@@ -956,14 +925,9 @@ public class DNDSupport_Test extends TestCase {
                            "dragEnter",
                            1 );
     Fixture.executeLifeCycleFromServerThread();
-    String markup = Fixture.getAllMarkup();
-    String expected
-    = "org.eclipse.rwt.DNDSupport.getInstance()"
-      + ".setDataType( "
-      + ( "wm.findWidgetById( \\\""
-          + WidgetUtil.getId( dropTargetControl )
-          + "\\\" ), " );
-    assertTrue( markup.contains( expected ) );
+    Message message = Fixture.getProtocolMessage();
+    CallOperation call = message.findCallOperation( dragSource, "changeDataType" );
+    assertEquals( WidgetUtil.getId( dropTargetControl ), call.getProperty( "control" ) );
   }
 
   public void testResponseChangeDataTypeOnOver() {
@@ -999,18 +963,14 @@ public class DNDSupport_Test extends TestCase {
                            "dragOver",
                            2 );
     Fixture.executeLifeCycleFromServerThread();
-    String markup = Fixture.getAllMarkup();
     DropTargetEvent dragEnter = ( DropTargetEvent )events.get( 0 );
     TransferData typeOnEnter = dragEnter.currentDataType;
     assertTrue( TextTransfer.getInstance().isSupportedType( typeOnEnter ) );
-    String expected
-    = "org.eclipse.rwt.DNDSupport.getInstance()"
-      + ".setDataType( "
-      + ( "wm.findWidgetById( \\\""
-          + WidgetUtil.getId( dropTargetControl )
-          + "\\\" ), "
-          + RTFTransfer.getInstance().getSupportedTypes()[ 0 ].type );
-    assertTrue( markup.contains( expected ) );
+    Message message = Fixture.getProtocolMessage();
+    CallOperation call = message.findCallOperation( dragSource, "changeDataType" );
+    assertEquals( WidgetUtil.getId( dropTargetControl ), call.getProperty( "control" ) );
+    Integer expectedType = new Integer( RTFTransfer.getInstance().getSupportedTypes()[ 0 ].type );
+    assertEquals( expectedType, call.getProperty( "dataType" ) );
   }
 
   public void testResponseChangeDataTypeOnEnter() {
@@ -1046,18 +1006,14 @@ public class DNDSupport_Test extends TestCase {
                            "dragOver",
                            2 );
     Fixture.executeLifeCycleFromServerThread();
-    String markup = Fixture.getAllMarkup();
     DropTargetEvent dragOver = ( DropTargetEvent )events.get( 0 );
     TransferData typeOnOver = dragOver.currentDataType;
     assertTrue( RTFTransfer.getInstance().isSupportedType( typeOnOver ) );
-    String expected
-    = "org.eclipse.rwt.DNDSupport.getInstance()"
-      + ".setDataType( "
-      + ( "wm.findWidgetById( \\\""
-          + WidgetUtil.getId( dropTargetControl )
-          + "\\\" ), "
-          + RTFTransfer.getInstance().getSupportedTypes()[ 0 ].type );
-    assertTrue( markup.contains( expected ) );
+    Message message = Fixture.getProtocolMessage();
+    CallOperation call = message.findCallOperation( dragSource, "changeDataType" );
+    assertEquals( WidgetUtil.getId( dropTargetControl ), call.getProperty( "control" ) );
+    Integer expectedType = new Integer( RTFTransfer.getInstance().getSupportedTypes()[ 0 ].type );
+    assertEquals( expectedType, call.getProperty( "dataType" ) );
   }
 
   public void testResponseChangeDataTypeInvalid() {
@@ -1083,13 +1039,12 @@ public class DNDSupport_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     createDropTargetEvent( dropTargetControl, dragSourceControl, "dragOver", 1 );
     Fixture.executeLifeCycleFromServerThread();
-    String markup = Fixture.getAllMarkup();
-    String expected = "org.eclipse.rwt.DNDSupport.getInstance()"
-                      + ".setDataType( "
-                      + ( "wm.findWidgetById( \\\""
-                          + WidgetUtil.getId( dropTargetControl )
-                          + "\\\" ), " + TextTransfer.getInstance().getSupportedTypes()[ 0 ].type );
-    assertTrue( markup.contains( expected ) );
+    Message message = Fixture.getProtocolMessage();
+    CallOperation call = message.findCallOperation( dragSource, "changeDataType" );
+    assertEquals( WidgetUtil.getId( dropTargetControl ), call.getProperty( "control" ) );
+    Integer expectedType = new Integer( TextTransfer.getInstance().getSupportedTypes()[ 0 ].type );
+    assertEquals( expectedType, call.getProperty( "dataType" ) );
+    
   }
 
   public void testOperationChangedEvent() {
