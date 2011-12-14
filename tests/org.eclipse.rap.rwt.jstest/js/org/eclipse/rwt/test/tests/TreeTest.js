@@ -241,7 +241,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeTest", {
       assertTrue( widget.isItemSelected( item1 ) );
       assertFalse( widget.isItemSelected( item2 ) );
       assertTrue( widget.isItemSelected( item3 ) );
-      assertIdentical( widget._focusItem, item1 );
       shell.destroy();
       widget.destroy();
     },
