@@ -46,6 +46,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static final String PROP_HEADER_VISIBLE = "headerVisible";
   private static final String PROP_LINES_VISIBLE = "linesVisible";
   private static final String PROP_TOP_ITEM_INDEX = "topItemIndex";
+  private static final String PROP_FOCUS_ITEM = "focusItem";
   private static final String PROP_SCROLL_LEFT = "scrollLeft";
   private static final String PROP_SELECTION = "selection";
   private static final String PROP_SORT_DIRECTION = "sortDirection";
@@ -74,6 +75,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     preserveProperty( tree, PROP_HEADER_VISIBLE, tree.getHeaderVisible() );
     preserveProperty( tree, PROP_LINES_VISIBLE, tree.getLinesVisible() );
     preserveProperty( tree, PROP_TOP_ITEM_INDEX, getTopItemIndex( tree ) );
+    preserveProperty( tree, PROP_FOCUS_ITEM, getFocusItem( tree ) );
     preserveProperty( tree, PROP_SCROLL_LEFT, getScrollLeft( tree ) );
     preserveProperty( tree, PROP_SELECTION, getSelection( tree ) );
     preserveProperty( tree, PROP_SORT_DIRECTION, getSortDirection( tree ) );
@@ -134,6 +136,9 @@ public final class TreeLCA extends AbstractWidgetLCA {
     renderProperty( tree, PROP_HEADER_VISIBLE, tree.getHeaderVisible(), false );
     renderProperty( tree, PROP_LINES_VISIBLE, tree.getLinesVisible(), false );
     renderProperty( tree, PROP_TOP_ITEM_INDEX, getTopItemIndex( tree ), ZERO );
+    if( tree.getSelectionCount() > 0 ) {
+      renderProperty( tree, PROP_FOCUS_ITEM, getFocusItem( tree ), null );
+    }
     renderProperty( tree, PROP_SCROLL_LEFT, getScrollLeft( tree ), ZERO );
     renderProperty( tree, PROP_SELECTION, getSelection( tree ), DEFAULT_SELECTION );
     renderProperty( tree, PROP_SORT_DIRECTION, getSortDirection( tree ), DEFAULT_SORT_DIRECTION );
@@ -297,6 +302,15 @@ public final class TreeLCA extends AbstractWidgetLCA {
   private static int getTopItemIndex( Tree tree ) {
     ITreeAdapter treeAdapter = getTreeAdapter( tree );
     return treeAdapter.getTopItemIndex();
+  }
+
+  private static TreeItem getFocusItem( Tree tree ) {
+    TreeItem result = null;
+    TreeItem[] selection = tree.getSelection();
+    if( selection.length > 0 ) {
+      result = selection[ 0 ];
+    }
+    return result;
   }
 
   private static int getTreeColumn( Tree tree ) {

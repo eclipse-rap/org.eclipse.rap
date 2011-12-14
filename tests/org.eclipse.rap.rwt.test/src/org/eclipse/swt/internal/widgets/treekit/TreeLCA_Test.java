@@ -1403,6 +1403,62 @@ public class TreeLCA_Test extends TestCase {
     assertNull( message.findSetOperation( tree, "sortColumn" ) );
   }
 
+  public void testRenderInitialFocusItem() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+
+    lca.render( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( tree );
+    assertTrue( operation.getPropertyNames().indexOf( "focusItem" ) == -1 );
+  }
+
+  public void testRenderFocusItem() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+
+    tree.setSelection( item );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( WidgetUtil.getId( item ), message.findSetProperty( tree, "focusItem" ) );
+  }
+
+  public void testRenderFocusItemUnchanged() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setSelection( item );
+    Fixture.preserveWidgets();
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "focusItem" ) );
+  }
+
+  public void testRenderFocusItemOnEmptySelection() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    new TreeItem( tree, SWT.NONE );
+    TreeItem item = new TreeItem( tree, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( tree );
+
+    tree.setSelection( item );
+    Fixture.preserveWidgets();
+    tree.setSelection( new TreeItem[ 0 ] );
+    lca.renderChanges( tree );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( tree, "focusItem" ) );
+  }
+
   private static void setScrollLeft( Tree tree, int scrollLeft ) {
     ITreeAdapter treeAdapter = getTreeAdapter( tree );
     treeAdapter.setScrollLeft( scrollLeft);
