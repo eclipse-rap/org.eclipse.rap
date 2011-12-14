@@ -121,6 +121,41 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TreeRowContainerTest", {
       tree.destroy();
     },
     
+    testRenderEmptyRowsBackground : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var tree = this._createDefaultTree();
+      var grad1 = [ [ 0, "red" ], [ 1, "yellow" ] ];
+      var grad2 = [ [ 0, "yellow" ], [ 1, "red" ] ];
+      testUtil.fakeAppearance( "tree-row", {
+        style : function( states ) {
+          return {
+            "itemBackground" : states.selected ? "red" : "blue",
+            "itemBackgroundGradient" : states.selected ?  grad1 : grad2, 
+            "itemBackgroundImage" : states.selected ? "foo.jpg" : "bar.jpg",
+            "itemForeground" : "undefined",
+            "backgroundImage" : null
+          }
+        }
+      } ); 
+      tree.setItemCount( 1 );
+      var root = new org.eclipse.rwt.widgets.TreeItem( tree.getRootItem(), 0 );
+      root.setItemCount( 1 );
+      var item = new org.eclipse.rwt.widgets.TreeItem( root, 0 );
+      root.setExpanded( true );
+      tree.selectItem( item );
+      testUtil.flush();
+      var row = tree._rowContainer._children[ 1 ];
+      assertEquals( "red", row.getBackgroundColor() );
+      assertEquals( "foo.jpg", row.getBackgroundImage() );
+      assertIdentical( grad1, row.getBackgroundGradient() );
+      root.setExpanded( false );
+      testUtil.flush();
+      assertNull( row.getBackgroundColor() );
+      assertNull( row.getBackgroundImage() );
+      assertNull( row.getBackgroundGradient() );
+      tree.destroy();
+    },
+
     testChangeTreeRowBounds : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var tree = this._createDefaultTree();

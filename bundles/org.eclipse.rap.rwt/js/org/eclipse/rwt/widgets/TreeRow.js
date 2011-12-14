@@ -54,6 +54,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.TreeRow", {
         this._renderCells( item, config, renderSelected, hoverElement );
       } else {
         this.setBackgroundColor( null );
+        this.setBackgroundImage( null );
+        this.setBackgroundGradient( null );
       }
       this._hideRemainingElements();
     },
