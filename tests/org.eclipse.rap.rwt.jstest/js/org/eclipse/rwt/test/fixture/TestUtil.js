@@ -324,14 +324,17 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
     _printableIdentifierToKeycodeMap : {
       "Backspace" : 8, 
       "Tab" : 9,
-      "Escape" : 27,
+      "Escape" : qx.core.Variant.select("qx.client", {
+        "default" : 27,
+        "webkit" : null
+      } ),
       "Space" : 32, 
       "Enter" : qx.core.Variant.select("qx.client", {
         "default" : 13,
         "gecko" : null
       } )
     },
-    
+
     pressOnce : function( target, key, mod ) {
       this.keyDown( target, key, mod );
       this.keyUp( target, key, mod );
@@ -439,7 +442,19 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
                                && keyCodeMap[ stringOrKeyCode ] === undefined;
       var isPrintableIdentifier =    typeof stringOrKeyCode === "string"
                                   && idMap[ stringOrKeyCode ] != null;
-      return isChar || isPrintableKeyCode || isPrintableIdentifier;               
+      var result = isChar || isPrintableKeyCode || isPrintableIdentifier;
+      
+      if( org.eclipse.rwt.Client.isWebkit() ) {
+        if( stringOrKeyCode === 27 || stringOrKeyCode === "Escape" ) {
+          result = false;
+        } 
+      }
+      if(    ( stringOrKeyCode === 9 || stringOrKeyCode === "Tab" ) 
+          || ( stringOrKeyCode === 8 || stringOrKeyCode === "Backspace") )
+      {
+        result = false;
+      }
+      return result;               
     },
     
     _isModifier : function( key ) {

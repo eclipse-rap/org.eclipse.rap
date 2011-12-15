@@ -393,6 +393,75 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       assertEquals( [ "click", "click", "dblclick" ], log );
       widget.destroy();
     },
+    
+    testSendKeyPress : qx.core.Variant.select("qx.client",  {
+      "gecko|opera" : function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        assertTrue( testUtil._sendKeyPress( "a" ) );
+        assertTrue( testUtil._sendKeyPress( "A" ) );
+        assertTrue( testUtil._sendKeyPress( 65 ) );
+        assertTrue( testUtil._sendKeyPress( "Enter" ) );
+        assertTrue( testUtil._sendKeyPress( 13 ) );
+        assertTrue( testUtil._sendKeyPress( "F1" ) );
+        assertTrue( testUtil._sendKeyPress( 112 ) );
+        assertTrue( testUtil._sendKeyPress( "Space" ) );
+        assertTrue( testUtil._sendKeyPress( 32 ) );
+        assertTrue( testUtil._sendKeyPress( "Escape" ) );
+        assertTrue( testUtil._sendKeyPress( 27 ) );
+        assertTrue( testUtil._sendKeyPress( "Tab" ) );
+        assertTrue( testUtil._sendKeyPress( 9 ) );
+        assertTrue( testUtil._sendKeyPress( "Backspace" ) );
+        assertTrue( testUtil._sendKeyPress( 8 ) );
+        if( org.eclipse.rwt.Client.isOpera() ) {
+          assertFalse( testUtil._sendKeyPress( "Win" ) ); 
+          assertFalse( testUtil._sendKeyPress( 91 ) );
+        } else {
+          assertTrue( testUtil._sendKeyPress( "Win" ) ); // opera false
+          assertTrue( testUtil._sendKeyPress( 91 ) );
+        }
+        assertTrue( testUtil._sendKeyPress( "Apps" ) );
+        assertTrue( testUtil._sendKeyPress( 93 ) );
+        assertFalse( testUtil._sendKeyPress( "Shift" ) );
+        assertFalse( testUtil._sendKeyPress( 16 ) );
+        assertFalse( testUtil._sendKeyPress( "Control" ) );
+        assertFalse( testUtil._sendKeyPress( 17 ) );
+        assertFalse( testUtil._sendKeyPress( "Alt" ) );
+        assertFalse( testUtil._sendKeyPress( 18 ) );
+      },
+      "default" : function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        assertTrue( testUtil._sendKeyPress( "a" ) );
+        assertTrue( testUtil._sendKeyPress( "A" ) );
+        assertTrue( testUtil._sendKeyPress( 65 ) );
+        assertTrue( testUtil._sendKeyPress( "Enter" ) );
+        assertTrue( testUtil._sendKeyPress( 13 ) );
+        assertFalse( testUtil._sendKeyPress( "F1" ) );
+        assertFalse( testUtil._sendKeyPress( 112 ) );
+        assertTrue( testUtil._sendKeyPress( "Space" ) );
+        assertTrue( testUtil._sendKeyPress( 32 ) );
+        if( org.eclipse.rwt.Client.isWebkit() ) {
+          assertFalse( testUtil._sendKeyPress( "Escape" ) );
+          assertFalse( testUtil._sendKeyPress( 27 ) );
+        } else {
+          assertTrue( testUtil._sendKeyPress( "Escape" ) );
+          assertTrue( testUtil._sendKeyPress( 27 ) );
+        }
+        assertFalse( testUtil._sendKeyPress( "Tab" ) );
+        assertFalse( testUtil._sendKeyPress( 9 ) );
+        assertFalse( testUtil._sendKeyPress( "Backspace" ) );
+        assertFalse( testUtil._sendKeyPress( 8 ) ); 
+        assertFalse( testUtil._sendKeyPress( "Win" ) );
+        assertFalse( testUtil._sendKeyPress( 91 ) );
+        assertFalse( testUtil._sendKeyPress( "Apps" ) );
+        assertFalse( testUtil._sendKeyPress( 93 ) );
+        assertFalse( testUtil._sendKeyPress( "Shift" ) );
+        assertFalse( testUtil._sendKeyPress( 16 ) );
+        assertFalse( testUtil._sendKeyPress( "Control" ) );
+        assertFalse( testUtil._sendKeyPress( 17 ) );
+        assertFalse( testUtil._sendKeyPress( "Alt" ) );
+        assertFalse( testUtil._sendKeyPress( 18 ) );
+      }
+    } ),
    
     testPressPrintable : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -416,8 +485,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
       var log = this._addKeyLogger( widget, true, true, false );
       widget.focus();
       testUtil.press( widget, "Space" );
-      var expected 
-        = [ "keydown", "Space", "keypress", "Space", "keyup", "Space", ];
+      var expected = [ "keydown", "Space", "keypress", "Space", "keyup", "Space", ];
       assertEquals( expected, log );
       widget.destroy();
     },    
