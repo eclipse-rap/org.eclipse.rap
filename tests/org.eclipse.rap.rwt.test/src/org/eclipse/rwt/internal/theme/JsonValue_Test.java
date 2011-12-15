@@ -24,6 +24,11 @@ public class JsonValue_Test extends TestCase {
     assertEquals( "-2147483648", JsonValue.valueOf( Integer.MIN_VALUE ).toString() );
   }
 
+  public void testValueOfLongs() {
+    assertEquals( "214748364711", JsonValue.valueOf( 214748364711l ).toString() );
+    assertEquals( "-214748364811", JsonValue.valueOf( -214748364811l ).toString() );
+  }
+
   public void testValueOfFloats() {
     assertEquals( "10.0", JsonValue.valueOf( 10f ).toString() );
     assertEquals( "1.23E-6", JsonValue.valueOf( 0.00000123f ).toString() );

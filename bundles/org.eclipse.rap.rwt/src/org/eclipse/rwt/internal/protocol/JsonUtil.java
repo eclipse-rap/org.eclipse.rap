@@ -53,8 +53,14 @@ final class JsonUtil {
       result = JsonValue.NULL;
     } else if( value instanceof String ) {
       result = JsonObject.valueOf( ( String )value );
+    } else if( value instanceof Byte ) {
+      result = JsonObject.valueOf( ( ( Byte )value ).intValue() );
+    } else if( value instanceof Short ) {
+      result = JsonObject.valueOf( ( ( Short )value ).intValue() );
     } else if( value instanceof Integer ) {
       result = JsonObject.valueOf( ( ( Integer )value ).intValue() );
+    } else if( value instanceof Long ) {
+      result = JsonObject.valueOf( ( ( Long )value ).longValue() );
     } else if( value instanceof Double ) {
       result = JsonObject.valueOf( ( ( Double )value ).doubleValue() );
     } else if( value instanceof Float ) {

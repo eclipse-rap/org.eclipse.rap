@@ -21,12 +21,16 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.*;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class BrowserLCA_Test extends TestCase {
@@ -255,65 +259,6 @@ public class BrowserLCA_Test extends TestCase {
     assertEquals( "null \" 3.6 true", ( String )result );
   }
 
-  public void testToJson() {
-    Object input = null;
-    String result = BrowserLCA.toJson( input, true );
-    String expected = "null";
-    assertEquals( expected, result );
-    input = Boolean.TRUE;
-    result = BrowserLCA.toJson( input, true );
-    expected = "true";
-    assertEquals( expected, result );
-    input = Boolean.FALSE;
-    result = BrowserLCA.toJson( input, true );
-    expected = "false";
-    assertEquals( expected, result );
-    input = new Double( 3.6 );
-    result = BrowserLCA.toJson( input, true );
-    expected = "3.6";
-    assertEquals( expected, result );
-    input = new String( "eclipse" );
-    result = BrowserLCA.toJson( input, true );
-    expected = "\"eclipse\"";
-    assertEquals( expected, result );
-    input = new Object[] {
-      new Short( ( short )3 ),
-      new Boolean( true ),
-      null,
-      new Object[] { "a string", new Boolean( false ) },
-      "hi",
-      new Float( 2.0 )
-    };
-    result = BrowserLCA.toJson( input, true );
-    expected = "[3,true,null,[\"a string\",false],\"hi\",2.0]";
-    assertEquals( expected, result );
-    input = new String( "\"RAP\"" );
-    result = BrowserLCA.toJson( input, true );
-    expected = "\"\\\"RAP\\\"\"";
-    assertEquals( expected, result );
-  }
-
-  public void testToJson_EmptyArray() {
-    Object input = new Object[ 0 ];
-    String result = BrowserLCA.toJson( input, true );
-    String expected = "[]";
-    assertEquals( expected, result );
-    input = new Object[] {
-      new Object[ 0 ]
-    };
-    result = BrowserLCA.toJson( input, true );
-    expected = "[[]]";
-    assertEquals( expected, result );
-    input = new Object[] {
-      "string1",
-      new Object[ 0 ],
-      "string2"
-    };
-    result = BrowserLCA.toJson( input, true );
-    expected = "[\"string1\",[],\"string2\"]";
-    assertEquals( expected, result );
-  }
-
   public void testProgressEvent() {
     final ArrayList<String> log = new ArrayList<String>();
     Fixture.markInitialized( display );
@@ -461,6 +406,75 @@ public class BrowserLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     CallOperation callOperation = message.findCallOperation( browser, "evaluate" );
     assertEquals( "alert('33');", callOperation.getProperty( "script" ) );
+  }
+
+  public void testCallCreateFunctions() throws JSONException, IOException {
+    Browser browser = new Browser( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( browser );
+
+    new BrowserFunction( browser, "func1" );
+    new BrowserFunction( browser, "func2" );
+    lca.renderChanges( browser );
+
+    Message message = Fixture.getProtocolMessage();
+    CallOperation callOperation = message.findCallOperation( browser, "createFunctions" );
+    JSONArray actual = ( JSONArray )callOperation.getProperty( "functions" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[\"func1\",\"func2\"]", actual ) );
+  }
+
+  public void testCallDestroyFunctions() throws JSONException, IOException {
+    Browser browser = new Browser( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( browser );
+
+    BrowserFunction function = new BrowserFunction( browser, "func1" );
+    function.dispose();
+    lca.renderChanges( browser );
+
+    Message message = Fixture.getProtocolMessage();
+    CallOperation callOperation = message.findCallOperation( browser, "destroyFunctions" );
+    JSONArray actual = ( JSONArray )callOperation.getProperty( "functions" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[\"func1\"]", actual ) );
+  }
+
+  public void testRenderFunctionResult() throws JSONException {
+    Browser browser = new Browser( shell, SWT.NONE );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( browser );
+    new BrowserFunction( browser, "func" ) {
+      public Object function( Object[] arguments ) {
+        return new Object[]{
+          Short.valueOf( ( short )3 ),
+          Boolean.TRUE,
+          null,
+          new Object[] { "a string", Boolean.FALSE },
+          "hi",
+          Float.valueOf( 0.6666667f ),
+          Long.valueOf( 12l )
+        };
+      }
+    };
+    String browserId = WidgetUtil.getId( browser );
+    String param = browserId + "." + BrowserLCA.PARAM_EXECUTE_FUNCTION;
+    Fixture.fakeRequestParam( param, "func" );
+    param = browserId + "." + BrowserLCA.PARAM_EXECUTE_ARGUMENTS;
+    Fixture.fakeRequestParam( param, "[\"eclipse\",3.6]" );
+
+    Fixture.executeLifeCycleFromServerThread();
+
+    Message message = Fixture.getProtocolMessage();
+    JSONArray actual =  ( JSONArray )message.findSetProperty( browser, "functionResult" );
+    assertEquals( "func", actual.getString( 0 ) );
+    JSONArray result = actual.getJSONArray( 1 );
+    assertEquals( 3, result.getInt( 0 ) );
+    assertTrue( result.getBoolean( 1 ) );
+    assertEquals( JSONObject.NULL, result.get( 2 ) );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[\"a string\",false]", result.getJSONArray( 3 ) ) );
+    assertEquals( "hi", result.getString( 4 ) );
+    assertEquals( Double.valueOf( 0.6666667 ), result.get( 5 ) );
+    assertEquals( 12l, result.getLong( 6 ) );
+    assertEquals( JSONObject.NULL, actual.get( 2 ) );
   }
 
   private static IBrowserAdapter getAdapter( Browser browser ) {

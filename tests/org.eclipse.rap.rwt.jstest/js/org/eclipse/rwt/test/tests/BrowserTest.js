@@ -177,6 +177,43 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
       }
     ],
 
+    testCreateDestroyBrowserFunctionByProtocol :  [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var shell = testUtil.createShellByProtocol( "w2" );
+        var browser = this._createBrowserByProtocol( "w3", "w2" );
+        testUtil.delayTest( 1000 );
+        testUtil.store( browser );
+      },
+      function( browser ) {
+        assertTrue( "slow connection?", browser._isLoaded );
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        testUtil.initRequestLog();
+        org.eclipse.rwt.protocol.Processor.processOperation( {
+          "target" : "w3",
+          "action" : "call",
+          "method" : "createFunctions",
+          "properties" : {
+            "functions" : [ "abc" ]
+          }
+        } );
+        var win = browser.getContentWindow();
+        assertTrue( typeof( win.abc ) === "function" );
+        assertTrue( typeof( win.abc_impl ) === "function" );
+        org.eclipse.rwt.protocol.Processor.processOperation( {
+          "target" : "w3",
+          "action" : "call",
+          "method" : "destroyFunctions",
+          "properties" : {
+            "functions" : [ "abc" ]
+          }
+        } );
+        assertTrue( typeof( win.abc ) === "undefined" );
+        assertTrue( typeof( win.abc_impl ) === "undefined" );
+        browser.destroy();
+      }
+    ],
+
     testExecuteFailed :  [
       function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -546,6 +583,78 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
         browser.destroy();
       }
     ],
+    
+    testBrowserFunctionFailedByProtocol :  [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var shell = testUtil.createShellByProtocol( "w2" );
+        var browser = this._createBrowserByProtocol( "w3", "w2" );
+        testUtil.delayTest( 1000 );
+        testUtil.store( browser );
+      },
+      function( browser ) {
+        assertTrue( "slow connection?", browser._isLoaded );
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        testUtil.initRequestLog();
+        org.eclipse.rwt.protocol.Processor.processOperation( {
+          "target" : "w3",
+          "action" : "call",
+          "method" : "createFunctions",
+          "properties" : {
+            "functions" : [ "abc" ]
+          }
+        } );
+        var win = browser.getContentWindow();
+        assertTrue( typeof( win.abc ) === "function" );
+        assertTrue( typeof( win.abc_impl ) === "function" );
+        testUtil.scheduleResponse( function() {
+          testUtil.protocolSet( "w3", { "functionResult" : [ "abc", null, "error" ] } );
+        } );
+        try {
+          var result = win.abc();
+          throw "Browser function should throw an error";
+        } catch( e ) {
+          assertEquals( "error", e.message );
+        }
+        browser.destroy();
+      }
+    ],
+
+    testBrowserFunctionSucceedByProtocol  :  [
+      function() {
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        var shell = testUtil.createShellByProtocol( "w2" );
+        var browser = this._createBrowserByProtocol( "w3", "w2" );
+        testUtil.delayTest( 1000 );
+        testUtil.store( browser );
+      },
+      function( browser ) {
+        assertTrue( "slow connection?", browser._isLoaded );
+        var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+        testUtil.initRequestLog();
+        org.eclipse.rwt.protocol.Processor.processOperation( {
+          "target" : "w3",
+          "action" : "call",
+          "method" : "createFunctions",
+          "properties" : {
+            "functions" : [ "abc" ]
+          }
+        } );
+        var win = browser.getContentWindow();
+        assertTrue( typeof( win.abc ) === "function" );
+        assertTrue( typeof( win.abc_impl ) === "function" );
+        testUtil.scheduleResponse( function() {
+          testUtil.protocolSet( "w3", { "functionResult" : [ "abc", "result", null ] } );
+        } );
+        try {
+          var result = win.abc();
+          assertEquals( "result", result );
+        } catch( e ) {
+          throw "Browser function shouldn't throw an error";
+        }
+        browser.destroy();
+      }
+    ],
 
     testDispose :  [
       function() {
@@ -648,6 +757,19 @@ qx.Class.define( "org.eclipse.rwt.test.tests.BrowserTest", {
 
     /////////////
     // helper
+
+    _createBrowserByProtocol : function( id, parentId ) {
+      org.eclipse.rwt.protocol.Processor.processOperation( {
+        "target" : id,
+        "action" : "create",
+        "type" : "rwt.widgets.Browser",
+        "properties" : {
+          "style" : [],
+          "parent" : parentId
+        }
+      } );
+      return org.eclipse.rwt.protocol.ObjectManager.getObject( id );
+    },
 
     _createBrowser : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;

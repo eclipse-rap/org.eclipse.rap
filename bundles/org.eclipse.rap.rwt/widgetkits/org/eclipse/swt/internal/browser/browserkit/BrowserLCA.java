@@ -27,7 +27,6 @@ import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.IServiceStateInfo;
-import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.resources.IResourceManager;
 import org.eclipse.swt.browser.*;
@@ -50,6 +49,12 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   static final String PARAM_EXECUTE_FUNCTION = "executeFunction";
   static final String PARAM_EXECUTE_ARGUMENTS = "executeArguments";
   private static final String PARAM_PROGRESS_LISTENER = "progress";
+  private static final String PARAM_SCRIPT = "script";
+  private static final String METHOD_EVALUATE = "evaluate";
+  private static final String PARAM_FUNCTIONS = "functions";
+  private static final String METHOD_CREATE_FUNCTIONS = "createFunctions";
+  private static final String METHOD_DESTROY_FUNCTIONS = "destroyFunctions";
+  private static final String PARAM_FUNCTION_RESULT = "functionResult";
 
   static final String EXECUTED_FUNCTION_NAME
     = Browser.class.getName() + "#executedFunctionName.";
@@ -93,7 +98,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     renderUrl( browser );
     createBrowserFunctions( browser );
     renderEvaluate( browser );
-    writeFunctionResult( browser );
+    renderFunctionResult( browser );
     renderListener( browser, PARAM_PROGRESS_LISTENER, ProgressEvent.hasListener( browser ), false );
   }
 
@@ -169,8 +174,8 @@ public final class BrowserLCA extends AbstractWidgetLCA {
             try {
               IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
               Map<String, Object> properties = new HashMap<String, Object>();
-              properties.put( "script", executeScript );
-              clientObject.call( "evaluate", properties );
+              properties.put( PARAM_SCRIPT, executeScript );
+              clientObject.call( METHOD_EVALUATE, properties );
             } finally {
               RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
             }
@@ -210,31 +215,27 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   //////////////////////////////////////
   // Helping methods for BrowserFunction
 
-  private static void createBrowserFunctions( Browser browser ) throws IOException {
+  private static void createBrowserFunctions( Browser browser ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     String id = WidgetUtil.getId( browser );
     String[] functions = ( String[] )stateInfo.getAttribute( FUNCTIONS_TO_CREATE + id );
     if( functions != null ) {
-      for( int i = 0; i < functions.length; i++ ) {
-        JSWriter writer = JSWriter.getWriterFor( browser );
-        writer.call( "createFunction", new Object[]{
-          functions[ i ]
-        } );
-      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
+      Map<String, Object> properties = new HashMap<String, Object>();
+      properties.put( PARAM_FUNCTIONS, functions );
+      clientObject.call( METHOD_CREATE_FUNCTIONS, properties );
     }
   }
 
-  private static void destroyBrowserFunctions( Browser browser ) throws IOException {
+  private static void destroyBrowserFunctions( Browser browser ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     String id = WidgetUtil.getId( browser );
     String[] functions = ( String[] )stateInfo.getAttribute( FUNCTIONS_TO_DESTROY + id );
     if( functions != null ) {
-      for( int i = 0; i < functions.length; i++ ) {
-        JSWriter writer = JSWriter.getWriterFor( browser );
-        writer.call( "destroyFunction", new Object[]{
-          functions[ i ]
-        } );
-      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
+      Map<String, Object> properties = new HashMap<String, Object>();
+      properties.put( PARAM_FUNCTIONS, functions );
+      clientObject.call( METHOD_DESTROY_FUNCTIONS, properties );
     }
   }
 
@@ -266,22 +267,18 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     }
   }
 
-  private static void writeFunctionResult( Browser browser )
-    throws IOException
-  {
+  private static void renderFunctionResult( Browser browser ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     String id = WidgetUtil.getId( browser );
-    String name
-      = ( String )stateInfo.getAttribute( EXECUTED_FUNCTION_NAME + id );
+    String name = ( String )stateInfo.getAttribute( EXECUTED_FUNCTION_NAME + id );
     if( name != null ) {
       Object result = stateInfo.getAttribute( EXECUTED_FUNCTION_RESULT + id );
-      if( result != null ) {
-        result = new JSVar( toJson( result, true ) );
-      }
-      String error
-        = ( String )stateInfo.getAttribute( EXECUTED_FUNCTION_ERROR + id );
-      JSWriter writer = JSWriter.getWriterFor( browser );
-      writer.call( "setFunctionResult", new Object[] { name, result, error } );
+      String error = ( String )stateInfo.getAttribute( EXECUTED_FUNCTION_ERROR + id );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
+      Object[] value = new Object[] {
+        name, result, error
+      };
+      clientObject.setProperty( PARAM_FUNCTION_RESULT, value );
     }
   }
 
@@ -368,38 +365,5 @@ public final class BrowserLCA extends AbstractWidgetLCA {
       }
     }
     return result;
-  }
-
-  static String toJson( Object object, boolean deleteLastChar ) {
-    StringBuilder result = new StringBuilder();
-    if( object == null ) {
-      result.append( "null" );
-      result.append( "," );
-    } else if( object instanceof String ) {
-      result.append( "\"" );
-      result.append( EncodingUtil.escapeDoubleQuoted( ( String )object ) );
-      result.append( "\"" );
-      result.append( "," );
-    } else if( object instanceof Boolean ) {
-      result.append( ( ( Boolean )object ).toString() );
-      result.append( "," );
-    } else if( object instanceof Number ) {
-      result.append( ( ( Number )object ).toString() );
-      result.append( "," );
-    } else if( object.getClass().isArray() ) {
-      Object[] array = ( Object[] )object;
-      result.append( "[" );
-      for( int i = 0; i < array.length; i++ ) {
-        result.append( toJson( array[ i ], false ) );
-      }
-      if( array.length == 0 ) {
-        result.append( "," );
-      }
-      result.insert( result.length() - 1, "]" );
-    }
-    if( deleteLastChar ) {
-      result.deleteCharAt( result.length() - 1 );
-    }
-    return result.toString();
   }
 }

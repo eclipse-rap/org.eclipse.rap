@@ -22,13 +22,17 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Browser", {
   destructor : org.eclipse.rwt.protocol.AdapterUtil.getControlDestructor(),
 
   properties : org.eclipse.rwt.protocol.AdapterUtil.extendControlProperties( [
-    "url"
+    "url",
+    "functionResult"
   ] ),
 
   propertyHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlPropertyHandler( {
     "url" : function( widget, value ) {
       widget.setSource( value );
       widget.syncSource();
+    },
+    "functionResult" : function( widget, value ) {
+      widget.setFunctionResult( value[ 0 ], value[ 1 ], value[ 2 ] );
     }
   } ),
 
@@ -39,12 +43,26 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.Browser", {
   listenerHandler : org.eclipse.rwt.protocol.AdapterUtil.extendControlListenerHandler( {} ),
 
   methods : [
-    "evaluate"
+    "evaluate",
+    "destroyFunctions",
+    "createFunctions"
   ],
   
   methodHandler : {
     "evaluate" : function( widget, properties ) {
       widget.execute( properties.script );
+    },
+    "createFunctions" : function( widget, properties ) {
+      var functions = properties.functions;
+      for( var i = 0; i < functions.length; i++ ) {
+      	widget.createFunction( functions[ i ] );
+      }
+    },
+    "destroyFunctions" : function( widget, properties ) {
+      var functions = properties.functions;
+      for( var i = 0; i < functions.length; i++ ) {
+        widget.destroyFunction( functions[ i ] );
+      }
     }
   }
 
