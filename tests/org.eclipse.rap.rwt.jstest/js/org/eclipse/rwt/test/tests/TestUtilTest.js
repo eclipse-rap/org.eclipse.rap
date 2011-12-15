@@ -419,6 +419,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
           assertTrue( testUtil._sendKeyPress( "Win" ) ); // opera false
           assertTrue( testUtil._sendKeyPress( 91 ) );
         }
+        assertTrue( testUtil._sendKeyPress( "Left" ) );
+        assertTrue( testUtil._sendKeyPress( 37 ) );
         assertTrue( testUtil._sendKeyPress( "Apps" ) );
         assertTrue( testUtil._sendKeyPress( 93 ) );
         assertFalse( testUtil._sendKeyPress( "Shift" ) );
@@ -452,6 +454,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TestUtilTest", {
         assertFalse( testUtil._sendKeyPress( 8 ) ); 
         assertFalse( testUtil._sendKeyPress( "Win" ) );
         assertFalse( testUtil._sendKeyPress( 91 ) );
+        assertFalse( testUtil._sendKeyPress( "Left" ) );
+        assertFalse( testUtil._sendKeyPress( 37 ) );
         assertFalse( testUtil._sendKeyPress( "Apps" ) );
         assertFalse( testUtil._sendKeyPress( 93 ) );
         assertFalse( testUtil._sendKeyPress( "Shift" ) );
