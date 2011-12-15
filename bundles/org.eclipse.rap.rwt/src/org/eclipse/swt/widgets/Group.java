@@ -45,7 +45,7 @@ import org.eclipse.swt.internal.widgets.groupkit.GroupThemeAdapter;
  */
 public class Group extends Composite {
 
-  private String text = "";
+  private String text;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -83,6 +83,7 @@ public class Group extends Composite {
   // TODO: [bm] implement shadow styles for Group
   public Group( Composite parent, int style ) {
     super( parent, checkStyle( style ) );
+    text = "";
   }
 
   /**
@@ -137,8 +138,7 @@ public class Group extends Composite {
   public Rectangle getClientArea() {
     checkWidget();
     Rectangle bounds = getBounds();
-    GroupThemeAdapter themeAdapter
-      = ( GroupThemeAdapter )getAdapter( IThemeAdapter.class );
+    GroupThemeAdapter themeAdapter = ( GroupThemeAdapter )getAdapter( IThemeAdapter.class );
     Rectangle trimmings = themeAdapter.getTrimmingSize( this );
     int border = getBorderWidth();
     int width = Math.max( 0, bounds.width - trimmings.width - 2 * border );
@@ -164,8 +164,7 @@ public class Group extends Composite {
     if( length != 0 ) {
       Font font = getFont();
       Point stringExtent = Graphics.stringExtent( font, text );
-      GroupThemeAdapter themeAdapter
-        = ( GroupThemeAdapter )getAdapter( IThemeAdapter.class );
+      GroupThemeAdapter themeAdapter = ( GroupThemeAdapter )getAdapter( IThemeAdapter.class );
       Rectangle headTrimmings = themeAdapter.getHeaderTrimmingSize( this );
       int headerWidth = stringExtent.x + headTrimmings.width;
       result.x = Math.max( result.x, headerWidth );
