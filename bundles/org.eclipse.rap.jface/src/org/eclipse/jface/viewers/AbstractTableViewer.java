@@ -1005,12 +1005,20 @@ public abstract class AbstractTableViewer extends ColumnViewer {
 		if (count < size) {
 			System.arraycopy(indices, 0, indices = new int[count], 0, count);
 		}
-		doDeselectAll();
-		doSelect(indices);
-
-		if (reveal && firstItem != null) {
-			doShowItem(firstItem);
+// RAP [rh] fix for bug 366385		
+//		doDeselectAll();
+//		doSelect(indices);
+//
+//		if (reveal && firstItem != null) {
+//			doShowItem(firstItem);
+//		}
+		if (reveal) {
+		  doSetSelection(indices);
+		} else {
+  		doDeselectAll();
+  		doSelect(indices);
 		}
+// end of bugfix		  
 	}
 
 	/**
