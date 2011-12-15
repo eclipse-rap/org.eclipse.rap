@@ -59,8 +59,8 @@ org.eclipse.rwt.UICallBack.prototype = {
       // NOTE: this was originally done almost exactly like this in 
       // XmlHttpTransport.getResponseContent, but is now done here for
       // better overview
+      var text = event.getContent();
       try {
-        var text = event.getContent();
         if( text && text.length > 0 ) {
           var messageObject = JSON.parse( text );
           org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
@@ -87,11 +87,11 @@ org.eclipse.rwt.UICallBack.prototype = {
   },
 
   _increaseRetryInterval : function() {
-    if( this._retryInterval == 0 ) {
+    if( this._retryInterval === 0 ) {
       this._retryInterval = 1000;
     } else if( this._retryInterval < 60 * 1000 ) {
       this._retryInterval *= 2;
     }
   }
 
-}
+};
