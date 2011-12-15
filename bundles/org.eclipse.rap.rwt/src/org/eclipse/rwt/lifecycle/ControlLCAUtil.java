@@ -273,17 +273,14 @@ public class ControlLCAUtil {
   }
 
   public static void processSelection( Widget widget, Item item, boolean readBounds ) {
-    String eventId = JSConst.EVENT_WIDGET_SELECTED;
-    if( WidgetLCAUtil.wasEventSent( widget, eventId ) ) {
-      SelectionEvent event;
-      event = createSelectionEvent( widget, item, readBounds, SelectionEvent.WIDGET_SELECTED );
+    if( WidgetLCAUtil.wasEventSent( widget, JSConst.EVENT_WIDGET_SELECTED ) ) {
+      SelectionEvent event
+        = createSelectionEvent( widget, item, readBounds, SelectionEvent.WIDGET_SELECTED );
       event.processEvent();
     }
-    eventId = JSConst.EVENT_WIDGET_DEFAULT_SELECTED;
-    if( WidgetLCAUtil.wasEventSent( widget, eventId ) ) {
-      SelectionEvent event;
-      int widgetDefaultSelected = SelectionEvent.WIDGET_DEFAULT_SELECTED;
-      event = createSelectionEvent( widget, item, readBounds, widgetDefaultSelected );
+    if( WidgetLCAUtil.wasEventSent( widget, JSConst.EVENT_WIDGET_DEFAULT_SELECTED ) ) {
+      SelectionEvent event
+        = createSelectionEvent( widget, item, readBounds, SelectionEvent.WIDGET_DEFAULT_SELECTED );
       event.processEvent();
     }
   }
