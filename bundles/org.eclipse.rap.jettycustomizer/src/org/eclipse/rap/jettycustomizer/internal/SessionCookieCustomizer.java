@@ -13,10 +13,10 @@ package org.eclipse.rap.jettycustomizer.internal;
 import java.util.Dictionary;
 
 import org.eclipse.equinox.http.jetty.JettyCustomizer;
-import org.mortbay.jetty.SessionManager;
-import org.mortbay.jetty.servlet.AbstractSessionManager;
-import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.SessionHandler;
+import org.eclipse.jetty.server.SessionManager;
+import org.eclipse.jetty.server.session.AbstractSessionManager;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.server.session.SessionHandler;
 
 /**
  * Configure Jetty to not use cookies for session management. This allows RAP
@@ -24,17 +24,16 @@ import org.mortbay.jetty.servlet.SessionHandler;
  */
 public final class SessionCookieCustomizer extends JettyCustomizer {
 
-  public Object customizeContext( final Object context, 
-                                  final Dictionary settings )
-  {
+  @SuppressWarnings("unchecked")
+  public Object customizeContext( Object context, Dictionary settings ) {
     Object result = super.customizeContext( context, settings );
     customizeSessionManager( result );
     return result;
   }
 
   private static void customizeSessionManager( Object context ) {
-    if( context instanceof Context ) {
-      Context jettyContext = ( Context )context;
+    if( context instanceof ServletContextHandler ) {
+      ServletContextHandler jettyContext = ( ServletContextHandler )context;
       SessionHandler sessionHandler = jettyContext.getSessionHandler();
       if( sessionHandler != null ) {
         SessionManager sessionManager = sessionHandler.getSessionManager();
