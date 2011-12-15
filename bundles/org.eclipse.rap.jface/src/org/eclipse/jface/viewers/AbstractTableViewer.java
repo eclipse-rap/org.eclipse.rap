@@ -68,13 +68,13 @@ public abstract class AbstractTableViewer extends ColumnViewer {
 				public void handleEvent(Event event) {
 					Item item = (Item) event.item;
 					final int index = doIndexOf(item);
-					
+
 					if (index == -1) {
 						// Should not happen, but the spec for doIndexOf allows returning -1.
 						// See bug 241117.
 						return;
 					}
-					
+
 					Object element = resolveElement(index);
 					if (element == null) {
 						// Didn't find it so make a request
@@ -218,7 +218,7 @@ public abstract class AbstractTableViewer extends ColumnViewer {
 		super.hookControl(control);
 		initializeVirtualManager(getControl().getStyle());
 	}
-	
+
 	protected void handleDispose(DisposeEvent event) {
 		super.handleDispose(event);
 		virtualManager = null;
@@ -1005,20 +1005,20 @@ public abstract class AbstractTableViewer extends ColumnViewer {
 		if (count < size) {
 			System.arraycopy(indices, 0, indices = new int[count], 0, count);
 		}
-// RAP [rh] fix for bug 366385		
+// RAP [rh] fix for bug 366385
 //		doDeselectAll();
 //		doSelect(indices);
 //
 //		if (reveal && firstItem != null) {
 //			doShowItem(firstItem);
 //		}
-		if (reveal) {
-		  doSetSelection(indices);
-		} else {
-  		doDeselectAll();
-  		doSelect(indices);
-		}
-// end of bugfix		  
+        if (reveal) {
+          doSetSelection(indices);
+        } else {
+          doDeselectAll();
+          doSelect(indices);
+        }
+// end of bugfix
 	}
 
 	/**
@@ -1053,7 +1053,7 @@ public abstract class AbstractTableViewer extends ColumnViewer {
 	 * Replace the element at the given index with the given element. This
 	 * method will not call the content provider to verify. <strong>Note that
 	 * this method will materialize a TableItem the given index.</strong>.
-	 * 
+	 *
 	 * @param element
 	 * @param index
 	 * @see ILazyContentProvider
