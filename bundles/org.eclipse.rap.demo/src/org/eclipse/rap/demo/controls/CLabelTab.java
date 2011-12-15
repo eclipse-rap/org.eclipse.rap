@@ -9,7 +9,6 @@
  *     Innoopract Informationssysteme GmbH - initial API and implementation
  *     EclipseSource - ongoing development
  ******************************************************************************/
-
 package org.eclipse.rap.demo.controls;
 
 import org.eclipse.rwt.graphics.Graphics;

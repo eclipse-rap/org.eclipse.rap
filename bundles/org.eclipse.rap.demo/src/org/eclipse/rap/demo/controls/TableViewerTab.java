@@ -15,13 +15,13 @@ import java.text.MessageFormat;
 import java.util.*;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -36,19 +36,24 @@ public class TableViewerTab extends ExampleTab {
   private static final int COL_AGE = 2;
   private static final int COL_MARRIED = 3;
 
+  private final PersonFilter viewerFilter;
+  private final List<Person> persons;
+  private final Image uncheckedImage;
+  private final Image checkedImage;
   private TableViewer viewer;
   private TableViewerColumn firstNameColumn;
   private TableViewerColumn lastNameColumn;
   private TableViewerColumn ageColumn;
-  private TableViewerColumn editableColumn;
+  private CheckboxTableViewerColumn marriedColumn;
   private Label lblSelection;
   private Button btnCreateCellEditor;
-  private final PersonFilter viewerFilter;
-  private final List<Person> persons = new ArrayList<Person>();
 
   public TableViewerTab( CTabFolder topFolder ) {
     super( topFolder, "TableViewer" );
+    persons = new ArrayList<Person>();
     viewerFilter = new PersonFilter();
+    uncheckedImage = loadImage( "resources/unchecked.png" );
+    checkedImage = loadImage( "resources/checked.png" );
   }
 
   protected void createStyleControls( Composite parent ) {
@@ -109,7 +114,7 @@ public class TableViewerTab extends ExampleTab {
     firstNameColumn = createFirstNameColumn();
     lastNameColumn = createLastNameColumn();
     ageColumn = createAgeColumn();
-    editableColumn = createEditableColumn();
+    marriedColumn = createMarriedColumn();
     viewer.setInput( persons );
     viewer.setItemCount( persons.size() );
     viewer.addFilter( viewerFilter );
@@ -184,8 +189,8 @@ public class TableViewerTab extends ExampleTab {
     return result;
   }
 
-  private TableViewerColumn createEditableColumn() {
-    TableViewerColumn result = new TableViewerColumn( viewer, SWT.NONE );
+  private CheckboxTableViewerColumn createMarriedColumn() {
+    CheckboxTableViewerColumn result = new CheckboxTableViewerColumn( viewer, SWT.NONE );
     result.setLabelProvider( new PersonLabelProvider( COL_MARRIED ) );
     TableColumn column = result.getColumn();
     column.setText( "Married" );
@@ -275,8 +280,7 @@ public class TableViewerTab extends ExampleTab {
     lastNameColumn.setEditingSupport( editingSupport );
     editingSupport = new AgeEditingSupport( viewer );
     ageColumn.setEditingSupport( editingSupport );
-    editingSupport = new MarriedEditingSupport( viewer );
-    editableColumn.setEditingSupport( editingSupport );
+    marriedColumn.setEditingSupport( new MarriedEditingSupport() );
     ColumnViewerEditorActivationStrategy activationStrategy
       = new EditorActivationStrategy( viewer );
     FocusCellOwnerDrawHighlighter highlighter = new FocusCellOwnerDrawHighlighter( viewer );
@@ -285,6 +289,7 @@ public class TableViewerTab extends ExampleTab {
     int feature = ColumnViewerEditor.TABBING_HORIZONTAL
                 | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR;
     TableViewerEditor.create( viewer, focusManager, activationStrategy, feature );
+    marriedColumn.attachToEditor();
   }
 
   private static int updateSortDirection( TableColumn column ) {
@@ -382,13 +387,13 @@ public class TableViewerTab extends ExampleTab {
     }
   }
 
-  private static final class PersonLabelProvider extends ColumnLabelProvider {
+  private class PersonLabelProvider extends ColumnLabelProvider {
     private final int columnIndex;
     private final Color nameBackground;
 
     public PersonLabelProvider( int columnIndex ) {
       this.columnIndex = columnIndex;
-      nameBackground = new Color( Display.getCurrent(), 248, 248, 248 );
+      this.nameBackground = new Color( Display.getCurrent(), 248, 248, 248 );
     }
 
     public String getText( Object element ) {
@@ -411,6 +416,15 @@ public class TableViewerTab extends ExampleTab {
       return result;
     }
 
+    public Image getImage( Object element ) {
+      Image result = null;
+      if( columnIndex == COL_MARRIED ) {
+        Person person = ( Person )element;
+        result = person.married ? checkedImage : uncheckedImage;
+      }
+      return result;
+    }
+    
     public Color getBackground( Object element ) {
       Color result = null;
       switch( columnIndex ) {
@@ -622,65 +636,21 @@ public class TableViewerTab extends ExampleTab {
     }
   }
 
-  private static final class MarriedEditingSupport extends EditingSupport {
-    private final RealCheckboxCellEditor editor;
-    public MarriedEditingSupport( TableViewer viewer ) {
-      super( viewer );
-      editor = new RealCheckboxCellEditor( viewer.getTable() );
-    }
-
-    protected boolean canEdit( Object element ) {
+  private static class MarriedEditingSupport extends CheckboxEditingSupport {
+    public boolean canEdit( Object element ) {
       return true;
     }
 
-    protected CellEditor getCellEditor( Object element ) {
-      return editor;
-    }
-
-    protected Object getValue( Object element ) {
+    public Boolean getValue( Object element ) {
       Person person = ( Person )element;
       return Boolean.valueOf( person.married );
     }
 
-    protected void setValue( Object element, Object value ) {
+    public void setValue( Object element, Boolean value ) {
       Person person = ( Person )element;
-      person.married = ( ( Boolean )value ).booleanValue();
-      getViewer().update( element, null );
+      person.married = value.booleanValue();
     }
 
-  }
-
-  private static final class RealCheckboxCellEditor extends CellEditor {
-
-    protected Button checkbox;
-
-    public RealCheckboxCellEditor( Composite parent ) {
-      super( parent, SWT.NONE );
-    }
-
-    @Override
-    protected Control createControl( Composite parent ) {
-      checkbox = new Button( parent, SWT.CHECK );
-      return checkbox;
-    }
-
-    @Override
-    protected Object doGetValue() {
-      return checkbox.getSelection() ? Boolean.TRUE : Boolean.FALSE;
-    }
-
-    @Override
-    protected void doSetFocus() {
-      checkbox.setFocus();
-    }
-
-    @Override
-    protected void doSetValue( Object value ) {
-      Assert.isTrue( value instanceof Boolean );
-      if( checkbox != null ) {
-        checkbox.setSelection( ( (Boolean ) value).booleanValue() );
-      }
-    }
   }
 
 }
