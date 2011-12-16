@@ -588,6 +588,28 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.destroy();
     },
 
+    testSelectionByKeyboardReadOnly : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var combo = this._createDefaultCombo();
+      combo.setEditable( false );
+      testUtil.flush();
+      combo.focus();
+      testUtil.keyDown( combo._field.getElement(), "R" );
+      assertEquals( "Ruby", combo._list.getSelectedItems()[ 0 ].getLabel() );
+      combo.destroy();
+    },
+
+    testSelectionByKeyboardEditable : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var combo = this._createDefaultCombo();
+      combo.setEditable( true );
+      testUtil.flush();
+      combo.focus();
+      testUtil.keyDown( combo._field.getElement(), "R" );
+      assertEquals( 0, combo._list.getSelectedItems().length );
+      combo.destroy();
+    },
+
     //////////
     // Helpers
 
