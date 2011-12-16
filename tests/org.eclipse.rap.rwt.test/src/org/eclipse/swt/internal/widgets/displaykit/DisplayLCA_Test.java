@@ -441,6 +441,19 @@ public class DisplayLCA_Test extends TestCase {
     assertTrue( actual.startsWith( "<html><head><title>" ) );
   }
 
+  public void testRenderBeep() throws IOException {
+    Display display = new Display();
+    String displayId = DisplayUtil.getId( display );
+    Fixture.fakeNewRequest( display );
+
+    display.beep();
+    displayLCA.render( display );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNotNull( message.findCallOperation( displayId, "beep" ) );
+    assertFalse( display.getAdapter( IDisplayAdapter.class ).isBeepCalled() );
+  }
+
   protected void setUp() throws Exception {
     clearLogs();
     Fixture.setUp();

@@ -64,6 +64,10 @@ org.eclipse.rwt.Display.prototype = {
     }
   },
 
+  beep : function() {
+    // do nothing for now, used by native clients
+  },
+
   /**
    * An exit confirmation dialog will be displayed if the given message is not
    * null. If the message is empty, the dialog will be displayed but without a

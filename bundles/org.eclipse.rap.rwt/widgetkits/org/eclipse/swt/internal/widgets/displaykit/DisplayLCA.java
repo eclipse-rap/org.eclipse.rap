@@ -61,6 +61,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   static final String PROP_CURRENT_THEME = "currentTheme";
   static final String PROP_EXIT_CONFIRMATION = "exitConfirmation";
   static final String PROP_TIMEOUT_PAGE = "timeoutPage";
+  private static final String METHOD_BEEP = "beep";
 
   private static final class RenderVisitor extends AllWidgetTreeVisitor {
 
@@ -163,6 +164,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       renderExitConfirmation( display );
       renderShells( display );
       renderFocus( display );
+      renderBeep( display );
       writeUICallBackActivation( display );
       markInitialized( display );
       ActiveKeysUtil.writeActiveKeys( display );
@@ -311,6 +313,15 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
                                     WidgetUtil.getId( display.getFocusControl() ) );
         }
       }
+    }
+  }
+
+  private static void renderBeep( Display display ) {
+    IDisplayAdapter displayAdapter = getDisplayAdapter( display );
+    if( displayAdapter.isBeepCalled() ) {
+      displayAdapter.resetBeep();
+      IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+      clientObject.call( METHOD_BEEP, null );
     }
   }
 

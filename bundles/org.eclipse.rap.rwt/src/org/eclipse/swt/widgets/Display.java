@@ -200,6 +200,7 @@ public class Display extends Device implements Adaptable {
   private Widget[] skinList;
   private int skinCount;
   private Set<Listener> skinListeners;
+  private boolean beep;
 
   /* Display Data */
   private Object data;
@@ -2128,6 +2129,7 @@ public class Display extends Device implements Adaptable {
    */
   public void beep() {
     checkDevice();
+    beep = true;
   }
 
   /**
@@ -2276,7 +2278,7 @@ public class Display extends Device implements Adaptable {
     public void run() {
     }
   }
-  
+
   private static class FilterEntry implements IFilterEntry, SerializableCompatibility {
 
     private final int eventType;
@@ -2407,6 +2409,14 @@ public class Display extends Device implements Adaptable {
 
     public boolean isValidThread() {
       return Display.this.isValidThread();
+    }
+
+    public boolean isBeepCalled() {
+      return Display.this.beep;
+    }
+
+    public void resetBeep() {
+      Display.this.beep = false;
     }
   }
 }

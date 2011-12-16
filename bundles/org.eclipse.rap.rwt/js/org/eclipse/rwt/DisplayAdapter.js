@@ -32,7 +32,8 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.Display", {
     "measureStrings",
     "allowEvent",
     "cancelEvent",
-    "reload"
+    "reload",
+    "beep"
   ]
 
 } );
