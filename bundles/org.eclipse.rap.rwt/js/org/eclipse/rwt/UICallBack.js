@@ -66,7 +66,7 @@ org.eclipse.rwt.UICallBack.prototype = {
           org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
         }
       } catch( ex ) {
-        throw new Error( "Could not execute javascript: [" + text + "]", ex );
+        throw new Error( "Could not process UICallBack response: [" + text + "]: " + ex );
       }
       this._retryInterval = 0;
     }
