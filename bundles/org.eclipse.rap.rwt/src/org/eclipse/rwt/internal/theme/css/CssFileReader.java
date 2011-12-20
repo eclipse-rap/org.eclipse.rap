@@ -19,15 +19,16 @@ import java.util.List;
 
 import org.eclipse.rwt.apache.batik.css.parser.ParseException;
 import org.eclipse.rwt.internal.theme.ThemeManagerException;
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.resources.ResourceLoader;
 import org.w3c.css.sac.*;
 
 
 public class CssFileReader {
-
   private static final String CSS_ENCODING = "UTF-8";
+
   private final List<CSSException> problems;
-  private Parser parser;
+  private final Parser parser;
 
   CssFileReader() {
     try {
@@ -45,9 +46,7 @@ public class CssFileReader {
   public static StyleSheet readStyleSheet( String fileName, ResourceLoader loader )
     throws IOException
   {
-    if( fileName == null ) {
-      throw new NullPointerException( "fileName" );
-    }
+    ParamCheck.notNull( fileName, "fileName" );
     InputStream inputStream = loader.getResourceAsStream( fileName );
     if( inputStream == null ) {
       throw new IllegalArgumentException( "Could not open resource " + fileName );
@@ -63,18 +62,15 @@ public class CssFileReader {
                                            String fileName,
                                            ResourceLoader loader ) throws IOException
   {
-    if( inputStream == null ) {
-      throw new NullPointerException( "inputStream" );
-    }
-    if( fileName == null ) {
-      throw new NullPointerException( "fileName" );
-    }
+    ParamCheck.notNull( inputStream, "inputStream" );
+    ParamCheck.notNull( fileName, "fileName" );
     return parseStyleSheet( inputStream, fileName, loader );
   }
 
   private static StyleSheet parseStyleSheet( InputStream inputStream,
                                              String fileName,
-                                             ResourceLoader loader ) throws IOException
+                                             ResourceLoader loader ) 
+    throws IOException
   {
     StyleSheet styleSheet;
     try {
@@ -120,6 +116,7 @@ public class CssFileReader {
     System.err.println( exception );
     problems.add( exception );
   }
+  
   private static class ErrorHandlerImpl implements ErrorHandler {
 
     private final List<CSSException> problems;
