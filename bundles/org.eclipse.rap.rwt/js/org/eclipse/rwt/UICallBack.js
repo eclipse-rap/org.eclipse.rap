@@ -56,16 +56,10 @@ org.eclipse.rwt.UICallBack.prototype = {
   _handleFinished : function( event ) {
     this._running = false;
     if( event.getType() === "completed" ) {
-      // NOTE: this was originally done almost exactly like this in 
-      // XmlHttpTransport.getResponseContent, but is now done here for
-      // better overview
       var text = event.getContent();
-      text = this._trim( text );
       try {
-        if( text && text.length > 0 ) {
-          var messageObject = JSON.parse( text );
-          org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
-        }
+        var messageObject = JSON.parse( text );
+        org.eclipse.rwt.protocol.Processor.processMessage( messageObject );
       } catch( ex ) {
         throw new Error( "Could not process UICallBack response: [" + text + "]: " + ex );
       }
@@ -93,14 +87,6 @@ org.eclipse.rwt.UICallBack.prototype = {
     } else if( this._retryInterval < 60 * 1000 ) {
       this._retryInterval *= 2;
     }
-  },
-
-  _trim : function( string ) {
-    var result = string;
-    if( string ) {
-      result = string.replace( /^\s+|\s+$/g, "" );
-    }
-    return result;
   }
 
 };

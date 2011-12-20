@@ -37,15 +37,15 @@ public class UICallBackServiceHandler implements IServiceHandler {
   public void service() throws IOException {
     HttpServletResponse response = ContextProvider.getResponse();
     ISessionStore sessionStore = ContextProvider.getSession();
+    ProtocolMessageWriter writer = new ProtocolMessageWriter();
+    configureResponseContentEncoding( response );
     boolean success = UICallBackManager.getInstance().processRequest( response );
     if( success && sessionStore.isBound() ) {
-      ProtocolMessageWriter writer = new ProtocolMessageWriter();
       writeUICallBackDeactivation( writer );
       writeUIRequestNeeded( writer );
-      configureResponseContentEncoding( response );
-      String message = writer.createMessage();
-      response.getWriter().write( message );
     }
+    String message = writer.createMessage();
+    response.getWriter().write( message );
   }
 
   public static void writeUICallBackActivation( ProtocolMessageWriter writer ) {

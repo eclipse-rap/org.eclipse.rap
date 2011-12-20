@@ -203,7 +203,7 @@ public class UICallBackManager_Test extends TestCase {
     callBackRequestSimulator.waitForRequest();
 
     TestResponse response = ( TestResponse )context.getResponse();
-    assertEquals( "", response.getContent().trim() );
+    assertEquals( createEmptyProtocolMessage(), response.getContent().trim() );
     assertFalse( manager.isCallBackRequestBlocked() );
     assertFalse( callBackRequestSimulator.isRequestRunning() );
     assertFalse( callBackRequestSimulator.exceptionOccured() );
@@ -233,11 +233,12 @@ public class UICallBackManager_Test extends TestCase {
     callBackRequestSimulator2.sendRequest();
     callBackRequestSimulator1.waitForRequest();
 
+    TestResponse response = ( TestResponse )context1.getResponse();
     assertTrue( manager.isCallBackRequestBlocked() );
     assertFalse( callBackRequestSimulator1.exceptionOccured() );
     assertFalse( callBackRequestSimulator2.exceptionOccured() );
     assertFalse( callBackRequestSimulator1.isRequestRunning() );
-    assertEquals( "", ( ( TestResponse )context1.getResponse() ).getContent().trim() );
+    assertEquals( createEmptyProtocolMessage(), response.getContent().trim() );
     assertTrue( callBackRequestSimulator2.isRequestRunning() );
   }
 
@@ -588,6 +589,15 @@ public class UICallBackManager_Test extends TestCase {
     ServiceStateInfo stateInfo = new ServiceStateInfo();
     result.setStateInfo( stateInfo );
     return result;
+  }
+
+  private static String createEmptyProtocolMessage() {
+    StringBuilder builder = new StringBuilder();
+    builder.append( "{\n" );
+    builder.append( "\"meta\": {},\n" );
+    builder.append( "\"operations\": []\n" );
+    builder.append( "}" );
+    return builder.toString();
   }
 
   private class AsyncExecRunnable implements Runnable {
