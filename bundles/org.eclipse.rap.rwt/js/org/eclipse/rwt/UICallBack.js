@@ -40,7 +40,7 @@ org.eclipse.rwt.UICallBack.prototype = {
   },
 
   sendUICallBackRequest : function() {
-    if( this._active && !this.running ) {
+    if( this._active && !this._running ) {
       this._running = true;
       var url = org.eclipse.swt.Request.getInstance().getUrl();
       var request = new qx.io.remote.Request( url, "GET", "application/javascript" );
