@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 CAS Software AG.
+ * Copyright (c) 2010, 2011 CAS Software AG and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,9 @@ import java.util.Dictionary;
 import org.eclipse.equinox.http.jetty.JettyCustomizer;
 import org.eclipse.jetty.server.SessionManager;
 import org.eclipse.jetty.server.session.AbstractSessionManager;
-import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+
 
 /**
  * Configure Jetty to not use cookies for session management. This allows RAP
