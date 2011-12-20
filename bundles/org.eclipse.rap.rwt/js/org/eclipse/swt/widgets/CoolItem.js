@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 /**
  * The parameter orientation must be one of "vertical" or "horizontal".
@@ -61,8 +61,7 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
     setControl : function( control ) {
       if( control != null ) {
         // TODO [tb] : Control positioning is already handled by server
-        control.setLeft(   this.getLeft()
-                         + org.eclipse.swt.widgets.CoolItem.CONTROL_OFFSET );
+        control.setLeft( this.getLeft() + org.eclipse.swt.widgets.CoolItem.CONTROL_OFFSET );
         control.setDisplay( true );
       }
       if( this._control != null ) {
@@ -81,7 +80,9 @@ qx.Class.define( "org.eclipse.swt.widgets.CoolItem", {
     
     _applyParent : function( value, oldValue ) {
       this.base( arguments, value, oldValue );
-      this.setLocked( value.getLocked() );
+      if( value != null ) {
+        this.setLocked( value.getLocked() );
+      }
     },
 
     _onHandleMouseDown : function( evt ) {

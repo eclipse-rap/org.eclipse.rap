@@ -57,6 +57,29 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CoolItemTest", {
       bar.destroy();
     },
 
+    testDestroyCoolItemByTheProtocol : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var bar = this._createCoolBar();
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "create",
+        "type" : "rwt.widgets.CoolItem",
+        "properties" : {
+          "style" : [],
+          "parent" : "w2"
+        }
+      } );
+      var item = org.eclipse.rwt.protocol.ObjectManager.getObject( "w3" );
+      testUtil.flush();
+      processor.processOperation( {
+        "target" : "w3",
+        "action" : "destroy"
+      } );
+      assertNull( item.getParent() );
+      bar.destroy();
+    },
+
     testUpdateHandleHeight : function() {
       var bar = this._createCoolBar();
       var processor = org.eclipse.rwt.protocol.Processor;
