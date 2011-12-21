@@ -401,6 +401,54 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( 97, event.keyCode );
   }
 
+  public void testProcessKeyEventWithDigitCharacter() {
+    final java.util.List<Event> eventLog = new ArrayList<Event>();
+    shell.open();
+    shell.addListener( SWT.KeyDown, new Listener() {
+      public void handleEvent( Event event ) {
+        eventLog.add( event );
+      }
+    } );
+    String shellId = WidgetUtil.getId( shell );
+    eventLog.clear();
+    Fixture.fakeNewRequest();
+    Fixture.fakePhase( PhaseId.READ_DATA );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "49" );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "49" );
+    ControlLCAUtil.processKeyEvents( shell );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display.readAndDispatch();
+    Event event = eventLog.get( 0 );
+    assertEquals( 49, event.character );
+    assertEquals( 49, event.keyCode );
+  }
+  
+  public void testProcessKeyEventWithPunctuationCharacter() {
+    final java.util.List<Event> eventLog = new ArrayList<Event>();
+    shell.open();
+    shell.addListener( SWT.KeyDown, new Listener() {
+      public void handleEvent( Event event ) {
+        eventLog.add( event );
+      }
+    } );
+    String shellId = WidgetUtil.getId( shell );
+    eventLog.clear();
+    Fixture.fakeNewRequest();
+    Fixture.fakePhase( PhaseId.READ_DATA );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "49" );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "33" );
+    ControlLCAUtil.processKeyEvents( shell );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display.readAndDispatch();
+    Event event = eventLog.get( 0 );
+    assertEquals( 33, event.character );
+    assertEquals( 49, event.keyCode );
+  }
+
   public void testProcessKeyEventsWithDoItFlag() {
     final java.util.List<Event> eventLog = new ArrayList<Event>();
     Listener doitTrueListener = new Listener() {
