@@ -36,7 +36,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
 
   public void service() throws IOException {
     HttpServletResponse response = ContextProvider.getResponse();
-    configureResponseContentEncoding( response );
+    configureResponseHeaders( response );
     ISessionStore sessionStore = ContextProvider.getSession();
     ProtocolMessageWriter writer = new ProtocolMessageWriter();
     boolean success = UICallBackManager.getInstance().processRequest( response );
@@ -82,7 +82,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
     return result;
   }
 
-  private static void configureResponseContentEncoding( ServletResponse response ) {
+  private static void configureResponseHeaders( ServletResponse response ) {
     response.setContentType( HTTP.CONTENT_TYPE_JSON );
     response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
   }
