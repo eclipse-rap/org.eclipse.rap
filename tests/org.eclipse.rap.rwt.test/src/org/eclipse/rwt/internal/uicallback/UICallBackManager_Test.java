@@ -28,6 +28,7 @@ import javax.servlet.http.HttpSessionBindingListener;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
 import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rap.rwt.testfixture.internal.NoOpRunnable;
@@ -203,7 +204,8 @@ public class UICallBackManager_Test extends TestCase {
     callBackRequestSimulator.waitForRequest();
 
     TestResponse response = ( TestResponse )context.getResponse();
-    assertEquals( createEmptyProtocolMessage(), response.getContent().trim() );
+    Message message = new Message( response.getContent().trim() );
+    assertEquals( 0, message.getOperationCount() );
     assertFalse( manager.isCallBackRequestBlocked() );
     assertFalse( callBackRequestSimulator.isRequestRunning() );
     assertFalse( callBackRequestSimulator.exceptionOccured() );
@@ -234,11 +236,12 @@ public class UICallBackManager_Test extends TestCase {
     callBackRequestSimulator1.waitForRequest();
 
     TestResponse response = ( TestResponse )context1.getResponse();
+    Message message = new Message( response.getContent().trim() );
+    assertEquals( 0, message.getOperationCount() );
     assertTrue( manager.isCallBackRequestBlocked() );
     assertFalse( callBackRequestSimulator1.exceptionOccured() );
     assertFalse( callBackRequestSimulator2.exceptionOccured() );
     assertFalse( callBackRequestSimulator1.isRequestRunning() );
-    assertEquals( createEmptyProtocolMessage(), response.getContent().trim() );
     assertTrue( callBackRequestSimulator2.isRequestRunning() );
   }
 
@@ -589,15 +592,6 @@ public class UICallBackManager_Test extends TestCase {
     ServiceStateInfo stateInfo = new ServiceStateInfo();
     result.setStateInfo( stateInfo );
     return result;
-  }
-
-  private static String createEmptyProtocolMessage() {
-    StringBuilder builder = new StringBuilder();
-    builder.append( "{\n" );
-    builder.append( "\"meta\": {},\n" );
-    builder.append( "\"operations\": []\n" );
-    builder.append( "}" );
-    return builder.toString();
   }
 
   private class AsyncExecRunnable implements Runnable {

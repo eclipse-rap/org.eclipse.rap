@@ -36,9 +36,9 @@ public class UICallBackServiceHandler implements IServiceHandler {
 
   public void service() throws IOException {
     HttpServletResponse response = ContextProvider.getResponse();
+    configureResponseContentEncoding( response );
     ISessionStore sessionStore = ContextProvider.getSession();
     ProtocolMessageWriter writer = new ProtocolMessageWriter();
-    configureResponseContentEncoding( response );
     boolean success = UICallBackManager.getInstance().processRequest( response );
     if( success && sessionStore.isBound() ) {
       writeUICallBackDeactivation( writer );
