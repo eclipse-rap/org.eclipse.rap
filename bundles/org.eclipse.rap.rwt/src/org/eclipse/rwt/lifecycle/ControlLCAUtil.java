@@ -1051,7 +1051,7 @@ public class ControlLCAUtil {
       }
     } else {
       evt.character = translateCharacter( charCode );
-      if( Character.isAlphabetic( charCode ) ) {
+      if( Character.isLetter( charCode ) ) {
         evt.keyCode = Character.toLowerCase( charCode );
       }
     }
