@@ -353,6 +353,54 @@ public class ControlLCAUtil_Test extends TestCase {
     assertTrue( event.doit );
   }
 
+  public void testProcessKeyEventWithLowerCaseCharacter() {
+    final java.util.List<Event> eventLog = new ArrayList<Event>();
+    shell.open();
+    shell.addListener( SWT.KeyDown, new Listener() {
+      public void handleEvent( Event event ) {
+        eventLog.add( event );
+      }
+    } );
+    String shellId = WidgetUtil.getId( shell );
+    eventLog.clear();
+    Fixture.fakeNewRequest();
+    Fixture.fakePhase( PhaseId.READ_DATA );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "65" );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "97" );
+    ControlLCAUtil.processKeyEvents( shell );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display.readAndDispatch();
+    Event event = eventLog.get( 0 );
+    assertEquals( 97, event.character );
+    assertEquals( 97, event.keyCode );
+  }
+  
+  public void testProcessKeyEventWithUpperCaseCharacter() {
+    final java.util.List<Event> eventLog = new ArrayList<Event>();
+    shell.open();
+    shell.addListener( SWT.KeyDown, new Listener() {
+      public void handleEvent( Event event ) {
+        eventLog.add( event );
+      }
+    } );
+    String shellId = WidgetUtil.getId( shell );
+    eventLog.clear();
+    Fixture.fakeNewRequest();
+    Fixture.fakePhase( PhaseId.READ_DATA );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "65" );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "65" );
+    ControlLCAUtil.processKeyEvents( shell );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display.readAndDispatch();
+    Event event = eventLog.get( 0 );
+    assertEquals( 65, event.character );
+    assertEquals( 97, event.keyCode );
+  }
+
   public void testProcessKeyEventsWithDoItFlag() {
     final java.util.List<Event> eventLog = new ArrayList<Event>();
     Listener doitTrueListener = new Listener() {
@@ -524,6 +572,8 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( SWT.F4, keyCode );
     keyCode = ControlLCAUtil.translateKeyCode( 123 );
     assertEquals( SWT.F12, keyCode );
+    keyCode = ControlLCAUtil.translateKeyCode( 18 );
+    assertEquals( SWT.ALT, keyCode );
   }
 
   public void testWriteBackgroundImage() throws IOException {

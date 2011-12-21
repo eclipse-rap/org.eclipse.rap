@@ -133,12 +133,18 @@ org.eclipse.rwt.protocol.Processor = {
   // Internals
 
   _processError : function( error, operation ) {
+    var errorstr; 
+    if( error ) {
+      errorstr = error.message ? error.message : error.toString();
+    } else {
+      errorstr = "No Error given!";
+    }
     var msg = "Operation \"" + operation.action + "\"";
     msg += " on target \"" +  operation.target + "\"";
     var target = this._getTarget( operation.target );
     msg += " of type \"" +  ( target && target.classname ? target.classname : target ) + "\"";
     msg += " failed:";
-    msg += "\n" + error +"\n";
+    msg += "\n" + errorstr +"\n";
     msg += "Properties: \n" + this._getPropertiesString( operation );
     throw new Error( msg );
   },

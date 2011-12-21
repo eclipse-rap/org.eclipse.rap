@@ -37,8 +37,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AsyncKeyEventUtilTest", {
       assertEquals( 0, testUtil.getRequestsSend() );
       // cancel event
       testUtil.fireFakeKeyDomEvent( node, "keypress", "x" );
-      var expected =   "org.eclipse.swt.events.keyDown.charCode=" 
-                     + "x".charCodeAt( 0 );
+      var expected = "org.eclipse.swt.events.keyDown.charCode=" + "x".charCodeAt( 0 );
       assertTrue( testUtil.getMessage().indexOf( expected ) != -1 );
       assertNotNull( keyUtil._pendingEventInfo );
       assertEquals( "", text.getComputedValue() );
@@ -114,6 +113,48 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AsyncKeyEventUtilTest", {
       assertEquals( 0, testUtil.getRequestsSend() );
       testUtil.fireFakeKeyDomEvent( node, "keydown", 37 );
       assertNull( keyUtil._pendingEventInfo );
+      this._disposeTextWidget( text );
+    },
+
+    testKeyCodeLowerCase : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var keyUtil = org.eclipse.rwt.AsyncKeyEventUtil.getInstance();
+      var text = this._createTextWidget();
+      testUtil.press( text, "a", 0 );
+      var expectedChar = "org.eclipse.swt.events.keyDown.charCode=97";
+      var expectedKey = "org.eclipse.swt.events.keyDown.keyCode=65";
+      assertTrue( testUtil.getMessage().indexOf( expectedChar ) != -1 );
+      assertTrue( testUtil.getMessage().indexOf( expectedKey ) != -1 );
+      keyUtil.allowEvent();
+      this._disposeTextWidget( text );
+    },
+
+    testKeyCodeUpperCase : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var keyUtil = org.eclipse.rwt.AsyncKeyEventUtil.getInstance();
+      var text = this._createTextWidget();
+      testUtil.press( text, "A", 0 );
+      var expectedChar = "org.eclipse.swt.events.keyDown.charCode=65";
+      var expectedKey = "org.eclipse.swt.events.keyDown.keyCode=65";
+      assertTrue( testUtil.getMessage().indexOf( expectedChar ) != -1 );
+      assertTrue( testUtil.getMessage().indexOf( expectedKey ) != -1 );
+      keyUtil.allowEvent();
+      this._disposeTextWidget( text );
+    },
+    
+    testSendModifier: function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var keyUtil = org.eclipse.rwt.AsyncKeyEventUtil.getInstance();
+      var text = this._createTextWidget();
+      var shift = qx.event.type.DomEvent.SHIFT_MASK;
+      testUtil.keyDown( text.getElement(), "Shift", shift );
+      keyUtil.allowEvent();
+      testUtil.keyHold( text.getElement(), "Shift", shift );
+      var expectedChar = "org.eclipse.swt.events.keyDown.charCode=0";
+      var expectedKey = "org.eclipse.swt.events.keyDown.keyCode=16";
+      assertEquals( 1, testUtil.getRequestsSend() );
+      assertTrue( testUtil.getMessage().indexOf( expectedChar ) != -1 );
+      assertTrue( testUtil.getMessage().indexOf( expectedKey ) != -1 );
       this._disposeTextWidget( text );
     },
     

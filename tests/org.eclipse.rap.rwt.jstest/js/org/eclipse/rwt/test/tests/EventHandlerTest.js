@@ -224,6 +224,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       widget.destroy();
     },
 
+    testKeyPressEscape : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      testUtil.flush();
+      widget.focus();
+      var log = [];
+      widget.addEventListener( "keypress", function( event ) {
+        log.push( event.getKeyCode() );
+        log.push( event.getCharCode() );
+        log.push( event.getKeyIdentifier() );
+      } );
+      testUtil.press( widget, "Escape", 0 );
+      var expected = [ 27, 0, "Escape" ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },
+
     testKeyDownPrintable : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();

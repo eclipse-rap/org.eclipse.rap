@@ -17,6 +17,8 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
     this.base( arguments );
     org.eclipse.rwt.EventHandler.setKeyEventFilter( this._onKeyEvent, this );
     this._keyBindings = {};
+    this._lastKeyCode = -1;
+    this._lastEventType = null;
   },
     
   members : {
@@ -35,6 +37,9 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
 
     _onKeyEvent : function( eventType, keyCode, charCode, domEvent ) {
       var result;
+      if( eventType === "keydown" ) {
+        this._lastKeyCode = keyCode;
+      }
       if( this._isKeyBinding( domEvent, keyCode, charCode ) ) {
         result = false;
         if( eventType === "keydown" ) {
@@ -47,8 +52,9 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
         }
       } else {
         var util = this._getDelegate();
-        result = !util.intercept( eventType, keyCode, charCode, domEvent );
+        result = !util.intercept( eventType, this._lastKeyCode, charCode, domEvent );
       }
+      this._lastEventType = eventType;
       return result;
     },
 
@@ -92,9 +98,42 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
       }
       return result.join( "+" );
     },
-    
+
+//    TODO [tb] : Use keydown for non-printables as soon as redispatch is not used anymore    
+//    _isRelevantEvent : function( eventType, keyCode ) {
+//      var result = false;
+//      if( this._useKeyDown( keyCode ) )  {
+//        if( result = eventType === "keydown" ) {
+//          result = true;
+//        } else if( result = eventType === "keypress" ) {
+//          result = !this._isModifier( keyCode ) && this._lastEventType !== "keydown";
+//        }
+//      } else {
+//        result = eventType === "keypress";
+//      }
+//      return result;
+//    },
+
     _isRelevantEvent : function( eventType, keyCode ) {
-      return eventType === "keypress";
+      var result = false;
+      if( this._isModifier( keyCode ) ) {
+        result = eventType === "keydown"; 
+      } else {
+        result = eventType === "keypress"; 
+      }
+      return result;
+    },
+
+    _isModifier : function( keyCode ) {
+      return keyCode >= 16 && keyCode <= 20 && keyCode !== 19;  
+    },
+    
+    _useKeyDown : function( keyCode ) {
+      var result =    org.eclipse.rwt.EventHandlerUtil.isNonPrintableKeyCode( keyCode )
+                   || keyCode === 13
+                   || keyCode === 27
+                   || keyCode === 32;
+      return result;
     },
 
     _getTargetControl : function() {

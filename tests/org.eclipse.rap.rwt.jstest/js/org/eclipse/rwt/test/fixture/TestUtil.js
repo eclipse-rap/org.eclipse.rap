@@ -318,16 +318,14 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       "Enter" : qx.core.Variant.select("qx.client", {
         "default" : null,
         "gecko" : 13
-      } )
+      } ),
+      "Escape" : 27
     },
     
     _printableIdentifierToKeycodeMap : {
       "Backspace" : 8, 
       "Tab" : 9,
-      "Escape" : qx.core.Variant.select("qx.client", {
-        "default" : 27,
-        "webkit" : null
-      } ),
+      "Escape" : 27,
       "Space" : 32, 
       "Enter" : qx.core.Variant.select("qx.client", {
         "default" : 13,
@@ -408,7 +406,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       "gecko" : function( type, stringOrKeyCode ) {
         var result;
         if( type === "keypress" && this._isPrintable( stringOrKeyCode ) ) {
-          result = 0;
+          result = this._isEscape( stringOrKeyCode ) ? 27 : 0;
         } else {
           result = this._convertToKeyCode( stringOrKeyCode );          
         }
@@ -423,7 +421,10 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       "gecko|webkit" : function( type, stringOrKeyCode ) {
         // NOTE [tb] : this is never called with keypress for webkit
         var result;
-        if( type === "keypress" && this._isPrintable( stringOrKeyCode ) ) {
+        if(    type === "keypress" 
+            && this._isPrintable( stringOrKeyCode ) 
+            && !this._isEscape( stringOrKeyCode ) 
+        ) {
           result = this._convertToCharCode( stringOrKeyCode );
         } else {
           result = 0
@@ -443,7 +444,6 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
       var isPrintableIdentifier =    typeof stringOrKeyCode === "string"
                                   && idMap[ stringOrKeyCode ] != null;
       var result = isChar || isPrintableKeyCode || isPrintableIdentifier;
-      
       if( org.eclipse.rwt.Client.isWebkit() ) {
         if( stringOrKeyCode === 27 || stringOrKeyCode === "Escape" ) {
           result = false;
@@ -455,6 +455,10 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
         result = false;
       }
       return result;               
+    },
+    
+    _isEscape : function( stringOrKeyCode ) {
+      return stringOrKeyCode === 27 || stringOrKeyCode === "Escape";
     },
     
     _isModifier : function( key ) {
@@ -469,7 +473,7 @@ qx.Class.define( "org.eclipse.rwt.test.fixture.TestUtil", {
         if( result == null ) { // result may be null or undefined
           result = this._printableIdentifierToKeycodeMap[ stringOrKeyCode ];
           if( result == null ) {
-            throw "_convertToKeyCode: unkown identifier " + stringOrKeyCode;
+            result = 0;
           }
         } 
       } else if( typeof stringOrKeyCode === "string" ) {

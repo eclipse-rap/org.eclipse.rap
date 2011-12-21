@@ -189,18 +189,18 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       },
       "default" : function( event ) {
         // the value in "keyCode" on "keypress" is actually the charcode:
-        var hasKeyCode = event.type !== "keypress" || event.keyCode === 13;
+        var hasKeyCode = event.type !== "keypress" || event.keyCode === 13 || event.keyCode === 27;
         return hasKeyCode ? event.keyCode : 0;
       }
     } ),
 
     getCharCode : qx.core.Variant.select( "qx.client", {
       "default" : function( event ) {
-        var hasCharCode = event.type === "keypress" && event.keyCode !== 13;
+        var hasCharCode = event.type === "keypress" && event.keyCode !== 13 && event.keyCode !== 27;
         return hasCharCode ? event.charCode : 0;
       },
       "mshtml|newmshtml" : function( event ) {
-        var hasCharCode = event.type === "keypress" && event.keyCode !== 13;
+        var hasCharCode = event.type === "keypress" && event.keyCode !== 13 && event.keyCode !== 27;
         return hasCharCode ? event.keyCode : 0;
       },
       "opera" : function( event ) {
@@ -220,14 +220,14 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
     } ),
 
     _isFirstKeyDown : function( keyCode ) {
-      return this._lastUpDownType[ keyCode ] !== "keydown"
+      return this._lastUpDownType[ keyCode ] !== "keydown";
     },
 
     getEventPseudoTypes : qx.core.Variant.select( "qx.client", {
       "default" : function( event, keyCode, charCode ) {
         var result;
         if( event.type === "keydown" ) {
-          var printable = !this._isNonPrintableKeyCode( keyCode );
+          var printable = !this.isNonPrintableKeyCode( keyCode );
           if( this._isFirstKeyDown( keyCode ) ) {
             // add a "keypress" for non-printable keys:
             result = printable ? [ "keydown" ] : [ "keydown", "keypress" ];
@@ -288,9 +288,14 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       return result;
     },
 
-    _isNonPrintableKeyCode : function( keyCode ) {
-      return this._keyCodeToIdentifierMap[ keyCode ] ? true : false;
-    },
+    isNonPrintableKeyCode  : qx.core.Variant.select( "qx.client", {
+      "default" : function( keyCode ) {
+        return this._keyCodeToIdentifierMap[ keyCode ] ? true : false;
+      },
+      "webkit" : function( keyCode ) {
+        return ( this._keyCodeToIdentifierMap[ keyCode ] || keyCode === 27 ) ? true : false;
+      }
+    } ),
 
     _isAlphaNumericKeyCode : function( keyCode ) {
       var result = false;

@@ -1044,14 +1044,16 @@ public class ControlLCAUtil {
   }
 
   private static void initializeKeyEvent( KeyEvent evt, int keyCode, int charCode, int stateMask ) {
+    evt.keyCode = translateKeyCode( keyCode );
     if( charCode == 0 ) {
-      evt.keyCode = translateKeyCode( keyCode );
       if( ( evt.keyCode & SWT.KEYCODE_BIT ) == 0 ) {
         evt.character = translateCharacter( evt.keyCode );
       }
     } else {
-      evt.keyCode = charCode;
       evt.character = translateCharacter( charCode );
+      if( Character.isAlphabetic( charCode ) ) {
+        evt.keyCode = Character.toLowerCase( charCode );
+      }
     }
     evt.stateMask = stateMask;
   }
@@ -1225,6 +1227,15 @@ public class ControlLCAUtil {
   static int translateKeyCode( int keyCode ) {
     int result;
     switch( keyCode ) {
+      case 16:
+        result = SWT.SHIFT;
+      break;
+      case 17:
+        result = SWT.CONTROL;
+      break;
+      case 18:
+        result = SWT.ALT;
+      break;
       case 20:
         result = SWT.CAPS_LOCK;
       break;
