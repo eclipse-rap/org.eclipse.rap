@@ -204,7 +204,10 @@ public class UICallBackManager_Test extends TestCase {
     callBackRequestSimulator.waitForRequest();
 
     TestResponse response = ( TestResponse )context.getResponse();
-    Message message = new Message( response.getContent().trim() );
+    String content = response.getContent().trim();
+    Message message = new Message( content );
+    // Remove the next assert when bug 367318 is fixed
+    assertFalse( content.equals( "" ) );
     assertEquals( 0, message.getOperationCount() );
     assertFalse( manager.isCallBackRequestBlocked() );
     assertFalse( callBackRequestSimulator.isRequestRunning() );
@@ -236,7 +239,10 @@ public class UICallBackManager_Test extends TestCase {
     callBackRequestSimulator1.waitForRequest();
 
     TestResponse response = ( TestResponse )context1.getResponse();
-    Message message = new Message( response.getContent().trim() );
+    String content = response.getContent().trim();
+    Message message = new Message( content );
+    // Remove the next assert when bug 367318 is fixed
+    assertFalse( content.equals( "" ) );
     assertEquals( 0, message.getOperationCount() );
     assertTrue( manager.isCallBackRequestBlocked() );
     assertFalse( callBackRequestSimulator1.exceptionOccured() );
