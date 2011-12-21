@@ -4064,7 +4064,7 @@ qx.Class.define( "qx.ui.core.Widget", {
     applyObjectId : function( id ) {
     	if( qx.ui.core.Widget._renderHtmlIds ) {
         this.setHtmlAttribute( "id", id );
-    	}
+      }
     }
     
   },
