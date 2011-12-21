@@ -29,17 +29,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       }
     },
 
-    testObjectManager : function() {
-      var manager = org.eclipse.rwt.protocol.ObjectManager;
-      var obj = {};
-      manager.add( "myId", obj, "myType" );
-      assertIdentical( obj, manager.getObject( "myId" ) );
-      assertEquals( "myType", manager.getType( "myId" ) );
-      manager.remove( "myId" );
-      assertTrue( manager.getObject( "myId" ) == null );
-      assertTrue( manager.getType( "myId" ) == null );
-    },
-
     testProcessSet : function() {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;

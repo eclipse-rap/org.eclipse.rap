@@ -534,6 +534,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.WidgetTest", {
       assertFalse( button.getFocused() );
     },
 
+    testApplyObjectId_default : function() {
+      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      button.addToDocument();
+
+      button.applyObjectId( "w23" );
+
+      assertIdentical( "", button.getHtmlAttribute( "id" ) );
+    },
+
+    testApplyObjectId_whenActivated : function() {
+      var button = new org.eclipse.rwt.widgets.Button( "push" );
+      button.addToDocument();
+
+      qx.ui.core.Widget._renderHtmlIds = true;
+      button.applyObjectId( "w23" );
+
+      assertEquals( "w23", button.getHtmlAttribute( "id" ) );
+    },
+
     /////////
     // Helper
     

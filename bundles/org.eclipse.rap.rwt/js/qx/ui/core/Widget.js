@@ -91,6 +91,8 @@ qx.Class.define( "qx.ui.core.Widget", {
 
     _autoFlushTimeout : null,
     _flushGlobalQueuesPhase : 0,
+    _renderHtmlIds : false,
+
     _FLUSH_PHASE_IDLE : 0,
     _FLUSH_PHASE_WIDGET : 1,
     _FLUSH_PHASE_STATE : 2,
@@ -4057,6 +4059,12 @@ qx.Class.define( "qx.ui.core.Widget", {
         result = this._adapters[ key ];
       }
       return result;
+    },
+
+    applyObjectId : function( id ) {
+    	if( qx.ui.core.Widget._renderHtmlIds ) {
+        this.setHtmlAttribute( "id", id );
+    	}
     }
     
   },

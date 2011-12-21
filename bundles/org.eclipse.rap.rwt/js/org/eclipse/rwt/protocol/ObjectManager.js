@@ -22,6 +22,9 @@ org.eclipse.rwt.protocol.ObjectManager = {
       "type" : type
     };
     object._rwtId = id;
+    if( typeof object.applyObjectId === "function" ) {
+      object.applyObjectId( id );
+    }
     if( this._callbacks[ id ] ) {
       for( var i = 0; i < this._callbacks[ id ].length; i++ ) {
         this._callbacks[ id ][ i ]( object );
