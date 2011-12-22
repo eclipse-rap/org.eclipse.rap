@@ -252,23 +252,6 @@ public class TreeItemLCA_Test extends TestCase {
     assertEquals( true, treeItem.getChecked() );
   }
 
-  public void testDontRenderDeselectionOnMaterialize() throws IOException {
-    tree = new Tree( shell, SWT.VIRTUAL );
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    shell.open();
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    treeItem.getBackground(); // materialize
-    TreeItemLCA lca = new TreeItemLCA();
-
-    lca.renderChanges( treeItem );
-
-    Message message = Fixture.getProtocolMessage();
-    // TODO [rst] Ivan, please translate this into a meaningful protocol test
-    // assertFalse( ProtocolTestUtil.getMessageScript().contains( "deselectItem" ) );
-    assertEquals( 0, message.getOperationCount() );
-  }
-
   public void testGetBoundsWithScrolling() {
     TreeItem rootItem = new TreeItem( tree, 0 );
     TreeItem rootItem2 = new TreeItem( tree, 0 );
