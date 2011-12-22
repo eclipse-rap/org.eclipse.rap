@@ -28,7 +28,7 @@ public class RenderDispose_Test extends TestCase {
     // set up the test widget hierarchy
     Display display = new Display();
     final Composite shell = new Shell( display , SWT.NONE );
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String displayId = DisplayUtil.getId( display );
     // first rendering: html document that contains the javaScript 'application'
     Fixture.executeLifeCycleFromServerThread( );
     // second rendering: initial markup that constructs the above created

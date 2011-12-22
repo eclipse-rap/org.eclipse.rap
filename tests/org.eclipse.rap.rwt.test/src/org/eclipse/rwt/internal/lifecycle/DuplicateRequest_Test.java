@@ -26,9 +26,9 @@ import org.eclipse.swt.widgets.*;
 
 
 public class DuplicateRequest_Test extends TestCase {
-  
+
   public void testDisabledButton() {
-    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>(); 
+    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>();
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
@@ -41,7 +41,7 @@ public class DuplicateRequest_Test extends TestCase {
     } );
     shell.open();
 
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
 
     // First request - within this request the button will become disabled
@@ -59,9 +59,9 @@ public class DuplicateRequest_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, events.size() );
   }
-  
+
   public void testInvisibleButton() {
-    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>(); 
+    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>();
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
@@ -73,10 +73,10 @@ public class DuplicateRequest_Test extends TestCase {
       }
     } );
     shell.open();
-    
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+
+    String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
-    
+
     // First request - within this request the button will become disabled
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
@@ -84,7 +84,7 @@ public class DuplicateRequest_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread( );
     assertFalse( button.getVisible() );
     assertEquals( 1, events.size() );
-    
+
     // Second request - simulating a click on the now disabled button
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
@@ -92,9 +92,9 @@ public class DuplicateRequest_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, events.size() );
   }
-  
+
   public void testDisposedButton() {
-    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>(); 
+    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>();
     Display display = new Display();
     Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
@@ -106,10 +106,10 @@ public class DuplicateRequest_Test extends TestCase {
       }
     } );
     shell.open();
-    
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+
+    String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
-    
+
     // First request - within this request the button will become disabled
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
@@ -117,7 +117,7 @@ public class DuplicateRequest_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread( );
     assertTrue( button.isDisposed() );
     assertEquals( 1, events.size() );
-    
+
     // Second request - simulating a click on the now disabled button
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
@@ -125,9 +125,9 @@ public class DuplicateRequest_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, events.size() );
   }
-  
+
   public void testButtonOpensModalShell() {
-    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>(); 
+    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>();
     Display display = new Display();
     final Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
@@ -141,8 +141,8 @@ public class DuplicateRequest_Test extends TestCase {
       }
     } );
     shell.open();
-    
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+
+    String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
 
     // First request - within this request a modal dialog will be opened
@@ -152,7 +152,7 @@ public class DuplicateRequest_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( 1, events.size() );
 
-    // Second request - simulates click on the button that should not be 
+    // Second request - simulates click on the button that should not be
     // available anymore as it is blocked by the modal dialog
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
@@ -162,7 +162,7 @@ public class DuplicateRequest_Test extends TestCase {
   }
 
   public void testFocusOutOpensModalShell() {
-    final java.util.List<TypedEvent> events = new ArrayList<TypedEvent>(); 
+    final java.util.List<TypedEvent> events = new ArrayList<TypedEvent>();
     Display display = new Display();
     final Shell shell = new Shell( display );
     shell.setLayout( new FillLayout() );
@@ -182,10 +182,10 @@ public class DuplicateRequest_Test extends TestCase {
       }
     } );
     shell.open();
-    
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+
+    String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
-    
+
     // Within this request a focusLost and widgetSelected (for the button)
     // is sent. The focusList listener opens a modal shell, thus the event on
     // button must not be executed
@@ -199,9 +199,9 @@ public class DuplicateRequest_Test extends TestCase {
     FocusEvent event = ( FocusEvent )events.get( 0 );
     assertSame( text, event.widget );
   }
-  
+
   public void testCloseClosedShell() {
-    final java.util.List<ShellEvent> events = new ArrayList<ShellEvent>(); 
+    final java.util.List<ShellEvent> events = new ArrayList<ShellEvent>();
     Display display = new Display();
     final Shell shell = new Shell( display, SWT.SHELL_TRIM );
     shell.setSize( 100, 100 );
@@ -211,10 +211,10 @@ public class DuplicateRequest_Test extends TestCase {
       }
     } );
     shell.open();
-    
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+
+    String displayId = DisplayUtil.getId( display );
     String shellId = WidgetUtil.getId( shell );
-    
+
     // First request - simulates click on close button of shell
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
@@ -223,7 +223,7 @@ public class DuplicateRequest_Test extends TestCase {
     assertEquals( 1, events.size() );
     assertTrue( shell.isDisposed() );
 
-    // Second request - simulates click on close button of shell that was 
+    // Second request - simulates click on close button of shell that was
     // already closed by the first request
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
@@ -231,14 +231,14 @@ public class DuplicateRequest_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, events.size() );
   }
-  
+
   public void testNestedModalShell() {
-    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>(); 
+    final java.util.List<SelectionEvent> events = new ArrayList<SelectionEvent>();
     Display display = new Display();
     final Shell shell1 = new Shell( display, SWT.APPLICATION_MODAL );
     shell1.setSize( 100, 100 );
     shell1.open();
-    
+
     Shell shell2 = new Shell( display, SWT.APPLICATION_MODAL );
     shell2.setSize( 100, 100 );
     Button button = new Button( shell2, SWT.PUSH );
@@ -248,17 +248,17 @@ public class DuplicateRequest_Test extends TestCase {
       }
     } );
     shell2.open();
-    
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+
+    String displayId = DisplayUtil.getId( display );
     String buttonId = WidgetUtil.getId( button );
-    
+
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, buttonId );
     Fixture.executeLifeCycleFromServerThread( );
     assertEquals( 1, events.size() );
   }
-  
+
   protected void setUp() throws Exception {
     Fixture.setUp();
   }

@@ -586,7 +586,7 @@ public class UICallBackManager_Test extends TestCase {
   private void fakeRequestParam() {
     Fixture.fakeResponseWriter();
     ContextProvider.getSession().setAttribute( "org.eclipse.swt.display", display );
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String displayId = DisplayUtil.getId( display );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
   }
 

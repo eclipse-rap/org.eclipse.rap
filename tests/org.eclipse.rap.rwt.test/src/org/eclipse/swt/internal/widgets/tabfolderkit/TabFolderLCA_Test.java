@@ -214,7 +214,7 @@ public class TabFolderLCA_Test extends TestCase {
       }
     } );
 
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String displayId = DisplayUtil.getId( display );
     String item1Id = WidgetUtil.getId( item1 );
     String folderId = WidgetUtil.getId( folder );
     Fixture.fakeNewRequest();

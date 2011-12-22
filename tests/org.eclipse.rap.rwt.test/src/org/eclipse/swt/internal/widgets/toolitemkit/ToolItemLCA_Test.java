@@ -72,7 +72,7 @@ public class ToolItemLCA_Test extends TestCase {
       }
     } );
     shell.open();
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String displayId = DisplayUtil.getId( display );
     String toolItemId = WidgetUtil.getId( item );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( toolItemId + ".selection", "true" );
@@ -85,7 +85,7 @@ public class ToolItemLCA_Test extends TestCase {
     ToolItem item0 = new ToolItem( toolbar, SWT.RADIO );
     item0.setSelection( true );
     ToolItem item1 = new ToolItem( toolbar, SWT.RADIO );
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String displayId = DisplayUtil.getId( display );
     String item0Id = WidgetUtil.getId( item0 );
     String item1Id = WidgetUtil.getId( item1 );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );

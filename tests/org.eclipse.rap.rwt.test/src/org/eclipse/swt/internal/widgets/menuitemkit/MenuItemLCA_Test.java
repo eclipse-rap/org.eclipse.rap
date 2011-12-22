@@ -96,7 +96,7 @@ public class MenuItemLCA_Test extends TestCase {
         assertEquals( 0, event.height );
       }
     } );
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String displayId = DisplayUtil.getId( display );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     String menuItemId = WidgetUtil.getId( menuItem );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, menuItemId );
@@ -122,7 +122,7 @@ public class MenuItemLCA_Test extends TestCase {
         assertEquals( true, menuItem.getSelection() );
       }
     } );
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String displayId = DisplayUtil.getId( display );
     String menuItemId = WidgetUtil.getId( menuItem );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( menuItemId + ".selection", "true" );

@@ -337,7 +337,7 @@ public class TreeLCA_Test extends TestCase {
     tree.addSelectionListener( new LoggingSelectionListener( events ) );
     String treeId = WidgetUtil.getId( tree );
     String treeItemId = WidgetUtil.getId( treeItem );
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String displayId = DisplayUtil.getId( display );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED, treeId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_SELECTED + ".item", treeItemId );
@@ -401,7 +401,7 @@ public class TreeLCA_Test extends TestCase {
     tree.addSelectionListener( new LoggingSelectionListener( events ) );
     String treeId = WidgetUtil.getId( tree );
     String treeItemId = WidgetUtil.getId( treeItem );
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String displayId = DisplayUtil.getId( display );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, treeId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED + ".item", treeItemId );
@@ -430,7 +430,7 @@ public class TreeLCA_Test extends TestCase {
     } );
     String treeId = WidgetUtil.getId( tree );
     String treeItemId = WidgetUtil.getId( treeItem );
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String displayId = DisplayUtil.getId( display );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED, treeId );
     Fixture.fakeRequestParam( JSConst.EVENT_WIDGET_DEFAULT_SELECTED + ".item", treeItemId );
@@ -449,7 +449,7 @@ public class TreeLCA_Test extends TestCase {
   public void testInvalidScrollValues() {
     Tree tree = new Tree( shell, SWT.NONE );
     String treeId = WidgetUtil.getId( tree );
-    String displayId = DisplayUtil.getAdapter( display ).getId();
+    String displayId = DisplayUtil.getId( display );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
     Fixture.fakeRequestParam( treeId + ".scrollLeft", "undefined" );
     Fixture.fakeRequestParam( treeId + ".scrollTop", "80" );
