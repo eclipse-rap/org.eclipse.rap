@@ -104,13 +104,14 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
       assertEquals( "Timeout occur!!!", org.eclipse.swt.Request.getInstance()._timeoutPage );
     },
 
-    testSetUiTestsEnabled : function() {
+    testSetEnableUiTests : function() {
       org.eclipse.rwt.Display._current = undefined;
     	var display = new org.eclipse.rwt.Display();
 
-    	display.setUiTestsEnabled( true );
+    	display.setEnableUiTests( true );
 
     	assertIdentical( true, qx.ui.core.Widget._renderHtmlIds );
+    	display.setEnableUiTests( false );
     }
 
   }
