@@ -70,9 +70,9 @@ public class CanvasLCA_Test extends TestCase {
     assertEquals( canvasId, gcCreate.getProperty( "parent" ) );
   }
 
-  public void testRenderDestroy() throws IOException {    
+  public void testRenderDestroy() throws IOException {
     lca.renderDispose( canvas );
-    
+
     Message message = Fixture.getProtocolMessage();
     DestroyOperation canvasDestroy = ( DestroyOperation )message.getOperation( 0 );
     DestroyOperation gcDestroy = ( DestroyOperation )message.getOperation( 1 );
@@ -88,10 +88,10 @@ public class CanvasLCA_Test extends TestCase {
     Fixture.markInitialized( canvas );
     Fixture.preserveWidgets();
     GCAdapter adapter = ( GCAdapter )canvas.getAdapter( IGCAdapter.class );
-    
+
     adapter.addGCOperation( new DrawLine( 1, 2, 3, 4 ) );
     new CanvasLCA().renderChanges( canvas );
-    
+
     CallOperation init = getGCOperation( canvas, "init" );
     assertEquals( new Integer( 50 ), init.getProperty( "width" ) );
     assertEquals( new Integer( 50 ), init.getProperty( "height" ) );
@@ -116,7 +116,7 @@ public class CanvasLCA_Test extends TestCase {
     adapter.addGCOperation( new DrawLine( 1, 2, 3, 4 ) );
     adapter.addGCOperation( new DrawLine( 5, 6, 7, 8 ) );
     new CanvasLCA().renderChanges( canvas );
-   
+
     CallOperation draw = getGCOperation( canvas, "draw" );
     JSONArray operations = ( JSONArray )draw.getProperty( "operations" );
     assertEquals( 8, operations.length() );
@@ -129,6 +129,7 @@ public class CanvasLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( canvas );
     Fixture.preserveWidgets();
+
     GC gc = new GC( canvas );
     gc.setFont( new Font( display, "Tahoma", 16, SWT.BOLD ) );
     gc.dispose();
@@ -139,7 +140,9 @@ public class CanvasLCA_Test extends TestCase {
     gc.setFont( new Font( display, "Tahoma", 16, SWT.BOLD ) );
     gc.dispose();
     new CanvasLCA().renderChanges( canvas );
-    assertEquals( "", Fixture.getAllMarkup() );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
   }
 
   public void testTrimTrailingSetOperations() throws IOException {
@@ -182,7 +185,28 @@ public class CanvasLCA_Test extends TestCase {
     assertEquals( 0, adapter.getGCOperations().length );
   }
 
-  public void testRenderOperations_Resize() throws IOException {
+  public void testRenderOperations_empty() throws IOException {
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    canvas.setSize( 50, 50 );
+    canvas.setFont( new Font( display, "Arial", 11, SWT.NORMAL ) );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( canvas );
+    Fixture.preserveWidgets();
+    canvas.addPaintListener( new PaintListener() {
+      public void paintControl( PaintEvent event ) {
+        event.gc.drawLine( 1, 2, 3, 4 );
+        event.gc.drawLine( 5, 6, 7, 8 );
+      }
+    } );
+    Fixture.fakeResponseWriter();
+
+    new CanvasLCA().renderChanges( canvas );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
+  }
+
+  public void testRenderOperations_resize() throws IOException {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     Canvas canvas = new Canvas( shell, SWT.NONE );
     canvas.setSize( 50, 50 );
@@ -197,8 +221,6 @@ public class CanvasLCA_Test extends TestCase {
       }
     } );
     Fixture.fakeResponseWriter();
-    new CanvasLCA().renderChanges( canvas );
-    assertEquals( "", Fixture.getAllMarkup() );
 
     canvas.setSize( 150, 150 );
     new CanvasLCA().renderChanges( canvas );
@@ -211,7 +233,7 @@ public class CanvasLCA_Test extends TestCase {
     assertEquals( 8, operations.length() );
   }
 
-  public void testRenderOperations_Redraw() throws IOException {
+  public void testRenderOperations_redraw() throws IOException {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     canvas.setSize( 50, 50 );
     canvas.setFont( new Font( display, "Arial", 11, SWT.NORMAL ) );
@@ -225,12 +247,10 @@ public class CanvasLCA_Test extends TestCase {
       }
     } );
     Fixture.fakeResponseWriter();
-    new CanvasLCA().renderChanges( canvas );
-    assertEquals( "", Fixture.getAllMarkup() );
 
     canvas.redraw();
     new CanvasLCA().renderChanges( canvas );
-    
+
     CallOperation draw = getGCOperation( canvas, "draw" );
     JSONArray operations = ( JSONArray )draw.getProperty( "operations" );
     assertEquals( 8, operations.length() );
@@ -288,7 +308,7 @@ public class CanvasLCA_Test extends TestCase {
 
   private static CallOperation getGCOperation( Canvas canvas, String method ) {
     Message message = Fixture.getProtocolMessage();
-    String id = WidgetUtil.getId( canvas ) + "#gc"; 
+    String id = WidgetUtil.getId( canvas ) + "#gc";
     return message.findCallOperation( id, method );
   }
 

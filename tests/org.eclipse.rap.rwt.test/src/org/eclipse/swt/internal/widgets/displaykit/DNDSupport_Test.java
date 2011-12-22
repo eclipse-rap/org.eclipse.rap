@@ -32,34 +32,6 @@ import org.json.JSONException;
 
 public class DNDSupport_Test extends TestCase {
 
-  private class LogingDropTargetListener implements DropTargetListener {
-
-    public void dragEnter( DropTargetEvent event ) {
-      events.add( event );
-    }
-
-    public void dragLeave( DropTargetEvent event ) {
-      events.add( event );
-    }
-
-    public void dragOperationChanged( DropTargetEvent event ) {
-      events.add( event );
-    }
-
-    public void dragOver( DropTargetEvent event ) {
-      events.add( event );
-    }
-
-    public void drop( DropTargetEvent event ) {
-      events.add( event );
-    }
-
-    public void dropAccept( DropTargetEvent event ) {
-      events.add( event );
-    }
-
-  }
-
   private Display display;
   private Shell shell;
   private java.util.List<Object> events;
@@ -78,18 +50,18 @@ public class DNDSupport_Test extends TestCase {
 
   public void testCancelAfterDragDetectAndStartEvent() {
     shell.setLocation( 5, 5 );
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    dragSourceControl.setLocation( 10, 20 );
-    DragSource dragSource = new DragSource( dragSourceControl, DND.DROP_MOVE );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    new DropTarget( dropTargetControl, DND.DROP_MOVE );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    sourceControl.setLocation( 10, 20 );
+    DragSource dragSource = new DragSource( sourceControl, DND.DROP_MOVE );
+    Control targetControl = new Label( shell, SWT.NONE );
+    new DropTarget( targetControl, DND.DROP_MOVE );
     dragSource.addDragListener( new DragSourceAdapter() {
       public void dragStart( DragSourceEvent event ) {
         events.add( event );
         event.doit = false;
       }
     } );
-    dragSourceControl.addDragDetectListener(  new DragDetectListener() {
+    sourceControl.addDragDetectListener(  new DragDetectListener() {
       public void dragDetected( DragDetectEvent event ) {
         events.add(  event );
       }
@@ -97,7 +69,7 @@ public class DNDSupport_Test extends TestCase {
     shell.open();
     // Simulate request that sends a drop event
     Fixture.fakeNewRequest( display );
-    createDragSourceEvent( dragSourceControl, "dragStart", 1 );
+    createDragSourceEvent( sourceControl, "dragStart", 1 );
     // run life cycle
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( 2, events.size() );
@@ -105,7 +77,7 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( DragDetectEvent.DRAG_DETECT, dragDetect.getID() );
     assertEquals( -16, dragDetect.x );
     assertEquals( -26, dragDetect.y );
-    assertSame( dragSourceControl, dragDetect.widget );
+    assertSame( sourceControl, dragDetect.widget );
     DragSourceEvent dragStart = ( DragSourceEvent )events.get( 1 );
     assertEquals( DragSourceEvent.DRAG_START, dragStart.getID() );
     assertSame( dragSource, dragStart.widget );
@@ -145,11 +117,11 @@ public class DNDSupport_Test extends TestCase {
   }
 
   public void testDataTransferOnDrop() {
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, DND.DROP_MOVE );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, DND.DROP_MOVE );
     dragSource.setTransfer( new Transfer[] { HTMLTransfer.getInstance() } );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, DND.DROP_MOVE );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, DND.DROP_MOVE );
     dropTarget.setTransfer( new Transfer[] { HTMLTransfer.getInstance() } );
     dropTarget.addDropListener( new DropTargetAdapter() {
       public void dropAccept( DropTargetEvent event ) {
@@ -169,8 +141,8 @@ public class DNDSupport_Test extends TestCase {
     // Simulate request that sends a drop event
     Fixture.fakeNewRequest( display );
     int typeId = HTMLTransfer.getInstance().getSupportedTypes()[ 0 ].type;
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
+    createDropTargetEvent( targetControl,
+                           sourceControl,
                            "dropAccept",
                            1,
                            2,
@@ -206,11 +178,11 @@ public class DNDSupport_Test extends TestCase {
   }
 
   public void testInvalidDataOnDragSetData() {
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, DND.DROP_MOVE );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, DND.DROP_MOVE );
     dragSource.setTransfer( new Transfer[] { TextTransfer.getInstance() } );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, DND.DROP_MOVE );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, DND.DROP_MOVE );
     dropTarget.setTransfer( new Transfer[] { TextTransfer.getInstance() } );
     dropTarget.addDropListener( new DropTargetAdapter() {
       public void dropAccept( DropTargetEvent event ) {
@@ -229,7 +201,7 @@ public class DNDSupport_Test extends TestCase {
     shell.open();
     // Simulate request that sends a drop event
     Fixture.fakeNewRequest( display );
-    createDropTargetEvent( dropTargetControl, dragSourceControl, "dropAccept", 1 );
+    createDropTargetEvent( targetControl, sourceControl, "dropAccept", 1 );
     // run life cycle
     try {
       Fixture.executeLifeCycleFromServerThread();
@@ -254,11 +226,11 @@ public class DNDSupport_Test extends TestCase {
       HTMLTransfer.getInstance(),
       TextTransfer.getInstance()
     };
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, DND.DROP_MOVE );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, DND.DROP_MOVE );
     dragSource.setTransfer( transfer );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, DND.DROP_MOVE );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, DND.DROP_MOVE );
     dropTarget.setTransfer( transfer );
     dropTarget.addDropListener( new DropTargetAdapter() {
       public void dropAccept( DropTargetEvent event ) {
@@ -286,7 +258,7 @@ public class DNDSupport_Test extends TestCase {
     shell.open();
     // Simulate request that sends a drop event
     Fixture.fakeNewRequest( display );
-    createDropTargetEvent( dropTargetControl, dragSourceControl, "dropAccept", 1 );
+    createDropTargetEvent( targetControl, sourceControl, "dropAccept", 1 );
     // run life cycle
     Fixture.readDataAndProcessAction( display );
     assertEquals( 3, events.size() );
@@ -309,11 +281,11 @@ public class DNDSupport_Test extends TestCase {
       HTMLTransfer.getInstance(),
       TextTransfer.getInstance()
     };
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, DND.DROP_MOVE );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, DND.DROP_MOVE );
     dragSource.setTransfer( transfer );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, DND.DROP_MOVE );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, DND.DROP_MOVE );
     dropTarget.setTransfer( transfer );
     dropTarget.addDropListener( new DropTargetAdapter() {
       public void dropAccept( DropTargetEvent event ) {
@@ -333,7 +305,7 @@ public class DNDSupport_Test extends TestCase {
     shell.open();
     // Simulate request that sends a drop event
     Fixture.fakeNewRequest( display );
-    createDropTargetEvent( dropTargetControl, dragSourceControl, "dropAccept", 1 );
+    createDropTargetEvent( targetControl, sourceControl, "dropAccept", 1 );
     // run life cycle
     Fixture.readDataAndProcessAction( display );
     // Invalid TransferData => no dropAccept
@@ -388,21 +360,21 @@ public class DNDSupport_Test extends TestCase {
   }
 
   public void testDropOverNonTarget() {
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, DND.DROP_MOVE );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, DND.DROP_MOVE );
     dragSource.addDragListener( new DragSourceAdapter() {
       public void dragFinished( DragSourceEvent event ) {
         events.add( event );
       }
     } );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, DND.DROP_MOVE );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, DND.DROP_MOVE );
     dropTarget.addDropListener( new LogingDropTargetListener() );
     shell.open();
     // Simulate request that sends a drop event 'somewhere', but outside a valid
     // drop target
     Fixture.fakeNewRequest( display );
-    createDragSourceEvent( dragSourceControl, "dragFinished", 1 );
+    createDragSourceEvent( sourceControl, "dragFinished", 1 );
     // run life cycle
     Fixture.readDataAndProcessAction( display );
     assertEquals( 1, events.size() );
@@ -559,8 +531,8 @@ public class DNDSupport_Test extends TestCase {
   }
 
   public void testDragSetDataDoitIsFalse() {
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, DND.DROP_MOVE );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, DND.DROP_MOVE );
     dragSource.setTransfer( new Transfer[]{ TextTransfer.getInstance() } );
     dragSource.addDragListener( new DragSourceAdapter() {
       public void dragSetData( DragSourceEvent event ) {
@@ -572,8 +544,8 @@ public class DNDSupport_Test extends TestCase {
         events.add( event );
       }
     } );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, DND.DROP_MOVE );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, DND.DROP_MOVE );
     dropTarget.setTransfer( new Transfer[]{ TextTransfer.getInstance() } );
     dropTarget.addDropListener( new DropTargetAdapter() {
       public void dropAccept( DropTargetEvent event ) {
@@ -586,8 +558,8 @@ public class DNDSupport_Test extends TestCase {
     shell.open();
     // Simulate request that sends a drop event over a valid drop target
     Fixture.fakeNewRequest( display );
-    createDropTargetEvent( dropTargetControl, dragSourceControl, "dropAccept", 1 );
-    createDragSourceEvent( dragSourceControl, "dragFinished", 2 );
+    createDropTargetEvent( targetControl, sourceControl, "dropAccept", 1 );
+    createDragSourceEvent( sourceControl, "dragFinished", 2 );
     // run life cycle
     Fixture.readDataAndProcessAction( display );
     assertEquals( 4, events.size() );
@@ -614,8 +586,8 @@ public class DNDSupport_Test extends TestCase {
   }
 
   public void testDragSetDataDataType() {
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, DND.DROP_MOVE );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, DND.DROP_MOVE );
     dragSource.setTransfer( new Transfer[] { TextTransfer.getInstance() } );
     dragSource.addDragListener( new DragSourceAdapter() {
       public void dragSetData( DragSourceEvent event ) {
@@ -623,8 +595,8 @@ public class DNDSupport_Test extends TestCase {
         event.data = "string";
       }
     } );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, DND.DROP_MOVE );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, DND.DROP_MOVE );
     dropTarget.addDropListener( new DropTargetAdapter() {
       public void drop( DropTargetEvent event ) {
         events.add( event );
@@ -634,7 +606,7 @@ public class DNDSupport_Test extends TestCase {
     shell.open();
     // Simulate request that sends a drop event over a valid drop target
     Fixture.fakeNewRequest( display );
-    createDropTargetEvent( dropTargetControl, dragSourceControl, "dropAccept", 0 );
+    createDropTargetEvent( targetControl, sourceControl, "dropAccept", 0 );
     // run life cycle
     Fixture.readDataAndProcessAction( display );
     // Ensure that dataType is set to something meaningful
@@ -649,49 +621,34 @@ public class DNDSupport_Test extends TestCase {
   public void testResponseNoDetailChange() {
     int operations = DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY;
     Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, operations );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, operations );
     dragSource.setTransfer( types );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, operations );
     dropTarget.setTransfer( types );
     shell.open();
     Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest( display );
     int typeId = TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dragEnter",
-                           10,
-                           10,
-                           "copy",
-                           typeId,
-                           1 );
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dragOver",
-                           10,
-                           10,
-                           "copy",
-                           typeId,
-                           2 );
+    createDropTargetEvent( targetControl, sourceControl, "dragEnter", 10, 10, "copy", typeId, 1 );
+    createDropTargetEvent( targetControl, sourceControl, "dragOver", 10, 10, "copy", typeId, 2 );
+
     Fixture.executeLifeCycleFromServerThread();
-    String markup = Fixture.getAllMarkup();
-    String expected
-      = "org.eclipse.rwt.DNDSupport.getInstance()"
-      + ".setOperationOverwrite( ";
-    assertTrue( markup.indexOf( expected ) == -1 );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( dragSource, "changeDetail" ) );
   }
 
   public void testResponseDetailChangedOnEnter() {
     int operations = DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY;
     Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, operations );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, operations );
     dragSource.setTransfer( types );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, operations );
     dropTarget.setTransfer( types );
     dropTarget.addDropListener( new DropTargetAdapter() {
       public void dragEnter( DropTargetEvent event ) {
@@ -702,24 +659,24 @@ public class DNDSupport_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest( display );
-    createDropTargetEvent( dropTargetControl, dragSourceControl, "dragEnter", 1 );
-    createDropTargetEvent( dropTargetControl, dragSourceControl, "dragOver", 2 );
+    createDropTargetEvent( targetControl, sourceControl, "dragEnter", 1 );
+    createDropTargetEvent( targetControl, sourceControl, "dragOver", 2 );
     Fixture.executeLifeCycleFromServerThread();
-    
+
     Message message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( dragSource, "changeDetail" );
-    assertEquals( WidgetUtil.getId( dropTargetControl ), call.getProperty( "control" ) );
+    assertEquals( WidgetUtil.getId( targetControl ), call.getProperty( "control" ) );
     assertEquals( "DROP_LINK", call.getProperty( "detail" ) );
   }
 
   public void testResponseDetailChangedOnOver() {
     int operations = DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY;
     Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, operations );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, operations );
     dragSource.setTransfer( types );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, operations );
     dropTarget.setTransfer( types );
     dropTarget.addDropListener( new DropTargetAdapter() {
       public void dragOver( DropTargetEvent event ) {
@@ -731,41 +688,27 @@ public class DNDSupport_Test extends TestCase {
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest( display );
     int typeId = TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dragEnter",
-                           10,
-                           10,
-                           "move",
-                           typeId,
-                           1 );
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dragOver",
-                           10,
-                           10,
-                           "copy",
-                           typeId,
-                           2 );
+    createDropTargetEvent( targetControl, sourceControl, "dragEnter", 10, 10, "move", typeId, 1 );
+    createDropTargetEvent( targetControl, sourceControl, "dragOver", 10, 10, "copy", typeId, 2 );
     Fixture.executeLifeCycleFromServerThread();
     Message message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( dragSource, "changeDetail" );
-    assertEquals( WidgetUtil.getId( dropTargetControl ), call.getProperty( "control" ) );
+    assertEquals( WidgetUtil.getId( targetControl ), call.getProperty( "control" ) );
     assertEquals( "DROP_LINK", call.getProperty( "detail" ) );
   }
 
   public void testDropAcceptWithDetailChangedOnEnter() {
     int operations = DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY;
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, operations );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, operations );
     dragSource.addDragListener( new DragSourceAdapter() {
       public void dragSetData( DragSourceEvent event ) {
         event.data = "some data";
       }
     } );
     dragSource.setTransfer( new Transfer[]{ TextTransfer.getInstance() } );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, operations );
     dropTarget.setTransfer( new Transfer[]{ TextTransfer.getInstance() } );
     dropTarget.addDropListener( new DropTargetAdapter() {
       public void dragEnter( DropTargetEvent event ) {
@@ -783,24 +726,15 @@ public class DNDSupport_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest( display );
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dragEnter",
-                           1 );
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dragOver",
-                           2 );
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dropAccept",
-                           3 );
-    createDragSourceEvent( dragSourceControl, "dragFinished", 3 );
+    createDropTargetEvent( targetControl, sourceControl, "dragEnter", 1 );
+    createDropTargetEvent( targetControl, sourceControl, "dragOver", 2 );
+    createDropTargetEvent( targetControl, sourceControl, "dropAccept", 3 );
+    createDragSourceEvent( sourceControl, "dragFinished", 3 );
+
     Fixture.executeLifeCycleFromServerThread();
-    String markup = Fixture.getAllMarkup();
-    String overwrite
-      = "org.eclipse.rwt.DNDSupport.getInstance().setOperationOverwrite( ";
-    assertTrue( markup.indexOf( overwrite ) == -1 );
+
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
     assertEquals( 3, events.size() );
     DropTargetEvent dragEnter = ( DropTargetEvent )events.get( 0 );
     assertEquals( DropTargetEvent.DRAG_ENTER, dragEnter.getID() );
@@ -814,10 +748,10 @@ public class DNDSupport_Test extends TestCase {
   }
 
   public void testDetermineDataType() {
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, DND.DROP_MOVE );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, DND.DROP_MOVE );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, DND.DROP_MOVE );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, DND.DROP_MOVE );
     Transfer[] sourceTransfers = new Transfer[]{
       TextTransfer.getInstance(),
       HTMLTransfer.getInstance()
@@ -836,11 +770,11 @@ public class DNDSupport_Test extends TestCase {
   public void testResponseFeedbackChangedOnEnter() throws JSONException {
     int operations = DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY;
     Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, operations );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, operations );
     dragSource.setTransfer( types );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, operations );
     dropTarget.setTransfer( types );
     dropTarget.addDropListener( new DropTargetAdapter() {
       public void dragEnter( DropTargetEvent event ) {
@@ -851,18 +785,12 @@ public class DNDSupport_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest( display );
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dragEnter",
-                           1 );
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dragOver",
-                           2 );
+    createDropTargetEvent( targetControl, sourceControl, "dragEnter", 1 );
+    createDropTargetEvent( targetControl, sourceControl, "dragOver", 2 );
     Fixture.executeLifeCycleFromServerThread();
     Message message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( dragSource, "changeFeedback" );
-    assertEquals( WidgetUtil.getId( dropTargetControl ), call.getProperty( "control" ) );
+    assertEquals( WidgetUtil.getId( targetControl ), call.getProperty( "control" ) );
     assertEquals( new Integer( DND.FEEDBACK_SELECT ), call.getProperty( "flags" ) );
     JSONArray feedbackArr = ( JSONArray )call.getProperty( "feedback" );
     assertEquals( "\"FEEDBACK_SELECT\"", feedbackArr.join( "," ) );
@@ -871,11 +799,11 @@ public class DNDSupport_Test extends TestCase {
   public void testResponseFeedbackChangedOnOver() throws JSONException {
     int operations = DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY;
     Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, operations );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, operations );
     dragSource.setTransfer( types );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, operations );
     dropTarget.setTransfer( types );
     dropTarget.addDropListener( new DropTargetAdapter() {
       public void dragOver( DropTargetEvent event ) {
@@ -886,18 +814,12 @@ public class DNDSupport_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest( display );
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dragEnter",
-                           1 );
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dragOver",
-                           2 );
+    createDropTargetEvent( targetControl, sourceControl, "dragEnter", 1 );
+    createDropTargetEvent( targetControl, sourceControl, "dragOver", 2 );
     Fixture.executeLifeCycleFromServerThread();
     Message message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( dragSource, "changeFeedback" );
-    assertEquals( WidgetUtil.getId( dropTargetControl ), call.getProperty( "control" ) );
+    assertEquals( WidgetUtil.getId( targetControl ), call.getProperty( "control" ) );
     Integer expectedFlags = new Integer( DND.FEEDBACK_SCROLL | DND.FEEDBACK_EXPAND );
     assertEquals( expectedFlags, call.getProperty( "flags" ) );
     JSONArray feedbackArr = ( JSONArray )call.getProperty( "feedback" );
@@ -910,24 +832,21 @@ public class DNDSupport_Test extends TestCase {
       TextTransfer.getInstance(),
       RTFTransfer.getInstance()
     };
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, operations );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, operations );
     dragSource.setTransfer( types );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, operations );
     dropTarget.setTransfer( types );
     shell.open();
     Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest( display );
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dragEnter",
-                           1 );
+    createDropTargetEvent( targetControl, sourceControl, "dragEnter", 1 );
     Fixture.executeLifeCycleFromServerThread();
     Message message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( dragSource, "changeDataType" );
-    assertEquals( WidgetUtil.getId( dropTargetControl ), call.getProperty( "control" ) );
+    assertEquals( WidgetUtil.getId( targetControl ), call.getProperty( "control" ) );
   }
 
   public void testResponseChangeDataTypeOnOver() {
@@ -936,11 +855,11 @@ public class DNDSupport_Test extends TestCase {
       TextTransfer.getInstance(),
       RTFTransfer.getInstance()
     };
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, operations );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, operations );
     dragSource.setTransfer( types );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, operations );
     dropTarget.setTransfer( types );
     dropTarget.addDropListener( new DropTargetAdapter() {
       public void dragEnter( DropTargetEvent event ) {
@@ -954,21 +873,15 @@ public class DNDSupport_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest( display );
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dragEnter",
-                           1 );
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dragOver",
-                           2 );
+    createDropTargetEvent( targetControl, sourceControl, "dragEnter", 1 );
+    createDropTargetEvent( targetControl, sourceControl, "dragOver", 2 );
     Fixture.executeLifeCycleFromServerThread();
     DropTargetEvent dragEnter = ( DropTargetEvent )events.get( 0 );
     TransferData typeOnEnter = dragEnter.currentDataType;
     assertTrue( TextTransfer.getInstance().isSupportedType( typeOnEnter ) );
     Message message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( dragSource, "changeDataType" );
-    assertEquals( WidgetUtil.getId( dropTargetControl ), call.getProperty( "control" ) );
+    assertEquals( WidgetUtil.getId( targetControl ), call.getProperty( "control" ) );
     Integer expectedType = new Integer( RTFTransfer.getInstance().getSupportedTypes()[ 0 ].type );
     assertEquals( expectedType, call.getProperty( "dataType" ) );
   }
@@ -979,11 +892,11 @@ public class DNDSupport_Test extends TestCase {
       TextTransfer.getInstance(),
       RTFTransfer.getInstance()
     };
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, operations );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, operations );
     dragSource.setTransfer( types );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, operations );
     dropTarget.setTransfer( types );
     dropTarget.addDropListener( new DropTargetAdapter() {
       public void dragEnter( DropTargetEvent event ) {
@@ -997,21 +910,15 @@ public class DNDSupport_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest( display );
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dragEnter",
-                           1 );
-    createDropTargetEvent( dropTargetControl,
-                           dragSourceControl,
-                           "dragOver",
-                           2 );
+    createDropTargetEvent( targetControl, sourceControl, "dragEnter", 1 );
+    createDropTargetEvent( targetControl, sourceControl, "dragOver", 2 );
     Fixture.executeLifeCycleFromServerThread();
     DropTargetEvent dragOver = ( DropTargetEvent )events.get( 0 );
     TransferData typeOnOver = dragOver.currentDataType;
     assertTrue( RTFTransfer.getInstance().isSupportedType( typeOnOver ) );
     Message message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( dragSource, "changeDataType" );
-    assertEquals( WidgetUtil.getId( dropTargetControl ), call.getProperty( "control" ) );
+    assertEquals( WidgetUtil.getId( targetControl ), call.getProperty( "control" ) );
     Integer expectedType = new Integer( RTFTransfer.getInstance().getSupportedTypes()[ 0 ].type );
     assertEquals( expectedType, call.getProperty( "dataType" ) );
   }
@@ -1022,11 +929,11 @@ public class DNDSupport_Test extends TestCase {
     //        SWT would set null and display the DROP_NONE cursor.
     int operations = DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY;
     Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceControl, operations );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, operations );
     dragSource.setTransfer( types );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetControl, operations );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, operations );
     dropTarget.setTransfer( types );
     dropTarget.addDropListener( new DropTargetAdapter() {
       public void dragOver( DropTargetEvent event ) {
@@ -1037,40 +944,40 @@ public class DNDSupport_Test extends TestCase {
     Fixture.fakeNewRequest( display );
     Fixture.executeLifeCycleFromServerThread();
     Fixture.fakeNewRequest( display );
-    createDropTargetEvent( dropTargetControl, dragSourceControl, "dragOver", 1 );
+    createDropTargetEvent( targetControl, sourceControl, "dragOver", 1 );
     Fixture.executeLifeCycleFromServerThread();
     Message message = Fixture.getProtocolMessage();
     CallOperation call = message.findCallOperation( dragSource, "changeDataType" );
-    assertEquals( WidgetUtil.getId( dropTargetControl ), call.getProperty( "control" ) );
+    assertEquals( WidgetUtil.getId( targetControl ), call.getProperty( "control" ) );
     Integer expectedType = new Integer( TextTransfer.getInstance().getSupportedTypes()[ 0 ].type );
     assertEquals( expectedType, call.getProperty( "dataType" ) );
-    
+
   }
 
   public void testOperationChangedEvent() {
     int operations = DND.DROP_MOVE | DND.DROP_LINK | DND.DROP_COPY;
     Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
-    Control dragSourceCont = new Label( shell, SWT.NONE );
-    DragSource dragSource = new DragSource( dragSourceCont, operations );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    DragSource dragSource = new DragSource( sourceControl, operations );
     dragSource.setTransfer( types );
-    Control dropTargetCont = new Label( shell, SWT.NONE );
-    DropTarget dropTarget = new DropTarget( dropTargetCont, operations );
+    Control targetControl = new Label( shell, SWT.NONE );
+    DropTarget dropTarget = new DropTarget( targetControl, operations );
     dropTarget.setTransfer( types );
     dropTarget.addDropListener( new LogingDropTargetListener() );
     shell.open();
     // Simulate request that sends a drop event
     Fixture.fakeNewRequest( display );
     int dataType = TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
-    createDropTargetEvent( dropTargetCont, dragSourceCont, "dragEnter", 2 );
-    createDropTargetEvent( dropTargetCont,
-                           dragSourceCont,
+    createDropTargetEvent( targetControl, sourceControl, "dragEnter", 2 );
+    createDropTargetEvent( targetControl,
+                           sourceControl,
                            "dragOperationChanged",
                            0,
                            0,
                            "copy",
                            dataType,
                            3 );
-    createDropTargetEvent( dropTargetCont, dragSourceCont, "dragOver", 5 );
+    createDropTargetEvent( targetControl, sourceControl, "dragOver", 5 );
     // run life cycle
     Fixture.executeLifeCycleFromServerThread();
     assertEquals( 3, events.size() );
@@ -1078,8 +985,7 @@ public class DNDSupport_Test extends TestCase {
     assertEquals( DropTargetEvent.DRAG_ENTER, dragEnter.getID() );
     assertSame( dropTarget, dragEnter.widget );
     DropTargetEvent dragOperationChanged = ( DropTargetEvent )events.get( 1 );
-    assertEquals( DropTargetEvent.DRAG_OPERATION_CHANGED,
-                  dragOperationChanged.getID() );
+    assertEquals( DropTargetEvent.DRAG_OPERATION_CHANGED, dragOperationChanged.getID() );
     assertTrue( ( dragOperationChanged.detail & DND.DROP_COPY ) != 0 );
     DropTargetEvent dragOver = ( DropTargetEvent )events.get( 2 );
     assertEquals( DropTargetEvent.DRAG_OVER, dragOver.getID() );
@@ -1121,11 +1027,11 @@ public class DNDSupport_Test extends TestCase {
 
   public void testDragStartEventRelativeCoordinates() {
     shell.setLocation( 5, 5 );
-    Control dragSourceControl = new Label( shell, SWT.NONE );
-    dragSourceControl.setLocation( 10, 20 );
-    DragSource dragSource = new DragSource( dragSourceControl, DND.DROP_MOVE );
-    Control dropTargetControl = new Label( shell, SWT.NONE );
-    new DropTarget( dropTargetControl, DND.DROP_MOVE );
+    Control sourceControl = new Label( shell, SWT.NONE );
+    sourceControl.setLocation( 10, 20 );
+    DragSource dragSource = new DragSource( sourceControl, DND.DROP_MOVE );
+    Control targetControl = new Label( shell, SWT.NONE );
+    new DropTarget( targetControl, DND.DROP_MOVE );
     dragSource.addDragListener( new DragSourceAdapter() {
       public void dragStart( DragSourceEvent event ) {
         events.add( event );
@@ -1134,7 +1040,7 @@ public class DNDSupport_Test extends TestCase {
     shell.open();
 
     Fixture.fakeNewRequest( display );
-    createDragSourceEvent( dragSourceControl, "dragStart", 20, 30, "move", 1 );
+    createDragSourceEvent( sourceControl, "dragStart", 20, 30, "move", 1 );
     Fixture.executeLifeCycleFromServerThread();
 
     assertEquals( 1, events.size() );
@@ -1169,14 +1075,7 @@ public class DNDSupport_Test extends TestCase {
                                              int time )
   {
     int dataType = TextTransfer.getInstance().getSupportedTypes()[ 0 ].type;
-    createDropTargetEvent( control,
-                           source,
-                           eventType,
-                           0,
-                           0,
-                           "move",
-                           dataType,
-                           time  );
+    createDropTargetEvent( control, source, eventType, 0, 0, "move", dataType, time  );
   }
 
   private static void createDropTargetEvent( Control control,
@@ -1199,5 +1098,33 @@ public class DNDSupport_Test extends TestCase {
     Fixture.fakeRequestParam( prefix + ".source", sourceId );
     Fixture.fakeRequestParam( prefix + ".time", String.valueOf( time ) );
     Fixture.fakeRequestParam( prefix + ".dataType", String.valueOf( dataType ) );
+  }
+
+  private class LogingDropTargetListener implements DropTargetListener {
+
+    public void dragEnter( DropTargetEvent event ) {
+      events.add( event );
+    }
+
+    public void dragLeave( DropTargetEvent event ) {
+      events.add( event );
+    }
+
+    public void dragOperationChanged( DropTargetEvent event ) {
+      events.add( event );
+    }
+
+    public void dragOver( DropTargetEvent event ) {
+      events.add( event );
+    }
+
+    public void drop( DropTargetEvent event ) {
+      events.add( event );
+    }
+
+    public void dropAccept( DropTargetEvent event ) {
+      events.add( event );
+    }
+
   }
 }

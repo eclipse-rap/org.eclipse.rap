@@ -15,6 +15,7 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.ExecuteScriptOperation;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -63,7 +64,7 @@ public class JSExecutor_Test extends TestCase {
     Fixture.fakeResponseWriter();
     Fixture.executeLifeCycleFromServerThread();
 
-    assertFalse( Fixture.getAllMarkup().contains( EXECUTE_1 ) );
+    assertFalse( ProtocolTestUtil.getMessageScript().contains( EXECUTE_1 ) );
   }
 
   public void testExecuteJSWithDifferentDisplay() {
@@ -72,7 +73,7 @@ public class JSExecutor_Test extends TestCase {
     simulateDifferentDisplay();
     Fixture.executeLifeCycleFromServerThread();
 
-    assertFalse( Fixture.getAllMarkup().contains( EXECUTE_1 ) );
+    assertFalse( ProtocolTestUtil.getMessageScript().contains( EXECUTE_1 ) );
   }
 
   private static void simulateDifferentDisplay() {

@@ -220,16 +220,25 @@ public class CComboLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.markInitialized( ccombo );
-    // test without verify listener
     Fixture.fakeNewRequest( display );
-    String textId = WidgetUtil.getId( ccombo );
-    Fixture.fakeRequestParam( textId + ".text", "some text" );
+    String comboId = WidgetUtil.getId( ccombo );
+    Fixture.fakeRequestParam( comboId + ".text", "some text" );
+
     Fixture.executeLifeCycleFromServerThread();
-    // ensure that no text and selection values are sent back to the client
-    String markup = Fixture.getAllMarkup();
-    assertEquals( -1, markup.indexOf( "w.setValue(" ) );
+
+    // ensure that no text is sent back to the client
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( ccombo, "text" ) );
     assertEquals( "some text", ccombo.getText() );
-    // test with verify listener
+  }
+
+  public void testReadText_withVerifyListener() {
+    final CCombo ccombo = new CCombo( shell, SWT.NONE );
+    ccombo.setText( "some text" );
+    shell.open();
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    Fixture.markInitialized( ccombo );
     final StringBuilder log = new StringBuilder();
     ccombo.addVerifyListener( new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
@@ -241,11 +250,14 @@ public class CComboLCA_Test extends TestCase {
       }
     } );
     Fixture.fakeNewRequest( display );
-    Fixture.fakeRequestParam( textId + ".text", "verify me" );
+    String comboId = WidgetUtil.getId( ccombo );
+    Fixture.fakeRequestParam( comboId + ".text", "verify me" );
+
     Fixture.executeLifeCycleFromServerThread();
-    // ensure that no text and selection values are sent back to the client
-    markup = Fixture.getAllMarkup();
-    assertEquals( -1, markup.indexOf( "w.setValue(" ) );
+
+    // ensure that no text is sent back to the client
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( ccombo, "text" ) );
     assertEquals( "verify me", ccombo.getText() );
     assertEquals( "verify me", log.toString() );
   }

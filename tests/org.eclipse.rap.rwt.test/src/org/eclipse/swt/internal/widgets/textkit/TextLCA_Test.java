@@ -32,6 +32,7 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 import org.json.*;
 
+
 public class TextLCA_Test extends TestCase {
 
   private Display display;
@@ -203,17 +204,18 @@ public class TextLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.markInitialized( text );
-    Fixture.fakeNewRequest();
-    String textId = WidgetUtil.getId( text );
     Fixture.fakeNewRequest( display );
+    String textId = WidgetUtil.getId( text );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
+
     Fixture.executeLifeCycleFromServerThread();
+
     // ensure that no text and selection values are sent back to the client
-    String markup = Fixture.getAllMarkup();
-    assertEquals( -1, markup.indexOf( "w.setValue(" ) );
-    assertEquals( -1, markup.indexOf( ".setSelection( w," ) );
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( text, "text" ) );
+    assertNull( message.findSetOperation( text, "selection" ) );
   }
 
   public void testVerifyAndModifyEvent() {

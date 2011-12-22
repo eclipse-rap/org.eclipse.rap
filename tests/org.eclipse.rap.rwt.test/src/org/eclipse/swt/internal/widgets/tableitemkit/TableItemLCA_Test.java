@@ -18,20 +18,29 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
-import org.eclipse.rap.rwt.testfixture.Message.DestroyOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.widgets.ITableAdapter;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 
 @SuppressWarnings("deprecation")
 public class TableItemLCA_Test extends TestCase {
@@ -207,28 +216,35 @@ public class TableItemLCA_Test extends TestCase {
   }
 
   public void testDispose() throws IOException {
-    final Table table = new Table( shell, SWT.CHECK );
-    TableItem itemOnlyDisposed = new TableItem( table, SWT.NONE );
-    TableItem itemWithTableDisposed = new TableItem( table, SWT.NONE );
+    Table table = new Table( shell, SWT.CHECK );
+    TableItem tableItem = new TableItem( table, SWT.NONE );
+    AbstractWidgetLCA lca = WidgetUtil.getLCA( tableItem );
     Fixture.markInitialized( table );
-    Fixture.markInitialized( itemOnlyDisposed );
-    Fixture.markInitialized( itemWithTableDisposed );
-    // Test that when a single items is disposed, its JavaScript dispose
-    // function is called
-    itemOnlyDisposed.dispose();
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( itemWithTableDisposed );
+    Fixture.markInitialized( tableItem );
     Fixture.fakeResponseWriter();
-    lca.renderDispose( itemOnlyDisposed );
+
+    tableItem.dispose();
+    lca.renderDispose( tableItem );
+
     Message message = Fixture.getProtocolMessage();
-    assertTrue( message.getOperation( 0 ) instanceof DestroyOperation );
-    // Test that when the whole Tables is dipsosed of, the TableItems dispose
-    // function is *not* called
-    table.dispose();
-    lca = WidgetUtil.getLCA( itemWithTableDisposed );
+    assertNotNull( message.findDestroyOperation( tableItem ) );
+  }
+
+  public void testDisposeTable() throws IOException {
+    Table table = new Table( shell, SWT.CHECK );
+    TableItem tableItem = new TableItem( table, SWT.NONE );
+    AbstractWidgetLCA lca = WidgetUtil.getLCA( tableItem );
+    Fixture.markInitialized( table );
+    Fixture.markInitialized( tableItem );
     Fixture.fakeResponseWriter();
-    lca.renderDispose( itemWithTableDisposed );
-    assertEquals( "", Fixture.getAllMarkup() );
-    assertTrue( itemWithTableDisposed.isDisposed() );
+
+    table.dispose();
+    lca.renderDispose( tableItem );
+
+    // when the whole table is disposed of, the tableitem's dispose must not be rendered
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findDestroyOperation( tableItem ) );
+    assertTrue( tableItem.isDisposed() );
   }
 
   public void testWriteChangesForVirtualItem() throws IOException {

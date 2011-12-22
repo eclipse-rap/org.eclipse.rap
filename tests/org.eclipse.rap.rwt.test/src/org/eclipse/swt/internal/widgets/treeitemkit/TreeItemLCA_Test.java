@@ -263,7 +263,10 @@ public class TreeItemLCA_Test extends TestCase {
 
     lca.renderChanges( treeItem );
 
-    assertFalse( Fixture.getAllMarkup().contains( "deselectItem" ) );
+    Message message = Fixture.getProtocolMessage();
+    // TODO [rst] Ivan, please translate this into a meaningful protocol test
+    // assertFalse( ProtocolTestUtil.getMessageScript().contains( "deselectItem" ) );
+    assertEquals( 0, message.getOperationCount() );
   }
 
   public void testGetBoundsWithScrolling() {
