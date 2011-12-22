@@ -69,8 +69,8 @@ public class ResourceManagerImpl implements IResourceManager {
 
   public ResourceManagerImpl( RWTConfiguration configuration ) {
     this.configuration = configuration;
-    this.resources = new Hashtable<String,Resource>();
-    this.contextLoader = new ThreadLocal<ClassLoader>();
+    resources = new Hashtable<String,Resource>();
+    contextLoader = new ThreadLocal<ClassLoader>();
   }
 
   /**
@@ -127,7 +127,7 @@ public class ResourceManagerImpl implements IResourceManager {
     ParamCheck.notNull( options, "options" );
     internalRegister( name, is, charset, options );
   }
-  
+
   public boolean unregister( String name ) {
     ParamCheck.notNull( name, "name" );
     boolean result = false;
@@ -229,10 +229,10 @@ public class ResourceManagerImpl implements IResourceManager {
     return url.toString();
   }
 
-  private void internalRegister( String name, 
-                                 InputStream is, 
-                                 String charset, 
-                                 RegisterOptions options ) 
+  private void internalRegister( String name,
+                                 InputStream is,
+                                 String charset,
+                                 RegisterOptions options )
   {
     boolean compress = shouldCompress( options );
     try {
@@ -273,7 +273,7 @@ public class ResourceManagerImpl implements IResourceManager {
     File dir = new File( fileToWrite.getParent() );
     if( !dir.mkdirs() ) {
       if( !dir.exists() ) {
-        throw new IOException( "Could not create directory structure: " + dir );
+        throw new IOException( "Could not create directory structure: " + dir.getAbsolutePath() );
       }
     }
     if( !fileToWrite.exists() ) {
