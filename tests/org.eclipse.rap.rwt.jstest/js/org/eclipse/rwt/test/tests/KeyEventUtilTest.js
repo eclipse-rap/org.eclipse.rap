@@ -19,6 +19,40 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventUtilTest", {
   
   members : {
     
+    testSetActiveKeysByProtocol : function() {
+      var processor = org.eclipse.rwt.protocol.Processor;
+      var keyUtil = org.eclipse.rwt.KeyEventUtil.getInstance();
+      
+      processor.processOperation( {
+        "target" : "w1",
+        "action" : "set",
+        "properties" : {
+          "activeKeys" : [ "A", "CTRL+A" ]
+        }
+      } );
+      
+      var expected = { "A" : true, "CTRL+A" : true };
+      assertEquals( expected, keyUtil._keyBindings );
+      keyUtil.setKeyBindings( {} );
+    },
+
+    testSetCancelKeysByProtocol : function() {
+      var processor = org.eclipse.rwt.protocol.Processor;
+      var keyUtil = org.eclipse.rwt.KeyEventUtil.getInstance();
+      
+      processor.processOperation( {
+        "target" : "w1",
+        "action" : "set",
+        "properties" : {
+          "cancelKeys" : [ "A", "CTRL+A" ]
+        }
+      } );
+      
+      var expected = { "A" : true, "CTRL+A" : true };
+      assertEquals( expected, keyUtil._cancelKeys );
+      keyUtil.setCancelKeys( {} );
+    },
+
     testKeyBindingSingleCharacter : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       testUtil.initRequestLog();
@@ -39,30 +73,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventUtilTest", {
       widget.destroy();
     },
     
-    testKeyBindingPreventDefaultNotCalled : function() {
-      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
-      var keyUtil = org.eclipse.rwt.KeyEventUtil.getInstance();
-      var prevented = false;
-      var preventDefault = function() {
-        prevented = true;
-      };
-      var widget = this._createWidget();
-      keyUtil.setKeyBindings( { "66" : true } );
-      var node = widget._getTargetNode();
-      var event = testUtil.createFakeDomKeyEvent( node, "keydown", "a", 0 );
-      event.preventDefault = preventDefault;
-      testUtil.fireFakeDomEvent( event );
-      var event = testUtil.createFakeDomKeyEvent( node, "keypress", "b", 0 );
-      event.preventDefault = preventDefault;
-      testUtil.fireFakeDomEvent( event );
-      var event = testUtil.createFakeDomKeyEvent( node, "keyup", "b", 0 );
-      event.preventDefault = preventDefault;
-      testUtil.fireFakeDomEvent( event );
-      assertFalse( prevented );
-      widget.destroy();
-    },
-    
-    testKeyBindingPreventDefaultCalled : function() {
+    testKeyBindingsPreventDefaultNeverCalled : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var keyUtil = org.eclipse.rwt.KeyEventUtil.getInstance();
       var prevented = false;
@@ -75,10 +86,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventUtilTest", {
       var event = testUtil.createFakeDomKeyEvent( node, "keydown", "b", 0 );
       event.preventDefault = preventDefault;
       testUtil.fireFakeDomEvent( event );
-      assertTrue( prevented );
+      assertFalse( prevented );
       widget.destroy();
     },
-    
+
     testKeyBindingWithServerKeyListener : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var keyUtil = org.eclipse.rwt.KeyEventUtil.getInstance();
@@ -117,7 +128,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventUtilTest", {
       testUtil.press( widget, "b", false, 0 );
       testUtil.forceTimerOnce();
       assertEquals( 1, testUtil.getRequestsSend() );
-      assertEquals( 3, log.length );
+      assertEquals( 6, log.length );
       widget.destroy();
     },
     
@@ -173,7 +184,55 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventUtilTest", {
       widget.destroy();          
     },
 
-    
+    testCancelKeysPreventDefaultNotCalled : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var keyUtil = org.eclipse.rwt.KeyEventUtil.getInstance();
+      var prevented = false;
+      var preventDefault = function() {
+        prevented = true;
+      };
+      var widget = this._createWidget();
+      keyUtil.setCancelKeys( { "66" : true } );
+      var node = widget._getTargetNode();
+      var event = testUtil.createFakeDomKeyEvent( node, "keydown", "a", 0 );
+      event.preventDefault = preventDefault;
+      testUtil.fireFakeDomEvent( event );
+      assertFalse( prevented );
+      widget.destroy();
+    },
+
+    testCancelKeysPreventDefaultCalled : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var keyUtil = org.eclipse.rwt.KeyEventUtil.getInstance();
+      var prevented = false;
+      var preventDefault = function() {
+        prevented = true;
+      };
+      var widget = this._createWidget();
+      keyUtil.setCancelKeys( { "66" : true } );
+      var node = widget._getTargetNode();
+      var event = testUtil.createFakeDomKeyEvent( node, "keydown", "b", 0 );
+      event.preventDefault = preventDefault;
+      testUtil.fireFakeDomEvent( event );
+      assertTrue( prevented );
+      widget.destroy();
+    },
+
+    testCancelKeysNotProcessed : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var keyUtil = org.eclipse.rwt.KeyEventUtil.getInstance();
+      var widget = this._createWidget();
+      keyUtil.setCancelKeys( { "66" : true } );
+      var listener = function() {
+        fail();
+      };
+      widget.addEventListener( "keydown", listener );
+      widget.addEventListener( "keypress", listener );
+      widget.addEventListener( "keyup", listener );
+      testUtil.press( widget, "b" );
+      widget.destroy();
+    },
+
     _createWidget : function() {
       var result = new org.eclipse.rwt.widgets.MultiCellWidget( [] );
       result.addToDocument();

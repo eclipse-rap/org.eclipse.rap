@@ -15,13 +15,19 @@ package org.eclipse.rwt;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.lifecycle.*;
+import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
+import org.eclipse.rwt.internal.lifecycle.LifeCycle;
+import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.ServletLog;
 import org.eclipse.rwt.internal.util.ClassUtil;
@@ -29,7 +35,12 @@ import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.internal.widgets.BrowserHistory;
 import org.eclipse.rwt.lifecycle.ILifeCycle;
 import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.rwt.service.*;
+import org.eclipse.rwt.service.IApplicationStore;
+import org.eclipse.rwt.service.IServiceHandler;
+import org.eclipse.rwt.service.IServiceManager;
+import org.eclipse.rwt.service.IServiceStore;
+import org.eclipse.rwt.service.ISessionStore;
+import org.eclipse.rwt.service.ISettingStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
@@ -168,7 +179,7 @@ public final class RWT {
    * for certain key sequences. The value for this property has to be an array of Strings, each
    * representing a key sequence. When this property is set on the display, the client will be
    * instructed to issue events for the given key sequences. These key events can be captured using
-   * <code>Display.addFilter()</code>.
+   * <code>Display.addFilter()</code>. 
    * <p>
    * Valid strings for key sequences consist of one or more keys, separated by <code>+</code>. Keys
    * can be identified by their character, i.e. upper case letters, digits, or one of the special
@@ -203,9 +214,22 @@ public final class RWT {
    *
    * @see Display#setData(String,Object)
    * @see Display#addFilter(int, Listener)
+   * @see RWT#CANCEL_KEYS
    * @since 1.4
    */
   public static final String ACTIVE_KEYS = "org.eclipse.rap.rwt.activeKeys";
+
+  /**
+   * The property to use in <code>Display.setData()</code> in order to always cancel the clients 
+   * default operation associated with certain key sequences. It allows the same values as 
+   * {@link RWT#ACTIVE_KEYS}. If a key sequences is given in {@link RWT#CANCEL_KEYS} as well as 
+   * in {@link RWT#ACTIVE_KEYS}, it will cancel its default operation, but still issue the event.
+   *
+   * @see Display#setData(String,Object)
+   * @see RWT#ACTIVE_KEYS
+   * @since 1.5
+   */
+  public static final String CANCEL_KEYS = "org.eclipse.rap.rwt.cancelKeys";
 
   /**
    * Returns the instance of the life cycle which is currently processed.

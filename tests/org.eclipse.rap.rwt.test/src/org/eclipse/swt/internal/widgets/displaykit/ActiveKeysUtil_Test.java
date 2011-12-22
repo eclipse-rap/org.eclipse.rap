@@ -16,14 +16,19 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 
 public class ActiveKeysUtil_Test extends TestCase {
@@ -74,6 +79,40 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertEquals( "CTRL+A", preserved[ 0 ] );
   }
 
+  public void testPreserveCancelKeysEmpty() {
+    Fixture.markInitialized( display );
+    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+
+    Fixture.preserveWidgets();
+
+    assertNull( adapter.getPreserved( ActiveKeysUtil.PROP_CANCEL_KEYS ) );
+  }
+
+  public void testPreserveCancelKeys() {
+    Fixture.markInitialized( display );
+    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+
+    String[] keyBindings = new String[] { "CTRL+A" };
+    display.setData( RWT.CANCEL_KEYS, keyBindings );
+    Fixture.preserveWidgets();
+
+    String[] preserved = ( String[] )adapter.getPreserved( ActiveKeysUtil.PROP_CANCEL_KEYS );
+    assertTrue( Arrays.equals( keyBindings, preserved ) );
+  }
+
+  public void testCancelKeySafeCopy() {
+    Fixture.markInitialized( display );
+    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+
+    String[] keyBindings = new String[] { "CTRL+A" };
+    display.setData( RWT.CANCEL_KEYS, keyBindings );
+    Fixture.preserveWidgets();
+    keyBindings[ 0 ] = "CTRL+B";
+
+    String[] preserved = ( String[] )adapter.getPreserved( ActiveKeysUtil.PROP_CANCEL_KEYS );
+    assertEquals( "CTRL+A", preserved[ 0 ] );
+  }
+  
   public void testNoKeyEventsForIllegalWidgetId() {
     final ArrayList<Event> log = new ArrayList<Event>();
     display.addFilter( SWT.KeyDown, new Listener() {
@@ -140,7 +179,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertEquals( SWT.SHIFT | SWT.ALT, event.stateMask );
   }
 
-  public void testWriteKeyBindings() {
+  public void testWriteKeyBindings() throws JSONException {
     Fixture.fakeNewRequest();
 
     String[] keyBindings = new String[] {
@@ -152,18 +191,19 @@ public class ActiveKeysUtil_Test extends TestCase {
       "F1"
     };
     display.setData( RWT.ACTIVE_KEYS, keyBindings );
-    ActiveKeysUtil.writeActiveKeys( display );
+    ActiveKeysUtil.renderActiveKeys( display );
 
     String expected
-      =   "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings({"
-        + "\"ALT+222\":true,"
-        + "\"CTRL+45\":true,"
-        + "\"CTRL+69\":true,"
-        + "\"ALT+CTRL+SHIFT+49\":true,"
-        + "\"ALT+CTRL+190\":true,"
-        + "\"112\":true"
-        + "});";
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
+      =   "\"ALT+222\","
+        + "\"CTRL+45\","
+        + "\"CTRL+69\","
+        + "\"ALT+CTRL+SHIFT+49\","
+        + "\"ALT+CTRL+190\","
+        + "\"112\"";
+    Message message = Fixture.getProtocolMessage();
+    SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
+    JSONArray activeKeys = ( JSONArray )operation.getProperty( "activeKeys" );
+    assertEquals( expected, activeKeys.join( "," ) );
   }
 
   public void testWriteKeyBindings_UnrecognizedKey() {
@@ -173,7 +213,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     display.setData( RWT.ACTIVE_KEYS, keyBindings );
 
     try {
-      ActiveKeysUtil.writeActiveKeys( display );
+      ActiveKeysUtil.renderActiveKeys( display );
       fail( "Should throw IllegalArgumentException" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -186,7 +226,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     display.setData( RWT.ACTIVE_KEYS, new String[] { "ALT+CONTROL+A" } );
 
     try {
-      ActiveKeysUtil.writeActiveKeys( display );
+      ActiveKeysUtil.renderActiveKeys( display );
       fail( "Should throw IllegalArgumentException" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -204,7 +244,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     display.setData( RWT.ACTIVE_KEYS, keyBindings );
 
     try {
-      ActiveKeysUtil.writeActiveKeys( display );
+      ActiveKeysUtil.renderActiveKeys( display );
       fail( "Should throw IllegalArgumentException" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -222,7 +262,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     display.setData( RWT.ACTIVE_KEYS, keyBindings );
 
     try {
-      ActiveKeysUtil.writeActiveKeys( display );
+      ActiveKeysUtil.renderActiveKeys( display );
       fail( "Should throw NullPointerException" );
     } catch( NullPointerException e ) {
       // expected
@@ -235,7 +275,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     display.setData( RWT.ACTIVE_KEYS, new Integer( 123 ) );
 
     try {
-      ActiveKeysUtil.writeActiveKeys( display );
+      ActiveKeysUtil.renderActiveKeys( display );
       fail( "Should throw IllegalArgumentException" );
     } catch( IllegalArgumentException e ) {
       // expected
@@ -249,10 +289,12 @@ public class ActiveKeysUtil_Test extends TestCase {
     Fixture.fakeNewRequest();
 
     display.setData( RWT.ACTIVE_KEYS, null );
-    ActiveKeysUtil.writeActiveKeys( display );
+    ActiveKeysUtil.renderActiveKeys( display );
 
-    String expected = "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings({});";
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
+    Message message = Fixture.getProtocolMessage();
+    SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
+    JSONArray activeKeys = ( JSONArray )operation.getProperty( "activeKeys" );
+    assertEquals( 0, activeKeys.length() );
   }
 
   public void testWriteKeyBindings_EmptyKeyBindingList() {
@@ -262,10 +304,12 @@ public class ActiveKeysUtil_Test extends TestCase {
     Fixture.fakeNewRequest();
 
     display.setData( RWT.ACTIVE_KEYS, new String[ 0 ] );
-    ActiveKeysUtil.writeActiveKeys( display );
+    ActiveKeysUtil.renderActiveKeys( display );
 
-    String expected = "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings({});";
-    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
+    Message message = Fixture.getProtocolMessage();
+    SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
+    JSONArray activeKeys = ( JSONArray )operation.getProperty( "activeKeys" );
+    assertEquals( 0, activeKeys.length() );
   }
 
 }

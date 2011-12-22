@@ -22,7 +22,9 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.Display", {
     "focusControl",
     "currentTheme",
     "timeoutPage",
-    "enableUiTests"
+    "enableUiTests",
+    "activeKeys",
+    "cancelKeys"
   ],
 
   listeners : [],
@@ -35,6 +37,17 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.Display", {
     "cancelEvent",
     "reload",
     "beep"
-  ]
+  ],
+  
+  propertyHandler : {
+    "activeKeys" : function( object, value ) {
+      var map = qx.lang.Object.fromArray( value );
+      org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings( map );
+    },
+    "cancelKeys" : function( object, value ) {
+      var map = qx.lang.Object.fromArray( value );
+      org.eclipse.rwt.KeyEventUtil.getInstance().setCancelKeys( map );
+    }
+  }
 
 } );

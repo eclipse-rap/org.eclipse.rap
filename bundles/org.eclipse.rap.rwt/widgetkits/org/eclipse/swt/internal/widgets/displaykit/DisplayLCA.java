@@ -139,6 +139,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     adapter.preserve( PROP_TIMEOUT_PAGE, getTimeoutPage() );
     adapter.preserve( PROP_EXIT_CONFIRMATION, getExitConfirmation() );
     ActiveKeysUtil.preserveActiveKeys( display );
+    ActiveKeysUtil.preserveCancelKeys( display );
     if( adapter.isInitialized() ) {
       Shell[] shells = getShells( display );
       for( int i = 0; i < shells.length; i++ ) {
@@ -169,7 +170,8 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       renderBeep( display );
       writeUICallBackActivation( display );
       markInitialized( display );
-      ActiveKeysUtil.writeActiveKeys( display );
+      ActiveKeysUtil.renderActiveKeys( display );
+      ActiveKeysUtil.renderCancelKeys( display );
     }
   }
 

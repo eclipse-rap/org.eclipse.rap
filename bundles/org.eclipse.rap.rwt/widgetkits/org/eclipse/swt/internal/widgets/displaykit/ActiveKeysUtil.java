@@ -19,9 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
@@ -34,9 +34,6 @@ import org.eclipse.swt.widgets.Event;
 
 
 public final class ActiveKeysUtil {
-
-  private static final String JSFUNC_SET_ACTIVE_KEYS
-    = "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings";
 
   private static final Map<String,Integer> KEY_MAP = new HashMap<String,Integer>();
   static {
@@ -107,6 +104,8 @@ public final class ActiveKeysUtil {
   private final static String SHIFT = "SHIFT+";
 
   final static String PROP_ACTIVE_KEYS = "activeKeys";
+  final static String PROP_CANCEL_KEYS = "cancelKeys";
+
 
   private ActiveKeysUtil() {
     // prevent instantiation
@@ -115,6 +114,11 @@ public final class ActiveKeysUtil {
   static void preserveActiveKeys( Display display ) {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_ACTIVE_KEYS, getActiveKeys( display ) );
+  }
+
+  static void preserveCancelKeys( Display display ) {
+    IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+    adapter.preserve( PROP_CANCEL_KEYS, getCancelKeys( display ) );
   }
 
   static void readKeyEvents( final Display display ) {
@@ -131,26 +135,30 @@ public final class ActiveKeysUtil {
     }
   }
 
-  static void writeActiveKeys( Display display ) {
+  static void renderActiveKeys( Display display ) {
     if( !display.isDisposed() ) {
       IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
       String[] newValue = getActiveKeys( display );
       String[] oldValue = ( String[] )adapter.getPreserved( PROP_ACTIVE_KEYS );
       boolean hasChanged = !Arrays.equals( oldValue, newValue );
       if( hasChanged ) {
-        writeActiveKeys( newValue );
+        IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+        clientObject.setProperty( "activeKeys", translateKeySequences( newValue ) );
       }
     }
   }
 
-  private static void writeActiveKeys( String[] newValue ) {
-    StringBuilder jsCode = new StringBuilder();
-    jsCode.append( JSFUNC_SET_ACTIVE_KEYS );
-    jsCode.append( "(" );
-    jsCode.append( toJson( newValue ) );
-    jsCode.append( ");" );
-    ProtocolMessageWriter protocolWriter = ContextProvider.getStateInfo().getProtocolWriter();
-    protocolWriter.appendExecuteScript( "jsex", HTTP.CONTENT_TYPE_JAVASCRIPT, jsCode.toString() );
+  static void renderCancelKeys( Display display ) {
+    if( !display.isDisposed() ) {
+      IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
+      String[] newValue = getCancelKeys( display );
+      String[] oldValue = ( String[] )adapter.getPreserved( PROP_CANCEL_KEYS );
+      boolean hasChanged = !Arrays.equals( oldValue, newValue );
+      if( hasChanged ) {
+        IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+        clientObject.setProperty( "cancelKeys", translateKeySequences( newValue ) );
+      }
+    }
   }
 
   private static String[] getActiveKeys( Display display ) {
@@ -169,21 +177,31 @@ public final class ActiveKeysUtil {
     return result;
   }
 
-  private static String toJson( String[] activeKeys ) {
-    StringBuilder json = new StringBuilder();
-    json.append( "{" );
-    if( activeKeys != null ) {
-      for( int i = 0; i < activeKeys.length; i++ ) {
-        json.append( "\"" );
-        json.append( translateKeySequence( activeKeys[ i ] ) );
-        json.append( "\":true" );
-        if( i < activeKeys.length - 1 ) {
-          json.append( "," );
-        }
+  private static String[] getCancelKeys( Display display ) {
+    String[] result = null;
+    Object data = display.getData( RWT.CANCEL_KEYS );
+    if( data != null ) {
+      if( data instanceof String[] ) {
+        String[] cancelKeys = ( String[] )data;
+        result = new String[ cancelKeys.length ];
+        System.arraycopy( cancelKeys, 0, result, 0, cancelKeys.length );
+      } else {
+        String mesg = "Illegal value for RWT.CANCEL_KEYS in display data, must be a string array";
+        throw new IllegalArgumentException( mesg );
       }
     }
-    json.append( "}" );
-    return json.toString();
+    return result;
+  }
+  
+  private static String[] translateKeySequences( String[] activeKeys ) {
+    String[] result = new String[ 0 ];
+    if( activeKeys != null ) {
+      result = new String[ activeKeys.length ];
+      for( int i = 0; i < activeKeys.length; i++ ) {
+        result[ i ] = translateKeySequence( activeKeys[ i ] );
+      }
+    }
+    return result;
   }
 
   private static String translateKeySequence( String keySequence ) {

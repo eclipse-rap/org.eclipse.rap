@@ -12,15 +12,16 @@
 qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
   type : "singleton",
   extend : qx.core.Object,
-  
+
   construct : function() {
     this.base( arguments );
     org.eclipse.rwt.EventHandler.setKeyEventFilter( this._onKeyEvent, this );
     this._keyBindings = {};
+    this._cancelKeys = {};
     this._lastKeyCode = -1;
     this._lastEventType = null;
   },
-    
+
   members : {
 
     cancelEvent : function() {
@@ -30,21 +31,24 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
     allowEvent : function() {
       this._getDelegate().allowEvent();
     },
-    
+
     setKeyBindings : function( value ) {
       this._keyBindings = value;
     },
 
+    setCancelKeys : function( value ) {
+      this._cancelKeys = value;
+    },
+
     _onKeyEvent : function( eventType, keyCode, charCode, domEvent ) {
-      var result;
+      var result = true;
       if( eventType === "keydown" ) {
         this._lastKeyCode = keyCode;
       }
-      if( this._isKeyBinding( domEvent, keyCode, charCode ) ) {
-        result = false;
+      var identifier = this._getKeyBindingIdentifier( domEvent, keyCode, charCode );
+      if( this._isKeyBinding( identifier ) ) {
         if( eventType === "keydown" ) {
           // TODO [tb] : use keypress (repeats) instead?
-          org.eclipse.rwt.EventHandlerUtil.stopDomEvent( domEvent ); 
 //          TODO [rst] Pass focused widget instead of null
 //          var widget = this._getTargetControl();
           this._attachKeyDown( null, keyCode, charCode, domEvent );
@@ -53,6 +57,10 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
       } else {
         var util = this._getDelegate();
         result = !util.intercept( eventType, this._lastKeyCode, charCode, domEvent );
+      }
+      if( result && this._isCancelKey( identifier ) ) {
+        org.eclipse.rwt.EventHandlerUtil.stopDomEvent( domEvent ); 
+        result = false;
       }
       this._lastEventType = eventType;
       return result;
@@ -71,10 +79,13 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
     //////////////////////////////////////////////////////////////
     // Helper, also used by AsyncKeyEventUtil and SyncKeyEventUtil
     
-    _isKeyBinding : function( domEvent, keyCode, charCode ) {
-      var identifier 
-        = this._getKeyBindingIdentifier( domEvent, keyCode, charCode );
+    _isKeyBinding : function( identifier ) {
       var result = this._keyBindings[ identifier ] === true;
+      return result;
+    },
+    
+    _isCancelKey : function( identifier ) {
+      var result = this._cancelKeys[ identifier ] === true;
       return result;
     },
     
