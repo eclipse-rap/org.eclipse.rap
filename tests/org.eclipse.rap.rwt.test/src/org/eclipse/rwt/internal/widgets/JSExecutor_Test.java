@@ -13,6 +13,8 @@ package org.eclipse.rwt.internal.widgets;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.ExecuteScriptOperation;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -36,7 +38,10 @@ public class JSExecutor_Test extends TestCase {
 
     Fixture.executeLifeCycleFromServerThread();
 
-    assertTrue( Fixture.getAllMarkup().contains( EXECUTE_1 ) );
+    Message message = Fixture.getProtocolMessage();
+    ExecuteScriptOperation operation = ( ExecuteScriptOperation )message.getOperation( 0 );
+    assertEquals( "text/javascript", operation.getScriptType() );
+    assertEquals( EXECUTE_1, operation.getScript() );
   }
 
   public void testExecuteJSTwice() {
@@ -45,7 +50,10 @@ public class JSExecutor_Test extends TestCase {
 
     Fixture.executeLifeCycleFromServerThread();
 
-    assertTrue( Fixture.getAllMarkup().contains( EXECUTE_1 + EXECUTE_2 ) );
+    Message message = Fixture.getProtocolMessage();
+    ExecuteScriptOperation operation = ( ExecuteScriptOperation )message.getOperation( 0 );
+    assertEquals( "text/javascript", operation.getScriptType() );
+    assertEquals( EXECUTE_1 + EXECUTE_2, operation.getScript() );
   }
 
   public void testExecuteJSIsClearedAfterRender() {

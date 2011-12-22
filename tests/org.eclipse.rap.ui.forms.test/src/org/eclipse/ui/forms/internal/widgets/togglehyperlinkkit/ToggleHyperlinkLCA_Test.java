@@ -13,6 +13,8 @@ package org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.ExecuteScriptOperation;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -67,7 +69,7 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     lca.renderChanges( twistie );
 
     String expected = "w.setHasSelectionListener( true )";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    assertTrue( getMessageScript().indexOf( expected ) != -1 );
   }
 
   private void testDefaultSelectionEvent( final ToggleHyperlink hyperlink ) {
@@ -92,6 +94,17 @@ public class ToggleHyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
                               hyperlinkId );
     Fixture.readDataAndProcessAction( hyperlink );
     assertEquals( "widgetDefaultSelected", log.toString() );
+  }
+
+  // TODO [rst] temporary helper for protocol migration, remove.
+  private static String getMessageScript() {
+    String result = "";
+    Message message = Fixture.getProtocolMessage();
+    if( message.getOperationCount() > 0 ) {
+      ExecuteScriptOperation operation = ( ExecuteScriptOperation )message.getOperation( 0 );
+      result = operation.getScript();
+    }
+    return result;
   }
 
 }

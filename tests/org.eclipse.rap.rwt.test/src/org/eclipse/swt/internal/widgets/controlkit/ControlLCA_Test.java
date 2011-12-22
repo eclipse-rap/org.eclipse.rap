@@ -21,6 +21,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -158,7 +159,7 @@ public class ControlLCA_Test extends TestCase {
 
     // Initial JavaScript code must not contain setVisibility()
     ControlLCAUtil.writeChanges( button );
-    assertTrue( Fixture.getAllMarkup().indexOf( "setVisibility" ) == -1 );
+    assertFalse( ProtocolTestUtil.getMessageScript().contains( "setVisibility" ) );
 
     // Unchanged visible attribute must not be rendered
     Fixture.fakeResponseWriter();
@@ -166,14 +167,14 @@ public class ControlLCA_Test extends TestCase {
     Fixture.markInitialized( button );
     Fixture.preserveWidgets();
     ControlLCAUtil.writeChanges( button );
-    assertTrue( Fixture.getAllMarkup().indexOf( "setVisibility" ) == -1 );
+    assertFalse( ProtocolTestUtil.getMessageScript().contains( "setVisibility" ) );
 
     // Changed visible attribute must not be rendered
     Fixture.fakeResponseWriter();
     Fixture.preserveWidgets();
     button.setVisible( false );
     ControlLCAUtil.writeChanges( button );
-    assertTrue( Fixture.getAllMarkup().contains( "setVisibility" ) );
+    assertTrue( ProtocolTestUtil.getMessageScript().contains( "setVisibility" ) );
   }
 
   public void testWriteBounds() throws IOException {
@@ -191,7 +192,7 @@ public class ControlLCA_Test extends TestCase {
     control.setBounds( 1, 2, 100, 200 );
     WidgetLCAUtil.writeBounds( control, parent, control.getBounds() );
     String expected = "w.setSpace( 1, 100, 2, 200 );";
-    assertTrue( Fixture.getAllMarkup().contains( expected ) );
+    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
   public void testMenuDetectListener() {

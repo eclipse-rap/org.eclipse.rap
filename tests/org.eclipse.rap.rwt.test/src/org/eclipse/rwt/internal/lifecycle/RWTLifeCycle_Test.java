@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.IPhase.IInterruptible;
@@ -422,8 +423,11 @@ public class RWTLifeCycle_Test extends TestCase {
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
+
     lifeCycle.execute();
-    assertTrue( Fixture.getAllMarkup().length() > 0 );
+
+    Message message = Fixture.getProtocolMessage();
+    assertTrue( message.getOperationCount() > 0 );
   }
 
   public void testPhaseListenerRegistration() throws IOException {

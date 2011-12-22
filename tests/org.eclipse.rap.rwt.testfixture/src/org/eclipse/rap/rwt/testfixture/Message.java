@@ -29,9 +29,6 @@ public final class Message {
 
   public Message( String string ) {
     String json = string.trim();
-    if( json.length() == 0 ) {
-      json = "{ meta: { \"requestCounter\": 0 }, operations: [] }";
-    }
     try {
       message = new JSONObject( json );
     } catch( JSONException e ) {
@@ -153,7 +150,7 @@ public final class Message {
     String target = WidgetUtil.getId( widget );
     return ( DestroyOperation )findOperation( DestroyOperation.class, target );
   }
-  
+
   public SetOperation findSetOperation( String target, String property ) {
     return ( SetOperation )findOperation( SetOperation.class , target, property );
   }

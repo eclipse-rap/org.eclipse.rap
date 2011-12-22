@@ -44,6 +44,15 @@ public class Message_Test extends TestCase {
     }
   }
 
+  public void testConstructWithEmptyString() {
+    try {
+      new Message( "" );
+      fail();
+    } catch( IllegalArgumentException expected ) {
+      assertTrue( expected.getMessage().contains( "Could not parse json" ) );
+    }
+  }
+
   public void testConstructWithInvalidJson() {
     try {
       new Message( "{" );

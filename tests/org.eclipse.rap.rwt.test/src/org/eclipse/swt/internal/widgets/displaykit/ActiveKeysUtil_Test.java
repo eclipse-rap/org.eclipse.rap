@@ -19,6 +19,7 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
@@ -155,14 +156,14 @@ public class ActiveKeysUtil_Test extends TestCase {
 
     String expected
       =   "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings({"
-        + "\\\"ALT+222\\\":true,"
-        + "\\\"CTRL+45\\\":true,"
-        + "\\\"CTRL+69\\\":true,"
-        + "\\\"ALT+CTRL+SHIFT+49\\\":true,"
-        + "\\\"ALT+CTRL+190\\\":true,"
-        + "\\\"112\\\":true"
+        + "\"ALT+222\":true,"
+        + "\"CTRL+45\":true,"
+        + "\"CTRL+69\":true,"
+        + "\"ALT+CTRL+SHIFT+49\":true,"
+        + "\"ALT+CTRL+190\":true,"
+        + "\"112\":true"
         + "});";
-    assertTrue( Fixture.getAllMarkup().contains( expected ) );
+    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
   public void testWriteKeyBindings_UnrecognizedKey() {
@@ -251,7 +252,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     ActiveKeysUtil.writeActiveKeys( display );
 
     String expected = "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings({});";
-    assertTrue( Fixture.getAllMarkup().contains( expected ) );
+    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
   public void testWriteKeyBindings_EmptyKeyBindingList() {
@@ -264,7 +265,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     ActiveKeysUtil.writeActiveKeys( display );
 
     String expected = "org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings({});";
-    assertTrue( Fixture.getAllMarkup().contains( expected ) );
+    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
 }

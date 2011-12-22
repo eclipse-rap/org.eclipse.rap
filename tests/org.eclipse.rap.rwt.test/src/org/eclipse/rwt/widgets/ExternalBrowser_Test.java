@@ -16,6 +16,9 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
+import org.eclipse.rap.rwt.testfixture.Message.Operation;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.lifecycle.RWTLifeCycle;
@@ -83,15 +86,15 @@ public class ExternalBrowser_Test extends TestCase {
                                                 TestExecutionOrderEntryPoint.class );
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
-    // run life cycle
+
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
     lifeCycle.execute();
-    // assert conditions
-    String markup = Fixture.getAllMarkup();
-    int open1Index = markup.indexOf( createOpenMarkup( "1" ) );
-    int close1Index = markup.indexOf( createCloseMarkup( "1" ) );
-    int open2Index = markup.indexOf( createOpenMarkup( "2" ) );
-    int close2Index = markup.indexOf( createCloseMarkup( "2" ) );
+
+    Message message = Fixture.getProtocolMessage();
+    int open1Index = indexOfCallOperation( message, "open", "1" );
+    int close1Index = indexOfCallOperation( message, "close", "1" );
+    int open2Index = indexOfCallOperation( message, "open", "2" );
+    int close2Index = indexOfCallOperation( message, "close", "2" );
     assertTrue( open1Index != -1 && close1Index != -1 );
     assertTrue( open2Index != -1 && close2Index != -1 );
     assertTrue( open1Index < close1Index );
@@ -99,30 +102,21 @@ public class ExternalBrowser_Test extends TestCase {
     assertTrue( open1Index < open2Index );
   }
 
-  private static String createOpenMarkup( String id ) {
-    StringBuilder builder = new StringBuilder();
-    builder.append( "\"target\": \"eb\",\n" );
-    builder.append( "\"action\": \"call\",\n" );
-    builder.append( "\"method\": \"open\",\n" );
-    builder.append( "\"properties\": {\n" );
-    builder.append( "\"id\": \"" );
-    builder.append( id );
-    builder.append( "\",\n" );
-    builder.append( "\"url\": \"http://eclipse.org\",\n" );
-    builder.append( "\"style\": [ \"STATUS\", \"LOCATION_BAR\" ]" );
-    return builder.toString();
-  }
-
-  private static String createCloseMarkup( String id ) {
-    StringBuilder builder = new StringBuilder();
-    builder.append( "\"target\": \"eb\",\n" );
-    builder.append( "\"action\": \"call\",\n" );
-    builder.append( "\"method\": \"close\",\n" );
-    builder.append( "\"properties\": {\n" );
-    builder.append( "\"id\": \"" );
-    builder.append( id );
-    builder.append( "\"" );
-    return builder.toString();
+  private int indexOfCallOperation( Message message, String method, String idProperty ) {
+    int result = -1;
+    int operationCount = message.getOperationCount();
+    for( int position = 0; position < operationCount; position++ ) {
+      Operation operation = message.getOperation( position );
+      if( operation instanceof CallOperation ) {
+        CallOperation callOperation = ( CallOperation )operation;
+        if(    method.equals( callOperation.getMethodName() )
+            && idProperty.equals( callOperation.getProperty( "id" ) ) )
+        {
+          result = position;
+        }
+      }
+    }
+    return result;
   }
 
   public static final class TestExecutionOrderEntryPoint implements IEntryPoint {

@@ -12,7 +12,8 @@ package org.eclipse.ui.forms.internal.widgets.hyperlinkkit;
 
 import java.io.IOException;
 
-import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.*;
+import org.eclipse.rap.rwt.testfixture.Message.ExecuteScriptOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
@@ -92,7 +93,7 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     lca.renderChanges( hyperlink );
 
     String expected = "w.setHasSelectionListener( true )";
-    assertTrue( Fixture.getAllMarkup().indexOf( expected ) != -1 );
+    assertTrue( getMessageScript().contains( expected ) );
   }
 
   private void testDefaultSelectionEvent( final Hyperlink hyperlink ) {
@@ -122,4 +123,16 @@ public class HyperlinkLCA_Test extends FormsControlLCA_AbstractTest {
     Object adapter = hyperlink.getAdapter( IHyperlinkAdapter.class );
     return ( IHyperlinkAdapter )adapter;
   }
+
+  // TODO [rst] temporary helper for protocol migration, remove.
+  private static String getMessageScript() {
+    String result = "";
+    Message message = Fixture.getProtocolMessage();
+    if( message.getOperationCount() > 0 ) {
+      ExecuteScriptOperation operation = ( ExecuteScriptOperation )message.getOperation( 0 );
+      result = operation.getScript();
+    }
+    return result;
+  }
+
 }

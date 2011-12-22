@@ -294,24 +294,25 @@ public final class Fixture {
 
   public static String getAllMarkup() {
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
-    finishResponse( response );
     return response.getContent();
   }
 
+  public static Message getProtocolMessage() {
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    finishResponse( response );
+    return new Message( response.getContent() );
+  }
+
   private static void finishResponse( TestResponse response ) {
-    ServiceStateInfo stateInfo = ( ServiceStateInfo )ContextProvider.getStateInfo();
-    ProtocolMessageWriter protocolWriter = stateInfo.resetProtocolWriter();
-    if( protocolWriter != null ) {
+    if( response.getContent().length() == 0 ) {
+      ServiceStateInfo stateInfo = ( ServiceStateInfo )ContextProvider.getStateInfo();
+      ProtocolMessageWriter protocolWriter = stateInfo.getProtocolWriter();
       try {
         response.getWriter().write( protocolWriter.createMessage() );
       } catch( IOException exception ) {
         throw new IllegalStateException( "Failed to get response writer", exception );
       }
     }
-  }
-
-  public static Message getProtocolMessage() {
-    return new Message( getAllMarkup() );
   }
 
   public static void fakeNewRequest( Display display ) {
@@ -343,6 +344,7 @@ public final class Fixture {
     testResponse.clearContent();
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     stateInfo.resetProtocolWriter();
+    stateInfo.getProtocolWriter();
   }
 
   public static void fakePhase( PhaseId phase ) {
