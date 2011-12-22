@@ -87,8 +87,8 @@ public class DisplayLCA_Test extends TestCase {
   public void testStartup() throws IOException {
     displayLCA.render( display );
 
-    String allMarkup = Fixture.getAllMarkup();
-    assertEquals( "", allMarkup );
+    Message message = Fixture.getProtocolMessage();
+    assertEquals( 0, message.getOperationCount() );
   }
 
   public void testRender() throws IOException {

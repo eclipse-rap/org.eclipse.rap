@@ -15,6 +15,7 @@ package org.eclipse.swt.internal.widgets.textkit;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -22,15 +23,30 @@ import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.protocol.*;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.TypedEvent;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.*;
-import org.json.*;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class TextLCA_Test extends TestCase {
@@ -121,20 +137,18 @@ public class TextLCA_Test extends TestCase {
     assertEquals( "verifyText", log.toString() );
   }
 
-  public void testSelectionWithVerifyEvent() {
-    final java.util.List<VerifyEvent> log = new ArrayList<VerifyEvent>();
-    // register preserve-values phase-listener
-    final Text text = new Text( shell, SWT.NONE );
-    shell.open();
-    String textId = WidgetUtil.getId( text );
+  public void testSelectionWithVerifyEvent_emptyListener() {
     // ensure that selection is unchanged in case a verify-listener is
     // registered that does not change the text
-    VerifyListener emptyVerifyListener = new VerifyListener() {
+    final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
+    Text text = new Text( shell, SWT.NONE );
+    shell.open();
+    String textId = WidgetUtil.getId( text );
+    text.addVerifyListener( new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
         log.add( event );
       }
-    };
-    text.addVerifyListener( emptyVerifyListener );
+    } );
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.markInitialized( text );
@@ -144,58 +158,71 @@ public class TextLCA_Test extends TestCase {
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
+
     Fixture.executeLifeCycleFromServerThread();
+
     // ensure that an empty verify listener does not lead to sending the
     // original text and selection values back to the client
-    String markup = Fixture.getAllMarkup();
-    assertEquals( -1, markup.indexOf( "w.setValue(" ) );
-    assertEquals( -1, markup.indexOf( ".setSelection( w," ) );
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( text, "text" ) );
+    assertNull( message.findSetOperation( text, "selection" ) );
     assertEquals( 1, log.size() );
     assertEquals( new Point( 1, 1 ), text.getSelection() );
     assertEquals( "verify me", text.getText() );
-    text.removeVerifyListener( emptyVerifyListener );
+  }
+
+  public void testSelectionWithVerifyEvent_listenerDoesNotChangeSelection() {
     // ensure that selection is unchanged in case a verify-listener changes
     // the incoming text within the limits of the selection
+    final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
+    Text text = new Text( shell, SWT.NONE );
+    shell.open();
+    String textId = WidgetUtil.getId( text );
     text.setText( "" );
-    VerifyListener alteringVerifyListener = new VerifyListener() {
+    text.addVerifyListener( new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
         log.add( event );
         event.text = "verified";
       }
-    };
-    text.addVerifyListener( alteringVerifyListener );
-    log.clear();
+    } );
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
+
     Fixture.executeLifeCycleFromServerThread( );
+
     assertEquals( 1, log.size() );
     assertEquals( new Point( 1, 1 ), text.getSelection() );
     assertEquals( "verified", text.getText() );
-    text.removeVerifyListener( alteringVerifyListener );
+  }
+
+  public void testSelectionWithVerifyEvent_listenerAdjustsSelection() {
     // ensure that selection is adjusted in case a verify-listener changes
     // the incoming text in a way that would result in an invalid selection
+    final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
+    Text text = new Text( shell, SWT.NONE );
+    shell.open();
+    String textId = WidgetUtil.getId( text );
     text.setText( "" );
-    alteringVerifyListener = new VerifyListener() {
+    text.addVerifyListener( new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
         log.add( event );
         event.text = "";
       }
-    };
-    text.addVerifyListener( alteringVerifyListener );
-    log.clear();
+    } );
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( textId + ".text", "verify me" );
     Fixture.fakeRequestParam( textId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( textId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, textId );
+
     Fixture.executeLifeCycleFromServerThread( );
+
     assertEquals( 1, log.size() );
     assertEquals( new Point( 0, 0 ), text.getSelection() );
     assertEquals( "", text.getText() );
-    text.removeVerifyListener( alteringVerifyListener );
   }
 
   public void testPreserveText() {
@@ -219,7 +246,7 @@ public class TextLCA_Test extends TestCase {
   }
 
   public void testVerifyAndModifyEvent() {
-    final java.util.List<TypedEvent> log = new ArrayList<TypedEvent>();
+    final List<TypedEvent> log = new ArrayList<TypedEvent>();
     // set up widgets to be tested
     final Text text = new Text( shell, SWT.NONE );
     shell.open();

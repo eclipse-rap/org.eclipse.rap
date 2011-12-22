@@ -14,6 +14,7 @@ package org.eclipse.swt.internal.widgets.combokit;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -22,16 +23,33 @@ import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.protocol.*;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
+import org.eclipse.rwt.lifecycle.IWidgetAdapter;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
-import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.events.ActivateAdapter;
 import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
-import org.eclipse.swt.widgets.*;
-import org.json.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ComboLCA_Test extends TestCase {
 
@@ -258,40 +276,46 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( "verify me", log.toString() );
   }
 
-  public void testTextSelectionWithVerifyEvent() {
-    final java.util.List<VerifyEvent> log = new ArrayList<VerifyEvent>();
-    final Combo combo = new Combo( shell, SWT.NONE );
-    shell.open();
-    String comboId = WidgetUtil.getId( combo );
+  public void testTextSelectionWithVerifyEvent_emptyListener() {
     // ensure that selection is unchanged in case a verify-listener is
     // registered that does not change the text
-    VerifyListener emptyVerifyListener = new VerifyListener() {
+    final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
+    final Combo combo = new Combo( shell, SWT.NONE );
+    shell.open();
+    combo.addVerifyListener( new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
         log.add( event );
       }
-    };
-    combo.addVerifyListener( emptyVerifyListener );
+    } );
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     Fixture.markInitialized( combo );
     log.clear();
     Fixture.fakeNewRequest( display );
+    String comboId = WidgetUtil.getId( combo );
     Fixture.fakeRequestParam( comboId + ".text", "verify me" );
     Fixture.fakeRequestParam( comboId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( comboId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, comboId );
+
     Fixture.executeLifeCycleFromServerThread();
+
     // ensure that an empty verify listener does not lead to sending the
     // original text and selection values back to the client
-    String markup = Fixture.getAllMarkup();
-    assertEquals( -1, markup.indexOf( "w.setValue(" ) );
-    assertEquals( -1, markup.indexOf( ".setSelection( w," ) );
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( combo, "text" ) );
+    assertNull( message.findSetOperation( combo, "selection" ) );
     assertEquals( 1, log.size() );
     assertEquals( new Point( 1, 1 ), combo.getSelection() );
     assertEquals( "verify me", combo.getText() );
-    combo.removeVerifyListener( emptyVerifyListener );
+  }
+
+  public void testTextSelectionWithVerifyEvent_listenerDoesNotChangeSelection() {
     // ensure that selection is unchanged in case a verify-listener changes
     // the incoming text within the limits of the selection
+    final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
+    final Combo combo = new Combo( shell, SWT.NONE );
+    shell.open();
     combo.setText( "" );
     VerifyListener alteringVerifyListener = new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
@@ -300,38 +324,46 @@ public class ComboLCA_Test extends TestCase {
       }
     };
     combo.addVerifyListener( alteringVerifyListener );
-    log.clear();
     Fixture.fakeNewRequest( display );
+    String comboId = WidgetUtil.getId( combo );
     Fixture.fakeRequestParam( comboId + ".text", "verify me" );
     Fixture.fakeRequestParam( comboId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( comboId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, comboId );
+
     Fixture.executeLifeCycleFromServerThread( );
+
     assertEquals( 1, log.size() );
     assertEquals( new Point( 1, 1 ), combo.getSelection() );
     assertEquals( "verified", combo.getText() );
-    combo.removeVerifyListener( alteringVerifyListener );
+  }
+
+  public void testTextSelectionWithVerifyEvent_listenerAdjustsSelection() {
     // ensure that selection is adjusted in case a verify-listener changes
     // the incoming text in a way that would result in an invalid selection
+    final List<VerifyEvent> log = new ArrayList<VerifyEvent>();
+    final Combo combo = new Combo( shell, SWT.NONE );
+    shell.open();
+    String comboId = WidgetUtil.getId( combo );
     combo.setText( "" );
-    alteringVerifyListener = new VerifyListener() {
+    combo.addVerifyListener( new VerifyListener() {
       public void verifyText( VerifyEvent event ) {
         log.add( event );
         event.text = "";
       }
-    };
-    combo.addVerifyListener( alteringVerifyListener );
+    } );
     log.clear();
     Fixture.fakeNewRequest( display );
     Fixture.fakeRequestParam( comboId + ".text", "verify me" );
     Fixture.fakeRequestParam( comboId + ".selectionStart", "1" );
     Fixture.fakeRequestParam( comboId + ".selectionLength", "0" );
     Fixture.fakeRequestParam( JSConst.EVENT_MODIFY_TEXT, comboId );
+
     Fixture.executeLifeCycleFromServerThread( );
+
     assertEquals( 1, log.size() );
     assertEquals( new Point( 0, 0 ), combo.getSelection() );
     assertEquals( "", combo.getText() );
-    combo.removeVerifyListener( alteringVerifyListener );
   }
 
   public void testSelectionAfterRemoveAll() {

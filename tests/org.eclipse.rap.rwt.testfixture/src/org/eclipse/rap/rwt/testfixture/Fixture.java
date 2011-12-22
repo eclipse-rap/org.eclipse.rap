@@ -292,11 +292,6 @@ public final class Fixture {
     fakePhase( bufferedPhaseId );
   }
 
-  public static String getAllMarkup() {
-    TestResponse response = ( TestResponse )ContextProvider.getResponse();
-    return response.getContent();
-  }
-
   public static Message getProtocolMessage() {
     TestResponse response = ( TestResponse )ContextProvider.getResponse();
     finishResponse( response );
@@ -339,12 +334,10 @@ public final class Fixture {
   }
 
   public static void fakeResponseWriter() {
-    TestResponse testResponse;
-    testResponse = ( TestResponse )ContextProvider.getResponse();
+    TestResponse testResponse = ( TestResponse )ContextProvider.getResponse();
     testResponse.clearContent();
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    ServiceStateInfo stateInfo = ( ServiceStateInfo )ContextProvider.getStateInfo();
     stateInfo.resetProtocolWriter();
-    stateInfo.getProtocolWriter();
   }
 
   public static void fakePhase( PhaseId phase ) {

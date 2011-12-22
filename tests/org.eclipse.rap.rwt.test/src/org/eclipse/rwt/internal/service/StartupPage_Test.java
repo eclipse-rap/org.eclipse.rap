@@ -17,6 +17,7 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rwt.internal.application.RWTFactory;
 
 
@@ -34,18 +35,25 @@ public class StartupPage_Test extends TestCase {
   public void testSend() throws IOException {
     RWTFactory.getStartupPage().send();
 
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.startsWith( "<!DOCTYPE HTML" ) );
-    assertTrue( markup.endsWith( "</html>\n" ) );
+    String content = getResponseContent();
+    assertTrue( content.startsWith( "<!DOCTYPE HTML" ) );
+    assertTrue( content.endsWith( "</html>\n" ) );
   }
 
   public void testSuccessiveMarkup() throws IOException {
     RWTFactory.getStartupPage().send();
-    String initialMarkup = Fixture.getAllMarkup();
+    String initialContent = getResponseContent();
+
+    // second request
     Fixture.fakeResponseWriter();
     RWTFactory.getStartupPage().send();
-    String successiveMarkup = Fixture.getAllMarkup();
 
-    assertEquals( initialMarkup, successiveMarkup );
+    String successiveContent = getResponseContent();
+    assertEquals( initialContent, successiveContent );
+  }
+
+  private static String getResponseContent() {
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    return response.getContent();
   }
 }

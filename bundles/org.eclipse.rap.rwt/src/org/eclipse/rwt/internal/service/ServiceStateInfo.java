@@ -38,10 +38,8 @@ public final class ServiceStateInfo implements IServiceStateInfo {
     return protocolWriter;
   }
 
-  public ProtocolMessageWriter resetProtocolWriter() {
-    ProtocolMessageWriter result = protocolWriter;
-    protocolWriter = null;
-    return result;
+  public void resetProtocolWriter() {
+    protocolWriter = new ProtocolMessageWriter();
   }
 
   public Object getAttribute( String name ) {

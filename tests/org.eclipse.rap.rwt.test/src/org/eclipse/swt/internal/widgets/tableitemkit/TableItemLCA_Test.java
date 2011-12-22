@@ -260,15 +260,17 @@ public class TableItemLCA_Test extends TestCase {
     // Ensure that nothing else than the 'checked' property gets preserved
     lca.preserveValues( item );
     IWidgetAdapter itemAdapter = WidgetUtil.getAdapter( item );
-    assertEquals( Boolean.FALSE,
-                  itemAdapter.getPreserved( TableItemLCA.PROP_CACHED ) );
+
+    assertEquals( Boolean.FALSE, itemAdapter.getPreserved( TableItemLCA.PROP_CACHED ) );
     assertNull( itemAdapter.getPreserved( TableItemLCA.PROP_TEXTS ) );
     assertNull( itemAdapter.getPreserved( TableItemLCA.PROP_IMAGES ) );
     assertNull( itemAdapter.getPreserved( TableItemLCA.PROP_CHECKED ) );
+
     // ... and no markup is generated for a uncached item that was already
     // uncached when entering the life cycle
     lca.renderChanges( item );
-    assertEquals( "", Fixture.getAllMarkup() );
+
+    assertEquals( 0, Fixture.getProtocolMessage().getOperationCount() );
   }
 
   public void testDynamicColumns() {

@@ -19,6 +19,4 @@ public interface IServiceStateInfo extends IServiceStore {
 
   ProtocolMessageWriter getProtocolWriter();
 
-  ProtocolMessageWriter resetProtocolWriter();
-
 }

@@ -18,6 +18,7 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.TestRequest;
+import org.eclipse.rap.rwt.testfixture.TestResponse;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
@@ -25,7 +26,7 @@ import org.eclipse.swt.widgets.Display;
 
 
 public class WrappedRequest_Test extends TestCase {
-  
+
   private static final int TOKEN_INDEX_TITLE = 1;
 
   public static final class DefaultEntryPoint implements IEntryPoint {
@@ -48,22 +49,22 @@ public class WrappedRequest_Test extends TestCase {
     String v1b = "v1b";
     original.addParameter( p1, v1a );
     original.addParameter( p1, v1b );
-    
+
     Map<String, String[]> paramMap = new HashMap<String, String[]>();
     String p2 = "p2";
     String v2 = "v2";
     String p3 = "p3";
     String v3a = "v3a";
     String v3b = "v3b";
-    paramMap.put( p2, new String[] { v2 } );    
-    paramMap.put( p3, new String[] { v3a, v3b } );    
+    paramMap.put( p2, new String[] { v2 } );
+    paramMap.put( p3, new String[] { v3a, v3b } );
     WrappedRequest wrapper = new WrappedRequest( original, paramMap );
-    
+
     assertEquals( v0, wrapper.getParameter( p0 ) );
     assertEquals( v1a, wrapper.getParameter( p1 ) );
     assertEquals( v2, wrapper.getParameter( p2 ) );
     assertEquals( v3a, wrapper.getParameter( p3 ) );
-    
+
     Enumeration parameterNames = wrapper.getParameterNames();
     Set<Object> names = new HashSet<Object>();
     while( parameterNames.hasMoreElements() ) {
@@ -73,14 +74,14 @@ public class WrappedRequest_Test extends TestCase {
     assertTrue( names.contains( p1 ) );
     assertTrue( names.contains( p2 ) );
     assertTrue( names.contains( p3 ) );
-    
+
     assertEquals( v0, wrapper.getParameterValues( p0 )[ 0 ] );
     assertEquals( v1a, wrapper.getParameterValues( p1 )[ 0 ] );
     assertEquals( v1b, wrapper.getParameterValues( p1 )[ 1 ] );
     assertEquals( v2, wrapper.getParameterValues( p2 )[ 0 ] );
     assertEquals( v3a, wrapper.getParameterValues( p3 )[ 0 ] );
     assertEquals( v3b, wrapper.getParameterValues( p3 )[ 1 ] );
-    
+
     Map parameterMap = wrapper.getParameterMap();
     assertEquals( v0, ( ( String[] )parameterMap.get( p0 ) )[ 0 ] );
     assertEquals( v1a, ( ( String[] )parameterMap.get( p1 ) )[ 0 ] );
@@ -95,24 +96,27 @@ public class WrappedRequest_Test extends TestCase {
     } catch( UnsupportedOperationException usoe ) {
     }
   }
-  
+
   public void testStartupRequestWithParameter() throws Exception {
     String p1 = "p1";
     String v1 = "v1";
     Fixture.fakeRequestParam( p1, v1 );
+
     RWTFactory.getServiceManager().getHandler().service();
-    String allMarkup = Fixture.getAllMarkup();
+
+    TestResponse response = ( TestResponse )ContextProvider.getResponse();
+    String content = response.getContent();
     StartupPage startupPage = RWTFactory.getStartupPage();
     String title = startupPage.getConfigurer().getTemplate().getTokens() [ TOKEN_INDEX_TITLE ];
-    assertTrue( allMarkup.contains( title ) );
-    
+    assertTrue( content.contains( title ) );
+
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, DefaultEntryPoint.class );
     Fixture.fakeRequestParam( p1, null );
-    Fixture.fakeRequestParam( RequestParams.STARTUP, 
-                              EntryPointManager.DEFAULT );
+    Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
     Fixture.fakeRequestParam( LifeCycleServiceHandler.RWT_INITIALIZE, "true" );
     TestRequest request = ( TestRequest )ContextProvider.getRequest();
     request.setHeader( "User-Agent", "myAgent" );
+
     RWTFactory.getServiceManager().getHandler().service();
 
     assertEquals( v1, ContextProvider.getRequest().getParameter( p1 ) );

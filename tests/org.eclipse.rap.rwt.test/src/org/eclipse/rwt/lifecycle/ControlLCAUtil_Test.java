@@ -13,6 +13,7 @@ package org.eclipse.rwt.lifecycle;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -96,7 +97,7 @@ public class ControlLCAUtil_Test extends TestCase {
     String expected = "w.setSpace( 0, 0, 0, 0 );";
     assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
 
-    // Ensure that unchanged bound do not lead to markup
+    // Ensure that unchanged bounds are not rendered
     Fixture.fakeResponseWriter();
     Fixture.markInitialized( composite );
     Fixture.clearPreserved();
@@ -292,11 +293,14 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testWriteKeyEvents() throws IOException {
-    final java.util.List<Event> eventLog = new ArrayList<Event>();
+    final List<Event> eventLog = new ArrayList<Event>();
     shell.open();
     Fixture.fakeResponseWriter();
+
     ControlLCAUtil.writeKeyListener( shell );
-    assertEquals( "", Fixture.getAllMarkup() );
+
+    assertEquals( "", ProtocolTestUtil.getMessageScript() );
+
     shell.addListener( SWT.KeyDown, new Listener() {
       public void handleEvent( Event event ) {
         eventLog.add( event );
@@ -312,11 +316,13 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testWriteTraverseEvents() throws IOException {
-    final java.util.List<Event> eventLog = new ArrayList<Event>();
+    final List<Event> eventLog = new ArrayList<Event>();
     shell.open();
     Fixture.fakeResponseWriter();
     ControlLCAUtil.writeTraverseListener( shell );
-    assertEquals( "", Fixture.getAllMarkup() );
+
+    assertEquals( "", ProtocolTestUtil.getMessageScript() );
+
     shell.addListener( SWT.Traverse, new Listener() {
       public void handleEvent( Event event ) {
         eventLog.add( event );
@@ -332,7 +338,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessKeyEvents() {
-    final java.util.List<Event> eventLog = new ArrayList<Event>();
+    final List<Event> eventLog = new ArrayList<Event>();
     shell.open();
     shell.addListener( SWT.KeyDown, new Listener() {
       public void handleEvent( Event event ) {
@@ -372,7 +378,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessKeyEventWithLowerCaseCharacter() {
-    final java.util.List<Event> eventLog = new ArrayList<Event>();
+    final List<Event> eventLog = new ArrayList<Event>();
     shell.open();
     shell.addListener( SWT.KeyDown, new Listener() {
       public void handleEvent( Event event ) {
@@ -396,7 +402,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessKeyEventWithUpperCaseCharacter() {
-    final java.util.List<Event> eventLog = new ArrayList<Event>();
+    final List<Event> eventLog = new ArrayList<Event>();
     shell.open();
     shell.addListener( SWT.KeyDown, new Listener() {
       public void handleEvent( Event event ) {
@@ -420,7 +426,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessKeyEventWithDigitCharacter() {
-    final java.util.List<Event> eventLog = new ArrayList<Event>();
+    final List<Event> eventLog = new ArrayList<Event>();
     shell.open();
     shell.addListener( SWT.KeyDown, new Listener() {
       public void handleEvent( Event event ) {
@@ -444,7 +450,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessKeyEventWithPunctuationCharacter() {
-    final java.util.List<Event> eventLog = new ArrayList<Event>();
+    final List<Event> eventLog = new ArrayList<Event>();
     shell.open();
     shell.addListener( SWT.KeyDown, new Listener() {
       public void handleEvent( Event event ) {
@@ -468,7 +474,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessKeyEventsWithDoItFlag() {
-    final java.util.List<Event> eventLog = new ArrayList<Event>();
+    final List<Event> eventLog = new ArrayList<Event>();
     Listener doitTrueListener = new Listener() {
       public void handleEvent( Event event ) {
         eventLog.add( event );
@@ -526,7 +532,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testProcessTraverseEventsWithDoItFlag() {
-    final java.util.List<Event> eventLog = new ArrayList<Event>();
+    final List<Event> eventLog = new ArrayList<Event>();
     Listener doitTrueListener = new Listener() {
       public void handleEvent( Event event ) {
         eventLog.add( event );
@@ -575,7 +581,7 @@ public class ControlLCAUtil_Test extends TestCase {
   }
 
   public void testKeyAndTraverseEvents() {
-    final java.util.List<Event> eventLog = new ArrayList<Event>();
+    final List<Event> eventLog = new ArrayList<Event>();
     shell.open();
     String shellId = WidgetUtil.getId( shell );
 
@@ -675,7 +681,7 @@ public class ControlLCAUtil_Test extends TestCase {
 
   public void testProcessHelpEvent() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
-    final java.util.List<HelpEvent> log = new ArrayList<HelpEvent>();
+    final List<HelpEvent> log = new ArrayList<HelpEvent>();
     shell.addHelpListener( new HelpListener() {
       public void helpRequested( HelpEvent event ) {
         log.add( event );
@@ -727,7 +733,7 @@ public class ControlLCAUtil_Test extends TestCase {
     control.addFocusListener( new FocusAdapter() {} );
     ControlLCAUtil.writeChanges( control );
 
-    assertEquals( "", Fixture.getAllMarkup() );
+    assertEquals( 0, Fixture.getProtocolMessage().getOperationCount() );
   }
 
   public void testWriteMenuDetectListener() throws IOException {
