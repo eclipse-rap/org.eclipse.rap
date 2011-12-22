@@ -102,8 +102,17 @@ qx.Class.define( "org.eclipse.rwt.test.tests.DisplayTest", {
         }
       } );
       assertEquals( "Timeout occur!!!", org.eclipse.swt.Request.getInstance()._timeoutPage );
+    },
+
+    testSetUiTestsEnabled : function() {
+      org.eclipse.rwt.Display._current = undefined;
+    	var display = new org.eclipse.rwt.Display();
+
+    	display.setUiTestsEnabled( true );
+
+    	assertIdentical( true, qx.ui.core.Widget._renderHtmlIds );
     }
 
   }
-  
+
 } );

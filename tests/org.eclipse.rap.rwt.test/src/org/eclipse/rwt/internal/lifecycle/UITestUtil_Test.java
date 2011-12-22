@@ -1,17 +1,15 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
-
-import java.io.IOException;
 
 import junit.framework.TestCase;
 
@@ -22,7 +20,19 @@ import org.eclipse.swt.widgets.*;
 
 
 public class UITestUtil_Test extends TestCase {
-  
+
+  private Display display;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+    UITestUtil.enabled = false;
+  }
+
   public void testIsValidId() {
     // Test with legal id
     assertTrue( UITestUtil.isValidId( "customId" ) );
@@ -40,9 +50,8 @@ public class UITestUtil_Test extends TestCase {
     assertFalse( UITestUtil.isValidId( "A&B" ) );
     assertFalse( UITestUtil.isValidId( "A/8" ) );
   }
-  
+
   public void testOverrideId() {
-    Display display = new Display();
     Widget widget = new Shell( display );
     String customId = "customId";
     String generatedId = WidgetUtil.getId( widget );
@@ -54,38 +63,21 @@ public class UITestUtil_Test extends TestCase {
     assertEquals( customId, WidgetUtil.getId( widget ) );
   }
 
-  public void testWriteIds() throws IOException {
+  public void testCheckIds() {
     UITestUtil.enabled = true;
-    Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
-    // Request with not yet initialized widgets
-    Fixture.fakeNewRequest( display );
-    Fixture.executeLifeCycleFromServerThread( );
-    String markup = Fixture.getAllMarkup();
-    assertTrue( markup.contains( "setHtmlId" ) );
-    
-    // Request with already initialized widgets
-    Fixture.fakeNewRequest( display );
-    Fixture.executeLifeCycleFromServerThread( );
-    markup = Fixture.getAllMarkup();
-    assertTrue( markup.indexOf( "setHtmlId" ) == -1 );
-    
-    // Request with invalid id
-    Fixture.fakeNewRequest( display );
-    Label label = new Label( shell, SWT.NONE );
-    label.setData( WidgetUtil.CUSTOM_WIDGET_ID, "a/8" );
-    AbstractWidgetLCA lca = WidgetUtil.getLCA( label );
+    shell.setData( WidgetUtil.CUSTOM_WIDGET_ID, "a/8" );
+
     try {
-      lca.render( label );
+      UITestUtil.checkId( shell );
       fail( "widget id contains illegal characters" );
     } catch( IllegalArgumentException iae ) {
     }
   }
-  
+
   public void testGetIdAfterDispose() {
     // set up test scenario
     UITestUtil.enabled = true;
-    Display display = new Display();
     Shell shell = new Shell( display, SWT.NONE );
     // ensure that the overridden id is available after the widget was disposed
     // of - needed by render phase
@@ -95,13 +87,5 @@ public class UITestUtil_Test extends TestCase {
     shell.dispose();
     assertEquals( "customId", WidgetUtil.getId( shell ) );
   }
-  
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-  }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
-    UITestUtil.enabled = false;
-  }
 }

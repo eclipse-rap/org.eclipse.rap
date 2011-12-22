@@ -24,6 +24,7 @@ import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.DisposedWidgets;
 import org.eclipse.rwt.internal.lifecycle.IDisplayLifeCycleAdapter;
 import org.eclipse.rwt.internal.lifecycle.RWTRequestVersionControl;
+import org.eclipse.rwt.internal.lifecycle.UITestUtil;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
@@ -162,6 +163,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       renderTheme( display );
       renderErrorPages( display );
       renderExitConfirmation( display );
+      renderEnableUiTests( display );
       renderShells( display );
       renderFocus( display );
       renderBeep( display );
@@ -322,6 +324,16 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
       displayAdapter.resetBeep();
       IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
       clientObject.call( METHOD_BEEP, null );
+    }
+  }
+
+  private static void renderEnableUiTests( Display display ) {
+    if( UITestUtil.isEnabled() ) {
+      WidgetAdapter adapter = ( WidgetAdapter )DisplayUtil.getAdapter( display );
+      if( !adapter.isInitialized() ) {
+        IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+        clientObject.setProperty( "enableUiTests", true );
+      }
     }
   }
 

@@ -11,10 +11,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import java.io.IOException;
-
-import org.eclipse.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rwt.lifecycle.JSWriter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Widget;
 
@@ -28,16 +24,13 @@ public final class UITestUtil {
     enabled = Boolean.valueOf( property ).booleanValue();
   }
 
-  public static void writeId( Widget widget ) throws IOException {
-    if( isEnabled() && !isInitialized( widget ) ) {
+  public static void checkId( Widget widget ) {
+    if( isEnabled() ) {
       String id = WidgetUtil.getId( widget );
       if( !isValidId( id ) ) {
         String msg = "The widget id contains illegal characters: " + id;
         throw new IllegalArgumentException( msg ) ;
       }
-      JSWriter writer = JSWriter.getWriterFor( widget );
-      Object[] args = new Object[] { widget, id };
-      writer.call( JSWriter.WIDGET_MANAGER_REF, "setHtmlId", args );
     }
   }
 
@@ -48,18 +41,13 @@ public final class UITestUtil {
   //////////////////
   // helping methods
 
-  private static boolean isInitialized( Widget widget ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    return adapter.isInitialized();
-  }
-
   static boolean isValidId( String id ) {
     // see http://www.w3.org/TR/html401/types.html#type-cdata (id and name)
     // for what characters are allowed
     boolean result
       =  id != null
       && id.length() > 0
-      && Character.isLetter( id.charAt ( 0 ) );
+      && Character.isLetter( id.charAt( 0 ) );
     for( int i = 1; result && i < id.length(); i++ ) {
       char ch = id.charAt( i );
       result &= Character.isLetter( ch )

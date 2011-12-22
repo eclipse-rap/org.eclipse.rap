@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,10 +31,10 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
   public final void render( Widget widget ) throws IOException {
     WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( widget );
     if( !adapter.isInitialized() ) {
+      UITestUtil.checkId( widget );
       renderInitialization( widget );
     }
     renderChanges( widget );
-    UITestUtil.writeId( widget );
     adapter.setInitialized( true );
   }
 
@@ -94,7 +94,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * widget type this LCA belongs to. To activate pooling override
    * {@link #getTypePoolId(Widget)}.
    * </p>
-   * 
+   *
    * @see #getTypePoolId(Widget)
    * @param typePoolId the type pool id of the widget to reset
    * @throws IOException
@@ -124,7 +124,7 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * the method {@link #createResetHandlerCalls(String)} should also be
    * overridden.
    * </p>
-   * 
+   *
    * @see #createResetHandlerCalls(String)
    * @param widget the widget to store in the pool
    * @return the type pool id or <code>null</code> if the widget should not be
