@@ -1217,6 +1217,21 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.menuBar.addMenuItemAt( separator, 0 );
     },
 
+    testHasNativeMenu : function() {
+      var text = new org.eclipse.rwt.widgets.Text( false );
+      text.addToDocument();
+      this.testUtil.flush();
+      var element = text.getElement().getElementsByTagName( "input" )[ 0 ];
+      assertTrue( org.eclipse.rwt.widgets.Menu._hasNativeMenu( element ) );
+      text.dispose();
+      text = new org.eclipse.rwt.widgets.Text( true );
+      text.addToDocument();
+      this.testUtil.flush();
+      element = text.getElement().getElementsByTagName( "textarea" )[ 0 ];
+      assertTrue( org.eclipse.rwt.widgets.Menu._hasNativeMenu( element ) );
+      text.dispose();
+    },
+
     /************************* Helper *****************************/
 
     _createMenuBarByProtocol : function( id, parentId ) {
