@@ -20,6 +20,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
     this._cancelKeys = {};
     this._lastKeyCode = -1;
     this._lastEventType = null;
+    this._cancelNext = false;
   },
 
   members : {
@@ -45,23 +46,27 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
       if( eventType === "keydown" ) {
         this._lastKeyCode = keyCode;
       }
-      var identifier = this._getKeyBindingIdentifier( domEvent, keyCode, charCode );
+      var identifier = this._getKeyBindingIdentifier( domEvent, eventType, keyCode, charCode );
       if( this._isKeyBinding( identifier ) ) {
-        if( eventType === "keydown" ) {
-          // TODO [tb] : use keypress (repeats) instead?
-//          TODO [rst] Pass focused widget instead of null
-//          var widget = this._getTargetControl();
-          this._attachKeyDown( null, keyCode, charCode, domEvent );
-          org.eclipse.swt.Request.getInstance().send();
-        }
+//      TODO [rst] Pass focused widget instead of null
+//      var widget = this._getTargetControl();
+        this._attachKeyDown( null, keyCode, charCode, domEvent );
+        org.eclipse.swt.Request.getInstance().send();
       } else {
         var util = this._getDelegate();
         result = !util.intercept( eventType, this._lastKeyCode, charCode, domEvent );
       }
-      if( result && this._isCancelKey( identifier ) ) {
-        org.eclipse.rwt.EventHandlerUtil.stopDomEvent( domEvent ); 
+      var cancelNext = this._cancelNext && eventType !== "keydown";
+      if( result && ( this._isCancelKey( identifier ) || cancelNext ) ) {
+        org.eclipse.rwt.EventHandlerUtil.stopDomEvent( domEvent );
+        if( eventType === "keydown" ) {
+          this._cancelNext = true;
+        }
         result = false;
-      }
+      } else if( eventType === "keydown" ) {
+          this._cancelNext = false;
+        }
+      
       this._lastEventType = eventType;
       return result;
     },
@@ -89,23 +94,21 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
       return result;
     },
     
-    _getKeyBindingIdentifier : function( domEvent, keyCode, charCode ) {
+    _getKeyBindingIdentifier : function( domEvent, eventType, keyCode, charCode ) {
       var result = [];
-      if( domEvent.altKey ) {
-        result.push( "ALT" );
-      }
-      if( domEvent.ctrlKey ) {
-        result.push( "CTRL" );//TODO Command @ apple?
-      }
-      if( domEvent.shiftKey ) {
-        result.push( "SHIFT" );
-      }
-      if( !isNaN( keyCode ) && keyCode > 0 ) {
-        result.push( keyCode.toString() ); 
-      } else if( !isNaN( charCode ) && charCode > 0 ) {
-        // Usually, the keyCode matches the charcode of the upper-case character
-        var charStr = String.fromCharCode( charCode );
-        result.push( charStr.toUpperCase().charCodeAt( 0 ) );
+      if( eventType === "keydown" && !isNaN( keyCode ) && keyCode > 0 ) {
+        if( domEvent.altKey ) {
+          result.push( "ALT" );
+        }
+        if( domEvent.ctrlKey ) {
+          result.push( "CTRL" ); //TODO Command @ apple?
+        }
+        if( domEvent.shiftKey ) {
+          result.push( "SHIFT" );
+        }
+        result.push( "#" + keyCode.toString() ); 
+      } else if( eventType === "keypress" && !isNaN( charCode ) && charCode > 0 ) {
+        result.push( String.fromCharCode( charCode ) );
       }
       return result.join( "+" );
     },

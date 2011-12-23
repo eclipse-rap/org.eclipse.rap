@@ -90,14 +90,6 @@ public final class ActiveKeysUtil {
     KEY_MAP.put( "NUMPAD_DIVIDE", new Integer( 111 ) );
     KEY_MAP.put( "NUM_LOCK", new Integer( 144 ) );
     KEY_MAP.put( "SCROLL_LOCK", new Integer( 145 ) );
-    KEY_MAP.put( ",", new Integer( 188 ) );
-    KEY_MAP.put( ".", new Integer( 190 ) );
-    KEY_MAP.put( "/", new Integer( 191 ) );
-    KEY_MAP.put( "`", new Integer( 192 ) );
-    KEY_MAP.put( "[", new Integer( 219 ) );
-    KEY_MAP.put( "\\", new Integer( 220 ) );
-    KEY_MAP.put( "]", new Integer( 221 ) );
-    KEY_MAP.put( "'", new Integer( 222 ) );
   }
   private final static String ALT = "ALT+";
   private final static String CTRL = "CTRL+";
@@ -220,7 +212,12 @@ public final class ActiveKeysUtil {
     } else {
       keyPart = keySequence;
     }
-    return getModifierKeys( modifierPart ) + getKeyCode( keyPart );
+    int keyCode = getKeyCode( keyPart );
+    if( keyCode != -1 ) {
+      // TODO [tb] : use identifier instead of keycode
+      keyPart = "#" + keyCode;
+    }
+    return getModifierKeys( modifierPart ) + keyPart;
   }
 
   private static String getModifierKeys( String modifier ) {
@@ -247,7 +244,10 @@ public final class ActiveKeysUtil {
     if( value instanceof Integer ) {
       result = ( ( Integer )value ).intValue();
     } else if( key.length() == 1 ) {
-      result = key.charAt( 0 );
+      if( Character.isLetterOrDigit( key.charAt( 0 ) ) ) {
+        // NOTE: This works only for A-Z and 0-9 where keycode matches charcode 
+        result = key.toUpperCase().charAt( 0 );
+      }
     } else {
       throw new IllegalArgumentException( "Unrecognized key: " + key );
     }

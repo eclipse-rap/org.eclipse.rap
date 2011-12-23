@@ -183,23 +183,37 @@ public class ActiveKeysUtil_Test extends TestCase {
     Fixture.fakeNewRequest();
 
     String[] keyBindings = new String[] {
-      "ALT+'",
+      "x",
+      "ALT+x",
+      "E",
       "CTRL+INSERT",
       "CTRL+E",
       "SHIFT+CTRL+ALT+1",
-      "CTRL+ALT+.",
-      "F1"
+      "CTRL+ALT+E",
+      "F1",
+      "/",
+      "SHIFT+~",
+      "CTRL+ALT+#",
+      ".",
+      ","
     };
     display.setData( RWT.ACTIVE_KEYS, keyBindings );
     ActiveKeysUtil.renderActiveKeys( display );
 
     String expected
-      =   "\"ALT+222\","
-        + "\"CTRL+45\","
-        + "\"CTRL+69\","
-        + "\"ALT+CTRL+SHIFT+49\","
-        + "\"ALT+CTRL+190\","
-        + "\"112\"";
+      =   "\"#88\","
+        + "\"ALT+#88\","
+        + "\"#69\","
+        + "\"CTRL+#45\","
+        + "\"CTRL+#69\","
+        + "\"ALT+CTRL+SHIFT+#49\","
+        + "\"ALT+CTRL+#69\","
+        + "\"#112\","
+        + "\"/\","
+        + "\"SHIFT+~\","
+        + "\"ALT+CTRL+#\","
+        + "\".\","
+        + "\",\"";
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
     JSONArray activeKeys = ( JSONArray )operation.getProperty( "activeKeys" );

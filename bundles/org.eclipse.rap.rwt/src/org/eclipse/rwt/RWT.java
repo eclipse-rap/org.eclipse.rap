@@ -181,10 +181,14 @@ public final class RWT {
    * instructed to issue events for the given key sequences. These key events can be captured using
    * <code>Display.addFilter()</code>. 
    * <p>
-   * Valid strings for key sequences consist of one or more keys, separated by <code>+</code>. Keys
-   * can be identified by their character, i.e. upper case letters, digits, or one of the special
-   * characters <code>, . / \ [ ] ` '</code>. Moreover, the following keywords can be used to refer
-   * to special keys: <code>BACKSPACE</code>, <code>TAB</code>, <code>RETURN</code>,
+   * Valid strings for key sequences consist of one key and any number of modifier keys, 
+   * separated by <code>+</code>. Keys can be identified by their character or by any of the 
+   * keywords below. Special characters (not a letter or digit) should not be combined with any 
+   * modifiers, and will issue events regardless of pressed modifiers.
+   * </p> 
+   * <p>
+   * The following keywords can be used to refer to special keys: 
+   * <code>BACKSPACE</code>, <code>TAB</code>, <code>RETURN</code>,
    * <code>ENTER</code>, <code>ESCAPE</code>, <code>SPACE</code>, <code>PAGE_UP</code>,
    * <code>PAGE_DOWN</code>, <code>END</code>, <code>HOME</code>, <code>ARROW_LEFT</code>,
    * <code>ARROW_UP</code>, <code>ARROW_RIGHT</code>, <code>ARROW_DOWN</code>, <code>INSERT</code>,
@@ -193,7 +197,7 @@ public final class RWT {
    * <code>F10</code>, <code>F11</code>, <code>F12</code>, Valid modifier keys are
    * <code>SHIFT</code>, <code>ALT</code>, and <code>CTRL</code>.
    * </p>
-   * Examples: <code>&quot;A&quot;</code>, <code>&quot;F12&quot;</code>,
+   * Examples: <code>&quot;A&quot;</code>, <code>&quot;#&quot;</code>, <code>&quot;F12&quot;</code>,
    * <code>&quot;CTRL+1&quot;</code>, <code>&quot;ALT+ARROW_DOWN&quot;</code>,
    * <code>&quot;ALT+SHIFT+X&quot;</code>.
    * <p>
@@ -220,7 +224,7 @@ public final class RWT {
   public static final String ACTIVE_KEYS = "org.eclipse.rap.rwt.activeKeys";
 
   /**
-   * The property to use in <code>Display.setData()</code> in order to always cancel the clients 
+   * The property to use in <code>Display.setData()</code> in order to always cancel the client's 
    * default operation associated with certain key sequences. It allows the same values as 
    * {@link RWT#ACTIVE_KEYS}. If a key sequences is given in {@link RWT#CANCEL_KEYS} as well as 
    * in {@link RWT#ACTIVE_KEYS}, it will cancel its default operation, but still issue the event.
