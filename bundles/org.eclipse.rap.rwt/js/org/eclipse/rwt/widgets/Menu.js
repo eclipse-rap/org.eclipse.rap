@@ -104,8 +104,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
     },
 
     _hasNativeMenu : function( element ) {
-      var tagName =   typeof element.tagName == "string" ? element.tagName.toUpperCase() : "";
-      return tagName === "INPUT";
+      var tagName = typeof element.tagName == "string" ? element.tagName.toUpperCase() : "";
+      return tagName === "INPUT" || tagName === "TEXTAREA";
     }
 
   },
