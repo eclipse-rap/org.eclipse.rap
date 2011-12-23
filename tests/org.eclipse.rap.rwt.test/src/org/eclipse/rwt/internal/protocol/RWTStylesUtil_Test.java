@@ -66,8 +66,7 @@ public class RWTStylesUtil_Test extends TestCase {
       "NO_RADIO_GROUP",
       "H_SCROLL",
       "V_SCROLL",
-      "BORDER",
-      "LEFT_TO_RIGHT"
+      "BORDER"
     };
     assertArrayEquals( compositeStyles, allowedStyles );
   }
@@ -88,8 +87,7 @@ public class RWTStylesUtil_Test extends TestCase {
       "LEFT",
       "RIGHT",
       "WRAP",
-      "BORDER",
-      "LEFT_TO_RIGHT"
+      "BORDER"
     };
     assertArrayEquals( labelStyles, allowedStyles );
   }
@@ -113,8 +111,7 @@ public class RWTStylesUtil_Test extends TestCase {
       "LEFT",
       "RIGHT",
       "CENTER",
-      "BORDER",
-      "LEFT_TO_RIGHT"
+      "BORDER"
     };
     Button button = new Button( shell, SWT.PUSH );
     String[] allowedStyles = RWTStylesUtil.getAllowedStylesForWidget( button );
