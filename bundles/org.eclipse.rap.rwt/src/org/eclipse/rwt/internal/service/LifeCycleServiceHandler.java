@@ -102,17 +102,16 @@ public class LifeCycleServiceHandler implements IServiceHandler {
     HttpServletResponse response = ContextProvider.getResponse();
     // TODO [rst] Find a clean way to skip the protocol message when initial page has been rendered
     if( response.getContentType().startsWith( HTTP.CONTENT_TYPE_JSON ) ) {
-      ProtocolMessageWriter protocolWriter = ContextProvider.getStateInfo().getProtocolWriter();
+      ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
       String message = protocolWriter.createMessage();
       response.getWriter().write( message );
     }
   }
 
   private static void handleInvalidRequestCounter() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
     Map<String, Object> properties = new HashMap<String, Object>();
     properties.put( "message", RWTMessages.getMessage( "RWT_MultipleInstancesError" ) );
-    ProtocolMessageWriter writer = stateInfo.getProtocolWriter();
+    ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
     // TODO [tb] : do not assume "w1" as id for display
     writer.appendCall( "w1", "reload", properties );
   }

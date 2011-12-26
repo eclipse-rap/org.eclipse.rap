@@ -67,8 +67,7 @@ public final class JSExecutor {
 
     public void afterPhase( PhaseEvent event ) {
       if( display == LifeCycleUtil.getSessionDisplay() ) {
-        IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-        ProtocolMessageWriter protocolWriter = stateInfo.getProtocolWriter();
+        ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
         try {
           String content = code.toString().trim();
           protocolWriter.appendExecuteScript( "jsex", HTTP.CONTENT_TYPE_JAVASCRIPT, content );

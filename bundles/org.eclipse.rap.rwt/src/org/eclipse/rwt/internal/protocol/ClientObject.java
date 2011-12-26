@@ -71,7 +71,7 @@ public final class ClientObject implements IClientObject {
   }
 
   private static ProtocolMessageWriter getWriter() {
-    return ContextProvider.getStateInfo().getProtocolWriter();
+    return ContextProvider.getProtocolWriter();
   }
 
 }

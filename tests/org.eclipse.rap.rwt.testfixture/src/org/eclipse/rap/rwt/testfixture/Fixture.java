@@ -300,8 +300,7 @@ public final class Fixture {
 
   private static void finishResponse( TestResponse response ) {
     if( response.getContent().length() == 0 ) {
-      ServiceStateInfo stateInfo = ( ServiceStateInfo )ContextProvider.getStateInfo();
-      ProtocolMessageWriter protocolWriter = stateInfo.getProtocolWriter();
+      ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
       try {
         response.getWriter().write( protocolWriter.createMessage() );
       } catch( IOException exception ) {
@@ -336,8 +335,7 @@ public final class Fixture {
   public static void fakeResponseWriter() {
     TestResponse testResponse = ( TestResponse )ContextProvider.getResponse();
     testResponse.clearContent();
-    ServiceStateInfo stateInfo = ( ServiceStateInfo )ContextProvider.getStateInfo();
-    stateInfo.resetProtocolWriter();
+    ContextProvider.getContext().resetProtocolWriter();
   }
 
   public static void fakePhase( PhaseId phase ) {

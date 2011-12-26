@@ -11,12 +11,9 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
-import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.service.IServiceStore;
 
 
 public interface IServiceStateInfo extends IServiceStore {
-
-  ProtocolMessageWriter getProtocolWriter();
 
 }

@@ -20,7 +20,6 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.*;
 import org.eclipse.rap.rwt.testfixture.Message.*;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -164,8 +163,7 @@ public class ClientObject_Test extends TestCase {
   }
 
   private Message getMessage() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    ProtocolMessageWriter writer = stateInfo.getProtocolWriter();
+    ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
     return new Message( writer.createMessage() );
   }
 }

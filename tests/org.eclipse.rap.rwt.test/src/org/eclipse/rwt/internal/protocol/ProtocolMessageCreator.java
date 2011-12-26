@@ -15,7 +15,6 @@ import java.util.Map;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.*;
@@ -61,8 +60,7 @@ public class ProtocolMessageCreator {
   }
 
   private String getMessage() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    ProtocolMessageWriter writer = stateInfo.getProtocolWriter();
+    ProtocolMessageWriter writer = ContextProvider.getProtocolWriter();
     return writer.createMessage();
   }
 

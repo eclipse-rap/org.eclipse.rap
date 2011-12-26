@@ -29,7 +29,6 @@ import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
@@ -200,8 +199,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static void renderRequestCounter() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    ProtocolMessageWriter protocolWriter = stateInfo.getProtocolWriter();
+    ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
     Integer requestId = RWTRequestVersionControl.getInstance().nextRequestId();
     protocolWriter.appendMeta( PROP_REQUEST_COUNTER, requestId.intValue() );
   }
@@ -340,7 +338,7 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
   }
 
   private static void writeUICallBackActivation( Display display ) {
-    ProtocolMessageWriter protocolWriter = ContextProvider.getStateInfo().getProtocolWriter();
+    ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
     UICallBackServiceHandler.writeUICallBackActivation( protocolWriter );
   }
 

@@ -17,30 +17,32 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.internal.application.ApplicationContext;
 import org.eclipse.rwt.internal.application.ApplicationContextUtil;
+import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.rwt.service.ISessionStore;
 
 
-/** 
- * <p>This encapsulates access to the currently processed request,
- * response and other helpful status information needed by the
- * service handler implementations. Note that after an requests
- * lifecycle has expired the corresponding <code>ServiceContext</code>
- * will be disposed and throws an <code>IllegalStateException</code>
- * if any of its methods will be called.</p>
+/**
+ * This encapsulates access to the currently processed request, response and
+ * other helpful status information needed by the service handler
+ * implementations. Note that after an requests lifecycle has expired the
+ * corresponding <code>ServiceContext</code> will be disposed and throws an
+ * <code>IllegalStateException</code> if any of its methods will be called.
  */
 public final class ServiceContext {
-  
+
   private HttpServletRequest request;
   private HttpServletResponse response;
   private IServiceStateInfo stateInfo;
   private boolean disposed;
   private ISessionStore sessionStore;
   private ApplicationContext applicationContext;
-  
+  private ProtocolMessageWriter protocolWriter;
+
   /**
    * creates a new instance of <code>ServiceContext</code>
-   * 
+   *
    * @param request the instance of the currently processed request. Must not
    *                be null.
    * @param response the corresponding response to the currently processed
@@ -55,7 +57,7 @@ public final class ServiceContext {
 
   /**
    * creates a new instance of <code>ServiceContext</code>
-   * 
+   *
    * @param request the instance of the currently processed request. Must not
    *                be null.
    * @param response the corresponding response to the currently processed
@@ -79,11 +81,11 @@ public final class ServiceContext {
     checkState();
     return request;
   }
-  
+
   public void setRequest( HttpServletRequest request ) {
     this.request = request;
   }
-  
+
   /**
    * Returns the corresponding response to the currently processed
    * request
@@ -94,16 +96,26 @@ public final class ServiceContext {
   }
 
   /**
-   * Returns the corresponding {@link IServiceStateInfo} to the currently 
-   * processed request.
+   * Returns the corresponding {@link IServiceStore} to the currently processed request.
    */
   public IServiceStateInfo getStateInfo() {
     checkState();
     return stateInfo;
   }
 
+  public ProtocolMessageWriter getProtocolWriter() {
+    if( protocolWriter == null ) {
+      protocolWriter = new ProtocolMessageWriter();
+    }
+    return protocolWriter;
+  }
+
+  public void resetProtocolWriter() {
+    protocolWriter = new ProtocolMessageWriter();
+  }
+
   /**
-   * Sets the corresponding {@link IServiceStateInfo} to the currently 
+   * Sets the corresponding {@link IServiceStateInfo} to the currently
    * processed request.
    */
   public void setStateInfo( IServiceStateInfo stateInfo ) {
@@ -115,7 +127,7 @@ public final class ServiceContext {
     }
     this.stateInfo = stateInfo;
   }
-  
+
   public boolean isDisposed() {
     return disposed;
   }
@@ -126,11 +138,11 @@ public final class ServiceContext {
     }
     return sessionStore;
   }
-  
+
   public void setSessionStore( ISessionStore sessionStore ) {
     this.sessionStore = sessionStore;
   }
-  
+
   public void dispose() {
     checkState();
     request = null;
@@ -140,7 +152,7 @@ public final class ServiceContext {
     applicationContext = null;
     disposed = true;
   }
-  
+
   public ApplicationContext getApplicationContext() {
     checkState();
     // TODO [ApplicationContext]: Revise performance improvement with buffering mechanism in place.
@@ -154,14 +166,14 @@ public final class ServiceContext {
     return applicationContext;
   }
 
-  
+
   //////////////////
   // helping methods
 
   private boolean isApplicationContextBuffered() {
     return applicationContext != null;
   }
-  
+
   private void bufferApplicationContextInSession() {
     if( sessionStore != null ) {
       ApplicationContextUtil.set( sessionStore, applicationContext );
@@ -170,7 +182,7 @@ public final class ServiceContext {
 
   private void getApplicationContextFromServletContext() {
     // Note [fappel]: Yourkit analysis showed that the following line is
-    //                expensive. Because of this the ApplicationContext is 
+    //                expensive. Because of this the ApplicationContext is
     //                buffered in a field.
     ServletContext servletContext = request.getSession().getServletContext();
     applicationContext = ApplicationContextUtil.get( servletContext );
@@ -184,7 +196,7 @@ public final class ServiceContext {
       }
     }
   }
-  
+
   private void checkState() {
     if( disposed ) {
       throw new IllegalStateException( "The context has been disposed." );

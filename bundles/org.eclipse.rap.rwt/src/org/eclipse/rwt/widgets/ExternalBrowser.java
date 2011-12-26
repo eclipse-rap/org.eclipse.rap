@@ -19,7 +19,6 @@ import java.util.Map;
 
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
 import org.eclipse.swt.widgets.Display;
@@ -125,7 +124,7 @@ public final class ExternalBrowser {
   // Helping methods
 
   private static void renderOpen( String id, String url, int style ) {
-    ProtocolMessageWriter protocolWriter = getProtocolWriter();
+    ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
     Map<String, Object> args = new LinkedHashMap<String, Object>();
     args.put( PROPERTY_ID, id );
     args.put( PROPERTY_URL, url );
@@ -134,7 +133,7 @@ public final class ExternalBrowser {
   }
 
   private static void renderClose( String id ) {
-    ProtocolMessageWriter protocolWriter = getProtocolWriter();
+    ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
     Map<String, Object> args = new HashMap<String, Object>();
     args.put( PROPERTY_ID, id );
     protocolWriter.appendCall( EXTERNAL_BROWSER_ID, METHOD_CLOSE, args );
@@ -152,11 +151,6 @@ public final class ExternalBrowser {
       features.add( "NAVIGATION_BAR" );
     }
     return features.toArray( new String[ 0 ] );
-  }
-
-  private static ProtocolMessageWriter getProtocolWriter() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    return stateInfo.getProtocolWriter();
   }
 
   private static void checkWidget() {

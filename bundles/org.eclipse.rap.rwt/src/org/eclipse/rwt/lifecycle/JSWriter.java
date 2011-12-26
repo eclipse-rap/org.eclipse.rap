@@ -1004,7 +1004,7 @@ public final class JSWriter {
 
   private static void write( String code ) {
     IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    ProtocolMessageWriter protocolWriter = stateInfo.getProtocolWriter();
+    ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
     // HACK [rst] ProtocolMessageWriter clears these state info attributes
     // whenever a new operation is created. But this also happens when we call
     // ProtocolMessageWriter#appendExecuteScript() here, immediately resetting
