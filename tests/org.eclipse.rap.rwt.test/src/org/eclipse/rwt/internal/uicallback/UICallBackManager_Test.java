@@ -36,7 +36,7 @@ import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.service.ServiceContext;
-import org.eclipse.rwt.internal.service.ServiceStateInfo;
+import org.eclipse.rwt.internal.service.ServiceStore;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.swt.SWT;
@@ -532,7 +532,7 @@ public class UICallBackManager_Test extends TestCase {
   public void testSetHasRunnablesWithoutStateInfo() {
     // Service handlers don't have a state info
     manager.activateUICallBacksFor( "foo" );
-    Fixture.replaceStateInfo( null );
+    Fixture.replaceServiceStore( null );
 
     try {
       manager.setHasRunnables( true );
@@ -590,8 +590,7 @@ public class UICallBackManager_Test extends TestCase {
     TestRequest request = new TestRequest();
     request.setSession( httpSession );
     ServiceContext result = new ServiceContext( request, response );
-    ServiceStateInfo stateInfo = new ServiceStateInfo();
-    result.setStateInfo( stateInfo );
+    result.setServiceStore( new ServiceStore() );
     return result;
   }
 

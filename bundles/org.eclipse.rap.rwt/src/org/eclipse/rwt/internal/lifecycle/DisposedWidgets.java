@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
@@ -15,22 +15,23 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.widgets.Widget;
+
 
 // TODO [rh] consider to maintain the list of disposed widget in IDisplayAdapter
 public final class DisposedWidgets {
-  
-  private static final String DISPOSAL_LIST 
+
+  private static final String DISPOSAL_LIST
     = DisposedWidgets.class.getName() + "#disposalList";
 
   @SuppressWarnings("unchecked")
   public static void add( Widget widget ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    List<Widget> disposalList = ( List<Widget> )stateInfo.getAttribute( DISPOSAL_LIST );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    List<Widget> disposalList = ( List<Widget> )serviceStore.getAttribute( DISPOSAL_LIST );
     if( disposalList == null ) {
       disposalList = new LinkedList<Widget>();
-      stateInfo.setAttribute( DISPOSAL_LIST, disposalList );
+      serviceStore.setAttribute( DISPOSAL_LIST, disposalList );
     }
     disposalList.add( widget );
   }
@@ -38,8 +39,8 @@ public final class DisposedWidgets {
   @SuppressWarnings("unchecked")
   public static Widget[] getAll() {
     Widget[] result;
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    List<Widget> disposalList = ( List<Widget> )stateInfo.getAttribute( DISPOSAL_LIST );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    List<Widget> disposalList = ( List<Widget> )serviceStore.getAttribute( DISPOSAL_LIST );
     if( disposalList == null ) {
       result = new Widget[ 0 ];
     } else {

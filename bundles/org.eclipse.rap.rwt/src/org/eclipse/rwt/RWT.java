@@ -179,15 +179,15 @@ public final class RWT {
    * for certain key sequences. The value for this property has to be an array of Strings, each
    * representing a key sequence. When this property is set on the display, the client will be
    * instructed to issue events for the given key sequences. These key events can be captured using
-   * <code>Display.addFilter()</code>. 
+   * <code>Display.addFilter()</code>.
    * <p>
-   * Valid strings for key sequences consist of one key and any number of modifier keys, 
-   * separated by <code>+</code>. Keys can be identified by their character or by any of the 
-   * keywords below. Special characters (not a letter or digit) should not be combined with any 
+   * Valid strings for key sequences consist of one key and any number of modifier keys,
+   * separated by <code>+</code>. Keys can be identified by their character or by any of the
+   * keywords below. Special characters (not a letter or digit) should not be combined with any
    * modifiers, and will issue events regardless of pressed modifiers.
-   * </p> 
+   * </p>
    * <p>
-   * The following keywords can be used to refer to special keys: 
+   * The following keywords can be used to refer to special keys:
    * <code>BACKSPACE</code>, <code>TAB</code>, <code>RETURN</code>,
    * <code>ENTER</code>, <code>ESCAPE</code>, <code>SPACE</code>, <code>PAGE_UP</code>,
    * <code>PAGE_DOWN</code>, <code>END</code>, <code>HOME</code>, <code>ARROW_LEFT</code>,
@@ -224,9 +224,9 @@ public final class RWT {
   public static final String ACTIVE_KEYS = "org.eclipse.rap.rwt.activeKeys";
 
   /**
-   * The property to use in <code>Display.setData()</code> in order to always cancel the client's 
-   * default operation associated with certain key sequences. It allows the same values as 
-   * {@link RWT#ACTIVE_KEYS}. If a key sequences is given in {@link RWT#CANCEL_KEYS} as well as 
+   * The property to use in <code>Display.setData()</code> in order to always cancel the client's
+   * default operation associated with certain key sequences. It allows the same values as
+   * {@link RWT#ACTIVE_KEYS}. If a key sequences is given in {@link RWT#CANCEL_KEYS} as well as
    * in {@link RWT#ACTIVE_KEYS}, it will cancel its default operation, but still issue the event.
    *
    * @see Display#setData(String,Object)
@@ -280,7 +280,7 @@ public final class RWT {
    */
   public static IServiceStore getServiceStore() {
     checkHasPhase();
-    return ContextProvider.getStateInfo();
+    return ContextProvider.getServiceStore();
   }
 
   /**

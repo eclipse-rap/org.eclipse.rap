@@ -19,6 +19,7 @@ import javax.servlet.http.*;
 import org.eclipse.rwt.internal.SingletonManager;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.rwt.service.ISessionStore;
 
 
@@ -145,12 +146,12 @@ public class ContextProvider {
   }
 
   /**
-   * Returns the {@link IServiceStateInfo} that is mapped
-   * to the currently processed request. This is a convenience method
-   * that delegates to <code>ContextProvider.getContext().getStateInfo()</code>;
+   * Returns the {@link IServiceStore} that is mapped to the currently processed
+   * request. This is a convenience method that delegates to
+   * <code>ContextProvider.getContext().getServiceStore()</code>;
    */
-  public static IServiceStateInfo getStateInfo() {
-    return getContext().getStateInfo();
+  public static IServiceStore getServiceStore() {
+    return getContext().getServiceStore();
   }
 
   public static ProtocolMessageWriter getProtocolWriter() {

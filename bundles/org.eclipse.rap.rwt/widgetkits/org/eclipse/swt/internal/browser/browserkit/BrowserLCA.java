@@ -14,7 +14,9 @@ package org.eclipse.swt.internal.browser.browserkit;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,10 +28,19 @@ import org.eclipse.rwt.internal.lifecycle.LifeCycleUtil;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
-import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
+import org.eclipse.rwt.lifecycle.ControlLCAUtil;
+import org.eclipse.rwt.lifecycle.PhaseEvent;
+import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.PhaseListener;
+import org.eclipse.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.rwt.resources.IResourceManager;
-import org.eclipse.swt.browser.*;
+import org.eclipse.rwt.service.IServiceStore;
+import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.BrowserFunction;
+import org.eclipse.swt.browser.ProgressEvent;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Widget;
 
@@ -216,9 +227,9 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   // Helping methods for BrowserFunction
 
   private static void createBrowserFunctions( Browser browser ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
     String id = WidgetUtil.getId( browser );
-    String[] functions = ( String[] )stateInfo.getAttribute( FUNCTIONS_TO_CREATE + id );
+    String[] functions = ( String[] )serviceStore.getAttribute( FUNCTIONS_TO_CREATE + id );
     if( functions != null ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
       Map<String, Object> properties = new HashMap<String, Object>();
@@ -228,9 +239,9 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   }
 
   private static void destroyBrowserFunctions( Browser browser ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
     String id = WidgetUtil.getId( browser );
-    String[] functions = ( String[] )stateInfo.getAttribute( FUNCTIONS_TO_DESTROY + id );
+    String[] functions = ( String[] )serviceStore.getAttribute( FUNCTIONS_TO_DESTROY + id );
     if( functions != null ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
       Map<String, Object> properties = new HashMap<String, Object>();
@@ -268,12 +279,12 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   }
 
   private static void renderFunctionResult( Browser browser ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
     String id = WidgetUtil.getId( browser );
-    String name = ( String )stateInfo.getAttribute( EXECUTED_FUNCTION_NAME + id );
+    String name = ( String )serviceStore.getAttribute( EXECUTED_FUNCTION_NAME + id );
     if( name != null ) {
-      Object result = stateInfo.getAttribute( EXECUTED_FUNCTION_RESULT + id );
-      String error = ( String )stateInfo.getAttribute( EXECUTED_FUNCTION_ERROR + id );
+      Object result = serviceStore.getAttribute( EXECUTED_FUNCTION_RESULT + id );
+      String error = ( String )serviceStore.getAttribute( EXECUTED_FUNCTION_ERROR + id );
       IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
       Object[] value = new Object[] {
         name, result, error
@@ -283,21 +294,21 @@ public final class BrowserLCA extends AbstractWidgetLCA {
   }
 
   private static void setExecutedFunctionName( Browser browser, String name ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
     String id = WidgetUtil.getId( browser );
-    stateInfo.setAttribute( EXECUTED_FUNCTION_NAME + id, name );
+    serviceStore.setAttribute( EXECUTED_FUNCTION_NAME + id, name );
   }
 
   private static void setExecutedFunctionResult( Browser browser, Object result ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
     String id = WidgetUtil.getId( browser );
-    stateInfo.setAttribute( EXECUTED_FUNCTION_RESULT + id, result );
+    serviceStore.setAttribute( EXECUTED_FUNCTION_RESULT + id, result );
   }
 
   private static void setExecutedFunctionError( Browser browser, String error ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
     String id = WidgetUtil.getId( browser );
-    stateInfo.setAttribute( EXECUTED_FUNCTION_ERROR + id, error );
+    serviceStore.setAttribute( EXECUTED_FUNCTION_ERROR + id, error );
   }
 
   static Object[] parseArguments( String arguments ) {

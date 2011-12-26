@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt.events;
 
@@ -17,8 +17,8 @@ import java.util.List;
 import org.eclipse.rwt.internal.events.Event;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.ProgressEvent;
@@ -102,9 +102,9 @@ public class TypedEvent extends Event {
    */
   public TypedEvent( org.eclipse.swt.widgets.Event e ) {
     super( e.widget, e.type );
-    this.display = e.display;
-    this.widget = e.widget;
-    this.data = e.data;
+    display = e.display;
+    widget = e.widget;
+    data = e.data;
   }
 
   /**
@@ -241,12 +241,12 @@ public class TypedEvent extends Event {
 
   @SuppressWarnings("unchecked")
   private static List<TypedEvent> getScheduledEventList() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
     List<TypedEvent> result
-      = ( List<TypedEvent> )stateInfo.getAttribute( ATTR_SCHEDULED_EVENT_LIST );
+      = ( List<TypedEvent> )serviceStore.getAttribute( ATTR_SCHEDULED_EVENT_LIST );
     if( result == null ) {
       result = new ArrayList<TypedEvent>();
-      stateInfo.setAttribute( ATTR_SCHEDULED_EVENT_LIST, result );
+      serviceStore.setAttribute( ATTR_SCHEDULED_EVENT_LIST, result );
     }
     return result;
   }

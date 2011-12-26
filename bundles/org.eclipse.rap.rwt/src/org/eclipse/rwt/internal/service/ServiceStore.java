@@ -11,9 +11,34 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.service.IServiceStore;
 
 
-public interface IServiceStateInfo extends IServiceStore {
+public final class ServiceStore implements IServiceStore {
+
+  private final Map<String,Object> attributes;
+
+  public ServiceStore() {
+    attributes = new HashMap<String,Object>();
+  }
+
+  public Object getAttribute( String name ) {
+    ParamCheck.notNull( name, "name" );
+    return attributes.get( name );
+  }
+
+  public void setAttribute( String name, Object value ) {
+    ParamCheck.notNull( name, "name" );
+    attributes.put( name, value );
+  }
+
+  public void removeAttribute( String name ) {
+    ParamCheck.notNull( name, "name" );
+    attributes.remove( name );
+  }
 
 }

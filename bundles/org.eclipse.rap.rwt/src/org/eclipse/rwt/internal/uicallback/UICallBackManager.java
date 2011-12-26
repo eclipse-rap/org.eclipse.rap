@@ -19,7 +19,6 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.SerializableLock;
 import org.eclipse.rwt.service.*;
 import org.eclipse.swt.internal.SerializableCompatibility;
@@ -79,9 +78,9 @@ public final class UICallBackManager implements SerializableCompatibility {
     synchronized( lock ) {
       this.hasRunnables = hasRunnables;
     }
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    if( stateInfo != null && hasRunnables && isUICallBackActive() ) {
-      stateInfo.setAttribute( FORCE_UI_CALLBACK, Boolean.TRUE );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    if( serviceStore != null && hasRunnables && isUICallBackActive() ) {
+      serviceStore.setAttribute( FORCE_UI_CALLBACK, Boolean.TRUE );
     }
   }
 
@@ -219,9 +218,9 @@ public final class UICallBackManager implements SerializableCompatibility {
 
   private static boolean forceUICallBackForPendingRunnables() {
     boolean result = false;
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    if( stateInfo != null ) {
-      result = Boolean.TRUE.equals( stateInfo.getAttribute( FORCE_UI_CALLBACK ) );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    if( serviceStore != null ) {
+      result = Boolean.TRUE.equals( serviceStore.getAttribute( FORCE_UI_CALLBACK ) );
     }
     return result;
   }
@@ -234,7 +233,7 @@ public final class UICallBackManager implements SerializableCompatibility {
 
     private SessionTerminationListener( ISessionStore sessionStore ) {
       this.sessionStore = sessionStore;
-      this.currentThread = Thread.currentThread();
+      currentThread = Thread.currentThread();
     }
 
     public void attach() {

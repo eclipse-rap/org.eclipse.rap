@@ -26,11 +26,11 @@ import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATIONS;
 import java.util.Map;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.theme.JsonArray;
 import org.eclipse.rwt.internal.theme.JsonObject;
 import org.eclipse.rwt.internal.theme.JsonValue;
 import org.eclipse.rwt.lifecycle.JSWriter;
+import org.eclipse.rwt.service.IServiceStore;
 
 
 public class ProtocolMessageWriter {
@@ -137,9 +137,9 @@ public class ProtocolMessageWriter {
 
   // TODO [rst] Needed to invalidate JavaScript context of JSWriter, remove when JSWriter is gone
   private static void invalidateJsWriterState() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.removeAttribute( HAS_WIDGET_MANAGER );
-    stateInfo.removeAttribute( CURRENT_WIDGET_REF );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    serviceStore.removeAttribute( HAS_WIDGET_MANAGER );
+    serviceStore.removeAttribute( CURRENT_WIDGET_REF );
   }
 
   public String createMessage() {

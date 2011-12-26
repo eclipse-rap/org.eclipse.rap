@@ -12,24 +12,24 @@
 package org.eclipse.rwt.lifecycle;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.ParamCheck;
+import org.eclipse.rwt.service.IServiceStore;
 
 
 /**
  * Instances of this class represent a JavaScript variable. In contrast to
  * Strings, JSVars are not enclosed in double quotes in the response.
- * 
+ *
  * @since 1.0
  * @noextend This class is not intended to be subclassed by clients.
  */
 public final class JSVar {
-  
+
   private static final String UNIQUE_NUMBER
     = JSVar.class.getName() + "#uniqueNumber";
-  
+
   private final String name;
-  
+
   /**
    * Creates a new JSVar instance with a generated name which is guaranteed to
    * be unique within the session.
@@ -37,7 +37,7 @@ public final class JSVar {
   public JSVar() {
     name = uniqueVarName();
   }
-  
+
   /**
    * Creates a new JSVar instance with the given name.
    * @param name the variable name, must neither be <code>null</code> nor empty.
@@ -51,20 +51,20 @@ public final class JSVar {
     }
     this.name = name;
   }
-  
+
   public String toString() {
     return name;
   }
-  
+
   private static String uniqueVarName() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Object attribute = stateInfo.getAttribute( UNIQUE_NUMBER );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    Object attribute = serviceStore.getAttribute( UNIQUE_NUMBER );
     Integer lastUniqueNumber = ( Integer )attribute;
     if( lastUniqueNumber == null ) {
       lastUniqueNumber = new Integer( -1 );
     }
     int uniqueNumber = lastUniqueNumber.intValue() + 1;
-    stateInfo.setAttribute( UNIQUE_NUMBER, new Integer( uniqueNumber ) );
+    serviceStore.setAttribute( UNIQUE_NUMBER, new Integer( uniqueNumber ) );
     return "v" + uniqueNumber;
   }
 }

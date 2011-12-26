@@ -50,15 +50,15 @@ import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.resources.ResourceManagerImpl;
 import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.service.LifeCycleServiceHandler;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.service.ServiceContext;
-import org.eclipse.rwt.internal.service.ServiceStateInfo;
+import org.eclipse.rwt.internal.service.ServiceStore;
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
@@ -179,8 +179,8 @@ public final class Fixture {
                                            HttpServletRequest request )
   {
     ServiceContext context = new ServiceContext( request, response );
-    ServiceStateInfo stateInfo = new ServiceStateInfo();
-    context.setStateInfo( stateInfo );
+    ServiceStore serviceStore = new ServiceStore();
+    context.setServiceStore( serviceStore );
     ContextProvider.setContext( context );
   }
 
@@ -320,7 +320,7 @@ public final class Fixture {
     request.setSession( session );
     TestResponse response = new TestResponse();
     ServiceContext serviceContext = new ServiceContext( request, response );
-    serviceContext.setStateInfo( new ServiceStateInfo() );
+    serviceContext.setServiceStore( new ServiceStore() );
     ContextProvider.disposeContext();
     ContextProvider.setContext( serviceContext );
     fakeResponseWriter();
@@ -339,8 +339,8 @@ public final class Fixture {
   }
 
   public static void fakePhase( PhaseId phase ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( CurrentPhase.class.getName() + "#value", phase );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    serviceStore.setAttribute( CurrentPhase.class.getName() + "#value", phase );
   }
 
   public static void executeLifeCycleFromServerThread() {
@@ -353,12 +353,12 @@ public final class Fixture {
     lifeCycle.sleep();
   }
 
-  public static void replaceStateInfo( IServiceStateInfo stateInfo ) {
+  public static void replaceServiceStore( IServiceStore serviceStore ) {
     HttpServletRequest request = ContextProvider.getRequest();
     HttpServletResponse response = ContextProvider.getResponse();
     ServiceContext context = new ServiceContext( request, response );
-    if( stateInfo != null ) {
-      context.setStateInfo( stateInfo );
+    if( serviceStore != null ) {
+      context.setServiceStore( serviceStore );
     }
     ContextProvider.disposeContext();
     ContextProvider.setContext( context );

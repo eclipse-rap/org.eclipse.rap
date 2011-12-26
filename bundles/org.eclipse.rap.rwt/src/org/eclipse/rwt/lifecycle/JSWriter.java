@@ -19,8 +19,8 @@ import java.util.Map;
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.EncodingUtil;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.internal.widgets.WidgetAdapter;
@@ -89,12 +89,12 @@ public final class JSWriter {
    */
   @SuppressWarnings("unchecked")
   public static JSWriter getWriterFor( Widget widget ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
     JSWriter result;
-    Map<Widget,JSWriter> map = ( Map<Widget,JSWriter> )stateInfo.getAttribute( WRITER_MAP );
+    Map<Widget,JSWriter> map = ( Map<Widget,JSWriter> )serviceStore.getAttribute( WRITER_MAP );
     if( map == null ) {
       map = new HashMap<Widget,JSWriter>();
-      stateInfo.setAttribute( WRITER_MAP, map );
+      serviceStore.setAttribute( WRITER_MAP, map );
     }
     if( map.containsKey( widget ) ) {
       result = map.get( widget );
@@ -368,9 +368,8 @@ public final class JSWriter {
     throws IOException
   {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    boolean changed
-      =  !adapter.isInitialized()
-      || WidgetLCAUtil.hasChanged( widget, javaProperty, newValue );
+    boolean changed =    !adapter.isInitialized()
+                      || WidgetLCAUtil.hasChanged( widget, javaProperty, newValue );
     if( changed ) {
       set( jsProperty, newValue );
     }
@@ -404,8 +403,7 @@ public final class JSWriter {
   public boolean set( String javaProperty, String jsProperty, Object newValue, Object defValue )
     throws IOException
   {
-    boolean changed
-      = WidgetLCAUtil.hasChanged( widget, javaProperty, newValue, defValue );
+    boolean changed = WidgetLCAUtil.hasChanged( widget, javaProperty, newValue, defValue );
     if( changed ) {
       set( jsProperty, new Object[] { newValue } );
     }
@@ -489,10 +487,7 @@ public final class JSWriter {
     if( info.getJSListenerType() == JSListenerType.ACTION ) {
       updateActionListener( property, info, javaListener, hasListeners );
     } else {
-      updateStateAndActionListener( property,
-                                    info,
-                                    javaListener,
-                                    hasListeners );
+      updateStateAndActionListener( property, info, javaListener, hasListeners );
     }
   }
 
@@ -673,23 +668,17 @@ public final class JSWriter {
       if( hadListeners == null || Boolean.FALSE.equals( hadListeners ) ) {
         if( hasListeners ) {
           removeListener( property, info.getEventType(), info.getJSListener() );
-          addListener( property,
-                       info.getEventType(),
-                       createJsActionListener( info ) );
+          addListener( property, info.getEventType(), createJsActionListener( info ) );
         }
       } else {
         if( !hasListeners ) {
-          removeListener( property,
-                          info.getEventType(),
-                          createJsActionListener( info ) );
+          removeListener( property, info.getEventType(), createJsActionListener( info ) );
           addListener( property, info.getEventType(), info.getJSListener() );
         }
       }
     } else {
       if( hasListeners ) {
-        addListener( property,
-                     info.getEventType(),
-                     createJsActionListener( info ) );
+        addListener( property, info.getEventType(), createJsActionListener( info ) );
       } else {
         addListener( property, info.getEventType(), info.getJSListener() );
       }
@@ -721,13 +710,13 @@ public final class JSWriter {
   }
 
   private void ensureWidgetManager() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
     if(    currentPhaseIsRender()
         && widget != null
-        && stateInfo.getAttribute( HAS_WIDGET_MANAGER ) == null )
+        && serviceStore.getAttribute( HAS_WIDGET_MANAGER ) == null )
     {
       writeVarAssignment( WIDGET_MANAGER_REF, "org.eclipse.swt.WidgetManager.getInstance()" );
-      stateInfo.setAttribute( HAS_WIDGET_MANAGER, Boolean.TRUE );
+      serviceStore.setAttribute( HAS_WIDGET_MANAGER, Boolean.TRUE );
     }
   }
 
@@ -743,8 +732,8 @@ public final class JSWriter {
 
   private void ensureWidgetRef() {
     ensureWidgetManager();
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Object currentWidgetRef = stateInfo.getAttribute( CURRENT_WIDGET_REF );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    Object currentWidgetRef = serviceStore.getAttribute( CURRENT_WIDGET_REF );
     if( widget != currentWidgetRef && widget != null ) {
       writeVarAssignment( WIDGET_REF, createFindWidgetById( widget ) );
       setCurrentWidgetRef( widget );
@@ -752,13 +741,13 @@ public final class JSWriter {
   }
 
   private static void setCurrentWidgetRef( Widget widget ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( CURRENT_WIDGET_REF, widget );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    serviceStore.setAttribute( CURRENT_WIDGET_REF, widget );
   }
 
   private static Widget getCurrentWidgetRef() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    return ( Widget )stateInfo.getAttribute( CURRENT_WIDGET_REF );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    return ( Widget )serviceStore.getAttribute( CURRENT_WIDGET_REF );
   }
 
   private static String createFindWidgetById( Widget widget ) {
@@ -1003,23 +992,23 @@ public final class JSWriter {
   }
 
   private static void write( String code ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
     ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
     // HACK [rst] ProtocolMessageWriter clears these state info attributes
     // whenever a new operation is created. But this also happens when we call
     // ProtocolMessageWriter#appendExecuteScript() here, immediately resetting
     // the values set in the ensureXxx() methods above.
     // Thus we buffer the values here ...
-    Object bufferHasWidgetManager = stateInfo.getAttribute( HAS_WIDGET_MANAGER );
-    Object bufferCurrentWidgetRef = stateInfo.getAttribute( CURRENT_WIDGET_REF );
+    Object bufferHasWidgetManager = serviceStore.getAttribute( HAS_WIDGET_MANAGER );
+    Object bufferCurrentWidgetRef = serviceStore.getAttribute( CURRENT_WIDGET_REF );
     // ... append the execute operation ...
     protocolWriter.appendExecuteScript( "jsex", "text/javascript", code.trim() );
     // ... and re-install them afterwards.
     if( bufferHasWidgetManager != null ) {
-      stateInfo.setAttribute( HAS_WIDGET_MANAGER, bufferHasWidgetManager );
+      serviceStore.setAttribute( HAS_WIDGET_MANAGER, bufferHasWidgetManager );
     }
     if( bufferCurrentWidgetRef != null ) {
-      stateInfo.setAttribute( CURRENT_WIDGET_REF, bufferCurrentWidgetRef );
+      serviceStore.setAttribute( CURRENT_WIDGET_REF, bufferCurrentWidgetRef );
     }
   }
 

@@ -26,10 +26,9 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.IPhase.IInterruptible;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.service.ServiceContext;
-import org.eclipse.rwt.internal.service.ServiceStateInfo;
+import org.eclipse.rwt.internal.service.ServiceStore;
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rwt.lifecycle.IEntryPoint;
 import org.eclipse.rwt.lifecycle.ILifeCycleAdapter;
@@ -37,6 +36,7 @@ import org.eclipse.rwt.lifecycle.PhaseEvent;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.PhaseListener;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.rwt.service.SessionStoreEvent;
 import org.eclipse.rwt.service.SessionStoreListener;
@@ -888,12 +888,12 @@ public class RWTLifeCycle_Test extends TestCase {
     final ISessionStore session = ContextProvider.getSession();
     final String[] invalidateThreadName = { null };
     final boolean hasContext[] = new boolean[]{ false };
-    final IServiceStateInfo stateInfo[] =  { null };
+    final IServiceStore serviceStore[] =  { null };
     session.addSessionStoreListener( new SessionStoreListener() {
       public void beforeDestroy( SessionStoreEvent event ) {
         invalidateThreadName[ 0 ] = Thread.currentThread().getName();
         hasContext[ 0 ] = ContextProvider.hasContext();
-        stateInfo[ 0 ] = ContextProvider.getStateInfo();
+        serviceStore[ 0 ] = ContextProvider.getServiceStore();
       }
     } );
     // Register and 'run' entry point with readAndDispatch/sleep loop
@@ -911,7 +911,7 @@ public class RWTLifeCycle_Test extends TestCase {
     assertFalse( session.isBound() );
     assertEquals( invalidateThreadName[ 0 ], uiThreadName );
     assertTrue( hasContext[ 0 ] );
-    assertNotNull( stateInfo[ 0 ] );
+    assertNotNull( serviceStore[ 0 ] );
     assertEquals( "", log.toString() );
   }
 
@@ -935,12 +935,12 @@ public class RWTLifeCycle_Test extends TestCase {
     final String[] uiThreadName = { "unknown-ui-thread" };
     final String[] invalidateThreadName = { "unkown-invalidate-thread" };
     final boolean hasContext[] = new boolean[]{ false };
-    final IServiceStateInfo stateInfo[] =  { null };
+    final IServiceStore serviceStore[] = { null };
     session.addSessionStoreListener( new SessionStoreListener() {
       public void beforeDestroy( SessionStoreEvent event ) {
         invalidateThreadName[ 0 ] = Thread.currentThread().getName();
         hasContext[ 0 ] = ContextProvider.hasContext();
-        stateInfo[ 0 ] = ContextProvider.getStateInfo();
+        serviceStore[ 0 ] = ContextProvider.getServiceStore();
       }
     } );
     // Register and 'run' entry point with readAndDispatch/sleep loop
@@ -965,7 +965,7 @@ public class RWTLifeCycle_Test extends TestCase {
     assertFalse( session.isBound() );
     assertEquals( uiThreadName[ 0 ], invalidateThreadName[ 0 ] );
     assertTrue( hasContext[ 0 ] );
-    assertNotNull( stateInfo[ 0 ] );
+    assertNotNull( serviceStore[ 0 ] );
   }
 
   public void testDisposeDisplayOnSessionTimeout() throws Throwable {
@@ -1065,7 +1065,7 @@ public class RWTLifeCycle_Test extends TestCase {
     HttpServletRequest request = ContextProvider.getRequest();
     HttpServletResponse response = ContextProvider.getResponse();
     ServiceContext result = new ServiceContext( request, response );
-    result.setStateInfo( new ServiceStateInfo() );
+    result.setServiceStore( new ServiceStore() );
     return result;
   }
 

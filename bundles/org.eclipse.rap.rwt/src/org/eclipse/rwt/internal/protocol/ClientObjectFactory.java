@@ -15,9 +15,9 @@ import java.util.Map;
 
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
@@ -70,7 +70,7 @@ public final class ClientObjectFactory {
     }
     return getForId( WidgetUtil.getId( widget ) + GC_SUFFIX );
   }
-  
+
   /**
    * Creates a {@link IClientObject} for a specific Display. The returned instance
    * is unique for the time a Request exists. The relationship between these two is a 1:1
@@ -103,20 +103,20 @@ public final class ClientObjectFactory {
 
   @SuppressWarnings("unchecked")
   private static Map<String, IClientObject> getClientObjectMap() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
     Map<String, IClientObject> result
-      = ( Map<String, IClientObject> )stateInfo.getAttribute( CLIENT_OBJECT_MAP_KEY );
+      = ( Map<String, IClientObject> )serviceStore.getAttribute( CLIENT_OBJECT_MAP_KEY );
     if( result == null ) {
       result = new HashMap<String, IClientObject>();
-      stateInfo.setAttribute( CLIENT_OBJECT_MAP_KEY, result );
+      serviceStore.setAttribute( CLIENT_OBJECT_MAP_KEY, result );
     }
     return result;
   }
-  
+
   private static boolean isValidThread( Widget widget ) {
     return isValidThread( widget.getDisplay() );
   }
-  
+
   private static boolean isValidThread( Display display ) {
     IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
     return adapter.isValidThread();

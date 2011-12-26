@@ -12,12 +12,12 @@
 package org.eclipse.rwt.internal.lifecycle;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.service.IServiceStore;
 
 
 public final class CurrentPhase {
-  
+
   public static final class Listener implements PhaseListener {
 
     public void beforePhase( PhaseEvent event ) {
@@ -27,30 +27,30 @@ public final class CurrentPhase {
     public void afterPhase( PhaseEvent event ) {
       // do nothing
     }
-    
+
     public PhaseId getPhaseId() {
       return PhaseId.ANY;
     }
   }
 
-  private static final String ATTR_CURRENT_PHASE 
+  private static final String ATTR_CURRENT_PHASE
     = CurrentPhase.class.getName() + "#value";
 
   private CurrentPhase() {
     // prevent instantiation
   }
-  
+
   public static PhaseId get() {
     PhaseId result = null;
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    if( stateInfo != null ) {
-      result = ( PhaseId )stateInfo.getAttribute( ATTR_CURRENT_PHASE );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    if( serviceStore != null ) {
+      result = ( PhaseId )serviceStore.getAttribute( ATTR_CURRENT_PHASE );
     }
     return result;
   }
 
   static void set( PhaseId phaseId ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( ATTR_CURRENT_PHASE, phaseId );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    serviceStore.setAttribute( ATTR_CURRENT_PHASE, phaseId );
   }
 }

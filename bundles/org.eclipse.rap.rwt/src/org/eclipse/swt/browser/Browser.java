@@ -14,9 +14,9 @@ package org.eclipse.swt.browser;
 import java.util.*;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.*;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
 import org.eclipse.swt.widgets.Composite;
@@ -50,18 +50,18 @@ public class Browser extends Composite {
   private final class BrowserAdapter implements IBrowserAdapter {
 
     public String getText() {
-      return Browser.this.html;
+      return html;
     }
 
     public String getExecuteScript() {
-      return Browser.this.executeScript;
+      return executeScript;
     }
 
     public void setExecuteResult( final boolean result, final Object value ) {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
-          Browser.this.executeResult = Boolean.valueOf( result );
-          Browser.this.evaluateResult = value;
+          executeResult = Boolean.valueOf( result );
+          evaluateResult = value;
         }
       } );
     }
@@ -71,7 +71,7 @@ public class Browser extends Composite {
     }
 
     public boolean getExecutePending() {
-      return Browser.this.executePending;
+      return executePending;
     }
 
     public BrowserFunction[] getBrowserFunctions() {
@@ -79,11 +79,11 @@ public class Browser extends Composite {
     }
 
     public boolean hasUrlChanged() {
-      return Browser.this.urlChanged;
+      return urlChanged;
     }
 
     public void resetUrlChanged() {
-      Browser.this.urlChanged = false;
+      urlChanged = false;
     }
 
   }
@@ -103,7 +103,7 @@ public class Browser extends Composite {
   private boolean executePending;
   private Object evaluateResult;
   private transient IBrowserAdapter browserAdapter;
-  private List<BrowserFunction> functions;
+  private final List<BrowserFunction> functions;
 
   /**
    * Constructs a new instance of this class given its parent
@@ -505,10 +505,10 @@ public class Browser extends Composite {
   }
 
   private void updateBrowserFunctions( String function, boolean create ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
     String id = WidgetUtil.getId( this );
     String key = create ? FUNCTIONS_TO_CREATE + id : FUNCTIONS_TO_DESTROY + id;
-    String[] funcList = ( String[] )stateInfo.getAttribute( key );
+    String[] funcList = ( String[] )serviceStore.getAttribute( key );
     String[] newList;
     if( funcList == null ) {
       newList = new String[ 1 ];
@@ -518,7 +518,7 @@ public class Browser extends Composite {
       System.arraycopy( funcList, 0, newList, 0, funcList.length );
       newList[ funcList.length ] = function;
     }
-    stateInfo.setAttribute( key, newList );
+    serviceStore.setAttribute( key, newList );
   }
 
   protected void checkWidget() {

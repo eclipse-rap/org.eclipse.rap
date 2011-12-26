@@ -733,9 +733,9 @@ public class Display extends Device implements Adaptable {
             String msg = "Exception while executing dispose-runnable.";
             ServletLog.log( msg, thr );
           }
+        }
       }
     }
-  }
 
   /////////////////////
   // Adaptable override
@@ -2377,11 +2377,11 @@ public class Display extends Device implements Adaptable {
     }
 
     public void invalidateFocus() {
-      ContextProvider.getStateInfo().setAttribute( ATTR_INVALIDATE_FOCUS, Boolean.TRUE );
+      ContextProvider.getServiceStore().setAttribute( ATTR_INVALIDATE_FOCUS, Boolean.TRUE );
     }
 
     public boolean isFocusInvalidated() {
-      Object value = ContextProvider.getStateInfo().getAttribute( ATTR_INVALIDATE_FOCUS );
+      Object value = ContextProvider.getServiceStore().getAttribute( ATTR_INVALIDATE_FOCUS );
       return value != null;
     }
 

@@ -205,7 +205,7 @@ public class UICallBackServiceHandler_Test extends TestCase {
   }
 
   public void testWriteUICallBackActivateWithoutStateInfo() throws Exception {
-    Fixture.replaceStateInfo( null );
+    Fixture.replaceServiceStore( null );
 
     ProtocolMessageWriter protocolWriter = mock( ProtocolMessageWriter.class );
     try {

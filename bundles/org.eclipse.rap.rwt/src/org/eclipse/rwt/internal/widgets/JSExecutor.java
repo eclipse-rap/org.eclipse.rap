@@ -14,9 +14,9 @@ import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.widgets.Display;
 
 
@@ -39,13 +39,13 @@ public final class JSExecutor {
   }
 
   private static JSExecutorPhaseListener getJSExecutor() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    return ( JSExecutorPhaseListener )stateInfo.getAttribute( JS_EXECUTOR );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    return ( JSExecutorPhaseListener )serviceStore.getAttribute( JS_EXECUTOR );
   }
 
   private static void setJSExecutor( JSExecutorPhaseListener jsExecutor ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( JS_EXECUTOR, jsExecutor );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    serviceStore.setAttribute( JS_EXECUTOR, jsExecutor );
   }
 
   private static class JSExecutorPhaseListener implements PhaseListener {

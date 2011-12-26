@@ -73,7 +73,7 @@ public final class FakeContextUtil {
   public static ServiceContext createFakeContext( ISessionStore sessionStore ) {
     HttpServletRequest request = newRequest( sessionStore );
     ServiceContext result = new ServiceContext( request, RESPONSE_PROXY, sessionStore );
-    result.setStateInfo( new ServiceStateInfo() );
+    result.setServiceStore( new ServiceStore() );
     return result;
   }
 

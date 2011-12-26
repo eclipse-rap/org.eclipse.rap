@@ -61,7 +61,7 @@ public class RWTServlet extends HttpServlet {
   private void handleValidRequest( HttpServletRequest request, HttpServletResponse response )
     throws IOException, ServletException
   {
-    ServiceContext context = createStateInfo( request, response );
+    ServiceContext context = createServiceContext( request, response );
     ContextProvider.setContext( context );
     try {
       createSessionStore();
@@ -71,11 +71,11 @@ public class RWTServlet extends HttpServlet {
     }
   }
 
-  private static ServiceContext createStateInfo( HttpServletRequest request,
-                                                 HttpServletResponse response )
+  private static ServiceContext createServiceContext( HttpServletRequest request,
+                                                      HttpServletResponse response )
   {
     ServiceContext context = new ServiceContext( request, response );
-    context.setStateInfo( new ServiceStateInfo() );
+    context.setServiceStore( new ServiceStore() );
     return context;
   }
 

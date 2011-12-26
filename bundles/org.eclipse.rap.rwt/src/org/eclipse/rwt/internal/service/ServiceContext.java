@@ -34,7 +34,7 @@ public final class ServiceContext {
 
   private HttpServletRequest request;
   private HttpServletResponse response;
-  private IServiceStateInfo stateInfo;
+  private IServiceStore serviceStore;
   private boolean disposed;
   private ISessionStore sessionStore;
   private ApplicationContext applicationContext;
@@ -98,9 +98,9 @@ public final class ServiceContext {
   /**
    * Returns the corresponding {@link IServiceStore} to the currently processed request.
    */
-  public IServiceStateInfo getStateInfo() {
+  public IServiceStore getServiceStore() {
     checkState();
-    return stateInfo;
+    return serviceStore;
   }
 
   public ProtocolMessageWriter getProtocolWriter() {
@@ -115,17 +115,16 @@ public final class ServiceContext {
   }
 
   /**
-   * Sets the corresponding {@link IServiceStateInfo} to the currently
-   * processed request.
+   * Sets the corresponding {@link IServiceStore} to the currently processed request.
    */
-  public void setStateInfo( IServiceStateInfo stateInfo ) {
+  public void setServiceStore( IServiceStore serviceStore ) {
     checkState();
-    ParamCheck.notNull( stateInfo, "stateInfo" );
-    if( this.stateInfo != null ) {
-      String msg = "StateInfo is already set and must not be replaced.";
+    ParamCheck.notNull( serviceStore, "serviceStore" );
+    if( this.serviceStore != null ) {
+      String msg = "ServiceStore is already set and must not be replaced.";
       throw new IllegalStateException( msg );
     }
-    this.stateInfo = stateInfo;
+    this.serviceStore = serviceStore;
   }
 
   public boolean isDisposed() {
@@ -147,7 +146,7 @@ public final class ServiceContext {
     checkState();
     request = null;
     response = null;
-    stateInfo = null;
+    serviceStore = null;
     sessionStore = null;
     applicationContext = null;
     disposed = true;

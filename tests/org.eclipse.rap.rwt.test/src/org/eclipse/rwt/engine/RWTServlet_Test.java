@@ -30,8 +30,8 @@ import org.eclipse.rwt.application.ApplicationConfigurator;
 import org.eclipse.rwt.internal.application.ApplicationContext;
 import org.eclipse.rwt.internal.application.ApplicationContextUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
 import org.eclipse.rwt.service.IServiceHandler;
+import org.eclipse.rwt.service.IServiceStore;
 
 
 public class RWTServlet_Test extends TestCase {
@@ -75,14 +75,14 @@ public class RWTServlet_Test extends TestCase {
                 || "/fooapp/rap?param2=value2&param1=value1".equals( url ) );
   }
 
-  public void testServiceHandlerHasStateInfo() throws ServletException, IOException {
-    final List<IServiceStateInfo> log = new ArrayList<IServiceStateInfo>();
+  public void testServiceHandlerHasServiceStore() throws ServletException, IOException {
+    final List<IServiceStore> log = new ArrayList<IServiceStore>();
     ApplicationContext applicationContext = createApplicationContext();
     TestRequest request = createTestRequest( applicationContext );
     request.setParameter( IServiceHandler.REQUEST_PARAM, "foo" );
     applicationContext.getServiceManager().registerServiceHandler( "foo", new IServiceHandler() {
       public void service() throws IOException, ServletException {
-        log.add( ContextProvider.getStateInfo() );
+        log.add( ContextProvider.getServiceStore() );
       }
     } );
     RWTServlet rwtDelegate = new RWTServlet();

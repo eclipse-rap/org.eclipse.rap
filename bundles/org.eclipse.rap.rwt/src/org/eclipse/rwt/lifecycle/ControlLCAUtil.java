@@ -990,7 +990,7 @@ public class ControlLCAUtil {
   // render other
 
   static void writeKeyEventResponse( Control control ) throws IOException {
-    IServiceStore serviceStore = ContextProvider.getStateInfo();
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
     if( serviceStore.getAttribute( ATT_ALLOW_KEY_EVENT ) == control ) {
       JSWriter writer = JSWriter.getWriterFor( control );
       writer.callStatic( JSFUNC_ALLOW_EVENT, null );
@@ -1001,7 +1001,7 @@ public class ControlLCAUtil {
   }
 
   static void renderKeyEventResponse( Control control ) {
-    IServiceStore serviceStore = ContextProvider.getStateInfo();
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
     // TODO [tb] : Static method calls or rename methods. call method without parameter?
     if( serviceStore.getAttribute( ATT_ALLOW_KEY_EVENT ) == control ) {
       IClientObject clientObject = ClientObjectFactory.getForDisplay( control.getDisplay() );
@@ -1059,11 +1059,11 @@ public class ControlLCAUtil {
   }
 
   static void cancelKeyEvent( Widget widget) {
-    ContextProvider.getStateInfo().setAttribute( ATT_CANCEL_KEY_EVENT, widget );
+    ContextProvider.getServiceStore().setAttribute( ATT_CANCEL_KEY_EVENT, widget );
   }
 
   static void allowKeyEvent( Widget widget ) {
-    ContextProvider.getStateInfo().setAttribute( ATT_ALLOW_KEY_EVENT, widget );
+    ContextProvider.getServiceStore().setAttribute( ATT_ALLOW_KEY_EVENT, widget );
   }
 
   /**

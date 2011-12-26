@@ -11,7 +11,7 @@
 package org.eclipse.swt.internal.dnd;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.IServiceStateInfo;
+import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Control;
 
@@ -33,100 +33,100 @@ public final class DNDAdapter implements IDNDAdapter {
     = DNDAdapter.class.getName() + "#dataTypeChangedControl";
 
   public void cancel() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( CANCEL, Boolean.TRUE );
-    this.cancelDetailChanged();
-    this.cancelFeedbackChanged();
-    this.cancelDataTypeChanged();
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    serviceStore.setAttribute( CANCEL, Boolean.TRUE );
+    cancelDetailChanged();
+    cancelFeedbackChanged();
+    cancelDataTypeChanged();
   }
 
   public boolean isCanceled() {
-    return ContextProvider.getStateInfo().getAttribute( CANCEL ) != null;
+    return ContextProvider.getServiceStore().getAttribute( CANCEL ) != null;
   }
 
   public void setDetailChanged( Control control, int detail ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( DETAIL_CHANGED_VALUE, new Integer( detail ) );
-    stateInfo.setAttribute( DETAIL_CHANGED_CONTROL, control );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    serviceStore.setAttribute( DETAIL_CHANGED_VALUE, new Integer( detail ) );
+    serviceStore.setAttribute( DETAIL_CHANGED_CONTROL, control );
   }
 
   public void cancelDetailChanged() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( DETAIL_CHANGED_VALUE, null );
-    stateInfo.setAttribute( DETAIL_CHANGED_CONTROL, null );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    serviceStore.setAttribute( DETAIL_CHANGED_VALUE, null );
+    serviceStore.setAttribute( DETAIL_CHANGED_CONTROL, null );
   }
 
   public boolean hasDetailChanged() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Object value = stateInfo.getAttribute( DETAIL_CHANGED_VALUE );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    Object value = serviceStore.getAttribute( DETAIL_CHANGED_VALUE );
     return value != null;
   }
 
   public int getDetailChangedValue() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Integer value = ( Integer )stateInfo.getAttribute( DETAIL_CHANGED_VALUE );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    Integer value = ( Integer )serviceStore.getAttribute( DETAIL_CHANGED_VALUE );
     return value.intValue();
   }
 
   public Control getDetailChangedControl() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    return ( Control )stateInfo.getAttribute( DETAIL_CHANGED_CONTROL );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    return ( Control )serviceStore.getAttribute( DETAIL_CHANGED_CONTROL );
   }
 
   public void setFeedbackChanged( Control control, int feedback ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( FEEDBACK_CHANGED_VALUE, new Integer( feedback ) );
-    stateInfo.setAttribute( FEEDBACK_CHANGED_CONTROL, control );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    serviceStore.setAttribute( FEEDBACK_CHANGED_VALUE, new Integer( feedback ) );
+    serviceStore.setAttribute( FEEDBACK_CHANGED_CONTROL, control );
   }
 
   public void cancelFeedbackChanged() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( FEEDBACK_CHANGED_VALUE, null );
-    stateInfo.setAttribute( FEEDBACK_CHANGED_CONTROL, null );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    serviceStore.setAttribute( FEEDBACK_CHANGED_VALUE, null );
+    serviceStore.setAttribute( FEEDBACK_CHANGED_CONTROL, null );
   }
 
   public boolean hasFeedbackChanged() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Object value = stateInfo.getAttribute( FEEDBACK_CHANGED_VALUE );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    Object value = serviceStore.getAttribute( FEEDBACK_CHANGED_VALUE );
     return value != null;
   }
 
   public int getFeedbackChangedValue() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Integer value = ( Integer )stateInfo.getAttribute( FEEDBACK_CHANGED_VALUE );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    Integer value = ( Integer )serviceStore.getAttribute( FEEDBACK_CHANGED_VALUE );
     return value.intValue();
   }
 
   public Control getFeedbackChangedControl() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    return ( Control )stateInfo.getAttribute( FEEDBACK_CHANGED_CONTROL );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    return ( Control )serviceStore.getAttribute( FEEDBACK_CHANGED_CONTROL );
   }
 
   public void setDataTypeChanged( Control control, TransferData dataType ) {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( DATATYPE_CHANGED_VALUE, dataType );
-    stateInfo.setAttribute( DATATYPE_CHANGED_CONTROL, control );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    serviceStore.setAttribute( DATATYPE_CHANGED_VALUE, dataType );
+    serviceStore.setAttribute( DATATYPE_CHANGED_CONTROL, control );
   }
 
   public void cancelDataTypeChanged() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    stateInfo.setAttribute( DATATYPE_CHANGED_VALUE, null );
-    stateInfo.setAttribute( DATATYPE_CHANGED_CONTROL, null );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    serviceStore.setAttribute( DATATYPE_CHANGED_VALUE, null );
+    serviceStore.setAttribute( DATATYPE_CHANGED_CONTROL, null );
   }
 
   public boolean hasDataTypeChanged() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    Object value = stateInfo.getAttribute( DATATYPE_CHANGED_VALUE );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    Object value = serviceStore.getAttribute( DATATYPE_CHANGED_VALUE );
     return value != null;
   }
 
   public TransferData getDataTypeChangedValue() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    return ( TransferData )stateInfo.getAttribute( DATATYPE_CHANGED_VALUE );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    return ( TransferData )serviceStore.getAttribute( DATATYPE_CHANGED_VALUE );
   }
 
   public Control getDataTypeChangedControl() {
-    IServiceStateInfo stateInfo = ContextProvider.getStateInfo();
-    return ( Control )stateInfo.getAttribute( DATATYPE_CHANGED_CONTROL );
+    IServiceStore serviceStore = ContextProvider.getServiceStore();
+    return ( Control )serviceStore.getAttribute( DATATYPE_CHANGED_CONTROL );
   }
 }
