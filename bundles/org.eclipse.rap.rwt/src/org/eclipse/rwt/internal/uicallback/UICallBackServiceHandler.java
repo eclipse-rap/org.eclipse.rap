@@ -37,7 +37,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
   public void service() throws IOException {
     HttpServletResponse response = ContextProvider.getResponse();
     configureResponseHeaders( response );
-    ISessionStore sessionStore = ContextProvider.getSession();
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
     ProtocolMessageWriter writer = new ProtocolMessageWriter();
     boolean success = UICallBackManager.getInstance().processRequest( response );
     if( success && sessionStore.isBound() ) {
@@ -53,7 +53,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
     boolean preserved = getPreservedUICallBackActivation();
     if( preserved != actual && actual ) {
       writeUICallBackActivation( writer, actual );
-      ISessionStore sessionStore = ContextProvider.getSession();
+      ISessionStore sessionStore = ContextProvider.getSessionStore();
       sessionStore.setAttribute( ATTR_NEEDS_UICALLBACK, Boolean.valueOf( actual ) );
     }
   }
@@ -63,7 +63,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
     boolean preserved = getPreservedUICallBackActivation();
     if( preserved != actual && !actual ) {
       writeUICallBackActivation( writer, actual );
-      ISessionStore sessionStore = ContextProvider.getSession();
+      ISessionStore sessionStore = ContextProvider.getSessionStore();
       sessionStore.setAttribute( ATTR_NEEDS_UICALLBACK, Boolean.valueOf( actual ) );
     }
   }
@@ -74,7 +74,7 @@ public class UICallBackServiceHandler implements IServiceHandler {
 
   private static boolean getPreservedUICallBackActivation() {
     boolean result = false;
-    ISessionStore sessionStore = ContextProvider.getSession();
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
     Boolean preserved = ( Boolean )sessionStore.getAttribute( ATTR_NEEDS_UICALLBACK );
     if( preserved != null ) {
       result = preserved.booleanValue();

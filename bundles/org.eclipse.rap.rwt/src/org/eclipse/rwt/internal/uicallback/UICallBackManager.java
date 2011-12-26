@@ -184,7 +184,7 @@ public final class UICallBackManager implements SerializableCompatibility {
   }
 
   private static SessionTerminationListener attachSessionTerminationListener() {
-    ISessionStore sessionStore = ContextProvider.getSession();
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
     SessionTerminationListener result = new SessionTerminationListener( sessionStore );
     result.attach();
     return result;
@@ -196,7 +196,7 @@ public final class UICallBackManager implements SerializableCompatibility {
 
   static boolean isSessionExpired( long requestStartTime, long currentTime ) {
     boolean result = false;
-    HttpSession httpSession = ContextProvider.getSession().getHttpSession();
+    HttpSession httpSession = ContextProvider.getSessionStore().getHttpSession();
     int maxInactiveInterval = httpSession.getMaxInactiveInterval();
     if( maxInactiveInterval > 0 ) {
       result = currentTime > requestStartTime + maxInactiveInterval * 1000;

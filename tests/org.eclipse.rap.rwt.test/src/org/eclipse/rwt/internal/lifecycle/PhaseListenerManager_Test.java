@@ -283,7 +283,7 @@ public class PhaseListenerManager_Test extends TestCase {
   }
 
   private void setupServletContextLog() {
-    HttpSession session = ContextProvider.getSession().getHttpSession();
+    HttpSession session = ContextProvider.getSessionStore().getHttpSession();
     TestServletContext servletContext = ( TestServletContext )session.getServletContext();
     servletContext.setLogger( new TestLogger() {
       public void log( String message, Throwable throwable ) {

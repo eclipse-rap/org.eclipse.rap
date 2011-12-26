@@ -53,7 +53,7 @@ public abstract class SessionSingletonBase {
    */
   public static Object getInstance( Class type ) {
     ParamCheck.notNull( type, "type" );
-    ISessionStore sessionStore = ContextProvider.getSession();
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
     return SingletonManager.getInstance( sessionStore ).getSingleton( type );
   }
 }

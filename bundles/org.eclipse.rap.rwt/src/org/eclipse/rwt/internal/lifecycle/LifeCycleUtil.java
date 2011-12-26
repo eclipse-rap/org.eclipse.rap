@@ -24,13 +24,13 @@ public class LifeCycleUtil {
   private static final String ATTR_UI_THREAD = LifeCycleUtil.class.getName() + "#uiThread";
 
   public static void setSessionDisplay( Display display ) {
-    ContextProvider.getSession().setAttribute( ATTR_SESSION_DISPLAY, display );
+    ContextProvider.getSessionStore().setAttribute( ATTR_SESSION_DISPLAY, display );
   }
 
   public static Display getSessionDisplay() {
     Display result = null;
     if( ContextProvider.hasContext() ) {
-      ISessionStore sessionStore = ContextProvider.getSession();
+      ISessionStore sessionStore = ContextProvider.getSessionStore();
       result = getSessionDisplay( sessionStore );
     }
     return result;

@@ -28,7 +28,7 @@ public class SettingStoreManager {
   private ISettingStoreFactory factory;
   
   public synchronized ISettingStore getStore() {
-    ISessionStore session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSessionStore();
     String storeId = getStoreId();
     ISettingStore result = ( ISettingStore )session.getAttribute( storeId );
     if( result == null ) {
@@ -72,7 +72,7 @@ public class SettingStoreManager {
   }
 
   private String getStoreId() {
-    ISessionStore session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSessionStore();
     // 1. storeId stored in session? (implies cookie exists)
     String result = ( String )session.getAttribute( COOKIE_NAME );
     if( result == null ) {

@@ -129,7 +129,7 @@ public class ContextProvider {
    * Returns the <code>ISessionStore</code> of the <code>HttpSession</code>
    * to which the currently processed request belongs.
    */
-  public static ISessionStore getSession() {
+  public static ISessionStore getSessionStore() {
     SessionStoreImpl result = ( SessionStoreImpl )getContext().getSessionStore();
     if( result == null ) {
       HttpSession httpSession = getRequest().getSession( true );
@@ -154,6 +154,10 @@ public class ContextProvider {
     return getContext().getServiceStore();
   }
 
+  /**
+   * Returns the protocol writer for the current request. This is a convenience method that
+   * delegates to <code>ContextProvider.getContext().getProtocolWriter()</code>;
+   */
   public static ProtocolMessageWriter getProtocolWriter() {
     return getContext().getProtocolWriter();
   }

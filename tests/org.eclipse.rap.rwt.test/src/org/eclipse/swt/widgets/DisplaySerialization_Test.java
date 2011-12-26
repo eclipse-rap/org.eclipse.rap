@@ -239,7 +239,7 @@ public class DisplaySerialization_Test extends TestCase {
     Fixture.useDefaultResourceManager();
     applicationContext = ApplicationContextUtil.getInstance();
     applicationContext.getLifeCycleFactory().configure( SimpleLifeCycle.class );
-    ApplicationContextUtil.set( ContextProvider.getSession(), applicationContext );
+    ApplicationContextUtil.set( ContextProvider.getSessionStore(), applicationContext );
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     display = new Display();
   }

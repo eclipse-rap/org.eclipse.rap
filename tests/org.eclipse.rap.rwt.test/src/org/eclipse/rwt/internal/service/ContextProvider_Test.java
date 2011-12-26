@@ -98,14 +98,14 @@ public class ContextProvider_Test extends TestCase {
   
   public void testSessionIsAttachedToSessionStore() {
     Fixture.createServiceContext();
-    ISessionStore sessionStore1 = ContextProvider.getSession();
+    ISessionStore sessionStore1 = ContextProvider.getSessionStore();
     HttpSession session1 = ContextProvider.getRequest().getSession();
     Fixture.disposeOfServiceContext();
     
     Fixture.createServiceContext();
     HttpSession session2 = ContextProvider.getRequest().getSession();
     session2.setAttribute( SessionStoreImpl.ATTR_SESSION_STORE, sessionStore1 );
-    ISessionStore sessionStore2 = ContextProvider.getSession();
+    ISessionStore sessionStore2 = ContextProvider.getSessionStore();
     
     assertSame( sessionStore1, sessionStore2 );
     assertNotSame( session1, session2 );

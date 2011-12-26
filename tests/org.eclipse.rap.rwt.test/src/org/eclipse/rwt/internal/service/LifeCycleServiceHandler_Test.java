@@ -55,7 +55,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   public void testRequestSynchronization() throws InterruptedException {
     List<Thread> threads = new ArrayList<Thread>();
     // initialize session, see bug 344549
-    ContextProvider.getSession();
+    ContextProvider.getSessionStore();
     ServiceContext context = ContextProvider.getContext();
     for( int i = 0; i < THREAD_COUNT; i++ ) {
       IServiceHandler syncHandler = new TestHandler( getLifeCycleFactory(), getStartupPage() );
@@ -77,7 +77,7 @@ public class LifeCycleServiceHandler_Test extends TestCase {
   }
 
   public void testSessionRestart() throws Exception {
-    ISessionStore sessionStore = ContextProvider.getSession();
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
     // set up session-store and http-session
     sessionStore.setAttribute( SESSION_STORE_ATTRIBUTE, new Object() );
     HttpSession httpSession = sessionStore.getHttpSession();
@@ -153,20 +153,20 @@ public class LifeCycleServiceHandler_Test extends TestCase {
 
   private void simulateInitialUiRequest() {
     Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
-    ISessionStore session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSessionStore();
     session.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED, Boolean.TRUE );
   }
 
   private void simulateUiRequest() {
     Fixture.fakeNewRequest( new Display() );
-    ISessionStore session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSessionStore();
     session.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED, Boolean.TRUE );
   }
 
   private void simulateUiRequestWithIllegalCounter() {
     Fixture.fakeNewRequest( new Display() );
     Fixture.fakeRequestParam( "requestCounter", "23" );
-    ISessionStore session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSessionStore();
     session.setAttribute( LifeCycleServiceHandler.SESSION_INITIALIZED, Boolean.TRUE );
   }
 

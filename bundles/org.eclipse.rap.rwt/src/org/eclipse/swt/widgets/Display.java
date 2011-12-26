@@ -173,7 +173,7 @@ public class Display extends Device implements Adaptable {
   private static boolean isUIThread() {
     boolean result = false;
     if( ContextProvider.hasContext() ) {
-      IUIThreadHolder uiThreadHolder = LifeCycleUtil.getUIThread( ContextProvider.getSession() );
+      IUIThreadHolder uiThreadHolder = LifeCycleUtil.getUIThread( ContextProvider.getSessionStore() );
       Thread uiThread = uiThreadHolder == null ? null : uiThreadHolder.getThread();
       result = uiThread == Thread.currentThread();
     }
@@ -235,7 +235,7 @@ public class Display extends Device implements Adaptable {
     }
     LifeCycleUtil.setSessionDisplay( this );
     attachThread();
-    sessionStore = ContextProvider.getSession();
+    sessionStore = ContextProvider.getSessionStore();
     shells = new ArrayList<Shell>();
     monitor = new Monitor( this );
     cursorLocation = new Point( 0, 0 );
@@ -2054,7 +2054,7 @@ public class Display extends Device implements Adaptable {
    * @since 1.3
    */
   public static String getAppName() {
-    ISessionStore session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSessionStore();
     return ( String )session.getAttribute( APP_NAME );
   }
 
@@ -2068,7 +2068,7 @@ public class Display extends Device implements Adaptable {
    * @since 1.3
    */
   public static String getAppVersion() {
-    ISessionStore session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSessionStore();
     return ( String )session.getAttribute( APP_VERSION );
   }
 
@@ -2083,7 +2083,7 @@ public class Display extends Device implements Adaptable {
    * @since 1.3
    */
   public static void setAppName( String name ) {
-    ISessionStore session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSessionStore();
     session.setAttribute( APP_NAME, name );
   }
 
@@ -2095,7 +2095,7 @@ public class Display extends Device implements Adaptable {
    * @since 1.3
    */
   public static void setAppVersion( String version ) {
-    ISessionStore session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSessionStore();
     session.setAttribute( APP_VERSION, version );
   }
 

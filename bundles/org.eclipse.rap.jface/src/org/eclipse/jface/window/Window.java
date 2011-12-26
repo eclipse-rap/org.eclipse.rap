@@ -1054,14 +1054,14 @@ public abstract class Window implements IShellProvider, Serializable {
 //			exceptionHandler = handler;
 //		}
 	    if( getExceptionHandler() instanceof DefaultExceptionHandler ) {
-	      ISessionStore session = ContextProvider.getSession();
+	      ISessionStore session = ContextProvider.getSessionStore();
 	      session.setAttribute( EXCEPTION_HANDLER, handler );
 	    }
 	}
 
 // RAP [if] Session scoped exceptionHandler
 	private static IExceptionHandler getExceptionHandler() {
-	  ISessionStore session = ContextProvider.getSession();
+	  ISessionStore session = ContextProvider.getSessionStore();
 	  IExceptionHandler result = ( IExceptionHandler )session.getAttribute( EXCEPTION_HANDLER );
       if( result == null ) {
         result = exceptionHandler;
@@ -1080,13 +1080,13 @@ public abstract class Window implements IShellProvider, Serializable {
     public static void setDefaultModalParent(IShellProvider provider) {
 // RAP [if] Session scoped defaultModalParent
 //        defaultModalParent = provider;
-        ISessionStore session = ContextProvider.getSession();
+        ISessionStore session = ContextProvider.getSessionStore();
         session.setAttribute( DEFAULT_MODAL_PARENT, provider );
     }
 
 // RAP [if] Session scoped defaultModalParent
     private static IShellProvider getDefaultModalParent() {
-        ISessionStore session = ContextProvider.getSession();
+        ISessionStore session = ContextProvider.getSessionStore();
         IShellProvider result = ( IShellProvider )session.getAttribute( DEFAULT_MODAL_PARENT );
         if( result == null ) {
           result = defaultModalParent;

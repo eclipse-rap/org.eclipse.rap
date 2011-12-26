@@ -41,8 +41,8 @@ public final class ThemeUtil {
    * @return the id of the current theme, never <code>null</code>
    */
   public static String getCurrentThemeId() {
-    ISessionStore session = ContextProvider.getSession();
-    String result = ( String )session.getAttribute( CURR_THEME_ATTR );
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
+    String result = ( String )sessionStore.getAttribute( CURR_THEME_ATTR );
     if( result == null ) {
       result = ThemeManager.DEFAULT_THEME_ID;
     }
@@ -60,7 +60,7 @@ public final class ThemeUtil {
     if( !RWTFactory.getThemeManager().hasTheme( themeId ) ) {
       throw new IllegalArgumentException( "Illegal theme id: " + themeId );
     }
-    ContextProvider.getSession().setAttribute( CURR_THEME_ATTR, themeId );
+    ContextProvider.getSessionStore().setAttribute( CURR_THEME_ATTR, themeId );
   }
 
   public static Theme getCurrentTheme() {

@@ -104,7 +104,7 @@ public class LifeCycleUtil_Test extends TestCase {
   }
 
   public void testGetUIThreadForNewSession() {
-    IUIThreadHolder uiThread = LifeCycleUtil.getUIThread( ContextProvider.getSession() );
+    IUIThreadHolder uiThread = LifeCycleUtil.getUIThread( ContextProvider.getSessionStore() );
 
     assertNull( uiThread );
   }

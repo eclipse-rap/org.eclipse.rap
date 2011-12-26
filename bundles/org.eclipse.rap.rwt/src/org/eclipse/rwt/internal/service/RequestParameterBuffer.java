@@ -37,7 +37,7 @@ final class RequestParameterBuffer {
     // Workaround for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=265008
     if( getBufferedParameters() == null ) {
       HashMap<String, String[]> buffer = new HashMap<String, String[]>( parameters );
-      ISessionStore sessionStore = ContextProvider.getSession();
+      ISessionStore sessionStore = ContextProvider.getSessionStore();
       sessionStore.setAttribute( BUFFER, buffer );
     }
   }
@@ -58,12 +58,12 @@ final class RequestParameterBuffer {
       ServiceContext context = ContextProvider.getContext();
       context.setRequest( wrappedRequest );
     }
-    ContextProvider.getSession().removeAttribute( BUFFER );
+    ContextProvider.getSessionStore().removeAttribute( BUFFER );
   }
 
   @SuppressWarnings("unchecked")
   static Map<String, String[]> getBufferedParameters() {
-    return ( Map<String, String[]> )ContextProvider.getSession().getAttribute( BUFFER );
+    return ( Map<String, String[]> )ContextProvider.getSessionStore().getAttribute( BUFFER );
   }
 
   private RequestParameterBuffer() {

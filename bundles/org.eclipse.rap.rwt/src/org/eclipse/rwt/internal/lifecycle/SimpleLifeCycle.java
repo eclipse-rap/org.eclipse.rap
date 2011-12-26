@@ -125,7 +125,7 @@ public class SimpleLifeCycle extends LifeCycle {
 
   public void execute() throws IOException {
     installSessionShutdownAdapter();
-    ISessionStore sessionStore = ContextProvider.getSession();
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
     attachThread( LifeCycleUtil.getSessionDisplay(), sessionStore );
     try {
       PhaseExecutor phaseExecutor = new SessionDisplayPhaseExecutor( phaseListenerManager, phases );
@@ -153,7 +153,7 @@ public class SimpleLifeCycle extends LifeCycle {
   }
 
   private static void installSessionShutdownAdapter() {
-    SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSession();
+    SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSessionStore();
     if( sessionStore.getShutdownAdapter() == null ) {
       sessionStore.setShutdownAdapter( new SimpleSessionShutdownAdapter() );
     }

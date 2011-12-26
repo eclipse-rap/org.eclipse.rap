@@ -290,7 +290,7 @@ public final class RWT {
    * @return instance of {@link ISessionStore}
    */
   public static ISessionStore getSessionStore() {
-    return ContextProvider.getSession();
+    return ContextProvider.getSessionStore();
   }
 
   /**
@@ -350,7 +350,7 @@ public final class RWT {
    */
   public static Locale getLocale() {
     checkHasSessionContext();
-    Locale result = ( Locale )ContextProvider.getSession().getAttribute( LOCALE );
+    Locale result = ( Locale )ContextProvider.getSessionStore().getAttribute( LOCALE );
     if( result == null ) {
       result = ContextProvider.getRequest().getLocale();
     }
@@ -369,7 +369,7 @@ public final class RWT {
    */
   public static void setLocale( Locale locale ) {
     checkHasSessionContext();
-    ISessionStore sessionStore = ContextProvider.getSession();
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
     sessionStore.setAttribute( LOCALE, locale );
   }
 

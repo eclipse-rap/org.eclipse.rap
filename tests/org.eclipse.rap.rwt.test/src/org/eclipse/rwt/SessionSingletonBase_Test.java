@@ -72,7 +72,7 @@ public class SessionSingletonBase_Test extends TestCase {
   protected void setUp() throws Exception {
     Fixture.createServiceContext();
     createSessionStore();
-    SingletonManager.install( ContextProvider.getSession() );
+    SingletonManager.install( ContextProvider.getSessionStore() );
   }
 
   protected void tearDown() throws Exception {

@@ -154,7 +154,7 @@ public class SimpleLifeCycle_Test extends TestCase {
     
     lifeCycle.execute();
     
-    assertNotNull( LifeCycleUtil.getSessionDisplay( ContextProvider.getSession() ) );
+    assertNotNull( LifeCycleUtil.getSessionDisplay( ContextProvider.getSessionStore() ) );
   }
   
   public void testPhaseListenersHaveApplicationScope() throws Exception {
@@ -207,7 +207,7 @@ public class SimpleLifeCycle_Test extends TestCase {
       public void beforePhase( PhaseEvent event ) {
       }
       public void afterPhase( PhaseEvent event ) {
-        uiThread[ 0 ] = LifeCycleUtil.getUIThread( ContextProvider.getSession() ).getThread();
+        uiThread[ 0 ] = LifeCycleUtil.getUIThread( ContextProvider.getSessionStore() ).getThread();
       }
     } );
     
@@ -220,13 +220,13 @@ public class SimpleLifeCycle_Test extends TestCase {
     registerEntryPoint( TestEntryPoint.class );
     lifeCycle.execute();
     
-    IUIThreadHolder threadHolder = LifeCycleUtil.getUIThread( ContextProvider.getSession() );
+    IUIThreadHolder threadHolder = LifeCycleUtil.getUIThread( ContextProvider.getSessionStore() );
 
     assertNull( threadHolder );
   }
   
   public void testInvalidateDisposesDisplay() throws Throwable {
-    final ISessionStore sessionStore = ContextProvider.getSession();
+    final ISessionStore sessionStore = ContextProvider.getSessionStore();
     Display display = new Display();
     lifeCycle.execute();
     
@@ -240,7 +240,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   }
   
   public void testSessionRestartDisposesDisplay() throws IOException {
-    final ISessionStore sessionStore = ContextProvider.getSession();
+    final ISessionStore sessionStore = ContextProvider.getSessionStore();
     Display display = new Display();
     lifeCycle.execute();
     
@@ -260,7 +260,7 @@ public class SimpleLifeCycle_Test extends TestCase {
   
   protected void setUp() throws Exception {
     Fixture.setUp();
-    ISessionStore sessionSore = ContextProvider.getSession();
+    ISessionStore sessionSore = ContextProvider.getSessionStore();
     ApplicationContextUtil.set( sessionSore, ApplicationContextUtil.getInstance() );
     lifeCycle = new SimpleLifeCycle( RWTFactory.getEntryPointManager() );
   }

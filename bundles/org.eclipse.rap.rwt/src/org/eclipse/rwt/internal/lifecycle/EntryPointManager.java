@@ -31,7 +31,7 @@ public class EntryPointManager {
   private final Map<String, IEntryPointFactory> registry;
 
   public static String getCurrentEntryPoint() {
-    ISessionStore session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSessionStore();
     return ( String )session.getAttribute( EntryPointManager.CURRENT_ENTRY_POINT );    
   }
   
@@ -106,7 +106,7 @@ public class EntryPointManager {
   }
 
   private static void setCurrentEntryPoint( String name ) {
-    ISessionStore session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSessionStore();
     session.setAttribute( EntryPointManager.CURRENT_ENTRY_POINT, name );
   }
 }

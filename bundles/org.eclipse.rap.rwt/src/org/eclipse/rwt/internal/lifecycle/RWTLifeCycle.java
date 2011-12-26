@@ -181,7 +181,7 @@ public class RWTLifeCycle extends LifeCycle {
 
   void executeUIThread() throws IOException {
     ServiceContext context = ContextProvider.getContext();
-    ISessionStore session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSessionStore();
     IUIThreadHolder uiThread = getUIThreadHolder();
     if( uiThread == null ) {
       uiThread = createUIThread();
@@ -232,7 +232,7 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   private IUIThreadHolder createUIThread() {
-    ISessionStore session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSessionStore();
     IUIThreadHolder result = new UIThread( uiRunnable );
     result.getThread().setDaemon( true );
     result.getThread().setName( "UIThread [" + session.getId() + "]" );
@@ -251,7 +251,7 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   private static void setShutdownAdapter( ISessionShutdownAdapter adapter ) {
-    ISessionStore sessionStore = ContextProvider.getSession();
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
     SessionStoreImpl sessionStoreImpl = ( SessionStoreImpl )sessionStore;
     sessionStoreImpl.setShutdownAdapter( adapter );
   }
@@ -267,7 +267,7 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   public static IUIThreadHolder getUIThreadHolder() {
-    return LifeCycleUtil.getUIThread( ContextProvider.getSession() );
+    return LifeCycleUtil.getUIThread( ContextProvider.getSessionStore() );
   }
 
   private static final class PhaseExecutionError extends ThreadDeath {

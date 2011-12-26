@@ -73,7 +73,7 @@ public class ImageSerialzation_Test extends TestCase {
     Fixture.createServiceContext();
     Fixture.useDefaultResourceManager();
     applicationContext = ApplicationContextUtil.getInstance();
-    ApplicationContextUtil.set( ContextProvider.getSession(), applicationContext );
+    ApplicationContextUtil.set( ContextProvider.getSessionStore(), applicationContext );
     display = new Display();
   }
 

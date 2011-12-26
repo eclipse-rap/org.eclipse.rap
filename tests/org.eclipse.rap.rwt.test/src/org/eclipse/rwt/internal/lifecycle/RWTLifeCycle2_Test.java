@@ -337,7 +337,7 @@ public class RWTLifeCycle2_Test extends TestCase {
   }
 
   private void registerTestLogger() {
-    session = ContextProvider.getSession().getHttpSession();
+    session = ContextProvider.getSessionStore().getHttpSession();
     ServletContext servletContext = session.getServletContext();
     TestServletContext servletContextImpl
       = ( TestServletContext )servletContext;

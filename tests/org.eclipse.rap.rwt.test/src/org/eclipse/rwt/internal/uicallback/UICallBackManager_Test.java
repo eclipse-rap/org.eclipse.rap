@@ -212,7 +212,7 @@ public class UICallBackManager_Test extends TestCase {
   }
 
   public void testCallBackRequestIsReleasedWhenSessionExpires() throws Exception {
-    HttpSession httpSession = ContextProvider.getSession().getHttpSession();
+    HttpSession httpSession = ContextProvider.getSessionStore().getHttpSession();
     httpSession.setMaxInactiveInterval( 1 );
     HttpSessionBindingListener sessionListener = mock( HttpSessionBindingListener.class );
     httpSession.setAttribute( "listener", sessionListener );
@@ -506,7 +506,7 @@ public class UICallBackManager_Test extends TestCase {
   }
 
   public void testIsSessionExpiredWithInfiniteSessionTimeout() {
-    ContextProvider.getSession().getHttpSession().setMaxInactiveInterval( -1 );
+    ContextProvider.getSessionStore().getHttpSession().setMaxInactiveInterval( -1 );
 
     boolean sessionExpired = UICallBackManager.isSessionExpired( 1, 2 );
 
@@ -514,7 +514,7 @@ public class UICallBackManager_Test extends TestCase {
   }
 
   public void testIsSessionExpiredWhenSessionTimedOut() {
-    ContextProvider.getSession().getHttpSession().setMaxInactiveInterval( 10 );
+    ContextProvider.getSessionStore().getHttpSession().setMaxInactiveInterval( 10 );
 
     boolean sessionExpired = UICallBackManager.isSessionExpired( 1, 20000 );
 
@@ -522,7 +522,7 @@ public class UICallBackManager_Test extends TestCase {
   }
 
   public void testIsSessionExpiredWhenSessionActive() {
-    ContextProvider.getSession().getHttpSession().setMaxInactiveInterval( 10 );
+    ContextProvider.getSessionStore().getHttpSession().setMaxInactiveInterval( 10 );
 
     boolean sessionExpired = UICallBackManager.isSessionExpired( 1, 9000 );
 
@@ -580,7 +580,7 @@ public class UICallBackManager_Test extends TestCase {
 
   private void fakeRequestParam() {
     Fixture.fakeResponseWriter();
-    ContextProvider.getSession().setAttribute( "org.eclipse.swt.display", display );
+    ContextProvider.getSessionStore().setAttribute( "org.eclipse.swt.display", display );
     String displayId = DisplayUtil.getId( display );
     Fixture.fakeRequestParam( RequestParams.UIROOT, displayId );
   }

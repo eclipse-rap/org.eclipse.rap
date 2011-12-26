@@ -566,8 +566,8 @@ public final class Fixture {
         return this;
       }
     };
-    ISessionStore session = ContextProvider.getSession();
-    LifeCycleUtil.setUIThread( session, result );
+    ISessionStore sessionStore = ContextProvider.getSessionStore();
+    LifeCycleUtil.setUIThread( sessionStore, result );
     return result;
   }
 

@@ -45,7 +45,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   }
 
   public void service() throws IOException {
-    synchronized( ContextProvider.getSession() ) {
+    synchronized( ContextProvider.getSessionStore() ) {
       synchronizedService();
     }
   }
@@ -66,7 +66,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   public static void initializeSession() {
     if( !isSessionInitialized() ) {
       if( ContextProvider.getRequest().getParameter( RWT_INITIALIZE ) != null ) {
-        ISessionStore session = ContextProvider.getSession();
+        ISessionStore session = ContextProvider.getSessionStore();
         session.setAttribute( SESSION_INITIALIZED, Boolean.TRUE );
       }
     }
@@ -117,7 +117,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
   }
 
   private static boolean isSessionInitialized() {
-    ISessionStore session = ContextProvider.getSession();
+    ISessionStore session = ContextProvider.getSessionStore();
     return Boolean.TRUE.equals( session.getAttribute( SESSION_INITIALIZED ) );
   }
 
@@ -129,7 +129,7 @@ public class LifeCycleServiceHandler implements IServiceHandler {
 
   private static void clearSessionStore() {
     Integer version = RWTRequestVersionControl.getInstance().getCurrentRequestId();
-    SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSession();
+    SessionStoreImpl sessionStore = ( SessionStoreImpl )ContextProvider.getSessionStore();
     // clear attributes of session store to enable new startup
     sessionStore.valueUnbound( null );
     // reinitialize session store state
