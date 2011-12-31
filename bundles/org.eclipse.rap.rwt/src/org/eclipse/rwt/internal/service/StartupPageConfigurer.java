@@ -33,6 +33,7 @@ import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
+import org.eclipse.rwt.internal.service.StartupPageTemplateHolder.Variable;
 import org.eclipse.rwt.internal.textsize.MeasurementUtil;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeManager;
@@ -215,20 +216,12 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     if( branding.getThemeId() != null ) {
       ThemeUtil.setCurrentThemeId( branding.getThemeId() );
     }
-    BrandingUtil.replacePlaceholder( template,
-                                     StartupPageTemplateHolder.VAR_BODY,
-                                     branding.getBody() );
-    BrandingUtil.replacePlaceholder( template,
-                                     StartupPageTemplateHolder.VAR_TITLE,
-                                     branding.getTitle() );
+    replacePlaceholder( template, StartupPageTemplateHolder.VAR_BODY, branding.getBody() );
+    replacePlaceholder( template, StartupPageTemplateHolder.VAR_TITLE, branding.getTitle() );
     String headers = BrandingUtil.headerMarkup( branding );
-    BrandingUtil.replacePlaceholder( template,
-                                     StartupPageTemplateHolder.VAR_HEADERS,
-                                     headers );
+    replacePlaceholder( template, StartupPageTemplateHolder.VAR_HEADERS, headers );
     String noScriptWarning = RWTMessages.getMessage( "RWT_NoScriptWarning" );
-    BrandingUtil.replacePlaceholder( template,
-                                     StartupPageTemplateHolder.VAR_NO_SCRIPT_MESSAGE,
-                                     noScriptWarning );
+    replacePlaceholder( template, StartupPageTemplateHolder.VAR_NO_SCRIPT_MESSAGE, noScriptWarning );
   }
 
   private void addThemeDefinitions() {
@@ -282,6 +275,14 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     String location = RWTFactory.getJSLibraryConcatenator().getLocation();
     writeScriptTag( buffer, location );
     return buffer.toString();
+  }
+
+  static void replacePlaceholder( StartupPageTemplateHolder template,
+                                  Variable variable,
+                                  String replacement )
+  {
+    String safeReplacement = replacement == null ? "" : replacement;
+    template.replace( variable, safeReplacement );
   }
 
   private static void writeScriptTag( StringBuilder buffer, String library ) {

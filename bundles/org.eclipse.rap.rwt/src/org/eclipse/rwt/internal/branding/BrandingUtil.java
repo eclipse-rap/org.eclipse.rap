@@ -17,21 +17,14 @@ import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.service.*;
+import org.eclipse.rwt.internal.service.ContextProvider;
+import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.internal.util.URLHelper;
 
 
 public final class BrandingUtil {
 
   private static final String ATTR_BRANDING_ID = BrandingUtil.class.getName() + "#brandingId";
-
-  public static void replacePlaceholder( StartupPageTemplateHolder template, 
-                                         StartupPageTemplateHolder.Variable variable, 
-                                         String replacement ) 
-  {
-    String safeReplacement = replacement == null ? "" : replacement;
-    template.replace( variable, safeReplacement );
-  }
 
   public static String headerMarkup( AbstractBranding branding ) {
     Header[] headers = branding.getHeaders();
@@ -46,7 +39,7 @@ public final class BrandingUtil {
     }
     return buffer.toString();
   }
-  
+
   public static AbstractBranding determineBranding() {
     HttpServletRequest request = ContextProvider.getRequest();
     String servletName = URLHelper.getServletName();
@@ -55,33 +48,25 @@ public final class BrandingUtil {
     RWT.getSessionStore().setAttribute( ATTR_BRANDING_ID, result.getId() );
     return result;
   }
-  
+
   /**
-   * Return the id of the current branding. This is only available after 
+   * Return the id of the current branding. This is only available after
    * {@link #determineBranding()} has been called.
    * @return the id of the current branding or <code>null</code>.
    */
   public static String getCurrentBrandingId() {
     return ( String )RWT.getSessionStore().getAttribute( ATTR_BRANDING_ID );
   }
-  
+
   //////////////////
   // Helping methods
-  
+
   private static void appendFavIconMarkup( StringBuilder buffer, AbstractBranding branding ) {
     String favIcon = branding.getFavIcon();
     if( favIcon != null && !"".equals( favIcon ) ) {
-      String[] names = new String[] { 
-        "rel", 
-        "type", 
-        "href" 
-      };
+      String[] names = new String[] { "rel", "type", "href" };
       String favIconUrl = RWT.getResourceManager().getLocation( favIcon );
-      String[] values = new String[] { 
-        "shortcut icon", 
-        "image/x-icon", 
-        favIconUrl
-      };
+      String[] values = new String[] { "shortcut icon", "image/x-icon", favIconUrl };
       Header header = new Header( "link", names, values );
       appendHeaderMarkup( buffer, header );
       buffer.append( "\n" );

@@ -16,35 +16,9 @@ import junit.framework.TestCase;
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.branding.Header;
 import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.service.StartupPageTemplateHolder;
 
 
 public class BrandingUtil_Test extends TestCase {
-
-  public void testReplacePlaceholder() {
-    String templateString = StartupPageTemplateHolder.VAR_ENTRY_POINT.toString();
-    StartupPageTemplateHolder template = new StartupPageTemplateHolder( templateString );
-
-    BrandingUtil.replacePlaceholder( template,
-                                     StartupPageTemplateHolder.VAR_ENTRY_POINT,
-                                     "replacement" );
-    assertEquals( "replacement", getTemplateContent( template ).toString() );
-
-    template.reset();
-    BrandingUtil.replacePlaceholder( template,
-                                     StartupPageTemplateHolder.VAR_ENTRY_POINT,
-                                     null );
-    assertEquals( "", getTemplateContent( template ).toString() );
-  }
-
-  private StringBuilder getTemplateContent( StartupPageTemplateHolder template ) {
-    String[] tokens = template.getTokens();
-    StringBuilder result = new StringBuilder();
-    for( int i = 0; i < tokens.length; i++ ) {
-      result.append( tokens[ i ] );
-    }
-    return result;
-  }
 
   public void testHeaderMarkup() {
     String expected;
