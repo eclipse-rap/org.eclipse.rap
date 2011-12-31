@@ -18,27 +18,21 @@ import org.eclipse.rwt.internal.util.ParamCheck;
 
 public final class StartupPageTemplateHolder {
   private static final int[] EMPTY_INDICES = new int[ 0 ];
-  
+
   private final static String TOKEN_BACKGROUND_IMAGE = "backgroundImage";
   private final static String TOKEN_LIBRARIES = "libraries";
   private final static String TOKEN_APPSCRIPT = "appScript";
-  private final static String TOKEN_SERVLET = "servlet";
-  private final static String TOKEN_ENTRY_POINT = "entrypoint";
   private final static String TOKEN_BODY = "body";
   private final static String TOKEN_TITLE = "title";
   private final static String TOKEN_HEADERS = "headers";
-  private final static String TOKEN_STARTUP = "startup";
   private final static String TOKEN_NO_SCRIPT_MESSAGE = "noScriptMessage";
 
   public final static Variable VAR_BACKGROUND_IMAGE = new Variable( TOKEN_BACKGROUND_IMAGE );
   public final static Variable VAR_LIBRARIES = new Variable( TOKEN_LIBRARIES );
   public final static Variable VAR_APPSCRIPT = new Variable( TOKEN_APPSCRIPT );
-  public final static Variable VAR_SERVLET = new Variable( TOKEN_SERVLET );
-  public final static Variable VAR_ENTRY_POINT = new Variable( TOKEN_ENTRY_POINT );
   public final static Variable VAR_BODY = new Variable( TOKEN_BODY );
   public final static Variable VAR_TITLE = new Variable( TOKEN_TITLE );
   public final static Variable VAR_HEADERS = new Variable( TOKEN_HEADERS );
-  public final static Variable VAR_STARTUP = new Variable( TOKEN_STARTUP );
   public final static Variable VAR_NO_SCRIPT_MESSAGE = new Variable( TOKEN_NO_SCRIPT_MESSAGE );
 
   private final String[] tokens;
@@ -49,7 +43,7 @@ public final class StartupPageTemplateHolder {
     private final String name;
 
     private Variable( String varName ) {
-      this.name = varName;
+      name = varName;
       NAMES.put( varName, this );
     }
 
@@ -86,16 +80,36 @@ public final class StartupPageTemplateHolder {
     }
   }
 
+  public String[] getTokens() {
+    // no secure copy due to performance reasons...
+    return tokens;
+  }
+
+  public void replace( Variable toReplace, String replacement ) {
+    int[] indices = getReplacementIndices( toReplace );
+    for( int i = 0; i < indices.length; i++ ) {
+      tokens[ indices[ i ] ] = replacement;
+    }
+  }
+
+  public void reset() {
+    Iterator iterator = Variable.NAMES.values().iterator();
+    while( iterator.hasNext() ) {
+      Variable variable = ( Variable )iterator.next();
+      int[] indices = getReplacementIndices( variable );
+      for( int i = 0; i < indices.length; i++ ) {
+        tokens[ indices[ i ] ] = null;
+      }
+    }
+  }
+
   private boolean isVariableToken( String nextToken ) {
     return    nextToken.equals( TOKEN_BACKGROUND_IMAGE.toString() )
            || nextToken.equals( TOKEN_LIBRARIES.toString() )
            || nextToken.equals( TOKEN_APPSCRIPT.toString() )
-           || nextToken.equals( TOKEN_SERVLET.toString() )
-           || nextToken.equals( TOKEN_ENTRY_POINT.toString() )
            || nextToken.equals( TOKEN_BODY.toString() )
            || nextToken.equals( TOKEN_TITLE.toString() )
            || nextToken.equals( TOKEN_HEADERS.toString() )
-           || nextToken.equals( TOKEN_STARTUP.toString() )
            || nextToken.equals( TOKEN_NO_SCRIPT_MESSAGE.toString() );
   }
 
@@ -121,27 +135,5 @@ public final class StartupPageTemplateHolder {
       }
     }
     return result;
-  }
-  public String[] getTokens() {
-    // no secure copy due to performance reasons...
-    return tokens;
-  }
-
-  public void replace( Variable toReplace, String replacement ) {
-    int[] indices = getReplacementIndices( toReplace );
-    for( int i = 0; i < indices.length; i++ ) {
-      tokens[ indices[ i ] ] = replacement;
-    }
-  }
-
-  public void reset() {
-    Iterator iterator = Variable.NAMES.values().iterator();
-    while( iterator.hasNext() ) {
-      Variable variable = ( Variable )iterator.next();
-      int[] indices = getReplacementIndices( variable );
-      for( int i = 0; i < indices.length; i++ ) {
-        tokens[ indices[ i ] ] = null;
-      }
-    }
   }
 }

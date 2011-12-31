@@ -29,17 +29,17 @@ public class StartupPageConfigurer_Test extends TestCase {
   }
 
   public void testReplacePlaceholder() {
-    String templateString = StartupPageTemplateHolder.VAR_ENTRY_POINT.toString();
+    String templateString = StartupPageTemplateHolder.VAR_BODY.toString();
     StartupPageTemplateHolder template = new StartupPageTemplateHolder( templateString );
 
     StartupPageConfigurer.replacePlaceholder( template,
-                                              StartupPageTemplateHolder.VAR_ENTRY_POINT,
+                                              StartupPageTemplateHolder.VAR_BODY,
                                               "replacement" );
     assertEquals( "replacement", getTemplateContent( template ).toString() );
 
     template.reset();
     StartupPageConfigurer.replacePlaceholder( template,
-                                              StartupPageTemplateHolder.VAR_ENTRY_POINT,
+                                              StartupPageTemplateHolder.VAR_BODY,
                                               null );
     assertEquals( "", getTemplateContent( template ).toString() );
   }

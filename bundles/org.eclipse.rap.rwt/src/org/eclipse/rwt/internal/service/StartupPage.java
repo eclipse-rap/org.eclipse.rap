@@ -15,13 +15,11 @@ package org.eclipse.rwt.internal.service;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
-import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.theme.*;
 import org.eclipse.rwt.internal.util.*;
@@ -64,12 +62,6 @@ public final class StartupPage {
     response.setCharacterEncoding( HTTP.CHARSET_UTF_8 );
     StartupPageTemplateHolder template = configurer.getTemplate();
     template.replace( StartupPageTemplateHolder.VAR_BACKGROUND_IMAGE, getBgImage() );
-    // TODO [fappel]: check whether servletName has to be url encoded
-    //                in case the client has switched off cookies
-    template.replace( StartupPageTemplateHolder.VAR_SERVLET,
-                      URLHelper.getServletName() );
-    template.replace( StartupPageTemplateHolder.VAR_ENTRY_POINT,
-                      EncodingUtil.encodeHTMLEntities( getEntryPoint() ) );
     String[] tokens = template.getTokens();
     PrintWriter writer = response.getWriter();
     for( int i = 0; i < tokens.length; i++ ) {
@@ -81,25 +73,14 @@ public final class StartupPage {
 
   private static String getBgImage() {
     String result = "";
-    QxType cssValue = ThemeUtil.getCssValue( "Display",
-                                             "background-image",
-                                             SimpleSelector.DEFAULT );
-    if( cssValue instanceof QxImage ) {
-      QxImage image = ( QxImage )cssValue;
+    QxType value = ThemeUtil.getCssValue( "Display", "background-image", SimpleSelector.DEFAULT );
+    if( value instanceof QxImage ) {
+      QxImage image = ( QxImage )value;
       // path is null if non-existing image was specified in css file
       String resourceName = image.getResourcePath();
       if( resourceName != null ) {
         result = RWT.getResourceManager().getLocation( resourceName );
       }
-    }
-    return result;
-  }
-
-  private static String getEntryPoint() {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String result = request.getParameter( RequestParams.STARTUP );
-    if( result == null ) {
-      result = EntryPointManager.DEFAULT;
     }
     return result;
   }
