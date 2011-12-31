@@ -11,57 +11,43 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
+import java.util.List;
+
 
 public final class QxAppearanceWriter {
 
-  private final StringBuilder code;
-  private boolean tailWritten;
-  private boolean valueWritten;
-
-  public QxAppearanceWriter() {
-    code = new StringBuilder();
-    valueWritten = false;
-    tailWritten = false;
-    writeHead();
+  private QxAppearanceWriter() {
   }
 
-  public void appendAppearances( String values ) {
-    beforeWriteValue();
-    code.append( values );
-    afterWriteValue();
-  }
-
-  public String getJsCode() {
-    if( !tailWritten ) {
-      writeTail();
-    }
+  public static String createQxAppearanceTheme( List<String> appearances ) {
+    StringBuilder code = new StringBuilder();
+    appendHead( code );
+    appendAppearances( code, appearances );
+    appendTail( code );
     return code.toString();
   }
 
-  private void beforeWriteValue() {
-    if( tailWritten ) {
-      throw new IllegalStateException( "Tail already written" );
-    }
-    if( valueWritten ) {
-      code.append( ",\n" );
-    }
-  }
-
-  private void afterWriteValue() {
-    valueWritten = true;
-  }
-
-  private void writeHead() {
+  private static void appendHead( StringBuilder code ) {
     code.append( "qx.theme.manager.Appearance.getInstance().setCurrentTheme( {\n" );
     code.append( "  name : \"rwtAppearance\",\n" );
     code.append( "  appearances : {\n" );
   }
 
-  private void writeTail() {
+  private static void appendAppearances( StringBuilder code, List<String> appearances ) {
+    boolean valueWritten = false;
+    for( String appearance : appearances ) {
+      if( valueWritten ) {
+        code.append( ",\n" );
+      }
+      code.append( appearance );
+      valueWritten = true;
+    }
+  }
+
+  private static void appendTail( StringBuilder code ) {
     code.append( "\n" );
     code.append( "  }\n" );
     code.append( "} );\n" );
-    tailWritten = true;
   }
 
 }

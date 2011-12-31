@@ -113,7 +113,25 @@ public class ThemeManager_Test extends TestCase {
     assertEquals( 0, afterDeactivate );
   }
 
+  public void testGetAppearances() {
+    manager.activate();
+
+    List<String> appearances = manager.getAppearances();
+
+    String joinedAppearances = join( appearances );
+    assertTrue( joinedAppearances.contains( "\"tree-row\" : {" ) );
+    assertTrue( joinedAppearances.contains( "\"sash-handle\" : {" ) );
+  }
+
   private Theme getDefaultTheme() {
     return manager.getTheme( ThemeManager.DEFAULT_THEME_ID );
+  }
+
+  private static String join( List<String> appearances ) {
+    StringBuilder buffer = new StringBuilder();
+    for( String string : appearances ) {
+      buffer.append( string );
+    }
+    return buffer.toString();
   }
 }

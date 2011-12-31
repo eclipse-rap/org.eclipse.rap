@@ -11,30 +11,32 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import junit.framework.TestCase;
 
 
-public class QxAppearanceTheme_Test extends TestCase {
+public class QxAppearanceWriter_Test extends TestCase {
 
   public void testNoValues() {
-    QxAppearanceWriter theme = new QxAppearanceWriter();
-    String code = theme.getJsCode();
-    assertTrue( code.contains( "qx.theme.manager.Appearance.getInstance().setCurrentTheme( {\n" ) );
+    List<String> appearances = Collections.<String>emptyList();
+    String code = QxAppearanceWriter.createQxAppearanceTheme( appearances );
+
+    assertTrue( code.startsWith( "qx.theme.manager.Appearance.getInstance().setCurrentTheme( {\n" ) );
     assertTrue( code.endsWith( "} );\n" ) );
   }
 
   public void testTailAlreadyWritten() {
-    QxAppearanceWriter theme = new QxAppearanceWriter();
-    theme.appendAppearances( "foo" );
-    theme.getJsCode();
-    theme.getJsCode(); // calling getJsCode twice is ok
+    List<String> appearances = new ArrayList<String>();
+    appearances.add( "foo\nfoo" );
+    appearances.add( "bar\nbar" );
+    String code = QxAppearanceWriter.createQxAppearanceTheme( appearances );
 
-    try {
-      theme.appendAppearances( "bar" );
-      fail( "ISE expected" );
-    } catch( IllegalStateException e ) {
-      // expected
-    }
+    assertTrue( code.startsWith( "qx.theme.manager.Appearance.getInstance().setCurrentTheme( {\n" ) );
+    assertTrue( code.endsWith( "} );\n" ) );
+    assertTrue( code.contains( "foo\nfoo,\nbar\nbar" ) );
   }
 
 }

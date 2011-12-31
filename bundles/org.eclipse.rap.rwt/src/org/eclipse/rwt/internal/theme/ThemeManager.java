@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +85,7 @@ public class ThemeManager {
 
   private final Map<String, Theme> themes;
   private final ThemeableWidgetHolder themeableWidgets;
-  private final List<String> customAppearances;
+  private final List<String> appearances;
   private final ThemeAdapterManager themeAdapterManager;
   private final Map<String, String> resolvedPackageNames; // only for performance improvements
   private Theme defaultTheme;
@@ -93,7 +94,7 @@ public class ThemeManager {
   public ThemeManager() {
     themes = new HashMap<String, Theme>();
     themeableWidgets = new ThemeableWidgetHolder();
-    customAppearances = new ArrayList<String>();
+    appearances = new ArrayList<String>();
     themeAdapterManager = new ThemeAdapterManager();
     resolvedPackageNames = new HashMap<String, String>();
     initialized = false;
@@ -116,7 +117,7 @@ public class ThemeManager {
   public void deactivate() {
     themes.clear();
     themeableWidgets.reset();
-    customAppearances.clear();
+    appearances.clear();
     themeAdapterManager.reset();
     resolvedPackageNames.clear();
     initialized = false;
@@ -214,12 +215,8 @@ public class ThemeManager {
     return themeableWidgets.get( widget );
   }
 
-  public String createQxAppearanceTheme() {
-    QxAppearanceWriter qxAppearanceWriter = new QxAppearanceWriter();
-    for( String appearance : customAppearances ) {
-      qxAppearanceWriter.appendAppearances( appearance );
-    }
-    return qxAppearanceWriter.getJsCode();
+  public List<String> getAppearances() {
+    return Collections.unmodifiableList( appearances );
   }
 
   ThemeableWidget[] getAllThemeableWidgets() {
@@ -304,7 +301,7 @@ public class ThemeManager {
     if( inStream != null ) {
       try {
         String content = AppearancesUtil.readAppearanceFile( inStream );
-        customAppearances.add( content );
+        appearances.add( content );
         result = true;
       } finally {
         inStream.close();

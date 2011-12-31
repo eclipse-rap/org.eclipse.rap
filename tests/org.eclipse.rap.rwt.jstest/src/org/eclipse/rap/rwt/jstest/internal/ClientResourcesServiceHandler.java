@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.application.RWTFactory;
+import org.eclipse.rwt.internal.theme.QxAppearanceWriter;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.service.IServiceHandler;
@@ -87,7 +89,8 @@ public class ClientResourcesServiceHandler implements IServiceHandler {
     HttpServletResponse response = RWT.getResponse();
     response.setContentType( "text/javascript" );
     ThemeManager themeManager = RWTFactory.getThemeManager();
-    String appearanceCode = themeManager.createQxAppearanceTheme();
+    List<String> customAppearances = themeManager.getAppearances();
+    String appearanceCode = QxAppearanceWriter.createQxAppearanceTheme( customAppearances );
     PrintWriter writer = response.getWriter();
     writer.write( appearanceCode );
   }

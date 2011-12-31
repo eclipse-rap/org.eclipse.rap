@@ -15,10 +15,13 @@ package org.eclipse.swt.internal.widgets.displaykit;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.resources.ContentBuffer;
 import org.eclipse.rwt.internal.resources.JSFile;
 import org.eclipse.rwt.internal.resources.SystemProps;
+import org.eclipse.rwt.internal.theme.QxAppearanceWriter;
 import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.util.HTTP;
@@ -337,7 +340,7 @@ public final class ClientResources {
 
   private void registerJavascriptFiles() throws IOException {
     ContentBuffer contentBuffer = new ContentBuffer();
-    String appearanceCode = themeManager.createQxAppearanceTheme();
+    String appearanceCode = getQxAppearanceThemeCode();
     String json2Code = readResourceContent( JSON_JS );
     if( SystemProps.isDevelopmentMode() ) {
       for( int i = 0; i < JAVASCRIPT_FILES.length; i++ ) {
@@ -351,6 +354,11 @@ public final class ClientResources {
     contentBuffer.append( json2Code.getBytes( HTTP.CHARSET_UTF_8 ) );
     contentBuffer.append( appearanceCode.getBytes( HTTP.CHARSET_UTF_8 ) );
     registerJavascriptResource( contentBuffer, "rap-client.js" );
+  }
+
+  private String getQxAppearanceThemeCode() {
+    List<String> customAppearances = themeManager.getAppearances();
+    return QxAppearanceWriter.createQxAppearanceTheme( customAppearances );
   }
 
   private void append( ContentBuffer contentBuffer, String location ) throws IOException {
