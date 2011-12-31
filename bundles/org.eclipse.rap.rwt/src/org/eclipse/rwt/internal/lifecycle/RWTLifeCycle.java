@@ -28,12 +28,10 @@ import org.eclipse.swt.widgets.Display;
 
 public class RWTLifeCycle extends LifeCycle {
 
-  private static final Integer ZERO = new Integer( 0 );
+  private static final Integer ZERO = Integer.valueOf( 0 );
 
-  private static final String CURRENT_PHASE
-    = RWTLifeCycle.class.getName() + ".currentPhase";
-  private static final String PHASE_ORDER
-    = RWTLifeCycle.class.getName() + ".phaseOrder";
+  private static final String CURRENT_PHASE = RWTLifeCycle.class.getName() + ".currentPhase";
+  private static final String PHASE_ORDER = RWTLifeCycle.class.getName() + ".phaseOrder";
   private static final String UI_THREAD_THROWABLE
     = UIThreadController.class.getName() + "#UIThreadThrowable";
   private static final String REQUEST_THREAD_RUNNABLE
@@ -85,7 +83,7 @@ public class RWTLifeCycle extends LifeCycle {
   }
 
   public void execute() throws IOException {
-    if( getEntryPoint() != null ) {
+    if( LifeCycleUtil.isStartup() ) {
       setPhaseOrder( PHASE_ORDER_STARTUP );
     } else {
       setPhaseOrder( PHASE_ORDER_SUBSEQUENT );
@@ -167,14 +165,11 @@ public class RWTLifeCycle extends LifeCycle {
     }
   }
 
-
   int createUI() {
     int result = -1;
-    if( ZERO.equals( getCurrentPhase() ) ) {
-      String startup = getEntryPoint();
-      if( startup != null ) {
-        result = entryPointManager.createUI( startup );
-      }
+    if( ZERO.equals( getCurrentPhase() ) && LifeCycleUtil.isStartup() ) {
+      String entryPoint = EntryPointUtil.findEntryPoint();
+      result = entryPointManager.createUI( entryPoint );
     }
     return result;
   }
@@ -244,10 +239,6 @@ public class RWTLifeCycle extends LifeCycle {
   private static Integer getCurrentPhase() {
     IServiceStore serviceStore = ContextProvider.getServiceStore();
     return ( Integer )serviceStore.getAttribute( CURRENT_PHASE );
-  }
-
-  private static String getEntryPoint() {
-    return LifeCycleUtil.getEntryPoint();
   }
 
   private static void setShutdownAdapter( ISessionShutdownAdapter adapter ) {

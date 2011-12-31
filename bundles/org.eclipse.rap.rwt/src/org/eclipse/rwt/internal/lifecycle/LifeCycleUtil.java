@@ -10,16 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.lifecycle;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.service.RequestParams;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Display;
 
 
 public class LifeCycleUtil {
-  private static final String ATTR_SESSION_DISPLAY 
+  private static final String ATTR_SESSION_DISPLAY
     = LifeCycleUtil.class.getName() + "#sessionDisplay";
   private static final String ATTR_UI_THREAD = LifeCycleUtil.class.getName() + "#uiThread";
 
@@ -43,21 +40,13 @@ public class LifeCycleUtil {
   public static void setUIThread( ISessionStore sessionStore, IUIThreadHolder threadHolder ) {
     sessionStore.setAttribute( ATTR_UI_THREAD, threadHolder );
   }
-  
+
   public static IUIThreadHolder getUIThread( ISessionStore sessionStore ) {
     return ( IUIThreadHolder )sessionStore.getAttribute( ATTR_UI_THREAD );
   }
 
-  static String getEntryPoint() {
-    String result = null;
-    HttpServletRequest request = ContextProvider.getRequest();
-    String startup = request.getParameter( RequestParams.STARTUP );
-    if( startup != null ) {
-      result = startup;
-    } else if( getSessionDisplay() == null ) {
-      result = EntryPointManager.DEFAULT;
-    }
-    return result;
+  static boolean isStartup() {
+    return getSessionDisplay() == null;
   }
 
   private LifeCycleUtil() {

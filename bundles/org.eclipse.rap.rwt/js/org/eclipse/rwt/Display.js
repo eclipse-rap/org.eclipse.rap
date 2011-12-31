@@ -31,7 +31,6 @@ org.eclipse.rwt.Display.prototype = {
   init : function( args ) {
     this._request.setUrl( args.url );
     this._request.setUIRootId( args.rootId );
-    this._request.addParameter( "startup", args.entrypoint );
     this._request.addParameter( "rwt_initialize", "true" );
     this._appendWindowSize();
     this._appendSystemDPI();

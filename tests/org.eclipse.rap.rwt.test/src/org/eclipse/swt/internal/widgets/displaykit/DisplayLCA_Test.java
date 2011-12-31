@@ -197,7 +197,7 @@ public class DisplayLCA_Test extends TestCase {
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT,
                                                 TestRenderInitiallyDisposedEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
+    LifeCycleUtil.setSessionDisplay( null );
     // ensure that life cycle execution succeeds with disposed display
     try {
       lifeCycle.execute();
@@ -210,7 +210,7 @@ public class DisplayLCA_Test extends TestCase {
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT,
                                                 TestRenderDisposedEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
+    LifeCycleUtil.setSessionDisplay( null );
     lifeCycle.execute();
     Fixture.fakeNewRequest();
     Fixture.fakeRequestParam( RequestParams.STARTUP, null );

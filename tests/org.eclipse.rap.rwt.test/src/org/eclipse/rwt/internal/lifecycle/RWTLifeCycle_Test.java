@@ -384,10 +384,10 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testErrorInLifeCycle() throws IOException {
-    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, TestErrorInLifeCycleEntryPoint.class );
+    RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT,
+                                                TestErrorInLifeCycleEntryPoint.class );
     RWTLifeCycle lifeCycle = ( RWTLifeCycle )RWTFactory.getLifeCycleFactory().getLifeCycle();
-    Fixture.fakeRequestParam( RequestParams.STARTUP,
-                              EntryPointManager.DEFAULT );
+    LifeCycleUtil.setSessionDisplay( null );
     try {
       lifeCycle.execute();
       fail();
@@ -916,8 +916,7 @@ public class RWTLifeCycle_Test extends TestCase {
   }
 
   public void testExceptionInRender() throws Exception {
-    Fixture.fakeRequestParam( RequestParams.STARTUP,
-                              EntryPointManager.DEFAULT );
+    Fixture.fakeRequestParam( RequestParams.STARTUP, EntryPointManager.DEFAULT );
     Fixture.fakeRequestParam( RequestParams.UIROOT, "w1" );
     Class<? extends IEntryPoint> entryPointClass = ExceptionInRenderEntryPoint.class;
     RWTFactory.getEntryPointManager().register( EntryPointManager.DEFAULT, entryPointClass );

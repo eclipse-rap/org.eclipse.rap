@@ -15,23 +15,23 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.widgets.Display;
 
 
-
 final class PrepareUIRoot implements IPhase {
+
   private final EntryPointManager entryPointManager;
 
   PrepareUIRoot( EntryPointManager entryPointManager ) {
     this.entryPointManager = entryPointManager;
   }
-  
+
   public PhaseId getPhaseId() {
     return PhaseId.PREPARE_UI_ROOT;
   }
 
   public PhaseId execute( Display display ) {
-    String entryPointName = LifeCycleUtil.getEntryPoint();
     PhaseId result;
-    if( entryPointName != null ) {
-      createUI( entryPointName );      
+    if( LifeCycleUtil.isStartup() ) {
+      String entryPointName = EntryPointUtil.findEntryPoint();
+      createUI( entryPointName );
       result = PhaseId.RENDER;
     } else {
       result = PhaseId.READ_DATA;

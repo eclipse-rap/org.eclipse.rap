@@ -33,26 +33,6 @@ public class LifeCycleUtil_Test extends TestCase {
     Fixture.tearDown();
   }
 
-  public void testGetEntryPointWithStartupParameter() {
-    String entryPoint = "foo";
-    Fixture.fakeRequestParam( RequestParams.STARTUP, entryPoint );
-
-    String returnedEntryPoint = LifeCycleUtil.getEntryPoint();
-
-    assertEquals( entryPoint, returnedEntryPoint );
-  }
-
-  public void testGetEntryPointWithoutStartupParameter() {
-    String entryPoint = LifeCycleUtil.getEntryPoint();
-    assertEquals( EntryPointManager.DEFAULT, entryPoint );
-  }
-
-  public void testGetEntryPointWhenDisplayWasCreated() {
-    new Display();
-    String entryPoint = LifeCycleUtil.getEntryPoint();
-    assertNull( entryPoint );
-  }
-
   public void testGetSessionDisplayBeforeAnyDisplayCreated() {
     Display sessionDisplay = LifeCycleUtil.getSessionDisplay();
 
@@ -120,6 +100,22 @@ public class LifeCycleUtil_Test extends TestCase {
 
     assertSame( uiThread1, LifeCycleUtil.getUIThread( session1 ) );
     assertSame( uiThread2, LifeCycleUtil.getUIThread( session2 ) );
+  }
+
+  public void testIsStartup_withoutDisplayCreated() {
+    assertTrue( LifeCycleUtil.isStartup() );
+  }
+
+  public void testIsStartup_withStartupParameter() {
+    Fixture.fakeRequestParam( RequestParams.STARTUP, "foo" );
+
+    assertTrue( LifeCycleUtil.isStartup() );
+  }
+
+  public void testIsStartup_whenDisplayWasCreated() {
+    new Display();
+
+    assertFalse( LifeCycleUtil.isStartup() );
   }
 
 }

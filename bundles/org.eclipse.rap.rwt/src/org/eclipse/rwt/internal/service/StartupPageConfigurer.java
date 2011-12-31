@@ -29,7 +29,6 @@ import org.eclipse.rwt.branding.AbstractBranding;
 import org.eclipse.rwt.internal.RWTMessages;
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.branding.BrandingUtil;
-import org.eclipse.rwt.internal.lifecycle.EntryPointManager;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.resources.ResourceRegistry;
 import org.eclipse.rwt.internal.service.StartupPage.IStartupPageConfigurer;
@@ -54,7 +53,6 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
   private static final String PROPERTY_URL = "url";
   private static final String PROPERTY_ROOT_ID = "rootId";
   private static final String METHOD_INIT = "init";
-  private static final String PROPERTY_ENTRYPOINT = "entrypoint";
 
   private final List<AbstractBranding> registeredBrandings;
   private final ResourceRegistry resourceRegistry;
@@ -163,7 +161,7 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     StringBuilder code = new StringBuilder();
     code.append( "org.eclipse.rwt.protocol.Processor.processMessage( " );
     code.append( getStartupProtocolMessage( "w1" ) );
-    code.append( " );/*EOM*/" );
+    code.append( " );" );
     return code.toString();
   }
 
@@ -191,7 +189,6 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
   private static void appendInitDisplay( String id, ProtocolMessageWriter writer ) {
     Map<String, Object> args = new HashMap<String, Object>();
     args.put( PROPERTY_URL, getUrl() );
-    args.put( PROPERTY_ENTRYPOINT, getEntryPoint() );
     args.put( PROPERTY_ROOT_ID, id );  // TODO [tb] : refactor client to remove this line
     writer.appendCall( id, METHOD_INIT, args );
   }
@@ -233,20 +230,6 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     if( !theme.getId().equals( ThemeManager.DEFAULT_THEME_ID ) ) {
       themeDefinitions.add( theme.getRegisteredLocation() );
     }
-  }
-
-  // TODO [tb] : merge with LifeCycleUtil.getEntryPoint(), StartupPage.getEntryPoint() ?
-  private static String getEntryPoint() {
-    AbstractBranding branding = BrandingUtil.determineBranding();
-    HttpServletRequest request = ContextProvider.getRequest();
-    String entryPoint = request.getParameter( RequestParams.STARTUP );
-    if( entryPoint == null ) {
-      entryPoint = branding.getDefaultEntryPoint();
-      if( entryPoint == null || "".equals( entryPoint ) ) {
-        entryPoint = EntryPointManager.DEFAULT;
-      }
-    }
-    return entryPoint;
   }
 
   private void registerBrandingResources( AbstractBranding branding ) throws IOException {
