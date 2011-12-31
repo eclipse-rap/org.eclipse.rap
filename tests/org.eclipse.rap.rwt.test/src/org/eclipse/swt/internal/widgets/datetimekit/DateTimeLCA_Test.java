@@ -30,6 +30,7 @@ import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
 import org.json.JSONArray;
 
+
 public class DateTimeLCA_Test extends TestCase {
 
   private Display display;
@@ -349,11 +350,12 @@ public class DateTimeLCA_Test extends TestCase {
   public void testRenderMonth() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.DATE );
 
-    dateTime.setMonth( 3 );
+    // Note: we have to use a month with 31 days, otherwise it is rejected on a 31th
+    dateTime.setMonth( 2 ); // 2 == March!
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 3 ), message.findSetProperty( dateTime, "month" ) );
+    assertEquals( new Integer( 2 ), message.findSetProperty( dateTime, "month" ) );
   }
 
   public void testRenderMonthUnchanged() throws IOException {
@@ -361,7 +363,8 @@ public class DateTimeLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( dateTime );
 
-    dateTime.setMonth( 3 );
+    // Note: we have to use a month with 31 days, otherwise it is rejected on a 31th
+    dateTime.setMonth( 2 );
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
@@ -611,11 +614,12 @@ public class DateTimeLCA_Test extends TestCase {
   public void testRenderMonth_Calendar() throws IOException {
     DateTime dateTime = new DateTime( shell, SWT.CALENDAR );
 
-    dateTime.setMonth( 3 );
+    // Note: we have to use a month with 31 days, otherwise it is rejected on a 31th
+    dateTime.setMonth( 2 ); // 2 == March!
     lca.renderChanges( dateTime );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 3 ), message.findSetProperty( dateTime, "month" ) );
+    assertEquals( new Integer( 2 ), message.findSetProperty( dateTime, "month" ) );
   }
 
   public void testRenderMonthUnchanged_Calendar() throws IOException {
@@ -623,7 +627,8 @@ public class DateTimeLCA_Test extends TestCase {
     Fixture.markInitialized( display );
     Fixture.markInitialized( dateTime );
 
-    dateTime.setMonth( 3 );
+    // Note: we have to use a month with 31 days, otherwise it is rejected on a 31th
+    dateTime.setMonth( 2 ); // 2 == March!
     Fixture.preserveWidgets();
     lca.renderChanges( dateTime );
 
