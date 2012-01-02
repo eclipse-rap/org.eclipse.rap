@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -159,21 +159,6 @@ public class TreeItemLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( treeItem );
     assertEquals( Boolean.TRUE, adapter.getPreserved( TreeItemLCA.PROP_CHECKED ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( TreeItemLCA.PROP_GRAYED ) );
-  }
-
-  public void testPreserveVariant() {
-    TreeItem treeItem = new TreeItem( tree, SWT.NONE );
-    Fixture.markInitialized( display );
-    Fixture.preserveWidgets();
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( treeItem );
-    Object variant = adapter.getPreserved( TreeItemLCA.PROP_VARIANT );
-    assertNull( variant );
-    Fixture.clearPreserved();
-    treeItem.setData( WidgetUtil.CUSTOM_VARIANT, "abc" );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( treeItem );
-    variant = adapter.getPreserved( TreeItemLCA.PROP_VARIANT );
-    assertEquals( "variant_abc", variant );
   }
 
   public void testLcaDoesNotMaterializeItem() {
@@ -769,27 +754,27 @@ public class TreeItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "grayed" ) );
   }
 
-  public void testRenderInitialVariant() throws IOException {
+  public void testRenderInitialCustomVariant() throws IOException {
     TreeItem item = new TreeItem( tree, SWT.NONE );
 
     lca.render( item );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "variant" ) == -1 );
+    assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
   }
 
-  public void testRenderVariant() throws IOException {
+  public void testRenderCustomVariant() throws IOException {
     TreeItem item = new TreeItem( tree, SWT.NONE );
 
     item.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "variant_blue", message.findSetProperty( item, "variant" ) );
+    assertEquals( "variant_blue", message.findSetProperty( item, "customVariant" ) );
   }
 
-  public void testRenderVariantUnchanged() throws IOException {
+  public void testRenderCustomVariantUnchanged() throws IOException {
     TreeItem item = new TreeItem( tree, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
@@ -799,7 +784,7 @@ public class TreeItemLCA_Test extends TestCase {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( item, "variant" ) );
+    assertNull( message.findSetOperation( item, "customVariant" ) );
   }
 
   private static Object getPreservedProperty( Widget widget, String property ) {

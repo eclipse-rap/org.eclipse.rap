@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   static final String PROP_CHECKED = "checked";
   static final String PROP_GRAYED = "grayed";
   static final String PROP_CACHED = "cached";
-  static final String PROP_VARIANT = "variant";
 
   @Override
   public void preserveValues( Widget widget ) {
@@ -54,12 +53,12 @@ public final class TableItemLCA extends AbstractWidgetLCA {
       WidgetLCAUtil.preserveBackground( item, getUserBackground( item ) );
       WidgetLCAUtil.preserveForeground( item, getUserForeground( item ) );
       WidgetLCAUtil.preserveFont( item, getUserFont( item ) );
+      WidgetLCAUtil.preserveCustomVariant( item );
       preserveProperty( item, PROP_CELL_BACKGROUNDS, getCellBackgrounds( item ) );
       preserveProperty( item, PROP_CELL_FOREGROUNDS, getCellForegrounds( item ) );
       preserveProperty( item, PROP_CELL_FONTS, getCellFonts( item ) );
       preserveProperty( item, PROP_CHECKED, item.getChecked() );
       preserveProperty( item, PROP_GRAYED, item.getGrayed() );
-      preserveProperty( item, PROP_VARIANT, getVariant( item ) );
     }
     preserveProperty( item, PROP_CACHED, isCached( item ) );
   }
@@ -129,6 +128,7 @@ public final class TableItemLCA extends AbstractWidgetLCA {
     WidgetLCAUtil.renderBackground( item, getUserBackground( item ) );
     WidgetLCAUtil.renderForeground( item, getUserForeground( item ) );
     WidgetLCAUtil.renderFont( item, getUserFont( item ) );
+    WidgetLCAUtil.renderCustomVariant( item );
     renderProperty( item,
                     PROP_CELL_BACKGROUNDS,
                     getCellBackgrounds( item ),
@@ -143,7 +143,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
                     new Font[ getColumnCount( item ) ] );
     renderProperty( item, PROP_CHECKED, item.getChecked(), false );
     renderProperty( item, PROP_GRAYED, item.getGrayed(), false );
-    renderProperty( item, PROP_VARIANT, getVariant( item ), null );
   }
 
   private static void renderClear( TableItem item ) {
@@ -214,14 +213,6 @@ public final class TableItemLCA extends AbstractWidgetLCA {
   private static Font[] getCellFonts( TableItem item ) {
     ITableItemAdapter itemAdapter = item.getAdapter( ITableItemAdapter.class );
     return itemAdapter.getCellFonts();
-  }
-
-  private static String getVariant( TableItem item ) {
-    String result = WidgetUtil.getVariant( item );
-    if( result != null ) {
-      result = "variant_" + result;
-    }
-    return result;
   }
 
   private static int getColumnCount( TableItem item ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,6 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   static final String PROP_EXPANDED = "expanded";
   static final String PROP_CHECKED = "checked";
   static final String PROP_GRAYED = "grayed";
-  static final String PROP_VARIANT = "variant";
 
   private static final int DEFAULT_ITEM_COUNT = 0;
 
@@ -56,13 +55,13 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       WidgetLCAUtil.preserveBackground( item, getUserBackground( item ) );
       WidgetLCAUtil.preserveForeground( item, getUserForeground( item ) );
       WidgetLCAUtil.preserveFont( item, getUserFont( item ) );
+      WidgetLCAUtil.preserveCustomVariant( item );
       preserveProperty( item, PROP_CELL_BACKGROUNDS, getCellBackgrounds( item ) );
       preserveProperty( item, PROP_CELL_FOREGROUNDS, getCellForegrounds( item ) );
       preserveProperty( item, PROP_CELL_FONTS, getCellFonts( item ) );
       preserveProperty( item, PROP_EXPANDED, item.getExpanded() );
       preserveProperty( item, PROP_CHECKED, item.getChecked() );
       preserveProperty( item, PROP_GRAYED, item.getGrayed() );
-      preserveProperty( item, PROP_VARIANT, getVariant( item ) );
     }
   }
 
@@ -119,6 +118,7 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       WidgetLCAUtil.renderBackground( item, getUserBackground( item ) );
       WidgetLCAUtil.renderForeground( item, getUserForeground( item ) );
       WidgetLCAUtil.renderFont( item, getUserFont( item ) );
+      WidgetLCAUtil.renderCustomVariant( item );
       renderProperty( item,
                       PROP_CELL_BACKGROUNDS,
                       getCellBackgrounds( item ),
@@ -134,7 +134,6 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
       renderProperty( item, PROP_EXPANDED, item.getExpanded(), false );
       renderProperty( item, PROP_CHECKED, item.getChecked(), false );
       renderProperty( item, PROP_GRAYED, item.getGrayed(), false );
-      renderProperty( item, PROP_VARIANT, getVariant( item ), null );
     }
   }
 
@@ -211,14 +210,6 @@ public final class TreeItemLCA extends AbstractWidgetLCA {
   private static Font[] getCellFonts( TreeItem item ) {
     ITreeItemAdapter itemAdapter = item.getAdapter( ITreeItemAdapter.class );
     return itemAdapter.getCellFonts();
-  }
-
-  private static String getVariant( TreeItem item ) {
-    String result = WidgetUtil.getVariant( item );
-    if( result != null ) {
-      result = "variant_" + result;
-    }
-    return result;
   }
 
   private static int getColumnCount( TreeItem item ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -694,27 +694,27 @@ public class TableItemLCA_Test extends TestCase {
     assertNull( message.findSetOperation( item, "grayed" ) );
   }
 
-  public void testRenderInitialVariant() throws IOException {
+  public void testRenderInitialCustomVariant() throws IOException {
     TableItem item = new TableItem( table, SWT.NONE );
 
     lca.render( item );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( item );
-    assertTrue( operation.getPropertyNames().indexOf( "variant" ) == -1 );
+    assertTrue( operation.getPropertyNames().indexOf( "customVariant" ) == -1 );
   }
 
-  public void testRenderVariant() throws IOException {
+  public void testRenderCustomVariant() throws IOException {
     TableItem item = new TableItem( table, SWT.NONE );
 
     item.setData( WidgetUtil.CUSTOM_VARIANT, "blue" );
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( "variant_blue", message.findSetProperty( item, "variant" ) );
+    assertEquals( "variant_blue", message.findSetProperty( item, "customVariant" ) );
   }
 
-  public void testRenderVariantUnchanged() throws IOException {
+  public void testRenderCustomVariantUnchanged() throws IOException {
     TableItem item = new TableItem( table, SWT.NONE );
     Fixture.markInitialized( display );
     Fixture.markInitialized( item );
@@ -724,7 +724,7 @@ public class TableItemLCA_Test extends TestCase {
     lca.renderChanges( item );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( item, "variant" ) );
+    assertNull( message.findSetOperation( item, "customVariant" ) );
   }
 
   public void testRenderClear() throws IOException {
