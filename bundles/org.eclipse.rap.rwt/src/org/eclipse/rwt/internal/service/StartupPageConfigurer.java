@@ -161,7 +161,9 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
     StringBuilder code = new StringBuilder();
     code.append( "org.eclipse.rwt.protocol.Processor.processMessage( " );
     code.append( getStartupProtocolMessage( "w1" ) );
-    code.append( " );" );
+    // TODO: The /*EOM*/ is needed for the native clients to determine where is the boot message in
+    // the initial start HTML page. Remove it when custom native clients boot process is implemented
+    code.append( " );/*EOM*/" );
     return code.toString();
   }
 
