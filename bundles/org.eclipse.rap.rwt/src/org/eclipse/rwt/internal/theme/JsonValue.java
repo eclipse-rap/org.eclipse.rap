@@ -21,6 +21,9 @@ public abstract class JsonValue {
   public static final JsonValue TRUE = new JsonPrimitive( "true" );
   public static final JsonValue FALSE = new JsonPrimitive( "false" );
 
+  private static final int CONTROL_CHARACTERS_START = 0x0000;
+  private static final int CONTROL_CHARACTERS_END = 0x001f;
+
   JsonValue() {
     // prevent instantiation from outside
   }
@@ -82,8 +85,12 @@ public abstract class JsonValue {
         resultBuffer.append( "\\u2028" );
       } else if( ch == '\u2029' ) {
         resultBuffer.append( "\\u2029" );
-      } else if( ch == '\u0000' ) {
-        resultBuffer.append( "\\u0000" );
+      } else if( ch >= CONTROL_CHARACTERS_START && ch <= CONTROL_CHARACTERS_END ) {
+        resultBuffer.append( "\\u00" );
+        if( ch <= 9 ) {
+          resultBuffer.append( "0" );
+        }
+        resultBuffer.append( Integer.toHexString( ch ) );
       } else {
         resultBuffer.append( ch );
       }
