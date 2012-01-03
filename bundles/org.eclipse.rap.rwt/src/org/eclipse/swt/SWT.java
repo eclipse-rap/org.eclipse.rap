@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 package org.eclipse.swt;
 
@@ -2272,7 +2272,7 @@ public class SWT {
 
   /**
    * System resize north-west-south-east cursor  (value is 8).
-   * 
+   *
    * @since 1.4
    */
   public static final int CURSOR_SIZENWSE = 8;
@@ -2553,12 +2553,10 @@ public class SWT {
   /**
    * The <code>MessageBox</code> style constant for a CANCEL button;
    * valid combinations are OK|CANCEL, YES|NO|CANCEL, RETRY|CANCEL
-   * (value is 1&lt;&lt;8).  This style constant is also used with
-   * <code>Text</code> in combination with SEARCH.
+   * (value is 1&lt;&lt;8).
    *
    * <p><b>Used By:</b><ul>
    * <li><code>MessageBox</code></li>
-   * <li><code>Text</code></li>
    * </ul></p>
    * @since 1.2
    */
