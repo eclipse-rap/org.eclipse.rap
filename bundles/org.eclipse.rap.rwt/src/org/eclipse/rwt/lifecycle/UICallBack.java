@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,26 +20,26 @@ import org.eclipse.swt.widgets.Display;
 
 
 /**
- * A utility class that provides methods to perform tasks related 
+ * A utility class that provides methods to perform tasks related
  * to UI updates from background threads.
- * 
+ *
  * @since 1.0
  */
 public final class UICallBack {
-    
+
   /**
    * Sometimes a background thread needs to access values that are stored
    * in the session object that started the thread. In particular these
    * values may be stored in session singletons. Accessing these singletons
    * directly from the background thread would fail. This method fakes the
-   * missing request context and allows the runnable code to access those 
+   * missing request context and allows the runnable code to access those
    * singletons.
-   * 
+   *
    * @param display The display that is bound to the session that contains the
    *                data to which the current thread should get access.
-   * @param runnable The runnable that contains the critical code that 
+   * @param runnable The runnable that contains the critical code that
    *                 needs to have access to a request context.
-   *        
+   *
    * @see org.eclipse.rwt.SessionSingletonBase
    * @see org.eclipse.rwt.internal.service.ContextProvider
    */
@@ -51,17 +51,17 @@ public final class UICallBack {
   }
 
   /**
-   * Call this method to enable UI updates from background threads (e.g. via 
+   * Call this method to enable UI updates from background threads (e.g. via
    * <code>Display.asyncExec()</code>}.
    * The UI callback must be activated from the UI thread before the background thread starts.
    * Each activation is given a session-unique id to allow reference-counting activation and
    * deactivation.
-   *  
-   * <p>If not deactivated explixitly, any active UI callbacks are released when the session 
+   *
+   * <p>If not deactivated explicitly, any active UI callbacks are released when the session
    * terminates.</p>
-   * 
+   *
    * <p>Note: this method must only be called from the UI-Thread of an RWT application.</p>
-   * 
+   *
    * <p>
    * Example code:
    * <pre></code>
@@ -91,16 +91,16 @@ public final class UICallBack {
    * bgThread.start();
    * </code></pre>
    * </p>
-   * 
+   *
    * @param id a session unique identifier to trace the activation and
    *           deactivation. Must not be <code>null</code>.
-   *           
+   *
    * </ul>
    * @throws SWTException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the id is <code>null</code></li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from the UI thread</li>
    * </ul>
-   * 
+   *
    * @see Display#syncExec
    * @see Display#asyncExec
    * @see Display#getThread
@@ -115,29 +115,29 @@ public final class UICallBack {
     }
     UICallBackManager.getInstance().activateUICallBacksFor( id );
   }
-  
+
   /**
-   * This method deactivates a previously {@link #activate(String) activated} UI callback 
-   * with the same <code>id</code>. 
+   * This method deactivates a previously {@link #activate(String) activated} UI callback
+   * with the same <code>id</code>.
    * Calling this method with an id that wasn't activated before has no effect.
-   * 
-   * <p>For each id, the system maintans a reference counter so that multiple activations 
-   * of the same id must be followed by the same number deactivations in oder to actually 
-   * stop the UI callback.</p> 
-   * 
-   * <p>Note: this method must only be called from code that is associated with a session. 
-   * That is, either code running in the UI thread or executed via 
+   *
+   * <p>For each id, the system maintains a reference counter so that multiple activations
+   * of the same id must be followed by the same number deactivations in oder to actually
+   * stop the UI callback.</p>
+   *
+   * <p>Note: this method must only be called from code that is associated with a session.
+   * That is, either code running in the UI thread or executed via
    * {@link UICallBack#runNonUIThreadWithFakeContext(Display, Runnable)}</p>
-   *          
+   *
    * @param id A session unique identifier to trace the activation and
    *           deactivation. Must not be <code>null</code>
-   *           
+   *
    * </ul>
    * @throws SWTException <ul>
    *    <li>ERROR_NULL_ARGUMENT - if the id is <code>null</code></li>
    *    <li>ERROR_THREAD_INVALID_ACCESS - if not called from session code</li>
    * </ul>
-   * 
+   *
    * @see Display#syncExec
    * @see Display#asyncExec
    * @see Display#getThread
@@ -152,7 +152,7 @@ public final class UICallBack {
     }
     UICallBackManager.getInstance().deactivateUICallBacksFor( id );
   }
-  
+
   private UICallBack() {
     // prevent instance creation
   }
