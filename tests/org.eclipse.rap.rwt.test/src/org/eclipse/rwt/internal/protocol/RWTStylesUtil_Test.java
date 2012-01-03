@@ -118,6 +118,26 @@ public class RWTStylesUtil_Test extends TestCase {
     assertArrayEquals( buttonStyles, allowedStyles );
   }
 
+  public void testGetStylesForText() {
+    String[] textStyles = new String[]{
+      "CENTER",
+      "LEFT",
+      "MULTI",
+      "PASSWORD",
+      "SEARCH",
+      "SINGLE",
+      "RIGHT",
+      "READ_ONLY",
+      "WRAP",
+      "H_SCROLL",
+      "V_SCROLL",
+      "BORDER"
+    };
+    Text text = new Text( shell, SWT.NONE );
+    String[] allowedStyles = RWTStylesUtil.getAllowedStylesForWidget( text );
+    assertArrayEquals( textStyles, allowedStyles );
+  }
+
   public final class SubclassedControl extends Label {
     public SubclassedControl( Composite parent, int style ) {
       super( parent, style );
