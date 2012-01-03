@@ -360,7 +360,8 @@ public class FilteredTree extends Composite {
 			Text testText = null;
 			try {
 				testText = new Text(composite, SWT.SEARCH | SWT.ICON_CANCEL);
-				useNativeSearchField = new Boolean((testText.getStyle() & SWT.ICON_CANCEL) != 0);
+// RAP [if] Remove comment when SWT.ICON_CANCEL is supported in the Web client
+//				useNativeSearchField = new Boolean((testText.getStyle() & SWT.ICON_CANCEL) != 0);
 			} finally {
 				if (testText != null) {
 					testText.dispose();
