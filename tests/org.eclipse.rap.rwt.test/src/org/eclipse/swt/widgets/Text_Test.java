@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -486,13 +486,12 @@ public class Text_Test extends TestCase {
     assertEquals( '*', passwordText.getEchoChar() );
   }
 
-  // Ensure that the CANCEL hint isn't returned by getStyle if it isn't
-  // actually supported
-  public void testCancelStyle() {
+  public void testIconStyles() {
     Display display = new Display();
     Shell shell = new Shell( display );
-    Text text = new Text( shell, SWT.SEARCH | SWT.CANCEL );
-    assertTrue( ( text.getStyle() & SWT.CANCEL ) == 0 );
+    Text text = new Text( shell, SWT.SEARCH | SWT.ICON_CANCEL | SWT.ICON_SEARCH );
+    assertTrue( ( text.getStyle() & SWT.ICON_CANCEL ) != 0 );
+    assertTrue( ( text.getStyle() & SWT.ICON_SEARCH ) != 0 );
   }
 
   public void testSetTextChars() {

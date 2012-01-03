@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -389,9 +389,9 @@ public class TextLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( text );
     assertEquals( "rwt.widgets.Text", operation.getType() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "MULTI" ) );
-    assertTrue( Arrays.asList( styles ).contains( "WRAP" ) );
+    List<Object> styles = Arrays.asList( operation.getStyles() );
+    assertTrue( styles.contains( "MULTI" ) );
+    assertTrue( styles.contains( "WRAP" ) );
   }
 
   public void testRenderAlingment() throws Exception {
@@ -404,6 +404,38 @@ public class TextLCA_Test extends TestCase {
     CreateOperation operation = message.findCreateOperation( text );
     Object[] styles = operation.getStyles();
     assertTrue( Arrays.asList( styles ).contains( "CENTER" ) );
+  }
+
+  public void testRenderCreateMultiWithScroll() throws IOException {
+    Text text = new Text( shell, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL );
+    Fixture.fakeResponseWriter();
+
+    lca.renderInitialization( text );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( text );
+    List<Object> styles = Arrays.asList( operation.getStyles() );
+    assertTrue( styles.contains( "MULTI" ) );
+    assertTrue( styles.contains( "H_SCROLL" ) );
+    assertTrue( styles.contains( "V_SCROLL" ) );
+    assertFalse( styles.contains( "ICON_CANCEL" ) );
+    assertFalse( styles.contains( "ICON_SEARCH" ) );
+  }
+
+  public void testRenderCreateSearchWithIcons() throws IOException {
+    Text text = new Text( shell, SWT.SEARCH | SWT.ICON_CANCEL | SWT.ICON_SEARCH );
+    Fixture.fakeResponseWriter();
+
+    lca.renderInitialization( text );
+
+    Message message = Fixture.getProtocolMessage();
+    CreateOperation operation = message.findCreateOperation( text );
+    List<Object> styles = Arrays.asList( operation.getStyles() );
+    assertTrue( styles.contains( "SEARCH" ) );
+    assertTrue( styles.contains( "ICON_CANCEL" ) );
+    assertTrue( styles.contains( "ICON_SEARCH" ) );
+    assertFalse( styles.contains( "H_SCROLL" ) );
+    assertFalse( styles.contains( "V_SCROLL" ) );
   }
 
   public void testRenderParent() throws IOException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -121,6 +121,21 @@ public class Text extends Scrollable {
     echoChar = ( char )0;
     if( ( style & SWT.PASSWORD ) != 0 ) {
       echoChar = '?';
+    }
+    if( ( style & SWT.SEARCH ) != 0 ) {
+      /*
+       * Ensure that SWT.ICON_CANCEL and ICON_SEARCH are set. NOTE: ICON_CANCEL
+       * has the same value as H_SCROLL and ICON_SEARCH has the same value as
+       * V_SCROLL so it is necessary to first clear these bits to avoid a scroll
+       * bar and then reset the bit using the original style supplied by the
+       * programmer.
+       */
+      if( ( style & SWT.ICON_CANCEL ) != 0 ) {
+        this.style |= SWT.ICON_CANCEL;
+      }
+      if( ( style & SWT.ICON_SEARCH ) != 0 ) {
+        this.style |= SWT.ICON_SEARCH;
+      }
     }
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,8 +20,11 @@ import java.io.IOException;
 
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
+import org.eclipse.rwt.internal.protocol.RWTStylesUtil;
+import org.eclipse.rwt.internal.protocol.StylesUtil;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.widgets.ITextAdapter;
@@ -66,7 +69,7 @@ final class TextLCAUtil {
     IClientObject clientObject = ClientObjectFactory.getForWidget( text );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( text.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( text ) );
+    clientObject.setProperty( "style", getStyles( text ) );
   }
 
   static void renderChanges( Text text ) throws IOException {
@@ -136,6 +139,20 @@ final class TextLCAUtil {
 
   //////////////////
   // Helping methods
+
+  private static String[] getStyles( Text text ) {
+    String[] allowedStyles = RWTStylesUtil.getAllowedStylesForWidget( text );
+    if( ( text.getStyle() & SWT.SEARCH ) != 0 ) {
+      for( int i = 0; i < allowedStyles.length; i++ ) {
+        if( allowedStyles[ i ].equals( "H_SCROLL" ) ) {
+          allowedStyles[ i ] = "ICON_CANCEL";
+        } else if( allowedStyles[ i ].equals( "V_SCROLL" ) ) {
+          allowedStyles[ i ] = "ICON_SEARCH";
+        }
+      }
+    }
+    return StylesUtil.filterStyles( text, allowedStyles );
+  }
 
   private static Integer getTextLimit( Text text ) {
     Integer result = null;
