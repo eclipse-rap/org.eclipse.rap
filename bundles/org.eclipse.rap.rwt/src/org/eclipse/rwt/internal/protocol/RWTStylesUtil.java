@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution", "and is available at
@@ -58,6 +58,7 @@ public final class RWTStylesUtil {
     CTAB_ITEM( CTabItem.class.getName(), new String[] { "CLOSE" } ),
     TABLE( Table.class.getName(), new String[] { "SINGLE", "MULTI", "CHECK", "FULL_SELECTION", "HIDE_SELECTION", "VIRTUAL", "NO_SCROLL", "NO_FOCUS", "NO_RADIO_GROUP", "H_SCROLL", "V_SCROLL", "BORDER" } ),
     TABLE_COLUMN( TableColumn.class.getName(), new String[] { "LEFT", "RIGHT", "CENTER" } ),
+    // Note: ICON_CANCEL and ICON_SEARCH are intentionally skipped.
     TEXT( Text.class.getName(), new String[] { "CENTER", "LEFT", "MULTI", "PASSWORD", "SEARCH", "SINGLE", "RIGHT", "READ_ONLY", "WRAP", "H_SCROLL", "V_SCROLL", "BORDER" } ),
     TOOL_BAR( ToolBar.class.getName(), new String[] { "FLAT", "HORIZONTAL", "VERTICAL", "NO_FOCUS", "NO_RADIO_GROUP", "BORDER" } ),
     TOOL_ITEM( ToolItem.class.getName(), new String[] { "PUSH", "CHECK", "RADIO", "SEPARATOR", "DROP_DOWN" } ),
