@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,9 +26,10 @@ qx.Class.define( "org.eclipse.rwt.SyncKeyEventUtil",
       // [if] Fix for bug 319159
       var keyUtil = org.eclipse.rwt.KeyEventUtil.getInstance();
       var realKeyCode = this._getRealKeyCode( keyCode, domEvent );
-      var relevantEvent = keyUtil._isRelevantEvent( eventType, realKeyCode );
+      var control = keyUtil._getTargetControl();
+      var relevantEvent = 
+        keyUtil._isRelevantEvent( eventType, realKeyCode, charCode, domEvent, control );
       if( !org.eclipse.swt.EventUtil.getSuspended() && relevantEvent ) {
-        var control = keyUtil._getTargetControl();
         var hasKeyListener = keyUtil._hasKeyListener( control );
         var hasTraverseListener = keyUtil._hasTraverseListener( control );
         var isTraverseKey = false;

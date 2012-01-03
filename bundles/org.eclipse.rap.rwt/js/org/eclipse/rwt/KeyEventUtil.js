@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -93,7 +93,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
       var result = this._cancelKeys[ identifier ] === true;
       return result;
     },
-    
+
     _getKeyBindingIdentifier : function( domEvent, eventType, keyCode, charCode ) {
       var result = [];
       if( eventType === "keydown" && !isNaN( keyCode ) && keyCode > 0 ) {
@@ -128,14 +128,23 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
 //      return result;
 //    },
 
-    _isRelevantEvent : function( eventType, keyCode ) {
+    _isRelevantEvent : function( eventType, keyCode, charCode, domEvent, control ) {
       var result = false;
       if( this._isModifier( keyCode ) ) {
-        result = eventType === "keydown"; 
+        result = eventType === "keydown";
       } else {
         result = eventType === "keypress"; 
       }
-      return result;
+      var activeKeys = control ? control.getUserData( "activeKeys" ) : null
+      if( result && activeKeys ) {
+        var identifier = this._getKeyBindingIdentifier( domEvent, "keydown", keyCode, charCode );
+        result = activeKeys[ identifier ] === true;
+        if( !result ) {
+          identifier = this._getKeyBindingIdentifier( domEvent, "keypress", keyCode, charCode );
+          result = activeKeys[ identifier ] === true;
+        }
+      }
+      return result;    
     },
 
     _isModifier : function( keyCode ) {

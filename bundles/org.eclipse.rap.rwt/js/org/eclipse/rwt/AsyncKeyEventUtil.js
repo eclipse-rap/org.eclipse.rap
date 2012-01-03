@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -107,11 +107,14 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
         }
         if( hasKeyListener || ( hasTraverseListener && isTraverseKey ) ) {
           if( !this._isUntrustedKey( keyCode, domEvent ) ) {
+            var activeKeys = control.getUserData( "activeKeys" );
+            var relevantEvent = 
+              keyUtil._isRelevantEvent( eventType, keyCode, charCode, domEvent, control );
             if( this._keyEventRequestRunning ) {
               this._bufferedEvents.push( this._getEventInfo( domEvent ) );
               this._cancelDomEvent( domEvent );
               result = true;
-            } else if( keyUtil._isRelevantEvent( eventType, keyCode ) ) {              
+            } else if( relevantEvent ) {              
               this._pendingEventInfo = this._getEventInfo( domEvent );
               this._sendKeyDown( control, keyCode, charCode, domEvent );
               this._cancelDomEvent( domEvent );

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -180,6 +180,11 @@ public final class RWT {
    * representing a key sequence. When this property is set on the display, the client will be
    * instructed to issue events for the given key sequences. These key events can be captured using
    * <code>Display.addFilter()</code>.
+   * <p>
+   * The property can also be used in <code>Control.setData()</code>, in which case a key listener 
+   * attached to that control will only receive events for these key sequences. A control that has 
+   * no active keys set will issue events for all key strokes. 
+   * </p>
    * <p>
    * Valid strings for key sequences consist of one key and any number of modifier keys,
    * separated by <code>+</code>. Keys can be identified by their character or by any of the

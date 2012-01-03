@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.internal.widgets.displaykit;
+package org.eclipse.rwt.internal.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,10 +23,12 @@ import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -62,6 +64,20 @@ public class ActiveKeysUtil_Test extends TestCase {
     display.setData( RWT.ACTIVE_KEYS, keyBindings );
     Fixture.preserveWidgets();
 
+    String[] preserved = ( String[] )adapter.getPreserved( ActiveKeysUtil.PROP_ACTIVE_KEYS );
+    assertTrue( Arrays.equals( keyBindings, preserved ) );
+  }
+
+  public void testPreserveActiveKeys() {
+    Shell shell = new Shell( display );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
+    
+    String[] keyBindings = new String[] { "CTRL+A" };
+    shell.setData( RWT.ACTIVE_KEYS, keyBindings );
+    Fixture.preserveWidgets();
+    
     String[] preserved = ( String[] )adapter.getPreserved( ActiveKeysUtil.PROP_ACTIVE_KEYS );
     assertTrue( Arrays.equals( keyBindings, preserved ) );
   }
@@ -218,6 +234,20 @@ public class ActiveKeysUtil_Test extends TestCase {
     SetOperation operation = message.findSetOperation( "w1", "activeKeys" );
     JSONArray activeKeys = ( JSONArray )operation.getProperty( "activeKeys" );
     assertEquals( expected, activeKeys.join( "," ) );
+  }
+  
+  public void testWriteKeyBindingsOnWidget() throws JSONException {
+    Fixture.fakeNewRequest();
+    Shell shell = new Shell( display );
+    String[] activeKeys = new String[] { "x", "ALT+x", };
+    shell.setData( RWT.ACTIVE_KEYS, activeKeys );
+    ActiveKeysUtil.renderActiveKeys( shell );
+    
+    String expected = "\"#88\",\"ALT+#88\"";
+    Message message = Fixture.getProtocolMessage();
+    SetOperation operation = message.findSetOperation( shell, "activeKeys" );
+    JSONArray renderedKeys = ( JSONArray )operation.getProperty( "activeKeys" );
+    assertEquals( expected, renderedKeys.join( "," ) );
   }
 
   public void testWriteKeyBindings_UnrecognizedKey() {

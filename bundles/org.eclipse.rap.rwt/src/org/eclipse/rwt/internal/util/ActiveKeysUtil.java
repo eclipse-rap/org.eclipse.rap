@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
-package org.eclipse.swt.internal.widgets.displaykit;
+package org.eclipse.rwt.internal.util;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,10 +25,12 @@ import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.ProcessActionRunner;
+import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.internal.events.EventLCAUtil;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter;
 import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 
@@ -103,17 +105,22 @@ public final class ActiveKeysUtil {
     // prevent instantiation
   }
 
-  static void preserveActiveKeys( Display display ) {
+  public static void preserveActiveKeys( Display display ) {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_ACTIVE_KEYS, getActiveKeys( display ) );
   }
 
-  static void preserveCancelKeys( Display display ) {
+  public static void preserveActiveKeys( Control control ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    adapter.preserve( PROP_ACTIVE_KEYS, getActiveKeys( control ) );
+  }
+  
+  public static void preserveCancelKeys( Display display ) {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_CANCEL_KEYS, getCancelKeys( display ) );
   }
 
-  static void readKeyEvents( final Display display ) {
+  public static void readKeyEvents( final Display display ) {
     if( wasEventSent( JSConst.EVENT_KEY_DOWN ) ) {
       final int keyCode = readIntParam( JSConst.EVENT_KEY_DOWN_KEY_CODE );
       final int charCode = readIntParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE );
@@ -127,7 +134,7 @@ public final class ActiveKeysUtil {
     }
   }
 
-  static void renderActiveKeys( Display display ) {
+  public static void renderActiveKeys( Display display ) {
     if( !display.isDisposed() ) {
       IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
       String[] newValue = getActiveKeys( display );
@@ -140,7 +147,20 @@ public final class ActiveKeysUtil {
     }
   }
 
-  static void renderCancelKeys( Display display ) {
+  public static void renderActiveKeys( Control control ) {
+    if( !control.isDisposed() ) {
+      IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+      String[] newValue = getActiveKeys( control );
+      String[] oldValue = ( String[] )adapter.getPreserved( PROP_ACTIVE_KEYS );
+      boolean hasChanged = !Arrays.equals( oldValue, newValue );
+      if( hasChanged ) {
+        IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+        clientObject.setProperty( "activeKeys", translateKeySequences( newValue ) );
+      }
+    }
+  }
+
+  public static void renderCancelKeys( Display display ) {
     if( !display.isDisposed() ) {
       IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
       String[] newValue = getCancelKeys( display );
@@ -154,21 +174,30 @@ public final class ActiveKeysUtil {
   }
 
   private static String[] getActiveKeys( Display display ) {
-    String[] result = null;
     Object data = display.getData( RWT.ACTIVE_KEYS );
+    return getActiveKeysCopy( data );
+  }
+
+  private static String[] getActiveKeys( Control control ) {
+    Object data = control.getData( RWT.ACTIVE_KEYS );
+    return getActiveKeysCopy( data );
+  }
+  
+  private static String[] getActiveKeysCopy( Object data ) {
+    String[] result = null;
     if( data != null ) {
       if( data instanceof String[] ) {
         String[] activeKeys = ( String[] )data;
         result = new String[ activeKeys.length ];
         System.arraycopy( activeKeys, 0, result, 0, activeKeys.length );
       } else {
-        String mesg = "Illegal value for RWT.ACTIVE_KEYS in display data, must be a string array";
+        String mesg = "Illegal value for RWT.ACTIVE_KEYS in widget data, must be a string array";
         throw new IllegalArgumentException( mesg );
       }
     }
     return result;
   }
-
+  
   private static String[] getCancelKeys( Display display ) {
     String[] result = null;
     Object data = display.getData( RWT.CANCEL_KEYS );
