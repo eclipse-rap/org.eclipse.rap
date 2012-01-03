@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,12 +17,20 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rwt.SessionSingletonBase;
 import org.eclipse.rwt.internal.application.RWTFactory;
+import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.internal.SerializableCompatibility;
+import org.eclipse.swt.widgets.Display;
 
 class MeasurementOperator implements SerializableCompatibility {
+
+  private static final String PROPERTY_STRINGS = "strings";
+  private static final String METHOD_MEASURE_STRINGS = "measureStrings";
+  private static final String PROPERTY_FONTS = "fonts";
+  private static final String METHOD_PROBE = "probe";
 
   private final Set<Probe> probes;
   private final Set<MeasurementItem> items;
@@ -40,10 +48,10 @@ class MeasurementOperator implements SerializableCompatibility {
 
   void handleMeasurementRequests() {
     if( hasProbesToMeasure() ) {
-      writeFontProbingStatement();
+      renderFontProbing();
     }
     if( hasItemsToMeasure() ) {
-      writeTextMeasurements();
+      renderStringMeasurements();
     }
   }
 
@@ -96,10 +104,6 @@ class MeasurementOperator implements SerializableCompatibility {
     return !probes.isEmpty();
   }
 
-  private void writeFontProbingStatement() {
-    TextSizeUtilFacade.writeFontProbing();
-  }
-
   private void readMeasuredFontProbeSizes() {
     HttpServletRequest request = ContextProvider.getRequest();
     Iterator probeList = probes.iterator();
@@ -122,10 +126,6 @@ class MeasurementOperator implements SerializableCompatibility {
   private void addStartupProbesToBuffer() {
     Probe[] probeList = RWTFactory.getProbeStore().getProbes();
     probes.addAll( Arrays.asList( probeList ) );
-  }
-
-  private void writeTextMeasurements() {
-    TextSizeUtilFacade.writeStringMeasurements();
   }
 
   private boolean readMeasuredTextSizes() {
@@ -172,5 +172,37 @@ class MeasurementOperator implements SerializableCompatibility {
     HttpServletRequest request = ContextProvider.getRequest();
     String name = String.valueOf( item.hashCode() );
     return getSize( request.getParameter( name ) );
+  }
+
+  private static void renderStringMeasurements() {
+    MeasurementItem[] items = MeasurementOperator.getInstance().getItems();
+    if( items.length > 0 ) {
+      Object[] itemsObject = new Object[ items.length ];
+      for( int i = 0; i < items.length; i++ ) {
+        itemsObject[ i ] = MeasurementUtil.createItemParamObject( items[ i ] );
+      }
+      callDisplayMethod( METHOD_MEASURE_STRINGS, PROPERTY_STRINGS, itemsObject );
+    }
+  }
+
+  private static void renderFontProbing() {
+    Probe[] probeList = MeasurementOperator.getInstance().getProbes();
+    if( probeList.length > 0 ) {
+      Object[] probesObject = new Object[ probeList.length ];
+      for( int i = 0; i < probeList.length; i++ ) {
+        probesObject[ i ] = MeasurementUtil.createProbeParamObject( probeList[ i ] );
+      }
+      callDisplayMethod( METHOD_PROBE, PROPERTY_FONTS, probesObject );
+    }
+  }
+
+  private static void callDisplayMethod( String method, String property, Object value ) {
+    Display display = Display.getCurrent();
+    if( display != null ) {
+      IClientObject clientObject = ClientObjectFactory.getForDisplay( display );
+      Map<String, Object> args = new HashMap<String, Object>();
+      args.put( property, value );
+      clientObject.call( method, args );
+    }
   }
 }

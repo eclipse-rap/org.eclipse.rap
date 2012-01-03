@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,13 +13,14 @@ package org.eclipse.rwt.internal.textsize;
 
 
 import java.math.BigDecimal;
-
+import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontUtil;
 
 
 public class TextSizeUtil {
+
   private static final int STRING_EXTENT = 0;
   private static final int TEXT_EXTENT = 1;
 
@@ -63,10 +64,10 @@ public class TextSizeUtil {
     }
     return result;
   }
-  
+
   //////////////////
-  // helping methods
-  
+  // Helping methods
+
   private static Point createSizeForEmptyString( Font font ) {
     return new Point( 0, getCharHeight( font ) );
   }
@@ -81,7 +82,7 @@ public class TextSizeUtil {
       result = estimate( font, string, wrapWidth, mode );
       addItemToMeasure( font, string, wrapWidth, mode );
     }
-    
+
     // TODO [rst] Still returns wrong result for texts that contain only
     //            whitespace (and possibly more that one line)
     if( isHeightZero( result ) ) {
@@ -122,12 +123,12 @@ public class TextSizeUtil {
     String measurementString = createMeasurementString( string, mode );
     MeasurementUtil.addItemToMeasure( measurementString, font, wrapWidth );
   }
-  
+
   private static String createMeasurementString( String string, int mode ) {
     boolean expandNewLines = mode == TEXT_EXTENT;
-    return TextSizeUtilFacade.createMeasurementString( string, expandNewLines );
+    return createMeasurementString( string, expandNewLines );
   }
-  
+
   private static Point adjustWrapDetermination( Font font, String text, int wrapWidth ) {
     Point result = TextSizeEstimation.textExtent( font, text, wrapWidth );
     BigDecimal height = new BigDecimal( result.y );
@@ -136,7 +137,7 @@ public class TextSizeUtil {
     result.y = getCharHeight( font ) * rows; // use the real char height if available...
     return result;
   }
-  
+
   private static Point adjustHeightForWhitespaceTexts( Font font, Point result ) {
     return new Point( result.x, getCharHeight( font ) );
   }
@@ -168,6 +169,10 @@ public class TextSizeUtil {
   private static ProbeResult getProbeResult( Font font ) {
     FontData data = FontUtil.getData( font );
     return ProbeResultStore.getInstance().getProbeResult( data );
+  }
+
+  private static String createMeasurementString( String string, boolean expandNewLines ) {
+    return expandNewLines ? string : WidgetLCAUtil.replaceNewLines( string, " " );
   }
 
   private TextSizeUtil() {

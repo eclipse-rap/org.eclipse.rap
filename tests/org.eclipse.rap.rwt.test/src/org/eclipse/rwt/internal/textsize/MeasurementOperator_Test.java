@@ -14,13 +14,19 @@ package org.eclipse.rwt.internal.textsize;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
+import org.eclipse.rap.rwt.testfixture.Message;
+import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
+import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.application.RWTFactory;
+import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 
 
 public class MeasurementOperator_Test extends TestCase {
+
   private static final FontData FONT_DATA_1 = new FontData( "arial", 12, SWT.NONE );
   private static final FontData FONT_DATA_2 = new FontData( "courier", 14, SWT.BOLD );
   private static final String TEXT_TO_MEASURE = "textToMeasure";
@@ -29,7 +35,18 @@ public class MeasurementOperator_Test extends TestCase {
   private static final MeasurementItem MEASUREMENT_ITEM_2
     = new MeasurementItem( TEXT_TO_MEASURE, FONT_DATA_2, -1 );
 
+  private Display display;
   private MeasurementOperator operator;
+
+  protected void setUp() throws Exception {
+    Fixture.setUp();
+    display = new Display();
+    operator = MeasurementOperator.getInstance();
+  }
+
+  protected void tearDown() throws Exception {
+    Fixture.tearDown();
+  }
 
   public void testHandleMeasurementRequest() {
     requestProbingOfFont1();
@@ -143,14 +160,28 @@ public class MeasurementOperator_Test extends TestCase {
     assertEquals( 0, items.length );
   }
 
-  protected void setUp() throws Exception {
-    Fixture.setUp();
-    initializeSessionWithDisplay();
-    operator = MeasurementOperator.getInstance();
+  public void testRenderFontProbing() {
+    prepareTextProbing();
+
+    operator.handleMeasurementRequests();
+
+    checkResponseContainsProbeCall();
   }
 
-  protected void tearDown() throws Exception {
-    Fixture.tearDown();
+  public void testRenderStringMeasurements() {
+    prepareTextProbing();
+
+    operator.handleMeasurementRequests();
+
+    checkResponseContainsMeasurementCall();
+  }
+
+  public void testRenderStringMeasurementsWithDisposedDisplay() {
+    prepareTextProbing();
+    display.dispose();
+
+    // Ensures that no exception is thrown.
+    operator.handleMeasurementRequests();
   }
 
   private void createProbeOfFont1() {
@@ -202,12 +233,64 @@ public class MeasurementOperator_Test extends TestCase {
     return new MeasurementItem( textToMeasure, fontData, wrapWidth );
   }
 
-  private Display initializeSessionWithDisplay() {
-    return new Display();
-  }
-
   private void checkMeasurementItemBuffering( MeasurementItem item ) {
     assertEquals( 1, MeasurementOperator.getInstance().getItems().length );
     assertSame( item, MeasurementOperator.getInstance().getItems() [ 0 ] );
+  }
+
+  private void checkResponseContainsMeasurementCall() {
+    Message message = Fixture.getProtocolMessage();
+    CallOperation operation
+      = message.findCallOperation( DisplayUtil.getId( display ), "measureStrings" );
+    Object stringsProperty = operation.getProperty( "strings" );
+    String[] expected = getMeasurementCall();
+    checkResponseContainsContent( expected, stringsProperty.toString() );
+  }
+
+  private void checkResponseContainsProbeCall() {
+    Message message = Fixture.getProtocolMessage();
+    CallOperation operation = message.findCallOperation( DisplayUtil.getId( display ), "probe" );
+    Object fontsProperty = operation.getProperty( "fonts" );
+    String[] expected = getProbeCall();
+    checkResponseContainsContent( expected, fontsProperty.toString() );
+  }
+
+  private void checkResponseContainsContent( String[] expected, String markup ) {
+    for( int i = 0; i < expected.length; i++ ) {
+      assertTrue( "Expected to contain '" + expected[ i ] + "', but was '" + markup + "'",
+                  markup.contains( expected[ i ] ) );
+    }
+  }
+
+  private void prepareTextProbing() {
+    askForTextSizes();
+    Fixture.fakeResponseWriter();
+  }
+
+  private String[] getProbeCall() {
+    return new String[] {
+      ",[\"arial\"],10,true,false]",
+      ",[\"helvetia\",\"ms sans serif\"],12,true,false]",
+      ",[\"Bogus  Font  Name\"],12,true,false]"
+    };
+  }
+
+  private String[] getMeasurementCall() {
+    return new String[] {
+      ",\"FirstString\",[\"arial\"],10,true,false,-1]",
+      ",\"SecondString\",[\"helvetia\",\"ms sans serif\"],12,true,false,-1]",
+      ",\"Weird \\\" String \\\\\",[\"Bogus  Font  Name\"],12,true,false,-1]"
+    };
+  }
+
+  private void askForTextSizes() {
+    Font[] fonts = new Font[] {
+      Graphics.getFont( "arial", 10, SWT.BOLD ),
+      Graphics.getFont( "helvetia, ms sans serif", 12, SWT.BOLD ),
+      Graphics.getFont( "\"Bogus\" \\ Font \" Name", 12, SWT.BOLD )
+    };
+    Graphics.stringExtent( fonts[ 0 ], "FirstString" );
+    Graphics.stringExtent( fonts[ 1 ], "SecondString" );
+    Graphics.stringExtent( fonts[ 2 ], "Weird \" String \\" );
   }
 }
