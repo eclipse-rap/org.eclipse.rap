@@ -1041,6 +1041,7 @@ public class ControlLCAUtil {
     result.type = type;
     result.display = widget.getDisplay();
     result.widget = widget;
+    result.doit = true;
     return result;
   }
 
