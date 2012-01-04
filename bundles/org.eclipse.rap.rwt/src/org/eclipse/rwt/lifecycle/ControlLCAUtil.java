@@ -146,6 +146,7 @@ public class ControlLCAUtil {
                       Boolean.valueOf( TraverseEvent.hasListener( control ) ) );
     WidgetLCAUtil.preserveHelpListener( control );
     ActiveKeysUtil.preserveActiveKeys( control );
+    ActiveKeysUtil.preserveCancelKeys( control );
     preserveMenuDetectListener( control );
   }
 
@@ -394,6 +395,7 @@ public class ControlLCAUtil {
       renderFont( control );
       renderCursor( control );
       ActiveKeysUtil.renderActiveKeys( control );
+      ActiveKeysUtil.renderCancelKeys( control );
   //    TODO [rst] missing: writeControlListener( control );
       renderListenActivate( control );
       renderListenFocus( control );
@@ -1067,6 +1069,7 @@ public class ControlLCAUtil {
     } else {
       evt.character = translateCharacter( charCode );
       if( Character.isLetter( charCode ) ) {
+        // NOTE : keycodes from browser are the upper-case character, in SWT it is the lower-case
         evt.keyCode = Character.toLowerCase( charCode );
       }
     }

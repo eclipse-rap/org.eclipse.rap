@@ -163,10 +163,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AsyncKeyEventUtilTest", {
       var keyUtil = org.eclipse.rwt.AsyncKeyEventUtil.getInstance();
       var text = this._createTextWidget();
       this._setActiveKeys( text, [ "a", "b" ] );
-      var expected = {
-        "a" : true,
-        "b" : true
-      }
+      var expected = { "a" : true, "b" : true }
       assertEquals( expected, text.getUserData( "activeKeys" ) );
       this._disposeTextWidget( text );
     },
@@ -265,6 +262,58 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AsyncKeyEventUtilTest", {
       this._disposeTextWidget( text );
     },
 
+    testCancelKeySequenceNotProcessed : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var keyUtil = org.eclipse.rwt.AsyncKeyEventUtil.getInstance();
+      var text = this._createTextWidget();
+      this._setCancelKeys( text, [
+        "#90", 
+        "ALT+#90", 
+        "CTRL+#90", 
+        "SHIFT+#90" 
+      ] );
+      var log = [];
+      var listener = function( e ) {
+        log.push( e );
+      };
+      text.addEventListener( "keydown", listener );
+      text.addEventListener( "keypress", listener );
+      text.addEventListener( "keyup", listener );
+      var dom = qx.event.type.DomEvent;
+      testUtil.press( text, "z", false, 0 );
+      testUtil.press( text, "z", false, dom.CTRL_MASK );
+      testUtil.press( text, "z", false, dom.ALT_MASK );
+      testUtil.press( text, "z", false, dom.SHIFT_MASK );
+      assertEquals( 0, log.length );
+      testUtil.press( text, "z", false, dom.ALT_MASK | dom.CTRL_MASK);
+      assertEquals( 2, log.length );
+      this._disposeTextWidget( text );
+    },
+
+    testCancelKeySequenceSent : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var keyUtil = org.eclipse.rwt.AsyncKeyEventUtil.getInstance();
+      var text = this._createTextWidget();
+      this._setCancelKeys( text, [
+        "#90", 
+        "ALT+#90", 
+        "CTRL+#90", 
+        "SHIFT+#90" 
+      ] );
+
+      var dom = qx.event.type.DomEvent;
+      testUtil.press( text, "z", false, 0 );
+      keyUtil.allowEvent();
+      testUtil.press( text, "z", false, dom.CTRL_MASK );
+      keyUtil.allowEvent();
+      testUtil.press( text, "z", false, dom.ALT_MASK );
+      keyUtil.allowEvent();
+      testUtil.press( text, "z", false, dom.SHIFT_MASK );
+      keyUtil.allowEvent();
+      assertEquals( 4, testUtil.getRequestsSend() );
+      this._disposeTextWidget( text );
+    },
+
     /////////
     // Helper
 
@@ -312,6 +361,18 @@ qx.Class.define( "org.eclipse.rwt.test.tests.AsyncKeyEventUtilTest", {
         "action" : "set",
         "properties" : {
           "activeKeys" : activeKeys
+        }
+      } );
+    },
+
+    _setCancelKeys : function( widget, cancelKeys ) {
+      var id = org.eclipse.rwt.protocol.ObjectManager.getId( widget );
+      var processor = org.eclipse.rwt.protocol.Processor;
+      processor.processOperation( {
+        "target" : id,
+        "action" : "set",
+        "properties" : {
+          "cancelKeys" : cancelKeys
         }
       } );
     }

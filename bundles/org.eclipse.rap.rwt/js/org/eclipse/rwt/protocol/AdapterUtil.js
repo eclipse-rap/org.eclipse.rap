@@ -42,7 +42,8 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     "bounds",
     "font",
     "menu",
-    "activeKeys"
+    "activeKeys",
+    "cancelKeys"
   ],
   
   _controlPropertyHandler : {
@@ -137,6 +138,10 @@ org.eclipse.rwt.protocol.AdapterUtil = {
     "activeKeys" : function( widget, value ) {
       var map = qx.lang.Object.fromArray( value );
       widget.setUserData( "activeKeys", map );
+    },
+    "cancelKeys" : function( widget, value ) {
+      var map = qx.lang.Object.fromArray( value );
+      widget.setUserData( "cancelKeys", map );
     }
   },
 

@@ -114,12 +114,17 @@ public final class ActiveKeysUtil {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( PROP_ACTIVE_KEYS, getActiveKeys( control ) );
   }
-  
+
   public static void preserveCancelKeys( Display display ) {
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
     adapter.preserve( PROP_CANCEL_KEYS, getCancelKeys( display ) );
   }
 
+  public static void preserveCancelKeys( Control control ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+    adapter.preserve( PROP_CANCEL_KEYS, getCancelKeys( control ) );
+  }
+  
   public static void readKeyEvents( final Display display ) {
     if( wasEventSent( JSConst.EVENT_KEY_DOWN ) ) {
       final int keyCode = readIntParam( JSConst.EVENT_KEY_DOWN_KEY_CODE );
@@ -173,28 +178,51 @@ public final class ActiveKeysUtil {
     }
   }
 
+  public static void renderCancelKeys( Control control ) {
+    if( !control.isDisposed() ) {
+      IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
+      String[] newValue = getCancelKeys( control );
+      String[] oldValue = ( String[] )adapter.getPreserved( PROP_CANCEL_KEYS );
+      boolean hasChanged = !Arrays.equals( oldValue, newValue );
+      if( hasChanged ) {
+        IClientObject clientObject = ClientObjectFactory.getForWidget( control );
+        clientObject.setProperty( "cancelKeys", translateKeySequences( newValue ) );
+      }
+    }
+  }
+  
   private static String[] getActiveKeys( Display display ) {
     Object data = display.getData( RWT.ACTIVE_KEYS );
-    return getActiveKeysCopy( data );
+    String[] result = null;
+    if( data != null ) {
+      if( data instanceof String[] ) {
+        result = getArrayCopy( data );
+      } else {
+        String mesg = "Illegal value for RWT.ACTIVE_KEYS in display data, must be a string array";
+        throw new IllegalArgumentException( mesg );
+      }
+    }
+    return result;
   }
 
   private static String[] getActiveKeys( Control control ) {
     Object data = control.getData( RWT.ACTIVE_KEYS );
-    return getActiveKeysCopy( data );
-  }
-  
-  private static String[] getActiveKeysCopy( Object data ) {
     String[] result = null;
     if( data != null ) {
       if( data instanceof String[] ) {
-        String[] activeKeys = ( String[] )data;
-        result = new String[ activeKeys.length ];
-        System.arraycopy( activeKeys, 0, result, 0, activeKeys.length );
+        result = getArrayCopy( data );
       } else {
         String mesg = "Illegal value for RWT.ACTIVE_KEYS in widget data, must be a string array";
         throw new IllegalArgumentException( mesg );
       }
     }
+    return result;
+  }
+
+  private static String[] getArrayCopy( Object data ) {
+    String[] activeKeys = ( String[] )data;
+    String[] result = new String[ activeKeys.length ];
+    System.arraycopy( activeKeys, 0, result, 0, activeKeys.length );
     return result;
   }
   
@@ -203,11 +231,23 @@ public final class ActiveKeysUtil {
     Object data = display.getData( RWT.CANCEL_KEYS );
     if( data != null ) {
       if( data instanceof String[] ) {
-        String[] cancelKeys = ( String[] )data;
-        result = new String[ cancelKeys.length ];
-        System.arraycopy( cancelKeys, 0, result, 0, cancelKeys.length );
+        result = getArrayCopy( data );
       } else {
         String mesg = "Illegal value for RWT.CANCEL_KEYS in display data, must be a string array";
+        throw new IllegalArgumentException( mesg );
+      }
+    }
+    return result;
+  }
+  
+  private static String[] getCancelKeys( Control control ) {
+    String[] result = null;
+    Object data = control.getData( RWT.CANCEL_KEYS );
+    if( data != null ) {
+      if( data instanceof String[] ) {
+        result = getArrayCopy( data );
+      } else {
+        String mesg = "Illegal value for RWT.CANCEL_KEYS in widget data, must be a string array";
         throw new IllegalArgumentException( mesg );
       }
     }

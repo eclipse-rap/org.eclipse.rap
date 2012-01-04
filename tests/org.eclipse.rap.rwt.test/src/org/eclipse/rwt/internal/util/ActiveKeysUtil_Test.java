@@ -116,6 +116,20 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertTrue( Arrays.equals( keyBindings, preserved ) );
   }
 
+  public void testPreserveCancelKeysOnWidget() {
+    Shell shell = new Shell( display );
+    Fixture.markInitialized( display );
+    Fixture.markInitialized( shell );
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
+    
+    String[] keyBindings = new String[] { "CTRL+A" };
+    shell.setData( RWT.CANCEL_KEYS, keyBindings );
+    Fixture.preserveWidgets();
+    
+    String[] preserved = ( String[] )adapter.getPreserved( ActiveKeysUtil.PROP_CANCEL_KEYS );
+    assertTrue( Arrays.equals( keyBindings, preserved ) );
+  }
+
   public void testCancelKeySafeCopy() {
     Fixture.markInitialized( display );
     IWidgetAdapter adapter = DisplayUtil.getAdapter( display );
@@ -235,7 +249,7 @@ public class ActiveKeysUtil_Test extends TestCase {
     JSONArray activeKeys = ( JSONArray )operation.getProperty( "activeKeys" );
     assertEquals( expected, activeKeys.join( "," ) );
   }
-  
+
   public void testWriteKeyBindingsOnWidget() throws JSONException {
     Fixture.fakeNewRequest();
     Shell shell = new Shell( display );
@@ -250,6 +264,33 @@ public class ActiveKeysUtil_Test extends TestCase {
     assertEquals( expected, renderedKeys.join( "," ) );
   }
 
+  public void testWriteCancelKeys() throws JSONException {
+    Fixture.fakeNewRequest();
+    String[] activeKeys = new String[] { "x", "ALT+x", };
+    display.setData( RWT.CANCEL_KEYS, activeKeys );
+    ActiveKeysUtil.renderCancelKeys( display );
+
+    String expected = "\"#88\",\"ALT+#88\"";
+    Message message = Fixture.getProtocolMessage();
+    SetOperation operation = message.findSetOperation( "w1", "cancelKeys" );
+    JSONArray renderedKeys = ( JSONArray )operation.getProperty( "cancelKeys" );
+    assertEquals( expected, renderedKeys.join( "," ) );
+  }
+
+  public void testWriteCancelKeysOnWidget() throws JSONException {
+    Fixture.fakeNewRequest();
+    Shell shell = new Shell( display );
+    String[] activeKeys = new String[] { "x", "ALT+x", };
+    shell.setData( RWT.CANCEL_KEYS, activeKeys );
+    ActiveKeysUtil.renderCancelKeys( shell );
+    
+    String expected = "\"#88\",\"ALT+#88\"";
+    Message message = Fixture.getProtocolMessage();
+    SetOperation operation = message.findSetOperation( shell, "cancelKeys" );
+    JSONArray renderedKeys = ( JSONArray )operation.getProperty( "cancelKeys" );
+    assertEquals( expected, renderedKeys.join( "," ) );
+  }
+  
   public void testWriteKeyBindings_UnrecognizedKey() {
     Fixture.fakeNewRequest();
 

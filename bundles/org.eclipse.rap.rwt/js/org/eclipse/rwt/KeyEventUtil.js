@@ -46,10 +46,9 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
       if( eventType === "keydown" ) {
         this._lastKeyCode = keyCode;
       }
+      var widget = this._getTargetControl();
       var identifier = this._getKeyBindingIdentifier( domEvent, eventType, keyCode, charCode );
       if( this._isKeyBinding( identifier ) ) {
-//      TODO [rst] Pass focused widget instead of null
-//      var widget = this._getTargetControl();
         this._attachKeyDown( null, keyCode, charCode, domEvent );
         org.eclipse.swt.Request.getInstance().send();
       } else {
@@ -57,16 +56,15 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
         result = !util.intercept( eventType, this._lastKeyCode, charCode, domEvent );
       }
       var cancelNext = this._cancelNext && eventType !== "keydown";
-      if( result && ( this._isCancelKey( identifier ) || cancelNext ) ) {
+      if( result && ( this._isCancelKey( widget, identifier ) || cancelNext ) ) {
         org.eclipse.rwt.EventHandlerUtil.stopDomEvent( domEvent );
         if( eventType === "keydown" ) {
           this._cancelNext = true;
         }
         result = false;
       } else if( eventType === "keydown" ) {
-          this._cancelNext = false;
-        }
-      
+        this._cancelNext = false;
+      }
       this._lastEventType = eventType;
       return result;
     },
@@ -80,17 +78,21 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
       }
       return util;
     },
-    
+
     //////////////////////////////////////////////////////////////
     // Helper, also used by AsyncKeyEventUtil and SyncKeyEventUtil
-    
+
     _isKeyBinding : function( identifier ) {
       var result = this._keyBindings[ identifier ] === true;
       return result;
     },
-    
-    _isCancelKey : function( identifier ) {
+
+    _isCancelKey : function( widget, identifier ) {
       var result = this._cancelKeys[ identifier ] === true;
+      if( !result && widget && widget.getUserData( "cancelKeys" ) ) {
+        var cancelKeys = widget.getUserData( "cancelKeys" );
+        var result = cancelKeys[ identifier ] === true;
+      }
       return result;
     },
 
@@ -217,3 +219,6 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
 
   }
 } );
+
+// force instance:
+org.eclipse.rwt.KeyEventUtil.getInstance();
