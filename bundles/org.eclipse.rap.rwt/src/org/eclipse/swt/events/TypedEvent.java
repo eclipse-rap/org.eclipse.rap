@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,6 +77,8 @@ public class TypedEvent extends Event {
     PaintEvent.class
   };
 
+  private org.eclipse.swt.widgets.Event sourceEvent;
+
   /**
    * the display where the event occurred
    *
@@ -105,6 +107,7 @@ public class TypedEvent extends Event {
     display = e.display;
     widget = e.widget;
     data = e.data;
+    sourceEvent = e;
   }
 
   /**
@@ -196,6 +199,10 @@ public class TypedEvent extends Event {
   private org.eclipse.swt.widgets.Event processFilters() {
     IFilterEntry[] filters = getFilterEntries();
     org.eclipse.swt.widgets.Event result = new org.eclipse.swt.widgets.Event();
+    if( sourceEvent != null ) {
+      copyFields( sourceEvent, result );
+    }
+    result.display = display;
     result.widget = widget;
     result.type = getID();
     for( int i = 0; !isFiltered( result ) && i < filters.length; i++ ) {
@@ -204,6 +211,29 @@ public class TypedEvent extends Event {
       }
     }
     return result;
+  }
+
+  private void copyFields( org.eclipse.swt.widgets.Event from, org.eclipse.swt.widgets.Event to ) {
+    to.button = from.button;
+    to.character = from.character;
+    to.count = from.count;
+    to.data = from.data;
+    to.detail = from.detail;
+    to.display = from.display;
+    to.doit = from.doit;
+    to.end = from.end;
+    to.height = from.height;
+    to.index = from.index;
+    to.item = from.item;
+    to.keyCode = from.keyCode;
+    to.start = from.start;
+    to.stateMask = from.stateMask;
+    to.text = from.text;
+    to.type = from.type;
+    to.widget = from.widget;
+    to.width = from.width;
+    to.x = from.x;
+    to.y = from.y;
   }
 
   private static boolean isFiltered( org.eclipse.swt.widgets.Event event ) {

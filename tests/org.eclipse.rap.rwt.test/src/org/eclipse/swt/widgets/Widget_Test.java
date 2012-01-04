@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,7 @@ public class Widget_Test extends TestCase {
     Object adapterOfDisposedWidget = shell.getAdapter( IWidgetAdapter.class );
     assertNotNull( adapterOfDisposedWidget );
   }
-  
+
   public void testCheckWidget() throws Throwable {
     final Widget widget = new Text( shell, SWT.NONE );
     Runnable target = new Runnable() {
@@ -58,9 +58,9 @@ public class Widget_Test extends TestCase {
       fail( "Illegal thread access expected." );
     } catch( SWTException swte ) {
       assertEquals( SWT.ERROR_THREAD_INVALID_ACCESS, swte.code );
-    } 
+    }
   }
-  
+
   public void testData() {
     Widget widget = new Text( shell, SWT.NONE );
 
@@ -185,7 +185,7 @@ public class Widget_Test extends TestCase {
     } catch( SWTException expected ) {
     }
   }
-  
+
   public void testDisposeWithException() {
     shell.addDisposeListener( new DisposeListener() {
       public void widgetDisposed( DisposeEvent event ) {
@@ -249,6 +249,24 @@ public class Widget_Test extends TestCase {
     final StringBuilder log = new StringBuilder();
     display.addFilter( SWT.Resize, new Listener() {
       public void handleEvent( Event event ) {
+        assertEquals( 2, event.button );
+        assertEquals( 'a', event.character );
+        assertEquals( 4, event.count );
+        assertNotNull( event.data );
+        assertEquals( 6, event.detail );
+        assertSame( display, event.display );
+        assertEquals( false, event.doit );
+        assertEquals( 8, event.end );
+        assertEquals( 10, event.height );
+        assertEquals( 12, event.index );
+        assertEquals( shell, event.item );
+        assertEquals( 14, event.keyCode );
+        assertEquals( 16, event.start );
+        assertEquals( 18, event.stateMask );
+        assertEquals( "foo", event.text );
+        assertEquals( 20, event.width );
+        assertEquals( 22, event.x );
+        assertEquals( 24, event.y );
         assertEquals( SWT.Resize, event.type );
         assertEquals( shell, event.widget );
         log.append( "filter" );
@@ -357,7 +375,7 @@ public class Widget_Test extends TestCase {
     } );
     assertTrue( shell.isListening( SWT.Help ) );
   }
-  
+
   public void testGetDisplay() {
     assertSame( display, shell.getDisplay() );
   }
@@ -373,7 +391,7 @@ public class Widget_Test extends TestCase {
     thread.join();
     assertSame( display, widgetDisplay[ 0 ] );
   }
-  
+
   public void testReskin() {
     final java.util.List<Widget> log = new ArrayList<Widget>();
     Listener listener = new Listener() {
