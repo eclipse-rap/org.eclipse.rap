@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -375,6 +375,30 @@ public class ControlLCAUtil_Test extends TestCase {
     assertEquals( 0, event.character );
     assertEquals( 0, event.keyCode );
     assertTrue( event.doit );
+  }
+
+  public void testProcessKeyEventWithDisplayFilter() {
+    final List<Event> eventLog = new ArrayList<Event>();
+    shell.open();
+    display.addFilter( SWT.KeyDown, new Listener() {
+      public void handleEvent( Event event ) {
+        eventLog.add( event );
+      }
+    } );
+    String shellId = WidgetUtil.getId( shell );
+    eventLog.clear();
+    Fixture.fakeNewRequest();
+    Fixture.fakePhase( PhaseId.READ_DATA );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, shellId );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "" );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "65" );
+    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "97" );
+    ControlLCAUtil.processKeyEvents( shell );
+    Fixture.fakePhase( PhaseId.PROCESS_ACTION );
+    display.readAndDispatch();
+    Event event = eventLog.get( 0 );
+    assertEquals( 97, event.character );
+    assertEquals( 97, event.keyCode );
   }
 
   public void testProcessKeyEventWithLowerCaseCharacter() {

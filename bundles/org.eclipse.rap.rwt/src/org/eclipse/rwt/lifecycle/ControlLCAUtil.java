@@ -244,22 +244,26 @@ public class ControlLCAUtil {
       final int traverseKey = getTraverseKey( keyCode, stateMask );
       ProcessActionRunner.add( new Runnable() {
         public void run() {
+          Event event;
           boolean allow = true;
           if( traverseKey != SWT.TRAVERSE_NONE ) {
-            TraverseEvent traverseEvent = new TraverseEvent( control );
-            initializeKeyEvent( traverseEvent, keyCode, charCode, stateMask );
-            traverseEvent.detail = traverseKey;
+            event = createEvent( control, TraverseEvent.KEY_TRAVERSED );
+            initializeKeyEvent( event, keyCode, charCode, stateMask );
+            event.detail = traverseKey;
+            TraverseEvent traverseEvent = new TraverseEvent( event );
             traverseEvent.processEvent();
             if( !traverseEvent.doit ) {
               allow = false;
             }
           }
-          KeyEvent pressedEvent = new KeyEvent( control, KeyEvent.KEY_PRESSED );
-          initializeKeyEvent( pressedEvent, keyCode, charCode, stateMask );
+          event = createEvent( control, KeyEvent.KEY_PRESSED );
+          initializeKeyEvent( event, keyCode, charCode, stateMask );
+          KeyEvent pressedEvent = new KeyEvent( event );
           pressedEvent.processEvent();
           if( pressedEvent.doit ) {
-            KeyEvent releasedEvent = new KeyEvent( control, KeyEvent.KEY_RELEASED );
-            initializeKeyEvent( releasedEvent, keyCode, charCode, stateMask );
+            event = createEvent( control, KeyEvent.KEY_RELEASED );
+            initializeKeyEvent( event, keyCode, charCode, stateMask );
+            KeyEvent releasedEvent = new KeyEvent( event );
             releasedEvent.processEvent();
           } else {
             allow = false;
@@ -1030,6 +1034,14 @@ public class ControlLCAUtil {
   //////////////////////////
   // event processing helper
 
+  private static Event createEvent( Widget widget, int type ) {
+    Event result = new Event();
+    result.type = type;
+    result.display = widget.getDisplay();
+    result.widget = widget;
+    return result;
+  }
+
   private static SelectionEvent createSelectionEvent( Widget widget,
                                                       Item item,
                                                       boolean readBounds,
@@ -1046,7 +1058,7 @@ public class ControlLCAUtil {
     return new SelectionEvent( widget, item, type, bounds, stateMask, null, true, SWT.NONE );
   }
 
-  private static void initializeKeyEvent( KeyEvent evt, int keyCode, int charCode, int stateMask ) {
+  private static void initializeKeyEvent( Event evt, int keyCode, int charCode, int stateMask ) {
     evt.keyCode = translateKeyCode( keyCode );
     if( charCode == 0 ) {
       if( ( evt.keyCode & SWT.KEYCODE_BIT ) == 0 ) {
