@@ -2201,6 +2201,7 @@ public final class BindingManager extends HandleObjectManager implements
           throw new IllegalStateException();
         }
         display.setData( RWT.ACTIVE_KEYS, array );
+        display.setData( RWT.CANCEL_KEYS, array );
 	  }
 	}
 	// ENDRAP [if]
