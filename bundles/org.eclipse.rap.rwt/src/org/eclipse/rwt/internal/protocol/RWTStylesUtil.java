@@ -102,7 +102,7 @@ public final class RWTStylesUtil {
     String widgetType = clazz.getName();
     for( AllowedStyles allowedStyles : AllowedStyles.values() ) {
       if( allowedStyles.getWidgetType().equals( widgetType ) ) {
-        result = allowedStyles.getStyles();
+        result = allowedStyles.getStyles().clone();
       }
     }
     return result;
