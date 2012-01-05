@@ -14,25 +14,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.rwt.RWT;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
-import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
-import org.eclipse.rwt.lifecycle.ProcessActionRunner;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.internal.events.EventLCAUtil;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter;
-import org.eclipse.swt.internal.widgets.IDisplayAdapter.IFilterEntry;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 
 
 public final class ActiveKeysUtil {
@@ -123,20 +112,6 @@ public final class ActiveKeysUtil {
   public static void preserveCancelKeys( Control control ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( PROP_CANCEL_KEYS, getCancelKeys( control ) );
-  }
-  
-  public static void readKeyEvents( final Display display ) {
-    if( wasEventSent( JSConst.EVENT_KEY_DOWN ) ) {
-      final int keyCode = readIntParam( JSConst.EVENT_KEY_DOWN_KEY_CODE );
-      final int charCode = readIntParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE );
-      final int stateMask = EventLCAUtil.readStateMask( JSConst.EVENT_KEY_DOWN_MODIFIER );
-      ProcessActionRunner.add( new Runnable() {
-        public void run() {
-          Event event = createEvent( display, keyCode, charCode, stateMask );
-          processEvent( display, event );
-        }
-      } );
-    }
   }
 
   public static void renderActiveKeys( Display display ) {
@@ -319,221 +294,6 @@ public final class ActiveKeysUtil {
       }
     } else {
       throw new IllegalArgumentException( "Unrecognized key: " + key );
-    }
-    return result;
-  }
-
-  private static Event createEvent( Display display, int keyCode, int charCode, int stateMask ) {
-    Event event = new Event();
-    event.display = display;
-    event.type = SWT.KeyDown;
-    if( charCode == 0 ) {
-      event.keyCode = translateKeyCode( keyCode );
-      if( ( event.keyCode & SWT.KEYCODE_BIT ) == 0 ) {
-        event.character = translateCharacter( event.keyCode );
-      }
-    } else {
-      event.keyCode = charCode;
-      event.character = translateCharacter( charCode );
-    }
-    event.stateMask = stateMask;
-    return event;
-  }
-
-  private static void processEvent( Display display, Event event ) {
-    IFilterEntry[] filters = getFilterEntries( display );
-    for( int i = 0; i < filters.length; i++ ) {
-      if( filters[ i ].getType() == event.type ) {
-        filters[ i ].getListener().handleEvent( event );
-      }
-    }
-  }
-
-  private static IFilterEntry[] getFilterEntries( Display display ) {
-    IDisplayAdapter adapter = display.getAdapter( IDisplayAdapter.class );
-    return adapter.getFilters();
-  }
-
-  private static boolean wasEventSent( String eventName ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    String widgetId = request.getParameter( eventName );
-    return "w1".equals( widgetId );
-  }
-
-  private static int readIntParam( String paramName ) {
-    String value = readStringParam( paramName );
-    return NumberFormatUtil.parseInt( value );
-  }
-
-  private static String readStringParam( String paramName ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    return request.getParameter( paramName );
-  }
-
-  // translates key code qooxdoo -> SWT
-  private static int translateKeyCode( int keyCode ) {
-    int result;
-    switch( keyCode ) {
-      case 20:
-        result = SWT.CAPS_LOCK;
-      break;
-      case 38:
-        result = SWT.ARROW_UP;
-      break;
-      case 37:
-        result = SWT.ARROW_LEFT;
-      break;
-      case 39:
-        result = SWT.ARROW_RIGHT;
-      break;
-      case 40:
-        result = SWT.ARROW_DOWN;
-      break;
-      case 33:
-        result = SWT.PAGE_UP;
-      break;
-      case 34:
-        result = SWT.PAGE_DOWN;
-      break;
-      case 35:
-        result = SWT.END;
-      break;
-      case 36:
-        result = SWT.HOME;
-      break;
-      case 45:
-        result = SWT.INSERT;
-      break;
-      case 46:
-        result = SWT.DEL;
-      break;
-      case 112:
-        result = SWT.F1;
-      break;
-      case 113:
-        result = SWT.F2;
-      break;
-      case 114:
-        result = SWT.F3;
-      break;
-      case 115:
-        result = SWT.F4;
-      break;
-      case 116:
-        result = SWT.F5;
-      break;
-      case 117:
-        result = SWT.F6;
-      break;
-      case 118:
-        result = SWT.F7;
-      break;
-      case 119:
-        result = SWT.F8;
-      break;
-      case 120:
-        result = SWT.F9;
-      break;
-      case 121:
-        result = SWT.F10;
-      break;
-      case 122:
-        result = SWT.F11;
-      break;
-      case 123:
-        result = SWT.F12;
-      break;
-      case 144:
-        result = SWT.NUM_LOCK;
-      break;
-      case 44:
-        result = SWT.PRINT_SCREEN;
-      break;
-      case 145:
-        result = SWT.SCROLL_LOCK;
-      break;
-      case 19:
-        result = SWT.PAUSE;
-      break;
-      case 96:
-        result = SWT.KEYPAD_0;
-      break;
-      case 97:
-        result = SWT.KEYPAD_1;
-      break;
-      case 98:
-        result = SWT.KEYPAD_2;
-      break;
-      case 99:
-        result = SWT.KEYPAD_3;
-      break;
-      case 100:
-        result = SWT.KEYPAD_4;
-      break;
-      case 101:
-        result = SWT.KEYPAD_5;
-      break;
-      case 102:
-        result = SWT.KEYPAD_6;
-      break;
-      case 103:
-        result = SWT.KEYPAD_7;
-      break;
-      case 104:
-        result = SWT.KEYPAD_8;
-      break;
-      case 105:
-        result = SWT.KEYPAD_9;
-      break;
-      case 106:
-        result = SWT.KEYPAD_MULTIPLY;
-      break;
-      case 107:
-        result = SWT.KEYPAD_ADD;
-      break;
-      case 109:
-        result = SWT.KEYPAD_SUBTRACT;
-      break;
-      case 110:
-        result = SWT.KEYPAD_DECIMAL;
-      break;
-      case 111:
-        result = SWT.KEYPAD_DIVIDE;
-      break;
-      case 188:
-        result = ',';
-      break;
-      case 190:
-        result = '.';
-      break;
-      case 191:
-        result = '/';
-      break;
-      case 192:
-        result = '`';
-      break;
-      case 219:
-        result = '[';
-      break;
-      case 220:
-        result = '\\';
-      break;
-      case 221:
-        result = ']';
-      break;
-      case 222:
-        result = '\'';
-      break;
-      default:
-        result = keyCode;
-    }
-    return result;
-  }
-
-  private static char translateCharacter( int keyCode ) {
-    char result = ( char )0;
-    if( Character.isDefined( ( char )keyCode ) ) {
-      result = ( char )keyCode;
     }
     return result;
   }

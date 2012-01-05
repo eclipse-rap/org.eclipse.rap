@@ -10,7 +10,6 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
@@ -141,72 +140,6 @@ public class ActiveKeysUtil_Test extends TestCase {
 
     String[] preserved = ( String[] )adapter.getPreserved( ActiveKeysUtil.PROP_CANCEL_KEYS );
     assertEquals( "CTRL+A", preserved[ 0 ] );
-  }
-  
-  public void testNoKeyEventsForIllegalWidgetId() {
-    final ArrayList<Event> log = new ArrayList<Event>();
-    display.addFilter( SWT.KeyDown, new Listener() {
-      public void handleEvent( Event event ) {
-        log.add( event );
-      }
-    } );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, "" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "32" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "ctrl,alt" );
-
-    Fixture.readDataAndProcessAction( display );
-
-    assertEquals( 0, log.size() );
-  }
-
-  public void testReadKeyBindingEvents_CtrlAltSpace() {
-    final ArrayList<Event> log = new ArrayList<Event>();
-    display.addFilter( SWT.KeyDown, new Listener() {
-      public void handleEvent( Event event ) {
-        log.add( event );
-      }
-    } );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, "w1" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "32" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "ctrl,alt" );
-
-    Fixture.readDataAndProcessAction( display );
-
-    assertEquals( 1, log.size() );
-    Event event = log.get( 0 );
-    assertEquals( SWT.KeyDown, event.type );
-    assertEquals( null, event.widget );
-    assertEquals( 32, event.keyCode );
-    assertEquals( ' ', event.character );
-    assertEquals( SWT.CTRL | SWT.ALT, event.stateMask );
-  }
-
-  public void testReadKeyBindingEvents_AltShiftF5() {
-    final java.util.List<Event> log = new ArrayList<Event>();
-    display.addFilter( SWT.KeyDown, new Listener() {
-      public void handleEvent( Event event ) {
-        log.add( event );
-      }
-    } );
-    Fixture.fakeNewRequest();
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN, "w1" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_KEY_CODE, "116" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_CHAR_CODE, "0" );
-    Fixture.fakeRequestParam( JSConst.EVENT_KEY_DOWN_MODIFIER, "alt,shift" );
-
-    Fixture.readDataAndProcessAction( display );
-
-    assertEquals( 1, log.size() );
-    Event event = log.get( 0 );
-    assertEquals( SWT.KeyDown, event.type );
-    assertEquals( null, event.widget );
-    assertEquals( SWT.F5, event.keyCode );
-    assertEquals( 0, event.character );
-    assertEquals( SWT.SHIFT | SWT.ALT, event.stateMask );
   }
 
   public void testWriteKeyBindings() throws JSONException {

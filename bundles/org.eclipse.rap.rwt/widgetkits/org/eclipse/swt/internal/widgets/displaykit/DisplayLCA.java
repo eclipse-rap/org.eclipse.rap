@@ -109,7 +109,6 @@ public class DisplayLCA implements IDisplayLifeCycleAdapter {
     readBounds( display );
     readCursorLocation( display );
     readFocusControl( display );
-    ActiveKeysUtil.readKeyEvents( display );
     WidgetTreeVisitor visitor = new AllWidgetTreeVisitor() {
       public boolean doVisit( Widget widget ) {
         IWidgetLifeCycleAdapter adapter = WidgetUtil.getLCA( widget );

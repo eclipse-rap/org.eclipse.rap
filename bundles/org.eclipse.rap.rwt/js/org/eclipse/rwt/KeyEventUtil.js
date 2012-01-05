@@ -49,7 +49,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
       var widget = this._getTargetControl();
       var identifier = this._getKeyBindingIdentifier( domEvent, eventType, keyCode, charCode );
       if( this._isKeyBinding( identifier ) ) {
-        this._attachKeyDown( null, keyCode, charCode, domEvent );
+        this._attachKeyDown( widget, keyCode, charCode, domEvent );
         org.eclipse.swt.Request.getInstance().send();
       } else {
         var util = this._getDelegate();
