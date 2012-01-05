@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -460,7 +460,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.menuItem = new this._menuItemClass( "push" );
       this.menuItem.setText( "bla" ); 
       this.menu.addMenuItemAt( this.menuItem, 0 );
-      var widget = new qx.ui.basic.Atom( "bla" );
+      var widget = this._createControl();
       widget.addToDocument();
       widget.setLocation( 10, 10 );
       widget.setDimension( 10, 10 );
@@ -482,27 +482,38 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.disposeMenu();            
     },
 
-    testContextmenuStopsPropagation : function() {
+    testContextmenuOpenOnControl : function() {
       var menu1 = new org.eclipse.rwt.widgets.Menu();
-      var menu2 = new org.eclipse.rwt.widgets.Menu();
       menu1.setHasMenuListener( true );
-      menu2.setHasMenuListener( true );
-      var parent = new org.eclipse.swt.widgets.Composite();
+      var parent = this._createControl();
       parent.addToDocument();    
       parent.setContextMenu( menu1 );
       this._addContextMenuListener( parent );      
       var widget = new qx.ui.basic.Atom( "bla" );
-      widget.setContextMenu( menu2 );
       widget.setParent( parent );
-      this._addContextMenuListener( widget );      
       this.testUtil.flush();
       assertFalse( menu1.isSeeable() );
-      assertFalse( menu2.isSeeable() );
       this.testUtil.rightClick( widget );
-      assertTrue( menu2.isSeeable() );
+      assertTrue( menu1.isSeeable() );
+      menu1.destroy();            
+      widget.destroy();
+      parent.destroy();
+    },
+
+    testContextmenuNotOpenOnParentControl : function() {
+      var menu1 = new org.eclipse.rwt.widgets.Menu();
+      menu1.setHasMenuListener( true );
+      var parent = this._createControl();
+      parent.addToDocument();    
+      parent.setContextMenu( menu1 );
+      this._addContextMenuListener( parent );      
+      var widget = this._createControl();
+      widget.setParent( parent );
+      this.testUtil.flush();
+      assertFalse( menu1.isSeeable() );
+      this.testUtil.rightClick( widget );
       assertFalse( menu1.isSeeable() );
       menu1.destroy();            
-      menu2.destroy();            
       widget.destroy();
       parent.destroy();
     },
@@ -941,7 +952,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.menuItem = new this._menuItemClass( "push" );
       this.menuItem.setText( "bla" ); 
       this.menu.addMenuItemAt( this.menuItem, 0 );
-      var widget = new qx.ui.basic.Atom( "bla" );
+      var widget = this._createControl();
       widget.addToDocument();
       widget.setLocation( 10, 10 );
       widget.setDimension( 10, 10 );
@@ -968,7 +979,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.menuItem = new this._menuItemClass( "push" );
       this.menuItem.setText( "bla" ); 
       this.menu.addMenuItemAt( this.menuItem, 0 );
-      var widget = new qx.ui.basic.Atom( "bla" );
+      var widget = this._createControl();
       widget.addToDocument();
       widget.setLocation( 10, 10 );
       widget.setDimension( 10, 10 );
@@ -978,7 +989,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       var menuItem2 = new this._menuItemClass( "push" );
       menuItem2.setText( "bla2" ); 
       menu2.addMenuItemAt( menuItem2, 0 );
-      var widget2 = new qx.ui.basic.Atom( "bla2" );
+      var widget2 = this._createControl();
       widget2.addToDocument();
       widget2.setLocation( 20, 20 );
       widget2.setDimension( 20, 20 );
@@ -1020,7 +1031,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       var menuItem2 = new this._menuItemClass( "push" );
       menuItem2.setText( "bla" ); 
       menu2.addMenuItemAt( menuItem2, 0 );
-      var widget = new qx.ui.basic.Atom( "bla" );
+      var widget = this._createControl();
       widget.addToDocument();
       widget.setLocation( 10, 10 );
       widget.setDimension( 10, 10 );
@@ -1189,7 +1200,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       this.menuItem.setText( "bla" ); 
       this.menu.addMenuItemAt( this.menuItem, 0 );
       var widget = new qx.ui.basic.Atom( "bla" );
-      var parent = new qx.ui.layout.CanvasLayout();
+      var parent = this._createControl();
       parent.add( widget );
       parent.addToDocument();
       parent.setLocation( 10, 10 );
@@ -1403,6 +1414,12 @@ qx.Class.define( "org.eclipse.rwt.test.tests.MenuTest", {
       var detectByMouse = org.eclipse.rwt.widgets.Menu.menuDetectedByMouse;
       widget.removeEventListener( "keydown", detectByKey );
       widget.removeEventListener( "mouseup", detectByMouse );
+    },
+    
+    _createControl : function() {
+      var result = new org.eclipse.swt.widgets.Composite();
+      result.setUserData( "isControl", true );
+      return result;
     }
 
   }

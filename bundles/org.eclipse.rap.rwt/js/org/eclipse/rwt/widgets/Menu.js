@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
+ * Copyright (c) 2009, 2012 EclipseSource and others. All rights reserved.
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution, 
  * and is available at http://www.eclipse.org/legal/epl-v10.html
@@ -74,8 +74,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
     },
 
     contextMenuHandler : function( event ) {
-      var widget = event.getCurrentTarget();
-      var contextMenu = widget.getContextMenu();
+      var control = org.eclipse.swt.WidgetUtil.getControl( event.getTarget() );
+      var contextMenu = control ? control.getContextMenu() : null;
       if( contextMenu != null && !this._hasNativeMenu( event.getDomTarget() ) ) {
         event.stopPropagation();
         event.preventDefault();

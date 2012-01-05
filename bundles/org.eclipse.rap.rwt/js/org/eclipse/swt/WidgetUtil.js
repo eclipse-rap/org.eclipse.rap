@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,15 @@ qx.Class.define( "org.eclipse.swt.WidgetUtil", {
         widget.setStyleProperty( "fontSize", "0" );
         widget.setStyleProperty( "lineHeight", "0" );
       }
+    },
+    
+    getControl : function( widget ) {
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var result = widget;
+      while( result != null && !widgetManager.isControl( result ) ) {
+        result = result.getParent ? result.getParent() : null;
+      }
+      return result;
     },
     
     /**
