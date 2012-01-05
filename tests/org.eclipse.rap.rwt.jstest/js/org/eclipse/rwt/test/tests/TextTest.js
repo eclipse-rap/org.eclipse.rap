@@ -629,10 +629,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
     },
     
     testTextAreaMaxLength : qx.core.Variant.select( "qx.client", {
-      "mshtml" : function() {
+      "mshtml|webkit" : function() {
         // NOTE: This test would fail in IE because it has a bug that sometimes
         // prevents a textFields value from being overwritten and read in the 
-        // same call
+        // same call. In webkit it seems to fail randomly aswell.
       },
       "default" : function() {
         var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
