@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,9 @@ import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 public class ProgressBarLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ProgressBar";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "SMOOTH", "HORIZONTAL", "VERTICAL", "INDETERMINATE", "BORDER"
+  };
 
   static final String PROP_MINIMUM = "minimum";
   static final String PROP_MAXIMUM = "maximum";
@@ -60,7 +63,7 @@ public class ProgressBarLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( progressBar );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( progressBar.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( progressBar ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( progressBar, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

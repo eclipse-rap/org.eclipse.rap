@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,9 @@ import org.eclipse.swt.widgets.MenuItem;
 final class MenuLCAUtil {
 
   private static final String TYPE = "rwt.widgets.Menu";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "BAR", "DROP_DOWN", "POP_UP", "NO_RADIO_GROUP"
+  };
 
   private static final String PROP_ENABLED = "enabled";
   private static final String PROP_MENU_LISTENER = "menu";
@@ -48,7 +51,7 @@ final class MenuLCAUtil {
   static void renderInitialization( Menu menu ) {
     IClientObject clientObject = ClientObjectFactory.getForWidget( menu );
     clientObject.create( TYPE );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( menu ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( menu, ALLOWED_STYLES ) );
   }
 
   static void renderChanges( Menu menu ) throws IOException {

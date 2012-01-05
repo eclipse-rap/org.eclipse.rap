@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,9 +20,10 @@ import org.eclipse.swt.widgets.*;
 
 
 public final class CanvasLCA extends AbstractWidgetLCA {
-  
+
   private static final String TYPE = "rwt.widgets.Canvas";
   private static final String TYPE_GC = "rwt.GC";
+  private static final String[] ALLOWED_STYLES = new String[] { "NO_RADIO_GROUP", "BORDER" };
 
   public void preserveValues( Widget widget ) {
     ControlLCAUtil.preserveValues( ( Control )widget );
@@ -42,7 +43,7 @@ public final class CanvasLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( canvas );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( canvas.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( canvas ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( canvas, ALLOWED_STYLES ) );
     IClientObject clientObjectGC = ClientObjectFactory.getForGC( canvas );
     clientObjectGC.create( TYPE_GC );
     clientObjectGC.setProperty( "parent", WidgetUtil.getId( canvas ) );

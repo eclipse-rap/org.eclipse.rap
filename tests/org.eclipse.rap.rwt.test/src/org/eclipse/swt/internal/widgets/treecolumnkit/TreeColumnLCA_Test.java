@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,6 @@
 package org.eclipse.swt.internal.widgets.treecolumnkit;
 
 import java.io.IOException;
-import java.util.Arrays;
-
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
@@ -301,13 +299,12 @@ public class TreeColumnLCA_Test extends TestCase {
   public void testRenderCreateWithAligment() throws IOException {
     TreeColumn column = new TreeColumn( tree, SWT.RIGHT );
 
-    lca.renderInitialization( column );
+    lca.render( column );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( column );
-    assertEquals( "rwt.widgets.TableColumn", operation.getType() );
-    Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "RIGHT" ) );
+    assertTrue( operation.getPropertyNames().indexOf( "style" ) == -1 );
+    assertEquals( "right", message.findCreateProperty( column, "alignment" ) );
   }
 
   public void testRenderParent() throws IOException {

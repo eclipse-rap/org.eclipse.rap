@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,9 @@ import org.eclipse.swt.widgets.Widget;
 public class ControlDecoratorLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ControlDecorator";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "TOP", "BOTTOM", "LEFT", "RIGHT", "CENTER"
+  };
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
@@ -57,7 +60,7 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( decorator );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( decorator.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( decorator ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( decorator, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

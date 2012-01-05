@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class CComboLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Combo";
+  private static final String[] ALLOWED_STYLES = new String[] { "FLAT", "BORDER" };
 
   // Property names for preserve-value facility
   static final String PROP_ITEMS = "items";
@@ -92,7 +93,7 @@ public final class CComboLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( ccombo );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( ccombo.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( ccombo ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( ccombo, ALLOWED_STYLES ) );
     clientObject.setProperty( "ccombo", true );
   }
 

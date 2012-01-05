@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,15 @@ import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 public class GroupLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Group";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "SHADOW_ETCHED_IN",
+    "SHADOW_ETCHED_OUT",
+    "SHADOW_IN",
+    "SHADOW_OUT",
+    "SHADOW_NONE",
+    "NO_RADIO_GROUP",
+    "BORDER"
+  };
 
   private static final String PROP_TEXT = "text";
 
@@ -47,7 +56,7 @@ public class GroupLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( group );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( group.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( group ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( group, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

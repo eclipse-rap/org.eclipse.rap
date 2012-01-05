@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,9 @@ import org.eclipse.swt.widgets.MenuItem;
 final class MenuItemLCAUtil {
 
   private static final String TYPE = "rwt.widgets.MenuItem";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "CHECK", "CASCADE", "PUSH", "RADIO", "SEPARATOR"
+  };
 
   private static final String PROP_MENU = "menu";
   private static final String PROP_ENABLED = "enabled";
@@ -52,7 +55,7 @@ final class MenuItemLCAUtil {
     clientObject.create( TYPE );
     Menu parent = item.getParent();
     clientObject.setProperty( "parent", WidgetUtil.getId( parent ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( item ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( item, ALLOWED_STYLES ) );
     clientObject.setProperty( "index", parent.indexOf( item ) );
   }
 

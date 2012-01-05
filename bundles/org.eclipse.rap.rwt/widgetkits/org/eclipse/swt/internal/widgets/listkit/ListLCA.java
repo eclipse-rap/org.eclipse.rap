@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.*;
 public class ListLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.List";
+  private static final String[] ALLOWED_STYLES = new String[] { "SINGLE", "MULTI", "BORDER" };
 
   private static final String PROP_ITEMS = "items";
   private static final String PROP_SELECTION_INDICES = "selectionIndices";
@@ -77,7 +78,7 @@ public class ListLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( list );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( list.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( list ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( list, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,9 @@ import org.eclipse.swt.widgets.*;
 final class ToolItemLCAUtil {
 
   private static final String TYPE = "rwt.widgets.ToolItem";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "PUSH", "CHECK", "RADIO", "SEPARATOR", "DROP_DOWN"
+  };
 
   private static final String PROP_VISIBLE = "visible";
   private static final String PROP_TEXT = "text";
@@ -72,7 +75,7 @@ final class ToolItemLCAUtil {
     IClientObject clientObject = ClientObjectFactory.getForWidget( toolItem );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( toolItem.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( toolItem ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( toolItem, ALLOWED_STYLES ) );
     clientObject.setProperty( "index", toolBar.indexOf( toolItem ) );
   }
 

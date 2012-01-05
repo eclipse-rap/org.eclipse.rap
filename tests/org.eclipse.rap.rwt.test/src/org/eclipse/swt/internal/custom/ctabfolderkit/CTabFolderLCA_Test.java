@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -294,21 +294,22 @@ public class CTabFolderLCA_Test extends TestCase {
     CreateOperation operation = message.findCreateOperation( folder );
     assertEquals( "rwt.widgets.CTabFolder", operation.getType() );
     List<Object> styles = Arrays.asList( operation.getStyles() );
-    assertTrue( styles.contains( "TOP" ) );
+    assertFalse( styles.contains( "TOP" ) );
     assertTrue( styles.contains( "MULTI" ) );
   }
 
   public void testRenderCreateOnBottom() throws IOException {
     CTabFolder folder = new CTabFolder( shell, SWT.BOTTOM );
 
-    lca.renderInitialization( folder );
+    lca.render( folder );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( folder );
     assertEquals( "rwt.widgets.CTabFolder", operation.getType() );
     List<Object> styles = Arrays.asList( operation.getStyles() );
-    assertTrue( styles.contains( "BOTTOM" ) );
+    assertFalse( styles.contains( "BOTTOM" ) );
     assertTrue( styles.contains( "MULTI" ) );
+    assertEquals( "bottom", message.findCreateProperty( folder, "tabPosition" ) );
   }
 
   public void testRenderSingleFlatAndClose() throws IOException {

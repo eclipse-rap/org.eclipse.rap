@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class FileUploadLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.FileUpload";
+  private static final String[] ALLOWED_STYLES = new String[] { "BORDER" };
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
@@ -45,7 +46,7 @@ public final class FileUploadLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( fileUpload );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( fileUpload.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( fileUpload ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( fileUpload, ALLOWED_STYLES ) );
   }
 
   public void readData( Widget widget ) {

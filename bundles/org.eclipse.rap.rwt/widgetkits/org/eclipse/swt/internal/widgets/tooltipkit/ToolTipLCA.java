@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2012 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,9 @@ import org.eclipse.swt.widgets.Widget;
 public final class ToolTipLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ToolTip";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "BALLOON", "ICON_ERROR", "ICON_INFORMATION", "ICON_WARNING"
+  };
 
   private static final String PROP_AUTO_HIDE = "autoHide";
   private static final String PROP_TEXT = "text";
@@ -65,7 +68,7 @@ public final class ToolTipLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( toolTip );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( toolTip.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( toolTip ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( toolTip, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

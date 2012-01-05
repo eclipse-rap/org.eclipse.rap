@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Label;
 final class StandardLabelLCA extends AbstractLabelLCADelegate {
 
   private static final String TYPE = "rwt.widgets.Label";
+  private static final String[] ALLOWED_STYLES = new String[] { "WRAP", "BORDER" };
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_ALIGNMENT = "alignment";
@@ -52,7 +53,7 @@ final class StandardLabelLCA extends AbstractLabelLCADelegate {
     IClientObject clientObject = ClientObjectFactory.getForWidget( label );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( label.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( label ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( label, ALLOWED_STYLES ) );
   }
 
   void renderChanges( Label label ) throws IOException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -114,13 +114,14 @@ public class ExpandBarLCA_Test extends TestCase {
   public void testRenderCreateWithVScroll() throws IOException {
     expandBar = new ExpandBar( shell, SWT.V_SCROLL );
 
-    lca.renderInitialization( expandBar );
+    lca.render( expandBar );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( expandBar );
     assertEquals( "rwt.widgets.ExpandBar", operation.getType() );
     List<Object> styles = Arrays.asList( operation.getStyles() );
-    assertTrue( styles.contains( "V_SCROLL" ) );
+    assertFalse( styles.contains( "V_SCROLL" ) );
+    assertEquals( Boolean.TRUE, message.findCreateProperty( expandBar, "vScrollBarVisible" ) );
   }
 
   public void testRenderParent() throws IOException {

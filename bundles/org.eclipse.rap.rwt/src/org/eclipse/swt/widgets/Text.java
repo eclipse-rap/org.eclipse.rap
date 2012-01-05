@@ -1072,7 +1072,6 @@ public class Text extends Scrollable {
     if( ( result & SWT.SEARCH ) != 0 ) {
       result |= SWT.SINGLE | SWT.BORDER;
       result &= ~SWT.PASSWORD;
-      result &= ~SWT.CANCEL;
     }
     if( ( result & SWT.SINGLE ) != 0 && ( result & SWT.MULTI ) != 0 ) {
       result &= ~SWT.MULTI;

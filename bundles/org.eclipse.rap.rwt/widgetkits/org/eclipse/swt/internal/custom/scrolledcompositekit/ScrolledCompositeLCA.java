@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.*;
 public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ScrolledComposite";
+  private static final String[] ALLOWED_STYLES = new String[] { "BORDER" };
 
   // Request parameter names
   private static final String PARAM_H_BAR_SELECTION = "horizontalBar.selection";
@@ -42,7 +43,6 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
   private static final String PROP_ORIGIN = "origin";
   private static final String PROP_CONTENT = "content";
   private static final String PROP_SHOW_FOCUSED_CONTROL = "showFocusedControl";
-  // TODO: [if] Move scrollbars synchronization to the ScrollBarLCA once it exists
   private static final String PROP_SCROLLBARS_VISIBLE = "scrollBarsVisible";
   private static final String PROP_SCROLLBARS_SELECTION_LISTENER = "scrollBarsSelection";
 
@@ -57,7 +57,6 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     preserveProperty( composite, PROP_ORIGIN, composite.getOrigin() );
     preserveProperty( composite, PROP_CONTENT, composite.getContent() );
     preserveProperty( composite, PROP_SHOW_FOCUSED_CONTROL, composite.getShowFocusedControl() );
-    // TODO: [if] Move scrollbars synchronization to the ScrollBarLCA once it exists
     preserveProperty( composite, PROP_SCROLLBARS_VISIBLE, getScrollBarsVisible( composite ) );
     preserveListener( composite,
                       PROP_SCROLLBARS_SELECTION_LISTENER,
@@ -91,7 +90,8 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( scrolledComposite );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( scrolledComposite.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( scrolledComposite ) );
+    clientObject.setProperty( "style",
+                              WidgetLCAUtil.getStyles( scrolledComposite, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
@@ -104,7 +104,6 @@ public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
                     PROP_SHOW_FOCUSED_CONTROL,
                     composite.getShowFocusedControl(),
                     false );
-    // TODO: [if] Move scrollbars synchronization to the ScrollBarLCA once it exists
     renderProperty( composite,
                     PROP_SCROLLBARS_VISIBLE,
                     getScrollBarsVisible( composite ),

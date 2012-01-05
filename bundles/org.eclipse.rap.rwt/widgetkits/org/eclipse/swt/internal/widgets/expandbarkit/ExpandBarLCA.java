@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.*;
 public final class ExpandBarLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ExpandBar";
+  private static final String[] ALLOWED_STYLES = new String[] { "NO_RADIO_GROUP", "BORDER" };
 
   private static final String PROP_BOTTOM_SPACING_BOUNDS = "bottomSpacingBounds";
   private static final String PROP_VSCROLLBAR_VISIBLE = "vScrollBarVisible";
@@ -53,7 +54,7 @@ public final class ExpandBarLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( expandBar );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( expandBar.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( expandBar ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( expandBar, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

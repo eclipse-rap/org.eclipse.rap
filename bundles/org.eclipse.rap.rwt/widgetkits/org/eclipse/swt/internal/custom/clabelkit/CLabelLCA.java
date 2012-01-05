@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,9 @@ import org.eclipse.swt.widgets.Widget;
 public final class CLabelLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.CLabel";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "SHADOW_IN", "SHADOW_OUT", "SHADOW_NONE", "BORDER"
+  };
 
   static final String PROP_TEXT = "text";
   static final String PROP_IMAGE = "image";
@@ -67,7 +70,7 @@ public final class CLabelLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( clabel );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( clabel.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( clabel ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( clabel, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

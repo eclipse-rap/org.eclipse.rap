@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,24 @@ import org.eclipse.swt.widgets.*;
 
 
 public final class ShellLCA extends AbstractWidgetLCA {
+
+  private static final String TYPE = "rwt.widgets.Shell";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "CLOSE",
+    "MIN",
+    "MAX",
+    "NO_TRIM",
+    "RESIZE",
+    "TITLE",
+    "ON_TOP",
+    "TOOL",
+    "SHEET",
+    "APPLICATION_MODAL",
+    "MODELESS",
+    "PRIMARY_MODAL",
+    "SYSTEM_MODAL",
+    "BORDER"
+  };
 
   private static final String PROP_TEXT = "text";
   private static final String PROP_IMAGE = "image";
@@ -85,8 +103,8 @@ public final class ShellLCA extends AbstractWidgetLCA {
   public void renderInitialization( Widget widget ) throws IOException {
     Shell shell = ( Shell )widget;
     IClientObject clientObject = ClientObjectFactory.getForWidget( shell );
-    clientObject.create( "rwt.widgets.Shell" );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( shell ) );
+    clientObject.create( TYPE );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( shell, ALLOWED_STYLES ) );
     Composite parent = shell.getParent();
     if( parent instanceof Shell ) {
       clientObject.setProperty( "parentShell", WidgetUtil.getId( parent ) );

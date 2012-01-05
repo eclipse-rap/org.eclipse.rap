@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,9 @@ import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 final class ButtonLCAUtil {
 
   private static final String TYPE = "rwt.widgets.Button";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "CHECK", "PUSH", "RADIO", "TOGGLE", "FLAT", "WRAP", "BORDER"
+  };
 
   static final String PROP_TEXT = "text";
   static final String PROP_IMAGE = "image";
@@ -58,7 +61,7 @@ final class ButtonLCAUtil {
     IClientObject clientObject = ClientObjectFactory.getForWidget( button );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( button.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( button ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( button, ALLOWED_STYLES ) );
   }
 
   static void renderChanges( Button button ) throws IOException {
@@ -82,7 +85,7 @@ final class ButtonLCAUtil {
 
   //////////////////
   // Helping methods
-  
+
   private static String getAlignment( Button button ) {
     int alignment = button.getAlignment();
     String result;

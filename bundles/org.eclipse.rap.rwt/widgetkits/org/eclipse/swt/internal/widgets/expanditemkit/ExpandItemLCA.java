@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -73,7 +73,6 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( item );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( item.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( item ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

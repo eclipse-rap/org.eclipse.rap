@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,16 @@ import org.eclipse.swt.widgets.*;
 public final class TreeLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Tree";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "SINGLE",
+    "MULTI",
+    "CHECK",
+    "FULL_SELECTION",
+    "VIRTUAL",
+    "NO_SCROLL",
+    "NO_RADIO_GROUP",
+    "BORDER"
+  };
 
   private static final String PROP_ITEM_COUNT = "itemCount";
   private static final String PROP_ITEM_HEIGHT = "itemHeight";
@@ -108,7 +118,7 @@ public final class TreeLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( tree );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( tree.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( tree ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( tree, ALLOWED_STYLES ) );
     clientObject.setProperty( "appearance", "tree" );
     ITreeAdapter adapter = getTreeAdapter( tree );
     if( ( tree.getStyle() & SWT.CHECK ) != 0 ) {

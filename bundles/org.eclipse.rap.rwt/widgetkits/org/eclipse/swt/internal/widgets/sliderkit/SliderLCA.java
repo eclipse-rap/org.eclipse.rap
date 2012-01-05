@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,9 @@ import org.eclipse.swt.widgets.*;
 public class SliderLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Slider";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "HORIZONTAL", "VERTICAL", "BORDER"
+  };
 
   // Property names for preserveValues
   static final String PROP_MINIMUM = "minimum";
@@ -77,7 +80,7 @@ public class SliderLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( slider );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( slider.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( slider ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( slider, ALLOWED_STYLES ) );
   }
 
 

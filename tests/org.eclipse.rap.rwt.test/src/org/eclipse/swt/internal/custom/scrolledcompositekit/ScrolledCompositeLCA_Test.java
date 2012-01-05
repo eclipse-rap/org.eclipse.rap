@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -222,17 +222,19 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertEquals( 0, log.size() );
   }
 
-  public void testRenderCreate() throws IOException {
+  public void testRenderCreate() throws IOException, JSONException {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
 
-    lca.renderInitialization( sc );
+    lca.render( sc );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( sc );
     assertEquals( "rwt.widgets.ScrolledComposite", operation.getType() );
     Object[] styles = operation.getStyles();
-    assertTrue( Arrays.asList( styles ).contains( "H_SCROLL" ) );
-    assertTrue( Arrays.asList( styles ).contains( "V_SCROLL" ) );
+    assertFalse( Arrays.asList( styles ).contains( "H_SCROLL" ) );
+    assertFalse( Arrays.asList( styles ).contains( "V_SCROLL" ) );
+    JSONArray actual = ( JSONArray )message.findCreateProperty( sc, "scrollBarsVisible" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[ false, false ]", actual ) );
   }
 
   public void testRenderParent() throws IOException {

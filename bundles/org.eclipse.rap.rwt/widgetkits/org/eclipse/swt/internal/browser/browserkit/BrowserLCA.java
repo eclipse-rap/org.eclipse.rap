@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,6 +48,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class BrowserLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Browser";
+  private static final String[] ALLOWED_STYLES = new String[] { "BORDER" };
 
   static final String BLANK_HTML = "<html><script></script></html>";
 
@@ -98,7 +99,7 @@ public final class BrowserLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( browser );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( browser.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( browser ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( browser, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

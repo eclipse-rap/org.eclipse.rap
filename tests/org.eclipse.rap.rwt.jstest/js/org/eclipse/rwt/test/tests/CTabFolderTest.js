@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,9 +52,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.CTabFolderTest", {
         "action" : "create",
         "type" : "rwt.widgets.CTabFolder",
         "properties" : {
-          "style" : [ "BOTTOM" ],
+          "style" : [],
           "parent" : "w2",
-          "toolTipTexts": [ "Minimize", "Maximize", "Restore", "Show List", "Close" ]
+          "toolTipTexts": [ "Minimize", "Maximize", "Restore", "Show List", "Close" ],
+          "tabPosition" : "bottom"
         }
       } );
       var objectManager = org.eclipse.rwt.protocol.ObjectManager;

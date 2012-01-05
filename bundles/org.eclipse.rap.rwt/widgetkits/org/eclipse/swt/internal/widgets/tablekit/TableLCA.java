@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,17 @@ import org.eclipse.swt.widgets.*;
 public final class TableLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Tree";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "SINGLE",
+    "MULTI",
+    "CHECK",
+    "FULL_SELECTION",
+    "HIDE_SELECTION",
+    "VIRTUAL",
+    "NO_SCROLL",
+    "NO_RADIO_GROUP",
+    "BORDER"
+  };
 
   private static final String PROP_ITEM_COUNT = "itemCount";
   private static final String PROP_ITEM_HEIGHT = "itemHeight";
@@ -112,7 +123,7 @@ public final class TableLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( table );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( table.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( table ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( table, ALLOWED_STYLES ) );
     clientObject.setProperty( "appearance", "table" );
     ITableAdapter adapter = table.getAdapter( ITableAdapter.class );
     if( ( table.getStyle() & SWT.CHECK ) != 0 ) {

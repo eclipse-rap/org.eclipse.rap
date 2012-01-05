@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,8 +38,10 @@ import org.eclipse.swt.widgets.Widget;
 public class CoolItemLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.CoolItem";
+  private static final String[] ALLOWED_STYLES = new String[] { "DROP_DOWN", "VERTICAL" };
+
   static final String PROP_CONTROL = "control";
-  
+
   /* (intentionally not JavaDoc'ed)
    * Unnecesary to call ItemLCAUtil.preserve, CoolItem does neither use text
    * nor image
@@ -73,7 +75,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( item );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( item.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( item ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( item, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,9 @@ import org.eclipse.swt.widgets.*;
 public class TabFolderLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.TabFolder";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "TOP", "BOTTOM", "NO_RADIO_GROUP", "BORDER"
+  };
 
   private static final String PROP_SELECTION = "selection";
 
@@ -50,7 +53,7 @@ public class TabFolderLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( folder );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( folder.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( folder ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( folder, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

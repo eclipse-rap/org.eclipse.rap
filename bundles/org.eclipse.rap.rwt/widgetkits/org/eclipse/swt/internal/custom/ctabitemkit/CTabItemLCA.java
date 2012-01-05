@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Widget;
 public final class CTabItemLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.CTabItem";
+  private static final String[] ALLOWED_STYLES = new String[] { "CLOSE" };
 
   public static final String EVENT_ITEM_CLOSED = "org.eclipse.swt.events.ctabItemClosed";
 
@@ -72,7 +73,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( parent ) );
     clientObject.setProperty( "index", parent.indexOf( item ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( item ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( item, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {

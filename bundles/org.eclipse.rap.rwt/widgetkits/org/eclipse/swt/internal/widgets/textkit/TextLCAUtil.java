@@ -20,8 +20,6 @@ import java.io.IOException;
 
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
-import org.eclipse.rwt.internal.protocol.RWTStylesUtil;
-import org.eclipse.rwt.internal.protocol.StylesUtil;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
@@ -34,6 +32,29 @@ import org.eclipse.swt.widgets.*;
 final class TextLCAUtil {
 
   private static final String TYPE = "rwt.widgets.Text";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "CENTER",
+    "LEFT",
+    "RIGHT",
+    "MULTI",
+    "SINGLE",
+    "PASSWORD",
+    "SEARCH",
+    "WRAP",
+    "H_SCROLL",
+    "V_SCROLL",
+    "BORDER"
+  };
+  private static final String[] ALLOWED_STYLES_WITH_SEARCH = new String[] {
+    "CENTER",
+    "LEFT",
+    "RIGHT",
+    "SINGLE",
+    "SEARCH",
+    "ICON_CANCEL",
+    "ICON_SEARCH",
+    "BORDER"
+  };
 
   static final String PROP_TEXT = "text";
   static final String PROP_TEXT_LIMIT = "textLimit";
@@ -69,7 +90,7 @@ final class TextLCAUtil {
     IClientObject clientObject = ClientObjectFactory.getForWidget( text );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( text.getParent() ) );
-    clientObject.setProperty( "style", getStyles( text ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( text, getAllowedStyles( text ) ) );
   }
 
   static void renderChanges( Text text ) throws IOException {
@@ -140,18 +161,8 @@ final class TextLCAUtil {
   //////////////////
   // Helping methods
 
-  private static String[] getStyles( Text text ) {
-    String[] allowedStyles = RWTStylesUtil.getAllowedStylesForWidget( text );
-    if( ( text.getStyle() & SWT.SEARCH ) != 0 ) {
-      for( int i = 0; i < allowedStyles.length; i++ ) {
-        if( allowedStyles[ i ].equals( "H_SCROLL" ) ) {
-          allowedStyles[ i ] = "ICON_CANCEL";
-        } else if( allowedStyles[ i ].equals( "V_SCROLL" ) ) {
-          allowedStyles[ i ] = "ICON_SEARCH";
-        }
-      }
-    }
-    return StylesUtil.filterStyles( text, allowedStyles );
+  private static String[] getAllowedStyles( Text text ) {
+    return ( text.getStyle() & SWT.SEARCH ) != 0 ? ALLOWED_STYLES_WITH_SEARCH : ALLOWED_STYLES;
   }
 
   private static Integer getTextLimit( Text text ) {

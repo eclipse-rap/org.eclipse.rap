@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ org.eclipse.rwt.protocol.AdapterRegistry.add( "rwt.widgets.TableColumn", {
     org.eclipse.rwt.protocol.AdapterUtil.callWithTarget( properties.parent, function( parent ) {
       result = new org.eclipse.swt.widgets.TableColumn( parent );
     } );
-    org.eclipse.rwt.protocol.AdapterUtil.addStatesForStyles( result, properties.style );
     return result;
   },
 

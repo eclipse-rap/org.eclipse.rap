@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,9 @@ import org.eclipse.swt.widgets.DateTime;
 final class DateTimeLCAUtil {
 
   private static final String TYPE = "rwt.widgets.DateTime";
+  private static final String[] ALLOWED_STYLES = new String[] {
+    "DATE", "TIME", "CALENDAR", "SHORT", "MEDIUM", "LONG", "DROP_DOWN", "BORDER"
+  };
 
   private static final String PROP_CELL_SIZE = "cellSize";
   private static final String PROP_MONTH_NAMES = "monthNames";
@@ -54,7 +57,7 @@ final class DateTimeLCAUtil {
     IClientObject clientObject = ClientObjectFactory.getForWidget( dateTime );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( dateTime.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( dateTime ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( dateTime, ALLOWED_STYLES ) );
   }
 
   static void renderChanges( DateTime dateTime ) throws IOException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.*;
 public class ComboLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.Combo";
+  private static final String[] ALLOWED_STYLES = new String[] { "DROP_DOWN", "SIMPLE", "BORDER" };
 
   // Must be in sync with appearance "list-item"
   private static final int LIST_ITEM_PADDING = 3;
@@ -97,7 +98,7 @@ public class ComboLCA extends AbstractWidgetLCA {
     IClientObject clientObject = ClientObjectFactory.getForWidget( combo );
     clientObject.create( TYPE );
     clientObject.setProperty( "parent", WidgetUtil.getId( combo.getParent() ) );
-    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( combo ) );
+    clientObject.setProperty( "style", WidgetLCAUtil.getStyles( combo, ALLOWED_STYLES ) );
   }
 
   public void renderChanges( Widget widget ) throws IOException {
