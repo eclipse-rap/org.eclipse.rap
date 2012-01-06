@@ -195,9 +195,9 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
       var req = org.eclipse.swt.Request.getInstance();
       var id;
       if( widget === null ) {
-      	id = "w1";
+        id = "w1";
       } else {
-      	var wm = org.eclipse.swt.WidgetManager.getInstance();
+        var wm = org.eclipse.swt.WidgetManager.getInstance();
         id = wm.findIdByWidget( widget );
       }
       req.addEvent( "org.eclipse.swt.events.keyDown", id );

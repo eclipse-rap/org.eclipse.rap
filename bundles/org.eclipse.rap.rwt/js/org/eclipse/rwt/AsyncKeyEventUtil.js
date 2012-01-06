@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 /**
@@ -56,7 +56,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
     this.base( arguments );
     this._pendingEventInfo = null;
     this._allowIntercept = true;
-    this._bufferedEvents = new Array();
+    this._bufferedEvents = [];
     this._keyEventRequestRunning = false;
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "received", this._onRequestReceived, this );
@@ -175,7 +175,7 @@ qx.Class.define( "org.eclipse.rwt.AsyncKeyEventUtil",
 
     _sendKeyDown : function( widget, keyCode, charCode, domEvent ) {
       var keyUtil = org.eclipse.rwt.KeyEventUtil.getInstance();
-	    keyUtil._attachKeyDown( widget, keyCode, charCode, domEvent );
+      keyUtil._attachKeyDown( widget, keyCode, charCode, domEvent );
       this._keyEventRequestRunning = true;
       org.eclipse.swt.Request.getInstance()._sendImmediate( true );
     },

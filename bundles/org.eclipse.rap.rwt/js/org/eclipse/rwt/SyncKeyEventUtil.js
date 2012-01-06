@@ -77,7 +77,7 @@ qx.Class.define( "org.eclipse.rwt.SyncKeyEventUtil",
     
     _sendKeyDown : function( widget, keyCode, charCode, domEvent ) {
       var keyUtil = org.eclipse.rwt.KeyEventUtil.getInstance();
-	    keyUtil._attachKeyDown( widget, keyCode, charCode, domEvent );
+      keyUtil._attachKeyDown( widget, keyCode, charCode, domEvent );
       org.eclipse.swt.Request.getInstance().sendSyncronous();
     }
 

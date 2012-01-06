@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,10 +55,10 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
     _gatherErrorInfo : function( error, script, currentRequest ) {
       var info = [];
       try {
-	      info.push( "Error: " + error + "\n" );
-	      if( script ) {
-		      info.push( "Script: " + script );
-	      }
+        info.push( "Error: " + error + "\n" );
+        if( script ) {
+          info.push( "Script: " + script );
+        }
         if( error instanceof Error ) {
           for( var key in error ) {
             info.push( key + ": " + error[ key ] );
@@ -66,7 +66,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
         }
         info.push( "Debug: " + qx.core.Variant.get( "qx.debug" ) );
         if( currentRequest ) {
-	        info.push( "Request: " + currentRequest.getData() );
+          info.push( "Request: " + currentRequest.getData() );
         }
         var inFlush = qx.ui.core.Widget._inFlushGlobalQueues;
         if( inFlush ) {

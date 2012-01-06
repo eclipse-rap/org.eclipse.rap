@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Mixin.define( "org.eclipse.rwt.FadeAnimationMixin", {
@@ -54,7 +55,7 @@ qx.Mixin.define( "org.eclipse.rwt.FadeAnimationMixin", {
       if( animationType != 0 ) {
         if( this._animation == null ) {
           this._animation = new org.eclipse.rwt.Animation();
-          var renderer = this._animation.getDefaultRenderer() 
+          var renderer = this._animation.getDefaultRenderer();
           renderer.animate( this, "opacity", animationType );
           this._animation.addEventListener( "init", this._initAnimation, this );
         } 

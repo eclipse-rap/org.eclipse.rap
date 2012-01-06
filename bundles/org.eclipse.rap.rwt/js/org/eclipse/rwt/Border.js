@@ -1,12 +1,13 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this
- * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -104,14 +105,14 @@ qx.Class.define( "org.eclipse.rwt.Border", {
 
     _resetComplexBorder : qx.core.Variant.select("qx.client", {
       "gecko" : function( widget ) {
-        var statics = org.eclipse.rwt.Border
+        var statics = org.eclipse.rwt.Border;
         var style = widget._style;
         for( var i = 0; i < 4; i++ ) {
           style[ statics._EDGEMOZCOLORS[ i ] ] = "";
         }
       }, 
       "default" : function( widget ) {
-        var statics = org.eclipse.rwt.Border
+        var statics = org.eclipse.rwt.Border;
         var inner = widget._innerStyle;
         if( inner ) {
           for( var i = 0; i < 4; i++ ) {
@@ -285,7 +286,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
     },
 
     _renderSimpleBorderStyle : function( style ) {
-      var statics = org.eclipse.rwt.Border
+      var statics = org.eclipse.rwt.Border;
       for( var i = 0; i < 4; i++ ) {
         style[ statics._EDGEWIDTH[ i ] ] = ( this._widths[ i ] || 0 ) + "px";
         style[ statics._EDGESTYLE[ i ] ] = this._styles[ i ] || "none";
@@ -295,7 +296,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
 
     _renderComplexBorder : qx.core.Variant.select( "qx.client", {
       "gecko" : function( widget ) {
-        var statics = org.eclipse.rwt.Border
+        var statics = org.eclipse.rwt.Border;
         statics._resetRadii( widget );
         var style = widget._style;
         for( var i = 0; i < 4; i++ ) {
@@ -311,7 +312,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
         }
       },
       "default" : function( widget ) {
-        var statics = org.eclipse.rwt.Border
+        var statics = org.eclipse.rwt.Border;
         statics._resetRadii( widget );
         var outer = widget._style;
         var inner = widget._innerStyle;
@@ -321,10 +322,10 @@ qx.Class.define( "org.eclipse.rwt.Border", {
               widget.prepareEnhancedBorder();
               inner = widget._innerStyle;
             }
-            outer[ statics._EDGEWIDTH[ i ] ] = "1px"
+            outer[ statics._EDGEWIDTH[ i ] ] = "1px";
             outer[ statics._EDGESTYLE[ i ] ] = "solid";
             outer[ statics._EDGECOLOR[ i ] ] = this._colors[ i ] || "";
-            inner[ statics._EDGEWIDTH[ i ] ] = "1px"
+            inner[ statics._EDGEWIDTH[ i ] ] = "1px";
             inner[ statics._EDGESTYLE[ i ] ] = "solid";
             inner[ statics._EDGECOLOR[ i ] ] = this._innerColors[ i ];
           } else {
@@ -342,7 +343,7 @@ qx.Class.define( "org.eclipse.rwt.Border", {
     } ),
 
     _renderRoundedBorder : function( widget ) {
-      var statics = org.eclipse.rwt.Border
+      var statics = org.eclipse.rwt.Border;
       this._renderSimpleBorder( widget );
       var style = widget._style;
       for( var i = 0; i < 4; i++ ) {

@@ -1,12 +1,13 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
- *                       and EclipseSource
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                        and EclipseSource
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this
- * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -270,7 +271,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
             this._onmouseevent_post( vDomEvent, "mousedown", vDomTarget );
           } else if (    vType == "dblclick" 
                       && this._lastMouseEventType == "mouseup" 
-                      && ( ( new Date ).valueOf() - this._lastMouseEventDate ) < 250
+                      && ( ( new Date() ).valueOf() - this._lastMouseEventDate ) < 250
           ) {
             // Fix MSHTML Doubleclick, should be after a normal click event, 
              // like Mozilla does this
@@ -438,8 +439,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       }
       qx.ui.popup.ToolTipManager.getInstance().handleMouseEvent( vEventObject );
       this._ignoreWindowBlur = vType === "mousedown";
-      if( qx.Class.isDefined("qx.event.handler.DragAndDropHandler" ) 
-          && vTarget ) {
+      if( qx.Class.isDefined("qx.event.handler.DragAndDropHandler" ) && vTarget ) {
         qx.event.handler.DragAndDropHandler.getInstance().handleMouseEvent( vEventObject );
       }
     },
@@ -480,9 +480,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
 
     _onwindowblur : function( e ) {
       try {
-        if (    !this._focused 
-             || this._ignoreWindowBlur 
-             || e.originalTarget != window ) {
+        if ( !this._focused || this._ignoreWindowBlur || e.originalTarget != window ) {
           return;
         }
         this._focused = false;
@@ -584,8 +582,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
 
     _getKeyEventTarget : function() {
       var vFocusRoot = this.getFocusRoot();
-      return    this.getCaptureWidget() 
-             || ( vFocusRoot == null ? null : vFocusRoot.getActiveChild() );
+      return this.getCaptureWidget() || ( vFocusRoot == null ? null : vFocusRoot.getActiveChild() );
     },
 
     attachEventTypes : function( vEventTypes, vFunctionPointer ) {

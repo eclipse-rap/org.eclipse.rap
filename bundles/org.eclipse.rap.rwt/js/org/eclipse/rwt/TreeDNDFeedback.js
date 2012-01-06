@@ -1,12 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2009, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
@@ -211,9 +212,9 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
       var result = 0;
       var rowIndex = this._tree._rowContainer.indexOf( row );
       if( rowIndex === 0 ) {
-      	result = -1;
+        result = -1;
       } else if( rowIndex >= this._tree._rowContainer.getChildrenLength() - 2 ) {
-      	result = 1;
+        result = 1;
       }
       return result;
     },
@@ -223,7 +224,7 @@ qx.Class.define( "org.eclipse.rwt.TreeDNDFeedback", {
       var offset = this._getScrollDirection( this._currentRow );
       if( offset != 0 ) {
         var item = this._tree._rowContainer.findItemByRow( this._currentRow );
-	      var index = item.getFlatIndex();
+        var index = item.getFlatIndex();
         var newIndex = index + offset;
         var newItem = this._tree._rootItem.findItemByFlatIndex( newIndex );
         if( newItem != null ) {
