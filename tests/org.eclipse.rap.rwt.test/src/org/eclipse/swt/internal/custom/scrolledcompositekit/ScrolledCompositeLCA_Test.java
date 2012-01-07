@@ -222,19 +222,17 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertEquals( 0, log.size() );
   }
 
-  public void testRenderCreate() throws IOException, JSONException {
+  public void testRenderCreate() throws IOException {
     ScrolledComposite sc = new ScrolledComposite( shell, SWT.H_SCROLL | SWT.V_SCROLL );
 
-    lca.render( sc );
+    lca.renderInitialization( sc );
 
     Message message = Fixture.getProtocolMessage();
     CreateOperation operation = message.findCreateOperation( sc );
     assertEquals( "rwt.widgets.ScrolledComposite", operation.getType() );
     Object[] styles = operation.getStyles();
-    assertFalse( Arrays.asList( styles ).contains( "H_SCROLL" ) );
-    assertFalse( Arrays.asList( styles ).contains( "V_SCROLL" ) );
-    JSONArray actual = ( JSONArray )message.findCreateProperty( sc, "scrollBarsVisible" );
-    assertTrue( ProtocolTestUtil.jsonEquals( "[ false, false ]", actual ) );
+    assertTrue( Arrays.asList( styles ).contains( "H_SCROLL" ) );
+    assertTrue( Arrays.asList( styles ).contains( "V_SCROLL" ) );
   }
 
   public void testRenderParent() throws IOException {

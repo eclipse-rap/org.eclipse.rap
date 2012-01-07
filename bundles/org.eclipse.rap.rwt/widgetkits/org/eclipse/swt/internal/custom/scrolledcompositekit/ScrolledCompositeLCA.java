@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.*;
 public final class ScrolledCompositeLCA extends AbstractWidgetLCA {
 
   private static final String TYPE = "rwt.widgets.ScrolledComposite";
-  private static final String[] ALLOWED_STYLES = new String[] { "BORDER" };
+  private static final String[] ALLOWED_STYLES = new String[] { "H_SCROLL", "V_SCROLL", "BORDER" };
 
   // Request parameter names
   private static final String PARAM_H_BAR_SELECTION = "horizontalBar.selection";
