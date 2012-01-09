@@ -217,6 +217,7 @@ public final class Image extends Resource {
    * </ul>
    * @since 1.3
    */
+  @SuppressWarnings("javadoc")
   public Image( Device device, Image srcImage, int flag ) {
     super( checkDevice( device ) );
     if( srcImage == null ) {

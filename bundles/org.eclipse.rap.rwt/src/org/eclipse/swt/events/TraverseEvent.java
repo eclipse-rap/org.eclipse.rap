@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors:
  *    Innoopract Informationssysteme GmbH - initial API and implementation
  *    EclipseSource - ongoing development
@@ -77,15 +77,15 @@ import org.eclipse.swt.widgets.Event;
  * Note: A widget implementor will typically implement traversal using only the
  * doit flag to either enable or disable system traversal.
  * </p>
- * 
- * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of 
- * this class are <em>not</em> part of the RWT public API. They are marked 
- * public only so that they can be shared within the packages provided by RWT. 
+ *
+ * <p><strong>IMPORTANT:</strong> All <code>public static</code> members of
+ * this class are <em>not</em> part of the RWT public API. They are marked
+ * public only so that they can be shared within the packages provided by RWT.
  * They should never be accessed from application code.
  * </p>
- * 
+ *
  * @see TraverseListener
- * 
+ *
  * @since 1.2
  */
 public final class TraverseEvent extends KeyEvent {
@@ -93,9 +93,9 @@ public final class TraverseEvent extends KeyEvent {
   private static final long serialVersionUID = 1L;
 
   public static final int KEY_TRAVERSED = SWT.Traverse;
-  
+
   private static final Class LISTENER = TraverseListener.class;
-  
+
   /**
    * The traversal type.
    * <p>
@@ -124,17 +124,18 @@ public final class TraverseEvent extends KeyEvent {
    * <code>true</code> indicates that the traversal described by the detail
    * field is to be performed.
    */
+  @SuppressWarnings("javadoc")
   public int detail;
 
   /**
    * Constructs a new instance of this class based on the information in the
    * given untyped event.
-   * 
+   *
    * @param e the untyped event containing the information
    */
   public TraverseEvent( Event e ) {
     super( e );
-    this.detail = e.detail;
+    detail = e.detail;
   }
 
   public TraverseEvent( Control source ) {
@@ -144,9 +145,10 @@ public final class TraverseEvent extends KeyEvent {
   /**
    * Returns a string containing a concise, human-readable description of the
    * receiver.
-   * 
+   *
    * @return a string representation of the event
    */
+  @Override
   public String toString() {
     String string = super.toString();
     return string.substring( 0, string.length() - 1 ) // remove trailing '}'
@@ -155,6 +157,7 @@ public final class TraverseEvent extends KeyEvent {
            + "}";
   }
 
+  @Override
   protected void dispatchToObserver( Object listener ) {
     switch( getID() ) {
       case KEY_TRAVERSED:
@@ -165,10 +168,12 @@ public final class TraverseEvent extends KeyEvent {
     }
   }
 
+  @Override
   protected Class getListenerType() {
     return LISTENER;
   }
-  
+
+  @Override
   protected boolean allowProcessing() {
     return EventUtil.isAccessible( widget );
   }
@@ -180,7 +185,7 @@ public final class TraverseEvent extends KeyEvent {
   public static void removeListener( Adaptable adaptable, TraverseListener listener ) {
     removeListener( adaptable, LISTENER, listener );
   }
-  
+
   public static boolean hasListener( Adaptable adaptable ) {
     return hasListener( adaptable, LISTENER );
   }

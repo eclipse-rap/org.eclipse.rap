@@ -33,6 +33,7 @@ import org.eclipse.rwt.lifecycle.JSWriter;
 import org.eclipse.rwt.service.IServiceStore;
 
 
+@SuppressWarnings("deprecation")
 public class ProtocolMessageWriter {
 
   // TODO [rst] Copy of JSWriter constant, remove when JSWriter is gone
