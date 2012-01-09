@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.*;
 
 /**
  * Utility class that provides a number of useful static methods to support the
- * implementation of widget life cycle adapters.
+ * implementation of life cycle adapters (LCAs) for {@link Widget}s.
  *
  * @see ControlLCAUtil
  * @since 1.0
@@ -45,6 +45,12 @@ public final class WidgetLCAUtil {
 
   private static final String JS_PROP_HEIGHT = "height";
   private static final String JS_PROP_WIDTH = "width";
+  private static final String JS_PROP_SPACE = "space";
+  private static final String JS_FUNC_SET_TOOL_TIP = "setToolTip";
+  private static final String JS_FUNC_SET_ROUNDED_BORDER = "setRoundedBorder";
+  private static final String JS_FUNC_SET_HAS_LISTENER = "setHasListener";
+  private static final String JS_EVENT_TYPE_HELP = "help";
+
   private static final String PARAM_X = "bounds.x";
   private static final String PARAM_Y = "bounds.y";
   private static final String PARAM_WIDTH = "bounds.width";
@@ -67,18 +73,8 @@ public final class WidgetLCAUtil {
 
   private static final String LISTENER_PREFIX = "listener_";
 
-  private static final String JS_PROP_SPACE = "space";
-
-  private static final String JS_FUNC_SET_TOOL_TIP = "setToolTip";
-  private static final String JS_FUNC_SET_ROUNDED_BORDER = "setRoundedBorder";
-  private static final String JS_FUNC_SET_HAS_LISTENER = "setHasListener";
-  private static final String JS_EVENT_TYPE_HELP = "help";
-
-  private static final Pattern FONT_NAME_FILTER_PATTERN
-    = Pattern.compile( "\"|\\\\" );
-
-  private static final Rectangle DEF_ROUNDED_BORDER_RADIUS
-    = new Rectangle( 0, 0, 0, 0 );
+  private static final Pattern FONT_NAME_FILTER_PATTERN = Pattern.compile( "\"|\\\\" );
+  private static final Rectangle DEF_ROUNDED_BORDER_RADIUS = new Rectangle( 0, 0, 0, 0 );
 
   //////////////////////////////////////////////////////////////////////////////
   // TODO [fappel]: Experimental - profiler seems to indicate that buffering
@@ -91,61 +87,83 @@ public final class WidgetLCAUtil {
     // prevent instantiation
   }
 
-  /////////////////////////////////////////////
-  // Methods to preserve common property values
+  ///////////////////////////////////////////////////////
+  // Methods to read and process request parameter values
 
   /**
-   * Preserves the value of the property of the specified widget.
+   * Reads the bounds of the specified widget from the current request. If the
+   * bounds of this widget was not sent with the current request, the specified
+   * default is returned.
    *
-   * @param widget the widget whose property to preserve
-   * @param property the name of the property
-   * @param value the value to preserve
-   *
-   * @since 1.5
+   * @param widget the widget whose bounds to read
+   * @param defaultValue the default bounds
+   * @return the bounds as read from the request or the default bounds if no
+   *         bounds were passed within the current request
    */
-  public static void preserveProperty( Widget widget, String property, Object value ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( property, value );
+  public static Rectangle readBounds( Widget widget, Rectangle defaultValue ) {
+    return readBounds( WidgetUtil.getId( widget ), defaultValue );
   }
 
   /**
-   * Preserves the value of the property of the specified widget.
+   * Reads the bounds of the widget specified by its id from the current
+   * request. If the bounds of this widget was not sent with the current
+   * request, the specified default is returned.
    *
-   * @param widget the widget whose property to preserve
-   * @param property the name of the property
-   * @param value the value to preserve
-   *
-   * @since 1.5
+   * @param widgetId the widget id of the widget whose bounds to read
+   * @param defaultValue the default bounds
+   * @return the bounds as read from the request or the default bounds if no
+   *         bounds were passed within the current request
    */
-  public static void preserveProperty( Widget widget, String property, int value ) {
-    preserveProperty( widget, property, Integer.valueOf( value ) );
+  public static Rectangle readBounds( String widgetId, Rectangle defaultValue ) {
+    int x = readBoundsX( widgetId, defaultValue.x );
+    int y = readBoundsY( widgetId, defaultValue.y );
+    int width = readBoundsWidth( widgetId, defaultValue.width );
+    int height = readBoundsHeight( widgetId, defaultValue.height );
+    return new Rectangle( x, y, width, height );
+  }
+
+  private static int readBoundsY( String widgetId, int defaultValue ) {
+    String value = readPropertyValue( widgetId, PARAM_Y );
+    return readBoundsValue( value, defaultValue );
+  }
+
+  private static int readBoundsX( String widgetId, int defaultValue ) {
+    String value = readPropertyValue( widgetId, PARAM_X );
+    return readBoundsValue( value, defaultValue );
+  }
+
+  private static int readBoundsWidth( String widgetId, int defaultValue ) {
+    String value = WidgetLCAUtil.readPropertyValue( widgetId, PARAM_WIDTH );
+    return readBoundsValue( value, defaultValue );
+  }
+
+  private static int readBoundsHeight( String widgetId, int defaultValue ) {
+    String value = WidgetLCAUtil.readPropertyValue( widgetId, PARAM_HEIGHT );
+    return readBoundsValue( value, defaultValue );
+  }
+
+  private static int readBoundsValue( String value, int current ) {
+    int result;
+    if( value != null && !"null".equals( value ) ) {
+      result = NumberFormatUtil.parseInt( value );
+    } else {
+      result = current;
+    }
+    return result;
   }
 
   /**
-   * Preserves the value of the property of the specified widget.
+   * Process a <code>HelpEvent</code> if the current request specifies that
+   * there occurred a help event for the given <code>widget</code>.
    *
-   * @param widget the widget whose property to preserve
-   * @param property the name of the property
-   * @param value the value to preserve
-   *
-   * @since 1.5
+   * @param widget the widget to process
+   * @since 1.3
    */
-  public static void preserveProperty( Widget widget, String property, boolean value ) {
-    preserveProperty( widget, property, Boolean.valueOf( value ) );
-  }
-
-  /**
-   * Preserves the value of the listener of the specified widget.
-   *
-   * @param widget the widget whose listener to preserve
-   * @param listener the type of the listener
-   * @param value the value to preserve
-   *
-   * @since 1.5
-   */
-  public static void preserveListener( Widget widget, String listener, boolean value ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( LISTENER_PREFIX + listener, new Boolean( value ) );
+  public static void processHelp( Widget widget ) {
+    if( WidgetLCAUtil.wasEventSent( widget, JSConst.EVENT_HELP ) ) {
+      HelpEvent event = new HelpEvent( widget );
+      event.processEvent();
+    }
   }
 
   /**
@@ -159,6 +177,19 @@ public final class WidgetLCAUtil {
   public static void preserveBounds( Widget widget, Rectangle bounds ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     adapter.preserve( Props.BOUNDS, bounds );
+  }
+
+  /**
+   * Preserves the value of the property <code>enabled</code> of the specified
+   * widget.
+   *
+   * @param widget the widget whose enabled property to preserve
+   * @param enabled the value to preserve
+   * @see #writeEnabled(Widget, boolean)
+   */
+  public static void preserveEnabled( Widget widget, boolean enabled ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( PROP_ENABLED, Boolean.valueOf( enabled ) );
   }
 
   /**
@@ -272,19 +303,6 @@ public final class WidgetLCAUtil {
   }
 
   /**
-   * Preserves the value of the property <code>enabled</code> of the specified
-   * widget.
-   *
-   * @param widget the widget whose enabled property to preserve
-   * @param enabled the value to preserve
-   * @see #writeEnabled(Widget, boolean)
-   */
-  public static void preserveEnabled( Widget widget, boolean enabled ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_ENABLED, Boolean.valueOf( enabled ) );
-  }
-
-  /**
    * Preserves the value of the custom variant of the specified
    * widget.
    *
@@ -297,72 +315,416 @@ public final class WidgetLCAUtil {
     adapter.preserve( PROP_VARIANT, variant );
   }
 
-  ////////////////////////////////////////////////////
-  // Methods to determine changes of widget properties
-
   /**
-   * Determines whether the property of the given widget has changed during the
-   * processing of the current request and thus the changes must be rendered in
-   * the response. This is done by comparing the current value with the
-   * preserved value.
-   * <p>
-   * If there is no preserved value, <code>null</code> is assumed.
-   * </p>
+   * Preserves whether the given <code>widget</code> has one or more
+   * <code>HelpListener</code>s attached.
    *
-   * @param widget the widget whose property is to be compared, must not be
-   *            <code>null</code>.
-   * @param property the name of the property under which the preserved value
-   *            can be looked up. Must not be <code>null</code>.
-   * @param newValue the value to compare the preserved value with
-   * @return <code>true</code> if the property has changed, <code>false</code>
-   *         otherwise
+   * @param widget the widget to preserve
+   * @since 1.3
    */
-  public static boolean hasChanged( Widget widget, String property, Object newValue ) {
+  public static void preserveHelpListener( Widget widget ) {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    Object oldValue = adapter.getPreserved( property );
-    return !WidgetLCAUtil.equals( oldValue, newValue );
+    adapter.preserve( PROP_HELP_LISTENER, Boolean.valueOf( HelpEvent.hasListener( widget ) ) );
   }
 
   /**
-   * Determines whether the property of the given widget has changed during the
-   * processing of the current request and thus the changes must be rendered in
-   * the response. This is done by comparing the current value with the
-   * preserved value.
-   * <p>
-   * In case it is the first time that the widget is rendered (it is not yet
-   * present on the client side) <code>true</code> is only returned if the
-   * <code>newValue</code> differs from the <code>defaultValue</code>.
-   * Otherwise the decision is delegated to
-   * {@link #hasChanged(Widget,String,Object)}.
-   * </p>
+   * Determines whether the bounds of the given widget have changed during the
+   * processing of the current request and if so, writes a set opration the
+   * response that updates the client-side bounds of the specified widget. For
+   * instances of {@link Control}, use the method
+   * {@link ControlLCAUtil#renderBounds(Control)} instead.
    *
-   * @param widget the widget whose property is to be compared, must not be
-   *            <code>null</code>.
-   * @param property the name of the property under which the preserved value
-   *            can be looked up. Must not be <code>null</code>.
-   * @param newValue the value that is compared to the preserved value
-   * @param defaultValue the default value
-   * @return <code>true</code> if the property has changed or if the widget is
-   *         not yet initialized and the property is at its default value,
-   *         <code>false</code> otherwise
+   * @param widget the widget whose bounds to write
+   * @param parent the parent of the widget or <code>null</code> if the widget
+   *            does not have a parent
+   * @param bounds the new bounds of the widget
+   * @throws IOException
    */
-  public static boolean hasChanged( Widget widget,
-                                    String property,
-                                    Object newValue,
-                                    Object defaultValue )
+  public static void renderBounds( Widget widget, Control parent, Rectangle bounds )
+    throws IOException
   {
-    boolean result;
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    if( adapter.isInitialized() ) {
-      result = hasChanged( widget, property, newValue );
-    } else {
-      result = !equals( newValue, defaultValue );
+    if( WidgetLCAUtil.hasChanged( widget, Props.BOUNDS, bounds ) ) {
+      // the SWT coordinates for the client area differ in some cases from
+      // the widget realization of qooxdoo
+      Rectangle newBounds = bounds;
+      if( parent != null ) {
+        AbstractWidgetLCA parentLCA = WidgetUtil.getLCA( parent );
+        newBounds = parentLCA.adjustCoordinates( widget, newBounds );
+      }
+      int[] args = new int[] {
+        newBounds.x,
+        newBounds.y,
+        newBounds.width,
+        newBounds.height
+      };
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( "bounds", args );
+    }
+  }
+
+  /**
+   * Determines whether the property <code>enabled</code> of the given widget
+   * has changed during the processing of the current request and if so, writes
+   * a protocol message to the response that updates the client-side enabled
+   * property of the specified widget. For instances of {@link Control}, use
+   * the method {@link ControlLCAUtil#writeEnabled(Control)} instead.
+   *
+   * @param widget the widget whose enabled property to set
+   * @param enabled the new value of the property
+   * @throws IOException
+   * @see #preserveEnabled(Widget, boolean)
+   */
+  public static void renderEnabled( Widget widget, boolean enabled ) throws IOException {
+    Boolean newValue = Boolean.valueOf( enabled );
+    Boolean defaultValue = Boolean.TRUE;
+    if( WidgetLCAUtil.hasChanged( widget, Props.ENABLED, newValue, defaultValue ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( "enabled", newValue );
+    }
+  }
+
+  /**
+   * Determines whether the custom variant of the given widget
+   * has changed during the processing of the current request and if so, writes
+   * a protocol Message to the response that updates the client-side variant.
+   *
+   * @param widget the widget whose custom variant to write
+   * @throws IOException
+   */
+  public static void renderCustomVariant( Widget widget ) throws IOException {
+    String newValue = WidgetUtil.getVariant( widget );
+    if( WidgetLCAUtil.hasChanged( widget, PROP_VARIANT, newValue, null ) ) {
+      String value = null;
+      if( newValue != null ) {
+        value = "variant_" + newValue;
+      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( "customVariant", value );
+    }
+  }
+
+  /**
+   * Adds or removes client-side help listeners for the the given
+   * <code>widget</code> as necessary.
+   *
+   * @param widget
+   * @since 1.3
+   */
+  public static void renderListenHelp( Widget widget ) {
+    Boolean hasListener = Boolean.valueOf( HelpEvent.hasListener( widget ) );
+    if( WidgetLCAUtil.hasChanged( widget, PROP_HELP_LISTENER, hasListener, Boolean.FALSE ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      if( hasListener.booleanValue() ) {
+        clientObject.addListener( "help" );
+      } else {
+        clientObject.removeListener( "help" );
+      }
+    }
+  }
+
+
+  ///////////////////////////////////////////////////////
+  // Methods to read and process request parameter values
+
+
+
+
+
+  ////////////////
+  // Help listener
+
+  /**
+   * Determines whether the property <code>menu</code> of the given widget has
+   * changed during the processing of the current request and if so, writes
+   * a protocol message to the response that updates the client-side menu property
+   * of the specified widget. For instances of {@link Control}, use the method
+   * {@link ControlLCAUtil#writeMenu(Control)} instead.
+   *
+   * @param widget the widget whose menu property to set
+   * @param menu the new value of the property
+   * @throws IOException
+   */
+  public static void renderMenu( Widget widget, Menu menu ) throws IOException {
+    renderProperty( widget, Props.MENU, menu, null );
+  }
+
+  /**
+   * Determines whether the property <code>toolTip</code> of the given widget
+   * has changed during the processing of the current request and if so, writes
+   * a protocol message to the response that updates the client-side toolTip
+   * property of the specified widget. For instances of {@link Control}, use
+   * the method {@link ControlLCAUtil#writeToolTip(Control)} instead.
+   *
+   * @param widget the widget whose toolTip property to set
+   * @param toolTip the new value of the property
+   * @throws IOException
+   * @see #preserveToolTipText(Widget, String)
+   */
+  public static void renderToolTip( Widget widget, String toolTip ) throws IOException {
+    String text = toolTip == null ? "" : toolTip;
+    if( hasChanged( widget, WidgetLCAUtil.PROP_TOOL_TIP_TEXT, text, "" ) ) {
+      // Under Windows, ampersand characters are not correctly displayed:
+      // https://bugs.eclipse.org/bugs/show_bug.cgi?id=188271
+      // However, it is correct not to escape mnemonics in tool tips
+      text = escapeText( text, false );
+      text = replaceNewLines( text, "<br/>" );
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( "toolTip", text );
+    }
+  }
+
+  /**
+   * Determines whether the property <code>font</code> of the given widget has
+   * changed during the processing of the current request and if so, writes
+   * JavaScript code to the response that updates the client-side font property
+   * of the specified widget. For instances of {@link Control}, use the method
+   * {@link ControlLCAUtil#writeFont(Control)} instead.
+   *
+   * @param widget the widget whose font property to set
+   * @param font the new value of the property
+   * @throws IOException
+   * @see #preserveFont(Widget, Font)
+   */
+  public static void renderFont( Widget widget, Font font ) throws IOException {
+    if( WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, null ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( PROP_FONT, getFontAsArray( font ) );
+    }
+  }
+
+  private static Object[] getFontAsArray( Font font ) {
+    Object[] result = null;
+    if( font != null ) {
+      FontData fontData = FontUtil.getData( font );
+      result = new Object[] {
+        parseFontName( fontData.getName() ),
+        Integer.valueOf( fontData.getHeight() ),
+        Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 ),
+        Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 )
+      };
     }
     return result;
   }
 
-  ///////////////////////////////////////////
-  // Methods to read request parameter values
+  public static String[] parseFontName( final String name ) {
+    return parsedFonts.get( name, new IInstanceCreator<String[]>() {
+      public String[] createInstance() {
+        return parseFontNameInternal( name );
+      }
+    } );
+  }
+
+  private static String[] parseFontNameInternal( String name ) {
+    String[] result = name.split( "," );
+    for( int i = 0; i < result.length; i++ ) {
+      result[ i ] = result[ i ].trim();
+      Matcher matcher = FONT_NAME_FILTER_PATTERN.matcher( result[ i ] );
+      result[ i ] = matcher.replaceAll( "" );
+    }
+    return result;
+  }
+
+  /**
+   * Determines whether the property <code>foreground</code> of the given
+   * widget has changed during the processing of the current request and if so,
+   * writes a protocol message to the response that updates the client-side
+   * foreground property of the specified widget. For instances of
+   * {@link Control}, use the method
+   * {@link ControlLCAUtil#writeForeground(Control)} instead.
+   *
+   * @param widget the widget whose foreground property to set
+   * @param newColor the new value of the property
+   * @throws IOException
+   * @see #preserveForeground(Widget, Color)
+   */
+  public static void renderForeground( Widget widget, Color newColor ) throws IOException {
+    if( WidgetLCAUtil.hasChanged( widget, PROP_FOREGROUND, newColor, null ) ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( PROP_FOREGROUND, getColorValueAsArray( newColor, false ) );
+    }
+  }
+
+  // TODO [tb] : merge with GCOperationWriter#getColorValueAsArray?
+  private static int[] getColorValueAsArray( Color color, boolean transparent ) {
+    int[] result = null;
+    if( color != null ) {
+      RGB rgb = color.getRGB();
+      result = new int[ 4 ];
+    result[ 0 ] = rgb.red;
+    result[ 1 ] = rgb.green;
+    result[ 2 ] = rgb.blue;
+    result[ 3 ] = transparent ? 0 : 255;
+    } else if( transparent ) {
+      result = new int[] { 0, 0, 0, 0 };
+    }
+    return result;
+  }
+
+  /**
+   * Determines whether the property <code>background</code> of the given
+   * widget has changed during the processing of the current request and if so,
+   * writes a protocol message to the response that updates the client-side
+   * background property of the specified widget. For instances of
+   * {@link Control}, use the method
+   * {@link ControlLCAUtil#writeBackground(Control)} instead.
+   *
+   * @param widget the widget whose background property to set
+   * @param newColor the new value of the property
+   * @throws IOException
+   * @see #preserveBackground(Widget, Color)
+   */
+  public static void renderBackground( Widget widget, Color newColor ) throws IOException {
+    renderBackground( widget, newColor, false );
+  }
+
+  /**
+   * Determines whether the property <code>background</code> of the given
+   * widget has changed during the processing of the current request and if so,
+   * writes a protocol message to the response that updates the client-side
+   * background property of the specified widget. For instances of
+   * {@link Control}, use the method
+   * {@link ControlLCAUtil#writeBackground(Control)} instead.
+   *
+   * @param widget the widget whose background property to set
+   * @param background the new background color
+   * @param transparency the new background transparency, if <code>true</code>,
+   *            the <code>background</code> parameter is ignored
+   * @throws IOException
+   * @see #preserveBackground(Widget, Color, boolean)
+   */
+  public static void renderBackground( Widget widget, Color background, boolean transparency )
+    throws IOException
+  {
+    boolean transparencyChanged = WidgetLCAUtil.hasChanged( widget,
+                                                            PROP_BACKGROUND_TRANSPARENCY,
+                                                            Boolean.valueOf( transparency ),
+                                                            Boolean.FALSE );
+    boolean colorChanged = WidgetLCAUtil.hasChanged( widget, PROP_BACKGROUND, background, null );
+    if( transparencyChanged || colorChanged ) {
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      int[] color = null;
+      if( transparency || background != null ) {
+        color = getColorValueAsArray( background, transparency );
+      }
+      clientObject.setProperty( PROP_BACKGROUND, color );
+    }
+  }
+
+  /**
+   * Determines whether the background gradient properties of the
+   * given widget have changed during the processing of the current request and
+   * if so, writes a protocol message to the response that updates the client-side
+   * background gradient properties of the specified widget.
+   *
+   * @param widget the widget whose background gradient properties to set
+   * @throws IOException
+   * @see #preserveBackgroundGradient(Widget)
+   * @since 1.5
+   */
+  public static void renderBackgroundGradient( Widget widget ) throws IOException {
+    if( hasBackgroundGradientChanged( widget ) ) {
+      Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+      IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
+      Color[] bgGradientColors = graphicsAdapter.getBackgroundGradientColors();
+      Object[] args = null;
+      if( bgGradientColors!= null ) {
+        String[] colorStrings = new String[ bgGradientColors.length ];
+        int[] bgGradientPercents = graphicsAdapter.getBackgroundGradientPercents();
+        Integer[] percents = new Integer[ bgGradientPercents.length ];
+        for( int i = 0; i < colorStrings.length; i++ ) {
+          colorStrings[ i ] = getColorValue( bgGradientColors[ i ].getRGB() );
+        }
+        for( int i = 0; i < bgGradientPercents.length; i++ ) {
+          percents[ i ] =  new Integer( bgGradientPercents[ i ] );
+        }
+        boolean bgGradientVertical = graphicsAdapter.isBackgroundGradientVertical();
+        args = new Object[] {
+          colorStrings,
+          percents,
+          new Boolean( bgGradientVertical )
+        };
+      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( "backgroundGradient", args );
+    }
+  }
+
+  private static boolean hasBackgroundGradientChanged( Widget widget ) {
+    IWidgetGraphicsAdapter graphicsAdapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+    Color[] bgGradientColors = graphicsAdapter.getBackgroundGradientColors();
+    int[] bgGradientPercents = graphicsAdapter.getBackgroundGradientPercents();
+    boolean bgGradientVertical = graphicsAdapter.isBackgroundGradientVertical();
+    return    WidgetLCAUtil.hasChanged( widget,
+                                        PROP_BACKGROUND_GRADIENT_COLORS,
+                                        bgGradientColors,
+                                        null )
+           || WidgetLCAUtil.hasChanged( widget,
+                                        PROP_BACKGROUND_GRADIENT_PERCENTS,
+                                        bgGradientPercents,
+                                        null )
+           || WidgetLCAUtil.hasChanged( widget,
+                                        PROP_BACKGROUND_GRADIENT_VERTICAL,
+                                        Boolean.valueOf( bgGradientVertical ),
+                                        Boolean.FALSE );
+  }
+
+  /**
+   * Determines whether the rounded border properties of the given widget has
+   * changed during the processing of the current request and if so, writes
+   * a protocol message to the response that updates the client-side rounded border
+   * of the specified widget.
+   *
+   * @param widget the widget whose rounded border properties to set
+   * @throws IOException
+   * @see #preserveRoundedBorder(Widget)
+   * @since 1.5
+   */
+  public static void renderRoundedBorder( Widget widget ) throws IOException {
+    if( hasRoundedBorderChanged( widget ) ) {
+      Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+      IWidgetGraphicsAdapter graphicAdapter = ( IWidgetGraphicsAdapter )adapter;
+      Object[] args = null;
+      int width = graphicAdapter.getRoundedBorderWidth();
+      Color color = graphicAdapter.getRoundedBorderColor();
+      if( width > 0 && color != null ) {
+        Rectangle radius = graphicAdapter.getRoundedBorderRadius();
+        args = new Object[] {
+          new Integer( width ),
+          getColorValue( color.getRGB() ),
+          new Integer( radius.x ),
+          new Integer( radius.y ),
+          new Integer( radius.width ),
+          new Integer( radius.height )
+        };
+      }
+      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
+      clientObject.setProperty( "roundedBorder", args );
+    }
+  }
+
+  private static boolean hasRoundedBorderChanged( Widget widget ) {
+    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
+    IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
+    int width = graphicsAdapter.getRoundedBorderWidth();
+    Color color = graphicsAdapter.getRoundedBorderColor();
+    Rectangle radius = graphicsAdapter.getRoundedBorderRadius();
+    return
+         WidgetLCAUtil.hasChanged( widget,
+                                   PROP_ROUNDED_BORDER_WIDTH,
+                                   new Integer( width ),
+                                   new Integer( 0 ) )
+      || WidgetLCAUtil.hasChanged( widget,
+                                   PROP_ROUNDED_BORDER_COLOR,
+                                   color,
+                                   null )
+      || WidgetLCAUtil.hasChanged( widget,
+                                   PROP_ROUNDED_BORDER_RADIUS,
+                                   radius,
+                                   DEF_ROUNDED_BORDER_RADIUS );
+  }
+
+  //////////////////////////////////////////
+  // Generic methods to read property values
 
   /**
    * Reads the value of the specified property for the specified widget from the
@@ -370,17 +732,19 @@ public final class WidgetLCAUtil {
    * the given widget, <code>null</code> is returned.
    *
    * @param widget the widget whose property to read
-   * @param propertyName the name of the property to read
+   * @param property the name of the property to read
    * @return the value read from the request or <code>null</code> if no value
    *         was submitted for the given property
    */
-  // TODO: [fappel] create a clear specification how property names should look
-  //                like, in particular properties that are non primitive with
-  //                their own props.
-  public static String readPropertyValue( Widget widget, String propertyName ) {
+  public static String readPropertyValue( Widget widget, String property ) {
+    String widgetId = WidgetUtil.getId( widget );
+    return readPropertyValue( widgetId, property );
+  }
+
+  private static String readPropertyValue( String widgetId, String propertyName ) {
     HttpServletRequest request = ContextProvider.getRequest();
     StringBuilder key = new StringBuilder();
-    key.append( WidgetUtil.getId( widget ) );
+    key.append( widgetId );
     key.append( "." );
     key.append( propertyName );
     return request.getParameter( key.toString() );
@@ -401,40 +765,65 @@ public final class WidgetLCAUtil {
     return WidgetUtil.getId( widget ).equals( widgetId );
   }
 
+  //////////////////////////////////////////////
+  // Generic methods to preserve property values
+
   /**
-   * Reads the bounds of the specified widget from the current request. If the
-   * bounds of this widget was not sent with the current request, the specified
-   * default is returned.
+   * Preserves the value of the property of the specified widget.
    *
-   * @param widget the widget whose bounds to read
-   * @param defValue the default bounds
-   * @return the bounds as read from the request or the default bounds if no
-   *         bounds were passed within the current request
+   * @param widget the widget whose property to preserve
+   * @param property the name of the property
+   * @param value the value to preserve
+   *
+   * @since 1.5
    */
-  public static Rectangle readBounds( Widget widget, Rectangle defValue ) {
-    return readBounds( WidgetUtil.getId( widget ), defValue );
+  public static void preserveProperty( Widget widget, String property, Object value ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( property, value );
   }
 
   /**
-   * Reads the bounds of the widget specified by its id from the current
-   * request. If the bounds of this widget was not sent with the current
-   * request, the specified default is returned.
+   * Preserves the value of the property of the specified widget.
    *
-   * @param widgetId the widget id of the widget whose bounds to read
-   * @param defValue the default bounds
-   * @return the bounds as read from the request or the default bounds if no
-   *         bounds were passed within the current request
+   * @param widget the widget whose property to preserve
+   * @param property the name of the property
+   * @param value the value to preserve
+   *
+   * @since 1.5
    */
-  public static Rectangle readBounds( String widgetId, Rectangle defValue ) {
-    int x = readBoundsX( widgetId, defValue.x );
-    int y = readBoundsY( widgetId, defValue.y );
-    int width = readBoundsWidth( widgetId, defValue.width );
-    int height = readBoundsHeight( widgetId, defValue.height );
-    return new Rectangle( x, y, width, height );
+  public static void preserveProperty( Widget widget, String property, int value ) {
+    preserveProperty( widget, property, Integer.valueOf( value ) );
   }
 
-  /////////////////////////////////////////////////////////
-  // Methods to write JavaScript code for widget properties
+  /**
+   * Preserves the value of the property of the specified widget.
+   *
+   * @param widget the widget whose property to preserve
+   * @param property the name of the property
+   * @param value the value to preserve
+   *
+   * @since 1.5
+   */
+  public static void preserveProperty( Widget widget, String property, boolean value ) {
+    preserveProperty( widget, property, Boolean.valueOf( value ) );
+  }
+
+  /**
+   * Preserves the value of the listener of the specified widget.
+   *
+   * @param widget the widget whose listener to preserve
+   * @param listener the type of the listener
+   * @param value the value to preserve
+   *
+   * @since 1.5
+   */
+  public static void preserveListener( Widget widget, String listener, boolean value ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    adapter.preserve( LISTENER_PREFIX + listener, new Boolean( value ) );
+  }
+
+  ////////////////////////////////////////////
+  // Generic methods to render property values
 
   /**
    * Determines whether the property of the given widget has changed during the processing of the
@@ -476,8 +865,9 @@ public final class WidgetLCAUtil {
                                      int newValue,
                                      int defaultValue )
   {
-    Integer defValue = Integer.valueOf( defaultValue );
-    renderProperty( widget, property, Integer.valueOf( newValue ), defValue );
+    Integer newValueObject = Integer.valueOf( newValue );
+    Integer defaultValueObject = Integer.valueOf( defaultValue );
+    renderProperty( widget, property, newValueObject, defaultValueObject );
   }
 
   /**
@@ -497,8 +887,9 @@ public final class WidgetLCAUtil {
                                      boolean newValue,
                                      boolean defaultValue )
   {
-    Boolean defValue = Boolean.valueOf( defaultValue );
-    renderProperty( widget, property, Boolean.valueOf( newValue ), defValue );
+    Boolean newValueObject = Boolean.valueOf( newValue );
+    Boolean defaultValueObject = Boolean.valueOf( defaultValue );
+    renderProperty( widget, property, newValueObject, defaultValueObject );
   }
 
   /**
@@ -549,20 +940,6 @@ public final class WidgetLCAUtil {
       IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
       clientObject.setProperty( property, images );
     }
-  }
-
-  private static Object[] getImageAsArray( Image image ) {
-    Object[] result = null;
-    if( image != null ) {
-      String imagePath = ImageFactory.getImagePath( image );
-      Rectangle bounds = image.getBounds();
-      result = new Object[] {
-        imagePath,
-        Integer.valueOf( bounds.width ),
-        Integer.valueOf( bounds.height )
-      };
-    }
-    return result;
   }
 
   /**
@@ -742,9 +1119,9 @@ public final class WidgetLCAUtil {
                                      boolean defaultValue )
   {
     String property = LISTENER_PREFIX + listener;
-    Boolean value = new Boolean( newValue );
-    Boolean defValue = new Boolean( defaultValue );
-    if( WidgetLCAUtil.hasChanged( widget, property, value, defValue ) ) {
+    Boolean newValueObject = new Boolean( newValue );
+    Boolean defaultValueObject = new Boolean( defaultValue );
+    if( WidgetLCAUtil.hasChanged( widget, property, newValueObject, defaultValueObject ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
       if( newValue ) {
         clientObject.addListener( listener );
@@ -753,6 +1130,172 @@ public final class WidgetLCAUtil {
       }
     }
   }
+
+  ////////////////////
+  // Auxiliary methods
+
+  /**
+   * Determines whether the property of the given widget has changed during the
+   * processing of the current request and thus the changes must be rendered in
+   * the response. This is done by comparing the current value with the
+   * preserved value.
+   * <p>
+   * If there is no preserved value, <code>null</code> is assumed.
+   * </p>
+   *
+   * @param widget the widget whose property is to be compared, must not be
+   *            <code>null</code>.
+   * @param property the name of the property under which the preserved value
+   *            can be looked up. Must not be <code>null</code>.
+   * @param newValue the value to compare the preserved value with
+   * @return <code>true</code> if the property has changed, <code>false</code>
+   *         otherwise
+   */
+  public static boolean hasChanged( Widget widget, String property, Object newValue ) {
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    Object oldValue = adapter.getPreserved( property );
+    return !WidgetLCAUtil.equals( oldValue, newValue );
+  }
+
+  /**
+   * Determines whether the property of the given widget has changed during the
+   * processing of the current request and thus the changes must be rendered in
+   * the response. This is done by comparing the current value with the
+   * preserved value.
+   * <p>
+   * In case it is the first time that the widget is rendered (it is not yet
+   * present on the client side) <code>true</code> is only returned if the
+   * <code>newValue</code> differs from the <code>defaultValue</code>.
+   * Otherwise the decision is delegated to
+   * {@link #hasChanged(Widget,String,Object)}.
+   * </p>
+   *
+   * @param widget the widget whose property is to be compared, must not be
+   *            <code>null</code>.
+   * @param property the name of the property under which the preserved value
+   *            can be looked up. Must not be <code>null</code>.
+   * @param newValue the value that is compared to the preserved value
+   * @param defaultValue the default value
+   * @return <code>true</code> if the property has changed or if the widget is
+   *         not yet initialized and the property is at its default value,
+   *         <code>false</code> otherwise
+   */
+  public static boolean hasChanged( Widget widget,
+                                    String property,
+                                    Object newValue,
+                                    Object defaultValue )
+  {
+    boolean result;
+    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
+    if( adapter.isInitialized() ) {
+      result = hasChanged( widget, property, newValue );
+    } else {
+      result = !equals( newValue, defaultValue );
+    }
+    return result;
+  }
+
+  /**
+   * Replaces all newline characters in the specified input string with the
+   * given replacement string.
+   *
+   * @param input the string to process
+   * @param replacement the string to replace line feeds with
+   * @return a new string with all line feeds replaced
+   * @since 1.1
+   */
+  public static String replaceNewLines( String input, String replacement ) {
+    return EncodingUtil.replaceNewLines( input, replacement );
+  }
+
+  /**
+   * Obtains a list of SWT style flags that are present in the given widget.
+   *
+   * @param widget the widget to get the styles for
+   * @param styles the names of the SWT style flags to check for, elements must
+   *          be valid SWT style flags
+   * @return the names of those styles from the <code>styles</code> parameter
+   *         that are present in the given widget, i.e. where
+   *         <code>( widget.getStyle() &amp; SWT.&lt;STYLE&gt; ) != 0</code>
+   * @since 1.5
+   * @see SWT
+   * @see Widget#getStyle()
+   */
+  public static String[] getStyles( Widget widget, String[] styles ) {
+    return StylesUtil.filterStyles( widget, styles );
+  }
+
+
+
+  ////////////////
+  // Help listener
+
+
+
+  ////////////////
+  // Help listener
+
+  static boolean equals( Object object1, Object object2 ) {
+    boolean result;
+    if( object1 == object2 ) {
+      result = true;
+    } else if( object1 == null ) {
+      result = false;
+    } else if( object1 instanceof boolean[] && object2 instanceof boolean[] ) {
+      result = Arrays.equals( ( boolean[] )object1, ( boolean[] )object2 );
+    } else if( object1 instanceof int[] && object2 instanceof int[] ) {
+      result = Arrays.equals( ( int[] )object1, ( int[] )object2 );
+    } else if( object1 instanceof long[] && object2 instanceof long[] ) {
+      result = Arrays.equals( ( long[] )object1, ( long[] )object2 );
+    } else if( object1 instanceof float[] && object2 instanceof float[] ) {
+      result = Arrays.equals( ( float[] )object1, ( float[] )object2 );
+    } else if( object1 instanceof double[] && object2 instanceof double[] ) {
+      result = Arrays.equals( ( double[] )object1, ( double[] )object2 );
+    } else if( object1 instanceof Object[] && object2 instanceof Object[] ) {
+      result = Arrays.equals( ( Object[] )object1, ( Object[] )object2 );
+    } else {
+      result = object1.equals( object2 );
+    }
+    return result;
+  }
+
+  public static String getColorValue( RGB rgb ) {
+    StringBuilder buffer = new StringBuilder();
+    buffer.append( "#" );
+    String red = Integer.toHexString( rgb.red );
+    if( red.length() == 1  ) {
+      buffer.append( "0" );
+    }
+    buffer.append( red );
+    String green = Integer.toHexString( rgb.green );
+    if( green.length() == 1  ) {
+      buffer.append( "0" );
+    }
+    buffer.append( green );
+    String blue = Integer.toHexString( rgb.blue );
+    if( blue.length() == 1  ) {
+      buffer.append( "0" );
+    }
+    buffer.append( blue );
+    return buffer.toString();
+  }
+
+  private static Object[] getImageAsArray( Image image ) {
+    Object[] result = null;
+    if( image != null ) {
+      String imagePath = ImageFactory.getImagePath( image );
+      Rectangle bounds = image.getBounds();
+      result = new Object[] {
+        imagePath,
+        Integer.valueOf( bounds.width ),
+        Integer.valueOf( bounds.height )
+      };
+    }
+    return result;
+  }
+
+  /////////////////////
+  // Deprecated methods
 
   /**
    * Determines whether the bounds of the given widget have changed during the
@@ -766,7 +1309,9 @@ public final class WidgetLCAUtil {
    *            does not have a parent
    * @param bounds the new bounds of the widget
    * @throws IOException
+   * @deprecated Use {@link #renderBounds(Widget, Control, Rectangle)} instead
    */
+  @Deprecated
   public static void writeBounds( Widget widget, Control parent, Rectangle bounds )
     throws IOException
   {
@@ -803,41 +1348,6 @@ public final class WidgetLCAUtil {
   }
 
   /**
-   * Determines whether the bounds of the given widget have changed during the
-   * processing of the current request and if so, writes a set opration the
-   * response that updates the client-side bounds of the specified widget. For
-   * instances of {@link Control}, use the method
-   * {@link ControlLCAUtil#renderBounds(Control)} instead.
-   *
-   * @param widget the widget whose bounds to write
-   * @param parent the parent of the widget or <code>null</code> if the widget
-   *            does not have a parent
-   * @param bounds the new bounds of the widget
-   * @throws IOException
-   */
-  public static void renderBounds( Widget widget, Control parent, Rectangle bounds )
-    throws IOException
-  {
-    if( WidgetLCAUtil.hasChanged( widget, Props.BOUNDS, bounds ) ) {
-      // the SWT coordinates for the client area differ in some cases from
-      // the widget realization of qooxdoo
-      Rectangle newBounds = bounds;
-      if( parent != null ) {
-        AbstractWidgetLCA parentLCA = WidgetUtil.getLCA( parent );
-        newBounds = parentLCA.adjustCoordinates( widget, newBounds );
-      }
-      int[] args = new int[] {
-        newBounds.x,
-        newBounds.y,
-        newBounds.width,
-        newBounds.height
-      };
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      clientObject.setProperty( "bounds", args );
-    }
-  }
-
-  /**
    * Determines whether the property <code>menu</code> of the given widget has
    * changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the client-side menu property
@@ -847,27 +1357,14 @@ public final class WidgetLCAUtil {
    * @param widget the widget whose menu property to set
    * @param menu the new value of the property
    * @throws IOException
+   * @deprecated Use {@link #renderMenu(Widget, Menu)} instead
    */
+  @Deprecated
   public static void writeMenu( Widget widget, Menu menu ) throws IOException {
     if( WidgetLCAUtil.hasChanged( widget, Props.MENU, menu, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
       writer.call( JSWriter.WIDGET_MANAGER_REF, "setContextMenu", new Object[] { widget, menu } );
     }
-  }
-
-  /**
-   * Determines whether the property <code>menu</code> of the given widget has
-   * changed during the processing of the current request and if so, writes
-   * a protocol message to the response that updates the client-side menu property
-   * of the specified widget. For instances of {@link Control}, use the method
-   * {@link ControlLCAUtil#writeMenu(Control)} instead.
-   *
-   * @param widget the widget whose menu property to set
-   * @param menu the new value of the property
-   * @throws IOException
-   */
-  public static void renderMenu( Widget widget, Menu menu ) throws IOException {
-    renderProperty( widget, Props.MENU, menu, null );
   }
 
   /**
@@ -881,7 +1378,9 @@ public final class WidgetLCAUtil {
    * @param toolTip the new value of the property
    * @throws IOException
    * @see #preserveToolTipText(Widget, String)
+   * @deprecated Use {@link #renderToolTip(Widget, String)} instead
    */
+  @Deprecated
   public static void writeToolTip( Widget widget, String toolTip ) throws IOException {
     String text = toolTip == null ? "" : toolTip;
     if( hasChanged( widget, WidgetLCAUtil.PROP_TOOL_TIP_TEXT, text, "" ) ) {
@@ -897,31 +1396,6 @@ public final class WidgetLCAUtil {
   }
 
   /**
-   * Determines whether the property <code>toolTip</code> of the given widget
-   * has changed during the processing of the current request and if so, writes
-   * a protocol message to the response that updates the client-side toolTip
-   * property of the specified widget. For instances of {@link Control}, use
-   * the method {@link ControlLCAUtil#writeToolTip(Control)} instead.
-   *
-   * @param widget the widget whose toolTip property to set
-   * @param toolTip the new value of the property
-   * @throws IOException
-   * @see #preserveToolTipText(Widget, String)
-   */
-  public static void renderToolTip( Widget widget, String toolTip ) throws IOException {
-    String text = toolTip == null ? "" : toolTip;
-    if( hasChanged( widget, WidgetLCAUtil.PROP_TOOL_TIP_TEXT, text, "" ) ) {
-      // Under Windows, ampersand characters are not correctly displayed:
-      // https://bugs.eclipse.org/bugs/show_bug.cgi?id=188271
-      // However, it is correct not to escape mnemonics in tool tips
-      text = escapeText( text, false );
-      text = replaceNewLines( text, "<br/>" );
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      clientObject.setProperty( "toolTip", text );
-    }
-  }
-
-  /**
    * Determines whether the property <code>image</code> of the given widget
    * has changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the client-side image property
@@ -930,7 +1404,9 @@ public final class WidgetLCAUtil {
    * @param widget the widget whose image property to set
    * @param image the new value of the property
    * @throws IOException
+   * @deprecated Use {@link #renderProperty(Widget, String, Image, Image)} intead
    */
+  @Deprecated
   public static void writeImage( Widget widget, Image image ) throws IOException {
     writeImage( widget, Props.IMAGE, JSConst.QX_FIELD_ICON, image );
   }
@@ -947,7 +1423,9 @@ public final class WidgetLCAUtil {
    * @param jsProperty the name of the JavaScript property to set
    * @param image the new value of the property
    * @throws IOException
+   * @deprecated Use {@link #renderProperty(Widget, String, Image, Image)} intead
    */
+  @Deprecated
   public static void writeImage( Widget widget,
                                  String javaProperty,
                                  String jsProperty,
@@ -967,7 +1445,9 @@ public final class WidgetLCAUtil {
    * @param jsProperty the name of the JavaScript property to set
    * @param image the new value of the property
    * @throws IOException
+   * @deprecated Use {@link #renderProperty(Widget, String, Image, Image)} intead
    */
+  @Deprecated
   public static void writeImage( Widget widget, String jsProperty, Image image )
     throws IOException
   {
@@ -987,7 +1467,9 @@ public final class WidgetLCAUtil {
    * @param font the new value of the property
    * @throws IOException
    * @see #preserveFont(Widget, Font)
+   * @deprecated Use {@link #renderFont(Widget, Font)} instead
    */
+  @Deprecated
   public static void writeFont( Widget widget, Font font ) throws IOException {
     if( WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
@@ -1009,57 +1491,6 @@ public final class WidgetLCAUtil {
   }
 
   /**
-   * Determines whether the property <code>font</code> of the given widget has
-   * changed during the processing of the current request and if so, writes
-   * JavaScript code to the response that updates the client-side font property
-   * of the specified widget. For instances of {@link Control}, use the method
-   * {@link ControlLCAUtil#writeFont(Control)} instead.
-   *
-   * @param widget the widget whose font property to set
-   * @param font the new value of the property
-   * @throws IOException
-   * @see #preserveFont(Widget, Font)
-   */
-  public static void renderFont( Widget widget, Font font ) throws IOException {
-    if( WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, null ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      clientObject.setProperty( PROP_FONT, getFontAsArray( font ) );
-    }
-  }
-
-  private static Object[] getFontAsArray( Font font ) {
-    Object[] result = null;
-    if( font != null ) {
-      FontData fontData = FontUtil.getData( font );
-      result = new Object[] {
-        parseFontName( fontData.getName() ),
-        Integer.valueOf( fontData.getHeight() ),
-        Boolean.valueOf( ( fontData.getStyle() & SWT.BOLD ) != 0 ),
-        Boolean.valueOf( ( fontData.getStyle() & SWT.ITALIC ) != 0 )
-      };
-    }
-    return result;
-  }
-
-  public static String[] parseFontName( final String name ) {
-    return parsedFonts.get( name, new IInstanceCreator<String[]>() {
-      public String[] createInstance() {
-        return parseFontNameInternal( name );
-      }
-    } );
-  }
-
-  private static String[] parseFontNameInternal( String name ) {
-    String[] result = name.split( "," );
-    for( int i = 0; i < result.length; i++ ) {
-      result[ i ] = result[ i ].trim();
-      Matcher matcher = FONT_NAME_FILTER_PATTERN.matcher( result[ i ] );
-      result[ i ] = matcher.replaceAll( "" );
-    }
-    return result;
-  }
-
-  /**
    * Determines whether the property <code>foreground</code> of the given
    * widget has changed during the processing of the current request and if so,
    * writes JavaScript code to the response that updates the client-side
@@ -1071,7 +1502,9 @@ public final class WidgetLCAUtil {
    * @param newColor the new value of the property
    * @throws IOException
    * @see #preserveForeground(Widget, Color)
+   * @deprecated Use {@link #renderForeground(Widget, Color)} instead
    */
+  @Deprecated
   public static void writeForeground( Widget widget, Color newColor ) throws IOException {
     if( WidgetLCAUtil.hasChanged( widget, PROP_FOREGROUND, newColor, null ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
@@ -1081,63 +1514,6 @@ public final class WidgetLCAUtil {
         writer.reset( JSConst.QX_FIELD_COLOR );
       }
     }
-  }
-
-  /**
-   * Determines whether the property <code>foreground</code> of the given
-   * widget has changed during the processing of the current request and if so,
-   * writes a protocol message to the response that updates the client-side
-   * foreground property of the specified widget. For instances of
-   * {@link Control}, use the method
-   * {@link ControlLCAUtil#writeForeground(Control)} instead.
-   *
-   * @param widget the widget whose foreground property to set
-   * @param newColor the new value of the property
-   * @throws IOException
-   * @see #preserveForeground(Widget, Color)
-   */
-  public static void renderForeground( Widget widget, Color newColor ) throws IOException {
-    if( WidgetLCAUtil.hasChanged( widget, PROP_FOREGROUND, newColor, null ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      clientObject.setProperty( PROP_FOREGROUND, getColorValueAsArray( newColor, false ) );
-    }
-  }
-
-  public static String getColorValue( RGB rgb ) {
-    StringBuilder buffer = new StringBuilder();
-    buffer.append( "#" );
-    String red = Integer.toHexString( rgb.red );
-    if( red.length() == 1  ) {
-      buffer.append( "0" );
-    }
-    buffer.append( red );
-    String green = Integer.toHexString( rgb.green );
-    if( green.length() == 1  ) {
-      buffer.append( "0" );
-    }
-    buffer.append( green );
-    String blue = Integer.toHexString( rgb.blue );
-    if( blue.length() == 1  ) {
-      buffer.append( "0" );
-    }
-    buffer.append( blue );
-    return buffer.toString();
-  }
-
-  // TODO [tb] : merge with GCOperationWriter#getColorValueAsArray?
-  private static int[] getColorValueAsArray( Color color, boolean transparent ) {
-    int[] result = null;
-    if( color != null ) {
-      RGB rgb = color.getRGB();
-      result = new int[ 4 ];
-    result[ 0 ] = rgb.red;
-    result[ 1 ] = rgb.green;
-    result[ 2 ] = rgb.blue;
-    result[ 3 ] = transparent ? 0 : 255;
-    } else if( transparent ) {
-      result = new int[] { 0, 0, 0, 0 };
-    }
-    return result;
   }
 
   /**
@@ -1152,7 +1528,9 @@ public final class WidgetLCAUtil {
    * @param newColor the new value of the property
    * @throws IOException
    * @see #preserveBackground(Widget, Color)
+   * @deprecated Use {@link #renderBackground(Widget, Color)} instead
    */
+  @Deprecated
   public static void writeBackground( Widget widget, Color newColor ) throws IOException {
     writeBackground( widget, newColor, false );
   }
@@ -1171,7 +1549,9 @@ public final class WidgetLCAUtil {
    *            the <code>background</code> parameter is ignored
    * @throws IOException
    * @see #preserveBackground(Widget, Color, boolean)
+   * @deprecated Use {@link #renderBackground(Widget, Color)} instead
    */
+  @Deprecated
   public static void writeBackground( Widget widget, Color background, boolean transparency )
     throws IOException
   {
@@ -1198,56 +1578,6 @@ public final class WidgetLCAUtil {
   }
 
   /**
-   * Determines whether the property <code>background</code> of the given
-   * widget has changed during the processing of the current request and if so,
-   * writes a protocol message to the response that updates the client-side
-   * background property of the specified widget. For instances of
-   * {@link Control}, use the method
-   * {@link ControlLCAUtil#writeBackground(Control)} instead.
-   *
-   * @param widget the widget whose background property to set
-   * @param newColor the new value of the property
-   * @throws IOException
-   * @see #preserveBackground(Widget, Color)
-   */
-  public static void renderBackground( Widget widget, Color newColor ) throws IOException {
-    renderBackground( widget, newColor, false );
-  }
-
-  /**
-   * Determines whether the property <code>background</code> of the given
-   * widget has changed during the processing of the current request and if so,
-   * writes a protocol message to the response that updates the client-side
-   * background property of the specified widget. For instances of
-   * {@link Control}, use the method
-   * {@link ControlLCAUtil#writeBackground(Control)} instead.
-   *
-   * @param widget the widget whose background property to set
-   * @param background the new background color
-   * @param transparency the new background transparency, if <code>true</code>,
-   *            the <code>background</code> parameter is ignored
-   * @throws IOException
-   * @see #preserveBackground(Widget, Color, boolean)
-   */
-  public static void renderBackground( Widget widget, Color background, boolean transparency )
-    throws IOException
-  {
-    boolean transparencyChanged = WidgetLCAUtil.hasChanged( widget,
-                                                            PROP_BACKGROUND_TRANSPARENCY,
-                                                            Boolean.valueOf( transparency ),
-                                                            Boolean.FALSE );
-    boolean colorChanged = WidgetLCAUtil.hasChanged( widget, PROP_BACKGROUND, background, null );
-    if( transparencyChanged || colorChanged ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      int[] color = null;
-      if( transparency || background != null ) {
-        color = getColorValueAsArray( background, transparency );
-      }
-      clientObject.setProperty( PROP_BACKGROUND, color );
-    }
-  }
-
-  /**
    * Determines whether the background gradient properties of the
    * given widget have changed during the processing of the current request and
    * if so, writes JavaScript code to the response that updates the client-side
@@ -1257,7 +1587,9 @@ public final class WidgetLCAUtil {
    * @throws IOException
    * @see #preserveBackgroundGradient(Widget)
    * @since 1.3
+   * @deprecated Use {@link #renderBackgroundGradient(Widget)} instead
    */
+  @Deprecated
   public static void writeBackgroundGradient( Widget widget ) throws IOException {
     if( hasBackgroundGradientChanged( widget ) ) {
       Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
@@ -1284,64 +1616,6 @@ public final class WidgetLCAUtil {
   }
 
   /**
-   * Determines whether the background gradient properties of the
-   * given widget have changed during the processing of the current request and
-   * if so, writes a protocol message to the response that updates the client-side
-   * background gradient properties of the specified widget.
-   *
-   * @param widget the widget whose background gradient properties to set
-   * @throws IOException
-   * @see #preserveBackgroundGradient(Widget)
-   * @since 1.5
-   */
-  public static void renderBackgroundGradient( Widget widget ) throws IOException {
-    if( hasBackgroundGradientChanged( widget ) ) {
-      Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
-      IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
-      Color[] bgGradientColors = graphicsAdapter.getBackgroundGradientColors();
-      Object[] args = null;
-      if( bgGradientColors!= null ) {
-        String[] colorStrings = new String[ bgGradientColors.length ];
-        int[] bgGradientPercents = graphicsAdapter.getBackgroundGradientPercents();
-        Integer[] percents = new Integer[ bgGradientPercents.length ];
-        for( int i = 0; i < colorStrings.length; i++ ) {
-          colorStrings[ i ] = getColorValue( bgGradientColors[ i ].getRGB() );
-        }
-        for( int i = 0; i < bgGradientPercents.length; i++ ) {
-          percents[ i ] =  new Integer( bgGradientPercents[ i ] );
-        }
-        boolean bgGradientVertical = graphicsAdapter.isBackgroundGradientVertical();
-        args = new Object[] {
-          colorStrings,
-          percents,
-          new Boolean( bgGradientVertical )
-        };
-      }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      clientObject.setProperty( "backgroundGradient", args );
-    }
-  }
-
-  private static boolean hasBackgroundGradientChanged( Widget widget ) {
-    IWidgetGraphicsAdapter graphicsAdapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
-    Color[] bgGradientColors = graphicsAdapter.getBackgroundGradientColors();
-    int[] bgGradientPercents = graphicsAdapter.getBackgroundGradientPercents();
-    boolean bgGradientVertical = graphicsAdapter.isBackgroundGradientVertical();
-    return    WidgetLCAUtil.hasChanged( widget,
-                                        PROP_BACKGROUND_GRADIENT_COLORS,
-                                        bgGradientColors,
-                                        null )
-           || WidgetLCAUtil.hasChanged( widget,
-                                        PROP_BACKGROUND_GRADIENT_PERCENTS,
-                                        bgGradientPercents,
-                                        null )
-           || WidgetLCAUtil.hasChanged( widget,
-                                        PROP_BACKGROUND_GRADIENT_VERTICAL,
-                                        Boolean.valueOf( bgGradientVertical ),
-                                        Boolean.FALSE );
-  }
-
-  /**
    * Determines whether the rounded border properties of the given widget has
    * changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the client-side rounded border
@@ -1351,7 +1625,9 @@ public final class WidgetLCAUtil {
    * @throws IOException
    * @see #preserveRoundedBorder(Widget)
    * @since 1.3
+   * @deprecated Use {@link #renderRoundedBorder(Widget)} instead
    */
+  @Deprecated
   public static void writeRoundedBorder( Widget widget )
     throws IOException
   {
@@ -1376,61 +1652,6 @@ public final class WidgetLCAUtil {
   }
 
   /**
-   * Determines whether the rounded border properties of the given widget has
-   * changed during the processing of the current request and if so, writes
-   * a protocol message to the response that updates the client-side rounded border
-   * of the specified widget.
-   *
-   * @param widget the widget whose rounded border properties to set
-   * @throws IOException
-   * @see #preserveRoundedBorder(Widget)
-   * @since 1.5
-   */
-  public static void renderRoundedBorder( Widget widget ) throws IOException {
-    if( hasRoundedBorderChanged( widget ) ) {
-      Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
-      IWidgetGraphicsAdapter graphicAdapter = ( IWidgetGraphicsAdapter )adapter;
-      Object[] args = null;
-      int width = graphicAdapter.getRoundedBorderWidth();
-      Color color = graphicAdapter.getRoundedBorderColor();
-      if( width > 0 && color != null ) {
-        Rectangle radius = graphicAdapter.getRoundedBorderRadius();
-        args = new Object[] {
-          new Integer( width ),
-          getColorValue( color.getRGB() ),
-          new Integer( radius.x ),
-          new Integer( radius.y ),
-          new Integer( radius.width ),
-          new Integer( radius.height )
-        };
-      }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      clientObject.setProperty( "roundedBorder", args );
-    }
-  }
-
-  private static boolean hasRoundedBorderChanged( Widget widget ) {
-    Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
-    IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
-    int width = graphicsAdapter.getRoundedBorderWidth();
-    Color color = graphicsAdapter.getRoundedBorderColor();
-    Rectangle radius = graphicsAdapter.getRoundedBorderRadius();
-    return
-         WidgetLCAUtil.hasChanged( widget,
-                                   PROP_ROUNDED_BORDER_WIDTH,
-                                   new Integer( width ),
-                                   new Integer( 0 ) )
-      || WidgetLCAUtil.hasChanged( widget,
-                                   PROP_ROUNDED_BORDER_COLOR,
-                                   color,
-                                   null )
-      || WidgetLCAUtil.hasChanged( widget,
-                                   PROP_ROUNDED_BORDER_RADIUS,
-                                   radius,
-                                   DEF_ROUNDED_BORDER_RADIUS );
-  }
-
-  /**
    * Determines whether the property <code>enabled</code> of the given widget
    * has changed during the processing of the current request and if so, writes
    * JavaScript code to the response that updates the client-side enabled
@@ -1441,47 +1662,14 @@ public final class WidgetLCAUtil {
    * @param enabled the new value of the property
    * @throws IOException
    * @see #preserveEnabled(Widget, boolean)
+   * @deprecated Use {@link #renderEnabled(Widget, boolean)} instead
    */
+  @Deprecated
   public static void writeEnabled( Widget widget, boolean enabled ) throws IOException {
     Boolean newValue = Boolean.valueOf( enabled );
     JSWriter writer = JSWriter.getWriterFor( widget );
-    Boolean defValue = Boolean.TRUE;
-    writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defValue );
-  }
-
-  /**
-   * Determines whether the property <code>enabled</code> of the given widget
-   * has changed during the processing of the current request and if so, writes
-   * a protocol message to the response that updates the client-side enabled
-   * property of the specified widget. For instances of {@link Control}, use
-   * the method {@link ControlLCAUtil#writeEnabled(Control)} instead.
-   *
-   * @param widget the widget whose enabled property to set
-   * @param enabled the new value of the property
-   * @throws IOException
-   * @see #preserveEnabled(Widget, boolean)
-   */
-  public static void renderEnabled( Widget widget, boolean enabled ) throws IOException {
-    Boolean newValue = Boolean.valueOf( enabled );
-    Boolean defValue = Boolean.TRUE;
-    if( WidgetLCAUtil.hasChanged( widget, Props.ENABLED, newValue, defValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      clientObject.setProperty( "enabled", newValue );
-    }
-  }
-
-
-  /**
-   * Replaces all newline characters in the specified input string with the
-   * given replacement string.
-   *
-   * @param input the string to process
-   * @param replacement the string to replace line feeds with
-   * @return a new string with all line feeds replaced
-   * @since 1.1
-   */
-  public static String replaceNewLines( String input, String replacement ) {
-    return EncodingUtil.replaceNewLines( input, replacement );
+    Boolean defaultValue = Boolean.TRUE;
+    writer.set( Props.ENABLED, JSConst.QX_FIELD_ENABLED, newValue, defaultValue );
   }
 
   /**
@@ -1491,7 +1679,9 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose custom variant to write
    * @throws IOException
+   * @deprecated Use {@link #renderCustomVariant(Widget)} instead
    */
+  @Deprecated
   public static void writeCustomVariant( Widget widget ) throws IOException {
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
     String oldValue = ( String )adapter.getPreserved( PROP_VARIANT );
@@ -1509,23 +1699,24 @@ public final class WidgetLCAUtil {
     }
   }
 
+  ////////////////
+  // Help listener
+
   /**
-   * Determines whether the custom variant of the given widget
-   * has changed during the processing of the current request and if so, writes
-   * a protocol Message to the response that updates the client-side variant.
+   * Adds or removes client-side help listeners for the the given
+   * <code>widget</code> as necessary.
    *
-   * @param widget the widget whose custom variant to write
-   * @throws IOException
+   * @param widget
+   * @since 1.3
+   * @deprecated Use {@link #renderListenHelp(Widget)} instead
    */
-  public static void renderCustomVariant( Widget widget ) throws IOException {
-    String newValue = WidgetUtil.getVariant( widget );
-    if( WidgetLCAUtil.hasChanged( widget, PROP_VARIANT, newValue, null ) ) {
-      String value = null;
-      if( newValue != null ) {
-        value = "variant_" + newValue;
-      }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      clientObject.setProperty( "customVariant", value );
+  @Deprecated
+  public static void writeHelpListener( Widget widget ) throws IOException {
+    Boolean hasListener = Boolean.valueOf( HelpEvent.hasListener( widget ) );
+    if( WidgetLCAUtil.hasChanged( widget, PROP_HELP_LISTENER, hasListener, Boolean.FALSE ) ) {
+      JSWriter writer = JSWriter.getWriterFor( widget );
+      Object[] args = new Object[] { widget, JS_EVENT_TYPE_HELP, hasListener };
+      writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
     }
   }
 
@@ -1538,7 +1729,11 @@ public final class WidgetLCAUtil {
    * @param styleName the uppercase name of the style
    * @throws IOException
    * @since 1.2
+   * @deprecated Use {@link #getStyles(Widget, String[])} to obtain the list of
+   *             styles instead and set the result to the property
+   *             <code>style</code>
    */
+  @Deprecated
   public static void writeStyleFlag( Widget widget, int style, String styleName )
     throws IOException
   {
@@ -1548,153 +1743,13 @@ public final class WidgetLCAUtil {
     }
   }
 
-  ////////////////
-  // Help listener
-
-  /**
-   * Preserves whether the given <code>widget</code> has one or more
-   * <code>HelpListener</code>s attached.
-   *
-   * @param widget the widget to preserve
-   * @since 1.3
-   */
-  public static void preserveHelpListener( Widget widget ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_HELP_LISTENER, Boolean.valueOf( HelpEvent.hasListener( widget ) ) );
-  }
-
-  /**
-   * Adds or removes client-side help listeners for the the given
-   * <code>widget</code> as necessary.
-   *
-   * @param widget
-   * @since 1.3
-   */
-  public static void writeHelpListener( Widget widget ) throws IOException {
-    Boolean hasListener = Boolean.valueOf( HelpEvent.hasListener( widget ) );
-    if( WidgetLCAUtil.hasChanged( widget, PROP_HELP_LISTENER, hasListener, Boolean.FALSE ) ) {
-      JSWriter writer = JSWriter.getWriterFor( widget );
-      Object[] args = new Object[] { widget, JS_EVENT_TYPE_HELP, hasListener };
-      writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
-    }
-  }
-
-  /**
-   * Adds or removes client-side help listeners for the the given
-   * <code>widget</code> as necessary.
-   *
-   * @param widget
-   * @since 1.3
-   */
-  public static void renderListenHelp( Widget widget ) {
-    Boolean hasListener = Boolean.valueOf( HelpEvent.hasListener( widget ) );
-    if( WidgetLCAUtil.hasChanged( widget, PROP_HELP_LISTENER, hasListener, Boolean.FALSE ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      if( hasListener.booleanValue() ) {
-        clientObject.addListener( "help" );
-      } else {
-        clientObject.removeListener( "help" );
-      }
-    }
-  }
-
-  /**
-   * Process a <code>HelpEvent</code> if the current request specifies that
-   * there occured a help event for the given <code>widget</code>.
-   *
-   * @param widget the widget to process
-   * @since 1.3
-   */
-  public static void processHelp( Widget widget ) {
-    if( WidgetLCAUtil.wasEventSent( widget, JSConst.EVENT_HELP ) ) {
-      HelpEvent event = new HelpEvent( widget );
-      event.processEvent();
-    }
-  }
-
-  public static String[] getStyles( Widget widget, String[] allowedStyles ) {
-    return StylesUtil.filterStyles( widget, allowedStyles );
-  }
-
-  private static String readPropertyValue( String widgetId, String propertyName ) {
-    HttpServletRequest request = ContextProvider.getRequest();
-    StringBuilder key = new StringBuilder();
-    key.append( widgetId );
-    key.append( "." );
-    key.append( propertyName );
-    return request.getParameter( key.toString() );
-  }
-
-  //////////////////////////////////////////////////////////////////
-  // Helping methods to read bounds for a widget from request params
-
-  private static int readBoundsY( String widgetId, int defValue ) {
-    String value = readPropertyValue( widgetId, PARAM_Y );
-    return readBoundsValue( value, defValue );
-  }
-
-  private static int readBoundsX( String widgetId, int defValue ) {
-    String value = readPropertyValue( widgetId, PARAM_X );
-    return readBoundsValue( value, defValue );
-  }
-
-  private static int readBoundsWidth( String widgetId, int defValue ) {
-    String value = WidgetLCAUtil.readPropertyValue( widgetId, PARAM_WIDTH );
-    return readBoundsValue( value, defValue );
-  }
-
-  private static int readBoundsHeight( String widgetId, int defValue ) {
-    String value = WidgetLCAUtil.readPropertyValue( widgetId, PARAM_HEIGHT );
-    return readBoundsValue( value, defValue );
-  }
-
-  private static int readBoundsValue( String value, int current ) {
-    int result;
-    if( value != null && !"null".equals( value ) ) {
-      result = NumberFormatUtil.parseInt( value );
-    } else {
-      result = current;
-    }
-    return result;
-  }
-
-  ///////////////////////////////////////
-  // Helping method to test for equality
-
-  static boolean equals( Object object1, Object object2 ) {
-    boolean result;
-    if( object1 == object2 ) {
-      result = true;
-    } else if( object1 == null ) {
-      result = false;
-    } else if( object1 instanceof boolean[] && object2 instanceof boolean[] ) {
-      result = Arrays.equals( ( boolean[] )object1, ( boolean[] )object2 );
-    } else if( object1 instanceof int[] && object2 instanceof int[] ) {
-      result = Arrays.equals( ( int[] )object1, ( int[] )object2 );
-    } else if( object1 instanceof long[] && object2 instanceof long[] ) {
-      result = Arrays.equals( ( long[] )object1, ( long[] )object2 );
-    } else if( object1 instanceof float[] && object2 instanceof float[] ) {
-      result = Arrays.equals( ( float[] )object1, ( float[] )object2 );
-    } else if( object1 instanceof double[] && object2 instanceof double[] ) {
-      result = Arrays.equals( ( double[] )object1, ( double[] )object2 );
-    } else if( object1 instanceof Object[] && object2 instanceof Object[] ) {
-      result = Arrays.equals( ( Object[] )object1, ( Object[] )object2 );
-    } else {
-      result = object1.equals( object2 );
-    }
-    return result;
-  }
-
-  //////////////////////////////////////
-  // Escaping of reserved XML characters
-
   /**
    * Replaces all occurrences of the characters <code>&lt;</code>,
-   * <code>&gt;</code>, <code>&amp;</code>, and <code>&quot;</code> with
-   * their corresponding HTML entities. This function is used for rendering
-   * texts to the client. When the parameter mnemonic is set to
-   * <code>true</code>, this method handles ampersand characters in the text
-   * as mnemonics in the same manner as SWT does.
+   * <code>&gt;</code>, <code>&amp;</code>, and <code>&quot;</code> with their
+   * corresponding HTML entities. This function is used for rendering texts to
+   * the client. When the parameter mnemonic is set to <code>true</code>, this
+   * method handles ampersand characters in the text as mnemonics in the same
+   * manner as SWT does.
    * <p>
    * <strong>Note:</strong> In contrast to SWT, the characters following an
    * ampersand are currently not underlined, as RAP doesn't support key events
@@ -1703,12 +1758,15 @@ public final class WidgetLCAUtil {
    *
    * @param text the input text
    * @param mnemonics if <code>true</code>, the function is mnemonic aware,
-   *            otherwise all ampersand characters are directly rendered.
+   *          otherwise all ampersand characters are directly rendered.
    * @return the resulting text
+   * @deprecated As of RAP 1.5, all texts are transferred to the client as JSON
+   *             strings and escaped on the client as needed.
    */
   // Note [rst]: Single quotes are not escaped as the entity &apos; is not
   //             defined in HTML 4. They should be handled by this method once
   //             we produce XHTML output.
+  @Deprecated
   public static String escapeText( String text, boolean mnemonics ) {
     boolean insertAmp = false;
     StringBuilder buffer = new StringBuilder();
