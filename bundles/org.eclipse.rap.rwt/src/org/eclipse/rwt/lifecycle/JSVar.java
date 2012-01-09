@@ -22,7 +22,10 @@ import org.eclipse.rwt.service.IServiceStore;
  *
  * @since 1.0
  * @noextend This class is not intended to be subclassed by clients.
+ * @deprecated As of RAP 1.5, the client-server protocol is based on JSON. This
+ *             class is related to the old JavaScript-based protocol.
  */
+@Deprecated
 public final class JSVar {
 
   private static final String UNIQUE_NUMBER
@@ -52,6 +55,7 @@ public final class JSVar {
     this.name = name;
   }
 
+  @Override
   public String toString() {
     return name;
   }
