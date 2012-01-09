@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2007 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,27 +11,34 @@
  ******************************************************************************/
 package org.eclipse.rwt.lifecycle;
 
+import org.eclipse.rwt.internal.protocol.IClientObject;
 
+
+/**
+ * @deprecated Use {@link IClientObject#addListener(String)} and
+ *             {@link IClientObject#removeListener(String)} instead
+ */
+@Deprecated
 public final class JSListenerInfo {
-  
+
   private final String eventType;
   private final String jsListener;
   private final JSListenerType jsListenerType;
-  
+
   public JSListenerInfo( String eventType, String jsListener, JSListenerType jsListenerType ) {
     this.eventType = eventType;
     this.jsListener = jsListener;
     this.jsListenerType = jsListenerType;
   }
-  
+
   public String getEventType() {
     return eventType;
   }
-  
+
   public String getJSListener() {
     return jsListener;
   }
-  
+
   public JSListenerType getJSListenerType() {
     return jsListenerType;
   }
