@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rwt.internal.lifecycle.CurrentPhase;
+import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.EncodingUtil;
@@ -32,16 +33,22 @@ import org.eclipse.swt.widgets.Widget;
 /**
  * This class provides helper methods to generate Javascript used to update the
  * client-side state of widgets.
- * <p>Note that the Javascript code that is rendered relies on the client-side
- * <code>org.eclipse.swt.WidgetManager</code> to be present.</p>
+ * <p>
+ * Note that the Javascript code that is rendered relies on the client-side
+ * <code>org.eclipse.swt.WidgetManager</code> to be present.
+ * </p>
  *
  * @see AbstractWidgetLCA
  * @see ControlLCAUtil
  * @see WidgetLCAUtil
- *
  * @since 1.0
  * @noextend This class is not intended to be subclassed by clients.
+ * @deprecated This class should not be used anymore as it writes JavaScript to
+ *             the client which is incompatible with clients other than the
+ *             default RAP webclient. Use {@link IClientObject} to write changes
+ *             to the client.
  */
+@Deprecated
 public final class JSWriter {
 
   /**
@@ -113,6 +120,7 @@ public final class JSWriter {
    * @deprecated As of 1.3, server-side widget pooling is no longer required.
    *             This method should not be used anymore.
    */
+  @Deprecated
   public static JSWriter getWriterForResetHandler() {
     return new JSWriter( null );
   }
