@@ -8,7 +8,7 @@
  * Contributors:
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
- 
+
 qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
 
   statics : {
@@ -27,7 +27,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
         location = location.substring( 0, index );
       }
       var hrefAttr = "href=\"" + location + "\"";
-      var html = content.replace( /{HREF_URL}/, hrefAttr );
+      var html = content.replace( /\{HREF_URL\}/, hrefAttr );
       this._freezeApplication();
       this._createOverlay();
       var element = this._createTimeoutArea( 400, 100 );
@@ -130,6 +130,7 @@ qx.Class.define( "org.eclipse.rwt.ErrorHandler", {
       return element;
     },
 
+    /*global console: false */
     _freezeApplication : function() {
       try {
         var display = org.eclipse.rwt.Display.getCurrent();

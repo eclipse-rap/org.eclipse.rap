@@ -1,13 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipsevent.org/legal/epl-v10.html
  *
  * Contributors:
- *     Innoopract Informationssysteme GmbH - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Innoopract Informationssysteme GmbH - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
 
@@ -47,8 +47,8 @@ qx.Class.define( "org.eclipse.rwt.RadioButtonUtil", {
         case "End":
         case "PageDown":
         case "PageUp":
-          evt.preventDefault();
-          evt.stopPropagation();
+          event.preventDefault();
+          event.stopPropagation();
         break;
       }
     },
@@ -56,11 +56,11 @@ qx.Class.define( "org.eclipse.rwt.RadioButtonUtil", {
     _onSelection : function( event ) {
       this._unselectSiblings( event.getTarget() );
     },
-    
+
     _isRadioElement : function( widget ) {
       return widget.hasState( "radio" );
     },
-    
+
     _getRadioGroup: function( widget ) {
       var group = [];
       if( !widget.getNoRadioGroup() ) {
@@ -87,7 +87,7 @@ qx.Class.define( "org.eclipse.rwt.RadioButtonUtil", {
               group = [];
             }
             i++;
-          };
+          }
         }
       }
       return group;
@@ -134,7 +134,7 @@ qx.Class.define( "org.eclipse.rwt.RadioButtonUtil", {
         }
       }
     }
-    
+
   }
 
 } );

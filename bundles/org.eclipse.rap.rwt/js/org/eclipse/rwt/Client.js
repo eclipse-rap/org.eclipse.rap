@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
- *                        and EclipseSource
+ * Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -18,7 +18,7 @@
  * http://en.wikipedia.org/wiki/Software_version
  */
 qx.Class.define( "org.eclipse.rwt.Client", {
-  
+
   statics : {
 
     __init : function() {
@@ -29,7 +29,7 @@ qx.Class.define( "org.eclipse.rwt.Client", {
       this._engineVersionMinor = 0;
       this._engineVersionRevision = 0;
       this._engineVersionBuild = 0;
-      this._browserPlatform = null;      
+      this._browserPlatform = null;
       this._runsLocally = window.location.protocol === "file:";
       this._engineQuirksMode = document.compatMode !== "CSS1Compat";
       this._defaultLocale = "en";
@@ -40,7 +40,7 @@ qx.Class.define( "org.eclipse.rwt.Client", {
       this._initGecko();
       this._initMshtml();
       this._initBoxSizing();
-      this._initLocale();      
+      this._initLocale();
       this._initPlatform();
     },
 
@@ -103,7 +103,7 @@ qx.Class.define( "org.eclipse.rwt.Client", {
     getLocale : function() {
       return this._browserLocale;
     },
-    
+
     getLanguage : function() {
       var locale = this.getLocale();
       var language;
@@ -115,7 +115,7 @@ qx.Class.define( "org.eclipse.rwt.Client", {
       }
       return language;
     },
-    
+
     getTerritory : function() {
       return this.getLocale().split( "_" )[ 1 ] || "";
     },
@@ -139,7 +139,7 @@ qx.Class.define( "org.eclipse.rwt.Client", {
     isMobileSafari : function() {
       return this.getPlatform() === "ios" && this.getBrowser() === "safari";
     },
-    
+
     isAndroidBrowser : function() {
       return this.getPlatform() === "android" && this.getBrowser() === "chrome";
     },
@@ -153,7 +153,7 @@ qx.Class.define( "org.eclipse.rwt.Client", {
       var engine = org.eclipse.rwt.Client.getEngine();
       var version = org.eclipse.rwt.Client.getVersion();
       var result =    engine === "gecko" && version >= 1.8
-                   || engine === "webkit" && version >= 523 
+                   || engine === "webkit" && version >= 523
                    || engine === "opera" && version >= 9
                    || engine === "newmshtml";
       if( this.isAndroidBrowser() ) {
@@ -161,13 +161,13 @@ qx.Class.define( "org.eclipse.rwt.Client", {
       }
       return result;
     },
-    
-    // NOTE: This returns true if the browser sufficiently implements 
+
+    // NOTE: This returns true if the browser sufficiently implements
     // border-radius, drop-shadow and linear-gradient. IE9 and opera (currently) ignored.
     supportsCss3 : function() {
       var engine = org.eclipse.rwt.Client.getEngine();
       var version = org.eclipse.rwt.Client.getVersion();
-      var result =    engine === "webkit" && version >= 522 // 
+      var result =    engine === "webkit" && version >= 522 //
                    || engine === "gecko" && version >= 2; // firefox 4+
                    // TODO [tb] : ie10+
       return result;
@@ -175,10 +175,10 @@ qx.Class.define( "org.eclipse.rwt.Client", {
 
     //////////
     // Helper
-    
+
     _initOpera : function() {
       if( this._engineName === null ) {
-        var isOpera =    window.opera 
+        var isOpera =    window.opera
                        && /Opera[\s\/]([0-9\.]*)/.test( navigator.userAgent );
         if( isOpera ) {
           this._browserName = "opera";
@@ -194,8 +194,8 @@ qx.Class.define( "org.eclipse.rwt.Client", {
     _initKonqueror : function() {
       if( this._engineName === null ) {
         var vendor = navigator.vendor;
-        var isKonqueror =    typeof vendor === "string" && vendor === "KDE" 
-                          && /KHTML\/([0-9-\.]*)/.test( navigator.userAgent );
+        var isKonqueror =    typeof vendor === "string" && vendor === "KDE"
+                          && /KHTML\/([0-9\-\.]*)/.test( navigator.userAgent );
         if( isKonqueror ) {
           this._engineName = "webkit";
           this._browserName = "konqueror";
@@ -237,21 +237,21 @@ qx.Class.define( "org.eclipse.rwt.Client", {
             this._browserName = "realplayer";
           } else if( userAgent.indexOf( "Mobile" ) != -1 ) {
             // iPad reports this in fullscreen mode
-            this._browserName = "safari";          
+            this._browserName = "safari";
           } else {
             this._browserName = "other webkit";
           }
         }
       }
     },
-    
+
     _initGecko : function() {
       if( this._engineName === null ) {
         var product = navigator.product;
         var userAgent = navigator.userAgent;
-        var isGecko =    window.controllers 
-                      && typeof product === "string" 
-                      && product === "Gecko" 
+        var isGecko =    window.controllers
+                      && typeof product === "string"
+                      && product === "Gecko"
                       && /rv\:([^\);]+)(\)|;)/.test( userAgent );
         if( isGecko ) {
           // http://www.mozilla.org/docs/dom/domref/dom_window_ref13.html
@@ -269,14 +269,14 @@ qx.Class.define( "org.eclipse.rwt.Client", {
         }
       }
     },
-    
+
     _initMshtml : function() {
       if( this._engineName === null ) {
         var isMshtml = /MSIE\s+([^\);]+)(\)|;)/.test( navigator.userAgent );
         if( isMshtml ) {
           this._parseVersion( RegExp.$1 );
           if( this._engineVersion >= 9 ) {
-            this._engineName = "newmshtml";            
+            this._engineName = "newmshtml";
           } else {
             this._engineName = "mshtml";
           }
@@ -284,19 +284,19 @@ qx.Class.define( "org.eclipse.rwt.Client", {
         }
       }
     },
-    
+
     _parseVersion : function( versionStr ) {
       if( typeof versionStr === "string" ) {
-        versionArr = versionStr.split( "." );
+        var versionArr = versionStr.split( "." );
         this._engineVersion = parseFloat( versionStr );
-        this._engineVersionMajor = parseInt( versionArr[ 0 ] || 0 );
+        this._engineVersionMajor = parseInt( versionArr[ 0 ] || 0, 10 );
         this._engineVersionMinor = parseFloat( versionArr[ 1 ] || 0 );
         this._engineVersionRevision = parseFloat( versionArr[ 2 ] || 0 );
-        this._engineVersionBuild = parseInt( versionArr[ 3 ] || 0 );
+        this._engineVersionBuild = parseInt( versionArr[ 3 ] || 0, 10 );
       }
     },
-    
-    _initBoxSizing : function() {      
+
+    _initBoxSizing : function() {
       var vEngineBoxSizingAttr = [];
       switch( this._engineName ) {
         case "gecko":
@@ -310,11 +310,11 @@ qx.Class.define( "org.eclipse.rwt.Client", {
           vEngineBoxSizingAttr.push( "box-sizing" );
       }
       this._engineBoxSizingAttributes = vEngineBoxSizingAttr;
-    },    
-    
+    },
+
     _initLocale : function() {
-      var language =   ( this._engineName.indexOf( "mshtml" ) !== -1 ) 
-                     ? navigator.userLanguage 
+      var language =   ( this._engineName.indexOf( "mshtml" ) !== -1 )
+                     ? navigator.userLanguage
                      : navigator.language;
       var browserLocale = language.toLowerCase();
       var browserLocaleVariantIndex = browserLocale.indexOf( "-" );
@@ -326,42 +326,42 @@ qx.Class.define( "org.eclipse.rwt.Client", {
 
     _initPlatform : function() {
       var platformStr = navigator.platform;
-      if(    platformStr.indexOf( "Windows" ) != -1 
-          || platformStr.indexOf( "Win32" ) != -1 
+      if(    platformStr.indexOf( "Windows" ) != -1
+          || platformStr.indexOf( "Win32" ) != -1
           || platformStr.indexOf( "Win64" ) != -1 )
       {
         this._browserPlatform = "win";
-      } else if(    platformStr.indexOf( "Macintosh" ) != -1 
-                 || platformStr.indexOf( "MacPPC" ) != -1 
+      } else if(    platformStr.indexOf( "Macintosh" ) != -1
+                 || platformStr.indexOf( "MacPPC" ) != -1
                  || platformStr.indexOf( "MacIntel" ) != -1 )
       {
         this._browserPlatform = "mac";
-      }else if(    platformStr.indexOf( "X11" ) != -1 
-                || platformStr.indexOf( "Linux" ) != -1 
+      } else if(   platformStr.indexOf( "X11" ) != -1
+                || platformStr.indexOf( "Linux" ) != -1
                 || platformStr.indexOf( "BSD" ) != -1 )
       {
         if( navigator.userAgent.indexOf( "Android" ) != -1 ) {
           this._browserPlatform = "android";
         } else {
-          this._browserPlatform = "unix";          
+          this._browserPlatform = "unix";
         }
-      } else if(    platformStr.indexOf( "iPhone" ) != -1 
-                 || platformStr.indexOf( "iPod" ) != -1  
-                 || platformStr.indexOf( "iPad" ) != -1 )  
+      } else if(    platformStr.indexOf( "iPhone" ) != -1
+                 || platformStr.indexOf( "iPod" ) != -1
+                 || platformStr.indexOf( "iPad" ) != -1 )
       {
         this._browserPlatform = "ios";
       } else {
         this._browserPlatform = "other";
       }
-      
     }
 
   },
 
   defer : function( statics, members, properties ) {
     statics.__init();
-    qx.core.Variant.define( "qx.client", 
-                            [ "gecko", "mshtml", "opera", "webkit" ], 
+    qx.core.Variant.define( "qx.client",
+                            [ "gecko", "mshtml", "opera", "webkit" ],
                             org.eclipse.rwt.Client.getEngine() );
   }
+
 } );

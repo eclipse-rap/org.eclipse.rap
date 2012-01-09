@@ -1,17 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2009, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
 
   statics : {
-    
+
     getSupportsShadows : function() {
       if( this._shadowSupport === undefined ) {
         var engine = org.eclipse.rwt.Client.getEngine();
@@ -37,7 +38,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       }
       return this._shadowSupport;
     }
-    
+
   },
 
   members : {
@@ -96,8 +97,8 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       if( this._gfxBackgroundEnabled ) {
         this.setGfxProperty( "backgroundImage", value );
         if(    this.getGfxProperty( "fillType" ) == "image"
-            && this._isCanvasReady() 
-            && value != null ) 
+            && this._isCanvasReady()
+            && value != null )
         {
           this._renderGfxBackground();
         } else {
@@ -111,7 +112,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         }
       }
     },
-    
+
     // Overwritten:
     renderBorder : function( changes ) {
       var value = this.__borderObject;
@@ -126,7 +127,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     },
 
     _styleGfxBorder : function( width, color, radii ) {
-      // NOTE: widgets with no dimensions of their own wont work together 
+      // NOTE: widgets with no dimensions of their own wont work together
       //       with a gfxBorder (accepted bug)
       var max = 0;
       if( width ) {
@@ -135,20 +136,20 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         }
       }
       var renderRadii;
-      if( width != null && radii != null && max > 0 ) { 
+      if( width != null && radii != null && max > 0 ) {
         renderRadii = [];
         for( var i = 0; i < 4; i++ ) {
           var prev = i > 0 ? i - 1 : 3;
-          if( width[ i ] == 0 || width[ prev ] == 0 ) {
+          if( width[ i ] === 0 || width[ prev ] === 0 ) {
             renderRadii[ i ] = 0;
           } else {
-            renderRadii[ i ] = radii[ i ];          
+            renderRadii[ i ] = radii[ i ];
           }
-        }        
+        }
       } else {
         renderRadii = radii;
       }
-      this.setGfxProperty( "borderWidths", width ); 
+      this.setGfxProperty( "borderWidths", width );
       this.setGfxProperty( "borderMaxWidth", max );
       this.setGfxProperty( "borderColor", color );
       this.setGfxProperty( "borderRadii", renderRadii );
@@ -164,7 +165,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       "newmshtml" : function( radii ) {
         // NOTE : While the actual border is rendred with vector graphics, CSS radii
         //        are set anyway to provide clipping and rounded CSS-shadows
-        var props = org.eclipse.rwt.Border._BORDERRADII
+        var props = org.eclipse.rwt.Border._BORDERRADII;
         for( var i = 0; i < 4; i++ ) {
           this._style[ props[ i ] ] = radii ? radii[ i ] + "px" : "";
         }
@@ -180,7 +181,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
 
     getGfxProperty : function( key ) {
       var value = this._gfxProperties !== null ? this._gfxProperties[ key ] : null;
-      return typeof value != "undefined" ? value : null;       
+      return typeof value != "undefined" ? value : null;
     },
 
     ///////////////////
@@ -282,7 +283,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         } else {
           this._gfxEnabled = false;
           this.removeEventListener( "changeElement", this._gfxOnElementChanged, this );
-          this.removeEventListener( "flush", this._gfxOnFlush, this );      
+          this.removeEventListener( "flush", this._gfxOnFlush, this );
         }
         this._targetNodeEnabled = ( this._innerStyle || useGfx ) && !this._gfxBorderEnabled;
       }
@@ -308,14 +309,14 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       var changes = event.getData();
       if ( changes.paddingRight || changes.paddingBottom ) {
         // TODO [tb] : Can this be removed savely?
-        this.setGfxProperty( "backgroundLayouted", null ); 
-        this.setGfxProperty( "shadowLayouted", null ); 
+        this.setGfxProperty( "backgroundLayouted", null );
+        this.setGfxProperty( "shadowLayouted", null );
       }
       this._layoutShapes();
     },
 
     _layoutShapes : function() {
-      if( this._gfxBackgroundEnabled ) { 
+      if( this._gfxBackgroundEnabled ) {
         this._layoutBackgroundShape();
       }
       if( this._gfxShadowEnabled ) {
@@ -394,7 +395,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
           }
         }
         this.prepareEnhancedBorder();
-        // TODO [tb] : redundand in some cases:
+        // TODO [tb] : redundant in some cases:
 //        this.addToQueue( "width" );
 //        this.addToQueue( "height" );
         if( outline ) {
@@ -402,12 +403,12 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         }
         this._applyOpacity( this.getOpacity() );
       }
-      this._gfxData = {};      
+      this._gfxData = {};
       this._gfxCanvas = org.eclipse.rwt.GraphicsUtil.createCanvas();
       // TODO [tb] : can be removed?
       this._prepareBackgroundShape();
     },
-    
+
     _appendCanvas : function() {
       var parentNode = this.getElement();
       var gfxNode = org.eclipse.rwt.GraphicsUtil.getCanvasNode( this._gfxCanvas );
@@ -431,7 +432,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
     },
 
     _onCanvasAppear : function() {
-      if( this._gfxCanvasAppended ) { 
+      if( this._gfxCanvasAppended ) {
         org.eclipse.rwt.GraphicsUtil.handleAppear( this._gfxCanvas );
       }
     },
@@ -466,7 +467,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       if( fillType == "gradient" ) {
         var gradient = this.getGfxProperty( "gradient" );
         util.setFillGradient( this._gfxData.backgroundShape, gradient );
-      } else if( fillType == "image" ) { 
+      } else if( fillType == "image" ) {
         var image = this.getGfxProperty( "backgroundImage" );
         image = typeof image == "undefined" ? null : image;
         var size = this._getImageSize( image );
@@ -516,13 +517,13 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
           var borderLeft = 0;
           // TODO [tb] : This hides the edges with width "0" by drawing
           // them outside the element so they are hidden. ("ContainerOverflow"
-          // must be set to false.) However this does not always work in IE. 
-          // See bug 306820.  
+          // must be set to false.) However this does not always work in IE.
+          // See bug 306820.
           if( maxWidth > 0 ) {
-            borderTop = ( borderWidth[ 0 ] == 0 ? -maxWidth - 1 : maxWidth );
-            borderRight = ( borderWidth[ 1 ] == 0 ? -maxWidth - 1 : maxWidth );
-            borderBottom = ( borderWidth[ 2 ] == 0 ? -maxWidth - 1 : maxWidth );
-            borderLeft = ( borderWidth[ 3 ] == 0 ? -maxWidth - 1: maxWidth );
+            borderTop = ( borderWidth[ 0 ] === 0 ? -maxWidth - 1 : maxWidth );
+            borderRight = ( borderWidth[ 1 ] === 0 ? -maxWidth - 1 : maxWidth );
+            borderBottom = ( borderWidth[ 2 ] === 0 ? -maxWidth - 1 : maxWidth );
+            borderLeft = ( borderWidth[ 3 ] === 0 ? -maxWidth - 1: maxWidth );
           }
           rectWidth = rectDimension[ 0 ] - ( borderLeft * 0.5 + borderRight * 0.5 );
           rectHeight = rectDimension[ 1 ] - ( borderTop * 0.5 + borderBottom * 0.5 );
@@ -530,7 +531,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
           top = borderTop * 0.5;
         } else {
           // TODO [tb] : write tests for this case
-          left = 0
+          left = 0;
           top = 0;
           rectWidth = rectDimension[ 0 ] - this._cachedBorderLeft - this._cachedBorderRight;
           rectHeight = rectDimension[ 1 ] - this._cachedBorderTop - this._cachedBorderBottom;
@@ -547,7 +548,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
 
     /////////////////////////
     // internal - shadowShape
-    
+
     _prepareShadowShape : function() {
       var util = org.eclipse.rwt.GraphicsUtil;
       if( this._gfxData ) {
@@ -582,7 +583,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
       this._gfxData.shadowShape = shape;
       return shape;
     },
-    
+
     _renderGfxShadow : function() {
       this._prepareShadowShape();
       if( this._gfxShadowEnabled ) {
@@ -594,7 +595,7 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         util.setOpacity( shape, shadow[ 6 ] );
       }
     },
-    
+
     _layoutShadowShape : function() {
       var util = org.eclipse.rwt.GraphicsUtil;
       var rect = [ this.getBoxWidth(), this.getBoxHeight() ];
@@ -620,29 +621,29 @@ qx.Mixin.define( "org.eclipse.rwt.GraphicsMixin", {
         var overflowWidth = width + overflowRight;
         var overflowHeight = height + overflowBottom;
         // overflow-area must be defined every time:
-        util.enableOverflow( this._gfxCanvas, 
-                             overflowLeft, 
-                             overflowTop, 
-                             overflowWidth, 
+        util.enableOverflow( this._gfxCanvas,
+                             overflowLeft,
+                             overflowTop,
+                             overflowWidth,
                              overflowHeight );
         util.setRoundRectLayout( shape, left, top, width, height, radii );
       }
     },
-    
+
     /////////////////////
     // internals - helper
 
     _getImageSize : function( source ) {
-      var result = this.getUserData( "backgroundImageSize" ); 
+      var result = this.getUserData( "backgroundImageSize" );
       if( result == null ) {
         var themeStore = org.eclipse.swt.theme.ThemeStore.getInstance();
         result = themeStore.getImageSize( source );
       }
       return result;
     },
-    
+
     _willBeLayouted : function() {
-      return this._jobQueue != undefined || !qx.lang.Object.isEmpty( this._layoutChanges );
+      return this._jobQueue !== undefined || !qx.lang.Object.isEmpty( this._layoutChanges );
     }
 
   }

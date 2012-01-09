@@ -108,14 +108,14 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
         if( domEvent.shiftKey ) {
           result.push( "SHIFT" );
         }
-        result.push( "#" + keyCode.toString() ); 
+        result.push( "#" + keyCode.toString() );
       } else if( eventType === "keypress" && !isNaN( charCode ) && charCode > 0 ) {
         result.push( String.fromCharCode( charCode ) );
       }
       return result.join( "+" );
     },
 
-//    TODO [tb] : Use keydown for non-printables as soon as redispatch is not used anymore    
+//    TODO [tb] : Use keydown for non-printables as soon as redispatch is not used anymore
 //    _isRelevantEvent : function( eventType, keyCode ) {
 //      var result = false;
 //      if( this._useKeyDown( keyCode ) )  {
@@ -135,9 +135,9 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
       if( this._isModifier( keyCode ) ) {
         result = eventType === "keydown";
       } else {
-        result = eventType === "keypress"; 
+        result = eventType === "keypress";
       }
-      var activeKeys = control ? control.getUserData( "activeKeys" ) : null
+      var activeKeys = control ? control.getUserData( "activeKeys" ) : null;
       if( result && activeKeys ) {
         var identifier = this._getKeyBindingIdentifier( domEvent, "keydown", keyCode, charCode );
         result = activeKeys[ identifier ] === true;
@@ -146,13 +146,13 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
           result = activeKeys[ identifier ] === true;
         }
       }
-      return result;    
+      return result;
     },
 
     _isModifier : function( keyCode ) {
-      return keyCode >= 16 && keyCode <= 20 && keyCode !== 19;  
+      return keyCode >= 16 && keyCode <= 20 && keyCode !== 19;
     },
-    
+
     _useKeyDown : function( keyCode ) {
       var result =    org.eclipse.rwt.EventHandlerUtil.isNonPrintableKeyCode( keyCode )
                    || keyCode === 13
@@ -179,7 +179,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventUtil", {
     },
 
     _hasTraverseListener : function( widget ) {
-      return    widget !== null 
+      return    widget !== null
              && widget.getUserData( "traverseListener" ) === true;
     },
 
