@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.Animation", {
@@ -243,14 +244,13 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
 
     _removeFromLoop : function( animation ) {
       qx.lang.Array.remove( this._queue, animation );  
-      if( this._queue.length == 0 ) {
+      if( this._queue.length === 0 ) {
         this._stopLoop();
       }
     },
 
     _startLoop : function() {
-      this._interval 
-        = setInterval( this._mainLoop, Math.round( 1000 / this.FPS ) );
+      this._interval = setInterval( this._mainLoop, Math.round( 1000 / this.FPS ) );
     },
 
     _stopLoop : function() {
@@ -264,8 +264,10 @@ qx.Class.define( "org.eclipse.rwt.Animation", {
           var time = new Date().getTime();
           var queue = org.eclipse.rwt.Animation._queue;
           try{
-            for ( var i=0, len = queue.length; i < len; i++ ) {
-              queue[ i ] && queue[ i ]._loop( time );
+            for( var i=0, len = queue.length; i < len; i++ ) {
+              if( queue[ i ] ) {
+                queue[ i ]._loop( time );
+              }
             }
           } catch( e ) {
             // prevent endless error-messages:
