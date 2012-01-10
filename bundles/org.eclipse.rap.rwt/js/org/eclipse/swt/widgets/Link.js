@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -155,7 +155,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       var linkShadow = themeValues.getCssShadow( "Link-Hyperlink", "text-shadow" );
       themeValues.dispose();
       var hyperlinks = this._getHyperlinkElements();
-      for( i = 0; i < hyperlinks.length; i++ ) {
+      for( var i = 0; i < hyperlinks.length; i++ ) {
         org.eclipse.rwt.HtmlUtil.setStyleProperty( hyperlinks[ i ], "color", linkColor );
         org.eclipse.rwt.HtmlUtil.setTextShadow( hyperlinks[ i ], linkShadow );
         if( this.isEnabled() ) {
@@ -168,7 +168,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
 
     _changeHyperlinksTabIndexProperty : function() {
       var hyperlinks = this._getHyperlinkElements();
-      for( i = 0; i < hyperlinks.length; i++ ) {
+      for( var i = 0; i < hyperlinks.length; i++ ) {
         if( this.isEnabled() ) {
           hyperlinks[ i ].tabIndex = "1";
         } else {
@@ -180,7 +180,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     _addEventListeners : function() {
       var hyperlinks = this._getHyperlinkElements();
       if( hyperlinks.length > 0 && !this._hyperlinksHaveListeners ) {
-        for( i = 0; i < hyperlinks.length; i++ ) {
+        for( var i = 0; i < hyperlinks.length; i++ ) {
           qx.html.EventRegistration.addEventListener( hyperlinks[ i ],
                                                       "mousedown",
                                                       this.__onMouseDown );
@@ -195,7 +195,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
     _removeEventListeners : function() {
       var hyperlinks = this._getHyperlinkElements();
       if( hyperlinks.length > 0 && this._hyperlinksHaveListeners ) {
-        for( i = 0; i < hyperlinks.length; i++ ) {
+        for( var i = 0; i < hyperlinks.length; i++ ) {
           qx.html.EventRegistration.removeEventListener( hyperlinks[ i ],
                                                          "mousedown",
                                                          this.__onMouseDown );
@@ -209,7 +209,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
 
     _onMouseDown : function( e ) {
       var target = this._getEventTarget( e );
-      var index = parseInt( target.id );
+      var index = parseInt( target.id, 10 );
       this._setFocusedLink( index );
       var leftBtnPressed = this._isLeftMouseButtonPressed( e );
       if( this.isEnabled() && leftBtnPressed && this._readyToSendChanges ) {
@@ -327,7 +327,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       if( linkElement ) {
         result = linkElement.getElementsByTagName( "span" );
       } else {
-      	result = [];
+        result = [];
       }
       return result;
     },
@@ -347,4 +347,5 @@ qx.Class.define( "org.eclipse.swt.widgets.Link", {
       this._readyToSendChanges = true;
     }
   }
+
 } );
