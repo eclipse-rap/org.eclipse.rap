@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.VML", {
@@ -25,7 +26,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       var result = {};
       result.type = "vmlCanvas";
       var node = document.createElement( "div" );
-      node.style.position = "absolute"
+      node.style.position = "absolute";
       node.style.width = "10px";
       node.style.height = "10px";
       node.style.top = "0";
@@ -71,7 +72,6 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         break;
         default: 
           throw "VML does not support shape " + type;
-        break;
       }
       result.restoreData = { "fill" : {} };
       result.node.stroked = false;
@@ -155,7 +155,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       radiusBottomLeft = this._convertNumeric( radiusBottomLeft, false );
       var bluroffsets = this._getBlurOffsets( shape.blurRadius );
       var rectLeft = this._convertNumeric( x - bluroffsets[ 1 ], true );
-      var rectTop = this._convertNumeric( y - bluroffsets[ 1 ], true )
+      var rectTop = this._convertNumeric( y - bluroffsets[ 1 ], true );
       var rectWidth = this._convertNumeric( width - bluroffsets[ 2 ], false );
       var rectHeight = this._convertNumeric( height - bluroffsets[ 2 ], false );
       var path = [];
@@ -263,7 +263,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         for( var colorPos = 1; colorPos < gradient.length; colorPos++ ) {
           var color = gradient[ colorPos ][ 1 ];
           nextColor = qx.util.ColorUtil.stringToRgb( color );
-          nextOffset = gradient[ colorPos ][ 0 ];
+          var nextOffset = gradient[ colorPos ][ 0 ];
           transitionColors += ", ";
           transitionColors += this._transitionColors( lastColor, 
                                                       nextColor, 
@@ -409,7 +409,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       var result = {};
       result.type = "vmlRect";
       var node = this._createNode( "rect" );
-      node.style.position = "absolute"
+      node.style.position = "absolute";
       node.style.width = 0;
       node.style.height = 0;
       node.style.top = 0;
@@ -423,7 +423,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
       var result = {};
       result.type = "vmlImage";
       var node = this._createNode( "image" );
-      node.style.position = "absolute"
+      node.style.position = "absolute";
       result.node = node;
       return result;      
     },
@@ -525,7 +525,7 @@ qx.Class.define( "org.eclipse.rwt.VML", {
         var item = path[ i ];
         switch( item.type ) {
           case "moveTo":
-            string.push( "M" )
+            string.push( "M" );
             string.push( this._convertNumeric( item.x, true ) );
             string.push( this._convertNumeric( item.y, true ) );
           break;

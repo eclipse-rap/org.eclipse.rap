@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
@@ -120,7 +121,7 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
     },
 
     arc : function( x, y, radiusX, radiusY, startAngle, endAngle, antiCW ) {
-      if( this._currentPath.length == 0 ) {  
+      if( this._currentPath.length === 0 ) {  
         var startX = x + Math.cos( startAngle ) * radiusX;
         var startY = y + Math.sin( startAngle ) * radiusY;
         this.moveTo( startX, startY );
@@ -181,7 +182,7 @@ qx.Class.define( "org.eclipse.rwt.VMLCanvas", {
     // Calls to "addColorStop" must be in the order of the offsets and can not 
     // overwrite previous colorsStops. 
     createLinearGradient : function( x1, y1, x2, y2 ) {
-      var gradient = new Array();
+      var gradient = [];
       gradient.addColorStop = this._addColorStopFunction;
       gradient.horizontal = x1 != x2;
       return gradient;

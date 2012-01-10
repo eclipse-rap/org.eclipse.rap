@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others. All rights reserved.
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010, 2012 EclipseSource and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *   EclipseSource - initial API and implementation
+ *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
 qx.Class.define( "org.eclipse.rwt.SVG", {
@@ -19,7 +20,7 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
     createCanvas : function() {
       var result = {};
       var node = this._createNode( "svg" );
-      node.style.position = "absolute"
+      node.style.position = "absolute";
       node.style.left = "0px";
       node.style.top = "0px";
       node.style.width = "100%";
@@ -82,13 +83,12 @@ qx.Class.define( "org.eclipse.rwt.SVG", {
         break;
         default: 
           throw "invalid shape " + type;
-        break;
       }
       result.node.setAttribute( "stroke", "none" );
       result.node.setAttribute( "stroke-width", "0px" );
       result.node.setAttribute( "fill", "none" );
       result.defNodes = {};
-      result.parent = null
+      result.parent = null;
       return result;
     },
 
