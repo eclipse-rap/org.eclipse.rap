@@ -104,6 +104,8 @@ public class JsonValue_Test extends TestCase {
   public void testEscapeStringWithControlChar() {
     char[] data = new char[] { 'h', 'e', 'l', 8, 'l', 'o' };
     assertEquals( "\"hel\\u0008lo\"", JsonValue.valueOf( String.valueOf( data ) ).toString() );
+    data = new char[] { 'h', 'e', 'l', 15, 'l', 'o' };
+    assertEquals( "\"hel\\u000flo\"", JsonValue.valueOf( String.valueOf( data ) ).toString() );
   }
 
 }

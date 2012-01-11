@@ -87,7 +87,7 @@ public abstract class JsonValue {
         resultBuffer.append( "\\u2029" );
       } else if( ch >= CONTROL_CHARACTERS_START && ch <= CONTROL_CHARACTERS_END ) {
         resultBuffer.append( "\\u00" );
-        if( ch <= 9 ) {
+        if( ch <= 0x000f ) {
           resultBuffer.append( "0" );
         }
         resultBuffer.append( Integer.toHexString( ch ) );
