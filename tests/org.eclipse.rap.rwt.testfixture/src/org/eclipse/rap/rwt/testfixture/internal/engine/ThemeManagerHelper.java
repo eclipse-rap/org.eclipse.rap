@@ -17,7 +17,9 @@ import java.util.Map;
 
 import org.eclipse.rwt.internal.application.ApplicationContext;
 import org.eclipse.rwt.internal.application.RWTFactory;
+import org.eclipse.rwt.internal.theme.Theme;
 import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.resources.ResourceLoader;
 
 
@@ -39,7 +41,8 @@ public class ThemeManagerHelper {
 
     public void initialize() {
       if( !initialized ) {
-        super.initialize();
+        // Register empty default theme. Execute tests against fall-back theme.
+        registerTheme( new Theme( ThemeUtil.DEFAULT_THEME_ID, "RAP Default Theme", null ) );
         initialized = true;
       }
     }

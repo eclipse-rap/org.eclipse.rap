@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-/* CCombo default theme */
+/* CCombo fallback theme */
 
 CCombo {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
@@ -17,33 +17,22 @@ CCombo {
   background-color: #ffffff;
   background-image: none;
   border: none;
-  border-radius: 0 2px 2px 0;
+  border-radius: 0;
   text-shadow: none;
   box-shadow: none;
 }
 
 CCombo[BORDER] {
   border: 1px solid #aaaaaa;
-  border-radius: 0 2px 2px 0;
-  box-shadow: inset 0 0 3px #bdbdbd;
-}
-
-CCombo[BORDER]:focused {
-  border: 1px solid #4f7cb1;
-  box-shadow: 0 0 5px #4f7cb1;
 }
 
 CCombo-Button {
   cursor: default;
-  background-color: #efefef;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #f9f9f9 ),
-    to( #e4e4e4 )
-  );
+  background-color: #ffffff;
+  background-image: none;
   border: none;
-  border-left: 1px solid #bdbdbd;
-  border-radius: 0px 2px 2px 0px;
+  border-left: 1px solid #aaaaaa;
+  border-radius: 0;
   width: 30px;
 }
 
@@ -56,9 +45,9 @@ CCombo-Button-Icon:hover {
 }
 
 CCombo-List {
-  border: 1px solid #4f7cb1;
-  box-shadow: 0 0 5px #4f7cb1;
-  border-radius: 2px;
+  border: 1px solid #aaaaaa;
+  box-shadow: none;
+  border-radius: 0;
 }
 
 CCombo-Field {

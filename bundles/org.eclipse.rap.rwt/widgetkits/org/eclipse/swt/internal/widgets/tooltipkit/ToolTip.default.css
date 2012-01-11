@@ -1,33 +1,29 @@
 /*******************************************************************************
- * Copyright (c) 2011 Ruediger Herrmann and others.
+ * Copyright (c) 2011, 2012 Ruediger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Ruediger Herrmann - initial API and implementation
- *     EclipseSource - ongoing development
+ *    Ruediger Herrmann - initial API and implementation
+ *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* ToolTip default theme */
+/* ToolTip fallback theme */
 
 ToolTip {
   cursor: default;
-  border: 1px solid #a0b3ca;
-  border-radius: 2px;
+  border: 1px solid #aaaaaa;
+  border-radius: 0;
   padding: 8px;
   opacity: 1;
   color: #4a4a4a;
-  background-image : gradient(
-    linear, left top, right top,
-    from( #f8f9ff ),
-    to( #f4f4f4 )
-  );
+  background-image : none;
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  background-color: #fcfcfc;
-  animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
-  box-shadow: 0 0 4px #adadad;
+  background-color: #ffffff;
+  animation: none;
+  box-shadow: none;
 }
 
 ToolTip-Image[ICON_ERROR] {

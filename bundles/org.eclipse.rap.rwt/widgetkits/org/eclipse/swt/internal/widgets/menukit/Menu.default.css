@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,20 +10,16 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* Menu default theme */
+/* Menu fallback theme */
 
 Menu {
   padding: 0;
-  color: #0059a5;
-  background-color: #f9f9f9;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #f4f4f4 ),
-    to( #ffffff )
-  );
-  border: 1px solid #a0b3ca;
-  border-radius: 2px;
-  box-shadow: 0 0 4px #ababab;
+  color: #4a4a4a;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #aaaaaa;
+  border-radius: 0;
+  box-shadow: none;
   opacity: 1;
   animation: none;
 }
@@ -41,33 +37,9 @@ MenuItem[SEPARATOR] {
   padding: 0px 10px;
 }
 
-MenuItem:hover {
-  color: #ffffff;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
-}
-
-MenuItem:pressed {
-  color: #ffffff;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #416693 ),
-    to( #5882b5 )
-  );
-}
-
-MenuItem:disabled {
-  color: #bdbdbd;
-  text-shadow: none;
-}
-
 MenuItem:onMenuBar {
   padding: 4px 6px;
 }
-
 
 MenuItem-CheckIcon {
   background-image: url( resource/widget/rap/menu/checkbox.gif );

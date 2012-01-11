@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,14 +11,12 @@
  ******************************************************************************/
 package org.eclipse.swt.widgets;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rwt.graphics.Graphics;
-import org.eclipse.rwt.internal.theme.ThemeTestUtil;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
@@ -1098,8 +1096,7 @@ public class List_Test extends TestCase {
     assertTrue( list.isDisposed() );
   }
 
-  public void testComputeSize() throws IOException {
-    fakeTheme();
+  public void testComputeSize() {
     List list = new List( shell, SWT.NONE );
     Point expected = new Point( 64, 64 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
@@ -1107,28 +1104,28 @@ public class List_Test extends TestCase {
     list.add( "test 1" );
     list.add( "test 22" );
     list.add( "test 333" );
-    expected = new Point( 64, 60 );
+    expected = new Point( 74, 78 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     list = new List( shell, SWT.V_SCROLL );
     list.add( "test 1" );
     list.add( "test 22" );
     list.add( "test 333" );
-    expected = new Point( 74, 60 );
+    expected = new Point( 84, 78 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     list = new List( shell, SWT.H_SCROLL );
     list.add( "test 1" );
     list.add( "test 22" );
     list.add( "test 333" );
-    expected = new Point( 64, 70 );
+    expected = new Point( 74, 88 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     list = new List( shell, SWT.BORDER );
     list.add( "test 1" );
     list.add( "test 22" );
     list.add( "test 333" );
-    expected = new Point( 66, 62 );
+    expected = new Point( 76, 80 );
     assertEquals( expected, list.computeSize( SWT.DEFAULT, SWT.DEFAULT ) );
 
     expected = new Point( 102, 102 );
@@ -1149,10 +1146,9 @@ public class List_Test extends TestCase {
     list.showSelection();
   }
 
-  public void testShowSelectionBottom() throws IOException {
-    fakeTheme();
+  public void testShowSelectionBottom() {
     List list = new List( shell, SWT.NONE );
-    list.setSize( 100, 20 );
+    list.setSize( 100, 26 );
     list.add( "1" );
     list.add( "2" );
     list.add( "3" );
@@ -1226,10 +1222,9 @@ public class List_Test extends TestCase {
     assertEquals( 0, noScrollList.getHScrollBarHeight() );
   }
 
-  public void testUpdateScrollBarOnItemsChange() throws IOException {
-    fakeTheme();
+  public void testUpdateScrollBarOnItemsChange() {
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
-    list.setSize( 200, 20 );
+    list.setSize( 200, 26 );
     assertFalse( list.hasVScrollBar() );
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
     assertTrue( list.hasVScrollBar() );
@@ -1244,8 +1239,7 @@ public class List_Test extends TestCase {
     assertTrue( list.hasVScrollBar() );
   }
 
-  public void testUpdateScrollBarOnResize() throws IOException {
-    fakeTheme();
+  public void testUpdateScrollBarOnResize() {
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.setSize( 20, 20 );
     list.setItems( new String[] { "Item 1", "Item 2", "Item 3" } );
@@ -1290,34 +1284,32 @@ public class List_Test extends TestCase {
     assertTrue( list.hasVScrollBar() );
   }
 
-  public void testUpdateScrollBarWithInterDependencyVFirst() throws IOException {
-    fakeTheme();
+  public void testUpdateScrollBarWithInterDependencyVFirst() {
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     list.add( "123" );
-    list.setSize( 30, 30 );
+    list.setSize( 50, 26 );
     assertFalse( list.hasHScrollBar() );
     assertFalse( list.hasVScrollBar() );
     for( int i = 0; i < 10; i++ ) {
-      list.add( "123" );
+      list.add( "123456789" );
     }
     assertTrue( list.hasHScrollBar() );
     assertTrue( list.hasVScrollBar() );
   }
 
-  public void testItemDimensions() throws IOException {
-    fakeTheme();
+  public void testItemDimensions() {
     List list = new List( shell, SWT.H_SCROLL | SWT.V_SCROLL );
     assertEquals( new Point( 0, 0 ), list.getItemDimensions() );
     list.add( "123" );
-    assertEquals( new Point( 30, 20 ), list.getItemDimensions() );
+    assertEquals( new Point( 40, 26 ), list.getItemDimensions() );
     list.setSize( 100, 100 );
-    assertEquals( new Point( 100, 20 ), list.getItemDimensions() );
+    assertEquals( new Point( 100, 26 ), list.getItemDimensions() );
     for( int i = 0; i < 10; i++ ) {
       list.add( "123" );
     }
-    assertEquals( new Point( 90, 20 ), list.getItemDimensions() );
+    assertEquals( new Point( 90, 26 ), list.getItemDimensions() );
     list.add( "Very long list item" );
-    assertEquals( new Point( 138, 20 ), list.getItemDimensions() );
+    assertEquals( new Point( 148, 26 ), list.getItemDimensions() );
   }
 
   public void testIsSerialized() throws Exception {
@@ -1328,13 +1320,5 @@ public class List_Test extends TestCase {
     List deserializedList = Fixture.serializeAndDeserialize( list );
 
     assertEquals( listItem, deserializedList.getItem( 0 ) );
-  }
-
-  private void fakeTheme() throws IOException {
-    StringBuilder buffer = new StringBuilder();
-    buffer.append( "List-Item {\n" );
-    buffer.append( "padding: 3px 5px;\n" );
-    buffer.append( "}\n" );
-    ThemeTestUtil.setCustomTheme( buffer.toString() );
   }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ Button {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   background-image: none;
   border: none;
-  border-radius: 2px;
+  border-radius: 0;
   padding: 6px 15px;
   spacing: 2px;
   cursor: default;
@@ -31,87 +31,18 @@ Button[PUSH],
 Button[TOGGLE],
 Button[PUSH][BORDER], 
 Button[TOGGLE][BORDER],
+Button[CHECK][BORDER], 
+Button[RADIO][BORDER],
 Button[PUSH][FLAT], 
 Button[TOGGLE][FLAT] {
-  border: 1px solid #bdbdbd;
-  border-radius: 2px;
-  padding: 6px 15px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #f9f9f9 ),
-    to( #e4e4e4 )
-  );
-  animation: none;
+  border: 1px solid #aaaaaa;
   cursor: pointer;
-  text-shadow: 0 1px 0 #ffffff;
-}
-
-Button[PUSH]:default,
-Button[TOGGLE]:default {
-  background-color: #416693;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e2eefc ),
-    to( #d4d4d4 )
-  );
-  border: 1px solid #a0b3ca;
-}
-
-Button[PUSH]:disabled, 
-Button[TOGGLE]:disabled {
-  cursor: default;
-  color: #d2d2d2;
-  background-image: none;
-  background-color: #fafafa;
-  border: 1px solid #d2d2d2;
-}
-
-Button[PUSH]:hover, 
-Button[TOGGLE]:hover {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #eaeaea ),
-    to( #d5d5d5 )
-  );
-}
-
-Button[PUSH]:pressed, 
-Button[TOGGLE]:pressed {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #d5d5d5 ),
-    to( #eaeaea )
-  );
-}
-
-Button[TOGGLE]:selected {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #d5d5d5 ),
-    to( #eaeaea )
-  );
-}
-
-Button[TOGGLE]:selected:hover {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #d5d5d5 ),
-    to( #eaeaea )
-  );
 }
 
 Button[CHECK], 
 Button[RADIO] {
   padding: 3px 3px 3px 3px;
   spacing: 7px;
-}
-
-Button[CHECK][BORDER], 
-Button[RADIO][BORDER] {
-  cursor: default;
-  background-image: none;
-  border: 1px solid #bdbdbd;
-  border-radius: 2px;
 }
 
 Button-CheckIcon {
@@ -154,18 +85,10 @@ Button-RadioIcon:selected:hover {
   background-image: url( resource/widget/rap/button/radio-selected-hover.png );
 }
 
-Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
+Button-FocusIndicator {
   background-color: transparent; 
-  border: 1px dotted #b8b8b8;
+  border: 1px dotted #aaaaaa;
   margin: 2px;
   padding: 0px;
-  opacity: 1;
-}
-
-Button-FocusIndicator[CHECK], Button-FocusIndicator[RADIO] {
-  background-color: transparent; 
-  border: 1px dotted #b8b8b8;
-  padding: 2px 2px 2px 1px;
-  margin: 0px;
   opacity: 1;
 }

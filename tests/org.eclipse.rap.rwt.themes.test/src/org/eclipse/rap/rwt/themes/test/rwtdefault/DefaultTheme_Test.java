@@ -13,18 +13,13 @@ package org.eclipse.rap.rwt.themes.test.rwtdefault;
 import java.io.IOException;
 
 import org.eclipse.rap.rwt.themes.test.ThemeTestCase;
-import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.theme.ThemeUtil;
+import org.eclipse.rap.rwt.themes.test.ThemesTestUtil;
 
 
-@SuppressWarnings("restriction")
 public class DefaultTheme_Test extends ThemeTestCase {
 
   public void testDefaultTheme() throws IOException {
-    RWTFactory.getThemeManager().deactivate();
-    RWTFactory.getThemeManager().initialize();
-    RWTFactory.getThemeManager().activate();
-    ThemeUtil.setCurrentThemeId( ThemeUtil.DEFAULT_THEME_ID );
+    ThemesTestUtil.createAndActivateTheme( ThemesTestUtil.DEFAULT_PATH, "test.dafault.id" );
     processCssTestFile( getClass(), "Button.test.css" );
     processCssTestFile( getClass(), "Shell.test.css" );
     processCssTestFile( getClass(), "ToolBar.test.css" );

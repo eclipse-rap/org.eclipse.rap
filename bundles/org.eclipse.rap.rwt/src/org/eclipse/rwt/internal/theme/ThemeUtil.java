@@ -12,8 +12,6 @@
 package org.eclipse.rwt.internal.theme;
 
 import java.io.IOException;
-import java.io.InputStream;
-
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.theme.css.ConditionalValue;
@@ -88,23 +86,22 @@ public final class ThemeUtil {
 
   public static void initializeDefaultTheme( ThemeManager themeManager ) {
     if( !themeManager.hasTheme( DEFAULT_THEME_ID ) ) {
-      Theme defaultTheme = new Theme( DEFAULT_THEME_ID, DEFAULT_THEME_NAME, null );
-      ResourceLoader resLoader = ThemeManager.STANDARD_RESOURCE_LOADER;
-      try {
-        InputStream inStream = resLoader.getResourceAsStream( DEFAULT_THEME_CSS );
-        try {
-          StyleSheet styleSheet
-            = CssFileReader.readStyleSheet( inStream, DEFAULT_THEME_CSS, resLoader );
-          defaultTheme.addStyleSheet( styleSheet );
-        } finally {
-          inStream.close();
-        }
-      } catch( IOException e ) {
-        String msg = "Failed to load default theme: " + DEFAULT_THEME_CSS;
-        throw new ThemeManagerException( msg, e );
-      }
+      StyleSheet defaultStyleSheet = readDafaultThemeStyleSheet();
+      Theme defaultTheme = new Theme( DEFAULT_THEME_ID, DEFAULT_THEME_NAME, defaultStyleSheet );
       themeManager.registerTheme( defaultTheme );
     }
+  }
+
+  private static StyleSheet readDafaultThemeStyleSheet() {
+    StyleSheet result;
+    try {
+      ResourceLoader resLoader = ThemeManager.STANDARD_RESOURCE_LOADER;
+      result = CssFileReader.readStyleSheet( DEFAULT_THEME_CSS, resLoader );
+    } catch( IOException e ) {
+      String msg = "Failed to load default theme: " + DEFAULT_THEME_CSS;
+      throw new ThemeManagerException( msg, e );
+    }
+    return result;
   }
 
   //////////////////////////////////////

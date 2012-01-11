@@ -29,6 +29,8 @@ import org.eclipse.rwt.resources.ResourceLoader;
 @SuppressWarnings("restriction")
 public class ThemesTestUtil {
 
+  public static final String DEFAULT_PATH = "resource/theme/default.css";
+
   public static final String CLASSIC_PATH = "theme/classic.css";
 
   public static final String BUSINESS_PATH = "theme/business/business.css";

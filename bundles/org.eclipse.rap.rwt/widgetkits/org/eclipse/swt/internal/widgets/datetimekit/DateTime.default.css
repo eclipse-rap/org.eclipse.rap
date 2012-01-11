@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,15 +15,11 @@
 DateTime {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border: none;
-  border-radius: 0 2px 2px 0;
-  color: #464a4e;
+  border-radius: 0;
+  color: #4a4a4a;
   background-color: #ffffff;
   background-image: none;
   text-shadow: none;
-}
-
-DateTime[BORDER]:focused {
-  border: 1px solid #4f7cb1;
 }
 
 DateTime-Field {
@@ -32,48 +28,20 @@ DateTime-Field {
 }
 
 DateTime[BORDER] {
-  border: 1px solid #bdbdbd;
-  border-radius: 0 2px 2px 0;
+  border: 1px solid #aaaaaa;
 }
 
 DateTime-Calendar-Day {
   text-shadow: none;
 }
 
-DateTime-Field:selected, 
-DateTime-Calendar-Day:selected {
-  background-color: #5882b5;
-  color: #ffffff;
-}
-
-DateTime-Calendar-Day:selected:hover {
-  background-color: #5882b5;
-  color: #ffffff;
-}
-
-DateTime-Calendar-Day:selected:unfocused {
-  background-color: #c0c0c0;
-}
-
-DateTime-Calendar-Day:otherMonth {
-  background-color: transparent;
-  color: #808080;
-}
-
-DateTime-Calendar-Day:hover {
-  background-color: #b5b5b5;
-}
-
 DateTime-Calendar-Navbar {
+  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   border: none;
   border-radius: 0;
-  background-color: #00569c;
-  background-image: gradient( 
-    linear, left top, left bottom, 
-    from( #416693 ), to( #5882b5 ) 
-  );
-  color: white;
-  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  background-color: #ffffff;
+  background-image: none;
+  color: #4a4a4a;
   text-shadow: none;
 }
 
@@ -113,17 +81,13 @@ DateTime-Calendar-NextYearButton:hover {
   background-image: url( resource/widget/rap/calendar/nextYear-hover.png );
 }
 
-DateTime-UpButton {
-  background-color: #f0f0f0;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #f9f9f9 ),
-    to( #efefef )
-  );;
+DateTime-UpButton, DateTime-DownButton, DateTime-DropDownButton {
+  background-color: #ffffff;
+  background-image: none;
   width: 30px;
   border: none;
-  border-left: 1px solid #bdbdbd;
-  border-radius: 0px 2px 0px 0px;
+  border-left: 1px solid #aaaaaa;
+  border-radius: 0;
   cursor: default;
 }
 
@@ -135,40 +99,12 @@ DateTime-UpButton-Icon:hover {
   background-image: url( resource/widget/rap/datetime/up-hover.png );
 }
 
-DateTime-DownButton {
-  background-color: #f0f0f0;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #efefef ),
-    to( #e4e4e4 )
-  );
-  width: 30px;
-  border: none;
-  border-left: 1px solid #bdbdbd;
-  border-radius: 0px 0px 2px 0px;
-  cursor: default;
-}
-
 DateTime-DownButton-Icon {
   background-image: url( resource/widget/rap/datetime/down.png );
 }
 
 DateTime-DownButton-Icon:hover {
   background-image: url( resource/widget/rap/datetime/down-hover.png );
-}
-
-DateTime-DropDownButton {
-  cursor: default;
-  background-color: #f0f0f0;
-  border: none;
-  border-left: 1px solid #bdbdbd;
-  border-radius: 0px 2px 2px 0px;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #f9f9f9 ),
-    to( #e4e4e4 )
-  );
-  width: 30px;
 }
 
 DateTime-DropDownButton-Icon {
@@ -180,5 +116,5 @@ DateTime-DropDownButton-Icon:hover {
 }
 
 DateTime-DropDownCalendar {
-  border: 1px #a7a6aa;
+  border: 1px #aaaaaa;
 }

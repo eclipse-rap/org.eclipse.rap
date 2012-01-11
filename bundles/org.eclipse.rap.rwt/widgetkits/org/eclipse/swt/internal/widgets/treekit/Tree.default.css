@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* Tree default theme */
+/* Tree fallback theme */
 
 Tree {
   background-color: #ffffff;
@@ -19,7 +19,7 @@ Tree {
 }
 
 Tree[BORDER] {
-  border: 1px solid #bdbdbd;
+  border: 1px solid #aaaaaa;
 }
 
 TreeItem {
@@ -31,91 +31,45 @@ TreeItem {
 }
 
 TreeItem:hover {
-  color: #4a4a4a;
   background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
 }
 
 TreeItem:selected {
   color: #ffffff;
   background-color: #5882b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
 }
 
 TreeItem:selected:unfocused {
   color: #ffffff;
   background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b5b5b5 ),
-    to( #818181 )
-  );
 }
 
 TreeItem:linesvisible:even {
-  background-color: #f0f0f0;
-  color: #4a4a4a;
-  border: none;
+  background-color: #ffffff;
 }
 
 TreeItem:linesvisible:even:hover {
-  color: #4a4a4a;
   background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #ebebeb ),
-    to( #d5d5d5 )
-  );
 }
 
 TreeItem:linesvisible:even:selected {
   color: #ffffff;
   background-color: #5882b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #5882b5 ),
-    to( #416693 )
-  );
 }
 
 TreeItem:linesvisible:even:selected:unfocused {
   color: #ffffff;
   background-color: #b5b5b5;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #b5b5b5 ),
-    to( #818181 )
-  );
 }
 
 TreeColumn {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
   color: #4a4a4a;
-  background-color: #f0f0f0;
-   background-image: gradient(
-    linear, left top, left bottom,
-    from( #f9f9f9 ),
-    to( #e4e4e4 )
-  );
+  background-color: #ffffff;
+  background-image: none;
   padding: 8px 10px 8px 6px;
-  border-bottom: 1px solid #bdbdbd;
+  border-bottom: 1px solid #aaaaaa;
   text-shadow: none;
-}
-
-TreeColumn:hover {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #e4e4e4 ),
-    to( #f9f9f9 )
-  );
 }
 
 TreeColumn-SortIndicator {
@@ -136,7 +90,7 @@ Tree-Cell {
 }
 
 Tree-GridLine {
-  color: #d0d0d0;
+  color: #dedede;
 }
 
 Tree-GridLine:horizontal {

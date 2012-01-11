@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* TabFolder default theme */
+/* TabFolder fallback theme */
 
 TabFolder {
   font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
@@ -18,31 +18,24 @@ TabFolder {
 }
 
 TabFolder[BORDER] {
-  border: 1px solid #bdbdbd;
+  border: 1px solid #aaaaaa;
 }
 
 TabFolder-ContentContainer {
-  border: 1px solid #bdbdbd;
+  border: 1px solid #aaaaaa;
 }
 
 TabItem {
   background-color: #ffffff;
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #f9f9f9 ),
-    to( #e4e4e4 )
-  );
-  border-top-color: #5882b5;
-  border-bottom-color: #5882b5;
-  text-shadow: 0 1px 0 #ffffff;
+  background-image: none;
+  border-top-color: #aaaaaa;
+  border-bottom-color: #aaaaaa;
+  text-shadow: none;
   padding : 6px;
 }
 
 TabItem:selected {
-  background-image: gradient(
-    linear, left top, left bottom,
-    from( #d5d5d5 ),
-    to( #eaeaea )
-  );
+  color: #4a4a4a;
+  background-color: #d6d6d6;
   padding : 6px 6px 7px 6px;
 }

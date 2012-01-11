@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,70 +10,34 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* Slider default theme */
+/* Slider fallback theme */
 
 Slider {
   border: none;
-  background-color: #f0f0f0;
-  border-radius: 2px;
+  background-color: #ffffff;
+  border-radius: 0;
 }
 
 /* Thumb */
 
 Slider-Thumb[HORIZONTAL],
 Slider-Thumb[VERTICAL] {
-  background-color: #e4e4e4;
+  background-color: #ffffff;
   background-image: url( resource/widget/rap/slider/slider-background.png );
-  border: 1px solid #bdbdbd;
-  border-radius: 2px;
+  border: 1px solid #aaaaaa;
+  border-radius: 0;
 }
 
 /* Buttons */
 
 Slider-UpButton, 
 Slider-DownButton {
-  background-color: #e4e4e4;
-  border: 1px solid #bdbdbd;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #aaaaaa;
+  border-radius: 0;
   cursor: default;
   padding: 0;
-}
-
-Slider-UpButton[HORIZONTAL], 
-Slider-DownButton[HORIZONTAL] {
-  background-image: none;
-}
-
-Slider-UpButton[VERTICAL], 
-Slider-DownButton[VERTICAL] {
-  background-image: none;
-}
-
-Slider-UpButton[HORIZONTAL]:pressed, 
-Slider-DownButton[HORIZONTAL]:pressed {
-  background-image: none;
-}
-
-Slider-UpButton[VERTICAL]:pressed, 
-Slider-DownButton[VERTICAL]:pressed {
-  background-image: none;
-}
-
-/* Rounded Borders */
-
-Slider-UpButton[HORIZONTAL] {
-  border-radius: 0px 2px 2px 0px;
-}
-
-Slider-UpButton[VERTICAL] {
-  border-radius: 0px 0px 2px 2px;
-}
-
-Slider-DownButton[HORIZONTAL] {
-  border-radius: 2px 0px 0px 2px;
-}
-
-Slider-DownButton[VERTICAL] {
-  border-radius: 2px 2px 0px 0px;
 }
 
 /* Button Icons */
