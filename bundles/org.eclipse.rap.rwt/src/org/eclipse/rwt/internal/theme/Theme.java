@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -125,7 +125,7 @@ public class Theme {
 
   private void registerThemeStoreFile( IResourceManager resourceManager ) {
     ThemeStoreWriter storeWriter = new ThemeStoreWriter( elements );
-    storeWriter.addTheme( this, id == ThemeManager.DEFAULT_THEME_ID );
+    storeWriter.addTheme( this, id == ThemeManager.FALLBACK_THEME_ID );
     String name = "rap-" + jsId + ".js";
     String code = storeWriter.createJs();
     registeredLocation = registerUtf8Resource( resourceManager, name, code );
@@ -166,8 +166,10 @@ public class Theme {
 
   private static String createUniqueJsId( String id ) {
     String result;
-    if( ThemeManager.DEFAULT_THEME_ID.equals( id ) ) {
+    if( ThemeUtil.DEFAULT_THEME_ID.equals( id ) ) {
       result = JS_THEME_PREFIX + "Default";
+    } else if( ThemeManager.FALLBACK_THEME_ID.equals( id ) ) {
+      result = JS_THEME_PREFIX + "Fallback";
     } else {
       String hash = Integer.toHexString( id.hashCode() );
       result = JS_THEME_PREFIX + "Custom_" + hash;

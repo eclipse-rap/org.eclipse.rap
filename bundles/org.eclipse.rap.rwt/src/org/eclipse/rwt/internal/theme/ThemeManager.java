@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.rwt.internal.lifecycle.LifeCycleAdapterUtil;
 import org.eclipse.rwt.internal.theme.css.CssFileReader;
-import org.eclipse.rwt.internal.theme.css.StyleSheet;
 import org.eclipse.rwt.internal.util.ParamCheck;
 import org.eclipse.rwt.resources.ResourceLoader;
 import org.eclipse.swt.widgets.Widget;
@@ -37,8 +36,8 @@ import org.eclipse.swt.widgets.Widget;
  */
 public class ThemeManager {
 
-  public static final String DEFAULT_THEME_ID = "org.eclipse.rap.rwt.theme.Default";
-  private static final String DEFAULT_THEME_NAME = "RAP Default Theme";
+  public static final String FALLBACK_THEME_ID = "org.eclipse.rap.rwt.theme.Fallback";
+  private static final String FALLBACK_THEME_NAME = "RAP Fallback Theme";
 
   // TODO [ApplicationContext]: made field public to replace with a performance
   //      optimized solution for tests. Think about a less intrusive solution.
@@ -88,7 +87,7 @@ public class ThemeManager {
   private final List<String> appearances;
   private final ThemeAdapterManager themeAdapterManager;
   private final Map<String, String> resolvedPackageNames; // only for performance improvements
-  private Theme defaultTheme;
+  private Theme fallbackTheme;
   private boolean initialized;
 
   public ThemeManager() {
@@ -98,8 +97,12 @@ public class ThemeManager {
     themeAdapterManager = new ThemeAdapterManager();
     resolvedPackageNames = new HashMap<String, String>();
     initialized = false;
-    createAndAddDefaultTheme();
+    createAndAddFallbackTheme();
     addDefaultThemableWidgets();
+  }
+
+  public void initialize() {
+    ThemeUtil.initializeDefaultTheme( this );
   }
 
   public void activate() {
@@ -121,7 +124,7 @@ public class ThemeManager {
     themeAdapterManager.reset();
     resolvedPackageNames.clear();
     initialized = false;
-    createAndAddDefaultTheme();
+    createAndAddFallbackTheme();
     addDefaultThemableWidgets();
   }
 
@@ -229,18 +232,16 @@ public class ThemeManager {
     }
   }
 
-  private void createAndAddDefaultTheme() {
-    defaultTheme = new Theme( DEFAULT_THEME_ID, DEFAULT_THEME_NAME, null );
-    themes.put( DEFAULT_THEME_ID, defaultTheme );
+  private void createAndAddFallbackTheme() {
+    fallbackTheme = new Theme( FALLBACK_THEME_ID, FALLBACK_THEME_NAME, null );
+    themes.put( FALLBACK_THEME_ID, fallbackTheme );
   }
 
   private void initializeThemeableWidgets() {
-    StyleSheet defaultThemeContributionsBuffer = defaultTheme.getStyleSheet();
     ThemeableWidget[] widgets = themeableWidgets.getAll();
     for( ThemeableWidget widget : widgets ) {
       loadThemeableWidgetResources( widget );
     }
-    defaultTheme.addStyleSheet( defaultThemeContributionsBuffer );
   }
 
   private void addDefaultThemableWidgets() {
@@ -260,7 +261,7 @@ public class ThemeManager {
         found |= loadDefaultCss( themeWidget, variants[ i ], className );
       }
       if( themeWidget.defaultStyleSheet != null ) {
-        defaultTheme.addStyleSheet( themeWidget.defaultStyleSheet );
+        fallbackTheme.addStyleSheet( themeWidget.defaultStyleSheet );
       }
     } catch( IOException e ) {
       String msg = "Failed to initialize themeable widget: " + themeWidget.widget.getName();

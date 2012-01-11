@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Frank Appel and others.
+ * Copyright (c) 2011, 2012 Frank Appel and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,16 +26,24 @@ public class ThemeManagerHelper {
   static {
     replaceStandardResourceLoader();
   }
-  
+
   public static class TestThemeManager extends ThemeManager {
+    boolean initialized;
     boolean activated;
     boolean deactivated;
-    
+
     public void deactivate() {
       // ignore reset for test cases to improve performance
       deactivated = true;
     }
-    
+
+    public void initialize() {
+      if( !initialized ) {
+        super.initialize();
+        initialized = true;
+      }
+    }
+
     public void activate() {
       if( !activated ) {
         super.activate();
@@ -45,7 +53,7 @@ public class ThemeManagerHelper {
       }
       deactivated = false;
     }
-    
+
     @Override
     public String[] getRegisteredThemeIds() {
       String[] result = new String[ 0 ];
@@ -54,15 +62,16 @@ public class ThemeManagerHelper {
       }
       return result;
     }
-    
+
     public void resetInstanceInTestCases() {
+      initialized = false;
       activated = false;
       super.deactivate();
     }
   }
 
-  // TODO [ApplicationContext]: Used as performance optimized solution for tests. At the time being 
-  //      buffering speeds up RWTAllTestSuite about 10% on my machine. Think about a less intrusive 
+  // TODO [ApplicationContext]: Used as performance optimized solution for tests. At the time being
+  //      buffering speeds up RWTAllTestSuite about 10% on my machine. Think about a less intrusive
   //      solution.
   private static class TestResourceLoader implements ResourceLoader {
     private ClassLoader classLoader = ThemeManager.class.getClassLoader();
@@ -121,11 +130,11 @@ public class ThemeManagerHelper {
       doThemeManagerReset();
     }
   }
-  
+
   public static void replaceStandardResourceLoader() {
     ThemeManager.STANDARD_RESOURCE_LOADER = new TestResourceLoader();
   }
-  
+
   private static ThemeManager getInstance() {
     if( themeManager == null ) {
       themeManager = new TestThemeManager();
@@ -140,7 +149,7 @@ public class ThemeManagerHelper {
 
   private static boolean isThemeManagerResetNeeded() {
     return    isThemeManagerAvailable()
-           && getThemeManager().getRegisteredThemeIds().length != 1;
+           && getThemeManager().getRegisteredThemeIds().length != 2;
   }
 
   private static boolean isThemeManagerAvailable() {

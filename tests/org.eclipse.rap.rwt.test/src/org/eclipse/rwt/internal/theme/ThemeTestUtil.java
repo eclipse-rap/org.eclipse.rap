@@ -82,6 +82,7 @@ public final class ThemeTestUtil {
     ThemeManagerHelper.resetThemeManager();
     Theme theme = createTheme( themeId, cssCode, loader );
     ThemeManager manager = RWTFactory.getThemeManager();
+    manager.initialize();
     manager.registerTheme( theme );
     manager.activate();
   }

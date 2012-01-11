@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -105,12 +105,12 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
       }
     },
 
-    setThemeCssValues : function( theme, values, isDefault ) {
+    setThemeCssValues : function( theme, values, isFallback ) {
       if( this._cssValues[ theme ] === undefined ) {
         this._cssValues[ theme ] = values;
       }
-      if( isDefault ) {
-        this.defaultTheme = theme;
+      if( isFallback ) {
+        this.fallbackTheme = theme;
       }
       this._fillNamedColors( theme );
     },
@@ -308,8 +308,8 @@ qx.Class.define( "org.eclipse.swt.theme.ThemeStore", {
           }
         }
       }
-      if( result === undefined && theme != this.defaultTheme ) {
-        result = this._getCssValue( element, states, property, this.defaultTheme );
+      if( result === undefined && theme != this.fallbackTheme ) {
+        result = this._getCssValue( element, states, property, this.fallbackTheme );
       }
       return result;
     },

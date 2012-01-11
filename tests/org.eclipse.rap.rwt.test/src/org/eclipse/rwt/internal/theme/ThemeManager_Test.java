@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,11 +43,11 @@ public class ThemeManager_Test extends TestCase {
     assertEquals( Widget.class, allThemeableWidgets[ 0 ].widget );
   }
 
-  public void testDefaultThemeBeforeActivation() {
-    Theme defaultTheme = manager.getTheme( ThemeManager.DEFAULT_THEME_ID );
+  public void testFallbackThemeBeforeActivation() {
+    Theme fallbackTheme = manager.getTheme( ThemeManager.FALLBACK_THEME_ID );
 
-    assertNotNull( defaultTheme );
-    assertEquals( "RAP Default Theme", defaultTheme.getName() );
+    assertNotNull( fallbackTheme );
+    assertEquals( "RAP Fallback Theme", fallbackTheme.getName() );
   }
 
   public void testRegisterTheme() {
@@ -83,8 +83,9 @@ public class ThemeManager_Test extends TestCase {
   }
 
   public void testDefaultThemeInitialized() {
+    manager.initialize();
     manager.activate();
-    Theme defaultTheme = manager.getTheme( ThemeManager.DEFAULT_THEME_ID );
+    Theme defaultTheme = manager.getTheme( ThemeUtil.DEFAULT_THEME_ID );
     assertNotNull( defaultTheme.getValuesMap() );
     assertTrue( defaultTheme.getValuesMap().getAllValues().length > 0 );
   }
@@ -93,8 +94,9 @@ public class ThemeManager_Test extends TestCase {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( "TestExample.css" );
     Theme customTheme = new Theme( "custom.id", "Custom Theme", styleSheet );
     manager.registerTheme( customTheme );
+    manager.initialize();
     manager.activate();
-    Theme defaultTheme = manager.getTheme( ThemeManager.DEFAULT_THEME_ID );
+    Theme defaultTheme = manager.getTheme( ThemeUtil.DEFAULT_THEME_ID );
     assertNotNull( defaultTheme.getValuesMap() );
     assertTrue( defaultTheme.getValuesMap().getAllValues().length > 0 );
     assertNotNull( customTheme.getValuesMap() );
@@ -102,11 +104,11 @@ public class ThemeManager_Test extends TestCase {
   }
 
   public void testActivateAndDeactivate() {
-    int beforeActivate = getDefaultTheme().getStyleSheet().getStyleRules().length;
+    int beforeActivate = getFallbackTheme().getStyleSheet().getStyleRules().length;
     manager.activate();
-    int afterActivate = getDefaultTheme().getValuesMap().getAllValues().length;
+    int afterActivate = getFallbackTheme().getValuesMap().getAllValues().length;
     manager.deactivate();
-    int afterDeactivate = getDefaultTheme().getStyleSheet().getStyleRules().length;
+    int afterDeactivate = getFallbackTheme().getStyleSheet().getStyleRules().length;
 
     assertEquals( 0, beforeActivate );
     assertTrue( 0 < afterActivate );
@@ -123,8 +125,8 @@ public class ThemeManager_Test extends TestCase {
     assertTrue( joinedAppearances.contains( "\"sash-handle\" : {" ) );
   }
 
-  private Theme getDefaultTheme() {
-    return manager.getTheme( ThemeManager.DEFAULT_THEME_ID );
+  private Theme getFallbackTheme() {
+    return manager.getTheme( ThemeManager.FALLBACK_THEME_ID );
   }
 
   private static String join( List<String> appearances ) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010, 2011 EclipseSource and others.
+* Copyright (c) 2010, 2012 EclipseSource and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import java.io.IOException;
 
 import org.eclipse.rap.rwt.themes.test.ThemeTestCase;
 import org.eclipse.rwt.internal.application.RWTFactory;
-import org.eclipse.rwt.internal.theme.ThemeManager;
 import org.eclipse.rwt.internal.theme.ThemeUtil;
 
 
@@ -23,11 +22,12 @@ public class DefaultTheme_Test extends ThemeTestCase {
 
   public void testDefaultTheme() throws IOException {
     RWTFactory.getThemeManager().deactivate();
+    RWTFactory.getThemeManager().initialize();
     RWTFactory.getThemeManager().activate();
-    ThemeUtil.setCurrentThemeId( ThemeManager.DEFAULT_THEME_ID );
+    ThemeUtil.setCurrentThemeId( ThemeUtil.DEFAULT_THEME_ID );
     processCssTestFile( getClass(), "Button.test.css" );
     processCssTestFile( getClass(), "Shell.test.css" );
-    processCssTestFile( getClass(), "ToolBar.test.css" ); 
+    processCssTestFile( getClass(), "ToolBar.test.css" );
     processCssTestFile( getClass(), "Tree.test.css" );
     processCssTestFile( getClass(), "Table.test.css" );
     processCssTestFile( getClass(), "List.test.css" );

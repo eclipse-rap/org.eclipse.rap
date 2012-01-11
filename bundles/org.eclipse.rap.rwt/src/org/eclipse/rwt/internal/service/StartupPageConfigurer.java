@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -226,12 +226,10 @@ final class StartupPageConfigurer implements IStartupPageConfigurer {
   private void addThemeDefinitions() {
     themeDefinitions.clear();
     ThemeManager themeManager = RWTFactory.getThemeManager();
-    Theme defaultTheme = themeManager.getTheme( ThemeManager.DEFAULT_THEME_ID );
-    themeDefinitions.add( defaultTheme.getRegisteredLocation() );
+    Theme fallbackTheme = themeManager.getTheme( ThemeManager.FALLBACK_THEME_ID );
+    themeDefinitions.add( fallbackTheme.getRegisteredLocation() );
     Theme theme = ThemeUtil.getCurrentTheme();
-    if( !theme.getId().equals( ThemeManager.DEFAULT_THEME_ID ) ) {
-      themeDefinitions.add( theme.getRegisteredLocation() );
-    }
+    themeDefinitions.add( theme.getRegisteredLocation() );
   }
 
   private void registerBrandingResources( AbstractBranding branding ) throws IOException {

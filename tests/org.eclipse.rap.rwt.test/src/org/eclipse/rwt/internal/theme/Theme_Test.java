@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -100,7 +100,7 @@ public class Theme_Test extends TestCase {
 
   public void testGetJsIdForDefaultTheme() throws Exception {
     StyleSheet styleSheet = ThemeTestUtil.getStyleSheet( TEST_SYNTAX_CSS );
-    String defaultThemeId = ThemeManager.DEFAULT_THEME_ID;
+    String defaultThemeId = ThemeUtil.DEFAULT_THEME_ID;
     Theme defaultTheme = new Theme( defaultThemeId, "Default", styleSheet );
     assertEquals( "org.eclipse.swt.theme.Default", defaultTheme.getJsId() );
   }

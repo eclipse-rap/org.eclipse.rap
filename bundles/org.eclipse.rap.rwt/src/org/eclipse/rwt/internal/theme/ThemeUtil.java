@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,15 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.theme;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.theme.css.ConditionalValue;
+import org.eclipse.rwt.internal.theme.css.CssFileReader;
+import org.eclipse.rwt.internal.theme.css.StyleSheet;
+import org.eclipse.rwt.resources.ResourceLoader;
 import org.eclipse.rwt.service.ISessionStore;
 import org.eclipse.swt.widgets.Widget;
 
@@ -23,8 +29,11 @@ import org.eclipse.swt.widgets.Widget;
  */
 public final class ThemeUtil {
 
-  private static final String CURR_THEME_ATTR
-    = "org.eclipse.rap.theme.current";
+  public static final String DEFAULT_THEME_ID = "org.eclipse.rap.rwt.theme.Default";
+  private static final String DEFAULT_THEME_NAME = "RAP Default Theme";
+  private static final String DEFAULT_THEME_CSS = "resource/theme/default.css";
+
+  private static final String CURR_THEME_ATTR = "org.eclipse.rap.theme.current";
 
   /**
    * Returns the ids of all themes that are currently registered.
@@ -44,7 +53,7 @@ public final class ThemeUtil {
     ISessionStore sessionStore = ContextProvider.getSessionStore();
     String result = ( String )sessionStore.getAttribute( CURR_THEME_ATTR );
     if( result == null ) {
-      result = ThemeManager.DEFAULT_THEME_ID;
+      result = ThemeUtil.DEFAULT_THEME_ID;
     }
     return result;
   }
@@ -69,7 +78,33 @@ public final class ThemeUtil {
 
   public static Theme getDefaultTheme() {
     ThemeManager themeManager = RWTFactory.getThemeManager();
-    return themeManager.getTheme( ThemeManager.DEFAULT_THEME_ID );
+    return themeManager.getTheme( DEFAULT_THEME_ID );
+  }
+
+  private static Theme getFallbackTheme() {
+    ThemeManager themeManager = RWTFactory.getThemeManager();
+    return themeManager.getTheme( ThemeManager.FALLBACK_THEME_ID );
+  }
+
+  public static void initializeDefaultTheme( ThemeManager themeManager ) {
+    if( !themeManager.hasTheme( DEFAULT_THEME_ID ) ) {
+      Theme defaultTheme = new Theme( DEFAULT_THEME_ID, DEFAULT_THEME_NAME, null );
+      ResourceLoader resLoader = ThemeManager.STANDARD_RESOURCE_LOADER;
+      try {
+        InputStream inStream = resLoader.getResourceAsStream( DEFAULT_THEME_CSS );
+        try {
+          StyleSheet styleSheet
+            = CssFileReader.readStyleSheet( inStream, DEFAULT_THEME_CSS, resLoader );
+          defaultTheme.addStyleSheet( styleSheet );
+        } finally {
+          inStream.close();
+        }
+      } catch( IOException e ) {
+        String msg = "Failed to load default theme: " + DEFAULT_THEME_CSS;
+        throw new ThemeManagerException( msg, e );
+      }
+      themeManager.registerTheme( defaultTheme );
+    }
   }
 
   //////////////////////////////////////
@@ -90,8 +125,8 @@ public final class ThemeUtil {
     ConditionalValue[] values = valuesMap.getValues( cssElement, cssProperty );
     QxType result = selector.select( values, widget );
     if( result == null ) {
-      // resort to default theme
-      theme = getDefaultTheme();
+      // resort to fallback theme
+      theme = getFallbackTheme();
       valuesMap = theme.getValuesMap();
       values = valuesMap.getValues( cssElement, cssProperty );
       result = selector.select( values, widget );

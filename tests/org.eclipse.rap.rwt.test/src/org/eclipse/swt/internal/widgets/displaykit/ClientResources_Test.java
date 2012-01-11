@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.resources.SystemProps;
 import org.eclipse.rwt.internal.resources.TestUtil;
 import org.eclipse.rwt.internal.theme.Theme;
-import org.eclipse.rwt.internal.theme.ThemeManager;
+import org.eclipse.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rwt.resources.IResourceManager;
 
 
@@ -44,7 +44,7 @@ public class ClientResources_Test extends TestCase {
 
     assertFalse( resourceManager.isRegistered( "qx/lang/Core.js" ) );
     assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
-    Theme defaultTheme = RWTFactory.getThemeManager().getTheme( ThemeManager.DEFAULT_THEME_ID );
+    Theme defaultTheme = RWTFactory.getThemeManager().getTheme( ThemeUtil.DEFAULT_THEME_ID );
     assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".js" ) );
   }
 
@@ -55,7 +55,7 @@ public class ClientResources_Test extends TestCase {
 
     assertTrue( resourceManager.isRegistered( "rap-client.js" ) );
     assertFalse( resourceManager.isRegistered( "qx/lang/Core.js" ) );
-    Theme defaultTheme = RWTFactory.getThemeManager().getTheme( ThemeManager.DEFAULT_THEME_ID );
+    Theme defaultTheme = RWTFactory.getThemeManager().getTheme( ThemeUtil.DEFAULT_THEME_ID );
     assertTrue( resourceManager.isRegistered( "rap-" + defaultTheme.getJsId() + ".js" ) );
   }
 

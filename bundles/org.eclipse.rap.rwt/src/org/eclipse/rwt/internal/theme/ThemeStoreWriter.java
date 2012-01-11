@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,8 +27,8 @@ public final class ThemeStoreWriter {
     themes = new ArrayList<ThemeEntry>();
   }
 
-  public void addTheme( Theme theme, boolean isDefault ) {
-    themes.add( new ThemeEntry( theme, isDefault ) );
+  public void addTheme( Theme theme, boolean isFallback ) {
+    themes.add( new ThemeEntry( theme, isFallback ) );
   }
 
   public String createJs() {
@@ -47,7 +47,7 @@ public final class ThemeStoreWriter {
       jsCode.append( ", " );
       jsCode.append( createThemeJson( themeEntry.theme ) );
       jsCode.append( ", " );
-      jsCode.append( themeEntry.isDefault );
+      jsCode.append( themeEntry.isFallback );
       jsCode.append( " );\n" );
     }
     jsCode.append( "} )( org.eclipse.swt.theme.ThemeStore.getInstance() );\n" );
@@ -154,13 +154,13 @@ public final class ThemeStoreWriter {
   }
 
   private static final class ThemeEntry {
-  
+
     final Theme theme;
-    final boolean isDefault;
-  
-    ThemeEntry( Theme theme, boolean isDefault ) {
+    final boolean isFallback;
+
+    ThemeEntry( Theme theme, boolean isFallback ) {
       this.theme = theme;
-      this.isDefault = isDefault;
+      this.isFallback = isFallback;
     }
   }
 }
