@@ -291,7 +291,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       };
       testUtil.fireFakeDomEvent( eventDown );
       testUtil.fireFakeDomEvent( eventPress );
-      if( org.eclipse.rwt.Client.isMshtml() || org.eclipse.rwt.Client.isNewMshtml() ) {
+      if(    org.eclipse.rwt.Client.isMshtml() 
+          || org.eclipse.rwt.Client.isNewMshtml() 
+          || org.eclipse.rwt.Client.isWebkit() 
+      ) {
         assertFalse( preventedDown ); // would prevent further keypress events otherwise
       } else {
         assertTrue( preventedDown );

@@ -170,10 +170,10 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
       return result;
     },
 
+    //NOTE : canceling keydown events would prevent following keypress events in some browser 
     _cancelDomEvent : qx.core.Variant.select( "qx.client", {
       "mshtml|newmshtml" : function( event ) {
         if( event.type !== "keydown" && event.preventDefault ) {
-          // preventDefault on keydown would prevent following keypress events 
           event.preventDefault();
         }
         try {
@@ -181,6 +181,16 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
         } catch( ex ) {
         }
         event.returnValue = false;
+      },
+      "webkit" : function( event ) {
+        if( event.type !== "keydown" && event.preventDefault ) {
+          event.preventDefault();
+          event.returnValue = false;
+        }
+        try {
+          event.keyCode = 0;
+        } catch( ex ) {
+        }
       },
       "default" : org.eclipse.rwt.EventHandlerUtil.stopDomEvent
     } ),
