@@ -21,7 +21,6 @@ import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.rwt.internal.util.NumberFormatUtil;
-import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.*;
@@ -66,14 +65,6 @@ public class ControlLCAUtil {
   private static final String USER_DATA_KEY_LISTENER = "keyListener";
   private static final String USER_DATA_TRAVERSE_LISTENER = "traverseListener";
   private static final String USER_DATA_BACKGROUND_IMAGE_SIZE = "backgroundImageSize";
-  private static final String ATT_CANCEL_KEY_EVENT
-    = ControlLCAUtil.class.getName() + "#cancelKeyEvent";
-  private static final String ATT_ALLOW_KEY_EVENT
-    = ControlLCAUtil.class.getName() + "#allowKeyEvent";
-  static final String JSFUNC_CANCEL_EVENT
-    = "org.eclipse.rwt.KeyEventUtil.getInstance().cancelEvent";
-  static final String JSFUNC_ALLOW_EVENT
-    = "org.eclipse.rwt.KeyEventUtil.getInstance().allowEvent";
   static final int MAX_STATIC_ZORDER = 300;
 
   private static final String CURSOR_UPARROW = "widget/cursors/up_arrow.cur";
@@ -169,16 +160,12 @@ public class ControlLCAUtil {
       ProcessActionRunner.add( new Runnable() {
         public void run() {
           Event event;
-          boolean allow = true;
           if( traverseKey != SWT.TRAVERSE_NONE ) {
             event = createEvent( control, TraverseEvent.KEY_TRAVERSED );
             initializeKeyEvent( event, keyCode, charCode, stateMask );
             event.detail = traverseKey;
             TraverseEvent traverseEvent = new TraverseEvent( event );
             traverseEvent.processEvent();
-            if( !traverseEvent.doit ) {
-              allow = false;
-            }
           }
           event = createEvent( control, KeyEvent.KEY_PRESSED );
           initializeKeyEvent( event, keyCode, charCode, stateMask );
@@ -189,13 +176,6 @@ public class ControlLCAUtil {
             initializeKeyEvent( event, keyCode, charCode, stateMask );
             KeyEvent releasedEvent = new KeyEvent( event );
             releasedEvent.processEvent();
-          } else {
-            allow = false;
-          }
-          if( allow ) {
-            allowKeyEvent( control );
-          } else {
-            cancelKeyEvent( control );
           }
         }
       } );
@@ -364,7 +344,6 @@ public class ControlLCAUtil {
     renderListenMouse( control );
     renderListenKey( control );
     renderListenTraverse( control );
-    renderKeyEventResponse( control );
     renderListenMenuDetect( control );
     WidgetLCAUtil.renderListenHelp( control );
   }
@@ -644,20 +623,6 @@ public class ControlLCAUtil {
     }
   }
 
-  ///////////////
-  // render other
-
-  static void renderKeyEventResponse( Control control ) {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
-    // TODO [tb] : Static method calls or rename methods. call method without parameter?
-    if( serviceStore.getAttribute( ATT_ALLOW_KEY_EVENT ) == control ) {
-      IClientObject clientObject = ClientObjectFactory.getForDisplay( control.getDisplay() );
-      clientObject.call( "allowEvent", null );
-    } else if( serviceStore.getAttribute( ATT_CANCEL_KEY_EVENT ) == control ) {
-      IClientObject clientObject = ClientObjectFactory.getForDisplay( control.getDisplay() );
-      clientObject.call( "cancelEvent", null );
-    }
-  }
 
   //////////////////////////
   // event processing helper
@@ -701,14 +666,6 @@ public class ControlLCAUtil {
       }
     }
     evt.stateMask = stateMask;
-  }
-
-  static void cancelKeyEvent( Widget widget) {
-    ContextProvider.getServiceStore().setAttribute( ATT_CANCEL_KEY_EVENT, widget );
-  }
-
-  static void allowKeyEvent( Widget widget ) {
-    ContextProvider.getServiceStore().setAttribute( ATT_ALLOW_KEY_EVENT, widget );
   }
 
   private static void checkAndProcessMouseEvent( MouseEvent event ) {
@@ -1090,7 +1047,6 @@ public class ControlLCAUtil {
     writeMouseListener( control );
     writeKeyListener( control );
     writeTraverseListener( control );
-    writeKeyEventResponse( control );
     writeMenuDetectListener( control );
     WidgetLCAUtil.writeHelpListener( control );
   }
@@ -1392,18 +1348,6 @@ public class ControlLCAUtil {
         Object[] args = new Object[] { control, JS_EVENT_TYPE_FOCUS, hasListener };
         writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
       }
-    }
-  }
-
-  @Deprecated
-  static void writeKeyEventResponse( Control control ) throws IOException {
-    IServiceStore serviceStore = ContextProvider.getServiceStore();
-    if( serviceStore.getAttribute( ATT_ALLOW_KEY_EVENT ) == control ) {
-      JSWriter writer = JSWriter.getWriterFor( control );
-      writer.callStatic( JSFUNC_ALLOW_EVENT, null );
-    } else if( serviceStore.getAttribute( ATT_CANCEL_KEY_EVENT ) == control ) {
-      JSWriter writer = JSWriter.getWriterFor( control );
-      writer.callStatic( JSFUNC_CANCEL_EVENT, null );
     }
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -827,11 +827,8 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   cleanUpKeyUtil : function() {
-    org.eclipse.rwt.KeyEventUtil.getInstance().setKeyBindings( {} );
-    var instance = org.eclipse.rwt.KeyEventUtil.getInstance()._getDelegate();
-    if( instance instanceof org.eclipse.rwt.AsyncKeyEventUtil ) {
-      instance.cancelEvent();
-    }
+    org.eclipse.rwt.KeyEventSupport.getInstance().setKeyBindings( {} );
+    org.eclipse.rwt.KeyEventSupport.getInstance()._pendingEventInfo = null;
   },
 
   /**

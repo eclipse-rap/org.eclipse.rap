@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,11 +49,11 @@ org.eclipse.rwt.Display.prototype = {
 
   allowEvent : function() {
     // NOTE : in the future might need a parameter if there are multiple types of cancelable events
-    org.eclipse.rwt.KeyEventUtil.getInstance().allowEvent();
+    org.eclipse.rwt.KeyEventSupport.getInstance().allowEvent();
   },
 
   cancelEvent : function() {
-    org.eclipse.rwt.KeyEventUtil.getInstance().cancelEvent();
+    org.eclipse.rwt.KeyEventSupport.getInstance().cancelEvent();
   },
 
   reload : function( args ) {
@@ -99,7 +99,7 @@ org.eclipse.rwt.Display.prototype = {
     this._document.addEventListener( "windowresize", this._onResize, this );
     this._document.addEventListener( "keypress", this._onKeyPress, this );
     this._request.addEventListener( "send", this._onSend, this );
-    org.eclipse.rwt.KeyEventUtil.getInstance(); // adds global KeyListener
+    org.eclipse.rwt.KeyEventSupport.getInstance(); // adds global KeyListener
     // Observe browser history
     // TODO [tb] : do this on demand only
     var history = qx.client.History.getInstance();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -179,7 +179,6 @@ public final class ClientResources {
     "org/eclipse/rwt/TreeRowContainerWrapper.js",
     "org/eclipse/rwt/TreeUtil.js",
     "org/eclipse/rwt/widgets/TreeRow.js",
-    "org/eclipse/rwt/AsyncKeyEventUtil.js",
     "org/eclipse/swt/Request.js",
     "org/eclipse/rwt/widgets/Menu.js",
     "org/eclipse/rwt/widgets/MenuAdapter.js",
@@ -188,7 +187,6 @@ public final class ClientResources {
     "org/eclipse/rwt/AnimationRenderer.js",
     "org/eclipse/rwt/Animation.js",
     "org/eclipse/rwt/widgets/WidgetToolTip.js",
-    "org/eclipse/rwt/SyncKeyEventUtil.js",
     "org/eclipse/rwt/GraphicsMixin.js",
     "org/eclipse/rwt/GraphicsUtil.js",
     "org/eclipse/rwt/VML.js",
@@ -285,7 +283,7 @@ public final class ClientResources {
     "org/eclipse/swt/widgets/ExpandBarAdapter.js",
     "org/eclipse/rwt/widgets/Text.js",
     "org/eclipse/rwt/widgets/TextAdapter.js",
-    "org/eclipse/rwt/KeyEventUtil.js",
+    "org/eclipse/rwt/KeyEventSupport.js",
     "org/eclipse/swt/widgets/Separator.js",
     "org/eclipse/swt/widgets/SeparatorAdapter.js",
     "org/eclipse/rwt/widgets/ControlDecorator.js",

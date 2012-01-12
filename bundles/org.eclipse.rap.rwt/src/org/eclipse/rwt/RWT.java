@@ -233,6 +233,12 @@ public final class RWT {
    * default operation associated with certain key sequences. It allows the same values as
    * {@link RWT#ACTIVE_KEYS}. If a key sequences is given in {@link RWT#CANCEL_KEYS} as well as
    * in {@link RWT#ACTIVE_KEYS}, it will cancel its default operation, but still issue the event.
+   * The property can also be used in <code>Control.setData()</code>, in which case the associated
+   * default operation will only be canceled if the control is focused.
+   *
+   * <p>
+   * Depending on the client, no all default operations can be canceled.
+   * </p>
    *
    * @see Display#setData(String,Object)
    * @see RWT#ACTIVE_KEYS

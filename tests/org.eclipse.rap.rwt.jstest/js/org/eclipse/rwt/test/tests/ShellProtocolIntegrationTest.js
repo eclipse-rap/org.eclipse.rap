@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -469,7 +469,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
     },
 
     testAllowKeyEvent : function() {
-      var util = org.eclipse.rwt.KeyEventUtil.getInstance();
+      var util = org.eclipse.rwt.KeyEventSupport.getInstance();
       var allow = false;
       util.allowEvent = function() {
         allow = true;
@@ -482,7 +482,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
     },
 
     testCancelKeyEvent : function() {
-      var util = org.eclipse.rwt.KeyEventUtil.getInstance();
+      var util = org.eclipse.rwt.KeyEventSupport.getInstance();
       var cancel = false;
       util.cancelEvent = function() {
         cancel = true;
