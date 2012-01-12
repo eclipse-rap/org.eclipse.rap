@@ -15,6 +15,8 @@ package org.eclipse.jface.viewers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.internal.util.SerializableListenerList;
 import org.eclipse.rwt.RWT;
@@ -284,10 +286,7 @@ public abstract class ColumnViewerEditor implements Serializable {
 	  if( oldCancelKeys == null ) {
 	    oldCancelKeys = new String[ 0 ];
 	  }
-	  ArrayList cancelKeys = new ArrayList();
-	  for( int i = 0; i < oldCancelKeys.length; i++ ) {
-	    cancelKeys.add( oldCancelKeys[ i ] );
-      }
+	  ArrayList cancelKeys = new ArrayList( Arrays.asList( oldCancelKeys ) );
 	  for( int i = 0; i < keysToUpdate.length; i++ ) {
 	    if( add ) {
 	      cancelKeys.add( keysToUpdate[ i ] );
