@@ -14,6 +14,7 @@ package org.eclipse.ui.forms.widgets;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.SWT;
 //import org.eclipse.swt.events.FocusEvent;
 //import org.eclipse.swt.events.FocusListener;
@@ -585,6 +586,12 @@ public class ExpandableComposite extends Canvas {
 					}
 				}
 			});
+// RAP [if] Use CANCEL_KEYS instead of doit = false
+	        String[] cancelKeys = new String[] {
+	          "ARROW_UP", "ARROW_DOWN" //$NON-NLS-1$ //$NON-NLS-2$
+	        };
+	        toggle.setData( RWT.CANCEL_KEYS, cancelKeys );
+// ENDRAP
 // RAP [rh] Unnecessary to add focus listener, focus-border must be handled
 //		 on the client-side
 //			if ((getExpansionStyle()&FOCUS_TITLE)==0) {

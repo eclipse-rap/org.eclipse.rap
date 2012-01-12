@@ -74,6 +74,9 @@ abstract class SWTFocusCellManager implements Serializable {
 	void init() {
 		this.cellHighlighter.init();
 		this.navigationStrategy.init();
+// RAP [if] Forse navigationStrategy.shouldCancelEvent to initialize CANCEL_KEYS
+        this.navigationStrategy.shouldCancelEvent( viewer, new Event() );
+// ENDRAP
 	}
 
 	private void handleMouseDown(Event event) {

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.ListenerList;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -1882,6 +1883,19 @@ public class ContentProposalAdapter implements Serializable {
 			}
 		};
 		control.addListener(SWT.KeyDown, controlListener);
+// RAP [if] Use CANCEL_KEYS instead of doit = false
+		String[] cancelKeys;
+		if( triggerKeyStroke ==  null ) {
+		  cancelKeys = new String[] {
+		    "ESC", "ENTER", "TAB" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		  };
+		} else {
+          cancelKeys = new String[] {
+            "ESC", "ENTER", "TAB", triggerKeyStroke.toString() //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+          };
+		}
+        control.setData( RWT.CANCEL_KEYS, cancelKeys );
+// ENDRAP
 		control.addListener(SWT.Traverse, controlListener);
 		control.addListener(SWT.Modify, controlListener);
 

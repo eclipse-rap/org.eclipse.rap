@@ -17,6 +17,7 @@ import java.text.MessageFormat; // Not using ICU to support standalone JFace
 // scenario
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.FocusAdapter;
@@ -114,6 +115,12 @@ public class ComboBoxViewerCellEditor extends AbstractComboBoxCellEditor {
 				}
 			}
 		});
+// RAP [if] Use CANCEL_KEYS instead of doit = false
+        String[] cancelKeys = new String[] {
+          "ESC", "ENTER" //$NON-NLS-1$ //$NON-NLS-2$
+        };
+        comboBox.setData( RWT.CANCEL_KEYS, cancelKeys );
+// ENDRAP
 
 		comboBox.addFocusListener(new FocusAdapter() {
 			public void focusLost(FocusEvent e) {
@@ -274,6 +281,11 @@ public class ComboBoxViewerCellEditor extends AbstractComboBoxCellEditor {
 			fireCancelEditor();
 		} else if (keyEvent.character == '\t') { // tab key
 			applyEditorValueAndDeactivate();
-		}
+// RAP [if] With CANCEL_KEYS in place we need to apply the editor value on key listener as
+//          defaultSelection event is not fired if ENTER is canceled
+        } else if (keyEvent.character == '\r') { // enter key
+            applyEditorValueAndDeactivate();
+        }
+// ENDRAP
 	}
 }

@@ -13,6 +13,7 @@ package org.eclipse.jface.viewers;
 
 import java.io.Serializable;
 
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Event;
 
@@ -157,6 +158,14 @@ public class CellNavigationStrategy implements Serializable {
 	 * @return <code>true</code> if the event has to be canceled
 	 */
 	public boolean shouldCancelEvent(ColumnViewer viewer, Event event) {
+// RAP [if] Use CANCEL_KEYS instead of doit = false
+	    if( viewer.getControl().getData( RWT.CANCEL_KEYS ) == null ) {
+          String[] cancelKeys = new String[] {
+            "ARROW_LEFT", "ARROW_RIGHT" //$NON-NLS-1$ //$NON-NLS-2$
+          };
+          viewer.getControl().setData( RWT.CANCEL_KEYS, cancelKeys );
+	    }
+// ENDRAP
 		return event.keyCode == SWT.ARROW_LEFT
 				|| event.keyCode == SWT.ARROW_RIGHT;
 	}

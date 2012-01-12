@@ -15,6 +15,7 @@ package org.eclipse.jface.viewers;
 import java.text.MessageFormat;	// Not using ICU to support standalone JFace scenario
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -169,6 +170,12 @@ public class TextCellEditor extends CellEditor {
                 }
             }
         });
+// RAP [if] Use CANCEL_KEYS instead of doit = false
+        String[] cancelKeys = new String[] {
+          "ESC", "ENTER" //$NON-NLS-1$ //$NON-NLS-2$
+        };
+        text.setData( RWT.CANCEL_KEYS, cancelKeys );
+// ENDRAP
         // We really want a selection listener but it is not supported so we
         // use a key listener and a mouse listener to know when selection changes
         // may have occurred
@@ -371,38 +378,40 @@ public class TextCellEditor extends CellEditor {
         return text.getCharCount() > 0;
     }
 
-    /**
-     * Processes a key release event that occurred in this cell editor.
-     * <p>
-     * The <code>TextCellEditor</code> implementation of this framework method 
-     * ignores when the RETURN key is pressed since this is handled in 
-     * <code>handleDefaultSelection</code>.
-     * An exception is made for Ctrl+Enter for multi-line texts, since
-     * a default selection event is not sent in this case. 
-     * </p>
-     *
-     * @param keyEvent the key event
-     */
-    protected void keyReleaseOccured(KeyEvent keyEvent) {
-        if (keyEvent.character == '\r') { // Return key
-            // Enter is handled in handleDefaultSelection.
-            // Do not apply the editor value in response to an Enter key event
-            // since this can be received from the IME when the intent is -not-
-            // to apply the value.  
-            // See bug 39074 [CellEditors] [DBCS] canna input mode fires bogus event from Text Control
-            //
-            // An exception is made for Ctrl+Enter for multi-line texts, since
-            // a default selection event is not sent in this case. 
-            if (text != null && !text.isDisposed()
-                    && (text.getStyle() & SWT.MULTI) != 0) {
-                if ((keyEvent.stateMask & SWT.CTRL) != 0) {
-                    super.keyReleaseOccured(keyEvent);
-                }
-            }
-            return;
-        }
-        super.keyReleaseOccured(keyEvent);
-    }
+// RAP [if] With CANCEL_KEYS in place we need to apply the editor value in key listener as
+//          defaultSelection is not fired if ENTER is canceled
+//    /**
+//     * Processes a key release event that occurred in this cell editor.
+//     * <p>
+//     * The <code>TextCellEditor</code> implementation of this framework method 
+//     * ignores when the RETURN key is pressed since this is handled in 
+//     * <code>handleDefaultSelection</code>.
+//     * An exception is made for Ctrl+Enter for multi-line texts, since
+//     * a default selection event is not sent in this case. 
+//     * </p>
+//     *
+//     * @param keyEvent the key event
+//     */
+//    protected void keyReleaseOccured(KeyEvent keyEvent) {
+//        if (keyEvent.character == '\r') { // Return key
+//            // Enter is handled in handleDefaultSelection.
+//            // Do not apply the editor value in response to an Enter key event
+//            // since this can be received from the IME when the intent is -not-
+//            // to apply the value.  
+//            // See bug 39074 [CellEditors] [DBCS] canna input mode fires bogus event from Text Control
+//            //
+//            // An exception is made for Ctrl+Enter for multi-line texts, since
+//            // a default selection event is not sent in this case. 
+//            if (text != null && !text.isDisposed()
+//                    && (text.getStyle() & SWT.MULTI) != 0) {
+//                if ((keyEvent.stateMask & SWT.CTRL) != 0) {
+//                    super.keyReleaseOccured(keyEvent);
+//                }
+//            }
+//            return;
+//        }
+//        super.keyReleaseOccured(keyEvent);
+//    }
 
 // RAP [rh] clipboard interaction not supported
 //    /**

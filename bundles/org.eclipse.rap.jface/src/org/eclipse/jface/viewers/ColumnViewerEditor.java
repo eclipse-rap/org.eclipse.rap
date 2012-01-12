@@ -14,9 +14,10 @@
 package org.eclipse.jface.viewers;
 
 import java.io.Serializable;
-
+import java.util.ArrayList;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.internal.util.SerializableListenerList;
+import org.eclipse.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -254,6 +255,9 @@ public abstract class ColumnViewerEditor implements Serializable {
 				}
 
 				control.addTraverseListener(tabeditingListener);
+// RAP [if] Use CANCEL_KEYS instead of doit = false
+                updateCancelKeys( control, true, new String[] { "TAB", "SHIFT+TAB" } ); //$NON-NLS-1$ //$NON-NLS-2$
+// ENDRAP
 
 				if (editorActivationListener != null
 						&& !editorActivationListener.isEmpty()) {
@@ -273,6 +277,27 @@ public abstract class ColumnViewerEditor implements Serializable {
 
 		return false;
 	}
+
+// RAP [if] Use CANCEL_KEYS instead of doit = false
+	private void updateCancelKeys( Control control, boolean add, String[] keysToUpdate ) {
+	  String[] oldCancelKeys = ( String[] )control.getData( RWT.CANCEL_KEYS );
+	  if( oldCancelKeys == null ) {
+	    oldCancelKeys = new String[ 0 ];
+	  }
+	  ArrayList cancelKeys = new ArrayList();
+	  for( int i = 0; i < oldCancelKeys.length; i++ ) {
+	    cancelKeys.add( oldCancelKeys[ i ] );
+      }
+	  for( int i = 0; i < keysToUpdate.length; i++ ) {
+	    if( add ) {
+	      cancelKeys.add( keysToUpdate[ i ] );
+	    } else {
+	      cancelKeys.remove( keysToUpdate[ i ] );
+	    }
+      }
+	  control.setData( RWT.CANCEL_KEYS, cancelKeys.toArray( new String[ 0 ] ) );
+	}
+// ENDRAP
 
 	private boolean shouldFireDoubleClick(int activationTime, int mouseTime,
 			ColumnViewerEditorActivationEvent activationEvent) {
@@ -330,6 +355,9 @@ public abstract class ColumnViewerEditor implements Serializable {
 
 						if (tabeditingListener != null) {
 							control.removeTraverseListener(tabeditingListener);
+// RAP [if] Use CANCEL_KEYS instead of doit = false
+			                updateCancelKeys( control, false, new String[] { "TAB", "SHIFT+TAB" } ); //$NON-NLS-1$ //$NON-NLS-2$
+// ENDRAP
 						}
 					}
 					c.deactivate(tmp);
@@ -397,6 +425,9 @@ public abstract class ColumnViewerEditor implements Serializable {
 
 						if (tabeditingListener != null) {
 							control.removeTraverseListener(tabeditingListener);
+// RAP [if] Use CANCEL_KEYS instead of doit = false
+                            updateCancelKeys( control, false, new String[] { "TAB", "SHIFT+TAB" } ); //$NON-NLS-1$ //$NON-NLS-2$
+// ENDRAP
 						}
 					}
 
