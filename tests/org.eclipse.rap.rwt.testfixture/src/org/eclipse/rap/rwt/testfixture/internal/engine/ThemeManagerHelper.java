@@ -12,7 +12,9 @@
 package org.eclipse.rap.rwt.testfixture.internal.engine;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rwt.internal.application.ApplicationContext;
@@ -151,8 +153,15 @@ public class ThemeManagerHelper {
   }
 
   private static boolean isThemeManagerResetNeeded() {
-    return    isThemeManagerAvailable()
-           && getThemeManager().getRegisteredThemeIds().length != 2;
+    boolean result = isThemeManagerAvailable();
+    if( result ) {
+      List<String> registeredThemeIds = Arrays.asList( getThemeManager().getRegisteredThemeIds() );
+      if( registeredThemeIds.size() == 2 ) {
+        result =    !registeredThemeIds.contains( ThemeManager.FALLBACK_THEME_ID )
+                 || !registeredThemeIds.contains( ThemeUtil.DEFAULT_THEME_ID );
+      }
+    }
+    return result;
   }
 
   private static boolean isThemeManagerAvailable() {
