@@ -1,12 +1,12 @@
 /*******************************************************************************
- *  Copyright: 2004-2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this
  * distribution, and is available at http://www.eclipse.org/legal/epl-v10.html
  *
- *  Contributors:
+ * Contributors:
  *    1&1 Internet AG and others - original API and implementation
  *    EclipseSource - adaptation for the Eclipse Rich Ajax Platform
  ******************************************************************************/
@@ -31,12 +31,12 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
     this._lastKeyPress = 0;
     this._itemWidth = 0;
     this._itemHeight = 0;
-    var selMgr = this.getManager();    
+    var selMgr = this.getManager();
     selMgr.setMultiSelection( multiSelection );
     selMgr.setDragSelection( false );
-    this.addEventListener( "dblclick", this._ondblclick, this );    
+    this.addEventListener( "dblclick", this._ondblclick, this );
   },
-  
+
   destruct : function() {
     this.removeEventListener( "dblclick", this._ondblclick, this );
     this._disposeObjects("_manager" );
@@ -47,21 +47,21 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
     getManager : function() {
       return this._manager;
     },
-    
+
     getPreferredWidth: function() {
       var result = 0;
       var items = this.getItems();
-	    for( var i = 0; i < items.length; i++ ) {
-	      var paddingWidth
-	        = items[ i ].getPaddingLeft() + items[ i ].getPaddingRight();
-	      var itemWidth
-	        = items[ i ].getLabelObject().getPreferredBoxWidth() + paddingWidth;
-	      result = Math.max( result, itemWidth );
-	    }
-	    result += this._vertScrollBar.getWidth();
+      for( var i = 0; i < items.length; i++ ) {
+        var paddingWidth
+          = items[ i ].getPaddingLeft() + items[ i ].getPaddingRight();
+        var itemWidth
+          = items[ i ].getLabelObject().getPreferredBoxWidth() + paddingWidth;
+        result = Math.max( result, itemWidth );
+      }
+      result += this._vertScrollBar.getWidth();
       return result;
     },
-    
+
     isRelevantEvent : function( evt ) {
       var target = evt.getTarget();
       while( target != null && target !== this ) {
@@ -135,7 +135,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
       this._manager.handleKeyPress( event );
     },
 
-    _onkeyinput : function( event ) { 
+    _onkeyinput : function( event ) {
       // Fix for bug# 288344
       if( !event.isAltPressed() && !event.isCtrlPressed() ) {
         if( event.getCharCode() !== 0 ) {
@@ -171,7 +171,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
           this._lastKeyPress = ( new Date() ).valueOf();
           event.preventDefault();
         }
-      } 
+      }
     },
 
     findString : function( vText, vStartIndex ) {
@@ -232,7 +232,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
           item.setLabel( "(empty)" );
           item.getLabelObject().setMode( qx.constant.Style.LABEL_MODE_HTML );
           item.setLabel( items[ i ] );
-          if( i % 2 == 0 ) {
+          if( i % 2 === 0 ) {
             item.addState( "even" );
           }
           this._clientArea.add( item );
@@ -258,21 +258,21 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
       }
       this._updateScrollDimension();
     },
-    
+
     getItems : function() {
       return this.getManager().getItems();
     },
-    
+
     getItemsCount : function() {
       return this.getItems().length;
     },
-    
+
     getItemIndex : function( item ) {
       return this._clientArea.indexOf( item );
     },
 
     /**
-     * Sets the single selection for the List to the item specified by the given 
+     * Sets the single selection for the List to the item specified by the given
      * itemIndex (-1 to clear selection).
      */
     selectItem : function( itemIndex ) {
@@ -291,11 +291,11 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
     },
 
     /**
-     * Sets the multi selection for the List to the items specified by the given 
+     * Sets the multi selection for the List to the items specified by the given
      * itemIndices array (empty array to clear selection).
      */
     selectItems : function( itemIndices ) {
-      var manager = this.getManager(); 
+      var manager = this.getManager();
       manager.deselectAll();
       for( var i = 0; i < itemIndices.length; i++ ) {
         var item = this.getItems()[ itemIndices[ i ] ];
@@ -304,7 +304,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
     },
 
     /**
-     * Sets the focused item the List to the item specified by the given 
+     * Sets the focused item the List to the item specified by the given
      * itemIndex (-1 for no focused item).
      */
     focusItem : function( itemIndex ) {
@@ -321,7 +321,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
         this.getManager().selectAll();
       }
     },
-    
+
     setItemDimensions : function( width, height ) {
       this._itemWidth = width;
       this._itemHeight = height;
@@ -337,7 +337,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
     _updateScrollDimension : function() {
       var itemCount = this.getItems().length;
       this._horzScrollBar.setMaximum( this._itemWidth );
-      this._vertScrollBar.setMaximum( this._itemHeight * itemCount );      
+      this._vertScrollBar.setMaximum( this._itemHeight * itemCount );
     },
 
     addState : function( state ) {
@@ -388,4 +388,5 @@ qx.Class.define( "org.eclipse.rwt.widgets.BasicList", {
     }
 
   }
+
 } );
