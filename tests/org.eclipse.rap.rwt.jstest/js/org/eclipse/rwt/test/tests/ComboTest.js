@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -607,6 +607,74 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ComboTest", {
       combo.focus();
       testUtil.keyDown( combo._field.getElement(), "R" );
       assertEquals( 0, combo._list.getSelectedItems().length );
+      combo.destroy();
+    },
+    
+    testFiresItemsChangedEvent : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var combo = new org.eclipse.swt.widgets.Combo();
+      var log = 0;
+      combo.addEventListener( "itemsChanged", function() {
+        log++;
+      } );
+
+      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
+      combo.addToDocument();
+      testUtil.flush();
+      
+      assertEquals( 1, log );
+      combo.destroy();
+    },
+
+    testFiresSelectionChangedEvent : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var combo = new org.eclipse.swt.widgets.Combo();
+      var log = 0;
+      combo.addEventListener( "selectionChanged", function() {
+        log++;
+      } );
+      
+      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
+      combo.addToDocument();
+      testUtil.flush();
+      combo._setSelected( combo._list.getItems()[ 3 ] );
+      
+      assertEquals( 1, log );
+      combo.destroy();
+    },
+    
+    testApplyListId_renderHtmlIdsActivated : function() {
+      var combo = new org.eclipse.swt.widgets.Combo();
+      combo.addToDocument();
+      
+      qx.ui.core.Widget._renderHtmlIds = true;
+      combo.applyObjectId( "123" );
+      
+      assertEquals( "123-listbox" ,combo._list.getHtmlAttribute( "id" ) );
+      combo.destroy();
+    },
+    
+    testApplyListId_renderHtmlIdsDeactivated : function() {
+      var combo = new org.eclipse.swt.widgets.Combo();
+      combo.addToDocument();
+      
+      qx.ui.core.Widget._renderHtmlIds = false;
+      combo.applyObjectId( "123" );
+      
+      assertEquals( "" ,combo._list.getHtmlAttribute( "id" ) );
+      combo.destroy();      
+    },
+    
+    testApplyListItemIds_renderHtmlIdsActivated : function() {
+      var combo = new org.eclipse.swt.widgets.Combo();
+      combo.addToDocument();
+
+      qx.ui.core.Widget._renderHtmlIds = true;
+      combo.applyObjectId( "123" );
+      combo.setItems( [ "Eiffel", "Java", "Python", "Ruby", "Simula", "Smalltalk" ] );
+      
+      var listItemId = combo._list.getHtmlAttribute( "id" ) + "-listitem-3";
+      assertEquals( listItemId, combo._list.getItems()[ 3 ].getHtmlAttribute( "id" ) );
       combo.destroy();
     },
 

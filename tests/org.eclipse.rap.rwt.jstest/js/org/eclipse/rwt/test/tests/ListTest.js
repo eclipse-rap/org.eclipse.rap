@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -671,7 +671,35 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ListTest", {
       list._onscroll( {} );
       var position = this._getScrollPosition( list );
       assertEquals( [ 0, 70 ], position );      
-      list.destroy();      
+      list.destroy();
+    },
+    
+    //////////////////////////
+    // test apply subelement IDs
+    
+    testApplyListItemIds_renderHtmlIdsActivated : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var list = this._createDefaultList();
+
+      qx.ui.core.Widget._renderHtmlIds = true;
+      list.setItems( [ "item1", "item2", "item3"] );
+      testUtil.flush();
+
+      var listItemId = list.getHtmlAttribute( "id" ) + "-listitem-" + "0";
+      assertEquals( listItemId, list.getItems()[ 0 ].getHtmlAttribute( "id" ) );
+      list.destroy();
+    },
+    
+    testApplyListItemIds_renderHtmlIdsDeactivated : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var list = this._createDefaultList();
+
+      qx.ui.core.Widget._renderHtmlIds = false;
+      list.setItems( [ "item1", "item2", "item3"] );
+      testUtil.flush();
+      
+      assertEquals( "", list.getItems()[ 0 ].getHtmlAttribute( "id" ) );
+      list.destroy();
     },
     
     //////////

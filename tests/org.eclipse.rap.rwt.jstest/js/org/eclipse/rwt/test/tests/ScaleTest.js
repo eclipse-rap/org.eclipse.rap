@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 201, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -187,6 +187,48 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ScaleTest", {
       assertTrue( widget._hasSelectionListener );
       shell.destroy();
       widget.destroy();
+    },
+    
+    testFiresSelectionChangedEvent : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var scale = new org.eclipse.swt.widgets.Scale();
+      testUtil.flush();
+
+      var log = 0;
+      scale.addEventListener( "selectionChanged", function() {
+        log++;
+      } );
+      scale.setSelection( 33 );
+
+      assertEquals( 1, log );
+    },
+    
+    testFiresMinimumChangedEvent : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var scale = new org.eclipse.swt.widgets.Scale();
+      testUtil.flush();
+      
+      var log = 0;
+      scale.addEventListener( "minimumChanged", function() {
+        log++;
+      } );
+      scale.setMinimum( 5 );
+      
+      assertEquals( 1, log );
+    },
+    
+    testFiresMaximumChangedEvent : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var scale = new org.eclipse.swt.widgets.Scale();
+      testUtil.flush();
+      
+      var log = 0;
+      scale.addEventListener( "maximumChanged", function() {
+        log++;
+      } );
+      scale.setMaximum( 100 );
+      
+      assertEquals( 1, log );
     }
 
   }

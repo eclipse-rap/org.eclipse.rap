@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -146,6 +146,26 @@ qx.Class.define( "org.eclipse.swt.widgets.List", {
           selectedItems[ i ].addState( "parent_unfocused" );
         }
       }
+    },
+
+    /////////////////////
+    // apply listitem IDs
+    
+    setItems : function( items ) {
+      this.base( arguments, items );
+      if( qx.ui.core.Widget._renderHtmlIds ) {
+        this._applyListItemIds();
+      }
+    },
+    
+    _applyListItemIds : function() {
+      var listItems = this.getItems();
+      if( listItems ) {
+        for( var i = 0; i < listItems.length; i++ ) {
+          listItems[ i ].setHtmlAttribute( "id", this.getHtmlAttribute( "id" ) + "-listitem-" + i );
+        }
+      }
     }
+    
   }
 } );

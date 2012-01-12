@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -87,6 +87,12 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     this.removeEventListener( "mousewheel", this._onMouseWheel, this );
     this._disposeObjects( "_line", "_thumb" );
     this._thumb = null;
+  },
+  
+  events : {
+    "selectionChanged" : "qx.event.type.Event",
+    "minimumChanged" : "qx.event.type.Event",
+    "maximumChanged" : "qx.event.type.Event"
   },
 
   statics : {
@@ -327,18 +333,21 @@ qx.Class.define( "org.eclipse.swt.widgets.Scale", {
     setSelection : function( value ) {
       this._selection = this._normalizeSelection( value );
       this._updateThumbPosition();
+      this.createDispatchEvent( "selectionChanged" );
     },
     
     setMinimum : function( value ) {
       this._minimum = value;
       this._updateStep();
       this._updateThumbPosition();
+      this.createDispatchEvent( "minimumChanged" );
     },
     
     setMaximum : function( value ) {
       this._maximum = value;
       this._updateStep();
       this._updateThumbPosition();
+      this.createDispatchEvent( "maximumChanged" );
     },
     
     setIncrement : function( value ) {

@@ -126,6 +126,10 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
     }
 
   },
+  
+  events : {
+    "changeHoverItem" : "qx.event.type.Event"
+  },
 
   members : {
 
@@ -263,6 +267,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.Menu", {
           }
         }
       }
+      this.createDispatchEvent( "changeHoverItem" );
     },
     
     getHoverItem : function( value ) {

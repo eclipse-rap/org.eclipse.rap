@@ -134,6 +134,11 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
                           "_manager", 
                           "_selected" );
   },
+  
+  events : {
+    "itemsChanged" : "qx.event.type.Event",
+    "selectionChanged" : "qx.event.type.Event"
+  },
 
   members : {
 
@@ -395,6 +400,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
         this._resetListSelection();
       }
       this._sendWidgetSelected();
+      this.createDispatchEvent( "selectionChanged" );
     },
     
     // [if] avoid warning message - see bug 300038
@@ -757,6 +763,7 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
 
     setItems : function( items ) {
       this._list.setItems( items );
+      this.createDispatchEvent( "itemsChanged" );
     },
 
     setVisibleItemCount : function( value ) {
@@ -820,6 +827,28 @@ qx.Class.define( "org.eclipse.swt.widgets.Combo", {
 
     _hasVerifyModifyListener : function() {
       return this._hasModifyListener || this._hasVerifyListener;
+    },
+
+    ////////////////////////////
+    // apply subwidget html IDs
+
+    applyObjectId : function( id ) {
+      this.base( arguments, id );
+      if( qx.ui.core.Widget._renderHtmlIds ) {
+        this._list.applyObjectId( id + "-listbox" );
+        this.addEventListener( "itemsChanged", this._applyListItemIds );
+      }
+    },
+
+    _applyListItemIds : function() {
+      var listId = this._list.getHtmlAttribute( "id" );
+      var listItems = this._list.getItems();
+      if( listItems ) {
+        for( var i = 0; i < listItems.length; i++ ) {
+          listItems[ i ].setHtmlAttribute( "id", this._list.getHtmlAttribute( "id" ) + "-listitem-" + i );
+        }
+      }
     }
+
   }
 } );
