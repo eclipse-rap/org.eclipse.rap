@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2009, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -97,6 +97,10 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     }
 
   },
+  
+  events : {
+  	"subMenuChanged" : "qx.event.type.Event"
+  },
 
   members : {
         
@@ -114,6 +118,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
 
     setMenu : function( menu ) {
       this._subMenu = menu;
+      this.createDispatchEvent( "subMenuChanged" );
     },    
 
     getMenu : function() {
@@ -201,6 +206,7 @@ qx.Class.define("org.eclipse.rwt.widgets.MenuItem",  {
     
     setSubMenu : function( value ) {
       this._subMenu = value;
+      this.createDispatchEvent( "subMenuChanged" );
     },
 
     setNoRadioGroup : function( value ) {

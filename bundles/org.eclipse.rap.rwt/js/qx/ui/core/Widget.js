@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -1010,7 +1010,8 @@ qx.Class.define( "qx.ui.core.Widget", {
     /** Contains the context menu object connected to the widget. (Need real implementation) */
     // RAP : remove check, allow other menu implementation
     contextMenu : {
-      nullable : true
+      nullable : true,
+      event: "changeContextMenu"
     },
 
     /** Capture all events and map them to this widget */
