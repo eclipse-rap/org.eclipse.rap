@@ -115,6 +115,7 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
 
     // overwritten:
     _beforeRenderLayout : function( changes ) {
+      // TODO [tb] : Is there a less error-prone and shabby way to layout the dropDown icon?
       if( this._isDropDown ) {
         if( changes.layoutY ) {
           // the cell used for the line needs to have 100% height
@@ -125,8 +126,8 @@ qx.Class.define( "org.eclipse.rwt.widgets.ToolItem", {
           // uses cell 0 (unused for tool-items) and 2 (text)
           // to force the dropdown-area to the right
           var inner = this.getInnerWidth();
-          this.setCellWidth( 0, 0 );
-          this.setCellWidth( 2, null );
+          this._setCellWidth( 0, 0 );
+          this._setCellWidth( 2, null );
           var preferred = this.getPreferredInnerWidth();
           var diff = inner - preferred;
           if( diff > 0 ) {
