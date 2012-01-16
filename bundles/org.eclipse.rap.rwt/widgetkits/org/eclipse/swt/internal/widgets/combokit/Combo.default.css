@@ -10,11 +10,11 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* Combo fallback theme */
+/* Combo property defaults */
 
 Combo,
 Combo[BORDER] {
-  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Arial, sans-serif;
   color: #4a4a4a;
   background-color: #ffffff;
   border: 1px solid #aaaaaa;
@@ -37,10 +37,6 @@ Combo-Button {
 Combo-Button-Icon {
   background-image: url( resource/widget/rap/combo/down.png );
 }  
-
-Combo-Button-Icon:hover {
-  background-image: url( resource/widget/rap/combo/down-hover.png );
-}
 
 Combo-List {
   border: 1px solid #aaaaaa;

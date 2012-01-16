@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* Tree fallback theme */
+/* Tree property defaults */
 
 Tree {
   background-color: #ffffff;
@@ -39,31 +39,8 @@ TreeItem:selected {
   background-color: #5882b5;
 }
 
-TreeItem:selected:unfocused {
-  color: #ffffff;
-  background-color: #b5b5b5;
-}
-
-TreeItem:linesvisible:even {
-  background-color: #ffffff;
-}
-
-TreeItem:linesvisible:even:hover {
-  background-color: #b5b5b5;
-}
-
-TreeItem:linesvisible:even:selected {
-  color: #ffffff;
-  background-color: #5882b5;
-}
-
-TreeItem:linesvisible:even:selected:unfocused {
-  color: #ffffff;
-  background-color: #b5b5b5;
-}
-
 TreeColumn {
-  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Arial, sans-serif;
   color: #4a4a4a;
   background-color: #ffffff;
   background-image: none;
@@ -102,24 +79,12 @@ Tree-Checkbox {
   background-image: url( resource/widget/rap/button/check-unselected.png );
 }
 
-Tree-Checkbox:hover {
-  background-image: url( resource/widget/rap/button/check-unselected-hover.png );
-}
-
 Tree-Checkbox:checked {
   background-image: url( resource/widget/rap/button/check-selected.png );
 }
 
-Tree-Checkbox:checked:hover {
-  background-image: url( resource/widget/rap/button/check-selected-hover.png );
-}
-
 Tree-Checkbox:checked:grayed {
   background-image: url( resource/widget/rap/button/check-grayed.png );
-}
-
-Tree-Checkbox:checked:grayed:hover {
-  background-image: url( resource/widget/rap/button/check-grayed-hover.png );
 }
 
 Tree-Indent {
@@ -131,16 +96,8 @@ Tree-Indent:collapsed {
   background-image: url( resource/widget/rap/tree/tree-collapsed.png );
 }
 
-Tree-Indent:collapsed:hover {
-  background-image: url( resource/widget/rap/tree/tree-collapsed-hover.png );
-}
-
 Tree-Indent:expanded {
   background-image: url( resource/widget/rap/tree/tree-expanded.png );
-}
-
-Tree-Indent:expanded:hover {
-  background-image: url( resource/widget/rap/tree/tree-expanded-hover.png );
 }
 
 Tree-Indent:line {
@@ -155,16 +112,8 @@ Tree-Indent:first:collapsed {
   background-image: url( resource/widget/rap/tree/tree-collapsed.png );
 }
 
-Tree-Indent:first:collapsed:hover {
-  background-image: url( resource/widget/rap/tree/tree-collapsed-hover.png );
-}
-
 Tree-Indent:first:expanded {
   background-image: url( resource/widget/rap/tree/tree-expanded.png );
-}
-
-Tree-Indent:first:expanded:hover {
-  background-image: url( resource/widget/rap/tree/tree-expanded-hover.png );
 }
 
 Tree-Indent:last {
@@ -175,16 +124,8 @@ Tree-Indent:last:collapsed {
   background-image: url( resource/widget/rap/tree/tree-collapsed.png );
 }
 
-Tree-Indent:last:collapsed:hover {
-  background-image: url( resource/widget/rap/tree/tree-collapsed-hover.png );
-}
-
 Tree-Indent:last:expanded {
   background-image: url( resource/widget/rap/tree/tree-expanded.png );
-}
-
-Tree-Indent:last:expanded:hover {
-  background-image: url( resource/widget/rap/tree/tree-expanded-hover.png );
 }
 
 Tree-Indent:first:last {
@@ -195,14 +136,6 @@ Tree-Indent:first:last:collapsed {
   background-image: url( resource/widget/rap/tree/tree-collapsed.png );
 }
 
-Tree-Indent:first:last:collapsed:hover {
-  background-image: url( resource/widget/rap/tree/tree-collapsed-hover.png );
-}
-
 Tree-Indent:first:last:expanded {
   background-image: url( resource/widget/rap/tree/tree-expanded.png );
-}
-
-Tree-Indent:first:last:expanded:hover {
-  background-image: url( resource/widget/rap/tree/tree-expanded-hover.png );
 }

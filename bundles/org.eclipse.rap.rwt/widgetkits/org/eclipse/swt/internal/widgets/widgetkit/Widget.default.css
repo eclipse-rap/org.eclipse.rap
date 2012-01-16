@@ -10,13 +10,13 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* Default theme for all widgets */
+/* Property defaults for all widgets */
 
 * {
   color: #4a4a4a;
   background-color: #ffffff;
   background-image: none;
-  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Arial, sans-serif;
 }
 
 *:disabled {
@@ -29,7 +29,7 @@ Widget-ToolTip {
   background-image : none;
   border: 1px solid #aaaaaa;
   border-radius: 0;
-  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Arial, sans-serif;
   color: #4a4a4a;
   opacity: 1;
   animation: none;
@@ -54,5 +54,5 @@ Display {
   rwt-fontlist: 14px 'Segoe UI', Corbel, Calibri, Tahoma, 'Lucida Sans Unicode';
   
   background-image: url( resource/widget/rap/display/browser_bg.png );
-  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Arial, sans-serif;
 }

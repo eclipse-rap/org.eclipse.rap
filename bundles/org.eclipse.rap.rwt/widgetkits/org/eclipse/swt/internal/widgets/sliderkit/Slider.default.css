@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* Slider fallback theme */
+/* Slider property defaults */
 
 Slider {
   border: none;
@@ -20,8 +20,7 @@ Slider {
 
 /* Thumb */
 
-Slider-Thumb[HORIZONTAL],
-Slider-Thumb[VERTICAL] {
+Slider-Thumb {
   background-color: #ffffff;
   background-image: url( resource/widget/rap/slider/slider-background.png );
   border: 1px solid #aaaaaa;
@@ -30,8 +29,7 @@ Slider-Thumb[VERTICAL] {
 
 /* Buttons */
 
-Slider-UpButton, 
-Slider-DownButton {
+Slider-UpButton, Slider-DownButton {
   background-color: #ffffff;
   background-image: none;
   border: 1px solid #aaaaaa;

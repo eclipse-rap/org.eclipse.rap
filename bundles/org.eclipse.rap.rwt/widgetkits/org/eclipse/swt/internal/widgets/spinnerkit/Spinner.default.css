@@ -10,10 +10,10 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* Spinner fallback theme */
+/* Spinner property defaults */
 
 Spinner {
-  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Arial, sans-serif;
   border: none;
   border-radius: 0;
   color: #4a4a4a;
@@ -45,14 +45,6 @@ Spinner-UpButton-Icon {
   background-image: url( resource/widget/rap/spinner/up.png );
 }
 
-Spinner-UpButton-Icon:hover {
-  background-image: url( resource/widget/rap/spinner/up-hover.png );
-}
-
 Spinner-DownButton-Icon {
   background-image: url( resource/widget/rap/spinner/down.png );
-}
-
-Spinner-DownButton-Icon:hover {
-  background-image: url( resource/widget/rap/spinner/down-hover.png );
 }

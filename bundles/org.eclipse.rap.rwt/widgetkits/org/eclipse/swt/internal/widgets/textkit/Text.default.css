@@ -10,10 +10,10 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* Text fallback theme */
+/* Text property defaults */
 
 Text {
-  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Arial, sans-serif;
   border: none;
   border-radius: 0;
   padding: 5px 10px 5px 10px;
@@ -32,11 +32,8 @@ Text[MULTI] {
   padding: 5px 10px 5px 10px; 
 }
 
-Text[BORDER],
-Text[MULTI][BORDER] {
+Text[BORDER] {
   border: 1px solid #aaaaaa;
-  border-radius: 0;
-  box-shadow: none;
 }
 
 Text-Message {

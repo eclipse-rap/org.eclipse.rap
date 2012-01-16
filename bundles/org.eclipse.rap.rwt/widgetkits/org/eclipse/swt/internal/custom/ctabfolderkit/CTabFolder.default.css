@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* CTabFolder fallback theme */
+/* CTabFolder property defaults */
 
 CTabFolder {
   border-color: #aaaaaa;
@@ -18,7 +18,7 @@ CTabFolder {
 }
 
 CTabItem {
-  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Arial, sans-serif;
   color: #4a4a4a;
   background-color: #ffffff;
   background-image: none;
@@ -34,8 +34,4 @@ CTabItem:selected {
 
 CTabFolder-DropDownButton-Icon {
   background-image: url( resource/widget/rap/ctabfolder/ctabfolder-dropdown.png );
-}
-
-CTabFolder-DropDownButton-Icon:hover {
-  background-image: url( resource/widget/rap/ctabfolder/ctabfolder-dropdown-hover.png );
 }

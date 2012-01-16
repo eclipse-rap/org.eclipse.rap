@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* Shell fallback theme */
+/* Shell property defaults */
 
 Shell {
   border: none;
@@ -23,22 +23,16 @@ Shell {
 }
 
 Shell[TITLE], Shell[BORDER] {
-  background-color: #ffffff;
   border: 1px solid #aaaaaa;
-  border-radius: 0;
   padding: 15px;
-  box-shadow: none;
+}
+
+Shell[BORDER]:maximized {
+  border: none;
 }
 
 Shell[BORDER]:inactive, Shell[TITLE]:inactive {
   border: 1px solid #aaaaaa;
-  box-shadow: none;
-}
-
-Shell:maximized, Shell:maximized:inactive {
-  border: none;
-  box-shadow: none;
-  border-radius: 0px;
 }
 
 Shell-DisplayOverlay {
@@ -51,7 +45,7 @@ Shell-DisplayOverlay {
 /* Shell titlebar */
 
 Shell-Titlebar {
-  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Arial, sans-serif;
   background-color: #0080c0;
   background-gradient-color: #0080c0;
   color: #ffffff;
@@ -67,7 +61,6 @@ Shell-Titlebar {
 Shell-Titlebar:inactive {
   background-color: #7996a5;
   background-gradient-color: #7996a5;
-  background-image: none;
 }
 
 /* Shell buttons */
@@ -79,17 +72,9 @@ Shell-MinButton {
   margin: 0 -2px 0 0;
 }
 
-Shell-MinButton:hover {
-  background-image: url( resource/widget/rap/window/shell-min-hover.png );
-}
-
 Shell-MinButton:inactive {
   background-image: url( resource/widget/rap/window/shell-min.png );
   margin: 0 -2px 0 0;
-}
-
-Shell-MinButton:inactive:hover {
-  background-image: url( resource/widget/rap/window/shell-min-hover.png );
 }
 
 /* Maximize button */
@@ -99,17 +84,9 @@ Shell-MaxButton {
   margin: 0 -2px 0 0;
 }
 
-Shell-MaxButton:hover {
-  background-image: url( resource/widget/rap/window/shell-max-hover.png );
-}
-
 Shell-MaxButton:inactive {
   background-image: url( resource/widget/rap/window/shell-max.png );
   margin: 0 -2px 0 0;
-}
-
-Shell-MaxButton:inactive:hover {
-  background-image: url( resource/widget/rap/window/shell-max-hover.png );
 }
 
 /* Restore button */
@@ -118,16 +95,8 @@ Shell-MaxButton:maximized {
   background-image: url( resource/widget/rap/window/shell-restore.png );
 }
 
-Shell-MaxButton:maximized:hover {
-  background-image: url( resource/widget/rap/window/shell-restore-hover.png );
-}
-
 Shell-MaxButton:maximized:inactive {
   background-image: url( resource/widget/rap/window/shell-restore.png );
-}
-
-Shell-MaxButton:maximized:inactive:hover {
-  background-image: url( resource/widget/rap/window/shell-restore-hover.png );
 }
 
 /* Close button */
@@ -137,15 +106,7 @@ Shell-CloseButton {
   margin: 0 -2px 0 0;
 }
 
-Shell-CloseButton:hover {
-  background-image: url( resource/widget/rap/window/shell-close-hover.png );
-}
-
 Shell-CloseButton:inactive {
   background-image: url( resource/widget/rap/window/shell-close.png );
   margin: 0 -2px 0 0;
-}
-
-Shell-CloseButton:inactive:hover {
-  background-image: url( resource/widget/rap/window/shell-close-hover.png );
 }

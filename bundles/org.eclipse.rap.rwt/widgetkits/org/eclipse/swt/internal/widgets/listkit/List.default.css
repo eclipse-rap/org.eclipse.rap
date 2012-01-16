@@ -10,10 +10,10 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* List fallback theme */
+/* List property defaults */
 
 List {
-  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Arial, sans-serif;
   background-color: #ffffff;
   border: none;
   color: #4a4a4a;
@@ -24,7 +24,7 @@ List[BORDER] {
 }
 
 List-Item {
-  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Arial, sans-serif;
   padding: 6px 10px 6px 10px;
   background-color: #ffffff;
   color: #4a4a4a;

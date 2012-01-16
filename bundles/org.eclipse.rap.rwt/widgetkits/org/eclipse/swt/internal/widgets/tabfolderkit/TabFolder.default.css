@@ -10,10 +10,10 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* TabFolder fallback theme */
+/* TabFolder property defaults */
 
 TabFolder {
-  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Arial, sans-serif;
   border: none;
 }
 

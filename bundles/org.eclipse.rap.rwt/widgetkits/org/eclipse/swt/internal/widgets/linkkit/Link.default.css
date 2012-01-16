@@ -10,10 +10,10 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* Link fallback theme */
+/* Link property defaults */
 
 Link {
-  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Arial, sans-serif;
   color: #4a4a4a;
   text-shadow: none;
 }

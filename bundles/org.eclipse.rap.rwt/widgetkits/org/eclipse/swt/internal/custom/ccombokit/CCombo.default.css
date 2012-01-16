@@ -9,10 +9,10 @@
  *    EclipseSource - initial API and implementation
  ******************************************************************************/
 
-/* CCombo fallback theme */
+/* CCombo property defaults */
 
 CCombo {
-  font: 14px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 14px Arial, sans-serif;
   color: #4a4a4a;
   background-color: #ffffff;
   background-image: none;
@@ -39,10 +39,6 @@ CCombo-Button {
 CCombo-Button-Icon {
   background-image: url( resource/widget/rap/ccombo/down.png );
 }  
-
-CCombo-Button-Icon:hover {
-  background-image: url( resource/widget/rap/ccombo/down-hover.png );
-}
 
 CCombo-List {
   border: 1px solid #aaaaaa;

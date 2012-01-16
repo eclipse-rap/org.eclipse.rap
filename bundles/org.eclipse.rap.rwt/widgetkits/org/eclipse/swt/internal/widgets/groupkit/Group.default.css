@@ -10,10 +10,10 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* Group fallback theme */
+/* Group property defaults */
 
 Group {
-  font: 10px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+  font: 10px Arial, sans-serif;
   color: #4a4a4a;
   background-color: #ffffff;
   border: none;

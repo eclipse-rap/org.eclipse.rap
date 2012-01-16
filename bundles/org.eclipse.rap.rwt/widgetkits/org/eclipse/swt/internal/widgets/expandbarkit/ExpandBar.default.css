@@ -10,7 +10,7 @@
  *    EclipseSource - ongoing development
  ******************************************************************************/
 
-/* ExpandBar fallback theme */
+/* ExpandBar property defaults */
 
 ExpandBar {
   color: #4a4a4a;
@@ -39,14 +39,6 @@ ExpandItem-Button {
   background-image: url( resource/widget/rap/expanditem/expanditem-expand.png );
 }
 
-ExpandItem-Button:hover {
-  background-image: url( resource/widget/rap/expanditem/expanditem-expand-hover.png );
-}
-
 ExpandItem-Button:expanded {
   background-image: url( resource/widget/rap/expanditem/expanditem-collapse.png );
-}
-
-ExpandItem-Button:expanded:hover {
-  background-image: url( resource/widget/rap/expanditem/expanditem-collapse-hover.png );
 }
