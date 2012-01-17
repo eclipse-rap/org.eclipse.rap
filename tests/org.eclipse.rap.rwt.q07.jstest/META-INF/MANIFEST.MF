@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Javascript test suite
 Bundle-SymbolicName: org.eclipse.rap.rwt.q07.jstest;singleton:=true
-Bundle-Version: 1.4.1.qualifier
+Bundle-Version: 1.4.2.qualifier
 Export-Package: org.eclipse.rwt.test,
  org.eclipse.rwt.test.fixture,
  org.eclipse.rwt.test.tests,

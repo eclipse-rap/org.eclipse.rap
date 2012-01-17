@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.rap.junit
-Bundle-Version: 1.4.1.qualifier
+Bundle-Version: 1.4.2.qualifier
 Require-Bundle: org.junit;bundle-version="[3.8.2,4.0.0)";visibility:=reexport,
  org.eclipse.rap.rwt
 Export-Package: org.eclipse.rap.junit
