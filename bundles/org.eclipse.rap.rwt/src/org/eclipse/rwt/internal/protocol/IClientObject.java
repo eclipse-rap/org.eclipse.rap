@@ -70,12 +70,14 @@ public interface IClientObject {
   void setProperty( String name, Object value );
 
   /**
-   * Advises the remote object to notify or not the server when an event of the given type occurs.
+   * Advises the remote object to listen or to stop listening on the given type
+   * of events. When the client is listening, it must notify the server when an
+   * event of the given type occurs.
    *
    * @param eventType the name of event type to listen
-   * @param listent true to notify the server when an event occurs, false otherwise
+   * @param listen true to listen to this type of events, false otherwise
    */
-  void setListen( String eventType, boolean listent );
+  void setListen( String eventType, boolean listen );
 
   /**
    * Advises the client to call a specific method on the remote object.
