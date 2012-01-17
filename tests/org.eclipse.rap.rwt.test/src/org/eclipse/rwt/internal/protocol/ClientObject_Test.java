@@ -109,8 +109,8 @@ public class ClientObject_Test extends TestCase {
   }
 
   public void testAddListener() {
-    clientObject.addListener( "selection" );
-    clientObject.addListener( "fake" );
+    clientObject.setListen( "selection", true );
+    clientObject.setListen( "fake", true );
 
     ListenOperation operation = ( ListenOperation )getMessage().getOperation( 0 );
     assertEquals( shellId, operation.getTarget() );
@@ -119,9 +119,9 @@ public class ClientObject_Test extends TestCase {
   }
 
   public void testRemoveListener() {
-    clientObject.removeListener( "selection" );
-    clientObject.removeListener( "fake" );
-    clientObject.addListener( "fake2" );
+    clientObject.setListen( "selection", false );
+    clientObject.setListen( "fake", false );
+    clientObject.setListen( "fake2", true );
 
     ListenOperation operation = ( ListenOperation )getMessage().getOperation( 0 );
     assertEquals( shellId, operation.getTarget() );

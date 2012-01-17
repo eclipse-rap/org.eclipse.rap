@@ -54,12 +54,8 @@ public final class ClientObject implements IClientObject {
     getWriter().appendSet( targetId, name, value );
   }
 
-  public void addListener( String eventName ) {
-    getWriter().appendListen( targetId, eventName, true );
-  }
-
-  public void removeListener( String eventName ) {
-    getWriter().appendListen( targetId, eventName, false );
+  public void setListen( String eventName, boolean listent ) {
+    getWriter().appendListen( targetId, eventName, listent );
   }
 
   public void call( String method, Map<String, Object> properties ) {

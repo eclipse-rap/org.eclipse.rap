@@ -52,12 +52,12 @@ public class ControlLCAUtil {
   private static final String JS_EVENT_TYPE_MENU_DETECT = "menuDetect";
 
   // Property names to preserve widget property values
-  private static final String PROP_ACTIVATE_LISTENER = "activateListener";
-  private static final String PROP_FOCUS_LISTENER = "focusListener";
-  private static final String PROP_MOUSE_LISTENER = "mouseListener";
-  private static final String PROP_KEY_LISTENER = "keyListener";
-  private static final String PROP_TRAVERSE_LISTENER = "traverseListener";
-  private static final String PROP_MENU_DETECT_LISTENER = "menuDetectListener";
+  private static final String PROP_ACTIVATE_LISTENER = "activate";
+  private static final String PROP_FOCUS_LISTENER = "focus";
+  private static final String PROP_MOUSE_LISTENER = "mouse";
+  private static final String PROP_KEY_LISTENER = "key";
+  private static final String PROP_TRAVERSE_LISTENER = "traverse";
+  private static final String PROP_MENU_DETECT_LISTENER = "menuDetect";
   private static final String PROP_TAB_INDEX = "tabIndex";
   private static final String PROP_CURSOR = "cursor";
   private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
@@ -248,19 +248,29 @@ public class ControlLCAUtil {
     adapter.preserve( PROP_CURSOR, control.getCursor() );
     adapter.preserve( Props.CONTROL_LISTENERS,
                       Boolean.valueOf( ControlEvent.hasListener( control ) ) );
-    adapter.preserve( PROP_ACTIVATE_LISTENER,
-                      Boolean.valueOf( ActivateEvent.hasListener( control ) ) );
-    adapter.preserve( PROP_MOUSE_LISTENER, Boolean.valueOf( MouseEvent.hasListener( control ) ) );
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_ACTIVATE_LISTENER,
+                                    ActivateEvent.hasListener( control ) );
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_MOUSE_LISTENER,
+                                    MouseEvent.hasListener( control ) );
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
-      adapter.preserve( PROP_FOCUS_LISTENER, Boolean.valueOf( FocusEvent.hasListener( control ) ) );
+      WidgetLCAUtil.preserveListener( control,
+                                      PROP_FOCUS_LISTENER,
+                                      FocusEvent.hasListener( control ) );
     }
-    adapter.preserve( PROP_KEY_LISTENER, Boolean.valueOf( KeyEvent.hasListener( control ) ) );
-    adapter.preserve( PROP_TRAVERSE_LISTENER,
-                      Boolean.valueOf( TraverseEvent.hasListener( control ) ) );
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_KEY_LISTENER,
+                                    KeyEvent.hasListener( control ) );
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_TRAVERSE_LISTENER,
+                                    TraverseEvent.hasListener( control ) );
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_MENU_DETECT_LISTENER,
+                                    MenuDetectEvent.hasListener( control ) );
     WidgetLCAUtil.preserveHelpListener( control );
     ActiveKeysUtil.preserveActiveKeys( control );
     ActiveKeysUtil.preserveCancelKeys( control );
-    preserveMenuDetectListener( control );
   }
 
   /**
@@ -274,19 +284,6 @@ public class ControlLCAUtil {
     Image image = controlAdapter.getUserBackgroundImage();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
     adapter.preserve( PROP_BACKGROUND_IMAGE, image );
-  }
-
-  /**
-   * Preserves whether the given <code>widget</code> has one or more
-   * <code>MenuDetect</code>s attached.
-   *
-   * @param control the widget to preserve
-   * @since 1.3
-   */
-  public static void preserveMenuDetectListener( Control control ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( control );
-    boolean hasListener = MenuDetectEvent.hasListener( control );
-    adapter.preserve( PROP_MENU_DETECT_LISTENER, Boolean.valueOf( hasListener ) );
   }
 
   ///////////////////////////////////////////
@@ -536,17 +533,8 @@ public class ControlLCAUtil {
 
   public static void renderListenActivate( Control control ) {
     if( !control.isDisposed() ) {
-      Boolean newValue = Boolean.valueOf( ActivateEvent.hasListener( control ) );
-      Boolean defValue = Boolean.FALSE;
-      if( WidgetLCAUtil.hasChanged( control, PROP_ACTIVATE_LISTENER, newValue, defValue ) ) {
-        IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-        // TODO [tb] : consider to introduce clientObject.setListen, makes this code much shorter
-        if( newValue.booleanValue() ) {
-          clientObject.addListener( "activate" );
-        } else {
-          clientObject.removeListener( "activate" );
-        }
-      }
+      boolean newValue = ActivateEvent.hasListener( control );
+      WidgetLCAUtil.renderListener( control, PROP_ACTIVATE_LISTENER, newValue, false );
     }
   }
 
@@ -561,66 +549,29 @@ public class ControlLCAUtil {
    */
   static void renderListenFocus( Control control ) {
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
-      Boolean hasListener = Boolean.valueOf( FocusEvent.hasListener( control ) );
-      if( WidgetLCAUtil.hasChanged( control, PROP_FOCUS_LISTENER, hasListener, Boolean.FALSE ) ) {
-        IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-        if( hasListener.booleanValue() ) {
-          clientObject.addListener( "focus" );
-        } else {
-          clientObject.removeListener( "focus" );
-        }
-      }
+      boolean newValue = FocusEvent.hasListener( control );
+      WidgetLCAUtil.renderListener( control, PROP_FOCUS_LISTENER, newValue, false );
     }
   }
 
   static void renderListenMouse( Control control ) {
-    Boolean hasListener = Boolean.valueOf( MouseEvent.hasListener( control ) );
-    if( WidgetLCAUtil.hasChanged( control, PROP_MOUSE_LISTENER, hasListener, Boolean.FALSE ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-      if( hasListener.booleanValue() ) {
-        clientObject.addListener( "mouse" );
-      } else {
-        clientObject.removeListener( "mouse" );
-      }
-    }
+    boolean newValue = MouseEvent.hasListener( control );
+    WidgetLCAUtil.renderListener( control, PROP_MOUSE_LISTENER, newValue, false );
   }
 
   static void renderListenKey( Control control ) {
-    Boolean hasListener = Boolean.valueOf( KeyEvent.hasListener( control ) );
-    if( WidgetLCAUtil.hasChanged( control, PROP_KEY_LISTENER, hasListener, Boolean.FALSE ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-      if( hasListener.booleanValue() ) {
-        clientObject.addListener( "key" );
-      } else {
-        clientObject.removeListener( "key" );
-      }
-    }
+    boolean newValue = KeyEvent.hasListener( control );
+    WidgetLCAUtil.renderListener( control, PROP_KEY_LISTENER, newValue, false );
   }
 
   static void renderListenTraverse( Control control ) {
-    String prop = PROP_TRAVERSE_LISTENER;
-    Boolean hasListener = Boolean.valueOf( TraverseEvent.hasListener( control ) );
-    Boolean defValue = Boolean.FALSE;
-    if( WidgetLCAUtil.hasChanged( control, prop, hasListener, defValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-      if( hasListener.booleanValue() ) {
-        clientObject.addListener( "traverse" );
-      } else {
-        clientObject.removeListener( "traverse" );
-      }
-    }
+    boolean newValue = TraverseEvent.hasListener( control );
+    WidgetLCAUtil.renderListener( control, PROP_TRAVERSE_LISTENER, newValue, false );
   }
 
   static void renderListenMenuDetect( Control control ) {
-    Boolean hasLsnr = Boolean.valueOf( MenuDetectEvent.hasListener( control ) );
-    if( WidgetLCAUtil.hasChanged( control, PROP_MENU_DETECT_LISTENER, hasLsnr, Boolean.FALSE ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-      if( hasLsnr.booleanValue() ) {
-        clientObject.addListener( "menuDetect" );
-      } else {
-        clientObject.removeListener( "menuDetect" );
-      }
-    }
+    boolean newValue = MenuDetectEvent.hasListener( control );
+    WidgetLCAUtil.renderListener( control, PROP_MENU_DETECT_LISTENER, newValue, false );
   }
 
 
@@ -1254,7 +1205,7 @@ public class ControlLCAUtil {
     if( !control.isDisposed() ) {
       Boolean newValue = Boolean.valueOf( ActivateEvent.hasListener( control ) );
       Boolean defValue = Boolean.FALSE;
-      String prop = PROP_ACTIVATE_LISTENER;
+      String prop = WidgetLCAUtil.LISTENER_PREFIX + PROP_ACTIVATE_LISTENER;
       Shell shell = control.getShell();
       if( !shell.isDisposed() && WidgetLCAUtil.hasChanged( control, prop, newValue, defValue ) ) {
         String function =   newValue.booleanValue()
@@ -1276,8 +1227,9 @@ public class ControlLCAUtil {
    */
   @Deprecated
   public static void writeMenuDetectListener( Control control ) throws IOException {
+    String prop = WidgetLCAUtil.LISTENER_PREFIX + PROP_MENU_DETECT_LISTENER;
     Boolean hasLsnr = Boolean.valueOf( MenuDetectEvent.hasListener( control ) );
-    if( WidgetLCAUtil.hasChanged( control, PROP_MENU_DETECT_LISTENER, hasLsnr, Boolean.FALSE ) ) {
+    if( WidgetLCAUtil.hasChanged( control, prop, hasLsnr, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( control );
       Object[] args = new Object[] { control, JS_EVENT_TYPE_MENU_DETECT, hasLsnr };
       writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
@@ -1342,8 +1294,9 @@ public class ControlLCAUtil {
   @Deprecated
   private static void writeFocusListener( Control control ) throws IOException {
     if( ( control.getStyle() & SWT.NO_FOCUS ) == 0 ) {
+      String prop = WidgetLCAUtil.LISTENER_PREFIX + PROP_FOCUS_LISTENER;
       Boolean hasListener = Boolean.valueOf( FocusEvent.hasListener( control ) );
-      if( WidgetLCAUtil.hasChanged( control, PROP_FOCUS_LISTENER, hasListener, Boolean.FALSE ) ) {
+      if( WidgetLCAUtil.hasChanged( control, prop, hasListener, Boolean.FALSE ) ) {
         JSWriter writer = JSWriter.getWriterFor( control );
         Object[] args = new Object[] { control, JS_EVENT_TYPE_FOCUS, hasListener };
         writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
@@ -1353,8 +1306,9 @@ public class ControlLCAUtil {
 
   @Deprecated
   private static void writeMouseListener( Control control ) throws IOException {
+    String prop = WidgetLCAUtil.LISTENER_PREFIX + PROP_MOUSE_LISTENER;
     Boolean hasListener = Boolean.valueOf( MouseEvent.hasListener( control ) );
-    if( WidgetLCAUtil.hasChanged( control, PROP_MOUSE_LISTENER, hasListener, Boolean.FALSE ) ) {
+    if( WidgetLCAUtil.hasChanged( control, prop, hasListener, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( control );
       Object[] args = new Object[] { control, JS_EVENT_TYPE_MOUSE, hasListener };
       writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
@@ -1363,7 +1317,7 @@ public class ControlLCAUtil {
 
   @Deprecated
   static void writeKeyListener( Control control ) throws IOException {
-    String prop = PROP_KEY_LISTENER;
+    String prop = WidgetLCAUtil.LISTENER_PREFIX + PROP_KEY_LISTENER;
     Boolean hasListener = Boolean.valueOf( KeyEvent.hasListener( control ) );
     Boolean defValue = Boolean.FALSE;
     if( WidgetLCAUtil.hasChanged( control, prop, hasListener, defValue ) ) {
@@ -1380,7 +1334,7 @@ public class ControlLCAUtil {
 
   @Deprecated
   static void writeTraverseListener( Control control ) throws IOException {
-    String prop = PROP_TRAVERSE_LISTENER;
+    String prop = WidgetLCAUtil.LISTENER_PREFIX + PROP_TRAVERSE_LISTENER;
     Boolean hasListener = Boolean.valueOf( TraverseEvent.hasListener( control ) );
     Boolean defValue = Boolean.FALSE;
     if( WidgetLCAUtil.hasChanged( control, prop, hasListener, defValue ) ) {
@@ -1393,6 +1347,20 @@ public class ControlLCAUtil {
         writer.call( "setUserData", args );
       }
     }
+  }
+
+  /**
+   * Preserves whether the given <code>widget</code> has one or more
+   * <code>MenuDetect</code>s attached.
+   *
+   * @param control the widget to preserve
+   * @since 1.3
+   */
+  @Deprecated
+  public static void preserveMenuDetectListener( Control control ) {
+    WidgetLCAUtil.preserveListener( control,
+                                    PROP_MENU_DETECT_LISTENER,
+                                    MenuDetectEvent.hasListener( control ) );
   }
 
 }

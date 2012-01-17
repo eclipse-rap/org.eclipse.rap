@@ -69,9 +69,9 @@ public final class WidgetLCAUtil {
   private static final String PROP_ROUNDED_BORDER_RADIUS = "roundedBorderRadius";
   private static final String PROP_ENABLED = "enabled";
   private static final String PROP_VARIANT = "variant";
-  private static final String PROP_HELP_LISTENER = "helpListener";
+  private static final String PROP_HELP_LISTENER = "help";
 
-  private static final String LISTENER_PREFIX = "listener_";
+  static final String LISTENER_PREFIX = "listener_";
 
   private static final Pattern FONT_NAME_FILTER_PATTERN = Pattern.compile( "\"|\\\\" );
   private static final Rectangle DEF_ROUNDED_BORDER_RADIUS = new Rectangle( 0, 0, 0, 0 );
@@ -323,8 +323,7 @@ public final class WidgetLCAUtil {
    * @since 1.3
    */
   public static void preserveHelpListener( Widget widget ) {
-    IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_HELP_LISTENER, Boolean.valueOf( HelpEvent.hasListener( widget ) ) );
+    preserveListener( widget, PROP_HELP_LISTENER, HelpEvent.hasListener( widget ) );
   }
 
   /**
@@ -408,30 +407,11 @@ public final class WidgetLCAUtil {
    * <code>widget</code> as necessary.
    *
    * @param widget
-   * @since 1.3
+   * @since 1.5
    */
   public static void renderListenHelp( Widget widget ) {
-    Boolean hasListener = Boolean.valueOf( HelpEvent.hasListener( widget ) );
-    if( WidgetLCAUtil.hasChanged( widget, PROP_HELP_LISTENER, hasListener, Boolean.FALSE ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      if( hasListener.booleanValue() ) {
-        clientObject.addListener( "help" );
-      } else {
-        clientObject.removeListener( "help" );
-      }
-    }
+    renderListener( widget, PROP_HELP_LISTENER, HelpEvent.hasListener( widget ), false );
   }
-
-
-  ///////////////////////////////////////////////////////
-  // Methods to read and process request parameter values
-
-
-
-
-
-  ////////////////
-  // Help listener
 
   /**
    * Determines whether the property <code>menu</code> of the given widget has
@@ -1123,11 +1103,7 @@ public final class WidgetLCAUtil {
     Boolean defaultValueObject = new Boolean( defaultValue );
     if( WidgetLCAUtil.hasChanged( widget, property, newValueObject, defaultValueObject ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      if( newValue ) {
-        clientObject.addListener( listener );
-      } else {
-        clientObject.removeListener( listener );
-      }
+      clientObject.setListen( listener, newValue );
     }
   }
 
@@ -1712,8 +1688,9 @@ public final class WidgetLCAUtil {
    */
   @Deprecated
   public static void writeHelpListener( Widget widget ) throws IOException {
+    String prop = LISTENER_PREFIX + PROP_HELP_LISTENER;
     Boolean hasListener = Boolean.valueOf( HelpEvent.hasListener( widget ) );
-    if( WidgetLCAUtil.hasChanged( widget, PROP_HELP_LISTENER, hasListener, Boolean.FALSE ) ) {
+    if( WidgetLCAUtil.hasChanged( widget, prop, hasListener, Boolean.FALSE ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
       Object[] args = new Object[] { widget, JS_EVENT_TYPE_HELP, hasListener };
       writer.call( JSWriter.WIDGET_MANAGER_REF, JS_FUNC_SET_HAS_LISTENER, args );
