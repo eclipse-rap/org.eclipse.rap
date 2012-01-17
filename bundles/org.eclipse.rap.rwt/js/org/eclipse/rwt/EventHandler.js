@@ -27,7 +27,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
     _lastMouseDown : false,
     _lastMouseEventDate : 0,
     _mouseIsDown : false,
-    
+
     ///////////////////
     // Public functions
 
@@ -147,6 +147,10 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
       this._filter[ "keyevent" ] = [ filter, context ];
     },
 
+    setKeyDomEventFilter : function( filter, context ) {
+      this._filter[ "domKeyevent" ] = [ filter, context ];
+    },
+
     //////////////
     // KEY EVENTS:
     
@@ -156,9 +160,17 @@ qx.Class.define( "org.eclipse.rwt.EventHandler", {
         var event = util.getDomEvent( arguments );
         var keyCode = util.getKeyCode( event );
         var charCode = util.getCharCode( event );
+        if( typeof this._filter[ "domKeyevent" ] !== "undefined" ) {
+          var context = this._filter[ "domKeyevent" ][ 1 ];
+          var func = this._filter[ "domKeyevent" ][ 0 ];
+          func.call( context, event.type, keyCode, charCode, event );
+        }
         var pseudoTypes = util.getEventPseudoTypes( event, keyCode, charCode );
         for( var i = 0; i < pseudoTypes.length; i++ ) {
           this._onkeyevent_post( event, pseudoTypes[ i ], keyCode, charCode );
+        }
+        if( util.mustRestoreKeypress( event, pseudoTypes ) ) {
+          this._onkeyevent_post( event, "keypress", keyCode, charCode );
         }
         util.saveData( event, keyCode, charCode );
       } catch( ex ) {

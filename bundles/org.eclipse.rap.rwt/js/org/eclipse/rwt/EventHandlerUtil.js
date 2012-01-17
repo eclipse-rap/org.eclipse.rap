@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -83,6 +83,7 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
     } ),
 
     stopDomEvent : function( vDomEvent ) {
+      vDomEvent._prevented = true;
       if( vDomEvent.preventDefault ) {
         vDomEvent.preventDefault();
       }
@@ -94,6 +95,10 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
         // do nothing
       }
       vDomEvent.returnValue = false;
+    },
+
+    wasStopped : function( domEvent ) {
+      return domEvent._prevented ? true : false;
     },
 
     // BUG: http://xscroll.mozdev.org/
@@ -257,6 +262,20 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
       }
     } ),
 
+    mustRestoreKeypress  : qx.core.Variant.select( "qx.client", {
+      "default" : function( event, pseudoTypes ) {
+        var result = false;
+        if( this.wasStopped( event ) ) {
+          result =    ( pseudoTypes.length === 1 && pseudoTypes[ 0 ] === "keydown" )
+                   || pseudoTypes.length === 0;
+        }
+        return result;
+      },
+      "gecko" : function( event, pseudoTypes ) {
+        return false;
+      }
+    } ),
+
     saveData : function( event, keyCode, charCode ) {
       if( event.type !== "keypress" ) {
         this._lastUpDownType[ keyCode ] = event.type;
@@ -296,6 +315,10 @@ qx.Class.define( "org.eclipse.rwt.EventHandlerUtil", {
         return ( this._keyCodeToIdentifierMap[ keyCode ] || keyCode === 27 ) ? true : false;
       }
     } ),
+
+    isSpecialKeyCode : function( keyCode ) {
+      return this._specialCharCodeMap[ keyCode ] ? true : false;
+    },
 
     _isAlphaNumericKeyCode : function( keyCode ) {
       var result = false;

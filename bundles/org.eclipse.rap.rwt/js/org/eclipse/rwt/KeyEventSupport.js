@@ -15,12 +15,14 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
 
   construct : function() {
     this.base( arguments );
+    org.eclipse.rwt.EventHandler.setKeyDomEventFilter( this._onKeyDomEvent, this );
     org.eclipse.rwt.EventHandler.setKeyEventFilter( this._onKeyEvent, this );
     this._keyBindings = {};
     this._cancelKeys = {};
     this._currentKeyCode = -1;
     this._bufferedEvents = [];
     this._keyEventRequestRunning = false;
+    this._ignoreNextKeypress = false;
     var req = org.eclipse.swt.Request.getInstance();
     req.addEventListener( "received", this._onRequestReceived, this );
   },
@@ -45,21 +47,27 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
     
     ////////////
     // Internals
-
-    _onKeyEvent : function( eventType, keyCode, charCode, domEvent ) {
-      var result = true;
+    
+    _onKeyDomEvent : function( eventType, keyCode, charCode, domEvent ) {
       if( eventType === "keydown" ) {
         this._currentKeyCode = keyCode;
       }
       var control = this._getTargetControl();
+      if( this._shouldCancel( this._currentKeyCode, charCode, domEvent, control ) ) {
+        org.eclipse.rwt.EventHandlerUtil.stopDomEvent( domEvent );
+        domEvent._noProcess = true;
+      }
+    },
+
+    _onKeyEvent : function( eventType, keyCode, charCode, domEvent ) {
+      var control = this._getTargetControl();
       if( this._shouldSend( eventType, this._currentKeyCode, charCode, domEvent, control ) ) {
         this._sendKeyEvent( control, this._currentKeyCode, charCode, domEvent );
       }
-      if( this._shouldCancel( eventType, this._currentKeyCode, charCode, domEvent, control ) ) {
-        this._cancelDomEvent( domEvent );
-        result = false;
+      if( eventType === "keypress" || eventType === "keyup" ) {
+        this._ignoreNextKeypress = false;
       }
-      return result;
+      return !domEvent._noProcess;
     },
     
     /////////////
@@ -67,7 +75,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
 
     _shouldSend : function( eventType, keyCode, charCode, domEvent, control ) {
       var result = false;
-      if( this._isRelevant( keyCode, eventType ) ) {
+      if( this._isRelevant( keyCode, eventType, domEvent ) ) {
         if( this._hasTraverseListener( control ) && this._isTraverseKey( keyCode ) ) {
           result = true;
         } 
@@ -86,13 +94,24 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
       return result;
     },
     
-    _isRelevant : function( keyCode, eventType ) {
+    _isRelevant : function( keyCode, eventType, domEvent ) {
       var result;
-      if( this._isModifier( keyCode ) ) {
-        // NOTE : because modifier don't repeat
-        result = eventType === "keydown";
-      } else {
-        result = eventType === "keypress";
+      if( eventType === "keypress" ) {
+        // NOTE : modifier don't repeat
+        result = !this._isModifier( keyCode ) && !this._ignoreNextKeypress;
+      } else if( eventType === "keydown" ) {
+        // NOTE : Prefered when keypress might not be fired, e.g. browser shortcuts that
+        //        are not or can not be prevented/canceled. Key might not repeat in that case.
+        //        Not to be used when charcode might be unkown (e.g. shift + char, special char)-
+        var eventUtil = org.eclipse.rwt.EventHandlerUtil;
+        var result =    eventUtil.isNonPrintableKeyCode( keyCode )
+                     || eventUtil.isSpecialKeyCode( keyCode );
+        if( !result && ( domEvent.altKey || domEvent.ctrlKey ) ) {
+          result = this._isAlphaNumeric( keyCode );
+        }
+        if( result ) {
+          this._ignoreNextKeypress = true;
+        }
       }
       return result;
     },
@@ -116,12 +135,11 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
       if( this._keyEventRequestRunning ) {
         this._bufferedEvents.push( [ widget, keyCode, charCode, domEvent ] );
       } else {
-        var keyUtil = org.eclipse.rwt.KeyEventSupport.getInstance();
-        keyUtil._attachKeyEvent( widget, keyCode, charCode, domEvent );
+        this._attachKeyEvent( widget, keyCode, charCode, domEvent );
         this._keyEventRequestRunning = true;
         if( keyCode === 27 ) {
           try{ 
-            domEvent.preventDefault(); // otherwise the request would be canceled
+            domEvent.preventDefault(); // otherwise the request could be canceled
           } catch( ex ) {
             // do nothing
           }
@@ -139,9 +157,10 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
         var wm = org.eclipse.swt.WidgetManager.getInstance();
         id = wm.findIdByWidget( widget );
       }
+      var finalCharCode = this._getCharCode( keyCode, charCode, domEvent );
       req.addEvent( "org.eclipse.swt.events.keyDown", id );
       req.addParameter( "org.eclipse.swt.events.keyDown.keyCode", keyCode );
-      req.addParameter( "org.eclipse.swt.events.keyDown.charCode", charCode );
+      req.addParameter( "org.eclipse.swt.events.keyDown.charCode", finalCharCode );
       var modifier = "";
       var commandKey = org.eclipse.rwt.Client.getPlatform() === "mac" && domEvent.metaKey;
       if( domEvent.shiftKey ) {
@@ -159,7 +178,7 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
     ///////////////
     // cancel event
 
-    _shouldCancel : function( eventType, keyCode, charCode, domEvent, control ) {
+    _shouldCancel : function( keyCode, charCode, domEvent, control ) {
       var result = this._isActive( this._cancelKeys, domEvent, keyCode, charCode );
       if( !result ) { 
         var cancelKeys = control ? control.getUserData( "cancelKeys" ) : null;
@@ -169,32 +188,6 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
       }
       return result;
     },
-
-    //NOTE : canceling keydown events would prevent following keypress events in some browser 
-    _cancelDomEvent : qx.core.Variant.select( "qx.client", {
-      "mshtml|newmshtml" : function( event ) {
-        if( event.type !== "keydown" && event.preventDefault ) {
-          event.preventDefault();
-        }
-        try {
-          event.keyCode = 0;
-        } catch( ex ) {
-        }
-        event.returnValue = false;
-      },
-      "webkit" : function( event ) {
-        if( event.type !== "keydown" && event.preventDefault ) {
-          event.preventDefault();
-          event.returnValue = false;
-        }
-        try {
-          event.keyCode = 0;
-        } catch( ex ) {
-        }
-      },
-      "default" : org.eclipse.rwt.EventHandlerUtil.stopDomEvent
-    } ),
-
 
     /////////
     // helper
@@ -241,10 +234,29 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
       }
       return result.join( "+" );
     },
-
+    
+    _getCharCode : function( keyCode, charCode, domEvent ) {
+      var result = charCode;
+      if( result === 0 && this._isAlphaNumeric( keyCode ) ) {
+        if( domEvent.shiftKey && !this._isNumeric( keyCode ) ) {
+          result = keyCode;
+        } else {
+          result = String.fromCharCode( keyCode ).toLowerCase().charCodeAt( 0 );
+        }
+      }
+      return result;
+    },
     
     _isModifier : function( keyCode ) {
       return keyCode >= 16 && keyCode <= 20 && keyCode !== 19;
+    },
+    
+    _isAlphaNumeric : function( keyCode ) {
+      return ( keyCode >= 65 && keyCode <= 90 ) || this._isNumeric( keyCode );
+    },
+    
+    _isNumeric : function( keyCode ) {
+      return keyCode >= 48 && keyCode <= 57;
     },
 
     _hasKeyListener : function( widget ) {

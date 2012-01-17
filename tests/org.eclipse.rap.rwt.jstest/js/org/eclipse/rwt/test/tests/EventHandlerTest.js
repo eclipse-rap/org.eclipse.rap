@@ -253,8 +253,24 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       var expected = [ "keydown", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
-    },    
-    
+    },
+
+    testCancelKeyDownPrintable : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      var widget = new qx.ui.basic.Terminator();
+      widget.addToDocument();
+      widget.addEventListener( "keydown", function( event ) {
+        event.preventDefault();
+      } );
+      testUtil.flush();
+      widget.focus();
+      var log = this._addKeyLogger( widget, true, false, false );
+      testUtil.keyDown( widget._getTargetNode(), "x" );
+      var expected = [ "keydown", "keypress" ];
+      assertEquals( expected, log );
+      widget.destroy();
+    },
+
     testKeyHoldPrintable : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();
@@ -267,8 +283,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       var expected = [ "keydown", "keypress", "keypress" ];
       assertEquals( expected, log );
       widget.destroy();
-    },    
-    
+    },
+
     testKeyUp : function() {
       // See Bug 335753
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
@@ -337,7 +353,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.EventHandlerTest", {
       assertEquals( expected, log );
       widget.destroy();
     },    
-    
+
     testKeyHoldPrintableSpecialChar : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       var widget = new qx.ui.basic.Terminator();

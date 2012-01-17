@@ -338,25 +338,26 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
   
   keyDown : function( target, key, mod ) {
-    this.fireFakeKeyDomEvent( target, "keydown", key, mod );
-    if( this._sendKeyPress( key ) ) { 
+    var event = this.fireFakeKeyDomEvent( target, "keydown", key, mod );
+    if( this._sendKeyPress( key, event ) ) { 
       this.fireFakeKeyDomEvent( target, "keypress", key, mod );
     }
   },
   
   keyHold : function( target, key, mod ) {
+    var event = null;
     if( this._sendKeyDownOnHold( key ) ) {
-      this.fireFakeKeyDomEvent( target, "keydown", key, mod );
+      var event = this.fireFakeKeyDomEvent( target, "keydown", key, mod );
     }
-    if( this._sendKeyPress( key ) ) { 
+    if( this._sendKeyPress( key, event ) ) { 
       this.fireFakeKeyDomEvent( target, "keypress", key, mod );
     }
   },
-  
+
   keyUp : function( target, key, mod ) {
     this.fireFakeKeyDomEvent( target, "keyup", key, mod );
   },
-  
+
   _sendKeyDownOnHold : qx.core.Variant.select("qx.client", {
     "default" : function( key ) {
       return true;
@@ -367,11 +368,14 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   } ),
 
   _sendKeyPress : qx.core.Variant.select("qx.client", { 
-    "gecko|opera" : function( key ) {
+    "gecko|opera" : function( key, keyDownEvent ) {
       return !this._isModifier( key );
     },
-    "default" : function( key ) {
-      return this._isPrintable( key ); 
+    "default" : function( key, keyDownEvent ) {
+      var wasStopped =   keyDownEvent 
+                       ? org.eclipse.rwt.EventHandlerUtil.wasStopped( keyDownEvent ) 
+                       : false;
+      return this._isPrintable( key ) && !wasStopped; 
     } 
   } ),
   
@@ -389,6 +393,7 @@ org.eclipse.rwt.test.fixture.TestUtil = {
                                                stringOrKeyCode, 
                                                mod );
     this.fireFakeDomEvent( domEvent );
+    return domEvent;
   },
 
   _getKeyCode : qx.core.Variant.select("qx.client", { 
@@ -476,7 +481,15 @@ org.eclipse.rwt.test.fixture.TestUtil = {
         }
       } 
     } else if( typeof stringOrKeyCode === "string" ) {
-      result = stringOrKeyCode.toUpperCase().charCodeAt( 0 ); // should match
+      var charCode = stringOrKeyCode.toUpperCase().charCodeAt( 0 );
+      if(    ( charCode >= 65 && charCode <= 90 ) 
+          || ( charCode >= 97 && charCode <= 122 ) 
+          || ( charCode >= 48 && charCode <= 57 ) 
+      ) {
+        result = stringOrKeyCode.toUpperCase().charCodeAt( 0 ); // should match
+      } else {
+        result = 0; // unkown
+      }
     } else {
       result = stringOrKeyCode;
     }
@@ -827,8 +840,13 @@ org.eclipse.rwt.test.fixture.TestUtil = {
   },
 
   cleanUpKeyUtil : function() {
-    org.eclipse.rwt.KeyEventSupport.getInstance().setKeyBindings( {} );
-    org.eclipse.rwt.KeyEventSupport.getInstance()._pendingEventInfo = null;
+    var support =  org.eclipse.rwt.KeyEventSupport.getInstance();
+    support.setKeyBindings( {} );
+    support.setCancelKeys( {} );
+    support._currentKeyCode = -1;
+    support._bufferedEvents = [];
+    support._keyEventRequestRunning = false;
+    support._ignoreNextKeypress = false;
   },
 
   /**

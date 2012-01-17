@@ -224,31 +224,14 @@ qx.Class.define("qx.event.type.DomEvent",
      * @return {var} TODOC
      * @signature function(vValue)
      */
-    setDefaultPrevented : qx.core.Variant.select("qx.client",
-    {
-      "mshtml" : function(vValue)
-      {
-        if (!vValue) {
-          throw new Error( "It is not possible to set preventDefault to false if it was true before!" );
-        }
-
-        this.getDomEvent().returnValue = false;
-
-        this.base(arguments, vValue);
-      },
-
-      "default" : function(vValue)
-      {
-        if (!vValue) {
-          throw new Error( "It is not possible to set preventDefault to false if it was true before!" );
-        }
-
-        this.getDomEvent().preventDefault();
-        this.getDomEvent().returnValue = false;
-
-        this.base(arguments, vValue);
+    setDefaultPrevented : function( vValue ) {
+      if( !vValue ) {
+        throw new Error( "It is not possible to set preventDefault to false if it was true before!" );
       }
-    })
+      org.eclipse.rwt.EventHandlerUtil.stopDomEvent( this.getDomEvent() );
+      this.base(arguments, vValue);
+    }
+
   },
 
 
