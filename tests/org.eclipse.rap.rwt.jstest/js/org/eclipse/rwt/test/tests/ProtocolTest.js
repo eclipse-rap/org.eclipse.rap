@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -556,23 +556,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
       processor.processOperation( operation );
       assertNull( targetObject.getMyData( "barListener" ) );
       targetObject.destroy();
-    },
-
-    testProcessExecute : function() {
-      var registry = org.eclipse.rwt.protocol.AdapterRegistry;
-      var processor = org.eclipse.rwt.protocol.Processor;
-      globalTemp = 1;
-      var properties = {
-      };
-      var operation = {
-        "scriptType" : "text/javascript",
-        "content" : "globalTemp++;",
-        "target" : "dummyId",
-        "action" : "executeScript"
-      };
-      processor.processOperation( operation );
-      assertEquals( 2, globalTemp );
-      delete globalTemp;
     },
 
     testProcessExecuteWrongType : function() {
