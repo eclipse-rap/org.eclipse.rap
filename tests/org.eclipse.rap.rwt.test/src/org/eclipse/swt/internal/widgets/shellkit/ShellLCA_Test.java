@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.*;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.*;
 import org.json.JSONObject;
 
@@ -52,14 +53,23 @@ public class ShellLCA_Test extends TestCase {
     Fixture.tearDown();
   }
 
+  public void testControlListeners() throws IOException {
+    Shell shell = new Shell( display, SWT.NONE );
+    ControlLCATestUtil.testActivateListener( shell );
+    ControlLCATestUtil.testFocusListener( shell );
+    ControlLCATestUtil.testMouseListener( shell );
+    ControlLCATestUtil.testKeyListener( shell );
+    ControlLCATestUtil.testTraverseListener( shell );
+    ControlLCATestUtil.testMenuDetectListener( shell );
+    ControlLCATestUtil.testHelpListener( shell );
+  }
+
   public void testPreserveValues() {
     Shell shell = new Shell( display, SWT.NONE );
     Button button = new Button( shell, SWT.PUSH );
-    Boolean hasListeners;
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( shell );
-    hasListeners = ( Boolean )adapter.getPreserved( ShellLCA.PROP_SHELL_LISTENER );
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
     assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
     assertEquals( null, adapter.getPreserved( ShellLCA.PROP_ACTIVE_CONTROL ) );
@@ -128,19 +138,7 @@ public class ShellLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( shell );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
-    //control_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( shell );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    shell.addControlListener( new ControlAdapter() { } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( shell );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    //foreground background font
+    // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     shell.setBackground( background );
     Color foreground = Graphics.getColor( 211, 178, 211 );
@@ -162,29 +160,6 @@ public class ShellLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( shell );
     assertEquals( "some text", shell.getToolTipText() );
-    Fixture.clearPreserved();
-    //activate_listeners   Focus_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( shell );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    shell.addFocusListener( new FocusAdapter() { } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( shell );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( shell );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    ActivateEvent.addListener( shell, new ActivateAdapter() { } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( shell );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
   }
 
   public void testReadDataForClosed() {
@@ -379,7 +354,7 @@ public class ShellLCA_Test extends TestCase {
 
     shell.setAlpha( 23 );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( new Integer( 23 ), message.findSetProperty( shell, "alpha" ) );
   }
@@ -409,14 +384,14 @@ public class ShellLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertEquals( JSONObject.NULL, message.findSetProperty( shell, "mode" ) );
   }
-  
+
   public void testResetFullscreen() throws Exception {
     shell.open();
     ShellLCA lca = new ShellLCA();
-    
+
     shell.setFullScreen( true );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( "fullscreen", message.findSetProperty( shell, "mode" ) );
   }
@@ -449,11 +424,11 @@ public class ShellLCA_Test extends TestCase {
 
     Fixture.preserveWidgets();
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( shell, "defaultButton" ) );
   }
-  
+
   public void testResetDefaultButton() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -471,25 +446,25 @@ public class ShellLCA_Test extends TestCase {
 
   public void testRenderActiveControlIntiallyNull() throws IOException {
     ShellLCA lca = new ShellLCA();
-    
+
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( shell, "activeControl" ) );
   }
-  
+
   public void testRenderActiveControlInitiallySet() throws Exception {
     ShellLCA lca = new ShellLCA();
     Button button = new Button( shell, SWT.PUSH );
     IShellAdapter adapter = shell.getAdapter( IShellAdapter.class );
-    
+
     adapter.setActiveControl( button );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( WidgetUtil.getId( button ), message.findSetProperty( shell, "activeControl" ) );
   }
-  
+
   public void testRenderActiveControlUnchanged() throws IOException {
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
@@ -497,10 +472,10 @@ public class ShellLCA_Test extends TestCase {
     IShellAdapter adapter = shell.getAdapter( IShellAdapter.class );
     adapter.setActiveControl( button );
     ShellLCA lca = new ShellLCA();
-    
+
     Fixture.preserveWidgets();
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( shell, "activeControl" ) );
   }
@@ -513,14 +488,14 @@ public class ShellLCA_Test extends TestCase {
     adapter.setActiveControl( button );
     ShellLCA lca = new ShellLCA();
     Fixture.preserveWidgets();
-    
+
     adapter.setActiveControl( null );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( JSONObject.NULL, message.findSetProperty( shell, "activeControl" ) );
   }
-  
+
   public void testRenderInitialBounds() throws Exception {
     Fixture.markInitialized( display );
     Fixture.preserveWidgets();
@@ -583,17 +558,17 @@ public class ShellLCA_Test extends TestCase {
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.TRUE, message.findListenProperty( shell, "shell" ) );
   }
-  
+
   public void testRenderShellListenerUnchanged() throws Exception {
     Shell shell = new Shell( display , SWT.SHELL_TRIM );
     Fixture.markInitialized( display );
     Fixture.markInitialized( shell );
     shell.addShellListener( new ShellAdapter(){ } );
     ShellLCA lca = new ShellLCA();
-    
+
     Fixture.preserveWidgets();
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findListenOperation( shell, "shell" ) );
   }
@@ -609,7 +584,7 @@ public class ShellLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     shell.removeShellListener( listener );
     lca.renderChanges( shell );
-    
+
     Message message = Fixture.getProtocolMessage();
     assertEquals( Boolean.FALSE, message.findListenProperty( shell, "shell" ) );
   }

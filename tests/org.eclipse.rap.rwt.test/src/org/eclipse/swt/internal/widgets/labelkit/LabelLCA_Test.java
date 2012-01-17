@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,12 +25,10 @@ import org.eclipse.rwt.internal.protocol.*;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.*;
 import org.json.*;
 
@@ -52,6 +50,16 @@ public class LabelLCA_Test extends TestCase {
   protected void tearDown() throws Exception {
     display.dispose();
     Fixture.tearDown();
+  }
+
+  public void testControlListeners() throws IOException {
+    Label label = new Label( shell, SWT.NONE );
+    ControlLCATestUtil.testActivateListener( label );
+    ControlLCATestUtil.testMouseListener( label );
+    ControlLCATestUtil.testKeyListener( label );
+    ControlLCATestUtil.testTraverseListener( label );
+    ControlLCATestUtil.testMenuDetectListener( label );
+    ControlLCATestUtil.testHelpListener( label );
   }
 
   public void testStandardPreserveValues() {
@@ -146,19 +154,6 @@ public class LabelLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     label.setEnabled( true );
-    //control_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( label );
-    Boolean hasListeners;
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    label.addControlListener( new ControlAdapter() { } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( label );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
     //foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     label.setBackground( background );
@@ -186,20 +181,6 @@ public class LabelLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( label );
     assertEquals( "some text", label.getToolTipText() );
-    Fixture.clearPreserved();
-    //activate_listeners   Focus_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( label );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    ActivateEvent.addListener( label, new ActivateAdapter() {
-    } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( label );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
   }
 
   public void testSeparatorPreserveValues() {

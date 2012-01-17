@@ -33,10 +33,9 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.custom.ICTabFolderAdapter;
 import org.eclipse.swt.internal.custom.ctabitemkit.CTabItemLCA;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.*;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,6 +58,17 @@ public class CTabFolderLCA_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  public void testControlListeners() throws IOException {
+    CTabFolder folder = new CTabFolder( shell, SWT.NONE );
+    ControlLCATestUtil.testActivateListener( folder );
+    ControlLCATestUtil.testFocusListener( folder );
+    ControlLCATestUtil.testMouseListener( folder );
+    ControlLCATestUtil.testKeyListener( folder );
+    ControlLCATestUtil.testTraverseListener( folder );
+    ControlLCATestUtil.testMenuDetectListener( folder );
+    ControlLCATestUtil.testHelpListener( folder );
   }
 
   public void testLCA() {
@@ -122,13 +132,6 @@ public class CTabFolderLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     folder.setEnabled( true );
-    // control_listeners
-    folder.addControlListener( new ControlAdapter() {} );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
     // foreground background font
     Color controlBackground = Graphics.getColor( 122, 33, 203 );
     folder.setBackground( controlBackground );
@@ -156,24 +159,6 @@ public class CTabFolderLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( folder );
     assertEquals( "some text", folder.getToolTipText() );
-    Fixture.clearPreserved();
-    // activate_listeners Focus_listeners
-    folder.addFocusListener( new FocusAdapter() {} );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    ActivateEvent.addListener( folder, new ActivateAdapter() {} );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( folder );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
   }
 
   public void testChangeSelection() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,9 +28,8 @@ import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.*;
 import org.json.JSONObject;
 
@@ -51,6 +50,17 @@ public class SpinnerLCA_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  public void testControlListeners() throws IOException {
+    Spinner spinner = new Spinner( shell, SWT.NONE );
+    ControlLCATestUtil.testActivateListener( spinner );
+    ControlLCATestUtil.testFocusListener( spinner );
+    ControlLCATestUtil.testMouseListener( spinner );
+    ControlLCATestUtil.testKeyListener( spinner );
+    ControlLCATestUtil.testTraverseListener( spinner );
+    ControlLCATestUtil.testMenuDetectListener( spinner );
+    ControlLCATestUtil.testHelpListener( spinner );
   }
 
   public void testPreserveValues() {
@@ -144,18 +154,6 @@ public class SpinnerLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( spinner );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
-    // control_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( spinner );
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    spinner.addControlListener( new ControlAdapter() {} );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( spinner );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
     // z-index
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
@@ -188,29 +186,6 @@ public class SpinnerLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( spinner );
     assertEquals( "some text", spinner.getToolTipText() );
-    Fixture.clearPreserved();
-    // activate_listeners Focus_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( spinner );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    spinner.addFocusListener( new FocusAdapter() {} );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( spinner );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( spinner );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    ActivateEvent.addListener( spinner, new ActivateAdapter() {} );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( spinner );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
   }
 
   public void testReadData() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import org.eclipse.rap.rwt.testfixture.Message;
 import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
@@ -41,6 +42,17 @@ public class ToolBarLCA_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  public void testControlListeners() throws IOException {
+    ToolBar toolBar = new ToolBar( shell, SWT.NONE );
+    ControlLCATestUtil.testActivateListener( toolBar );
+    ControlLCATestUtil.testFocusListener( toolBar );
+    ControlLCATestUtil.testMouseListener( toolBar );
+    ControlLCATestUtil.testKeyListener( toolBar );
+    ControlLCATestUtil.testTraverseListener( toolBar );
+    ControlLCATestUtil.testMenuDetectListener( toolBar );
+    ControlLCATestUtil.testHelpListener( toolBar );
   }
 
   public void testRenderCreate() throws IOException {

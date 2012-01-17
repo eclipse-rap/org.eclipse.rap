@@ -32,6 +32,7 @@ import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.IShellAdapter;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.*;
 import org.json.*;
 
@@ -56,6 +57,17 @@ public class ButtonLCA_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  public void testControlListeners() throws IOException {
+    Button button = new Button( shell, SWT.NONE );
+    ControlLCATestUtil.testActivateListener( button );
+    ControlLCATestUtil.testFocusListener( button );
+    ControlLCATestUtil.testMouseListener( button );
+    ControlLCATestUtil.testKeyListener( button );
+    ControlLCATestUtil.testTraverseListener( button );
+    ControlLCATestUtil.testMenuDetectListener( button );
+    ControlLCATestUtil.testHelpListener( button );
   }
 
   public void testRadioPreserveValues() {
@@ -106,17 +118,6 @@ public class ButtonLCA_Test extends TestCase {
       Fixture.preserveWidgets();
       adapter = WidgetUtil.getAdapter( button );
       assertSame( image, adapter.getPreserved( Props.IMAGE ) );
-      Fixture.clearPreserved();
-      Fixture.preserveWidgets();
-      adapter = WidgetUtil.getAdapter( button );
-      hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-      assertEquals( Boolean.FALSE, hasListeners );
-      Fixture.clearPreserved();
-      button.addFocusListener( new FocusAdapter() { } );
-      Fixture.preserveWidgets();
-      adapter = WidgetUtil.getAdapter( button );
-      hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-      assertEquals( Boolean.TRUE, hasListeners );
       Fixture.clearPreserved();
     }
     //Selection_Listener
@@ -178,19 +179,7 @@ public class ButtonLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     button.setEnabled( true );
-    //control_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    button.addControlListener( new ControlAdapter() { } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    //foreground background font
+    // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     button.setBackground( background );
     Color foreground = Graphics.getColor( 211, 178, 211 );
@@ -217,18 +206,6 @@ public class ButtonLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( button );
     assertEquals( "some text", button.getToolTipText() );
-    Fixture.clearPreserved();
-    //activate_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    ActivateEvent.addListener( button, new ActivateAdapter() { } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( button );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
   }
 

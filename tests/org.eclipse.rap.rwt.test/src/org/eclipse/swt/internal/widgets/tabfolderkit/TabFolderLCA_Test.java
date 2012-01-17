@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,9 +29,8 @@ import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
 
@@ -53,9 +52,19 @@ public class TabFolderLCA_Test extends TestCase {
     Fixture.tearDown();
   }
 
+  public void testControlListeners() throws IOException {
+    TabFolder tabfolder = new TabFolder( shell, SWT.NONE );
+    ControlLCATestUtil.testActivateListener( tabfolder );
+    ControlLCATestUtil.testFocusListener( tabfolder );
+    ControlLCATestUtil.testMouseListener( tabfolder );
+    ControlLCATestUtil.testKeyListener( tabfolder );
+    ControlLCATestUtil.testTraverseListener( tabfolder );
+    ControlLCATestUtil.testMenuDetectListener( tabfolder );
+    ControlLCATestUtil.testHelpListener( tabfolder );
+  }
+
   public void testPreserveValues() {
     TabFolder tabfolder = new TabFolder( shell, SWT.NONE );
-    Boolean hasListeners;
     Fixture.markInitialized( display );
     //control: enabled
     Fixture.preserveWidgets();
@@ -99,18 +108,6 @@ public class TabFolderLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( tabfolder );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
-    //control_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tabfolder );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    tabfolder.addControlListener( new ControlAdapter() { } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tabfolder );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
     //z-index
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tabfolder );
@@ -143,31 +140,6 @@ public class TabFolderLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tabfolder );
     assertEquals( "some text", tabfolder.getToolTipText() );
-    Fixture.clearPreserved();
-    //activate_listeners   Focus_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tabfolder );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    tabfolder.addFocusListener( new FocusAdapter() { } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tabfolder );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tabfolder );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    ActivateEvent.addListener( tabfolder, new ActivateAdapter() {
-    } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tabfolder );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
   }
 
   public void testSelectionWithoutListener() {

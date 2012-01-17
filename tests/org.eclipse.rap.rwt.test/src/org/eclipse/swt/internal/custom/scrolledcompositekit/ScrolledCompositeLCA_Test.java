@@ -28,9 +28,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.*;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,6 +53,17 @@ public class ScrolledCompositeLCA_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  public void testControlListeners() throws IOException {
+    ScrolledComposite sc = new ScrolledComposite( shell, SWT.NONE );
+    ControlLCATestUtil.testActivateListener( sc );
+    ControlLCATestUtil.testFocusListener( sc );
+    ControlLCATestUtil.testMouseListener( sc );
+    ControlLCATestUtil.testKeyListener( sc );
+    ControlLCATestUtil.testTraverseListener( sc );
+    ControlLCATestUtil.testMenuDetectListener( sc );
+    ControlLCATestUtil.testHelpListener( sc );
   }
 
   public void testPreserveValues() {
@@ -115,18 +125,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ) );
     Fixture.clearPreserved();
     sc.setEnabled( true );
-    // control_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    sc.addControlListener( new ControlAdapter() {} );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
     // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     sc.setBackground( background );
@@ -154,30 +152,6 @@ public class ScrolledCompositeLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( sc );
     assertEquals( "some text", sc.getToolTipText() );
-    Fixture.clearPreserved();
-    // activate_listeners Focus_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    sc.addFocusListener( new FocusAdapter() {} );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    ActivateEvent.addListener( sc, new ActivateAdapter() {
-    } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( sc );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
   }
 
   public void testReadData() {

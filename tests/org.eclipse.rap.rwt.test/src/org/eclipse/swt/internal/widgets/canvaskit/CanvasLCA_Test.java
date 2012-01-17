@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.eclipse.swt.internal.graphics.GCAdapter;
 import org.eclipse.swt.internal.graphics.GCOperation.DrawLine;
 import org.eclipse.swt.internal.graphics.GCOperation.SetProperty;
 import org.eclipse.swt.internal.graphics.IGCAdapter;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -55,6 +56,16 @@ public class CanvasLCA_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  public void testControlListeners() throws IOException {
+    ControlLCATestUtil.testActivateListener( canvas );
+    ControlLCATestUtil.testFocusListener( canvas );
+    ControlLCATestUtil.testMouseListener( canvas );
+    ControlLCATestUtil.testKeyListener( canvas );
+    ControlLCATestUtil.testTraverseListener( canvas );
+    ControlLCATestUtil.testMenuDetectListener( canvas );
+    ControlLCATestUtil.testHelpListener( canvas );
   }
 
   public void testRenderCreate() throws IOException {

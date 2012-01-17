@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,9 +26,8 @@ import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.*;
 import org.json.*;
 
@@ -48,6 +47,17 @@ public class LinkLCA_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  public void testControlListeners() throws IOException {
+    Link link = new Link( shell, SWT.NONE );
+    ControlLCATestUtil.testActivateListener( link );
+    ControlLCATestUtil.testFocusListener( link );
+    ControlLCATestUtil.testMouseListener( link );
+    ControlLCATestUtil.testKeyListener( link );
+    ControlLCATestUtil.testTraverseListener( link );
+    ControlLCATestUtil.testMenuDetectListener( link );
+    ControlLCATestUtil.testHelpListener( link );
   }
 
   public void testPreserveValues() {
@@ -105,18 +115,6 @@ public class LinkLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( link );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
-    // control_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( link );
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    link.addControlListener( new ControlAdapter() {} );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( link );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
     // z-index
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
@@ -149,29 +147,6 @@ public class LinkLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( link );
     assertEquals( "some text", link.getToolTipText() );
-    Fixture.clearPreserved();
-    // activate_listeners Focus_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( link );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    link.addFocusListener( new FocusAdapter() {} );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( link );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( link );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    ActivateEvent.addListener( link, new ActivateAdapter() {} );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( link );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
   }
 
   public void testSelectionEvent() {

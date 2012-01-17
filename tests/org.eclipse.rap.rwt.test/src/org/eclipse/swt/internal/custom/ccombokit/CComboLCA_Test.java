@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,8 +28,6 @@ import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -40,9 +38,8 @@ import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
@@ -73,8 +70,19 @@ public class CComboLCA_Test extends TestCase {
     Fixture.tearDown();
   }
 
+  public void testControlListeners() throws IOException {
+    CCombo ccombo = new CCombo( shell, SWT.NONE );
+    ControlLCATestUtil.testActivateListener( ccombo );
+    ControlLCATestUtil.testFocusListener( ccombo );
+    ControlLCATestUtil.testMouseListener( ccombo );
+    ControlLCATestUtil.testKeyListener( ccombo );
+    ControlLCATestUtil.testTraverseListener( ccombo );
+    ControlLCATestUtil.testMenuDetectListener( ccombo );
+    ControlLCATestUtil.testHelpListener( ccombo );
+  }
+
   public void testPreserveValues() {
-    CCombo ccombo = new CCombo( shell, SWT.DEFAULT );
+    CCombo ccombo = new CCombo( shell, SWT.READ_ONLY );
     Fixture.markInitialized( display );
     // Test preserving a CCombo with no items and (naturally) no selection
     Fixture.preserveWidgets();
@@ -115,17 +123,6 @@ public class CComboLCA_Test extends TestCase {
     assertEquals( new Integer( 10 ), adapter.getPreserved( CComboLCA.PROP_TEXT_LIMIT ) );
     assertEquals( Boolean.TRUE, adapter.getPreserved( CComboLCA.PROP_LIST_VISIBLE ) );
     assertEquals( Boolean.FALSE, adapter.getPreserved( CComboLCA.PROP_EDITABLE ) );
-    // control_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( ccombo );
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    ccombo.addControlListener( new ControlAdapter() {} );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( ccombo );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
     // foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
@@ -154,19 +151,6 @@ public class CComboLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( ccombo );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    Fixture.clearPreserved();
-    // activateListener
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( ccombo );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    ActivateEvent.addListener( ccombo, new ActivateAdapter() {
-    } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( ccombo );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
   }
 
   public void testEditablePreserveValues() {
@@ -175,18 +159,6 @@ public class CComboLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( ccombo );
     assertEquals( Boolean.TRUE, adapter.getPreserved( CComboLCA.PROP_EDITABLE ) );
-    // activateListeners, focusListeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( ccombo );
-    Boolean focusListener = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.FALSE, focusListener );
-    Fixture.clearPreserved();
-    ccombo.addFocusListener( new FocusAdapter() {
-    } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( ccombo );
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
   }
 
   public void testReadData() {

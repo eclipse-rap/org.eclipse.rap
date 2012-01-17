@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,11 +27,8 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
 import org.eclipse.swt.widgets.*;
-
 
 public class ControlLCA_Test extends TestCase {
 
@@ -47,7 +44,6 @@ public class ControlLCA_Test extends TestCase {
     Display display = new Display();
     Composite shell = new Shell( display , SWT.NONE );
     Control control = new Button( shell, SWT.PUSH );
-    Boolean hasListeners;
     Fixture.markInitialized( display );
     //bound
     Rectangle rectangle = new Rectangle( 10, 10, 10, 10 );
@@ -82,18 +78,6 @@ public class ControlLCA_Test extends TestCase {
     assertEquals( Boolean.FALSE, adapter.getPreserved( Props.ENABLED ));
     Fixture.clearPreserved();
     control.setEnabled( true );
-    //control_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( control );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    control.addControlListener( new ControlAdapter() { } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( control );
-    hasListeners = ( Boolean ) adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
     //foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
     control.setBackground( background );
@@ -121,29 +105,6 @@ public class ControlLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( control );
     assertEquals( "some text", control.getToolTipText() );
-    Fixture.clearPreserved();
-    //activate_listeners   Focus_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( control );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    control.addFocusListener( new FocusAdapter() { } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( control );
-    hasListeners = ( Boolean ) adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( control );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    ActivateEvent.addListener( control, new ActivateAdapter() { } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( control );
-    hasListeners = ( Boolean ) adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
   }
 
   public void testWriteVisibility() throws IOException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import org.eclipse.rap.rwt.testfixture.Message.CreateOperation;
 import org.eclipse.rap.rwt.testfixture.Message.SetOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
-import org.eclipse.rwt.internal.theme.JsonValue;
 import org.eclipse.rwt.lifecycle.AbstractWidgetLCA;
 import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
@@ -30,10 +29,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.ICoolBarAdapter;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.CoolBar;
 import org.eclipse.swt.widgets.CoolItem;
@@ -57,15 +55,23 @@ public final class CoolBarLCA_Test extends TestCase {
     shell = new Shell( display, SWT.NONE );
     bar = new CoolBar( shell, SWT.FLAT );
     lca = new CoolBarLCA();
-    Fixture.fakeNewRequest( display );    
+    Fixture.fakeNewRequest( display );
   }
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
   }
 
+  public void testControlListeners() throws IOException {
+    ControlLCATestUtil.testActivateListener( bar );
+    ControlLCATestUtil.testMouseListener( bar );
+    ControlLCATestUtil.testKeyListener( bar );
+    ControlLCATestUtil.testTraverseListener( bar );
+    ControlLCATestUtil.testMenuDetectListener( bar );
+    ControlLCATestUtil.testHelpListener( bar );
+  }
+
   public void testPreserveValues() {
-    Boolean hasListeners;
     Fixture.markInitialized( bar );
     AbstractWidgetLCA lca = WidgetUtil.getLCA( bar );
     lca.preserveValues( bar );
@@ -119,12 +125,6 @@ public final class CoolBarLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( bar );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
-    // control_listeners is always true
-    lca.preserveValues( bar );
-    adapter = WidgetUtil.getAdapter( bar );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
     // z-index
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
@@ -157,19 +157,6 @@ public final class CoolBarLCA_Test extends TestCase {
     lca.preserveValues( bar );
     adapter = WidgetUtil.getAdapter( bar );
     assertEquals( "some text", bar.getToolTipText() );
-    Fixture.clearPreserved();
-    // activate_listeners
-    lca.preserveValues( bar );
-    adapter = WidgetUtil.getAdapter( bar );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    ActivateEvent.addListener( bar, new ActivateAdapter() {
-    } );
-    lca.preserveValues( bar );
-    adapter = WidgetUtil.getAdapter( bar );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
   }
 
   public void testRenderCreate() throws IOException {
@@ -192,12 +179,12 @@ public final class CoolBarLCA_Test extends TestCase {
     lca.preserveValues( bar );
     bar.setLocked( true );
     lca.renderChanges( bar );
-    
+
     Message message = Fixture.getProtocolMessage();
     SetOperation operation = message.findSetOperation( bar, "locked" );
     assertEquals( Boolean.TRUE, operation.getProperty( "locked" ) );
   }
-  
+
   public void testItemReordering1() {
     Fixture.fakePhase( PhaseId.PROCESS_ACTION );
     bar.setSize( 100, 10 );

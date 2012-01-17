@@ -28,7 +28,6 @@ import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -39,6 +38,7 @@ import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -66,6 +66,17 @@ public class TextLCA_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  public void testControlListeners() throws IOException {
+    Text text = new Text( shell, SWT.NONE );
+    ControlLCATestUtil.testActivateListener( text );
+    ControlLCATestUtil.testFocusListener( text );
+    ControlLCATestUtil.testMouseListener( text );
+    ControlLCATestUtil.testKeyListener( text );
+    ControlLCATestUtil.testTraverseListener( text );
+    ControlLCATestUtil.testMenuDetectListener( text );
+    ControlLCATestUtil.testHelpListener( text );
   }
 
   public void testMultiPreserveValues() {
@@ -316,15 +327,6 @@ public class TextLCA_Test extends TestCase {
     text.setBounds( rectangle );
     Fixture.preserveWidgets();
     assertEquals( rectangle, getPreserved( text, Props.BOUNDS ) );
-    Fixture.clearPreserved();
-    //control_listeners
-    Fixture.preserveWidgets();
-    assertEquals( Boolean.FALSE,
-                  getPreserved( text, Props.CONTROL_LISTENERS ) );
-    Fixture.clearPreserved();
-    text.addControlListener( new ControlAdapter() { } );
-    Fixture.preserveWidgets();
-    assertEquals( Boolean.TRUE, getPreserved( text, Props.CONTROL_LISTENERS ) );
     Fixture.clearPreserved();
     //enabled
     Fixture.preserveWidgets();

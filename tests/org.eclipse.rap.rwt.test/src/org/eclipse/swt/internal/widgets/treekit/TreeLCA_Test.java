@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,9 +29,8 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.internal.widgets.treekit.TreeLCA.ItemMetrics;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
@@ -55,6 +54,17 @@ public class TreeLCA_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  public void testControlListeners() throws IOException {
+    Tree tree = new Tree( shell, SWT.NONE );
+    ControlLCATestUtil.testActivateListener( tree );
+    ControlLCATestUtil.testFocusListener( tree );
+    ControlLCATestUtil.testMouseListener( tree );
+    ControlLCATestUtil.testKeyListener( tree );
+    ControlLCATestUtil.testTraverseListener( tree );
+    ControlLCATestUtil.testMenuDetectListener( tree );
+    ControlLCATestUtil.testHelpListener( tree );
   }
 
   public void testGetItemMetricsImageWidth() {
@@ -266,12 +276,6 @@ public class TreeLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
-    // control_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
     // z-index
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
@@ -304,29 +308,6 @@ public class TreeLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( tree );
     assertEquals( "some text", tree.getToolTipText() );
-    Fixture.clearPreserved();
-    // activate_listeners Focus_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    tree.addFocusListener( new FocusAdapter() {} );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    ActivateEvent.addListener( tree, new ActivateAdapter() {} );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( tree );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
   }
 
   public void testSelectionEvent() {

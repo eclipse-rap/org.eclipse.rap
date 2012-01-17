@@ -28,6 +28,7 @@ import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.*;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +51,16 @@ public class ExpandBarLCA_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  public void testControlListeners() throws IOException {
+    ControlLCATestUtil.testActivateListener( expandBar );
+    ControlLCATestUtil.testFocusListener( expandBar );
+    ControlLCATestUtil.testMouseListener( expandBar );
+    ControlLCATestUtil.testKeyListener( expandBar );
+    ControlLCATestUtil.testTraverseListener( expandBar );
+    ControlLCATestUtil.testMenuDetectListener( expandBar );
+    ControlLCATestUtil.testHelpListener( expandBar );
   }
 
   public void testPreserveValues() {

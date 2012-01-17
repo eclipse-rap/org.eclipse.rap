@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH abd others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH abd others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import org.eclipse.swt.events.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.events.*;
 import org.eclipse.swt.internal.widgets.*;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.internal.widgets.tablekit.TableLCA.ItemMetrics;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.*;
@@ -57,6 +58,17 @@ public class TableLCA_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  public void testControlListeners() throws IOException {
+    Table table = new Table( shell, SWT.NONE );
+    ControlLCATestUtil.testActivateListener( table );
+    ControlLCATestUtil.testFocusListener( table );
+    ControlLCATestUtil.testMouseListener( table );
+    ControlLCATestUtil.testKeyListener( table );
+    ControlLCATestUtil.testTraverseListener( table );
+    ControlLCATestUtil.testMenuDetectListener( table );
+    ControlLCATestUtil.testHelpListener( table );
   }
 
   public void testPreserveValues() {
@@ -104,12 +116,6 @@ public class TableLCA_Test extends TestCase {
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( rectangle, adapter.getPreserved( Props.BOUNDS ) );
     Fixture.clearPreserved();
-    // control_listeners (Table always registers a control listener)
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( table );
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
     // z-index
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
@@ -142,31 +148,6 @@ public class TableLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( table );
     assertEquals( "some text", table.getToolTipText() );
-    Fixture.clearPreserved();
-    // activate listeners, focus listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( table );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    table.addFocusListener( new FocusAdapter() { } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( table );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( table );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    ActivateEvent.addListener( table, new ActivateAdapter() {
-    } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( table );
-    hasListeners = ( Boolean )adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
-    Fixture.clearPreserved();
   }
 
   public void testWidgetSelectedWithCheck() {

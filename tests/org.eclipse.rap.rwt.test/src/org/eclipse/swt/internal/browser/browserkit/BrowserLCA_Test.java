@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2008, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.*;
 import org.eclipse.swt.internal.widgets.IBrowserAdapter;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.json.JSONArray;
@@ -49,6 +50,17 @@ public class BrowserLCA_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  public void testControlListeners() throws IOException {
+    Browser browser = new Browser( shell, SWT.NONE );
+    ControlLCATestUtil.testActivateListener( browser );
+    ControlLCATestUtil.testFocusListener( browser );
+    ControlLCATestUtil.testMouseListener( browser );
+    ControlLCATestUtil.testKeyListener( browser );
+    ControlLCATestUtil.testTraverseListener( browser );
+    ControlLCATestUtil.testMenuDetectListener( browser );
+    ControlLCATestUtil.testHelpListener( browser );
   }
 
   public void testTextChanged() throws IOException {

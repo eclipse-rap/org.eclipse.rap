@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,8 +28,6 @@ import org.eclipse.rwt.lifecycle.IWidgetAdapter;
 import org.eclipse.rwt.lifecycle.PhaseId;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -40,9 +38,8 @@ import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.internal.events.ActivateAdapter;
-import org.eclipse.swt.internal.events.ActivateEvent;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
@@ -72,8 +69,19 @@ public class ComboLCA_Test extends TestCase {
     Fixture.tearDown();
   }
 
+  public void testControlListeners() throws IOException {
+    Combo combo = new Combo( shell, SWT.NONE );
+    ControlLCATestUtil.testActivateListener( combo );
+    ControlLCATestUtil.testFocusListener( combo );
+    ControlLCATestUtil.testMouseListener( combo );
+    ControlLCATestUtil.testKeyListener( combo );
+    ControlLCATestUtil.testTraverseListener( combo );
+    ControlLCATestUtil.testMenuDetectListener( combo );
+    ControlLCATestUtil.testHelpListener( combo );
+  }
+
   public void testPreserveValues() {
-    Combo combo = new Combo( shell, SWT.DEFAULT );
+    Combo combo = new Combo( shell, SWT.READ_ONLY );
     Fixture.markInitialized( display );
     // Test preserving a combo with no items and (naturally) no selection
     Fixture.preserveWidgets();
@@ -110,17 +118,6 @@ public class ComboLCA_Test extends TestCase {
     assertEquals( new Integer( combo.getVisibleItemCount() ), visibleItemCount );
     assertEquals( "item 2", adapter.getPreserved( Props.TEXT ) );
     assertEquals( Boolean.FALSE, adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
-    //control_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( combo );
-    Boolean hasListeners = ( Boolean )adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    combo.addControlListener( new ControlAdapter() {} );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( combo );
-    hasListeners = ( Boolean ) adapter.getPreserved( Props.CONTROL_LISTENERS );
-    assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
     //foreground background font
     Color background = Graphics.getColor( 122, 33, 203 );
@@ -149,19 +146,6 @@ public class ComboLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     adapter = WidgetUtil.getAdapter( combo );
     assertTrue( adapter.getPreserved( Props.Z_INDEX ) != null );
-    Fixture.clearPreserved();
-    //activateListener
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( combo );
-    hasListeners = (Boolean)adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.FALSE, hasListeners );
-    Fixture.clearPreserved();
-    ActivateEvent.addListener( combo, new ActivateAdapter() {
-    } );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( combo );
-    hasListeners = ( Boolean ) adapter.getPreserved( Props.ACTIVATE_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
   }
 
   public void testEditablePreserveValues() {
@@ -170,17 +154,6 @@ public class ComboLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     IWidgetAdapter adapter = WidgetUtil.getAdapter( combo );
     assertEquals( Boolean.TRUE , adapter.getPreserved( ComboLCA.PROP_EDITABLE ) );
-    //activate_listeners   Focus_listeners
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( combo );
-    Boolean focusListener = (Boolean)adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.FALSE, focusListener );
-    Fixture.clearPreserved();
-    combo.addFocusListener( new FocusAdapter() {} );
-    Fixture.preserveWidgets();
-    adapter = WidgetUtil.getAdapter( combo );
-    Boolean hasListeners = ( Boolean ) adapter.getPreserved( Props.FOCUS_LISTENER );
-    assertEquals( Boolean.TRUE, hasListeners );
     Fixture.clearPreserved();
     // textLimit
     combo.setTextLimit( 10 );

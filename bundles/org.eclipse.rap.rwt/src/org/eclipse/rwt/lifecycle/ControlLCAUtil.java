@@ -246,8 +246,6 @@ public class ControlLCAUtil {
     preserveBackgroundImage( control );
     WidgetLCAUtil.preserveFont( control, controlAdapter.getUserFont() );
     adapter.preserve( PROP_CURSOR, control.getCursor() );
-    adapter.preserve( Props.CONTROL_LISTENERS,
-                      Boolean.valueOf( ControlEvent.hasListener( control ) ) );
     WidgetLCAUtil.preserveListener( control,
                                     PROP_ACTIVATE_LISTENER,
                                     ActivateEvent.hasListener( control ) );

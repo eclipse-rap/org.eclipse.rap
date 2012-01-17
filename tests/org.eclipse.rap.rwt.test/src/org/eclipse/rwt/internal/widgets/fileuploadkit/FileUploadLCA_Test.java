@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.internal.widgets.Props;
+import org.eclipse.swt.internal.widgets.controlkit.ControlLCATestUtil;
 import org.eclipse.swt.widgets.*;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,6 +61,16 @@ public class FileUploadLCA_Test extends TestCase {
 
   protected void tearDown() throws Exception {
     Fixture.tearDown();
+  }
+
+  public void testControlListeners() throws IOException {
+    ControlLCATestUtil.testActivateListener( fileUpload );
+    ControlLCATestUtil.testFocusListener( fileUpload );
+    ControlLCATestUtil.testMouseListener( fileUpload );
+    ControlLCATestUtil.testKeyListener( fileUpload );
+    ControlLCATestUtil.testTraverseListener( fileUpload );
+    ControlLCATestUtil.testMenuDetectListener( fileUpload );
+    ControlLCATestUtil.testHelpListener( fileUpload );
   }
 
   public void testPreserveBounds() {

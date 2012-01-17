@@ -20,11 +20,6 @@ public final class Props {
   public static final String MENU = "menu";
   public static final String VISIBLE = "visible";
   public static final String ENABLED = "enabled";
-  public static final String CONTROL_LISTENERS = "listener_control";
-
-  public static final String SELECTION_LISTENERS = "listener_selection";
-  public static final String ACTIVATE_LISTENER = "listener_activate";
-  public static final String FOCUS_LISTENER = "listener_focus";
 
   public static final String TEXT = "text";
   public static final String IMAGE = "image";
