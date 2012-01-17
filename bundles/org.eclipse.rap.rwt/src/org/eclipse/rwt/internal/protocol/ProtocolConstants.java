@@ -1,5 +1,5 @@
 /******************************************************************************* 
-* Copyright (c) 2011 EclipseSource and others.
+* Copyright (c) 2011, 2012 EclipseSource and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -27,8 +27,7 @@ final class ProtocolConstants {
   public static final String ACTION_SET = "set";
   public static final String ACTION_LISTEN = "listen";
   public static final String ACTION_CALL = "call";
-  public static final String ACTION_DESTROY = "destroy";    
-  public static final String ACTION_EXECUTE_SCRIPT = "executeScript";
+  public static final String ACTION_DESTROY = "destroy";
 
   // Common properties
   public static final String META_REQUEST_COUNTER = "requestCounter";
@@ -36,8 +35,6 @@ final class ProtocolConstants {
   public static final String CREATE_PARENT = "parent";
   public static final String CREATE_TYPE = "type";
   public static final String CREATE_STYLE = "style";
-  public static final String EXECUTE_SCRIPT_TYPE = "scriptType";
-  public static final String EXECUTE_SCRIPT_CONTENT = "content";
 
   private ProtocolConstants() {
     // prevent instantiation

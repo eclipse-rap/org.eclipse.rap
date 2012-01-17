@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,8 +74,6 @@ public final class Message {
       result = new SetOperation( operation );
     } else if( action.equals( "listen" ) ) {
       result = new ListenOperation( operation );
-    } else if( action.equals( "executeScript" ) ) {
-      result = new ExecuteScriptOperation( operation );
     } else if( action.equals( "destroy" ) ) {
       result = new DestroyOperation( operation );
     } else {
@@ -330,21 +328,6 @@ public final class Message {
 
     public boolean listensTo( String eventName ) {
       return ( ( Boolean )getProperty( eventName ) ).booleanValue();
-    }
-  }
-
-  public final class ExecuteScriptOperation extends Operation {
-
-    private ExecuteScriptOperation( JSONObject operation ) {
-      super( operation );
-    }
-
-    public String getScriptType() {
-      return ( String )getDetail( "scriptType" );
-    }
-
-    public String getScript() {
-      return ( String )getDetail( "content" );
     }
   }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Rüdiger Herrmann and others.
+ * Copyright (c) 2011, 2012 Rüdiger Herrmann and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,6 @@ package org.eclipse.rwt.internal.widgets;
 import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
-import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.ExecuteScriptOperation;
 import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.swt.widgets.Display;
 
@@ -39,10 +37,7 @@ public class JSExecutor_Test extends TestCase {
 
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
-    ExecuteScriptOperation operation = ( ExecuteScriptOperation )message.getOperation( 0 );
-    assertEquals( "text/javascript", operation.getScriptType() );
-    assertEquals( EXECUTE_1, operation.getScript() );
+    assertEquals( EXECUTE_1, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testExecuteJSTwice() {
@@ -51,10 +46,7 @@ public class JSExecutor_Test extends TestCase {
 
     Fixture.executeLifeCycleFromServerThread();
 
-    Message message = Fixture.getProtocolMessage();
-    ExecuteScriptOperation operation = ( ExecuteScriptOperation )message.getOperation( 0 );
-    assertEquals( "text/javascript", operation.getScriptType() );
-    assertEquals( EXECUTE_1 + EXECUTE_2, operation.getScript() );
+    assertEquals( EXECUTE_1 + EXECUTE_2, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testExecuteJSIsClearedAfterRender() {

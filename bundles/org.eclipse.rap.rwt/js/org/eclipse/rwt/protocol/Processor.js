@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,9 +44,6 @@ org.eclipse.rwt.protocol.Processor = {
         break; 
         case "listen":
           this._processListen( operation.target, operation.properties );
-        break; 
-        case "executeScript":
-          this._processExecute( operation.target, operation.scriptType, operation.content );
         break; 
       }
     } catch( ex ) {
@@ -117,17 +114,6 @@ org.eclipse.rwt.protocol.Processor = {
       }
     }
   },
-
- _processExecute : function( targetId, scriptType, content ) {
-   if( scriptType === "text/javascript" ) {
-     try {
-       eval( content );
-     } catch( ex ) {
-       // ignored
-       // TODO [tb] : handle in processOperation
-     }
-   }
- },
 
   ////////////
   // Internals

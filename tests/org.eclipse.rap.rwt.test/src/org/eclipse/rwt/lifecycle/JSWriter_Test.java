@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,10 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.ExecuteScriptOperation;
+import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
+import org.eclipse.rwt.internal.protocol.ProtocolTestUtil;
 import org.eclipse.rwt.internal.service.ContextProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -77,7 +78,7 @@ public class JSWriter_Test extends TestCase {
                       + "var w = new rap.Button();"
                       + "wm.add( w, \"w2\", true );"
                       + "wm.setParent( w, \"w3\" );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testInitialization2() throws Exception {
@@ -93,7 +94,7 @@ public class JSWriter_Test extends TestCase {
                       + "wm.add( w, \"w2\", true );"
                       + "wm.setParent( w, \"w3\" );"
                       + "w.setWidth( 5 );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testNewWidget() throws Exception {
@@ -106,7 +107,7 @@ public class JSWriter_Test extends TestCase {
                       + "var w = new rap.Button();"
                       + "wm.add( w, \"w2\", true );wm.setParent( w, \"w3\" );"
                       + "w.setText( \"xyz\" );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testNewWidgetWithParams() throws Exception {
@@ -121,7 +122,7 @@ public class JSWriter_Test extends TestCase {
                       + "var w = new rap.Button( \"abc\", [\"#ff0000\" ] );"
                       + "wm.add( w, \"w2\", true );wm.setParent( w, \"w3\" );"
                       + "w.setText( \"xyz\" );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testNewWidgetWithItem() throws Exception {
@@ -133,7 +134,7 @@ public class JSWriter_Test extends TestCase {
 
     String expected =   WM_SETUP_CODE
                       + "var w = new TreeItem();wm.add( w, \"w2\", false );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testResetJSProperty() throws IOException {
@@ -144,7 +145,7 @@ public class JSWriter_Test extends TestCase {
                       + "var w = wm.findWidgetById( \""
                       + WidgetUtil.getId( shell )
                       + "\" );w.resetTestProperty();";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testResetJSPropertyChain() throws IOException {
@@ -155,7 +156,7 @@ public class JSWriter_Test extends TestCase {
                       + "var w = wm.findWidgetById( \""
                       + WidgetUtil.getId( shell )
                       + "\" );w.getLabelObject().resetTestProperty();";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testSetParent() throws IOException {
@@ -164,7 +165,7 @@ public class JSWriter_Test extends TestCase {
     writer.setParent( "xyz" );
 
     String expected = "wm.setParent( w, \"xyz\" );";
-    assertTrue( getExecuteScript().contains( expected ) );
+    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
   public void testSetString() throws Exception {
@@ -172,7 +173,7 @@ public class JSWriter_Test extends TestCase {
     writer.set( "text", "xyz" );
 
     String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setText( \"xyz\" );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testSetInt() throws Exception {
@@ -181,7 +182,7 @@ public class JSWriter_Test extends TestCase {
     writer.set( "width", 20000000 );
 
     String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setWidth( 20000000 );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testSetBoolean() throws Exception {
@@ -189,7 +190,7 @@ public class JSWriter_Test extends TestCase {
     writer.set( "allowStretchY", true );
 
     String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setAllowStretchY( true );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testCallWithStringArray() throws Exception {
@@ -198,14 +199,14 @@ public class JSWriter_Test extends TestCase {
     writer.call( "setTextValues", new String[] { "abc", "xyz" } );
 
     String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setTextValues( \"abc\", \"xyz\" );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
 
     // test string with newline
     Fixture.fakeResponseWriter();
     writer.call( "setTextValues", new String[] { "new\nline" } );
 
     expected = "w.setTextValues( \"new\\nline\" );";
-    assertTrue( getExecuteScript().contains( expected ) );
+    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
   public void testCallWithObjectArray() throws IOException {
@@ -213,7 +214,7 @@ public class JSWriter_Test extends TestCase {
     writer.call( "setIntegerValues", new Integer[] { new Integer( 1 ), new Integer( 2 ) } );
 
     String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setIntegerValues( 1, 2 );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testCallWithColorValue() throws IOException {
@@ -222,7 +223,7 @@ public class JSWriter_Test extends TestCase {
     writer.call( "setColor", new Object[] { salmon } );
 
     String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setColor( \"#fa8072\" );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testCallWithRGBValue() throws IOException {
@@ -231,7 +232,7 @@ public class JSWriter_Test extends TestCase {
     writer.call( "setColor", new Object[] { salmon } );
 
     String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setColor( \"#fa8072\" );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testSetIntArray() throws Exception {
@@ -239,7 +240,7 @@ public class JSWriter_Test extends TestCase {
     writer.set( "intValues", new int[] { 1, 2 } );
 
     String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setIntValues( 1, 2 );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testSetBooleanArray() throws Exception {
@@ -247,7 +248,7 @@ public class JSWriter_Test extends TestCase {
     writer.set( "boolValues", new boolean[] { true, false } );
 
     String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setBoolValues( true, false );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testSetWidgetArray() throws IOException {
@@ -256,7 +257,7 @@ public class JSWriter_Test extends TestCase {
     writer.set( "buttons", "buttons", new Widget[ 0 ], null );
 
     String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.setButtons( [] );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testSetWidgetArray2() throws IOException {
@@ -268,7 +269,7 @@ public class JSWriter_Test extends TestCase {
     String expected = WM_SETUP_CODE
                       + W2_SETUP_CODE
                       + "w.setButtons( [wm.findWidgetById( \"w3\" ) ] );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testSetWidgetArray3() throws IOException {
@@ -282,7 +283,7 @@ public class JSWriter_Test extends TestCase {
                       + W2_SETUP_CODE
                       + "w.setButtons( [wm.findWidgetById( \"w3\" ),"
                       + "wm.findWidgetById( \"w4\" ) ] );";
-    assertTrue( getExecuteScript().contains( expected ) );
+    assertTrue( ProtocolTestUtil.getMessageScript().contains( expected ) );
   }
 
   public void testSetWithPropertyChainAndObjectArray() throws Exception {
@@ -291,7 +292,7 @@ public class JSWriter_Test extends TestCase {
                 new Object[] { new JSVar( "var1" ), new JSVar( "var2" ) } );
 
     String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.getProp1().setProp2( var1, var2 );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testSetWithStringArray() throws Exception {
@@ -306,7 +307,7 @@ public class JSWriter_Test extends TestCase {
     String expected = WM_SETUP_CODE
                       + getSetupCode( widget )
                       + "w.setStringArray( [ \"c\", \"b\", \"a\" ] );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testSetWithStringArrayPreserved() throws Exception {
@@ -332,7 +333,7 @@ public class JSWriter_Test extends TestCase {
     String expected = WM_SETUP_CODE
                       + "var w = wm.findWidgetById( \"w4\" );"
                       + "w.setValue( \"\" );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testSetChangedString2() throws Exception {
@@ -357,7 +358,7 @@ public class JSWriter_Test extends TestCase {
     writer.set( "text", "value", shell.text.getText() );
 
     String expected = WM_SETUP_CODE + getSetupCode( shell.text ) + "w.setValue( \"hello\" );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testCall() throws Exception {
@@ -365,7 +366,7 @@ public class JSWriter_Test extends TestCase {
     writer.call( "function1", null );
 
     String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.function1();";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testCall2() throws Exception {
@@ -374,7 +375,7 @@ public class JSWriter_Test extends TestCase {
     writer.call( "function2", null );
 
     String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.function1();w.function2();";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testCallFieldAssignment() {
@@ -382,7 +383,7 @@ public class JSWriter_Test extends TestCase {
     writer.callFieldAssignment( new JSVar( "w" ), "field", "value" );
 
     String expected = "w.field = value;";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testCallStatic() throws IOException {
@@ -390,7 +391,7 @@ public class JSWriter_Test extends TestCase {
     writer.callStatic( "doSomethingStatic", null );
 
     String expected = WM_SETUP_CODE + "doSomethingStatic();";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testCallStatic2() throws IOException {
@@ -398,7 +399,7 @@ public class JSWriter_Test extends TestCase {
     writer.callStatic( "doSomethingStaticWithButton", new Object[]{ shell.button } );
 
     String expected = WM_SETUP_CODE + "doSomethingStaticWithButton( wm.findWidgetById( \"w2\" ) );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testCallStatic3() throws IOException {
@@ -409,7 +410,7 @@ public class JSWriter_Test extends TestCase {
     String expected = WM_SETUP_CODE
                       + W2_SETUP_CODE
                       + "w.test();doSomethingStaticWithButtonRef( w );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testCallStatic4() throws IOException {
@@ -417,7 +418,7 @@ public class JSWriter_Test extends TestCase {
     writer.callStatic( "doSomething", new Object[] { new String[] { "xyz" } } );
 
     String expected = WM_SETUP_CODE + "doSomething( [ \"xyz\" ] );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testTargetedCallForWidget() throws IOException {
@@ -427,7 +428,7 @@ public class JSWriter_Test extends TestCase {
     String expected = WM_SETUP_CODE
                       + "var t = wm.findWidgetById( \"w2\" );"
                       + "t.doSomethingWithShell( wm.findWidgetById( \"w2\" ) );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testTargetedCallForWidget2() throws IOException {
@@ -435,7 +436,7 @@ public class JSWriter_Test extends TestCase {
     writer.call( shell, "doSomething", new Object[ 0 ] );
 
     String expected = WM_SETUP_CODE + "var t = wm.findWidgetById( \"w2\" );t.doSomething();";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testTargetedCallForWidget3() throws IOException {
@@ -443,7 +444,7 @@ public class JSWriter_Test extends TestCase {
     writer.call( shell, "doSomething", new Object[]{ new Integer( 123 ) } );
 
     String expected = WM_SETUP_CODE + "var t = wm.findWidgetById( \"w2\" );t.doSomething( 123 );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testTargetedCallForWidget4() throws IOException {
@@ -452,7 +453,7 @@ public class JSWriter_Test extends TestCase {
 
     String expected = WM_SETUP_CODE
                       + "var t = wm.findWidgetById( \"w2\" );t.doSomething( \"abc\", 123 );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testTargetedCallForWidget5() throws IOException {
@@ -463,7 +464,7 @@ public class JSWriter_Test extends TestCase {
                       + "var t = wm.findWidgetById( \"w2\" );"
                       + "t.doSomething( wm.findWidgetById( \"w2\" ), "
                       + "[ \"test\", \"test2\", \"test3\" ] );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testTargetedCallForWidget6() throws IOException {
@@ -475,7 +476,7 @@ public class JSWriter_Test extends TestCase {
                       + "var t = wm.findWidgetById( \"w2\" );"
                       + "t.doSomething( wm.findWidgetById( \"w2\" ), "
                       + "[] );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testTargetedCallForWidget7() throws IOException {
@@ -483,7 +484,7 @@ public class JSWriter_Test extends TestCase {
     writer.call( shell, "doSomething", null );
 
     String expected = WM_SETUP_CODE + "var t = wm.findWidgetById( \"w2\" );t.doSomething();";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testTargetedCallForWidget8() throws IOException {
@@ -493,7 +494,7 @@ public class JSWriter_Test extends TestCase {
     String expected = WM_SETUP_CODE
                       + "var t = wm.findWidgetById( \"w2\" );"
                       + "t.doSomething( null );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testTargetedCallForWidget9() throws IOException {
@@ -501,7 +502,7 @@ public class JSWriter_Test extends TestCase {
     writer.call( shell.button, "buttonFunction", null );
 
     String expected = WM_SETUP_CODE + W2_SETUP_CODE + "w.buttonFunction();";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testCallWithCharacterParam() throws IOException {
@@ -509,7 +510,7 @@ public class JSWriter_Test extends TestCase {
     writer.call( new JSVar( "a" ), "setChar", new Object[] { new Character( 'A' ) } );
 
     String expected = WM_SETUP_CODE + "a.setChar( \"A\" );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testTargetedCallForJSVar() throws IOException {
@@ -517,7 +518,7 @@ public class JSWriter_Test extends TestCase {
     writer.call( new JSVar( "a" ), "doSomething", null );
 
     String expected = WM_SETUP_CODE + "a.doSomething();";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testAddListener() throws Exception {
@@ -528,7 +529,7 @@ public class JSWriter_Test extends TestCase {
     String expected = WM_SETUP_CODE
                       + W2_SETUP_CODE
                       + "w.addEventListener( \"execute\", buttonExecuted1 );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testAddListener2() throws Exception {
@@ -541,7 +542,7 @@ public class JSWriter_Test extends TestCase {
                       + W2_SETUP_CODE
                       + "w.addEventListener( \"execute\", buttonExecuted1 );"
                       + "w.addEventListener( \"execute\", buttonExecuted2 );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testAddListener3() throws Exception {
@@ -552,7 +553,7 @@ public class JSWriter_Test extends TestCase {
     String expected = WM_SETUP_CODE
                       + W2_SETUP_CODE
                       + "w.getProp().addEventListener( \"type\", jshandler );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testRemoveListener() throws Exception {
@@ -563,7 +564,7 @@ public class JSWriter_Test extends TestCase {
     String expected = WM_SETUP_CODE
                       + W2_SETUP_CODE
                       + "w.removeEventListener( \"execute\", buttonExecuted1 );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testRemoveListener2() throws Exception {
@@ -576,7 +577,7 @@ public class JSWriter_Test extends TestCase {
                       + W2_SETUP_CODE
                       + "w.removeEventListener( \"execute\", buttonExecuted1 );"
                       + "w.removeEventListener( \"execute\", buttonExecuted2 );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testRemoveListener3() throws Exception {
@@ -587,7 +588,7 @@ public class JSWriter_Test extends TestCase {
     String expected = WM_SETUP_CODE
                       + W2_SETUP_CODE
                       + "w.getProp().removeEventListener( \"type\", jshandler );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testRemoveListener4() throws Exception {
@@ -598,7 +599,7 @@ public class JSWriter_Test extends TestCase {
     String expected = WM_SETUP_CODE
                       + W2_SETUP_CODE
                       + "w.removeEventListener( \"type\", w.jshandler, w );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testUpdateListenerAction() throws Exception {
@@ -628,7 +629,7 @@ public class JSWriter_Test extends TestCase {
     String expected = WM_SETUP_CODE
                       + getSetupCode( shell.button )
                       + "w.addEventListener( \"execute\", selectedEvent );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
 
     // Test adding the first listeners
     Fixture.fakeResponseWriter();
@@ -660,7 +661,7 @@ public class JSWriter_Test extends TestCase {
     writer.updateListener( jsListenerInfo,
                            PROP_SELECTION_LISTENER,
                            SelectionEvent.hasListener( shell.button ) );
-    assertEquals( "w.removeEventListener( \"execute\", selectedEvent );", getExecuteScript() );
+    assertEquals( "w.removeEventListener( \"execute\", selectedEvent );", ProtocolTestUtil.getMessageScript() );
 
     // Test that no changes to listeners do not cause any additional markup
     Fixture.fakeResponseWriter();
@@ -687,7 +688,7 @@ public class JSWriter_Test extends TestCase {
     String expected = WM_SETUP_CODE
                       + getSetupCode( shell.button )
                       + "w.addEventListener( \"type\", event );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
 
     // Test rendering with action listener added
     WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( shell.button );
@@ -702,7 +703,7 @@ public class JSWriter_Test extends TestCase {
                            SelectionEvent.hasListener( shell.button ) );
     expected = "w.removeEventListener( \"type\", event );"
                + "w.addEventListener( \"type\", eventAction );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
 
     // Test adding a further listener: leads to no markup
     Fixture.fakeResponseWriter();
@@ -726,7 +727,7 @@ public class JSWriter_Test extends TestCase {
                            SelectionEvent.hasListener( shell.button ) );
     expected = "w.removeEventListener( \"type\", eventAction );"
                + "w.addEventListener( \"type\", event );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testUpdateListenerStateAndActionWithActionFirst() throws Exception {
@@ -748,7 +749,7 @@ public class JSWriter_Test extends TestCase {
     String expected = WM_SETUP_CODE
                       + getSetupCode( shell.button )
                       + "w.addEventListener( \"type\", eventAction );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
 
     // Test adding a further listener: leads to no markup
     WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( shell.button );
@@ -774,7 +775,7 @@ public class JSWriter_Test extends TestCase {
                            SelectionEvent.hasListener( shell.button ) );
     expected = "w.removeEventListener( \"type\", eventAction );"
                + "w.addEventListener( \"type\", event );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testUpdateListenerOnPropertyAction() throws Exception {
@@ -806,7 +807,7 @@ public class JSWriter_Test extends TestCase {
     String expected = WM_SETUP_CODE
                       + getSetupCode( shell.button )
                       + "w.getPropertyName().addEventListener( \"execute\", selectedEvent );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
 
     // Test adding the first listeners
     Fixture.fakeResponseWriter();
@@ -843,7 +844,7 @@ public class JSWriter_Test extends TestCase {
                            PROP_SELECTION_LISTENER,
                            SelectionEvent.hasListener( shell.button ) );
     expected = "w.getPropertyName().removeEventListener" + "( \"execute\", selectedEvent );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
 
     // Test that no changes to listeners do not cause any additional markup
     Fixture.fakeResponseWriter();
@@ -872,7 +873,7 @@ public class JSWriter_Test extends TestCase {
     String expected = WM_SETUP_CODE
                       + getSetupCode( shell.button )
                       + "w.getPropertyName().addEventListener( \"type\", event );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
 
     // Test rendering with action listener added
     WidgetAdapter adapter = ( WidgetAdapter )WidgetUtil.getAdapter( shell.button );
@@ -888,7 +889,7 @@ public class JSWriter_Test extends TestCase {
                            SelectionEvent.hasListener( shell.button ) );
     expected = "w.getPropertyName().removeEventListener( \"type\", event );"
                + "w.getPropertyName().addEventListener( \"type\", eventAction );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
 
     // Test adding a further listener: leads to no markup
     Fixture.fakeResponseWriter();
@@ -914,7 +915,7 @@ public class JSWriter_Test extends TestCase {
                            SelectionEvent.hasListener( shell.button ) );
     expected = "w.getPropertyName().removeEventListener( \"type\", eventAction );"
                + "w.getPropertyName().addEventListener( \"type\", event );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
   //////////////////////////////// <<<<<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -923,7 +924,7 @@ public class JSWriter_Test extends TestCase {
     writer.dispose();
 
     String expected = WM_SETUP_CODE + "wm.dispose( \"w2\" );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testDisposeWithDisposedControl() throws IOException {
@@ -932,7 +933,7 @@ public class JSWriter_Test extends TestCase {
     writer.dispose();
 
     String expected = WM_SETUP_CODE + "wm.dispose( \"w2\" );";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testWigetRef() throws IOException {
@@ -944,23 +945,23 @@ public class JSWriter_Test extends TestCase {
     Fixture.fakeResponseWriter();
     writer1.set( "visible", false );
     String findWidget = "findWidgetById";
-    assertTrue( getExecuteScript().contains( findWidget ) );
+    assertTrue( ProtocolTestUtil.getMessageScript().contains( findWidget ) );
 
     Fixture.fakeResponseWriter();
     writer1.set( "visible", true );
-    assertTrue( getExecuteScript().indexOf( findWidget ) == -1 );
+    assertTrue( ProtocolTestUtil.getMessageScript().indexOf( findWidget ) == -1 );
 
     Fixture.fakeResponseWriter();
     writer2.set( "visible", true );
-    assertTrue( getExecuteScript().contains( findWidget ) );
+    assertTrue( ProtocolTestUtil.getMessageScript().contains( findWidget ) );
 
     Fixture.fakeResponseWriter();
     writer2.set( "visible", true );
-    assertTrue( getExecuteScript().indexOf( findWidget ) == -1 );
+    assertTrue( ProtocolTestUtil.getMessageScript().indexOf( findWidget ) == -1 );
 
     Fixture.fakeResponseWriter();
     writer1.set( "visible", true );
-    assertTrue( getExecuteScript().contains( findWidget ) );
+    assertTrue( ProtocolTestUtil.getMessageScript().contains( findWidget ) );
   }
 
   public void testVarAssignment() {
@@ -968,7 +969,7 @@ public class JSWriter_Test extends TestCase {
     writer.varAssignment( new JSVar( "foo" ), "getFoo" );
 
     String expected = WM_SETUP_CODE + W2_SETUP_CODE + "var foo = w.getFoo();";
-    assertEquals( expected, getExecuteScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testSubsequentCalls() throws IOException {
@@ -976,13 +977,11 @@ public class JSWriter_Test extends TestCase {
     writer.call( "foo", null );
     writer.call( "bar", null );
 
-    Message message = Fixture.getProtocolMessage();
-    ExecuteScriptOperation operation1 = ( ExecuteScriptOperation )message.getOperation( 0 );
     String expected = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
                       + "var w = wm.findWidgetById( \"w2\" );"
                       + "w.foo();"
                       + "w.bar();";
-    assertEquals( expected, operation1.getScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testSubsequentCallsWithIntermediateOperation() throws IOException {
@@ -993,22 +992,16 @@ public class JSWriter_Test extends TestCase {
     writer.call( "bar", null );
 
     Message message = Fixture.getProtocolMessage();
-    ExecuteScriptOperation operation1 = ( ExecuteScriptOperation )message.getOperation( 0 );
-    ExecuteScriptOperation operation2 = ( ExecuteScriptOperation )message.getOperation( 2 );
+    CallOperation operation1 = ( CallOperation )message.getOperation( 0 );
+    CallOperation operation2 = ( CallOperation )message.getOperation( 2 );
     String expected1 = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
                        + "var w = wm.findWidgetById( \"w2\" );"
                        + "w.foo();";
     String expected2 = "var wm = org.eclipse.swt.WidgetManager.getInstance();"
                        + "var w = wm.findWidgetById( \"w2\" );"
                        + "w.bar();";
-    assertEquals( expected1, operation1.getScript() );
-    assertEquals( expected2, operation2.getScript() );
-  }
-
-  private static String getExecuteScript() {
-    Message message = Fixture.getProtocolMessage();
-    ExecuteScriptOperation executeOperation = ( ExecuteScriptOperation )message.getOperation( 0 );
-    return executeOperation.getScript();
+    assertEquals( expected1, operation1.getProperty( "content" ) );
+    assertEquals( expected2, operation2.getProperty( "content" ) );
   }
 
   private static String getSetupCode( Widget widget ) {

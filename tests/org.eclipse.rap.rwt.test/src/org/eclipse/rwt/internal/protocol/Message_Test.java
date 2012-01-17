@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -130,12 +130,6 @@ public class Message_Test extends TestCase {
     assertTrue( getMessage().getOperation( 0 ) instanceof ListenOperation );
   }
 
-  public void testGetExecuteScriptOperation() {
-    writer.appendExecuteScript( "w1", "java", "content" );
-
-    assertTrue( getMessage().getOperation( 0 ) instanceof ExecuteScriptOperation );
-  }
-
   public void testGetDestroyOperation() {
     writer.appendDestroy( "w1" );
 
@@ -191,23 +185,6 @@ public class Message_Test extends TestCase {
     assertEquals( false, operation.listensTo( "event2" ) );
   }
 
-  public void testExecuteScriptOperation() {
-    writer.appendExecuteScript( "w1", "java", "content" );
-
-    ExecuteScriptOperation operation = ( ExecuteScriptOperation )getMessage().getOperation( 0 );
-    assertEquals( "java", operation.getScriptType() );
-    assertEquals( "content", operation.getScript() );
-  }
-
-  public void testWithTwoOperations() {
-    writer.appendDestroy( "w3" );
-    writer.appendExecuteScript( "w1", "java", "content" );
-
-    ExecuteScriptOperation operation = ( ExecuteScriptOperation )getMessage().getOperation( 1 );
-    assertEquals( "java", operation.getScriptType() );
-    assertEquals( "content", operation.getScript() );
-  }
-
   public void testOperationGetPropertyNames() {
     writer.appendSet( "w1", "key", true );
     SetOperation operation = ( SetOperation )getMessage().getOperation( 0 );
@@ -217,8 +194,8 @@ public class Message_Test extends TestCase {
   }
 
   public void testOperationGetPropertyNamesWhenEmpty() {
-    writer.appendExecuteScript( "w1", "application/javascript", "alert( 'Hello!' );" );
-    ExecuteScriptOperation operation = ( ExecuteScriptOperation )getMessage().getOperation( 0 );
+    writer.appendCall( "w1", "foo", null );
+    CallOperation operation = ( CallOperation )getMessage().getOperation( 0 );
 
     try {
       operation.getPropertyNames();

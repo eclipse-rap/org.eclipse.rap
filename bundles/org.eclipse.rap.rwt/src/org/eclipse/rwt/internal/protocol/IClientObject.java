@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -91,14 +91,6 @@ public interface IClientObject {
    * @param properties the named properties to pass as arguments to the method call
    */
   void call( String method, Map<String, Object> properties );
-
-  /**
-   * Advises the client to execute a script with the given MIME type.
-   *
-   * @param type the MIME type of the scripting language, e.g. "text/javascript"
-   * @param script the script code to execute on the client
-   */
-  void executeScript( String type, String script );
 
   /**
    * Advises the client to destroy the remote object.

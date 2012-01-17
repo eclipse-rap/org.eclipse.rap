@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 EclipseSource and others.
+ * Copyright (c) 2011, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@ package org.eclipse.rwt.internal.protocol;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.ExecuteScriptOperation;
+import org.eclipse.rap.rwt.testfixture.Message.CallOperation;
 import org.json.*;
 
 
@@ -45,8 +45,8 @@ public class ProtocolTestUtil {
     String result = "";
     Message message = Fixture.getProtocolMessage();
     if( message.getOperationCount() > 0 ) {
-      ExecuteScriptOperation operation = ( ExecuteScriptOperation )message.getOperation( 0 );
-      result = operation.getScript();
+      CallOperation operation = ( CallOperation )message.getOperation( 0 );
+      result = ( String )operation.getProperty( "content" );
     }
     return result;
   }

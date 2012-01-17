@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,13 @@
  ******************************************************************************/
 package org.eclipse.rwt.internal.widgets;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.rwt.internal.application.RWTFactory;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.internal.protocol.ProtocolMessageWriter;
 import org.eclipse.rwt.internal.service.ContextProvider;
-import org.eclipse.rwt.internal.util.HTTP;
 import org.eclipse.rwt.lifecycle.*;
 import org.eclipse.rwt.service.IServiceStore;
 import org.eclipse.swt.widgets.Display;
@@ -23,6 +25,9 @@ import org.eclipse.swt.widgets.Display;
 public final class JSExecutor {
 
   private static final String JS_EXECUTOR = JSExecutor.class.getName() + "#instance";
+  private static final String JSEXECUTOR_ID = "jsex";
+  private static final String PARAM_CONTENT = "content";
+  private static final String METHOD_EXECUTE = "execute";
 
   public static void executeJS( String code ) {
     JSExecutorPhaseListener jsExecutor = getJSExecutor();
@@ -69,8 +74,9 @@ public final class JSExecutor {
       if( display == LifeCycleUtil.getSessionDisplay() ) {
         ProtocolMessageWriter protocolWriter = ContextProvider.getProtocolWriter();
         try {
-          String content = code.toString().trim();
-          protocolWriter.appendExecuteScript( "jsex", HTTP.CONTENT_TYPE_JAVASCRIPT, content );
+          Map<String, Object> properties = new HashMap<String, Object>();
+          properties.put( PARAM_CONTENT, code.toString().trim() );
+          protocolWriter.appendCall( JSEXECUTOR_ID, METHOD_EXECUTE, properties );
         } finally {
           RWTFactory.getLifeCycleFactory().getLifeCycle().removePhaseListener( this );
         }

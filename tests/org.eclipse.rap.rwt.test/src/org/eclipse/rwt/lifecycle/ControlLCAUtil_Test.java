@@ -19,7 +19,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.ExecuteScriptOperation;
 import org.eclipse.rwt.graphics.Graphics;
 import org.eclipse.rwt.internal.lifecycle.DisplayUtil;
 import org.eclipse.rwt.internal.lifecycle.JSConst;
@@ -574,26 +573,21 @@ public class ControlLCAUtil_Test extends TestCase {
     ControlLCAUtil.writeBackgroundImage( control );
     String imageLocation = ImageFactory.getImagePath( image );
 
-    Message message1 = Fixture.getProtocolMessage();
-    ExecuteScriptOperation operation1 = ( ExecuteScriptOperation )message1.getOperation( 0 );
     String expected = "var w = wm.findWidgetById( \"w2\" );"
                       + "w.setUserData( \"backgroundImageSize\", [58,12 ] );"
                       + "w.setBackgroundImage( \""
                       + imageLocation
                       + "\" );";
-    assertEquals( expected, operation1.getScript() );
+    assertEquals( expected, ProtocolTestUtil.getMessageScript() );
 
     Fixture.fakeResponseWriter();
     ControlLCAUtil.preserveBackgroundImage( control );
     control.setBackgroundImage( null );
     ControlLCAUtil.writeBackgroundImage( control );
 
-    Message message2 = Fixture.getProtocolMessage();
-    assertEquals( 1, message2.getOperationCount() );
-    ExecuteScriptOperation operation2 = ( ExecuteScriptOperation )message2.getOperation( 0 );
     String expected2 = "w.setUserData( \"backgroundImageSize\", null );"
                        + "w.resetBackgroundImage();";
-    assertEquals( expected2, operation2.getScript() );
+    assertEquals( expected2, ProtocolTestUtil.getMessageScript() );
   }
 
   public void testProcessHelpEvent() {

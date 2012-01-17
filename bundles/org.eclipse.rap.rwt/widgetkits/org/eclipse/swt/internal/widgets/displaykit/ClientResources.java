@@ -295,6 +295,8 @@ public final class ClientResources {
     "org/eclipse/rwt/protocol/Processor.js",
     "org/eclipse/rwt/UICallBack.js",
     "org/eclipse/rwt/UICallBackAdapter.js",
+    "org/eclipse/rwt/JSExecutor.js",
+    "org/eclipse/rwt/JSExecutorAdapter.js",
     "org/eclipse/rwt/System.js"
   };
 

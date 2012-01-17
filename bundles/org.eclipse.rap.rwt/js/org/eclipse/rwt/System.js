@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ * Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                       and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -79,6 +79,8 @@ qx.Class.define( "org.eclipse.rwt.System", {
     _registerSingletons : function() {
       var uiCallBack = org.eclipse.rwt.UICallBack.getInstance();
       org.eclipse.rwt.protocol.ObjectManager.add( "uicb", uiCallBack, "rwt.UICallBack" );
+      var jsExecutor = org.eclipse.rwt.JSExecutor.getInstance();
+      org.eclipse.rwt.protocol.ObjectManager.add( "jsex", jsExecutor, "rwt.JSExecutor" );
       var browser = org.eclipse.rwt.widgets.ExternalBrowser.getInstance();
       org.eclipse.rwt.protocol.ObjectManager.add( "eb", browser, "rwt.widgets.ExternalBrowser" );
     },

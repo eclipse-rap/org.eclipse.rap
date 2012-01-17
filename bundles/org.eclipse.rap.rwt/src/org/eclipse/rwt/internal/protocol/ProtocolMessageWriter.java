@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010, 2011 EclipseSource and others.
+* Copyright (c) 2010, 2012 EclipseSource and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -13,16 +13,14 @@ package org.eclipse.rwt.internal.protocol;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_CALL;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_CREATE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_DESTROY;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_EXECUTE_SCRIPT;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_LISTEN;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.ACTION_SET;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CALL_METHOD_NAME;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.CREATE_TYPE;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_CONTENT;
-import static org.eclipse.rwt.internal.protocol.ProtocolConstants.EXECUTE_SCRIPT_TYPE;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.META;
 import static org.eclipse.rwt.internal.protocol.ProtocolConstants.OPERATIONS;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rwt.internal.service.ContextProvider;
@@ -35,11 +33,17 @@ import org.eclipse.rwt.service.IServiceStore;
 
 @SuppressWarnings("deprecation")
 public class ProtocolMessageWriter {
-
+ 
   // TODO [rst] Copy of JSWriter constant, remove when JSWriter is gone
   private static final String HAS_WIDGET_MANAGER = JSWriter.class.getName() + "#hasWidgetManager";
   // TODO [rst] Copy of JSWriter constant, remove when JSWriter is gone
   private static final String CURRENT_WIDGET_REF = JSWriter.class.getName() + "#currentWidgetRef";
+  // TODO [if] Remove when JSWriter is gone
+  private static final String JSEXECUTOR_ID = "jsex";
+  // TODO [if] Moved from ProtocolConstants, remove when JSWriter is gone
+  private static final String ACTION_EXECUTE_SCRIPT = "execute";
+  // TODO [if] Moved from ProtocolConstants, remove when JSWriter is gone
+  private static final String EXECUTE_SCRIPT_CONTENT = "content";
 
   private final JsonObject meta;
   private final JsonArray operations;
@@ -100,26 +104,13 @@ public class ProtocolMessageWriter {
   }
 
   public void appendCall( String target, String methodName, Map<String, Object> properties ) {
-    prepareOperation( target, ACTION_CALL );
-    pendingOperation.appendDetail( CALL_METHOD_NAME, JsonValue.valueOf( methodName ) );
-    pendingOperation.appendProperties( properties );
-  }
-
-  public void appendExecuteScript( String target, String scriptType, String code ) {
-    prepareOperation( target, ACTION_EXECUTE_SCRIPT );
-    Object pendingScriptType = pendingOperation.getDetail( EXECUTE_SCRIPT_TYPE );
-    if( pendingScriptType != null ) {
-      if( !pendingScriptType.equals( scriptType ) ) {
-        throw new IllegalStateException( "Cannot mix different script types" );
-      }
+    // TODO [if] Needed to append JavaScript in JSWriter, remove when JSWriter is gone
+    if( JSEXECUTOR_ID.equals( target ) && ACTION_EXECUTE_SCRIPT.equals( methodName ) ) {
+      appendExecuteScript( target, ( String )properties.get( EXECUTE_SCRIPT_CONTENT ) );
     } else {
-      pendingOperation.appendDetail( EXECUTE_SCRIPT_TYPE, scriptType );
-    }
-    String pendingScript = ( String )pendingOperation.getDetail( EXECUTE_SCRIPT_CONTENT );
-    if( pendingScript != null ) {
-      pendingOperation.replaceDetail( EXECUTE_SCRIPT_CONTENT, pendingScript + code );
-    } else {
-      pendingOperation.appendDetail( EXECUTE_SCRIPT_CONTENT, code );
+      prepareOperation( target, ACTION_CALL );
+      pendingOperation.appendDetail( CALL_METHOD_NAME, JsonValue.valueOf( methodName ) );
+      pendingOperation.appendProperties( properties );
     }
   }
 
@@ -148,12 +139,6 @@ public class ProtocolMessageWriter {
     alreadyCreated = true;
     JsonObject message = createMessageObject();
     return message.toString();
-  }
-
-  public boolean hasPendingExecuteOperation( String target ) {
-    return pendingOperation != null
-           && ACTION_EXECUTE_SCRIPT.equals( pendingOperation.getAction() )
-           && pendingOperation.getTarget().equals( target );
   }
 
   private void ensureMessagePending() {
@@ -187,7 +172,31 @@ public class ProtocolMessageWriter {
 
   private void appendPendingOperation() {
     if( pendingOperation != null ) {
+      replaceExecuteScriptOperation();
       operations.append( pendingOperation.toJson() );
+    }
+  }
+  
+  // TODO [if] Needed to append JavaScript in JSWriter, remove when JSWriter is gone
+  private void appendExecuteScript( String target, String code ) {
+    prepareOperation( target, ACTION_EXECUTE_SCRIPT );
+    String pendingScript = ( String )pendingOperation.getDetail( EXECUTE_SCRIPT_CONTENT );
+    if( pendingScript != null ) {
+      pendingOperation.replaceDetail( EXECUTE_SCRIPT_CONTENT, pendingScript + code );
+    } else {
+      pendingOperation.appendDetail( EXECUTE_SCRIPT_CONTENT, code );
+    }
+  }
+  
+  // TODO [if] Needed to append JavaScript in JSWriter, remove when JSWriter is gone
+  private void replaceExecuteScriptOperation() {
+    if( pendingOperation.getAction().equals( ACTION_EXECUTE_SCRIPT ) ) {
+      String code = ( String )pendingOperation.getDetail( EXECUTE_SCRIPT_CONTENT );
+      pendingOperation = new Operation( JSEXECUTOR_ID, ACTION_CALL );
+      pendingOperation.appendDetail( CALL_METHOD_NAME, JsonValue.valueOf( ACTION_EXECUTE_SCRIPT ) );
+      Map<String, Object> properties = new HashMap<String, Object>();
+      properties.put( EXECUTE_SCRIPT_CONTENT, code );
+      pendingOperation.appendProperties( properties );
     }
   }
 }

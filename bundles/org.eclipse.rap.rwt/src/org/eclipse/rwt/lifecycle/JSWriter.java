@@ -1010,7 +1010,9 @@ public final class JSWriter {
     Object bufferHasWidgetManager = serviceStore.getAttribute( HAS_WIDGET_MANAGER );
     Object bufferCurrentWidgetRef = serviceStore.getAttribute( CURRENT_WIDGET_REF );
     // ... append the execute operation ...
-    protocolWriter.appendExecuteScript( "jsex", "text/javascript", code.trim() );
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "content", code.trim() );
+    protocolWriter.appendCall( "jsex", "execute", properties );
     // ... and re-install them afterwards.
     if( bufferHasWidgetManager != null ) {
       serviceStore.setAttribute( HAS_WIDGET_MANAGER, bufferHasWidgetManager );

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2011 EclipseSource and others.
+* Copyright (c) 2011, 2012 EclipseSource and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.rap.rwt.testfixture.Fixture;
 import org.eclipse.rap.rwt.testfixture.Message;
-import org.eclipse.rap.rwt.testfixture.Message.ExecuteScriptOperation;
 import org.eclipse.rap.rwt.testfixture.Message.*;
 import org.eclipse.rwt.internal.lifecycle.*;
 import org.eclipse.rwt.lifecycle.WidgetUtil;
@@ -207,35 +206,15 @@ public class ProtocolMessageWriter_Test extends TestCase {
   }
 
   public void testMessageWithExecuteScript() {
-    Button button = new Button( shell, SWT.PUSH );
-    String buttonId = WidgetUtil.getId( button );
-    String scriptType = "text/javascript";
     String script = "var c = 4; c++;";
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "content", script );
+    
+    writer.appendCall( "jsex", "execute", properties );
 
-    writer.appendExecuteScript( buttonId, scriptType, script );
-
-    ExecuteScriptOperation operation = ( ExecuteScriptOperation )getMessage().getOperation( 0 );
-    assertEquals( buttonId, operation.getTarget() );
-    assertEquals( scriptType, operation.getScriptType() );
-    assertEquals( script, operation.getScript() );
-  }
-
-  public void testMessageWithExecuteScriptTwice() {
-    Button button = new Button( shell, SWT.PUSH );
-    String shellId = WidgetUtil.getId( shell );
-    String buttonId = WidgetUtil.getId( button );
-    String scriptType = "text/vb";
-    String script = "really bad VB;";
-
-    writer.appendExecuteScript( buttonId, "text/javascript", "var c = 4; c++;" );
-    writer.appendExecuteScript( WidgetUtil.getId( shell ), scriptType, script );
-
-    Message message = getMessage();
-    assertTrue( message.getOperation( 0 ) instanceof ExecuteScriptOperation );
-    ExecuteScriptOperation secondOperation = ( ExecuteScriptOperation )message.getOperation( 1 );
-    assertEquals( shellId, secondOperation.getTarget() );
-    assertEquals( scriptType, secondOperation.getScriptType() );
-    assertEquals( script, secondOperation.getScript() );
+    CallOperation operation = ( CallOperation )getMessage().getOperation( 0 );
+    assertEquals( "jsex", operation.getTarget() );
+    assertEquals( script, operation.getProperty( "content" ) );
   }
 
   public void testMessageWithSet() {
@@ -430,13 +409,17 @@ public class ProtocolMessageWriter_Test extends TestCase {
   }
 
   public void testAppendsToExistingExecuteOperation() {
-    writer.appendExecuteScript( "jsex", "text/javascript", "var x = foo();" );
-    writer.appendExecuteScript( "jsex", "text/javascript", "x.foo();" );
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put( "content", "var x = foo();" );
+    writer.appendCall( "jsex", "execute", properties );
+    properties = new HashMap<String, Object>();
+    properties.put( "content", "x.foo();" );
+    writer.appendCall( "jsex", "execute", properties );
 
     Message message = getMessage();
     assertEquals( 1, message.getOperationCount() );
-    ExecuteScriptOperation operation = ( ExecuteScriptOperation )message.getOperation( 0 );
-    assertEquals( "var x = foo();x.foo();", operation.getScript() );
+    CallOperation operation = ( CallOperation )message.getOperation( 0 );
+    assertEquals( "var x = foo();x.foo();", operation.getProperty( "content" ) );
   }
 
   private Message getMessage() {

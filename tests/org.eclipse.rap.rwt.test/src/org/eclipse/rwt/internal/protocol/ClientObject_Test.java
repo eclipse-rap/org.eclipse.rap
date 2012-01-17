@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2011 EclipseSource and others.
+* Copyright (c) 2011, 2012 EclipseSource and others.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -151,15 +151,6 @@ public class ClientObject_Test extends TestCase {
     assertEquals( "method2", operation.getMethodName() );
     assertEquals( "a", operation.getProperty( "key1" ) );
     assertEquals( new Integer( 3 ), operation.getProperty( "key2" ) );
-  }
-
-  public void testExecuteScript() {
-    clientObject.executeScript( "text/javascript", "var x = 5;" );
-
-    ExecuteScriptOperation operation = ( ExecuteScriptOperation )getMessage().getOperation( 0 );
-    assertEquals( shellId, operation.getTarget() );
-    assertEquals( "text/javascript", operation.getScriptType() );
-    assertEquals( "var x = 5;", operation.getScript() );
   }
 
   private Message getMessage() {
