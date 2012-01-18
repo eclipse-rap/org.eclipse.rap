@@ -63,7 +63,7 @@ abstract class SWTFocusCellManager implements Serializable {
 		if( this.cellHighlighter != null ) {
 			this.cellHighlighter.setMgr(this);
 		}
-		
+
 		this.navigationStrategy = navigationDelegate;
 		hookListener(viewer);
 	}
@@ -74,7 +74,7 @@ abstract class SWTFocusCellManager implements Serializable {
 	void init() {
 		this.cellHighlighter.init();
 		this.navigationStrategy.init();
-// RAP [if] Forse navigationStrategy.shouldCancelEvent to initialize CANCEL_KEYS
+// RAP [if] Force navigationStrategy.shouldCancelEvent to initialize CANCEL_KEYS
         this.navigationStrategy.shouldCancelEvent( viewer, new Event() );
 // ENDRAP
 	}
@@ -127,7 +127,7 @@ abstract class SWTFocusCellManager implements Serializable {
 
 	/**
 	 * Handles the {@link SWT#FocusIn} event.
-	 * 
+	 *
 	 * @param event the event
 	 */
 	private void handleFocusIn(Event event) {
@@ -172,31 +172,31 @@ abstract class SWTFocusCellManager implements Serializable {
 
 		});
 		viewer.getControl().addListener(SWT.FocusIn, listener);
-// RAP [rh] accessibility		
+// RAP [rh] accessibility
 //		viewer.getControl().getAccessible().addAccessibleListener(
 //				new AccessibleAdapter() {
 //					public void getName(AccessibleEvent event) {
 //						ViewerCell cell = getFocusCell();
 //						if (cell == null)
 //							return;
-//						
+//
 //						ViewerRow row = cell.getViewerRow();
 //						if (row == null)
 //							return;
-//						
+//
 //						Object element = row.getItem().getData();
 //						ViewerColumn viewPart = viewer.getViewerColumn(cell
 //								.getColumnIndex());
-//						
+//
 //						if (viewPart == null)
 //							return;
-//						
+//
 //						ColumnLabelProvider labelProvider = (ColumnLabelProvider) viewPart
 //								.getLabelProvider();
-//						
+//
 //						if (labelProvider == null)
 //							return;
-//						
+//
 //						event.result = labelProvider.getText(element);
 //					}
 //				});
@@ -210,7 +210,7 @@ abstract class SWTFocusCellManager implements Serializable {
 	public ViewerCell getFocusCell() {
 		return focusCell;
 	}
-	
+
 	final ViewerCell _getFocusCell() {
 		return focusCell;
 	}
@@ -229,9 +229,9 @@ abstract class SWTFocusCellManager implements Serializable {
 		}
 
 		if( focusCell != null ) {
-			focusCell.scrollIntoView();	
+			focusCell.scrollIntoView();
 		}
-		
+
 		this.cellHighlighter.focusCellChanged(focusCell,oldCell);
 
 		getViewer().getControl().getAccessible().setFocus(ACC.CHILDID_SELF);
