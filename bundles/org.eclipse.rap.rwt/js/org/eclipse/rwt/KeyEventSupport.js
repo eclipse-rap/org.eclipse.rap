@@ -137,15 +137,14 @@ qx.Class.define( "org.eclipse.rwt.KeyEventSupport", {
       } else {
         this._attachKeyEvent( widget, keyCode, charCode, domEvent );
         this._keyEventRequestRunning = true;
-        if( keyCode === 27 ) {
-          try{ 
-            domEvent.preventDefault(); // otherwise the request could be canceled
-          } catch( ex ) {
-            // do nothing
-          }
-        }
-        org.eclipse.swt.Request.getInstance()._sendImmediate( true );
+        this._sendRequestAsync();
       }
+    },
+    
+    _sendRequestAsync : function() {
+      window.setTimeout( function() { 
+        org.eclipse.swt.Request.getInstance()._sendImmediate( true );
+      }, 0 );
     },
 
     _attachKeyEvent : function( widget, keyCode, charCode, domEvent ) {
