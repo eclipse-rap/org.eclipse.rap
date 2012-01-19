@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2007, 2012Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       // [if] The selection is applied on the TextField when it gains the focus.
       text.setUserData( "selectionStart", start );
       text.setUserData( "selectionLength", length );
-      if( text.getFocused() ) {
+      if( text.getFocused() && text.isCreated() ) {
         org.eclipse.swt.TextUtil._doSetSelection( text );
       }
     },
@@ -63,12 +63,8 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       var start = text.getUserData( "selectionStart" );
       var length = text.getUserData( "selectionLength" );
       if( start != null && length != null ) {
-        // TODO: [if] Find better solution for initial text selection
-        // (without timer)
-        qx.client.Timer.once( function() {
-          text.setSelectionStart( start );
-          text.setSelectionLength( length );
-        }, text, 50 );
+        text.setSelectionStart( start );
+        text.setSelectionLength( length );
       }
     },
 
@@ -78,8 +74,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       // TODO [rst] Optimize: add/remove listener on change of
       //            hasVerifyOrModifyListener property
       var text = event.getTarget();
-      text.removeEventListener( "appear",
-                                org.eclipse.swt.TextUtil._onAppearInitialize );
+      text.removeEventListener( "appear", org.eclipse.swt.TextUtil._onAppearInitialize );
       org.eclipse.swt.TextUtil._doInitialize( text );
     },
 
@@ -94,6 +89,7 @@ qx.Class.define( "org.eclipse.swt.TextUtil", {
       text.addEventListener( "focus", org.eclipse.swt.TextUtil._onFocus, text );
       text.addEventListener( "blur", org.eclipse.swt.TextUtil._onBlur, text );
       org.eclipse.swt.TextUtil._updateLineHeight( text );
+      this._doSetSelection( text );
     },
 
     // === Event listener ===

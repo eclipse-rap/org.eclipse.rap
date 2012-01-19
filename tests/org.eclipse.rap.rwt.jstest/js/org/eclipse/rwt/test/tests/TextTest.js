@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 EclipseSource and others.
+ * Copyright (c) 2010, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -485,6 +485,37 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       }
     },
 
+    testSetSelection : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      testUtil.prepareTimerUse();
+      var text = new org.eclipse.rwt.widgets.Text( false );
+      org.eclipse.swt.TextUtil.initialize( text );
+      text.setValue( "asdfjkloe" );
+      text.addToDocument();
+      testUtil.flush();
+      text.focus();
+      org.eclipse.swt.TextUtil.setSelection( text, 2, 3 );
+      assertEquals( 2, text.getSelectionStart() );
+      assertEquals( 3, text.getSelectionLength() );
+      text.destroy();
+    },
+    
+    testSetSelectionBeforeAppear : function() {
+      var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
+      testUtil.prepareTimerUse();
+      var text = new org.eclipse.rwt.widgets.Text( false );
+      org.eclipse.swt.TextUtil.initialize( text );
+      text.setValue( "asdfjkloe" );
+      org.eclipse.swt.TextUtil.setSelection( text, 2, 3 );
+      text.addToDocument();
+      text.focus();
+      testUtil.flush();
+      assertEquals( 2, text.getSelectionStart() );
+      assertEquals( 3, text.getSelectionLength() );
+      text.destroy();
+    },
+    
+
     testCreateAsTextSetPasswordMode : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       testUtil.prepareTimerUse();
@@ -537,7 +568,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       testUtil.clearTimerOnceLog();
     },
     
-    testValue : function() {
+    testValueSetPaswordMode : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       testUtil.prepareTimerUse();
       var text = new org.eclipse.rwt.widgets.Text( false );
@@ -560,7 +591,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       testUtil.clearTimerOnceLog();
     },
     
-    testSelection : function() {
+    testSelectionSetPasswordMode : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       testUtil.prepareTimerUse();
       var text = new org.eclipse.rwt.widgets.Text( false );
@@ -582,7 +613,7 @@ qx.Class.define( "org.eclipse.rwt.test.tests.TextTest", {
       testUtil.clearTimerOnceLog();
     },
     
-    testCss : function() {
+    testCsssetPasswordMode : function() {
       var testUtil = org.eclipse.rwt.test.fixture.TestUtil;
       testUtil.prepareTimerUse();
       var text = new org.eclipse.rwt.widgets.Text( false );
