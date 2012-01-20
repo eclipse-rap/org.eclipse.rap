@@ -892,14 +892,14 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "enabled" ) );
   }
 
-  public void testRenderIntialBackgroundImage() throws IOException {
+  public void testRenderIntialBackgroundImage() {
     ControlLCAUtil.renderBackgroundImage( control );
 
     Message message = Fixture.getProtocolMessage();
     assertNull( message.findSetOperation( control, "backgroundImage" ) );
   }
 
-  public void testRenderBackgroundImage() throws IOException, JSONException {
+  public void testRenderBackgroundImage() throws JSONException {
     Image image = Graphics.getImage( Fixture.IMAGE1 );
 
     control.setBackgroundImage( image );
@@ -912,7 +912,7 @@ public class ControlLCAUtil_Test extends TestCase {
     assertTrue( ProtocolTestUtil.jsonEquals( expected, args ) );
   }
 
-  public void testRenderBackgroundImageUnchanged() throws IOException {
+  public void testRenderBackgroundImageUnchanged() {
     Fixture.markInitialized( display );
     Fixture.markInitialized( control );
     control.setBackgroundImage( Graphics.getImage( Fixture.IMAGE1 ) );
