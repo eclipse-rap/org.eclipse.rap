@@ -84,6 +84,7 @@ public abstract class ColumnViewerEditor implements Serializable {
 
 	/**
 	 * Support tabbing to Cell above/below the current cell
+	 * <p>Note: Vertical tabbing is not supported in RAP</p>
 	 */
 	public static final int TABBING_VERTICAL = 1 << 3;
 
@@ -138,7 +139,7 @@ public abstract class ColumnViewerEditor implements Serializable {
 					cancelEditing();
 				}
 			}
-			
+
 		};
 		initCellEditorListener();
 	}
@@ -369,7 +370,7 @@ public abstract class ColumnViewerEditor implements Serializable {
 									.afterEditorDeactivated(tmp);
 						}
 					}
-					
+
 					if( ! this.cell.getItem().isDisposed() ) {
 						this.cell.getItem().removeDisposeListener(disposeListener);
 					}
@@ -445,7 +446,7 @@ public abstract class ColumnViewerEditor implements Serializable {
 					if( ! this.cell.getItem().isDisposed() ) {
 						this.cell.getItem().addDisposeListener(disposeListener);
 					}
-					
+
 					this.cellEditor = null;
 					this.cell = null;
 
