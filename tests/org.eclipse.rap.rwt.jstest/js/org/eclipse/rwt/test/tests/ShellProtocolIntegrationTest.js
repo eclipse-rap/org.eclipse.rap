@@ -308,10 +308,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       this._disposeShell();
     },
 
-    testSetToolTipText : function() {
+    testSetToolTip : function() {
       var shell = this._protocolCreateShell();
-      this._protocolSet( { "toolTip" : "hello blue world" } );
-      assertEquals( "hello blue world", shell.getUserData( "toolTipText" ) );
+      this._protocolSet( { "toolTip" : "hello\n blue<> world" } );
+      assertEquals( "hello<br/> blue&lt;&gt; world", shell.getUserData( "toolTipText" ) );
       assertTrue( shell.getToolTip() !== null );
       this._disposeShell();
     },

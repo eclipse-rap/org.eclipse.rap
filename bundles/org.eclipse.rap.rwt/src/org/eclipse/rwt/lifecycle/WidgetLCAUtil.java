@@ -56,7 +56,7 @@ public final class WidgetLCAUtil {
   private static final String PARAM_WIDTH = "bounds.width";
   private static final String PARAM_HEIGHT = "bounds.height";
 
-  private static final String PROP_TOOL_TIP_TEXT = "toolTipText";
+  private static final String PROP_TOOL_TIP = "toolTip";
   private static final String PROP_FONT = "font";
   private static final String PROP_FOREGROUND = "foreground";
   private static final String PROP_BACKGROUND = "background";
@@ -203,7 +203,7 @@ public final class WidgetLCAUtil {
   public static void preserveToolTipText( Widget widget, String toolTip ) {
     String text = toolTip == null ? "" : toolTip;
     IWidgetAdapter adapter = WidgetUtil.getAdapter( widget );
-    adapter.preserve( PROP_TOOL_TIP_TEXT, text );
+    adapter.preserve( PROP_TOOL_TIP, text );
   }
 
   /**
@@ -437,20 +437,12 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose toolTip property to set
    * @param toolTip the new value of the property
-   * @throws IOException
    * @see #preserveToolTipText(Widget, String)
+   * @since 1.5
    */
-  public static void renderToolTip( Widget widget, String toolTip ) throws IOException {
+  public static void renderToolTip( Widget widget, String toolTip ) {
     String text = toolTip == null ? "" : toolTip;
-    if( hasChanged( widget, WidgetLCAUtil.PROP_TOOL_TIP_TEXT, text, "" ) ) {
-      // Under Windows, ampersand characters are not correctly displayed:
-      // https://bugs.eclipse.org/bugs/show_bug.cgi?id=188271
-      // However, it is correct not to escape mnemonics in tool tips
-      text = escapeText( text, false );
-      text = replaceNewLines( text, "<br/>" );
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      clientObject.setProperty( "toolTip", text );
-    }
+    WidgetLCAUtil.renderProperty( widget, PROP_TOOL_TIP, text, "" );
   }
 
   /**
@@ -1359,7 +1351,7 @@ public final class WidgetLCAUtil {
   @Deprecated
   public static void writeToolTip( Widget widget, String toolTip ) throws IOException {
     String text = toolTip == null ? "" : toolTip;
-    if( hasChanged( widget, WidgetLCAUtil.PROP_TOOL_TIP_TEXT, text, "" ) ) {
+    if( hasChanged( widget, WidgetLCAUtil.PROP_TOOL_TIP, text, "" ) ) {
       JSWriter writer = JSWriter.getWriterFor( widget );
       // Under Windows, ampersand characters are not correctly displayed:
       // https://bugs.eclipse.org/bugs/show_bug.cgi?id=188271

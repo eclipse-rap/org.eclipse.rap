@@ -104,9 +104,12 @@ org.eclipse.rwt.protocol.AdapterUtil = {
       widget.setWidth( bounds[ 2 ] );
       widget.setHeight( bounds[ 3 ] );
     },
-    "toolTip" : function( widget, toolTipText ) {
-      if( toolTipText != null && toolTipText != "" ) {
-        widget.setUserData( "toolTipText", toolTipText );
+    "toolTip" : function( widget, value ) {
+      if( value != null && value != "" ) {
+        var encodingUtil = org.eclipse.rwt.protocol.EncodingUtil;
+        var text = encodingUtil.escapeText( value, false );
+        text = encodingUtil.replaceNewLines( text, "<br/>" );
+        widget.setUserData( "toolTipText", text );
         var toolTip = org.eclipse.rwt.widgets.WidgetToolTip.getInstance()
         widget.setToolTip( toolTip );
         // make sure "boundToWidget" is initialized:

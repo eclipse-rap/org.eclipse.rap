@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 EclipseSource and others.
+ * Copyright (c) 2009, 2012 EclipseSource and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,7 +59,7 @@ public class TabItemLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     assertEquals( "", adapter.getPreserved( Props.TEXT ) );
     assertEquals( null, adapter.getPreserved( Props.IMAGE ) );
-    assertEquals( "", adapter.getPreserved( "toolTipText" ) );
+    assertEquals( "", adapter.getPreserved( "toolTip" ) );
     Fixture.clearPreserved();
     tabFolder.setSelection( 1 );
     item.setText( "some text" );
@@ -68,7 +68,7 @@ public class TabItemLCA_Test extends TestCase {
     Fixture.preserveWidgets();
     assertEquals( "some text", adapter.getPreserved( Props.TEXT ) );
     assertEquals( Graphics.getImage( Fixture.IMAGE1 ), adapter.getPreserved( Props.IMAGE ) );
-    assertEquals( "tooltip text", adapter.getPreserved( "toolTipText" ) );
+    assertEquals( "tooltip text", adapter.getPreserved( "toolTip" ) );
   }
 
   public void testReadData() {
