@@ -33,6 +33,7 @@ org.eclipse.rwt.protocol.Processor = {
       switch( operation.action ) {
         case "create":
           this._processCreate( operation.target, operation.type, operation.properties );
+        break;
         case "set":
           this._processSet( operation.target, operation.properties );
         break; 
@@ -57,22 +58,27 @@ org.eclipse.rwt.protocol.Processor = {
   _processCreate : function( targetId, type, properties ) {
     var adapter = org.eclipse.rwt.protocol.AdapterRegistry.getAdapter( type );
     var targetObject = adapter.factory( properties );
-    this._addTarget( targetObject, targetId, type );
+    this._addTarget( targetObject, targetId, adapter );
+    this._processSetImpl( targetObject, adapter, properties );
   },
 
   _processDestroy : function( targetId ) {
-    var type = this._getTargetType( targetId );
-    var adapter = org.eclipse.rwt.protocol.AdapterRegistry.getAdapter( type );
+    var objectEntry = org.eclipse.rwt.protocol.ObjectManager.getEntry( targetId );
+    var adapter = objectEntry.adapter;
+    var targetObject = objectEntry.object;
     if( adapter.destructor ) {
-      adapter.destructor( this._getTarget( targetId ) );
+      adapter.destructor( targetObject );
     }
     org.eclipse.rwt.protocol.ObjectManager.remove( targetId );
   },
 
   _processSet : function( targetId, properties ) {
-    var adapter = this._getAdapter( targetId );
+    var objectEntry = org.eclipse.rwt.protocol.ObjectManager.getEntry( targetId );
+    this._processSetImpl( objectEntry.object, objectEntry.adapter, properties );
+  },
+  
+  _processSetImpl : function( targetObject, adapter, properties ) {
     if( properties && adapter.properties  instanceof Array ) {
-      var targetObject = this._getTarget( targetId );
       for( var i = 0; i < adapter.properties.length; i++ ) {
         var property = adapter.properties [ i ];
         var value = properties[ property ];
@@ -89,9 +95,10 @@ org.eclipse.rwt.protocol.Processor = {
   },
 
   _processCall : function( targetId, method, properties ) {
-    var adapter = this._getAdapter( targetId );
+    var objectEntry = org.eclipse.rwt.protocol.ObjectManager.getEntry( targetId );
+    var adapter = objectEntry.adapter;
+    var targetObject = objectEntry.object;
     if( adapter.methods instanceof Array && adapter.methods.indexOf( method ) !== -1 ) {
-      var targetObject = this._getTarget( targetId );
       if( adapter.methodHandler && adapter.methodHandler[ method ] ) {
         adapter.methodHandler[ method ]( targetObject, properties );
       } else {
@@ -101,9 +108,10 @@ org.eclipse.rwt.protocol.Processor = {
   },
 
   _processListen : function( targetId, properties ) {
-    var adapter = this._getAdapter( targetId );
+    var objectEntry = org.eclipse.rwt.protocol.ObjectManager.getEntry( targetId );
+    var adapter = objectEntry.adapter;
+    var targetObject = objectEntry.object;
     if( adapter.listeners instanceof Array ) {
-      var targetObject = this._getTarget( targetId );
       for( var i = 0; i < adapter.listeners.length; i++ ) {
         var type = adapter.listeners[ i ];
         if( properties[ type ] === true ) {
@@ -127,7 +135,8 @@ org.eclipse.rwt.protocol.Processor = {
     }
     var msg = "Operation \"" + operation.action + "\"";
     msg += " on target \"" +  operation.target + "\"";
-    var target = this._getTarget( operation.target );
+    var objectEntry = org.eclipse.rwt.protocol.ObjectManager.getEntry( operation.target );
+    var target = objectEntry.object;
     msg += " of type \"" +  ( target && target.classname ? target.classname : target ) + "\"";
     msg += " failed:";
     msg += "\n" + errorstr +"\n";
@@ -143,28 +152,14 @@ org.eclipse.rwt.protocol.Processor = {
     return result;
   },
 
-  _addTarget : function( target, targetId, type ) {
+  _addTarget : function( target, targetId, adapter ) {
     if( target instanceof qx.ui.core.Widget ) {
       // TODO [tb] : remove WidgetManager and then this if 
       var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
-      widgetManager.add( target, targetId, false, type ); // uses ObjectManager internally
+      widgetManager.add( target, targetId, false, adapter ); // uses ObjectManager internally
     } else {
-      org.eclipse.rwt.protocol.ObjectManager.add( targetId, target, type );
+      org.eclipse.rwt.protocol.ObjectManager.add( targetId, target, adapter );
     }
-  },
-
-  _getTarget : function( targetId ) {
-    return org.eclipse.rwt.protocol.ObjectManager.getObject( targetId );
-  },
-
-  _getAdapter : function( targetId ) {
-    var type = this._getTargetType( targetId );
-    var adapter = org.eclipse.rwt.protocol.AdapterRegistry.getAdapter( type );
-    return adapter;
-  },
-  
-  _getTargetType : function ( targetId ) {
-    return org.eclipse.rwt.protocol.ObjectManager.getType( targetId );
   },
 
   _addListener : function( adapter, targetObject, eventType ) {

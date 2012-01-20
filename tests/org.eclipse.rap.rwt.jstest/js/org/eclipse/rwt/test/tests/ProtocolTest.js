@@ -53,10 +53,10 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
     testProcessSetLessProperties : function() {
       var registry = org.eclipse.rwt.protocol.AdapterRegistry;
       var processor = org.eclipse.rwt.protocol.Processor;
-      var targetObject = this._getDummyTarget( "dummyId" );
       registry.add( "dummyType", {
         properties : [ "width", "height" ]
       } );
+      var targetObject = this._getDummyTarget( "dummyId" );
       var properties = {
         "height" : 33
       };
@@ -760,7 +760,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ProtocolTest", {
         return log;
       };
       if( typeof targetId === "string" ) {
-        org.eclipse.rwt.protocol.ObjectManager.add( targetId, targetObject, "dummyType" );
+        var adapter = org.eclipse.rwt.protocol.AdapterRegistry.getAdapter( "dummyType" );
+        org.eclipse.rwt.protocol.ObjectManager.add( targetId, targetObject, adapter );
       }
       return targetObject;
     },

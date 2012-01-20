@@ -16,10 +16,10 @@ org.eclipse.rwt.protocol.ObjectManager = {
   _map : {},
   _callbacks : {},
 
-  add : function( id, object, type ) {
+  add : function( id, object, adapter ) {
     this._map[ id ] = {
       "object" : object,
-      "type" : type
+      "adapter" : adapter
     };
     object._rwtId = id;
     if( typeof object.applyObjectId === "function" ) {
@@ -51,8 +51,8 @@ org.eclipse.rwt.protocol.ObjectManager = {
     return this._map[ id ] ? this._map[ id ].object : undefined;
   },
 
-  getType : function( id ) {
-    return this._map[ id ] ? this._map[ id ].type : undefined;
+  getEntry : function( id ) {
+    return this._map[ id ];
   },
 
   addRegistrationCallback : function( id, fun ) {

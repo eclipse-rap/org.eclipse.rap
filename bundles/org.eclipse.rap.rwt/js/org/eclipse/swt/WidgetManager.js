@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,11 +63,11 @@ qx.Class.define( "org.eclipse.swt.WidgetManager", {
     /**
      * Registers the given widget under the given id at the WidgetManager.
      */
-    add : function( widget, id, isControl, type ) {
+    add : function( widget, id, isControl, adapter ) {
       if( isControl != "undefined" && isControl == true ) {
         widget.setUserData( "isControl", true );
       }
-      org.eclipse.rwt.protocol.ObjectManager.add( id, widget, type );
+      org.eclipse.rwt.protocol.ObjectManager.add( id, widget, adapter );
     },
 
     /**
