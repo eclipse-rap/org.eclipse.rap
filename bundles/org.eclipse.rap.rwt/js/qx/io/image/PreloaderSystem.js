@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -50,7 +50,7 @@ qx.Class.define("qx.io.image.PreloaderSystem",
     }
 
     // Create timer
-    this._timer = new qx.client.Timer(qx.core.Setting.get("qx.preloaderTimeout"));
+    this._timer = new qx.client.Timer( 3000 );
     this._timer.addEventListener("interval", this.__oninterval, this);
 
     // If we use the compact syntax, automatically add an event listeners and start the loading process
@@ -218,24 +218,6 @@ qx.Class.define("qx.io.image.PreloaderSystem",
       }
     }
   },
-
-
-
-
-  /*
-  *****************************************************************************
-     SETTINGS
-  *****************************************************************************
-  */
-
-  settings :
-  {
-    /** Timeout for the image pre loader in milliseconds */
-    "qx.preloaderTimeout" : 3000
-  },
-
-
-
 
   /*
   *****************************************************************************

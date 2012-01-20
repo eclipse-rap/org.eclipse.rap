@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -96,17 +96,6 @@ qx.Class.define("qx.lang.Function",
      */
     bind: function(fcn, self, varargs)
     {
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (typeof fcn !== "function") {
-          throw new Error("First parameter to bind() needs to be of type function!");
-        }
-
-        if (typeof self !== "object") {
-          throw new Error("Second parameter to bind() needs to be of type object!");
-        }
-      }
-
       // Create wrapper method
       if (arguments.length > 2)
       {
@@ -150,17 +139,6 @@ qx.Class.define("qx.lang.Function",
      */
     bindEvent: function(fcn, self)
     {
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (typeof fcn !== "function") {
-          throw new Error("First parameter to bindEvent() needs to be of type function!");
-        }
-
-        if (typeof self !== "object") {
-          throw new Error("Second parameter to bindEvent() needs to be of type object!");
-        }
-      }
-
       // Create wrapper method
       var wrap = function(event)
       {

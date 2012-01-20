@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -286,30 +286,12 @@ qx.Class.define("qx.core.Object",
 
       if (typeof data === "string")
       {
-        if (qx.core.Variant.isSet("qx.debug", "on"))
-        {
-          if (!this[setter[data]])
-          {
-            throw new Error( "No such property: " + data );
-            return;
-          }
-        }
-
         return this[setter[data]](value);
       }
       else
       {
         for (var prop in data)
         {
-          if (qx.core.Variant.isSet("qx.debug", "on"))
-          {
-            if (!this[setter[prop]])
-            {
-              throw new Error( "No such property: " + prop );
-              continue;
-            }
-          }
-
           this[setter[prop]](data[prop]);
         }
 
@@ -329,16 +311,6 @@ qx.Class.define("qx.core.Object",
     get : function(prop)
     {
       var getter = qx.core.Property.$$method.get;
-
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (!this[getter[prop]])
-        {
-          throw new Error( "No such property: " + prop );
-          return;
-        }
-      }
-
       return this[getter[prop]]();
     },
 
@@ -353,16 +325,6 @@ qx.Class.define("qx.core.Object",
     reset : function(prop)
     {
       var resetter = qx.core.Property.$$method.reset;
-
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (!this[resetter[prop]])
-        {
-          throw new Error( "No such property: " + prop );
-          return;
-        }
-      }
-
       this[resetter[prop]]();
     },
 

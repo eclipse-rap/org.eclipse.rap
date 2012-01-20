@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -62,24 +62,6 @@ qx.Class.define("qx.core.Target",
     {
       if (this.getDisposed()) {
         return;
-      }
-
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (typeof type !== "string")
-        {
-          throw new Error( "addEventListener(" + type + "): '" + type + "' is not a string!" );
-        }
-
-        if (typeof func !== "function")
-        {
-          throw new Error( "addEventListener(" + type + "): '" + func + "' is not a function!");
-        }
-
-        // Event validation is only available in modern classes
-        if (this.constructor.classname && !qx.Class.supportsEvent(this.constructor, type)) {
-          throw new Error( "Objects of class '" + this.constructor.classname + "' does not support the event '" + type + "'", new Error() );
-        }
       }
 
       // If this is the first event of given type, we need to create a subobject

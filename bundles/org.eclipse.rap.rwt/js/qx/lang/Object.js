@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -325,17 +325,6 @@ qx.Class.define("qx.lang.Object",
 
       for (var i=0, l=array.length; i<l; i++)
       {
-        if (qx.core.Variant.isSet("qx.debug", "on"))
-        {
-          switch(typeof array[i])
-          {
-            case "object":
-            case "function":
-            case "undefined":
-              throw new Error("Could not convert complex objects like " + array[i] + " at array index "+ i +" to map syntax");
-          }
-        }
-
         obj[array[i].toString()] = true;
       }
 

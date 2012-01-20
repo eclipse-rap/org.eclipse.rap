@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -205,11 +205,6 @@ qx.Class.define("qx.Class",
           }
         }
       }
-      if( config.settings ) {
-        for (var key in config.settings) {
-          qx.core.Setting.define(key, config.settings[key]);
-        }
-      }
       if( config.variants ) {
         for (var key in config.variants) {
           qx.core.Variant.define(key, config.variants[key].allowedValues, config.variants[key].defaultValue);
@@ -307,13 +302,6 @@ qx.Class.define("qx.Class",
      */
     include : function(clazz, mixin)
     {
-      if (qx.core.Variant.isSet("qx.debug", "on")) {
-        if (!mixin) {
-          throw new Error("Includes of mixins must be mixins. The mixin of class '" + clazz.classname + "' is undefined/null!");
-        }
-        qx.Mixin.isCompatible(mixin, clazz);
-      }
-
       qx.Class.__addMixin(clazz, mixin, false);
     },
 
@@ -334,9 +322,6 @@ qx.Class.define("qx.Class",
      */
     patch : function(clazz, mixin)
     {
-      if (qx.core.Variant.isSet("qx.debug", "on")) {
-        qx.Mixin.isCompatible(mixin, clazz);
-      }
       qx.Class.__addMixin(clazz, mixin, true);
     },
 
@@ -872,34 +857,6 @@ qx.Class.define("qx.Class",
      */
     __addEvents : function(clazz, events, patch)
     {
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (!qx.core.Target) {
-          throw new Error(clazz.classname + ": the class 'qx.core.Target' must be availabe to use events!");
-        }
-
-        if (typeof events !== "object" || events instanceof Array) {
-          throw new Error(clazz.classname + ": the events must be defined as map!");
-        }
-
-        for (var key in events)
-        {
-          if (typeof events[key] !== "string") {
-            throw new Error(clazz.classname + "/" + key + ": the event value needs to be a string with the class name of the event object which will be fired.");
-          }
-        }
-
-        // Compare old and new event type/value if patching is disabled
-        if (clazz.$$events && patch !== true)
-        {
-          for (var key in events)
-          {
-            if (clazz.$$events[key] !== undefined && clazz.$$events[key] !== events[key]) {
-              throw new Error(clazz.classname + "/" + key + ": the event value/type cannot be changed from " + clazz.$$events[key] + " to " + events[key]);
-            }
-          }
-        }
-      }
 
       if (clazz.$$events)
       {
@@ -936,11 +893,6 @@ qx.Class.define("qx.Class",
       for (var name in properties)
       {
         config = properties[name];
-
-        // Check incoming configuration
-        if (qx.core.Variant.isSet("qx.debug", "on")) {
-          //this.__validateProperty(clazz, name, config, patch);
-        }
 
         // Store name into configuration
         config.name = name;
@@ -1107,16 +1059,6 @@ qx.Class.define("qx.Class",
         key = a[i];
         member = members[key];
 
-        if (qx.core.Variant.isSet("qx.debug", "on"))
-        {
-          if (proto[key] !== undefined && key.charAt(0) == "_" && key.charAt(1) == "_") {
-            throw new Error('Overwriting private member "' + key + '" of Class "' + clazz.classname + '" is not allowed!');
-          }
-
-          if (patch !== true && proto[key] !== undefined) {
-            throw new Error('Overwriting member "' + key + '" of Class "' + clazz.classname + '" is not allowed!');
-          }
-        }
 
         // Added helper stuff to functions
         // Hint: Could not use typeof function because RegExp objects are functions, too
@@ -1182,16 +1124,6 @@ qx.Class.define("qx.Class",
      */
     __addMixin : function(clazz, mixin, patch)
     {
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (!clazz || !mixin) {
-          throw new Error("Incomplete parameters!")
-        }
-
-        if (this.hasMixin(clazz, mixin)) {
-          throw new Error('Mixin "' + mixin.name + '" is already included into Class "' + clazz.classname + '" by class: ' + this.getByMixin(clazz, mixin).classname + '!');
-        }
-      }
 
       // Attach content
       var list = qx.Mixin.flatten([mixin]);
@@ -1300,19 +1232,6 @@ qx.Class.define("qx.Class",
         // We can access the class/statics using arguments.callee
         var clazz=arguments.callee.constructor;
         init( clazz );
-
-        if (qx.core.Variant.isSet("qx.debug", "on"))
-        {
-          // new keyword check
-          if(!(this instanceof clazz))throw new Error("Please initialize " + name + " objects using the new keyword!");
-  
-          // add abstract and singleton checks
-          if (type === "abstract") {
-            if(this.classname===name)throw new Error("The class " + name + " is abstract! It is not possible to instantiate it.");
-          } else if (type === "singleton") {
-            if(!clazz.$$allowconstruct)throw new Error("The class " + name + " is a singleton! It is not possible to instantiate it directly. Use the static getInstance() method instead.");
-          }
-        }
   
         // Attach local properties
         if(!clazz.$$propertiesAttached)qx.core.Property.attach(clazz);

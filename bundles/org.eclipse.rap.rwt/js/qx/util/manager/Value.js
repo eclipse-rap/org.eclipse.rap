@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2007, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2007, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -69,18 +69,6 @@ qx.Class.define("qx.util.manager.Value",
       var connections = this._connectedObjects;
       var reg = this._registry;
 
-      // Error checking
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (!obj) {
-          throw new Error("Can not disconnect from an empty object");
-        }
-
-        if (!connections[objectHash]) {
-          throw new Error("disconnect: themed value " + this + " has no connection to object: " + obj);
-        }
-      }
-
       // Disconnect all keys
       var lKeys = connections[objectHash];
       while (lKeys.length) {
@@ -104,29 +92,6 @@ qx.Class.define("qx.util.manager.Value",
      */
     connect : function(callback, obj, value)
     {
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (!callback) {
-          throw new Error("Can not connect to invalid callback: " + callback);
-        }
-
-        if (!obj) {
-          throw new Error("Can not connect to invalid object: " + obj);
-        }
-
-        if (typeof obj.hasConnectionTo != "function") {
-          throw new Error("The Connected object '" + obj + "' must include the mixin 'qx.util.manager.MConnectedObject'!");
-        }
-
-        if (value === undefined) {
-          throw new Error("Undefined values are not allowed for connect: " + callback + "[" + obj + "]");
-        }
-
-        if (typeof value === "boolean") {
-          throw new Error("Boolean values are not allowed for connect: " + callback + "[" + obj + "]");
-        }
-      }
-
       // Store references for dynamic values
       var objectHash = obj.toHashCode();
       var key = "v" + objectHash + "$" + qx.core.Object.toHashCode(callback);

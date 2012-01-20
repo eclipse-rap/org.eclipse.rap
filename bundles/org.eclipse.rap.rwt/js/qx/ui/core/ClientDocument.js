@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -616,23 +616,18 @@ qx.Class.define("qx.ui.core.ClientDocument",
   defer : function()
   {
     // CSS fix
-    if (qx.core.Setting.get("qx.boxModelCorrection"))
-    {
-      var boxSizingAttr = org.eclipse.rwt.Client.getEngineBoxSizingAttributes();
-      var borderBoxCss = boxSizingAttr.join(":border-box;") + ":border-box;";
-      var contentBoxCss = boxSizingAttr.join(":content-box;") + ":content-box;";
+    var boxSizingAttr = org.eclipse.rwt.Client.getEngineBoxSizingAttributes();
+    var borderBoxCss = boxSizingAttr.join(":border-box;") + ":border-box;";
+    var contentBoxCss = boxSizingAttr.join(":content-box;") + ":content-box;";
 
-      qx.html.StyleSheet.createElement(
-        "html,body { margin:0;border:0;padding:0; } " +
-        "html { border:0 none; } " +
-        "*{" + borderBoxCss +"} " +
-        "img{" + contentBoxCss + "}"
-      );
-    }
+    qx.html.StyleSheet.createElement(
+      "html,body { margin:0;border:0;padding:0; } " +
+      "html { border:0 none; } " +
+      "*{" + borderBoxCss +"} " +
+      "img{" + contentBoxCss + "}"
+    );
 
-    if (qx.core.Setting.get("qx.enableApplicationLayout")) {
-      qx.html.StyleSheet.createElement("html,body{width:100%;height:100%;overflow:hidden;}");
-    }
+    qx.html.StyleSheet.createElement("html,body{width:100%;height:100%;overflow:hidden;}");
   },
 
 

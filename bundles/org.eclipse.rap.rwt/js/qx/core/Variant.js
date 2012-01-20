@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -144,42 +144,8 @@ qx.Class.define("qx.core.Variant",
         try {
           delete window.qxvariants;
         } catch(ex) {};
-
-        this.__loadUrlVariants(this.__variants);
       }
     },
-
-
-    /**
-     * Load variants from URL parameters if the setting <code>"qx.allowUrlSettings"</code>
-     * is set to true.
-     *
-     * The url scheme for variants is: <code>qxvariant:VARIANT_NAME:VARIANT_VALUE</code>.
-     */
-    __loadUrlVariants : function()
-    {
-      if (qx.core.Setting.get("qx.allowUrlVariants") != true) {
-        return;
-      }
-
-      var urlVariants = document.location.search.slice(1).split("&");
-
-      for (var i=0; i<urlVariants.length; i++)
-      {
-        var variant = urlVariants[i].split(":");
-        if (variant.length != 3 || variant[0] != "qxvariant") {
-          continue;
-        }
-
-        var key = variant[1];
-        if (!this.__variants[key]) {
-          this.__variants[key] = {};
-        }
-
-        this.__variants[key].value = decodeURIComponent(variant[2]);
-      }
-    },
-
 
     /**
      * Select a function depending on the value of the variant.

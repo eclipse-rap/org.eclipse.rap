@@ -39,7 +39,6 @@ public final class ClientResources {
     "debug-settings.js",
     "qx/core/Bootstrap.js",
     "qx/lang/Core.js",
-    "qx/core/Setting.js",
     "qx/lang/Array.js",
     "qx/core/Variant.js",
     "org/eclipse/rwt/Client.js",

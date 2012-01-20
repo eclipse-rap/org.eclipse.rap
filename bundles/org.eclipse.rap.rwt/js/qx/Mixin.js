@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2010 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -79,11 +79,6 @@ qx.Class.define("qx.Mixin",
         // Normalize include
         if (config.include && !(config.include instanceof Array)) {
           config.include = [config.include];
-        }
-
-        // Validate incoming data
-        if (qx.core.Variant.isSet("qx.debug", "on")) {
-          this.__validateConfig(name, config);
         }
 
         // Create Interface from statics

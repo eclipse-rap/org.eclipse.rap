@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -118,17 +118,6 @@ qx.Class.define("qx.io.remote.RequestQueue",
      */
     _debug : function()
     {
-      // Debug output
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (qx.core.Setting.get("qx.ioRemoteDebug"))
-        {
-          var vText =
-            this._active.length + "/" +
-            (this._queue.length + this._active.length);
-          window.status = "Request-Queue Progress: " + vText;
-        }
-      }
     },
 
 
@@ -252,15 +241,6 @@ qx.Class.define("qx.io.remote.RequestQueue",
      */
     _onsending : function(e)
     {
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (qx.core.Setting.get("qx.ioRemoteDebug"))
-        {
-          this._activeCount++;
-          e.getTarget()._counted = true;
-        }
-      }
-
       var vTransport = e.getTarget();
       vTransport.getRequest()._onsending(e);
     },
@@ -288,16 +268,6 @@ qx.Class.define("qx.io.remote.RequestQueue",
      */
     _oncompleted : function(e)
     {
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (qx.core.Setting.get("qx.ioRemoteDebug"))
-        {
-          if (e.getTarget()._counted)
-          {
-            this._activeCount--;
-          }
-        }
-      }
 
       var vTransport = e.getTarget();
 

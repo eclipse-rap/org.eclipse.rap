@@ -2915,13 +2915,6 @@ qx.Class.define( "qx.ui.core.Widget", {
 
     _unstyleFromArray : function(data) {
       var unstyler = qx.core.Property.$$method.unstyle;
-      if (qx.core.Variant.isSet("qx.debug", "on")) {
-        for (var i=0, l=data.length; i<l; i++) {
-          if (!this[unstyler[data[i]]]) {
-            throw new Error(this.classname + ' has no themeable property "' + data[i] + '"');
-          }
-        }
-      }
       for (var i=0, l=data.length; i<l; i++) {
         this[unstyler[data[i]]]();
       }
@@ -4068,14 +4061,6 @@ qx.Class.define( "qx.ui.core.Widget", {
       }
     }
     
-  },
-
-  ///////////
-  // SETTINGS
-
-  settings : {
-    "qx.widgetQueueDebugging" : false,
-    "qx.widgetDebugId"        : false   // true: auto-generate HTML id's
   },
 
   ////////

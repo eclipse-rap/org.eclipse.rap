@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -99,15 +99,6 @@ qx.Class.define( "qx.io.Alias", {
       // manager prefixes it with "https:" to avoid any problems for IE
       if( value.match( /^\/\// ) != null ) {
         urlPrefix = window.location.protocol;
-      }
-      // If the resolved URL begins with "./" the final URL has to be
-      // put together using the document.URL property.
-      // IMPORTANT: this is only applicable for the source version, because
-      // the build version does itself add a "/" at the end of the URL. This 
-      // would end up with e.g. "build//example.png" instead of "build/./example.png"
-      else if( value.match( /^\.\// ) != null && qx.core.Setting.get( "qx.isSource" ) ) {
-        value = value.substring( 1 );
-        urlPrefix = document.URL.substring( 0, document.URL.lastIndexOf( "/" ) );
       }
       // Prefix an relative URL beginning with "/" with the protocol and the 
       // host e.g. "https://yourdomain.com"

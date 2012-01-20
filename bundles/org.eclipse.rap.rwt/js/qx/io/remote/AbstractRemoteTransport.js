@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright: 2004, 2011 1&1 Internet AG, Germany, http://www.1und1.de,
+ *  Copyright: 2004, 2012 1&1 Internet AG, Germany, http://www.1und1.de,
  *                        and EclipseSource
  *
  * This program and the accompanying materials are made available under the
@@ -195,13 +195,6 @@ qx.Class.define("qx.io.remote.AbstractRemoteTransport",
      */
     abort : function()
     {
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-          throw new Error( "Aborting..." );
-        }
-      }
-
       this.setState("aborted");
     },
 
@@ -214,13 +207,6 @@ qx.Class.define("qx.io.remote.AbstractRemoteTransport",
      */
     timeout : function()
     {
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-          throw new Error( "Timeout..." );
-        }
-      }
-
       this.setState("timeout");
     },
 
@@ -235,13 +221,6 @@ qx.Class.define("qx.io.remote.AbstractRemoteTransport",
      */
     failed : function()
     {
-      if (qx.core.Variant.isSet("qx.debug", "on"))
-      {
-        if (qx.core.Setting.get("qx.ioRemoteDebug")) {
-          throw new Error( "Failed..." );
-        }
-      }
-
       this.setState("failed");
     },
 
