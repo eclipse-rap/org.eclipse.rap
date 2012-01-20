@@ -77,12 +77,25 @@ qx.Class.define( "org.eclipse.rwt.System", {
     },
 
     _registerSingletons : function() {
+      var AdapterRegistry = org.eclipse.rwt.protocol.AdapterRegistry;
       var uiCallBack = org.eclipse.rwt.UICallBack.getInstance();
-      org.eclipse.rwt.protocol.ObjectManager.add( "uicb", uiCallBack, "rwt.UICallBack" );
+      org.eclipse.rwt.protocol.ObjectManager.add( 
+        "uicb", 
+        uiCallBack, 
+        AdapterRegistry.getAdapter( "rwt.UICallBack" ) 
+      );
       var jsExecutor = org.eclipse.rwt.JSExecutor.getInstance();
-      org.eclipse.rwt.protocol.ObjectManager.add( "jsex", jsExecutor, "rwt.JSExecutor" );
+      org.eclipse.rwt.protocol.ObjectManager.add( 
+        "jsex", 
+        jsExecutor, 
+        AdapterRegistry.getAdapter( "rwt.JSExecutor" ) 
+      );
       var browser = org.eclipse.rwt.widgets.ExternalBrowser.getInstance();
-      org.eclipse.rwt.protocol.ObjectManager.add( "eb", browser, "rwt.widgets.ExternalBrowser" );
+      org.eclipse.rwt.protocol.ObjectManager.add( 
+        "eb", 
+        browser, 
+        AdapterRegistry.getAdapter( "rwt.widgets.ExternalBrowser" ) 
+      );
     },
 
     getStartupTime : function() {
