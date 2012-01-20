@@ -61,6 +61,7 @@ public class ControlLCAUtil {
   private static final String PROP_TAB_INDEX = "tabIndex";
   private static final String PROP_CURSOR = "cursor";
   private static final String PROP_BACKGROUND_IMAGE = "backgroundImage";
+  private static final String PROP_CHILDREN = "children";
 
   private static final String USER_DATA_KEY_LISTENER = "keyListener";
   private static final String USER_DATA_TRAVERSE_LISTENER = "traverseListener";
@@ -233,6 +234,7 @@ public class ControlLCAUtil {
     if( !( control instanceof Shell ) ) {
       adapter.preserve( Props.Z_INDEX, new Integer( getZIndex( control ) ) );
     }
+    adapter.preserve( PROP_CHILDREN, getChildren( control ) );
     adapter.preserve( PROP_TAB_INDEX, new Integer( getTabIndex( control ) ) );
     WidgetLCAUtil.preserveToolTipText( control, control.getToolTipText() );
     adapter.preserve( Props.MENU, control.getMenu() );
@@ -317,10 +319,11 @@ public class ControlLCAUtil {
    * @param control the control whose properties to set
    * @throws IOException
    * @see #preserveValues(Control)
+   * @since 1.5
    */
   public static void renderChanges( Control control ) throws IOException {
     renderBounds( control );
-    renderZIndex( control );
+    renderChildren( control );
     renderTabIndex( control );
     renderToolTip( control );
     renderMenu( control );
@@ -349,6 +352,7 @@ public class ControlLCAUtil {
    * response that updates the client-side bounds.
    *
    * @param control the control whose bounds to write
+   * @since 1.5
    * @throws IOException
    */
   public static void renderBounds( Control control ) throws IOException {
@@ -356,27 +360,14 @@ public class ControlLCAUtil {
     WidgetLCAUtil.renderBounds( control, parent, control.getBounds() );
   }
 
-  /**
-   * Determines whether the z-index of the given control has changed during the
-   * processing of the current request and if so, writes JavaScript code to the
-   * response that updates the client-side z-index.
-   *
-   * @param control the control whose z-index to write
-   * @throws IOException
-   */
-  public static void renderZIndex( Control control ) throws IOException {
-    // TODO [rst] remove surrounding if statement as soon as z-order on shells
-    //      is completely implemented
-    if( !( control instanceof Shell ) ) {
-      Integer newValue = new Integer( getZIndex( control ) );
-      if( WidgetLCAUtil.hasChanged( control, Props.Z_INDEX, newValue ) ) {
-        IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-        clientObject.setProperty( "zIndex", newValue );
-      }
+  static void renderChildren( Control control ) {
+    if( control instanceof Composite ) {
+      String[] newValue = getChildren( control );
+      WidgetLCAUtil.renderProperty( control, PROP_CHILDREN, newValue, null );
     }
   }
 
-  public static void renderTabIndex( Control control ) {
+  static void renderTabIndex( Control control ) {
     if( control instanceof Shell ) {
       resetTabIndices( ( Shell )control );
       // tabIndex must be a positive value
@@ -396,6 +387,7 @@ public class ControlLCAUtil {
    * response that updates the client-side tool tip.
    *
    * @param control the control whose tool tip to write
+   * @since 1.5
    * @throws IOException
    */
   public static void renderToolTip( Control control ) throws IOException {
@@ -409,6 +401,7 @@ public class ControlLCAUtil {
    * property.
    *
    * @param control the control whose menu property to write
+   * @since 1.5
    * @throws IOException
    */
   public static void renderMenu( Control control ) throws IOException {
@@ -421,6 +414,7 @@ public class ControlLCAUtil {
    * the response that updates the client-side visibility.
    *
    * @param control the control whose visibility to write
+   * @since 1.5
    * @throws IOException
    */
   public static void renderVisible( Control control ) throws IOException {
@@ -440,6 +434,7 @@ public class ControlLCAUtil {
    * property.
    *
    * @param control the control whose enabled property to write
+   * @since 1.5
    * @throws IOException
    */
   public static void renderEnabled( Control control ) throws IOException {
@@ -455,6 +450,7 @@ public class ControlLCAUtil {
    * foreground property.
    *
    * @param control the control whose foreground property to write
+   * @since 1.5
    * @throws IOException
    */
   public static void renderForeground( Control control ) throws IOException {
@@ -469,6 +465,7 @@ public class ControlLCAUtil {
    * background property.
    *
    * @param control the control whose background property to write
+   * @since 1.5
    * @throws IOException
    */
   public static void renderBackground( Control control ) throws IOException {
@@ -485,23 +482,12 @@ public class ControlLCAUtil {
    * property.
    *
    * @param control the control whose background image property to write
-   * @throws IOException
+   * @since 1.5
    */
-  public static void renderBackgroundImage( Control control ) throws IOException {
+  public static void renderBackgroundImage( Control control ) {
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     Image image = controlAdapter.getUserBackgroundImage();
-    if( WidgetLCAUtil.hasChanged( control, PROP_BACKGROUND_IMAGE, image, null ) ) {
-      Object[] imageArray = null;
-      if( image != null ) {
-        imageArray = new Object[]{
-          ImageFactory.getImagePath( image ),
-          new Integer( image.getBounds().width ),
-          new Integer( image.getBounds().height )
-        };
-      }
-      IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-      clientObject.setProperty( "backgroundImage", imageArray );
-    }
+    WidgetLCAUtil.renderProperty( control, PROP_BACKGROUND_IMAGE, image, null );
   }
 
   /**
@@ -510,6 +496,7 @@ public class ControlLCAUtil {
    * a protocol message to the response that updates the client-side font property.
    *
    * @param control the control whose font property to write
+   * @since 1.5
    * @throws IOException
    */
   public static void renderFont( Control control ) throws IOException {
@@ -529,7 +516,7 @@ public class ControlLCAUtil {
   //////////////////
   // render listener
 
-  public static void renderListenActivate( Control control ) {
+  static void renderListenActivate( Control control ) {
     if( !control.isDisposed() ) {
       boolean newValue = ActivateEvent.hasListener( control );
       WidgetLCAUtil.renderListener( control, PROP_ACTIVATE_LISTENER, newValue, false );
@@ -655,20 +642,18 @@ public class ControlLCAUtil {
   //////////////////////
   // widget value getter
 
-  /**
-   * Determines the z-index to render for a given control.
-   * @param control the control whose z-index is requested
-   * @return the z-index
-   */
-  // TODO [rst] also document the meaning of the returned number
-  public static int getZIndex( Control control ) {
-    int max = MAX_STATIC_ZORDER;
-    Composite parent = control.getParent();
-    if( parent != null ) {
-      max = Math.max( ControlHolder.size( parent ), max );
+  private static String[] getChildren( Control control ) {
+    String[] result = null;
+    if( control instanceof Composite ) {
+      Composite composite = ( Composite )control;
+      IControlHolderAdapter controlHolder = composite.getAdapter( IControlHolderAdapter.class );
+      Control[] children = controlHolder.getControls();
+      result = new String[ children.length ];
+      for( int i = 0; i < result.length; i++ ) {
+        result[ i ] = WidgetUtil.getId( children[ i ] );
+      }
     }
-    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
-    return max - controlAdapter.getZIndex();
+    return result;
   }
 
   // [if] Fix for bug 263025, 297466, 223873 and more
@@ -1020,7 +1005,7 @@ public class ControlLCAUtil {
    *
    * @param control the control whose z-index to write
    * @throws IOException
-   * @deprecated Use {@link #renderZIndex(Control)} instead
+   * @deprecated This method should not be used anymore as zIndex is not rendered directly anymore.
    */
   @Deprecated
   public static void writeZIndex( Control control ) throws IOException {
@@ -1351,12 +1336,31 @@ public class ControlLCAUtil {
    *
    * @param control the widget to preserve
    * @since 1.3
+   * @deprecated Use {@link WidgetLCAUtil#preserveListener(Widget, String, boolean)} instead
    */
   @Deprecated
   public static void preserveMenuDetectListener( Control control ) {
     WidgetLCAUtil.preserveListener( control,
                                     PROP_MENU_DETECT_LISTENER,
                                     MenuDetectEvent.hasListener( control ) );
+  }
+
+  /**
+   * Determines the z-index to render for a given control.
+   * @param control the control whose z-index is requested
+   * @return the z-index
+   * @deprecated This method should not be used anymore.
+   */
+  // TODO [rst] also document the meaning of the returned number
+  @Deprecated
+  public static int getZIndex( Control control ) {
+    int max = MAX_STATIC_ZORDER;
+    Composite parent = control.getParent();
+    if( parent != null ) {
+      max = Math.max( ControlHolder.size( parent ), max );
+    }
+    IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
+    return max - controlAdapter.getZIndex();
   }
 
 }

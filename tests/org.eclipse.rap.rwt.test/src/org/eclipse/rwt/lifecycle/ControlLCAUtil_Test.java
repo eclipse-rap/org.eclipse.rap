@@ -727,31 +727,42 @@ public class ControlLCAUtil_Test extends TestCase {
     assertNull( message.findSetOperation( control, "bounds" ) );
   }
 
-  public void testRenderIntialZIndex() throws IOException {
-    ControlLCAUtil.renderZIndex( control );
+  public void testRenderIntialChildren() throws JSONException {
+    ControlLCAUtil.renderChildren( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 300 ), message.findSetProperty( control, "zIndex" ) );
+    JSONArray actual = ( JSONArray )message.findSetProperty( shell, "children" );
+    assertTrue( ProtocolTestUtil.jsonEquals( "[" +  WidgetUtil.getId( control ) + "]", actual ) );
   }
 
-  public void testRenderZIndex() throws IOException {
-    control.moveBelow( new Button( shell, SWT.PUSH ) );
-    ControlLCAUtil.renderZIndex( control );
+  public void testRenderChildren() throws JSONException {
+    Button button = new Button( shell, SWT.PUSH );
+    control.moveBelow( button );
+    ControlLCAUtil.renderChildren( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertEquals( new Integer( 299 ), message.findSetProperty( control, "zIndex" ) );
+    JSONArray actual = ( JSONArray )message.findSetProperty( shell, "children" );
+    String expected = "[" + WidgetUtil.getId( button ) + "," + WidgetUtil.getId( control ) + "]";
+    assertTrue( ProtocolTestUtil.jsonEquals( expected, actual ) );
   }
 
-  public void testRenderZIndexUnchanged() throws IOException {
+  public void testRenderChildrenOnNotComposite() {
+    ControlLCAUtil.renderChildren( control );
+
+    Message message = Fixture.getProtocolMessage();
+    assertNull( message.findSetOperation( control, "children" ) );
+  }
+
+  public void testRenderChildrenUnchanged() {
     Fixture.markInitialized( display );
-    Fixture.markInitialized( control );
+    Fixture.markInitialized( shell );
     control.moveBelow( new Button( shell, SWT.PUSH ) );
 
     Fixture.preserveWidgets();
-    ControlLCAUtil.renderZIndex( control );
+    ControlLCAUtil.renderChildren( shell );
 
     Message message = Fixture.getProtocolMessage();
-    assertNull( message.findSetOperation( control, "zIndex" ) );
+    assertNull( message.findSetOperation( shell, "children" ) );
   }
 
   public void testRenderIntialTabIndex() throws IOException {

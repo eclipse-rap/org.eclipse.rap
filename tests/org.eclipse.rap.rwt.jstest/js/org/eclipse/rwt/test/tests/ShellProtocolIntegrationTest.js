@@ -286,10 +286,25 @@ qx.Class.define( "org.eclipse.rwt.test.tests.ShellProtocolIntegrationTest", {
       this._disposeShell();
     },
 
-    testSetZIndex : function() {
+    testSetChildren : function() {
       var shell = this._protocolCreateShell();
-      this._protocolSet( { "zIndex" : 527 } );
-      assertEquals( 527, shell.getZIndex() );
+      var widgetManager = org.eclipse.swt.WidgetManager.getInstance();
+      var button1 = new org.eclipse.rwt.widgets.Button( "push" );
+      widgetManager.add( button1, "w11", true );
+      var button2 = new org.eclipse.rwt.widgets.Button( "push" );
+      widgetManager.add( button2, "w12", true );
+      var button3 = new org.eclipse.rwt.widgets.Button( "push" );
+      widgetManager.add( button3, "w13", true );
+      this._protocolSet( { "children" : [ "w12", "w13", "w11" ] } );
+      assertEquals( 1, button1.getZIndex() );
+      assertEquals( 2, button3.getZIndex() );
+      assertEquals( 3, button2.getZIndex() );
+      widgetManager.remove( button1 );
+      button1.destroy();
+      widgetManager.remove( button2 );
+      button2.destroy();
+      widgetManager.remove( button3 );
+      button3.destroy();
       this._disposeShell();
     },
 
