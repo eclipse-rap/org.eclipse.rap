@@ -13,7 +13,8 @@ package org.eclipse.rwt.internal.textsize;
 
 
 import java.math.BigDecimal;
-import org.eclipse.rwt.lifecycle.WidgetLCAUtil;
+
+import org.eclipse.rwt.internal.util.EncodingUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.internal.graphics.FontUtil;
@@ -172,7 +173,7 @@ public class TextSizeUtil {
   }
 
   private static String createMeasurementString( String string, boolean expandNewLines ) {
-    return expandNewLines ? string : WidgetLCAUtil.replaceNewLines( string, " " );
+    return expandNewLines ? string : EncodingUtil.replaceNewLines( string, " " );
   }
 
   private TextSizeUtil() {
