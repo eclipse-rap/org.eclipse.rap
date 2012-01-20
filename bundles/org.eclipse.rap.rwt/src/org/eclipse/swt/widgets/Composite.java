@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH.
+ * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -837,10 +837,6 @@ public class Composite extends Scrollable {
     }
   }
 
-  int getChildrenCount() {
-    return controlHolder.size();
-  }
-
   ////////////////
   // Resize helper
 
@@ -885,10 +881,6 @@ public class Composite extends Scrollable {
 
     public void markLayoutNeeded() {
       Composite.this.markLayout( false, false );
-    }
-
-    public int getChildrenCount() {
-      return Composite.this.getChildrenCount();
     }
 
   }

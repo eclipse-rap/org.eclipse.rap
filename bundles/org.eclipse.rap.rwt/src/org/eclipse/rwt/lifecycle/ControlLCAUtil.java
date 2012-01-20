@@ -665,8 +665,7 @@ public class ControlLCAUtil {
     int max = MAX_STATIC_ZORDER;
     Composite parent = control.getParent();
     if( parent != null ) {
-      ICompositeAdapter compositeAdapter = parent.getAdapter( ICompositeAdapter.class );
-      max = Math.max( compositeAdapter.getChildrenCount(), max );
+      max = Math.max( ControlHolder.size( parent ), max );
     }
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     return max - controlAdapter.getZIndex();
