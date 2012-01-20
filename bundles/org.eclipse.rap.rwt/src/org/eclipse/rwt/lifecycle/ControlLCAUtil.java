@@ -663,11 +663,10 @@ public class ControlLCAUtil {
   // TODO [rst] also document the meaning of the returned number
   public static int getZIndex( Control control ) {
     int max = MAX_STATIC_ZORDER;
-    if( control.getParent() != null ) {
-      // TODO [rh] revise: determining the childrenCount by getting all the
-      //      children might be bad performance-wise. This was done in order to
-      //      eliminate Composite#getChildrenCount() which is no API in SWT
-      max = Math.max( control.getParent().getChildren().length, max );
+    Composite parent = control.getParent();
+    if( parent != null ) {
+      ICompositeAdapter compositeAdapter = parent.getAdapter( ICompositeAdapter.class );
+      max = Math.max( compositeAdapter.getChildrenCount(), max );
     }
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     return max - controlAdapter.getZIndex();
