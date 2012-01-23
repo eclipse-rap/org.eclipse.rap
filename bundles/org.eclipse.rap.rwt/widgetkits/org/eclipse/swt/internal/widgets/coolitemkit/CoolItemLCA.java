@@ -80,7 +80,7 @@ public class CoolItemLCA extends AbstractWidgetLCA {
 
   public void renderChanges( Widget widget ) throws IOException {
     CoolItem item = ( CoolItem )widget;
-    WidgetLCAUtil.renderBounds( item, item.getParent(), item.getBounds() );
+    WidgetLCAUtil.renderBounds( item, item.getBounds() );
     renderProperty( item, PROP_CONTROL, item.getControl(), null );
     WidgetLCAUtil.renderCustomVariant( item );
   }

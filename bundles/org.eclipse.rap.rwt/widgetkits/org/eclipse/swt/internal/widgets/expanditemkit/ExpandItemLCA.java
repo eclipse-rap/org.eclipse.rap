@@ -78,7 +78,7 @@ public final class ExpandItemLCA extends AbstractWidgetLCA {
   public void renderChanges( Widget widget ) throws IOException {
     ExpandItem item = ( ExpandItem )widget;
     WidgetLCAUtil.renderCustomVariant( widget );
-    WidgetLCAUtil.renderBounds( item, item.getParent(), getBounds( item ) );
+    WidgetLCAUtil.renderBounds( item, getBounds( item ) );
     ItemLCAUtil.renderChanges( item );
     renderProperty( item, PROP_EXPANDED, item.getExpanded(), false );
     renderProperty( item, PROP_HEADER_HEIGHT, item.getHeaderHeight(), DEFAULT_HEADER_HEIGHT );

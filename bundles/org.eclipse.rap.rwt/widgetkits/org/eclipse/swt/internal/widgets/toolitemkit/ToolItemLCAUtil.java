@@ -16,8 +16,6 @@ import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.preserveListener;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderProperty;
 import static org.eclipse.rwt.lifecycle.WidgetLCAUtil.renderListener;
 
-import java.io.IOException;
-
 import org.eclipse.rwt.internal.lifecycle.JSConst;
 import org.eclipse.rwt.internal.protocol.ClientObjectFactory;
 import org.eclipse.rwt.internal.protocol.IClientObject;
@@ -79,8 +77,8 @@ final class ToolItemLCAUtil {
     clientObject.setProperty( "index", toolBar.indexOf( toolItem ) );
   }
 
-  static void renderChanges( ToolItem toolItem ) throws IOException {
-    WidgetLCAUtil.renderBounds( toolItem, toolItem.getParent(), toolItem.getBounds() );
+  static void renderChanges( ToolItem toolItem ) {
+    WidgetLCAUtil.renderBounds( toolItem, toolItem.getBounds() );
     WidgetLCAUtil.renderEnabled( toolItem, toolItem.getEnabled() );
     WidgetLCAUtil.renderToolTip( toolItem, toolItem.getToolTipText() );
     WidgetLCAUtil.renderCustomVariant( toolItem );

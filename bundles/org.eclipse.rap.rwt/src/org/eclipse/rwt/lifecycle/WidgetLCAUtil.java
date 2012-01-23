@@ -328,37 +328,17 @@ public final class WidgetLCAUtil {
 
   /**
    * Determines whether the bounds of the given widget have changed during the
-   * processing of the current request and if so, writes a set opration the
+   * processing of the current request and if so, writes a set operation the
    * response that updates the client-side bounds of the specified widget. For
    * instances of {@link Control}, use the method
    * {@link ControlLCAUtil#renderBounds(Control)} instead.
    *
    * @param widget the widget whose bounds to write
-   * @param parent the parent of the widget or <code>null</code> if the widget
-   *            does not have a parent
    * @param bounds the new bounds of the widget
-   * @throws IOException
+   * @since 1.5
    */
-  public static void renderBounds( Widget widget, Control parent, Rectangle bounds )
-    throws IOException
-  {
-    if( WidgetLCAUtil.hasChanged( widget, Props.BOUNDS, bounds ) ) {
-      // the SWT coordinates for the client area differ in some cases from
-      // the widget realization of qooxdoo
-      Rectangle newBounds = bounds;
-      if( parent != null ) {
-        AbstractWidgetLCA parentLCA = WidgetUtil.getLCA( parent );
-        newBounds = parentLCA.adjustCoordinates( widget, newBounds );
-      }
-      int[] args = new int[] {
-        newBounds.x,
-        newBounds.y,
-        newBounds.width,
-        newBounds.height
-      };
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      clientObject.setProperty( "bounds", args );
-    }
+  public static void renderBounds( Widget widget, Rectangle bounds ) {
+    renderProperty( widget, Props.BOUNDS, bounds, null );
   }
 
   /**
@@ -370,16 +350,11 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose enabled property to set
    * @param enabled the new value of the property
-   * @throws IOException
    * @see #preserveEnabled(Widget, boolean)
+   * @since 1.5
    */
-  public static void renderEnabled( Widget widget, boolean enabled ) throws IOException {
-    Boolean newValue = Boolean.valueOf( enabled );
-    Boolean defaultValue = Boolean.TRUE;
-    if( WidgetLCAUtil.hasChanged( widget, Props.ENABLED, newValue, defaultValue ) ) {
-      IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
-      clientObject.setProperty( "enabled", newValue );
-    }
+  public static void renderEnabled( Widget widget, boolean enabled ) {
+    renderProperty( widget, Props.ENABLED, enabled, true );
   }
 
   /**
@@ -388,9 +363,9 @@ public final class WidgetLCAUtil {
    * a protocol Message to the response that updates the client-side variant.
    *
    * @param widget the widget whose custom variant to write
-   * @throws IOException
+   * @since 1.5
    */
-  public static void renderCustomVariant( Widget widget ) throws IOException {
+  public static void renderCustomVariant( Widget widget ) {
     String newValue = WidgetUtil.getVariant( widget );
     if( WidgetLCAUtil.hasChanged( widget, PROP_VARIANT, newValue, null ) ) {
       String value = null;
@@ -422,9 +397,9 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose menu property to set
    * @param menu the new value of the property
-   * @throws IOException
+   * @since 1.5
    */
-  public static void renderMenu( Widget widget, Menu menu ) throws IOException {
+  public static void renderMenu( Widget widget, Menu menu ) {
     renderProperty( widget, Props.MENU, menu, null );
   }
 
@@ -454,10 +429,10 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose font property to set
    * @param font the new value of the property
-   * @throws IOException
    * @see #preserveFont(Widget, Font)
+   * @since 1.5
    */
-  public static void renderFont( Widget widget, Font font ) throws IOException {
+  public static void renderFont( Widget widget, Font font ) {
     if( WidgetLCAUtil.hasChanged( widget, PROP_FONT, font, null ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
       clientObject.setProperty( PROP_FONT, getFontAsArray( font ) );
@@ -506,10 +481,10 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose foreground property to set
    * @param newColor the new value of the property
-   * @throws IOException
    * @see #preserveForeground(Widget, Color)
+   * @since 1.5
    */
-  public static void renderForeground( Widget widget, Color newColor ) throws IOException {
+  public static void renderForeground( Widget widget, Color newColor ) {
     if( WidgetLCAUtil.hasChanged( widget, PROP_FOREGROUND, newColor, null ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( widget );
       clientObject.setProperty( PROP_FOREGROUND, getColorValueAsArray( newColor, false ) );
@@ -542,10 +517,10 @@ public final class WidgetLCAUtil {
    *
    * @param widget the widget whose background property to set
    * @param newColor the new value of the property
-   * @throws IOException
    * @see #preserveBackground(Widget, Color)
+   * @since 1.5
    */
-  public static void renderBackground( Widget widget, Color newColor ) throws IOException {
+  public static void renderBackground( Widget widget, Color newColor ) {
     renderBackground( widget, newColor, false );
   }
 
@@ -561,12 +536,10 @@ public final class WidgetLCAUtil {
    * @param background the new background color
    * @param transparency the new background transparency, if <code>true</code>,
    *            the <code>background</code> parameter is ignored
-   * @throws IOException
    * @see #preserveBackground(Widget, Color, boolean)
+   * @since 1.5
    */
-  public static void renderBackground( Widget widget, Color background, boolean transparency )
-    throws IOException
-  {
+  public static void renderBackground( Widget widget, Color background, boolean transparency ) {
     boolean transparencyChanged = WidgetLCAUtil.hasChanged( widget,
                                                             PROP_BACKGROUND_TRANSPARENCY,
                                                             Boolean.valueOf( transparency ),
@@ -589,11 +562,10 @@ public final class WidgetLCAUtil {
    * background gradient properties of the specified widget.
    *
    * @param widget the widget whose background gradient properties to set
-   * @throws IOException
    * @see #preserveBackgroundGradient(Widget)
    * @since 1.5
    */
-  public static void renderBackgroundGradient( Widget widget ) throws IOException {
+  public static void renderBackgroundGradient( Widget widget ) {
     if( hasBackgroundGradientChanged( widget ) ) {
       Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
       IWidgetGraphicsAdapter graphicsAdapter = ( IWidgetGraphicsAdapter )adapter;
@@ -647,11 +619,10 @@ public final class WidgetLCAUtil {
    * of the specified widget.
    *
    * @param widget the widget whose rounded border properties to set
-   * @throws IOException
    * @see #preserveRoundedBorder(Widget)
    * @since 1.5
    */
-  public static void renderRoundedBorder( Widget widget ) throws IOException {
+  public static void renderRoundedBorder( Widget widget ) {
     if( hasRoundedBorderChanged( widget ) ) {
       Object adapter = widget.getAdapter( IWidgetGraphicsAdapter.class );
       IWidgetGraphicsAdapter graphicAdapter = ( IWidgetGraphicsAdapter )adapter;
@@ -1277,7 +1248,7 @@ public final class WidgetLCAUtil {
    *            does not have a parent
    * @param bounds the new bounds of the widget
    * @throws IOException
-   * @deprecated Use {@link #renderBounds(Widget, Control, Rectangle)} instead
+   * @deprecated Use {@link #renderBounds(Widget, Rectangle)} instead
    */
   @Deprecated
   public static void writeBounds( Widget widget, Control parent, Rectangle bounds )

@@ -80,7 +80,7 @@ public final class CTabItemLCA extends AbstractWidgetLCA {
     CTabItem item = ( CTabItem )widget;
     WidgetLCAUtil.renderCustomVariant( item );
     WidgetLCAUtil.renderToolTip( item, item.getToolTipText() );
-    WidgetLCAUtil.renderBounds( item, item.getParent(), item.getBounds() );
+    WidgetLCAUtil.renderBounds( item, item.getBounds() );
     WidgetLCAUtil.renderFont( item, getFont( item ) );
     renderProperty( item, PROP_TEXT, getText( item ), "" );
     renderProperty( item, PROP_IMAGE, getImage( item ), null );

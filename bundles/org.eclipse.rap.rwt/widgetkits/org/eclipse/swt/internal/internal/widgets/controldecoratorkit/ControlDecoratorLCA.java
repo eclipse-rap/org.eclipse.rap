@@ -65,7 +65,7 @@ public class ControlDecoratorLCA extends AbstractWidgetLCA {
 
   public void renderChanges( Widget widget ) throws IOException {
     ControlDecorator decorator = ( ControlDecorator )widget;
-    WidgetLCAUtil.renderBounds( decorator, decorator.getParent(), decorator.getBounds() );
+    WidgetLCAUtil.renderBounds( decorator, decorator.getBounds() );
     renderProperty( decorator, PROP_TEXT, decorator.getText(), "" );
     renderProperty( decorator, PROP_IMAGE, decorator.getImage(), null );
     renderProperty( decorator, PROP_VISIBLE, decorator.isVisible(), false );

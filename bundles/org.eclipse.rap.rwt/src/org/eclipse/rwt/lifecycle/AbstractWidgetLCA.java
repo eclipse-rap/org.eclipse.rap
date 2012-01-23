@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 Innoopract Informationssysteme GmbH and others.
+ * Copyright (c) 2002, 2012 Innoopract Informationssysteme GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,10 @@ public abstract class AbstractWidgetLCA implements IWidgetLifeCycleAdapter {
    * @param widget the enclosed widget whose bounds to adjust
    * @param bounds the actual bounds of the enclosed widget
    * @return the adjusted bounds
+   * @deprecated Should not use this method anymore. Adjusting of the widget bounds is handled on
+   *             the client
    */
+  @Deprecated
   public Rectangle adjustCoordinates( Widget widget, Rectangle bounds ) {
     return bounds;
   }

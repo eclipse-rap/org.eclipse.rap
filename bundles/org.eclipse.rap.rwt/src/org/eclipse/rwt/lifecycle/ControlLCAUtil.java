@@ -317,11 +317,10 @@ public class ControlLCAUtil {
    * </ul>
    *
    * @param control the control whose properties to set
-   * @throws IOException
    * @see #preserveValues(Control)
    * @since 1.5
    */
-  public static void renderChanges( Control control ) throws IOException {
+  public static void renderChanges( Control control ) {
     renderBounds( control );
     renderChildren( control );
     renderTabIndex( control );
@@ -353,11 +352,9 @@ public class ControlLCAUtil {
    *
    * @param control the control whose bounds to write
    * @since 1.5
-   * @throws IOException
    */
-  public static void renderBounds( Control control ) throws IOException {
-    Composite parent = control.getParent();
-    WidgetLCAUtil.renderBounds( control, parent, control.getBounds() );
+  public static void renderBounds( Control control ) {
+    WidgetLCAUtil.renderBounds( control, control.getBounds() );
   }
 
   static void renderChildren( Control control ) {
@@ -388,9 +385,8 @@ public class ControlLCAUtil {
    *
    * @param control the control whose tool tip to write
    * @since 1.5
-   * @throws IOException
    */
-  public static void renderToolTip( Control control ) throws IOException {
+  public static void renderToolTip( Control control ) {
     WidgetLCAUtil.renderToolTip( control, control.getToolTipText() );
   }
 
@@ -402,9 +398,8 @@ public class ControlLCAUtil {
    *
    * @param control the control whose menu property to write
    * @since 1.5
-   * @throws IOException
    */
-  public static void renderMenu( Control control ) throws IOException {
+  public static void renderMenu( Control control ) {
     WidgetLCAUtil.renderMenu( control, control.getMenu() );
   }
 
@@ -415,9 +410,8 @@ public class ControlLCAUtil {
    *
    * @param control the control whose visibility to write
    * @since 1.5
-   * @throws IOException
    */
-  public static void renderVisible( Control control ) throws IOException {
+  public static void renderVisible( Control control ) {
     Boolean newValue = Boolean.valueOf( getVisible( control ) );
     Boolean defValue = Boolean.TRUE;
     // TODO [tb] : Can we have a shorthand for this, like in JSWriter?
@@ -435,9 +429,8 @@ public class ControlLCAUtil {
    *
    * @param control the control whose enabled property to write
    * @since 1.5
-   * @throws IOException
    */
-  public static void renderEnabled( Control control ) throws IOException {
+  public static void renderEnabled( Control control ) {
     // Using isEnabled() would result in unnecessarily updating child widgets of
     // enabled/disabled controls.
     WidgetLCAUtil.renderEnabled( control, control.getEnabled() );
@@ -451,9 +444,8 @@ public class ControlLCAUtil {
    *
    * @param control the control whose foreground property to write
    * @since 1.5
-   * @throws IOException
    */
-  public static void renderForeground( Control control ) throws IOException {
+  public static void renderForeground( Control control ) {
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     WidgetLCAUtil.renderForeground( control, controlAdapter.getUserForeground() );
   }
@@ -466,9 +458,8 @@ public class ControlLCAUtil {
    *
    * @param control the control whose background property to write
    * @since 1.5
-   * @throws IOException
    */
-  public static void renderBackground( Control control ) throws IOException {
+  public static void renderBackground( Control control ) {
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     WidgetLCAUtil.renderBackground( control,
                                     controlAdapter.getUserBackground(),
@@ -497,9 +488,8 @@ public class ControlLCAUtil {
    *
    * @param control the control whose font property to write
    * @since 1.5
-   * @throws IOException
    */
-  public static void renderFont( Control control ) throws IOException {
+  public static void renderFont( Control control ) {
     IControlAdapter controlAdapter = ControlUtil.getControlAdapter( control );
     Font newValue = controlAdapter.getUserFont();
     WidgetLCAUtil.renderFont( control, newValue );
@@ -509,7 +499,7 @@ public class ControlLCAUtil {
     Cursor newValue = control.getCursor();
     if( WidgetLCAUtil.hasChanged( control, PROP_CURSOR, newValue, null ) ) {
       IClientObject clientObject = ClientObjectFactory.getForWidget( control );
-      clientObject.setProperty( "cursor", getQxCursor( newValue ) );
+      clientObject.setProperty( PROP_CURSOR, getQxCursor( newValue ) );
     }
   }
 
