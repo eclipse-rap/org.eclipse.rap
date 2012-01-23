@@ -414,7 +414,6 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       keyUtil._onRequestReceived();
       assertEquals( 3, TestUtil.getRequestsSend() );
       assertEquals( 0, keyUtil._bufferedEvents.length );
-      keyUtil._pendingEventInfo = null;
       req.addEventListener( "received", keyUtil._onRequestReceived, keyUtil );
       this._disposeTextWidget( text );
     },
@@ -452,10 +451,8 @@ qx.Class.define( "org.eclipse.rwt.test.tests.KeyEventSupportTest", {
       var text = this._createTextWidget();
       var node = text._inputElement;
       // cancel event
-      assertNull( keyUtil._pendingEventInfo );
       assertEquals( 0, TestUtil.getRequestsSend() );
       TestUtil.fireFakeKeyDomEvent( node, "keydown", 37 );
-      assertNull( keyUtil._pendingEventInfo );
       this._disposeTextWidget( text );
     },
 
